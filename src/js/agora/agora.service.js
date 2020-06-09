@@ -153,6 +153,19 @@ export default class AgoraService extends Emittable {
 		return this.state$.getValue();
 	}
 
+	get publisherStreamId() {
+		const streams = this.remotes$.getValue().slice();
+		const local = this.local$.getValue();
+		if (local) {
+			streams.unshift(local);
+		}
+		const publisherStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+		if (publisherStream) {
+			return publisherStream.getId();
+		}
+		return null;
+	}
+
 	constructor(defaultDevices) {
 		if (AgoraService.AGORA) {
 			throw ('AgoraService is a singleton');
@@ -192,7 +205,7 @@ export default class AgoraService extends Emittable {
 			cameraMuted: false,
 			audioMuted: false,
 			devices: (role !== RoleType.Attendee && defaultDevices) ? defaultDevices : { videos: [], audios: [] },
-			quality: StreamQualities[StreamQualities.length - 1],
+			quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1],
 		};
 		this.state$ = new BehaviorSubject(state);
 		this.local$ = new BehaviorSubject(null);
@@ -648,6 +661,10 @@ export default class AgoraService extends Emittable {
 		client.publish(local, (error) => {
 			console.log('AgoraService.publishLocalStream.error', local.getId(), error);
 		});
+		local.clientInfo = {
+			role: this.state.role,
+			uid: this.state.uid,
+		};
 		this.local$.next(local);
 	}
 
@@ -926,6 +943,10 @@ export default class AgoraService extends Emittable {
 
 	onStreamPublished(event) {
 		// console.log('AgoraService.onStreamPublished');
+		this.local.clientInfo = {
+			role: this.state.role,
+			uid: this.state.uid,
+		};
 		this.local$.next(this.local);
 	}
 

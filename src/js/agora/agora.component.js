@@ -161,7 +161,7 @@ export default class AgoraComponent extends Component {
 				cameraMuted: false,
 				audioMuted: false,
 				devices: [],
-				quality: StreamQualities[StreamQualities.length - 1],
+				quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1],
 			};
 		}
 	}

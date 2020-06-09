@@ -581,6 +581,26 @@
       get: function get() {
         return this.state$.getValue();
       }
+    }, {
+      key: "publisherStreamId",
+      get: function get() {
+        var streams = this.remotes$.getValue().slice();
+        var local = this.local$.getValue();
+
+        if (local) {
+          streams.unshift(local);
+        }
+
+        var publisherStream = streams.find(function (x) {
+          return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
+        });
+
+        if (publisherStream) {
+          return publisherStream.getId();
+        }
+
+        return null;
+      }
     }]);
 
     function AgoraService(defaultDevices) {
@@ -628,7 +648,7 @@
           videos: [],
           audios: []
         },
-        quality: StreamQualities[StreamQualities.length - 1]
+        quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
       };
       _this.state$ = new rxjs.BehaviorSubject(state);
       _this.local$ = new rxjs.BehaviorSubject(null);
@@ -1137,6 +1157,10 @@
       client.publish(local, function (error) {
         console.log('AgoraService.publishLocalStream.error', local.getId(), error);
       });
+      local.clientInfo = {
+        role: this.state.role,
+        uid: this.state.uid
+      };
       this.local$.next(local);
     };
 
@@ -1489,6 +1513,10 @@
 
     _proto.onStreamPublished = function onStreamPublished(event) {
       // console.log('AgoraService.onStreamPublished');
+      this.local.clientInfo = {
+        role: this.state.role,
+        uid: this.state.uid
+      };
       this.local$.next(this.local);
     };
 
@@ -58416,7 +58444,14 @@
 
     EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
       var agora = AgoraService.getSingleton();
-      var target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+      var publisherStreamId = agora.publisherStreamId;
+
+      if (!publisherStreamId) {
+        return;
+      } // const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+
+
+      var target = "#stream-" + publisherStreamId;
       var video = document.querySelector(target + " video");
 
       if (!video) {

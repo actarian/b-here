@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../../environment/environment';
-import AgoraService, { RoleType } from '../../agora/agora.service';
+import AgoraService from '../../agora/agora.service';
 import { BASE_HREF } from '../../const';
 
 export class EnvMapLoader {
@@ -39,7 +39,12 @@ export class EnvMapLoader {
 
 	static loadPublisherStreamBackground(renderer, callback) {
 		const agora = AgoraService.getSingleton();
-		const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+		const publisherStreamId = agora.publisherStreamId;
+		if (!publisherStreamId) {
+			return;
+		}
+		// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+		const target = `#stream-${publisherStreamId}`;
 		const video = document.querySelector(`${target} video`);
 		if (!video) {
 			return;
