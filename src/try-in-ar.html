@@ -1,0 +1,33 @@
+<!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
+
+<!-- @@block = main-->
+
+<div class="try-in-ar" try-in-ar>
+	<div *if="devicePlatform == 'android'">
+		<script type="module" src="https://unpkg.com/@google/model-viewer@0.3.1/dist/model-viewer.js"></script>
+		<script nomodule src="https://unpkg.com/@google/model-viewer@0.3.1/dist/model-viewer-legacy.js"></script>
+	</div>
+	<div class="ui" *if="!viewId">
+		<div class="group--info">
+			<div class="group--info__content">
+				<div class="info">Unknown url.</div>
+			</div>
+		</div>
+	</div>
+	<div class="ui" *if="viewId && devicePlatform === 'windowsPhone'">
+		<div class="group--info">
+			<div class="group--info__content">
+				<div class="info">Windows Phone not supported.</div>
+			</div>
+		</div>
+	</div>
+	<div class="ui" *if="viewId && devicePlatform === 'unknown'">
+		<div class="group--info">
+			<div class="group--info__content">
+				<div class="info">Unsupported device.</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- @@close-->

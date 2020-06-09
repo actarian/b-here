@@ -1,0 +1,168 @@
+<!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
+
+<!-- @@block = main-->
+
+<div class="agora" agora-component>
+
+	<div class="ui" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
+		<div class="group--info" *if="form">
+			<form class="form" [formGroup]="form" (submit)="onNext($event)" name="form" role="form" novalidate autocomplete="off">
+				<div class="group--info__content">
+					<!-- LINK -->
+					<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
+						<label>Inserisci un Meeting ID</label>
+						<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" />
+						<div class="control--addon" (click)="onCopyToClipBoard($event)" *if="controls.link.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+						</div>
+					</div>
+					<div class="info" *if="controls.link.errors.required">inserisci meeting id</div>
+					<div class="info" *if="controls.link.errors.pattern">meeting id non valido</div>
+					<div class="info" *if="form.valid">partecipa al meeting</div>
+					<button type="button" class="btn--generate" *if="state.role == 'publisher'" (click)="onGenerateMeetingId($event)">
+						<span>Genera un Meeting ID</span>
+					</button>
+					<button type="submit" class="btn--next" [class]="{ disabled: !form.valid }">
+						<span>Partecipa</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="ui" *if="state.status == 'device' || state.status == 'disconnected'" [agora-device] (enter)="onEnter($event)">
+		<div class="group--info" *if="form">
+			<form class="form" [formGroup]="form" (submit)="onEnter($event)" name="form" role="form" novalidate autocomplete="off">
+				<!-- PREVIEW -->
+				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)">
+					<video class="video" muted></video>
+				</div>
+				<div class="group--info__content">
+					<!-- AUDIO -->
+					<div class="group--form--select" [class]="{ required: controls.audio.validators.length }">
+						<label>Audio</label>
+						<select class="control--select" [formControl]="controls.audio" required>
+							<option value="">Seleziona</option>
+							<option [value]="item.id" *for="let item of controls.audio.options" [innerHTML]="item.name"></option>
+						</select>
+						<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+					</div>
+					<!-- VIDEO -->
+					<div class="group--form--select" [class]="{ required: controls.video.validators.length }">
+						<label>Video</label>
+						<select class="control--select" [formControl]="controls.video" required>
+							<option value="">Seleziona</option>
+							<option [value]="item.id" *for="let item of controls.video.options" [innerHTML]="item.name"></option>
+						</select>
+						<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+					</div>
+					<div class="info" *if="!form.valid || !stream">seleziona sorgente audio e video</div>
+					<div class="info" *if="form.valid && stream">audio e video connessi</div>
+					<button type="submit" class="btn--connect" [class]="{ disabled: !form.valid || !stream }">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
+						<span *if="!state.connecting">Entra</span>
+						<span *if="state.connecting">In connessione...</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="ui" *if="state.status == 'connected'">
+
+		<div class="ui__head">
+			<div class="group--remote" [class]="'group--remote--' + remotes.length">
+				<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
+					<div class="agora-stream__player"></div>
+					<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
+						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
+						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+						<div class="id" [innerHTML]="streamId"></div>
+						<button type="button" class="btn--spy" (click)="onToggleSpy(stream.clientInfo.uid)" *if="state.role === 'publisher' && stream.clientInfo">
+							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="group--select" *if="form && controls && state.hosted">
+				<form class="form" [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+					<div control-custom-select [control]="controls.view" label="Vista"></div>
+				</form>
+			</div>
+			<div class="group--local" [class]="{ publisher: state.role == 'publisher' }">
+				<!--
+			<button type="button" class="btn--spy" [class]="{ active: state.spying }" (click)="onToggleSpy($event)" *if="state.role == 'publisher'">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
+			</button>
+			-->
+				<button type="button" class="btn--control" [class]="{ active: state.control }" (click)="onToggleControl($event)" *if="state.role == 'publisher'">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#gamepad"></use></svg>
+				</button>
+				<div class="agora-stream" *if="!local"></div>
+				<div class="agora-stream" agora-stream [stream]="local" *if="local">
+					<div class="agora-stream__player"></div>
+					<div class="agora-stream__info">
+						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
+						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="ui__body">
+			<div class="world" world [view]="view" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)">
+				<div class="world__view" *if="view">
+					<div class="world__item" *for="let item of view.items; let index = index;">
+						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type == 'nav'"></div>
+						<div class="panel" model-panel [item]="item" *if="item.showPanel">
+							<div class="panel__title" [innerHTML]="item.title"></div>
+							<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+						</div>
+					</div>
+					<div class="banner" model-banner [item]="banner" *if="banner">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
+				</div>
+				<div class="world__info" *if="error" [innerHTML]="error"></div>
+			</div>
+		</div>
+
+		<div class="ui__foot">
+			<div class="left">
+				<div class="group--controls">
+					<button type="button" class="btn--call" (click)="disconnect()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
+					</button>
+					<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
+					</button>
+					<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
+					</button>
+				</div>
+			</div>
+			<div class="center">
+				<button type="button" class="btn--ar" [href]="view?.ar" (click)="tryInAr()" *if="view?.ar">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
+				</button>
+				<button type="button" class="btn--vr" [class]="{ disabled: vrService.isDisabled() }" (click)="vrService.toggleVR()">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
+				</button>
+				<!-- <span *if="!view?.ar">&nbsp;</span> -->
+			</div>
+			<div class="right">
+				<button type="button" class="btn--heart" [class]="{ active: view?.liked }" (click)="addToWishlist($event)">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
+					<span class="badge" [innerHTML]="view?.likes"></span>
+				</button>
+			</div>
+		</div>
+
+		<div class="ui__lock" (mousedown)="onPrevent($event)" (touchstart)="onPrevent($event)" *if="state.locked"></div>
+		<div class="ui__lock control" *if="state.control"></div>
+
+	</div>
+
+</div>
+
+<!-- @@close-->
