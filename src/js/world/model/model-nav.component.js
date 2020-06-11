@@ -17,7 +17,7 @@ export default class ModelNavComponent extends ModelComponent {
 	}
 
 	static getTexture() {
-		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/pin.png'));
+		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png'));
 	}
 
 	onInit() {
@@ -33,13 +33,16 @@ export default class ModelNavComponent extends ModelComponent {
 	create(callback) {
 		const geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
 		const map = ModelNavComponent.getTexture();
+		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.MeshBasicMaterial({
+			depthTest: false,
 			// alphaMap: texture,
 			map: map,
 			transparent: true,
 			opacity: 0,
 		});
 		const mesh = this.mesh = new InteractiveMesh(geometry, material);
+		mesh.renderOrder = 10;
 		this.item.mesh = mesh;
 		mesh.on('over', () => {
 			const from = { scale: mesh.scale.x };

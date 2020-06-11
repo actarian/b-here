@@ -14,7 +14,7 @@ export default class TryInARModalComponent extends Component {
 			if (data && data.ar) {
 				// const url = `${window.location.protocol}//${this.getHost()}${BASE_HREF}${data.ar.usdz}`;
 				const url = `${window.location.protocol}//${this.getHost()}${BASE_HREF}try-in-ar.html?viewId=${data.id}`;
-				// console.log(url);
+				console.log(url);
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
 					value: url,

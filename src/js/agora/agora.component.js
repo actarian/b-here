@@ -168,7 +168,7 @@ export default class AgoraComponent extends Component {
 
 	initForm() {
 		const data = this.data;
-		const views = data.views.filter(x => x.type === 'panorama');
+		const views = data.views.filter(x => x.type !== 'waiting-room');
 		const form = this.form = new FormGroup({
 			view: new FormControl(views[0].id, Validators.RequiredValidator()),
 		});

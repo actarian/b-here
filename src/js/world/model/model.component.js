@@ -1,5 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import * as THREE from 'three';
+import InteractiveMesh from '../interactive/interactive.mesh';
 // import Ease from '../ease/ease';
 import WorldComponent from '../world.component';
 
@@ -19,7 +20,8 @@ export default class ModelComponent extends Component {
 		this.scale = new THREE.Vector3(1.0, 1.0, 1.0);
 		this.position = new THREE.Vector3();
 		const group = this.group = new THREE.Group();
-		group.renderOrder = 3;
+		group.name = this.getName();
+		// group.renderOrder = 3;
 		group.userData.render = (time, tick) => {
 			// if (this.intersection) {
 			this.render(this, time, tick);
@@ -30,9 +32,19 @@ export default class ModelComponent extends Component {
 	}
 
 	onDestroy() {
-		this.host.objects.remove(this.group);
-		delete this.group.userData.render;
+		const group = this.group;
+		this.host.objects.remove(group);
+		group.traverse(object => {
+			if (object instanceof InteractiveMesh) {
+				InteractiveMesh.dispose(object);
+			}
+		});
+		delete group.userData.render;
 		this.group = null;
+	}
+
+	getName(name) {
+		return `${this.constructor.meta.selector}-${this.rxcompId}${name ? `-${name}` : ''}`;
 	}
 
 	create(callback) {
@@ -52,6 +64,7 @@ export default class ModelComponent extends Component {
 	}
 
 	loaded(mesh) {
+		mesh.name = this.getName('mesh');
 		this.mesh = mesh;
 		this.group.add(mesh);
 		// this.host.render(); !!!

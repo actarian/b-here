@@ -73,7 +73,7 @@
 		<div class="ui__head">
 			<div class="group--remote" [class]="'group--remote--' + remotes.length">
 				<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
-					<div class="agora-stream__player" [id]="'stream-' + streamId"></div>
+					<div class="agora-stream__player"></div>
 					<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
 						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
@@ -100,7 +100,7 @@
 				</button>
 				<div class="agora-stream" *if="!local"></div>
 				<div class="agora-stream" agora-stream [stream]="local" *if="local">
-					<div class="agora-stream__player" [id]="'stream-' + streamId"></div>
+					<div class="agora-stream__player"></div>
 					<div class="agora-stream__info">
 						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
@@ -114,6 +114,9 @@
 				<div class="world__view" *if="view">
 					<div class="world__item" *for="let item of view.items; let index = index;">
 						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type == 'nav'"></div>
+						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type == 'gltf'">
+							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
+						</div>
 						<div class="panel" model-panel [item]="item" *if="item.showPanel">
 							<div class="panel__title" [innerHTML]="item.title"></div>
 							<div class="panel__abstract" [innerHTML]="item.abstract"></div>
@@ -122,6 +125,9 @@
 					<div class="banner" model-banner [item]="banner" *if="banner">
 						<div class="banner__title" [innerHTML]="item.title"></div>
 					</div>
+					<!--
+					<div class="grid" model-grid *if="view.type === 'panorama'"></div>
+					-->
 				</div>
 				<div class="world__info" *if="error" [innerHTML]="error"></div>
 			</div>

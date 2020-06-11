@@ -1630,7 +1630,10 @@
       });
 
       if (remote) {
-        remote.stop();
+        if (remote.isPlaying()) {
+          remote.stop();
+        }
+
         remotes.splice(remotes.indexOf(remote), 1);
         this.remotes$.next(remotes);
 
@@ -1894,6 +1897,24 @@
 
     var _proto = AgoraStreamComponent.prototype;
 
+    _proto.setMediaStream = function setMediaStream(mediaStream) {
+      var videoNode = this.videoNode;
+
+      if ('srcObject' in videoNode) {
+        videoNode.srcObject = mediaStream;
+      } else {
+        videoNode.src = mediaStream ? window.URL.createObjectURL(mediaStream) : null;
+      }
+    };
+
+    _proto.onLoadedMetadata = function onLoadedMetadata(event) {
+      this.videoNode.play().then(function (success) {
+        console.log('AgoraStreamComponent.play.success', success);
+      }, function (error) {
+        console.log('AgoraStreamComponent.play.error', error);
+      });
+    };
+
     _proto.onInit = function onInit() {
       var _this = this;
 
@@ -1980,6 +2001,61 @@
               node = _getContext3.node;
 
           var player = this.player = node.querySelector('.agora-stream__player');
+
+          while (player.childElementCount > 0) {
+            player.removeChild(player.firstElementChild);
+          } // player.textContent = '';
+
+
+          if (this.stream_ && this.stream_.isPlaying() && this.stream_.player.div.parentNode === player) {
+            // console.log('stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
+            this.stream_.stop();
+          }
+
+          this.stream_ = stream;
+
+          if (stream) {
+            this.videoMuted = stream.userMuteVideo;
+            this.audioMuted = stream.userMuteAudio;
+          }
+
+          var streamId = stream ? stream.getId() : null;
+          this.streamId = streamId;
+
+          if (streamId) {
+            var name = "stream-" + streamId;
+            player.setAttribute('id', name);
+            var self = this;
+
+            if (stream.isPlaying()) {
+              player.appendChild(stream.player.div);
+            } else {
+              this.shouldUseResumeGesture = false;
+              stream.play(name, {
+                fit: 'cover'
+              }, function (error) {
+                if (error && error.status !== 'aborted') {
+                  // The playback fails, probably due to browser policy. You can resume the playback by user gesture.
+                  self.shouldUseResumeGesture = true;
+                  self.pushChanges();
+                }
+              });
+            }
+          } else {
+            player.removeAttribute('id');
+          }
+        }
+      }
+    }, {
+      key: "stream__",
+      set: function set(stream) {
+        if (this.stream_ !== stream) {
+          console.log(stream);
+
+          var _getContext4 = rxcomp.getContext(this),
+              node = _getContext4.node;
+
+          var player = this.player = node.querySelector('.agora-stream__player');
           player.textContent = '';
           this.shouldUseResumeGesture = false;
           /*
@@ -1996,26 +2072,44 @@
             this.audioMuted = stream.userMuteAudio;
           }
 
-          var id = stream ? stream.getId() : null;
-          this.streamId = id;
+          var streamId = stream ? stream.getId() : null;
+          this.streamId = streamId;
 
-          if (id) {
-            var name = "agora-stream-" + id;
+          if (streamId) {
+            var name = "stream-" + streamId;
             player.setAttribute('id', name);
-            var self = this;
-            stream.play(name, {
-              fit: 'cover'
-            }, function (error) {
-              if (error && error.status !== 'aborted') {
-                // The playback fails, probably due to browser policy. You can resume the playback by user gesture.
-                self.shouldUseResumeGesture = true;
-                self.pushChanges();
-              }
+            var mediaStream = stream.stream;
+            this.setMediaStream(mediaStream); // this.pushChanges();
+
+            /*
+            stream.play(name, { fit: 'cover' }, (error) => {
+            	if (error && error.status !== 'aborted') {
+            		// The playback fails, probably due to browser policy. You can resume the playback by user gesture.
+            		self.shouldUseResumeGesture = true;
+            		self.pushChanges();
+            	}
             }); // stream will be played in the element with the ID agora_remote
+            */
           } else {
             player.removeAttribute('id');
           }
         }
+      }
+    }, {
+      key: "videoNode",
+      get: function get() {
+        var videoNode = this.videoNode_;
+
+        if (!videoNode) {
+          var player = rxcomp.getContext(this).node.querySelector('.agora-stream__player');
+          videoNode = document.createElement('video');
+          this.onLoadedMetadata = this.onLoadedMetadata.bind(this);
+          videoNode.addEventListener('loadedmetadata', this.onLoadedMetadata);
+          player.appendChild(videoNode);
+          this.videoNode_ = videoNode;
+        }
+
+        return videoNode;
       }
     }]);
 
@@ -2376,7 +2470,7 @@
 
       var data = this.data;
       var views = data.views.filter(function (x) {
-        return x.type === 'panorama';
+        return x.type !== 'waiting-room';
       });
       var form = this.form = new rxcompForm.FormGroup({
         view: new rxcompForm.FormControl(views[0].id, rxcompForm.Validators.RequiredValidator())
@@ -3594,8 +3688,8 @@
 
         if (data && data.ar) {
           // const url = `${window.location.protocol}//${this.getHost()}${BASE_HREF}${data.ar.usdz}`;
-          var url = window.location.protocol + "//" + this.getHost() + BASE_HREF + "try-in-ar.html?viewId=" + data.id; // console.log(url);
-
+          var url = window.location.protocol + "//" + this.getHost() + BASE_HREF + "try-in-ar.html?viewId=" + data.id;
+          console.log(url);
           var qrcode = new QRious({
             element: node.querySelector('.qrcode'),
             value: url,
@@ -57654,12 +57748,18 @@
       var key, hit;
       var hash = {};
       intersections.forEach(function (intersection, i) {
-        var object = intersection.object;
+        var object = intersection.object; // console.log('InteractiveMesh.hittest', i, object.name);
+
         key = object.uuid;
 
-        if (i === 0 && InteractiveMesh.lastIntersectedObject !== object) {
-          InteractiveMesh.lastIntersectedObject = object;
-          hit = object; // haptic feedback
+        if (i === 0) {
+          if (InteractiveMesh.lastIntersectedObject !== object) {
+            InteractiveMesh.lastIntersectedObject = object;
+            hit = object; // haptic feedback
+          } else if (object.intersection.point.x !== intersection.point.x || object.intersection.point.y !== intersection.point.y) {
+            object.intersection = intersection;
+            object.emit('move', object);
+          }
         }
 
         hash[key] = intersection;
@@ -57737,11 +57837,33 @@
   }(EmittableMesh);
   InteractiveMesh.items = [];
 
+  var OrbitMode = {
+    Panorama: 'panorama',
+    PanoramaGrid: 'panorama-grid',
+    Model: 'model'
+  };
+
   var OrbitService = /*#__PURE__*/function () {
+    _createClass(OrbitService, [{
+      key: "mode",
+      get: function get() {
+        return this.mode_;
+      },
+      set: function set(mode) {
+        if (this.mode_ !== mode) {
+          this.mode_ = mode;
+          this.update();
+        }
+      }
+    }]);
+
     function OrbitService(camera) {
+      this.mode_ = OrbitMode.Panorama;
       this.longitude = 0;
       this.latitude = 0;
-      this.direction = 1; // this.speed = 1;
+      this.direction = 1;
+      this.radius = 500;
+      this.position = new THREE.Vector3(); // this.speed = 1;
 
       this.inertia = new THREE.Vector2();
       this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
@@ -57785,9 +57907,10 @@
         longitude = _this.longitude;
         latitude = _this.latitude;
       }, function (event) {
+        var flip = _this.mode_ === OrbitMode.Panorama ? 1 : -1;
         var direction = event.distance.x ? event.distance.x / Math.abs(event.distance.x) * -1 : 1;
         _this.direction = direction;
-        var lon = longitude - event.distance.x * 0.1;
+        var lon = longitude - event.distance.x * 0.1 * flip;
         var lat = latitude + event.distance.y * 0.1;
 
         _this.setInertia(lon, lat);
@@ -57840,7 +57963,9 @@
           latitude = _this2.latitude;
           longitude = _this2.longitude;
         } else if (event instanceof DragMoveEvent) {
-          _this2.set(longitude - event.distance.x * 0.1, latitude + event.distance.y * 0.1);
+          var flip = _this2.mode_ === OrbitMode.Panorama ? 1 : -1;
+
+          _this2.set(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
         }
       }), operators.filter(function (event) {
         return event instanceof DragMoveEvent;
@@ -57855,13 +57980,28 @@
     };
 
     _proto.update = function update() {
+      var radius;
       var phi = THREE.MathUtils.degToRad(90 - this.latitude);
       var theta = THREE.MathUtils.degToRad(this.longitude);
       var camera = this.camera;
-      camera.position.set(0, 0, 0);
-      camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-      camera.target.y = 500 * Math.cos(phi);
-      camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+      switch (this.mode_) {
+        case OrbitMode.Model:
+          radius = 3;
+          camera.target.copy(this.position);
+          camera.position.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+          camera.position.y = this.position.y + radius * Math.cos(phi);
+          camera.position.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+          break;
+
+        default:
+          radius = this.radius;
+          camera.position.copy(this.position);
+          camera.target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+          camera.target.y = this.position.y + radius * Math.cos(phi);
+          camera.target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+      }
+
       camera.lookAt(camera.target);
       this.events$.next(this);
     };
@@ -58634,6 +58774,7 @@
       geometry.scale(-1, 1, 1);
       geometry.rotateY(Math.PI);
       var material = new THREE$1.ShaderMaterial({
+        depthTest: false,
         vertexShader: VERTEX_SHADER,
         fragmentShader: FRAGMENT_SHADER,
         uniforms: {
@@ -58660,6 +58801,8 @@
       */
 
       var mesh = this.mesh = new InteractiveMesh(geometry, material);
+      mesh.name = '[panorama]';
+      mesh.renderOrder = 0;
     };
 
     _proto.swap = function swap(item, renderer, callback) {
@@ -58798,8 +58941,14 @@
       this.setView();
       this.addListeners();
       this.animate(); // !!! no
-    } // onView() { const context = getContext(this); }
-    // onChanges() {}
+    };
+
+    _proto.onView = function onView() {
+      var scene = this.scene;
+      scene.traverse(function (object) {
+        console.log(object.name !== '' ? object.name : object.type);
+      });
+    } // onChanges() {}
     ;
 
     _proto.onDestroy = function onDestroy() {
@@ -58858,20 +59007,23 @@
       var scene = this.scene = new THREE$1.Scene();
       var panorama = this.panorama = new Panorama();
       scene.add(panorama.mesh);
-      var pointer = this.pointer = this.addPointer();
-      var torus = this.torus = this.addTorus();
+      console.log(scene);
+      var pointer = this.pointer = this.addPointer(); // const torus = this.torus = this.addTorus();
+
       var mainLight = new THREE$1.PointLight(0xffffff);
       mainLight.position.set(-50, 0, -50);
       scene.add(mainLight);
-      var objects = this.objects = new THREE$1.Group();
-      scene.add(objects);
       var light = new THREE$1.AmbientLight(0x404040);
       scene.add(light);
+      var objects = this.objects = new THREE$1.Group();
+      objects.name = '[objects]';
+      scene.add(objects);
       this.onSelect1Start = this.onSelect1Start.bind(this);
       this.onSelect1End = this.onSelect1End.bind(this);
       this.onSelect2Start = this.onSelect2Start.bind(this);
       this.onSelect2End = this.onSelect2End.bind(this);
       var controller1 = this.controller1 = renderer.xr.getController(0);
+      controller1.name = '[controller1]';
       controller1.addEventListener('selectstart', this.onSelect1Start);
       controller1.addEventListener('selectend', this.onSelect1End);
       controller1.addEventListener('connected', function (event) {
@@ -58882,6 +59034,7 @@
       });
       scene.add(controller1);
       var controller2 = this.controller2 = renderer.xr.getController(1);
+      controller2.name = '[controller2]';
       controller2.addEventListener('selectstart', this.onSelect2Start);
       controller2.addEventListener('selectend', this.onSelect2End);
       controller2.addEventListener('connected', function (event) {
@@ -58914,11 +59067,17 @@
 
       if (view) {
         if (this.orbit) {
+          this.orbit.mode = view.type;
+
           if (this.infoResultMessage) {
             this.orbit.setOrientation(this.infoResultMessage.orientation);
+            this.camera.fov = this.infoResultMessage.fov;
+            this.camera.updateProjectionMatrix();
             this.infoResultMessage = null;
           } else {
             this.orbit.setOrientation(view.orientation);
+            this.camera.fov = view.fov;
+            this.camera.updateProjectionMatrix();
           }
         }
 
@@ -58926,8 +59085,12 @@
           this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
             // this.scene.background = envMap;
             _this2.scene.environment = envMap;
-            _this2.torus.material.envMap = envMap;
-            _this2.torus.material.needsUpdate = true; // this.render();
+
+            if (_this2.torus) {
+              _this2.torus.material.envMap = envMap;
+              _this2.torus.material.needsUpdate = true;
+            } // this.render();
+
           });
         }
       }
@@ -58940,7 +59103,7 @@
     _proto.addPointer = function addPointer(parent) {
       var geometry = new THREE$1.PlaneBufferGeometry(1.2, 1.2, 2, 2);
       var loader = new THREE$1.TextureLoader();
-      var texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/pin.png'); // texture.magFilter = THREE.NearestFilter;
+      var texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png'); // texture.magFilter = THREE.NearestFilter;
       // texture.wrapT = THREE.RepeatWrapping;
       // texture.repeat.y = 1;
       // texture.anisotropy = 0;
@@ -59211,7 +59374,7 @@
             camera = this.camera;
         renderer.render(this.scene, this.camera);
 
-        if (!this.agora || !this.agora.state.hosted) {
+        if (this.agora && !this.agora.state.hosted) {
           var orbit = this.orbit;
           orbit.render();
         }
@@ -59333,8 +59496,23 @@
         var fov = camera.fov + event.deltaY * 0.01;
         camera.fov = THREE$1.Math.clamp(fov, 30, 75);
         camera.updateProjectionMatrix();
+        this.onOrientationDidChange();
       } catch (error) {
         this.error = error;
+      }
+    };
+
+    _proto.onOrientationDidChange = function onOrientationDidChange() {
+
+      var agora = this.agora;
+
+      if (agora && (agora.state.control || agora.state.spyed)) {
+        agora.sendMessage({
+          type: MessageType.CameraOrientation,
+          clientId: agora.state.uid,
+          orientation: this.orbit.getOrientation(),
+          fov: this.camera.fov
+        });
       }
     };
 
@@ -59365,21 +59543,7 @@
       });
       this.orbit.observe$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
         // this.render();
-
-        /*
-        if (DEBUG) {
-        	console.log(JSON.stringify({ orientation: this.orbit.getOrientation() }));
-        }
-        */
-        var agora = _this4.agora;
-
-        if (agora && (agora.state.control || agora.state.spyed)) {
-          agora.sendMessage({
-            type: MessageType.CameraOrientation,
-            clientId: agora.state.uid,
-            orientation: _this4.orbit.getOrientation()
-          });
-        }
+        _this4.onOrientationDidChange();
       });
 
       {
@@ -59400,6 +59564,7 @@
                 message.type = MessageType.RequestInfoResult;
                 message.viewId = _this4.view.id;
                 message.orientation = _this4.orbit.getOrientation();
+                message.fov = _this4.camera.fov;
                 agora.sendMessage(message);
               }
 
@@ -59409,6 +59574,10 @@
               if (agora.state.role === RoleType.Publisher) {
                 if (message.viewId === _this4.view.id) {
                   _this4.orbit.setOrientation(message.orientation);
+
+                  _this4.camera.fov = message.fov;
+
+                  _this4.camera.updateProjectionMatrix();
                 } else {
                   _this4.infoResultMessage = message;
                 }
@@ -59418,7 +59587,11 @@
 
             case MessageType.CameraOrientation:
               if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
-                _this4.orbit.setOrientation(message.orientation); // this.render();
+                _this4.orbit.setOrientation(message.orientation);
+
+                _this4.camera.fov = message.fov;
+
+                _this4.camera.updateProjectionMatrix(); // this.render();
 
               }
 
@@ -59506,7 +59679,7 @@
       this.scale = new THREE$1.Vector3(1.0, 1.0, 1.0);
       this.position = new THREE$1.Vector3();
       var group = this.group = new THREE$1.Group();
-      group.renderOrder = 3;
+      group.name = this.getName(); // group.renderOrder = 3;
 
       group.userData.render = function (time, tick) {
         // if (this.intersection) {
@@ -59521,9 +59694,19 @@
     };
 
     _proto.onDestroy = function onDestroy() {
-      this.host.objects.remove(this.group);
-      delete this.group.userData.render;
+      var group = this.group;
+      this.host.objects.remove(group);
+      group.traverse(function (object) {
+        if (object instanceof InteractiveMesh) {
+          InteractiveMesh.dispose(object);
+        }
+      });
+      delete group.userData.render;
       this.group = null;
+    };
+
+    _proto.getName = function getName(name) {
+      return this.constructor.meta.selector + "-" + this.rxcompId + (name ? "-" + name : '');
     };
 
     _proto.create = function create(callback) {
@@ -59545,6 +59728,7 @@
     };
 
     _proto.loaded = function loaded(mesh) {
+      mesh.name = this.getName('mesh');
       this.mesh = mesh;
       this.group.add(mesh); // this.host.render(); !!!
 
@@ -59903,8 +60087,216 @@
     inputs: ['item']
   };
 
-  var NAV_RADIUS = 100;
   var ORIGIN$2 = new THREE$1.Vector3();
+  var RADIUS = 500;
+  var COLS = 11;
+  var ROWS = 11;
+
+  var ModelGridComponent = /*#__PURE__*/function (_ModelComponent) {
+    _inheritsLoose(ModelGridComponent, _ModelComponent);
+
+    function ModelGridComponent() {
+      return _ModelComponent.apply(this, arguments) || this;
+    }
+
+    ModelGridComponent.getLoader = function getLoader() {
+      return ModelGridComponent.loader || (ModelGridComponent.loader = new THREE$1.TextureLoader());
+    };
+
+    ModelGridComponent.getTexture = function getTexture() {
+      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav.png'));
+    };
+
+    var _proto = ModelGridComponent.prototype;
+
+    _proto.getCoords = function getCoords(point) {
+      var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+
+      var col = Math.ceil((point.x + outerTileSize / 2) / outerTileSize) - 1;
+      var row = Math.ceil((point.z + outerTileSize / 2) / outerTileSize) - 1;
+      var dx = Math.floor(COLS / 2);
+      var dy = Math.floor(ROWS / 2);
+      var ci = Math.min(dx, Math.abs(col)) * (col ? Math.abs(col) / col : 1);
+      var ri = Math.min(dy, Math.abs(row)) * (row ? Math.abs(row) / row : 1); // console.log('col', col, 'row', row, 'ci', ci, 'ri', ri);
+
+      return new THREE$1.Vector2(ci, ri);
+    };
+
+    _proto.onInit = function onInit() {
+      _ModelComponent.prototype.onInit.call(this); // console.log('ModelGridComponent.onInit', this.item);
+
+    };
+
+    _proto.onView = function onView() {};
+
+    _proto.addTiles = function addTiles() {
+      var _this = this;
+
+      // console.log('addTiles');
+      var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+
+      var innerTileSize = outerTileSize * 0.9;
+      var geometry = new THREE$1.PlaneBufferGeometry(innerTileSize, innerTileSize, 2, 2);
+      geometry.rotateX(-Math.PI / 2);
+      var map = ModelGridComponent.getTexture();
+      map.encoding = THREE$1.sRGBEncoding; // geometry.scale(-1, 1, 1);
+
+      var mesh = this.mesh;
+      var tileMap = this.tileMap = {};
+      var tiles = this.tiles = new Array(COLS * ROWS).fill(0).map(function (x, i) {
+        var material = new THREE$1.MeshBasicMaterial({
+          map: map,
+          depthTest: false,
+          transparent: true,
+          opacity: 0 // side: THREE.DoubleSide,
+
+        });
+        var tile = new THREE$1.Mesh(geometry, material);
+        var dx = Math.floor(COLS / 2);
+        var dy = Math.floor(ROWS / 2);
+        var row = Math.floor(i / COLS);
+        var col = i % COLS;
+        var ci = -dx + col;
+        var ri = -dy + row; // console.log(ci, ri);
+
+        tile.position.set(ci * outerTileSize, -RADIUS * 0.15, ri * outerTileSize);
+        tile.name = _this.getName("tile_" + ci + "_" + ri);
+        tile.renderOrder = 2;
+        tileMap[ci + "_" + ri] = tile;
+        mesh.add(tile);
+      });
+    };
+
+    _proto.addHitArea = function addHitArea() {
+      this.onGroundOver = this.onGroundOver.bind(this);
+      this.onGroundMove = this.onGroundMove.bind(this);
+      this.onGroundDown = this.onGroundDown.bind(this);
+      this.onGroundOut = this.onGroundOut.bind(this);
+      var geometry = new THREE$1.PlaneBufferGeometry(RADIUS, RADIUS, 20, 20);
+      geometry.rotateX(-Math.PI / 2); // geometry.scale(-1, 1, 1);
+
+      var material = new THREE$1.MeshBasicMaterial({
+        depthTest: false,
+        transparent: true,
+        opacity: 0 // side: THREE.DoubleSide,
+
+      });
+      var mesh = this.mesh;
+      var ground = this.ground = new InteractiveMesh(geometry, material);
+      ground.name = this.getName('ground');
+      ground.renderOrder = 1;
+      ground.position.set(0, -RADIUS * 0.15, 0);
+      ground.on('over', this.onGroundOver);
+      ground.on('move', this.onGroundMove);
+      ground.on('out', this.onGroundOut);
+      ground.on('down', this.onGroundDown);
+      mesh.add(ground);
+    };
+
+    _proto.onGroundOver = function onGroundOver() {
+      var ground = this.ground;
+      var coords = this.getCoords(ground.intersection.point);
+      this.coords = coords;
+    };
+
+    _proto.onGroundMove = function onGroundMove() {
+      var ground = this.ground;
+      var coords = this.getCoords(ground.intersection.point);
+      this.coords = coords;
+    };
+
+    _proto.onGroundDown = function onGroundDown() {
+      var ground = this.ground;
+      var coords = this.getCoords(ground.intersection.point);
+      this.coords = coords;
+    };
+
+    _proto.onGroundOut = function onGroundOut() {
+      this.coords = null;
+    };
+
+    _proto.onDestroy = function onDestroy() {
+      _ModelComponent.prototype.onDestroy.call(this);
+
+      var ground = this.ground;
+      ground.off('over', this.onGroundOver);
+      ground.off('move', this.onGroundMove);
+      ground.off('down', this.onGroundDown);
+      ground.off('out', this.onGroundOut);
+    };
+
+    _proto.create = function create(callback) {
+      var mesh = this.mesh = new THREE$1.Group();
+      mesh.renderOrder = 2;
+      this.addTiles();
+      this.addHitArea();
+      /*
+      mesh.userData = {
+      	render: () => {
+      		}
+      };
+      */
+
+      if (typeof callback === 'function') {
+        callback(mesh);
+      }
+    };
+
+    _createClass(ModelGridComponent, [{
+      key: "coords",
+      set: function set(coords) {
+        if (!coords && this.coords_ !== coords || !this.coords_ || coords.x !== this.coords_.x || coords.y !== this.coords_.y) {
+          // changed!
+          var tileMap = this.tileMap;
+
+          if (this.coords_) {
+            var previousTile = tileMap[this.coords_.x + "_" + this.coords_.y];
+            var from = {
+              pow: 1
+            };
+            gsap.to(from, 0.4, {
+              pow: 0,
+              delay: 0,
+              ease: Power2.easeInOut,
+              onUpdate: function onUpdate() {
+                previousTile.material.opacity = from.pow; // previousTile.material.needsUpdate = true;
+              }
+            });
+          }
+
+          if (coords) {
+            var currentTile = this.currentTile = tileMap[coords.x + "_" + coords.y];
+            var _from = {
+              pow: 0
+            };
+            gsap.to(_from, 0.4, {
+              pow: 1,
+              delay: 0,
+              ease: Power2.easeInOut,
+              onUpdate: function onUpdate() {
+                currentTile.material.opacity = _from.pow; // currentTile.material.needsUpdate = true;
+              }
+            }); // console.log(currentTile, `${coords.x}_${coords.y}`);
+          }
+
+          this.coords_ = coords;
+        }
+      }
+    }]);
+
+    return ModelGridComponent;
+  }(ModelComponent);
+  ModelGridComponent.ORIGIN = new THREE$1.Vector3();
+  ModelGridComponent.meta = {
+    selector: '[model-grid]',
+    hosts: {
+      host: WorldComponent
+    },
+    inputs: ['item']
+  };
+
+  var NAV_RADIUS = 100;
+  var ORIGIN$3 = new THREE$1.Vector3();
 
   var ModelNavComponent = /*#__PURE__*/function (_ModelComponent) {
     _inheritsLoose(ModelNavComponent, _ModelComponent);
@@ -59918,7 +60310,7 @@
     };
 
     ModelNavComponent.getTexture = function getTexture() {
-      return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/pin.png'));
+      return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png'));
     };
 
     var _proto = ModelNavComponent.prototype;
@@ -59940,13 +60332,16 @@
 
       var geometry = new THREE$1.PlaneBufferGeometry(2, 2, 2, 2);
       var map = ModelNavComponent.getTexture();
+      map.encoding = THREE$1.sRGBEncoding;
       var material = new THREE$1.MeshBasicMaterial({
+        depthTest: false,
         // alphaMap: texture,
         map: map,
         transparent: true,
         opacity: 0
       });
       var mesh = this.mesh = new InteractiveMesh(geometry, material);
+      mesh.renderOrder = 10;
       this.item.mesh = mesh;
       mesh.on('over', function () {
         var from = {
@@ -59985,7 +60380,7 @@
       var position = (_THREE$Vector = new THREE$1.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(NAV_RADIUS);
 
       mesh.position.set(position.x, position.y, position.z);
-      mesh.lookAt(ORIGIN$2);
+      mesh.lookAt(ORIGIN$3);
       var from = {
         opacity: 0
       };
@@ -60017,7 +60412,7 @@
   };
 
   var PANEL_RADIUS$1 = 102;
-  var ORIGIN$3 = new THREE$1.Vector3();
+  var ORIGIN$4 = new THREE$1.Vector3();
 
   var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
     _inheritsLoose(ModelPanelComponent, _ModelComponent);
@@ -60046,6 +60441,7 @@
         var height = PANEL_RADIUS$1 / 8 / aspect;
         var geometry = new THREE$1.PlaneBufferGeometry(width, height, 3, 3);
         var material = new THREE$1.MeshBasicMaterial({
+          depthTest: false,
           map: texture.map,
           transparent: true,
           opacity: 0 // side: THREE.DoubleSide,
@@ -60055,8 +60451,9 @@
         var position = _this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS$1);
 
         var panel = _this.panel = new THREE$1.Mesh(geometry, material);
+        panel.renderOrder = 9;
         panel.position.set(position.x, position.y, position.z);
-        panel.lookAt(ORIGIN$3);
+        panel.lookAt(ORIGIN$4);
 
         _this.mesh.add(panel);
 
@@ -60069,7 +60466,7 @@
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
             panel.position.set(position.x, position.y + height * from.value, position.z);
-            panel.lookAt(ORIGIN$3);
+            panel.lookAt(ORIGIN$4);
             panel.material.opacity = from.value;
             panel.material.needsUpdate = true;
           }
@@ -60212,7 +60609,7 @@
   }(rxcomp.Module);
   AppModule.meta = {
     imports: [rxcomp.CoreModule, rxcompForm.FormModule],
-    declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelGltfComponent, ModelPictureComponent, ModelTextComponent, ModelNavComponent, ModelPanelComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+    declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelTextComponent, ModelNavComponent, ModelPanelComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
     bootstrap: AppComponent
   };
 

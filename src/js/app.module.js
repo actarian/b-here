@@ -22,6 +22,7 @@ import ValueDirective from './value/value.directive';
 import HlsDirective from './video/hls.directive';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelGltfComponent from './world/model/model-gltf.component';
+import ModelGridComponent from './world/model/model-grid.component';
 import ModelNavComponent from './world/model/model-nav.component';
 import ModelPanelComponent from './world/model/model-panel.component';
 import ModelPictureComponent from './world/model/model-picture.component';
@@ -55,6 +56,7 @@ AppModule.meta = {
 		ModelBannerComponent,
 		ModelComponent,
 		ModelGltfComponent,
+		ModelGridComponent,
 		ModelPictureComponent,
 		ModelTextComponent,
 		ModelNavComponent,

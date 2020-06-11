@@ -2,7 +2,7 @@
 // const AgoraRTC = require('agora-rtc-sdk');
 
 import AgoraRTM from 'agora-rtm-sdk';
-import { BehaviorSubject, from, of , Subject } from 'rxjs';
+import { BehaviorSubject, from, of, Subject } from 'rxjs';
 import { environment } from '../../environment/environment';
 import Emittable from '../emittable/emittable';
 import HttpService from '../http/http.service';
@@ -1037,7 +1037,9 @@ export default class AgoraService extends Emittable {
 		const remotes = this.remotes$.getValue();
 		const remote = remotes.find(x => x.getId() === streamId);
 		if (remote) {
-			remote.stop();
+			if (remote.isPlaying()) {
+				remote.stop();
+			}
 			remotes.splice(remotes.indexOf(remote), 1);
 			this.remotes$.next(remotes);
 			if (remote.clientInfo && remote.clientInfo.role === RoleType.Publisher) {

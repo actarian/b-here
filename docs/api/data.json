@@ -12,7 +12,8 @@
       "orientation": {
         "latitude": 0,
         "longitude": 0
-      }
+      },
+      "fov": 75
     },
     {
       "id": 1,
@@ -21,8 +22,8 @@
       "likes": 40,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-1.jpg",
@@ -79,7 +80,8 @@
       "orientation": {
         "latitude": -4.1,
         "longitude": 88
-      }
+      },
+      "fov": 75
     },
     {
       "id": 2,
@@ -88,8 +90,8 @@
       "likes": 190,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-2.jpg",
@@ -146,7 +148,8 @@
       "orientation": {
         "latitude": -20.100000000000005,
         "longitude": 179.8
-      }
+      },
+      "fov": 75
     },
     {
       "id": 3,
@@ -155,8 +158,8 @@
       "likes": 165,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-3.jpg",
@@ -213,7 +216,8 @@
       "orientation": {
         "latitude": -28.6,
         "longitude": 83.1
-      }
+      },
+      "fov": 75
     },
     {
       "id": 4,
@@ -222,8 +226,8 @@
       "likes": 143,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-4.jpg",
@@ -280,7 +284,8 @@
       "orientation": {
         "latitude": -27.499999999999993,
         "longitude": 76.39999999999998
-      }
+      },
+      "fov": 75
     },
     {
       "id": 5,
@@ -289,8 +294,8 @@
       "likes": 156,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "panorama-sm/",
       "envMapFile": "panorama-01.jpg",
@@ -311,7 +316,8 @@
       "orientation": {
         "latitude": -4.1,
         "longitude": 88
-      }
+      },
+      "fov": 75
     },
     {
       "id": 6,
@@ -320,8 +326,8 @@
       "likes": 134,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "panorama-sm/",
       "envMapFile": "panorama-02.jpg",
@@ -342,7 +348,8 @@
       "orientation": {
         "latitude": -8,
         "longitude": 90
-      }
+      },
+      "fov": 75
     },
     {
       "id": 7,
@@ -351,8 +358,8 @@
       "likes": 175,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "equirectangular/",
       "envMapFile": "old_depot_2k.hdr",
@@ -373,7 +380,8 @@
       "orientation": {
         "latitude": -8,
         "longitude": 90
-      }
+      },
+      "fov": 75
     },
     {
       "id": 8,
@@ -382,8 +390,8 @@
       "likes": 175,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "video/",
       "envMapFile": "Square.mp4",
@@ -404,7 +412,8 @@
       "orientation": {
         "latitude": -8,
         "longitude": 90
-      }
+      },
+      "fov": 75
     },
     {
       "id": 9,
@@ -413,8 +422,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "video/",
       "envMapFile": "Garden.mp4",
@@ -435,7 +444,8 @@
       "orientation": {
         "latitude": -8,
         "longitude": 90
-      }
+      },
+      "fov": 75
     },
     {
       "id": 10,
@@ -444,8 +454,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "",
       "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
@@ -466,7 +476,8 @@
       "orientation": {
         "latitude": 0,
         "longitude": 0
-      }
+      },
+      "fov": 75
     },
     {
       "id": 11,
@@ -475,8 +486,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/worn_brown_boots/worn_brown_boots.gltf",
-        "usdz": "models/worn_brown_boots/worn_brown_boots.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "",
       "envMapFile": "publisherStream",
@@ -497,7 +508,64 @@
       "orientation": {
         "latitude": 0,
         "longitude": 0
-      }
+      },
+      "fov": 75
+    },
+    {
+      "id": 12,
+      "type": "model",
+      "name": "Washing Machine",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "washing-machine/",
+          "gltfFile": "glb.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 20.400000000000002,
+        "longitude": 57.60000000000001
+      },
+      "fov": 52
+    },
+    {
+      "id": 13,
+      "type": "model",
+      "name": "Helmet",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "damaged-helmet/",
+          "gltfFile": "damaged-helmet.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 14.300000000000002,
+        "longitude": 124.30000000000001
+      },
+      "fov": 51
     }
   ]
 }

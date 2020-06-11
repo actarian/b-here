@@ -2,12 +2,32 @@ import { ReplaySubject } from 'rxjs';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
 
+export const OrbitMode = {
+	Panorama: 'panorama',
+	PanoramaGrid: 'panorama-grid',
+	Model: 'model',
+};
+
 export default class OrbitService {
 
+	get mode() {
+		return this.mode_;
+	}
+
+	set mode(mode) {
+		if (this.mode_ !== mode) {
+			this.mode_ = mode;
+			this.update();
+		}
+	}
+
 	constructor(camera) {
+		this.mode_ = OrbitMode.Panorama;
 		this.longitude = 0;
 		this.latitude = 0;
 		this.direction = 1;
+		this.radius = 500;
+		this.position = new THREE.Vector3();
 		// this.speed = 1;
 		this.inertia = new THREE.Vector2();
 		this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
@@ -47,9 +67,10 @@ export default class OrbitService {
 			longitude = this.longitude;
 			latitude = this.latitude;
 		}, (event) => {
+			const flip = this.mode_ === OrbitMode.Panorama ? 1 : -1;
 			const direction = event.distance.x ? (event.distance.x / Math.abs(event.distance.x) * -1) : 1;
 			this.direction = direction;
-			const lon = longitude - event.distance.x * 0.1;
+			const lon = longitude - event.distance.x * 0.1 * flip;
 			const lat = latitude + event.distance.y * 0.1;
 			this.setInertia(lon, lat);
 			this.set(lon, lat);
@@ -99,7 +120,8 @@ export default class OrbitService {
 					latitude = this.latitude;
 					longitude = this.longitude;
 				} else if (event instanceof DragMoveEvent) {
-					this.set(longitude - event.distance.x * 0.1, latitude + event.distance.y * 0.1);
+					const flip = this.mode_ === OrbitMode.Panorama ? 1 : -1;
+					this.set(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
 				} else if (event instanceof DragUpEvent) {
 
 				}
@@ -112,13 +134,25 @@ export default class OrbitService {
 	}
 
 	update() {
+		let radius;
 		const phi = THREE.MathUtils.degToRad(90 - this.latitude);
 		const theta = THREE.MathUtils.degToRad(this.longitude);
 		const camera = this.camera;
-		camera.position.set(0, 0, 0);
-		camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-		camera.target.y = 500 * Math.cos(phi);
-		camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+		switch(this.mode_) {
+			case OrbitMode.Model:
+				radius = 3;
+				camera.target.copy(this.position);
+				camera.position.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+				camera.position.y = this.position.y + radius * Math.cos(phi);
+				camera.position.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				break;
+			default:
+				radius = this.radius;
+				camera.position.copy(this.position);
+				camera.target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+				camera.target.y = this.position.y + radius * Math.cos(phi);
+				camera.target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+		}
 		camera.lookAt(camera.target);
 		this.events$.next(this);
 	}

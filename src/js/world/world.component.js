@@ -52,7 +52,12 @@ export default class WorldComponent extends Component {
 		this.animate(); // !!! no
 	}
 
-	// onView() { const context = getContext(this); }
+	onView() {
+		const scene = this.scene;
+		scene.traverse((object) => {
+			console.log(object.name !== '' ? object.name : object.type);
+		});
+	}
 
 	// onChanges() {}
 
@@ -110,19 +115,22 @@ export default class WorldComponent extends Component {
 		const panorama = this.panorama = new Panorama();
 		scene.add(panorama.mesh);
 
+		console.log(scene);
+
 		const pointer = this.pointer = this.addPointer();
 
-		const torus = this.torus = this.addTorus();
+		// const torus = this.torus = this.addTorus();
 
 		var mainLight = new THREE.PointLight(0xffffff);
 		mainLight.position.set(-50, 0, -50);
 		scene.add(mainLight);
 
-		const objects = this.objects = new THREE.Group();
-		scene.add(objects);
-
 		const light = new THREE.AmbientLight(0x404040);
 		scene.add(light);
+
+		const objects = this.objects = new THREE.Group();
+		objects.name = '[objects]';
+		scene.add(objects);
 
 		this.onSelect1Start = this.onSelect1Start.bind(this);
 		this.onSelect1End = this.onSelect1End.bind(this);
@@ -130,6 +138,7 @@ export default class WorldComponent extends Component {
 		this.onSelect2End = this.onSelect2End.bind(this);
 
 		const controller1 = this.controller1 = renderer.xr.getController(0);
+		controller1.name = '[controller1]';
 		controller1.addEventListener('selectstart', this.onSelect1Start);
 		controller1.addEventListener('selectend', this.onSelect1End);
 		controller1.addEventListener('connected', (event) => {
@@ -140,6 +149,7 @@ export default class WorldComponent extends Component {
 		});
 		scene.add(controller1);
 		const controller2 = this.controller2 = renderer.xr.getController(1);
+		controller2.name = '[controller2]';
 		controller2.addEventListener('selectstart', this.onSelect2Start);
 		controller2.addEventListener('selectend', this.onSelect2End);
 		controller2.addEventListener('connected', (event) => {
@@ -169,19 +179,26 @@ export default class WorldComponent extends Component {
 		const view = this.view_;
 		if (view) {
 			if (this.orbit) {
+				this.orbit.mode = view.type;
 				if (this.infoResultMessage) {
 					this.orbit.setOrientation(this.infoResultMessage.orientation);
+					this.camera.fov = this.infoResultMessage.fov;
+					this.camera.updateProjectionMatrix();
 					this.infoResultMessage = null;
 				} else {
 					this.orbit.setOrientation(view.orientation);
+					this.camera.fov = view.fov;
+					this.camera.updateProjectionMatrix();
 				}
 			}
 			if (this.panorama) {
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
-					this.torus.material.envMap = envMap;
-					this.torus.material.needsUpdate = true;
+					if (this.torus) {
+						this.torus.material.envMap = envMap;
+						this.torus.material.needsUpdate = true;
+					}
 					// this.render();
 				});
 			}
@@ -194,7 +211,7 @@ export default class WorldComponent extends Component {
 	addPointer(parent) {
 		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
-		const texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/pin.png');
+		const texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png');
 		// texture.magFilter = THREE.NearestFilter;
 		// texture.wrapT = THREE.RepeatWrapping;
 		// texture.repeat.y = 1;
@@ -444,7 +461,7 @@ export default class WorldComponent extends Component {
 				scene = this.scene,
 				camera = this.camera;
 			renderer.render(this.scene, this.camera);
-			if (!this.agora || !this.agora.state.hosted) {
+			if (this.agora && !this.agora.state.hosted) {
 				const orbit = this.orbit;
 				orbit.render();
 			}
@@ -561,8 +578,24 @@ export default class WorldComponent extends Component {
 			const fov = camera.fov + event.deltaY * 0.01;
 			camera.fov = THREE.Math.clamp(fov, 30, 75);
 			camera.updateProjectionMatrix();
+			this.onOrientationDidChange();
 		} catch (error) {
 			this.error = error;
+		}
+	}
+
+	onOrientationDidChange() {
+		if (DEBUG) {
+			console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
+		}
+		const agora = this.agora;
+		if (agora && (agora.state.control || agora.state.spyed)) {
+			agora.sendMessage({
+				type: MessageType.CameraOrientation,
+				clientId: agora.state.uid,
+				orientation: this.orbit.getOrientation(),
+				fov: this.camera.fov,
+			});
 		}
 	}
 
@@ -595,19 +628,7 @@ export default class WorldComponent extends Component {
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			// this.render();
-			/*
-			if (DEBUG) {
-				console.log(JSON.stringify({ orientation: this.orbit.getOrientation() }));
-			}
-			*/
-			const agora = this.agora;
-			if (agora && (agora.state.control || agora.state.spyed)) {
-				agora.sendMessage({
-					type: MessageType.CameraOrientation,
-					clientId: agora.state.uid,
-					orientation: this.orbit.getOrientation()
-				});
-			}
+			this.onOrientationDidChange();
 		});
 
 		if (!DEBUG) {
@@ -632,6 +653,7 @@ export default class WorldComponent extends Component {
 							message.type = MessageType.RequestInfoResult;
 							message.viewId = this.view.id;
 							message.orientation = this.orbit.getOrientation();
+							message.fov = this.camera.fov;
 							agora.sendMessage(message);
 						}
 						break;
@@ -639,6 +661,8 @@ export default class WorldComponent extends Component {
 						if (agora.state.role === RoleType.Publisher) {
 							if (message.viewId === this.view.id) {
 								this.orbit.setOrientation(message.orientation);
+								this.camera.fov = message.fov;
+								this.camera.updateProjectionMatrix();
 							} else {
 								this.infoResultMessage = message;
 							}
@@ -647,6 +671,8 @@ export default class WorldComponent extends Component {
 					case MessageType.CameraOrientation:
 						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
 							this.orbit.setOrientation(message.orientation);
+							this.camera.fov = message.fov;
+							this.camera.updateProjectionMatrix();
 							// this.render();
 						}
 						break;

@@ -24,6 +24,7 @@ export default class ModelPanelComponent extends ModelComponent {
 			const height = PANEL_RADIUS / 8 / aspect;
 			const geometry = new THREE.PlaneBufferGeometry(width, height, 3, 3);
 			const material = new THREE.MeshBasicMaterial({
+				depthTest: false,
 				map: texture.map,
 				transparent: true,
 				opacity: 0,
@@ -31,6 +32,7 @@ export default class ModelPanelComponent extends ModelComponent {
 			});
 			const position = this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS);
 			const panel = this.panel = new THREE.Mesh(geometry, material);
+			panel.renderOrder = 9;
 			panel.position.set(position.x, position.y, position.z);
 			panel.lookAt(ORIGIN);
 			this.mesh.add(panel);
