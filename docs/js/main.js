@@ -58737,17 +58737,18 @@
           _this3.update();
         },
         onComplete: function onComplete() {
-          _this3.setLongitudeLatitude(headingLongitude, headingLatitude);
-
-          _this3.position.set(0, 0, 0);
-
-          _this3.update();
-
+          // this.walkComplete(headingLongitude, headingLatitude);
           if (typeof callback === 'function') {
-            callback();
+            callback(headingLongitude, headingLatitude);
           }
         }
       });
+    };
+
+    _proto.walkComplete = function walkComplete(headingLongitude, headingLatitude) {
+      this.setLongitudeLatitude(headingLongitude, headingLatitude);
+      this.position.set(0, 0, 0);
+      this.update();
     };
 
     return OrbitService;
@@ -60560,7 +60561,7 @@
       var _this5 = this;
 
       console.log('WorldComponent.onGridMove', event);
-      this.orbit.walk(event.position, function () {
+      this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
         var item = _this5.view.getTile(event.indices.x, event.indices.y);
 
         if (item) {
@@ -60571,7 +60572,9 @@
             if (_this5.torus) {
               _this5.torus.material.envMap = envMap;
               _this5.torus.material.needsUpdate = true;
-            } // this.render();
+            }
+
+            _this5.orbit.walkComplete(headingLongitude, headingLatitude); // this.render();
 
           });
         }

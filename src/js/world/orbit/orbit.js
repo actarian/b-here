@@ -214,14 +214,18 @@ export default class OrbitService {
 				this.update();
 			},
 			onComplete: () => {
-				this.setLongitudeLatitude(headingLongitude, headingLatitude);
-				this.position.set(0, 0, 0);
-				this.update();
+				// this.walkComplete(headingLongitude, headingLatitude);
 				if (typeof callback === 'function') {
-					callback();
+					callback(headingLongitude, headingLatitude);
 				}
 			}
 		});
+	}
+
+	walkComplete(headingLongitude, headingLatitude) {
+		this.setLongitudeLatitude(headingLongitude, headingLatitude);
+		this.position.set(0, 0, 0);
+		this.update();
 	}
 
 }

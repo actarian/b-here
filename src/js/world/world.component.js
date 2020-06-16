@@ -687,7 +687,7 @@ export default class WorldComponent extends Component {
 
 	onGridMove(event) {
 		console.log('WorldComponent.onGridMove', event);
-		this.orbit.walk(event.position, () => {
+		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
 			const item = this.view.getTile(event.indices.x, event.indices.y);
 			if (item) {
 				this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
@@ -697,6 +697,7 @@ export default class WorldComponent extends Component {
 						this.torus.material.envMap = envMap;
 						this.torus.material.needsUpdate = true;
 					}
+					this.orbit.walkComplete(headingLongitude, headingLatitude);
 					// this.render();
 				});
 			}
