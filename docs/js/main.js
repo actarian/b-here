@@ -61217,7 +61217,7 @@
     };
 
     ModelGridComponent.getTexture = function getTexture() {
-      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav-square.png'));
+      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav-circle-v2.png'));
     };
 
     var _proto = ModelGridComponent.prototype;
