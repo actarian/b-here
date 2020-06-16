@@ -3750,6 +3750,21 @@ body {
     border-radius: 6px 6px 0 0;
     border: none;
     background: #a5b3bd; }
+  .agora-device-preview > .audio {
+    position: absolute;
+    bottom: 10px;
+    left: 22px;
+    right: 16px;
+    height: 30px; }
+    .agora-device-preview > .audio > .bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      transform: scale(1, 0); }
 
 .group--controls {
   display: flex;
@@ -3848,6 +3863,13 @@ body {
       position: absolute;
       width: 100%;
       height: 100%;
+      object-fit: cover; }
+    .agora-stream__player > .player__vr {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
       object-fit: cover; }
   .agora-stream__info {
     position: absolute;
@@ -4057,6 +4079,12 @@ model-viewer {
   font-weight: 900;
   font-size: 70px;
   text-shadow: 0 10px 10px rgba(0, 0, 0, 0.5); }
+
+.model-viewer__item .progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%); }
 
 @media (min-width: 768px) {
   .ui__foot .btn--vr {

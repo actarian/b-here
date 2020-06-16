@@ -57,9 +57,9 @@ void main() {
 	vec4 color = texture2D(texture, vUv);
 	// color = Blur(vUv, color);
 	if (rgbe) {
-		color = vec4(encodeColor(color) * pow + rand(vUv) * 0.05, 1.0);
+		color = vec4(encodeColor(color) * pow + rand(vUv) * 0.01, 1.0);
 	} else {
-		color = vec4(color.rgb * pow + rand(vUv) * 0.05, 1.0);
+		color = vec4(color.rgb * pow + rand(vUv) * 0.01, 1.0);
 	}
 	gl_FragColor = color;
 }
@@ -73,7 +73,7 @@ export default class Panorama {
 	}
 
 	create() {
-		const geometry = new THREE.SphereBufferGeometry(500, 60, 40);
+		const geometry = new THREE.SphereBufferGeometry(101, 60, 40);
 		geometry.scale(-1, 1, 1);
 		geometry.rotateY(Math.PI);
 		const material = new THREE.ShaderMaterial({
@@ -99,8 +99,8 @@ export default class Panorama {
 	}
 
 	swap(item, renderer, callback) {
+		const material = this.mesh.material;
 		if (this.pow > 0) {
-			const material = this.mesh.material;
 			gsap.to(this, 0.5, {
 				pow: 0,
 				ease: Power2.easeInOut,
@@ -109,24 +109,58 @@ export default class Panorama {
 					material.needsUpdate = true;
 				},
 				onComplete: () => {
-					this.load(item, renderer, callback);
+					this.load(item, renderer, (envMap, texture, rgbe) => {
+						gsap.to(this, 0.5, {
+							pow: 1,
+							ease: Power2.easeInOut,
+							onUpdate: () => {
+								material.uniforms.pow.value = this.pow;
+								material.needsUpdate = true;
+							}
+						});
+						if (typeof callback === 'function') {
+							callback(envMap, texture, rgbe);
+						}
+					});
 				}
 			});
 		} else {
-			this.load(item, renderer, callback);
+			this.load(item, renderer, (envMap, texture, rgbe) => {
+				gsap.to(this, 0.5, {
+					pow: 1,
+					ease: Power2.easeInOut,
+					onUpdate: () => {
+						material.uniforms.pow.value = this.pow;
+						material.needsUpdate = true;
+					}
+				});
+				if (typeof callback === 'function') {
+					callback(envMap, texture, rgbe);
+				}
+			});
 		}
 	}
 
+	crossfade(item, renderer, callback) {
+		const material = this.mesh.material;
+		this.load(item, renderer, (envMap, texture, rgbe) => {
+			material.uniforms.pow.value = 1;
+			material.needsUpdate = true;
+			if (typeof callback === 'function') {
+				callback(envMap, texture, rgbe);
+			}
+		});
+	}
+
 	load(item, renderer, callback) {
-		if (this.mesh.material.uniforms.texture.value) {
-			const texture = this.mesh.material.uniforms.texture.value;
-			texture.dispose();
-			this.mesh.material.uniforms.texture.value = null;
-		}
+		const material = this.mesh.material;
 		EnvMapLoader.load(item, renderer, (envMap, texture, rgbe, video, pmremGenerator) => {
+			if (material.uniforms.texture.value) {
+				material.uniforms.texture.value.dispose();
+				material.uniforms.texture.value = null;
+			}
 			texture.magFilter = THREE.LinearFilter;
 			texture.needsUpdate = true;
-			const material = this.mesh.material;
 			// material.map = texture;
 			material.uniforms.texture.value = texture;
 			material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
@@ -134,14 +168,6 @@ export default class Panorama {
 			material.uniforms.rgbe.value = rgbe;
 			// console.log(texture.width, texture.height);
 			material.needsUpdate = true;
-			gsap.to(this, 0.5, {
-				pow: 1,
-				ease: Power2.easeInOut,
-				onUpdate: () => {
-					material.uniforms.pow.value = this.pow;
-					material.needsUpdate = true;
-				}
-			});
 			if (typeof callback === 'function') {
 				callback(envMap, texture, rgbe);
 			}

@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { takeUntil, tap } from 'rxjs/operators';
+import { auditTime, takeUntil, tap } from 'rxjs/operators';
 import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { environment } from '../../environment/environment';
@@ -9,13 +9,17 @@ import { BASE_HREF, DEBUG } from '../const';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
+import { ModelView } from '../view/view.service';
+import AvatarElement from './avatar/avatar-element';
 import InteractiveMesh from './interactive/interactive.mesh';
 import OrbitService from './orbit/orbit';
 import Panorama from './panorama/panorama';
+import PhoneElement from './phone/phone-element';
 import VRService from './vr.service';
 
 const POINTER_RADIUS = 99;
 const ORIGIN = new THREE.Vector3();
+const USE_PHONE = true;
 
 export default class WorldComponent extends Component {
 
@@ -46,18 +50,23 @@ export default class WorldComponent extends Component {
 		this.index = 0;
 		this.error_ = null;
 		this.banner = null;
+		this.avatars = {};
 		this.createScene();
 		this.setView();
 		this.addListeners();
 		this.animate(); // !!! no
 	}
 
+	/*
 	onView() {
-		const scene = this.scene;
-		scene.traverse((object) => {
-			console.log(object.name !== '' ? object.name : object.type);
-		});
+		if (DEBUG) {
+			const scene = this.scene;
+			scene.traverse((object) => {
+				console.log(object.name !== '' ? object.name : object.type);
+			});
+		}
 	}
+	*/
 
 	// onChanges() {}
 
@@ -115,8 +124,6 @@ export default class WorldComponent extends Component {
 		const panorama = this.panorama = new Panorama();
 		scene.add(panorama.mesh);
 
-		console.log(scene);
-
 		const pointer = this.pointer = this.addPointer();
 
 		// const torus = this.torus = this.addTorus();
@@ -160,6 +167,10 @@ export default class WorldComponent extends Component {
 		});
 		scene.add(controller2);
 		this.controllers = [this.controller1, this.controller2];
+		if (USE_PHONE) {
+			const phone = this.phone = new PhoneElement();
+			controller2.add(phone.mesh);
+		}
 		// The XRControllerModelFactory will automatically fetch controller models
 		// that match what the user is holding as closely as possible. The models
 		// should be attached to the object returned from getControllerGrip in
@@ -168,11 +179,36 @@ export default class WorldComponent extends Component {
 		const controllerGrip1 = this.controllerGrip1 = renderer.xr.getControllerGrip(0);
 		controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
 		scene.add(controllerGrip1);
-		const controllerGrip2 = this.controllerGrip2 = renderer.xr.getControllerGrip(1);
-		controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-		scene.add(controllerGrip2);
+		if (!USE_PHONE) {
+			const controllerGrip2 = this.controllerGrip2 = renderer.xr.getControllerGrip(1);
+			controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+			scene.add(controllerGrip2);
+		}
 		//
 		this.resize();
+	}
+
+	addOffCanvasScene(message) {
+		const avatar = new AvatarElement(message);
+		this.avatars[message.clientId] = avatar;
+		// avatar.container.appendChild(avatar.element);
+	}
+
+	removeOffCanvasScene(message) {
+		const avatar = this.avatars[message.clientId];
+		/*
+		if (avatar && avatar.element.parentNode) {
+			avatar.element.parentNode.removeChild(avatar.element);
+		}
+		*/
+		delete this.avatars[message.clientId];
+	}
+
+	updateOffCanvasScene(message) {
+		const avatar = this.avatars[message.clientId];
+		if (avatar) {
+			avatar.update(message);
+		}
 	}
 
 	setView() {
@@ -440,6 +476,9 @@ export default class WorldComponent extends Component {
 
 	render(delta) {
 		try {
+			const renderer = this.renderer,
+				scene = this.scene,
+				camera = this.camera;
 			const time = performance.now();
 			const tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
 			this.updateRaycaster();
@@ -447,6 +486,10 @@ export default class WorldComponent extends Component {
 				if (typeof child.userData.render === 'function') {
 					child.userData.render(time, tick);
 				}
+			});
+			this.vrService.updateState(this);
+			Object.keys(this.avatars).forEach(key => {
+				this.avatars[key].render();
 			});
 			/*
 			const objects = this.objects;
@@ -457,9 +500,6 @@ export default class WorldComponent extends Component {
 				}
 			}
 			*/
-			const renderer = this.renderer,
-				scene = this.scene,
-				camera = this.camera;
 			renderer.render(this.scene, this.camera);
 			if (this.agora && !this.agora.state.hosted) {
 				const orbit = this.orbit;
@@ -574,20 +614,25 @@ export default class WorldComponent extends Component {
 	onMouseWheel(event) {
 		// !!! fov zoom
 		try {
-			const camera = this.camera;
-			const fov = camera.fov + event.deltaY * 0.01;
-			camera.fov = THREE.Math.clamp(fov, 30, 75);
-			camera.updateProjectionMatrix();
-			this.onOrientationDidChange();
+			const agora = this.agora;
+			if (!agora || !agora.state.locked) {
+				const camera = this.camera;
+				const fov = camera.fov + event.deltaY * 0.01;
+				camera.fov = THREE.Math.clamp(fov, 30, 75);
+				camera.updateProjectionMatrix();
+				this.onOrientationDidChange();
+			}
 		} catch (error) {
 			this.error = error;
 		}
 	}
 
 	onOrientationDidChange() {
+		/*
 		if (DEBUG) {
 			console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
 		}
+		*/
 		const agora = this.agora;
 		if (agora && (agora.state.control || agora.state.spyed)) {
 			agora.sendMessage({
@@ -597,6 +642,65 @@ export default class WorldComponent extends Component {
 				fov: this.camera.fov,
 			});
 		}
+	}
+
+	onVRStarted() {
+		this.scene.add(this.pointer);
+		const agora = this.agora;
+		if (agora) {
+			agora.sendMessage({
+				type: MessageType.VRStarted,
+				clientId: agora.state.uid,
+			});
+		}
+		if (this.view_ instanceof ModelView) {
+			console.log(this.view_);
+		}
+	}
+
+	onVREnded() {
+		this.scene.remove(this.pointer);
+		const agora = this.agora;
+		if (agora) {
+			agora.sendMessage({
+				type: MessageType.VREnded,
+				clientId: agora.state.uid,
+			});
+		}
+	}
+
+	onVRStateDidChange(state) {
+		/*
+		if (DEBUG) {
+			console.log('WorldComponent.onVRStateDidChange', state.camera.array);
+		}
+		*/
+		const agora = this.agora;
+		if (agora) {
+			agora.sendMessage({
+				type: MessageType.VRState,
+				clientId: agora.state.uid,
+				camera: state.camera.array,
+			});
+		}
+	}
+
+	onGridMove(event) {
+		console.log('WorldComponent.onGridMove', event);
+		this.orbit.walk(event.position, () => {
+			const item = this.view.getTile(event.indices.x, event.indices.y);
+			if (item) {
+				this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
+					// this.scene.background = envMap;
+					this.scene.environment = envMap;
+					if (this.torus) {
+						this.torus.material.envMap = envMap;
+						this.torus.material.needsUpdate = true;
+					}
+					// this.render();
+				});
+			}
+		});
 	}
 
 	addListeners() {
@@ -618,10 +722,16 @@ export default class WorldComponent extends Component {
 		).subscribe((session) => {
 			this.renderer.xr.setSession(session);
 			if (session) {
-				this.scene.add(this.pointer);
+				this.onVRStarted();
 			} else {
-				this.scene.remove(this.pointer);
+				this.onVREnded();
 			}
+		});
+		vrService.state$.pipe(
+			takeUntil(this.unsubscribe$),
+			auditTime(Math.floor(1000 / 15)),
+		).subscribe((state) => {
+			this.onVRStateDidChange(state);
 		});
 
 		this.orbit.observe$().pipe(
@@ -631,8 +741,8 @@ export default class WorldComponent extends Component {
 			this.onOrientationDidChange();
 		});
 
-		if (!DEBUG) {
-			const agora = this.agora = AgoraService.getSingleton();
+		const agora = this.agora = AgoraService.getSingleton();
+		if (agora) {
 			agora.events$.pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(event => {
@@ -682,6 +792,21 @@ export default class WorldComponent extends Component {
 							camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
 							camera.lookAt(ORIGIN);
 							// this.render();
+						}
+						break;
+					case MessageType.VRStarted:
+						if (agora.state.uid !== message.clientId) {
+							this.addOffCanvasScene(message);
+						}
+						break;
+					case MessageType.VREnded:
+						if (agora.state.uid !== message.clientId) {
+							this.removeOffCanvasScene(message);
+						}
+						break;
+					case MessageType.VRState:
+						if (agora.state.uid !== message.clientId) {
+							this.updateOffCanvasScene(message);
 						}
 						break;
 				}

@@ -52,6 +52,20 @@ export default class ModelGltfComponent extends ModelComponent {
 				// mesh.position.y - center.y + size.y / 2 * scale - 0.5, // bottom
 				mesh.position.z - center.z
 			);
+			const endY = dummy.position.y;
+			const endRotationY = 0;
+			const from = { pow: 1 };
+			const onUpdate = () => {
+				dummy.position.y = endY + 3 * from.pow;
+				dummy.rotation.y = 0 + Math.PI * from.pow;
+			};
+			onUpdate();
+			gsap.to(from, 1.5, {
+				pow: 0,
+				delay: 0.1,
+				ease: Power2.easeInOut,
+				onUpdate: onUpdate
+			});
 			// stand
 			/*
 			this.createStand();
@@ -130,11 +144,13 @@ export default class ModelGltfComponent extends ModelComponent {
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 		const loader = new GLTFLoader().setPath(path);
 		loader.load(file, (gltf) => {
+			/*
 			gltf.scene.traverse((child) => {
 				if (child.isMesh) {
-					// roughnessMipmapper.generateMipmaps(child.material);
+					roughnessMipmapper.generateMipmaps(child.material);
 				}
 			});
+			*/
 			if (typeof callback === 'function') {
 				callback(gltf.scene);
 			}

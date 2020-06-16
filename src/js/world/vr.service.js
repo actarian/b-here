@@ -19,14 +19,31 @@ export default class VRService {
 		return this.service_;
 	}
 
+	get status() {
+		return this.status$.getValue();
+	}
+
+	get state() {
+		return this.state$.getValue();
+	}
+
 	constructor() {
 		if (VRService.service_) {
 			throw ('VRService is a singleton class!');
 		}
+		const state = this.state_ = {
+			camera: {
+				position: new THREE.Vector3(),
+				quaternion: new THREE.Quaternion(),
+				scale: new THREE.Vector3(),
+				array: new Array(3 + 4 + 3).fill(0),
+			}
+		};
 		this.onSessionStarted = this.onSessionStarted.bind(this);
 		this.onSessionEnded = this.onSessionEnded.bind(this);
 		this.status$ = new BehaviorSubject(XRStatus.Waiting);
 		this.session$ = new Subject();
+		this.state$ = new BehaviorSubject(state);
 		this.currentSession = null;
 		if ('xr' in navigator) {
 			navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
@@ -113,6 +130,27 @@ export default class VRService {
 				break;
 		}
 		return label;
+	}
+
+	updateState(world) {
+		if (this.status === XRStatus.Started) {
+			const renderer = world.renderer,
+				scene = world.scene,
+				camera = world.camera,
+				state = this.state_;
+			camera.matrixWorld.decompose(state.camera.position, state.camera.quaternion, state.camera.scale);
+			state.camera.array[0] = state.camera.position.x;
+			state.camera.array[1] = state.camera.position.y;
+			state.camera.array[2] = state.camera.position.z;
+			state.camera.array[3] = state.camera.quaternion.x;
+			state.camera.array[4] = state.camera.quaternion.y;
+			state.camera.array[5] = state.camera.quaternion.z;
+			state.camera.array[6] = state.camera.quaternion.w;
+			state.camera.array[7] = state.camera.scale.x;
+			state.camera.array[8] = state.camera.scale.y;
+			state.camera.array[9] = state.camera.scale.z;
+			this.state$.next(state);
+		}
 	}
 
 }

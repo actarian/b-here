@@ -21,13 +21,15 @@ export default class AgoraLinkComponent extends Component {
 			this.pushChanges();
 		});
 		const agora = this.agora = AgoraService.getSingleton();
-		agora.state$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(state => {
-			// console.log('AgoraLinkComponent.state', state);
-			this.state = state;
-			this.pushChanges();
-		});
+		if (agora) {
+			agora.state$.pipe(
+				takeUntil(this.unsubscribe$)
+			).subscribe(state => {
+				// console.log('AgoraLinkComponent.state', state);
+				this.state = state;
+				this.pushChanges();
+			});
+		}
 	}
 
 	onGenerateMeetingId($event) {

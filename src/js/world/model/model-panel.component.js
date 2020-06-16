@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
-const PANEL_RADIUS = 102;
+const PANEL_RADIUS = 99;
 const ORIGIN = new THREE.Vector3();
 
 export default class ModelPanelComponent extends ModelComponent {
@@ -24,7 +24,7 @@ export default class ModelPanelComponent extends ModelComponent {
 			const height = PANEL_RADIUS / 8 / aspect;
 			const geometry = new THREE.PlaneBufferGeometry(width, height, 3, 3);
 			const material = new THREE.MeshBasicMaterial({
-				depthTest: false,
+				// depthTest: false,
 				map: texture.map,
 				transparent: true,
 				opacity: 0,
@@ -32,7 +32,6 @@ export default class ModelPanelComponent extends ModelComponent {
 			});
 			const position = this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS);
 			const panel = this.panel = new THREE.Mesh(geometry, material);
-			panel.renderOrder = 9;
 			panel.position.set(position.x, position.y, position.z);
 			panel.lookAt(ORIGIN);
 			this.mesh.add(panel);
@@ -52,6 +51,7 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		this.renderOrder = 11;
 		const mesh = new THREE.Group();
 		if (typeof callback === 'function') {
 			callback(mesh);

@@ -6,13 +6,16 @@ import EmittableMesh from './emittable.mesh';
 export default class InteractiveMesh extends EmittableMesh {
 
 	static hittest(raycaster, down) {
+		// !!! da rivedere per consentire eventi multipli (nav-items)
 		const items = InteractiveMesh.items.filter(x => !x.freezed);
 		const intersections = raycaster.intersectObjects(items);
 		let key, hit;
 		const hash = {};
+		// let has = false;
 		intersections.forEach((intersection, i) => {
 			const object = intersection.object;
 			// console.log('InteractiveMesh.hittest', i, object.name);
+			// has = has || object.name.indexOf('nav') !== -1;
 			key = object.uuid;
 			if (i === 0) {
 				if (InteractiveMesh.lastIntersectedObject !== object) {
@@ -26,9 +29,10 @@ export default class InteractiveMesh extends EmittableMesh {
 			}
 			hash[key] = intersection;
 		});
+		// console.log(has);
 		items.forEach(x => {
 			x.intersection = hash[x.uuid];
-			x.over = x === InteractiveMesh.lastIntersectedObject;
+			x.over = (x === InteractiveMesh.lastIntersectedObject) || (!x.depthTest && x.intersection);
 			x.down = down && x.over;
 		});
 		return hit;
@@ -45,6 +49,7 @@ export default class InteractiveMesh extends EmittableMesh {
 
 	constructor(geometry, material) {
 		super(geometry, material);
+		this.depthTest = true;
 		this.over_ = false;
 		this.down_ = false;
 		// this.renderOrder = 10;

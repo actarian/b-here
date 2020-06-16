@@ -31,6 +31,7 @@ export default class ModelNavComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		this.renderOrder = 10;
 		const geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
 		const map = ModelNavComponent.getTexture();
 		map.encoding = THREE.sRGBEncoding;
@@ -42,7 +43,7 @@ export default class ModelNavComponent extends ModelComponent {
 			opacity: 0,
 		});
 		const mesh = this.mesh = new InteractiveMesh(geometry, material);
-		mesh.renderOrder = 10;
+		mesh.depthTest = false;
 		this.item.mesh = mesh;
 		mesh.on('over', () => {
 			const from = { scale: mesh.scale.x };
@@ -71,7 +72,6 @@ export default class ModelNavComponent extends ModelComponent {
 		mesh.on('down', () => {
 			this.down.next(this.item);
 		});
-		// this.renderOrder = 1;
 		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(NAV_RADIUS);
 		mesh.position.set(position.x, position.y, position.z);
 		mesh.lookAt(ORIGIN);

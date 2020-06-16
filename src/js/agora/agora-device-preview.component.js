@@ -1,4 +1,6 @@
 import { Component, getContext } from 'rxcomp';
+import { takeUntil } from 'rxjs/operators';
+import AudioStreamService from '../audio/audio-stream.service';
 
 export default class AgoraDevicePreviewComponent extends Component {
 
@@ -29,11 +31,19 @@ export default class AgoraDevicePreviewComponent extends Component {
 		const { node } = getContext(this);
 		const preview = this.preview = node.querySelector('video');
 		preview.addEventListener('loadedmetadata', this.onLoadedMetadata);
+		const audio = node.querySelector('.audio');
+		const bars = this.bars = new Array(32).fill(0).map(x => {
+			const bar = document.createElement('div');
+			bar.classList.add('bar');
+			audio.appendChild(bar);
+			return bar;
+		});
 	}
 
 	onDestroy() {
 		const preview = this.preview;
 		preview.removeEventListener('loadedmetadata', this.onLoadedMetadata);
+		AudioStreamService.dispose();
 	}
 
 	initStream() {
@@ -52,7 +62,8 @@ export default class AgoraDevicePreviewComponent extends Component {
 					} else {
 						preview.src = window.URL.createObjectURL(stream);
 					}
-					this.stream.next(stream);
+					this.analyzeData(stream);
+					this.loadingStream_ = stream;
 				}).catch((error) => {
 					console.log('AgoraDevicePreviewComponent.initStream.error', error.name, error.message);
 					this.stream.next(null);
@@ -64,12 +75,36 @@ export default class AgoraDevicePreviewComponent extends Component {
 			} else {
 				preview.src = null;
 			}
+			this.analyzeData(null);
 			this.stream.next(null);
 		}
 	}
 
 	onLoadedMetadata(event) {
 		this.preview.play();
+		this.stream.next(this.loadingStream_);
+	}
+
+	analyzeData(stream) {
+		if (this.frequencySubscription) {
+			this.frequencySubscription.unsubscribe();
+		}
+		if (stream) {
+			this.frequencySubscription = AudioStreamService.frequency$(stream, 64).pipe(
+				takeUntil(this.unsubscribe$)
+			).subscribe(frequency => {
+				// 32 data points
+				// console.log(frequency);
+				const spacing = 100 / 32;
+				const bars = this.bars;
+				bars.forEach((bar, i) => {
+					const pow = Math.min(100, (5 + frequency[i])) / 100;
+					bar.style.left = i * spacing + '%';
+					bar.style.transform = `scale(1,${pow})`;
+					bar.style.opacity = pow;
+				});
+			});
+		}
 	}
 
 	// onView() { const context = getContext(this); }

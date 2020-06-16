@@ -8,29 +8,31 @@ export default class AgoraDeviceComponent extends Component {
 
 	onInit() {
 		this.state = {};
-		this.devices = [];
+		this.devices = { videos: [], audios: [] };
 		this.stream = null;
 		this.form = null;
 		const agora = this.agora = AgoraService.getSingleton();
-		agora.state$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(state => {
-			// console.log('AgoraDeviceComponent.state', state);
-			this.state = state;
-			this.pushChanges();
-		});
-		agora.devices$().subscribe(devices => {
-			// console.log(devices);
-			this.devices = devices;
-			this.initForm(devices);
-			this.pushChanges();
-		});
+		if (agora) {
+			agora.state$.pipe(
+				takeUntil(this.unsubscribe$)
+			).subscribe(state => {
+				// console.log('AgoraDeviceComponent.state', state);
+				this.state = state;
+				this.pushChanges();
+			});
+			agora.devices$().subscribe(devices => {
+				// console.log(devices);
+				this.devices = devices;
+				this.initForm(devices);
+				this.pushChanges();
+			});
+		}
 	}
 
 	initForm(devices) {
 		const form = this.form = new FormGroup({
-			video: new FormControl(null, Validators.RequiredValidator()),
 			audio: new FormControl(null, Validators.RequiredValidator()),
+			video: new FormControl(null),
 		});
 		const controls = this.controls = form.controls;
 		controls.video.options = devices.videos.map(x => {

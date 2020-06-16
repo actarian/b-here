@@ -297,7 +297,7 @@
         "gltf": "models/washing-machine/gltf.gltf",
         "usdz": "models/washing-machine/washing-machine.usdz"
       },
-      "envMapFolder": "panorama-sm/",
+      "envMapFolder": "panorama/",
       "envMapFile": "panorama-01.jpg",
       "items": [
         {
@@ -329,7 +329,7 @@
         "gltf": "models/washing-machine/gltf.gltf",
         "usdz": "models/washing-machine/washing-machine.usdz"
       },
-      "envMapFolder": "panorama-sm/",
+      "envMapFolder": "panorama/",
       "envMapFile": "panorama-02.jpg",
       "items": [
         {
@@ -566,6 +566,46 @@
         "longitude": 124.30000000000001
       },
       "fov": 51
+    },
+    {
+      "id": 14,
+      "type": "panorama-grid",
+      "name": "New One Set 2",
+      "likes": 225,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "newoneset2/",
+      "envMapFile": "NEWONESET2_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "items": [
+        "NEWONESET2_x0_y0.jpg",
+        "NEWONESET2_x0_y1.jpg",
+        "NEWONESET2_x0_y2.jpg",
+        "NEWONESET2_x0_y3.jpg",
+        "NEWONESET2_x0_y4.jpg",
+        "NEWONESET2_x0_y5.jpg",
+        "NEWONESET2_x0_y6.jpg",
+        "NEWONESET2_x0_y7.jpg",
+        "NEWONESET2_x1_y7.jpg",
+        "NEWONESET2_x2_y7.jpg",
+        "NEWONESET2_x3_y0.jpg",
+        "NEWONESET2_x3_y1.jpg",
+        "NEWONESET2_x3_y2.jpg",
+        "NEWONESET2_x3_y3.jpg",
+        "NEWONESET2_x3_y4.jpg",
+        "NEWONESET2_x3_y5.jpg",
+        "NEWONESET2_x3_y6.jpg",
+        "NEWONESET2_x3_y7.jpg"
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
     }
   ]
 }

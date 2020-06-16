@@ -39,6 +39,9 @@ export class EnvMapLoader {
 
 	static loadPublisherStreamBackground(renderer, callback) {
 		const agora = AgoraService.getSingleton();
+		if (!agora) {
+			return;
+		}
 		const publisherStreamId = agora.publisherStreamId;
 		if (!publisherStreamId) {
 			return;

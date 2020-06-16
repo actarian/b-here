@@ -1,12 +1,12 @@
 import { Component, getContext } from 'rxcomp';
 // import UserService from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environment/environment';
 import { BASE_HREF, DEBUG } from '../const';
-import HttpService from '../http/http.service';
 import LocationService from '../location/location.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
+import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import AgoraService, { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.service';
 
@@ -45,7 +45,7 @@ export default class AgoraComponent extends Component {
 		vrService.status$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(status => this.pushChanges());
-		this.load$().pipe(
+		ViewService.data$().pipe(
 			first()
 		).subscribe(data => {
 			this.data = data;
@@ -54,22 +54,9 @@ export default class AgoraComponent extends Component {
 		});
 	}
 
-	load$() {
-		return HttpService.get$('./api/data.json').pipe(
-			map(data => {
-				data.views.forEach(view => {
-					view.items.forEach((item, index) => {
-						item.index = index;
-					});
-				});
-				return data;
-			})
-		);
-	}
-
 	init() {
-		if (!DEBUG) {
-			const agora = this.agora = AgoraService.getSingleton();
+		const agora = this.agora = AgoraService.getSingleton();
+		if (agora) {
 			agora.message$.pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(message => {

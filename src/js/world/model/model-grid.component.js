@@ -8,7 +8,7 @@ import ModelComponent from './model.component';
 const PANEL_RADIUS = 102;
 const ORIGIN = new THREE.Vector3();
 
-const RADIUS = 500;
+const RADIUS = 101;
 const COLS = 11;
 const ROWS = 11;
 
@@ -19,7 +19,7 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	static getTexture() {
-		return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav.png'));
+		return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav-square.png'));
 	}
 
 	set coords(coords) {
@@ -65,13 +65,16 @@ export default class ModelGridComponent extends ModelComponent {
 		const dy = Math.floor(ROWS / 2);
 		const ci = Math.min(dx, Math.abs(col)) * (col ? Math.abs(col) / col : 1);
 		const ri = Math.min(dy, Math.abs(row)) * (row ? Math.abs(row) / row : 1);
-		// console.log('col', col, 'row', row, 'ci', ci, 'ri', ri);
-		return new THREE.Vector2(ci, ri);
+		if (this.view.hasTile(this.indices.x + ci, this.indices.y + ri)) {
+			// console.log('col', col, 'row', row, 'ci', ci, 'ri', ri);
+			return new THREE.Vector2(ci, ri);
+		}
 	}
 
 	onInit() {
 		super.onInit();
-		// console.log('ModelGridComponent.onInit', this.item);
+		this.indices = new THREE.Vector2();
+		console.log('ModelGridComponent.onInit', this.view);
 	}
 
 	onView() {
@@ -92,7 +95,7 @@ export default class ModelGridComponent extends ModelComponent {
 		const tiles = this.tiles = new Array(COLS * ROWS).fill(0).map((x, i) => {
 			const material = new THREE.MeshBasicMaterial({
 				map: map,
-				depthTest: false,
+				// depthTest: false,
 				transparent: true,
 				opacity: 0,
 				// side: THREE.DoubleSide,
@@ -107,7 +110,7 @@ export default class ModelGridComponent extends ModelComponent {
 			// console.log(ci, ri);
 			tile.position.set(ci * outerTileSize, -RADIUS * 0.15, ri * outerTileSize);
 			tile.name = this.getName(`tile_${ci}_${ri}`);
-			tile.renderOrder = 2;
+			// tile.renderOrder = 2;
 			tileMap[`${ci}_${ri}`] = tile;
 			mesh.add(tile);
 		});
@@ -132,7 +135,7 @@ export default class ModelGridComponent extends ModelComponent {
 		const mesh = this.mesh;
 		const ground = this.ground = new InteractiveMesh(geometry, material);
 		ground.name = this.getName('ground');
-		ground.renderOrder = 1;
+		// ground.renderOrder = 1;
 		ground.position.set(0, -RADIUS * 0.15, 0);
 		ground.on('over', this.onGroundOver);
 		ground.on('move', this.onGroundMove);
@@ -157,6 +160,16 @@ export default class ModelGridComponent extends ModelComponent {
 		const ground = this.ground;
 		const coords = this.getCoords(ground.intersection.point);
 		this.coords = coords;
+		if (coords) {
+			this.indices.x += coords.x;
+			this.indices.y += coords.y;
+			const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+			this.move.next({
+				indices: this.indices,
+				coords,
+				position: coords.clone().multiplyScalar(outerTileSize)
+			});
+		}
 	}
 
 	onGroundOut() {
@@ -173,8 +186,8 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		this.renderOrder = 9;
 		const mesh = this.mesh = new THREE.Group();
-		mesh.renderOrder = 2;
 		this.addTiles();
 		this.addHitArea();
 		/*
@@ -196,5 +209,6 @@ ModelGridComponent.ORIGIN = new THREE.Vector3();
 ModelGridComponent.meta = {
 	selector: '[model-grid]',
 	hosts: { host: WorldComponent },
-	inputs: ['item'],
+	outputs: ['move'],
+	inputs: ['view'],
 };

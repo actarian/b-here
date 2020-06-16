@@ -11,6 +11,10 @@ const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
 
 export default class ModelComponent extends Component {
 
+	set renderOrder(renderOrder) {
+		this.group.renderOrder = renderOrder;
+	}
+
 	onInit() {
 		// console.log('ModelComponent.onInit');
 		// console.log('item', this.item, 'host', this.host);

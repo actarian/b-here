@@ -2,8 +2,9 @@
 // const AgoraRTC = require('agora-rtc-sdk');
 
 import AgoraRTM from 'agora-rtm-sdk';
-import { BehaviorSubject, from, of, Subject } from 'rxjs';
+import { BehaviorSubject, from, of , Subject } from 'rxjs';
 import { environment } from '../../environment/environment';
+import { DEBUG } from '../const';
 import Emittable from '../emittable/emittable';
 import HttpService from '../http/http.service';
 import LocationService from '../location/location.service';
@@ -120,6 +121,9 @@ export const MessageType = {
 	CameraRotate: 'cameraRotate',
 	CameraOrientation: 'cameraOrientation',
 	NavToView: 'navToView',
+	VRStarted: 'vrStarted',
+	VREnded: 'vrEnded',
+	VRState: 'vrState',
 };
 
 export class AgoraEvent {
@@ -138,6 +142,9 @@ export class AgoraVolumeLevelsEvent extends AgoraEvent {}
 export default class AgoraService extends Emittable {
 
 	static getSingleton(defaultDevices) {
+		if (DEBUG) {
+			return;
+		}
 		if (!this.AGORA) {
 			this.AGORA = new AgoraService(defaultDevices);
 		}
@@ -256,8 +263,7 @@ export default class AgoraService extends Emittable {
 		inputs.videos = defaultVideos.slice();
 		inputs.audios = defaultAudios.slice();
 		return from(new Promise((resolve, reject) => {
-			const tempStream = AgoraRTC.createStream({ audio: true, video: true });
-			tempStream.init(() => {
+			const getDevices = () => {
 				AgoraRTC.getDevices((devices) => {
 					tempStream.close();
 					for (let i = 0; i < devices.length; i++) {
@@ -284,6 +290,12 @@ export default class AgoraService extends Emittable {
 						reject(inputs);
 					}
 				});
+			};
+			const tempStream = AgoraRTC.createStream({ audio: true, video: true });
+			tempStream.init(() => {
+				getDevices();
+			}, () => {
+				getDevices();
 			});
 		}));
 	}
@@ -909,6 +921,11 @@ export default class AgoraService extends Emittable {
 			if (message.rpcid) {
 				this.emit(`message-${message.rpcid}`, message);
 			}
+			if (message.type === MessageType.VRStarted) {
+				const container = document.createElement('div');
+				container.classList.add('player__vr');
+				message.container = container;
+			}
 			this.message$.next(message);
 			switch (message.type) {
 				case MessageType.RequestControlDismiss:
@@ -1045,6 +1062,15 @@ export default class AgoraService extends Emittable {
 			if (remote.clientInfo && remote.clientInfo.role === RoleType.Publisher) {
 				this.patchState({ hosted: false });
 			}
+		}
+	}
+
+	remoteById(streamId) {
+		// console.log('AgoraService.remoteById', streamId);
+		const remotes = this.remotes$.getValue();
+		const remote = remotes.find(x => x.getId() === streamId);
+		if (remote) {
+			return remote;
 		}
 	}
 

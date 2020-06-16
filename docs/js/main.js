@@ -5,10 +5,10 @@
  */
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('rxcomp'), require('rxcomp-form'), require('rxjs/operators'), require('agora-rtm-sdk'), require('rxjs'), require('html2canvas'), require('three')) :
-  typeof define === 'function' && define.amd ? define(['rxcomp', 'rxcomp-form', 'rxjs/operators', 'agora-rtm-sdk', 'rxjs', 'html2canvas', 'three'], factory) :
-  (global = global || self, factory(global.rxcomp, global.rxcomp.form, global.rxjs.operators, global.AgoraRTM, global.rxjs, global.html2canvas, global.THREE));
-}(this, (function (rxcomp, rxcompForm, operators, AgoraRTM, rxjs, html2canvas, THREE$1) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('rxcomp'), require('rxcomp-form'), require('rxjs/operators'), require('rxjs'), require('agora-rtm-sdk'), require('html2canvas'), require('three')) :
+  typeof define === 'function' && define.amd ? define(['rxcomp', 'rxcomp-form', 'rxjs/operators', 'rxjs', 'agora-rtm-sdk', 'html2canvas', 'three'], factory) :
+  (global = global || self, factory(global.rxcomp, global.rxcomp.form, global.rxjs.operators, global.rxjs, global.AgoraRTM, global.html2canvas, global.THREE));
+}(this, (function (rxcomp, rxcompForm, operators, rxjs, AgoraRTM, html2canvas, THREE$1) { 'use strict';
 
   AgoraRTM = AgoraRTM && Object.prototype.hasOwnProperty.call(AgoraRTM, 'default') ? AgoraRTM['default'] : AgoraRTM;
   html2canvas = html2canvas && Object.prototype.hasOwnProperty.call(html2canvas, 'default') ? html2canvas['default'] : html2canvas;
@@ -43,6 +43,283 @@
     return self;
   }
 
+  var BUFF_SIZE = 512;
+
+  var AudioStreamService = /*#__PURE__*/function () {
+    function AudioStreamService() {}
+
+    AudioStreamService.addSource = function addSource(streamOrElement) {
+      var key = streamOrElement instanceof MediaStream ? streamOrElement.id : streamOrElement;
+
+      if (!this.sources_[key]) {
+        this.sources_[key] = streamOrElement instanceof MediaStream ? this.context.createMediaStreamSource(streamOrElement) : this.context.createMediaElementSource(streamOrElement);
+      }
+
+      return this.sources_[key];
+    };
+
+    AudioStreamService.removeSource = function removeSource(streamOrElement) {
+      var source;
+      var key = streamOrElement instanceof MediaStream ? streamOrElement.id : streamOrElement;
+
+      if (this.sources_[key]) {
+        source = this.sources_[key];
+        source.disconnect();
+        delete this.sources_[key];
+      }
+
+      return source;
+    };
+
+    AudioStreamService.frequency$ = function frequency$(streamOrElement, fftSize) {
+      var _this = this;
+
+      if (fftSize === void 0) {
+        fftSize = 64;
+      }
+
+      if (fftSize % 2 === 1) {
+        throw fftSize;
+      }
+
+      var state = new Uint8Array(fftSize / 2);
+      var context = this.context;
+
+      if (context) {
+        var analyser = this.analyser; // Connect the output of the analyser to the destination
+        // analyser.connect(context.destination); // no audio !
+        // console.log(analyser.fftSize); // 2048 by default
+        // console.log(analyser.frequencyBinCount); // will give us 1024 data points
+
+        analyser.fftSize = fftSize; // 64
+        // console.log(analyser.frequencyBinCount); // fftSize/2 = 32 data points
+
+        var source = this.addSource(streamOrElement); // source.connect(context.destination); // no audio!
+        // Connect the output of the source to the input of the analyser
+
+        source.connect(analyser);
+        var state$ = new rxjs.BehaviorSubject(state);
+        return AudioStreamService.frame$.pipe(operators.withLatestFrom(state$), operators.map(function (_ref) {
+          var deltaTime = _ref[0],
+              state = _ref[1];
+          // Get the new frequency data
+          analyser.getByteFrequencyData(state);
+          /*
+          const max = state.reduce((p, c, i) => {
+          	return Math.max(c, p);
+          }, 0);
+          if (max > 0) {
+          	console.log(max);
+          }
+          */
+          // Update the visualisation
+
+          return state;
+        }), operators.tap(function (state) {
+          return state$.next(state);
+        }), operators.finalize(function () {
+          _this.removeSource(streamOrElement);
+        }));
+      } else {
+        return rxjs.of(state);
+      }
+    };
+
+    AudioStreamService.volume$ = function volume$(streamOrElement) {
+      var _this2 = this;
+
+      var state = {
+        volume: 0,
+        clipped: false
+      };
+      var context = this.context;
+      console.log('AudioStreamService.volume$', context, state);
+
+      if (context) {
+        var source = this.addSource(streamOrElement);
+        var meter = AudioStreamService.audioMeterCreate();
+        source.connect(meter);
+        var state$ = new rxjs.BehaviorSubject(state);
+        return AudioStreamService.frame$.pipe(operators.withLatestFrom(state$), operators.map(function (_ref2) {
+          var deltaTime = _ref2[0],
+              state = _ref2[1];
+          state.clipped = meter.checkClipping();
+          state.volume = meter.volume;
+          return state;
+        }), operators.tap(function (state) {
+          return state$.next(state);
+        }), operators.finalize(function () {
+          _this2.removeSource(streamOrElement);
+        }));
+      } else {
+        return rxjs.of(state);
+      }
+    };
+
+    AudioStreamService.audioMeterCreate = function audioMeterCreate(clipLevel, averaging, clipLag) {
+      if (clipLevel === void 0) {
+        clipLevel = 0.98;
+      }
+
+      if (averaging === void 0) {
+        averaging = 0.95;
+      }
+
+      if (clipLag === void 0) {
+        clipLag = 750;
+      }
+
+      var context = this.context;
+
+      if (context) {
+        var processor = context.createScriptProcessor(512);
+        processor.onaudioprocess = this.audioMeterProcess;
+        processor.checkClipping = this.audioMeterClip;
+        processor.dispose = this.audioMeterDispose;
+        processor.clipping = false;
+        processor.lastClip = 0;
+        processor.volume = 0;
+        processor.clipLevel = clipLevel;
+        processor.averaging = averaging;
+        processor.clipLag = clipLag; // this will have no effect, since we don't copy the input to the output,
+        // but works around a current Chrome bug.
+
+        processor.connect(context.destination);
+        return processor;
+      }
+    };
+
+    AudioStreamService.audioMeterProcess = function audioMeterProcess(event) {
+      var buffer = event.inputBuffer.getChannelData(0);
+      var bufferLength = buffer.length;
+      var sum = 0;
+      var x; // Do a root-mean-square on the samples: sum up the squares...
+
+      for (var i = 0; i < bufferLength; i++) {
+        x = buffer[i];
+
+        if (Math.abs(x) >= this.clipLevel) {
+          this.clipping = true;
+          this.lastClip = window.performance.now();
+        }
+
+        sum += x * x;
+      } // ... then take the square root of the sum.
+
+
+      var rms = Math.sqrt(sum / bufferLength); // Now smooth this out with the averaging factor applied
+      // to the previous sample - take the max here because we
+      // want "fast attack, slow release."
+
+      this.volume = Math.max(rms, this.volume * this.averaging);
+    };
+
+    AudioStreamService.audioMeterClip = function audioMeterClip() {
+      if (!this.clipping) {
+        return false;
+      }
+
+      if (this.lastClip + this.clipLag < window.performance.now()) {
+        this.clipping = false;
+      }
+
+      return this.clipping;
+    };
+
+    AudioStreamService.audioMeterDispose = function audioMeterDispose() {
+      this.disconnect();
+      this.onaudioprocess = null;
+    };
+
+    AudioStreamService.step$ = function step$(previous) {
+      /**
+       * This function returns an observable that will emit the next frame once the
+       * browser has returned an animation frame step. Given the previous frame it calculates
+       * the delta time, and we also clamp it to 30FPS in case we get long frames.
+       */
+      return rxjs.Observable.create(function (observer) {
+        requestAnimationFrame(function (startTime) {
+          // Millis to seconds
+          var deltaTime = previous ? (startTime - previous.startTime) / 1000 : 0;
+          observer.next({
+            startTime: startTime,
+            deltaTime: deltaTime
+          });
+        });
+      }).pipe(operators.map(function (frame) {
+        if (frame.deltaTime > 1 / 30) {
+          frame.deltaTime = 1 / 30;
+        }
+
+        return frame;
+      }));
+    };
+
+    AudioStreamService.dispose = function dispose() {
+      var _this3 = this;
+
+      Object.keys(this.sources_).forEach(function (key) {
+        _this3.sources_[key].disconnect();
+      });
+      this.analyser.disconnect();
+      this.sources_ = {};
+      this.context_.close().then(function (success) {
+        return console.log('AudioStreamService.dispose', success);
+      });
+      this.context_ = null;
+    };
+
+    _createClass(AudioStreamService, null, [{
+      key: "context",
+      get: function get() {
+        if (!this.context_ && 'AudioContext' in window) {
+          this.context_ = new AudioContext();
+        }
+
+        return this.context_;
+      }
+    }, {
+      key: "processorNode",
+      get: function get() {
+        if (!this.processorNode_) {
+          this.processorNode_ = this.context.createScriptProcessor(BUFF_SIZE, 1, 1);
+        }
+
+        return this.processorNode_;
+      }
+    }, {
+      key: "gain",
+      get: function get() {
+        if (!this.gain_) {
+          this.gain_ = this.context.createGain();
+        }
+
+        return this.gain_;
+      }
+    }, {
+      key: "analyser",
+      get: function get() {
+        if (!this.analyser_) {
+          this.analyser_ = this.context.createAnalyser();
+        }
+
+        return this.analyser_;
+      }
+    }]);
+
+    return AudioStreamService;
+  }();
+  AudioStreamService.sources_ = {};
+  AudioStreamService.frame$ = rxjs.of(undefined).pipe(operators.expand(function (value) {
+    return AudioStreamService.step$(value);
+  }), // Expand emits the first value provided to it, and in this
+  //  case we just want to ignore the undefined input frame
+  operators.filter(function (frame) {
+    return frame !== undefined;
+  }), operators.map(function (frame) {
+    return frame.deltaTime;
+  }), operators.share());
+
   var AgoraDevicePreviewComponent = /*#__PURE__*/function (_Component) {
     _inheritsLoose(AgoraDevicePreviewComponent, _Component);
 
@@ -60,11 +337,19 @@
 
       var preview = this.preview = node.querySelector('video');
       preview.addEventListener('loadedmetadata', this.onLoadedMetadata);
+      var audio = node.querySelector('.audio');
+      var bars = this.bars = new Array(32).fill(0).map(function (x) {
+        var bar = document.createElement('div');
+        bar.classList.add('bar');
+        audio.appendChild(bar);
+        return bar;
+      });
     };
 
     _proto.onDestroy = function onDestroy() {
       var preview = this.preview;
       preview.removeEventListener('loadedmetadata', this.onLoadedMetadata);
+      AudioStreamService.dispose();
     };
 
     _proto.initStream = function initStream() {
@@ -92,7 +377,9 @@
               preview.src = window.URL.createObjectURL(stream);
             }
 
-            _this.stream.next(stream);
+            _this.analyzeData(stream);
+
+            _this.loadingStream_ = stream;
           }).catch(function (error) {
             console.log('AgoraDevicePreviewComponent.initStream.error', error.name, error.message);
 
@@ -106,12 +393,37 @@
           preview.src = null;
         }
 
+        this.analyzeData(null);
         this.stream.next(null);
       }
     };
 
     _proto.onLoadedMetadata = function onLoadedMetadata(event) {
       this.preview.play();
+      this.stream.next(this.loadingStream_);
+    };
+
+    _proto.analyzeData = function analyzeData(stream) {
+      var _this2 = this;
+
+      if (this.frequencySubscription) {
+        this.frequencySubscription.unsubscribe();
+      }
+
+      if (stream) {
+        this.frequencySubscription = AudioStreamService.frequency$(stream, 64).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (frequency) {
+          // 32 data points
+          // console.log(frequency);
+          var spacing = 100 / 32;
+          var bars = _this2.bars;
+          bars.forEach(function (bar, i) {
+            var pow = Math.min(100, 5 + frequency[i]) / 100;
+            bar.style.left = i * spacing + '%';
+            bar.style.transform = "scale(1," + pow + ")";
+            bar.style.opacity = pow;
+          });
+        });
+      }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
     // onDestroy() {}
@@ -162,6 +474,9 @@
       textures: 'textures/'
     }
   };
+
+  var BASE_HREF = document.querySelector('base').getAttribute('href');
+  var DEBUG = false;
 
   var Emittable = /*#__PURE__*/function () {
     function Emittable() {
@@ -492,7 +807,10 @@
     SlideChange: 'slideChange',
     CameraRotate: 'cameraRotate',
     CameraOrientation: 'cameraOrientation',
-    NavToView: 'navToView'
+    NavToView: 'navToView',
+    VRStarted: 'vrStarted',
+    VREnded: 'vrEnded',
+    VRState: 'vrState'
   };
   var AgoraEvent = function AgoraEvent(options) {
     Object.assign(this, options);
@@ -565,6 +883,7 @@
     _inheritsLoose(AgoraService, _Emittable);
 
     AgoraService.getSingleton = function getSingleton(defaultDevices) {
+
       if (!this.AGORA) {
         this.AGORA = new AgoraService(defaultDevices);
       } // console.log('AgoraService', this.AGORA.state);
@@ -709,11 +1028,7 @@
       inputs.videos = defaultVideos.slice();
       inputs.audios = defaultAudios.slice();
       return rxjs.from(new Promise(function (resolve, reject) {
-        var tempStream = AgoraRTC.createStream({
-          audio: true,
-          video: true
-        });
-        tempStream.init(function () {
+        var getDevices = function getDevices() {
           AgoraRTC.getDevices(function (devices) {
             tempStream.close();
 
@@ -743,6 +1058,16 @@
               reject(inputs);
             }
           });
+        };
+
+        var tempStream = AgoraRTC.createStream({
+          audio: true,
+          video: true
+        });
+        tempStream.init(function () {
+          getDevices();
+        }, function () {
+          getDevices();
         });
       }));
     };
@@ -1471,6 +1796,12 @@
           this.emit("message-" + message.rpcid, message);
         }
 
+        if (message.type === MessageType.VRStarted) {
+          var container = document.createElement('div');
+          container.classList.add('player__vr');
+          message.container = container;
+        }
+
         this.message$.next(message);
 
         switch (message.type) {
@@ -1645,6 +1976,18 @@
       }
     };
 
+    _proto.remoteById = function remoteById(streamId) {
+      // console.log('AgoraService.remoteById', streamId);
+      var remotes = this.remotes$.getValue();
+      var remote = remotes.find(function (x) {
+        return x.getId() === streamId;
+      });
+
+      if (remote) {
+        return remote;
+      }
+    };
+
     _proto.onMuteVideo = function onMuteVideo(event) {
       // console.log('AgoraService.onMuteVideo', event);
       this.events$.next(new AgoraMuteVideoEvent({
@@ -1718,32 +2061,38 @@
       var _this = this;
 
       this.state = {};
-      this.devices = [];
+      this.devices = {
+        videos: [],
+        audios: []
+      };
       this.stream = null;
       this.form = null;
       var agora = this.agora = AgoraService.getSingleton();
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        // console.log('AgoraDeviceComponent.state', state);
-        _this.state = state;
 
-        _this.pushChanges();
-      });
-      agora.devices$().subscribe(function (devices) {
-        // console.log(devices);
-        _this.devices = devices;
+      if (agora) {
+        agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+          // console.log('AgoraDeviceComponent.state', state);
+          _this.state = state;
 
-        _this.initForm(devices);
+          _this.pushChanges();
+        });
+        agora.devices$().subscribe(function (devices) {
+          // console.log(devices);
+          _this.devices = devices;
 
-        _this.pushChanges();
-      });
+          _this.initForm(devices);
+
+          _this.pushChanges();
+        });
+      }
     };
 
     _proto.initForm = function initForm(devices) {
       var _this2 = this;
 
       var form = this.form = new rxcompForm.FormGroup({
-        video: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-        audio: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator())
+        audio: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+        video: new rxcompForm.FormControl(null)
       });
       var controls = this.controls = form.controls;
       controls.video.options = devices.videos.map(function (x) {
@@ -1821,12 +2170,15 @@
         _this.pushChanges();
       });
       var agora = this.agora = AgoraService.getSingleton();
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        // console.log('AgoraLinkComponent.state', state);
-        _this.state = state;
 
-        _this.pushChanges();
-      });
+      if (agora) {
+        agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+          // console.log('AgoraLinkComponent.state', state);
+          _this.state = state;
+
+          _this.pushChanges();
+        });
+      }
     };
 
     _proto.onGenerateMeetingId = function onGenerateMeetingId($event) {
@@ -1923,32 +2275,55 @@
       this.shouldUseResumeGesture = false;
       this.state = {};
       var agora = this.agora = AgoraService.getSingleton();
-      agora.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        // console.log('AgoraStreamEvent', event, this.streamId);
-        if (_this.streamId && event.streamId === _this.streamId) {
-          if (event instanceof AgoraMuteVideoEvent) {
-            _this.videoMuted = true;
+
+      if (agora) {
+        agora.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+          // console.log('AgoraStreamEvent', event, this.streamId);
+          if (_this.streamId && event.streamId === _this.streamId) {
+            if (event instanceof AgoraMuteVideoEvent) {
+              _this.videoMuted = true;
+            }
+
+            if (event instanceof AgoraUnmuteVideoEvent) {
+              _this.videoMuted = false;
+            }
+
+            if (event instanceof AgoraMuteAudioEvent) {
+              _this.audioMuted = true;
+            }
+
+            if (event instanceof AgoraUnmuteAudioEvent) {
+              _this.audioMuted = false;
+            }
           }
+        });
+        agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+          _this.state = state;
 
-          if (event instanceof AgoraUnmuteVideoEvent) {
-            _this.videoMuted = false;
+          _this.pushChanges(); // console.log('AgoraStreamComponent', this.state.spying, this.streamId);
+
+        });
+        agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+          // console.log('AgoraStreamComponent.message', message.type);
+          switch (message.type) {
+            case MessageType.VRStarted:
+              // console.log('AgoraStreamComponent.VRStarted', this.streamId, message.clientId, message.container);
+              if (_this.streamId === message.clientId) {
+                _this.vrContainer = message.container;
+              }
+
+              break;
+
+            case MessageType.VREnded:
+              // console.log('AgoraStreamComponent.VREnded', this.streamId, message.clientId);
+              if (_this.streamId === message.clientId) {
+                _this.vrContainer = null;
+              }
+
+              break;
           }
-
-          if (event instanceof AgoraMuteAudioEvent) {
-            _this.audioMuted = true;
-          }
-
-          if (event instanceof AgoraUnmuteAudioEvent) {
-            _this.audioMuted = false;
-          }
-        }
-      });
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        _this.state = state;
-
-        _this.pushChanges(); // console.log('AgoraStreamComponent', this.state.spying, this.streamId);
-
-      });
+        });
+      }
     };
 
     _proto.onToggleSpy = function onToggleSpy($event) {
@@ -2047,51 +2422,17 @@
         }
       }
     }, {
-      key: "stream__",
-      set: function set(stream) {
-        if (this.stream_ !== stream) {
-          console.log(stream);
+      key: "vrContainer",
+      set: function set(vrContainer) {
+        if (this.vrContainer_ !== vrContainer) {
+          this.vrContainer_ = vrContainer;
 
-          var _getContext4 = rxcomp.getContext(this),
-              node = _getContext4.node;
-
-          var player = this.player = node.querySelector('.agora-stream__player');
-          player.textContent = '';
-          this.shouldUseResumeGesture = false;
-          /*
-          // !!! stop in AgoraService
-          if (this.stream_) {
-          	this.stream_.stop();
-          }
-          */
-
-          this.stream_ = stream;
-
-          if (stream) {
-            this.videoMuted = stream.userMuteVideo;
-            this.audioMuted = stream.userMuteAudio;
-          }
-
-          var streamId = stream ? stream.getId() : null;
-          this.streamId = streamId;
-
-          if (streamId) {
-            var name = "stream-" + streamId;
-            player.setAttribute('id', name);
-            var mediaStream = stream.stream;
-            this.setMediaStream(mediaStream); // this.pushChanges();
-
-            /*
-            stream.play(name, { fit: 'cover' }, (error) => {
-            	if (error && error.status !== 'aborted') {
-            		// The playback fails, probably due to browser policy. You can resume the playback by user gesture.
-            		self.shouldUseResumeGesture = true;
-            		self.pushChanges();
-            	}
-            }); // stream will be played in the element with the ID agora_remote
-            */
-          } else {
-            player.removeAttribute('id');
+          if (vrContainer) {
+            this.stream_.vrContainer = vrContainer;
+            this.player.appendChild(vrContainer);
+          } else if (this.stream_.vrContainer && this.stream_.vrContainer.parentNode) {
+            this.stream_.vrContainer.parentNode.removeChild(this.stream_.vrContainer);
+            this.stream_.vrContainer = null;
           }
         }
       }
@@ -2120,9 +2461,6 @@
     outputs: ['toggleSpy'],
     inputs: ['stream']
   };
-
-  var BASE_HREF = document.querySelector('base').getAttribute('href');
-  var DEBUG = false;
 
   var ModalEvent = function ModalEvent(data) {
     this.data = data;
@@ -2195,6 +2533,127 @@
   ModalService.modal$ = new rxjs.Subject();
   ModalService.events$ = new rxjs.Subject();
 
+  var View = function View(options) {
+    if (options) {
+      Object.assign(this, options);
+
+      if (options.items) {
+        options.items.forEach(function (item, index) {
+          item.index = index;
+        });
+      }
+    }
+  };
+  var PanoramaView = /*#__PURE__*/function (_View) {
+    _inheritsLoose(PanoramaView, _View);
+
+    function PanoramaView(options) {
+      return _View.call(this, options) || this;
+    }
+
+    return PanoramaView;
+  }(View);
+  var PanoramaGridView = /*#__PURE__*/function (_View2) {
+    _inheritsLoose(PanoramaGridView, _View2);
+
+    function PanoramaGridView(options) {
+      if (options.items) {
+        options.items = options.items.map(function (mapFile, i) {
+          var indices = new THREE.Vector2();
+          mapFile.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+            var flipAxes = options.flipAxes ? -1 : 1;
+
+            if (options.invertAxes) {
+              indices.y = parseInt(b);
+              indices.x = parseInt(c) * flipAxes;
+            } else {
+              indices.x = parseInt(b);
+              indices.y = parseInt(c) * flipAxes;
+            }
+
+            console.log('PanoramaGridView', mapFile, indices);
+          });
+          return {
+            id: i + 1,
+            envMapFolder: options.envMapFolder,
+            envMapFile: mapFile,
+            indices: indices
+          };
+        });
+      }
+
+      return _View2.call(this, options) || this;
+    }
+
+    var _proto = PanoramaGridView.prototype;
+
+    _proto.getTileIndex = function getTileIndex(x, y) {
+      return this.items.reduce(function (p, c, i) {
+        if (c.indices.x === x && c.indices.y === y) {
+          return i;
+        } else {
+          return p;
+        }
+      }, -1);
+    };
+
+    _proto.hasTile = function hasTile(x, y) {
+      return this.getTileIndex(x, y) !== -1;
+    };
+
+    _proto.getTile = function getTile(x, y) {
+      return this.items[this.getTileIndex(x, y)];
+    };
+
+    return PanoramaGridView;
+  }(View);
+  var ModelView = /*#__PURE__*/function (_View3) {
+    _inheritsLoose(ModelView, _View3);
+
+    function ModelView(options) {
+      return _View3.call(this, options) || this;
+    }
+
+    return ModelView;
+  }(View);
+  var ViewType = {
+    Panorama: 'panorama',
+    PanoramaGrid: 'panorama-grid',
+    Model: 'model'
+  };
+
+  var ViewService = /*#__PURE__*/function () {
+    function ViewService() {}
+
+    ViewService.data$ = function data$() {
+      return HttpService.get$('./api/data.json').pipe(operators.map(function (data) {
+        data.views = data.views.map(function (view) {
+          switch (view.type) {
+            case ViewType.Panorama:
+              view = new PanoramaView(view);
+              break;
+
+            case ViewType.PanoramaGrid:
+              view = new PanoramaGridView(view);
+              break;
+
+            case ViewType.Model:
+              view = new ModelView(view);
+              break;
+
+            default:
+              view = new View(view);
+          }
+
+          return view;
+        });
+        return data;
+      }));
+    };
+
+    return ViewService;
+  }();
+
   var XRStatus = {
     Waiting: 'waiting',
     Enabled: 'enabled',
@@ -2214,6 +2673,18 @@
       return this.service_;
     };
 
+    _createClass(VRService, [{
+      key: "status",
+      get: function get() {
+        return this.status$.getValue();
+      }
+    }, {
+      key: "state",
+      get: function get() {
+        return this.state$.getValue();
+      }
+    }]);
+
     function VRService() {
       var _this = this;
 
@@ -2221,10 +2692,19 @@
         throw 'VRService is a singleton class!';
       }
 
+      var state = this.state_ = {
+        camera: {
+          position: new THREE.Vector3(),
+          quaternion: new THREE.Quaternion(),
+          scale: new THREE.Vector3(),
+          array: new Array(3 + 4 + 3).fill(0)
+        }
+      };
       this.onSessionStarted = this.onSessionStarted.bind(this);
       this.onSessionEnded = this.onSessionEnded.bind(this);
       this.status$ = new rxjs.BehaviorSubject(XRStatus.Waiting);
       this.session$ = new rxjs.Subject();
+      this.state$ = new rxjs.BehaviorSubject(state);
       this.currentSession = null;
 
       if ('xr' in navigator) {
@@ -2328,6 +2808,27 @@
       return label;
     };
 
+    _proto.updateState = function updateState(world) {
+      if (this.status === XRStatus.Started) {
+        var renderer = world.renderer,
+            scene = world.scene,
+            camera = world.camera,
+            state = this.state_;
+        camera.matrixWorld.decompose(state.camera.position, state.camera.quaternion, state.camera.scale);
+        state.camera.array[0] = state.camera.position.x;
+        state.camera.array[1] = state.camera.position.y;
+        state.camera.array[2] = state.camera.position.z;
+        state.camera.array[3] = state.camera.quaternion.x;
+        state.camera.array[4] = state.camera.quaternion.y;
+        state.camera.array[5] = state.camera.quaternion.z;
+        state.camera.array[6] = state.camera.quaternion.w;
+        state.camera.array[7] = state.camera.scale.x;
+        state.camera.array[8] = state.camera.scale.y;
+        state.camera.array[9] = state.camera.scale.z;
+        this.state$.next(state);
+      }
+    };
+
     return VRService;
   }();
 
@@ -2359,7 +2860,7 @@
       vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
         return _this.pushChanges();
       });
-      this.load$().pipe(operators.first()).subscribe(function (data) {
+      ViewService.data$().pipe(operators.first()).subscribe(function (data) {
         _this.data = data;
 
         _this.init();
@@ -2368,22 +2869,12 @@
       });
     };
 
-    _proto.load$ = function load$() {
-      return HttpService.get$('./api/data.json').pipe(operators.map(function (data) {
-        data.views.forEach(function (view) {
-          view.items.forEach(function (item, index) {
-            item.index = index;
-          });
-        });
-        return data;
-      }));
-    };
-
     _proto.init = function init() {
       var _this2 = this;
 
-      {
-        var agora = this.agora = AgoraService.getSingleton();
+      var agora = this.agora = AgoraService.getSingleton();
+
+      if (agora) {
         agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
           // console.log('AgoraComponent.message', message);
           switch (message.type) {
@@ -2462,6 +2953,27 @@
 
           _this2.pushChanges();
         });
+      } else {
+        var role = LocationService.get('role') || RoleType.Attendee;
+        var link = LocationService.get('link') || null;
+        this.state = {
+          role: role,
+          link: link,
+          channelName: environment.channelName,
+          publisherId: role === RoleType.Publisher ? environment.publisherId : null,
+          uid: null,
+          status: AgoraStatus.Connected,
+          connecting: false,
+          connected: true,
+          locked: false,
+          control: false,
+          spyed: false,
+          hosted: role === RoleType.Publisher ? true : false,
+          cameraMuted: false,
+          audioMuted: false,
+          devices: [],
+          quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
+        };
       }
     };
 
@@ -3494,9 +4006,9 @@
       gsap.set(this.inner, {
         x: -100 * this.current + '%'
       });
+      var agora = AgoraService.getSingleton();
 
-      {
-        var agora = AgoraService.getSingleton();
+      if (agora) {
         agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
           switch (message.type) {
             case MessageType.SlideChange:
@@ -45829,7 +46341,7 @@
 
   var _context;
 
-  var AudioContext = {
+  var AudioContext$1 = {
 
   	getContext: function () {
 
@@ -45876,7 +46388,7 @@
   			// detaches the buffer when complete, preventing reuse.
   			var bufferCopy = buffer.slice( 0 );
 
-  			var context = AudioContext.getContext();
+  			var context = AudioContext$1.getContext();
   			context.decodeAudioData( bufferCopy, function ( audioBuffer ) {
 
   				onLoad( audioBuffer );
@@ -46163,7 +46675,7 @@
 
   	this.type = 'AudioListener';
 
-  	this.context = AudioContext.getContext();
+  	this.context = AudioContext$1.getContext();
 
   	this.gain = this.context.createGain();
   	this.gain.connect( this.context.destination );
@@ -57624,6 +58136,151 @@
     return Rect;
   }();
 
+  var W = 320;
+  var H = 240;
+  var COLORS = [0xffcc00, 0x00ffcc, 0x00ccff, 0xccff00, 0xcc00ff, 0xffffff];
+
+  var AvatarElement = /*#__PURE__*/function () {
+    _createClass(AvatarElement, null, [{
+      key: "headGeometry",
+      get: function get() {
+        if (!this.headGeometry_) {
+          this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 48, 48);
+        }
+
+        return this.headGeometry_;
+      }
+    }]);
+
+    function AvatarElement(message) {
+      var clientId = this.clientId = message.clientId;
+      var container = this.container = message.container;
+      var renderer = this.renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: false,
+        premultipliedAlpha: true // physicallyCorrectLights: true,
+
+      });
+      renderer.setClearColor(0x000000, 1);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(W, H);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 0.8;
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      container.appendChild(renderer.domElement);
+      var camera = this.camera = new THREE.PerspectiveCamera(70, W / H, 0.01, 1000);
+      camera.position.set(0, 0, -0.5);
+      camera.target = new THREE.Vector3();
+      camera.lookAt(camera.target);
+      var scene = this.scene = new THREE.Scene();
+      /*
+      const ambient = this.ambient = new THREE.AmbientLight(0x202020);
+      scene.add(ambient);
+      */
+
+      var light = this.light = new THREE.PointLight(0xffffff, 1, 100);
+      light.position.set(0, 2, -2);
+      scene.add(light);
+      var head = this.head = this.addHead();
+      scene.add(head);
+      var agora = this.agora = AgoraService.getSingleton();
+
+      if (agora) {
+        var remote = this.remote = agora.remoteById(clientId);
+        /*
+        if (remote) {
+        	console.log('remote', remote);
+        	this.subscription = AudioStreamService.volume$(remote.stream).pipe(
+        		auditTime(Math.floor(1000 / 15)),
+        		tap(meter => {
+        			this.chalk(meter.volume);
+        		})
+        	);
+        }
+        */
+      }
+    }
+
+    var _proto = AvatarElement.prototype;
+
+    _proto.addHead = function addHead() {
+      var geometry = AvatarElement.headGeometry;
+      var canvas = this.canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 512;
+      var ctx = this.ctx = this.canvas.getContext('2d');
+      var map = this.map = new THREE.CanvasTexture(canvas);
+      map.offset.x = -0.25;
+      var color = COLORS[this.clientId % COLORS.length];
+      var material = new THREE.MeshStandardMaterial({
+        map: map,
+        color: color
+      });
+      this.chalk(0);
+      return new THREE.Mesh(geometry, material);
+    };
+
+    _proto.render = function render() {
+      var tick = this.tick_ ? ++this.tick_ : this.tick_ = 1; // if (tick % 2 === 1) {
+
+      if (this.remote) {
+        var audioLevel = this.remote.getAudioLevel() * 12;
+        this.chalk(audioLevel);
+      }
+
+      var renderer = this.renderer,
+          scene = this.scene,
+          camera = this.camera;
+      renderer.render(scene, camera); // }
+    };
+
+    _proto.update = function update(message) {
+      var camera = message.camera;
+      var head = this.head;
+      head.quaternion.set(camera[3], camera[4], camera[5], camera[6]);
+      /*
+      head.position.set(camera[0], camera[1], camera[2]);
+      */
+    };
+
+    _proto.dispose = function dispose() {
+      if (this.subscription) {
+        this.subscription.unsubscribe();
+      }
+    };
+
+    _proto.chalk = function chalk(i) {
+      i = (i + Math.PI * 0.5) % (Math.PI * 2);
+      var vol = Math.sin(i) * 30;
+      var smile = Math.cos(i) * 10;
+      var x = 512;
+      var y = 256;
+      var ctx = this.ctx;
+      ctx.fillStyle = '#888888';
+      ctx.fillRect(0, 0, 1024, 512);
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(x - 40, y - 50, 7, 0, 2 * Math.PI);
+      ctx.arc(x + 40, y - 50, 7, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath(); // ctx.quadraticCurveTo(x - 30, y + 30, x - 30, y + 30);
+      // ctx.quadraticCurveTo(x - 30, y + 60, x, y + 60);
+      // ctx.quadraticCurveTo(x + 30, y + 60, x + 30, y + 30);
+      // ctx.quadraticCurveTo(x + 30, y, x, y);
+
+      ctx.moveTo(x - 40 - smile, y + 30);
+      ctx.bezierCurveTo(x - 40 - smile, y + 60, x + 40 + smile, y + 60, x + 40 + smile, y + 30);
+      ctx.bezierCurveTo(x + 40 + smile, y + vol, x - 40 - smile, y + vol, x - 40 - smile, y + 30); // ctx.arc(x, 256 + 50, 50, 0, 2 * Math.PI);
+
+      ctx.closePath();
+      ctx.fill();
+      this.map.needsUpdate = true;
+    };
+
+    return AvatarElement;
+  }();
+
   /* jshint esversion: 6 */
 
   /* global window, document */
@@ -57741,14 +58398,17 @@
     _inheritsLoose(InteractiveMesh, _EmittableMesh);
 
     InteractiveMesh.hittest = function hittest(raycaster, down) {
+      // !!! da rivedere per consentire eventi multipli (nav-items)
       var items = InteractiveMesh.items.filter(function (x) {
         return !x.freezed;
       });
       var intersections = raycaster.intersectObjects(items);
       var key, hit;
-      var hash = {};
+      var hash = {}; // let has = false;
+
       intersections.forEach(function (intersection, i) {
         var object = intersection.object; // console.log('InteractiveMesh.hittest', i, object.name);
+        // has = has || object.name.indexOf('nav') !== -1;
 
         key = object.uuid;
 
@@ -57763,10 +58423,11 @@
         }
 
         hash[key] = intersection;
-      });
+      }); // console.log(has);
+
       items.forEach(function (x) {
         x.intersection = hash[x.uuid];
-        x.over = x === InteractiveMesh.lastIntersectedObject;
+        x.over = x === InteractiveMesh.lastIntersectedObject || !x.depthTest && x.intersection;
         x.down = down && x.over;
       });
       return hit;
@@ -57786,6 +58447,7 @@
       var _this;
 
       _this = _EmittableMesh.call(this, geometry, material) || this;
+      _this.depthTest = true;
       _this.over_ = false;
       _this.down_ = false; // this.renderOrder = 10;
 
@@ -57862,14 +58524,14 @@
       this.longitude = 0;
       this.latitude = 0;
       this.direction = 1;
-      this.radius = 500;
+      this.radius = 101;
       this.position = new THREE.Vector3(); // this.speed = 1;
 
       this.inertia = new THREE.Vector2();
       this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
       this.target = new THREE.Vector3();
       this.camera = camera;
-      this.set(0, 0);
+      this.setLongitudeLatitude(0, 0);
       this.events$ = new rxjs.ReplaySubject(1);
     }
 
@@ -57877,7 +58539,7 @@
 
     _proto.setOrientation = function setOrientation(orientation) {
       if (orientation) {
-        this.set(orientation.longitude, orientation.latitude);
+        this.setLongitudeLatitude(orientation.longitude, orientation.latitude);
         this.update();
       }
     };
@@ -57889,10 +58551,11 @@
       };
     };
 
-    _proto.set = function set(longitude, latitude) {
+    _proto.setLongitudeLatitude = function setLongitudeLatitude(longitude, latitude) {
       latitude = Math.max(-80, Math.min(80, latitude));
-      this.longitude = longitude;
-      this.latitude = latitude;
+      this.longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+      this.latitude = latitude; // console.log(this.longitude);
+
       var phi = THREE.Math.degToRad(90 - latitude);
       var theta = THREE.Math.degToRad(longitude);
       this.phi = phi;
@@ -57907,7 +58570,7 @@
         longitude = _this.longitude;
         latitude = _this.latitude;
       }, function (event) {
-        var flip = _this.mode_ === OrbitMode.Panorama ? 1 : -1;
+        var flip = _this.mode_ === OrbitMode.Model ? -1 : 1;
         var direction = event.distance.x ? event.distance.x / Math.abs(event.distance.x) * -1 : 1;
         _this.direction = direction;
         var lon = longitude - event.distance.x * 0.1 * flip;
@@ -57915,7 +58578,7 @@
 
         _this.setInertia(lon, lat);
 
-        _this.set(lon, lat); // console.log('longitude', this.longitude, 'latitude', this.latitude, 'direction', this.direction);
+        _this.setLongitudeLatitude(lon, lat); // console.log('longitude', this.longitude, 'latitude', this.latitude, 'direction', this.direction);
 
       }, function (event) {// this.speed = Math.abs(event.strength.x) * 100;
         // console.log('speed', this.speed);
@@ -57947,7 +58610,7 @@
 
     _proto.update_ = function update_() {
       if (this.dragListener && !this.dragListener.dragging) {
-        this.set(this.longitude + this.inertia.x, this.latitude + this.inertia.y);
+        this.setLongitudeLatitude(this.longitude + this.inertia.x, this.latitude + this.inertia.y);
         this.updateInertia();
       }
     };
@@ -57963,9 +58626,9 @@
           latitude = _this2.latitude;
           longitude = _this2.longitude;
         } else if (event instanceof DragMoveEvent) {
-          var flip = _this2.mode_ === OrbitMode.Panorama ? 1 : -1;
+          var flip = _this2.mode_ === OrbitMode.Model ? -1 : 1;
 
-          _this2.set(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+          _this2.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
         }
       }), operators.filter(function (event) {
         return event instanceof DragMoveEvent;
@@ -58000,15 +58663,91 @@
           camera.target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
           camera.target.y = this.position.y + radius * Math.cos(phi);
           camera.target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
-      }
+      } // console.log('phi', phi, 'theta', theta);
+      // this.inverse();
+
 
       camera.lookAt(camera.target);
       this.events$.next(this);
     };
 
+    _proto.inverse = function inverse() {
+      var position, radius;
+
+      switch (this.mode_) {
+        case OrbitMode.Model:
+          radius = 3;
+          position = this.camera.position;
+          break;
+
+        default:
+          radius = this.radius;
+          position = this.camera.target;
+      }
+
+      radius = Math.sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
+      var phi = Math.acos(position.y / radius);
+      var theta = Math.atan2(position.z, position.x);
+      console.log('phi', phi, 'theta', theta);
+    };
+
     _proto.render = function render() {
       this.longitude += 0.025;
       this.update();
+    };
+
+    _proto.walk = function walk(position, callback) {
+      var _this3 = this;
+
+      var radius;
+
+      switch (this.mode_) {
+        case OrbitMode.Model:
+          radius = 3;
+          break;
+
+        default:
+          radius = this.radius;
+      }
+
+      var heading = new THREE.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
+      var headingTheta = Math.atan2(heading.y, heading.x);
+      var headingLongitude = THREE.MathUtils.radToDeg(headingTheta);
+      headingLongitude = (headingLongitude < 0 ? 360 + headingLongitude : headingLongitude) % 360;
+      var headingLatitude = 0;
+      var latitude = this.latitude;
+      var longitude = this.longitude;
+      var differenceLongitude = headingLongitude - longitude;
+      differenceLongitude = Math.abs(differenceLongitude) > 180 ? differenceLongitude - 360 * (differenceLongitude / Math.abs(differenceLongitude)) : differenceLongitude;
+      var differenceLatitude = headingLatitude - latitude;
+      differenceLatitude = Math.abs(differenceLatitude) > 90 ? differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude)) : differenceLatitude; // console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
+
+      var from = {
+        pow: 0
+      };
+      gsap.to(from, 0.7, {
+        pow: 1,
+        delay: 0,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          _this3.setLongitudeLatitude(longitude + differenceLongitude * from.pow, latitude + differenceLatitude * from.pow);
+
+          _this3.position.set(position.x * from.pow, 0, position.y * from.pow);
+
+          _this3.update();
+        },
+        onComplete: function onComplete() {
+          _this3.setLongitudeLatitude(headingLongitude, headingLatitude);
+
+          _this3.position.set(0, 0, 0);
+
+          _this3.update();
+
+          if (typeof callback === 'function') {
+            callback();
+          }
+        }
+      });
     };
 
     return OrbitService;
@@ -58584,6 +59323,11 @@
 
     EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
       var agora = AgoraService.getSingleton();
+
+      if (!agora) {
+        return;
+      }
+
       var publisherStreamId = agora.publisherStreamId;
 
       if (!publisherStreamId) {
@@ -58759,7 +59503,7 @@
   });
 
   var VERTEX_SHADER = "\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\t// gl_PointSize = 8.0;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-  var FRAGMENT_SHADER = "\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float pow;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * pow + rand(vUv) * 0.05, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * pow + rand(vUv) * 0.05, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
+  var FRAGMENT_SHADER = "\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float pow;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * pow + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * pow + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
 
   var Panorama = /*#__PURE__*/function () {
     function Panorama() {
@@ -58770,7 +59514,7 @@
     var _proto = Panorama.prototype;
 
     _proto.create = function create() {
-      var geometry = new THREE$1.SphereBufferGeometry(500, 60, 40);
+      var geometry = new THREE$1.SphereBufferGeometry(101, 60, 40);
       geometry.scale(-1, 1, 1);
       geometry.rotateY(Math.PI);
       var material = new THREE$1.ShaderMaterial({
@@ -58808,8 +59552,9 @@
     _proto.swap = function swap(item, renderer, callback) {
       var _this = this;
 
+      var material = this.mesh.material;
+
       if (this.pow > 0) {
-        var material = this.mesh.material;
         gsap.to(this, 0.5, {
           pow: 0,
           ease: Power2.easeInOut,
@@ -58818,27 +59563,62 @@
             material.needsUpdate = true;
           },
           onComplete: function onComplete() {
-            _this.load(item, renderer, callback);
+            _this.load(item, renderer, function (envMap, texture, rgbe) {
+              gsap.to(_this, 0.5, {
+                pow: 1,
+                ease: Power2.easeInOut,
+                onUpdate: function onUpdate() {
+                  material.uniforms.pow.value = _this.pow;
+                  material.needsUpdate = true;
+                }
+              });
+
+              if (typeof callback === 'function') {
+                callback(envMap, texture, rgbe);
+              }
+            });
           }
         });
       } else {
-        this.load(item, renderer, callback);
+        this.load(item, renderer, function (envMap, texture, rgbe) {
+          gsap.to(_this, 0.5, {
+            pow: 1,
+            ease: Power2.easeInOut,
+            onUpdate: function onUpdate() {
+              material.uniforms.pow.value = _this.pow;
+              material.needsUpdate = true;
+            }
+          });
+
+          if (typeof callback === 'function') {
+            callback(envMap, texture, rgbe);
+          }
+        });
       }
     };
 
+    _proto.crossfade = function crossfade(item, renderer, callback) {
+      var material = this.mesh.material;
+      this.load(item, renderer, function (envMap, texture, rgbe) {
+        material.uniforms.pow.value = 1;
+        material.needsUpdate = true;
+
+        if (typeof callback === 'function') {
+          callback(envMap, texture, rgbe);
+        }
+      });
+    };
+
     _proto.load = function load(item, renderer, callback) {
-      var _this2 = this;
-
-      if (this.mesh.material.uniforms.texture.value) {
-        var texture = this.mesh.material.uniforms.texture.value;
-        texture.dispose();
-        this.mesh.material.uniforms.texture.value = null;
-      }
-
+      var material = this.mesh.material;
       EnvMapLoader.load(item, renderer, function (envMap, texture, rgbe, video, pmremGenerator) {
+        if (material.uniforms.texture.value) {
+          material.uniforms.texture.value.dispose();
+          material.uniforms.texture.value = null;
+        }
+
         texture.magFilter = THREE$1.LinearFilter;
-        texture.needsUpdate = true;
-        var material = _this2.mesh.material; // material.map = texture;
+        texture.needsUpdate = true; // material.map = texture;
 
         material.uniforms.texture.value = texture;
         material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height);
@@ -58846,14 +59626,6 @@
         material.uniforms.rgbe.value = rgbe; // console.log(texture.width, texture.height);
 
         material.needsUpdate = true;
-        gsap.to(_this2, 0.5, {
-          pow: 1,
-          ease: Power2.easeInOut,
-          onUpdate: function onUpdate() {
-            material.uniforms.pow.value = _this2.pow;
-            material.needsUpdate = true;
-          }
-        });
 
         if (typeof callback === 'function') {
           callback(envMap, texture, rgbe);
@@ -58876,7 +59648,7 @@
     };
 
     _proto.setVideo = function setVideo(video) {
-      var _this3 = this;
+      var _this2 = this;
 
       // console.log('Panorama.setVideo', video);
       if (video) {
@@ -58887,7 +59659,7 @@
           texture.magFilter = THREE$1.LinearFilter;
           texture.format = THREE$1.RGBFormat;
           texture.needsUpdate = true;
-          var material = _this3.mesh.material;
+          var material = _this2.mesh.material;
           material.map = texture;
           material.uniforms.texture.value = texture;
           material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
@@ -58920,6 +59692,183 @@
     return Panorama;
   }();
 
+  var W$1 = 6;
+  var H$1 = 13.5;
+  var D = 0.5;
+  var R = 4 / 3;
+  var COLORS$1 = [0xffffff, 0xffcc00, 0x00ffcc, 0x00ccff, 0xccff00, 0xcc00ff];
+  var PhoneStreamElement = /*#__PURE__*/function () {
+    var _proto = PhoneStreamElement.prototype;
+
+    _proto.setRemote = function setRemote(remote, i, total) {
+      var _this = this;
+
+      this.remote = remote;
+      var s,
+          c,
+          r,
+          w,
+          h,
+          sx,
+          sy,
+          sz = 0.01 * D * 0.5 * 1.01;
+
+      if (total < 4) {
+        s = 1;
+        c = 0;
+        r = i;
+        w = 0.01 * W$1 * s;
+        h = w / R;
+        sx = 0;
+        sy = h / 2 - total * h / 2;
+        this.plane.position.set(sx, sy + h * i, sz);
+      } else {
+        s = 0.5;
+        c = i % 2;
+        r = Math.floor(i / 2);
+        w = 0.01 * W$1 * s;
+        h = w / R;
+        sx = -w / 2;
+        sy = h / 2 - Math.ceil(total / 2) * h / 2;
+        this.plane.position.set(sx + c * w, sy + r * h, sz);
+      }
+
+      this.plane.scale.set(s, s, s); // console.log(this.plane.position);
+
+      if (typeof remote === 'number') {
+        this.plane.material.color.set(COLORS$1[i % COLORS$1.length]);
+      } else {
+        if (remote.texture) {
+          this.plane.material.map = remote.texture;
+          this.plane.material.needsUpdate = true;
+        } else {
+          this.addStreamTexture(remote.getId(), function (texture) {
+            remote.texture = texture;
+            _this.plane.material.map = texture;
+            _this.plane.material.needsUpdate = true;
+          });
+        }
+      }
+    };
+
+    _proto.addStreamTexture = function addStreamTexture(streamId, callback) {
+      var target = "#stream-" + streamId;
+      var video = document.querySelector(target + " video");
+
+      if (!video) {
+        return;
+      }
+
+      var onPlaying = function onPlaying() {
+        var texture = new THREE.VideoTexture(video);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.format = THREE.RGBFormat;
+        texture.needsUpdate = true;
+
+        if (typeof callback === 'function') {
+          callback(texture);
+        }
+      };
+
+      video.crossOrigin = 'anonymous';
+
+      if (video.readyState >= video.HAVE_FUTURE_DATA) {
+        onPlaying();
+      } else {
+        video.oncanplay = function () {
+          onPlaying();
+        };
+      }
+    };
+
+    _createClass(PhoneStreamElement, null, [{
+      key: "geometry",
+      get: function get() {
+        var geometry = new THREE.PlaneBufferGeometry(0.01 * W$1, 0.01 * W$1 / R, 2, 2);
+        return geometry;
+      }
+    }]);
+
+    function PhoneStreamElement() {
+      var geometry = PhoneStreamElement.geometry;
+      var material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide
+      });
+      var plane = this.plane = new THREE.Mesh(geometry, material);
+    }
+
+    return PhoneStreamElement;
+  }();
+
+  var PhoneElement = /*#__PURE__*/function () {
+    _createClass(PhoneElement, [{
+      key: "remotes",
+      set: function set(remotes) {
+        var _this2 = this;
+
+        console.log('PhoneElement', remotes);
+        remotes.forEach(function (remote, i) {
+          var stream = _this2.streams[i];
+
+          if (!stream) {
+            stream = new PhoneStreamElement();
+          }
+
+          stream.setRemote(remote, i, remotes.length);
+
+          _this2.phone.add(stream.plane);
+
+          _this2.streams[i] = stream;
+        });
+
+        for (var i = remotes.length; i < this.streams.length; i++) {
+          this.phone.remove(this.streams[i].plane);
+        }
+
+        this.streams.length = remotes.length;
+      }
+    }]);
+
+    function PhoneElement() {
+      var _this3 = this;
+
+      var mesh = this.mesh = new THREE.Group();
+      var phone = this.phone = this.create();
+      mesh.add(phone);
+      var streams = this.streams = [];
+      var agora = this.agora = AgoraService.getSingleton();
+
+      if (agora) {
+        /*
+        pipe(
+        	takeUntil(this.unsubscribe$)
+        )
+        */
+        agora.remotes$.subscribe(function (remotes) {
+          _this3.remotes = remotes;
+        });
+      } else {
+        this.remotes = [1, 2, 3, 4];
+      }
+    }
+
+    var _proto2 = PhoneElement.prototype;
+
+    _proto2.create = function create() {
+      var geometry = new THREE.BoxBufferGeometry(0.01 * W$1, 0.01 * H$1, 0.01 * D, 2, 2, 1);
+      var material = new THREE.MeshStandardMaterial({
+        color: 0x202020
+      });
+      var phone = new THREE.Mesh(geometry, material);
+      phone.rotation.set(-Math.PI / 4, 0, 0);
+      return phone;
+    };
+
+    return PhoneElement;
+  }();
+
   var POINTER_RADIUS = 99;
   var ORIGIN = new THREE$1.Vector3();
 
@@ -58937,18 +59886,23 @@
       this.index = 0;
       this.error_ = null;
       this.banner = null;
+      this.avatars = {};
       this.createScene();
       this.setView();
       this.addListeners();
       this.animate(); // !!! no
-    };
-
-    _proto.onView = function onView() {
-      var scene = this.scene;
-      scene.traverse(function (object) {
-        console.log(object.name !== '' ? object.name : object.type);
-      });
-    } // onChanges() {}
+    }
+    /*
+    onView() {
+    	if (DEBUG) {
+    		const scene = this.scene;
+    		scene.traverse((object) => {
+    			console.log(object.name !== '' ? object.name : object.type);
+    		});
+    	}
+    }
+    */
+    // onChanges() {}
     ;
 
     _proto.onDestroy = function onDestroy() {
@@ -59007,7 +59961,6 @@
       var scene = this.scene = new THREE$1.Scene();
       var panorama = this.panorama = new Panorama();
       scene.add(panorama.mesh);
-      console.log(scene);
       var pointer = this.pointer = this.addPointer(); // const torus = this.torus = this.addTorus();
 
       var mainLight = new THREE$1.PointLight(0xffffff);
@@ -59044,20 +59997,48 @@
         controller2.remove(controller2.children[0]);
       });
       scene.add(controller2);
-      this.controllers = [this.controller1, this.controller2]; // The XRControllerModelFactory will automatically fetch controller models
+      this.controllers = [this.controller1, this.controller2];
+
+      {
+        var phone = this.phone = new PhoneElement();
+        controller2.add(phone.mesh);
+      } // The XRControllerModelFactory will automatically fetch controller models
       // that match what the user is holding as closely as possible. The models
       // should be attached to the object returned from getControllerGrip in
       // order to match the orientation of the held device.
+
 
       var controllerModelFactory = new XRControllerModelFactory();
       var controllerGrip1 = this.controllerGrip1 = renderer.xr.getControllerGrip(0);
       controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
       scene.add(controllerGrip1);
-      var controllerGrip2 = this.controllerGrip2 = renderer.xr.getControllerGrip(1);
-      controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-      scene.add(controllerGrip2); //
+
 
       this.resize();
+    };
+
+    _proto.addOffCanvasScene = function addOffCanvasScene(message) {
+      var avatar = new AvatarElement(message);
+      this.avatars[message.clientId] = avatar; // avatar.container.appendChild(avatar.element);
+    };
+
+    _proto.removeOffCanvasScene = function removeOffCanvasScene(message) {
+      var avatar = this.avatars[message.clientId];
+      /*
+      if (avatar && avatar.element.parentNode) {
+      	avatar.element.parentNode.removeChild(avatar.element);
+      }
+      */
+
+      delete this.avatars[message.clientId];
+    };
+
+    _proto.updateOffCanvasScene = function updateOffCanvasScene(message) {
+      var avatar = this.avatars[message.clientId];
+
+      if (avatar) {
+        avatar.update(message);
+      }
     };
 
     _proto.setView = function setView() {
@@ -59350,7 +60331,12 @@
     };
 
     _proto.render = function render(delta) {
+      var _this4 = this;
+
       try {
+        var renderer = this.renderer,
+            scene = this.scene,
+            camera = this.camera;
         var time = performance.now();
         var tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
         this.updateRaycaster();
@@ -59358,6 +60344,10 @@
           if (typeof child.userData.render === 'function') {
             child.userData.render(time, tick);
           }
+        });
+        this.vrService.updateState(this);
+        Object.keys(this.avatars).forEach(function (key) {
+          _this4.avatars[key].render();
         });
         /*
         const objects = this.objects;
@@ -59369,9 +60359,6 @@
         }
         */
 
-        var renderer = this.renderer,
-            scene = this.scene,
-            camera = this.camera;
         renderer.render(this.scene, this.camera);
 
         if (this.agora && !this.agora.state.hosted) {
@@ -59492,18 +60479,26 @@
     _proto.onMouseWheel = function onMouseWheel(event) {
       // !!! fov zoom
       try {
-        var camera = this.camera;
-        var fov = camera.fov + event.deltaY * 0.01;
-        camera.fov = THREE$1.Math.clamp(fov, 30, 75);
-        camera.updateProjectionMatrix();
-        this.onOrientationDidChange();
+        var agora = this.agora;
+
+        if (!agora || !agora.state.locked) {
+          var camera = this.camera;
+          var fov = camera.fov + event.deltaY * 0.01;
+          camera.fov = THREE$1.Math.clamp(fov, 30, 75);
+          camera.updateProjectionMatrix();
+          this.onOrientationDidChange();
+        }
       } catch (error) {
         this.error = error;
       }
     };
 
     _proto.onOrientationDidChange = function onOrientationDidChange() {
-
+      /*
+      if (DEBUG) {
+      	console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
+      }
+      */
       var agora = this.agora;
 
       if (agora && (agora.state.control || agora.state.spyed)) {
@@ -59516,8 +60511,75 @@
       }
     };
 
+    _proto.onVRStarted = function onVRStarted() {
+      this.scene.add(this.pointer);
+      var agora = this.agora;
+
+      if (agora) {
+        agora.sendMessage({
+          type: MessageType.VRStarted,
+          clientId: agora.state.uid
+        });
+      }
+
+      if (this.view_ instanceof ModelView) {
+        console.log(this.view_);
+      }
+    };
+
+    _proto.onVREnded = function onVREnded() {
+      this.scene.remove(this.pointer);
+      var agora = this.agora;
+
+      if (agora) {
+        agora.sendMessage({
+          type: MessageType.VREnded,
+          clientId: agora.state.uid
+        });
+      }
+    };
+
+    _proto.onVRStateDidChange = function onVRStateDidChange(state) {
+      /*
+      if (DEBUG) {
+      	console.log('WorldComponent.onVRStateDidChange', state.camera.array);
+      }
+      */
+      var agora = this.agora;
+
+      if (agora) {
+        agora.sendMessage({
+          type: MessageType.VRState,
+          clientId: agora.state.uid,
+          camera: state.camera.array
+        });
+      }
+    };
+
+    _proto.onGridMove = function onGridMove(event) {
+      var _this5 = this;
+
+      console.log('WorldComponent.onGridMove', event);
+      this.orbit.walk(event.position, function () {
+        var item = _this5.view.getTile(event.indices.x, event.indices.y);
+
+        if (item) {
+          _this5.panorama.crossfade(item, _this5.renderer, function (envMap, texture, rgbe) {
+            // this.scene.background = envMap;
+            _this5.scene.environment = envMap;
+
+            if (_this5.torus) {
+              _this5.torus.material.envMap = envMap;
+              _this5.torus.material.needsUpdate = true;
+            } // this.render();
+
+          });
+        }
+      });
+    };
+
     _proto.addListeners = function addListeners() {
-      var _this4 = this;
+      var _this6 = this;
 
       this.resize = this.resize.bind(this);
       this.render = this.render.bind(this);
@@ -59533,21 +60595,24 @@
       this.container.addEventListener('mouseup', this.onMouseUp, false);
       var vrService = this.vrService = VRService.getService();
       vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-        _this4.renderer.xr.setSession(session);
+        _this6.renderer.xr.setSession(session);
 
         if (session) {
-          _this4.scene.add(_this4.pointer);
+          _this6.onVRStarted();
         } else {
-          _this4.scene.remove(_this4.pointer);
+          _this6.onVREnded();
         }
+      });
+      vrService.state$.pipe(operators.takeUntil(this.unsubscribe$), operators.auditTime(Math.floor(1000 / 15))).subscribe(function (state) {
+        _this6.onVRStateDidChange(state);
       });
       this.orbit.observe$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
         // this.render();
-        _this4.onOrientationDidChange();
+        _this6.onOrientationDidChange();
       });
+      var agora = this.agora = AgoraService.getSingleton();
 
-      {
-        var agora = this.agora = AgoraService.getSingleton();
+      if (agora) {
         agora.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
           /*
           if (event instanceof AgoraRemoteEvent) {
@@ -59562,9 +60627,9 @@
             case MessageType.RequestInfo:
               if (message.clientId === agora.state.uid) {
                 message.type = MessageType.RequestInfoResult;
-                message.viewId = _this4.view.id;
-                message.orientation = _this4.orbit.getOrientation();
-                message.fov = _this4.camera.fov;
+                message.viewId = _this6.view.id;
+                message.orientation = _this6.orbit.getOrientation();
+                message.fov = _this6.camera.fov;
                 agora.sendMessage(message);
               }
 
@@ -59572,14 +60637,14 @@
 
             case MessageType.RequestInfoResult:
               if (agora.state.role === RoleType.Publisher) {
-                if (message.viewId === _this4.view.id) {
-                  _this4.orbit.setOrientation(message.orientation);
+                if (message.viewId === _this6.view.id) {
+                  _this6.orbit.setOrientation(message.orientation);
 
-                  _this4.camera.fov = message.fov;
+                  _this6.camera.fov = message.fov;
 
-                  _this4.camera.updateProjectionMatrix();
+                  _this6.camera.updateProjectionMatrix();
                 } else {
-                  _this4.infoResultMessage = message;
+                  _this6.infoResultMessage = message;
                 }
               }
 
@@ -59587,11 +60652,11 @@
 
             case MessageType.CameraOrientation:
               if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
-                _this4.orbit.setOrientation(message.orientation);
+                _this6.orbit.setOrientation(message.orientation);
 
-                _this4.camera.fov = message.fov;
+                _this6.camera.fov = message.fov;
 
-                _this4.camera.updateProjectionMatrix(); // this.render();
+                _this6.camera.updateProjectionMatrix(); // this.render();
 
               }
 
@@ -59599,16 +60664,37 @@
 
             case MessageType.CameraRotate:
               if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
-                var camera = _this4.camera;
+                var camera = _this6.camera;
                 camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
                 camera.lookAt(ORIGIN); // this.render();
+              }
+
+              break;
+
+            case MessageType.VRStarted:
+              if (agora.state.uid !== message.clientId) {
+                _this6.addOffCanvasScene(message);
+              }
+
+              break;
+
+            case MessageType.VREnded:
+              if (agora.state.uid !== message.clientId) {
+                _this6.removeOffCanvasScene(message);
+              }
+
+              break;
+
+            case MessageType.VRState:
+              if (agora.state.uid !== message.clientId) {
+                _this6.updateOffCanvasScene(message);
               }
 
               break;
           }
         });
         agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-          _this4.state = state; // console.log(state);
+          _this6.state = state; // console.log(state);
           // this.pushChanges();
         });
       }
@@ -59776,6 +60862,13 @@
     } // onView() { const context = getContext(this); }
     // onChanges() {}
     ;
+
+    _createClass(ModelComponent, [{
+      key: "renderOrder",
+      set: function set(renderOrder) {
+        this.group.renderOrder = renderOrder;
+      }
+    }]);
 
     return ModelComponent;
   }(rxcomp.Component);
@@ -59970,7 +61063,24 @@
         var center = box.getCenter(new THREE$1.Vector3());
         dummy.position.set(mesh.position.x - center.x, mesh.position.y - center.y, // center
         // mesh.position.y - center.y + size.y / 2 * scale - 0.5, // bottom
-        mesh.position.z - center.z); // stand
+        mesh.position.z - center.z);
+        var endY = dummy.position.y;
+        var from = {
+          pow: 1
+        };
+
+        var onUpdate = function onUpdate() {
+          dummy.position.y = endY + 3 * from.pow;
+          dummy.rotation.y = 0 + Math.PI * from.pow;
+        };
+
+        onUpdate();
+        gsap.to(from, 1.5, {
+          pow: 0,
+          delay: 0.1,
+          ease: Power2.easeInOut,
+          onUpdate: onUpdate
+        }); // stand
 
         /*
         this.createStand();
@@ -60052,10 +61162,13 @@
 
       var loader = new GLTFLoader().setPath(path);
       loader.load(file, function (gltf) {
-        gltf.scene.traverse(function (child) {
-          if (child.isMesh) ;
+        /*
+        gltf.scene.traverse((child) => {
+        	if (child.isMesh) {
+        		roughnessMipmapper.generateMipmaps(child.material);
+        	}
         });
-
+        */
         if (typeof callback === 'function') {
           callback(gltf.scene);
         }
@@ -60088,7 +61201,7 @@
   };
 
   var ORIGIN$2 = new THREE$1.Vector3();
-  var RADIUS = 500;
+  var RADIUS = 101;
   var COLS = 11;
   var ROWS = 11;
 
@@ -60104,7 +61217,7 @@
     };
 
     ModelGridComponent.getTexture = function getTexture() {
-      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav.png'));
+      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav-square.png'));
     };
 
     var _proto = ModelGridComponent.prototype;
@@ -60117,14 +61230,19 @@
       var dx = Math.floor(COLS / 2);
       var dy = Math.floor(ROWS / 2);
       var ci = Math.min(dx, Math.abs(col)) * (col ? Math.abs(col) / col : 1);
-      var ri = Math.min(dy, Math.abs(row)) * (row ? Math.abs(row) / row : 1); // console.log('col', col, 'row', row, 'ci', ci, 'ri', ri);
+      var ri = Math.min(dy, Math.abs(row)) * (row ? Math.abs(row) / row : 1);
 
-      return new THREE$1.Vector2(ci, ri);
+      if (this.view.hasTile(this.indices.x + ci, this.indices.y + ri)) {
+        // console.log('col', col, 'row', row, 'ci', ci, 'ri', ri);
+        return new THREE$1.Vector2(ci, ri);
+      }
     };
 
     _proto.onInit = function onInit() {
-      _ModelComponent.prototype.onInit.call(this); // console.log('ModelGridComponent.onInit', this.item);
+      _ModelComponent.prototype.onInit.call(this);
 
+      this.indices = new THREE$1.Vector2();
+      console.log('ModelGridComponent.onInit', this.view);
     };
 
     _proto.onView = function onView() {};
@@ -60146,7 +61264,7 @@
       var tiles = this.tiles = new Array(COLS * ROWS).fill(0).map(function (x, i) {
         var material = new THREE$1.MeshBasicMaterial({
           map: map,
-          depthTest: false,
+          // depthTest: false,
           transparent: true,
           opacity: 0 // side: THREE.DoubleSide,
 
@@ -60160,8 +61278,8 @@
         var ri = -dy + row; // console.log(ci, ri);
 
         tile.position.set(ci * outerTileSize, -RADIUS * 0.15, ri * outerTileSize);
-        tile.name = _this.getName("tile_" + ci + "_" + ri);
-        tile.renderOrder = 2;
+        tile.name = _this.getName("tile_" + ci + "_" + ri); // tile.renderOrder = 2;
+
         tileMap[ci + "_" + ri] = tile;
         mesh.add(tile);
       });
@@ -60183,8 +61301,8 @@
       });
       var mesh = this.mesh;
       var ground = this.ground = new InteractiveMesh(geometry, material);
-      ground.name = this.getName('ground');
-      ground.renderOrder = 1;
+      ground.name = this.getName('ground'); // ground.renderOrder = 1;
+
       ground.position.set(0, -RADIUS * 0.15, 0);
       ground.on('over', this.onGroundOver);
       ground.on('move', this.onGroundMove);
@@ -60209,6 +61327,18 @@
       var ground = this.ground;
       var coords = this.getCoords(ground.intersection.point);
       this.coords = coords;
+
+      if (coords) {
+        this.indices.x += coords.x;
+        this.indices.y += coords.y;
+        var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+
+        this.move.next({
+          indices: this.indices,
+          coords: coords,
+          position: coords.clone().multiplyScalar(outerTileSize)
+        });
+      }
     };
 
     _proto.onGroundOut = function onGroundOut() {
@@ -60226,8 +61356,8 @@
     };
 
     _proto.create = function create(callback) {
+      this.renderOrder = 9;
       var mesh = this.mesh = new THREE$1.Group();
-      mesh.renderOrder = 2;
       this.addTiles();
       this.addHitArea();
       /*
@@ -60292,7 +61422,8 @@
     hosts: {
       host: WorldComponent
     },
-    inputs: ['item']
+    outputs: ['move'],
+    inputs: ['view']
   };
 
   var NAV_RADIUS = 100;
@@ -60330,6 +61461,7 @@
       var _this = this,
           _THREE$Vector;
 
+      this.renderOrder = 10;
       var geometry = new THREE$1.PlaneBufferGeometry(2, 2, 2, 2);
       var map = ModelNavComponent.getTexture();
       map.encoding = THREE$1.sRGBEncoding;
@@ -60341,7 +61473,7 @@
         opacity: 0
       });
       var mesh = this.mesh = new InteractiveMesh(geometry, material);
-      mesh.renderOrder = 10;
+      mesh.depthTest = false;
       this.item.mesh = mesh;
       mesh.on('over', function () {
         var from = {
@@ -60375,7 +61507,7 @@
       });
       mesh.on('down', function () {
         _this.down.next(_this.item);
-      }); // this.renderOrder = 1;
+      });
 
       var position = (_THREE$Vector = new THREE$1.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(NAV_RADIUS);
 
@@ -60411,7 +61543,7 @@
     inputs: ['item']
   };
 
-  var PANEL_RADIUS$1 = 102;
+  var PANEL_RADIUS$1 = 99;
   var ORIGIN$4 = new THREE$1.Vector3();
 
   var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
@@ -60441,7 +61573,7 @@
         var height = PANEL_RADIUS$1 / 8 / aspect;
         var geometry = new THREE$1.PlaneBufferGeometry(width, height, 3, 3);
         var material = new THREE$1.MeshBasicMaterial({
-          depthTest: false,
+          // depthTest: false,
           map: texture.map,
           transparent: true,
           opacity: 0 // side: THREE.DoubleSide,
@@ -60451,7 +61583,6 @@
         var position = _this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS$1);
 
         var panel = _this.panel = new THREE$1.Mesh(geometry, material);
-        panel.renderOrder = 9;
         panel.position.set(position.x, position.y, position.z);
         panel.lookAt(ORIGIN$4);
 
@@ -60475,6 +61606,7 @@
     };
 
     _proto.create = function create(callback) {
+      this.renderOrder = 11;
       var mesh = new THREE$1.Group();
 
       if (typeof callback === 'function') {

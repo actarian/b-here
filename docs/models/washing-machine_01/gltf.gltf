@@ -1,0 +1,210 @@
+{
+    "asset": {
+        "copyright": "2019 (c) Adobe Inc.",
+        "generator": "Adobe Dimension - 0897bb3786688dd8ac0e16e7ca439aa83b5dca11",
+        "version": "2.0"
+    },
+    "accessors": [
+        {
+            "bufferView": 0,
+            "componentType": 5126,
+            "count": 17216,
+            "type": "VEC3",
+            "max": [
+                0.3000001013278961,
+                0.8501074910163879,
+                0.3063235580921173
+            ],
+            "min": [
+                -0.3000001013278961,
+                0.0,
+                -0.3063235580921173
+            ]
+        },
+        {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 17216,
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 17216,
+            "type": "VEC2"
+        },
+        {
+            "bufferView": 3,
+            "componentType": 5125,
+            "count": 25590,
+            "type": "SCALAR",
+            "max": [
+                17215.0
+            ],
+            "min": [
+                0.0
+            ]
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 206592,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 206592,
+            "byteLength": 206592,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 413184,
+            "byteLength": 137728,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 550912,
+            "byteLength": 102360,
+            "target": 34963
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 653272,
+            "uri": "gltf_binary.bin"
+        }
+    ],
+    "cameras": [
+        {
+            "perspective": {
+                "znear": 0.000024149696400854738,
+                "yfov": 0.6024156808853149,
+                "zfar": 2.0,
+                "aspectRatio": 1.3333333730697632
+            },
+            "type": "perspective",
+            "name": "render_camera"
+        }
+    ],
+    "images": [
+        {
+            "name": "texture34076",
+            "uri": "gltf_images\\texture34076.jpg",
+            "mimeType": "image/jpeg"
+        },
+        {
+            "name": "image_image",
+            "uri": "gltf_images\\image_image.png",
+            "mimeType": "image/png"
+        },
+        {
+            "name": "modern_washing_machine_Mat_normal",
+            "uri": "gltf_images\\modern_washing_machine_Mat_normal.png",
+            "mimeType": "image/png"
+        }
+    ],
+    "materials": [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicRoughnessTexture": {
+                    "index": 1
+                }
+            },
+            "normalTexture": {
+                "index": 2
+            },
+            "name": "modern_washing_machine_Mat"
+        }
+    ],
+    "meshes": [
+        {
+            "name": "modern_washing_machine",
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    },
+                    "indices": 3,
+                    "material": 0
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "translation": [
+                -1.1873844861984254,
+                1.4390045404434205,
+                1.9227899312973023
+            ],
+            "rotation": [
+                -0.23591755330562592,
+                -0.26059943437576296,
+                -0.06583418697118759,
+                0.9338611960411072
+            ],
+            "camera": 0,
+            "name": "render_camera_n3d"
+        },
+        {
+            "mesh": 0,
+            "name": "modern_washing_machine"
+        }
+    ],
+    "samplers": [
+        {},
+        {},
+        {}
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0,
+                1
+            ],
+            "name": "scene"
+        }
+    ],
+    "textures": [
+        {
+            "name": "texture34076",
+            "sampler": 0,
+            "source": 0
+        },
+        {
+            "name": "image_image",
+            "sampler": 1,
+            "source": 1
+        },
+        {
+            "name": "modern_washing_machine_Mat::normal::image",
+            "sampler": 2,
+            "source": 2
+        }
+    ],
+    "scene": 0,
+    "extensions": {
+        "KHR_xmp": {
+            "packets": [
+                {
+                    "dc:date": "2020-06-11T11:02:36.133+02:00",
+                    "dc:format": "model/gltf+json",
+                    "dc:title": "washingmachine.dn",
+                    "xmp:CreatorTool": "AdobeDCXTest"
+                }
+            ]
+        }
+    },
+    "extensionsUsed": [
+        "KHR_xmp"
+    ]
+}

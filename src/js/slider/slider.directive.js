@@ -1,7 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil, tap } from 'rxjs/operators';
 import AgoraService, { MessageType } from '../agora/agora.service';
-import { DEBUG } from '../const';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
 
 export default class SliderDirective extends Component {
@@ -26,8 +25,8 @@ export default class SliderDirective extends Component {
 		gsap.set(this.inner, {
 			x: -100 * this.current + '%',
 		});
-		if (!DEBUG) {
-			const agora = AgoraService.getSingleton();
+		const agora = AgoraService.getSingleton();
+		if (agora) {
 			agora.message$.pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(message => {
