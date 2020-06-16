@@ -121,6 +121,7 @@ export const MessageType = {
 	CameraRotate: 'cameraRotate',
 	CameraOrientation: 'cameraOrientation',
 	NavToView: 'navToView',
+	NavToGrid: 'navToGrid',
 	VRStarted: 'vrStarted',
 	VREnded: 'vrEnded',
 	VRState: 'vrState',

@@ -9,7 +9,7 @@ import { BASE_HREF, DEBUG } from '../const';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
-import { ModelView } from '../view/view.service';
+import { ModelView, PanoramaGridView } from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
 import InteractiveMesh from './interactive/interactive.mesh';
 import OrbitService from './orbit/orbit';
@@ -220,7 +220,6 @@ export default class WorldComponent extends Component {
 					this.orbit.setOrientation(this.infoResultMessage.orientation);
 					this.camera.fov = this.infoResultMessage.fov;
 					this.camera.updateProjectionMatrix();
-					this.infoResultMessage = null;
 				} else {
 					this.orbit.setOrientation(view.orientation);
 					this.camera.fov = view.fov;
@@ -228,6 +227,11 @@ export default class WorldComponent extends Component {
 				}
 			}
 			if (this.panorama) {
+				if (this.infoResultMessage) {
+					if (view instanceof PanoramaGridView && message.gridIndex) {
+						view.index_ = message.gridIndex;
+					}
+				}
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
@@ -238,6 +242,7 @@ export default class WorldComponent extends Component {
 					// this.render();
 				});
 			}
+			this.infoResultMessage = null;
 		}
 		this.banner = (view && view.type === 'waiting-room') ? {
 			title: 'waiting host'
@@ -704,6 +709,19 @@ export default class WorldComponent extends Component {
 		});
 	}
 
+	onGridNav(event) {
+		console.log('WorldComponent.onGridNav', event);
+		const agora = this.agora;
+		if (agora && (agora.state.control || agora.state.spyed)) {
+			agora.sendMessage({
+				type: MessageType.NavToGrid,
+				clientId: this.agora.state.uid,
+				viewId: this.view.id,
+				gridIndex: event,
+			});
+		}
+	}
+
 	addListeners() {
 		this.resize = this.resize.bind(this);
 		this.render = this.render.bind(this);
@@ -765,8 +783,22 @@ export default class WorldComponent extends Component {
 							message.viewId = this.view.id;
 							message.orientation = this.orbit.getOrientation();
 							message.fov = this.camera.fov;
+							if (this.view instanceof PanoramaGridView) {
+								message.gridIndex = this.view.index;
+							}
 							agora.sendMessage(message);
 						}
+						break;
+					case MessageType.RequestControlAccepted:
+						message = {
+							type: MessageType.NavToView,
+							clientId: agora.state.uid,
+							viewId: this.view.id,
+						};
+						if (this.view instanceof PanoramaGridView) {
+							message.gridIndex = this.view.index;
+						}
+						agora.sendMessage(message);
 						break;
 					case MessageType.RequestInfoResult:
 						if (agora.state.role === RoleType.Publisher) {
@@ -774,6 +806,9 @@ export default class WorldComponent extends Component {
 								this.orbit.setOrientation(message.orientation);
 								this.camera.fov = message.fov;
 								this.camera.updateProjectionMatrix();
+								if (this.view instanceof PanoramaGridView && message.gridIndex) {
+									this.view.index = message.gridIndex;
+								}
 							} else {
 								this.infoResultMessage = message;
 							}
@@ -793,6 +828,13 @@ export default class WorldComponent extends Component {
 							camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
 							camera.lookAt(ORIGIN);
 							// this.render();
+						}
+						break;
+					case MessageType.NavToGrid:
+						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
+							if (this.view.id === message.viewId) {
+								this.view.index = message.gridIndex;
+							}
 						}
 						break;
 					case MessageType.VRStarted:

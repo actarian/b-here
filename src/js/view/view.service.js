@@ -1,3 +1,4 @@
+import { Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import HttpService from "../http/http.service";
 
@@ -26,6 +27,17 @@ export class PanoramaView extends View {
 
 export class PanoramaGridView extends View {
 
+	set index(index) {
+		if (this.index_ !== index) {
+			this.index_ = index;
+			this.index$.next(index);
+		}
+	}
+
+	get index() {
+		return this.index_;
+	}
+
 	constructor(options) {
 		if (options.items) {
 			options.items = options.items.map((mapFile, i) => {
@@ -50,6 +62,8 @@ export class PanoramaGridView extends View {
 			});
 		}
 		super(options);
+		this.index_ = 0;
+		this.index$ = new Subject();
 	}
 
 	getTileIndex(x, y) {
@@ -67,7 +81,11 @@ export class PanoramaGridView extends View {
 	}
 
 	getTile(x, y) {
-		return this.items[this.getTileIndex(x, y)];
+		const index = this.getTileIndex(x, y);
+		if (index !== -1) {
+			this.index = index;
+			return this.items[index];
+		}
 	}
 
 }

@@ -3871,6 +3871,9 @@ body {
       top: 0;
       left: 0;
       object-fit: cover; }
+      .agora-stream__player > .player__vr canvas {
+        width: 100% !important;
+        height: 100% !important; }
   .agora-stream__info {
     position: absolute;
     top: 0;

@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import { environment } from '../../../environment/environment';
 import { BASE_HREF } from '../../const';
@@ -75,6 +76,11 @@ export default class ModelGridComponent extends ModelComponent {
 		super.onInit();
 		this.indices = new THREE.Vector2();
 		console.log('ModelGridComponent.onInit', this.view);
+		this.view.index$.pipe(
+			takeUntil(this.unsubscribe$),
+		).subscribe(index => {
+			this.moveToIndex(index);
+		});
 	}
 
 	onView() {
@@ -161,6 +167,10 @@ export default class ModelGridComponent extends ModelComponent {
 		const coords = this.getCoords(ground.intersection.point);
 		this.coords = coords;
 		if (coords) {
+			const index = this.view.getTileIndex(this.indices.x + coords.x, this.indices.y + coords.y);
+			this.view.index = index;
+			this.nav.next(index);
+			/*
 			this.indices.x += coords.x;
 			this.indices.y += coords.y;
 			const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
@@ -169,11 +179,26 @@ export default class ModelGridComponent extends ModelComponent {
 				coords,
 				position: coords.clone().multiplyScalar(outerTileSize)
 			});
+			*/
 		}
 	}
 
 	onGroundOut() {
 		this.coords = null;
+	}
+
+	moveToIndex(index) {
+		this.coords = null;
+		const item = this.view.items[index];
+		const coords = new THREE.Vector2(item.indices.x - this.indices.x, item.indices.y - this.indices.y);
+		this.indices.x = item.indices.x;
+		this.indices.y = item.indices.y;
+		const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+		this.move.next({
+			indices: this.indices,
+			coords,
+			position: coords.clone().multiplyScalar(outerTileSize)
+		});
 	}
 
 	onDestroy() {
@@ -209,6 +234,6 @@ ModelGridComponent.ORIGIN = new THREE.Vector3();
 ModelGridComponent.meta = {
 	selector: '[model-grid]',
 	hosts: { host: WorldComponent },
-	outputs: ['move'],
+	outputs: ['move', 'nav'],
 	inputs: ['view'],
 };

@@ -15,7 +15,7 @@ export class PhoneStreamElement {
 
 	setRemote(remote, i, total) {
 		this.remote = remote;
-		let s, c, r, w, h, sx, sy, sz = 0.01 * D * 0.5 * 1.01;
+		let s, c, r, w, h, sx, sy, sz = 0.01 * D * 0.5 * 1.05;
 		if (total < 4) {
 			s = 1;
 			c = 0;

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { PanoramaGridView } from '../../view/view.service';
 import { EnvMapLoader } from '../envmap/envmap.loader';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import { VideoTexture } from '../video-texture';
@@ -98,7 +99,8 @@ export default class Panorama {
 		mesh.renderOrder = 0;
 	}
 
-	swap(item, renderer, callback) {
+	swap(view, renderer, callback) {
+		const item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
 		const material = this.mesh.material;
 		if (this.pow > 0) {
 			gsap.to(this, 0.5, {

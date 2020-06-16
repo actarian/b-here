@@ -6,7 +6,7 @@ import { environment } from '../../environment/environment';
 import { BASE_HREF, DEBUG } from '../const';
 import LocationService from '../location/location.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
-import ViewService from '../view/view.service';
+import ViewService, { PanoramaGridView } from '../view/view.service';
 import VRService from '../world/vr.service';
 import AgoraService, { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.service';
 
@@ -79,13 +79,6 @@ export default class AgoraComponent extends Component {
 						// !!! control request permission not required
 						// this.onRemoteControlRequest(message);
 						break;
-					case MessageType.RequestControlAccepted:
-						agora.sendMessage({
-							type: MessageType.NavToView,
-							clientId: agora.state.uid,
-							viewId: this.view.id,
-						});
-						break;
 					case MessageType.RequestInfo:
 						if (message.clientId === agora.state.uid) {
 							agora.patchState({ spyed: true });
@@ -101,6 +94,12 @@ export default class AgoraComponent extends Component {
 						if ((agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) && message.viewId) {
 							if (this.controls.view.value !== message.viewId) {
 								this.controls.view.value = message.viewId;
+								if (message.gridIndex !== undefined) {
+									const view = this.data.views.find(x => x.id === message.viewId);
+									if (view instanceof PanoramaGridView) {
+										view.index = message.gridIndex;
+									}
+								}
 								// console.log('AgoraComponent.NavToView', message.viewId);
 							}
 						}

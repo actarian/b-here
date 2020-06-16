@@ -808,6 +808,7 @@
     CameraRotate: 'cameraRotate',
     CameraOrientation: 'cameraOrientation',
     NavToView: 'navToView',
+    NavToGrid: 'navToGrid',
     VRStarted: 'vrStarted',
     VREnded: 'vrEnded',
     VRState: 'vrState'
@@ -2556,7 +2557,22 @@
   var PanoramaGridView = /*#__PURE__*/function (_View2) {
     _inheritsLoose(PanoramaGridView, _View2);
 
+    _createClass(PanoramaGridView, [{
+      key: "index",
+      set: function set(index) {
+        if (this.index_ !== index) {
+          this.index_ = index;
+          this.index$.next(index);
+        }
+      },
+      get: function get() {
+        return this.index_;
+      }
+    }]);
+
     function PanoramaGridView(options) {
+      var _this;
+
       if (options.items) {
         options.items = options.items.map(function (mapFile, i) {
           var indices = new THREE.Vector2();
@@ -2582,7 +2598,10 @@
         });
       }
 
-      return _View2.call(this, options) || this;
+      _this = _View2.call(this, options) || this;
+      _this.index_ = 0;
+      _this.index$ = new rxjs.Subject();
+      return _this;
     }
 
     var _proto = PanoramaGridView.prototype;
@@ -2602,7 +2621,12 @@
     };
 
     _proto.getTile = function getTile(x, y) {
-      return this.items[this.getTileIndex(x, y)];
+      var index = this.getTileIndex(x, y);
+
+      if (index !== -1) {
+        this.index = index;
+        return this.items[index];
+      }
     };
 
     return PanoramaGridView;
@@ -2900,14 +2924,6 @@
 
               break;
 
-            case MessageType.RequestControlAccepted:
-              agora.sendMessage({
-                type: MessageType.NavToView,
-                clientId: agora.state.uid,
-                viewId: _this2.view.id
-              });
-              break;
-
             case MessageType.RequestInfo:
               if (message.clientId === agora.state.uid) {
                 agora.patchState({
@@ -2927,7 +2943,18 @@
             case MessageType.NavToView:
               if ((agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) && message.viewId) {
                 if (_this2.controls.view.value !== message.viewId) {
-                  _this2.controls.view.value = message.viewId; // console.log('AgoraComponent.NavToView', message.viewId);
+                  _this2.controls.view.value = message.viewId;
+
+                  if (message.gridIndex !== undefined) {
+                    var view = _this2.data.views.find(function (x) {
+                      return x.id === message.viewId;
+                    });
+
+                    if (view instanceof PanoramaGridView) {
+                      view.index = message.gridIndex;
+                    }
+                  } // console.log('AgoraComponent.NavToView', message.viewId);
+
                 }
               }
 
@@ -59550,9 +59577,10 @@
       mesh.renderOrder = 0;
     };
 
-    _proto.swap = function swap(item, renderer, callback) {
+    _proto.swap = function swap(view, renderer, callback) {
       var _this = this;
 
+      var item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
       var material = this.mesh.material;
 
       if (this.pow > 0) {
@@ -59712,7 +59740,7 @@
           h,
           sx,
           sy,
-          sz = 0.01 * D * 0.5 * 1.01;
+          sz = 0.01 * D * 0.5 * 1.05;
 
       if (total < 4) {
         s = 1;
@@ -60055,7 +60083,6 @@
             this.orbit.setOrientation(this.infoResultMessage.orientation);
             this.camera.fov = this.infoResultMessage.fov;
             this.camera.updateProjectionMatrix();
-            this.infoResultMessage = null;
           } else {
             this.orbit.setOrientation(view.orientation);
             this.camera.fov = view.fov;
@@ -60064,6 +60091,12 @@
         }
 
         if (this.panorama) {
+          if (this.infoResultMessage) {
+            if (view instanceof PanoramaGridView && message.gridIndex) {
+              view.index_ = message.gridIndex;
+            }
+          }
+
           this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
             // this.scene.background = envMap;
             _this2.scene.environment = envMap;
@@ -60075,6 +60108,8 @@
 
           });
         }
+
+        this.infoResultMessage = null;
       }
 
       this.banner = view && view.type === 'waiting-room' ? {
@@ -60581,6 +60616,20 @@
       });
     };
 
+    _proto.onGridNav = function onGridNav(event) {
+      console.log('WorldComponent.onGridNav', event);
+      var agora = this.agora;
+
+      if (agora && (agora.state.control || agora.state.spyed)) {
+        agora.sendMessage({
+          type: MessageType.NavToGrid,
+          clientId: this.agora.state.uid,
+          viewId: this.view.id,
+          gridIndex: event
+        });
+      }
+    };
+
     _proto.addListeners = function addListeners() {
       var _this6 = this;
 
@@ -60633,9 +60682,28 @@
                 message.viewId = _this6.view.id;
                 message.orientation = _this6.orbit.getOrientation();
                 message.fov = _this6.camera.fov;
+
+                if (_this6.view instanceof PanoramaGridView) {
+                  message.gridIndex = _this6.view.index;
+                }
+
                 agora.sendMessage(message);
               }
 
+              break;
+
+            case MessageType.RequestControlAccepted:
+              message = {
+                type: MessageType.NavToView,
+                clientId: agora.state.uid,
+                viewId: _this6.view.id
+              };
+
+              if (_this6.view instanceof PanoramaGridView) {
+                message.gridIndex = _this6.view.index;
+              }
+
+              agora.sendMessage(message);
               break;
 
             case MessageType.RequestInfoResult:
@@ -60646,6 +60714,10 @@
                   _this6.camera.fov = message.fov;
 
                   _this6.camera.updateProjectionMatrix();
+
+                  if (_this6.view instanceof PanoramaGridView && message.gridIndex) {
+                    _this6.view.index = message.gridIndex;
+                  }
                 } else {
                   _this6.infoResultMessage = message;
                 }
@@ -60670,6 +60742,15 @@
                 var camera = _this6.camera;
                 camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
                 camera.lookAt(ORIGIN); // this.render();
+              }
+
+              break;
+
+            case MessageType.NavToGrid:
+              if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
+                if (_this6.view.id === message.viewId) {
+                  _this6.view.index = message.gridIndex;
+                }
               }
 
               break;
@@ -61242,16 +61323,21 @@
     };
 
     _proto.onInit = function onInit() {
+      var _this = this;
+
       _ModelComponent.prototype.onInit.call(this);
 
       this.indices = new THREE$1.Vector2();
       console.log('ModelGridComponent.onInit', this.view);
+      this.view.index$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (index) {
+        _this.moveToIndex(index);
+      });
     };
 
     _proto.onView = function onView() {};
 
     _proto.addTiles = function addTiles() {
-      var _this = this;
+      var _this2 = this;
 
       // console.log('addTiles');
       var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
@@ -61281,7 +61367,7 @@
         var ri = -dy + row; // console.log(ci, ri);
 
         tile.position.set(ci * outerTileSize, -RADIUS * 0.15, ri * outerTileSize);
-        tile.name = _this.getName("tile_" + ci + "_" + ri); // tile.renderOrder = 2;
+        tile.name = _this2.getName("tile_" + ci + "_" + ri); // tile.renderOrder = 2;
 
         tileMap[ci + "_" + ri] = tile;
         mesh.add(tile);
@@ -61332,20 +61418,39 @@
       this.coords = coords;
 
       if (coords) {
+        var index = this.view.getTileIndex(this.indices.x + coords.x, this.indices.y + coords.y);
+        this.view.index = index;
+        this.nav.next(index);
+        /*
         this.indices.x += coords.x;
         this.indices.y += coords.y;
-        var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
-
+        const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
         this.move.next({
-          indices: this.indices,
-          coords: coords,
-          position: coords.clone().multiplyScalar(outerTileSize)
+        	indices: this.indices,
+        	coords,
+        	position: coords.clone().multiplyScalar(outerTileSize)
         });
+        */
       }
     };
 
     _proto.onGroundOut = function onGroundOut() {
       this.coords = null;
+    };
+
+    _proto.moveToIndex = function moveToIndex(index) {
+      this.coords = null;
+      var item = this.view.items[index];
+      var coords = new THREE$1.Vector2(item.indices.x - this.indices.x, item.indices.y - this.indices.y);
+      this.indices.x = item.indices.x;
+      this.indices.y = item.indices.y;
+      var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+
+      this.move.next({
+        indices: this.indices,
+        coords: coords,
+        position: coords.clone().multiplyScalar(outerTileSize)
+      });
     };
 
     _proto.onDestroy = function onDestroy() {
@@ -61425,7 +61530,7 @@
     hosts: {
       host: WorldComponent
     },
-    outputs: ['move'],
+    outputs: ['move', 'nav'],
     inputs: ['view']
   };
 
