@@ -479,7 +479,7 @@
   };
 
   var BASE_HREF = document.querySelector('base').getAttribute('href');
-  var DEBUG = false;
+  var DEBUG = true;
 
   var Emittable = /*#__PURE__*/function () {
     function Emittable() {
@@ -888,13 +888,9 @@
     _inheritsLoose(AgoraService, _Emittable);
 
     AgoraService.getSingleton = function getSingleton(defaultDevices) {
-
-      if (!this.AGORA) {
-        this.AGORA = new AgoraService(defaultDevices);
-      } // console.log('AgoraService', this.AGORA.state);
-
-
-      return this.AGORA;
+      {
+        return;
+      }
     };
 
     _createClass(AgoraService, [{
@@ -3122,10 +3118,6 @@
         setTimeout(function () {
           if (_this3.state.hosted) {
             _this3.view = view; // !!!
-
-            {
-              _this3.agora.navToView(view.id);
-            }
           } else {
             // !!! waiting room
             _this3.view = _this3.getWaitingRoom();
@@ -3189,18 +3181,14 @@
 
     _proto.disconnect = function disconnect() {
       {
-        this.agora.leaveChannel();
+        this.patchState({
+          connecting: false,
+          connected: false
+        });
       }
     };
 
     _proto.onSlideChange = function onSlideChange(index) {
-      {
-        this.agora.sendMessage({
-          type: MessageType.SlideChange,
-          clientId: this.agora.state.uid,
-          index: index
-        });
-      }
     };
 
     _proto.onNavTo = function onNavTo(viewId) {
@@ -3218,16 +3206,16 @@
       }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
         {
           if (event instanceof ModalResolveEvent) {
-            message.type = MessageType.RequestControlAccepted;
-            _this4.state.locked = true;
+            _this4.patchState({
+              control: true,
+              spying: false
+            });
           } else {
-            message.type = MessageType.RequestControlRejected;
-            _this4.state.locked = false;
+            _this4.patchState({
+              control: false,
+              spying: false
+            });
           }
-
-          _this4.agora.sendMessage(message);
-
-          _this4.pushChanges();
         }
       });
     } // onView() { const context = getContext(this); }
@@ -3242,25 +3230,36 @@
 
     _proto.toggleCamera = function toggleCamera() {
       {
-        this.agora.toggleCamera();
+        this.patchState({
+          cameraMuted: !this.state.cameraMuted
+        });
       }
     };
 
     _proto.toggleAudio = function toggleAudio() {
       {
-        this.agora.toggleAudio();
+        this.patchState({
+          audioMuted: !this.state.audioMuted
+        });
       }
     };
 
     _proto.onToggleControl = function onToggleControl() {
-      {
-        this.agora.toggleControl();
+      if (this.state.control) {
+        this.patchState({
+          control: false
+        });
+      } else {
+        this.onRemoteControlRequest({});
       }
     };
 
     _proto.onToggleSpy = function onToggleSpy(clientId) {
       {
-        this.agora.toggleSpy(clientId);
+        this.patchState({
+          spying: !this.state.spying,
+          control: false
+        });
       }
     };
 

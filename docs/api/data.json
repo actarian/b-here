@@ -16,6 +16,67 @@
       "fov": 75
     },
     {
+      "id": 17,
+      "type": "panorama",
+      "name": "Cinema",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "cinema/",
+      "envMapFile": "cinema.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "plane",
+          "folder": "room-3d/",
+          "file": "plane-01.mp4",
+          "position": {
+            "x": 20,
+            "y": 1.7,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 22,
+            "y": 12,
+            "z": 0
+          }
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.8002543789009917,
+            -0.19439701223042613,
+            -0.5672765909903842
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.8012228950677142,
+            -0.19355223904603844,
+            0.5661973182377114
+          ],
+          "navTo": 8
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
       "id": 1,
       "type": "panorama",
       "name": "Kitchen 01",
@@ -712,67 +773,6 @@
         "longitude": 124.30000000000001
       },
       "fov": 51
-    },
-    {
-      "id": 17,
-      "type": "panorama",
-      "name": "Cinema",
-      "likes": 40,
-      "liked": false,
-      "envMapFolder": "cinema/",
-      "envMapFile": "cinema.jpg",
-      "items": [
-        {
-          "id": 1,
-          "type": "plane",
-          "folder": "room-3d/",
-          "file": "plane-01.mp4",
-          "position": {
-            "x": 20,
-            "y": 1.7,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": -1.57079632679,
-            "z": 0
-          },
-          "scale": {
-            "x": 22,
-            "y": 12,
-            "z": 0
-          }
-        },
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Kitchen 01",
-          "abstract": "Abstract",
-          "position": [
-            0.8002543789009917,
-            -0.19439701223042613,
-            -0.5672765909903842
-          ],
-          "navTo": 1
-        },
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Time Square",
-          "abstract": "Abstract",
-          "position": [
-            0.8012228950677142,
-            -0.19355223904603844,
-            0.5661973182377114
-          ],
-          "navTo": 8
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "fov": 75
     }
   ]
 }
