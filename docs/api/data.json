@@ -83,8 +83,8 @@
       "likes": 40,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-1.jpg",
@@ -151,8 +151,8 @@
       "likes": 190,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-2.jpg",
@@ -219,8 +219,8 @@
       "likes": 165,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-3.jpg",
@@ -287,8 +287,8 @@
       "likes": 143,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-4.jpg",
@@ -355,8 +355,8 @@
       "likes": 156,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "panorama/",
       "envMapFile": "panorama-01.jpg",
@@ -387,8 +387,8 @@
       "likes": 134,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "panorama/",
       "envMapFile": "panorama-02.jpg",
@@ -419,8 +419,8 @@
       "likes": 175,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "equirectangular/",
       "envMapFile": "old_depot_2k.hdr",
@@ -451,8 +451,8 @@
       "likes": 175,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "video/",
       "envMapFile": "TimeSquare.mp4",
@@ -460,44 +460,12 @@
         {
           "id": 81,
           "type": "nav",
-          "title": "Garden",
+          "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
             -0.15644789925908917,
             -0.0013182015249417318,
             0.9876853330702838
-          ],
-          "navTo": 9
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 9,
-      "type": "panorama",
-      "name": "Garden",
-      "likes": 235,
-      "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
-      "envMapFolder": "video/",
-      "envMapFile": "Garden.mp4",
-      "items": [
-        {
-          "id": 91,
-          "type": "nav",
-          "title": "Kitchen 01",
-          "abstract": "Abstract",
-          "position": [
-            0.04713776229380867,
-            -0.16372888464057858,
-            0.9853785484270928
           ],
           "navTo": 1
         }
@@ -515,8 +483,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "",
       "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
@@ -547,8 +515,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "",
       "envMapFile": "publisherStream",
@@ -579,8 +547,8 @@
       "likes": 225,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "newoneset2/",
       "envMapFile": "NEWONESET2_x0_y0.jpg",
@@ -619,8 +587,8 @@
       "likes": 225,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "newoneset2_low/",
       "envMapFile": "NEWONESET2_x0_y0.jpg",
