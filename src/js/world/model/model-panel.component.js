@@ -51,7 +51,6 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	create(callback) {
-		this.renderOrder = 11;
 		const mesh = new THREE.Group();
 		if (typeof callback === 'function') {
 			callback(mesh);
@@ -77,7 +76,6 @@ export default class ModelPanelComponent extends ModelComponent {
 						// const alphaMap = new THREE.CanvasTexture(alpha);
 						this.item.panelTexture = {
 							map: map,
-							// alphaMap: alphaMap,
 							width: canvas.width,
 							height: canvas.height,
 						};

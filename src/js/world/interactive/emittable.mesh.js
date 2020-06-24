@@ -13,7 +13,6 @@ export default class EmittableMesh extends FreezableMesh {
 			// transparent: true,
 		});
 		super(geometry, material);
-		// this.renderOrder = 10;
 		this.events = {};
 	}
 

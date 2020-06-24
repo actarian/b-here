@@ -16,7 +16,8 @@ var environment = {
   apiEnabled: false,
   paths: {
     models: 'models/',
-    textures: 'textures/'
+    textures: 'textures/',
+    fonts: 'fonts/'
   }
 };
 

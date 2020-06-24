@@ -9,5 +9,6 @@ export const environment = {
 	paths: {
 		models: 'models/',
 		textures: 'textures/',
+		fonts: 'fonts/',
 	}
 };

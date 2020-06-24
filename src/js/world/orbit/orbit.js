@@ -203,14 +203,14 @@ export default class OrbitService {
 		let differenceLatitude = (headingLatitude - latitude);
 		differenceLatitude = Math.abs(differenceLatitude) > 90 ? (differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude))) : differenceLatitude;
 		// console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
-		const from = { pow: 0 };
+		const from = { tween: 0 };
 		gsap.to(from, 0.7, {
-			pow: 1,
+			tween: 1,
 			delay: 0,
 			ease: Power2.easeInOut,
 			onUpdate: () => {
-				this.setLongitudeLatitude(longitude + differenceLongitude * from.pow, latitude + differenceLatitude * from.pow);
-				this.position.set(position.x * from.pow, 0, position.y * from.pow);
+				this.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
+				this.position.set(position.x * from.tween, 0, position.y * from.tween);
 				this.update();
 			},
 			onComplete: () => {

@@ -92,6 +92,7 @@ export const StreamQualities = [{
 
 export const AgoraStatus = {
 	Link: 'link',
+	Name: 'name',
 	Device: 'device',
 	Connecting: 'connecting',
 	Connected: 'connected',
@@ -197,13 +198,15 @@ export default class AgoraService extends Emittable {
 		this.onMessage = this.onMessage.bind(this);
 		const role = LocationService.get('role') || RoleType.Attendee;
 		const link = LocationService.get('link') || null;
+		const name = LocationService.get('name') || null;
 		const state = {
 			role: role,
 			link: link,
+			name: name,
 			channelName: environment.channelName,
 			publisherId: role === RoleType.Publisher ? environment.publisherId : null,
 			uid: null,
-			status: link ? AgoraStatus.Device : AgoraStatus.Link,
+			status: link ? (name ? AgoraStatus.Device : AgoraStatus.Name) : AgoraStatus.Link,
 			connecting: false,
 			connected: false,
 			locked: false,
@@ -676,6 +679,7 @@ export default class AgoraService extends Emittable {
 		});
 		local.clientInfo = {
 			role: this.state.role,
+			name: this.state.name,
 			uid: this.state.uid,
 		};
 		this.local$.next(local);
@@ -963,6 +967,7 @@ export default class AgoraService extends Emittable {
 		// console.log('AgoraService.onStreamPublished');
 		this.local.clientInfo = {
 			role: this.state.role,
+			name: this.state.name,
 			uid: this.state.uid,
 		};
 		this.local$.next(this.local);

@@ -367,7 +367,7 @@
         {
           "id": 71,
           "type": "nav",
-          "title": "Square",
+          "title": "Time Square",
           "abstract": "Abstract",
           "position": [
             -0.552684304525924,
@@ -386,7 +386,7 @@
     {
       "id": 8,
       "type": "panorama",
-      "name": "Square",
+      "name": "Time Square",
       "likes": 175,
       "liked": false,
       "ar": {
@@ -394,7 +394,7 @@
         "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "video/",
-      "envMapFile": "Square.mp4",
+      "envMapFile": "TimeSquare.mp4",
       "items": [
         {
           "id": 81,
@@ -513,62 +513,6 @@
     },
     {
       "id": 12,
-      "type": "model",
-      "name": "Washing Machine",
-      "likes": 172,
-      "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
-      "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
-          "id": 1201,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "washing-machine/",
-          "gltfFile": "glb.glb"
-        }
-      ],
-      "orientation": {
-        "latitude": 20.400000000000002,
-        "longitude": 57.60000000000001
-      },
-      "fov": 52
-    },
-    {
-      "id": 13,
-      "type": "model",
-      "name": "Helmet",
-      "likes": 172,
-      "liked": false,
-      "ar": {
-        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
-      },
-      "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
-          "id": 1201,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "damaged-helmet/",
-          "gltfFile": "damaged-helmet.glb"
-        }
-      ],
-      "orientation": {
-        "latitude": 14.300000000000002,
-        "longitude": 124.30000000000001
-      },
-      "fov": 51
-    },
-    {
-      "id": 14,
       "type": "panorama-grid",
       "name": "New One Set 2",
       "likes": 225,
@@ -608,7 +552,7 @@
       "fov": 75
     },
     {
-      "id": 15,
+      "id": 13,
       "type": "panorama-grid",
       "name": "New One Set 4096",
       "likes": 225,
@@ -644,6 +588,189 @@
       "orientation": {
         "latitude": 0,
         "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 14,
+      "type": "room-3d",
+      "name": "Room 3D",
+      "likes": 321,
+      "liked": false,
+      "modelFolder": "room-3d/",
+      "modelFile": "room-3d.fbx",
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": "plane-01",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-01.mp4"
+        },
+        {
+          "id": "plane-02",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-02.jpg"
+        },
+        {
+          "id": "plane-03",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-03.jpg"
+        },
+        {
+          "id": "plane-04",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-04.jpg"
+        },
+        {
+          "id": "plane-05",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-05.mp4"
+        },
+        {
+          "id": "plane-06",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-06.jpg"
+        },
+        {
+          "id": "plane-07",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-07.jpg"
+        },
+        {
+          "id": "plane-08",
+          "type": "texture",
+          "folder": "room-3d/",
+          "file": "plane-08.jpg"
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 52
+    },
+    {
+      "id": 15,
+      "type": "model",
+      "name": "Washing Machine",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "washing-machine/",
+          "gltfFile": "glb.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 20.400000000000002,
+        "longitude": 57.60000000000001
+      },
+      "fov": 52
+    },
+    {
+      "id": 16,
+      "type": "model",
+      "name": "Helmet",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "damaged-helmet/",
+          "gltfFile": "damaged-helmet.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 14.300000000000002,
+        "longitude": 124.30000000000001
+      },
+      "fov": 51
+    },
+    {
+      "id": 17,
+      "type": "panorama",
+      "name": "Cinema",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "cinema/",
+      "envMapFile": "cinema.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "plane",
+          "folder": "room-3d/",
+          "file": "plane-01.mp4",
+          "position": {
+            "x": 20,
+            "y": 1.7,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 22,
+            "y": 12,
+            "z": 0
+          }
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.8002543789009917,
+            -0.19439701223042613,
+            -0.5672765909903842
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.8012228950677142,
+            -0.19355223904603844,
+            0.5661973182377114
+          ],
+          "navTo": 8
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
       },
       "fov": 75
     }

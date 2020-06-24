@@ -11,6 +11,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 	set video(video) {
 		if (this.video_ !== video) {
 			this.video_ = video;
+			this.change.next();
 			this.initStream();
 		}
 	}
@@ -22,6 +23,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 	set audio(audio) {
 		if (this.audio_ !== audio) {
 			this.audio_ = audio;
+			this.change.next();
 			this.initStream();
 		}
 	}
@@ -117,6 +119,6 @@ export default class AgoraDevicePreviewComponent extends Component {
 
 AgoraDevicePreviewComponent.meta = {
 	selector: '[agora-device-preview]',
-	outputs: ['stream'],
+	outputs: ['stream', 'change'],
 	inputs: ['video', 'audio']
 };

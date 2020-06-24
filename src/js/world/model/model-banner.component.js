@@ -1,10 +1,11 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
 import * as THREE from 'three';
+import { PANORAMA_RADIUS } from '../panorama/panorama';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
-const PANEL_RADIUS = 102;
+const PANEL_RADIUS = PANORAMA_RADIUS - 0.01;
 const ORIGIN = new THREE.Vector3();
 
 export default class ModelBannerComponent extends ModelComponent {
@@ -93,7 +94,6 @@ export default class ModelBannerComponent extends ModelComponent {
 						// const alphaMap = new THREE.CanvasTexture(alpha);
 						this.item.bannerTexture = {
 							map: map,
-							// alphaMap: alphaMap,
 							width: canvas.width,
 							height: canvas.height,
 						};

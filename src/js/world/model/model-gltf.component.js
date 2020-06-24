@@ -1,17 +1,33 @@
+import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
 import { environment } from '../../../environment/environment';
 import { BASE_HREF } from '../../const';
+import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
+
+export const FAR_POSITION = 4;
 
 export default class ModelGltfComponent extends ModelComponent {
 
 	onInit() {
 		super.onInit();
 		this.progress = 0;
+		const group = this.group;
+		// group.position.x = this.host.renderer.xr.isPresenting ? FAR_POSITION : 0;
+		const vrService = this.vrService = VRService.getService();
+		vrService.session$.pipe(
+			takeUntil(this.unsubscribe$),
+		).subscribe((session) => {
+			if (session) {
+				// group.position.x = FAR_POSITION;
+			} else {
+				// group.position.x = 0;
+			}
+		});
 		// console.log('ModelGltfComponent.onInit');
 	}
 
@@ -50,18 +66,18 @@ export default class ModelGltfComponent extends ModelComponent {
 				mesh.position.x - center.x,
 				mesh.position.y - center.y, // center
 				// mesh.position.y - center.y + size.y / 2 * scale - 0.5, // bottom
-				mesh.position.z - center.z
+				mesh.position.z - center.z + this.host.renderer.xr.isPresenting ? -2 : 0,
 			);
 			const endY = dummy.position.y;
 			const endRotationY = 0;
-			const from = { pow: 1 };
+			const from = { tween: 1 };
 			const onUpdate = () => {
-				dummy.position.y = endY + 3 * from.pow;
-				dummy.rotation.y = 0 + Math.PI * from.pow;
+				dummy.position.y = endY + 3 * from.tween;
+				dummy.rotation.y = 0 + Math.PI * from.tween;
 			};
 			onUpdate();
 			gsap.to(from, 1.5, {
-				pow: 0,
+				tween: 0,
 				delay: 0.1,
 				ease: Power2.easeInOut,
 				onUpdate: onUpdate

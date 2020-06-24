@@ -6,12 +6,37 @@ import { BASE_HREF } from '../../const';
 
 export class EnvMapLoader {
 
+	static get video() {
+		let video = this.video_;
+		if (!video) {
+			video = this.video_ = document.createElement('video');
+		}
+		return video;
+	}
+
+	static set cubeRenderTarget(cubeRenderTarget) {
+		if (this.cubeRenderTarget_) {
+			this.cubeRenderTarget_.texture.dispose();
+			this.cubeRenderTarget_.dispose();
+		}
+		this.cubeRenderTarget_ = cubeRenderTarget;
+	}
+
+	static set texture(texture) {
+		if (this.texture_) {
+			this.texture_.dispose();
+		}
+		this.texture_ = texture;
+	}
+
 	static load(item, renderer, callback) {
+		const video = this.video;
+		video.pause();
 		if (item.envMapFile === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
 		} else if (item.envMapFile.indexOf('.hdr') !== -1) {
 			return this.loadRgbeBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
-		} else if (item.envMapFile.indexOf('.mp4') !== -1) {
+		} else if (item.envMapFile.indexOf('.mp4') !== -1 || item.envMapFile.indexOf('.webm') !== -1) {
 			return this.loadVideoBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
 		} else if (item.envMapFile.indexOf('.m3u8') !== -1) {
 			return this.loadHlslVideoBackground(item.envMapFile, renderer, callback);
@@ -54,12 +79,12 @@ export class EnvMapLoader {
 		}
 		let videoReady = false;
 		const onPlaying = () => {
-			const texture = new THREE.VideoTexture(video);
+			const texture = this.texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
-			const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
+			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 				generateMipmaps: true,
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
@@ -84,16 +109,11 @@ export class EnvMapLoader {
 	}
 
 	static loadVideoBackground(path, file, renderer, callback) {
-		const video = document.createElement('video');
-		/*
-		const temp = document.querySelector('.temp');
-		temp.appendChild(video);
-		*/
+		const video = this.video;
 		video.src = path + file;
 		video.loop = true;
 		video.muted = true;
 		video.playsInline = true;
-		video.play();
 		let videoReady = false;
 		const onPlaying = () => {
 			video.oncanplay = null;
@@ -103,7 +123,7 @@ export class EnvMapLoader {
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			// const envMap = new THREE.VideoTexture(video);
-			const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
+			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 				generateMipmaps: true,
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
@@ -115,13 +135,19 @@ export class EnvMapLoader {
 				callback(cubeRenderTarget.texture, texture, false);
 			}
 		};
+		console.log(video.src);
 		// video.addEventListener('playing', onPlaying);
 		video.crossOrigin = 'anonymous';
 		video.oncanplay = () => {
 			videoReady = true;
-			// console.log('videoReady', videoReady);
+			console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
+		video.play().then(() => {
+			console.log('EnvMapLoader.loadVideoBackground.play');
+		}, error => {
+			console.log('EnvMapLoader.loadVideoBackground.play.error', error);
+		});
 	}
 
 	static loadHlslVideoBackground(src, renderer, callback) {

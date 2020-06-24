@@ -9,16 +9,17 @@ import { BASE_HREF, DEBUG } from '../const';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
-import { ModelView, PanoramaGridView } from '../view/view.service';
+import { PanoramaGridView } from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
 import InteractiveMesh from './interactive/interactive.mesh';
 import OrbitService from './orbit/orbit';
 import Panorama from './panorama/panorama';
-import PhoneElement from './phone/phone-element';
+import PhoneElement from './phone/phone.element';
+import PointerElement from './pointer/pointer.element';
 import VRService from './vr.service';
 
-const POINTER_RADIUS = 99;
 const ORIGIN = new THREE.Vector3();
+const USE_SHADOW = false;
 const USE_PHONE = true;
 
 export default class WorldComponent extends Component {
@@ -43,6 +44,10 @@ export default class WorldComponent extends Component {
 			this.view_ = view;
 			this.setView();
 		}
+	}
+
+	get debugging() {
+		return DEBUG;
 	}
 
 	onInit() {
@@ -80,7 +85,9 @@ export default class WorldComponent extends Component {
 		const { node } = getContext(this);
 		this.size = { width: 0, height: 0, aspect: 0 };
 		this.mouse = new THREE.Vector2();
-		this.direction = new THREE.Vector3();
+		this.controllerMatrix_ = new THREE.Matrix4();
+		this.controllerWorldPosition_ = new THREE.Vector3();
+		this.controllerWorldDirection_ = new THREE.Vector3();
 
 		const container = this.container = node;
 		const info = this.info = node.querySelector('.world__info');
@@ -88,13 +95,18 @@ export default class WorldComponent extends Component {
 		const worldRect = this.worldRect = Rect.fromNode(container);
 		const cameraRect = this.cameraRect = new Rect();
 
+		const cameraGroup = this.cameraGroup = new THREE.Group();
 		// new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, ROOM_RADIUS * 2);
 		const camera = this.camera = new THREE.PerspectiveCamera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
 		camera.target = new THREE.Vector3();
+		camera.box = new THREE.Group();
+		camera.add(camera.box);
 		/*
 		camera.position.set(0, 20, 20);
 		camera.lookAt(camera.target);
 		*/
+		cameraGroup.add(camera);
+		cameraGroup.target = new THREE.Vector3();
 
 		const orbit = this.orbit = new OrbitService(camera);
 
@@ -102,15 +114,20 @@ export default class WorldComponent extends Component {
 			antialias: true,
 			alpha: false,
 			premultipliedAlpha: true,
+			logarithmicDepthBuffer: true,
 			// physicallyCorrectLights: true,
 		});
 		renderer.setClearColor(0x000000, 1);
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(container.offsetWidth, container.offsetHeight);
+		renderer.xr.enabled = true;
 		renderer.toneMapping = THREE.ACESFilmicToneMapping;
 		renderer.toneMappingExposure = 0.8;
 		renderer.outputEncoding = THREE.sRGBEncoding;
-		renderer.xr.enabled = true;
+		if (USE_SHADOW) {
+			renderer.shadowMap.enabled = true;
+			renderer.shadowMap.type = THREE.PCFShadowMap; // THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+		}
 		if (container.childElementCount > 0) {
 			container.insertBefore(renderer.domElement, container.children[0]);
 		} else {
@@ -120,70 +137,29 @@ export default class WorldComponent extends Component {
 		const raycaster = this.raycaster = new THREE.Raycaster();
 
 		const scene = this.scene = new THREE.Scene();
+		scene.add(cameraGroup);
 
 		const panorama = this.panorama = new Panorama();
 		scene.add(panorama.mesh);
 
-		const pointer = this.pointer = this.addPointer();
+		const pointer = this.pointer = new PointerElement();
 
 		// const torus = this.torus = this.addTorus();
 
-		var mainLight = new THREE.PointLight(0xffffff);
+		/*
+		const mainLight = new THREE.PointLight(0xffffff);
 		mainLight.position.set(-50, 0, -50);
 		scene.add(mainLight);
 
-		const light = new THREE.AmbientLight(0x404040);
+		*/
+		const light = new THREE.AmbientLight(0x101010);
 		scene.add(light);
 
 		const objects = this.objects = new THREE.Group();
 		objects.name = '[objects]';
 		scene.add(objects);
 
-		this.onSelect1Start = this.onSelect1Start.bind(this);
-		this.onSelect1End = this.onSelect1End.bind(this);
-		this.onSelect2Start = this.onSelect2Start.bind(this);
-		this.onSelect2End = this.onSelect2End.bind(this);
-
-		const controller1 = this.controller1 = renderer.xr.getController(0);
-		controller1.name = '[controller1]';
-		controller1.addEventListener('selectstart', this.onSelect1Start);
-		controller1.addEventListener('selectend', this.onSelect1End);
-		controller1.addEventListener('connected', (event) => {
-			controller1.add(this.buildController(event.data));
-		});
-		controller1.addEventListener('disconnected', () => {
-			controller1.remove(controller1.children[0]);
-		});
-		scene.add(controller1);
-		const controller2 = this.controller2 = renderer.xr.getController(1);
-		controller2.name = '[controller2]';
-		controller2.addEventListener('selectstart', this.onSelect2Start);
-		controller2.addEventListener('selectend', this.onSelect2End);
-		controller2.addEventListener('connected', (event) => {
-			controller2.add(this.buildController(event.data));
-		});
-		controller2.addEventListener('disconnected', () => {
-			controller2.remove(controller2.children[0]);
-		});
-		scene.add(controller2);
-		this.controllers = [this.controller1, this.controller2];
-		if (USE_PHONE) {
-			const phone = this.phone = new PhoneElement();
-			controller2.add(phone.mesh);
-		}
-		// The XRControllerModelFactory will automatically fetch controller models
-		// that match what the user is holding as closely as possible. The models
-		// should be attached to the object returned from getControllerGrip in
-		// order to match the orientation of the held device.
-		const controllerModelFactory = new XRControllerModelFactory();
-		const controllerGrip1 = this.controllerGrip1 = renderer.xr.getControllerGrip(0);
-		controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-		scene.add(controllerGrip1);
-		if (!USE_PHONE) {
-			const controllerGrip2 = this.controllerGrip2 = renderer.xr.getControllerGrip(1);
-			controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-			scene.add(controllerGrip2);
-		}
+		this.addControllers();
 		//
 		this.resize();
 	}
@@ -216,14 +192,16 @@ export default class WorldComponent extends Component {
 		if (view) {
 			if (this.orbit) {
 				this.orbit.mode = view.type;
-				if (this.infoResultMessage) {
-					this.orbit.setOrientation(this.infoResultMessage.orientation);
-					this.camera.fov = this.infoResultMessage.fov;
-					this.camera.updateProjectionMatrix();
-				} else {
-					this.orbit.setOrientation(view.orientation);
-					this.camera.fov = view.fov;
-					this.camera.updateProjectionMatrix();
+				if (!this.renderer.xr.isPresenting) {
+					if (this.infoResultMessage) {
+						this.orbit.setOrientation(this.infoResultMessage.orientation);
+						this.camera.fov = this.infoResultMessage.fov;
+						this.camera.updateProjectionMatrix();
+					} else {
+						this.orbit.setOrientation(view.orientation);
+						this.camera.fov = view.fov;
+						this.camera.updateProjectionMatrix();
+					}
 				}
 			}
 			if (this.panorama) {
@@ -249,6 +227,103 @@ export default class WorldComponent extends Component {
 		} : null;
 	}
 
+	addControllers() {
+		const renderer = this.renderer;
+		const scene = this.scene;
+		const controllerGroup = this.controllerGroup = new THREE.Group();
+		const controller1 = this.controller1 = renderer.xr.getController(0);
+		controller1.name = '[controller1]';
+		this.onSelect1Start = this.onSelect1Start.bind(this);
+		this.onSelect1End = this.onSelect1End.bind(this);
+		controller1.addEventListener('selectstart', this.onSelect1Start);
+		controller1.addEventListener('selectend', this.onSelect1End);
+		controller1.addEventListener('connected', (event) => {
+			controller1.add(this.buildController(event.data));
+		});
+		controller1.addEventListener('disconnected', () => {
+			while (controller1.children.length) {
+				controller1.remove(controller1.children[0]);
+			}
+		});
+		controllerGroup.add(controller1);
+		const controller2 = this.controller2 = renderer.xr.getController(1);
+		controller2.name = '[controller2]';
+		this.onSelect2Start = this.onSelect2Start.bind(this);
+		this.onSelect2End = this.onSelect2End.bind(this);
+		controller2.addEventListener('selectstart', this.onSelect2Start);
+		controller2.addEventListener('selectend', this.onSelect2End);
+		controller2.addEventListener('connected', (event) => {
+			controller2.add(this.buildController(event.data));
+			if (USE_PHONE) {
+				const phone = this.phone = new PhoneElement();
+				controller2.add(phone.mesh);
+			}
+		});
+		controller2.addEventListener('disconnected', () => {
+			while (controller2.children.length) {
+				controller2.remove(controller2.children[0]);
+			}
+		});
+		controllerGroup.add(controller2);
+		this.controllers = [this.controller1, this.controller2];
+		// The XRControllerModelFactory will automatically fetch controller models
+		// that match what the user is holding as closely as possible. The models
+		// should be attached to the object returned from getControllerGrip in
+		// order to match the orientation of the held device.
+		const controllerModelFactory = new XRControllerModelFactory();
+		const controllerGrip1 = this.controllerGrip1 = renderer.xr.getControllerGrip(0);
+		controllerGrip1.name = '[controller-grip1]';
+		controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+		controllerGroup.add(controllerGrip1);
+		if (!USE_PHONE) {
+			const controllerGrip2 = this.controllerGrip2 = renderer.xr.getControllerGrip(1);
+			controllerGrip2.name = '[controller-grip2]';
+			controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+			controllerGroup.add(controllerGrip2);
+		}
+		scene.add(controllerGroup);
+	}
+
+	buildController(data) {
+		let geometry, material;
+		switch (data.targetRayMode) {
+			case 'tracked-pointer':
+				geometry = new THREE.BufferGeometry();
+				geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, -1], 3));
+				geometry.setAttribute('color', new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
+				material = new THREE.LineBasicMaterial({
+					vertexColors: true,
+					blending: THREE.AdditiveBlending
+				});
+				return new THREE.Line(geometry, material);
+			case 'gaze':
+				geometry = new THREE.RingBufferGeometry(0.02, 0.04, 32).translate(0, 0, -1);
+				material = new THREE.MeshBasicMaterial({
+					opacity: 0.5,
+					transparent: true
+				});
+				return new THREE.Mesh(geometry, material);
+		}
+	}
+
+	onSelect1Start() {
+		this.controller1.userData.isSelecting = true;
+		this.controller = this.controller1;
+	}
+
+	onSelect1End() {
+		this.controller1.userData.isSelecting = false;
+	}
+
+	onSelect2Start() {
+		this.controller2.userData.isSelecting = true;
+		this.controller = this.controller2;
+	}
+
+	onSelect2End() {
+		this.controller2.userData.isSelecting = false;
+	}
+
 	addPointer(parent) {
 		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
@@ -260,16 +335,17 @@ export default class WorldComponent extends Component {
 		// texture.magFilter = THREE.LinearMipMapLinearFilter;
 		// texture.minFilter = THREE.NearestFilter;
 		const material = new THREE.MeshBasicMaterial({
+			depthTest: false,
 			map: texture,
 			transparent: true,
 			opacity: 0.9,
 		});
 		const mesh = new THREE.Mesh(geometry, material);
-		mesh.renderOrder = 1000;
 		mesh.position.set(-100000, -100000, -100000);
+		/*
 		const panorama = this.panorama.mesh;
 		panorama.on('down', (panorama) => {
-			mesh.material.color.setHex(0x0000ff);
+			mesh.material.color.setHex(0x0099ff);
 			mesh.material.opacity = 1.0;
 			mesh.material.needsUpdate = true;
 		});
@@ -278,6 +354,7 @@ export default class WorldComponent extends Component {
 			mesh.material.opacity = 0.9;
 			mesh.material.needsUpdate = true;
 		});
+		*/
 		return mesh;
 	}
 
@@ -319,36 +396,6 @@ export default class WorldComponent extends Component {
 		return mesh;
 	}
 
-	onSelect1Start() {
-		this.controller1.userData.isSelecting = true;
-		this.controller = this.controller1;
-	}
-	onSelect1End() {
-		this.controller1.userData.isSelecting = false;
-	}
-	onSelect2Start() {
-		this.controller2.userData.isSelecting = true;
-		this.controller = this.controller2;
-	}
-	onSelect2End() {
-		this.controller2.userData.isSelecting = false;
-	}
-
-	buildController(data) {
-		switch (data.targetRayMode) {
-			case 'tracked-pointer':
-				var geometry = new THREE.BufferGeometry();
-				geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, -1], 3));
-				geometry.setAttribute('color', new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
-				var material = new THREE.LineBasicMaterial({ vertexColors: true, blending: THREE.AdditiveBlending });
-				return new THREE.Line(geometry, material);
-			case 'gaze':
-				var geometry = new THREE.RingBufferGeometry(0.02, 0.04, 32).translate(0, 0, -1);
-				var material = new THREE.MeshBasicMaterial({ opacity: 0.5, transparent: true });
-				return new THREE.Mesh(geometry, material);
-		}
-	}
-
 	/*
 	handleController(controller) {
 		if (controller.userData.isSelecting) {
@@ -363,6 +410,11 @@ export default class WorldComponent extends Component {
 		}
 	}
 	*/
+
+	onMenuOpen(event) {
+		// console.log('WorldComponent.onMenuOpen', event.id, event);
+		this.navTo.next(event.id);
+	}
 
 	onNavOver(event) {
 		// console.log('WorldComponent.onNavOver', event);
@@ -416,35 +468,36 @@ export default class WorldComponent extends Component {
 		this.slideChange.next(index);
 	}
 
-	setRaycaster(controller, raycaster) {
+	updateRaycaster__(controller, raycaster) {
 		if (controller) {
-			const position = controller.position;
-			const rotation = controller.getWorldDirection(this.direction).multiplyScalar(-1);
+			const position = controller.getWorldPosition(this.controllerWorldPosition_);
+			const rotation = controller.getWorldDirection(this.controllerWorldDirection_).multiplyScalar(-1);
 			raycaster.set(position, rotation);
 			return raycaster;
 		}
 	}
 
-	updateRaycaster() {
+	updateRaycaster(controller, raycaster) {
+		if (controller) {
+			this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
+			raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+			raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.controllerMatrix_);
+			return raycaster;
+		}
+	}
+
+	raycasterHitTest() {
 		try {
 			if (this.renderer.xr.isPresenting) {
-				const controller = this.controller;
-				if (controller) {
-					const raycaster = this.setRaycaster(controller, this.raycaster);
-					if (raycaster) {
-						const hit = InteractiveMesh.hittest(raycaster, controller.userData.isSelecting);
-						if (this.panorama.mesh.intersection) {
-							const pointer = this.pointer;
-							const position = this.panorama.mesh.intersection.point.normalize().multiplyScalar(POINTER_RADIUS);
-							pointer.position.set(position.x, position.y, position.z);
-							pointer.lookAt(ORIGIN);
-						}
-						/*
-						if (hit && hit !== this.panorama.mesh) {
-							// controllers.feedback();
-						}
-						*/
+				const raycaster = this.updateRaycaster(this.controller, this.raycaster);
+				if (raycaster) {
+					const hit = InteractiveMesh.hittest(raycaster, this.controller.userData.isSelecting);
+					this.pointer.update();
+					/*
+					if (hit && hit !== this.panorama.mesh) {
+						// controllers.feedback();
 					}
+					*/
 				}
 			} else {
 				const raycaster = this.raycaster;
@@ -459,7 +512,7 @@ export default class WorldComponent extends Component {
 			}
 		} catch (error) {
 			this.error = error;
-			throw (error);
+			// throw (error);
 		}
 	}
 
@@ -486,7 +539,7 @@ export default class WorldComponent extends Component {
 				camera = this.camera;
 			const time = performance.now();
 			const tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
-			this.updateRaycaster();
+			this.raycasterHitTest();
 			this.scene.traverse((child) => {
 				if (typeof child.userData.render === 'function') {
 					child.userData.render(time, tick);
@@ -496,6 +549,9 @@ export default class WorldComponent extends Component {
 			Object.keys(this.avatars).forEach(key => {
 				this.avatars[key].render();
 			});
+			if (renderer.xr.isPresenting) {
+				gsap.ticker.tick();
+			}
 			/*
 			const objects = this.objects;
 			for (let i = 0; i < objects.children.length; i++) {
@@ -512,7 +568,7 @@ export default class WorldComponent extends Component {
 			}
 		} catch (error) {
 			this.error = error;
-			throw (error);
+			// throw (error);
 		}
 	}
 
@@ -532,22 +588,23 @@ export default class WorldComponent extends Component {
 			size.aspect = size.width / size.height;
 			const worldRect = this.worldRect;
 			worldRect.setSize(size.width, size.height);
-			if (renderer) {
+			if (!renderer.xr.isPresenting) {
 				renderer.setSize(size.width, size.height);
-			}
-			if (camera) {
-				camera.aspect = size.width / size.height;
-				const angle = camera.fov * Math.PI / 180;
-				const height = Math.abs(camera.position.z * Math.tan(angle / 2) * 2);
-				const cameraRect = this.cameraRect;
-				cameraRect.width = height * camera.aspect;
-				cameraRect.height = height;
-				// console.log('position', camera.position.z, 'angle', angle, 'height', height, 'aspect', camera.aspect, cameraRect);
-				camera.updateProjectionMatrix();
+				if (camera) {
+					camera.aspect = size.width / size.height;
+					const angle = camera.fov * Math.PI / 180;
+					const height = Math.abs(camera.position.z * Math.tan(angle / 2) * 2);
+					const cameraRect = this.cameraRect;
+					cameraRect.width = height * camera.aspect;
+					cameraRect.height = height;
+					// console.log('position', camera.position.z, 'angle', angle, 'height', height, 'aspect', camera.aspect, cameraRect);
+					camera.updateProjectionMatrix();
+				}
 			}
 			// this.render();
 		} catch (error) {
 			this.error = error;
+			// throw (error);
 		}
 	}
 
@@ -584,6 +641,7 @@ export default class WorldComponent extends Component {
 			}
 		} catch (error) {
 			this.error = error;
+			// throw (error);
 		}
 	}
 
@@ -603,6 +661,7 @@ export default class WorldComponent extends Component {
 			// InteractiveMesh.hittest(raycaster, this.mousedown);
 		} catch (error) {
 			this.error = error;
+			// throw (error);
 		}
 	}
 
@@ -620,7 +679,7 @@ export default class WorldComponent extends Component {
 		// !!! fov zoom
 		try {
 			const agora = this.agora;
-			if (!agora || !agora.state.locked) {
+			if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
 				const camera = this.camera;
 				const fov = camera.fov + event.deltaY * 0.01;
 				camera.fov = THREE.Math.clamp(fov, 30, 75);
@@ -629,6 +688,7 @@ export default class WorldComponent extends Component {
 			}
 		} catch (error) {
 			this.error = error;
+			// throw (error);
 		}
 	}
 
@@ -650,7 +710,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onVRStarted() {
-		this.scene.add(this.pointer);
+		this.scene.add(this.pointer.mesh);
 		const agora = this.agora;
 		if (agora) {
 			agora.sendMessage({
@@ -658,13 +718,15 @@ export default class WorldComponent extends Component {
 				clientId: agora.state.uid,
 			});
 		}
+		/*
 		if (this.view_ instanceof ModelView) {
 			console.log(this.view_);
 		}
+		*/
 	}
 
 	onVREnded() {
-		this.scene.remove(this.pointer);
+		this.scene.remove(this.pointer.mesh);
 		const agora = this.agora;
 		if (agora) {
 			agora.sendMessage({
@@ -804,8 +866,10 @@ export default class WorldComponent extends Component {
 						if (agora.state.role === RoleType.Publisher) {
 							if (message.viewId === this.view.id) {
 								this.orbit.setOrientation(message.orientation);
-								this.camera.fov = message.fov;
-								this.camera.updateProjectionMatrix();
+								if (!this.renderer.xr.isPresenting) {
+									this.camera.fov = message.fov;
+									this.camera.updateProjectionMatrix();
+								}
 								if (this.view instanceof PanoramaGridView && message.gridIndex) {
 									this.view.index = message.gridIndex;
 								}
@@ -817,17 +881,21 @@ export default class WorldComponent extends Component {
 					case MessageType.CameraOrientation:
 						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
 							this.orbit.setOrientation(message.orientation);
-							this.camera.fov = message.fov;
-							this.camera.updateProjectionMatrix();
+							if (!this.renderer.xr.isPresenting) {
+								this.camera.fov = message.fov;
+								this.camera.updateProjectionMatrix();
+							}
 							// this.render();
 						}
 						break;
 					case MessageType.CameraRotate:
 						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							const camera = this.camera;
-							camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
-							camera.lookAt(ORIGIN);
-							// this.render();
+							if (!this.renderer.xr.isPresenting) {
+								const camera = this.camera;
+								camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
+								camera.lookAt(ORIGIN);
+								// this.render();
+							}
 						}
 						break;
 					case MessageType.NavToGrid:
@@ -877,6 +945,6 @@ export default class WorldComponent extends Component {
 
 WorldComponent.meta = {
 	selector: '[world]',
-	inputs: ['view'],
+	inputs: ['view', 'views'],
 	outputs: ['slideChange', 'navTo'],
 };

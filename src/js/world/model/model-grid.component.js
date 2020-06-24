@@ -29,26 +29,26 @@ export default class ModelGridComponent extends ModelComponent {
 			const tileMap = this.tileMap;
 			if (this.coords_) {
 				const previousTile = tileMap[`${this.coords_.x}_${this.coords_.y}`];
-				const from = { pow: 1 };
+				const from = { tween: 1 };
 				gsap.to(from, 0.4, {
-					pow: 0,
+					tween: 0,
 					delay: 0,
 					ease: Power2.easeInOut,
 					onUpdate: () => {
-						previousTile.material.opacity = from.pow;
+						previousTile.material.opacity = from.tween;
 						// previousTile.material.needsUpdate = true;
 					}
 				});
 			}
 			if (coords) {
 				const currentTile = this.currentTile = tileMap[`${coords.x}_${coords.y}`];
-				const from = { pow: 0 };
+				const from = { tween: 0 };
 				gsap.to(from, 0.4, {
-					pow: 1,
+					tween: 1,
 					delay: 0,
 					ease: Power2.easeInOut,
 					onUpdate: () => {
-						currentTile.material.opacity = from.pow;
+						currentTile.material.opacity = from.tween;
 						// currentTile.material.needsUpdate = true;
 					}
 				});
@@ -75,7 +75,7 @@ export default class ModelGridComponent extends ModelComponent {
 	onInit() {
 		super.onInit();
 		this.indices = new THREE.Vector2();
-		console.log('ModelGridComponent.onInit', this.view);
+		// console.log('ModelGridComponent.onInit', this.view);
 		this.view.index$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(index => {
@@ -94,14 +94,15 @@ export default class ModelGridComponent extends ModelComponent {
 		const geometry = new THREE.PlaneBufferGeometry(innerTileSize, innerTileSize, 2, 2);
 		geometry.rotateX(-Math.PI / 2);
 		const map = ModelGridComponent.getTexture();
+		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		// geometry.scale(-1, 1, 1);
 		const mesh = this.mesh;
 		const tileMap = this.tileMap = {};
 		const tiles = this.tiles = new Array(COLS * ROWS).fill(0).map((x, i) => {
 			const material = new THREE.MeshBasicMaterial({
+				depthTest: false,
 				map: map,
-				// depthTest: false,
 				transparent: true,
 				opacity: 0,
 				// side: THREE.DoubleSide,
@@ -116,7 +117,6 @@ export default class ModelGridComponent extends ModelComponent {
 			// console.log(ci, ri);
 			tile.position.set(ci * outerTileSize, -RADIUS * 0.15, ri * outerTileSize);
 			tile.name = this.getName(`tile_${ci}_${ri}`);
-			// tile.renderOrder = 2;
 			tileMap[`${ci}_${ri}`] = tile;
 			mesh.add(tile);
 		});
@@ -141,7 +141,6 @@ export default class ModelGridComponent extends ModelComponent {
 		const mesh = this.mesh;
 		const ground = this.ground = new InteractiveMesh(geometry, material);
 		ground.name = this.getName('ground');
-		// ground.renderOrder = 1;
 		ground.position.set(0, -RADIUS * 0.15, 0);
 		ground.on('over', this.onGroundOver);
 		ground.on('move', this.onGroundMove);
@@ -211,7 +210,6 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	create(callback) {
-		this.renderOrder = 9;
 		const mesh = this.mesh = new THREE.Group();
 		this.addTiles();
 		this.addHitArea();

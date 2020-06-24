@@ -1,6 +1,5 @@
 import { Component } from 'rxcomp';
-// import UserService from './user/user.service';
-import { FormControl, FormGroup, Validators } from 'rxcomp-form';
+import { FormGroup } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import AgoraService from './agora.service';
 
@@ -31,8 +30,8 @@ export default class AgoraDeviceComponent extends Component {
 
 	initForm(devices) {
 		const form = this.form = new FormGroup({
-			audio: new FormControl(null, Validators.RequiredValidator()),
-			video: new FormControl(null),
+			audio: null,
+			video: null,
 		});
 		const controls = this.controls = form.controls;
 		controls.video.options = devices.videos.map(x => {
@@ -63,8 +62,19 @@ export default class AgoraDeviceComponent extends Component {
 		return this.state.devices ? this.state.devices.audios : [];
 	}
 
+	onStreamDidChange(event) {
+		this.stream = null;
+		this.pushChanges();
+	}
+
 	onStream(stream) {
 		this.stream = stream;
+		this.pushChanges();
+	}
+
+	isValid() {
+		const isValid = this.form.valid && this.stream;
+		return isValid;
 	}
 
 	onEnter(event) {

@@ -51,7 +51,7 @@ export class PanoramaGridView extends View {
 						indices.x = parseInt(b);
 						indices.y = parseInt(c) * flipAxes;
 					}
-					console.log('PanoramaGridView', mapFile, indices);
+					// console.log('PanoramaGridView', mapFile, indices);
 				});
 				return {
 					id: i + 1,
@@ -101,6 +101,7 @@ export class ModelView extends View {
 export const ViewType = {
 	Panorama: 'panorama',
 	PanoramaGrid: 'panorama-grid',
+	Room3d: 'room-3d',
 	Model: 'model',
 };
 

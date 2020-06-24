@@ -4,7 +4,11 @@ import { EnvMapLoader } from '../envmap/envmap.loader';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import { VideoTexture } from '../video-texture';
 
+export const PANORAMA_RADIUS = 101;
+
 const VERTEX_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
 varying vec2 vUv;
 void main() {
 	vUv = uv;
@@ -14,9 +18,11 @@ void main() {
 `;
 
 const FRAGMENT_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
 varying vec2 vUv;
 uniform vec2 resolution;
-uniform float pow;
+uniform float tween;
 uniform bool rgbe;
 uniform sampler2D texture;
 
@@ -58,9 +64,9 @@ void main() {
 	vec4 color = texture2D(texture, vUv);
 	// color = Blur(vUv, color);
 	if (rgbe) {
-		color = vec4(encodeColor(color) * pow + rand(vUv) * 0.01, 1.0);
+		color = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);
 	} else {
-		color = vec4(color.rgb * pow + rand(vUv) * 0.01, 1.0);
+		color = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);
 	}
 	gl_FragColor = color;
 }
@@ -69,22 +75,22 @@ void main() {
 export default class Panorama {
 
 	constructor() {
-		this.pow = 0;
+		this.tween = 0;
 		this.create();
 	}
 
 	create() {
-		const geometry = new THREE.SphereBufferGeometry(101, 60, 40);
+		const geometry = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
 		geometry.scale(-1, 1, 1);
 		geometry.rotateY(Math.PI);
 		const material = new THREE.ShaderMaterial({
-			depthTest: false,
+			// depthTest: false,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
 			uniforms: {
 				texture: { type: "t", value: null },
 				resolution: { value: new THREE.Vector2() },
-				pow: { value: 0 },
+				tween: { value: 0 },
 				rgbe: { value: false },
 			},
 		});
@@ -96,27 +102,26 @@ export default class Panorama {
 		*/
 		const mesh = this.mesh = new InteractiveMesh(geometry, material);
 		mesh.name = '[panorama]';
-		mesh.renderOrder = 0;
 	}
 
 	swap(view, renderer, callback) {
 		const item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
 		const material = this.mesh.material;
-		if (this.pow > 0) {
+		if (this.tween > 0) {
 			gsap.to(this, 0.5, {
-				pow: 0,
+				tween: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					material.uniforms.pow.value = this.pow;
+					material.uniforms.tween.value = this.tween;
 					material.needsUpdate = true;
 				},
 				onComplete: () => {
 					this.load(item, renderer, (envMap, texture, rgbe) => {
 						gsap.to(this, 0.5, {
-							pow: 1,
+							tween: 1,
 							ease: Power2.easeInOut,
 							onUpdate: () => {
-								material.uniforms.pow.value = this.pow;
+								material.uniforms.tween.value = this.tween;
 								material.needsUpdate = true;
 							}
 						});
@@ -129,10 +134,10 @@ export default class Panorama {
 		} else {
 			this.load(item, renderer, (envMap, texture, rgbe) => {
 				gsap.to(this, 0.5, {
-					pow: 1,
+					tween: 1,
 					ease: Power2.easeInOut,
 					onUpdate: () => {
-						material.uniforms.pow.value = this.pow;
+						material.uniforms.tween.value = this.tween;
 						material.needsUpdate = true;
 					}
 				});
@@ -146,7 +151,7 @@ export default class Panorama {
 	crossfade(item, renderer, callback) {
 		const material = this.mesh.material;
 		this.load(item, renderer, (envMap, texture, rgbe) => {
-			material.uniforms.pow.value = 1;
+			material.uniforms.tween.value = 1;
 			material.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(envMap, texture, rgbe);
@@ -166,7 +171,7 @@ export default class Panorama {
 			// material.map = texture;
 			material.uniforms.texture.value = texture;
 			material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
-			material.uniforms.pow.value = 0;
+			material.uniforms.tween.value = 0;
 			material.uniforms.rgbe.value = rgbe;
 			// console.log(texture.width, texture.height);
 			material.needsUpdate = true;

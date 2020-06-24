@@ -400,7 +400,8 @@ body {
 		&:focus,
 		&:hover,
 		&:visited {
-			background: #a5b3bd;
+			background: #c6e3f7;
+			pointer-events: none;
 		}
 	}
 }
@@ -493,7 +494,7 @@ body {
 		padding: 4px;
 		line-height: 1;
 		font-size: 10px;
-		display: none; // !!!
+		// display: none; // !!!
 	}
 
 	&__info {
@@ -635,7 +636,7 @@ body {
 	@extend %btn-reset;
 	position: relative;
 	line-height: 0;
-	margin: 0 40px 0 0;
+	margin: 0 10px 0 0;
 	padding: 0;
 
 	svg {
@@ -908,5 +909,51 @@ model-viewer {
 		line-height: 1;
 		color: white;
 		white-space: nowrap;
+	}
+}
+
+.btn--menu {
+	@extend %btn-circle;
+	position: absolute;
+	pointer-events: all;
+	right: 20px;
+	top: 50%;
+
+	svg {
+		width: 28px;
+		height: 28px;
+	}
+
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		// border: 2px solid rgba(0, 0, 0, 0.2);
+		background: $background; // rgba(0, 0, 0, 0.0);
+		color: $foreground;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+
+	&:hover {
+		// border-color: rgba(0, 0, 0, 0.0);
+		background: rgba($background-negative, 0.8);
+		color: $foreground-negative;
+	}
+
+	&.active {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			border-color: rgba(0, 0, 0, 0.0);
+			background: rgba(0, 0, 0, 0.8);
+			color: $foreground-negative;
+		}
 	}
 }

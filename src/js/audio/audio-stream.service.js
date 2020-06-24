@@ -214,7 +214,7 @@ export default class AudioStreamService {
 		});
 		this.analyser.disconnect();
 		this.sources_ = {};
-		this.context_.close().then(success => console.log('AudioStreamService.dispose', success));
+		this.context_.close().then(() => console.log('AudioStreamService.dispose'));
 		this.context_ = null;
 	}
 

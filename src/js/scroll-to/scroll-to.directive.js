@@ -24,17 +24,17 @@ export default class ScrollToDirective extends Directive {
 					if (target) {
 						const from = this.currentTop();
 						const to = from + target.getBoundingClientRect().top - 50;
-						const o = { pow: 0 };
+						const o = { tween: 0 };
 						const html = document.querySelector('html');
 						gsap.set(html, {
 							'scroll-behavior': 'auto'
 						});
 						gsap.to(o, Math.abs((to - from)) / 2000, {
-							pow: 1,
+							tween: 1,
 							ease: Quad.easeOut,
 							overwrite: 'all',
 							onUpdate: () => {
-								window.scrollTo(0, from + (to - from) * o.pow);
+								window.scrollTo(0, from + (to - from) * o.tween);
 							},
 							onComplete: () => {
 								gsap.set(html, {

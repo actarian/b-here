@@ -25,7 +25,6 @@ export default class ModelComponent extends Component {
 		this.position = new THREE.Vector3();
 		const group = this.group = new THREE.Group();
 		group.name = this.getName();
-		// group.renderOrder = 3;
 		group.userData.render = (time, tick) => {
 			// if (this.intersection) {
 			this.render(this, time, tick);
@@ -38,12 +37,19 @@ export default class ModelComponent extends Component {
 	onDestroy() {
 		const group = this.group;
 		this.host.objects.remove(group);
-		group.traverse(object => {
-			if (object instanceof InteractiveMesh) {
-				InteractiveMesh.dispose(object);
+		delete group.userData.render;
+		group.traverse(child => {
+			if (child instanceof InteractiveMesh) {
+				InteractiveMesh.dispose(child);
+			}
+			if (child.isMesh) {
+				if (child.material.map && child.material.map.disposable !== false) {
+					child.material.map.dispose();
+				}
+				child.material.dispose();
+				child.geometry.dispose();
 			}
 		});
-		delete group.userData.render;
 		this.group = null;
 	}
 
@@ -95,9 +101,9 @@ export default class ModelComponent extends Component {
 		// group.scale.set(scale.x, scale.y, scale.z);
 		const position = this.position;
 		group.position.set(position.x, 0, 0);
-		// const pow = this.pow();
-		// group.rotation.x = deg(180) * pow;
-		// group.rotation.y = deg(360) * pow;
+		// const tween = this.tween();
+		// group.rotation.x = deg(180) * tween;
+		// group.rotation.y = deg(360) * tween;
 	}
 
 	getScroll(offset) {
@@ -106,12 +112,12 @@ export default class ModelComponent extends Component {
 		return scroll;
 	}
 
-	getPow(offset) {
-		let pow = Math.min(0.0, this.intersection.offset(offset)) + 1;
-		pow = Math.max(0.0, pow);
-		// pow = Ease.Sine.InOut(pow);
-		pow -= 1;
-		return pow;
+	getTween(offset) {
+		let tween = Math.min(0.0, this.intersection.offset(offset)) + 1;
+		tween = Math.max(0.0, tween);
+		// tween = Ease.Sine.InOut(tween);
+		tween -= 1;
+		return tween;
 	}
 
 	// onView() { const context = getContext(this); }

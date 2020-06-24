@@ -31,13 +31,12 @@ export default class ModelNavComponent extends ModelComponent {
 	}
 
 	create(callback) {
-		this.renderOrder = 10;
 		const geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
 		const map = ModelNavComponent.getTexture();
+		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.MeshBasicMaterial({
-			depthTest: false,
-			// alphaMap: texture,
+			// depthTest: false,
 			map: map,
 			transparent: true,
 			opacity: 0,

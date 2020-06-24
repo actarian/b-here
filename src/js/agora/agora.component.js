@@ -37,6 +37,8 @@ export default class AgoraComponent extends Component {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.state = {};
+		this.data = null;
+		this.views = null;
 		this.view = null;
 		this.form = null;
 		this.local = null;
@@ -67,6 +69,7 @@ export default class AgoraComponent extends Component {
 							message.type = MessageType.RequestPeerInfoResult;
 							message.clientInfo = {
 								role: agora.state.role,
+								name: agora.state.name,
 								uid: agora.state.uid,
 							};
 							agora.sendMessage(message);
@@ -131,9 +134,11 @@ export default class AgoraComponent extends Component {
 		} else {
 			const role = LocationService.get('role') || RoleType.Attendee;
 			const link = LocationService.get('link') || null;
+			const name = LocationService.get('name') || null;
 			this.state = {
 				role: role,
 				link: link,
+				name: name,
 				channelName: environment.channelName,
 				publisherId: role === RoleType.Publisher ? environment.publisherId : null,
 				uid: null,
@@ -154,7 +159,7 @@ export default class AgoraComponent extends Component {
 
 	initForm() {
 		const data = this.data;
-		const views = data.views.filter(x => x.type !== 'waiting-room');
+		const views = this.views = data.views.filter(x => x.type !== 'waiting-room');
 		const form = this.form = new FormGroup({
 			view: new FormControl(views[0].id, Validators.RequiredValidator()),
 		});
@@ -201,7 +206,15 @@ export default class AgoraComponent extends Component {
 	}
 
 	onLink(link) {
-		this.agora.patchState({ link, status: AgoraStatus.Device });
+		if (this.agora.state.name) {
+			this.agora.patchState({ link, status: AgoraStatus.Device });
+		} else {
+			this.agora.patchState({ link, status: AgoraStatus.Name });
+		}
+	}
+
+	onName(name) {
+		this.agora.patchState({ name, status: AgoraStatus.Device });
 	}
 
 	onEnter(preferences) {

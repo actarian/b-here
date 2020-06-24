@@ -61,16 +61,23 @@ export default class AgoraLinkComponent extends Component {
 		alert(`link copiato!\n ${input.value}`);
 	}
 
+	isValid() {
+		const isValid = this.form.valid;
+		return isValid;
+	}
+
 	onNext(event) {
-		if ('history' in window) {
-			const role = LocationService.get('role') || null;
-			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', this.generateLink(role));
-		}
+		this.replaceUrl();
 		this.link.next(this.controls.link.value);
 	}
 
-	generateLink(role) {
-		return `${window.location.origin}${window.location.pathname}?link=${this.controls.link.value}` + (role ? `&role=${role}` : '');
+	replaceUrl() {
+		if ('history' in window) {
+			const role = LocationService.get('role') || null;
+			const name = LocationService.get('name') || null;
+			const url = `${window.location.origin}${window.location.pathname}?link=${this.controls.link.value}` + (name ? `&name=${name}` : '') + (role ? `&role=${role}` : '');
+			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
+		}
 	}
 
 	padded(num, size) {
