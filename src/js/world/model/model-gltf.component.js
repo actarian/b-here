@@ -66,7 +66,7 @@ export default class ModelGltfComponent extends ModelComponent {
 				mesh.position.x - center.x,
 				mesh.position.y - center.y, // center
 				// mesh.position.y - center.y + size.y / 2 * scale - 0.5, // bottom
-				mesh.position.z - center.z + this.host.renderer.xr.isPresenting ? -2 : 0,
+				mesh.position.z - center.z + (this.host.renderer.xr.isPresenting ? -2 : 0),
 			);
 			const endY = dummy.position.y;
 			const endRotationY = 0;

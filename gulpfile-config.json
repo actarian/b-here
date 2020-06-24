@@ -88,7 +88,7 @@
     "port": 41789,
     "log": false,
     "https": {
-      "cert": "certs/self-signed.cer"
+      "cert": "certs/server.crt"
     }
   }
 }

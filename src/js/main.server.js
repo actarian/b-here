@@ -2,7 +2,7 @@ const express = require('express');
 const https = require('https');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-
+const serveStatic = require('serve-static');
 const path = require('path');
 const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
 
@@ -10,31 +10,27 @@ import { environment } from '../environment/environment';
 
 const PORT = process.env.PORT || environment.port;
 
-console.log(environment);
-
 var app = express();
 
 app.disable('x-powered-by');
 
 app.use(express.static(path.join(__dirname, '../../docs/')));
+app.use('/b-here', serveStatic(path.join(__dirname, '../../docs/')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 
 // app.use(express.favicon());
-
 /*
 app.get('/', function(request, response) {
 	response.send('Hello World!');
 });
 */
-
 /*
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.get('/', (request, response) => response.render('pages/index'));
 */
-
 // app.set('view engine', 'handlebars');
 
 app.get('/', function(request, response) {
@@ -76,8 +72,8 @@ app.listen(PORT, () => {
 
 https
 	.createServer({
-		key: fs.readFileSync(path.join(__dirname, '../../certs/client-key.pem'), 'utf8'),
-		cert: fs.readFileSync(path.join(__dirname, '../../certs/client-cert.pem'), 'utf8')
+		cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
+		key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
 	}, app)
 	.listen(PORT, function() {
 		console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);

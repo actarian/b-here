@@ -29,6 +29,8 @@ var fs = require('fs');
 
 var bodyParser = require('body-parser');
 
+var serveStatic = require('serve-static');
+
 var path = require('path');
 
 var _require = require('agora-access-token'),
@@ -37,10 +39,10 @@ var _require = require('agora-access-token'),
     RtcRole = _require.RtcRole,
     RtmRole = _require.RtmRole;
 var PORT = process.env.PORT || environment.port;
-console.log(environment);
 var app = express();
 app.disable('x-powered-by');
 app.use(express.static(path.join(__dirname, '../../docs/')));
+app.use('/b-here', serveStatic(path.join(__dirname, '../../docs/')));
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -94,8 +96,8 @@ app.listen(PORT, () => {
 */
 
 https.createServer({
-  key: fs.readFileSync(path.join(__dirname, '../../certs/client-key.pem'), 'utf8'),
-  cert: fs.readFileSync(path.join(__dirname, '../../certs/client-cert.pem'), 'utf8')
+  cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
+  key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
 }, app).listen(PORT, function () {
   console.log("Example app listening on port " + PORT + "! Go to https://192.168.1.2:" + PORT + "/");
 }); // IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
