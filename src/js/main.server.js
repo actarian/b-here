@@ -6,7 +6,7 @@ const serveStatic = require('serve-static');
 const path = require('path');
 const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
 
-import { environment } from 'environment';
+import { environment } from './environment';
 
 const PORT = process.env.PORT || environment.port;
 

@@ -1,8 +1,9 @@
-export const PARAMS = new URLSearchParams(window.location.search);
+export const NODE = (typeof module !== 'undefined' && module.exports);
+export const PARAMS = NODE ? { get: () => {} } : new URLSearchParams(window.location.search);
 export const DEBUG = false || (PARAMS.get('debug') != null);
-export const BASE_HREF = document.querySelector('base').getAttribute('href');
-export const STATIC = window.location.port === '41999' || window.location.host === 'actarian.github.io';
-export const DEVELOPMENT = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+export const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+export const STATIC = NODE ? false : (window && (window.location.port === '41999' || window.location.host === 'actarian.github.io'));
+export const DEVELOPMENT = NODE ? false : (window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1);
 export const PRODUCTION = !DEVELOPMENT;
 export const ENV = {
 	STATIC,

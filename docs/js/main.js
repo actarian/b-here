@@ -526,11 +526,14 @@
     return Emittable;
   }();
 
-  var PARAMS = new URLSearchParams(window.location.search);
+  var NODE = typeof module !== 'undefined' && module.exports;
+  var PARAMS = NODE ? {
+    get: function get() {}
+  } : new URLSearchParams(window.location.search);
   var DEBUG =  PARAMS.get('debug') != null;
-  var BASE_HREF = document.querySelector('base').getAttribute('href');
-  var STATIC = window.location.port === '41999' || window.location.host === 'actarian.github.io';
-  var DEVELOPMENT = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+  var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+  var STATIC = NODE ? false : window && (window.location.port === '41999' || window.location.host === 'actarian.github.io');
+  var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
   var Environment = /*#__PURE__*/function () {
     var _proto = Environment.prototype;
 
