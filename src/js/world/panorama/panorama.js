@@ -189,7 +189,7 @@ export default class Panorama {
 		*/
 		video.src = src;
 		video.muted = true;
-		video.playsInline = true;
+		video.playsinline = true;
 		video.play();
 		this.setVideo(video);
 	}

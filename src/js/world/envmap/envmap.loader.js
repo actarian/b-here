@@ -113,7 +113,6 @@ export class EnvMapLoader {
 		video.loop = true;
 		video.muted = true;
 		video.playsInline = true;
-		let videoReady = false;
 		const onPlaying = () => {
 			video.oncanplay = null;
 			const texture = new THREE.VideoTexture(video);
@@ -138,7 +137,6 @@ export class EnvMapLoader {
 		// video.addEventListener('playing', onPlaying);
 		video.crossOrigin = 'anonymous';
 		video.oncanplay = () => {
-			videoReady = true;
 			console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
@@ -153,7 +151,7 @@ export class EnvMapLoader {
 		const video = document.createElement('video');
 		video.loop = true;
 		video.muted = true;
-		video.playsInline = true;
+		video.playsinline = true;
 		video.crossOrigin = 'anonymous';
 		const onPlaying = () => {
 			video.oncanplay = null;

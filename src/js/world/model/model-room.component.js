@@ -101,54 +101,46 @@ export default class ModelRoomComponent extends ModelComponent {
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 		const loader = this.getLoader(path, file);
 		loader.load(file, (model) => {
+			console.log(model);
 			let mesh;
 			const scene = model.scene;
 			if (scene) {
-				/*
-				model.scene.traverse((child) => {
-					if (child.isMesh) {
-						roughnessMipmapper.generateMipmaps(child.material);
-					}
-				});
-				*/
-				mesh = model.scene;
+				mesh = scene;
 			} else {
 				mesh = model;
 			}
 			const texture = ModelRoomComponent.getTexture();
 			const items = this.item.items;
 			mesh.scale.set(0.1, 0.1, 0.1);
+			// mesh.scale.set(10, 10, 10);
 			mesh.traverse((child) => {
 				if (child.isMesh) {
-					child.material.dispose();
+					// roughnessMipmapper.generateMipmaps(child.material);
 					const item = items.find(x => x.id === child.name);
 					if (item) {
-						const m = new THREE.MeshBasicMaterial({
+						child.material.dispose();
+						const material = new THREE.MeshBasicMaterial({
 							color: 0x000000,
 							side: THREE.DoubleSide,
 						});
 						this.loadTexture(item, (texture) => {
-							m.map = texture;
-							m.color.setHex(0xffffff);
-							m.needsUpdate = true;
+							material.map = texture;
+							material.color.setHex(0xffffff);
+							material.needsUpdate = true;
 						});
-						child.material = m;
+						child.material = material;
 					} else {
+						/*
 						if (USE_SHADOW) {
 							child.castShadow = true;
 							child.receiveShadow = true;
 						}
-						// child.material = material;
-						/*
-						const m = new THREE.MeshStandardMaterial({
-							color: new THREE.Color(Math.random(), Math.random(), Math.random()),
-						});
-						*/
-						const m = new THREE.MeshStandardMaterial({
+						const material = new THREE.MeshStandardMaterial({
 							color: 0x222222, // new THREE.Color(Math.random(), Math.random(), Math.random()),
 							roughness: 0.4,
 						});
-						child.material = m;
+						child.material = material;
+						*/
 					}
 				}
 			});

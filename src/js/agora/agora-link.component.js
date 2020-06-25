@@ -76,6 +76,7 @@ export default class AgoraLinkComponent extends Component {
 			const role = LocationService.get('role') || null;
 			const name = LocationService.get('name') || null;
 			const url = `${window.location.origin}${window.location.pathname}?link=${this.controls.link.value}` + (name ? `&name=${name}` : '') + (role ? `&role=${role}` : '');
+			console.log('AgoraLinkComponent.url', url);
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
 	}

@@ -2303,6 +2303,7 @@
         var role = LocationService.get('role') || null;
         var name = LocationService.get('name') || null;
         var url = "" + window.location.origin + window.location.pathname + "?link=" + this.controls.link.value + (name ? "&name=" + name : '') + (role ? "&role=" + role : '');
+        console.log('AgoraLinkComponent.url', url);
         window.history.replaceState({
           'pageTitle': window.pageTitle
         }, '', url);
@@ -2372,6 +2373,7 @@
         var role = LocationService.get('role') || null;
         var link = LocationService.get('link') || null;
         var url = "" + window.location.origin + window.location.pathname + "?link=" + link + "&name=" + this.controls.name.value + (role ? "&role=" + role : '');
+        console.log('AgoraNameComponent.url', url);
         window.history.replaceState({
           'pageTitle': window.pageTitle
         }, '', url);
@@ -3028,6 +3030,7 @@
           node = _getContext.node;
 
       node.classList.remove('hidden');
+      this.debug = DEBUG;
       this.state = {};
       this.data = null;
       this.views = null;
@@ -55157,7 +55160,7 @@
       var video = document.createElement('video');
       video.loop = true;
       video.muted = true;
-      video.playsInline = true;
+      video.playsinline = true;
       video.crossOrigin = 'anonymous';
 
       var onPlaying = function onPlaying() {
@@ -55676,7 +55679,7 @@
 
       video.src = src;
       video.muted = true;
-      video.playsInline = true;
+      video.playsinline = true;
       video.play();
       this.setVideo(video);
     };
@@ -63298,6 +63301,8 @@
         */
 
 
+        console.log(mesh);
+
         if (typeof callback === 'function') {
           callback(mesh);
         }
@@ -68129,61 +68134,41 @@
 
       var loader = this.getLoader(path, file);
       loader.load(file, function (model) {
+        console.log(model);
         var mesh;
         var scene = model.scene;
 
         if (scene) {
-          /*
-          model.scene.traverse((child) => {
-          	if (child.isMesh) {
-          		roughnessMipmapper.generateMipmaps(child.material);
-          	}
-          });
-          */
-          mesh = model.scene;
+          mesh = scene;
         } else {
           mesh = model;
         }
 
         var texture = ModelRoomComponent.getTexture();
         var items = _this2.item.items;
-        mesh.scale.set(0.1, 0.1, 0.1);
+        mesh.scale.set(0.1, 0.1, 0.1); // mesh.scale.set(10, 10, 10);
+
         mesh.traverse(function (child) {
           if (child.isMesh) {
-            child.material.dispose();
+            // roughnessMipmapper.generateMipmaps(child.material);
             var item = items.find(function (x) {
               return x.id === child.name;
             });
 
             if (item) {
-              var m = new THREE$1.MeshBasicMaterial({
+              child.material.dispose();
+              var material = new THREE$1.MeshBasicMaterial({
                 color: 0x000000,
                 side: THREE$1.DoubleSide
               });
 
               _this2.loadTexture(item, function (texture) {
-                m.map = texture;
-                m.color.setHex(0xffffff);
-                m.needsUpdate = true;
+                material.map = texture;
+                material.color.setHex(0xffffff);
+                material.needsUpdate = true;
               });
 
-              child.material = m;
-            } else {
-
-              /*
-              const m = new THREE.MeshStandardMaterial({
-              	color: new THREE.Color(Math.random(), Math.random(), Math.random()),
-              });
-              */
-
-
-              var _m = new THREE$1.MeshStandardMaterial({
-                color: 0x222222,
-                // new THREE.Color(Math.random(), Math.random(), Math.random()),
-                roughness: 0.4
-              });
-
-              child.material = _m;
+              child.material = material;
             }
           }
         });

@@ -82,6 +82,7 @@ export default class ModelPlaneComponent extends ModelComponent {
 			var box = new THREE.BoxHelper(mesh, 0xffff00);
 			this.host.scene.add(box);
 			*/
+			console.log(mesh);
 			if (typeof callback === 'function') {
 				callback(mesh);
 			}

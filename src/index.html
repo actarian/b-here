@@ -93,7 +93,7 @@
 
 	<!-- Status Connected -->
 	<div class="ui" *if="state.status == 'connected'">
-		<div class="ui__head">
+		<div class="ui__head" *if="!debug">
 			<div class="group--remote" [class]="'group--remote--' + remotes.length">
 				<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
 					<div class="agora-stream__player"></div>
@@ -166,7 +166,7 @@
 
 		<div class="ui__foot">
 			<div class="left">
-				<div class="group--controls">
+				<div class="group--controls" *if="!debug">
 					<button type="button" class="btn--call" (click)="disconnect()">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
 					</button>
