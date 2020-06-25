@@ -501,7 +501,7 @@
         "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "video/",
-      "envMapFile": "TimeSquare.mp4",
+      "envMapFile": "time-square-composition.mp4",
       "items": [
         {
           "id": 81,
@@ -533,7 +533,7 @@
         "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "video/",
-      "envMapFile": "Garden.mp4",
+      "envMapFile": "garden-01.mp4",
       "items": [
         {
           "id": 91,
