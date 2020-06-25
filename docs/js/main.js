@@ -68080,6 +68080,48 @@
       return loader;
     };
 
+    _proto.loadTexture = function loadTexture(item, callback) {
+      var texture;
+
+      if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
+        // create the video element
+        var video = item.video = document.createElement('video');
+        video.src = ModelRoomComponent.getPath(item.folder, item.file);
+        video.muted = true;
+        video.playsinline = true;
+        video.loop = true;
+        video.crossOrigin = 'anonymous';
+
+        var onCanPlay = function onCanPlay() {
+          video.oncanplay = null;
+          var texture = new THREE$1.VideoTexture(video);
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.format = THREE$1.RGBFormat;
+          texture.needsUpdate = true;
+
+          if (typeof callback === 'function') {
+            callback(texture);
+          }
+        };
+
+        video.oncanplay = onCanPlay;
+        video.load(); // must call after setting/changing source
+
+        video.play().then(function () {
+          console.log('ModelRoomComponent.play');
+        }, function (error) {
+          console.log('ModelRoomComponent.play.error', error);
+        });
+      } else {
+        texture = ModelRoomComponent.loadTexture(item.folder, item.file);
+
+        if (typeof callback === 'function') {
+          callback(texture);
+        }
+      }
+    };
+
     _proto.loadModel = function loadModel(path, file, callback) {
       var _this2 = this;
 
@@ -68114,31 +68156,17 @@
             });
 
             if (item) {
-              var t;
-
-              if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
-                // create the video element
-                var video = document.createElement('video');
-                video.src = ModelRoomComponent.getPath(item.folder, item.file);
-                video.muted = true;
-                video.loop = true;
-                video.load(); // must call after setting/changing source
-
-                video.play();
-                t = new THREE$1.VideoTexture(video);
-                item.video = video;
-              } else {
-                t = ModelRoomComponent.loadTexture(item.folder, item.file);
-              } // const t = new THREE.VideoTexture(video);
-
-
-              t.minFilter = THREE$1.LinearFilter;
-              t.magFilter = THREE$1.LinearFilter;
-              t.format = THREE$1.RGBFormat;
               var m = new THREE$1.MeshBasicMaterial({
-                map: t,
+                color: 0x000000,
                 side: THREE$1.DoubleSide
               });
+
+              _this2.loadTexture(item, function (texture) {
+                m.map = texture;
+                m.color.setHex(0xffffff);
+                m.needsUpdate = true;
+              });
+
               child.material = m;
             } else {
 
