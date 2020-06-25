@@ -553,7 +553,7 @@
       key: "href",
       get: function get() {
         if (window.location.host.indexOf('herokuapp') !== -1) {
-          return 'https://raw.githack.com/actarian/b-here/b-here-barilla/docs/';
+          return 'https://raw.githubusercontent.com/actarian/b-here/b-here-barilla/docs/';
         } else {
           return BASE_HREF;
         }
