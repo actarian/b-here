@@ -60,6 +60,52 @@
         {
           "id": 171,
           "type": "nav",
+          "title": "Ambiente1",
+          "abstract": "Abstract",
+          "position": [
+            0.8012228950677142,
+            -0.19355223904603844,
+            0.5661973182377114
+          ],
+          "navTo": 18
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 18,
+      "type": "panorama-grid",
+      "name": "Ambiente1",
+      "likes": 225,
+      "liked": false,
+      "envMapFolder": "ambiente1/",
+      "envMapFile": "ambiente1_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente1_x0_y0.jpg",
+        "ambiente1_x0_y1.jpg",
+        "ambiente1_x0_y2.jpg",
+        "ambiente1_x0_y3.jpg",
+        "ambiente1_x1_y0.jpg",
+        "ambiente1_x1_y3.jpg",
+        "ambiente1_x2_y0.jpg",
+        "ambiente1_x2_y3.jpg",
+        "ambiente1_x3_y0.jpg",
+        "ambiente1_x3_y3.jpg",
+        "ambiente1_x4_y0.jpg",
+        "ambiente1_x4_y1.jpg",
+        "ambiente1_x4_y2.jpg",
+        "ambiente1_x4_y3.jpg"
+      ],
+      "items": [
+        {
+          "id": 171,
+          "type": "nav",
           "title": "Time Square",
           "abstract": "Abstract",
           "position": [
@@ -72,7 +118,7 @@
       ],
       "orientation": {
         "latitude": 0,
-        "longitude": 0
+        "longitude": 90
       },
       "fov": 75
     },
@@ -586,7 +632,7 @@
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "items": [
+      "tiles": [
         "NEWONESET2_x0_y0.jpg",
         "NEWONESET2_x0_y1.jpg",
         "NEWONESET2_x0_y2.jpg",
@@ -606,6 +652,7 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90
@@ -626,7 +673,7 @@
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "items": [
+      "tiles": [
         "NEWONESET2_x0_y0.jpg",
         "NEWONESET2_x0_y1.jpg",
         "NEWONESET2_x0_y2.jpg",
@@ -646,6 +693,7 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90

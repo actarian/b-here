@@ -105,7 +105,7 @@ export default class Panorama {
 	}
 
 	swap(view, renderer, callback) {
-		const item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
+		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
 		if (this.tween > 0) {
 			gsap.to(this, 0.5, {

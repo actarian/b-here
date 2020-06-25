@@ -187,10 +187,10 @@ export default class ModelGridComponent extends ModelComponent {
 
 	moveToIndex(index) {
 		this.coords = null;
-		const item = this.view.items[index];
-		const coords = new THREE.Vector2(item.indices.x - this.indices.x, item.indices.y - this.indices.y);
-		this.indices.x = item.indices.x;
-		this.indices.y = item.indices.y;
+		const tile = this.view.tiles[index];
+		const coords = new THREE.Vector2(tile.indices.x - this.indices.x, tile.indices.y - this.indices.y);
+		this.indices.x = tile.indices.x;
+		this.indices.y = tile.indices.y;
 		const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
 		this.move.next({
 			indices: this.indices,

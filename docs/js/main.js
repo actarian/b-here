@@ -553,7 +553,7 @@
       key: "href",
       get: function get() {
         if (window.location.host.indexOf('herokuapp') !== -1) {
-          return 'https://raw.githack.com/actarian/b-here/master/docs/';
+          return 'https://raw.githack.com/actarian/b-here/b-here-barilla/docs/';
         } else {
           return BASE_HREF;
         }
@@ -2721,9 +2721,15 @@
       var _this;
 
       if (options.items) {
-        options.items = options.items.map(function (mapFile, i) {
+        options.items.forEach(function (item, index) {
+          item.index = index;
+        });
+      }
+
+      if (options.tiles) {
+        options.tiles = options.tiles.map(function (tile, i) {
           var indices = new THREE.Vector2();
-          mapFile.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+          tile.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
             var flipAxes = options.flipAxes ? -1 : 1;
 
             if (options.invertAxes) {
@@ -2732,13 +2738,13 @@
             } else {
               indices.x = parseInt(b);
               indices.y = parseInt(c) * flipAxes;
-            } // console.log('PanoramaGridView', mapFile, indices);
+            } // console.log('PanoramaGridView', tile, indices);
 
           });
           return {
             id: i + 1,
             envMapFolder: options.envMapFolder,
-            envMapFile: mapFile,
+            envMapFile: tile,
             indices: indices
           };
         });
@@ -2753,7 +2759,7 @@
     var _proto = PanoramaGridView.prototype;
 
     _proto.getTileIndex = function getTileIndex(x, y) {
-      return this.items.reduce(function (p, c, i) {
+      return this.tiles.reduce(function (p, c, i) {
         if (c.indices.x === x && c.indices.y === y) {
           return i;
         } else {
@@ -2771,7 +2777,7 @@
 
       if (index !== -1) {
         this.index = index;
-        return this.items[index];
+        return this.tiles[index];
       }
     };
 
@@ -55579,7 +55585,7 @@
     _proto.swap = function swap(view, renderer, callback) {
       var _this = this;
 
-      var item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
+      var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
       var material = this.mesh.material;
 
       if (this.tween > 0) {
@@ -62288,10 +62294,10 @@
 
     _proto.moveToIndex = function moveToIndex(index) {
       this.coords = null;
-      var item = this.view.items[index];
-      var coords = new THREE$1.Vector2(item.indices.x - this.indices.x, item.indices.y - this.indices.y);
-      this.indices.x = item.indices.x;
-      this.indices.y = item.indices.y;
+      var tile = this.view.tiles[index];
+      var coords = new THREE$1.Vector2(tile.indices.x - this.indices.x, tile.indices.y - this.indices.y);
+      this.indices.x = tile.indices.x;
+      this.indices.y = tile.indices.y;
       var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
 
       this.move.next({
