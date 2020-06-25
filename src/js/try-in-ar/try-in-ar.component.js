@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { first, map } from 'rxjs/operators';
-import { BASE_HREF } from '../const';
+import { environment } from '../environment';
 import HttpService from '../http/http.service';
 import LocationService from '../location/location.service';
 
@@ -29,7 +29,7 @@ export default class TryInARComponent extends Component {
 					const { node } = getContext(this);
 					node.appendChild(modelViewerNode);
 				} else if (this.devicePlatform === DevicePlatform.IOS) {
-					const usdzSrc = `${window.location.protocol}//${this.getHost()}${BASE_HREF}${view.ar.usdz}`;
+					const usdzSrc = `${environment.host}${view.ar.usdz}`;
 					window.location.href = usdzSrc;
 				}
 			});
@@ -61,21 +61,13 @@ export default class TryInARComponent extends Component {
 	}
 
 	getModelViewerNode(view) {
-		const gltfSrc = `${window.location.protocol}//${this.getHost()}${BASE_HREF}${view.ar.gltf}`;
-		const usdzSrc = `${window.location.protocol}//${this.getHost()}${BASE_HREF}${view.ar.usdz}`;
+		const gltfSrc = `${environment.host}${view.ar.gltf}`;
+		const usdzSrc = `${environment.host}${view.ar.usdz}`;
 		const template = `<model-viewer alt="${view.name}" src="${gltfSrc}" ios-src="${usdzSrc}" magic-leap ar ar_preferred></model-viewer>`;
 		const div = document.createElement("div");
 		div.innerHTML = template;
 		const node = div.firstElementChild;
 		return node;
-	}
-
-	getHost() {
-		let host = window.location.host.replace('127.0.0.1', '192.168.1.2');
-		if (host.substr(host.length - 1, 1) === '/') {
-			host = host.substr(0, host.length - 1);
-		}
-		return host;
 	}
 
 	load$() {

@@ -2,7 +2,7 @@ import { Directive, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import DownloadService from '../download/download.service';
-import { STATIC } from '../environment/environment';
+import { STATIC } from '../environment';
 import HttpService from '../http/http.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import UserService from '../user/user.service';

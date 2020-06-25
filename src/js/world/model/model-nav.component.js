@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
-import { environment } from '../../../environment/environment';
-import { BASE_HREF } from '../../const';
+import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -17,7 +16,7 @@ export default class ModelNavComponent extends ModelComponent {
 	}
 
 	static getTexture() {
-		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png'));
+		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getTexturePath('ui/wall-nav.png')));
 	}
 
 	onInit() {

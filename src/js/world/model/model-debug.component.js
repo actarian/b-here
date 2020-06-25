@@ -1,7 +1,6 @@
 import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
-import { environment } from '../../../environment/environment';
-import { BASE_HREF } from '../../const';
+import { environment } from '../../environment';
 import DebugService from '../debug.service';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
@@ -18,7 +17,7 @@ export default class ModelDebugComponent extends ModelComponent {
 	}
 
 	static getFontLoader(callback) {
-		return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(BASE_HREF + environment.paths.fonts + 'helvetiker/helvetiker_regular.typeface.json', callback));
+		return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(environment.getFontPath('helvetiker/helvetiker_regular.typeface.json'), callback));
 	}
 
 	get message() {

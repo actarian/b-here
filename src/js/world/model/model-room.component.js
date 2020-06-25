@@ -3,8 +3,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
-import { environment } from '../../../environment/environment';
-import { BASE_HREF } from '../../const';
+import { environment } from '../../environment';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -13,7 +12,7 @@ const USE_SHADOW = false;
 export default class ModelRoomComponent extends ModelComponent {
 
 	static getPath(folder, file) {
-		return BASE_HREF + environment.paths.textures + folder + file;
+		return environment.getTexturePath(folder + file);
 	}
 
 	static getLoader() {
@@ -37,7 +36,7 @@ export default class ModelRoomComponent extends ModelComponent {
 	}
 
 	create(callback) {
-		this.loadModel(BASE_HREF + environment.paths.models + this.item.modelFolder, this.item.modelFile, (mesh) => {
+		this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, (mesh) => {
 			if (typeof callback === 'function') {
 				callback(mesh);
 			}

@@ -2,11 +2,10 @@ import { Component, getContext } from 'rxcomp';
 import { auditTime, takeUntil, tap } from 'rxjs/operators';
 import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
-import { environment } from '../../environment/environment';
 // import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import AgoraService, { MessageType, RoleType } from '../agora/agora.service';
-import { BASE_HREF, DEBUG } from '../const';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
+import { DEBUG, environment } from '../environment';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
 import { PanoramaGridView } from '../view/view.service';
@@ -327,7 +326,7 @@ export default class WorldComponent extends Component {
 	addPointer(parent) {
 		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
-		const texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png');
+		const texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
 		// texture.magFilter = THREE.NearestFilter;
 		// texture.wrapT = THREE.RepeatWrapping;
 		// texture.repeat.y = 1;

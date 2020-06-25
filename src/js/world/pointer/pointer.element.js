@@ -1,7 +1,6 @@
-import { environment } from "../../../environment/environment";
-import { BASE_HREF } from "../../const";
-import InteractiveMesh from "../interactive/interactive.mesh";
-import { PANORAMA_RADIUS } from "../panorama/panorama";
+import { environment } from '../../environment';
+import InteractiveMesh from '../interactive/interactive.mesh';
+import { PANORAMA_RADIUS } from '../panorama/panorama';
 
 const POINTER_RADIUS = PANORAMA_RADIUS - 0.01;
 const ORIGIN = new THREE.Vector3();
@@ -11,7 +10,7 @@ export default class PointerElement {
 	constructor() {
 		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
-		const texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png');
+		const texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
 		const material = new THREE.MeshBasicMaterial({
 			depthTest: false,
 			map: texture,

@@ -1,12 +1,11 @@
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import { environment } from '../../environment/environment';
-import { BASE_HREF } from '../const';
+import { environment } from '../environment';
 
 export class RgbeLoader {
 
 	static load(item, renderer, callback) {
-		return this.loadRgbeBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+		return this.loadRgbeBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
 	}
 
 	static loadRgbeBackground(path, file, renderer, callback) {

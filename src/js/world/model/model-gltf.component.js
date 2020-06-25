@@ -3,8 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
-import { environment } from '../../../environment/environment';
-import { BASE_HREF } from '../../const';
+import { environment } from '../../environment';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -48,7 +47,7 @@ export default class ModelGltfComponent extends ModelComponent {
 	}
 
 	create(callback) {
-		this.loadGltfModel(BASE_HREF + environment.paths.models + this.item.gltfFolder, this.item.gltfFile, (mesh) => {
+		this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (mesh) => {
 			// scale
 			const box = new THREE.Box3().setFromObject(mesh);
 			const size = box.max.clone().sub(box.min);
@@ -96,8 +95,8 @@ export default class ModelGltfComponent extends ModelComponent {
 			this.pushChanges();
 		});
 		/*
-		this.loadRgbeBackground(BASE_HREF + environment.paths.textures + this.item.envMapFolder, this.item.envMapFile, (envMap) => {
-			this.loadGltfModel(BASE_HREF + environment.paths.models + this.item.gltfFolder, this.item.gltfFile, (mesh) => {
+		this.loadRgbeBackground(environment.getTexturePath(this.item.envMapFolder), this.item.envMapFile, (envMap) => {
+			this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (mesh) => {
 				const box = new THREE.Box3().setFromObject(mesh);
 				const center = box.getCenter(new THREE.Vector3());
 				mesh.position.x += (mesh.position.x - center.x);
@@ -120,8 +119,8 @@ export default class ModelGltfComponent extends ModelComponent {
 
 	/*
 	loadAssets() {
-		this.loadRgbeBackground(BASE_HREF + environment.paths.textures + this.item.envMapFolder, this.item.envMapFile, (envMap) => {
-			this.loadGltfModel(BASE_HREF + environment.paths.models + this.item.gltfFolder, this.item.gltfFile, (model) => {
+		this.loadRgbeBackground(environment.getTexturePath(this.item.envMapFolder), this.item.envMapFile, (envMap) => {
+			this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (model) => {
 				const scene = this.host.scene;
 				scene.add(model);
 				this.host.render();

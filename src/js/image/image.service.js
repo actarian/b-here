@@ -1,6 +1,6 @@
 import { fromEvent, of } from 'rxjs';
 import { filter, finalize, first, map } from 'rxjs/operators';
-import { STATIC } from '../environment/environment';
+import { STATIC } from '../environment';
 
 const PATH = STATIC ? './' : '/Client/docs/';
 

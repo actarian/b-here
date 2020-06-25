@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { STATIC } from '../environment/environment';
+import { STATIC } from '../environment';
 import HttpService from '../http/http.service';
 import LocalStorageService from '../local-storage/local-storage.service';
 

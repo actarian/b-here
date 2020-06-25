@@ -1,6 +1,6 @@
 import { from, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { STATIC } from '../environment/environment';
+import { STATIC } from '../environment';
 
 export default class HttpService {
 

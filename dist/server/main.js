@@ -6,20 +6,7 @@
 
 'use strict';
 
-var environment = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  appCertificate: '',
-  channelName: 'BHere',
-  publisherId: '999',
-  debugMeetingId: '1591366622325',
-  port: 5000,
-  apiEnabled: false,
-  paths: {
-    models: 'models/',
-    textures: 'textures/',
-    fonts: 'fonts/'
-  }
-};
+var environment = require('environment');
 
 var express = require('express');
 
@@ -38,7 +25,7 @@ var _require = require('agora-access-token'),
     RtmTokenBuilder = _require.RtmTokenBuilder,
     RtcRole = _require.RtcRole,
     RtmRole = _require.RtmRole;
-var PORT = process.env.PORT || environment.port;
+var PORT = process.env.PORT || environment.environment.port;
 var app = express();
 app.disable('x-powered-by');
 app.use(express.static(path.join(__dirname, '../../docs/')));
@@ -72,7 +59,7 @@ app.post('/api/token/rtc', function (request, response) {
   var expirationTime = timestamp + duration;
   var uid = payload.uid ? String(payload.uid) : timestamp.toString();
   var role = RtcRole.PUBLISHER;
-  var token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
+  var token = RtcTokenBuilder.buildTokenWithUid(environment.environment.appKey, environment.environment.appCertificate, environment.environment.channelName, uid, role, expirationTime);
   response.send(JSON.stringify({
     token: token
   }));
@@ -84,7 +71,7 @@ app.post('/api/token/rtm', function (request, response) {
   var expirationTime = timestamp + duration;
   var uid = payload.uid ? String(payload.uid) : timestamp.toString();
   var role = RtmRole.PUBLISHER;
-  var token = RtmTokenBuilder.buildToken(environment.appKey, environment.appCertificate, uid, role, expirationTime);
+  var token = RtmTokenBuilder.buildToken(environment.environment.appKey, environment.environment.appCertificate, uid, role, expirationTime);
   response.send(JSON.stringify({
     token: token
   }));

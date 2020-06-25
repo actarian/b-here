@@ -1,5 +1,5 @@
+import { ENV } from 'environment';
 import { Component } from 'rxcomp';
-import { ENV } from '../environment/environment';
 
 export default class TestComponent extends Component {
 

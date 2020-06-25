@@ -1,13 +1,12 @@
 import * as THREE from 'three';
-import { environment } from '../../../environment/environment';
-import { BASE_HREF } from '../../const';
+import { environment } from '../../environment';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
 export default class ModelPlaneComponent extends ModelComponent {
 
 	static getPath(folder, file) {
-		return BASE_HREF + environment.paths.textures + folder + file;
+		return environment.getTexturePath(folder + file);
 	}
 
 	static getLoader() {

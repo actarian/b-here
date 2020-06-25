@@ -463,24 +463,6 @@
     inputs: ['video', 'audio']
   };
 
-  var environment = {
-    appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-    appCertificate: '',
-    channelName: 'BHere',
-    publisherId: '999',
-    debugMeetingId: '1591366622325',
-    port: 5000,
-    apiEnabled: false,
-    paths: {
-      models: 'models/',
-      textures: 'textures/',
-      fonts: 'fonts/'
-    }
-  };
-
-  var BASE_HREF = document.querySelector('base').getAttribute('href');
-  var DEBUG = false;
-
   var Emittable = /*#__PURE__*/function () {
     function Emittable() {
       this.events = {};
@@ -544,8 +526,70 @@
     return Emittable;
   }();
 
+  var PARAMS = new URLSearchParams(window.location.search);
+  var DEBUG =  PARAMS.get('debug') != null;
+  var BASE_HREF = document.querySelector('base').getAttribute('href');
   var STATIC = window.location.port === '41999' || window.location.host === 'actarian.github.io';
   var DEVELOPMENT = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+  var Environment = /*#__PURE__*/function () {
+    var _proto = Environment.prototype;
+
+    _proto.getModelPath = function getModelPath(path) {
+      return this.href + this.paths.models + path;
+    };
+
+    _proto.getTexturePath = function getTexturePath(path) {
+      return this.href + this.paths.textures + path;
+    };
+
+    _proto.getFontPath = function getFontPath(path) {
+      return this.href + this.paths.fonts + path;
+    };
+
+    _createClass(Environment, [{
+      key: "href",
+      get: function get() {
+        if (window.location.host.indexOf('herokuapp') !== -1) {
+          return 'https://raw.githack.com/actarian/b-here/master/docs/';
+        } else {
+          return BASE_HREF;
+        }
+      }
+    }, {
+      key: "host",
+      get: function get() {
+        var host = window.location.host.replace('127.0.0.1', '192.168.1.2'); // let host = window.location.host;
+
+        if (host.substr(host.length - 1, 1) === '/') {
+          host = host.substr(0, host.length - 1);
+        }
+
+        return window.location.protocol + "//" + host + BASE_HREF;
+      }
+    }]);
+
+    function Environment(options) {
+      if (options) {
+        Object.assign(this, options);
+      }
+    }
+
+    return Environment;
+  }();
+  var environment = new Environment({
+    appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+    appCertificate: '',
+    channelName: 'BHere',
+    publisherId: '999',
+    debugMeetingId: '1591366622325',
+    port: 5000,
+    apiEnabled: false,
+    paths: {
+      models: 'models/',
+      textures: 'textures/',
+      fonts: 'fonts/'
+    }
+  });
 
   var HttpService = /*#__PURE__*/function () {
     function HttpService() {}
@@ -888,6 +932,9 @@
     _inheritsLoose(AgoraService, _Emittable);
 
     AgoraService.getSingleton = function getSingleton(defaultDevices) {
+      if (DEBUG) {
+        return;
+      }
 
       if (!this.AGORA) {
         this.AGORA = new AgoraService(defaultDevices);
@@ -1110,7 +1157,11 @@
     };
 
     _proto.getRtcToken = function getRtcToken() {
-      {
+      if (environment.apiEnabled) {
+        return HttpService.post$('/api/token/rtc', {
+          uid: null
+        });
+      } else {
         return rxjs.of({
           token: null
         });
@@ -1118,7 +1169,11 @@
     };
 
     _proto.getRtmToken = function getRtmToken(uid) {
-      {
+      if (environment.apiEnabled) {
+        return HttpService.post$('/api/token/rtm', {
+          uid: uid
+        });
+      } else {
         return rxjs.of({
           token: null
         });
@@ -3123,7 +3178,7 @@
           if (_this3.state.hosted) {
             _this3.view = view; // !!!
 
-            {
+            if (!DEBUG) {
               _this3.agora.navToView(view.id);
             }
           } else {
@@ -3188,13 +3243,18 @@
     };
 
     _proto.disconnect = function disconnect() {
-      {
+      if (!DEBUG) {
         this.agora.leaveChannel();
+      } else {
+        this.patchState({
+          connecting: false,
+          connected: false
+        });
       }
     };
 
     _proto.onSlideChange = function onSlideChange(index) {
-      {
+      if (!DEBUG) {
         this.agora.sendMessage({
           type: MessageType.SlideChange,
           clientId: this.agora.state.uid,
@@ -3216,7 +3276,7 @@
         src: CONTROL_REQUEST,
         data: null
       }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        {
+        if (!DEBUG) {
           if (event instanceof ModalResolveEvent) {
             message.type = MessageType.RequestControlAccepted;
             _this4.state.locked = true;
@@ -3228,6 +3288,18 @@
           _this4.agora.sendMessage(message);
 
           _this4.pushChanges();
+        } else {
+          if (event instanceof ModalResolveEvent) {
+            _this4.patchState({
+              control: true,
+              spying: false
+            });
+          } else {
+            _this4.patchState({
+              control: false,
+              spying: false
+            });
+          }
         }
       });
     } // onView() { const context = getContext(this); }
@@ -3241,26 +3313,45 @@
     };
 
     _proto.toggleCamera = function toggleCamera() {
-      {
+      if (!DEBUG) {
         this.agora.toggleCamera();
+      } else {
+        this.patchState({
+          cameraMuted: !this.state.cameraMuted
+        });
       }
     };
 
     _proto.toggleAudio = function toggleAudio() {
-      {
+      if (!DEBUG) {
         this.agora.toggleAudio();
+      } else {
+        this.patchState({
+          audioMuted: !this.state.audioMuted
+        });
       }
     };
 
     _proto.onToggleControl = function onToggleControl() {
-      {
+      if (!DEBUG) {
         this.agora.toggleControl();
+      } else if (this.state.control) {
+        this.patchState({
+          control: false
+        });
+      } else {
+        this.onRemoteControlRequest({});
       }
     };
 
     _proto.onToggleSpy = function onToggleSpy(clientId) {
-      {
+      if (!DEBUG) {
         this.agora.toggleSpy(clientId);
+      } else {
+        this.patchState({
+          spying: !this.state.spying,
+          control: false
+        });
       }
     };
 
@@ -4334,8 +4425,8 @@
         var data = this.data = parentInstance.modal.data; // console.log('data', data);
 
         if (data && data.ar) {
-          // const url = `${window.location.protocol}//${this.getHost()}${BASE_HREF}${data.ar.usdz}`;
-          var url = window.location.protocol + "//" + this.getHost() + BASE_HREF + "try-in-ar.html?viewId=" + data.id;
+          // const url = `${environment.host}${data.ar.usdz}`;
+          var url = environment.host + "try-in-ar.html?viewId=" + data.id;
           console.log(url);
           var qrcode = new QRious({
             element: node.querySelector('.qrcode'),
@@ -4344,16 +4435,6 @@
           });
         }
       }
-    };
-
-    _proto.getHost = function getHost() {
-      var host = window.location.host.replace('127.0.0.1', '192.168.1.2');
-
-      if (host.substr(host.length - 1, 1) === '/') {
-        host = host.substr(0, host.length - 1);
-      }
-
-      return host;
     };
 
     _proto.close = function close() {
@@ -4403,7 +4484,7 @@
 
             node.appendChild(modelViewerNode);
           } else if (_this.devicePlatform === DevicePlatform.IOS) {
-            var usdzSrc = window.location.protocol + "//" + _this.getHost() + BASE_HREF + view.ar.usdz;
+            var usdzSrc = "" + environment.host + view.ar.usdz;
             window.location.href = usdzSrc;
           }
         });
@@ -4440,23 +4521,13 @@
     };
 
     _proto.getModelViewerNode = function getModelViewerNode(view) {
-      var gltfSrc = window.location.protocol + "//" + this.getHost() + BASE_HREF + view.ar.gltf;
-      var usdzSrc = window.location.protocol + "//" + this.getHost() + BASE_HREF + view.ar.usdz;
+      var gltfSrc = "" + environment.host + view.ar.gltf;
+      var usdzSrc = "" + environment.host + view.ar.usdz;
       var template = "<model-viewer alt=\"" + view.name + "\" src=\"" + gltfSrc + "\" ios-src=\"" + usdzSrc + "\" magic-leap ar ar_preferred></model-viewer>";
       var div = document.createElement("div");
       div.innerHTML = template;
       var node = div.firstElementChild;
       return node;
-    };
-
-    _proto.getHost = function getHost() {
-      var host = window.location.host.replace('127.0.0.1', '192.168.1.2');
-
-      if (host.substr(host.length - 1, 1) === '/') {
-        host = host.substr(0, host.length - 1);
-      }
-
-      return host;
     };
 
     _proto.load$ = function load$() {
@@ -54948,13 +55019,13 @@
       if (item.envMapFile === 'publisherStream') {
         return this.loadPublisherStreamBackground(renderer, callback);
       } else if (item.envMapFile.indexOf('.hdr') !== -1) {
-        return this.loadRgbeBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+        return this.loadRgbeBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
       } else if (item.envMapFile.indexOf('.mp4') !== -1 || item.envMapFile.indexOf('.webm') !== -1) {
-        return this.loadVideoBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+        return this.loadVideoBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
       } else if (item.envMapFile.indexOf('.m3u8') !== -1) {
         return this.loadHlslVideoBackground(item.envMapFile, renderer, callback);
       } else {
-        return this.loadBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+        return this.loadBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
       }
     };
 
@@ -60347,7 +60418,7 @@
     function PointerElement() {
       var geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
       var loader = new THREE.TextureLoader();
-      var texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png');
+      var texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
       var material = new THREE.MeshBasicMaterial({
         depthTest: false,
         map: texture,
@@ -60685,7 +60756,7 @@
     _proto.addPointer = function addPointer(parent) {
       var geometry = new THREE$1.PlaneBufferGeometry(1.2, 1.2, 2, 2);
       var loader = new THREE$1.TextureLoader();
-      var texture = loader.load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png'); // texture.magFilter = THREE.NearestFilter;
+      var texture = loader.load(environment.getTexturePath('ui/wall-nav.png')); // texture.magFilter = THREE.NearestFilter;
       // texture.wrapT = THREE.RepeatWrapping;
       // texture.repeat.y = 1;
       // texture.anisotropy = 0;
@@ -61667,7 +61738,7 @@
     };
 
     ModelDebugComponent.getFontLoader = function getFontLoader(callback) {
-      return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(BASE_HREF + environment.paths.fonts + 'helvetiker/helvetiker_regular.typeface.json', callback));
+      return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(environment.getFontPath('helvetiker/helvetiker_regular.typeface.json'), callback));
     };
 
     var _proto = ModelDebugComponent.prototype;
@@ -61906,7 +61977,7 @@
     _proto.create = function create(callback) {
       var _this = this;
 
-      this.loadGltfModel(BASE_HREF + environment.paths.models + this.item.gltfFolder, this.item.gltfFile, function (mesh) {
+      this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, function (mesh) {
         // scale
         var box = new THREE$1.Box3().setFromObject(mesh);
         var size = box.max.clone().sub(box.min);
@@ -61957,8 +62028,8 @@
         _this.pushChanges();
       });
       /*
-      this.loadRgbeBackground(BASE_HREF + environment.paths.textures + this.item.envMapFolder, this.item.envMapFile, (envMap) => {
-      	this.loadGltfModel(BASE_HREF + environment.paths.models + this.item.gltfFolder, this.item.gltfFile, (mesh) => {
+      this.loadRgbeBackground(environment.getTexturePath(this.item.envMapFolder), this.item.envMapFile, (envMap) => {
+      	this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (mesh) => {
       		const box = new THREE.Box3().setFromObject(mesh);
       		const center = box.getCenter(new THREE.Vector3());
       		mesh.position.x += (mesh.position.x - center.x);
@@ -61978,8 +62049,8 @@
 
     /*
     loadAssets() {
-    	this.loadRgbeBackground(BASE_HREF + environment.paths.textures + this.item.envMapFolder, this.item.envMapFile, (envMap) => {
-    		this.loadGltfModel(BASE_HREF + environment.paths.models + this.item.gltfFolder, this.item.gltfFile, (model) => {
+    	this.loadRgbeBackground(environment.getTexturePath(this.item.envMapFolder), this.item.envMapFile, (envMap) => {
+    		this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (model) => {
     			const scene = this.host.scene;
     			scene.add(model);
     			this.host.render();
@@ -62076,7 +62147,7 @@
     };
 
     ModelGridComponent.getTexture = function getTexture() {
-      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/floor-nav-circle-v2.png'));
+      return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getTexturePath('ui/floor-nav-circle-v2.png')));
     };
 
     var _proto = ModelGridComponent.prototype;
@@ -62869,7 +62940,7 @@
     };
 
     ModelNavComponent.getTexture = function getTexture() {
-      return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(BASE_HREF + environment.paths.textures + 'ui/wall-nav.png'));
+      return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getTexturePath('ui/wall-nav.png')));
     };
 
     var _proto = ModelNavComponent.prototype;
@@ -63129,7 +63200,7 @@
     }
 
     ModelPlaneComponent.getPath = function getPath(folder, file) {
-      return BASE_HREF + environment.paths.textures + folder + file;
+      return environment.getTexturePath(folder + file);
     };
 
     ModelPlaneComponent.getLoader = function getLoader() {
@@ -67946,7 +68017,7 @@
     }
 
     ModelRoomComponent.getPath = function getPath(folder, file) {
-      return BASE_HREF + environment.paths.textures + folder + file;
+      return environment.getTexturePath(folder + file);
     };
 
     ModelRoomComponent.getLoader = function getLoader() {
@@ -67974,7 +68045,7 @@
     _proto.create = function create(callback) {
       var _this = this;
 
-      this.loadModel(BASE_HREF + environment.paths.models + this.item.modelFolder, this.item.modelFile, function (mesh) {
+      this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, function (mesh) {
         if (typeof callback === 'function') {
           callback(mesh);
         }

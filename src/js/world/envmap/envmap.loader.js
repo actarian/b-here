@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import { environment } from '../../../environment/environment';
 import AgoraService from '../../agora/agora.service';
-import { BASE_HREF } from '../../const';
+import { environment } from '../../environment';
 
 export class EnvMapLoader {
 
@@ -35,13 +34,13 @@ export class EnvMapLoader {
 		if (item.envMapFile === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
 		} else if (item.envMapFile.indexOf('.hdr') !== -1) {
-			return this.loadRgbeBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+			return this.loadRgbeBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
 		} else if (item.envMapFile.indexOf('.mp4') !== -1 || item.envMapFile.indexOf('.webm') !== -1) {
-			return this.loadVideoBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+			return this.loadVideoBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
 		} else if (item.envMapFile.indexOf('.m3u8') !== -1) {
 			return this.loadHlslVideoBackground(item.envMapFile, renderer, callback);
 		} else {
-			return this.loadBackground(BASE_HREF + environment.paths.textures + item.envMapFolder, item.envMapFile, renderer, callback);
+			return this.loadBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
 		}
 	}
 

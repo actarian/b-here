@@ -3,9 +3,8 @@
 
 import AgoraRTM from 'agora-rtm-sdk';
 import { BehaviorSubject, from, of , Subject } from 'rxjs';
-import { environment } from '../../environment/environment';
-import { DEBUG } from '../const';
 import Emittable from '../emittable/emittable';
+import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
 import LocationService from '../location/location.service';
 
