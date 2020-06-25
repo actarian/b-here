@@ -157,18 +157,20 @@ app.post('/api/token/rtm', function (request, response) {
     token: token
   }));
 });
-/*
-app.listen(PORT, () => {
-	console.log(`Listening on ${ PORT }`);
+app.listen(PORT, function () {
+  console.log("Listening on " + PORT);
 });
+/*
+https
+	.createServer({
+		cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
+		key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
+	}, app)
+	.listen(PORT, function() {
+		console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
+	});
 */
-
-https.createServer({
-  cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
-  key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
-}, app).listen(PORT, function () {
-  console.log("Example app listening on port " + PORT + "! Go to https://192.168.1.2:" + PORT + "/");
-}); // IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
+// IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
 // Build token with uid
 // const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
 // Build token with user account
