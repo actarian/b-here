@@ -333,6 +333,9 @@ export default class WorldComponent extends Component {
 		// texture.anisotropy = 0;
 		// texture.magFilter = THREE.LinearMipMapLinearFilter;
 		// texture.minFilter = THREE.NearestFilter;
+		texture.minFilter = THREE.LinearFilter;
+		texture.magFilter = THREE.LinearFilter;
+		texture.mapping = THREE.UVMapping;
 		const material = new THREE.MeshBasicMaterial({
 			depthTest: false,
 			map: texture,

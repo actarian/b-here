@@ -2279,7 +2279,7 @@
       input.style.top = '1000vh'; // input.style.visibility = 'hidden';
 
       document.querySelector('body').appendChild(input);
-      input.value = this.generateLink();
+      input.value = this.getUrl(true);
       input.focus();
       input.select();
       input.setSelectionRange(0, 99999);
@@ -2298,11 +2298,16 @@
       this.link.next(this.controls.link.value);
     };
 
+    _proto.getUrl = function getUrl(shareable) {
+      var role = LocationService.get('role') || null;
+      var name = LocationService.get('name') || null;
+      var url = "" + window.location.origin + window.location.pathname + "?link=" + this.controls.link.value + (name ? "&name=" + name : '') + (role && !shareable ? "&role=" + role : '');
+      return url;
+    };
+
     _proto.replaceUrl = function replaceUrl() {
       if ('history' in window) {
-        var role = LocationService.get('role') || null;
-        var name = LocationService.get('name') || null;
-        var url = "" + window.location.origin + window.location.pathname + "?link=" + this.controls.link.value + (name ? "&name=" + name : '') + (role ? "&role=" + role : '');
+        var url = this.getUrl();
         console.log('AgoraLinkComponent.url', url);
         window.history.replaceState({
           'pageTitle': window.pageTitle
@@ -55084,6 +55089,7 @@
         var texture = _this.texture = new THREE$1.VideoTexture(video);
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true;
         var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
@@ -55091,6 +55097,7 @@
           // minFilter: THREE.LinearMipmapLinearFilter,
           minFilter: THREE$1.LinearFilter,
           magFilter: THREE$1.LinearFilter,
+          mapping: THREE$1.UVMapping,
           format: THREE$1.RGBFormat
         }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
@@ -55114,16 +55121,13 @@
       var _this2 = this;
 
       var video = this.video;
-      video.src = path + file;
-      video.loop = true;
-      video.muted = true;
-      video.playsInline = true;
 
       var onPlaying = function onPlaying() {
         video.oncanplay = null;
         var texture = new THREE$1.VideoTexture(video);
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
 
@@ -55132,23 +55136,23 @@
           // minFilter: THREE.LinearMipmapLinearFilter,
           minFilter: THREE$1.LinearFilter,
           magFilter: THREE$1.LinearFilter,
+          mapping: THREE$1.UVMapping,
           format: THREE$1.RGBFormat
         }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
         if (typeof callback === 'function') {
           callback(cubeRenderTarget.texture, texture, false);
         }
-      };
+      }; // video.addEventListener('playing', onPlaying);
 
-      console.log(video.src); // video.addEventListener('playing', onPlaying);
-
-      video.crossOrigin = 'anonymous';
 
       video.oncanplay = function () {
         console.log('EnvMapLoader.loadVideoBackground.oncanplay');
         onPlaying();
       };
 
+      video.src = path + file;
+      console.log(video.src);
       video.play().then(function () {
         console.log('EnvMapLoader.loadVideoBackground.play');
       }, function (error) {
@@ -55158,16 +55162,13 @@
 
     EnvMapLoader.loadHlslVideoBackground = function loadHlslVideoBackground(src, renderer, callback) {
       var video = document.createElement('video');
-      video.loop = true;
-      video.muted = true;
-      video.playsinline = true;
-      video.crossOrigin = 'anonymous';
 
       var onPlaying = function onPlaying() {
         video.oncanplay = null;
         var texture = new THREE$1.VideoTexture(video);
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
 
@@ -55176,6 +55177,7 @@
           // minFilter: THREE.LinearMipmapLinearFilter,
           minFilter: THREE$1.LinearFilter,
           magFilter: THREE$1.LinearFilter,
+          mapping: THREE$1.UVMapping,
           format: THREE$1.RGBFormat
         }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
@@ -55185,7 +55187,7 @@
       };
 
       video.oncanplay = function () {
-
+        // console.log('videoReady', videoReady);
         onPlaying();
       };
 
@@ -55227,6 +55229,10 @@
 
         if (!video) {
           video = this.video_ = document.createElement('video');
+          video.loop = true;
+          video.muted = true;
+          video.playsInline = true;
+          video.crossOrigin = 'anonymous';
         }
 
         return video;
@@ -55523,6 +55529,7 @@
     this.format = format !== undefined ? format : THREE.RGBFormat;
     this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
     this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
+    this.mapping = THREE.UVMapping;
     this.generateMipmaps = false;
   }
 
@@ -55654,7 +55661,9 @@
           material.uniforms.texture.value = null;
         }
 
+        texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
         texture.needsUpdate = true; // material.map = texture;
 
         material.uniforms.texture.value = texture;
@@ -55694,6 +55703,7 @@
           var texture = new VideoTexture$1(video);
           texture.minFilter = THREE$1.LinearFilter;
           texture.magFilter = THREE$1.LinearFilter;
+          texture.mapping = THREE$1.UVMapping;
           texture.format = THREE$1.RGBFormat;
           texture.needsUpdate = true;
           var material = _this2.mesh.material;
@@ -60178,8 +60188,7 @@
 
       radius = Math.sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
       var phi = Math.acos(position.y / radius);
-      var theta = Math.atan2(position.z, position.x);
-      console.log('phi', phi, 'theta', theta);
+      var theta = Math.atan2(position.z, position.x); // console.log('phi', phi, 'theta', theta);
     };
 
     _proto.render = function render() {
@@ -60316,6 +60325,7 @@
         var texture = new THREE.VideoTexture(video);
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.UVMapping;
         texture.format = THREE.RGBFormat;
         texture.needsUpdate = true;
 
@@ -60775,6 +60785,9 @@
       // texture.magFilter = THREE.LinearMipMapLinearFilter;
       // texture.minFilter = THREE.NearestFilter;
 
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
       var material = new THREE$1.MeshBasicMaterial({
         depthTest: false,
         map: texture,
@@ -61734,6 +61747,228 @@
     inputs: ['item']
   };
 
+  var MediaLoader = /*#__PURE__*/function () {
+    MediaLoader.getLoader = function getLoader() {
+      return MediaLoader.loader || (MediaLoader.loader = new THREE$1.TextureLoader());
+    };
+
+    MediaLoader.getPath = function getPath(item) {
+      return environment.getTexturePath(item.folder + item.file);
+    };
+
+    MediaLoader.loadTexture = function loadTexture(item, callback) {
+      var path = MediaLoader.getPath(item);
+      return MediaLoader.getLoader().load(path, callback);
+    };
+
+    MediaLoader.isVideo = function isVideo(item) {
+      return item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1;
+    };
+
+    _createClass(MediaLoader, [{
+      key: "isVideo",
+      get: function get() {
+        return MediaLoader.isVideo(this.item);
+      }
+    }, {
+      key: "isPlayableVideo",
+      get: function get() {
+        return this.isVideo && !this.item.autoplay;
+      }
+    }, {
+      key: "isAutoplayVideo",
+      get: function get() {
+        return this.isVideo && this.item.autoplay;
+      }
+    }]);
+
+    function MediaLoader(item) {
+      this.item = item;
+      this.toggle = this.toggle.bind(this);
+    }
+
+    var _proto = MediaLoader.prototype;
+
+    _proto.load = function load(callback) {
+      var _this = this;
+
+      var item = this.item;
+
+      if (MediaLoader.isVideo(item)) {
+        // create the video element
+        var video = this.video = document.createElement('video');
+        video.preload = 'metadata';
+        video.muted = true;
+        video.playsinline = true;
+
+        if (item.autoplay) {
+          video.loop = true;
+        }
+
+        video.crossOrigin = 'anonymous';
+
+        var onCanPlay = function onCanPlay() {
+          video.oncanplay = null;
+          var texture = new THREE$1.VideoTexture(video);
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.mapping = THREE$1.UVMapping;
+          texture.format = THREE$1.RGBFormat;
+          texture.needsUpdate = true;
+
+          if (!item.autoplay) {
+            video.pause();
+          }
+
+          if (typeof callback === 'function') {
+            callback(texture, _this);
+          }
+        };
+
+        video.oncanplay = onCanPlay;
+        video.src = MediaLoader.getPath(item);
+        video.load(); // must call after setting/changing source
+
+        this.play();
+      } else {
+        MediaLoader.loadTexture(item, function (texture) {
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.mapping = THREE$1.UVMapping; // texture.format = THREE.RGBFormat;
+
+          texture.wrapS = THREE$1.RepeatWrapping;
+          texture.wrapT = THREE$1.RepeatWrapping;
+
+          if (typeof callback === 'function') {
+            callback(texture, _this);
+          }
+        });
+      }
+
+      return this;
+    };
+
+    _proto.play = function play() {
+      var _this2 = this;
+
+      // console.log('MediaLoader.play');
+      this.video.play().then(function () {
+        console.log('MediaLoader.play.success', _this2.item.file);
+      }, function (error) {
+        console.log('MediaLoader.play.error', _this2.item.file, error);
+      });
+    };
+
+    _proto.pause = function pause() {
+      // console.log('MediaLoader.pause');
+      this.video.muted = true;
+      this.video.pause();
+    };
+
+    _proto.toggle = function toggle() {
+      // console.log('MediaLoader.toggle', this.video);
+      if (this.video.paused) {
+        this.video.muted = false;
+        this.play();
+      } else {
+        this.pause();
+      }
+    };
+
+    _proto.dispose = function dispose() {
+      if (this.isVideo) {
+        this.video.pause();
+        this.video.muted = true;
+        delete this.video;
+      }
+    };
+
+    return MediaLoader;
+  }();
+
+  var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelComponent) {
+    _inheritsLoose(ModelCurvedPlaneComponent, _ModelComponent);
+
+    function ModelCurvedPlaneComponent() {
+      return _ModelComponent.apply(this, arguments) || this;
+    }
+
+    var _proto = ModelCurvedPlaneComponent.prototype;
+
+    _proto.onInit = function onInit() {
+      _ModelComponent.prototype.onInit.call(this); // console.log('ModelCurvedPlaneComponent.onInit');
+
+    };
+
+    _proto.create = function create(callback) {
+      var item = this.item;
+      this.mediaLoader = new MediaLoader(item).load(function (texture, mediaLoader) {
+        var material = new THREE$1.MeshBasicMaterial({
+          map: texture,
+          side: THREE$1.DoubleSide
+        });
+        var arc = Math.PI / 180 * item.arc;
+        var geometry = new THREE$1.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
+        geometry.rotateY(-Math.PI / 2 - arc / 2);
+        geometry.scale(-1, 1, 1);
+        var mesh = new InteractiveMesh(geometry, material);
+
+        if (!mediaLoader.isVideo) {
+          mesh.freeze();
+        }
+
+        if (item.position) {
+          mesh.position.set(item.position.x, item.position.y, item.position.z);
+        }
+
+        if (item.rotation) {
+          mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+        }
+
+        if (item.scale) {
+          mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+        }
+
+        if (mediaLoader.isPlayableVideo) {
+          mesh.on('down', mediaLoader.toggle);
+        }
+        /*
+        var box = new THREE.BoxHelper(mesh, 0xffff00);
+        this.host.scene.add(box);
+        */
+
+
+        if (typeof callback === 'function') {
+          callback(mesh);
+        }
+      });
+    } // onView() { const context = getContext(this); }
+    // onChanges() {}
+    ;
+
+    _proto.onDestroy = function onDestroy() {
+      _ModelComponent.prototype.onDestroy.call(this);
+
+      var mediaLoader = this.mediaLoader;
+
+      if (mediaLoader.isPlayableVideo) {
+        this.mesh.off('down', mediaLoader.toggle);
+      }
+
+      mediaLoader.dispose();
+    };
+
+    return ModelCurvedPlaneComponent;
+  }(ModelComponent);
+  ModelCurvedPlaneComponent.textures = {};
+  ModelCurvedPlaneComponent.meta = {
+    selector: '[model-curved-plane]',
+    hosts: {
+      host: WorldComponent
+    },
+    inputs: ['item']
+  };
+
   var ORIGIN$3 = new THREE$1.Vector3();
   var W$2 = 1024;
   var H$2 = 256;
@@ -61787,7 +62022,9 @@
       canvas.height = H$2;
       var texture = new THREE$1.CanvasTexture(canvas);
       texture.encoding = THREE$1.sRGBEncoding;
+      texture.minFilter = THREE$1.LinearFilter;
       texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
       texture.needsUpdate = true;
       var geometry = new THREE$1.PlaneBufferGeometry(2, 0.5, 2, 2);
       var material = new THREE$1.MeshBasicMaterial({
@@ -62527,8 +62764,10 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillText(text, 10, 50, w - 20);
       var texture = new THREE$1.CanvasTexture(canvas);
-      texture.encoding = THREE$1.sRGBEncoding;
+      texture.minFilter = THREE$1.LinearFilter;
       texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.encoding = THREE$1.sRGBEncoding;
       texture.needsUpdate = true;
       return texture;
     };
@@ -62577,7 +62816,6 @@
         tween: 0,
         ease: Power2.easeInOut,
         onUpdate: function onUpdate() {
-          _this3.tween = _this3.tween;
           _this3.position.z = 0.1 * _this3.tween;
           _this3.material.uniforms.tween.value = _this3.tween;
           _this3.material.needsUpdate = true;
@@ -62620,8 +62858,9 @@
       ctx.fillStyle = '#000000';
       ctx.fillText(text, 10, 50, w - 20);
       var texture = new THREE$1.CanvasTexture(canvas);
-      texture.encoding = THREE$1.sRGBEncoding;
+      texture.minFilter = THREE$1.LinearFilter;
       texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
       texture.needsUpdate = true;
       return texture;
     };
@@ -63204,26 +63443,178 @@
     inputs: ['item']
   };
 
+  var VERTEX_SHADER$2 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
+  var FRAGMENT_SHADER$2 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform float opacity;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\n\nvoid main() {\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec2 uv2 = clamp(vec2(\n\t\t(vUv.x - (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5) / resolutionB.x * resolutionA.x,\n\t\t(vUv.y - (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5) / resolutionB.y * resolutionA.y\n\t), vec2(0.0,0.0), vec2(1.0,1.0));\n\tvec4 colorB = texture2D(textureB, uv2);\n\tvec4 color = vec4(colorA.rgb + colorB.rgb * tween * colorB.a, opacity);\n\tgl_FragColor = color;\n}\n";
+
+  var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
+    _inheritsLoose(MediaMesh, _InteractiveMesh);
+
+    MediaMesh.getMaterial = function getMaterial() {
+      var material = new THREE$1.ShaderMaterial({
+        // depthTest: false,
+        transparent: true,
+        vertexShader: VERTEX_SHADER$2,
+        fragmentShader: FRAGMENT_SHADER$2,
+        uniforms: {
+          textureA: {
+            type: "t",
+            value: null
+          },
+          textureB: {
+            type: "t",
+            value: null
+          },
+          resolutionA: {
+            value: new THREE$1.Vector2()
+          },
+          resolutionB: {
+            value: new THREE$1.Vector2()
+          },
+          tween: {
+            value: 0
+          },
+          opacity: {
+            value: 0
+          }
+        }
+      });
+      /*
+      const material = new THREE.MeshBasicMaterial({
+      	map: texture,
+      	side: THREE.DoubleSide,
+      });
+      */
+
+      return material;
+    };
+
+    function MediaMesh(item, geometry, material) {
+      var _this;
+
+      material = material || MediaMesh.getMaterial();
+      _this = _InteractiveMesh.call(this, geometry, material) || this;
+      _this.item = item;
+      _this.tween = 0;
+      _this.opacity = 0;
+      var mediaLoader = _this.mediaLoader = new MediaLoader(item);
+
+      if (!mediaLoader.isVideo) {
+        _this.freeze();
+      }
+
+      return _this;
+    }
+
+    var _proto = MediaMesh.prototype;
+
+    _proto.load = function load(callback) {
+      var _this2 = this;
+
+      var material = this.material;
+      var mediaLoader = this.mediaLoader;
+      mediaLoader.load(function (textureA) {
+        material.uniforms.textureA.value = textureA;
+        material.uniforms.resolutionA.value = new THREE$1.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight); // console.log(material.uniforms.resolutionA.value, textureA);
+
+        material.needsUpdate = true;
+
+        _this2.onAppear();
+
+        if (mediaLoader.isPlayableVideo) {
+          _this2.onOver = _this2.onOver.bind(_this2);
+          _this2.onOut = _this2.onOut.bind(_this2);
+
+          _this2.on('over', _this2.onOver);
+
+          _this2.on('out', _this2.onOut);
+
+          _this2.on('down', mediaLoader.toggle);
+        }
+
+        if (typeof callback === 'function') {
+          callback(_this2);
+        }
+      });
+      var textureB = MediaLoader.loadTexture({
+        folder: 'ui/',
+        file: 'play.png'
+      }, function (textureB) {
+        textureB.minFilter = THREE$1.LinearFilter;
+        textureB.magFilter = THREE$1.LinearFilter;
+        textureB.mapping = THREE$1.UVMapping; // textureB.format = THREE.RGBFormat;
+
+        textureB.wrapS = THREE$1.RepeatWrapping;
+        textureB.wrapT = THREE$1.RepeatWrapping;
+        material.uniforms.textureB.value = textureB;
+        material.uniforms.resolutionB.value = new THREE$1.Vector2(textureB.image.width, textureB.image.height); // console.log(material.uniforms.resolutionB.value, textureB);
+
+        material.needsUpdate = true;
+      });
+    };
+
+    _proto.onAppear = function onAppear() {
+      var _this3 = this;
+
+      var o = {
+        opacity: 0
+      };
+      gsap.to(o, 0.4, {
+        opacity: 1,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          _this3.material.uniforms.opacity.value = o.opacity;
+          _this3.material.needsUpdate = true;
+        }
+      });
+    };
+
+    _proto.onOver = function onOver() {
+      var _this4 = this;
+
+      gsap.to(this, 0.4, {
+        tween: 1,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          _this4.material.uniforms.tween.value = _this4.tween;
+          _this4.material.needsUpdate = true;
+        }
+      });
+    };
+
+    _proto.onOut = function onOut() {
+      var _this5 = this;
+
+      gsap.to(this, 0.4, {
+        tween: 0,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          _this5.material.uniforms.tween.value = _this5.tween;
+          _this5.material.needsUpdate = true;
+        }
+      });
+    };
+
+    _proto.dispose = function dispose() {
+      var mediaLoader = this.mediaLoader;
+
+      if (mediaLoader.isPlayableVideo) {
+        this.off('over', this.onOver);
+        this.off('out', this.onOut);
+        this.off('down', mediaLoader.toggle);
+      }
+
+      mediaLoader.dispose();
+    };
+
+    return MediaMesh;
+  }(InteractiveMesh);
+
   var ModelPlaneComponent = /*#__PURE__*/function (_ModelComponent) {
     _inheritsLoose(ModelPlaneComponent, _ModelComponent);
 
     function ModelPlaneComponent() {
       return _ModelComponent.apply(this, arguments) || this;
     }
-
-    ModelPlaneComponent.getPath = function getPath(folder, file) {
-      return environment.getTexturePath(folder + file);
-    };
-
-    ModelPlaneComponent.getLoader = function getLoader() {
-      // return new THREE.TextureLoader();
-      return ModelPlaneComponent.loader || (ModelPlaneComponent.loader = new THREE$1.TextureLoader());
-    };
-
-    ModelPlaneComponent.loadTexture = function loadTexture(folder, file) {
-      var path = ModelPlaneComponent.getPath(folder, file);
-      return ModelPlaneComponent.textures[path] || (ModelPlaneComponent.textures[path] = ModelPlaneComponent.getLoader().load(path));
-    };
 
     var _proto = ModelPlaneComponent.prototype;
 
@@ -63232,77 +63623,28 @@
 
     };
 
-    _proto.loadTexture = function loadTexture(item, callback) {
-      var texture;
-
-      if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
-        // create the video element
-        var video = item.video = document.createElement('video');
-        video.src = ModelPlaneComponent.getPath(item.folder, item.file);
-        video.muted = true;
-        video.playsinline = true;
-        video.loop = true;
-        video.crossOrigin = 'anonymous';
-
-        var onCanPlay = function onCanPlay() {
-          video.oncanplay = null;
-          var texture = new THREE$1.VideoTexture(video);
-          texture.minFilter = THREE$1.LinearFilter;
-          texture.magFilter = THREE$1.LinearFilter;
-          texture.format = THREE$1.RGBFormat;
-          texture.needsUpdate = true;
-
-          if (typeof callback === 'function') {
-            callback(texture);
-          }
-        };
-
-        video.oncanplay = onCanPlay;
-        video.load(); // must call after setting/changing source
-
-        video.play().then(function () {
-          console.log('ModelPlaneComponent.play');
-        }, function (error) {
-          console.log('ModelPlaneComponent.play.error', error);
-        });
-      } else {
-        texture = ModelPlaneComponent.loadTexture(item.folder, item.file);
-
-        if (typeof callback === 'function') {
-          callback(texture);
-        }
-      }
-    };
-
     _proto.create = function create(callback) {
       var item = this.item;
-      this.loadTexture(item, function (texture) {
-        var material = new THREE$1.MeshBasicMaterial({
-          map: texture,
-          side: THREE$1.DoubleSide
-        });
-        var geometry = new THREE$1.PlaneBufferGeometry(1, 1, 2, 2);
-        var mesh = new THREE$1.Mesh(geometry, material);
+      var geometry = new THREE$1.PlaneBufferGeometry(1, 1, 2, 2);
+      var mesh = new MediaMesh(item, geometry);
 
-        if (item.position) {
-          mesh.position.set(item.position.x, item.position.y, item.position.z);
-        }
+      if (item.position) {
+        mesh.position.set(item.position.x, item.position.y, item.position.z);
+      }
 
-        if (item.rotation) {
-          mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
-        }
+      if (item.rotation) {
+        mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+      }
 
-        if (item.scale) {
-          mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
-        }
+      if (item.scale) {
+        mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+      }
+
+      mesh.load(function () {
         /*
         var box = new THREE.BoxHelper(mesh, 0xffff00);
         this.host.scene.add(box);
         */
-
-
-        console.log(mesh);
-
         if (typeof callback === 'function') {
           callback(mesh);
         }
@@ -63314,12 +63656,7 @@
     _proto.onDestroy = function onDestroy() {
       _ModelComponent.prototype.onDestroy.call(this);
 
-      var item = this.item;
-
-      if (item && item.video) {
-        item.video.pause();
-        delete item.video;
-      }
+      this.mesh.dispose();
     };
 
     return ModelPlaneComponent;
@@ -68030,24 +68367,6 @@
       return _ModelComponent.apply(this, arguments) || this;
     }
 
-    ModelRoomComponent.getPath = function getPath(folder, file) {
-      return environment.getTexturePath(folder + file);
-    };
-
-    ModelRoomComponent.getLoader = function getLoader() {
-      // return new THREE.TextureLoader();
-      return ModelRoomComponent.loader || (ModelRoomComponent.loader = new THREE$1.TextureLoader());
-    };
-
-    ModelRoomComponent.getTexture = function getTexture() {
-      return ModelRoomComponent.loadTexture('matcaps/', 'matcap-01.png');
-    };
-
-    ModelRoomComponent.loadTexture = function loadTexture(folder, file) {
-      var path = ModelRoomComponent.getPath(folder, file);
-      return ModelRoomComponent.textures[path] || (ModelRoomComponent.textures[path] = ModelRoomComponent.getLoader().load(path));
-    };
-
     var _proto = ModelRoomComponent.prototype;
 
     _proto.onInit = function onInit() {
@@ -68085,56 +68404,13 @@
       return loader;
     };
 
-    _proto.loadTexture = function loadTexture(item, callback) {
-      var texture;
-
-      if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
-        // create the video element
-        var video = item.video = document.createElement('video');
-        video.src = ModelRoomComponent.getPath(item.folder, item.file);
-        video.muted = true;
-        video.playsinline = true;
-        video.loop = true;
-        video.crossOrigin = 'anonymous';
-
-        var onCanPlay = function onCanPlay() {
-          video.oncanplay = null;
-          var texture = new THREE$1.VideoTexture(video);
-          texture.minFilter = THREE$1.LinearFilter;
-          texture.magFilter = THREE$1.LinearFilter;
-          texture.format = THREE$1.RGBFormat;
-          texture.needsUpdate = true;
-
-          if (typeof callback === 'function') {
-            callback(texture);
-          }
-        };
-
-        video.oncanplay = onCanPlay;
-        video.load(); // must call after setting/changing source
-
-        video.play().then(function () {
-          console.log('ModelRoomComponent.play');
-        }, function (error) {
-          console.log('ModelRoomComponent.play.error', error);
-        });
-      } else {
-        texture = ModelRoomComponent.loadTexture(item.folder, item.file);
-
-        if (typeof callback === 'function') {
-          callback(texture);
-        }
-      }
-    };
-
     _proto.loadModel = function loadModel(path, file, callback) {
       var _this2 = this;
 
-      var renderer = this.host.renderer; // const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
-
+      // const renderer = this.host.renderer;
+      // const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
       var loader = this.getLoader(path, file);
       loader.load(file, function (model) {
-        console.log(model);
         var mesh;
         var scene = model.scene;
 
@@ -68144,7 +68420,6 @@
           mesh = model;
         }
 
-        var texture = ModelRoomComponent.getTexture();
         var items = _this2.item.items;
         mesh.scale.set(0.1, 0.1, 0.1); // mesh.scale.set(10, 10, 10);
 
@@ -68156,23 +68431,42 @@
             });
 
             if (item) {
-              child.material.dispose();
-              var material = new THREE$1.MeshBasicMaterial({
-                color: 0x000000,
-                side: THREE$1.DoubleSide
-              });
-
-              _this2.loadTexture(item, function (texture) {
-                material.map = texture;
-                material.color.setHex(0xffffff);
-                material.needsUpdate = true;
-              });
-
-              child.material = material;
+              item.mesh = child;
             }
           }
         });
         mesh.position.y = -1.66 * 3;
+        items.forEach(function (item) {
+          var child = item.mesh;
+
+          if (child) {
+            child.material.color.setHex(0x000000);
+            item.mediaLoader = new MediaLoader(item).load(function (texture, mediaLoader) {
+              var material = new THREE$1.MeshBasicMaterial({
+                map: texture,
+                side: THREE$1.DoubleSide
+              });
+              var mesh = new InteractiveMesh(child.geometry, material);
+
+              if (!mediaLoader.isVideo) {
+                mesh.freeze();
+              }
+
+              mesh.name = child.name;
+              mesh.position.copy(child.position);
+              mesh.rotation.copy(child.rotation);
+              mesh.scale.copy(child.scale);
+              var parent = child.parent;
+              parent.remove(child);
+              child.material.dispose();
+              parent.add(mesh);
+
+              if (mediaLoader.isPlayableVideo) {
+                mesh.on('down', mediaLoader.toggle);
+              }
+            });
+          }
+        });
         var lights = new Array(3).fill(0).map(function (x, i) {
           var light = new THREE$1.PointLight(0xffffff, 0.1, 1000, 2);
 
@@ -68219,9 +68513,9 @@
 
         if (items) {
           items.forEach(function (item) {
-            if (item.video) {
-              item.video.pause();
-              delete item.video;
+            if (item.mediaLoader) {
+              item.mediaLoader.dispose();
+              delete item.mediaLoader;
             }
           });
         }
@@ -68284,7 +68578,7 @@
   }(rxcomp.Module);
   AppModule.meta = {
     imports: [rxcomp.CoreModule, rxcompForm.FormModule],
-    declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+    declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, ModelCurvedPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
     bootstrap: AppComponent
   };
 

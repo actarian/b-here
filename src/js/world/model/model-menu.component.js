@@ -142,8 +142,10 @@ export class MenuButton extends InteractiveMesh {
 		ctx.fillStyle = '#ffffff';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
-		texture.encoding = THREE.sRGBEncoding;
+		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
+		texture.mapping = THREE.UVMapping;
+		texture.encoding = THREE.sRGBEncoding;
 		texture.needsUpdate = true;
 		return texture;
 	}
@@ -188,7 +190,6 @@ export class MenuButton extends InteractiveMesh {
 			tween: 0,
 			ease: Power2.easeInOut,
 			onUpdate: () => {
-				this.tween = this.tween;
 				this.position.z = 0.1 * this.tween;
 				this.material.uniforms.tween.value = this.tween;
 				this.material.needsUpdate = true;
@@ -229,8 +230,9 @@ export class BackButton extends MenuButton {
 		ctx.fillStyle = '#000000';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
-		texture.encoding = THREE.sRGBEncoding;
+		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
+		texture.mapping = THREE.UVMapping;
 		texture.needsUpdate = true;
 		return texture;
 	}

@@ -22,16 +22,16 @@
       "likes": 40,
       "liked": false,
       "envMapFolder": "cinema/",
-      "envMapFile": "cinema.jpg",
+      "envMapFile": "cinema-playing.jpg",
       "items": [
         {
           "id": 1,
           "type": "plane",
-          "folder": "room-3d/",
-          "file": "plane-01.mp4",
+          "folder": "video/",
+          "file": "pesto-experience.mp4",
           "position": {
-            "x": 99,
-            "y": 9,
+            "x": 80,
+            "y": 7,
             "z": 0
           },
           "rotation": {
@@ -40,9 +40,9 @@
             "z": 0
           },
           "scale": {
-            "x": 105,
-            "y": 60,
-            "z": 0
+            "x": 85,
+            "y": 46,
+            "z": 1
           }
         },
         {
@@ -152,7 +152,7 @@
         {
           "id": 171,
           "type": "nav",
-          "title": "Panel 01",
+          "title": "Ambiente2A",
           "abstract": "Abstract",
           "position": [
             -0.15316718404648044,
@@ -170,50 +170,88 @@
     },
     {
       "id": 20,
-      "type": "panorama",
-      "name": "Panel 01",
-      "likes": 40,
+      "type": "panorama-grid",
+      "name": "Ambiente2A",
+      "likes": 225,
       "liked": false,
-      "envMapFolder": "video/",
-      "envMapFile": "panel-01.mp4",
+      "envMapFolder": "ambiente2a/",
+      "envMapFile": "ambiente2a_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente2a_x0_y0.jpg",
+        "ambiente2a_x0_y1.jpg",
+        "ambiente2a_x0_y2.jpg",
+        "ambiente2a_x0_y3.jpg",
+        "ambiente2a_x1_y0.jpg",
+        "ambiente2a_x1_y3.jpg",
+        "ambiente2a_x2_y0.jpg",
+        "ambiente2a_x2_y1.jpg",
+        "ambiente2a_x2_y2.jpg",
+        "ambiente2a_x2_y3.jpg"
+      ],
       "items": [
         {
           "id": 171,
           "type": "nav",
-          "title": "Panel 02",
+          "title": "Panel 01",
           "abstract": "Abstract",
           "position": [
-            0.6281756251668247,
-            -0.3435148400654412,
-            0.698135329718446
+            -0.15316718404648044,
+            -0.204222912061974,
+            0.9668675275963087
           ],
           "navTo": 21
         }
       ],
       "orientation": {
         "latitude": 0,
-        "longitude": 0
+        "longitude": 90
       },
       "fov": 75
     },
     {
       "id": 21,
       "type": "panorama",
-      "name": "Panel 02",
+      "name": "Panel 01",
       "likes": 40,
       "liked": false,
-      "envMapFolder": "video/",
-      "envMapFile": "panel-02.mp4",
+      "envMapFolder": "virtual-room/",
+      "envMapFile": "virtual-room.jpg",
       "items": [
+        {
+          "id": 1,
+          "type": "curved-plane",
+          "folder": "video/",
+          "file": "panel-01-plane.mp4",
+          "radius": 70,
+          "arc": 90,
+          "height": 40,
+          "position": {
+            "x": 0,
+            "y": 8,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
         {
           "id": 171,
           "type": "nav",
-          "title": "Panel 04",
+          "title": "Panel 02",
           "abstract": "Abstract",
           "position": [
-            0.6281756251668247,
-            -0.3435148400654412,
-            0.698135329718446
+            0.9672554079668645,
+            -0.253784919203119,
+            -0.0031922631346306433
           ],
           "navTo": 22
         }
@@ -227,21 +265,97 @@
     {
       "id": 22,
       "type": "panorama",
+      "name": "Panel 02",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "virtual-room/",
+      "envMapFile": "virtual-room.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "curved-plane",
+          "folder": "video/",
+          "file": "panel-02-plane.mp4",
+          "radius": 70,
+          "arc": 90,
+          "height": 40,
+          "position": {
+            "x": 0,
+            "y": 8,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Panel 03",
+          "abstract": "Abstract",
+          "position": [
+            0.9672554079668645,
+            -0.253784919203119,
+            -0.0031922631346306433
+          ],
+          "navTo": 23
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 23,
+      "type": "panorama",
       "name": "Panel 04",
       "likes": 40,
       "liked": false,
-      "envMapFolder": "video/",
-      "envMapFile": "panel-04.mp4",
+      "envMapFolder": "virtual-room/",
+      "envMapFile": "virtual-room.jpg",
       "items": [
+        {
+          "id": 1,
+          "type": "curved-plane",
+          "folder": "video/",
+          "file": "panel-04-plane.mp4",
+          "radius": 70,
+          "arc": 90,
+          "height": 40,
+          "position": {
+            "x": 0,
+            "y": 8,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
         {
           "id": 171,
           "type": "nav",
           "title": "Time Square",
           "abstract": "Abstract",
           "position": [
-            0.6281756251668247,
-            -0.3435148400654412,
-            0.698135329718446
+            0.9672554079668645,
+            -0.253784919203119,
+            -0.0031922631346306433
           ],
           "navTo": 8
         }
@@ -292,7 +406,7 @@
       "envMapFile": "waiting-room-02.jpg",
       "items": [
         {
-          "id": "plane_01",
+          "id": "plane-01",
           "type": "texture",
           "folder": "room-3d/",
           "file": "plane-01.mp4"
@@ -344,7 +458,7 @@
         "latitude": 0,
         "longitude": 0
       },
-      "fov": 52
+      "fov": 75
     },
     {
       "id": 16,

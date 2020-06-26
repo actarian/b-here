@@ -9,6 +9,10 @@ export class EnvMapLoader {
 		let video = this.video_;
 		if (!video) {
 			video = this.video_ = document.createElement('video');
+			video.loop = true;
+			video.muted = true;
+			video.playsInline = true;
+			video.crossOrigin = 'anonymous';
 		}
 		return video;
 	}
@@ -76,11 +80,11 @@ export class EnvMapLoader {
 		if (!video) {
 			return;
 		}
-		let videoReady = false;
 		const onPlaying = () => {
 			const texture = this.texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
@@ -88,6 +92,7 @@ export class EnvMapLoader {
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
+				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			// texture.dispose();
@@ -97,11 +102,9 @@ export class EnvMapLoader {
 		};
 		video.crossOrigin = 'anonymous';
 		if (video.readyState >= video.HAVE_FUTURE_DATA) {
-			videoReady = true;
 			onPlaying();
 		} else {
 			video.oncanplay = () => {
-				videoReady = true;
 				onPlaying();
 			};
 		}
@@ -109,15 +112,12 @@ export class EnvMapLoader {
 
 	static loadVideoBackground(path, file, renderer, callback) {
 		const video = this.video;
-		video.src = path + file;
-		video.loop = true;
-		video.muted = true;
-		video.playsInline = true;
 		const onPlaying = () => {
 			video.oncanplay = null;
 			const texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			// const envMap = new THREE.VideoTexture(video);
@@ -126,6 +126,7 @@ export class EnvMapLoader {
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
+				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			// texture.dispose();
@@ -133,13 +134,13 @@ export class EnvMapLoader {
 				callback(cubeRenderTarget.texture, texture, false);
 			}
 		};
-		console.log(video.src);
 		// video.addEventListener('playing', onPlaying);
-		video.crossOrigin = 'anonymous';
 		video.oncanplay = () => {
 			console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
+		video.src = path + file;
+		console.log(video.src);
 		video.play().then(() => {
 			console.log('EnvMapLoader.loadVideoBackground.play');
 		}, error => {
@@ -149,15 +150,12 @@ export class EnvMapLoader {
 
 	static loadHlslVideoBackground(src, renderer, callback) {
 		const video = document.createElement('video');
-		video.loop = true;
-		video.muted = true;
-		video.playsinline = true;
-		video.crossOrigin = 'anonymous';
 		const onPlaying = () => {
 			video.oncanplay = null;
 			const texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			// const envMap = new THREE.VideoTexture(video);
@@ -166,6 +164,7 @@ export class EnvMapLoader {
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
+				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			// texture.dispose();
@@ -173,9 +172,7 @@ export class EnvMapLoader {
 				callback(cubeRenderTarget.texture, texture, false);
 			}
 		};
-		let videoReady = false;
 		video.oncanplay = () => {
-			videoReady = true;
 			// console.log('videoReady', videoReady);
 			onPlaying();
 		};

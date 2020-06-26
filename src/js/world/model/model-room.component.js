@@ -4,30 +4,14 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
 import { environment } from '../../environment';
+import InteractiveMesh from '../interactive/interactive.mesh';
+import MediaLoader from '../media/media-loader';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
 const USE_SHADOW = false;
 
 export default class ModelRoomComponent extends ModelComponent {
-
-	static getPath(folder, file) {
-		return environment.getTexturePath(folder + file);
-	}
-
-	static getLoader() {
-		// return new THREE.TextureLoader();
-		return ModelRoomComponent.loader || (ModelRoomComponent.loader = new THREE.TextureLoader());
-	}
-
-	static getTexture() {
-		return ModelRoomComponent.loadTexture('matcaps/', 'matcap-01.png');
-	}
-
-	static loadTexture(folder, file) {
-		const path = ModelRoomComponent.getPath(folder, file);
-		return ModelRoomComponent.textures[path] || (ModelRoomComponent.textures[path] = ModelRoomComponent.getLoader().load(path));
-	}
 
 	onInit() {
 		super.onInit();
@@ -60,48 +44,11 @@ export default class ModelRoomComponent extends ModelComponent {
 		return loader;
 	}
 
-	loadTexture(item, callback) {
-		let texture;
-		if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
-			// create the video element
-			const video = item.video = document.createElement('video');
-			video.src = ModelRoomComponent.getPath(item.folder, item.file);
-			video.muted = true;
-			video.playsinline = true;
-			video.loop = true;
-			video.crossOrigin = 'anonymous';
-			const onCanPlay = () => {
-				video.oncanplay = null;
-				const texture = new THREE.VideoTexture(video);
-				texture.minFilter = THREE.LinearFilter;
-				texture.magFilter = THREE.LinearFilter;
-				texture.format = THREE.RGBFormat;
-				texture.needsUpdate = true;
-				if (typeof callback === 'function') {
-					callback(texture);
-				}
-			};
-			video.oncanplay = onCanPlay;
-			video.load(); // must call after setting/changing source
-			video.play().then(() => {
-				console.log('ModelRoomComponent.play');
-			}, error => {
-				console.log('ModelRoomComponent.play.error', error);
-			});
-		} else {
-			texture = ModelRoomComponent.loadTexture(item.folder, item.file);
-			if (typeof callback === 'function') {
-				callback(texture);
-			}
-		}
-	}
-
 	loadModel(path, file, callback) {
-		const renderer = this.host.renderer;
+		// const renderer = this.host.renderer;
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 		const loader = this.getLoader(path, file);
 		loader.load(file, (model) => {
-			console.log(model);
 			let mesh;
 			const scene = model.scene;
 			if (scene) {
@@ -109,7 +56,6 @@ export default class ModelRoomComponent extends ModelComponent {
 			} else {
 				mesh = model;
 			}
-			const texture = ModelRoomComponent.getTexture();
 			const items = this.item.items;
 			mesh.scale.set(0.1, 0.1, 0.1);
 			// mesh.scale.set(10, 10, 10);
@@ -118,17 +64,7 @@ export default class ModelRoomComponent extends ModelComponent {
 					// roughnessMipmapper.generateMipmaps(child.material);
 					const item = items.find(x => x.id === child.name);
 					if (item) {
-						child.material.dispose();
-						const material = new THREE.MeshBasicMaterial({
-							color: 0x000000,
-							side: THREE.DoubleSide,
-						});
-						this.loadTexture(item, (texture) => {
-							material.map = texture;
-							material.color.setHex(0xffffff);
-							material.needsUpdate = true;
-						});
-						child.material = material;
+						item.mesh = child;
 					} else {
 						/*
 						if (USE_SHADOW) {
@@ -145,6 +81,33 @@ export default class ModelRoomComponent extends ModelComponent {
 				}
 			});
 			mesh.position.y = -1.66 * 3;
+			items.forEach(item => {
+				const child = item.mesh;
+				if (child) {
+					child.material.color.setHex(0x000000);
+					item.mediaLoader = new MediaLoader(item).load((texture, mediaLoader) => {
+						const material = new THREE.MeshBasicMaterial({
+							map: texture,
+							side: THREE.DoubleSide,
+						});
+						const mesh = new InteractiveMesh(child.geometry, material);
+						if (!mediaLoader.isVideo) {
+							mesh.freeze();
+						}
+						mesh.name = child.name;
+						mesh.position.copy(child.position);
+						mesh.rotation.copy(child.rotation);
+						mesh.scale.copy(child.scale);
+						const parent = child.parent;
+						parent.remove(child);
+						child.material.dispose();
+						parent.add(mesh);
+						if (mediaLoader.isPlayableVideo) {
+							mesh.on('down', mediaLoader.toggle);
+						}
+					});
+				}
+			});
 			const lights = new Array(3).fill(0).map((x, i) => {
 				const light = new THREE.PointLight(0xffffff, 0.1, 1000, 2);
 				if (USE_SHADOW) {
@@ -188,9 +151,9 @@ export default class ModelRoomComponent extends ModelComponent {
 			const items = item.items;
 			if (items) {
 				items.forEach(item => {
-					if (item.video) {
-						item.video.pause();
-						delete item.video;
+					if (item.mediaLoader) {
+						item.mediaLoader.dispose();
+						delete item.mediaLoader;
 					}
 				});
 			}

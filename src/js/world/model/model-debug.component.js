@@ -69,7 +69,9 @@ export default class ModelDebugComponent extends ModelComponent {
 		canvas.height = H;
 		const texture = new THREE.CanvasTexture(canvas);
 		texture.encoding = THREE.sRGBEncoding;
+		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
+		texture.mapping = THREE.UVMapping;
 		texture.needsUpdate = true;
 		const geometry = new THREE.PlaneBufferGeometry(2, 0.5, 2, 2);
 		const material = new THREE.MeshBasicMaterial({

@@ -166,7 +166,9 @@ export default class Panorama {
 				material.uniforms.texture.value.dispose();
 				material.uniforms.texture.value = null;
 			}
+			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.needsUpdate = true;
 			// material.map = texture;
 			material.uniforms.texture.value = texture;
@@ -202,6 +204,7 @@ export default class Panorama {
 				const texture = new VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
+				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
 				texture.needsUpdate = true;
 				const material = this.mesh.material;
