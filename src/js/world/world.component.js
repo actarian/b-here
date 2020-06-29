@@ -704,11 +704,9 @@ export default class WorldComponent extends Component {
 	}
 
 	onOrientationDidChange() {
-		/*
 		if (DEBUG) {
 			console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
 		}
-		*/
 		const agora = this.agora;
 		if (agora && (agora.state.control || agora.state.spyed)) {
 			agora.sendMessage({

@@ -503,6 +503,30 @@
       "fov": 75
     },
     {
+      "id": 50,
+      "type": "model",
+      "name": "Pesto alla genovese",
+      "likes": 172,
+      "liked": false,
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "barattolo-pesto/",
+          "gltfFile": "barattolo-pesto.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 25,
+        "longitude": 119
+      },
+      "fov": 51
+    },
+    {
       "id": 16,
       "type": "model",
       "name": "Helmet",

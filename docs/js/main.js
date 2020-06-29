@@ -61247,11 +61247,13 @@
     };
 
     _proto.onOrientationDidChange = function onOrientationDidChange() {
-      /*
       if (DEBUG) {
-      	console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
+        console.log(JSON.stringify({
+          orientation: this.orbit.getOrientation(),
+          fov: this.camera.fov
+        }));
       }
-      */
+
       var agora = this.agora;
 
       if (agora && (agora.state.control || agora.state.spyed)) {
