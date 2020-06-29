@@ -20,8 +20,10 @@ export default class ModelPanelComponent extends ModelComponent {
 		}
 		this.getCanvasTexture().then(texture => {
 			const aspect = texture.width / texture.height;
-			const width = PANEL_RADIUS / 8;
-			const height = PANEL_RADIUS / 8 / aspect;
+			const width = PANEL_RADIUS / 10;
+			const height = PANEL_RADIUS / 10 / aspect;
+			const dy = PANEL_RADIUS / 10 * 0.25;
+			/*
 			const geometry = new THREE.PlaneBufferGeometry(width, height, 3, 3);
 			const material = new THREE.MeshBasicMaterial({
 				// depthTest: false,
@@ -30,10 +32,17 @@ export default class ModelPanelComponent extends ModelComponent {
 				opacity: 0,
 				// side: THREE.DoubleSide,
 			});
+			*/
 			const position = this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS);
-			const panel = this.panel = new THREE.Mesh(geometry, material);
+			// const panel = this.panel = new THREE.Mesh(geometry, material);
+			const material = new THREE.SpriteMaterial({
+				map: texture.map,
+				sizeAttenuation: false,
+			});
+			const panel = this.panel = new THREE.Sprite(material);
+			panel.scale.set(0.02 * width, 0.02 * height, 1);
 			panel.position.set(position.x, position.y, position.z);
-			panel.lookAt(ORIGIN);
+			// panel.lookAt(ORIGIN);
 			this.mesh.add(panel);
 			const from = { value: 0 };
 			gsap.to(from, 0.5, {
@@ -41,7 +50,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				delay: 0.0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					panel.position.set(position.x, position.y + height * from.value, position.z);
+					panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
 					panel.lookAt(ORIGIN);
 					panel.material.opacity = from.value;
 					panel.material.needsUpdate = true;

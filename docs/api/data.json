@@ -60,7 +60,7 @@
         {
           "id": 171,
           "type": "nav",
-          "title": "Ambiente1",
+          "title": "Ambiente 1A",
           "abstract": "Abstract",
           "position": [
             0.8012228950677142,
@@ -79,34 +79,34 @@
     {
       "id": 18,
       "type": "panorama-grid",
-      "name": "Ambiente1",
+      "name": "Ambiente 1A",
       "likes": 225,
       "liked": false,
-      "envMapFolder": "ambiente1/",
-      "envMapFile": "ambiente1_x0_y0.jpg",
+      "envMapFolder": "ambiente1a/",
+      "envMapFile": "ambiente1a_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
       "tiles": [
-        "ambiente1_x0_y0.jpg",
-        "ambiente1_x0_y1.jpg",
-        "ambiente1_x0_y2.jpg",
-        "ambiente1_x0_y3.jpg",
-        "ambiente1_x1_y0.jpg",
-        "ambiente1_x1_y3.jpg",
-        "ambiente1_x2_y0.jpg",
-        "ambiente1_x2_y3.jpg",
-        "ambiente1_x3_y0.jpg",
-        "ambiente1_x3_y3.jpg",
-        "ambiente1_x4_y0.jpg",
-        "ambiente1_x4_y1.jpg",
-        "ambiente1_x4_y2.jpg",
-        "ambiente1_x4_y3.jpg"
+        "ambiente1a_x0_y0.jpg",
+        "ambiente1a_x0_y1.jpg",
+        "ambiente1a_x0_y2.jpg",
+        "ambiente1a_x0_y3.jpg",
+        "ambiente1a_x1_y0.jpg",
+        "ambiente1a_x1_y3.jpg",
+        "ambiente1a_x2_y0.jpg",
+        "ambiente1a_x2_y3.jpg",
+        "ambiente1a_x3_y0.jpg",
+        "ambiente1a_x3_y3.jpg",
+        "ambiente1a_x4_y0.jpg",
+        "ambiente1a_x4_y1.jpg",
+        "ambiente1a_x4_y2.jpg",
+        "ambiente1a_x4_y3.jpg"
       ],
       "items": [
         {
           "id": 171,
           "type": "nav",
-          "title": "Ambiente2",
+          "title": "Ambiente 1B",
           "abstract": "Abstract",
           "position": [
             -0.13299151705396445,
@@ -125,34 +125,34 @@
     {
       "id": 19,
       "type": "panorama-grid",
-      "name": "Ambiente2",
+      "name": "Ambiente 1B",
       "likes": 225,
       "liked": false,
-      "envMapFolder": "ambiente2/",
-      "envMapFile": "ambiente2_x0_y0.jpg",
+      "envMapFolder": "ambiente1b/",
+      "envMapFile": "ambiente1b_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
       "tiles": [
-        "ambiente2_x0_y0.jpg",
-        "ambiente2_x0_y1.jpg",
-        "ambiente2_x0_y2.jpg",
-        "ambiente2_x0_y3.jpg",
-        "ambiente2_x1_y0.jpg",
-        "ambiente2_x1_y3.jpg",
-        "ambiente2_x2_y0.jpg",
-        "ambiente2_x2_y3.jpg",
-        "ambiente2_x3_y0.jpg",
-        "ambiente2_x3_y3.jpg",
-        "ambiente2_x4_y0.jpg",
-        "ambiente2_x4_y1.jpg",
-        "ambiente2_x4_y2.jpg",
-        "ambiente2_x4_y3.jpg"
+        "ambiente1b_x0_y0.jpg",
+        "ambiente1b_x0_y1.jpg",
+        "ambiente1b_x0_y2.jpg",
+        "ambiente1b_x0_y3.jpg",
+        "ambiente1b_x1_y0.jpg",
+        "ambiente1b_x1_y3.jpg",
+        "ambiente1b_x2_y0.jpg",
+        "ambiente1b_x2_y3.jpg",
+        "ambiente1b_x3_y0.jpg",
+        "ambiente1b_x3_y3.jpg",
+        "ambiente1b_x4_y0.jpg",
+        "ambiente1b_x4_y1.jpg",
+        "ambiente1b_x4_y2.jpg",
+        "ambiente1b_x4_y3.jpg"
       ],
       "items": [
         {
           "id": 171,
           "type": "nav",
-          "title": "Ambiente2A",
+          "title": "Ambiente 2A",
           "abstract": "Abstract",
           "position": [
             -0.15316718404648044,
@@ -171,7 +171,7 @@
     {
       "id": 20,
       "type": "panorama-grid",
-      "name": "Ambiente2A",
+      "name": "Ambiente 2A",
       "likes": 225,
       "liked": false,
       "envMapFolder": "ambiente2a/",
@@ -194,7 +194,7 @@
         {
           "id": 171,
           "type": "nav",
-          "title": "Panel 01",
+          "title": "Ambiente 2B",
           "abstract": "Abstract",
           "position": [
             -0.15316718404648044,
@@ -212,6 +212,48 @@
     },
     {
       "id": 21,
+      "type": "panorama-grid",
+      "name": "Ambiente 2B",
+      "likes": 225,
+      "liked": false,
+      "envMapFolder": "ambiente2b/",
+      "envMapFile": "ambiente2b_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente2b_x0_y0.jpg",
+        "ambiente2b_x0_y1.jpg",
+        "ambiente2b_x0_y2.jpg",
+        "ambiente2b_x0_y3.jpg",
+        "ambiente2b_x1_y0.jpg",
+        "ambiente2b_x1_y3.jpg",
+        "ambiente2b_x2_y0.jpg",
+        "ambiente2b_x2_y1.jpg",
+        "ambiente2b_x2_y2.jpg",
+        "ambiente2b_x2_y3.jpg"
+      ],
+      "items": [
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Panel 01",
+          "abstract": "Abstract",
+          "position": [
+            -0.15316718404648044,
+            -0.204222912061974,
+            0.9668675275963087
+          ],
+          "navTo": 22
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 22,
       "type": "panorama",
       "name": "Panel 01",
       "likes": 40,
@@ -253,7 +295,7 @@
             -0.253784919203119,
             -0.0031922631346306433
           ],
-          "navTo": 22
+          "navTo": 23
         }
       ],
       "orientation": {
@@ -263,7 +305,7 @@
       "fov": 75
     },
     {
-      "id": 22,
+      "id": 23,
       "type": "panorama",
       "name": "Panel 02",
       "likes": 40,
@@ -305,7 +347,7 @@
             -0.253784919203119,
             -0.0031922631346306433
           ],
-          "navTo": 23
+          "navTo": 24
         }
       ],
       "orientation": {
@@ -315,7 +357,7 @@
       "fov": 75
     },
     {
-      "id": 23,
+      "id": 24,
       "type": "panorama",
       "name": "Panel 04",
       "likes": 40,

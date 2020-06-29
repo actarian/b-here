@@ -45,7 +45,7 @@ export default class MediaLoader {
 			const video = this.video = document.createElement('video');
 			video.preload = 'metadata';
 			video.muted = true;
-			video.playsinline = true;
+			video.playsinline = video.playsInline = true;
 			if (item.autoplay) {
 				video.loop = true;
 			}
@@ -105,8 +105,10 @@ export default class MediaLoader {
 		if (this.video.paused) {
 			this.video.muted = false;
 			this.play();
+			return true;
 		} else {
 			this.pause();
+			return false;
 		}
 	}
 

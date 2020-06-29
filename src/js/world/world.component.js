@@ -10,6 +10,7 @@ import { DEBUG, environment } from '../environment';
 import { Rect } from '../rect/rect';
 import { PanoramaGridView } from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
+import Interactive from './interactive/interactive';
 import InteractiveMesh from './interactive/interactive.mesh';
 import OrbitService from './orbit/orbit';
 import Panorama from './panorama/panorama';
@@ -134,6 +135,7 @@ export default class WorldComponent extends Component {
 		}
 
 		const raycaster = this.raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera(this.mouse, camera);
 
 		const scene = this.scene = new THREE.Scene();
 		scene.add(cameraGroup);
@@ -186,23 +188,26 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	setViewOrientation(view) {
+		if (this.orbit) {
+			this.orbit.mode = view.type;
+			if (!this.renderer.xr.isPresenting) {
+				if (this.infoResultMessage) {
+					this.orbit.setOrientation(this.infoResultMessage.orientation);
+					this.camera.fov = this.infoResultMessage.fov;
+					this.camera.updateProjectionMatrix();
+				} else {
+					this.orbit.setOrientation(view.orientation);
+					this.camera.fov = view.fov;
+					this.camera.updateProjectionMatrix();
+				}
+			}
+		}
+	}
+
 	setView() {
 		const view = this.view_;
 		if (view) {
-			if (this.orbit) {
-				this.orbit.mode = view.type;
-				if (!this.renderer.xr.isPresenting) {
-					if (this.infoResultMessage) {
-						this.orbit.setOrientation(this.infoResultMessage.orientation);
-						this.camera.fov = this.infoResultMessage.fov;
-						this.camera.updateProjectionMatrix();
-					} else {
-						this.orbit.setOrientation(view.orientation);
-						this.camera.fov = view.fov;
-						this.camera.updateProjectionMatrix();
-					}
-				}
-			}
 			if (this.panorama) {
 				if (this.infoResultMessage) {
 					if (view instanceof PanoramaGridView && message.gridIndex) {
@@ -217,7 +222,11 @@ export default class WorldComponent extends Component {
 						this.torus.material.needsUpdate = true;
 					}
 					// this.render();
+				}, (view) => {
+					this.setViewOrientation(view);
 				});
+			} else {
+				this.setViewOrientation(view);
 			}
 			this.infoResultMessage = null;
 		}
@@ -493,7 +502,7 @@ export default class WorldComponent extends Component {
 			if (this.renderer.xr.isPresenting) {
 				const raycaster = this.updateRaycaster(this.controller, this.raycaster);
 				if (raycaster) {
-					const hit = InteractiveMesh.hittest(raycaster, this.controller.userData.isSelecting);
+					const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
 					this.pointer.update();
 					/*
 					if (hit && hit !== this.panorama.mesh) {
@@ -504,7 +513,7 @@ export default class WorldComponent extends Component {
 			} else {
 				const raycaster = this.raycaster;
 				if (raycaster) {
-					const hit = InteractiveMesh.hittest(this.raycaster);
+					const hit = Interactive.hittest(raycaster);
 					/*
 					if (hit && hit !== this.panorama.mesh) {
 						// console.log('hit', hit);
@@ -636,7 +645,7 @@ export default class WorldComponent extends Component {
 			this.mouse.y = -(event.clientY - h2) / h2;
 			const raycaster = this.raycaster;
 			raycaster.setFromCamera(this.mouse, this.camera);
-			const hit = InteractiveMesh.hittest(raycaster, true);
+			const hit = Interactive.hittest(raycaster, true);
 			if (DEBUG && this.panorama.mesh.intersection) {
 				const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
 				console.log(JSON.stringify({ position: position.toArray() }));
@@ -660,7 +669,7 @@ export default class WorldComponent extends Component {
 			*/
 			const raycaster = this.raycaster;
 			raycaster.setFromCamera(this.mouse, this.camera);
-			// InteractiveMesh.hittest(raycaster, this.mousedown);
+			// Interactive.hittest(raycaster, this.mousedown);
 		} catch (error) {
 			this.error = error;
 			// throw (error);
@@ -755,7 +764,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridMove(event) {
-		console.log('WorldComponent.onGridMove', event);
+		// console.log('WorldComponent.onGridMove', event);
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
 			const item = this.view.getTile(event.indices.x, event.indices.y);
 			if (item) {

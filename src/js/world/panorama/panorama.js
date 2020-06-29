@@ -104,7 +104,7 @@ export default class Panorama {
 		mesh.name = '[panorama]';
 	}
 
-	swap(view, renderer, callback) {
+	swap(view, renderer, callback, onexit) {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
 		if (this.tween > 0) {
@@ -116,6 +116,9 @@ export default class Panorama {
 					material.needsUpdate = true;
 				},
 				onComplete: () => {
+					if (typeof onexit === 'function') {
+						onexit(view);
+					}
 					this.load(item, renderer, (envMap, texture, rgbe) => {
 						gsap.to(this, 0.5, {
 							tween: 1,
@@ -132,6 +135,9 @@ export default class Panorama {
 				}
 			});
 		} else {
+			if (typeof onexit === 'function') {
+				onexit(view);
+			}
 			this.load(item, renderer, (envMap, texture, rgbe) => {
 				gsap.to(this, 0.5, {
 					tween: 1,
@@ -191,7 +197,7 @@ export default class Panorama {
 		*/
 		video.src = src;
 		video.muted = true;
-		video.playsinline = true;
+		video.playsinline = video.playsInline = true;
 		video.play();
 		this.setVideo(video);
 	}

@@ -1,6 +1,7 @@
 import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import { ViewType } from '../../view/view.service';
+import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
@@ -198,7 +199,7 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	dispose() {
-		InteractiveMesh.dispose(this);
+		Interactive.dispose(this);
 		this.textureA.dispose();
 		this.textureB.dispose();
 		this.material.dispose();
@@ -290,7 +291,7 @@ export default class ModelMenuComponent extends ModelComponent {
 
 	onDestroy() {
 		if (this.buttons) {
-			this.buttons.forEach(x => InteractiveMesh.dispose(x));
+			this.buttons.forEach(x => Interactive.dispose(x));
 		}
 		super.onDestroy();
 	}
