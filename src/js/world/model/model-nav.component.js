@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
 import { environment } from '../../environment';
 import Interactive from '../interactive/interactive';
-import InteractiveSprite from '../interactive/interactive.sprite';
+import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -26,60 +26,73 @@ export default class ModelNavComponent extends ModelComponent {
 	}
 
 	onDestroy() {
-		Interactive.dispose(this.mesh);
+		Interactive.dispose(this.sphere);
 		super.onDestroy();
 	}
 
 	create(callback) {
 		// this.renderOrder = environment.renderOrder.nav;
-		// const geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
+
+		const nav = new THREE.Group();
+		this.item.nav = nav;
+		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(NAV_RADIUS);
+		nav.position.set(position.x, position.y, position.z);
+
 		const map = ModelNavComponent.getTexture();
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.SpriteMaterial({
 			depthTest: false,
+			depthWrite: false,
 			transparent: true,
 			map: map,
 			sizeAttenuation: false,
 			opacity: 0
 		});
-		const sprite = new InteractiveSprite(material);
-		sprite.depthTest = false;
+		const sprite = new THREE.Sprite(material);
 		sprite.scale.set(0.03, 0.03, 0.03);
-		const mesh = this.mesh = sprite;
-		// const mesh = this.mesh = new InteractiveMesh(geometry, material);
+		nav.add(sprite);
 
-		this.item.mesh = mesh;
-		mesh.on('over', () => {
-			const from = { scale: mesh.scale.x };
+		// const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
+		const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
+		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+			opacity: 0.0,
+			color: 0x00ffff,
+		}));
+		sphere.lookAt(ORIGIN);
+		sphere.depthTest = false;
+		sphere.renderOrder = 0;
+		nav.add(sphere);
+		sphere.on('over', () => {
+			const from = { scale: sprite.scale.x };
 			gsap.to(from, 0.4, {
 				scale: 0.04,
 				delay: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					mesh.scale.set(from.scale, from.scale, from.scale);
+					sprite.scale.set(from.scale, from.scale, from.scale);
 				}
 			});
 			this.over.next(this.item);
 		});
-		mesh.on('out', () => {
-			const from = { scale: mesh.scale.x };
+		sphere.on('out', () => {
+			const from = { scale: sprite.scale.x };
 			gsap.to(from, 0.4, {
 				scale: 0.03,
 				delay: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					mesh.scale.set(from.scale, from.scale, from.scale);
+					sprite.scale.set(from.scale, from.scale, from.scale);
 				}
 			});
 			this.out.next(this.item);
 		});
-		mesh.on('down', () => {
+		sphere.on('down', () => {
 			this.down.next(this.item);
 		});
-		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(NAV_RADIUS);
-		mesh.position.set(position.x, position.y, position.z);
-		// mesh.lookAt(ORIGIN);
 		const from = { opacity: 0 };
 		gsap.to(from, 0.7, {
 			opacity: 1,
@@ -92,7 +105,7 @@ export default class ModelNavComponent extends ModelComponent {
 			}
 		});
 		if (typeof callback === 'function') {
-			callback(mesh);
+			callback(nav);
 		}
 	}
 

@@ -5,13 +5,12 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 // import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import AgoraService, { MessageType, RoleType } from '../agora/agora.service';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
-import { DEBUG, environment } from '../environment';
+import { DEBUG } from '../environment';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
 import { PanoramaGridView } from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
 import Interactive from './interactive/interactive';
-import InteractiveMesh from './interactive/interactive.mesh';
 import OrbitService from './orbit/orbit';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
@@ -145,8 +144,6 @@ export default class WorldComponent extends Component {
 		scene.add(panorama.mesh);
 
 		const pointer = this.pointer = new PointerElement();
-
-		// const torus = this.torus = this.addTorus();
 
 		/*
 		const mainLight = new THREE.PointLight(0xffffff);
@@ -337,81 +334,6 @@ export default class WorldComponent extends Component {
 		this.controller2.userData.isSelecting = false;
 	}
 
-	addPointer(parent) {
-		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
-		const loader = new THREE.TextureLoader();
-		const texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
-		// texture.magFilter = THREE.NearestFilter;
-		// texture.wrapT = THREE.RepeatWrapping;
-		// texture.repeat.y = 1;
-		// texture.anisotropy = 0;
-		// texture.magFilter = THREE.LinearMipMapLinearFilter;
-		// texture.minFilter = THREE.NearestFilter;
-		texture.minFilter = THREE.LinearFilter;
-		texture.magFilter = THREE.LinearFilter;
-		texture.mapping = THREE.UVMapping;
-		const material = new THREE.MeshBasicMaterial({
-			depthTest: false,
-			transparent: true,
-			map: texture,
-			opacity: 0.9,
-		});
-		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(-100000, -100000, -100000);
-		/*
-		const panorama = this.panorama.mesh;
-		panorama.on('down', (panorama) => {
-			mesh.material.color.setHex(0x0099ff);
-			mesh.material.opacity = 1.0;
-			mesh.material.needsUpdate = true;
-		});
-		panorama.on('up', (panorama) => {
-			mesh.material.color.setHex(0xffffff);
-			mesh.material.opacity = 0.9;
-			mesh.material.needsUpdate = true;
-		});
-		*/
-		return mesh;
-	}
-
-	addTorus() {
-		const geometry = new THREE.TorusKnotBufferGeometry(3, 1.5, 150, 20);
-		const material = new THREE.MeshStandardMaterial({
-			color: 0x888888,
-			metalness: 1.3,
-			roughness: 0.3,
-		});
-		const mesh = new InteractiveMesh(geometry, material);
-		mesh.position.set(50, -20, 50);
-		mesh.userData.render = () => {
-			mesh.rotation.set(0, mesh.rotation.y + 0.01, 0);
-		};
-		mesh.on('over', () => {
-			const from = { scale: mesh.scale.x };
-			gsap.to(from, 0.4, {
-				scale: 1.5,
-				delay: 0,
-				ease: Power2.easeInOut,
-				onUpdate: () => {
-					mesh.scale.set(from.scale, from.scale, from.scale);
-				}
-			});
-		});
-		mesh.on('out', () => {
-			const from = { scale: mesh.scale.x };
-			gsap.to(from, 0.4, {
-				scale: 1,
-				delay: 0,
-				ease: Power2.easeInOut,
-				onUpdate: () => {
-					mesh.scale.set(from.scale, from.scale, from.scale);
-				}
-			});
-		});
-		this.scene.add(mesh);
-		return mesh;
-	}
-
 	/*
 	handleController(controller) {
 		if (controller.userData.isSelecting) {
@@ -498,6 +420,7 @@ export default class WorldComponent extends Component {
 			this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
 			raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
 			raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.controllerMatrix_);
+			// raycaster.camera = this.host.renderer.xr.getCamera(this.camera);
 			return raycaster;
 		}
 	}

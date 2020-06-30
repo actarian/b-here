@@ -95,7 +95,9 @@ var environment = new Environment({
     banner: 40,
     nav: 50,
     panel: 60,
-    menu: 70
+    menu: 70,
+    debug: 80,
+    pointer: 90
   }
 });
 

@@ -72,5 +72,7 @@ export const environment = new Environment({
 		nav: 50,
 		panel: 60,
 		menu: 70,
+		debug: 80,
+		pointer: 90,
 	}
 });

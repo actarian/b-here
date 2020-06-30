@@ -64,7 +64,7 @@ export default class ModelRoomComponent extends ModelComponent {
 					// roughnessMipmapper.generateMipmaps(child.material);
 					const item = items.find(x => x.id === child.name);
 					if (item) {
-						item.mesh = child;
+						item.plane = child;
 					} else {
 						/*
 						if (USE_SHADOW) {
@@ -83,7 +83,7 @@ export default class ModelRoomComponent extends ModelComponent {
 			});
 			mesh.position.y = -1.66 * 3;
 			items.forEach(item => {
-				const child = item.mesh;
+				const child = item.plane;
 				if (child) {
 					child.material.color.setHex(0x000000);
 					item.mediaLoader = new MediaLoader(item).load((texture, mediaLoader) => {

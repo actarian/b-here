@@ -499,7 +499,7 @@
       "likes": 175,
       "liked": false,
       "envMapFolder": "video/",
-      "envMapFile": "time-square-composition.mp4",
+      "envMapFile": "time-square-composition-3.mp4",
       "items": [
         {
           "id": 81,
@@ -527,7 +527,7 @@
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
-      "modelFile": "room-3d-3.fbx",
+      "modelFile": "room-3d.fbx",
       "envMapFolder": "cinema/",
       "envMapFile": "cinema-playing.jpg",
       "items": [
@@ -625,9 +625,9 @@
           "title": "Time Square",
           "abstract": "Abstract",
           "position": [
-            0.7138064498616354,
-            -0.23218082284626923,
-            0.6607362693528771
+            0.07886914775963917,
+            -0.23883547227955518,
+            -0.9678518867640181
           ],
           "navTo": 8
         }

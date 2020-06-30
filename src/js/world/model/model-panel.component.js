@@ -1,6 +1,7 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
 import * as THREE from 'three';
+import { environment } from '../../environment';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -23,7 +24,7 @@ export default class ModelPanelComponent extends ModelComponent {
 			const width = PANEL_RADIUS / 10;
 			const height = PANEL_RADIUS / 10 / aspect;
 			const dy = PANEL_RADIUS / 10 * 0.25;
-			const position = this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS);
+			const position = this.item.nav.position.normalize().multiplyScalar(PANEL_RADIUS);
 			const material = new THREE.SpriteMaterial({
 				depthTest: false,
 				transparent: true,
@@ -31,6 +32,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				sizeAttenuation: false,
 			});
 			const panel = this.panel = new THREE.Sprite(material);
+			panel.renderOrder = environment.renderOrder.panel;
 			panel.scale.set(0.02 * width, 0.02 * height, 1);
 			panel.position.set(position.x, position.y, position.z);
 			// panel.lookAt(ORIGIN);

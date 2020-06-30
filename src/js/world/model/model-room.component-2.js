@@ -63,7 +63,7 @@ export default class ModelRoomComponent extends ModelComponent {
 					// roughnessMipmapper.generateMipmaps(child.material);
 					const item = items.find(x => x.id === child.name);
 					if (item) {
-						item.mesh = child;
+						item.plane = child;
 					} else {
 						/*
 						if (USE_SHADOW) {
@@ -83,11 +83,13 @@ export default class ModelRoomComponent extends ModelComponent {
 			});
 			mesh.position.y = -1.66 * 3;
 			items.forEach(item => {
-				const previous = item.mesh;
+				const previous = item.plane;
 				if (previous) {
-					previous.material.color.setHex(0x000000);
+					if (previous.material) {
+						previous.material.color.setHex(0x000000);
+					}
 					const parent = previous.parent;
-					const mesh = item.mesh = new MediaMesh(item, previous.geometry);
+					const mesh = item.plane = new MediaMesh(item, previous.geometry);
 					mesh.name = previous.name;
 					mesh.position.copy(previous.position);
 					mesh.rotation.copy(previous.rotation);
@@ -96,7 +98,9 @@ export default class ModelRoomComponent extends ModelComponent {
 						// mesh.material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 						parent.add(mesh);
 						parent.remove(previous);
-						previous.material.dispose();
+						if (previous.material) {
+							previous.material.dispose();
+						}
 					});
 				}
 			});
@@ -143,9 +147,9 @@ export default class ModelRoomComponent extends ModelComponent {
 			const items = item.items;
 			if (items) {
 				items.forEach(item => {
-					if (item.mesh) {
-						item.mesh.dispose();
-						delete item.mesh;
+					if (item.plane) {
+						item.plane.dispose();
+						delete item.plane;
 					}
 				});
 			}
