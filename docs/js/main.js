@@ -60623,6 +60623,7 @@
       this.controllerMatrix_ = new THREE$1.Matrix4();
       this.controllerWorldPosition_ = new THREE$1.Vector3();
       this.controllerWorldDirection_ = new THREE$1.Vector3();
+      this.showNavPoints = false;
       var container = this.container = node;
       var info = this.info = node.querySelector('.world__info');
       var worldRect = this.worldRect = Rect.fromNode(container);
@@ -60741,6 +60742,7 @@
             }
           }
 
+          this.showNavPoints = false;
           this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
             // this.scene.background = envMap;
             _this.scene.environment = envMap;
@@ -60752,6 +60754,8 @@
 
           }, function (view) {
             _this.setViewOrientation(view);
+
+            _this.showNavPoints = true;
           });
         } else {
           this.setViewOrientation(view);

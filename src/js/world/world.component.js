@@ -88,6 +88,7 @@ export default class WorldComponent extends Component {
 		this.controllerMatrix_ = new THREE.Matrix4();
 		this.controllerWorldPosition_ = new THREE.Vector3();
 		this.controllerWorldDirection_ = new THREE.Vector3();
+		this.showNavPoints = false;
 
 		const container = this.container = node;
 		const info = this.info = node.querySelector('.world__info');
@@ -214,6 +215,7 @@ export default class WorldComponent extends Component {
 						view.index_ = message.gridIndex;
 					}
 				}
+				this.showNavPoints = false;
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
@@ -224,6 +226,7 @@ export default class WorldComponent extends Component {
 					// this.render();
 				}, (view) => {
 					this.setViewOrientation(view);
+					this.showNavPoints = true;
 				});
 			} else {
 				this.setViewOrientation(view);
