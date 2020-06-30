@@ -61963,8 +61963,8 @@
 
       material = material || MediaMesh.getMaterial();
       _this = _InteractiveMesh.call(this, geometry, material) || this;
-      _this.item = item; // this.renderOrder = environment.renderOrder.plane;
-
+      _this.item = item;
+      _this.renderOrder = environment.renderOrder.plane;
       var uniforms = _this.uniforms = {
         overlay: 0,
         tween: 1,
@@ -62903,6 +62903,7 @@
       _this = _InteractiveMesh.call(this, geometry, material) || this; // this.userData.item = item;
       // this.userData.index = index;
 
+      _this.renderOrder = environment.renderOrder.menu;
       _this.name = item.name;
       _this.item = item;
       _this.index = index;

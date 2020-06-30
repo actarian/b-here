@@ -1,5 +1,6 @@
 import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
+import { environment } from '../../environment';
 import { ViewType } from '../../view/view.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -108,6 +109,7 @@ export class MenuButton extends InteractiveMesh {
 		super(geometry, material);
 		// this.userData.item = item;
 		// this.userData.index = index;
+		this.renderOrder = environment.renderOrder.menu;
 		this.name = item.name;
 		this.item = item;
 		this.index = index;

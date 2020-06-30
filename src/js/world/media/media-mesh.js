@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import MediaLoader from './media-loader';
 
@@ -114,7 +115,7 @@ export default class MediaMesh extends InteractiveMesh {
 		material = material || MediaMesh.getMaterial();
 		super(geometry, material);
 		this.item = item;
-		// this.renderOrder = environment.renderOrder.plane;
+		this.renderOrder = environment.renderOrder.plane;
 		const uniforms = this.uniforms = {
 			overlay: 0,
 			tween: 1,
