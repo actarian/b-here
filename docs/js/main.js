@@ -61887,6 +61887,7 @@
         // create the video element
         var video = this.video = document.createElement('video');
         video.preload = 'metadata';
+        video.volume = 0.5;
         video.muted = true;
         video.playsinline = video.playsInline = true;
 
@@ -61985,7 +61986,7 @@
 
     MediaMesh.getMaterial = function getMaterial() {
       var material = new THREE$1.ShaderMaterial({
-        // depthTest: false,
+        depthTest: false,
         transparent: true,
         vertexShader: VERTEX_SHADER$1,
         fragmentShader: FRAGMENT_SHADER$1,
@@ -62019,8 +62020,8 @@
           opacity: {
             value: 0
           }
-        },
-        side: THREE$1.DoubleSide
+        } // side: THREE.DoubleSide
+
       });
       return material;
     };
@@ -62031,6 +62032,7 @@
       material = material || MediaMesh.getMaterial();
       _this = _InteractiveMesh.call(this, geometry, material) || this;
       _this.item = item;
+      _this.renderOrder = 1;
       var uniforms = _this.uniforms = {
         overlay: 0,
         tween: 1,
@@ -62058,6 +62060,7 @@
           folder: 'ui/',
           file: 'play.png'
         }, function (textureB) {
+          // console.log('MediaMesh.textureB', textureB);
           textureB.minFilter = THREE$1.LinearFilter;
           textureB.magFilter = THREE$1.LinearFilter;
           textureB.mapping = THREE$1.UVMapping; // textureB.format = THREE.RGBFormat;
@@ -62072,6 +62075,7 @@
       }
 
       mediaLoader.load(function (textureA) {
+        // console.log('MediaMesh.textureA', textureA);
         material.uniforms.textureA.value = textureA;
         material.uniforms.resolutionA.value = new THREE$1.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
         material.needsUpdate = true;
@@ -62100,50 +62104,59 @@
     _proto.onAppear = function onAppear() {
       var uniforms = this.uniforms;
       var material = this.material;
-      gsap.to(uniforms, 0.4, {
-        opacity: 1,
-        ease: Power2.easeInOut,
-        onUpdate: function onUpdate() {
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
+
+      if (material.uniforms) {
+        gsap.to(uniforms, 0.4, {
+          opacity: 1,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            material.uniforms.opacity.value = uniforms.opacity;
+            material.needsUpdate = true;
+          }
+        });
+      }
     };
 
     _proto.onOver = function onOver() {
       var uniforms = this.uniforms;
       var material = this.material;
-      gsap.to(uniforms, 0.4, {
-        overlay: 1,
-        tween: 0,
-        opacity: 1,
-        ease: Power2.easeInOut,
-        overwrite: true,
-        onUpdate: function onUpdate() {
-          material.uniforms.overlay.value = uniforms.overlay;
-          material.uniforms.tween.value = uniforms.tween;
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
+
+      if (material.uniforms) {
+        gsap.to(uniforms, 0.4, {
+          overlay: 1,
+          tween: 0,
+          opacity: 1,
+          ease: Power2.easeInOut,
+          overwrite: true,
+          onUpdate: function onUpdate() {
+            material.uniforms.overlay.value = uniforms.overlay;
+            material.uniforms.tween.value = uniforms.tween;
+            material.uniforms.opacity.value = uniforms.opacity;
+            material.needsUpdate = true;
+          }
+        });
+      }
     };
 
     _proto.onOut = function onOut() {
       var uniforms = this.uniforms;
       var material = this.material;
-      gsap.to(uniforms, 0.4, {
-        overlay: 0,
-        tween: this.playing ? 0 : 1,
-        opacity: 1,
-        ease: Power2.easeInOut,
-        overwrite: true,
-        onUpdate: function onUpdate() {
-          material.uniforms.overlay.value = uniforms.overlay;
-          material.uniforms.tween.value = uniforms.tween;
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
+
+      if (material.uniforms) {
+        gsap.to(uniforms, 0.4, {
+          overlay: 0,
+          tween: this.playing ? 0 : 1,
+          opacity: 1,
+          ease: Power2.easeInOut,
+          overwrite: true,
+          onUpdate: function onUpdate() {
+            material.uniforms.overlay.value = uniforms.overlay;
+            material.uniforms.tween.value = uniforms.tween;
+            material.uniforms.opacity.value = uniforms.opacity;
+            material.needsUpdate = true;
+          }
+        });
+      }
     };
 
     _proto.onToggle = function onToggle() {
@@ -62986,6 +62999,7 @@
       _this = _InteractiveMesh.call(this, geometry, material) || this; // this.userData.item = item;
       // this.userData.index = index;
 
+      _this.renderOrder = 2;
       _this.name = item.name;
       _this.item = item;
       _this.index = index;
@@ -63728,6 +63742,7 @@
         opacity: 0
       });
       var sprite = new InteractiveSprite(material);
+      sprite.renderOrder = 2;
       sprite.scale.set(0.02, 0.02, 0.02);
       var mesh = this.mesh = sprite; // const mesh = this.mesh = new InteractiveMesh(geometry, material);
 
@@ -63849,6 +63864,7 @@
           sizeAttenuation: false
         });
         var panel = _this.panel = new THREE$1.Sprite(material);
+        panel.renderOrder = 2;
         panel.scale.set(0.02 * width, 0.02 * height, 1);
         panel.position.set(position.x, position.y, position.z); // panel.lookAt(ORIGIN);
 
@@ -68783,38 +68799,46 @@
 
             if (item) {
               item.mesh = child;
+            } else {
+              /*
+              if (USE_SHADOW) {
+              	child.castShadow = true;
+              	child.receiveShadow = true;
+              }
+              */
+              child.material.dispose();
+              child.renderOrder = 10;
+              var material = new THREE$1.MeshStandardMaterial({
+                color: 0x111111,
+                roughness: 0.6
+              });
+              child.material = material;
             }
           }
         });
         mesh.position.y = -1.66 * 3;
         items.forEach(function (item) {
-          var child = item.mesh;
+          var previous = item.mesh;
 
-          if (child) {
-            child.material.color.setHex(0x000000);
-            item.mediaLoader = new MediaLoader(item).load(function (texture, mediaLoader) {
-              var material = new THREE$1.MeshBasicMaterial({
-                map: texture,
-                side: THREE$1.DoubleSide
-              });
-              var mesh = new InteractiveMesh(child.geometry, material);
+          if (previous) {
+            previous.material.color.setHex(0x000000);
+            var parent = previous.parent;
 
-              if (!mediaLoader.isVideo) {
-                mesh.freeze();
-              }
+            var _mesh = item.mesh = new MediaMesh(item, previous.geometry);
 
-              mesh.name = child.name;
-              mesh.position.copy(child.position);
-              mesh.rotation.copy(child.rotation);
-              mesh.scale.copy(child.scale);
-              var parent = child.parent;
-              parent.remove(child);
-              child.material.dispose();
-              parent.add(mesh);
+            _mesh.name = previous.name;
 
-              if (mediaLoader.isPlayableVideo) {
-                mesh.on('down', mediaLoader.toggle);
-              }
+            _mesh.position.copy(previous.position);
+
+            _mesh.rotation.copy(previous.rotation);
+
+            _mesh.scale.copy(previous.scale);
+
+            _mesh.load(function () {
+              // mesh.material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+              parent.add(_mesh);
+              parent.remove(previous);
+              previous.material.dispose();
             });
           }
         });
@@ -68864,9 +68888,9 @@
 
         if (items) {
           items.forEach(function (item) {
-            if (item.mediaLoader) {
-              item.mediaLoader.dispose();
-              delete item.mediaLoader;
+            if (item.mesh) {
+              item.mesh.dispose();
+              delete item.mesh;
             }
           });
         }

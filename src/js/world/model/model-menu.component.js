@@ -108,6 +108,7 @@ export class MenuButton extends InteractiveMesh {
 		super(geometry, material);
 		// this.userData.item = item;
 		// this.userData.index = index;
+		this.renderOrder = 2;
 		this.name = item.name;
 		this.item = item;
 		this.index = index;

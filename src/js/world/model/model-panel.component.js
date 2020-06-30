@@ -40,6 +40,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				sizeAttenuation: false,
 			});
 			const panel = this.panel = new THREE.Sprite(material);
+			panel.renderOrder = 2;
 			panel.scale.set(0.02 * width, 0.02 * height, 1);
 			panel.position.set(position.x, position.y, position.z);
 			// panel.lookAt(ORIGIN);

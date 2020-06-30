@@ -71,12 +71,13 @@ export default class ModelRoomComponent extends ModelComponent {
 							child.castShadow = true;
 							child.receiveShadow = true;
 						}
+						*/
+						child.material.dispose();
 						const material = new THREE.MeshStandardMaterial({
-							color: 0x222222, // new THREE.Color(Math.random(), Math.random(), Math.random()),
-							roughness: 0.4,
+							color: 0x111111,
+							roughness: 0.6,
 						});
 						child.material = material;
-						*/
 					}
 				}
 			});

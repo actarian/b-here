@@ -31,7 +31,7 @@ import ModelNavComponent from './world/model/model-nav.component';
 import ModelPanelComponent from './world/model/model-panel.component';
 import ModelPictureComponent from './world/model/model-picture.component';
 import ModelPlaneComponent from './world/model/model-plane.component';
-import ModelRoomComponent from './world/model/model-room.component';
+import ModelRoomComponent from './world/model/model-room.component-2';
 import ModelTextComponent from './world/model/model-text.component';
 import ModelComponent from './world/model/model.component';
 import WorldComponent from './world/world.component';

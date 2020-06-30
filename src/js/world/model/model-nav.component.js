@@ -45,6 +45,7 @@ export default class ModelNavComponent extends ModelComponent {
 		*/
 		const material = new THREE.SpriteMaterial({ map: map, sizeAttenuation: false, opacity: 0 });
 		const sprite = new InteractiveSprite(material);
+		sprite.renderOrder = 2;
 		sprite.scale.set(0.02, 0.02, 0.02);
 		const mesh = this.mesh = sprite;
 		// const mesh = this.mesh = new InteractiveMesh(geometry, material);

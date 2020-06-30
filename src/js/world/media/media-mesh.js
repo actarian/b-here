@@ -89,7 +89,7 @@ export default class MediaMesh extends InteractiveMesh {
 
 	static getMaterial() {
 		const material = new THREE.ShaderMaterial({
-			// depthTest: false,
+			depthTest: false,
 			transparent: true,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
@@ -104,7 +104,7 @@ export default class MediaMesh extends InteractiveMesh {
 				tween: { value: 1 },
 				opacity: { value: 0 },
 			},
-			side: THREE.DoubleSide
+			// side: THREE.DoubleSide
 		});
 		return material;
 	}
@@ -113,6 +113,7 @@ export default class MediaMesh extends InteractiveMesh {
 		material = material || MediaMesh.getMaterial();
 		super(geometry, material);
 		this.item = item;
+		this.renderOrder = 1;
 		const uniforms = this.uniforms = {
 			overlay: 0,
 			tween: 1,
@@ -129,6 +130,7 @@ export default class MediaMesh extends InteractiveMesh {
 		const mediaLoader = this.mediaLoader;
 		if (mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({ folder: 'ui/', file: 'play.png' }, (textureB) => {
+				// console.log('MediaMesh.textureB', textureB);
 				textureB.minFilter = THREE.LinearFilter;
 				textureB.magFilter = THREE.LinearFilter;
 				textureB.mapping = THREE.UVMapping;
@@ -142,6 +144,7 @@ export default class MediaMesh extends InteractiveMesh {
 			});
 		}
 		mediaLoader.load((textureA) => {
+			// console.log('MediaMesh.textureA', textureA);
 			material.uniforms.textureA.value = textureA;
 			material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
 			material.needsUpdate = true;
@@ -164,50 +167,56 @@ export default class MediaMesh extends InteractiveMesh {
 	onAppear() {
 		const uniforms = this.uniforms;
 		const material = this.material;
-		gsap.to(uniforms, 0.4, {
-			opacity: 1,
-			ease: Power2.easeInOut,
-			onUpdate: () => {
-				material.uniforms.opacity.value = uniforms.opacity;
-				material.needsUpdate = true;
-			},
-		});
+		if (material.uniforms) {
+			gsap.to(uniforms, 0.4, {
+				opacity: 1,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					material.uniforms.opacity.value = uniforms.opacity;
+					material.needsUpdate = true;
+				},
+			});
+		}
 	}
 
 	onOver() {
 		const uniforms = this.uniforms;
 		const material = this.material;
-		gsap.to(uniforms, 0.4, {
-			overlay: 1,
-			tween: 0,
-			opacity: 1,
-			ease: Power2.easeInOut,
-			overwrite: true,
-			onUpdate: () => {
-				material.uniforms.overlay.value = uniforms.overlay;
-				material.uniforms.tween.value = uniforms.tween;
-				material.uniforms.opacity.value = uniforms.opacity;
-				material.needsUpdate = true;
-			},
-		});
+		if (material.uniforms) {
+			gsap.to(uniforms, 0.4, {
+				overlay: 1,
+				tween: 0,
+				opacity: 1,
+				ease: Power2.easeInOut,
+				overwrite: true,
+				onUpdate: () => {
+					material.uniforms.overlay.value = uniforms.overlay;
+					material.uniforms.tween.value = uniforms.tween;
+					material.uniforms.opacity.value = uniforms.opacity;
+					material.needsUpdate = true;
+				},
+			});
+		}
 	}
 
 	onOut() {
 		const uniforms = this.uniforms;
 		const material = this.material;
-		gsap.to(uniforms, 0.4, {
-			overlay: 0,
-			tween: this.playing ? 0 : 1,
-			opacity: 1,
-			ease: Power2.easeInOut,
-			overwrite: true,
-			onUpdate: () => {
-				material.uniforms.overlay.value = uniforms.overlay;
-				material.uniforms.tween.value = uniforms.tween;
-				material.uniforms.opacity.value = uniforms.opacity;
-				material.needsUpdate = true;
-			},
-		});
+		if (material.uniforms) {
+			gsap.to(uniforms, 0.4, {
+				overlay: 0,
+				tween: this.playing ? 0 : 1,
+				opacity: 1,
+				ease: Power2.easeInOut,
+				overwrite: true,
+				onUpdate: () => {
+					material.uniforms.overlay.value = uniforms.overlay;
+					material.uniforms.tween.value = uniforms.tween;
+					material.uniforms.opacity.value = uniforms.opacity;
+					material.needsUpdate = true;
+				},
+			});
+		}
 	}
 
 	onToggle() {

@@ -44,6 +44,7 @@ export default class MediaLoader {
 			// create the video element
 			const video = this.video = document.createElement('video');
 			video.preload = 'metadata';
+			video.volume = 0.5;
 			video.muted = true;
 			video.playsinline = video.playsInline = true;
 			if (item.autoplay) {

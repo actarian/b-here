@@ -443,9 +443,9 @@
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
-      "modelFile": "room-3d.fbx",
-      "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room-02.jpg",
+      "modelFile": "room-3d-3.fbx",
+      "envMapFolder": "cinema/",
+      "envMapFile": "cinema-playing.jpg",
       "items": [
         {
           "id": "plane-01",
@@ -508,6 +508,10 @@
       "name": "Pesto alla genovese",
       "likes": 172,
       "liked": false,
+      "ar": {
+        "gltf": "models/barattolo-pesto/barattolo-pesto.gltf",
+        "usdz": "models/barattolo-pesto/barattolo-pesto.usdz"
+      },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
       "items": [
