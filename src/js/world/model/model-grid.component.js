@@ -101,6 +101,7 @@ export default class ModelGridComponent extends ModelComponent {
 		const tiles = this.tiles = new Array(COLS * ROWS).fill(0).map((x, i) => {
 			const material = new THREE.MeshBasicMaterial({
 				depthTest: false,
+				depthWrite: false,
 				map: map,
 				transparent: true,
 				opacity: 0,
@@ -133,6 +134,7 @@ export default class ModelGridComponent extends ModelComponent {
 		// geometry.scale(-1, 1, 1);
 		const material = new THREE.MeshBasicMaterial({
 			depthTest: false,
+			depthWrite: false,
 			transparent: true,
 			opacity: 0,
 			// side: THREE.DoubleSide,
@@ -209,6 +211,7 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.tile;
 		const mesh = this.mesh = new THREE.Group();
 		this.addTiles();
 		this.addHitArea();

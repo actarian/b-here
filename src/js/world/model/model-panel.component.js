@@ -23,24 +23,14 @@ export default class ModelPanelComponent extends ModelComponent {
 			const width = PANEL_RADIUS / 10;
 			const height = PANEL_RADIUS / 10 / aspect;
 			const dy = PANEL_RADIUS / 10 * 0.25;
-			/*
-			const geometry = new THREE.PlaneBufferGeometry(width, height, 3, 3);
-			const material = new THREE.MeshBasicMaterial({
-				// depthTest: false,
-				map: texture.map,
-				transparent: true,
-				opacity: 0,
-				// side: THREE.DoubleSide,
-			});
-			*/
 			const position = this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS);
-			// const panel = this.panel = new THREE.Mesh(geometry, material);
 			const material = new THREE.SpriteMaterial({
+				depthTest: false,
+				transparent: true,
 				map: texture.map,
 				sizeAttenuation: false,
 			});
 			const panel = this.panel = new THREE.Sprite(material);
-			panel.renderOrder = 2;
 			panel.scale.set(0.02 * width, 0.02 * height, 1);
 			panel.position.set(position.x, position.y, position.z);
 			// panel.lookAt(ORIGIN);
@@ -61,6 +51,7 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.panel;
 		const mesh = new THREE.Group();
 		if (typeof callback === 'function') {
 			callback(mesh);

@@ -591,6 +591,16 @@
       models: 'models/',
       textures: 'textures/',
       fonts: 'fonts/'
+    },
+    renderOrder: {
+      panorama: 0,
+      model: 10,
+      plane: 20,
+      tile: 30,
+      banner: 40,
+      nav: 50,
+      panel: 60,
+      menu: 70
     }
   });
 
@@ -4501,7 +4511,7 @@
 
             node.appendChild(modelViewerNode);
           } else if (_this.devicePlatform === DevicePlatform.IOS) {
-            var usdzSrc = "" + environment.host + view.ar.usdz;
+            var usdzSrc = environment.getModelPath(view.ar.usdz);
             window.location.href = usdzSrc;
           }
         });
@@ -4538,8 +4548,8 @@
     };
 
     _proto.getModelViewerNode = function getModelViewerNode(view) {
-      var gltfSrc = "" + environment.host + view.ar.gltf;
-      var usdzSrc = "" + environment.host + view.ar.usdz;
+      var gltfSrc = environment.getModelPath(view.ar.gltf);
+      var usdzSrc = environment.getModelPath(view.ar.usdz);
       var template = "<model-viewer alt=\"" + view.name + "\" src=\"" + gltfSrc + "\" ios-src=\"" + usdzSrc + "\" magic-leap ar ar_preferred></model-viewer>";
       var div = document.createElement("div");
       div.innerHTML = template;
@@ -55635,6 +55645,7 @@
       geometry.rotateY(Math.PI);
       var material = new THREE$1.ShaderMaterial({
         // depthTest: false,
+        depthWrite: false,
         vertexShader: VERTEX_SHADER,
         fragmentShader: FRAGMENT_SHADER,
         uniforms: {
@@ -55660,7 +55671,8 @@
       });
       */
 
-      var mesh = this.mesh = new InteractiveMesh(geometry, material);
+      var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
+
       mesh.name = '[panorama]';
     };
 
@@ -60622,8 +60634,8 @@
       this.mouse = new THREE$1.Vector2();
       this.controllerMatrix_ = new THREE$1.Matrix4();
       this.controllerWorldPosition_ = new THREE$1.Vector3();
-      this.controllerWorldDirection_ = new THREE$1.Vector3();
-      this.showNavPoints = false;
+      this.controllerWorldDirection_ = new THREE$1.Vector3(); // this.showNavPoints = false;
+
       var container = this.container = node;
       var info = this.info = node.querySelector('.world__info');
       var worldRect = this.worldRect = Rect.fromNode(container);
@@ -60740,9 +60752,10 @@
             if (view instanceof PanoramaGridView && message.gridIndex) {
               view.index_ = message.gridIndex;
             }
-          }
+          } // this.showNavPoints = false;
+          // this.pushChanges();
 
-          this.showNavPoints = false;
+
           this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
             // this.scene.background = envMap;
             _this.scene.environment = envMap;
@@ -60753,9 +60766,9 @@
             } // this.render();
 
           }, function (view) {
-            _this.setViewOrientation(view);
+            _this.setViewOrientation(view); // this.showNavPoints = true;
+            // this.pushChanges();
 
-            _this.showNavPoints = true;
           });
         } else {
           this.setViewOrientation(view);
@@ -60881,8 +60894,8 @@
       texture.mapping = THREE$1.UVMapping;
       var material = new THREE$1.MeshBasicMaterial({
         depthTest: false,
-        map: texture,
         transparent: true,
+        map: texture,
         opacity: 0.9
       });
       var mesh = new THREE$1.Mesh(geometry, material);
@@ -61782,6 +61795,7 @@
     };
 
     _proto.create = function create(callback) {
+      // this.renderOrder = environment.renderOrder.banner;
       var mesh = new THREE$1.Group();
       mesh.userData = {
         render: function render() {
@@ -61855,7 +61869,7 @@
     };
 
     MediaLoader.isVideo = function isVideo(item) {
-      return item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1;
+      return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
     };
 
     _createClass(MediaLoader, [{
@@ -61991,6 +62005,7 @@
     MediaMesh.getMaterial = function getMaterial() {
       var material = new THREE$1.ShaderMaterial({
         depthTest: false,
+        depthWrite: false,
         transparent: true,
         vertexShader: VERTEX_SHADER$1,
         fragmentShader: FRAGMENT_SHADER$1,
@@ -62035,8 +62050,8 @@
 
       material = material || MediaMesh.getMaterial();
       _this = _InteractiveMesh.call(this, geometry, material) || this;
-      _this.item = item;
-      _this.renderOrder = 1;
+      _this.item = item; // this.renderOrder = environment.renderOrder.plane;
+
       var uniforms = _this.uniforms = {
         overlay: 0,
         tween: 1,
@@ -62509,6 +62524,7 @@
     _proto.create = function create(callback) {
       var _this = this;
 
+      // this.renderOrder = environment.renderOrder.model;
       this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, function (mesh) {
         // scale
         var box = new THREE$1.Box3().setFromObject(mesh);
@@ -62627,7 +62643,7 @@
         /*
         gltf.scene.traverse((child) => {
         	if (child.isMesh) {
-        		roughnessMipmapper.generateMipmaps(child.material);
+        		// roughnessMipmapper.generateMipmaps(child.material);
         	}
         });
         */
@@ -62732,6 +62748,7 @@
       var tiles = this.tiles = new Array(COLS * ROWS).fill(0).map(function (x, i) {
         var material = new THREE$1.MeshBasicMaterial({
           depthTest: false,
+          depthWrite: false,
           map: map,
           transparent: true,
           opacity: 0 // side: THREE.DoubleSide,
@@ -62762,6 +62779,7 @@
 
       var material = new THREE$1.MeshBasicMaterial({
         depthTest: false,
+        depthWrite: false,
         transparent: true,
         opacity: 0 // side: THREE.DoubleSide,
 
@@ -62841,6 +62859,7 @@
     };
 
     _proto.create = function create(callback) {
+      // this.renderOrder = environment.renderOrder.tile;
       var mesh = this.mesh = new THREE$1.Group();
       this.addTiles();
       this.addHitArea();
@@ -63003,7 +63022,6 @@
       _this = _InteractiveMesh.call(this, geometry, material) || this; // this.userData.item = item;
       // this.userData.index = index;
 
-      _this.renderOrder = 2;
       _this.name = item.name;
       _this.item = item;
       _this.index = index;
@@ -63209,6 +63227,7 @@
     };
 
     _proto3.create = function create(callback) {
+      // this.renderOrder = environment.renderOrder.menu;
       var menuGroup = this.menuGroup = new THREE$1.Group();
       menuGroup.lookAt(ORIGIN$5);
 
@@ -63262,19 +63281,19 @@
 
         switch (type) {
           case ViewType.Panorama:
-            name = 'Panorama 360';
+            name = 'Experience';
             break;
 
           case ViewType.PanoramaGrid:
-            name = 'Panorama Grids';
+            name = 'Virtual Tour';
             break;
 
           case ViewType.Room3d:
-            name = '3D Rooms';
+            name = 'Stanze 3D';
             break;
 
           case ViewType.Model:
-            name = 'Models';
+            name = 'Modelli 3D';
             break;
         }
 
@@ -63727,37 +63746,30 @@
       var _this = this,
           _THREE$Vector;
 
+      // this.renderOrder = environment.renderOrder.nav;
       // const geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
       var map = ModelNavComponent.getTexture();
       map.disposable = false;
       map.encoding = THREE$1.sRGBEncoding;
-      /*
-      const material = new THREE.MeshBasicMaterial({
-      	// depthTest: false,
-      	map: map,
-      	transparent: true,
-      	opacity: 0,
-      });
-      */
-
       var material = new THREE$1.SpriteMaterial({
+        depthTest: false,
+        transparent: true,
         map: map,
         sizeAttenuation: false,
         opacity: 0
       });
       var sprite = new InteractiveSprite(material);
-      sprite.renderOrder = 2;
-      sprite.scale.set(0.02, 0.02, 0.02);
+      sprite.depthTest = false;
+      sprite.scale.set(0.03, 0.03, 0.03);
       var mesh = this.mesh = sprite; // const mesh = this.mesh = new InteractiveMesh(geometry, material);
 
-      mesh.depthTest = false;
       this.item.mesh = mesh;
       mesh.on('over', function () {
         var from = {
           scale: mesh.scale.x
         };
         gsap.to(from, 0.4, {
-          scale: 0.03,
+          scale: 0.04,
           delay: 0,
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
@@ -63772,7 +63784,7 @@
           scale: mesh.scale.x
         };
         gsap.to(from, 0.4, {
-          scale: 0.02,
+          scale: 0.03,
           delay: 0,
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
@@ -63849,26 +63861,16 @@
         var width = PANEL_RADIUS$1 / 10;
         var height = PANEL_RADIUS$1 / 10 / aspect;
         var dy = PANEL_RADIUS$1 / 10 * 0.25;
-        /*
-        const geometry = new THREE.PlaneBufferGeometry(width, height, 3, 3);
-        const material = new THREE.MeshBasicMaterial({
-        	// depthTest: false,
-        	map: texture.map,
-        	transparent: true,
-        	opacity: 0,
-        	// side: THREE.DoubleSide,
-        });
-        */
 
-        var position = _this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS$1); // const panel = this.panel = new THREE.Mesh(geometry, material);
-
+        var position = _this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS$1);
 
         var material = new THREE$1.SpriteMaterial({
+          depthTest: false,
+          transparent: true,
           map: texture.map,
           sizeAttenuation: false
         });
         var panel = _this.panel = new THREE$1.Sprite(material);
-        panel.renderOrder = 2;
         panel.scale.set(0.02 * width, 0.02 * height, 1);
         panel.position.set(position.x, position.y, position.z); // panel.lookAt(ORIGIN);
 
@@ -63892,6 +63894,7 @@
     };
 
     _proto.create = function create(callback) {
+      // this.renderOrder = environment.renderOrder.panel;
       var mesh = new THREE$1.Group();
 
       if (typeof callback === 'function') {
@@ -68810,8 +68813,8 @@
               	child.receiveShadow = true;
               }
               */
-              child.material.dispose();
-              child.renderOrder = 10;
+              child.material.dispose(); // child.renderOrder = environment.renderOrder.model;
+
               var material = new THREE$1.MeshStandardMaterial({
                 color: 0x111111,
                 roughness: 0.6

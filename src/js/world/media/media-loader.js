@@ -17,7 +17,7 @@ export default class MediaLoader {
 	}
 
 	static isVideo(item) {
-		return item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1;
+		return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
 	}
 
 	get isVideo() {

@@ -18,7 +18,7 @@
     {
       "id": 17,
       "type": "panorama",
-      "name": "Cinema",
+      "name": "The Pesto Experience",
       "likes": 40,
       "liked": false,
       "envMapFolder": "cinema/",
@@ -48,7 +48,7 @@
         {
           "id": 171,
           "type": "nav",
-          "title": "Room 3D",
+          "title": "Stanza 3D",
           "abstract": "Abstract",
           "position": [
             0.8002543789009917,
@@ -60,14 +60,14 @@
         {
           "id": 171,
           "type": "nav",
-          "title": "Ambiente 1A",
+          "title": "Video Basil Story",
           "abstract": "Abstract",
           "position": [
             0.8012228950677142,
             -0.19355223904603844,
             0.5661973182377114
           ],
-          "navTo": 18
+          "navTo": 22
         }
       ],
       "orientation": {
@@ -77,185 +77,9 @@
       "fov": 75
     },
     {
-      "id": 18,
-      "type": "panorama-grid",
-      "name": "Ambiente 1A",
-      "likes": 225,
-      "liked": false,
-      "envMapFolder": "ambiente1a/",
-      "envMapFile": "ambiente1a_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente1a_x0_y0.jpg",
-        "ambiente1a_x0_y1.jpg",
-        "ambiente1a_x0_y2.jpg",
-        "ambiente1a_x0_y3.jpg",
-        "ambiente1a_x1_y0.jpg",
-        "ambiente1a_x1_y3.jpg",
-        "ambiente1a_x2_y0.jpg",
-        "ambiente1a_x2_y3.jpg",
-        "ambiente1a_x3_y0.jpg",
-        "ambiente1a_x3_y3.jpg",
-        "ambiente1a_x4_y0.jpg",
-        "ambiente1a_x4_y1.jpg",
-        "ambiente1a_x4_y2.jpg",
-        "ambiente1a_x4_y3.jpg"
-      ],
-      "items": [
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Ambiente 1B",
-          "abstract": "Abstract",
-          "position": [
-            -0.13299151705396445,
-            -0.19868612186375417,
-            0.9709979821659911
-          ],
-          "navTo": 19
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 19,
-      "type": "panorama-grid",
-      "name": "Ambiente 1B",
-      "likes": 225,
-      "liked": false,
-      "envMapFolder": "ambiente1b/",
-      "envMapFile": "ambiente1b_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente1b_x0_y0.jpg",
-        "ambiente1b_x0_y1.jpg",
-        "ambiente1b_x0_y2.jpg",
-        "ambiente1b_x0_y3.jpg",
-        "ambiente1b_x1_y0.jpg",
-        "ambiente1b_x1_y3.jpg",
-        "ambiente1b_x2_y0.jpg",
-        "ambiente1b_x2_y3.jpg",
-        "ambiente1b_x3_y0.jpg",
-        "ambiente1b_x3_y3.jpg",
-        "ambiente1b_x4_y0.jpg",
-        "ambiente1b_x4_y1.jpg",
-        "ambiente1b_x4_y2.jpg",
-        "ambiente1b_x4_y3.jpg"
-      ],
-      "items": [
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Ambiente 2A",
-          "abstract": "Abstract",
-          "position": [
-            -0.15316718404648044,
-            -0.204222912061974,
-            0.9668675275963087
-          ],
-          "navTo": 20
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 20,
-      "type": "panorama-grid",
-      "name": "Ambiente 2A",
-      "likes": 225,
-      "liked": false,
-      "envMapFolder": "ambiente2a/",
-      "envMapFile": "ambiente2a_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente2a_x0_y0.jpg",
-        "ambiente2a_x0_y1.jpg",
-        "ambiente2a_x0_y2.jpg",
-        "ambiente2a_x0_y3.jpg",
-        "ambiente2a_x1_y0.jpg",
-        "ambiente2a_x1_y3.jpg",
-        "ambiente2a_x2_y0.jpg",
-        "ambiente2a_x2_y1.jpg",
-        "ambiente2a_x2_y2.jpg",
-        "ambiente2a_x2_y3.jpg"
-      ],
-      "items": [
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Ambiente 2B",
-          "abstract": "Abstract",
-          "position": [
-            -0.15316718404648044,
-            -0.204222912061974,
-            0.9668675275963087
-          ],
-          "navTo": 21
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 21,
-      "type": "panorama-grid",
-      "name": "Ambiente 2B",
-      "likes": 225,
-      "liked": false,
-      "envMapFolder": "ambiente2b/",
-      "envMapFile": "ambiente2b_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente2b_x0_y0.jpg",
-        "ambiente2b_x0_y1.jpg",
-        "ambiente2b_x0_y2.jpg",
-        "ambiente2b_x0_y3.jpg",
-        "ambiente2b_x1_y0.jpg",
-        "ambiente2b_x1_y3.jpg",
-        "ambiente2b_x2_y0.jpg",
-        "ambiente2b_x2_y1.jpg",
-        "ambiente2b_x2_y2.jpg",
-        "ambiente2b_x2_y3.jpg"
-      ],
-      "items": [
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Panel 01",
-          "abstract": "Abstract",
-          "position": [
-            -0.15316718404648044,
-            -0.204222912061974,
-            0.9668675275963087
-          ],
-          "navTo": 22
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
       "id": 22,
       "type": "panorama",
-      "name": "Panel 01",
+      "name": "Video Basil Story",
       "likes": 40,
       "liked": false,
       "envMapFolder": "virtual-room/",
@@ -286,14 +110,26 @@
           }
         },
         {
-          "id": 171,
+          "id": 100,
           "type": "nav",
-          "title": "Panel 02",
+          "title": "The Pesto Experience",
           "abstract": "Abstract",
           "position": [
-            0.9672554079668645,
-            -0.253784919203119,
-            -0.0031922631346306433
+            0.7230979380711492,
+            -0.21366641081551815,
+            -0.6568683557962482
+          ],
+          "navTo": 17
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Video Virtual Chef",
+          "abstract": "Abstract",
+          "position": [
+            0.7269271285325771,
+            -0.2212886850676967,
+            0.6500832774840404
           ],
           "navTo": 23
         }
@@ -307,7 +143,7 @@
     {
       "id": 23,
       "type": "panorama",
-      "name": "Panel 02",
+      "name": "Video Virtual Chef",
       "likes": 40,
       "liked": false,
       "envMapFolder": "virtual-room/",
@@ -338,14 +174,26 @@
           }
         },
         {
-          "id": 171,
+          "id": 100,
           "type": "nav",
-          "title": "Panel 03",
+          "title": "Video Basil Story",
           "abstract": "Abstract",
           "position": [
-            0.9672554079668645,
-            -0.253784919203119,
-            -0.0031922631346306433
+            0.7230979380711492,
+            -0.21366641081551815,
+            -0.6568683557962482
+          ],
+          "navTo": 22
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Video Cooking Show",
+          "abstract": "Abstract",
+          "position": [
+            0.7138064498616354,
+            -0.23218082284626923,
+            0.6607362693528771
           ],
           "navTo": 24
         }
@@ -359,7 +207,7 @@
     {
       "id": 24,
       "type": "panorama",
-      "name": "Panel 04",
+      "name": "Video Cooking Show",
       "likes": 40,
       "liked": false,
       "envMapFolder": "virtual-room/",
@@ -390,21 +238,257 @@
           }
         },
         {
-          "id": 171,
+          "id": 100,
           "type": "nav",
-          "title": "Time Square",
+          "title": "Video Virtual Chef",
           "abstract": "Abstract",
           "position": [
-            0.9672554079668645,
-            -0.253784919203119,
-            -0.0031922631346306433
+            0.7230979380711492,
+            -0.21366641081551815,
+            -0.6568683557962482
           ],
-          "navTo": 8
+          "navTo": 23
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Social Media",
+          "abstract": "Abstract",
+          "position": [
+            0.7138064498616354,
+            -0.23218082284626923,
+            0.6607362693528771
+          ],
+          "navTo": 18
         }
       ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 18,
+      "type": "panorama-grid",
+      "name": "Social Media",
+      "likes": 225,
+      "liked": false,
+      "envMapFolder": "ambiente1a/",
+      "envMapFile": "ambiente1a_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente1a_x0_y0.jpg",
+        "ambiente1a_x0_y1.jpg",
+        "ambiente1a_x0_y2.jpg",
+        "ambiente1a_x0_y3.jpg",
+        "ambiente1a_x1_y0.jpg",
+        "ambiente1a_x1_y3.jpg",
+        "ambiente1a_x2_y0.jpg",
+        "ambiente1a_x2_y3.jpg",
+        "ambiente1a_x3_y0.jpg",
+        "ambiente1a_x3_y3.jpg",
+        "ambiente1a_x4_y0.jpg",
+        "ambiente1a_x4_y1.jpg",
+        "ambiente1a_x4_y2.jpg",
+        "ambiente1a_x4_y3.jpg"
+      ],
+      "items": [
+        {
+          "id": 100,
+          "type": "nav",
+          "title": "Video Cooking Show",
+          "abstract": "Abstract",
+          "position": [
+            0.7441952273141098,
+            0.1306860755524518,
+            0.6550531377679213
+          ],
+          "navTo": 24
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Pesto Dashboard",
+          "abstract": "Abstract",
+          "position": [
+            -0.09502457077161766,
+            -0.02100718985272462,
+            0.9952532486378336
+          ],
+          "navTo": 19
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 19,
+      "type": "panorama-grid",
+      "name": "Pesto Dashboard",
+      "likes": 225,
+      "liked": false,
+      "envMapFolder": "ambiente1b/",
+      "envMapFile": "ambiente1b_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente1b_x0_y0.jpg",
+        "ambiente1b_x0_y1.jpg",
+        "ambiente1b_x0_y2.jpg",
+        "ambiente1b_x0_y3.jpg",
+        "ambiente1b_x1_y0.jpg",
+        "ambiente1b_x1_y3.jpg",
+        "ambiente1b_x2_y0.jpg",
+        "ambiente1b_x2_y3.jpg",
+        "ambiente1b_x3_y0.jpg",
+        "ambiente1b_x3_y3.jpg",
+        "ambiente1b_x4_y0.jpg",
+        "ambiente1b_x4_y1.jpg",
+        "ambiente1b_x4_y2.jpg",
+        "ambiente1b_x4_y3.jpg"
+      ],
+      "items": [
+        {
+          "id": 100,
+          "type": "nav",
+          "title": "Social Media",
+          "abstract": "Abstract",
+          "position": [
+            0.803095276916137,
+            0.13288630184456648,
+            0.5808435305459363
+          ],
+          "navTo": 18
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "From Basil To Pesto p1",
+          "abstract": "Abstract",
+          "position": [
+            -0.27016786337746956,
+            -0.0714928886374919,
+            0.9601552439435616
+          ],
+          "navTo": 20
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 20,
+      "type": "panorama-grid",
+      "name": "From Basil To Pesto p1",
+      "likes": 225,
+      "liked": false,
+      "envMapFolder": "ambiente2a/",
+      "envMapFile": "ambiente2a_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente2a_x0_y0.jpg",
+        "ambiente2a_x0_y1.jpg",
+        "ambiente2a_x0_y2.jpg",
+        "ambiente2a_x0_y3.jpg",
+        "ambiente2a_x1_y0.jpg",
+        "ambiente2a_x1_y3.jpg",
+        "ambiente2a_x2_y0.jpg",
+        "ambiente2a_x2_y1.jpg",
+        "ambiente2a_x2_y2.jpg",
+        "ambiente2a_x2_y3.jpg"
+      ],
+      "items": [
+        {
+          "id": 100,
+          "type": "nav",
+          "title": "Pesto Dashboard",
+          "abstract": "Abstract",
+          "position": [
+            -0.043581652820426996,
+            0.05878153966605557,
+            -0.9973190914305851
+          ],
+          "navTo": 19
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "From Basil To Pesto p2",
+          "abstract": "Abstract",
+          "position": [
+            -0.1301986455646018,
+            -0.011244252437772512,
+            0.9914241672867666
+          ],
+          "navTo": 21
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 21,
+      "type": "panorama-grid",
+      "name": "From Basil To Pesto p2",
+      "likes": 225,
+      "liked": false,
+      "envMapFolder": "ambiente2b/",
+      "envMapFile": "ambiente2b_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "ambiente2b_x0_y0.jpg",
+        "ambiente2b_x0_y1.jpg",
+        "ambiente2b_x0_y2.jpg",
+        "ambiente2b_x0_y3.jpg",
+        "ambiente2b_x1_y0.jpg",
+        "ambiente2b_x1_y3.jpg",
+        "ambiente2b_x2_y0.jpg",
+        "ambiente2b_x2_y1.jpg",
+        "ambiente2b_x2_y2.jpg",
+        "ambiente2b_x2_y3.jpg"
+      ],
+      "items": [
+        {
+          "id": 100,
+          "type": "nav",
+          "title": "From Basil To Pesto p1",
+          "abstract": "Abstract",
+          "position": [
+            -0.036975130634405856,
+            -0.3220820753941067,
+            -0.9459894166555954
+          ],
+          "navTo": 20
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Pesto alla genovese",
+          "abstract": "Abstract",
+          "position": [
+            -0.12304766752980198,
+            0.09983112648644324,
+            0.9873667088270309
+          ],
+          "navTo": 50
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
       },
       "fov": 75
     },
@@ -420,7 +504,7 @@
         {
           "id": 81,
           "type": "nav",
-          "title": "Cinema",
+          "title": "The Pesto Experience",
           "abstract": "Abstract",
           "position": [
             -0.15644789925908917,
@@ -439,7 +523,7 @@
     {
       "id": 14,
       "type": "room-3d",
-      "name": "Room 3D",
+      "name": "Stanza 3D",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
@@ -494,6 +578,18 @@
           "type": "texture",
           "folder": "room-3d/",
           "file": "plane-08.jpg"
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.9672554079668645,
+            -0.253784919203119,
+            -0.0031922631346306433
+          ],
+          "navTo": 8
         }
       ],
       "orientation": {
@@ -509,8 +605,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/barattolo-pesto/barattolo-pesto.gltf",
-        "usdz": "models/barattolo-pesto/barattolo-pesto.usdz"
+        "gltf": "/barattolo-pesto/barattolo-pesto.gltf",
+        "usdz": "/barattolo-pesto/barattolo-pesto.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
@@ -522,6 +618,18 @@
           "abstract": "Abstract",
           "gltfFolder": "barattolo-pesto/",
           "gltfFile": "barattolo-pesto.glb"
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.7138064498616354,
+            -0.23218082284626923,
+            0.6607362693528771
+          ],
+          "navTo": 8
         }
       ],
       "orientation": {
@@ -537,8 +645,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+        "gltf": "/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",

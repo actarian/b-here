@@ -72,7 +72,7 @@ export default class ModelRoomComponent extends ModelComponent {
 						}
 						*/
 						child.material.dispose();
-						child.renderOrder = 10;
+						// child.renderOrder = environment.renderOrder.model;
 						const material = new THREE.MeshStandardMaterial({
 							color: 0x111111,
 							roughness: 0.6,

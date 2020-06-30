@@ -85,6 +85,7 @@ export default class Panorama {
 		geometry.rotateY(Math.PI);
 		const material = new THREE.ShaderMaterial({
 			// depthTest: false,
+			depthWrite: false,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
 			uniforms: {
@@ -101,6 +102,7 @@ export default class Panorama {
 		});
 		*/
 		const mesh = this.mesh = new InteractiveMesh(geometry, material);
+		// mesh.renderOrder = environment.renderOrder.panorama;
 		mesh.name = '[panorama]';
 	}
 

@@ -108,7 +108,6 @@ export class MenuButton extends InteractiveMesh {
 		super(geometry, material);
 		// this.userData.item = item;
 		// this.userData.index = index;
-		this.renderOrder = 2;
 		this.name = item.name;
 		this.item = item;
 		this.index = index;
@@ -298,6 +297,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
 		menuGroup.lookAt(ORIGIN);
 		if (typeof callback === 'function') {
@@ -344,16 +344,16 @@ export default class ModelMenuComponent extends ModelComponent {
 			let name = 'Button';
 			switch (type) {
 				case ViewType.Panorama:
-					name = 'Panorama 360';
+					name = 'Experience';
 					break;
 				case ViewType.PanoramaGrid:
-					name = 'Panorama Grids';
+					name = 'Virtual Tour';
 					break;
 				case ViewType.Room3d:
-					name = '3D Rooms';
+					name = 'Stanze 3D';
 					break;
 				case ViewType.Model:
-					name = 'Models';
+					name = 'Modelli 3D';
 					break;
 			}
 			return { name, type: 'menu-group', items: this.items.filter(x => x.type === type) };

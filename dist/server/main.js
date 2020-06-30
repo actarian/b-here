@@ -86,6 +86,16 @@ var environment = new Environment({
     models: 'models/',
     textures: 'textures/',
     fonts: 'fonts/'
+  },
+  renderOrder: {
+    panorama: 0,
+    model: 10,
+    plane: 20,
+    tile: 30,
+    banner: 40,
+    nav: 50,
+    panel: 60,
+    menu: 70
   }
 });
 

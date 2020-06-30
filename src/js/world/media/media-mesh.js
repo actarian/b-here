@@ -90,6 +90,7 @@ export default class MediaMesh extends InteractiveMesh {
 	static getMaterial() {
 		const material = new THREE.ShaderMaterial({
 			depthTest: false,
+			depthWrite: false,
 			transparent: true,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
@@ -113,7 +114,7 @@ export default class MediaMesh extends InteractiveMesh {
 		material = material || MediaMesh.getMaterial();
 		super(geometry, material);
 		this.item = item;
-		this.renderOrder = 1;
+		// this.renderOrder = environment.renderOrder.plane;
 		const uniforms = this.uniforms = {
 			overlay: 0,
 			tween: 1,

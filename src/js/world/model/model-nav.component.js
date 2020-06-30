@@ -31,31 +31,29 @@ export default class ModelNavComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.nav;
 		// const geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
 		const map = ModelNavComponent.getTexture();
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
-		/*
-		const material = new THREE.MeshBasicMaterial({
-			// depthTest: false,
-			map: map,
+		const material = new THREE.SpriteMaterial({
+			depthTest: false,
 			transparent: true,
-			opacity: 0,
+			map: map,
+			sizeAttenuation: false,
+			opacity: 0
 		});
-		*/
-		const material = new THREE.SpriteMaterial({ map: map, sizeAttenuation: false, opacity: 0 });
 		const sprite = new InteractiveSprite(material);
-		sprite.renderOrder = 2;
-		sprite.scale.set(0.02, 0.02, 0.02);
+		sprite.depthTest = false;
+		sprite.scale.set(0.03, 0.03, 0.03);
 		const mesh = this.mesh = sprite;
 		// const mesh = this.mesh = new InteractiveMesh(geometry, material);
 
-		mesh.depthTest = false;
 		this.item.mesh = mesh;
 		mesh.on('over', () => {
 			const from = { scale: mesh.scale.x };
 			gsap.to(from, 0.4, {
-				scale: 0.03,
+				scale: 0.04,
 				delay: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
@@ -67,7 +65,7 @@ export default class ModelNavComponent extends ModelComponent {
 		mesh.on('out', () => {
 			const from = { scale: mesh.scale.x };
 			gsap.to(from, 0.4, {
-				scale: 0.02,
+				scale: 0.03,
 				delay: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {

@@ -88,7 +88,7 @@ export default class WorldComponent extends Component {
 		this.controllerMatrix_ = new THREE.Matrix4();
 		this.controllerWorldPosition_ = new THREE.Vector3();
 		this.controllerWorldDirection_ = new THREE.Vector3();
-		this.showNavPoints = false;
+		// this.showNavPoints = false;
 
 		const container = this.container = node;
 		const info = this.info = node.querySelector('.world__info');
@@ -215,7 +215,8 @@ export default class WorldComponent extends Component {
 						view.index_ = message.gridIndex;
 					}
 				}
-				this.showNavPoints = false;
+				// this.showNavPoints = false;
+				// this.pushChanges();
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
@@ -226,7 +227,8 @@ export default class WorldComponent extends Component {
 					// this.render();
 				}, (view) => {
 					this.setViewOrientation(view);
-					this.showNavPoints = true;
+					// this.showNavPoints = true;
+					// this.pushChanges();
 				});
 			} else {
 				this.setViewOrientation(view);
@@ -350,8 +352,8 @@ export default class WorldComponent extends Component {
 		texture.mapping = THREE.UVMapping;
 		const material = new THREE.MeshBasicMaterial({
 			depthTest: false,
-			map: texture,
 			transparent: true,
+			map: texture,
 			opacity: 0.9,
 		});
 		const mesh = new THREE.Mesh(geometry, material);
