@@ -5,12 +5,12 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 // import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import AgoraService, { MessageType, RoleType } from '../agora/agora.service';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
-import { DEBUG, environment } from '../environment';
+import { DEBUG } from '../environment';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
 import { PanoramaGridView } from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
-import InteractiveMesh from './interactive/interactive.mesh';
+import Interactive from './interactive/interactive';
 import OrbitService from './orbit/orbit';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
@@ -87,6 +87,7 @@ export default class WorldComponent extends Component {
 		this.controllerMatrix_ = new THREE.Matrix4();
 		this.controllerWorldPosition_ = new THREE.Vector3();
 		this.controllerWorldDirection_ = new THREE.Vector3();
+		// this.showNavPoints = false;
 
 		const container = this.container = node;
 		const info = this.info = node.querySelector('.world__info');
@@ -134,6 +135,7 @@ export default class WorldComponent extends Component {
 		}
 
 		const raycaster = this.raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera(this.mouse, camera);
 
 		const scene = this.scene = new THREE.Scene();
 		scene.add(cameraGroup);
@@ -142,8 +144,6 @@ export default class WorldComponent extends Component {
 		scene.add(panorama.mesh);
 
 		const pointer = this.pointer = new PointerElement();
-
-		// const torus = this.torus = this.addTorus();
 
 		
 		const mainLight = new THREE.PointLight(0xffffff);
@@ -155,7 +155,6 @@ export default class WorldComponent extends Component {
 		light2.target.position.set(0, 0, 0);
 		scene.add(light2);
 
-		
 		const light = new THREE.AmbientLight(0x101010);
 		scene.add(light);
 
@@ -191,29 +190,34 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	setViewOrientation(view) {
+		if (this.orbit) {
+			this.orbit.mode = view.type;
+			if (!this.renderer.xr.isPresenting) {
+				if (this.infoResultMessage) {
+					this.orbit.setOrientation(this.infoResultMessage.orientation);
+					this.camera.fov = this.infoResultMessage.fov;
+					this.camera.updateProjectionMatrix();
+				} else {
+					this.orbit.setOrientation(view.orientation);
+					this.camera.fov = view.fov;
+					this.camera.updateProjectionMatrix();
+				}
+			}
+		}
+	}
+
 	setView() {
 		const view = this.view_;
 		if (view) {
-			if (this.orbit) {
-				this.orbit.mode = view.type;
-				if (!this.renderer.xr.isPresenting) {
-					if (this.infoResultMessage) {
-						this.orbit.setOrientation(this.infoResultMessage.orientation);
-						this.camera.fov = this.infoResultMessage.fov;
-						this.camera.updateProjectionMatrix();
-					} else {
-						this.orbit.setOrientation(view.orientation);
-						this.camera.fov = view.fov;
-						this.camera.updateProjectionMatrix();
-					}
-				}
-			}
 			if (this.panorama) {
 				if (this.infoResultMessage) {
 					if (view instanceof PanoramaGridView && message.gridIndex) {
 						view.index_ = message.gridIndex;
 					}
 				}
+				// this.showNavPoints = false;
+				// this.pushChanges();
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
@@ -222,7 +226,13 @@ export default class WorldComponent extends Component {
 						this.torus.material.needsUpdate = true;
 					}
 					// this.render();
+				}, (view) => {
+					this.setViewOrientation(view);
+					// this.showNavPoints = true;
+					// this.pushChanges();
 				});
+			} else {
+				this.setViewOrientation(view);
 			}
 			this.infoResultMessage = null;
 		}
@@ -328,78 +338,6 @@ export default class WorldComponent extends Component {
 		this.controller2.userData.isSelecting = false;
 	}
 
-	addPointer(parent) {
-		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
-		const loader = new THREE.TextureLoader();
-		const texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
-		// texture.magFilter = THREE.NearestFilter;
-		// texture.wrapT = THREE.RepeatWrapping;
-		// texture.repeat.y = 1;
-		// texture.anisotropy = 0;
-		// texture.magFilter = THREE.LinearMipMapLinearFilter;
-		// texture.minFilter = THREE.NearestFilter;
-		const material = new THREE.MeshBasicMaterial({
-			depthTest: false,
-			map: texture,
-			transparent: true,
-			opacity: 0.9,
-		});
-		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(-100000, -100000, -100000);
-		/*
-		const panorama = this.panorama.mesh;
-		panorama.on('down', (panorama) => {
-			mesh.material.color.setHex(0x0099ff);
-			mesh.material.opacity = 1.0;
-			mesh.material.needsUpdate = true;
-		});
-		panorama.on('up', (panorama) => {
-			mesh.material.color.setHex(0xffffff);
-			mesh.material.opacity = 0.9;
-			mesh.material.needsUpdate = true;
-		});
-		*/
-		return mesh;
-	}
-
-	addTorus() {
-		const geometry = new THREE.TorusKnotBufferGeometry(3, 1.5, 150, 20);
-		const material = new THREE.MeshStandardMaterial({
-			color: 0x888888,
-			metalness: 1.3,
-			roughness: 0.3,
-		});
-		const mesh = new InteractiveMesh(geometry, material);
-		mesh.position.set(50, -20, 50);
-		mesh.userData.render = () => {
-			mesh.rotation.set(0, mesh.rotation.y + 0.01, 0);
-		};
-		mesh.on('over', () => {
-			const from = { scale: mesh.scale.x };
-			gsap.to(from, 0.4, {
-				scale: 1.5,
-				delay: 0,
-				ease: Power2.easeInOut,
-				onUpdate: () => {
-					mesh.scale.set(from.scale, from.scale, from.scale);
-				}
-			});
-		});
-		mesh.on('out', () => {
-			const from = { scale: mesh.scale.x };
-			gsap.to(from, 0.4, {
-				scale: 1,
-				delay: 0,
-				ease: Power2.easeInOut,
-				onUpdate: () => {
-					mesh.scale.set(from.scale, from.scale, from.scale);
-				}
-			});
-		});
-		this.scene.add(mesh);
-		return mesh;
-	}
-
 	/*
 	handleController(controller) {
 		if (controller.userData.isSelecting) {
@@ -486,6 +424,7 @@ export default class WorldComponent extends Component {
 			this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
 			raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
 			raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.controllerMatrix_);
+			// raycaster.camera = this.host.renderer.xr.getCamera(this.camera);
 			return raycaster;
 		}
 	}
@@ -495,7 +434,7 @@ export default class WorldComponent extends Component {
 			if (this.renderer.xr.isPresenting) {
 				const raycaster = this.updateRaycaster(this.controller, this.raycaster);
 				if (raycaster) {
-					const hit = InteractiveMesh.hittest(raycaster, this.controller.userData.isSelecting);
+					const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
 					this.pointer.update();
 					/*
 					if (hit && hit !== this.panorama.mesh) {
@@ -506,7 +445,7 @@ export default class WorldComponent extends Component {
 			} else {
 				const raycaster = this.raycaster;
 				if (raycaster) {
-					const hit = InteractiveMesh.hittest(this.raycaster);
+					const hit = Interactive.hittest(raycaster);
 					/*
 					if (hit && hit !== this.panorama.mesh) {
 						// console.log('hit', hit);
@@ -638,7 +577,7 @@ export default class WorldComponent extends Component {
 			this.mouse.y = -(event.clientY - h2) / h2;
 			const raycaster = this.raycaster;
 			raycaster.setFromCamera(this.mouse, this.camera);
-			const hit = InteractiveMesh.hittest(raycaster, true);
+			const hit = Interactive.hittest(raycaster, true);
 			if (DEBUG && this.panorama.mesh.intersection) {
 				const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
 				console.log(JSON.stringify({ position: position.toArray() }));
@@ -662,7 +601,7 @@ export default class WorldComponent extends Component {
 			*/
 			const raycaster = this.raycaster;
 			raycaster.setFromCamera(this.mouse, this.camera);
-			// InteractiveMesh.hittest(raycaster, this.mousedown);
+			// Interactive.hittest(raycaster, this.mousedown);
 		} catch (error) {
 			this.error = error;
 			// throw (error);
@@ -697,11 +636,9 @@ export default class WorldComponent extends Component {
 	}
 
 	onOrientationDidChange() {
-		/*
 		if (DEBUG) {
 			console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
 		}
-		*/
 		const agora = this.agora;
 		if (agora && (agora.state.control || agora.state.spyed)) {
 			agora.sendMessage({
@@ -757,7 +694,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridMove(event) {
-		console.log('WorldComponent.onGridMove', event);
+		// console.log('WorldComponent.onGridMove', event);
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
 			const item = this.view.getTile(event.indices.x, event.indices.y);
 			if (item) {

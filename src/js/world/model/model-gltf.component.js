@@ -47,6 +47,7 @@ export default class ModelGltfComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.model;
 		this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (mesh) => {
 			// scale
 			const box = new THREE.Box3().setFromObject(mesh);
@@ -162,7 +163,7 @@ export default class ModelGltfComponent extends ModelComponent {
 			/*
 			gltf.scene.traverse((child) => {
 				if (child.isMesh) {
-					roughnessMipmapper.generateMipmaps(child.material);
+					// roughnessMipmapper.generateMipmaps(child.material);
 				}
 			});
 			*/

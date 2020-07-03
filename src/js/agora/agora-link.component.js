@@ -52,7 +52,7 @@ export default class AgoraLinkComponent extends Component {
 		input.style.top = '1000vh';
 		// input.style.visibility = 'hidden';
 		document.querySelector('body').appendChild(input);
-		input.value = this.generateLink();
+		input.value = this.getUrl(true);
 		input.focus();
 		input.select();
 		input.setSelectionRange(0, 99999);
@@ -71,11 +71,17 @@ export default class AgoraLinkComponent extends Component {
 		this.link.next(this.controls.link.value);
 	}
 
+	getUrl(shareable) {
+		const role = LocationService.get('role') || null;
+		const name = LocationService.get('name') || null;
+		const url = `${window.location.origin}${window.location.pathname}?link=${this.controls.link.value}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
+		return url;
+	}
+
 	replaceUrl() {
 		if ('history' in window) {
-			const role = LocationService.get('role') || null;
-			const name = LocationService.get('name') || null;
-			const url = `${window.location.origin}${window.location.pathname}?link=${this.controls.link.value}` + (name ? `&name=${name}` : '') + (role ? `&role=${role}` : '');
+			const url = this.getUrl();
+			console.log('AgoraLinkComponent.url', url);
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
 	}

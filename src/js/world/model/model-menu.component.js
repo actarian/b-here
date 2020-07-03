@@ -1,6 +1,8 @@
 import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
+import { environment } from '../../environment';
 import { ViewType } from '../../view/view.service';
+import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
@@ -107,6 +109,7 @@ export class MenuButton extends InteractiveMesh {
 		super(geometry, material);
 		// this.userData.item = item;
 		// this.userData.index = index;
+		this.renderOrder = environment.renderOrder.menu;
 		this.name = item.name;
 		this.item = item;
 		this.index = index;
@@ -142,8 +145,10 @@ export class MenuButton extends InteractiveMesh {
 		ctx.fillStyle = '#ffffff';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
-		texture.encoding = THREE.sRGBEncoding;
+		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
+		texture.mapping = THREE.UVMapping;
+		texture.encoding = THREE.sRGBEncoding;
 		texture.needsUpdate = true;
 		return texture;
 	}
@@ -188,7 +193,6 @@ export class MenuButton extends InteractiveMesh {
 			tween: 0,
 			ease: Power2.easeInOut,
 			onUpdate: () => {
-				this.tween = this.tween;
 				this.position.z = 0.1 * this.tween;
 				this.material.uniforms.tween.value = this.tween;
 				this.material.needsUpdate = true;
@@ -197,7 +201,7 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	dispose() {
-		InteractiveMesh.dispose(this);
+		Interactive.dispose(this);
 		this.textureA.dispose();
 		this.textureB.dispose();
 		this.material.dispose();
@@ -229,8 +233,9 @@ export class BackButton extends MenuButton {
 		ctx.fillStyle = '#000000';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
-		texture.encoding = THREE.sRGBEncoding;
+		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
+		texture.mapping = THREE.UVMapping;
 		texture.needsUpdate = true;
 		return texture;
 	}
@@ -288,12 +293,13 @@ export default class ModelMenuComponent extends ModelComponent {
 
 	onDestroy() {
 		if (this.buttons) {
-			this.buttons.forEach(x => InteractiveMesh.dispose(x));
+			this.buttons.forEach(x => Interactive.dispose(x));
 		}
 		super.onDestroy();
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
 		menuGroup.lookAt(ORIGIN);
 		if (typeof callback === 'function') {
@@ -340,16 +346,16 @@ export default class ModelMenuComponent extends ModelComponent {
 			let name = 'Button';
 			switch (type) {
 				case ViewType.Panorama:
-					name = 'Panorama 360';
+					name = 'Experience';
 					break;
 				case ViewType.PanoramaGrid:
-					name = 'Panorama Grids';
+					name = 'Virtual Tour';
 					break;
 				case ViewType.Room3d:
-					name = '3D Rooms';
+					name = 'Stanze 3D';
 					break;
 				case ViewType.Model:
-					name = 'Models';
+					name = 'Modelli 3D';
 					break;
 			}
 			return { name, type: 'menu-group', items: this.items.filter(x => x.type === type) };

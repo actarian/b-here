@@ -3,6 +3,7 @@
 
 import DebugService from '../debug.service';
 import EmittableMesh from './emittable.mesh';
+import Interactive from './interactive';
 
 export default class InteractiveMesh extends EmittableMesh {
 
@@ -65,7 +66,7 @@ export default class InteractiveMesh extends EmittableMesh {
 		this.depthTest = true;
 		this.over_ = false;
 		this.down_ = false;
-		InteractiveMesh.items.push(this);
+		Interactive.items.push(this);
 	}
 
 	get over() {

@@ -1,6 +1,7 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
 import * as THREE from 'three';
+import { environment } from '../../environment';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -20,20 +21,21 @@ export default class ModelPanelComponent extends ModelComponent {
 		}
 		this.getCanvasTexture().then(texture => {
 			const aspect = texture.width / texture.height;
-			const width = PANEL_RADIUS / 8;
-			const height = PANEL_RADIUS / 8 / aspect;
-			const geometry = new THREE.PlaneBufferGeometry(width, height, 3, 3);
-			const material = new THREE.MeshBasicMaterial({
-				// depthTest: false,
-				map: texture.map,
+			const width = PANEL_RADIUS / 10;
+			const height = PANEL_RADIUS / 10 / aspect;
+			const dy = PANEL_RADIUS / 10 * 0.25;
+			const position = this.item.nav.position.normalize().multiplyScalar(PANEL_RADIUS);
+			const material = new THREE.SpriteMaterial({
+				depthTest: false,
 				transparent: true,
-				opacity: 0,
-				// side: THREE.DoubleSide,
+				map: texture.map,
+				sizeAttenuation: false,
 			});
-			const position = this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS);
-			const panel = this.panel = new THREE.Mesh(geometry, material);
+			const panel = this.panel = new THREE.Sprite(material);
+			panel.renderOrder = environment.renderOrder.panel;
+			panel.scale.set(0.02 * width, 0.02 * height, 1);
 			panel.position.set(position.x, position.y, position.z);
-			panel.lookAt(ORIGIN);
+			// panel.lookAt(ORIGIN);
 			this.mesh.add(panel);
 			const from = { value: 0 };
 			gsap.to(from, 0.5, {
@@ -41,7 +43,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				delay: 0.0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					panel.position.set(position.x, position.y + height * from.value, position.z);
+					panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
 					panel.lookAt(ORIGIN);
 					panel.material.opacity = from.value;
 					panel.material.needsUpdate = true;
@@ -51,6 +53,7 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	create(callback) {
+		// this.renderOrder = environment.renderOrder.panel;
 		const mesh = new THREE.Group();
 		if (typeof callback === 'function') {
 			callback(mesh);

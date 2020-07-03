@@ -2,15 +2,30 @@ import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import AgoraService from '../../agora/agora.service';
 import { environment } from '../../environment';
+import DebugService from '../debug.service';
 
 export class EnvMapLoader {
 
 	static get video() {
-		let video = this.video_;
-		if (!video) {
-			video = this.video_ = document.createElement('video');
+		return this.video_;
+	}
+
+	static set video(video) {
+		if (this.video_) {
+			this.video_.pause();
+			if (this.video_.parentNode) {
+				this.video_.parentNode.removeChild(this.video_);
+			}
+			this.video_ = null;
 		}
-		return video;
+		if (video) {
+			const video = this.video_ = document.createElement('video');
+			video.loop = true;
+			video.muted = true;
+			video.playsInline = true;
+			video.crossOrigin = 'anonymous';
+			// document.querySelector('body').appendChild(video);
+		}
 	}
 
 	static set cubeRenderTarget(cubeRenderTarget) {
@@ -29,8 +44,7 @@ export class EnvMapLoader {
 	}
 
 	static load(item, renderer, callback) {
-		const video = this.video;
-		video.pause();
+		this.video = null;
 		if (item.envMapFile === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
 		} else if (item.envMapFile.indexOf('.hdr') !== -1) {
@@ -76,11 +90,11 @@ export class EnvMapLoader {
 		if (!video) {
 			return;
 		}
-		let videoReady = false;
 		const onPlaying = () => {
 			const texture = this.texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
@@ -88,6 +102,7 @@ export class EnvMapLoader {
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
+				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			// texture.dispose();
@@ -97,28 +112,24 @@ export class EnvMapLoader {
 		};
 		video.crossOrigin = 'anonymous';
 		if (video.readyState >= video.HAVE_FUTURE_DATA) {
-			videoReady = true;
 			onPlaying();
 		} else {
 			video.oncanplay = () => {
-				videoReady = true;
 				onPlaying();
 			};
 		}
 	}
 
 	static loadVideoBackground(path, file, renderer, callback) {
+		const debugService = DebugService.getService();
+		this.video = true;
 		const video = this.video;
-		video.src = path + file;
-		video.loop = true;
-		video.muted = true;
-		video.playsInline = true;
-		let videoReady = false;
 		const onPlaying = () => {
 			video.oncanplay = null;
 			const texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			// const envMap = new THREE.VideoTexture(video);
@@ -127,6 +138,7 @@ export class EnvMapLoader {
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
+				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			// texture.dispose();
@@ -134,32 +146,30 @@ export class EnvMapLoader {
 				callback(cubeRenderTarget.texture, texture, false);
 			}
 		};
-		console.log(video.src);
 		// video.addEventListener('playing', onPlaying);
-		video.crossOrigin = 'anonymous';
 		video.oncanplay = () => {
-			videoReady = true;
 			console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
+		video.src = path + file;
+		video.load();
 		video.play().then(() => {
 			console.log('EnvMapLoader.loadVideoBackground.play');
+			debugService.setMessage(`play ${video.src}`);
 		}, error => {
 			console.log('EnvMapLoader.loadVideoBackground.play.error', error);
+			debugService.setMessage(`play.error ${video.src}`);
 		});
 	}
 
 	static loadHlslVideoBackground(src, renderer, callback) {
 		const video = document.createElement('video');
-		video.loop = true;
-		video.muted = true;
-		video.playsInline = true;
-		video.crossOrigin = 'anonymous';
 		const onPlaying = () => {
 			video.oncanplay = null;
 			const texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			// const envMap = new THREE.VideoTexture(video);
@@ -168,6 +178,7 @@ export class EnvMapLoader {
 				// minFilter: THREE.LinearMipmapLinearFilter,
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
+				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			// texture.dispose();
@@ -175,9 +186,7 @@ export class EnvMapLoader {
 				callback(cubeRenderTarget.texture, texture, false);
 			}
 		};
-		let videoReady = false;
 		video.oncanplay = () => {
-			videoReady = true;
 			// console.log('videoReady', videoReady);
 			onPlaying();
 		};
