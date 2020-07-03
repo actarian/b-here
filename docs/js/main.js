@@ -526,11 +526,14 @@
     return Emittable;
   }();
 
-  var PARAMS = new URLSearchParams(window.location.search);
+  var NODE = typeof module !== 'undefined' && module.exports;
+  var PARAMS = NODE ? {
+    get: function get() {}
+  } : new URLSearchParams(window.location.search);
   var DEBUG =  PARAMS.get('debug') != null;
-  var BASE_HREF = document.querySelector('base').getAttribute('href');
-  var STATIC = window.location.port === '41999' || window.location.host === 'actarian.github.io';
-  var DEVELOPMENT = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+  var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+  var STATIC = NODE ? false : window && (window.location.port === '41999' || window.location.host === 'actarian.github.io');
+  var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
   var Environment = /*#__PURE__*/function () {
     var _proto = Environment.prototype;
 
@@ -550,7 +553,7 @@
       key: "href",
       get: function get() {
         if (window.location.host.indexOf('herokuapp') !== -1) {
-          return 'https://raw.githack.com/actarian/b-here-benelli/master/docs/';
+          return 'https://raw.githubusercontent.com/actarian/b-here/b-here-benelli/docs/';
         } else {
           return BASE_HREF;
         }
@@ -588,6 +591,18 @@
       models: 'models/',
       textures: 'textures/',
       fonts: 'fonts/'
+    },
+    renderOrder: {
+      panorama: 0,
+      model: 10,
+      plane: 20,
+      tile: 30,
+      banner: 40,
+      nav: 50,
+      panel: 60,
+      menu: 70,
+      debug: 80,
+      pointer: 90
     }
   });
 
