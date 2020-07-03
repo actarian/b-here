@@ -6,100 +6,7 @@
 
 'use strict';
 
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-var NODE = typeof module !== 'undefined' && module.exports;
-var PARAMS = NODE ? {
-  get: function get() {}
-} : new URLSearchParams(window.location.search);
-var DEBUG =  PARAMS.get('debug') != null;
-var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
-var Environment = /*#__PURE__*/function () {
-  var _proto = Environment.prototype;
-
-  _proto.getModelPath = function getModelPath(path) {
-    return this.href + this.paths.models + path;
-  };
-
-  _proto.getTexturePath = function getTexturePath(path) {
-    return this.href + this.paths.textures + path;
-  };
-
-  _proto.getFontPath = function getFontPath(path) {
-    return this.href + this.paths.fonts + path;
-  };
-
-  _createClass(Environment, [{
-    key: "href",
-    get: function get() {
-      if (window.location.host.indexOf('herokuapp') !== -1) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-benelli/docs/';
-      } else {
-        return BASE_HREF;
-      }
-    }
-  }, {
-    key: "host",
-    get: function get() {
-      var host = window.location.host.replace('127.0.0.1', '192.168.1.2'); // let host = window.location.host;
-
-      if (host.substr(host.length - 1, 1) === '/') {
-        host = host.substr(0, host.length - 1);
-      }
-
-      return window.location.protocol + "//" + host + BASE_HREF;
-    }
-  }]);
-
-  function Environment(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-  return Environment;
-}();
-var environment = new Environment({
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  appCertificate: '',
-  channelName: 'BHere',
-  publisherId: '999',
-  debugMeetingId: '1591366622325',
-  port: 5000,
-  apiEnabled: false,
-  paths: {
-    models: 'models/',
-    textures: 'textures/',
-    fonts: 'fonts/'
-  },
-  renderOrder: {
-    panorama: 0,
-    model: 10,
-    plane: 20,
-    tile: 30,
-    banner: 40,
-    nav: 50,
-    panel: 60,
-    menu: 70,
-    debug: 80,
-    pointer: 90
-  }
-});
+var environment = require('environment');
 
 var express = require('express');
 
@@ -118,7 +25,7 @@ var _require = require('agora-access-token'),
     RtmTokenBuilder = _require.RtmTokenBuilder,
     RtcRole = _require.RtcRole,
     RtmRole = _require.RtmRole;
-var PORT = process.env.PORT || environment.port;
+var PORT = process.env.PORT || environment.environment.port;
 var app = express();
 app.disable('x-powered-by');
 app.use(express.static(path.join(__dirname, '../../docs/')));
@@ -152,7 +59,7 @@ app.post('/api/token/rtc', function (request, response) {
   var expirationTime = timestamp + duration;
   var uid = payload.uid ? String(payload.uid) : timestamp.toString();
   var role = RtcRole.PUBLISHER;
-  var token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
+  var token = RtcTokenBuilder.buildTokenWithUid(environment.environment.appKey, environment.environment.appCertificate, environment.environment.channelName, uid, role, expirationTime);
   response.send(JSON.stringify({
     token: token
   }));
@@ -164,25 +71,23 @@ app.post('/api/token/rtm', function (request, response) {
   var expirationTime = timestamp + duration;
   var uid = payload.uid ? String(payload.uid) : timestamp.toString();
   var role = RtmRole.PUBLISHER;
-  var token = RtmTokenBuilder.buildToken(environment.appKey, environment.appCertificate, uid, role, expirationTime);
+  var token = RtmTokenBuilder.buildToken(environment.environment.appKey, environment.environment.appCertificate, uid, role, expirationTime);
   response.send(JSON.stringify({
     token: token
   }));
 });
-app.listen(PORT, function () {
-  console.log("Listening on " + PORT);
-});
 /*
-https
-	.createServer({
-		cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
-		key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
-	}, app)
-	.listen(PORT, function() {
-		console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
-	});
+app.listen(PORT, () => {
+	console.log(`Listening on ${ PORT }`);
+});
 */
-// IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
+
+https.createServer({
+  cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
+  key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
+}, app).listen(PORT, function () {
+  console.log("Example app listening on port " + PORT + "! Go to https://192.168.1.2:" + PORT + "/");
+}); // IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
 // Build token with uid
 // const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
 // Build token with user account

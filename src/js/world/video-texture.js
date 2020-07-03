@@ -5,7 +5,6 @@ function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format
 	this.format = format !== undefined ? format : THREE.RGBFormat;
 	this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
 	this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
-	this.mapping = THREE.UVMapping;
 	this.generateMipmaps = false;
 }
 

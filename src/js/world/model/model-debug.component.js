@@ -69,14 +69,11 @@ export default class ModelDebugComponent extends ModelComponent {
 		canvas.height = H;
 		const texture = new THREE.CanvasTexture(canvas);
 		texture.encoding = THREE.sRGBEncoding;
-		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
-		texture.mapping = THREE.UVMapping;
 		texture.needsUpdate = true;
-		const geometry = new THREE.PlaneBufferGeometry(4, 1, 2, 2);
+		const geometry = new THREE.PlaneBufferGeometry(2, 0.5, 2, 2);
 		const material = new THREE.MeshBasicMaterial({
 			depthTest: false,
-			depthWrite: false,
 			map: texture,
 			color: 0xffffff, // 0x33c5f6,
 			transparent: true,
@@ -85,7 +82,6 @@ export default class ModelDebugComponent extends ModelComponent {
 			// side: THREE.DoubleSide
 		});
 		const text = new THREE.Mesh(geometry, material);
-		text.renderer = environment.renderOrder.debug;
 		text.position.y = 2;
 		return text;
 	}
@@ -102,8 +98,8 @@ export default class ModelDebugComponent extends ModelComponent {
 	create(callback) {
 		const textGroup = this.textGroup = new THREE.Group();
 		const material = this.material = new THREE.MeshBasicMaterial({
-			depthTest: false,
-			color: 0xffffff, // 0x33c5f6,
+			// depthTest: false,
+			color: 0x111111, // 0x33c5f6,
 			transparent: true,
 			opacity: 1,
 			side: THREE.DoubleSide
@@ -150,12 +146,12 @@ export default class ModelDebugComponent extends ModelComponent {
 				ctx.clearRect(0, 0, W, H);
 				// ctx.fillRect(0, 0, 10, 10);
 				// ctx.fillRect(W - 10, H - 10, 10, 10);
-				ctx.font = '30px Maven Pro';
+				ctx.font = '40px Maven Pro';
 				ctx.textBaseline = 'middle';
 				ctx.textAlign = "center";
-				ctx.fillStyle = '#FFFFFF';
-				ctx.strokeStyle = '#000000';
-				ctx.lineWidth = 5;
+				ctx.fillStyle = '#000000';
+				ctx.strokeStyle = '#ffffff';
+				ctx.lineWidth = 1;
 				ctx.fillText(message, W / 2, H / 2, W - 20);
 				text.material.map.needsUpdate = true;
 				// draw
@@ -166,6 +162,38 @@ export default class ModelDebugComponent extends ModelComponent {
 		}
 	}
 
+	setText_(message) {
+		if (this.text) {
+			this.text.parent.remove(this.text);
+			this.text.geometry.dispose();
+		}
+		if (this.font && this.host.renderer.xr.isPresenting && message != null) {
+			const geometry = new THREE.TextGeometry(message, {
+				font: this.font,
+				size: 0.05,
+				height: 0.001,
+				curveSegments: 12,
+				bevelEnabled: false,
+				bevelThickness: 10,
+				bevelSize: 8,
+				bevelOffset: 0,
+				bevelSegments: 5
+			});
+			geometry.computeBoundingBox();
+			const x = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+			geometry.translate(x, 0, 0);
+			const text = new THREE.Mesh(geometry, this.material);
+			text.name = 'text';
+			text.position.y = 1;
+			this.text = text;
+			this.textGroup.add(text);
+			/*
+			const box = new THREE.BoxHelper(text, 0xffff00);
+			this.host.scene.add(box);
+			*/
+			// console.log('ModelDebugComponent.setText', message, box);
+		}
+	}
 }
 
 ModelDebugComponent.meta = {

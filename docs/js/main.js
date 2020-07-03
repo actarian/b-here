@@ -526,14 +526,11 @@
     return Emittable;
   }();
 
-  var NODE = typeof module !== 'undefined' && module.exports;
-  var PARAMS = NODE ? {
-    get: function get() {}
-  } : new URLSearchParams(window.location.search);
+  var PARAMS = new URLSearchParams(window.location.search);
   var DEBUG =  PARAMS.get('debug') != null;
-  var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-  var STATIC = NODE ? false : window && (window.location.port === '41999' || window.location.host === 'actarian.github.io');
-  var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+  var BASE_HREF = document.querySelector('base').getAttribute('href');
+  var STATIC = window.location.port === '41999' || window.location.host === 'actarian.github.io';
+  var DEVELOPMENT = ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
   var Environment = /*#__PURE__*/function () {
     var _proto = Environment.prototype;
 
@@ -553,7 +550,7 @@
       key: "href",
       get: function get() {
         if (window.location.host.indexOf('herokuapp') !== -1) {
-          return 'https://raw.githubusercontent.com/actarian/b-here/b-here-benelli/docs/';
+          return 'https://raw.githack.com/actarian/b-here/master/docs/';
         } else {
           return BASE_HREF;
         }
@@ -591,18 +588,6 @@
       models: 'models/',
       textures: 'textures/',
       fonts: 'fonts/'
-    },
-    renderOrder: {
-      panorama: 0,
-      model: 10,
-      plane: 20,
-      tile: 30,
-      banner: 40,
-      nav: 50,
-      panel: 60,
-      menu: 70,
-      debug: 80,
-      pointer: 90
     }
   });
 
@@ -2291,7 +2276,7 @@
       input.style.top = '1000vh'; // input.style.visibility = 'hidden';
 
       document.querySelector('body').appendChild(input);
-      input.value = this.getUrl(true);
+      input.value = this.generateLink();
       input.focus();
       input.select();
       input.setSelectionRange(0, 99999);
@@ -2310,17 +2295,11 @@
       this.link.next(this.controls.link.value);
     };
 
-    _proto.getUrl = function getUrl(shareable) {
-      var role = LocationService.get('role') || null;
-      var name = LocationService.get('name') || null;
-      var url = "" + window.location.origin + window.location.pathname + "?link=" + this.controls.link.value + (name ? "&name=" + name : '') + (role && !shareable ? "&role=" + role : '');
-      return url;
-    };
-
     _proto.replaceUrl = function replaceUrl() {
       if ('history' in window) {
-        var url = this.getUrl();
-        console.log('AgoraLinkComponent.url', url);
+        var role = LocationService.get('role') || null;
+        var name = LocationService.get('name') || null;
+        var url = "" + window.location.origin + window.location.pathname + "?link=" + this.controls.link.value + (name ? "&name=" + name : '') + (role ? "&role=" + role : '');
         window.history.replaceState({
           'pageTitle': window.pageTitle
         }, '', url);
@@ -2390,7 +2369,6 @@
         var role = LocationService.get('role') || null;
         var link = LocationService.get('link') || null;
         var url = "" + window.location.origin + window.location.pathname + "?link=" + link + "&name=" + this.controls.name.value + (role ? "&role=" + role : '');
-        console.log('AgoraNameComponent.url', url);
         window.history.replaceState({
           'pageTitle': window.pageTitle
         }, '', url);
@@ -2740,15 +2718,9 @@
       var _this;
 
       if (options.items) {
-        options.items.forEach(function (item, index) {
-          item.index = index;
-        });
-      }
-
-      if (options.tiles) {
-        options.tiles = options.tiles.map(function (tile, i) {
+        options.items = options.items.map(function (mapFile, i) {
           var indices = new THREE.Vector2();
-          tile.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+          mapFile.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
             var flipAxes = options.flipAxes ? -1 : 1;
 
             if (options.invertAxes) {
@@ -2757,13 +2729,13 @@
             } else {
               indices.x = parseInt(b);
               indices.y = parseInt(c) * flipAxes;
-            } // console.log('PanoramaGridView', tile, indices);
+            } // console.log('PanoramaGridView', mapFile, indices);
 
           });
           return {
             id: i + 1,
             envMapFolder: options.envMapFolder,
-            envMapFile: tile,
+            envMapFile: mapFile,
             indices: indices
           };
         });
@@ -2778,7 +2750,7 @@
     var _proto = PanoramaGridView.prototype;
 
     _proto.getTileIndex = function getTileIndex(x, y) {
-      return this.tiles.reduce(function (p, c, i) {
+      return this.items.reduce(function (p, c, i) {
         if (c.indices.x === x && c.indices.y === y) {
           return i;
         } else {
@@ -2796,7 +2768,7 @@
 
       if (index !== -1) {
         this.index = index;
-        return this.tiles[index];
+        return this.items[index];
       }
     };
 
@@ -3047,7 +3019,6 @@
           node = _getContext.node;
 
       node.classList.remove('hidden');
-      this.debug = DEBUG;
       this.state = {};
       this.data = null;
       this.views = null;
@@ -4513,7 +4484,7 @@
 
             node.appendChild(modelViewerNode);
           } else if (_this.devicePlatform === DevicePlatform.IOS) {
-            var usdzSrc = environment.getModelPath(view.ar.usdz);
+            var usdzSrc = "" + environment.host + view.ar.usdz;
             window.location.href = usdzSrc;
           }
         });
@@ -4550,8 +4521,8 @@
     };
 
     _proto.getModelViewerNode = function getModelViewerNode(view) {
-      var gltfSrc = environment.getModelPath(view.ar.gltf);
-      var usdzSrc = environment.getModelPath(view.ar.usdz);
+      var gltfSrc = "" + environment.host + view.ar.gltf;
+      var usdzSrc = "" + environment.host + view.ar.usdz;
       var template = "<model-viewer alt=\"" + view.name + "\" src=\"" + gltfSrc + "\" ios-src=\"" + usdzSrc + "\" magic-leap ar ar_preferred></model-viewer>";
       var div = document.createElement("div");
       div.innerHTML = template;
@@ -55038,46 +55009,12 @@
 
   } );
 
-  var DebugService = /*#__PURE__*/function () {
-    DebugService.getService = function getService() {
-      if (!this.service_) {
-        this.service_ = new DebugService();
-      }
-
-      return this.service_;
-    };
-
-    _createClass(DebugService, [{
-      key: "message",
-      get: function get() {
-        return this.message$.getValue();
-      }
-    }]);
-
-    function DebugService() {
-      if (DebugService.service_) {
-        throw 'DebugService is a singleton class!';
-      }
-
-      this.message$ = new rxjs.BehaviorSubject(null);
-    }
-
-    var _proto = DebugService.prototype;
-
-    _proto.setMessage = function setMessage(message) {
-      if (this.message !== message) {
-        this.message$.next(message);
-      }
-    };
-
-    return DebugService;
-  }();
-
   var EnvMapLoader = /*#__PURE__*/function () {
     function EnvMapLoader() {}
 
     EnvMapLoader.load = function load(item, renderer, callback) {
-      this.video = null;
+      var video = this.video;
+      video.pause();
 
       if (item.envMapFile === 'publisherStream') {
         return this.loadPublisherStreamBackground(renderer, callback);
@@ -55135,7 +55072,6 @@
         var texture = _this.texture = new THREE$1.VideoTexture(video);
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true;
         var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
@@ -55143,7 +55079,6 @@
           // minFilter: THREE.LinearMipmapLinearFilter,
           minFilter: THREE$1.LinearFilter,
           magFilter: THREE$1.LinearFilter,
-          mapping: THREE$1.UVMapping,
           format: THREE$1.RGBFormat
         }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
@@ -55166,16 +55101,17 @@
     EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
       var _this2 = this;
 
-      var debugService = DebugService.getService();
-      this.video = true;
       var video = this.video;
+      video.src = path + file;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
 
       var onPlaying = function onPlaying() {
         video.oncanplay = null;
         var texture = new THREE$1.VideoTexture(video);
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
 
@@ -55184,41 +55120,42 @@
           // minFilter: THREE.LinearMipmapLinearFilter,
           minFilter: THREE$1.LinearFilter,
           magFilter: THREE$1.LinearFilter,
-          mapping: THREE$1.UVMapping,
           format: THREE$1.RGBFormat
         }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
         if (typeof callback === 'function') {
           callback(cubeRenderTarget.texture, texture, false);
         }
-      }; // video.addEventListener('playing', onPlaying);
+      };
 
+      console.log(video.src); // video.addEventListener('playing', onPlaying);
+
+      video.crossOrigin = 'anonymous';
 
       video.oncanplay = function () {
         console.log('EnvMapLoader.loadVideoBackground.oncanplay');
         onPlaying();
       };
 
-      video.src = path + file;
-      video.load();
       video.play().then(function () {
         console.log('EnvMapLoader.loadVideoBackground.play');
-        debugService.setMessage("play " + video.src);
       }, function (error) {
         console.log('EnvMapLoader.loadVideoBackground.play.error', error);
-        debugService.setMessage("play.error " + video.src);
       });
     };
 
     EnvMapLoader.loadHlslVideoBackground = function loadHlslVideoBackground(src, renderer, callback) {
       var video = document.createElement('video');
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.crossOrigin = 'anonymous';
 
       var onPlaying = function onPlaying() {
         video.oncanplay = null;
         var texture = new THREE$1.VideoTexture(video);
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
 
@@ -55227,7 +55164,6 @@
           // minFilter: THREE.LinearMipmapLinearFilter,
           minFilter: THREE$1.LinearFilter,
           magFilter: THREE$1.LinearFilter,
-          mapping: THREE$1.UVMapping,
           format: THREE$1.RGBFormat
         }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
@@ -55237,7 +55173,7 @@
       };
 
       video.oncanplay = function () {
-        // console.log('videoReady', videoReady);
+
         onPlaying();
       };
 
@@ -55275,27 +55211,13 @@
     _createClass(EnvMapLoader, null, [{
       key: "video",
       get: function get() {
-        return this.video_;
-      },
-      set: function set(video) {
-        if (this.video_) {
-          this.video_.pause();
+        var video = this.video_;
 
-          if (this.video_.parentNode) {
-            this.video_.parentNode.removeChild(this.video_);
-          }
-
-          this.video_ = null;
+        if (!video) {
+          video = this.video_ = document.createElement('video');
         }
 
-        if (video) {
-          var _video = this.video_ = document.createElement('video');
-
-          _video.loop = true;
-          _video.muted = true;
-          _video.playsInline = true;
-          _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
-        }
+        return video;
       }
     }, {
       key: "cubeRenderTarget",
@@ -55319,6 +55241,41 @@
     }]);
 
     return EnvMapLoader;
+  }();
+
+  var DebugService = /*#__PURE__*/function () {
+    DebugService.getService = function getService() {
+      if (!this.service_) {
+        this.service_ = new DebugService();
+      }
+
+      return this.service_;
+    };
+
+    _createClass(DebugService, [{
+      key: "message",
+      get: function get() {
+        return this.message$.getValue();
+      }
+    }]);
+
+    function DebugService() {
+      if (DebugService.service_) {
+        throw 'DebugService is a singleton class!';
+      }
+
+      this.message$ = new rxjs.BehaviorSubject(null);
+    }
+
+    var _proto = DebugService.prototype;
+
+    _proto.setMessage = function setMessage(message) {
+      if (this.message !== message) {
+        this.message$.next(message);
+      }
+    };
+
+    return DebugService;
   }();
 
   /* jshint esversion: 6 */
@@ -55433,78 +55390,6 @@
     return EmittableMesh;
   }(FreezableMesh);
 
-  /* jshint esversion: 6 */
-
-  var Interactive = /*#__PURE__*/function () {
-    function Interactive() {}
-
-    Interactive.hittest = function hittest(raycaster, down) {
-      var debugService = DebugService.getService();
-
-      if (Interactive.down !== down) {
-        Interactive.down = down;
-        Interactive.lock = false;
-      } // !!! da rivedere per consentire eventi multipli (nav-items)
-
-
-      var items = Interactive.items.filter(function (x) {
-        return !x.freezed;
-      });
-      var intersections = raycaster.intersectObjects(items);
-      var key, hit;
-      var hash = {}; // let has = false;
-
-      intersections.forEach(function (intersection, i) {
-        var object = intersection.object; // console.log('Interactive.hittest', i, object.name);
-        // has = has || object.name.indexOf('nav') !== -1;
-
-        key = object.uuid;
-
-        if (i === 0) {
-          if (Interactive.lastIntersectedObject !== object) {
-            Interactive.lastIntersectedObject = object;
-            hit = object;
-            debugService.setMessage(hit.name || hit.id); // haptic feedback
-          } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
-            object.intersection = intersection;
-            object.emit('move', object);
-          }
-        }
-
-        hash[key] = intersection;
-      });
-
-      if (intersections.length === 0) {
-        Interactive.lastIntersectedObject = null;
-      } // console.log(has);
-
-
-      items.forEach(function (x) {
-        x.intersection = hash[x.uuid];
-        x.over = x === Interactive.lastIntersectedObject || !x.depthTest && x.intersection;
-        x.down = down && x.over && !Interactive.lock;
-
-        if (x.down) {
-          Interactive.lock = true;
-        }
-      });
-      return hit;
-    };
-
-    Interactive.dispose = function dispose(object) {
-      if (object) {
-        var index = Interactive.items.indexOf(object);
-
-        if (index !== -1) {
-          Interactive.items.splice(index, 1);
-        }
-      }
-    };
-
-    return Interactive;
-  }();
-  Interactive.items = [];
-
   var InteractiveMesh = /*#__PURE__*/function (_EmittableMesh) {
     _inheritsLoose(InteractiveMesh, _EmittableMesh);
 
@@ -55573,7 +55458,7 @@
       _this.depthTest = true;
       _this.over_ = false;
       _this.down_ = false;
-      Interactive.items.push(_assertThisInitialized(_this));
+      InteractiveMesh.items.push(_assertThisInitialized(_this));
       return _this;
     }
 
@@ -55626,7 +55511,6 @@
     this.format = format !== undefined ? format : THREE.RGBFormat;
     this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
     this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
-    this.mapping = THREE.UVMapping;
     this.generateMipmaps = false;
   }
 
@@ -55660,7 +55544,6 @@
       geometry.rotateY(Math.PI);
       var material = new THREE$1.ShaderMaterial({
         // depthTest: false,
-        depthWrite: false,
         vertexShader: VERTEX_SHADER,
         fragmentShader: FRAGMENT_SHADER,
         uniforms: {
@@ -55686,15 +55569,14 @@
       });
       */
 
-      var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
-
+      var mesh = this.mesh = new InteractiveMesh(geometry, material);
       mesh.name = '[panorama]';
     };
 
-    _proto.swap = function swap(view, renderer, callback, onexit) {
+    _proto.swap = function swap(view, renderer, callback) {
       var _this = this;
 
-      var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
+      var item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
       var material = this.mesh.material;
 
       if (this.tween > 0) {
@@ -55706,10 +55588,6 @@
             material.needsUpdate = true;
           },
           onComplete: function onComplete() {
-            if (typeof onexit === 'function') {
-              onexit(view);
-            }
-
             _this.load(item, renderer, function (envMap, texture, rgbe) {
               gsap.to(_this, 0.5, {
                 tween: 1,
@@ -55727,10 +55605,6 @@
           }
         });
       } else {
-        if (typeof onexit === 'function') {
-          onexit(view);
-        }
-
         this.load(item, renderer, function (envMap, texture, rgbe) {
           gsap.to(_this, 0.5, {
             tween: 1,
@@ -55768,9 +55642,7 @@
           material.uniforms.texture.value = null;
         }
 
-        texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
         texture.needsUpdate = true; // material.map = texture;
 
         material.uniforms.texture.value = texture;
@@ -55795,7 +55667,7 @@
 
       video.src = src;
       video.muted = true;
-      video.playsinline = video.playsInline = true;
+      video.playsInline = true;
       video.play();
       this.setVideo(video);
     };
@@ -55810,7 +55682,6 @@
           var texture = new VideoTexture$1(video);
           texture.minFilter = THREE$1.LinearFilter;
           texture.magFilter = THREE$1.LinearFilter;
-          texture.mapping = THREE$1.UVMapping;
           texture.format = THREE$1.RGBFormat;
           texture.needsUpdate = true;
           var material = _this2.mesh.material;
@@ -60295,7 +60166,8 @@
 
       radius = Math.sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
       var phi = Math.acos(position.y / radius);
-      var theta = Math.atan2(position.z, position.x); // console.log('phi', phi, 'theta', theta);
+      var theta = Math.atan2(position.z, position.x);
+      console.log('phi', phi, 'theta', theta);
     };
 
     _proto.render = function render() {
@@ -60432,7 +60304,6 @@
         var texture = new THREE.VideoTexture(video);
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
-        texture.mapping = THREE.UVMapping;
         texture.format = THREE.RGBFormat;
         texture.needsUpdate = true;
 
@@ -60550,27 +60421,47 @@
       var texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
       var material = new THREE.MeshBasicMaterial({
         depthTest: false,
-        depthWrite: false,
         map: texture,
         transparent: true,
         opacity: 0.9
       });
       var mesh = this.mesh = new THREE.Mesh(geometry, material);
-      mesh.renderOrder = environment.renderOrder.pointer;
       mesh.position.set(-100000, -100000, -100000);
+      /*
+      const panorama = this.panorama.mesh;
+      panorama.on('down', (panorama) => {
+      	mesh.material.color.setHex(0x0099ff);
+      	mesh.material.opacity = 1.0;
+      	mesh.material.needsUpdate = true;
+      });
+      panorama.on('up', (panorama) => {
+      	mesh.material.color.setHex(0xffffff);
+      	mesh.material.opacity = 0.9;
+      	mesh.material.needsUpdate = true;
+      });
+      */
     }
 
     var _proto = PointerElement.prototype;
 
     _proto.update = function update() {
-      if (Interactive.lastIntersectedObject) {
+      if (InteractiveMesh.lastIntersectedObject) {
         var mesh = this.mesh;
-        var position = Interactive.lastIntersectedObject.intersection.point.multiplyScalar(0.99);
+        var position = InteractiveMesh.lastIntersectedObject.intersection.point.multiplyScalar(0.99);
         mesh.position.set(position.x, position.y, position.z);
         var s = mesh.position.length() / 80;
         mesh.scale.set(s, s, s);
         mesh.lookAt(ORIGIN);
       }
+      /*
+      if (this.panorama.mesh.intersection) {
+      	const pointer = this.pointer;
+      	const position = this.panorama.mesh.intersection.point.normalize().multiplyScalar(POINTER_RADIUS);
+      	pointer.position.set(position.x, position.y, position.z);
+      	pointer.lookAt(ORIGIN);
+      }
+      */
+
     };
 
     return PointerElement;
@@ -60629,8 +60520,7 @@
       this.mouse = new THREE$1.Vector2();
       this.controllerMatrix_ = new THREE$1.Matrix4();
       this.controllerWorldPosition_ = new THREE$1.Vector3();
-      this.controllerWorldDirection_ = new THREE$1.Vector3(); // this.showNavPoints = false;
-
+      this.controllerWorldDirection_ = new THREE$1.Vector3();
       var container = this.container = node;
       var info = this.info = node.querySelector('.world__info');
       var worldRect = this.worldRect = Rect.fromNode(container);
@@ -60671,18 +60561,19 @@
       }
 
       var raycaster = this.raycaster = new THREE$1.Raycaster();
-      raycaster.setFromCamera(this.mouse, camera);
       var scene = this.scene = new THREE$1.Scene();
       scene.add(cameraGroup);
       var panorama = this.panorama = new Panorama();
       scene.add(panorama.mesh);
-      var pointer = this.pointer = new PointerElement();
-      /*
-      const mainLight = new THREE.PointLight(0xffffff);
+      var pointer = this.pointer = new PointerElement(); // const torus = this.torus = this.addTorus();
+
+      var mainLight = new THREE$1.PointLight(0xffffff);
       mainLight.position.set(-50, 0, -50);
       scene.add(mainLight);
-      		*/
-
+      var light2 = new THREE$1.DirectionalLight(0xffe699, 5);
+      light2.position.set(5, -5, 5);
+      light2.target.position.set(0, 0, 0);
+      scene.add(light2);
       var light = new THREE$1.AmbientLight(0x101010);
       scene.add(light);
       var objects = this.objects = new THREE$1.Group();
@@ -60717,38 +60608,34 @@
       }
     };
 
-    _proto.setViewOrientation = function setViewOrientation(view) {
-      if (this.orbit) {
-        this.orbit.mode = view.type;
-
-        if (!this.renderer.xr.isPresenting) {
-          if (this.infoResultMessage) {
-            this.orbit.setOrientation(this.infoResultMessage.orientation);
-            this.camera.fov = this.infoResultMessage.fov;
-            this.camera.updateProjectionMatrix();
-          } else {
-            this.orbit.setOrientation(view.orientation);
-            this.camera.fov = view.fov;
-            this.camera.updateProjectionMatrix();
-          }
-        }
-      }
-    };
-
     _proto.setView = function setView() {
       var _this = this;
 
       var view = this.view_;
 
       if (view) {
+        if (this.orbit) {
+          this.orbit.mode = view.type;
+
+          if (!this.renderer.xr.isPresenting) {
+            if (this.infoResultMessage) {
+              this.orbit.setOrientation(this.infoResultMessage.orientation);
+              this.camera.fov = this.infoResultMessage.fov;
+              this.camera.updateProjectionMatrix();
+            } else {
+              this.orbit.setOrientation(view.orientation);
+              this.camera.fov = view.fov;
+              this.camera.updateProjectionMatrix();
+            }
+          }
+        }
+
         if (this.panorama) {
           if (this.infoResultMessage) {
             if (view instanceof PanoramaGridView && message.gridIndex) {
               view.index_ = message.gridIndex;
             }
-          } // this.showNavPoints = false;
-          // this.pushChanges();
-
+          }
 
           this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
             // this.scene.background = envMap;
@@ -60759,13 +60646,7 @@
               _this.torus.material.needsUpdate = true;
             } // this.render();
 
-          }, function (view) {
-            _this.setViewOrientation(view); // this.showNavPoints = true;
-            // this.pushChanges();
-
           });
-        } else {
-          this.setViewOrientation(view);
         }
 
         this.infoResultMessage = null;
@@ -60871,6 +60752,85 @@
 
     _proto.onSelect2End = function onSelect2End() {
       this.controller2.userData.isSelecting = false;
+    };
+
+    _proto.addPointer = function addPointer(parent) {
+      var geometry = new THREE$1.PlaneBufferGeometry(1.2, 1.2, 2, 2);
+      var loader = new THREE$1.TextureLoader();
+      var texture = loader.load(environment.getTexturePath('ui/wall-nav.png')); // texture.magFilter = THREE.NearestFilter;
+      // texture.wrapT = THREE.RepeatWrapping;
+      // texture.repeat.y = 1;
+      // texture.anisotropy = 0;
+      // texture.magFilter = THREE.LinearMipMapLinearFilter;
+      // texture.minFilter = THREE.NearestFilter;
+
+      var material = new THREE$1.MeshBasicMaterial({
+        depthTest: false,
+        map: texture,
+        transparent: true,
+        opacity: 0.9
+      });
+      var mesh = new THREE$1.Mesh(geometry, material);
+      mesh.position.set(-100000, -100000, -100000);
+      /*
+      const panorama = this.panorama.mesh;
+      panorama.on('down', (panorama) => {
+      	mesh.material.color.setHex(0x0099ff);
+      	mesh.material.opacity = 1.0;
+      	mesh.material.needsUpdate = true;
+      });
+      panorama.on('up', (panorama) => {
+      	mesh.material.color.setHex(0xffffff);
+      	mesh.material.opacity = 0.9;
+      	mesh.material.needsUpdate = true;
+      });
+      */
+
+      return mesh;
+    };
+
+    _proto.addTorus = function addTorus() {
+      var geometry = new THREE$1.TorusKnotBufferGeometry(3, 1.5, 150, 20);
+      var material = new THREE$1.MeshStandardMaterial({
+        color: 0x888888,
+        metalness: 1.3,
+        roughness: 0.3
+      });
+      var mesh = new InteractiveMesh(geometry, material);
+      mesh.position.set(50, -20, 50);
+
+      mesh.userData.render = function () {
+        mesh.rotation.set(0, mesh.rotation.y + 0.01, 0);
+      };
+
+      mesh.on('over', function () {
+        var from = {
+          scale: mesh.scale.x
+        };
+        gsap.to(from, 0.4, {
+          scale: 1.5,
+          delay: 0,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            mesh.scale.set(from.scale, from.scale, from.scale);
+          }
+        });
+      });
+      mesh.on('out', function () {
+        var from = {
+          scale: mesh.scale.x
+        };
+        gsap.to(from, 0.4, {
+          scale: 1,
+          delay: 0,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            mesh.scale.set(from.scale, from.scale, from.scale);
+          }
+        });
+      });
+      this.scene.add(mesh);
+      return mesh;
     }
     /*
     handleController(controller) {
@@ -60956,8 +60916,7 @@
       if (controller) {
         this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
         raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.controllerMatrix_); // raycaster.camera = this.host.renderer.xr.getCamera(this.camera);
-
+        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.controllerMatrix_);
         return raycaster;
       }
     };
@@ -60968,7 +60927,7 @@
           var raycaster = this.updateRaycaster(this.controller, this.raycaster);
 
           if (raycaster) {
-            var hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
+            var hit = InteractiveMesh.hittest(raycaster, this.controller.userData.isSelecting);
             this.pointer.update();
             /*
             if (hit && hit !== this.panorama.mesh) {
@@ -60980,7 +60939,7 @@
           var _raycaster = this.raycaster;
 
           if (_raycaster) {
-            var _hit = Interactive.hittest(_raycaster);
+            var _hit = InteractiveMesh.hittest(this.raycaster);
             /*
             if (hit && hit !== this.panorama.mesh) {
             	// console.log('hit', hit);
@@ -61117,7 +61076,7 @@
         this.mouse.y = -(event.clientY - h2) / h2;
         var raycaster = this.raycaster;
         raycaster.setFromCamera(this.mouse, this.camera);
-        var hit = Interactive.hittest(raycaster, true);
+        var hit = InteractiveMesh.hittest(raycaster, true);
 
         if (DEBUG && this.panorama.mesh.intersection) {
           var position = new THREE$1.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
@@ -61143,7 +61102,7 @@
         */
 
         var raycaster = this.raycaster;
-        raycaster.setFromCamera(this.mouse, this.camera); // Interactive.hittest(raycaster, this.mousedown);
+        raycaster.setFromCamera(this.mouse, this.camera); // InteractiveMesh.hittest(raycaster, this.mousedown);
       } catch (error) {
         this.error = error; // throw (error);
       }
@@ -61167,7 +61126,7 @@
         if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
           var camera = this.camera;
           var fov = camera.fov + event.deltaY * 0.01;
-          camera.fov = THREE$1.Math.clamp(fov, 30, 75);
+          camera.fov = THREE$1.Math.clamp(fov, 15, 75);
           camera.updateProjectionMatrix();
           this.onOrientationDidChange();
         }
@@ -61177,13 +61136,11 @@
     };
 
     _proto.onOrientationDidChange = function onOrientationDidChange() {
+      /*
       if (DEBUG) {
-        console.log(JSON.stringify({
-          orientation: this.orbit.getOrientation(),
-          fov: this.camera.fov
-        }));
+      	console.log(JSON.stringify({ orientation: this.orbit.getOrientation(), fov: this.camera.fov }));
       }
-
+      */
       var agora = this.agora;
 
       if (agora && (agora.state.control || agora.state.spyed)) {
@@ -61246,7 +61203,7 @@
     _proto.onGridMove = function onGridMove(event) {
       var _this5 = this;
 
-      // console.log('WorldComponent.onGridMove', event);
+      console.log('WorldComponent.onGridMove', event);
       this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
         var item = _this5.view.getTile(event.indices.x, event.indices.y);
 
@@ -61531,7 +61488,7 @@
       delete group.userData.render;
       group.traverse(function (child) {
         if (child instanceof InteractiveMesh) {
-          Interactive.dispose(child);
+          InteractiveMesh.dispose(child);
         }
 
         if (child.isMesh) {
@@ -61708,7 +61665,6 @@
     };
 
     _proto.create = function create(callback) {
-      // this.renderOrder = environment.renderOrder.banner;
       var mesh = new THREE$1.Group();
       mesh.userData = {
         render: function render() {
@@ -61761,419 +61717,6 @@
   ModelBannerComponent.ORIGIN = new THREE$1.Vector3();
   ModelBannerComponent.meta = {
     selector: '[model-banner]',
-    hosts: {
-      host: WorldComponent
-    },
-    inputs: ['item']
-  };
-
-  var MediaLoader = /*#__PURE__*/function () {
-    MediaLoader.getLoader = function getLoader() {
-      return MediaLoader.loader || (MediaLoader.loader = new THREE$1.TextureLoader());
-    };
-
-    MediaLoader.getPath = function getPath(item) {
-      return environment.getTexturePath(item.folder + item.file);
-    };
-
-    MediaLoader.loadTexture = function loadTexture(item, callback) {
-      var path = MediaLoader.getPath(item);
-      return MediaLoader.getLoader().load(path, callback);
-    };
-
-    MediaLoader.isVideo = function isVideo(item) {
-      return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
-    };
-
-    _createClass(MediaLoader, [{
-      key: "isVideo",
-      get: function get() {
-        return MediaLoader.isVideo(this.item);
-      }
-    }, {
-      key: "isPlayableVideo",
-      get: function get() {
-        return this.isVideo && !this.item.autoplay;
-      }
-    }, {
-      key: "isAutoplayVideo",
-      get: function get() {
-        return this.isVideo && this.item.autoplay;
-      }
-    }]);
-
-    function MediaLoader(item) {
-      this.item = item;
-      this.toggle = this.toggle.bind(this);
-    }
-
-    var _proto = MediaLoader.prototype;
-
-    _proto.load = function load(callback) {
-      var _this = this;
-
-      var item = this.item;
-
-      if (MediaLoader.isVideo(item)) {
-        // create the video element
-        var video = this.video = document.createElement('video');
-        video.preload = 'metadata';
-        video.volume = 0.5;
-        video.muted = true;
-        video.playsinline = video.playsInline = true;
-
-        if (item.autoplay) {
-          video.loop = true;
-        }
-
-        video.crossOrigin = 'anonymous';
-
-        var onCanPlay = function onCanPlay() {
-          video.oncanplay = null;
-          var texture = new THREE$1.VideoTexture(video);
-          texture.minFilter = THREE$1.LinearFilter;
-          texture.magFilter = THREE$1.LinearFilter;
-          texture.mapping = THREE$1.UVMapping;
-          texture.format = THREE$1.RGBFormat;
-          texture.needsUpdate = true;
-
-          if (!item.autoplay) {
-            video.pause();
-          }
-
-          if (typeof callback === 'function') {
-            callback(texture, _this);
-          }
-        };
-
-        video.oncanplay = onCanPlay;
-        video.src = MediaLoader.getPath(item);
-        video.load(); // must call after setting/changing source
-
-        this.play();
-      } else {
-        MediaLoader.loadTexture(item, function (texture) {
-          texture.minFilter = THREE$1.LinearFilter;
-          texture.magFilter = THREE$1.LinearFilter;
-          texture.mapping = THREE$1.UVMapping; // texture.format = THREE.RGBFormat;
-
-          texture.wrapS = THREE$1.RepeatWrapping;
-          texture.wrapT = THREE$1.RepeatWrapping;
-
-          if (typeof callback === 'function') {
-            callback(texture, _this);
-          }
-        });
-      }
-
-      return this;
-    };
-
-    _proto.play = function play() {
-      var _this2 = this;
-
-      // console.log('MediaLoader.play');
-      this.video.play().then(function () {
-        console.log('MediaLoader.play.success', _this2.item.file);
-      }, function (error) {
-        console.log('MediaLoader.play.error', _this2.item.file, error);
-      });
-    };
-
-    _proto.pause = function pause() {
-      // console.log('MediaLoader.pause');
-      this.video.muted = true;
-      this.video.pause();
-    };
-
-    _proto.toggle = function toggle() {
-      // console.log('MediaLoader.toggle', this.video);
-      if (this.video.paused) {
-        this.video.muted = false;
-        this.play();
-        return true;
-      } else {
-        this.pause();
-        return false;
-      }
-    };
-
-    _proto.dispose = function dispose() {
-      if (this.isVideo) {
-        this.video.pause();
-        this.video.muted = true;
-        delete this.video;
-      }
-    };
-
-    return MediaLoader;
-  }();
-
-  var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-  var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nmat3 rotate(float a) {\n\treturn mat3(\n\t\tcos(a), sin(a), 0.0,\n\t\t-sin(a), cos(a), 0.0,\n\t\t0.0, 0.0, 1.0\n\t);\n}\n\nmat3 translate(vec2 t) {\n\treturn mat3(\n\t\t1.0, 0.0, 0.0,\n\t\t0.0, 1.0, 0.0,\n\t\tt.x, t.y, 1.0\n\t);\n}\n\nmat3 scale(vec2 s) {\n\treturn mat3(\n\t\ts.x, 0.0, 0.0,\n\t\t0.0, s.y, 0.0,\n\t\t0.0, 0.0, 1.0\n\t);\n}\n\nvec2 getUV2(vec2 vUv, vec2 t, vec2 s, float a) {\n\tmat3 transform = scale(s) * rotate(a);\n\treturn (vec3(vUv + t, 0.0) * transform).xy;\n}\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tfloat rA = resolutionA.x / resolutionA.y;\n\t\tfloat rB = resolutionB.x / resolutionB.y;\n\t\tfloat aspect = 1.0 / rA * rB;\n\t\tvec2 s = vec2(3.0 / aspect, 3.0);\n\t\tvec2 t = vec2(\n\t\t\t-(resolutionA.x - resolutionB.x / s.x) * 0.5 / resolutionA.x,\n\t\t\t-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y\n\t\t);\n\t\tt = vec2(\n\t\t\t-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,\n\t\t\t-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y\n\t\t);\n\t\tvec2 uv2 = clamp(\n\t\t\tgetUV2(vUv, t, s, 0.0),\n\t\t\tvec2(0.0,0.0),\n\t\t\tvec2(1.0,1.0)\n\t\t);\n\t\tvec4 colorB = texture2D(textureB, uv2);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
-
-  var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
-    _inheritsLoose(MediaMesh, _InteractiveMesh);
-
-    MediaMesh.getMaterial = function getMaterial() {
-      var material = new THREE$1.ShaderMaterial({
-        depthTest: false,
-        depthWrite: false,
-        transparent: true,
-        vertexShader: VERTEX_SHADER$1,
-        fragmentShader: FRAGMENT_SHADER$1,
-        uniforms: {
-          video: {
-            value: false
-          },
-          textureA: {
-            type: "t",
-            value: null
-          },
-          textureB: {
-            type: "t",
-            value: null
-          },
-          resolutionA: {
-            value: new THREE$1.Vector2()
-          },
-          resolutionB: {
-            value: new THREE$1.Vector2()
-          },
-          overlayColor: {
-            value: new THREE$1.Color('#ffffff')
-          },
-          overlay: {
-            value: 0
-          },
-          tween: {
-            value: 1
-          },
-          opacity: {
-            value: 0
-          }
-        } // side: THREE.DoubleSide
-
-      });
-      return material;
-    };
-
-    function MediaMesh(item, geometry, material) {
-      var _this;
-
-      material = material || MediaMesh.getMaterial();
-      _this = _InteractiveMesh.call(this, geometry, material) || this;
-      _this.item = item;
-      _this.renderOrder = environment.renderOrder.plane;
-      var uniforms = _this.uniforms = {
-        overlay: 0,
-        tween: 1,
-        opacity: 0
-      };
-      var mediaLoader = _this.mediaLoader = new MediaLoader(item);
-
-      if (!mediaLoader.isVideo) {
-        _this.freeze();
-      }
-
-      return _this;
-    }
-
-    var _proto = MediaMesh.prototype;
-
-    _proto.load = function load(callback) {
-      var _this2 = this;
-
-      var material = this.material;
-      var mediaLoader = this.mediaLoader;
-
-      if (mediaLoader.isPlayableVideo) {
-        var textureB = MediaLoader.loadTexture({
-          folder: 'ui/',
-          file: 'play.png'
-        }, function (textureB) {
-          // console.log('MediaMesh.textureB', textureB);
-          textureB.minFilter = THREE$1.LinearFilter;
-          textureB.magFilter = THREE$1.LinearFilter;
-          textureB.mapping = THREE$1.UVMapping; // textureB.format = THREE.RGBFormat;
-
-          textureB.wrapS = THREE$1.RepeatWrapping;
-          textureB.wrapT = THREE$1.RepeatWrapping;
-          material.uniforms.textureB.value = textureB;
-          material.uniforms.resolutionB.value = new THREE$1.Vector2(textureB.image.width, textureB.image.height); // console.log(material.uniforms.resolutionB.value, textureB);
-
-          material.needsUpdate = true;
-        });
-      }
-
-      mediaLoader.load(function (textureA) {
-        // console.log('MediaMesh.textureA', textureA);
-        material.uniforms.textureA.value = textureA;
-        material.uniforms.resolutionA.value = new THREE$1.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-        material.needsUpdate = true;
-
-        _this2.onAppear();
-
-        if (mediaLoader.isPlayableVideo) {
-          material.uniforms.video.value = true;
-          _this2.onOver = _this2.onOver.bind(_this2);
-          _this2.onOut = _this2.onOut.bind(_this2);
-          _this2.onToggle = _this2.onToggle.bind(_this2);
-
-          _this2.on('over', _this2.onOver);
-
-          _this2.on('out', _this2.onOut);
-
-          _this2.on('down', _this2.onToggle);
-        }
-
-        if (typeof callback === 'function') {
-          callback(_this2);
-        }
-      });
-    };
-
-    _proto.onAppear = function onAppear() {
-      var uniforms = this.uniforms;
-      var material = this.material;
-
-      if (material.uniforms) {
-        gsap.to(uniforms, 0.4, {
-          opacity: 1,
-          ease: Power2.easeInOut,
-          onUpdate: function onUpdate() {
-            material.uniforms.opacity.value = uniforms.opacity;
-            material.needsUpdate = true;
-          }
-        });
-      }
-    };
-
-    _proto.onOver = function onOver() {
-      var uniforms = this.uniforms;
-      var material = this.material;
-
-      if (material.uniforms) {
-        gsap.to(uniforms, 0.4, {
-          overlay: 1,
-          tween: 0,
-          opacity: 1,
-          ease: Power2.easeInOut,
-          overwrite: true,
-          onUpdate: function onUpdate() {
-            material.uniforms.overlay.value = uniforms.overlay;
-            material.uniforms.tween.value = uniforms.tween;
-            material.uniforms.opacity.value = uniforms.opacity;
-            material.needsUpdate = true;
-          }
-        });
-      }
-    };
-
-    _proto.onOut = function onOut() {
-      var uniforms = this.uniforms;
-      var material = this.material;
-
-      if (material.uniforms) {
-        gsap.to(uniforms, 0.4, {
-          overlay: 0,
-          tween: this.playing ? 0 : 1,
-          opacity: 1,
-          ease: Power2.easeInOut,
-          overwrite: true,
-          onUpdate: function onUpdate() {
-            material.uniforms.overlay.value = uniforms.overlay;
-            material.uniforms.tween.value = uniforms.tween;
-            material.uniforms.opacity.value = uniforms.opacity;
-            material.needsUpdate = true;
-          }
-        });
-      }
-    };
-
-    _proto.onToggle = function onToggle() {
-      this.playing = this.mediaLoader.toggle();
-      this.onOut();
-    };
-
-    _proto.dispose = function dispose() {
-      var mediaLoader = this.mediaLoader;
-
-      if (mediaLoader.isPlayableVideo) {
-        this.off('over', this.onOver);
-        this.off('out', this.onOut);
-        this.off('down', this.onToggle);
-      }
-
-      mediaLoader.dispose();
-    };
-
-    return MediaMesh;
-  }(InteractiveMesh);
-
-  var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelComponent) {
-    _inheritsLoose(ModelCurvedPlaneComponent, _ModelComponent);
-
-    function ModelCurvedPlaneComponent() {
-      return _ModelComponent.apply(this, arguments) || this;
-    }
-
-    var _proto = ModelCurvedPlaneComponent.prototype;
-
-    _proto.onInit = function onInit() {
-      _ModelComponent.prototype.onInit.call(this); // console.log('ModelCurvedPlaneComponent.onInit');
-
-    };
-
-    _proto.create = function create(callback) {
-      var item = this.item;
-      var arc = Math.PI / 180 * item.arc;
-      var geometry = new THREE$1.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
-      geometry.rotateY(-Math.PI / 2 - arc / 2);
-      geometry.scale(-1, 1, 1);
-      var mesh = new MediaMesh(item, geometry);
-
-      if (item.position) {
-        mesh.position.set(item.position.x, item.position.y, item.position.z);
-      }
-
-      if (item.rotation) {
-        mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
-      }
-
-      if (item.scale) {
-        mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
-      }
-      /*
-      var box = new THREE.BoxHelper(mesh, 0xffff00);
-      this.host.scene.add(box);
-      */
-
-
-      mesh.load(function () {
-        /*
-        var box = new THREE.BoxHelper(mesh, 0xffff00);
-        this.host.scene.add(box);
-        */
-        if (typeof callback === 'function') {
-          callback(mesh);
-        }
-      });
-    } // onView() { const context = getContext(this); }
-    // onChanges() {}
-    ;
-
-    _proto.onDestroy = function onDestroy() {
-      _ModelComponent.prototype.onDestroy.call(this);
-
-      this.mesh.dispose();
-    };
-
-    return ModelCurvedPlaneComponent;
-  }(ModelComponent);
-  ModelCurvedPlaneComponent.textures = {};
-  ModelCurvedPlaneComponent.meta = {
-    selector: '[model-curved-plane]',
     hosts: {
       host: WorldComponent
     },
@@ -62233,14 +61776,11 @@
       canvas.height = H$2;
       var texture = new THREE$1.CanvasTexture(canvas);
       texture.encoding = THREE$1.sRGBEncoding;
-      texture.minFilter = THREE$1.LinearFilter;
       texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
       texture.needsUpdate = true;
-      var geometry = new THREE$1.PlaneBufferGeometry(4, 1, 2, 2);
+      var geometry = new THREE$1.PlaneBufferGeometry(2, 0.5, 2, 2);
       var material = new THREE$1.MeshBasicMaterial({
         depthTest: false,
-        depthWrite: false,
         map: texture,
         color: 0xffffff,
         // 0x33c5f6,
@@ -62250,7 +61790,6 @@
 
       });
       var text = new THREE$1.Mesh(geometry, material);
-      text.renderer = environment.renderOrder.debug;
       text.position.y = 2;
       return text;
     };
@@ -62270,8 +61809,8 @@
     _proto.create = function create(callback) {
       var textGroup = this.textGroup = new THREE$1.Group();
       var material = this.material = new THREE$1.MeshBasicMaterial({
-        depthTest: false,
-        color: 0xffffff,
+        // depthTest: false,
+        color: 0x111111,
         // 0x33c5f6,
         transparent: true,
         opacity: 1,
@@ -62319,12 +61858,12 @@
           ctx.clearRect(0, 0, W$2, H$2); // ctx.fillRect(0, 0, 10, 10);
           // ctx.fillRect(W - 10, H - 10, 10, 10);
 
-          ctx.font = '30px Maven Pro';
+          ctx.font = '40px Maven Pro';
           ctx.textBaseline = 'middle';
           ctx.textAlign = "center";
-          ctx.fillStyle = '#FFFFFF';
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 5;
+          ctx.fillStyle = '#000000';
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
           ctx.fillText(message, W$2 / 2, H$2 / 2, W$2 - 20);
           text.material.map.needsUpdate = true; // draw
 
@@ -62332,6 +61871,40 @@
         } else if (text.parent) {
           text.parent.remove(text);
         }
+      }
+    };
+
+    _proto.setText_ = function setText_(message) {
+      if (this.text) {
+        this.text.parent.remove(this.text);
+        this.text.geometry.dispose();
+      }
+
+      if (this.font && this.host.renderer.xr.isPresenting && message != null) {
+        var geometry = new THREE$1.TextGeometry(message, {
+          font: this.font,
+          size: 0.05,
+          height: 0.001,
+          curveSegments: 12,
+          bevelEnabled: false,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5
+        });
+        geometry.computeBoundingBox();
+        var x = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(x, 0, 0);
+        var text = new THREE$1.Mesh(geometry, this.material);
+        text.name = 'text';
+        text.position.y = 1;
+        this.text = text;
+        this.textGroup.add(text);
+        /*
+        const box = new THREE.BoxHelper(text, 0xffff00);
+        this.host.scene.add(box);
+        */
+        // console.log('ModelDebugComponent.setText', message, box);
       }
     };
 
@@ -62405,7 +61978,6 @@
     _proto.create = function create(callback) {
       var _this = this;
 
-      // this.renderOrder = environment.renderOrder.model;
       this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, function (mesh) {
         // scale
         var box = new THREE$1.Box3().setFromObject(mesh);
@@ -62524,7 +62096,7 @@
         /*
         gltf.scene.traverse((child) => {
         	if (child.isMesh) {
-        		// roughnessMipmapper.generateMipmaps(child.material);
+        		roughnessMipmapper.generateMipmaps(child.material);
         	}
         });
         */
@@ -62629,7 +62201,6 @@
       var tiles = this.tiles = new Array(COLS * ROWS).fill(0).map(function (x, i) {
         var material = new THREE$1.MeshBasicMaterial({
           depthTest: false,
-          depthWrite: false,
           map: map,
           transparent: true,
           opacity: 0 // side: THREE.DoubleSide,
@@ -62660,7 +62231,6 @@
 
       var material = new THREE$1.MeshBasicMaterial({
         depthTest: false,
-        depthWrite: false,
         transparent: true,
         opacity: 0 // side: THREE.DoubleSide,
 
@@ -62716,10 +62286,10 @@
 
     _proto.moveToIndex = function moveToIndex(index) {
       this.coords = null;
-      var tile = this.view.tiles[index];
-      var coords = new THREE$1.Vector2(tile.indices.x - this.indices.x, tile.indices.y - this.indices.y);
-      this.indices.x = tile.indices.x;
-      this.indices.y = tile.indices.y;
+      var item = this.view.items[index];
+      var coords = new THREE$1.Vector2(item.indices.x - this.indices.x, item.indices.y - this.indices.y);
+      this.indices.x = item.indices.x;
+      this.indices.y = item.indices.y;
       var outerTileSize = RADIUS / 10; // assume room is 20m x 20m
 
       this.move.next({
@@ -62740,14 +62310,13 @@
     };
 
     _proto.create = function create(callback) {
-      // this.renderOrder = environment.renderOrder.tile;
       var mesh = this.mesh = new THREE$1.Group();
       this.addTiles();
       this.addHitArea();
       /*
       mesh.userData = {
       	render: () => {
-      			}
+      		}
       };
       */
 
@@ -62812,8 +62381,8 @@
 
   var ORIGIN$5 = new THREE$1.Vector3();
   var ORIGIN_HEAD = new THREE$1.Vector3(0, 1.66, 0);
-  var VERTEX_SHADER$2 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-  var FRAGMENT_SHADER$2 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform float opacity;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\n\nvoid main() {\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 colorB = texture2D(textureB, vUv);\n\tvec4 color = vec4(mix(colorA.rgb, colorB.rgb, tween), opacity);\n\tgl_FragColor = color;\n}\n";
+  var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
+  var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform float opacity;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\n\nvoid main() {\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 colorB = texture2D(textureB, vUv);\n\tvec4 color = vec4(mix(colorA.rgb, colorB.rgb, tween), opacity);\n\tgl_FragColor = color;\n}\n";
   var MenuButton = /*#__PURE__*/function (_InteractiveMesh) {
     _inheritsLoose(MenuButton, _InteractiveMesh);
 
@@ -62857,8 +62426,8 @@
         var material = new THREE$1.ShaderMaterial({
           depthTest: false,
           transparent: true,
-          vertexShader: VERTEX_SHADER$2,
-          fragmentShader: FRAGMENT_SHADER$2,
+          vertexShader: VERTEX_SHADER$1,
+          fragmentShader: FRAGMENT_SHADER$1,
           uniforms: {
             textureA: {
               type: "t",
@@ -62903,7 +62472,6 @@
       _this = _InteractiveMesh.call(this, geometry, material) || this; // this.userData.item = item;
       // this.userData.index = index;
 
-      _this.renderOrder = environment.renderOrder.menu;
       _this.name = item.name;
       _this.item = item;
       _this.index = index;
@@ -62948,10 +62516,8 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillText(text, 10, 50, w - 20);
       var texture = new THREE$1.CanvasTexture(canvas);
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
       texture.encoding = THREE$1.sRGBEncoding;
+      texture.magFilter = THREE$1.LinearFilter;
       texture.needsUpdate = true;
       return texture;
     };
@@ -63000,6 +62566,7 @@
         tween: 0,
         ease: Power2.easeInOut,
         onUpdate: function onUpdate() {
+          _this3.tween = _this3.tween;
           _this3.position.z = 0.1 * _this3.tween;
           _this3.material.uniforms.tween.value = _this3.tween;
           _this3.material.needsUpdate = true;
@@ -63008,7 +62575,7 @@
     };
 
     _proto.dispose = function dispose() {
-      Interactive.dispose(this);
+      InteractiveMesh.dispose(this);
       this.textureA.dispose();
       this.textureB.dispose();
       this.material.dispose();
@@ -63042,9 +62609,8 @@
       ctx.fillStyle = '#000000';
       ctx.fillText(text, 10, 50, w - 20);
       var texture = new THREE$1.CanvasTexture(canvas);
-      texture.minFilter = THREE$1.LinearFilter;
+      texture.encoding = THREE$1.sRGBEncoding;
       texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
       texture.needsUpdate = true;
       return texture;
     };
@@ -63101,7 +62667,7 @@
     _proto3.onDestroy = function onDestroy() {
       if (this.buttons) {
         this.buttons.forEach(function (x) {
-          return Interactive.dispose(x);
+          return InteractiveMesh.dispose(x);
         });
       }
 
@@ -63109,7 +62675,6 @@
     };
 
     _proto3.create = function create(callback) {
-      // this.renderOrder = environment.renderOrder.menu;
       var menuGroup = this.menuGroup = new THREE$1.Group();
       menuGroup.lookAt(ORIGIN$5);
 
@@ -63163,19 +62728,19 @@
 
         switch (type) {
           case ViewType.Panorama:
-            name = 'Experience';
+            name = 'Panorama 360';
             break;
 
           case ViewType.PanoramaGrid:
-            name = 'Virtual Tour';
+            name = 'Panorama Grids';
             break;
 
           case ViewType.Room3d:
-            name = 'Stanze 3D';
+            name = '3D Rooms';
             break;
 
           case ViewType.Model:
-            name = 'Modelli 3D';
+            name = 'Models';
             break;
         }
 
@@ -63387,88 +62952,72 @@
     };
 
     _proto.onDestroy = function onDestroy() {
-      Interactive.dispose(this.sphere);
+      InteractiveMesh.dispose(this.mesh);
 
       _ModelComponent.prototype.onDestroy.call(this);
     };
 
     _proto.create = function create(callback) {
-      var _THREE$Vector,
-          _this = this;
+      var _this = this,
+          _THREE$Vector;
 
-      // this.renderOrder = environment.renderOrder.nav;
-      var nav = new THREE$1.Group();
-      this.item.nav = nav;
-
-      var position = (_THREE$Vector = new THREE$1.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(NAV_RADIUS);
-
-      nav.position.set(position.x, position.y, position.z);
+      var geometry = new THREE$1.PlaneBufferGeometry(2, 2, 2, 2);
       var map = ModelNavComponent.getTexture();
       map.disposable = false;
       map.encoding = THREE$1.sRGBEncoding;
-      var material = new THREE$1.SpriteMaterial({
-        depthTest: false,
-        depthWrite: false,
-        transparent: true,
+      var material = new THREE$1.MeshBasicMaterial({
+        // depthTest: false,
         map: map,
-        sizeAttenuation: false,
+        transparent: true,
         opacity: 0
       });
-      var sprite = new THREE$1.Sprite(material);
-      sprite.scale.set(0.03, 0.03, 0.03);
-      nav.add(sprite); // const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
-
-      var geometry = new THREE$1.SphereBufferGeometry(3, 12, 12);
-      var sphere = new InteractiveMesh(geometry, new THREE$1.MeshBasicMaterial({
-        depthTest: false,
-        depthWrite: false,
-        transparent: true,
-        opacity: 0.0,
-        color: 0x00ffff
-      }));
-      sphere.lookAt(ORIGIN$6);
-      sphere.depthTest = false;
-      sphere.renderOrder = 0;
-      nav.add(sphere);
-      sphere.on('over', function () {
+      var mesh = this.mesh = new InteractiveMesh(geometry, material);
+      mesh.depthTest = false;
+      this.item.mesh = mesh;
+      mesh.on('over', function () {
         var from = {
-          scale: sprite.scale.x
+          scale: mesh.scale.x
         };
         gsap.to(from, 0.4, {
-          scale: 0.04,
+          scale: 3,
           delay: 0,
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
-            sprite.scale.set(from.scale, from.scale, from.scale);
+            mesh.scale.set(from.scale, from.scale, from.scale);
           }
         });
 
         _this.over.next(_this.item);
       });
-      sphere.on('out', function () {
+      mesh.on('out', function () {
         var from = {
-          scale: sprite.scale.x
+          scale: mesh.scale.x
         };
         gsap.to(from, 0.4, {
-          scale: 0.03,
+          scale: 1,
           delay: 0,
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
-            sprite.scale.set(from.scale, from.scale, from.scale);
+            mesh.scale.set(from.scale, from.scale, from.scale);
           }
         });
 
         _this.out.next(_this.item);
       });
-      sphere.on('down', function () {
+      mesh.on('down', function () {
         _this.down.next(_this.item);
       });
+
+      var position = (_THREE$Vector = new THREE$1.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(NAV_RADIUS);
+
+      mesh.position.set(position.x, position.y, position.z);
+      mesh.lookAt(ORIGIN$6);
       var from = {
         opacity: 0
       };
       gsap.to(from, 0.7, {
         opacity: 1,
-        delay: 0.5 + 0.1 * this.item.index,
+        delay: 0.1 * this.item.index,
         ease: Power2.easeInOut,
         onUpdate: function onUpdate() {
           // console.log(index, from.opacity);
@@ -63478,7 +63027,7 @@
       });
 
       if (typeof callback === 'function') {
-        callback(nav);
+        callback(mesh);
       }
     };
 
@@ -63519,22 +63068,22 @@
 
       this.getCanvasTexture().then(function (texture) {
         var aspect = texture.width / texture.height;
-        var width = PANEL_RADIUS$1 / 10;
-        var height = PANEL_RADIUS$1 / 10 / aspect;
-        var dy = PANEL_RADIUS$1 / 10 * 0.25;
-
-        var position = _this.item.nav.position.normalize().multiplyScalar(PANEL_RADIUS$1);
-
-        var material = new THREE$1.SpriteMaterial({
-          depthTest: false,
-          transparent: true,
+        var width = PANEL_RADIUS$1 / 8;
+        var height = PANEL_RADIUS$1 / 8 / aspect;
+        var geometry = new THREE$1.PlaneBufferGeometry(width, height, 3, 3);
+        var material = new THREE$1.MeshBasicMaterial({
+          // depthTest: false,
           map: texture.map,
-          sizeAttenuation: false
+          transparent: true,
+          opacity: 0 // side: THREE.DoubleSide,
+
         });
-        var panel = _this.panel = new THREE$1.Sprite(material);
-        panel.renderOrder = environment.renderOrder.panel;
-        panel.scale.set(0.02 * width, 0.02 * height, 1);
-        panel.position.set(position.x, position.y, position.z); // panel.lookAt(ORIGIN);
+
+        var position = _this.item.mesh.position.normalize().multiplyScalar(PANEL_RADIUS$1);
+
+        var panel = _this.panel = new THREE$1.Mesh(geometry, material);
+        panel.position.set(position.x, position.y, position.z);
+        panel.lookAt(ORIGIN$7);
 
         _this.mesh.add(panel);
 
@@ -63546,7 +63095,7 @@
           delay: 0.0,
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
-            panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
+            panel.position.set(position.x, position.y + height * from.value, position.z);
             panel.lookAt(ORIGIN$7);
             panel.material.opacity = from.value;
             panel.material.needsUpdate = true;
@@ -63556,7 +63105,6 @@
     };
 
     _proto.create = function create(callback) {
-      // this.renderOrder = environment.renderOrder.panel;
       var mesh = new THREE$1.Group();
 
       if (typeof callback === 'function') {
@@ -63652,6 +63200,20 @@
       return _ModelComponent.apply(this, arguments) || this;
     }
 
+    ModelPlaneComponent.getPath = function getPath(folder, file) {
+      return environment.getTexturePath(folder + file);
+    };
+
+    ModelPlaneComponent.getLoader = function getLoader() {
+      // return new THREE.TextureLoader();
+      return ModelPlaneComponent.loader || (ModelPlaneComponent.loader = new THREE$1.TextureLoader());
+    };
+
+    ModelPlaneComponent.loadTexture = function loadTexture(folder, file) {
+      var path = ModelPlaneComponent.getPath(folder, file);
+      return ModelPlaneComponent.textures[path] || (ModelPlaneComponent.textures[path] = ModelPlaneComponent.getLoader().load(path));
+    };
+
     var _proto = ModelPlaneComponent.prototype;
 
     _proto.onInit = function onInit() {
@@ -63659,28 +63221,75 @@
 
     };
 
+    _proto.loadTexture = function loadTexture(item, callback) {
+      var texture;
+
+      if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
+        // create the video element
+        var video = item.video = document.createElement('video');
+        video.src = ModelPlaneComponent.getPath(item.folder, item.file);
+        video.muted = true;
+        video.playsinline = true;
+        video.loop = true;
+        video.crossOrigin = 'anonymous';
+
+        var onCanPlay = function onCanPlay() {
+          video.oncanplay = null;
+          var texture = new THREE$1.VideoTexture(video);
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.format = THREE$1.RGBFormat;
+          texture.needsUpdate = true;
+
+          if (typeof callback === 'function') {
+            callback(texture);
+          }
+        };
+
+        video.oncanplay = onCanPlay;
+        video.load(); // must call after setting/changing source
+
+        video.play().then(function () {
+          console.log('ModelPlaneComponent.play');
+        }, function (error) {
+          console.log('ModelPlaneComponent.play.error', error);
+        });
+      } else {
+        texture = ModelPlaneComponent.loadTexture(item.folder, item.file);
+
+        if (typeof callback === 'function') {
+          callback(texture);
+        }
+      }
+    };
+
     _proto.create = function create(callback) {
       var item = this.item;
-      var geometry = new THREE$1.PlaneBufferGeometry(1, 1, 2, 2);
-      var mesh = new MediaMesh(item, geometry);
+      this.loadTexture(item, function (texture) {
+        var material = new THREE$1.MeshBasicMaterial({
+          map: texture,
+          side: THREE$1.DoubleSide
+        });
+        var geometry = new THREE$1.PlaneBufferGeometry(1, 1, 2, 2);
+        var mesh = new THREE$1.Mesh(geometry, material);
 
-      if (item.position) {
-        mesh.position.set(item.position.x, item.position.y, item.position.z);
-      }
+        if (item.position) {
+          mesh.position.set(item.position.x, item.position.y, item.position.z);
+        }
 
-      if (item.rotation) {
-        mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
-      }
+        if (item.rotation) {
+          mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+        }
 
-      if (item.scale) {
-        mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
-      }
-
-      mesh.load(function () {
+        if (item.scale) {
+          mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+        }
         /*
         var box = new THREE.BoxHelper(mesh, 0xffff00);
         this.host.scene.add(box);
         */
+
+
         if (typeof callback === 'function') {
           callback(mesh);
         }
@@ -63692,7 +63301,12 @@
     _proto.onDestroy = function onDestroy() {
       _ModelComponent.prototype.onDestroy.call(this);
 
-      this.mesh.dispose();
+      var item = this.item;
+
+      if (item && item.video) {
+        item.video.pause();
+        delete item.video;
+      }
     };
 
     return ModelPlaneComponent;
@@ -68403,6 +68017,24 @@
       return _ModelComponent.apply(this, arguments) || this;
     }
 
+    ModelRoomComponent.getPath = function getPath(folder, file) {
+      return environment.getTexturePath(folder + file);
+    };
+
+    ModelRoomComponent.getLoader = function getLoader() {
+      // return new THREE.TextureLoader();
+      return ModelRoomComponent.loader || (ModelRoomComponent.loader = new THREE$1.TextureLoader());
+    };
+
+    ModelRoomComponent.getTexture = function getTexture() {
+      return ModelRoomComponent.loadTexture('matcaps/', 'matcap-01.png');
+    };
+
+    ModelRoomComponent.loadTexture = function loadTexture(folder, file) {
+      var path = ModelRoomComponent.getPath(folder, file);
+      return ModelRoomComponent.textures[path] || (ModelRoomComponent.textures[path] = ModelRoomComponent.getLoader().load(path));
+    };
+
     var _proto = ModelRoomComponent.prototype;
 
     _proto.onInit = function onInit() {
@@ -68443,80 +68075,83 @@
     _proto.loadModel = function loadModel(path, file, callback) {
       var _this2 = this;
 
-      // const renderer = this.host.renderer;
-      // const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
+      var renderer = this.host.renderer; // const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
+
       var loader = this.getLoader(path, file);
       loader.load(file, function (model) {
         var mesh;
         var scene = model.scene;
 
         if (scene) {
-          mesh = scene;
+          /*
+          model.scene.traverse((child) => {
+          	if (child.isMesh) {
+          		roughnessMipmapper.generateMipmaps(child.material);
+          	}
+          });
+          */
+          mesh = model.scene;
         } else {
           mesh = model;
         }
 
+        var texture = ModelRoomComponent.getTexture();
         var items = _this2.item.items;
-        mesh.scale.set(0.1, 0.1, 0.1); // mesh.scale.set(10, 10, 10);
-
+        mesh.scale.set(0.1, 0.1, 0.1);
         mesh.traverse(function (child) {
           if (child.isMesh) {
-            // roughnessMipmapper.generateMipmaps(child.material);
+            child.material.dispose();
             var item = items.find(function (x) {
               return x.id === child.name;
             });
 
             if (item) {
-              item.plane = child;
-            } else {
-              /*
-              if (USE_SHADOW) {
-              	child.castShadow = true;
-              	child.receiveShadow = true;
-              }
-              */
-              child.material.dispose(); // child.renderOrder = environment.renderOrder.model;
+              var t;
 
-              var material = new THREE$1.MeshStandardMaterial({
-                color: 0x111111,
-                roughness: 0.6
+              if (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1) {
+                // create the video element
+                var video = document.createElement('video');
+                video.src = ModelRoomComponent.getPath(item.folder, item.file);
+                video.muted = true;
+                video.loop = true;
+                video.load(); // must call after setting/changing source
+
+                video.play();
+                t = new THREE$1.VideoTexture(video);
+                item.video = video;
+              } else {
+                t = ModelRoomComponent.loadTexture(item.folder, item.file);
+              } // const t = new THREE.VideoTexture(video);
+
+
+              t.minFilter = THREE$1.LinearFilter;
+              t.magFilter = THREE$1.LinearFilter;
+              t.format = THREE$1.RGBFormat;
+              var m = new THREE$1.MeshBasicMaterial({
+                map: t,
+                side: THREE$1.DoubleSide
               });
-              child.material = material;
+              child.material = m;
+            } else {
+
+              /*
+              const m = new THREE.MeshStandardMaterial({
+              	color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+              });
+              */
+
+
+              var _m = new THREE$1.MeshStandardMaterial({
+                color: 0x222222,
+                // new THREE.Color(Math.random(), Math.random(), Math.random()),
+                roughness: 0.4
+              });
+
+              child.material = _m;
             }
           }
         });
         mesh.position.y = -1.66 * 3;
-        items.forEach(function (item) {
-          var previous = item.plane;
-
-          if (previous) {
-            if (previous.material) {
-              previous.material.color.setHex(0x000000);
-            }
-
-            var parent = previous.parent;
-
-            var _mesh = item.plane = new MediaMesh(item, previous.geometry);
-
-            _mesh.name = previous.name;
-
-            _mesh.position.copy(previous.position);
-
-            _mesh.rotation.copy(previous.rotation);
-
-            _mesh.scale.copy(previous.scale);
-
-            _mesh.load(function () {
-              // mesh.material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-              parent.add(_mesh);
-              parent.remove(previous);
-
-              if (previous.material) {
-                previous.material.dispose();
-              }
-            });
-          }
-        });
         var lights = new Array(3).fill(0).map(function (x, i) {
           var light = new THREE$1.PointLight(0xffffff, 0.1, 1000, 2);
 
@@ -68563,9 +68198,9 @@
 
         if (items) {
           items.forEach(function (item) {
-            if (item.plane) {
-              item.plane.dispose();
-              delete item.plane;
+            if (item.video) {
+              item.video.pause();
+              delete item.video;
             }
           });
         }
@@ -68628,7 +68263,7 @@
   }(rxcomp.Module);
   AppModule.meta = {
     imports: [rxcomp.CoreModule, rxcompForm.FormModule],
-    declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, ModelCurvedPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+    declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
     bootstrap: AppComponent
   };
 

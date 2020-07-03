@@ -64,7 +64,6 @@ export default class ModelBannerComponent extends ModelComponent {
 	}
 
 	create(callback) {
-		// this.renderOrder = environment.renderOrder.banner;
 		const mesh = new THREE.Group();
 		mesh.userData = {
 			render: () => {

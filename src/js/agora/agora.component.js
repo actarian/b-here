@@ -35,7 +35,6 @@ export default class AgoraComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
-		this.debug = DEBUG;
 		this.state = {};
 		this.data = null;
 		this.views = null;

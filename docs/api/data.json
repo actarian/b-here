@@ -16,6 +16,35 @@
       "fov": 75
     },
     {
+      "id": 17,
+      "type": "model",
+      "name": "Ducati",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "road2.jpeg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "moto/",
+          "gltfFile": "moto_ducati.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 14.300000000000002,
+        "longitude": 0.30000000000001
+      },
+      "fov": 30
+    },
+    
+    {
       "id": 1,
       "type": "panorama",
       "name": "Kitchen 01",
@@ -525,7 +554,7 @@
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
+      "items": [
         "NEWONESET2_x0_y0.jpg",
         "NEWONESET2_x0_y1.jpg",
         "NEWONESET2_x0_y2.jpg",
@@ -565,7 +594,7 @@
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
+      "items": [
         "NEWONESET2_x0_y0.jpg",
         "NEWONESET2_x0_y1.jpg",
         "NEWONESET2_x0_y2.jpg",
@@ -600,7 +629,7 @@
       "modelFolder": "room-3d/",
       "modelFile": "room-3d.fbx",
       "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room-02.jpg",
+      "envMapFile": "desert.jpeg",
       "items": [
         {
           "id": "plane-01",
@@ -660,33 +689,62 @@
     {
       "id": 15,
       "type": "model",
-      "name": "Washing Machine",
+      "name": "Suzuki",
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
+        "gltf": "models/moto/scene.gltf",
         "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room-02.jpg",
+      "envMapFile": "desert.jpeg",
       "items": [
         {
           "id": 1201,
           "type": "gltf",
           "title": "Model",
           "abstract": "Abstract",
-          "gltfFolder": "washing-machine/",
-          "gltfFile": "glb.glb"
+          "gltfFolder": "moto/",
+          "gltfFile": "moto_ducati.glb"
         }
       ],
       "orientation": {
         "latitude": 20.400000000000002,
         "longitude": 57.60000000000001
       },
-      "fov": 52
+      "fov": 30
     },
     {
       "id": 16,
+      "type": "model",
+      "name": "Moto2",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "road1.jpeg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "moto/",
+          "gltfFile": "moto_suzuki.glb"
+        }
+      ],
+      "orientation": {
+        "latitude": 20.300000000000002,
+        "longitude": 0.30000000000001
+      },
+      "fov": 30
+
+    },
+    {
+      "id": 17,
       "type": "model",
       "name": "Helmet",
       "likes": 172,
@@ -714,7 +772,7 @@
       "fov": 51
     },
     {
-      "id": 17,
+      "id": 18,
       "type": "panorama",
       "name": "Cinema",
       "likes": 40,

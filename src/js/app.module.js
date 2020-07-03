@@ -22,7 +22,6 @@ import TryInARComponent from './try-in-ar/try-in-ar.component';
 import ValueDirective from './value/value.directive';
 import HlsDirective from './video/hls.directive';
 import ModelBannerComponent from './world/model/model-banner.component';
-import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
 import ModelDebugComponent from './world/model/model-debug.component';
 import ModelGltfComponent from './world/model/model-gltf.component';
 import ModelGridComponent from './world/model/model-grid.component';
@@ -31,7 +30,7 @@ import ModelNavComponent from './world/model/model-nav.component';
 import ModelPanelComponent from './world/model/model-panel.component';
 import ModelPictureComponent from './world/model/model-picture.component';
 import ModelPlaneComponent from './world/model/model-plane.component';
-import ModelRoomComponent from './world/model/model-room.component-2';
+import ModelRoomComponent from './world/model/model-room.component';
 import ModelTextComponent from './world/model/model-text.component';
 import ModelComponent from './world/model/model.component';
 import WorldComponent from './world/world.component';
@@ -72,7 +71,6 @@ AppModule.meta = {
 		ModelNavComponent,
 		ModelPanelComponent,
 		ModelPlaneComponent,
-		ModelCurvedPlaneComponent,
 		SliderDirective,
 		TryInARComponent,
 		TryInARModalComponent,

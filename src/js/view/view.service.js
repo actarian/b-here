@@ -40,14 +40,9 @@ export class PanoramaGridView extends View {
 
 	constructor(options) {
 		if (options.items) {
-			options.items.forEach((item, index) => {
-				item.index = index;
-			});
-		}
-		if (options.tiles) {
-			options.tiles = options.tiles.map((tile, i) => {
+			options.items = options.items.map((mapFile, i) => {
 				const indices = new THREE.Vector2();
-				tile.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
+				mapFile.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
 					const flipAxes = options.flipAxes ? -1 : 1;
 					if (options.invertAxes) {
 						indices.y = parseInt(b);
@@ -56,12 +51,12 @@ export class PanoramaGridView extends View {
 						indices.x = parseInt(b);
 						indices.y = parseInt(c) * flipAxes;
 					}
-					// console.log('PanoramaGridView', tile, indices);
+					// console.log('PanoramaGridView', mapFile, indices);
 				});
 				return {
 					id: i + 1,
 					envMapFolder: options.envMapFolder,
-					envMapFile: tile,
+					envMapFile: mapFile,
 					indices,
 				};
 			});
@@ -72,7 +67,7 @@ export class PanoramaGridView extends View {
 	}
 
 	getTileIndex(x, y) {
-		return this.tiles.reduce((p, c, i) => {
+		return this.items.reduce((p, c, i) => {
 			if (c.indices.x === x && c.indices.y === y) {
 				return i;
 			} else {
@@ -89,7 +84,7 @@ export class PanoramaGridView extends View {
 		const index = this.getTileIndex(x, y);
 		if (index !== -1) {
 			this.index = index;
-			return this.tiles[index];
+			return this.items[index];
 		}
 	}
 

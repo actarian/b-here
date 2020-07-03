@@ -174,7 +174,7 @@ export default class OrbitService {
 		radius = Math.sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
 		const phi = Math.acos(position.y / radius);
 		const theta = Math.atan2(position.z, position.x);
-		// console.log('phi', phi, 'theta', theta);
+		console.log('phi', phi, 'theta', theta);
 	}
 
 	render() {

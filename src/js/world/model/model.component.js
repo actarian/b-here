@@ -1,6 +1,5 @@
 import { Component, getContext } from 'rxcomp';
 import * as THREE from 'three';
-import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 // import Ease from '../ease/ease';
 import WorldComponent from '../world.component';
@@ -41,7 +40,7 @@ export default class ModelComponent extends Component {
 		delete group.userData.render;
 		group.traverse(child => {
 			if (child instanceof InteractiveMesh) {
-				Interactive.dispose(child);
+				InteractiveMesh.dispose(child);
 			}
 			if (child.isMesh) {
 				if (child.material.map && child.material.map.disposable !== false) {

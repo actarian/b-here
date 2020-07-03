@@ -85,7 +85,6 @@ export default class Panorama {
 		geometry.rotateY(Math.PI);
 		const material = new THREE.ShaderMaterial({
 			// depthTest: false,
-			depthWrite: false,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
 			uniforms: {
@@ -102,12 +101,11 @@ export default class Panorama {
 		});
 		*/
 		const mesh = this.mesh = new InteractiveMesh(geometry, material);
-		// mesh.renderOrder = environment.renderOrder.panorama;
 		mesh.name = '[panorama]';
 	}
 
-	swap(view, renderer, callback, onexit) {
-		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
+	swap(view, renderer, callback) {
+		const item = view instanceof PanoramaGridView ? view.items[view.index_] : view;
 		const material = this.mesh.material;
 		if (this.tween > 0) {
 			gsap.to(this, 0.5, {
@@ -118,9 +116,6 @@ export default class Panorama {
 					material.needsUpdate = true;
 				},
 				onComplete: () => {
-					if (typeof onexit === 'function') {
-						onexit(view);
-					}
 					this.load(item, renderer, (envMap, texture, rgbe) => {
 						gsap.to(this, 0.5, {
 							tween: 1,
@@ -137,9 +132,6 @@ export default class Panorama {
 				}
 			});
 		} else {
-			if (typeof onexit === 'function') {
-				onexit(view);
-			}
 			this.load(item, renderer, (envMap, texture, rgbe) => {
 				gsap.to(this, 0.5, {
 					tween: 1,
@@ -174,9 +166,7 @@ export default class Panorama {
 				material.uniforms.texture.value.dispose();
 				material.uniforms.texture.value = null;
 			}
-			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
-			texture.mapping = THREE.UVMapping;
 			texture.needsUpdate = true;
 			// material.map = texture;
 			material.uniforms.texture.value = texture;
@@ -199,7 +189,7 @@ export default class Panorama {
 		*/
 		video.src = src;
 		video.muted = true;
-		video.playsinline = video.playsInline = true;
+		video.playsInline = true;
 		video.play();
 		this.setVideo(video);
 	}
@@ -212,7 +202,6 @@ export default class Panorama {
 				const texture = new VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
-				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
 				texture.needsUpdate = true;
 				const material = this.mesh.material;

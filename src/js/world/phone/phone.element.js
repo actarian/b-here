@@ -63,7 +63,6 @@ export class PhoneStreamElement {
 			const texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
-			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
