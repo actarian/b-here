@@ -16,478 +16,369 @@
       "fov": 75
     },
     {
-      "id": 17,
+      "id": 1,
       "type": "panorama",
-      "name": "The Pesto Experience",
+      "name": "Kitchen 01",
       "likes": 40,
       "liked": false,
-      "envMapFolder": "cinema/",
-      "envMapFile": "cinema-playing.jpg",
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Kitchen-1.jpg",
       "items": [
         {
-          "id": 1,
-          "type": "plane",
-          "folder": "video/",
-          "file": "pesto-experience.mp4",
-          "position": {
-            "x": 80,
-            "y": 7,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": -1.57079632679,
-            "z": 0
-          },
-          "scale": {
-            "x": 85,
-            "y": 46,
-            "z": 1
-          }
-        },
-        {
-          "id": 171,
+          "id": 11,
           "type": "nav",
-          "title": "Stanza 3D",
+          "title": "Kitchen 02",
           "abstract": "Abstract",
           "position": [
-            0.8002543789009917,
-            -0.19439701223042613,
-            -0.5672765909903842
+            0.5554038916015188,
+            -0.3047905538856642,
+            0.7737113385856244
           ],
-          "navTo": 14
+          "navTo": 2
         },
         {
-          "id": 171,
+          "id": 12,
           "type": "nav",
-          "title": "Video Basil Story",
+          "title": "Kitchen 03",
           "abstract": "Abstract",
           "position": [
-            0.8012228950677142,
-            -0.19355223904603844,
-            0.5661973182377114
+            0.38873046523452154,
+            -0.14819409336721764,
+            0.9093553409364356
           ],
-          "navTo": 22
+          "navTo": 3
+        },
+        {
+          "id": 13,
+          "type": "nav",
+          "title": "Kitchen 04",
+          "abstract": "Abstract",
+          "position": [
+            -0.14688247897969064,
+            -0.14635017708124282,
+            0.9782674292017852
+          ],
+          "navTo": 4
+        },
+        {
+          "id": 14,
+          "type": "nav",
+          "title": "Mostra 01",
+          "abstract": "Abstract",
+          "position": [
+            -0.3617832939341157,
+            -0.232928541436513,
+            0.9026943795185832
+          ],
+          "navTo": 5
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -4.1,
+        "longitude": 88
       },
       "fov": 75
     },
     {
-      "id": 22,
+      "id": 2,
       "type": "panorama",
-      "name": "Video Basil Story",
-      "likes": 40,
+      "name": "Kitchen 02",
+      "likes": 190,
       "liked": false,
-      "envMapFolder": "virtual-room/",
-      "envMapFile": "virtual-room.jpg",
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Kitchen-2.jpg",
       "items": [
         {
-          "id": 1,
-          "type": "curved-plane",
-          "folder": "video/",
-          "file": "panel-01-plane.mp4",
-          "radius": 70,
-          "arc": 90,
-          "height": 40,
-          "position": {
-            "x": 0,
-            "y": 8,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
-          }
-        },
-        {
-          "id": 100,
+          "id": 21,
           "type": "nav",
-          "title": "The Pesto Experience",
+          "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
-            0.7230979380711492,
-            -0.21366641081551815,
-            -0.6568683557962482
+            -0.8703133087098993,
+            -0.42390236970813877,
+            -0.25072200868342626
           ],
-          "navTo": 17
+          "navTo": 1
         },
         {
-          "id": 200,
+          "id": 22,
           "type": "nav",
-          "title": "Video Virtual Chef",
+          "title": "Kitchen 03",
           "abstract": "Abstract",
           "position": [
-            0.7269271285325771,
-            -0.2212886850676967,
-            0.6500832774840404
+            0.11584666848949339,
+            -0.21541997661968337,
+            0.969625589118326
           ],
-          "navTo": 23
+          "navTo": 3
+        },
+        {
+          "id": 23,
+          "type": "nav",
+          "title": "Kitchen 04",
+          "abstract": "Abstract",
+          "position": [
+            -0.46288166298120587,
+            -0.19885132358883986,
+            0.8638279442011122
+          ],
+          "navTo": 4
+        },
+        {
+          "id": 14,
+          "type": "nav",
+          "title": "Mostra 01",
+          "abstract": "Abstract",
+          "position": [
+            -0.6666804421448888,
+            -0.26491927754833555,
+            0.6966742168652171
+          ],
+          "navTo": 5
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -20.100000000000005,
+        "longitude": 179.8
       },
       "fov": 75
     },
     {
-      "id": 23,
+      "id": 3,
       "type": "panorama",
-      "name": "Video Virtual Chef",
-      "likes": 40,
+      "name": "Kitchen 03",
+      "likes": 165,
       "liked": false,
-      "envMapFolder": "virtual-room/",
-      "envMapFile": "virtual-room.jpg",
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Kitchen-3.jpg",
       "items": [
         {
-          "id": 1,
-          "type": "curved-plane",
-          "folder": "video/",
-          "file": "panel-02-plane.mp4",
-          "radius": 70,
-          "arc": 90,
-          "height": 40,
-          "position": {
-            "x": 0,
-            "y": 8,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
-          }
-        },
-        {
-          "id": 100,
+          "id": 31,
           "type": "nav",
-          "title": "Video Basil Story",
+          "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
-            0.7230979380711492,
-            -0.21366641081551815,
-            -0.6568683557962482
+            -0.6775023449332943,
+            -0.24427547940728414,
+            -0.6937723421773377
           ],
-          "navTo": 22
+          "navTo": 1
         },
         {
-          "id": 200,
+          "id": 32,
           "type": "nav",
-          "title": "Video Cooking Show",
+          "title": "Kitchen 02",
           "abstract": "Abstract",
           "position": [
-            0.7138064498616354,
-            -0.23218082284626923,
-            0.6607362693528771
+            -0.21386136071921605,
+            -0.40229394303539145,
+            -0.8901813870152322
           ],
-          "navTo": 24
+          "navTo": 2
+        },
+        {
+          "id": 33,
+          "type": "nav",
+          "title": "Kitchen 04",
+          "abstract": "Abstract",
+          "position": [
+            -0.9368742924845852,
+            -0.30404319386678996,
+            0.1726971231514575
+          ],
+          "navTo": 4
+        },
+        {
+          "id": 34,
+          "type": "nav",
+          "title": "Mostra 01",
+          "abstract": "Abstract",
+          "position": [
+            -0.9507002527461537,
+            -0.29767987379782945,
+            0.08692365710270128
+          ],
+          "navTo": 5
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -28.6,
+        "longitude": 83.1
       },
       "fov": 75
     },
     {
-      "id": 24,
+      "id": 4,
       "type": "panorama",
-      "name": "Video Cooking Show",
-      "likes": 40,
+      "name": "Kitchen 04",
+      "likes": 143,
       "liked": false,
-      "envMapFolder": "virtual-room/",
-      "envMapFile": "virtual-room.jpg",
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Kitchen-4.jpg",
       "items": [
         {
-          "id": 1,
-          "type": "curved-plane",
-          "folder": "video/",
-          "file": "panel-04-plane.mp4",
-          "radius": 70,
-          "arc": 90,
-          "height": 40,
-          "position": {
-            "x": 0,
-            "y": 8,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
-          }
-        },
-        {
-          "id": 100,
+          "id": 31,
           "type": "nav",
-          "title": "Video Virtual Chef",
+          "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
-            0.7230979380711492,
-            -0.21366641081551815,
-            -0.6568683557962482
+            -0.04722904764548762,
+            -0.4220415702050294,
+            -0.9053454203105981
           ],
-          "navTo": 23
+          "navTo": 1
         },
         {
-          "id": 200,
+          "id": 32,
           "type": "nav",
-          "title": "Social Media",
+          "title": "Kitchen 02",
           "abstract": "Abstract",
           "position": [
-            0.7138064498616354,
-            -0.23218082284626923,
-            0.6607362693528771
+            0.7097231724375945,
+            -0.27343904745629816,
+            -0.6492488781902581
           ],
-          "navTo": 18
+          "navTo": 2
+        },
+        {
+          "id": 33,
+          "type": "nav",
+          "title": "Kitchen 03",
+          "abstract": "Abstract",
+          "position": [
+            0.8594255802870656,
+            -0.2881487976615867,
+            0.42232445152326026
+          ],
+          "navTo": 3
+        },
+        {
+          "id": 34,
+          "type": "nav",
+          "title": "Mostra 01",
+          "abstract": "Abstract",
+          "position": [
+            -0.5731157530449438,
+            -0.5463942694245818,
+            0.6107304118444605
+          ],
+          "navTo": 5
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -27.499999999999993,
+        "longitude": 76.39999999999998
       },
       "fov": 75
     },
     {
-      "id": 18,
-      "type": "panorama-grid",
-      "name": "Social Media",
-      "likes": 225,
+      "id": 5,
+      "type": "panorama",
+      "name": "Mostra 01",
+      "likes": 156,
       "liked": false,
-      "envMapFolder": "ambiente1a/",
-      "envMapFile": "ambiente1a_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente1a_x0_y0.jpg",
-        "ambiente1a_x0_y1.jpg",
-        "ambiente1a_x0_y2.jpg",
-        "ambiente1a_x0_y3.jpg",
-        "ambiente1a_x1_y0.jpg",
-        "ambiente1a_x1_y3.jpg",
-        "ambiente1a_x2_y0.jpg",
-        "ambiente1a_x2_y3.jpg",
-        "ambiente1a_x3_y0.jpg",
-        "ambiente1a_x3_y3.jpg",
-        "ambiente1a_x4_y0.jpg",
-        "ambiente1a_x4_y1.jpg",
-        "ambiente1a_x4_y2.jpg",
-        "ambiente1a_x4_y3.jpg"
-      ],
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "panorama/",
+      "envMapFile": "panorama-01.jpg",
       "items": [
         {
-          "id": 100,
+          "id": 51,
           "type": "nav",
-          "title": "Video Cooking Show",
+          "title": "Mostra 02",
           "abstract": "Abstract",
           "position": [
-            0.7441952273141098,
-            0.1306860755524518,
-            0.6550531377679213
+            -124.29046901090334,
+            -112.9935452521287,
+            470.109251736104
           ],
-          "navTo": 24
-        },
-        {
-          "id": 200,
-          "type": "nav",
-          "title": "Pesto Dashboard",
-          "abstract": "Abstract",
-          "position": [
-            -0.09502457077161766,
-            -0.02100718985272462,
-            0.9952532486378336
-          ],
-          "navTo": 19
+          "navTo": 6
         }
       ],
       "orientation": {
-        "latitude": 0,
+        "latitude": -4.1,
+        "longitude": 88
+      },
+      "fov": 75
+    },
+    {
+      "id": 6,
+      "type": "panorama",
+      "name": "Mostra 02",
+      "likes": 134,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "panorama/",
+      "envMapFile": "panorama-02.jpg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Old Depot",
+          "abstract": "Abstract",
+          "position": [
+            -265.3058462058933,
+            -160.4825267081394,
+            391.30946337019196
+          ],
+          "navTo": 7
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
         "longitude": 90
       },
       "fov": 75
     },
     {
-      "id": 19,
-      "type": "panorama-grid",
-      "name": "Pesto Dashboard",
-      "likes": 225,
+      "id": 7,
+      "type": "panorama",
+      "name": "Old Depot",
+      "likes": 175,
       "liked": false,
-      "envMapFolder": "ambiente1b/",
-      "envMapFile": "ambiente1b_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente1b_x0_y0.jpg",
-        "ambiente1b_x0_y1.jpg",
-        "ambiente1b_x0_y2.jpg",
-        "ambiente1b_x0_y3.jpg",
-        "ambiente1b_x1_y0.jpg",
-        "ambiente1b_x1_y3.jpg",
-        "ambiente1b_x2_y0.jpg",
-        "ambiente1b_x2_y3.jpg",
-        "ambiente1b_x3_y0.jpg",
-        "ambiente1b_x3_y3.jpg",
-        "ambiente1b_x4_y0.jpg",
-        "ambiente1b_x4_y1.jpg",
-        "ambiente1b_x4_y2.jpg",
-        "ambiente1b_x4_y3.jpg"
-      ],
-      "items": [
-        {
-          "id": 100,
-          "type": "nav",
-          "title": "Social Media",
-          "abstract": "Abstract",
-          "position": [
-            0.803095276916137,
-            0.13288630184456648,
-            0.5808435305459363
-          ],
-          "navTo": 18
-        },
-        {
-          "id": 200,
-          "type": "nav",
-          "title": "From Basil To Pesto p1",
-          "abstract": "Abstract",
-          "position": [
-            -0.27016786337746956,
-            -0.0714928886374919,
-            0.9601552439435616
-          ],
-          "navTo": 20
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
-      "fov": 75
-    },
-    {
-      "id": 20,
-      "type": "panorama-grid",
-      "name": "From Basil To Pesto p1",
-      "likes": 225,
-      "liked": false,
-      "envMapFolder": "ambiente2a/",
-      "envMapFile": "ambiente2a_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente2a_x0_y0.jpg",
-        "ambiente2a_x0_y1.jpg",
-        "ambiente2a_x0_y2.jpg",
-        "ambiente2a_x0_y3.jpg",
-        "ambiente2a_x1_y0.jpg",
-        "ambiente2a_x1_y3.jpg",
-        "ambiente2a_x2_y0.jpg",
-        "ambiente2a_x2_y1.jpg",
-        "ambiente2a_x2_y2.jpg",
-        "ambiente2a_x2_y3.jpg"
-      ],
+      "envMapFolder": "equirectangular/",
+      "envMapFile": "old_depot_2k.hdr",
       "items": [
         {
-          "id": 100,
+          "id": 71,
           "type": "nav",
-          "title": "Pesto Dashboard",
+          "title": "Time Square",
           "abstract": "Abstract",
           "position": [
-            -0.043581652820426996,
-            0.05878153966605557,
-            -0.9973190914305851
+            -0.552684304525924,
+            -0.05134015933951605,
+            0.8318078188918935
           ],
-          "navTo": 19
-        },
-        {
-          "id": 200,
-          "type": "nav",
-          "title": "From Basil To Pesto p2",
-          "abstract": "Abstract",
-          "position": [
-            -0.1301986455646018,
-            -0.011244252437772512,
-            0.9914241672867666
-          ],
-          "navTo": 21
+          "navTo": 8
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 21,
-      "type": "panorama-grid",
-      "name": "From Basil To Pesto p2",
-      "likes": 225,
-      "liked": false,
-      "envMapFolder": "ambiente2b/",
-      "envMapFile": "ambiente2b_x0_y0.jpg",
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        "ambiente2b_x0_y0.jpg",
-        "ambiente2b_x0_y1.jpg",
-        "ambiente2b_x0_y2.jpg",
-        "ambiente2b_x0_y3.jpg",
-        "ambiente2b_x1_y0.jpg",
-        "ambiente2b_x1_y3.jpg",
-        "ambiente2b_x2_y0.jpg",
-        "ambiente2b_x2_y1.jpg",
-        "ambiente2b_x2_y2.jpg",
-        "ambiente2b_x2_y3.jpg"
-      ],
-      "items": [
-        {
-          "id": 100,
-          "type": "nav",
-          "title": "From Basil To Pesto p1",
-          "abstract": "Abstract",
-          "position": [
-            -0.036975130634405856,
-            -0.3220820753941067,
-            -0.9459894166555954
-          ],
-          "navTo": 20
-        },
-        {
-          "id": 200,
-          "type": "nav",
-          "title": "Pesto alla genovese",
-          "abstract": "Abstract",
-          "position": [
-            -0.12304766752980198,
-            0.09983112648644324,
-            0.9873667088270309
-          ],
-          "navTo": 50
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
+        "latitude": -8,
         "longitude": 90
       },
       "fov": 75
@@ -498,20 +389,24 @@
       "name": "Time Square",
       "likes": 175,
       "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
       "envMapFolder": "video/",
-      "envMapFile": "time-square-composition-3.mp4",
+      "envMapFile": "TimeSquare.mp4",
       "items": [
         {
           "id": 81,
           "type": "nav",
-          "title": "The Pesto Experience",
+          "title": "Garden",
           "abstract": "Abstract",
           "position": [
             -0.15644789925908917,
             -0.0013182015249417318,
             0.9876853330702838
           ],
-          "navTo": 17
+          "navTo": 9
         }
       ],
       "orientation": {
@@ -521,15 +416,191 @@
       "fov": 75
     },
     {
+      "id": 9,
+      "type": "panorama",
+      "name": "Garden",
+      "likes": 235,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "video/",
+      "envMapFile": "Garden.mp4",
+      "items": [
+        {
+          "id": 91,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "navTo": 1
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 10,
+      "type": "panorama",
+      "name": "Live",
+      "likes": 235,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "",
+      "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
+      "items": [
+        {
+          "id": 101,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "navTo": 1
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 11,
+      "type": "panorama",
+      "name": "Webcam",
+      "likes": 235,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "",
+      "envMapFile": "publisherStream",
+      "items": [
+        {
+          "id": 101,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "navTo": 1
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 12,
+      "type": "panorama-grid",
+      "name": "New One Set 2",
+      "likes": 225,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "newoneset2/",
+      "envMapFile": "NEWONESET2_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "NEWONESET2_x0_y0.jpg",
+        "NEWONESET2_x0_y1.jpg",
+        "NEWONESET2_x0_y2.jpg",
+        "NEWONESET2_x0_y3.jpg",
+        "NEWONESET2_x0_y4.jpg",
+        "NEWONESET2_x0_y5.jpg",
+        "NEWONESET2_x0_y6.jpg",
+        "NEWONESET2_x0_y7.jpg",
+        "NEWONESET2_x1_y7.jpg",
+        "NEWONESET2_x2_y7.jpg",
+        "NEWONESET2_x3_y0.jpg",
+        "NEWONESET2_x3_y1.jpg",
+        "NEWONESET2_x3_y2.jpg",
+        "NEWONESET2_x3_y3.jpg",
+        "NEWONESET2_x3_y4.jpg",
+        "NEWONESET2_x3_y5.jpg",
+        "NEWONESET2_x3_y6.jpg",
+        "NEWONESET2_x3_y7.jpg"
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 13,
+      "type": "panorama-grid",
+      "name": "New One Set 4096",
+      "likes": 225,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "newoneset2_low/",
+      "envMapFile": "NEWONESET2_x0_y0.jpg",
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        "NEWONESET2_x0_y0.jpg",
+        "NEWONESET2_x0_y1.jpg",
+        "NEWONESET2_x0_y2.jpg",
+        "NEWONESET2_x0_y3.jpg",
+        "NEWONESET2_x0_y4.jpg",
+        "NEWONESET2_x0_y5.jpg",
+        "NEWONESET2_x0_y6.jpg",
+        "NEWONESET2_x0_y7.jpg",
+        "NEWONESET2_x1_y7.jpg",
+        "NEWONESET2_x2_y7.jpg",
+        "NEWONESET2_x3_y0.jpg",
+        "NEWONESET2_x3_y1.jpg",
+        "NEWONESET2_x3_y2.jpg",
+        "NEWONESET2_x3_y3.jpg",
+        "NEWONESET2_x3_y4.jpg",
+        "NEWONESET2_x3_y5.jpg",
+        "NEWONESET2_x3_y6.jpg",
+        "NEWONESET2_x3_y7.jpg"
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
       "id": 14,
       "type": "room-3d",
-      "name": "Stanza 3D",
+      "name": "Room 3D",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
       "modelFile": "room-3d.fbx",
-      "envMapFolder": "cinema/",
-      "envMapFile": "cinema-playing.jpg",
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
       "items": [
         {
           "id": "plane-01",
@@ -578,35 +649,23 @@
           "type": "texture",
           "folder": "room-3d/",
           "file": "plane-08.jpg"
-        },
-        {
-          "id": 171,
-          "type": "nav",
-          "title": "Time Square",
-          "abstract": "Abstract",
-          "position": [
-            0.9672554079668645,
-            -0.253784919203119,
-            -0.0031922631346306433
-          ],
-          "navTo": 8
         }
       ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
-      "fov": 75
+      "fov": 52
     },
     {
-      "id": 50,
+      "id": 15,
       "type": "model",
-      "name": "Pesto alla genovese",
+      "name": "Washing Machine",
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/barattolo-pesto/barattolo-pesto.gltf",
-        "usdz": "/barattolo-pesto/barattolo-pesto.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
@@ -616,27 +675,15 @@
           "type": "gltf",
           "title": "Model",
           "abstract": "Abstract",
-          "gltfFolder": "barattolo-pesto/",
-          "gltfFile": "barattolo-pesto.glb"
-        },
-        {
-          "id": 200,
-          "type": "nav",
-          "title": "Time Square",
-          "abstract": "Abstract",
-          "position": [
-            0.07886914775963917,
-            -0.23883547227955518,
-            -0.9678518867640181
-          ],
-          "navTo": 8
+          "gltfFolder": "washing-machine/",
+          "gltfFile": "glb.glb"
         }
       ],
       "orientation": {
-        "latitude": 25,
-        "longitude": 119
+        "latitude": 20.400000000000002,
+        "longitude": 57.60000000000001
       },
-      "fov": 51
+      "fov": 52
     },
     {
       "id": 16,
@@ -645,8 +692,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "/damaged-helmet/damaged-helmet.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
@@ -665,6 +712,67 @@
         "longitude": 124.30000000000001
       },
       "fov": 51
+    },
+    {
+      "id": 17,
+      "type": "panorama",
+      "name": "Cinema",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "cinema/",
+      "envMapFile": "cinema.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "plane",
+          "folder": "room-3d/",
+          "file": "plane-01.mp4",
+          "position": {
+            "x": 20,
+            "y": 1.7,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 22,
+            "y": 12,
+            "z": 0
+          }
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.8002543789009917,
+            -0.19439701223042613,
+            -0.5672765909903842
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 171,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.8012228950677142,
+            -0.19355223904603844,
+            0.5661973182377114
+          ],
+          "navTo": 8
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
     }
   ]
 }

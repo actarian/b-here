@@ -60681,7 +60681,7 @@
       const mainLight = new THREE.PointLight(0xffffff);
       mainLight.position.set(-50, 0, -50);
       scene.add(mainLight);
-      	*/
+      		*/
 
       var light = new THREE$1.AmbientLight(0x101010);
       scene.add(light);
@@ -62747,7 +62747,7 @@
       /*
       mesh.userData = {
       	render: () => {
-      		}
+      			}
       };
       */
 
