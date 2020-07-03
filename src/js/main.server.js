@@ -15,7 +15,7 @@ var app = express();
 app.disable('x-powered-by');
 
 app.use(express.static(path.join(__dirname, '../../docs/')));
-app.use('/b-here', serveStatic(path.join(__dirname, '../../docs/')));
+app.use('/b-here-benelli', serveStatic(path.join(__dirname, '../../docs/')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());

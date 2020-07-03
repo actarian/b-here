@@ -14,7 +14,7 @@ export class Environment {
 
 	get href() {
 		if (window.location.host.indexOf('herokuapp') !== -1) {
-			return 'https://raw.githack.com/actarian/b-here/master/docs/';
+			return 'https://raw.githack.com/actarian/b-here-benelli/master/docs/';
 		} else {
 			return BASE_HREF;
 		}

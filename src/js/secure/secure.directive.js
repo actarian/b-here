@@ -7,7 +7,7 @@ import HttpService from '../http/http.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import UserService from '../user/user.service';
 
-const src = STATIC ? '/b-here/club-modal.html' : '/Viewdoc.cshtml?co_id=23649';
+const src = STATIC ? '/b-here-benelli/club-modal.html' : '/Viewdoc.cshtml?co_id=23649';
 
 export default class SecureDirective extends Directive {
 
