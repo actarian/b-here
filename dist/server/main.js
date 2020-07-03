@@ -48,7 +48,7 @@ var Environment = /*#__PURE__*/function () {
     key: "href",
     get: function get() {
       if (window.location.host.indexOf('herokuapp') !== -1) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-barilla/docs/';
+        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-benelli/docs/';
       } else {
         return BASE_HREF;
       }
