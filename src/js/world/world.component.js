@@ -145,12 +145,16 @@ export default class WorldComponent extends Component {
 
 		const pointer = this.pointer = new PointerElement();
 
-		/*
+		
 		const mainLight = new THREE.PointLight(0xffffff);
 		mainLight.position.set(-50, 0, -50);
 		scene.add(mainLight);
 
-		*/
+		const light2 = new THREE.DirectionalLight(0xffe699, 5);
+		light2.position.set(5, -5, 5);
+		light2.target.position.set(0, 0, 0);
+		scene.add(light2);
+
 		const light = new THREE.AmbientLight(0x101010);
 		scene.add(light);
 
@@ -621,7 +625,7 @@ export default class WorldComponent extends Component {
 			if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
 				const camera = this.camera;
 				const fov = camera.fov + event.deltaY * 0.01;
-				camera.fov = THREE.Math.clamp(fov, 30, 75);
+				camera.fov = THREE.Math.clamp(fov, 15, 75);
 				camera.updateProjectionMatrix();
 				this.onOrientationDidChange();
 			}

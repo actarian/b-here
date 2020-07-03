@@ -60677,12 +60677,13 @@
       var panorama = this.panorama = new Panorama();
       scene.add(panorama.mesh);
       var pointer = this.pointer = new PointerElement();
-      /*
-      const mainLight = new THREE.PointLight(0xffffff);
+      var mainLight = new THREE$1.PointLight(0xffffff);
       mainLight.position.set(-50, 0, -50);
       scene.add(mainLight);
-      		*/
-
+      var light2 = new THREE$1.DirectionalLight(0xffe699, 5);
+      light2.position.set(5, -5, 5);
+      light2.target.position.set(0, 0, 0);
+      scene.add(light2);
       var light = new THREE$1.AmbientLight(0x101010);
       scene.add(light);
       var objects = this.objects = new THREE$1.Group();
@@ -61167,7 +61168,7 @@
         if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
           var camera = this.camera;
           var fov = camera.fov + event.deltaY * 0.01;
-          camera.fov = THREE$1.Math.clamp(fov, 30, 75);
+          camera.fov = THREE$1.Math.clamp(fov, 15, 75);
           camera.updateProjectionMatrix();
           this.onOrientationDidChange();
         }
