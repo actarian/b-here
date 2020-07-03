@@ -1,12 +1,12 @@
 {
   "author": "Luca Zampetti <lzampetti@gmail.com>",
-  "name": "b-here-benelli",
-  "description": "b-here-benelli",
+  "name": "b-here",
+  "description": "b-here",
   "version": "1.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/actarian/b-here-benelli.git"
+    "url": "git://github.com/actarian/b-here.git"
   },
   "engines": {
     "node": "10.x"

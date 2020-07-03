@@ -1,5 +1,5 @@
 /**
- * @license b-here-benelli v1.0.0
+ * @license b-here v1.0.0
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -550,7 +550,7 @@
       key: "href",
       get: function get() {
         if (window.location.host.indexOf('herokuapp') !== -1) {
-          return 'https://raw.githack.com/actarian/b-here-benelli/master/docs/';
+          return 'https://raw.githack.com/actarian/b-here/master/docs/';
         } else {
           return BASE_HREF;
         }

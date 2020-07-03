@@ -1,5 +1,5 @@
 /**
- * @license b-here-benelli v1.0.0
+ * @license b-here v1.0.0
  * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -29,7 +29,7 @@ var PORT = process.env.PORT || environment.environment.port;
 var app = express();
 app.disable('x-powered-by');
 app.use(express.static(path.join(__dirname, '../../docs/')));
-app.use('/b-here-benelli', serveStatic(path.join(__dirname, '../../docs/')));
+app.use('/b-here', serveStatic(path.join(__dirname, '../../docs/')));
 app.use(bodyParser.urlencoded({
   extended: true
 }));
