@@ -6,7 +6,7 @@ const serveStatic = require('serve-static');
 const path = require('path');
 const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
 
-import { environment } from 'environment';
+import { environment } from './environment';
 
 const PORT = process.env.PORT || environment.port;
 
@@ -64,12 +64,11 @@ app.post('/api/token/rtm', function(request, response) {
 	}));
 });
 
-/*
 app.listen(PORT, () => {
 	console.log(`Listening on ${ PORT }`);
 });
-*/
 
+/*
 https
 	.createServer({
 		cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
@@ -78,6 +77,7 @@ https
 	.listen(PORT, function() {
 		console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
 	});
+*/
 
 // IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
 
