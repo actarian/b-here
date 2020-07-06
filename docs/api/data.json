@@ -16,6 +16,157 @@
       "fov": 75
     },
     {
+      "id": 7,
+      "type": "panorama",
+      "name": "Living 01",
+      "likes": 134,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Living-0.jpg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Living 02",
+          "abstract": "Abstract",
+          "position": [
+            -1065.3058462058933,
+            -250.4825267081394,
+            -201.30946337019196
+            
+          ],
+          "navTo": 8
+        },
+        {
+          "id": 62,
+          "type": "nav",
+          "title": "Living 03",
+          "abstract": "Abstract",
+          "position": [
+            -1065.3058462058933,
+            -50.4825267081394,
+            101.30946337019196
+            
+          ],
+          "navTo": 9
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 180
+      },
+      "fov": 75
+    },
+    {
+      "id": 8,
+      "type": "panorama",
+      "name": "Living 02",
+      "likes": 134,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Living-1.jpg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Living 03",
+          "abstract": "Abstract",
+          "position": [
+            -465.3058462058933,
+            -160.4825267081394,
+            391.30946337019196
+            
+          ],
+          "navTo": 9
+        },
+        {
+          "id": 62,
+          "type": "nav",
+          "title": "Living 01",
+          "abstract": "Abstract",
+          "position": [
+            265.3058462058933,
+            -160.4825267081394,
+            391.30946337019196
+            
+          ],
+          "navTo": 7
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 9,
+      "type": "panorama",
+      "name": "Living 03",
+      "likes": 134,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "rendering/",
+      "envMapFile": "Living-2.jpg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Living 02",
+          "abstract": "Abstract",
+          "position": [
+            -265.3058462058933,
+            -160.4825267081394,
+            391.30946337019196
+            
+          ],
+          "navTo": 8
+        },
+        {
+          "id": 62,
+          "type": "nav",
+          "title": "Living 01",
+          "abstract": "Abstract",
+          "position": [
+            -465.3058462058933,
+            -160.4825267081394,
+            391.30946337019196
+            
+          ],
+          "navTo": 7
+        },
+        {
+          "id": 62,
+          "type": "nav",
+          "title": "Old Depot",
+          "abstract": "Abstract",
+          "position": [
+            1065.3058462058933,
+            -160.4825267081394,
+            391.30946337019196
+            
+          ],
+          "navTo": 10
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
       "id": 17,
       "type": "panorama",
       "name": "Cinema",
@@ -412,157 +563,7 @@
       },
       "fov": 75
     },
-    {
-      "id": 7,
-      "type": "panorama",
-      "name": "Living 01",
-      "likes": 134,
-      "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
-      "envMapFolder": "rendering/",
-      "envMapFile": "Living-0.jpg",
-      "items": [
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Living 02",
-          "abstract": "Abstract",
-          "position": [
-            665.3058462058933,
-            -160.4825267081394,
-            91.30946337019196
-            
-          ],
-          "navTo": 8
-        },
-        {
-          "id": 62,
-          "type": "nav",
-          "title": "Living 03",
-          "abstract": "Abstract",
-          "position": [
-            1165.3058462058933,
-            160.4825267081394,
-            91.30946337019196
-            
-          ],
-          "navTo": 9
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 180
-      },
-      "fov": 75
-    },
-    {
-      "id": 8,
-      "type": "panorama",
-      "name": "Living 02",
-      "likes": 134,
-      "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
-      "envMapFolder": "rendering/",
-      "envMapFile": "Living-1.jpg",
-      "items": [
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Living 03",
-          "abstract": "Abstract",
-          "position": [
-            -865.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
-            
-          ],
-          "navTo": 9
-        },
-        {
-          "id": 62,
-          "type": "nav",
-          "title": "Living 01",
-          "abstract": "Abstract",
-          "position": [
-            -165.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
-            
-          ],
-          "navTo": 7
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 9,
-      "type": "panorama",
-      "name": "Living 03",
-      "likes": 134,
-      "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
-      "envMapFolder": "rendering/",
-      "envMapFile": "Living-2.jpg",
-      "items": [
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Living 02",
-          "abstract": "Abstract",
-          "position": [
-            -265.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
-            
-          ],
-          "navTo": 8
-        },
-        {
-          "id": 62,
-          "type": "nav",
-          "title": "Living 01",
-          "abstract": "Abstract",
-          "position": [
-            865.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
-            
-          ],
-          "navTo": 7
-        },
-        {
-          "id": 62,
-          "type": "nav",
-          "title": "Old Depot",
-          "abstract": "Abstract",
-          "position": [
-            1065.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
-            
-          ],
-          "navTo": 10
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
+    
     {
       "id": 10,
       "type": "panorama",
@@ -1049,6 +1050,46 @@
         "longitude": 0.30000000000001
       },
       "fov": 40
+    },
+    {
+      "id": 50,
+      "type": "model",
+      "name": "Pesto alla genovese",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "/barattolo-pesto/barattolo-pesto.gltf",
+        "usdz": "/barattolo-pesto/barattolo-pesto.usdz"
+      },
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": 1201,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "gltfFolder": "barattolo-pesto/",
+          "gltfFile": "barattolo-pesto.glb"
+        },
+        {
+          "id": 200,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.07886914775963917,
+            -0.23883547227955518,
+            -0.9678518867640181
+          ],
+          "navTo": 8
+        }
+      ],
+      "orientation": {
+        "latitude": 25,
+        "longitude": 119
+      },
+      "fov": 51
     },
     {
       "id": 996,
