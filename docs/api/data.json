@@ -1348,7 +1348,7 @@
             -0.23883547227955518,
             -0.9678518867640181
           ],
-          "navTo": 8
+          "navTo": 80
         }
       ],
       "orientation": {
@@ -1419,12 +1419,9 @@
       "name": "Time Square",
       "likes": 175,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "video/",
-      "envMapFile": "360_1.mp4",
+      "envMapFile": "time-square-01.mp4",
       "items": [
         {
           "id": 81,
