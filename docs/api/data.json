@@ -237,6 +237,18 @@
             80.9876853330702838
           ],
           "navTo": 7
+        },
+        {
+          "id": 8,
+          "type": "nav",
+          "title": "Tour Render",
+          "abstract": "Abstract",
+          "position": [
+            250.15644789925908917,
+            0.0013182015249318,
+            80.9876853330702838
+          ],
+          "navTo": 84
         }
       ],
       "orientation": {
