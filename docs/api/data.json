@@ -16,15 +16,96 @@
       "fov": 75
     },
     {
+      "id": 81,
+      "type": "panorama",
+      "name": "VideoRender_1",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "render_2.mp4",
+      "items": [
+        {
+          "id": 82,
+          "type": "nav",
+          "title": "VideoRender_2",
+          "abstract": "Abstract",
+          "position": [
+            250.15644789925908917,
+            20.0013182015249318,
+            80.9876853330702838
+          ],
+          "navTo": 82
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
+      "id": 82,
+      "type": "panorama",
+      "name": "VideoRender_2",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "render_1.mp4",
+      "items": [
+        {
+          "id": 83,
+          "type": "nav",
+          "title": "Tour House",
+          "abstract": "Abstract",
+          "position": [
+            250.15644789925908917,
+            20.0013182015249318,
+            80.9876853330702838
+          ],
+          "navTo": 83
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
+      "id": 83,
+      "type": "panorama",
+      "name": "Tour House",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "360_1.mp4",
+      "items": [
+        {
+          "id": 7,
+          "type": "nav",
+          "title": "Living 01",
+          "abstract": "Abstract",
+          "position": [
+            250.15644789925908917,
+            20.0013182015249318,
+            80.9876853330702838
+          ],
+          "navTo": 7
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    
+    {
       "id": 7,
       "type": "panorama",
       "name": "Living 01",
       "likes": 134,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
       "envMapFolder": "rendering/",
       "envMapFile": "Living-0.jpg",
       "items": [
@@ -37,7 +118,6 @@
             -1065.3058462058933,
             -250.4825267081394,
             -201.30946337019196
-            
           ],
           "navTo": 8
         },
@@ -50,9 +130,20 @@
             -1065.3058462058933,
             -50.4825267081394,
             101.30946337019196
-            
           ],
           "navTo": 9
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            -1065.3058462058933,
+            -100.4825267081394,
+            -201.30946337019196
+          ],
+          "navTo": 1
         }
       ],
       "orientation": {
@@ -67,10 +158,6 @@
       "name": "Living 02",
       "likes": 134,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
       "envMapFolder": "rendering/",
       "envMapFile": "Living-1.jpg",
       "items": [
@@ -83,7 +170,6 @@
             -465.3058462058933,
             -160.4825267081394,
             391.30946337019196
-            
           ],
           "navTo": 9
         },
@@ -96,9 +182,20 @@
             265.3058462058933,
             -160.4825267081394,
             391.30946337019196
-            
           ],
           "navTo": 7
+        },
+        {
+          "id": 62,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            265.3058462058933,
+            -60.4825267081394,
+            391.30946337019196
+          ],
+          "navTo": 1
         }
       ],
       "orientation": {
@@ -113,10 +210,6 @@
       "name": "Living 03",
       "likes": 134,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
       "envMapFolder": "rendering/",
       "envMapFile": "Living-2.jpg",
       "items": [
@@ -129,7 +222,6 @@
             -265.3058462058933,
             -160.4825267081394,
             391.30946337019196
-            
           ],
           "navTo": 8
         },
@@ -142,7 +234,6 @@
             -465.3058462058933,
             -160.4825267081394,
             391.30946337019196
-            
           ],
           "navTo": 7
         },
@@ -155,9 +246,20 @@
             1065.3058462058933,
             -160.4825267081394,
             391.30946337019196
-            
           ],
           "navTo": 10
+        },
+        {
+          "id": 62,
+          "type": "nav",
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            -465.3058462058933,
+            -60.4825267081394,
+            391.30946337019196
+          ],
+          "navTo": 1
         }
       ],
       "orientation": {
@@ -347,7 +449,7 @@
         {
           "id": 14,
           "type": "nav",
-          "title": "Mostra 01",
+          "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
             -0.6666804421448888,
@@ -415,7 +517,7 @@
         {
           "id": 34,
           "type": "nav",
-          "title": "Mostra 01",
+          "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
             -0.9507002527461537,
@@ -523,6 +625,18 @@
             470.109251736104
           ],
           "navTo": 6
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            1200.29046901090334,
+            -52.9935452521287,
+            470.109251736104
+          ],
+          "navTo": 51
         }
       ],
       "orientation": {
@@ -555,6 +669,18 @@
             70.109251736104
           ],
           "navTo": 7
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -1100.29046901090334,
+            -52.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51
         }
       ],
       "orientation": {
@@ -563,7 +689,207 @@
       },
       "fov": 75
     },
-    
+    {
+      "id": 51,
+      "type": "panorama",
+      "name": "Interior 01",
+      "likes": 134,
+      "liked": false,
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "render_1.jpeg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 02",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            0.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 52
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 03",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 53        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "WoodHouse",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 54
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 52,
+      "type": "panorama",
+      "name": "Interior 02",
+      "likes": 134,
+      "liked": false,
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "render_2.jpeg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            0.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 03",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 53        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "WoodHouse",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 54
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 53,
+      "type": "panorama",
+      "name": "Interior 03",
+      "likes": 134,
+      "liked": false,
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "render_3.jpeg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 02",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            0.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 52
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "WoodHouse",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 54
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 54,
+      "type": "panorama",
+      "name": "Wood House",
+      "likes": 134,
+      "liked": false,
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "wood1.jpeg",
+      "items": [
+        
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 80
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
     {
       "id": 10,
       "type": "panorama",
@@ -588,38 +914,6 @@
             0.8318078188918935
           ],
           "navTo": 80
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 80,
-      "type": "panorama",
-      "name": "Time Square",
-      "likes": 175,
-      "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
-      "envMapFolder": "video/",
-      "envMapFile": "time-square-01.mp4",
-      "items": [
-        {
-          "id": 81,
-          "type": "nav",
-          "title": "Garden",
-          "abstract": "Abstract",
-          "position": [
-            -0.15644789925908917,
-            -0.0013182015249417318,
-            0.9876853330702838
-          ],
-          "navTo": 11
         }
       ],
       "orientation": {
@@ -910,7 +1204,6 @@
       },
       "fov": 52
     },
-
     {
       "id": 991,
       "type": "model",
@@ -1148,6 +1441,38 @@
       "fov": 51
     },
     {
+      "id": 80,
+      "type": "panorama",
+      "name": "Time Square",
+      "likes": 175,
+      "liked": false,
+      "ar": {
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
+      },
+      "envMapFolder": "video/",
+      "envMapFile": "360_1.mp4",
+      "items": [
+        {
+          "id": 81,
+          "type": "nav",
+          "title": "Garden",
+          "abstract": "Abstract",
+          "position": [
+            -0.15644789925908917,
+            -0.0013182015249417318,
+            0.9876853330702838
+          ],
+          "navTo": 11
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
       "id": 998,
       "type": "panorama-grid",
       "name": "From Basil To Pesto p1",
@@ -1255,6 +1580,5 @@
       },
       "fov": 75
     }
-    
   ]
 }
