@@ -16,61 +16,207 @@
       "fov": 75
     },
     {
-      "id": 81,
+      "id": 51,
       "type": "panorama",
-      "name": "VideoRender_1",
-      "likes": 175,
+      "name": "Interior 01",
+      "likes": 134,
       "liked": false,
-      "envMapFolder": "video/",
-      "envMapFile": "Render_2.mp4",
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "render_1.jpeg",
       "items": [
         {
-          "id": 82,
+          "id": 61,
           "type": "nav",
-          "title": "VideoRender_2",
+          "title": "Interior 02",
           "abstract": "Abstract",
           "position": [
-            250.15644789925908917,
-            20.0013182015249318,
-            80.9876853330702838
+            -10.29046901090334,
+            0.9935452521287,
+            70.109251736104
           ],
-          "navTo": 82
+          "navTo": 52
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 03",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 53        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "WoodHouse",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 54
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 360
+        "latitude": -8,
+        "longitude": 90
       },
       "fov": 75
     },
     {
-      "id": 82,
+      "id": 52,
       "type": "panorama",
-      "name": "VideoRender_2",
-      "likes": 175,
+      "name": "Interior 02",
+      "likes": 134,
       "liked": false,
-      "envMapFolder": "video/",
-      "envMapFile": "Render_1.mp4",
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "render_2.jpeg",
       "items": [
         {
-          "id": 83,
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            0.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 03",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 53        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "WoodHouse",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 54
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 53,
+      "type": "panorama",
+      "name": "Interior 03",
+      "likes": 134,
+      "liked": false,
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "render_3.jpeg",
+      "items": [
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 02",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            0.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 52
+        },
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51        
+        },
+        {
+          "id": 65,
+          "type": "nav",
+          "title": "WoodHouse",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 54
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
+      },
+      "fov": 75
+    },
+    {
+      "id": 54,
+      "type": "panorama",
+      "name": "Wood House",
+      "likes": 134,
+      "liked": false,
+      
+      "envMapFolder": "rendering/",
+      "envMapFile": "wood1.jpeg",
+      "items": [
+        
+        {
+          "id": 61,
+          "type": "nav",
+          "title": "Interior 01",
+          "abstract": "Abstract",
+          "position": [
+            -10.29046901090334,
+            10.9935452521287,
+            70.109251736104
+          ],
+          "navTo": 51        
+        },
+        {
+          "id": 65,
           "type": "nav",
           "title": "Tour House",
           "abstract": "Abstract",
           "position": [
-            250.15644789925908917,
-            20.0013182015249318,
-            80.9876853330702838
+            -10.29046901090334,
+            -10.9935452521287,
+            70.109251736104
           ],
           "navTo": 83
         }
       ],
       "orientation": {
-        "latitude": 0,
-        "longitude": 360
+        "latitude": -8,
+        "longitude": 90
       },
       "fov": 75
     },
+ 
     {
       "id": 83,
       "type": "panorama",
@@ -99,8 +245,36 @@
       },
       "fov": 75
     },
-    
     {
+      "id": 84,
+      "type": "panorama",
+      "name": "Tour Render",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "Render_2.mp4",
+      "items": [
+        {
+          "id": 7,
+          "type": "nav",
+          "title": "Living 01",
+          "abstract": "Abstract",
+          "position": [
+            250.15644789925908917,
+            20.0013182015249318,
+            80.9876853330702838
+          ],
+          "navTo": 7
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    
+{
       "id": 7,
       "type": "panorama",
       "name": "Living 01",
@@ -681,207 +855,6 @@
             70.109251736104
           ],
           "navTo": 51
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 51,
-      "type": "panorama",
-      "name": "Interior 01",
-      "likes": 134,
-      "liked": false,
-      
-      "envMapFolder": "rendering/",
-      "envMapFile": "render_1.jpeg",
-      "items": [
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 02",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            0.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 52
-        },
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 03",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 53        
-        },
-        {
-          "id": 65,
-          "type": "nav",
-          "title": "WoodHouse",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            -10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 54
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 52,
-      "type": "panorama",
-      "name": "Interior 02",
-      "likes": 134,
-      "liked": false,
-      
-      "envMapFolder": "rendering/",
-      "envMapFile": "render_2.jpeg",
-      "items": [
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 01",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            0.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 51
-        },
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 03",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 53        
-        },
-        {
-          "id": 65,
-          "type": "nav",
-          "title": "WoodHouse",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            -10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 54
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 53,
-      "type": "panorama",
-      "name": "Interior 03",
-      "likes": 134,
-      "liked": false,
-      
-      "envMapFolder": "rendering/",
-      "envMapFile": "render_3.jpeg",
-      "items": [
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 02",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            0.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 52
-        },
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 01",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 51        
-        },
-        {
-          "id": 65,
-          "type": "nav",
-          "title": "WoodHouse",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            -10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 54
-        }
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "fov": 75
-    },
-    {
-      "id": 54,
-      "type": "panorama",
-      "name": "Wood House",
-      "likes": 134,
-      "liked": false,
-      
-      "envMapFolder": "rendering/",
-      "envMapFile": "wood1.jpeg",
-      "items": [
-        
-        {
-          "id": 61,
-          "type": "nav",
-          "title": "Interior 01",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 51        
-        },
-        {
-          "id": 65,
-          "type": "nav",
-          "title": "Time Square",
-          "abstract": "Abstract",
-          "position": [
-            -10.29046901090334,
-            -10.9935452521287,
-            70.109251736104
-          ],
-          "navTo": 80
         }
       ],
       "orientation": {
