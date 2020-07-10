@@ -23,50 +23,50 @@
       "liked": false,
       
       "envMapFolder": "waiting-room/",
-      "envMapFile": "mod.jpg",
+      "envMapFile": "mod2.jpg",
       "items": [
         {
           "id": 51,
           "type": "nav",
-          "title": "Barilla Tour",
+          "title": "Barilla Experience",
           "abstract": "Abstract",
           "position": [
-            0.8300493895021891,
-            -0.011191424270003752,
-            0.00000000
+            0.9491595148619703,
+            -0.3147945860255039,
+            0
           ],
           "navTo": 23
         },
         {
           "id": 61,
           "type": "nav",
-          "title": "Interior House",
+          "title": "House Experience",
           "abstract": "Abstract",
           "position": [
-            0.8300493895021891,
-            -0.011191424270003752,
-            -0.5575775847448066
+            0.9491595148619703,
+            -0.3147945860255039,
+            0.37763166291263806
           ],
           "navTo": 11        
         },
         {
           "id": 65,
           "type": "nav",
-          "title": "Benelli Moto",
+          "title": "Benelli Experience",
           "abstract": "Abstract",
           "position": [
-            0.8300493895021891,
-            -0.011191424270003752,
-            0.5575775847448066
+            0.9491595148619703,
+            -0.3147945860255039,
+            -0.37763166291263806
           ],
           "navTo": 303
         }
       ],
       "orientation": {
-        "latitude": -7,
+        "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "fov": 55
     },
     {
       "id": 11,
@@ -317,7 +317,7 @@
       },
       "fov": 75
     },
-
+    
     {
       "id": 16,
       "type": "panorama",
@@ -440,9 +440,36 @@
         "longitude": 360
       },
       "fov": 75
-    },
-    
-{
+    },  
+    {
+      "id": 22,
+      "type": "panorama",
+      "name": "Moto VR",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "moto.mp4",
+      "items": [
+        {
+          "id": 101,
+          "type": "nav",
+          "title": "Room 3D",
+          "abstract": "Abstract",
+          "position": [
+            0.9510368676062331,
+            0.022236340182408915,
+            0.3082765343470318
+          ],
+          "navTo": 101
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "fov": 75
+    },    
+    {
       "id": 31,
       "type": "panorama",
       "name": "Living 01",
@@ -464,6 +491,18 @@
           "navTo": 32
         },
         {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            -0.9529355460512962,
+            0.23473324276047958,
+            -0.19187013789297183
+          ],
+          "navTo": 1
+        },
+        {
           "id": 33,
           "type": "nav",
           "title": "Living 03",
@@ -481,9 +520,9 @@
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
-            -1065.3058462058933,
-            -100.4825267081394,
-            -201.30946337019196
+            -0.0247641694758386,
+            -0.079858411485302,
+            0.9964985549539026
           ],
           "navTo": 41
         }
@@ -509,11 +548,23 @@
           "title": "Living 03",
           "abstract": "Abstract",
           "position": [
-            -465.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
+            -0.9210956320683762,
+            -0.2894432983454992,
+            0.26039472657378593
           ],
           "navTo": 33
+        },
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            -0.8477053319412373,
+            0.4235754906465803,
+            -0.3193422520148335
+          ],
+          "navTo": 1
         },
         {
           "id": 31,
@@ -521,9 +572,9 @@
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
-            265.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
+            0.926811077581933,
+            -0.3261763909429974,
+            0.18609188177568883
           ],
           "navTo": 31
         },
@@ -533,9 +584,9 @@
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
-            265.3058462058933,
-            -60.4825267081394,
-            391.30946337019196
+            0.5093436123732924,
+            -0.08696968552632889,
+            0.8561573210187345
           ],
           "navTo": 41
         }
@@ -561,9 +612,9 @@
           "title": "Living 02",
           "abstract": "Abstract",
           "position": [
-            -265.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
+            -0.46290700239018806,
+            -0.2875217200054489,
+            0.838479795620168
           ],
           "navTo": 32
         },
@@ -573,9 +624,9 @@
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
-            -465.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
+            -0.8621021120942532,
+            -0.15854457666244307,
+            0.4812936375369554
           ],
           "navTo": 31
         },
@@ -585,9 +636,9 @@
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
-            1065.3058462058933,
-            -160.4825267081394,
-            391.30946337019196
+            -0.8619625686456724,
+            0.22913480865404218,
+            0.4522364091012906
           ],
           "navTo": 1
         },
@@ -597,9 +648,9 @@
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
-            -465.3058462058933,
-            -60.4825267081394,
-            391.30946337019196
+            -0.9924701468744184,
+            -0.007349815947958455,
+            -0.12226605321429879
           ],
           "navTo": 41
         }
@@ -677,10 +728,7 @@
       "name": "Kitchen 01",
       "likes": 40,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-1.jpg",
       "items": [
@@ -745,10 +793,7 @@
       "name": "Kitchen 02",
       "likes": 190,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-2.jpg",
       "items": [
@@ -813,10 +858,7 @@
       "name": "Kitchen 03",
       "likes": 165,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-3.jpg",
       "items": [
@@ -881,10 +923,7 @@
       "name": "Kitchen 04",
       "likes": 143,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-4.jpg",
       "items": [
@@ -968,7 +1007,7 @@
         {
           "id": 31,
           "type": "nav",
-          "title": "Living",
+          "title": "Living 01",
           "abstract": "Abstract",
           "position": [
             -0.9972068265263746,
@@ -983,11 +1022,23 @@
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
-            1200.29046901090334,
-            -52.9935452521287,
-            470.109251736104
+            -0.998150255179974,
+            0.06020028565986354,
+            0.008484909582514986
           ],
           "navTo": 11
+        },
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            -0.6154044998218916,
+            0.25337016570369375,
+            -0.7463784969640069
+          ],
+          "navTo": 1
         }
       ],
       "orientation": {
@@ -1019,14 +1070,26 @@
           "navTo": 31
         },
         {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            -0.9330193713909759,
+            0.09575494629162772,
+            -0.3468513267523651
+          ],
+          "navTo": 1
+        },
+        {
           "id": 51,
           "type": "nav",
           "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
-            -0.9053739929238671,
-            -0.25783272832949156,
-            -0.3373725198341797
+            -0.8510724658281764,
+            -0.4874053067094644,
+            -0.19522224489181664
           ],
           "navTo": 51
         },
@@ -1149,10 +1212,7 @@
       "name": "Kitchen Hight",
       "likes": 225,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "newoneset2/",
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
@@ -1189,10 +1249,7 @@
       "name": "Kitchen Low",
       "likes": 225,
       "liked": false,
-      "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
-      },
+      
       "envMapFolder": "newoneset2_low/",
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
@@ -1226,7 +1283,7 @@
     {
       "id": 100,
       "type": "room-3d",
-      "name": "Room 3D",
+      "name": "Room 3D Barilla",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
@@ -1262,7 +1319,7 @@
           "id": "plane-05",
           "type": "texture",
           "folder": "room-3d/",
-          "file": "benelli.mp4"
+          "file": "plane-05.mp4"
         },
         {
           "id": "plane-06",
@@ -1293,11 +1350,113 @@
             0.38901693359451694
           ],
           "navTo": 1
+        },
+        {
+          "id": 305,
+          "type": "nav",
+          "title": "Pesto alla Genovese",
+          "abstract": "Abstract",
+          "position": [
+            0.9210009978552354,
+            -0.027991828533736385,
+            -0.38855323893258004
+          ],
+          "navTo": 305
         }
       ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
+      },
+      "fov": 52
+    },
+    {
+      "id": 101,
+      "type": "room-3d",
+      "name": "Room 3D Benelli",
+      "likes": 321,
+      "liked": false,
+      "modelFolder": "room-3d/",
+      "modelFile": "room-3d-2.fbx",
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "waiting-room-02.jpg",
+      "items": [
+        {
+          "id": "plane-01",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "benelli.mp4"
+        },
+        {
+          "id": "plane-02",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "plane-02.jpg"
+        },
+        {
+          "id": "plane-03",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "plane-03.jpg"
+        },
+        {
+          "id": "plane-04",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "plane-04.jpg"
+        },
+        {
+          "id": "plane-05",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "benelli2.mp4"
+        },
+        {
+          "id": "plane-06",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "plane-06.jpg"
+        },
+        {
+          "id": "plane-07",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "plane-07.jpg"
+        },
+        {
+          "id": "plane-08",
+          "type": "texture",
+          "folder": "room-3d_2/",
+          "file": "plane-08.jpg"
+        },
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.9206193140260596,
+            -0.033554493274472665,
+            0.38901693359451694
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 303,
+          "type": "nav",
+          "title": "Ducati",
+          "abstract": "Abstract",
+          "position": [
+            0.9210009978552354,
+            -0.027991828533736385,
+            -0.38855323893258004
+          ],
+          "navTo": 303
+        }
+      ],
+      "orientation": {
+        "latitude": 2,
+        "longitude": 360
       },
       "fov": 52
     },
@@ -1412,16 +1571,16 @@
           "title": "Suzuki",
           "abstract": "Abstract",
           "position": [
-            0.07886914775963917,
-            -0.23883547227955518,
-            -0.9678518867640181
+            -0.8830695517982071,
+            -0.22364848022972544,
+            -0.41251608935633943
           ],
           "navTo": 304
         }
       ],
       "orientation": {
-        "latitude": 14.300000000000002,
-        "longitude": 0.30000000000001
+        "latitude": 15,
+        "longitude": 5
       },
       "fov": 40
     },
@@ -1447,21 +1606,21 @@
           "gltfFile": "moto_suzuki.glb"
         },
         {
-          "id": 200,
+          "id": 22,
           "type": "nav",
-          "title": "Room 3D",
+          "title": "Moto VR",
           "abstract": "Abstract",
           "position": [
-            0.07886914775963917,
-            -0.23883547227955518,
-            -0.9678518867640181
+            -0.7893777947989654,
+            -0.16577137583014698,
+            -0.5911028235710792
           ],
-          "navTo": 100
+          "navTo": 22
         }
       ],
       "orientation": {
-        "latitude": 14.300000000000002,
-        "longitude": 0.30000000000001
+        "latitude": 19,
+        "longitude": 19
       },
       "fov": 40
     },
@@ -1568,11 +1727,11 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+        "gltf": "models/logo/logowsGLTF.gltf",
+        "usdz": "models/logo/logows.usdz"
       },
       "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room-02.jpg",
+      "envMapFile": "amazing.jpg",
       "items": [
         {
           "id": 1201,

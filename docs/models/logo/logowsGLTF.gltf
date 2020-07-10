@@ -1,0 +1,177 @@
+{
+    "asset": {
+        "copyright": "2020 (c) Adobe Inc.",
+        "generator": "Adobe Dimension - 5769982f30ff13dfba89076b81240843d8e6af81",
+        "version": "2.0"
+    },
+    "accessors": [
+        {
+            "bufferView": 0,
+            "componentType": 5126,
+            "count": 11460,
+            "type": "VEC3",
+            "max": [
+                2.607621431350708,
+                0.05000000447034836,
+                0.5028572082519531
+            ],
+            "min": [
+                -2.607621431350708,
+                -0.05000000447034836,
+                -0.5028572082519531
+            ]
+        },
+        {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 11460,
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 11460,
+            "type": "VEC2"
+        },
+        {
+            "bufferView": 3,
+            "componentType": 5125,
+            "count": 11460,
+            "type": "SCALAR",
+            "max": [
+                11459.0
+            ],
+            "min": [
+                0.0
+            ]
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 137520,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 137520,
+            "byteLength": 137520,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 275040,
+            "byteLength": 91680,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 366720,
+            "byteLength": 45840,
+            "target": 34963
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 412560,
+            "uri": "logowsGLTF_binary.bin"
+        }
+    ],
+    "cameras": [
+        {
+            "perspective": {
+                "znear": 0.000010000000656873454,
+                "yfov": 0.6024156808853149,
+                "zfar": 2.0,
+                "aspectRatio": 1.3333333730697632
+            },
+            "type": "perspective",
+            "name": "render_camera"
+        }
+    ],
+    "materials": [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.0,
+                    0.5333333015441895,
+                    0.9215688109397888,
+                    1.0
+                ],
+                "metallicFactor": 0.25,
+                "roughnessFactor": 0.10999999940395355
+            },
+            "name": "_logowsdefault",
+            "doubleSided": true
+        }
+    ],
+    "meshes": [
+        {
+            "name": "logows",
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    },
+                    "indices": 3,
+                    "material": 0
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "translation": [
+                0.5,
+                0.31508567929267886,
+                0.49849995970726015
+            ],
+            "rotation": [
+                -0.12059047073125839,
+                0.379409521818161,
+                0.04995020851492882,
+                0.9159756302833557
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                0.9999999403953552
+            ],
+            "camera": 0,
+            "name": "render_camera_n3d"
+        },
+        {
+            "translation": [
+                -1.5828731658729112e-9,
+                0.015085680410265923,
+                0.0
+            ],
+            "rotation": [
+                0.7071068286895752,
+                -8.991256805757075e-8,
+                -2.47262278207927e-7,
+                0.7071067690849304
+            ],
+            "scale": [
+                0.029999982565641404,
+                0.0299999862909317,
+                0.02999998815357685
+            ],
+            "mesh": 0,
+            "name": "logows"
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0,
+                1
+            ],
+            "name": "scene"
+        }
+    ],
+    "scene": 0
+}
