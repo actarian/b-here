@@ -1,5 +1,18 @@
+import { ReplaySubject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import * as THREE from 'three';
+import AgoraService from '../../agora/agora.service';
 import { environment } from '../../environment';
+
+export class MediaLoaderEvent {
+	constructor(src) {
+		this.src = src;
+	}
+}
+
+export class MediaLoaderPlayEvent extends MediaLoaderEvent {}
+
+export class MediaLoaderPauseEvent extends MediaLoaderEvent {}
 
 export default class MediaLoader {
 
@@ -20,16 +33,24 @@ export default class MediaLoader {
 		return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
 	}
 
+	static isPublisherStream(item) {
+		return item.file === 'publisherStream';
+	}
+
 	get isVideo() {
 		return MediaLoader.isVideo(this.item);
 	}
 
+	get isPublisherStream() {
+		return MediaLoader.isPublisherStream(this.item);
+	}
+
 	get isPlayableVideo() {
-		return this.isVideo && !this.item.autoplay;
+		return !this.isAutoplayVideo;
 	}
 
 	get isAutoplayVideo() {
-		return this.isVideo && this.item.autoplay;
+		return this.isPublisherStream || (this.isVideo && this.item.autoplay);
 	}
 
 	constructor(item) {
@@ -40,7 +61,41 @@ export default class MediaLoader {
 	load(callback) {
 		const item = this.item;
 		let texture;
-		if (MediaLoader.isVideo(item)) {
+		if (this.isPublisherStream) {
+			const agora = AgoraService.getSingleton();
+			if (!agora) {
+				return;
+			}
+			const onPublisherStreamId = (publisherStreamId) => {
+				// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+				const target = `#stream-${publisherStreamId}`;
+				const video = document.querySelector(`${target} video`);
+				if (!video) {
+					return;
+				}
+				const onCanPlay = () => {
+					video.oncanplay = null;
+					texture = this.texture = new THREE.VideoTexture(video);
+					texture.minFilter = THREE.LinearFilter;
+					texture.magFilter = THREE.LinearFilter;
+					texture.mapping = THREE.UVMapping;
+					texture.format = THREE.RGBFormat;
+					texture.needsUpdate = true;
+					if (typeof callback === 'function') {
+						callback(texture, this);
+					}
+				};
+				video.crossOrigin = 'anonymous';
+				if (video.readyState >= video.HAVE_FUTURE_DATA) {
+					onCanPlay();
+				} else {
+					video.oncanplay = onCanPlay;
+				}
+			}
+			agora.getPublisherStreamId$().pipe(
+				first()
+			).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
+		} else if (this.isVideo) {
 			// create the video element
 			const video = this.video = document.createElement('video');
 			video.preload = 'metadata';
@@ -53,7 +108,7 @@ export default class MediaLoader {
 			video.crossOrigin = 'anonymous';
 			const onCanPlay = () => {
 				video.oncanplay = null;
-				const texture = new THREE.VideoTexture(video);
+				texture = new THREE.VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
@@ -69,7 +124,7 @@ export default class MediaLoader {
 			video.oncanplay = onCanPlay;
 			video.src = MediaLoader.getPath(item);
 			video.load(); // must call after setting/changing source
-			this.play();
+			this.play(true);
 		} else {
 			MediaLoader.loadTexture(item, texture => {
 				texture.minFilter = THREE.LinearFilter;
@@ -86,19 +141,25 @@ export default class MediaLoader {
 		return this;
 	}
 
-	play() {
+	play(silent) {
 		// console.log('MediaLoader.play');
 		this.video.play().then(() => {
 			console.log('MediaLoader.play.success', this.item.file);
 		}, error => {
 			console.log('MediaLoader.play.error', this.item.file, error);
 		});
+		if (!silent) {
+			MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src));
+		}
 	}
 
-	pause() {
+	pause(silent) {
 		// console.log('MediaLoader.pause');
 		this.video.muted = true;
 		this.video.pause();
+		if (!silent) {
+			MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src));
+		}
 	}
 
 	toggle() {
@@ -115,10 +176,11 @@ export default class MediaLoader {
 
 	dispose() {
 		if (this.isVideo) {
-			this.video.pause();
-			this.video.muted = true;
+			this.pause();
 			delete this.video;
 		}
 	}
 
 }
+
+MediaLoader.events$ = new ReplaySubject(1);

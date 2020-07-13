@@ -141,8 +141,8 @@
 					<div class="grid" model-grid *if="view.type === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div class="world__item" *for="let item of view.items; let index = index;">
 						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type == 'nav'"></div>
-						<div model-plane [item]="item" *if="item.type == 'plane'"></div>
-						<div model-curved-plane [item]="item" *if="item.type == 'curved-plane'"></div>
+						<div model-plane [item]="item" [items]="view.items" *if="item.type == 'plane'"></div>
+						<div model-curved-plane [item]="item" [items]="view.items" *if="item.type == 'curved-plane'"></div>
 						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type == 'gltf'">
 							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 						</div>

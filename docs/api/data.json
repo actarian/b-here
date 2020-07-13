@@ -21,7 +21,6 @@
       "name": "Welcome Room",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "waiting-room/",
       "envMapFile": "mod2.jpg",
       "items": [
@@ -47,7 +46,7 @@
             -0.3147945860255039,
             0.37763166291263806
           ],
-          "navTo": 11        
+          "navTo": 11
         },
         {
           "id": 65,
@@ -66,7 +65,7 @@
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 55
+      "fov": 75
     },
     {
       "id": 11,
@@ -74,7 +73,6 @@
       "name": "Interior 01",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "render_1.jpeg",
       "items": [
@@ -100,7 +98,7 @@
             0.008026602023804374,
             0.9934670409461472
           ],
-          "navTo": 13        
+          "navTo": 13
         },
         {
           "id": 15,
@@ -139,7 +137,6 @@
       "name": "Interior 02",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "render_2.jpeg",
       "items": [
@@ -165,7 +162,7 @@
             0.028245600257141203,
             -0.28877216280400786
           ],
-          "navTo": 13        
+          "navTo": 13
         },
         {
           "id": 15,
@@ -204,7 +201,6 @@
       "name": "Interior 03",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "render_3.jpeg",
       "items": [
@@ -230,7 +226,7 @@
             -0.00022299080421135106,
             0.7260330755836272
           ],
-          "navTo": 11        
+          "navTo": 11
         },
         {
           "id": 15,
@@ -269,11 +265,9 @@
       "name": "Wood House",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "wood1.jpeg",
       "items": [
-        
         {
           "id": 11,
           "type": "nav",
@@ -284,7 +278,7 @@
             -0.03784724047157898,
             -0.42475983951586715
           ],
-          "navTo": 11        
+          "navTo": 11
         },
         {
           "id": 20,
@@ -317,18 +311,15 @@
       },
       "fov": 75
     },
-    
     {
       "id": 16,
       "type": "panorama",
       "name": "Brochure Corte Trastevere",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "brochure.jpg",
       "items": [
-        
         {
           "id": 11,
           "type": "nav",
@@ -339,7 +330,7 @@
             0.09808409000136013,
             0.44813520472240637
           ],
-          "navTo": 11        
+          "navTo": 11
         },
         {
           "id": 20,
@@ -360,7 +351,6 @@
       },
       "fov": 75
     },
- 
     {
       "id": 20,
       "type": "panorama",
@@ -440,7 +430,7 @@
         "longitude": 360
       },
       "fov": 75
-    },  
+    },
     {
       "id": 22,
       "type": "panorama",
@@ -468,7 +458,7 @@
         "longitude": 360
       },
       "fov": 75
-    },    
+    },
     {
       "id": 31,
       "type": "panorama",
@@ -671,7 +661,7 @@
       "envMapFile": "cinema.jpg",
       "items": [
         {
-          "id": 1,
+          "id": 2310,
           "type": "plane",
           "folder": "room-3d/",
           "file": "plane-01.mp4",
@@ -688,11 +678,38 @@
           "scale": {
             "x": 22,
             "y": 12,
-            "z": 0
+            "z": 1
           }
         },
         {
-          "id": 205,
+          "id": 2320,
+          "type": "plane",
+          "folder": "green-screen/",
+          "file": "green-screen.mp4",
+          "linkedPlayId": 2310,
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 14,
+            "y": -2,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 6,
+            "y": 4,
+            "z": 1
+          }
+        },
+        {
+          "id": 2330,
           "type": "nav",
           "title": "Social Media",
           "abstract": "Abstract",
@@ -704,7 +721,94 @@
           "navTo": 205
         },
         {
-          "id": 80,
+          "id": 2340,
+          "type": "nav",
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.8012228950677142,
+            -0.19355223904603844,
+            0.5661973182377114
+          ],
+          "navTo": 80
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 24,
+      "type": "panorama",
+      "name": "Cinema Stream",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "cinema/",
+      "envMapFile": "cinema.jpg",
+      "items": [
+        {
+          "id": 2410,
+          "type": "plane",
+          "folder": "room-3d/",
+          "file": "plane-01.mp4",
+          "position": {
+            "x": 20,
+            "y": 1.7,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 22,
+            "y": 12,
+            "z": 1
+          }
+        },
+        {
+          "id": 2420,
+          "type": "plane",
+          "folder": "",
+          "file": "publisherStream",
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 14,
+            "y": -2,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 6,
+            "y": 4,
+            "z": 1
+          }
+        },
+        {
+          "id": 2430,
+          "type": "nav",
+          "title": "Social Media",
+          "abstract": "Abstract",
+          "position": [
+            0.8002543789009917,
+            -0.19439701223042613,
+            -0.5672765909903842
+          ],
+          "navTo": 205
+        },
+        {
+          "id": 2440,
           "type": "nav",
           "title": "Time Square",
           "abstract": "Abstract",
@@ -728,7 +832,6 @@
       "name": "Kitchen 01",
       "likes": 40,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-1.jpg",
       "items": [
@@ -793,7 +896,6 @@
       "name": "Kitchen 02",
       "likes": 190,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-2.jpg",
       "items": [
@@ -858,7 +960,6 @@
       "name": "Kitchen 03",
       "likes": 165,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-3.jpg",
       "items": [
@@ -923,7 +1024,6 @@
       "name": "Kitchen 04",
       "likes": 143,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-4.jpg",
       "items": [
@@ -988,7 +1088,6 @@
       "name": "Bathroom 01",
       "likes": 156,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "Bathroom-1.jpg",
       "items": [
@@ -1053,7 +1152,6 @@
       "name": "Bathroom 02",
       "likes": 134,
       "liked": false,
-      
       "envMapFolder": "rendering/",
       "envMapFile": "Bathroom-2.jpg",
       "items": [
@@ -1118,7 +1216,6 @@
       "name": "Garden",
       "likes": 235,
       "liked": false,
-      
       "envMapFolder": "video/",
       "envMapFile": "garden-01.mp4",
       "items": [
@@ -1205,14 +1302,12 @@
       },
       "fov": 75
     },
-
     {
       "id": 201,
       "type": "panorama-grid",
       "name": "Kitchen Hight",
       "likes": 225,
       "liked": false,
-      
       "envMapFolder": "newoneset2/",
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
@@ -1249,7 +1344,6 @@
       "name": "Kitchen Low",
       "likes": 225,
       "liked": false,
-      
       "envMapFolder": "newoneset2_low/",
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
@@ -1754,7 +1848,6 @@
       "name": "Time Square",
       "likes": 175,
       "liked": false,
-      
       "envMapFolder": "video/",
       "envMapFile": "time-square-composition.mp4",
       "items": [

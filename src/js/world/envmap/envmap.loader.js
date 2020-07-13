@@ -1,3 +1,4 @@
+import { first } from 'rxjs/operators';
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import AgoraService from '../../agora/agora.service';
@@ -80,44 +81,45 @@ export class EnvMapLoader {
 		if (!agora) {
 			return;
 		}
-		const publisherStreamId = agora.publisherStreamId;
-		if (!publisherStreamId) {
-			return;
-		}
-		// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-		const target = `#stream-${publisherStreamId}`;
-		const video = document.querySelector(`${target} video`);
-		if (!video) {
-			return;
-		}
-		const onPlaying = () => {
-			const texture = this.texture = new THREE.VideoTexture(video);
-			texture.minFilter = THREE.LinearFilter;
-			texture.magFilter = THREE.LinearFilter;
-			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
-			texture.needsUpdate = true;
-			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
-				generateMipmaps: true,
-				// minFilter: THREE.LinearMipmapLinearFilter,
-				minFilter: THREE.LinearFilter,
-				magFilter: THREE.LinearFilter,
-				mapping: THREE.UVMapping,
-				format: THREE.RGBFormat
-			}).fromEquirectangularTexture(renderer, texture);
-			// texture.dispose();
-			if (typeof callback === 'function') {
-				callback(cubeRenderTarget.texture, texture, false);
+		const onPublisherStreamId = (publisherStreamId) => {
+			// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+			const target = `#stream-${publisherStreamId}`;
+			const video = document.querySelector(`${target} video`);
+			if (!video) {
+				return;
+			}
+			const onPlaying = () => {
+				const texture = this.texture = new THREE.VideoTexture(video);
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+				texture.mapping = THREE.UVMapping;
+				texture.format = THREE.RGBFormat;
+				texture.needsUpdate = true;
+				const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
+					generateMipmaps: true,
+					// minFilter: THREE.LinearMipmapLinearFilter,
+					minFilter: THREE.LinearFilter,
+					magFilter: THREE.LinearFilter,
+					mapping: THREE.UVMapping,
+					format: THREE.RGBFormat
+				}).fromEquirectangularTexture(renderer, texture);
+				// texture.dispose();
+				if (typeof callback === 'function') {
+					callback(cubeRenderTarget.texture, texture, false);
+				}
+			};
+			video.crossOrigin = 'anonymous';
+			if (video.readyState >= video.HAVE_FUTURE_DATA) {
+				onPlaying();
+			} else {
+				video.oncanplay = () => {
+					onPlaying();
+				};
 			}
 		};
-		video.crossOrigin = 'anonymous';
-		if (video.readyState >= video.HAVE_FUTURE_DATA) {
-			onPlaying();
-		} else {
-			video.oncanplay = () => {
-				onPlaying();
-			};
-		}
+		agora.getPublisherStreamId$().pipe(
+			first(),
+		).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 	}
 
 	static loadVideoBackground(path, file, renderer, callback) {

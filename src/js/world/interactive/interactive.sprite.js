@@ -79,11 +79,13 @@ export default class InteractiveSprite extends EmittableSprite {
 		return this.over_;
 	}
 	set over(over) {
-		if (over) {
-			this.emit('hit', this);
-		}
-		if (this.over_ !== over) {
+		if (this.over_ != over) {
 			this.over_ = over;
+			/*
+			if (over) {
+				this.emit('hit', this);
+			}
+			*/
 			if (over) {
 				this.emit('over', this);
 			} else {
@@ -97,7 +99,7 @@ export default class InteractiveSprite extends EmittableSprite {
 	}
 	set down(down) {
 		down = down && this.over;
-		if (this.down_ !== down) {
+		if (this.down_ != down) {
 			this.down_ = down;
 			if (down) {
 				this.emit('down', this);
