@@ -160,8 +160,9 @@ export default class AgoraComponent extends Component {
 	initForm() {
 		const data = this.data;
 		const views = this.views = data.views.filter(x => x.type !== 'waiting-room');
+		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
 		const form = this.form = new FormGroup({
-			view: new FormControl(views[0].id, Validators.RequiredValidator()),
+			view: new FormControl(initialViewId, Validators.RequiredValidator()),
 		});
 		const controls = this.controls = form.controls;
 		controls.view.options = views;

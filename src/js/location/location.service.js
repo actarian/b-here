@@ -1,5 +1,11 @@
 export default class LocationService {
 
+	static has(key) {
+		const params = new URLSearchParams(window.location.search);
+		// console.log('LocationService.has', params);
+		return params.has(key);
+	}
+
 	static get(key) {
 		const params = new URLSearchParams(window.location.search);
 		// console.log('LocationService.get', params);

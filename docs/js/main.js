@@ -695,6 +695,12 @@
   var LocationService = /*#__PURE__*/function () {
     function LocationService() {}
 
+    LocationService.has = function has(key) {
+      var params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+
+      return params.has(key);
+    };
+
     LocationService.get = function get(key) {
       var params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
 
@@ -959,6 +965,24 @@
       return this.AGORA;
     };
 
+    var _proto = AgoraService.prototype;
+
+    _proto.getPublisherStreamId$ = function getPublisherStreamId$() {
+      var _this2 = this;
+
+      var publisherStreamId = this.publisherStreamId;
+
+      if (publisherStreamId) {
+        return rxjs.of(publisherStreamId);
+      } else {
+        return this.streams$.pipe(operators.map(function () {
+          return _this2.publisherStreamId;
+        }), operators.filter(function (x) {
+          return x;
+        }));
+      }
+    };
+
     _createClass(AgoraService, [{
       key: "state",
       set: function set(state) {
@@ -1041,13 +1065,23 @@
       _this.state$ = new rxjs.BehaviorSubject(state);
       _this.local$ = new rxjs.BehaviorSubject(null);
       _this.remotes$ = new rxjs.BehaviorSubject([]);
+      _this.streams$ = rxjs.combineLatest(_this.local$, _this.remotes$).pipe(operators.map(function (data) {
+        var local = data[0];
+        var remotes = data[1];
+        var streams = remotes;
+
+        if (local) {
+          streams = streams.slice();
+          streams.push(local);
+        }
+
+        return streams;
+      }));
       _this.peers$ = new rxjs.BehaviorSubject([]);
       _this.message$ = new rxjs.Subject();
       _this.events$ = new rxjs.Subject();
       return _this;
     }
-
-    var _proto = AgoraService.prototype;
 
     _proto.patchState = function patchState(state) {
       state = Object.assign({}, this.state, state);
@@ -1142,7 +1176,7 @@
     };
 
     _proto.connect$ = function connect$(preferences) {
-      var _this2 = this;
+      var _this3 = this;
 
       var devices = this.state.devices;
 
@@ -1159,10 +1193,10 @@
           devices: devices
         });
         setTimeout(function () {
-          _this2.createClient(function () {
-            _this2.getRtcToken().subscribe(function (token) {
+          _this3.createClient(function () {
+            _this3.getRtcToken().subscribe(function (token) {
               // console.log('token', token);
-              _this2.joinChannel(token.token);
+              _this3.joinChannel(token.token);
             });
           });
         }, 250);
@@ -1196,7 +1230,7 @@
     };
 
     _proto.createClient = function createClient(next) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.client) {
         next();
@@ -1215,7 +1249,7 @@
         next();
       }, function (error) {
         // console.log('AgoraRTC client init failed', error);
-        _this3.client = null;
+        _this4.client = null;
       });
       client.on('stream-published', this.onStreamPublished);
       client.on('stream-unpublished', this.onStreamUnpublished); //subscribe remote stream
@@ -1252,7 +1286,7 @@
     };
 
     _proto.joinChannel = function joinChannel(token) {
-      var _this4 = this;
+      var _this5 = this;
 
       var client = this.client;
       var clientId = null; // this.state.role === RoleType.Publisher ? this.state.publisherId : null;
@@ -1261,22 +1295,22 @@
 
       client.join(token, this.state.channelNameLink, clientId, function (uid) {
         // console.log('AgoraService.joinChannel', uid);
-        _this4.patchState({
+        _this5.patchState({
           status: AgoraStatus.Connected,
           connected: true,
           uid: uid
         });
 
         {
-          _this4.getRtmToken(uid).subscribe(function (token) {
+          _this5.getRtmToken(uid).subscribe(function (token) {
             // console.log('token', token);
-            _this4.joinMessageChannel(token.token, uid).then(function (success) {
+            _this5.joinMessageChannel(token.token, uid).then(function (success) {
               // console.log('joinMessageChannel.success', success);
-              _this4.emit('messageChannel', _this4.messageChannel);
+              _this5.emit('messageChannel', _this5.messageChannel);
 
-              _this4.autoDetectDevice();
+              _this5.autoDetectDevice();
 
-              _this4.createMediaStream(uid, _this4.state.devices.video, _this4.state.devices.audio);
+              _this5.createMediaStream(uid, _this5.state.devices.video, _this5.state.devices.audio);
             }, function (error) {// console.log('joinMessageChannel.error', error);
             });
           });
@@ -1287,18 +1321,18 @@
     };
 
     _proto.joinMessageChannel = function joinMessageChannel(token, uid) {
-      var _this5 = this;
+      var _this6 = this;
 
       return new Promise(function (resolve, reject) {
-        var messageClient = _this5.messageClient;
+        var messageClient = _this6.messageClient;
 
         messageClient.login({
           uid: uid.toString()
         }).then(function () {
-          _this5.messageChannel = messageClient.createChannel(_this5.state.channelNameLink);
-          return _this5.messageChannel.join();
+          _this6.messageChannel = messageClient.createChannel(_this6.state.channelNameLink);
+          return _this6.messageChannel.join();
         }).then(function () {
-          _this5.messageChannel.on('ChannelMessage', _this5.onMessage);
+          _this6.messageChannel.on('ChannelMessage', _this6.onMessage);
 
           resolve(uid);
         }).catch(reject);
@@ -1306,7 +1340,7 @@
     };
 
     _proto.sendMessage = function sendMessage(message) {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.state.connected) {
         message.wrc_version = 'beta';
@@ -1320,7 +1354,7 @@
 
           if (message.rpcid) {
             return new Promise(function (resolve) {
-              _this6.once("message-" + message.rpcid, function (message) {
+              _this7.once("message-" + message.rpcid, function (message) {
                 resolve(message);
               });
             });
@@ -1329,13 +1363,13 @@
           }
         } else {
           return new Promise(function (resolve) {
-            _this6.once("messageChannel", function (messageChannel) {
+            _this7.once("messageChannel", function (messageChannel) {
               messageChannel.sendMessage({
                 text: JSON.stringify(message)
               }); // console.log('wrc: send', message);
 
               if (message.rpcid) {
-                _this6.once("message-" + message.rpcid, function (message) {
+                _this7.once("message-" + message.rpcid, function (message) {
                   resolve(message);
                 });
               } else {
@@ -1491,7 +1525,7 @@
     };
 
     _proto.createMediaStream = function createMediaStream(uid, video, audio) {
-      var _this7 = this;
+      var _this8 = this;
 
       // this.releaseStream('_mediaVideoStream')
       var options = {
@@ -1502,22 +1536,22 @@
       };
       Promise.all([this.getVideoOptions(options, video), this.getAudioOptions(options, audio)]).then(function (success) {
         // console.log('AgoraService.createMediaStream', uid, options);
-        var local = _this7.local = AgoraRTC.createStream(options); // console.log('AgoraService.createMediaStream', uid, local.getId());
+        var local = _this8.local = AgoraRTC.createStream(options); // console.log('AgoraService.createMediaStream', uid, local.getId());
 
-        var quality = Object.assign({}, _this7.state.quality); // console.log('AgoraService.setVideoEncoderConfiguration', quality);
+        var quality = Object.assign({}, _this8.state.quality); // console.log('AgoraService.setVideoEncoderConfiguration', quality);
 
         local.setVideoEncoderConfiguration(quality);
 
-        _this7.initLocalStream(options);
+        _this8.initLocalStream(options);
       });
     };
 
     _proto.initLocalStream = function initLocalStream(options) {
-      var _this8 = this;
+      var _this9 = this;
 
       var local = this.local;
       local.init(function () {
-        _this8.publishLocalStream();
+        _this9.publishLocalStream();
       }, function (error) {
         console.log('AgoraService.initLocalStream.init.error', error);
       });
@@ -1581,7 +1615,7 @@
     };
 
     _proto.leaveChannel = function leaveChannel() {
-      var _this9 = this;
+      var _this10 = this;
 
       this.patchState({
         connecting: false
@@ -1592,12 +1626,12 @@
       var client = this.client;
       client.leave(function () {
         // console.log('Leave channel successfully');
-        _this9.patchState({
+        _this10.patchState({
           status: AgoraStatus.Disconnected,
           connected: false
         });
 
-        _this9.leaveMessageChannel();
+        _this10.leaveMessageChannel();
       }, function (error) {
         console.log('AgoraService.leaveChannel.error', error);
       });
@@ -1661,25 +1695,25 @@
     };
 
     _proto.toggleControl = function toggleControl() {
-      var _this10 = this;
+      var _this11 = this;
 
       if (this.state.control) {
         this.sendRemoteControlDismiss().then(function (control) {
           // console.log('AgoraService.sendRemoteControlDismiss', control);
-          _this10.patchState({
+          _this11.patchState({
             control: !control
           });
         });
       } else if (this.state.spying) {
         this.sendRemoteInfoDismiss(this.state.spying).then(function (spying) {
           // console.log('AgoraService.sendRemoteInfoDismiss', spying);
-          _this10.patchState({
+          _this11.patchState({
             spying: false
           });
 
-          _this10.sendRemoteControlRequest().then(function (control) {
+          _this11.sendRemoteControlRequest().then(function (control) {
             // console.log('AgoraService.sendRemoteControlRequest', control);
-            _this10.patchState({
+            _this11.patchState({
               control: control
             });
           });
@@ -1687,7 +1721,7 @@
       } else {
         this.sendRemoteControlRequest().then(function (control) {
           // console.log('AgoraService.sendRemoteControlRequest', control);
-          _this10.patchState({
+          _this11.patchState({
             control: control
           });
         });
@@ -1695,16 +1729,16 @@
     };
 
     _proto.toggleSpy = function toggleSpy(clientId) {
-      var _this11 = this;
+      var _this12 = this;
 
       if (this.state.control) {
         this.sendRemoteControlDismiss().then(function (control) {
-          _this11.patchState({
+          _this12.patchState({
             control: false
           });
 
-          _this11.sendRemoteRequestInfo(clientId).then(function (info) {
-            _this11.patchState({
+          _this12.sendRemoteRequestInfo(clientId).then(function (info) {
+            _this12.patchState({
               spying: clientId
             });
           });
@@ -1713,21 +1747,21 @@
         this.sendRemoteInfoDismiss(this.state.spying).then(function (spying) {
           // console.log('AgoraService.sendRemoteInfoDismiss', spying);
           // this.patchState({ spying: !spying });
-          if (_this11.state.spying !== clientId) {
-            _this11.sendRemoteRequestInfo(clientId).then(function (info) {
-              _this11.patchState({
+          if (_this12.state.spying !== clientId) {
+            _this12.sendRemoteRequestInfo(clientId).then(function (info) {
+              _this12.patchState({
                 spying: clientId
               });
             });
           } else {
-            _this11.patchState({
+            _this12.patchState({
               spying: false
             });
           }
         });
       } else {
         this.sendRemoteRequestInfo(clientId).then(function (info) {
-          _this11.patchState({
+          _this12.patchState({
             spying: clientId
           });
         });
@@ -1745,10 +1779,10 @@
     };
 
     _proto.sendRemoteControlDismiss = function sendRemoteControlDismiss() {
-      var _this12 = this;
+      var _this13 = this;
 
       return new Promise(function (resolve, reject) {
-        _this12.sendMessage({
+        _this13.sendMessage({
           type: MessageType.RequestControlDismiss,
           rpcid: Date.now().toString()
         }).then(function (message) {
@@ -1763,10 +1797,10 @@
     };
 
     _proto.sendRemoteControlRequest = function sendRemoteControlRequest(message) {
-      var _this13 = this;
+      var _this14 = this;
 
       return new Promise(function (resolve, reject) {
-        _this13.sendMessage({
+        _this14.sendMessage({
           type: MessageType.RequestControl,
           rpcid: Date.now().toString()
         }).then(function (message) {
@@ -1782,17 +1816,17 @@
     };
 
     _proto.sendRemoteRequestPeerInfo = function sendRemoteRequestPeerInfo(streamId) {
-      var _this14 = this;
+      var _this15 = this;
 
       return new Promise(function (resolve, reject) {
-        _this14.sendMessage({
+        _this15.sendMessage({
           type: MessageType.RequestPeerInfo,
           streamId: streamId,
           rpcid: Date.now().toString()
         }).then(function (message) {
           if (message.type === MessageType.RequestPeerInfoResult) {
             if (message.clientInfo.role === RoleType.Publisher) {
-              _this14.patchState({
+              _this15.patchState({
                 hosted: true
               });
             }
@@ -1804,16 +1838,16 @@
     };
 
     _proto.sendRemoteRequestInfo = function sendRemoteRequestInfo(clientId) {
-      var _this15 = this;
+      var _this16 = this;
 
       return new Promise(function (resolve, reject) {
-        _this15.sendMessage({
+        _this16.sendMessage({
           type: MessageType.RequestInfo,
           clientId: clientId,
           rpcid: Date.now().toString()
         }).then(function (message) {
           if (message.type === MessageType.RequestInfoResult) {
-            _this15.patchState({
+            _this16.patchState({
               spying: clientId
             });
 
@@ -1824,10 +1858,10 @@
     };
 
     _proto.sendRemoteInfoDismiss = function sendRemoteInfoDismiss(clientId) {
-      var _this16 = this;
+      var _this17 = this;
 
       return new Promise(function (resolve, reject) {
-        _this16.sendMessage({
+        _this17.sendMessage({
           type: MessageType.RequestInfoDismiss,
           clientId: clientId,
           rpcid: Date.now().toString()
@@ -2007,7 +2041,7 @@
     };
 
     _proto.remoteAdd = function remoteAdd(stream) {
-      var _this17 = this;
+      var _this18 = this;
 
       // console.log('AgoraService.remoteAdd', stream);
       var remotes = this.remotes$.getValue();
@@ -2018,7 +2052,7 @@
       }));
       var streamId = stream.getId();
       this.sendRemoteRequestPeerInfo(streamId).then(function (message) {
-        var remotes = _this17.remotes$.getValue();
+        var remotes = _this18.remotes$.getValue();
 
         var remote = remotes.find(function (x) {
           return x.getId() === streamId;
@@ -2028,7 +2062,7 @@
           remote.clientInfo = message.clientInfo;
         }
 
-        _this17.remotes$.next(remotes);
+        _this18.remotes$.next(remotes);
       });
     };
 
@@ -3189,8 +3223,9 @@
       var views = this.views = data.views.filter(function (x) {
         return x.type !== 'waiting-room';
       });
+      var initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
       var form = this.form = new rxcompForm.FormGroup({
-        view: new rxcompForm.FormControl(views[0].id, rxcompForm.Validators.RequiredValidator())
+        view: new rxcompForm.FormControl(initialViewId, rxcompForm.Validators.RequiredValidator())
       });
       var controls = this.controls = form.controls;
       controls.view.options = views;
@@ -55117,50 +55152,50 @@
         return;
       }
 
-      var publisherStreamId = agora.publisherStreamId;
+      var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
+        // const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+        var target = "#stream-" + publisherStreamId;
+        var video = document.querySelector(target + " video");
 
-      if (!publisherStreamId) {
-        return;
-      } // const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+        if (!video) {
+          return;
+        }
 
+        var onPlaying = function onPlaying() {
+          var texture = _this.texture = new THREE$1.VideoTexture(video);
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.mapping = THREE$1.UVMapping;
+          texture.format = THREE$1.RGBFormat;
+          texture.needsUpdate = true;
+          var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+            generateMipmaps: true,
+            // minFilter: THREE.LinearMipmapLinearFilter,
+            minFilter: THREE$1.LinearFilter,
+            magFilter: THREE$1.LinearFilter,
+            mapping: THREE$1.UVMapping,
+            format: THREE$1.RGBFormat
+          }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
 
-      var target = "#stream-" + publisherStreamId;
-      var video = document.querySelector(target + " video");
+          if (typeof callback === 'function') {
+            callback(cubeRenderTarget.texture, texture, false);
+          }
+        };
 
-      if (!video) {
-        return;
-      }
+        video.crossOrigin = 'anonymous';
 
-      var onPlaying = function onPlaying() {
-        var texture = _this.texture = new THREE$1.VideoTexture(video);
-        texture.minFilter = THREE$1.LinearFilter;
-        texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
-        texture.format = THREE$1.RGBFormat;
-        texture.needsUpdate = true;
-        var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-          generateMipmaps: true,
-          // minFilter: THREE.LinearMipmapLinearFilter,
-          minFilter: THREE$1.LinearFilter,
-          magFilter: THREE$1.LinearFilter,
-          mapping: THREE$1.UVMapping,
-          format: THREE$1.RGBFormat
-        }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-        if (typeof callback === 'function') {
-          callback(cubeRenderTarget.texture, texture, false);
+        if (video.readyState >= video.HAVE_FUTURE_DATA) {
+          onPlaying();
+        } else {
+          video.oncanplay = function () {
+            onPlaying();
+          };
         }
       };
 
-      video.crossOrigin = 'anonymous';
-
-      if (video.readyState >= video.HAVE_FUTURE_DATA) {
-        onPlaying();
-      } else {
-        video.oncanplay = function () {
-          onPlaying();
-        };
-      }
+      agora.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
+        return onPublisherStreamId(publisherStreamId);
+      });
     };
 
     EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
@@ -55583,12 +55618,13 @@
         return this.over_;
       },
       set: function set(over) {
-        if (over) {
-          this.emit('hit', this);
-        }
-
-        if (this.over_ !== over) {
+        if (this.over_ != over) {
           this.over_ = over;
+          /*
+          if (over) {
+          	this.emit('hit', this);
+          }
+          */
 
           if (over) {
             this.emit('over', this);
@@ -55605,7 +55641,7 @@
       set: function set(down) {
         down = down && this.over;
 
-        if (this.down_ !== down) {
+        if (this.down_ != down) {
           this.down_ = down;
 
           if (down) {
@@ -61768,6 +61804,28 @@
     inputs: ['item']
   };
 
+  var MediaLoaderEvent = function MediaLoaderEvent(src) {
+    this.src = src;
+  };
+  var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
+    _inheritsLoose(MediaLoaderPlayEvent, _MediaLoaderEvent);
+
+    function MediaLoaderPlayEvent() {
+      return _MediaLoaderEvent.apply(this, arguments) || this;
+    }
+
+    return MediaLoaderPlayEvent;
+  }(MediaLoaderEvent);
+  var MediaLoaderPauseEvent = /*#__PURE__*/function (_MediaLoaderEvent2) {
+    _inheritsLoose(MediaLoaderPauseEvent, _MediaLoaderEvent2);
+
+    function MediaLoaderPauseEvent() {
+      return _MediaLoaderEvent2.apply(this, arguments) || this;
+    }
+
+    return MediaLoaderPauseEvent;
+  }(MediaLoaderEvent);
+
   var MediaLoader = /*#__PURE__*/function () {
     MediaLoader.getLoader = function getLoader() {
       return MediaLoader.loader || (MediaLoader.loader = new THREE$1.TextureLoader());
@@ -61786,20 +61844,29 @@
       return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
     };
 
+    MediaLoader.isPublisherStream = function isPublisherStream(item) {
+      return item.file === 'publisherStream';
+    };
+
     _createClass(MediaLoader, [{
       key: "isVideo",
       get: function get() {
         return MediaLoader.isVideo(this.item);
       }
     }, {
+      key: "isPublisherStream",
+      get: function get() {
+        return MediaLoader.isPublisherStream(this.item);
+      }
+    }, {
       key: "isPlayableVideo",
       get: function get() {
-        return this.isVideo && !this.item.autoplay;
+        return !this.isAutoplayVideo;
       }
     }, {
       key: "isAutoplayVideo",
       get: function get() {
-        return this.isVideo && this.item.autoplay;
+        return this.isPublisherStream || this.isVideo && this.item.autoplay;
       }
     }]);
 
@@ -61814,8 +61881,51 @@
       var _this = this;
 
       var item = this.item;
+      var texture;
 
-      if (MediaLoader.isVideo(item)) {
+      if (this.isPublisherStream) {
+        var agora = AgoraService.getSingleton();
+
+        if (!agora) {
+          return;
+        }
+
+        var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
+          // const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+          var target = "#stream-" + publisherStreamId;
+          var video = document.querySelector(target + " video");
+
+          if (!video) {
+            return;
+          }
+
+          var onCanPlay = function onCanPlay() {
+            video.oncanplay = null;
+            texture = _this.texture = new THREE$1.VideoTexture(video);
+            texture.minFilter = THREE$1.LinearFilter;
+            texture.magFilter = THREE$1.LinearFilter;
+            texture.mapping = THREE$1.UVMapping;
+            texture.format = THREE$1.RGBFormat;
+            texture.needsUpdate = true;
+
+            if (typeof callback === 'function') {
+              callback(texture, _this);
+            }
+          };
+
+          video.crossOrigin = 'anonymous';
+
+          if (video.readyState >= video.HAVE_FUTURE_DATA) {
+            onCanPlay();
+          } else {
+            video.oncanplay = onCanPlay;
+          }
+        };
+
+        agora.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
+          return onPublisherStreamId(publisherStreamId);
+        });
+      } else if (this.isVideo) {
         // create the video element
         var video = this.video = document.createElement('video');
         video.preload = 'metadata';
@@ -61831,7 +61941,7 @@
 
         var onCanPlay = function onCanPlay() {
           video.oncanplay = null;
-          var texture = new THREE$1.VideoTexture(video);
+          texture = new THREE$1.VideoTexture(video);
           texture.minFilter = THREE$1.LinearFilter;
           texture.magFilter = THREE$1.LinearFilter;
           texture.mapping = THREE$1.UVMapping;
@@ -61851,7 +61961,7 @@
         video.src = MediaLoader.getPath(item);
         video.load(); // must call after setting/changing source
 
-        this.play();
+        this.play(true);
       } else {
         MediaLoader.loadTexture(item, function (texture) {
           texture.minFilter = THREE$1.LinearFilter;
@@ -61870,7 +61980,7 @@
       return this;
     };
 
-    _proto.play = function play() {
+    _proto.play = function play(silent) {
       var _this2 = this;
 
       // console.log('MediaLoader.play');
@@ -61879,12 +61989,20 @@
       }, function (error) {
         console.log('MediaLoader.play.error', _this2.item.file, error);
       });
+
+      if (!silent) {
+        MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src));
+      }
     };
 
-    _proto.pause = function pause() {
+    _proto.pause = function pause(silent) {
       // console.log('MediaLoader.pause');
       this.video.muted = true;
       this.video.pause();
+
+      if (!silent) {
+        MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src));
+      }
     };
 
     _proto.toggle = function toggle() {
@@ -61901,28 +62019,29 @@
 
     _proto.dispose = function dispose() {
       if (this.isVideo) {
-        this.video.pause();
-        this.video.muted = true;
+        this.pause();
         delete this.video;
       }
     };
 
     return MediaLoader;
   }();
+  MediaLoader.events$ = new rxjs.ReplaySubject(1);
 
   var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
   var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nmat3 rotate(float a) {\n\treturn mat3(\n\t\tcos(a), sin(a), 0.0,\n\t\t-sin(a), cos(a), 0.0,\n\t\t0.0, 0.0, 1.0\n\t);\n}\n\nmat3 translate(vec2 t) {\n\treturn mat3(\n\t\t1.0, 0.0, 0.0,\n\t\t0.0, 1.0, 0.0,\n\t\tt.x, t.y, 1.0\n\t);\n}\n\nmat3 scale(vec2 s) {\n\treturn mat3(\n\t\ts.x, 0.0, 0.0,\n\t\t0.0, s.y, 0.0,\n\t\t0.0, 0.0, 1.0\n\t);\n}\n\nvec2 getUV2(vec2 vUv, vec2 t, vec2 s, float a) {\n\tmat3 transform = scale(s) * rotate(a);\n\treturn (vec3(vUv + t, 0.0) * transform).xy;\n}\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tfloat rA = resolutionA.x / resolutionA.y;\n\t\tfloat rB = resolutionB.x / resolutionB.y;\n\t\tfloat aspect = 1.0 / rA * rB;\n\t\tvec2 s = vec2(3.0 / aspect, 3.0);\n\t\tvec2 t = vec2(\n\t\t\t-(resolutionA.x - resolutionB.x / s.x) * 0.5 / resolutionA.x,\n\t\t\t-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y\n\t\t);\n\t\tt = vec2(\n\t\t\t-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,\n\t\t\t-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y\n\t\t);\n\t\tvec2 uv2 = clamp(\n\t\t\tgetUV2(vUv, t, s, 0.0),\n\t\t\tvec2(0.0,0.0),\n\t\t\tvec2(1.0,1.0)\n\t\t);\n\t\tvec4 colorB = texture2D(textureB, uv2);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
+  var FRAGMENT_CHROMA_KEY_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 chromaKeyColor;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);\n\tgl_FragColor = color;\n}\n";
 
   var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     _inheritsLoose(MediaMesh, _InteractiveMesh);
 
-    MediaMesh.getMaterial = function getMaterial() {
+    MediaMesh.getMaterial = function getMaterial(useChromaKey) {
       var material = new THREE$1.ShaderMaterial({
         depthTest: false,
         depthWrite: false,
         transparent: true,
         vertexShader: VERTEX_SHADER$1,
-        fragmentShader: FRAGMENT_SHADER$1,
+        fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER$1,
         uniforms: {
           video: {
             value: false
@@ -61955,6 +62074,56 @@
           }
         } // side: THREE.DoubleSide
 
+      });
+      return material;
+    };
+
+    MediaMesh.getChromaKeyMaterial = function getChromaKeyMaterial(chromaKeyColor) {
+      if (chromaKeyColor === void 0) {
+        chromaKeyColor = [0.0, 1.0, 0.0];
+      }
+
+      var material = new THREE$1.ShaderMaterial({
+        depthTest: false,
+        depthWrite: false,
+        transparent: true,
+        vertexShader: VERTEX_SHADER$1,
+        fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
+        uniforms: {
+          video: {
+            value: false
+          },
+          textureA: {
+            type: "t",
+            value: null
+          },
+          textureB: {
+            type: "t",
+            value: null
+          },
+          resolutionA: {
+            value: new THREE$1.Vector2()
+          },
+          resolutionB: {
+            value: new THREE$1.Vector2()
+          },
+          chromaKeyColor: {
+            value: new THREE$1.Vector3(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2])
+          },
+          overlayColor: {
+            value: new THREE$1.Color('#ffffff')
+          },
+          overlay: {
+            value: 0
+          },
+          tween: {
+            value: 1
+          },
+          opacity: {
+            value: 0
+          }
+        },
+        side: THREE$1.DoubleSide
       });
       return material;
     };
@@ -62097,6 +62266,18 @@
       this.onOut();
     };
 
+    _proto.play = function play() {
+      this.mediaLoader.play();
+      this.playing = true;
+      this.onOut();
+    };
+
+    _proto.pause = function pause() {
+      this.mediaLoader.pause();
+      this.playing = false;
+      this.onOut();
+    };
+
     _proto.dispose = function dispose() {
       var mediaLoader = this.mediaLoader;
 
@@ -62127,12 +62308,14 @@
     };
 
     _proto.create = function create(callback) {
+      var _this = this;
+
       var item = this.item;
       var arc = Math.PI / 180 * item.arc;
       var geometry = new THREE$1.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
       geometry.rotateY(-Math.PI / 2 - arc / 2);
       geometry.scale(-1, 1, 1);
-      var mesh = new MediaMesh(item, geometry);
+      var mesh = new MediaMesh(item, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
 
       if (item.position) {
         mesh.position.set(item.position.x, item.position.y, item.position.z);
@@ -62160,6 +62343,24 @@
           callback(mesh);
         }
       });
+
+      if (item.linkedPlayId) {
+        mesh.freeze();
+        MediaLoader.events$.pipe(takeUntil(this.unsubscribe$)).subscribe(function (event) {
+          var eventItem = _this.items.find(function (x) {
+            return event.src.indexOf(x.file) !== -1;
+          });
+
+          if (eventItem && eventItem.id === item.linkedPlayId) {
+            // console.log('MediaLoader.events$.eventItem', eventItem);
+            if (event instanceof MediaLoaderPlayEvent) {
+              mesh.play();
+            } else {
+              mesh.pause();
+            }
+          }
+        });
+      }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
     ;
@@ -62178,7 +62379,7 @@
     hosts: {
       host: WorldComponent
     },
-    inputs: ['item']
+    inputs: ['item', 'items']
   };
 
   var ORIGIN$3 = new THREE$1.Vector3();
@@ -62748,7 +62949,7 @@
       /*
       mesh.userData = {
       	render: () => {
-      		}
+      			}
       };
       */
 
@@ -63661,9 +63862,11 @@
     };
 
     _proto.create = function create(callback) {
+      var _this = this;
+
       var item = this.item;
       var geometry = new THREE$1.PlaneBufferGeometry(1, 1, 2, 2);
-      var mesh = new MediaMesh(item, geometry);
+      var mesh = new MediaMesh(item, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
 
       if (item.position) {
         mesh.position.set(item.position.x, item.position.y, item.position.z);
@@ -63686,6 +63889,24 @@
           callback(mesh);
         }
       });
+
+      if (item.linkedPlayId) {
+        mesh.freeze();
+        MediaLoader.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+          var eventItem = _this.items.find(function (x) {
+            return event.src.indexOf(x.file) !== -1;
+          });
+
+          if (eventItem && eventItem.id === item.linkedPlayId) {
+            // console.log('MediaLoader.events$.eventItem', eventItem);
+            if (event instanceof MediaLoaderPlayEvent) {
+              mesh.play();
+            } else {
+              mesh.pause();
+            }
+          }
+        });
+      }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
     ;
@@ -63704,7 +63925,7 @@
     hosts: {
       host: WorldComponent
     },
-    inputs: ['item']
+    inputs: ['item', 'items']
   };
 
   /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */var mod={}, l=void 0,aa=mod;function r(c,d){var a=c.split("."),b=aa;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)!a.length&&d!==l?b[e]=d:b=b[e]?b[e]:b[e]={};}var t="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function v(c){var d=c.length,a=0,b=Number.POSITIVE_INFINITY,e,f,g,h,k,m,n,p,s,x;for(p=0;p<d;++p)c[p]>a&&(a=c[p]),c[p]<b&&(b=c[p]);e=1<<a;f=new (t?Uint32Array:Array)(e);g=1;h=0;for(k=2;g<=a;){for(p=0;p<d;++p)if(c[p]===g){m=0;n=h;for(s=0;s<g;++s)m=m<<1|n&1,n>>=1;x=g<<16|p;for(s=m;s<e;s+=k)f[s]=x;++h;}++g;h<<=1;k<<=1;}return [f,a,b]}function w(c,d){this.g=[];this.h=32768;this.d=this.f=this.a=this.l=0;this.input=t?new Uint8Array(c):c;this.m=!1;this.i=y;this.r=!1;if(d||!(d={}))d.index&&(this.a=d.index),d.bufferSize&&(this.h=d.bufferSize),d.bufferType&&(this.i=d.bufferType),d.resize&&(this.r=d.resize);switch(this.i){case A:this.b=32768;this.c=new (t?Uint8Array:Array)(32768+this.h+258);break;case y:this.b=0;this.c=new (t?Uint8Array:Array)(this.h);this.e=this.z;this.n=this.v;this.j=this.w;break;default:throw Error("invalid inflate mode");

@@ -86,15 +86,44 @@ void main() {
 }
 `;
 
+const FRAGMENT_CHROMA_KEY_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
+#define threshold 0.55
+#define padding 0.05
+
+varying vec2 vUv;
+uniform bool video;
+uniform float opacity;
+uniform float overlay;
+uniform float tween;
+uniform sampler2D textureA;
+uniform sampler2D textureB;
+uniform vec2 resolutionA;
+uniform vec2 resolutionB;
+uniform vec3 chromaKeyColor;
+uniform vec3 overlayColor;
+
+void main() {
+	vec4 color;
+	vec4 colorA = texture2D(textureA, vUv);
+	vec4 chromaKey = vec4(chromaKeyColor, 1.0);
+    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;
+    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));
+	color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);
+	gl_FragColor = color;
+}
+`;
+
 export default class MediaMesh extends InteractiveMesh {
 
-	static getMaterial() {
+	static getMaterial(useChromaKey) {
 		const material = new THREE.ShaderMaterial({
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
 			vertexShader: VERTEX_SHADER,
-			fragmentShader: FRAGMENT_SHADER,
+			fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER,
 			uniforms: {
 				video: { value: false },
 				textureA: { type: "t", value: null },
@@ -107,6 +136,30 @@ export default class MediaMesh extends InteractiveMesh {
 				opacity: { value: 0 },
 			},
 			// side: THREE.DoubleSide
+		});
+		return material;
+	}
+
+	static getChromaKeyMaterial(chromaKeyColor = [0.0, 1.0, 0.0]) {
+		const material = new THREE.ShaderMaterial({
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+			vertexShader: VERTEX_SHADER,
+			fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
+			uniforms: {
+				video: { value: false },
+				textureA: { type: "t", value: null },
+				textureB: { type: "t", value: null },
+				resolutionA: { value: new THREE.Vector2() },
+				resolutionB: { value: new THREE.Vector2() },
+				chromaKeyColor: { value: new THREE.Vector3(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2]) },
+				overlayColor: { value: new THREE.Color('#ffffff') },
+				overlay: { value: 0 },
+				tween: { value: 1 },
+				opacity: { value: 0 },
+			},
+			side: THREE.DoubleSide
 		});
 		return material;
 	}
@@ -223,6 +276,18 @@ export default class MediaMesh extends InteractiveMesh {
 
 	onToggle() {
 		this.playing = this.mediaLoader.toggle();
+		this.onOut();
+	}
+
+	play() {
+		this.mediaLoader.play();
+		this.playing = true;
+		this.onOut();
+	}
+
+	pause() {
+		this.mediaLoader.pause();
+		this.playing = false;
 		this.onOut();
 	}
 

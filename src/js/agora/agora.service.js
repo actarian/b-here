@@ -2,7 +2,8 @@
 // const AgoraRTC = require('agora-rtc-sdk');
 
 import AgoraRTM from 'agora-rtm-sdk';
-import { BehaviorSubject, from, of , Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, of , Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
@@ -174,6 +175,18 @@ export default class AgoraService extends Emittable {
 		return null;
 	}
 
+	getPublisherStreamId$() {
+		const publisherStreamId = this.publisherStreamId;
+		if (publisherStreamId) {
+			return of(publisherStreamId);
+		} else {
+			return this.streams$.pipe(
+				map(() => this.publisherStreamId),
+				filter(x => x),
+			);
+		}
+	}
+
 	constructor(defaultDevices) {
 		if (AgoraService.AGORA) {
 			throw ('AgoraService is a singleton');
@@ -220,6 +233,18 @@ export default class AgoraService extends Emittable {
 		this.state$ = new BehaviorSubject(state);
 		this.local$ = new BehaviorSubject(null);
 		this.remotes$ = new BehaviorSubject([]);
+		this.streams$ = combineLatest(this.local$, this.remotes$).pipe(
+			map(data => {
+				const local = data[0];
+				const remotes = data[1];
+				let streams = remotes;
+				if (local) {
+					streams = streams.slice();
+					streams.push(local);
+				}
+				return streams;
+			})
+		);
 		this.peers$ = new BehaviorSubject([]);
 		this.message$ = new Subject();
 		this.events$ = new Subject();
