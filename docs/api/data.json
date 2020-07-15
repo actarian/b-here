@@ -1851,8 +1851,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/watch/watch-ao.glb",
-        "usdz": "/watch/watch-ao.usdz"
+        "gltf": "/watch/watchfree.glb",
+        "usdz": "/watch/watchfree.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
