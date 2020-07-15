@@ -65,7 +65,7 @@
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "fov": 55
     },
     {
       "id": 11,
@@ -1245,8 +1245,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "/washing-machine/gltf.gltf",
+        "usdz": "/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "",
       "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
@@ -1277,8 +1277,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "/washing-machine/gltf.gltf",
+        "usdz": "/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "",
       "envMapFile": "publisherStream",
@@ -1561,8 +1561,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/watch/casio.glb",
-        "usdz": "models/watch/casio.usdz"
+        "gltf": "/watch/casio.glb",
+        "usdz": "/watch/casio.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
@@ -1589,8 +1589,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/watch/watch-ao.glb",
-        "usdz": "models/watch/watch-ao.usdz"
+        "gltf": "/watch/watch-ao.glb",
+        "usdz": "/watch/watch-ao.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
@@ -1617,8 +1617,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/watch/watch-ao.glb",
-        "usdz": "models/watch/watch-ao.usdz"
+        "gltf": "/watch/watch-ao.glb",
+        "usdz": "/watch/watch-ao.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
@@ -1645,8 +1645,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/moto/ducatiGLTF.gltf",
-        "usdz": "models/moto/moto.usdz"
+        "gltf": "/moto/ducatiGLTF.gltf",
+        "usdz": "/moto/moto.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "road1.jpeg",
@@ -1685,8 +1685,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/moto/suzukiGLTF.gltf",
-        "usdz": "models/moto/moto.usdz"
+        "gltf": "/moto/suzukiGLTF.gltf",
+        "usdz": "/moto/moto.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "road2.jpeg",
@@ -1765,8 +1765,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/washing-machine/gltf.gltf",
-        "usdz": "models/washing-machine/washing-machine.usdz"
+        "gltf": "/washing-machine/gltf.gltf",
+        "usdz": "/washing-machine/washing-machine.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
@@ -1793,8 +1793,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
+        "gltf": "/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "/damaged-helmet/damaged-helmet.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
@@ -1821,8 +1821,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "models/logo/logowsGLTF.gltf",
-        "usdz": "models/logo/logows.usdz"
+        "gltf": "/logo/logowsGLTF.gltf",
+        "usdz": "/logo/logows.usdz"
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "amazing.jpg",
