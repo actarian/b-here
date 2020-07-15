@@ -827,6 +827,238 @@
       "fov": 75
     },
     {
+      "id": 25,
+      "type": "panorama",
+      "name": "White Room",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "whiteroom.jpeg",
+      "items": [
+        {
+          "id": 2320,
+          "type": "plane",
+          "folder": "green-screen/",
+          "file": "green-screen.mp4",
+          "linkedPlayId": 2310,
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 20,
+            "y": 2.5,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 16,
+            "y": 12,
+            "z": 1
+          }
+        },
+        {
+          "id": 2321,
+          "type": "plane",
+          "folder": "green-screen/",
+          "file": "green-screen.mp4",
+          "linkedPlayId": 2310,
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 8,
+            "y": 0,
+            "z": -6.5
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0.00,
+            "z": 0
+          },
+          "scale": {
+            "x": 8,
+            "y": 6,
+            "z": 1
+          }
+        },
+        {
+          "id": 2322,
+          "type": "plane",
+          "folder": "green-screen/",
+          "file": "green-screen.mp4",
+          "linkedPlayId": 2310,
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 8,
+            "y": 0,
+            "z": 5.8
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0.0,
+            "z": 0
+          },
+          "scale": {
+            "x": 8,
+            "y": 6,
+            "z": 1
+          }
+        },
+        {
+          "id": 2440,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.925340065062613,
+            -0.3789150666212419,
+            0.0
+          ],
+          "navTo": 1
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 26,
+      "type": "panorama",
+      "name": "White Room Stream",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "waiting-room/",
+      "envMapFile": "whiteroom.jpeg",
+      "items": [
+        {
+          "id": 2320,
+          "type": "plane",
+          "folder": "",
+          "file": "publisherStream",
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 20,
+            "y": 0.2,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 10,
+            "y": 7.5,
+            "z": 1
+          }
+        },
+        {
+          "id": 2321,
+          "type": "plane",
+          "folder": "",
+          "file": "publisherStream",
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 8,
+            "y": -1.5,
+            "z": -6.2
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0.00,
+            "z": 0
+          },
+          "scale": {
+            "x": 4,
+            "y": 3,
+            "z": 1
+          }
+        },
+        {
+          "id": 2322,
+          "type": "plane",
+          "folder": "",
+          "file": "publisherStream",
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 8,
+            "y": -1.5,
+            "z": 5.7
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0.0,
+            "z": 0
+          },
+          "scale": {
+            "x": 4,
+            "y": 3,
+            "z": 1
+          }
+        },
+        {
+          "id": 2440,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.925340065062613,
+            -0.3789150666212419,
+            0.0
+          ],
+          "navTo": 1
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 17,
+      "type": "panorama",
+      "name": "Ernestomeda",
+      "likes": 40,
+      "liked": false,
+      "envMapFolder": "rendering/",
+      "envMapFile": "ernestomeda.jpg",
+      "items": [
+
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "fov": 75
+    },
+    {
       "id": 41,
       "type": "panorama",
       "name": "Kitchen 01",
@@ -1305,7 +1537,7 @@
     {
       "id": 201,
       "type": "panorama-grid",
-      "name": "Kitchen Hight",
+      "name": "Kitchen 8192",
       "likes": 225,
       "liked": false,
       "envMapFolder": "newoneset2/",
@@ -1332,6 +1564,7 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90
@@ -1341,7 +1574,7 @@
     {
       "id": 202,
       "type": "panorama-grid",
-      "name": "Kitchen Low",
+      "name": "Kitchen 4096",
       "likes": 225,
       "liked": false,
       "envMapFolder": "newoneset2_low/",
@@ -1368,6 +1601,7 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90
