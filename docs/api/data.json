@@ -59,6 +59,30 @@
             -0.37763166291263806
           ],
           "navTo": 303
+        },
+        {
+          "id": 70,
+          "type": "nav",
+          "title": "Camera Stream",
+          "abstract": "Abstract",
+          "position": [
+            0.7250713998864943,
+            -0.23978414850231675,
+            0.6455811546147071
+          ],
+          "navTo": 29
+        },
+        {
+          "id": 72,
+          "type": "nav",
+          "title": "Ernestomeda",
+          "abstract": "Abstract",
+          "position": [
+            0.7635030433471529,
+            -0.24565269221397465,
+            -0.5972586186968437
+          ],
+          "navTo": 17
         }
       ],
       "orientation": {
@@ -928,7 +952,7 @@
           ],
           "navTo": 1
         }
-      ],
+     ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
@@ -1033,11 +1057,117 @@
             0.0
           ],
           "navTo": 1
+        },
+        {
+          "id": 2450,
+          "type": "nav",
+          "title": "Cinema Stream",
+          "abstract": "Abstract",
+          "position": [
+            0.8527075805981347,
+            -0.5223879763820495,
+            0.000764278707697236
+          ],
+          "navTo": 24
         }
       ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
+      },
+      "fov": 75
+    },
+    {
+      "id": 29,
+      "type": "panorama",
+      "name": "Set Cinematografico",
+      "likes": 134,
+      "liked": false,
+      "envMapFolder": "rendering/",
+      "envMapFile": "ue_set.jpg",
+      "items": [
+        {
+          "id": 2320,
+          "type": "plane",
+          "folder": "green-screen/",
+          "file": "green-screen.mp4",
+          "linkedPlayId": 2310,
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 12,
+            "y": 0.7,
+            "z": 0.2
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 6,
+            "y": 4,
+            "z": 1
+          }
+        },
+        {
+          "id": 2322,
+          "type": "plane",
+          "folder": "",
+          "file": "publisherStream",
+          "chromaKeyColor": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "position": {
+            "x": 11,
+            "y": 0.2,
+            "z": 3
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 4,
+            "y": 3,
+            "z": 1
+          }
+        },
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.7986748566481554,
+            0.17860638059524706,
+            0.5746461817229052
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 2330,
+          "type": "nav",
+          "title": "White Room",
+          "abstract": "Abstract",
+          "position": [
+            0.9291670530146359,
+            -0.3428065798712133,
+            0.13831932760499613
+          ],
+          "navTo": 26
+        }
+      ],
+
+      "orientation": {
+        "latitude": -7,
+        "longitude": 8.5
       },
       "fov": 75
     },
@@ -1050,6 +1180,30 @@
       "envMapFolder": "rendering/",
       "envMapFile": "ernestomeda.jpg",
       "items": [
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.9895859099478105,
+            0.0015676209690798433,
+            -0.14393494849153685
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 2330,
+          "type": "nav",
+          "title": "Kitchen 4096",
+          "abstract": "Abstract",
+          "position": [
+            0.8939132074560319,
+            -0.16237757850308276,
+            0.41779504489060726
+          ],
+          "navTo": 202
+        }
 
       ],
       "orientation": {
@@ -1058,6 +1212,7 @@
       },
       "fov": 75
     },
+    
     {
       "id": 41,
       "type": "panorama",
@@ -1564,10 +1719,37 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
-      "items": [],
+      "items": [
+
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.9895859099478105,
+            0.0015676209690798433,
+            -0.14393494849153685
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 2330,
+          "type": "nav",
+          "title": "Ernestomeda",
+          "abstract": "Abstract",
+          "position": [
+            0.9171044989783855,
+            -0.14408490583842612,
+            0.3716972933223166
+          ],
+          "navTo": 17
+        }
+
+      ],
       "orientation": {
         "latitude": 0,
-        "longitude": 90
+        "longitude": 360
       },
       "fov": 75
     },
@@ -1601,10 +1783,37 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
-      "items": [],
+      "items": [
+
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.9895859099478105,
+            0.0015676209690798433,
+            -0.14393494849153685
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 2330,
+          "type": "nav",
+          "title": "Kitchen 8192",
+          "abstract": "Abstract",
+          "position": [
+            0.9171044989783855,
+            -0.14408490583842612,
+            0.3716972933223166
+          ],
+          "navTo": 201
+        }
+
+      ],
       "orientation": {
         "latitude": 0,
-        "longitude": 90
+        "longitude": 360
       },
       "fov": 75
     },
