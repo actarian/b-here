@@ -822,26 +822,26 @@
         {
           "id": 2430,
           "type": "nav",
-          "title": "Social Media",
+          "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
             0.8002543789009917,
             -0.19439701223042613,
             -0.5672765909903842
           ],
-          "navTo": 205
+          "navTo": 1
         },
         {
           "id": 2440,
           "type": "nav",
-          "title": "Time Square",
+          "title": "Set Cinematografico",
           "abstract": "Abstract",
           "position": [
             0.8012228950677142,
             -0.19355223904603844,
             0.5661973182377114
           ],
-          "navTo": 80
+          "navTo": 29
         }
       ],
       "orientation": {
@@ -1072,7 +1072,7 @@
         }
       ],
       "orientation": {
-        "latitude": 0,
+        "latitude": -10,
         "longitude": 0
       },
       "fov": 75
@@ -1086,33 +1086,7 @@
       "envMapFolder": "rendering/",
       "envMapFile": "ue_set.jpg",
       "items": [
-        {
-          "id": 2320,
-          "type": "plane",
-          "folder": "green-screen/",
-          "file": "green-screen.mp4",
-          "linkedPlayId": 2310,
-          "chromaKeyColor": [
-            0.0,
-            1.0,
-            0.0
-          ],
-          "position": {
-            "x": 12,
-            "y": 0.7,
-            "z": 0.2
-          },
-          "rotation": {
-            "x": 0,
-            "y": -1.57079632679,
-            "z": 0
-          },
-          "scale": {
-            "x": 6,
-            "y": 4,
-            "z": 1
-          }
-        },
+        
         {
           "id": 2322,
           "type": "plane",
@@ -1125,8 +1099,8 @@
           ],
           "position": {
             "x": 11,
-            "y": 0.2,
-            "z": 3
+            "y": 0.26,
+            "z": 1.35
           },
           "rotation": {
             "x": 0,
