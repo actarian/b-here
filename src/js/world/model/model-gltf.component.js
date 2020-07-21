@@ -46,7 +46,7 @@ export default class ModelGltfComponent extends ModelComponent {
 		const stand = this.stand = new THREE.Mesh(geometry, material);
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.model;
 		this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (mesh) => {
 			// scale
@@ -89,8 +89,8 @@ export default class ModelGltfComponent extends ModelComponent {
 			this.group.add(this.stand);
 			*/
 			//
-			if (typeof callback === 'function') {
-				callback(dummy);
+			if (typeof mount === 'function') {
+				mount(dummy);
 			}
 			this.progress = 0;
 			this.pushChanges();

@@ -52,11 +52,11 @@ export default class ModelPanelComponent extends ModelComponent {
 		});
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.panel;
 		const mesh = new THREE.Group();
-		if (typeof callback === 'function') {
-			callback(mesh);
+		if (typeof mount === 'function') {
+			mount(mesh);
 		}
 	}
 

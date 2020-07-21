@@ -99,7 +99,7 @@ export default class ModelDebugComponent extends ModelComponent {
 		});
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		const textGroup = this.textGroup = new THREE.Group();
 		const material = this.material = new THREE.MeshBasicMaterial({
 			depthTest: false,
@@ -109,8 +109,8 @@ export default class ModelDebugComponent extends ModelComponent {
 			side: THREE.DoubleSide
 		});
 		const text = this.text = this.createText();
-		if (typeof callback === 'function') {
-			callback(textGroup);
+		if (typeof mount === 'function') {
+			mount(textGroup);
 		}
 	}
 

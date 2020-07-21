@@ -210,7 +210,7 @@ export default class ModelGridComponent extends ModelComponent {
 		ground.off('out', this.onGroundOut);
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.tile;
 		const mesh = this.mesh = new THREE.Group();
 		this.addTiles();
@@ -222,8 +222,8 @@ export default class ModelGridComponent extends ModelComponent {
 			}
 		};
 		*/
-		if (typeof callback === 'function') {
-			callback(mesh);
+		if (typeof mount === 'function') {
+			mount(mesh);
 		}
 	}
 

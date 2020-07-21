@@ -1,12 +1,11 @@
 import { ReplaySubject } from 'rxjs';
-import { first } from 'rxjs/operators';
 import * as THREE from 'three';
-import AgoraService from '../../agora/agora.service';
 import { environment } from '../../environment';
 
 export class MediaLoaderEvent {
-	constructor(src) {
+	constructor(src, id) {
 		this.src = src;
+		this.id = id;
 	}
 }
 
@@ -37,6 +36,10 @@ export default class MediaLoader {
 		return item.file === 'publisherStream';
 	}
 
+	static isNextAttendeeStream(item) {
+		return item.file === 'nextAttendeeStream';
+	}
+
 	get isVideo() {
 		return MediaLoader.isVideo(this.item);
 	}
@@ -45,12 +48,16 @@ export default class MediaLoader {
 		return MediaLoader.isPublisherStream(this.item);
 	}
 
+	get isNextAttendeeStream() {
+		return MediaLoader.isNextAttendeeStream(this.item);
+	}
+
 	get isPlayableVideo() {
 		return !this.isAutoplayVideo;
 	}
 
 	get isAutoplayVideo() {
-		return this.isPublisherStream || (this.isVideo && this.item.autoplay);
+		return this.isPublisherStream || this.isNextAttendeeStream || (this.isVideo && this.item.autoplay);
 	}
 
 	constructor(item) {
@@ -61,40 +68,31 @@ export default class MediaLoader {
 	load(callback) {
 		const item = this.item;
 		let texture;
-		if (this.isPublisherStream) {
-			const agora = AgoraService.getSingleton();
-			if (!agora) {
+		if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
+			const streamId = item.streamId;
+			const target = `#stream-${streamId}`;
+			const video = document.querySelector(`${target} video`);
+			if (!video) {
 				return;
 			}
-			const onPublisherStreamId = (publisherStreamId) => {
-				// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-				const target = `#stream-${publisherStreamId}`;
-				const video = document.querySelector(`${target} video`);
-				if (!video) {
-					return;
+			const onCanPlay = () => {
+				video.oncanplay = null;
+				texture = this.texture = new THREE.VideoTexture(video);
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+				texture.mapping = THREE.UVMapping;
+				texture.format = THREE.RGBFormat;
+				texture.needsUpdate = true;
+				if (typeof callback === 'function') {
+					callback(texture, this);
 				}
-				const onCanPlay = () => {
-					video.oncanplay = null;
-					texture = this.texture = new THREE.VideoTexture(video);
-					texture.minFilter = THREE.LinearFilter;
-					texture.magFilter = THREE.LinearFilter;
-					texture.mapping = THREE.UVMapping;
-					texture.format = THREE.RGBFormat;
-					texture.needsUpdate = true;
-					if (typeof callback === 'function') {
-						callback(texture, this);
-					}
-				};
-				video.crossOrigin = 'anonymous';
-				if (video.readyState >= video.HAVE_FUTURE_DATA) {
-					onCanPlay();
-				} else {
-					video.oncanplay = onCanPlay;
-				}
+			};
+			video.crossOrigin = 'anonymous';
+			if (video.readyState >= video.HAVE_FUTURE_DATA) {
+				onCanPlay();
+			} else {
+				video.oncanplay = onCanPlay;
 			}
-			agora.getPublisherStreamId$().pipe(
-				first()
-			).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 		} else if (this.isVideo) {
 			// create the video element
 			const video = this.video = document.createElement('video');
@@ -149,7 +147,7 @@ export default class MediaLoader {
 			console.log('MediaLoader.play.error', this.item.file, error);
 		});
 		if (!silent) {
-			MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src));
+			MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
 		}
 	}
 
@@ -158,7 +156,7 @@ export default class MediaLoader {
 		this.video.muted = true;
 		this.video.pause();
 		if (!silent) {
-			MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src));
+			MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
 		}
 	}
 

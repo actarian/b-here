@@ -1280,7 +1280,10 @@
         var messageClient = this.messageClient = AgoraRTM.createInstance(environment.appKey, {
           logFilter: AgoraRTM.LOG_FILTER_OFF
         }); // LOG_FILTER_DEBUG
-        // messageClient.on('ConnectionStateChanged', console.warn);
+
+        messageClient.setParameters({
+          logFilter: AgoraRTM.LOG_FILTER_OFF
+        }); // messageClient.on('ConnectionStateChanged', console.warn);
         // messageClient.on('MessageFromPeer', console.log);
       }
     };
@@ -2739,8 +2742,13 @@
       Object.assign(this, options);
 
       if (options.items) {
+        var nextAttendeeStreamIndex = 0;
         options.items.forEach(function (item, index) {
           item.index = index;
+
+          if (item.file === 'nextAttendeeStream') {
+            item.fileIndex = nextAttendeeStreamIndex++;
+          }
         });
       }
     }
@@ -2772,12 +2780,6 @@
 
     function PanoramaGridView(options) {
       var _this;
-
-      if (options.items) {
-        options.items.forEach(function (item, index) {
-          item.index = index;
-        });
-      }
 
       if (options.tiles) {
         options.tiles = options.tiles.map(function (tile, i) {
@@ -3229,7 +3231,7 @@
       });
       var controls = this.controls = form.controls;
       controls.view.options = views;
-      form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      form.changes$.pipe(operators.takeUntil(this.unsubscribe$), operators.map(function (changes) {
         // console.log('AgoraComponent.form.changes$', changes, form.valid);
         var view = data.views.find(function (x) {
           return x.id === changes.view;
@@ -3238,21 +3240,21 @@
 
         _this3.pushChanges();
 
-        setTimeout(function () {
-          if (_this3.state.hosted) {
-            _this3.view = view; // !!!
-
-            if (!DEBUG) {
-              _this3.agora.navToView(view.id);
-            }
-          } else {
-            // !!! waiting room
-            _this3.view = _this3.getWaitingRoom();
+        return view;
+      }), operators.delay(1), operators.map(function (view) {
+        if (!_this3.state.hosted) {
+          view = _this3.getWaitingRoom();
+        } else {
+          if (!DEBUG) {
+            _this3.agora.navToView(view.id);
           }
+        } // collect items publisherStream & nextAttendeeStream ?
 
-          _this3.pushChanges();
-        }, 1);
-      });
+
+        _this3.view = view;
+
+        _this3.pushChanges();
+      })).subscribe(console.log);
     };
 
     _proto.getWaitingRoom = function getWaitingRoom() {
@@ -61557,8 +61559,10 @@
       };
 
       this.host.objects.add(group);
-      this.create(function (mesh) {
-        return _this.loaded(mesh);
+      this.onCreate(function (mesh) {
+        return _this.onMount(mesh);
+      }, function (mesh) {
+        return _this.onDismount(mesh);
       });
     };
 
@@ -61587,7 +61591,7 @@
       return this.constructor.meta.selector + "-" + this.rxcompId + (name ? "-" + name : '');
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mounth, dismount) {
       var material = new THREE$1.MeshStandardMaterial({
         color: new THREE$1.Color('#ffcc00'),
         roughness: 0.4,
@@ -61598,14 +61602,14 @@
       });
       var mesh = new THREE$1.Mesh(GEOMETRY, material);
 
-      if (typeof callback === 'function') {
-        callback(mesh);
+      if (typeof mounth === 'function') {
+        mounth(mesh);
       }
 
       return mesh;
     };
 
-    _proto.loaded = function loaded(mesh) {
+    _proto.onMount = function onMount(mesh) {
       mesh.name = this.getName('mesh');
       this.mesh = mesh;
       this.group.add(mesh); // this.host.render(); !!!
@@ -61619,6 +61623,16 @@
       });
       */
       // console.log('Model.loaded', mesh);
+    };
+
+    _proto.onDismount = function onDismount(mesh) {
+      this.group.remove(mesh);
+
+      if (typeof mesh.dispose === 'function') {
+        mesh.dispose();
+      }
+
+      this.mesh = null;
     };
 
     _proto.calculateScaleAndPosition = function calculateScaleAndPosition() {
@@ -61744,7 +61758,7 @@
       });
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       // this.renderOrder = environment.renderOrder.banner;
       var mesh = new THREE$1.Group();
       mesh.userData = {
@@ -61753,8 +61767,8 @@
         }
       };
 
-      if (typeof callback === 'function') {
-        callback(mesh);
+      if (typeof mount === 'function') {
+        mount(mesh);
       }
     };
 
@@ -61804,8 +61818,9 @@
     inputs: ['item']
   };
 
-  var MediaLoaderEvent = function MediaLoaderEvent(src) {
+  var MediaLoaderEvent = function MediaLoaderEvent(src, id) {
     this.src = src;
+    this.id = id;
   };
   var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
     _inheritsLoose(MediaLoaderPlayEvent, _MediaLoaderEvent);
@@ -61848,6 +61863,10 @@
       return item.file === 'publisherStream';
     };
 
+    MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
+      return item.file === 'nextAttendeeStream';
+    };
+
     _createClass(MediaLoader, [{
       key: "isVideo",
       get: function get() {
@@ -61859,6 +61878,11 @@
         return MediaLoader.isPublisherStream(this.item);
       }
     }, {
+      key: "isNextAttendeeStream",
+      get: function get() {
+        return MediaLoader.isNextAttendeeStream(this.item);
+      }
+    }, {
       key: "isPlayableVideo",
       get: function get() {
         return !this.isAutoplayVideo;
@@ -61866,7 +61890,7 @@
     }, {
       key: "isAutoplayVideo",
       get: function get() {
-        return this.isPublisherStream || this.isVideo && this.item.autoplay;
+        return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.autoplay;
       }
     }]);
 
@@ -61883,65 +61907,54 @@
       var item = this.item;
       var texture;
 
-      if (this.isPublisherStream) {
-        var agora = AgoraService.getSingleton();
+      if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
+        var streamId = item.streamId;
+        var target = "#stream-" + streamId;
+        var video = document.querySelector(target + " video");
 
-        if (!agora) {
+        if (!video) {
           return;
         }
 
-        var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
-          // const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-          var target = "#stream-" + publisherStreamId;
-          var video = document.querySelector(target + " video");
+        var onCanPlay = function onCanPlay() {
+          video.oncanplay = null;
+          texture = _this.texture = new THREE$1.VideoTexture(video);
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.mapping = THREE$1.UVMapping;
+          texture.format = THREE$1.RGBFormat;
+          texture.needsUpdate = true;
 
-          if (!video) {
-            return;
-          }
-
-          var onCanPlay = function onCanPlay() {
-            video.oncanplay = null;
-            texture = _this.texture = new THREE$1.VideoTexture(video);
-            texture.minFilter = THREE$1.LinearFilter;
-            texture.magFilter = THREE$1.LinearFilter;
-            texture.mapping = THREE$1.UVMapping;
-            texture.format = THREE$1.RGBFormat;
-            texture.needsUpdate = true;
-
-            if (typeof callback === 'function') {
-              callback(texture, _this);
-            }
-          };
-
-          video.crossOrigin = 'anonymous';
-
-          if (video.readyState >= video.HAVE_FUTURE_DATA) {
-            onCanPlay();
-          } else {
-            video.oncanplay = onCanPlay;
+          if (typeof callback === 'function') {
+            callback(texture, _this);
           }
         };
 
-        agora.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
-          return onPublisherStreamId(publisherStreamId);
-        });
-      } else if (this.isVideo) {
-        // create the video element
-        var video = this.video = document.createElement('video');
-        video.preload = 'metadata';
-        video.volume = 0.5;
-        video.muted = true;
-        video.playsinline = video.playsInline = true;
-
-        if (item.autoplay) {
-          video.loop = true;
-        }
-
         video.crossOrigin = 'anonymous';
 
-        var onCanPlay = function onCanPlay() {
-          video.oncanplay = null;
-          texture = new THREE$1.VideoTexture(video);
+        if (video.readyState >= video.HAVE_FUTURE_DATA) {
+          onCanPlay();
+        } else {
+          video.oncanplay = onCanPlay;
+        }
+      } else if (this.isVideo) {
+        // create the video element
+        var _video = this.video = document.createElement('video');
+
+        _video.preload = 'metadata';
+        _video.volume = 0.5;
+        _video.muted = true;
+        _video.playsinline = _video.playsInline = true;
+
+        if (item.autoplay) {
+          _video.loop = true;
+        }
+
+        _video.crossOrigin = 'anonymous';
+
+        var _onCanPlay = function _onCanPlay() {
+          _video.oncanplay = null;
+          texture = new THREE$1.VideoTexture(_video);
           texture.minFilter = THREE$1.LinearFilter;
           texture.magFilter = THREE$1.LinearFilter;
           texture.mapping = THREE$1.UVMapping;
@@ -61949,7 +61962,7 @@
           texture.needsUpdate = true;
 
           if (!item.autoplay) {
-            video.pause();
+            _video.pause();
           }
 
           if (typeof callback === 'function') {
@@ -61957,9 +61970,11 @@
           }
         };
 
-        video.oncanplay = onCanPlay;
-        video.src = MediaLoader.getPath(item);
-        video.load(); // must call after setting/changing source
+        _video.oncanplay = _onCanPlay;
+        _video.src = MediaLoader.getPath(item);
+
+        _video.load(); // must call after setting/changing source
+
 
         this.play(true);
       } else {
@@ -61991,7 +62006,7 @@
       });
 
       if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src));
+        MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
       }
     };
 
@@ -62001,7 +62016,7 @@
       this.video.pause();
 
       if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src));
+        MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
       }
     };
 
@@ -62128,12 +62143,54 @@
       return material;
     };
 
-    function MediaMesh(item, geometry, material) {
+    MediaMesh.getStreamId$ = function getStreamId$(item) {
+      var file = item.file;
+
+      if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
+        return rxjs.of(file);
+      }
+
+      var agora = AgoraService.getSingleton();
+
+      if (agora) {
+        return agora.streams$.pipe(operators.map(function (streams) {
+          var stream;
+
+          if (file === 'publisherStream') {
+            stream = streams.find(function (x) {
+              return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
+            });
+          } else if (file === 'nextAttendeeStream') {
+            var i = 0;
+            streams.forEach(function (x) {
+              if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+                if (i === item.fileIndex) {
+                  stream = x;
+                }
+
+                i++;
+              }
+            });
+          }
+
+          if (stream) {
+            return stream.getId();
+          } else {
+            return null;
+          }
+        }));
+      } else {
+        return rxjs.of(null);
+      }
+    };
+
+    function MediaMesh(item, items, geometry, material) {
       var _this;
 
       material = material || MediaMesh.getMaterial();
       _this = _InteractiveMesh.call(this, geometry, material) || this;
       _this.item = item;
+      _this.items = items;
       _this.renderOrder = environment.renderOrder.plane;
       var uniforms = _this.uniforms = {
         overlay: 0,
@@ -62203,6 +62260,36 @@
       });
     };
 
+    _proto.events$ = function events$() {
+      var _this3 = this;
+
+      var item = this.item;
+      var items = this.items;
+
+      if (item.linkedPlayId) {
+        this.freeze();
+      }
+
+      return MediaLoader.events$.pipe(operators.map(function (event) {
+        if (item.linkedPlayId) {
+          var eventItem = items.find(function (x) {
+            return event.src.indexOf(x.file) !== -1 && event.id === item.linkedPlayId;
+          });
+
+          if (eventItem) {
+            // console.log('MediaLoader.events$.eventItem', event, eventItem);
+            if (event instanceof MediaLoaderPlayEvent) {
+              _this3.play();
+            } else if (event instanceof MediaLoaderPauseEvent) {
+              _this3.pause();
+            }
+          }
+        }
+
+        return event;
+      }));
+    };
+
     _proto.onAppear = function onAppear() {
       var uniforms = this.uniforms;
       var material = this.material;
@@ -62210,6 +62297,22 @@
       if (material.uniforms) {
         gsap.to(uniforms, 0.4, {
           opacity: 1,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            material.uniforms.opacity.value = uniforms.opacity;
+            material.needsUpdate = true;
+          }
+        });
+      }
+    };
+
+    _proto.onDisappear = function onDisappear() {
+      var uniforms = this.uniforms;
+      var material = this.material;
+
+      if (material.uniforms) {
+        gsap.to(uniforms, 0.4, {
+          opacity: 0,
           ease: Power2.easeInOut,
           onUpdate: function onUpdate() {
             material.uniforms.opacity.value = uniforms.opacity;
@@ -62307,60 +62410,57 @@
 
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var _this = this;
 
       var item = this.item;
+      var items = this.items;
       var arc = Math.PI / 180 * item.arc;
       var geometry = new THREE$1.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
       geometry.rotateY(-Math.PI / 2 - arc / 2);
       geometry.scale(-1, 1, 1);
-      var mesh = new MediaMesh(item, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
+      var mesh;
+      var subscription;
+      MediaMesh.getStreamId$(item).pipe(takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
+        if (_this.streamId !== streamId) {
+          _this.streamId = streamId;
 
-      if (item.position) {
-        mesh.position.set(item.position.x, item.position.y, item.position.z);
-      }
+          if (mesh) {
+            dismount(mesh);
+          }
 
-      if (item.rotation) {
-        mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
-      }
+          if (subscription) {
+            subscription.unsubscribe();
+            subscription = null;
+          }
 
-      if (item.scale) {
-        mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
-      }
-      /*
-      var box = new THREE.BoxHelper(mesh, 0xffff00);
-      this.host.scene.add(box);
-      */
+          if (streamId) {
+            item.streamId = streamId;
+            mesh = new MediaMesh(item, items, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
 
+            if (item.position) {
+              mesh.position.set(item.position.x, item.position.y, item.position.z);
+            }
 
-      mesh.load(function () {
-        /*
-        var box = new THREE.BoxHelper(mesh, 0xffff00);
-        this.host.scene.add(box);
-        */
-        if (typeof callback === 'function') {
-          callback(mesh);
+            if (item.rotation) {
+              mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+            }
+
+            if (item.scale) {
+              mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+            }
+
+            mesh.load(function () {
+              if (typeof mount === 'function') {
+                mount(mesh);
+              }
+
+              subscription = mesh.events$().pipe(takeUntil(_this.unsubscribe$)).subscribe(function () {});
+            });
+          } // console.log('streamId', streamId, mesh);
+
         }
       });
-
-      if (item.linkedPlayId) {
-        mesh.freeze();
-        MediaLoader.events$.pipe(takeUntil(this.unsubscribe$)).subscribe(function (event) {
-          var eventItem = _this.items.find(function (x) {
-            return event.src.indexOf(x.file) !== -1;
-          });
-
-          if (eventItem && eventItem.id === item.linkedPlayId) {
-            // console.log('MediaLoader.events$.eventItem', eventItem);
-            if (event instanceof MediaLoaderPlayEvent) {
-              mesh.play();
-            } else {
-              mesh.pause();
-            }
-          }
-        });
-      }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
     ;
@@ -62368,7 +62468,9 @@
     _proto.onDestroy = function onDestroy() {
       _ModelComponent.prototype.onDestroy.call(this);
 
-      this.mesh.dispose();
+      if (this.mesh) {
+        this.mesh.dispose();
+      }
     };
 
     return ModelCurvedPlaneComponent;
@@ -62469,7 +62571,7 @@
       });
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var textGroup = this.textGroup = new THREE$1.Group();
       var material = this.material = new THREE$1.MeshBasicMaterial({
         depthTest: false,
@@ -62481,8 +62583,8 @@
       });
       var text = this.text = this.createText();
 
-      if (typeof callback === 'function') {
-        callback(textGroup);
+      if (typeof mount === 'function') {
+        mount(textGroup);
       }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
@@ -62604,7 +62706,7 @@
       var stand = this.stand = new THREE$1.Mesh(geometry, material);
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var _this = this;
 
       // this.renderOrder = environment.renderOrder.model;
@@ -62650,8 +62752,8 @@
         */
         //
 
-        if (typeof callback === 'function') {
-          callback(dummy);
+        if (typeof mount === 'function') {
+          mount(dummy);
         }
 
         _this.progress = 0;
@@ -62941,7 +63043,7 @@
       ground.off('out', this.onGroundOut);
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       // this.renderOrder = environment.renderOrder.tile;
       var mesh = this.mesh = new THREE$1.Group();
       this.addTiles();
@@ -62949,12 +63051,12 @@
       /*
       mesh.userData = {
       	render: () => {
-      		}
+      			}
       };
       */
 
-      if (typeof callback === 'function') {
-        callback(mesh);
+      if (typeof mount === 'function') {
+        mount(mesh);
       }
     };
 
@@ -63310,13 +63412,13 @@
       _ModelComponent.prototype.onDestroy.call(this);
     };
 
-    _proto3.create = function create(callback) {
+    _proto3.onCreate = function onCreate(mount, dismount) {
       // this.renderOrder = environment.renderOrder.menu;
       var menuGroup = this.menuGroup = new THREE$1.Group();
       menuGroup.lookAt(ORIGIN$5);
 
-      if (typeof callback === 'function') {
-        callback(menuGroup);
+      if (typeof mount === 'function') {
+        mount(menuGroup);
       }
     };
 
@@ -63594,7 +63696,7 @@
       _ModelComponent.prototype.onDestroy.call(this);
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var _THREE$Vector,
           _this = this;
 
@@ -63679,8 +63781,8 @@
         }
       });
 
-      if (typeof callback === 'function') {
-        callback(nav);
+      if (typeof mount === 'function') {
+        mount(nav);
       }
     };
 
@@ -63757,12 +63859,12 @@
       });
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       // this.renderOrder = environment.renderOrder.panel;
       var mesh = new THREE$1.Group();
 
-      if (typeof callback === 'function') {
-        callback(mesh);
+      if (typeof mount === 'function') {
+        mount(mesh);
       }
     };
 
@@ -63827,11 +63929,11 @@
 
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var mesh = new THREE$1.Group();
 
-      if (typeof callback === 'function') {
-        callback(mesh);
+      if (typeof mount === 'function') {
+        mount(mesh);
       }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
@@ -63861,52 +63963,54 @@
 
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var _this = this;
 
       var item = this.item;
+      var items = this.items;
       var geometry = new THREE$1.PlaneBufferGeometry(1, 1, 2, 2);
-      var mesh = new MediaMesh(item, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
+      var mesh;
+      var subscription;
+      MediaMesh.getStreamId$(item).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
+        if (_this.streamId !== streamId) {
+          _this.streamId = streamId;
 
-      if (item.position) {
-        mesh.position.set(item.position.x, item.position.y, item.position.z);
-      }
+          if (mesh) {
+            dismount(mesh);
+          }
 
-      if (item.rotation) {
-        mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
-      }
+          if (subscription) {
+            subscription.unsubscribe();
+            subscription = null;
+          }
 
-      if (item.scale) {
-        mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
-      }
+          if (streamId) {
+            item.streamId = streamId;
+            mesh = new MediaMesh(item, items, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
 
-      mesh.load(function () {
-        /*
-        var box = new THREE.BoxHelper(mesh, 0xffff00);
-        this.host.scene.add(box);
-        */
-        if (typeof callback === 'function') {
-          callback(mesh);
+            if (item.position) {
+              mesh.position.set(item.position.x, item.position.y, item.position.z);
+            }
+
+            if (item.rotation) {
+              mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+            }
+
+            if (item.scale) {
+              mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+            }
+
+            mesh.load(function () {
+              if (typeof mount === 'function') {
+                mount(mesh);
+              }
+
+              subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
+            });
+          } // console.log('streamId', streamId, mesh);
+
         }
       });
-
-      if (item.linkedPlayId) {
-        mesh.freeze();
-        MediaLoader.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-          var eventItem = _this.items.find(function (x) {
-            return event.src.indexOf(x.file) !== -1;
-          });
-
-          if (eventItem && eventItem.id === item.linkedPlayId) {
-            // console.log('MediaLoader.events$.eventItem', eventItem);
-            if (event instanceof MediaLoaderPlayEvent) {
-              mesh.play();
-            } else {
-              mesh.pause();
-            }
-          }
-        });
-      }
     } // onView() { const context = getContext(this); }
     // onChanges() {}
     ;
@@ -63914,7 +64018,9 @@
     _proto.onDestroy = function onDestroy() {
       _ModelComponent.prototype.onDestroy.call(this);
 
-      this.mesh.dispose();
+      if (this.mesh) {
+        this.mesh.dispose();
+      }
     };
 
     return ModelPlaneComponent;
@@ -68633,12 +68739,12 @@
       this.progress = 0; // console.log('ModelRoomComponent.onInit');
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var _this = this;
 
       this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, function (mesh) {
-        if (typeof callback === 'function') {
-          callback(mesh);
+        if (typeof mount === 'function') {
+          mount(mesh);
         }
 
         _this.progress = 0;
@@ -68718,7 +68824,7 @@
 
             var parent = previous.parent;
 
-            var _mesh = item.plane = new MediaMesh(item, previous.geometry);
+            var _mesh = item.plane = new MediaMesh(item, items, previous.geometry);
 
             _mesh.name = previous.name;
 
@@ -68819,11 +68925,11 @@
 
     };
 
-    _proto.create = function create(callback) {
+    _proto.onCreate = function onCreate(mount, dismount) {
       var mesh = new THREE$1.Group();
 
-      if (typeof callback === 'function') {
-        callback(mesh);
+      if (typeof mount === 'function') {
+        mount(mesh);
       }
     } // onView() { const context = getContext(this); }
     // onChanges() {}

@@ -4114,7 +4114,9 @@ model-viewer {
       .ui__head .group--select .nav--dropdown > li > span {
         font-size: 12px; }
     .ui__head .group--local {
-      display: none; }
+      position: absolute;
+      visibility: hidden;
+      pointer-events: none; }
     .ui__head .control--select {
       font-size: 15px;
       text-transform: uppercase;

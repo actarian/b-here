@@ -63,7 +63,7 @@ export default class ModelBannerComponent extends ModelComponent {
 		});
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.banner;
 		const mesh = new THREE.Group();
 		mesh.userData = {
@@ -71,8 +71,8 @@ export default class ModelBannerComponent extends ModelComponent {
 				mesh.rotation.y += Math.PI / 180 * 0.1;
 			}
 		};
-		if (typeof callback === 'function') {
-			callback(mesh);
+		if (typeof mount === 'function') {
+			mount(mesh);
 		}
 	}
 

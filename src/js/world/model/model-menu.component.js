@@ -298,12 +298,12 @@ export default class ModelMenuComponent extends ModelComponent {
 		super.onDestroy();
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
 		menuGroup.lookAt(ORIGIN);
-		if (typeof callback === 'function') {
-			callback(menuGroup);
+		if (typeof mount === 'function') {
+			mount(menuGroup);
 		}
 	}
 

@@ -30,7 +30,7 @@ export default class ModelNavComponent extends ModelComponent {
 		super.onDestroy();
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.nav;
 
 		const nav = new THREE.Group();
@@ -104,8 +104,8 @@ export default class ModelNavComponent extends ModelComponent {
 				material.needsUpdate = true;
 			}
 		});
-		if (typeof callback === 'function') {
-			callback(nav);
+		if (typeof mount === 'function') {
+			mount(nav);
 		}
 	}
 

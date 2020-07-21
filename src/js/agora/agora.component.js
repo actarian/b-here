@@ -1,7 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 // import UserService from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
-import { first, takeUntil } from 'rxjs/operators';
+import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { BASE_HREF, DEBUG, environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
@@ -167,26 +167,28 @@ export default class AgoraComponent extends Component {
 		const controls = this.controls = form.controls;
 		controls.view.options = views;
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe((changes) => {
-			// console.log('AgoraComponent.form.changes$', changes, form.valid);
-			const view = data.views.find(x => x.id === changes.view);
-			this.view = null;
-			this.pushChanges();
-			setTimeout(() => {
-				if (this.state.hosted) {
-					this.view = view;
-					// !!!
+			takeUntil(this.unsubscribe$),
+			map(changes => {
+				// console.log('AgoraComponent.form.changes$', changes, form.valid);
+				const view = data.views.find(x => x.id === changes.view);
+				this.view = null;
+				this.pushChanges();
+				return view;
+			}),
+			delay(1),
+			map(view => {
+				if (!this.state.hosted) {
+					view = this.getWaitingRoom();
+				} else {
 					if (!DEBUG) {
 						this.agora.navToView(view.id);
 					}
-				} else {
-					// !!! waiting room
-					this.view = this.getWaitingRoom();
 				}
+				// collect items publisherStream & nextAttendeeStream ?
+				this.view = view;
 				this.pushChanges();
-			}, 1);
-		});
+			}),
+		).subscribe(console.log);
 	}
 
 	getWaitingRoom() {

@@ -32,7 +32,10 @@ export default class ModelComponent extends Component {
 			// }
 		};
 		this.host.objects.add(group);
-		this.create((mesh) => this.loaded(mesh));
+		this.onCreate(
+			(mesh) => this.onMount(mesh),
+			(mesh) => this.onDismount(mesh)
+		);
 	}
 
 	onDestroy() {
@@ -58,7 +61,7 @@ export default class ModelComponent extends Component {
 		return `${this.constructor.meta.selector}-${this.rxcompId}${name ? `-${name}` : ''}`;
 	}
 
-	create(callback) {
+	onCreate(mounth, dismount) {
 		const material = new THREE.MeshStandardMaterial({
 			color: new THREE.Color('#ffcc00'),
 			roughness: 0.4,
@@ -68,13 +71,13 @@ export default class ModelComponent extends Component {
 			opacity: 0.9,
 		});
 		const mesh = new THREE.Mesh(GEOMETRY, material);
-		if (typeof callback === 'function') {
-			callback(mesh);
+		if (typeof mounth === 'function') {
+			mounth(mesh);
 		}
 		return mesh;
 	}
 
-	loaded(mesh) {
+	onMount(mesh) {
 		mesh.name = this.getName('mesh');
 		this.mesh = mesh;
 		this.group.add(mesh);
@@ -88,6 +91,14 @@ export default class ModelComponent extends Component {
 		});
 		*/
 		// console.log('Model.loaded', mesh);
+	}
+
+	onDismount(mesh) {
+		this.group.remove(mesh);
+		if (typeof mesh.dispose === 'function') {
+			mesh.dispose();
+		}
+		this.mesh = null;
 	}
 
 	calculateScaleAndPosition() {

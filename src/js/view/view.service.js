@@ -8,8 +8,12 @@ export class View {
 		if (options) {
 			Object.assign(this, options);
 			if (options.items) {
+				let nextAttendeeStreamIndex = 0;
 				options.items.forEach((item, index) => {
 					item.index = index;
+					if (item.file === 'nextAttendeeStream') {
+						item.fileIndex = nextAttendeeStreamIndex++;
+					}
 				});
 			}
 		}
@@ -39,11 +43,6 @@ export class PanoramaGridView extends View {
 	}
 
 	constructor(options) {
-		if (options.items) {
-			options.items.forEach((item, index) => {
-				item.index = index;
-			});
-		}
 		if (options.tiles) {
 			options.tiles = options.tiles.map((tile, i) => {
 				const indices = new THREE.Vector2();

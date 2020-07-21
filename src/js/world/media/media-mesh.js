@@ -1,7 +1,10 @@
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as THREE from 'three';
+import AgoraService, { RoleType } from '../../agora/agora.service';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import MediaLoader from './media-loader';
+import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
 
 const VERTEX_SHADER = `
 #extension GL_EXT_frag_depth : enable
@@ -164,10 +167,46 @@ export default class MediaMesh extends InteractiveMesh {
 		return material;
 	}
 
-	constructor(item, geometry, material) {
+	static getStreamId$(item) {
+		const file = item.file;
+		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
+			return of(file);
+		}
+		const agora = AgoraService.getSingleton();
+		if (agora) {
+			return agora.streams$.pipe(
+				map((streams) => {
+					let stream;
+					if (file === 'publisherStream') {
+						stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+					} else if (file === 'nextAttendeeStream') {
+						let i = 0;
+						streams.forEach(x => {
+							if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+								if (i === item.fileIndex) {
+									stream = x;
+								}
+								i++;
+							}
+						});
+					}
+					if (stream) {
+						return stream.getId();
+					} else {
+						return null;
+					}
+				}),
+			);
+		} else {
+			return of(null);
+		}
+	}
+
+	constructor(item, items, geometry, material) {
 		material = material || MediaMesh.getMaterial();
 		super(geometry, material);
 		this.item = item;
+		this.items = items;
 		this.renderOrder = environment.renderOrder.plane;
 		const uniforms = this.uniforms = {
 			overlay: 0,
@@ -219,12 +258,51 @@ export default class MediaMesh extends InteractiveMesh {
 		});
 	}
 
+	events$() {
+		const item = this.item;
+		const items = this.items;
+		if (item.linkedPlayId) {
+			this.freeze();
+		}
+		return MediaLoader.events$.pipe(
+			map(event => {
+				if (item.linkedPlayId) {
+					const eventItem = items.find(x => event.src.indexOf(x.file) !== -1 && event.id === item.linkedPlayId);
+					if (eventItem) {
+						// console.log('MediaLoader.events$.eventItem', event, eventItem);
+						if (event instanceof MediaLoaderPlayEvent) {
+							this.play();
+						} else if (event instanceof MediaLoaderPauseEvent) {
+							this.pause();
+						}
+					}
+				}
+				return event;
+			})
+		);
+	}
+
 	onAppear() {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
 			gsap.to(uniforms, 0.4, {
 				opacity: 1,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					material.uniforms.opacity.value = uniforms.opacity;
+					material.needsUpdate = true;
+				},
+			});
+		}
+	}
+
+	onDisappear() {
+		const uniforms = this.uniforms;
+		const material = this.material;
+		if (material.uniforms) {
+			gsap.to(uniforms, 0.4, {
+				opacity: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
 					material.uniforms.opacity.value = uniforms.opacity;

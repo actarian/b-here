@@ -410,6 +410,7 @@ export default class AgoraService extends Emittable {
 			AgoraRTM.LOG_FILTER_WARNING
 			*/
 			const messageClient = this.messageClient = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF }); // LOG_FILTER_DEBUG
+			messageClient.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
 			// messageClient.on('ConnectionStateChanged', console.warn);
 			// messageClient.on('MessageFromPeer', console.log);
 		}

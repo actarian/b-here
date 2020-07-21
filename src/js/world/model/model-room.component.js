@@ -19,10 +19,10 @@ export default class ModelRoomComponent extends ModelComponent {
 		// console.log('ModelRoomComponent.onInit');
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, (mesh) => {
-			if (typeof callback === 'function') {
-				callback(mesh);
+			if (typeof mount === 'function') {
+				mount(mesh);
 			}
 			this.progress = 0;
 			this.pushChanges();

@@ -824,7 +824,9 @@ model-viewer {
 		}
 
 		.group--local {
-			display: none;
+			position: absolute;
+			visibility: hidden;
+			pointer-events: none;
 		}
 
 		.control--select {

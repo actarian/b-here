@@ -18,10 +18,10 @@ export default class ModelRoomComponent extends ModelComponent {
 		// console.log('ModelRoomComponent.onInit');
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, (mesh) => {
-			if (typeof callback === 'function') {
-				callback(mesh);
+			if (typeof mount === 'function') {
+				mount(mesh);
 			}
 			this.progress = 0;
 			this.pushChanges();
@@ -89,7 +89,7 @@ export default class ModelRoomComponent extends ModelComponent {
 						previous.material.color.setHex(0x000000);
 					}
 					const parent = previous.parent;
-					const mesh = item.plane = new MediaMesh(item, previous.geometry);
+					const mesh = item.plane = new MediaMesh(item, items, previous.geometry);
 					mesh.name = previous.name;
 					mesh.position.copy(previous.position);
 					mesh.rotation.copy(previous.rotation);

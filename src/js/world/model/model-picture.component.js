@@ -9,10 +9,10 @@ export default class ModelPictureComponent extends ModelComponent {
 		// console.log('ModelPictureComponent.onInit');
 	}
 
-	create(callback) {
+	onCreate(mount, dismount) {
 		const mesh = new THREE.Group();
-		if (typeof callback === 'function') {
-			callback(mesh);
+		if (typeof mount === 'function') {
+			mount(mesh);
 		}
 	}
 
