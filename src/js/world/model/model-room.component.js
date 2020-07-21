@@ -27,6 +27,7 @@ export default class ModelRoomComponent extends ModelComponent {
 			this.progress = 0;
 			this.pushChanges();
 		});
+		// dismount
 	}
 
 	// onView() { const context = getContext(this); }
