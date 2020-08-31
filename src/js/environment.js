@@ -1,5 +1,5 @@
 export const NODE = (typeof module !== 'undefined' && module.exports);
-export const PARAMS = NODE ? { get: () => {} } : new URLSearchParams(window.location.search);
+export const PARAMS = NODE ? { get: () => { } } : new URLSearchParams(window.location.search);
 export const DEBUG = false || (PARAMS.get('debug') != null);
 export const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
 export const STATIC = NODE ? false : (window && (window.location.port === '41999' || window.location.host === 'actarian.github.io'));
@@ -15,7 +15,7 @@ export class Environment {
 
 	get href() {
 		if (window.location.host.indexOf('herokuapp') !== -1) {
-			return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
+			return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/';
 		} else {
 			return BASE_HREF;
 		}
