@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import FreezableSprite from "./freezable.sprite";
 
 export default class EmittableSprite extends FreezableSprite {

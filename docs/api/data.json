@@ -1,6 +1,5 @@
 {
-  "views": [
-    {
+  "views": [{
       "id": "waiting-room",
       "type": "waiting-room",
       "name": "Waiting Room",
@@ -23,12 +22,17 @@
       "liked": false,
       "envMapFolder": "waiting-room/",
       "envMapFile": "mod2.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 110,
           "type": "nav",
           "title": "Barilla Experience",
           "abstract": "Abstract",
+          "image": "/img/logo-barilla.jpg",
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.barilla.com/it-it/",
+            "target": "_blank"
+          },
           "position": [
             0.9491595148619703,
             -0.3147945860255039,
@@ -99,8 +103,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "render_1.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 1110,
           "type": "nav",
           "title": "Interior 02",
@@ -163,8 +166,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "render_2.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 1210,
           "type": "nav",
           "title": "Interior 01",
@@ -227,8 +229,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "render_3.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 1310,
           "type": "nav",
           "title": "Interior 02",
@@ -291,8 +292,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "wood1.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 1510,
           "type": "nav",
           "title": "Interior 01",
@@ -343,8 +343,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "brochure.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 1610,
           "type": "nav",
           "title": "Interior 01",
@@ -383,8 +382,7 @@
       "liked": false,
       "envMapFolder": "video/",
       "envMapFile": "360_1.mp4",
-      "items": [
-        {
+      "items": [{
           "id": 2010,
           "type": "nav",
           "title": "Living 01",
@@ -423,8 +421,7 @@
       "liked": false,
       "envMapFolder": "video/",
       "envMapFile": "Render_2.mp4",
-      "items": [
-        {
+      "items": [{
           "id": 2110,
           "type": "nav",
           "title": "Living 01",
@@ -463,20 +460,18 @@
       "liked": false,
       "envMapFolder": "video/",
       "envMapFile": "moto.mp4",
-      "items": [
-        {
-          "id": 2210,
-          "type": "nav",
-          "title": "Room 3D",
-          "abstract": "Abstract",
-          "position": [
-            0.9510368676062331,
-            0.022236340182408915,
-            0.3082765343470318
-          ],
-          "navTo": 101
-        }
-      ],
+      "items": [{
+        "id": 2210,
+        "type": "nav",
+        "title": "Room 3D",
+        "abstract": "Abstract",
+        "position": [
+          0.9510368676062331,
+          0.022236340182408915,
+          0.3082765343470318
+        ],
+        "navTo": 101
+      }],
       "orientation": {
         "latitude": 0,
         "longitude": 360
@@ -491,8 +486,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Living-0.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 3110,
           "type": "nav",
           "title": "Living 02",
@@ -555,8 +549,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Living-1.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 3210,
           "type": "nav",
           "title": "Living 03",
@@ -619,8 +612,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Living-2.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 3310,
           "type": "nav",
           "title": "Living 02",
@@ -683,8 +675,7 @@
       "liked": false,
       "envMapFolder": "cinema/",
       "envMapFile": "cinema.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 2310,
           "type": "plane",
           "folder": "room-3d/",
@@ -771,8 +762,7 @@
       "liked": false,
       "envMapFolder": "cinema/",
       "envMapFile": "cinema.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 2410,
           "type": "plane",
           "folder": "room-3d/",
@@ -858,8 +848,7 @@
       "liked": false,
       "envMapFolder": "waiting-room/",
       "envMapFile": "whiteroom.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 2510,
           "type": "plane",
           "folder": "green-screen/",
@@ -966,8 +955,7 @@
       "liked": false,
       "envMapFolder": "waiting-room/",
       "envMapFile": "whiteroom.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 26100,
           "type": "plane",
           "folder": "",
@@ -1084,8 +1072,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "ue_set.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 2910,
           "type": "plane",
           "folder": "",
@@ -1150,8 +1137,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "ernestomeda.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 1710,
           "type": "nav",
           "title": "Welcome Room",
@@ -1190,8 +1176,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-1.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 4110,
           "type": "nav",
           "title": "Kitchen 02",
@@ -1254,8 +1239,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-2.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 4210,
           "type": "nav",
           "title": "Kitchen 01",
@@ -1318,8 +1302,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-3.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 4310,
           "type": "nav",
           "title": "Kitchen 01",
@@ -1382,8 +1365,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Kitchen-4.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 4410,
           "type": "nav",
           "title": "Kitchen 01",
@@ -1446,8 +1428,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Bathroom-1.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 5110,
           "type": "nav",
           "title": "Bathroom 02",
@@ -1510,8 +1491,7 @@
       "liked": false,
       "envMapFolder": "rendering/",
       "envMapFile": "Bathroom-2.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 5210,
           "type": "nav",
           "title": "Living 01",
@@ -1574,20 +1554,18 @@
       "liked": false,
       "envMapFolder": "video/",
       "envMapFile": "garden-01.mp4",
-      "items": [
-        {
-          "id": 6110,
-          "type": "nav",
-          "title": "Kitchen 01",
-          "abstract": "Abstract",
-          "position": [
-            0.04713776229380867,
-            -0.16372888464057858,
-            0.9853785484270928
-          ],
-          "navTo": 41
-        }
-      ],
+      "items": [{
+        "id": 6110,
+        "type": "nav",
+        "title": "Kitchen 01",
+        "abstract": "Abstract",
+        "position": [
+          0.04713776229380867,
+          -0.16372888464057858,
+          0.9853785484270928
+        ],
+        "navTo": 41
+      }],
       "orientation": {
         "latitude": -8,
         "longitude": 90
@@ -1606,20 +1584,18 @@
       },
       "envMapFolder": "",
       "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
-      "items": [
-        {
-          "id": 6210,
-          "type": "nav",
-          "title": "Kitchen 01",
-          "abstract": "Abstract",
-          "position": [
-            0.04713776229380867,
-            -0.16372888464057858,
-            0.9853785484270928
-          ],
-          "navTo": 41
-        }
-      ],
+      "items": [{
+        "id": 6210,
+        "type": "nav",
+        "title": "Kitchen 01",
+        "abstract": "Abstract",
+        "position": [
+          0.04713776229380867,
+          -0.16372888464057858,
+          0.9853785484270928
+        ],
+        "navTo": 41
+      }],
       "orientation": {
         "latitude": 0,
         "longitude": 0
@@ -1638,20 +1614,18 @@
       },
       "envMapFolder": "",
       "envMapFile": "publisherStream",
-      "items": [
-        {
-          "id": 6310,
-          "type": "nav",
-          "title": "Kitchen 01",
-          "abstract": "Abstract",
-          "position": [
-            0.04713776229380867,
-            -0.16372888464057858,
-            0.9853785484270928
-          ],
-          "navTo": 41
-        }
-      ],
+      "items": [{
+        "id": 6310,
+        "type": "nav",
+        "title": "Kitchen 01",
+        "abstract": "Abstract",
+        "position": [
+          0.04713776229380867,
+          -0.16372888464057858,
+          0.9853785484270928
+        ],
+        "navTo": 41
+      }],
       "orientation": {
         "latitude": 0,
         "longitude": 0
@@ -1668,8 +1642,32 @@
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
-        "NEWONESET2_x0_y0.jpg",
+      "tiles": [{
+          "file": "NEWONESET2_x0_y0.jpg",
+          "navs": [{
+            "id": 20110,
+            "type": "nav",
+            "title": "Welcome Room",
+            "abstract": "Abstract",
+            "position": [
+              0.9895859099478105,
+              0.0015676209690798433,
+              -0.14393494849153685
+            ],
+            "navTo": 1
+          }, {
+            "id": 20120,
+            "type": "nav",
+            "title": "Ernestomeda",
+            "abstract": "Abstract",
+            "position": [
+              0.9171044989783855,
+              -0.14408490583842612,
+              0.3716972933223166
+            ],
+            "navTo": 17
+          }]
+        },
         "NEWONESET2_x0_y1.jpg",
         "NEWONESET2_x0_y2.jpg",
         "NEWONESET2_x0_y3.jpg",
@@ -1688,32 +1686,7 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
-      "items": [
-        {
-          "id": 20110,
-          "type": "nav",
-          "title": "Welcome Room",
-          "abstract": "Abstract",
-          "position": [
-            0.9895859099478105,
-            0.0015676209690798433,
-            -0.14393494849153685
-          ],
-          "navTo": 1
-        },
-        {
-          "id": 20120,
-          "type": "nav",
-          "title": "Ernestomeda",
-          "abstract": "Abstract",
-          "position": [
-            0.9171044989783855,
-            -0.14408490583842612,
-            0.3716972933223166
-          ],
-          "navTo": 17
-        }
-      ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 360
@@ -1730,8 +1703,32 @@
       "envMapFile": "NEWONESET2_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
-        "NEWONESET2_x0_y0.jpg",
+      "tiles": [{
+          "file": "NEWONESET2_x0_y0.jpg",
+          "navs": [{
+            "id": 20210,
+            "type": "nav",
+            "title": "Welcome Room",
+            "abstract": "Abstract",
+            "position": [
+              0.9895859099478105,
+              0.0015676209690798433,
+              -0.14393494849153685
+            ],
+            "navTo": 1
+          }, {
+            "id": 20220,
+            "type": "nav",
+            "title": "Kitchen 8192",
+            "abstract": "Abstract",
+            "position": [
+              0.9171044989783855,
+              -0.14408490583842612,
+              0.3716972933223166
+            ],
+            "navTo": 201
+          }]
+        },
         "NEWONESET2_x0_y1.jpg",
         "NEWONESET2_x0_y2.jpg",
         "NEWONESET2_x0_y3.jpg",
@@ -1750,32 +1747,7 @@
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
       ],
-      "items": [
-        {
-          "id": 20210,
-          "type": "nav",
-          "title": "Welcome Room",
-          "abstract": "Abstract",
-          "position": [
-            0.9895859099478105,
-            0.0015676209690798433,
-            -0.14393494849153685
-          ],
-          "navTo": 1
-        },
-        {
-          "id": 20220,
-          "type": "nav",
-          "title": "Kitchen 8192",
-          "abstract": "Abstract",
-          "position": [
-            0.9171044989783855,
-            -0.14408490583842612,
-            0.3716972933223166
-          ],
-          "navTo": 201
-        }
-      ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 360
@@ -1792,8 +1764,7 @@
       "modelFile": "room-3d.fbx",
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
+      "items": [{
           "id": "plane-01",
           "type": "texture",
           "folder": "room-3d/",
@@ -1882,8 +1853,7 @@
       "modelFile": "room-3d-2.fbx",
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
+      "items": [{
           "id": "plane-01",
           "type": "texture",
           "folder": "room-3d_2/",
@@ -1974,16 +1944,14 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
-      "items": [
-        {
-          "id": 30010,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "watch/",
-          "gltfFile": "casio.glb"
-        }
-      ],
+      "items": [{
+        "id": 30010,
+        "type": "gltf",
+        "title": "Model",
+        "abstract": "Abstract",
+        "gltfFolder": "watch/",
+        "gltfFile": "casio.glb"
+      }],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -2002,16 +1970,14 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
-      "items": [
-        {
-          "id": 30110,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "watch/",
-          "gltfFile": "watch-ao.glb"
-        }
-      ],
+      "items": [{
+        "id": 30110,
+        "type": "gltf",
+        "title": "Model",
+        "abstract": "Abstract",
+        "gltfFolder": "watch/",
+        "gltfFile": "watch-ao.glb"
+      }],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -2030,16 +1996,14 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "dark.jpeg",
-      "items": [
-        {
-          "id": 30210,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "watch/",
-          "gltfFile": "watchfree.glb"
-        }
-      ],
+      "items": [{
+        "id": 30210,
+        "type": "gltf",
+        "title": "Model",
+        "abstract": "Abstract",
+        "gltfFolder": "watch/",
+        "gltfFile": "watchfree.glb"
+      }],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -2058,8 +2022,7 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "road1.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 30310,
           "type": "gltf",
           "title": "Model",
@@ -2098,8 +2061,7 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "road2.jpeg",
-      "items": [
-        {
+      "items": [{
           "id": 30410,
           "type": "gltf",
           "title": "Model",
@@ -2138,8 +2100,7 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 30510,
           "type": "gltf",
           "title": "Model",
@@ -2178,16 +2139,14 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
-          "id": 30610,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "washing-machine/",
-          "gltfFile": "glb.glb"
-        }
-      ],
+      "items": [{
+        "id": 30610,
+        "type": "gltf",
+        "title": "Model",
+        "abstract": "Abstract",
+        "gltfFolder": "washing-machine/",
+        "gltfFile": "glb.glb"
+      }],
       "orientation": {
         "latitude": 20.400000000000002,
         "longitude": 57.60000000000001
@@ -2206,16 +2165,14 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "waiting-room-02.jpg",
-      "items": [
-        {
-          "id": 30710,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "damaged-helmet/",
-          "gltfFile": "damaged-helmet.glb"
-        }
-      ],
+      "items": [{
+        "id": 30710,
+        "type": "gltf",
+        "title": "Model",
+        "abstract": "Abstract",
+        "gltfFolder": "damaged-helmet/",
+        "gltfFile": "damaged-helmet.glb"
+      }],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -2234,16 +2191,14 @@
       },
       "envMapFolder": "waiting-room/",
       "envMapFile": "amazing.jpg",
-      "items": [
-        {
-          "id": 30810,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "gltfFolder": "logo/",
-          "gltfFile": "logows2.glb"
-        }
-      ],
+      "items": [{
+        "id": 30810,
+        "type": "gltf",
+        "title": "Model",
+        "abstract": "Abstract",
+        "gltfFolder": "logo/",
+        "gltfFile": "logows2.glb"
+      }],
       "orientation": {
         "latitude": 18,
         "longitude": 150
@@ -2258,20 +2213,18 @@
       "liked": false,
       "envMapFolder": "video/",
       "envMapFile": "time-square-composition.mp4",
-      "items": [
-        {
-          "id": 8010,
-          "type": "nav",
-          "title": "Video Basil Story",
-          "abstract": "Abstract",
-          "position": [
-            -0.15644789925908917,
-            -0.0013182015249417318,
-            0.9876853330702838
-          ],
-          "navTo": 70
-        }
-      ],
+      "items": [{
+        "id": 8010,
+        "type": "nav",
+        "title": "Video Basil Story",
+        "abstract": "Abstract",
+        "position": [
+          -0.15644789925908917,
+          -0.0013182015249417318,
+          0.9876853330702838
+        ],
+        "navTo": 70
+      }],
       "orientation": {
         "latitude": -8,
         "longitude": 90
@@ -2288,8 +2241,32 @@
       "envMapFile": "ambiente2a_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
-        "ambiente2a_x0_y0.jpg",
+      "tiles": [{
+          "file": "ambiente2a_x0_y0.jpg",
+          "navs": [{
+            "id": 20310,
+            "type": "nav",
+            "title": "Pesto Dashboard",
+            "abstract": "Abstract",
+            "position": [
+              -0.043581652820426996,
+              0.05878153966605557,
+              -0.9973190914305851
+            ],
+            "navTo": 206
+          }, {
+            "id": 20320,
+            "type": "nav",
+            "title": "From Basil To Pesto p2",
+            "abstract": "Abstract",
+            "position": [
+              -0.1301986455646018,
+              -0.011244252437772512,
+              0.9914241672867666
+            ],
+            "navTo": 204
+          }]
+        },
         "ambiente2a_x0_y1.jpg",
         "ambiente2a_x0_y2.jpg",
         "ambiente2a_x0_y3.jpg",
@@ -2300,32 +2277,7 @@
         "ambiente2a_x2_y2.jpg",
         "ambiente2a_x2_y3.jpg"
       ],
-      "items": [
-        {
-          "id": 20310,
-          "type": "nav",
-          "title": "Pesto Dashboard",
-          "abstract": "Abstract",
-          "position": [
-            -0.043581652820426996,
-            0.05878153966605557,
-            -0.9973190914305851
-          ],
-          "navTo": 206
-        },
-        {
-          "id": 20320,
-          "type": "nav",
-          "title": "From Basil To Pesto p2",
-          "abstract": "Abstract",
-          "position": [
-            -0.1301986455646018,
-            -0.011244252437772512,
-            0.9914241672867666
-          ],
-          "navTo": 204
-        }
-      ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90
@@ -2342,8 +2294,32 @@
       "envMapFile": "ambiente2b_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
-        "ambiente2b_x0_y0.jpg",
+      "tiles": [{
+          "file": "ambiente2b_x0_y0.jpg",
+          "navs": [{
+            "id": 20410,
+            "type": "nav",
+            "title": "From Basil To Pesto p1",
+            "abstract": "Abstract",
+            "position": [
+              -0.036975130634405856,
+              -0.3220820753941067,
+              -0.9459894166555954
+            ],
+            "navTo": 203
+          }, {
+            "id": 20420,
+            "type": "nav",
+            "title": "Pesto alla genovese",
+            "abstract": "Abstract",
+            "position": [
+              -0.12304766752980198,
+              0.09983112648644324,
+              0.9873667088270309
+            ],
+            "navTo": 305
+          }]
+        },
         "ambiente2b_x0_y1.jpg",
         "ambiente2b_x0_y2.jpg",
         "ambiente2b_x0_y3.jpg",
@@ -2354,32 +2330,7 @@
         "ambiente2b_x2_y2.jpg",
         "ambiente2b_x2_y3.jpg"
       ],
-      "items": [
-        {
-          "id": 20410,
-          "type": "nav",
-          "title": "From Basil To Pesto p1",
-          "abstract": "Abstract",
-          "position": [
-            -0.036975130634405856,
-            -0.3220820753941067,
-            -0.9459894166555954
-          ],
-          "navTo": 203
-        },
-        {
-          "id": 20420,
-          "type": "nav",
-          "title": "Pesto alla genovese",
-          "abstract": "Abstract",
-          "position": [
-            -0.12304766752980198,
-            0.09983112648644324,
-            0.9873667088270309
-          ],
-          "navTo": 305
-        }
-      ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90
@@ -2394,8 +2345,7 @@
       "liked": false,
       "envMapFolder": "virtual-room/",
       "envMapFile": "virtual-room.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 7010,
           "type": "curved-plane",
           "folder": "video/",
@@ -2446,8 +2396,7 @@
       "liked": false,
       "envMapFolder": "virtual-room/",
       "envMapFile": "virtual-room.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 7110,
           "type": "curved-plane",
           "folder": "video/",
@@ -2498,8 +2447,7 @@
       "liked": false,
       "envMapFolder": "virtual-room/",
       "envMapFile": "virtual-room.jpg",
-      "items": [
-        {
+      "items": [{
           "id": 7210,
           "type": "curved-plane",
           "folder": "video/",
@@ -2552,8 +2500,32 @@
       "envMapFile": "ambiente1a_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
-        "ambiente1a_x0_y0.jpg",
+      "tiles": [{
+          "file": "ambiente1a_x0_y0.jpg",
+          "navs": [{
+            "id": 20510,
+            "type": "nav",
+            "title": "Video Basil Story",
+            "abstract": "Abstract",
+            "position": [
+              0.7441952273141098,
+              0.1306860755524518,
+              0.6550531377679213
+            ],
+            "navTo": 70
+          }, {
+            "id": 20520,
+            "type": "nav",
+            "title": "Pesto Dashboard",
+            "abstract": "Abstract",
+            "position": [
+              -0.09502457077161766,
+              -0.02100718985272462,
+              0.9952532486378336
+            ],
+            "navTo": 206
+          }]
+        },
         "ambiente1a_x0_y1.jpg",
         "ambiente1a_x0_y2.jpg",
         "ambiente1a_x0_y3.jpg",
@@ -2568,32 +2540,7 @@
         "ambiente1a_x4_y2.jpg",
         "ambiente1a_x4_y3.jpg"
       ],
-      "items": [
-        {
-          "id": 20510,
-          "type": "nav",
-          "title": "Video Basil Story",
-          "abstract": "Abstract",
-          "position": [
-            0.7441952273141098,
-            0.1306860755524518,
-            0.6550531377679213
-          ],
-          "navTo": 70
-        },
-        {
-          "id": 20520,
-          "type": "nav",
-          "title": "Pesto Dashboard",
-          "abstract": "Abstract",
-          "position": [
-            -0.09502457077161766,
-            -0.02100718985272462,
-            0.9952532486378336
-          ],
-          "navTo": 206
-        }
-      ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90
@@ -2610,8 +2557,32 @@
       "envMapFile": "ambiente1b_x0_y0.jpg",
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [
-        "ambiente1b_x0_y0.jpg",
+      "tiles": [{
+          "file": "ambiente1b_x0_y0.jpg",
+          "navs": [{
+            "id": 20610,
+            "type": "nav",
+            "title": "Social Media",
+            "abstract": "Abstract",
+            "position": [
+              0.803095276916137,
+              0.13288630184456648,
+              0.5808435305459363
+            ],
+            "navTo": 205
+          }, {
+            "id": 20620,
+            "type": "nav",
+            "title": "From Basil To Pesto p1",
+            "abstract": "Abstract",
+            "position": [
+              -0.27016786337746956,
+              -0.0714928886374919,
+              0.9601552439435616
+            ],
+            "navTo": 203
+          }]
+        },
         "ambiente1b_x0_y1.jpg",
         "ambiente1b_x0_y2.jpg",
         "ambiente1b_x0_y3.jpg",
@@ -2626,32 +2597,7 @@
         "ambiente1b_x4_y2.jpg",
         "ambiente1b_x4_y3.jpg"
       ],
-      "items": [
-        {
-          "id": 20610,
-          "type": "nav",
-          "title": "Social Media",
-          "abstract": "Abstract",
-          "position": [
-            0.803095276916137,
-            0.13288630184456648,
-            0.5808435305459363
-          ],
-          "navTo": 205
-        },
-        {
-          "id": 20620,
-          "type": "nav",
-          "title": "From Basil To Pesto p1",
-          "abstract": "Abstract",
-          "position": [
-            -0.27016786337746956,
-            -0.0714928886374919,
-            0.9601552439435616
-          ],
-          "navTo": 203
-        }
-      ],
+      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 90

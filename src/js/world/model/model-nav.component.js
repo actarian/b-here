@@ -1,3 +1,5 @@
+import { ReplaySubject } from 'rxjs';
+import { auditTime, takeUntil, tap } from 'rxjs/operators';
 import * as THREE from 'three';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
@@ -22,6 +24,12 @@ export default class ModelNavComponent extends ModelComponent {
 
 	onInit() {
 		super.onInit();
+		this.debouncedOver$ = new ReplaySubject(1).pipe(
+			auditTime(250),
+			tap(event => this.over.next(event)),
+			takeUntil(this.unsubscribe$),
+		);
+		this.debouncedOver$.subscribe();
 		// console.log('ModelNavComponent.onInit');
 	}
 
@@ -32,9 +40,9 @@ export default class ModelNavComponent extends ModelComponent {
 
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.nav;
-
 		const nav = new THREE.Group();
 		this.item.nav = nav;
+
 		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(NAV_RADIUS);
 		nav.position.set(position.x, position.y, position.z);
 
@@ -47,7 +55,8 @@ export default class ModelNavComponent extends ModelComponent {
 			transparent: true,
 			map: map,
 			sizeAttenuation: false,
-			opacity: 0
+			opacity: 0,
+			// color: 0xff0000,
 		});
 		const sprite = new THREE.Sprite(material);
 		sprite.scale.set(0.03, 0.03, 0.03);
@@ -72,11 +81,12 @@ export default class ModelNavComponent extends ModelComponent {
 				scale: 0.04,
 				delay: 0,
 				ease: Power2.easeInOut,
+				overwrite: true,
 				onUpdate: () => {
 					sprite.scale.set(from.scale, from.scale, from.scale);
 				}
 			});
-			this.over.next(this.item);
+			this.debouncedOver$.next(this.item);
 		});
 		sphere.on('out', () => {
 			const from = { scale: sprite.scale.x };
@@ -84,6 +94,7 @@ export default class ModelNavComponent extends ModelComponent {
 				scale: 0.03,
 				delay: 0,
 				ease: Power2.easeInOut,
+				overwrite: true,
 				onUpdate: () => {
 					sprite.scale.set(from.scale, from.scale, from.scale);
 				}
@@ -98,6 +109,7 @@ export default class ModelNavComponent extends ModelComponent {
 			opacity: 1,
 			delay: 0.5 + 0.1 * this.item.index,
 			ease: Power2.easeInOut,
+			overwrite: true,
 			onUpdate: () => {
 				// console.log(index, from.opacity);
 				material.opacity = from.opacity;
@@ -108,7 +120,6 @@ export default class ModelNavComponent extends ModelComponent {
 			mount(nav);
 		}
 	}
-
 }
 
 ModelNavComponent.meta = {

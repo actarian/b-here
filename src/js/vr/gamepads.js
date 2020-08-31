@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import Emittable from '../interactive/emittable';
 
 export const SUPPORTED_GAMEPADS = ['Gear VR Controller', 'Daydream Controller', 'Oculus Go Controller', 'OpenVR Gamepad', 'Oculus Touch', 'Spatial Controller'];

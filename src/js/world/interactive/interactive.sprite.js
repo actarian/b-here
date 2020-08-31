@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import DebugService from '../debug.service';
 import EmittableSprite from './emittable.sprite';
 import Interactive from './interactive';

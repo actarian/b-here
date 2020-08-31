@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import { cm, mm } from '../../const';
 import { GAMEPAD_HANDS } from '../gamepads';
 

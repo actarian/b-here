@@ -17,6 +17,8 @@ export class View {
 				});
 			}
 		}
+		this.items = this.items || [];
+		this.originalItems = this.items.slice();
 	}
 
 }
@@ -34,6 +36,8 @@ export class PanoramaGridView extends View {
 	set index(index) {
 		if (this.index_ !== index) {
 			this.index_ = index;
+			this.items = this.originalItems.concat(this.tiles[index].navs);
+			console.log('PanoramaGridView.index.set', index, this.items);
 			this.index$.next(index);
 		}
 	}
@@ -46,7 +50,8 @@ export class PanoramaGridView extends View {
 		if (options.tiles) {
 			options.tiles = options.tiles.map((tile, i) => {
 				const indices = new THREE.Vector2();
-				tile.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
+				tile = typeof tile === 'string' ? { file: tile, navs: [] } : tile;
+				tile.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
 					const flipAxes = options.flipAxes ? -1 : 1;
 					if (options.invertAxes) {
 						indices.y = parseInt(b);
@@ -60,14 +65,19 @@ export class PanoramaGridView extends View {
 				return {
 					id: i + 1,
 					envMapFolder: options.envMapFolder,
-					envMapFile: tile,
+					envMapFile: tile.file,
+					navs: tile.navs || [],
 					indices,
 				};
 			});
 		}
 		super(options);
+		if (!this.tiles.length) {
+			throw new Error('PanoramaGridView.constructor tile list is empty!');
+		}
 		this.index_ = 0;
 		this.index$ = new Subject();
+		this.items = this.originalItems.concat(this.tiles[0].navs);
 	}
 
 	getTileIndex(x, y) {

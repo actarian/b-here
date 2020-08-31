@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import DebugService from '../debug.service';
 
 export default class Interactive {
@@ -46,7 +43,7 @@ export default class Interactive {
 		// console.log(has);
 		items.forEach(x => {
 			x.intersection = hash[x.uuid];
-			x.over = (x === Interactive.lastIntersectedObject) || (!x.depthTest && x.intersection);
+			x.over = (x === Interactive.lastIntersectedObject) || (!x.depthTest && x.intersection && (!Interactive.lastIntersectedObject || Interactive.lastIntersectedObject.depthTest));
 			x.down = down && x.over && !Interactive.lock;
 			if (x.down) {
 				Interactive.lock = true;

@@ -8,21 +8,57 @@ export const OrbitMode = {
 	Model: 'model',
 };
 
+export const USE_DOLLY = false;
+export const DOLLY_MIN = 15;
+export const DOLLY_MAX = 75;
+export const ZOOM_MIN = 15;
+export const ZOOM_MAX = 75;
+
 export default class OrbitService {
+
+	get dolly() {
+		return this.dolly_;
+	}
+	set dolly(dolly) {
+		const clampedDolly = THREE.Math.clamp(dolly, DOLLY_MIN, DOLLY_MAX);
+		if (this.dolly_ !== clampedDolly) {
+			this.dolly_ = clampedDolly;
+			this.update();
+		}
+	}
+	getDollyValue() {
+		return (1 - (this.dolly_ - DOLLY_MIN) / (DOLLY_MAX - DOLLY_MIN)) - 0.5;
+	}
+
+	get zoom() {
+		return this.zoom_;
+	}
+	set zoom(zoom) {
+		const clampedDolly = THREE.Math.clamp(zoom, DOLLY_MIN, DOLLY_MAX);
+		if (this.zoom_ !== clampedDolly) {
+			this.zoom_ = clampedDolly;
+			this.update();
+		}
+	}
+	getZoomValue() {
+		return 1 + 1 - (this.zoom_ - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN);
+	}
 
 	get mode() {
 		return this.mode_;
 	}
-
 	set mode(mode) {
 		if (this.mode_ !== mode) {
 			this.mode_ = mode;
+			OrbitService.mode = mode;
 			this.update();
 		}
 	}
 
 	constructor(camera) {
-		this.mode_ = OrbitMode.Panorama;
+		this.mode_ = OrbitService.mode = OrbitMode.Panorama;
+		this.dolly_ = 70;
+		this.zoom_ = 70;
 		this.longitude = 0;
 		this.latitude = 0;
 		this.direction = 1;
@@ -32,6 +68,8 @@ export default class OrbitService {
 		this.inertia = new THREE.Vector2();
 		this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
 		this.target = new THREE.Vector3();
+		this.updatePosition = new THREE.Vector3();
+		this.updateTarget = new THREE.Vector3();
 		this.camera = camera;
 		this.setLongitudeLatitude(0, 0);
 		this.events$ = new ReplaySubject(1);
@@ -80,7 +118,7 @@ export default class OrbitService {
 			// this.speed = Math.abs(event.strength.x) * 100;
 			// console.log('speed', this.speed);
 		});
-		dragListener.move = () => {};
+		dragListener.move = () => { };
 		this.dragListener = dragListener;
 		return dragListener;
 	}
@@ -135,28 +173,45 @@ export default class OrbitService {
 	}
 
 	update() {
-		let radius;
+		let radius, position = this.updatePosition, target = this.updateTarget;
+		const zoom = this.getZoomValue();
+		const dolly = this.getDollyValue();
+		// console.log('dolly', dolly);
 		const phi = THREE.MathUtils.degToRad(90 - this.latitude);
 		const theta = THREE.MathUtils.degToRad(this.longitude);
 		const camera = this.camera;
 		switch (this.mode_) {
 			case OrbitMode.Model:
-				radius = 3;
-				camera.target.copy(this.position);
-				camera.position.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
-				camera.position.y = this.position.y + radius * Math.cos(phi);
-				camera.position.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				radius = USE_DOLLY ? 3 + 3 * dolly : 3;
+				position.copy(this.position);
+				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+				target.y = this.position.y + radius * Math.cos(phi);
+				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				camera.target.copy(position);
+				camera.position.copy(target);
 				break;
 			default:
 				radius = this.radius;
-				camera.position.copy(this.position);
-				camera.target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
-				camera.target.y = this.position.y + radius * Math.cos(phi);
-				camera.target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+				target.y = this.position.y + radius * Math.cos(phi);
+				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				if (USE_DOLLY) {
+					position.copy(target).position.multiplyScalar(-1 * dolly);
+				} else {
+					position.copy(this.position);
+				}
+				camera.position.copy(position);
+				camera.target.copy(target);
 		}
+		// console.log(camera.position.x, camera.position.y, camera.position.z);
+		// console.log(camera.target.x, camera.target.y, camera.target.z);
 		// console.log('phi', phi, 'theta', theta);
 		// this.inverse();
+		if (!USE_DOLLY) {
+			camera.zoom = zoom;
+		}
 		camera.lookAt(camera.target);
+		camera.updateProjectionMatrix();
 		this.events$.next(this);
 	}
 

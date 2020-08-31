@@ -1,12 +1,11 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
 import * as THREE from 'three';
+import DragService from '../../drag/drag.service';
 import { environment } from '../../environment';
+import InteractiveSprite from '../interactive/interactive.sprite';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
-
-const PANEL_RADIUS = 99;
-const ORIGIN = new THREE.Vector3();
 
 export default class ModelPanelComponent extends ModelComponent {
 
@@ -19,23 +18,52 @@ export default class ModelPanelComponent extends ModelComponent {
 		if (this.panel) {
 			return;
 		}
-		this.getCanvasTexture().then(texture => {
+		const { node } = getContext(this);
+		this.getCanvasTexture(node).then(texture => {
+			const scale = 0.2;
 			const aspect = texture.width / texture.height;
-			const width = PANEL_RADIUS / 10;
-			const height = PANEL_RADIUS / 10 / aspect;
-			const dy = PANEL_RADIUS / 10 * 0.25;
-			const position = this.item.nav.position.normalize().multiplyScalar(PANEL_RADIUS);
+			const width = ModelPanelComponent.PANEL_RADIUS * scale;
+			const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
+			const dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
+			const position = this.item.nav.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 			const material = new THREE.SpriteMaterial({
 				depthTest: false,
 				transparent: true,
 				map: texture.map,
 				sizeAttenuation: false,
 			});
-			const panel = this.panel = new THREE.Sprite(material);
+			const panel = this.panel = new InteractiveSprite(material);
 			panel.renderOrder = environment.renderOrder.panel;
 			panel.scale.set(0.02 * width, 0.02 * height, 1);
 			panel.position.set(position.x, position.y, position.z);
-			// panel.lookAt(ORIGIN);
+			panel.on('down', (event) => {
+				const xy = { x: parseInt(event.intersection.uv.x * node.offsetWidth), y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight) };
+				console.log('ModelPanelComponent.down.xy', xy);
+				const link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(link => {
+					return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= (link.offsetLeft + link.offsetWidth) && xy.y <= (link.offsetTop + link.offsetHeight);
+				});
+				console.log('ModelPanelComponent.down.link', link);
+				if (link) {
+					this.down.next(link);
+					const rect = node.getBoundingClientRect();
+					const event = new MouseEvent('mouseup', {
+						button: 0,
+						buttons: 0,
+						clientX: xy.x + rect.left,
+						clientY: xy.y + rect.top,
+						movementX: 0,
+						movementY: 0,
+						relatedTarget: link,
+						screenX: xy.x,
+						screenY: xy.y,
+					});
+					// console.log('ModelPanelComponent.dispatchEvent', event);
+					link.dispatchEvent(event);
+					setTimeout(() => {
+						DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
+					}, 1);
+				}
+			});
 			this.mesh.add(panel);
 			const from = { value: 0 };
 			gsap.to(from, 0.5, {
@@ -44,7 +72,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				ease: Power2.easeInOut,
 				onUpdate: () => {
 					panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
-					panel.lookAt(ORIGIN);
+					panel.lookAt(ModelPanelComponent.ORIGIN);
 					panel.material.opacity = from.value;
 					panel.material.needsUpdate = true;
 				}
@@ -60,40 +88,77 @@ export default class ModelPanelComponent extends ModelComponent {
 		}
 	}
 
-	getCanvasTexture() {
-		return new Promise((resolve, reject) => {
-			if (this.item.panelTexture) {
-				resolve(this.item.panelTexture);
-			} else {
-				const { node } = getContext(this);
-				setTimeout(() => {
-					html2canvas(node, {
-						backgroundColor: '#ffffff00',
-						scale: 2,
-					}).then(canvas => {
-						// !!!
-						// document.body.appendChild(canvas);
-						// const alpha = this.getAlphaFromCanvas(canvas);
-						// document.body.appendChild(alpha);
-						const map = new THREE.CanvasTexture(canvas);
-						// const alphaMap = new THREE.CanvasTexture(alpha);
-						this.item.panelTexture = {
-							map: map,
-							width: canvas.width,
-							height: canvas.height,
-						};
-						resolve(this.item.panelTexture);
-					}, error => {
-						reject(error);
-					});
-				}, 1);
+	imagesLoaded() {
+		const { node } = getContext(this);
+		const images = Array.prototype.slice.call(node.querySelectorAll('img'));
+		const promises = images.map(x => new Promise(function(resolve, reject) {
+			if (x.complete) {
+				return resolve(x);
 			}
-		});
+			const removeListeners = () => {
+				x.removeEventListener('load', onLoad);
+				x.removeEventListener('error', onError);
+			};
+			const onLoad = () => {
+				// console.log('loaded!');
+				removeListeners();
+				resolve(x);
+			};
+			const onError = () => {
+				// console.log('error!');
+				removeListeners();
+				resolve(null);
+			};
+			const addListeners = () => {
+				x.addEventListener('load', onLoad);
+				x.addEventListener('error', onError);
+			};
+			addListeners();
+		}));
+		if (promises.length) {
+			return Promise.all(promises);
+		} else {
+			return Promise.resolve();
+		}
 	}
 
+	getCanvasTexture(node) {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				if (this.item.panelTexture) {
+					resolve(this.item.panelTexture);
+				} else {
+					this.imagesLoaded().then(() => {
+						html2canvas(node, {
+							backgroundColor: '#ffffff00',
+							scale: 2,
+							// logging: true,
+						}).then(canvas => {
+							// !!!
+							// document.body.appendChild(canvas);
+							// const alpha = this.getAlphaFromCanvas(canvas);
+							// document.body.appendChild(alpha);
+							const map = new THREE.CanvasTexture(canvas);
+							// const alphaMap = new THREE.CanvasTexture(alpha);
+							// console.log(canvas.width, canvas.height);
+							this.item.panelTexture = {
+								map: map,
+								width: canvas.width,
+								height: canvas.height,
+							};
+							resolve(this.item.panelTexture);
+						}, error => {
+							reject(error);
+						});
+					});
+				}
+			}, 1); // keep it for childnode images to be compiled
+		});
+	}
 }
 
 ModelPanelComponent.ORIGIN = new THREE.Vector3();
+ModelPanelComponent.PANEL_RADIUS = 99;
 
 ModelPanelComponent.meta = {
 	selector: '[model-panel]',

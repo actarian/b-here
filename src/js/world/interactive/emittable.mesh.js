@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import FreezableMesh from "./freezable.mesh";
 
 export default class EmittableMesh extends FreezableMesh {

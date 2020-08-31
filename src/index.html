@@ -146,16 +146,18 @@
 						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type == 'gltf'">
 							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 						</div>
-						<div class="panel" model-panel [item]="item" *if="item.showPanel">
+						<div class="panel" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
 							<div class="panel__title" [innerHTML]="item.title"></div>
 							<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+							<img class="panel__picture" [src]="item.image" *if="item.image">
+							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
 						</div>
 					</div>
 				</div>
 				<div class="banner" model-banner [item]="banner" *if="banner">
 					<div class="banner__title" [innerHTML]="item.title"></div>
 				</div>
-				<div model-menu [items]="views" (open)="onMenuOpen($event)">
+				<div model-menu [items]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 					</div>

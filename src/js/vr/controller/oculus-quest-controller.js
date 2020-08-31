@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import { cm, deg, mm, TEST_ENABLED } from '../../const';
 import { GAMEPAD_HANDS } from '../gamepads';
 import Controller from './controller';

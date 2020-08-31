@@ -5,13 +5,6 @@ import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
-const PANEL_RADIUS = 102;
-const ORIGIN = new THREE.Vector3();
-
-const RADIUS = 101;
-const COLS = 11;
-const ROWS = 11;
-
 export default class ModelGridComponent extends ModelComponent {
 
 	static getLoader() {
@@ -58,11 +51,11 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	getCoords(point) {
-		const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		const col = Math.ceil((point.x + outerTileSize / 2) / outerTileSize) - 1;
 		const row = Math.ceil((point.z + outerTileSize / 2) / outerTileSize) - 1;
-		const dx = Math.floor(COLS / 2);
-		const dy = Math.floor(ROWS / 2);
+		const dx = Math.floor(ModelGridComponent.COLS / 2);
+		const dy = Math.floor(ModelGridComponent.ROWS / 2);
 		const ci = Math.min(dx, Math.abs(col)) * (col ? Math.abs(col) / col : 1);
 		const ri = Math.min(dy, Math.abs(row)) * (row ? Math.abs(row) / row : 1);
 		if (this.view.hasTile(this.indices.x + ci, this.indices.y + ri)) {
@@ -88,7 +81,7 @@ export default class ModelGridComponent extends ModelComponent {
 
 	addTiles() {
 		// console.log('addTiles');
-		const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		const innerTileSize = outerTileSize * 0.9;
 		const geometry = new THREE.PlaneBufferGeometry(innerTileSize, innerTileSize, 2, 2);
 		geometry.rotateX(-Math.PI / 2);
@@ -98,7 +91,7 @@ export default class ModelGridComponent extends ModelComponent {
 		// geometry.scale(-1, 1, 1);
 		const mesh = this.mesh;
 		const tileMap = this.tileMap = {};
-		const tiles = this.tiles = new Array(COLS * ROWS).fill(0).map((x, i) => {
+		const tiles = this.tiles = new Array(ModelGridComponent.COLS * ModelGridComponent.ROWS).fill(0).map((x, i) => {
 			const material = new THREE.MeshBasicMaterial({
 				depthTest: false,
 				depthWrite: false,
@@ -108,14 +101,14 @@ export default class ModelGridComponent extends ModelComponent {
 				// side: THREE.DoubleSide,
 			});
 			const tile = new THREE.Mesh(geometry, material);
-			const dx = Math.floor(COLS / 2);
-			const dy = Math.floor(ROWS / 2);
-			const row = Math.floor(i / COLS);
-			const col = i % COLS;
+			const dx = Math.floor(ModelGridComponent.COLS / 2);
+			const dy = Math.floor(ModelGridComponent.ROWS / 2);
+			const row = Math.floor(i / ModelGridComponent.COLS);
+			const col = i % ModelGridComponent.COLS;
 			const ci = -dx + col;
 			const ri = -dy + row;
 			// console.log(ci, ri);
-			tile.position.set(ci * outerTileSize, -RADIUS * 0.15, ri * outerTileSize);
+			tile.position.set(ci * outerTileSize, -ModelGridComponent.RADIUS * 0.15, ri * outerTileSize);
 			tile.name = this.getName(`tile_${ci}_${ri}`);
 			tileMap[`${ci}_${ri}`] = tile;
 			mesh.add(tile);
@@ -127,9 +120,9 @@ export default class ModelGridComponent extends ModelComponent {
 		this.onGroundMove = this.onGroundMove.bind(this);
 		this.onGroundDown = this.onGroundDown.bind(this);
 		this.onGroundOut = this.onGroundOut.bind(this);
-		const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		const innerTileSize = outerTileSize * 0.9;
-		const geometry = new THREE.PlaneBufferGeometry(RADIUS, RADIUS, 20, 20);
+		const geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 20, 20);
 		geometry.rotateX(-Math.PI / 2);
 		// geometry.scale(-1, 1, 1);
 		const material = new THREE.MeshBasicMaterial({
@@ -142,7 +135,7 @@ export default class ModelGridComponent extends ModelComponent {
 		const mesh = this.mesh;
 		const ground = this.ground = new InteractiveMesh(geometry, material);
 		ground.name = this.getName('ground');
-		ground.position.set(0, -RADIUS * 0.15, 0);
+		ground.position.set(0, -ModelGridComponent.RADIUS * 0.15, 0);
 		ground.on('over', this.onGroundOver);
 		ground.on('move', this.onGroundMove);
 		ground.on('out', this.onGroundOut);
@@ -173,7 +166,7 @@ export default class ModelGridComponent extends ModelComponent {
 			/*
 			this.indices.x += coords.x;
 			this.indices.y += coords.y;
-			const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+			const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 			this.move.next({
 				indices: this.indices,
 				coords,
@@ -193,21 +186,12 @@ export default class ModelGridComponent extends ModelComponent {
 		const coords = new THREE.Vector2(tile.indices.x - this.indices.x, tile.indices.y - this.indices.y);
 		this.indices.x = tile.indices.x;
 		this.indices.y = tile.indices.y;
-		const outerTileSize = RADIUS / 10; // assume room is 20m x 20m
+		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		this.move.next({
 			indices: this.indices,
 			coords,
 			position: coords.clone().multiplyScalar(outerTileSize)
 		});
-	}
-
-	onDestroy() {
-		super.onDestroy();
-		const ground = this.ground;
-		ground.off('over', this.onGroundOver);
-		ground.off('move', this.onGroundMove);
-		ground.off('down', this.onGroundDown);
-		ground.off('out', this.onGroundOut);
 	}
 
 	onCreate(mount, dismount) {
@@ -227,9 +211,21 @@ export default class ModelGridComponent extends ModelComponent {
 		}
 	}
 
+	onDestroy() {
+		super.onDestroy();
+		const ground = this.ground;
+		ground.off('over', this.onGroundOver);
+		ground.off('move', this.onGroundMove);
+		ground.off('down', this.onGroundDown);
+		ground.off('out', this.onGroundOut);
+	}
+
 }
 
 ModelGridComponent.ORIGIN = new THREE.Vector3();
+ModelGridComponent.RADIUS = 101;
+ModelGridComponent.COLS = 11;
+ModelGridComponent.ROWS = 11;
 
 ModelGridComponent.meta = {
 	selector: '[model-grid]',

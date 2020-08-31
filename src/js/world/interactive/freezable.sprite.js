@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 export default class FreezableSprite extends THREE.Sprite {
 
 	get freezed() {
