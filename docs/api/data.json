@@ -23,7 +23,7 @@
       "envMapFolder": "waiting-room/",
       "envMapFile": "IPF WELCOME.jpg",
       "items": [{
-          "id": 110,
+          "id": 1,
           "type": "nav",
           "title": "IPF Experience",
           "abstract": "Abstract",
@@ -41,7 +41,7 @@
           "navTo": 1
         },
         {
-          "id": 120,
+          "id": 2,
           "type": "nav",
           "title": "Cinema",
           "abstract": "Abstract",
@@ -53,7 +53,7 @@
           "navTo": 2
         },
         {
-          "id": 130,
+          "id": 3,
           "type": "nav",
           "title": "Collezione 1",
           "abstract": "Abstract",
@@ -62,10 +62,10 @@
             -0.031437694960594904,
             0.10129214999707196
           ],
-          "navTo": 3
+          "navTo": 4
         },
         {
-          "id": 140,
+          "id": 4,
           "type": "nav",
           "title": "Collezione 2",
           "abstract": "Abstract",
@@ -74,10 +74,10 @@
             -0.025826583120471387,
             0.6663760239876656
           ],
-          "navTo": 4
+          "navTo": 5
         },
         {
-          "id": 150,
+          "id": 5,
           "type": "nav",
           "title": "Collezione 3",
           "abstract": "Abstract",
@@ -86,10 +86,10 @@
             -0.02228653842611006,
             0.9773276505373021
           ],
-          "navTo": 5
+          "navTo": 6
         },
         {
-          "id": 160,
+          "id": 6,
           "type": "nav",
           "title": "Gallery Vision",
           "abstract": "Abstract",
@@ -98,20 +98,44 @@
             -0.032228276380236016,
             -0.49407500142996114
           ],
-          "navTo": 6
+          "navTo": 3
         },
         {
-          "id": 170,
+          "id": 7,
           "type": "nav",
-          "title": "Paesaggi",
+          "title": "Company",
           "abstract": "Abstract",
           "position": [
             0.41272837408536445,
             -0.043653776361458126,
             -0.9098074725095608
           ],
+          "navTo": 1
+        },
+        {
+          "id": 8,
+          "type": "nav",
+          "title": "Collezione 4",
+          "abstract": "Abstract",
+          "position": [
+            -0.4064303603164417,
+            -0.017823494378604976,
+            0.9135079010392757
+          ],
           "navTo": 7
-        }             
+        },
+        {
+          "id": 9,
+          "type": "nav",
+          "title": "Collezione 5",
+          "abstract": "Abstract",
+          "position": [
+            -0.8629962814309915,
+            -0.020841779548457492,
+            0.5047801882617173
+          ],
+          "navTo": 8
+        }                         
       ],
       "orientation": {
         "latitude": -10,
@@ -129,7 +153,28 @@
       "envMapFile": "01_cinema.jpg",
       "items": [
         {
-          "id": 120,
+          "id": 1,
+          "type": "plane",
+          "folder": "video/",
+          "file": "IPF PARQUET.mp4",
+          "position": {
+            "x": 86,
+            "y": 0.5,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 164,
+            "y": 60,
+            "z": 1
+          }
+        },
+        {
+          "id": 2,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
@@ -150,6 +195,46 @@
     {
       "id": 3,
       "type": "panorama",
+      "name": "Gallery Vision",
+      "likes": 134,
+      "liked": false,
+      "envMapFolder": "rendering/",
+      "envMapFile": "02_galleryvision.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            -0.9974571460154388,
+            -0.03805309790943292,
+            0.060259468983974794
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 2,
+          "type": "nav",
+          "title": "Paesaggio 1",
+          "abstract": "Abstract",
+          "position": [
+            0.9853691587219949,
+            -0.043530668787042835,
+            0.16478076924951143
+          ],
+          "navTo": 10
+        }       
+      ],
+      "orientation": {
+        "latitude": -10,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
+      "id": 4,
+      "type": "panorama",
       "name": "Collezione 1",
       "likes": 134,
       "liked": false,
@@ -157,7 +242,7 @@
       "envMapFile": "03_collezione1.jpg",
       "items": [
         {
-          "id": 120,
+          "id": 1,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
@@ -169,7 +254,7 @@
           "navTo": 1
         },
         {
-          "id": 110,
+          "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Rovere",
@@ -184,7 +269,7 @@
             -0.0759471808804943,
             0.9284316051782305
           ],
-          "navTo": 3
+          "navTo": 4
         }  
       ],
       "orientation": {
@@ -194,7 +279,7 @@
       "fov": 75
     },
     {
-      "id": 4,
+      "id": 5,
       "type": "panorama",
       "name": "Collezione 2",
       "likes": 134,
@@ -203,7 +288,7 @@
       "envMapFile": "04_collezione2.jpg",
       "items": [
         {
-          "id": 120,
+          "id": 1,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
@@ -215,7 +300,7 @@
           "navTo": 1
         },
         {
-          "id": 110,
+          "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Quercia",
@@ -230,7 +315,7 @@
             0.03332111387733693,
             -0.9743448104604446
           ],
-          "navTo": 4
+          "navTo": 5
         }      
       ],
       "orientation": {
@@ -240,7 +325,7 @@
       "fov": 75
     },
     {
-      "id": 5,
+      "id": 6,
       "type": "panorama",
       "name": "Collezione 3",
       "likes": 134,
@@ -249,7 +334,7 @@
       "envMapFile": "05_collezione3.jpg",
       "items": [
         {
-          "id": 120,
+          "id": 1,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
@@ -261,7 +346,7 @@
           "navTo": 1
         },
         {
-          "id": 110,
+          "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Quercia",
@@ -276,36 +361,8 @@
             0.04054145963749951,
             -0.9833976596097861
           ],
-          "navTo": 5
+          "navTo": 6
         }      
-      ],
-      "orientation": {
-        "latitude": -10,
-        "longitude": 360
-      },
-      "fov": 75
-    },
-    {
-      "id": 6,
-      "type": "panorama",
-      "name": "Gallery Vision",
-      "likes": 134,
-      "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "02_galleryvision.jpg",
-      "items": [
-        {
-          "id": 120,
-          "type": "nav",
-          "title": "Welcome Room",
-          "abstract": "Abstract",
-          "position": [
-            -0.9974571460154388,
-            -0.03805309790943292,
-            0.060259468983974794
-          ],
-          "navTo": 1
-        }    
       ],
       "orientation": {
         "latitude": -10,
@@ -316,36 +373,42 @@
     {
       "id": 7,
       "type": "panorama",
-      "name": "Paesaggio 1",
+      "name": "Collezione 4",
       "likes": 134,
       "liked": false,
       "envMapFolder": "rendering/",
-      "envMapFile": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg",
+      "envMapFile": "06_collezione4.jpg",
       "items": [
         {
-          "id": 100,
+          "id": 1,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
-            -0.998381105589995,
-            -0.0394442548923739,
-            -0.040979491906128374
+            -0.9578879322837994,
+            0.0001824169568976166,
+            0.28714225726827636
           ],
           "navTo": 1
         },
         {
-          "id": 101,
+          "id": 2,
           "type": "nav",
-          "title": "Paesaggio 2",
-          "abstract": "Abstract",
+          "title": "Material",
+          "abstract": "Resina",
+          "image": "/img/logo-ipf.png",
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.ipfparquet.com/collezioni-ipf/",
+            "target": "_blank"
+          },
           "position": [
-            0.9981761632814652,
-            -0.060145352361237046,
-            0.0051849441690719434
-        ],
-        "navTo": 8
-      }    
+            -0.10342693934480164,
+            0.016819332038556466,
+            -0.994494835726935
+          ],
+          "navTo": 7
+        }      
       ],
       "orientation": {
         "latitude": -10,
@@ -356,36 +419,42 @@
     {
       "id": 8,
       "type": "panorama",
-      "name": "Paesaggio 2",
+      "name": "Collezione 5",
       "likes": 134,
       "liked": false,
       "envMapFolder": "rendering/",
-      "envMapFile": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg",
+      "envMapFile": "07_collezione5.jpg",
       "items": [
         {
-          "id": 100,
+          "id": 1,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
-            -0.998381105589995,
-            -0.0394442548923739,
-            -0.040979491906128374
+            -0.9866624991233695,
+            -0.08632242341657502,
+            0.13800562321556384
           ],
           "navTo": 1
         },
         {
-          "id": 101,
+          "id": 2,
           "type": "nav",
-          "title": "Paesaggio 3",
-          "abstract": "Abstract",
+          "title": "Material",
+          "abstract": "Idro Oil",
+          "image": "/img/logo-ipf.png",
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.ipfparquet.com/collezioni-ipf/",
+            "target": "_blank"
+          },
           "position": [
-            0.9981761632814652,
-            -0.060145352361237046,
-            0.0051849441690719434
-        ],
-        "navTo": 9
-      }    
+            0.07131555457804827,
+            0.22789123821306526,
+            -0.9710714058301487
+          ],
+          "navTo": 8
+        }      
       ],
       "orientation": {
         "latitude": -10,
@@ -394,7 +463,63 @@
       "fov": 75
     },
     {
-      "id": 9,
+      "id": 10,
+      "type": "panorama",
+      "name": "Paesaggio 1",
+      "likes": 134,
+      "liked": false,
+      "envMapFolder": "rendering/",
+      "envMapFile": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Paesaggio 2",
+          "abstract": "Abstract",
+          "position": [
+            -0.998381105589995,
+            -0.0394442548923739,
+            -0.040979491906128374
+          ],
+          "navTo": 11
+        }
+      ],
+      "orientation": {
+        "latitude": -10,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
+      "id": 11,
+      "type": "panorama",
+      "name": "Paesaggio 2",
+      "likes": 134,
+      "liked": false,
+      "envMapFolder": "rendering/",
+      "envMapFile": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg",
+      "items": [
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Paesaggio 3",
+          "abstract": "Abstract",
+          "position": [
+            -0.998381105589995,
+            -0.0394442548923739,
+            -0.040979491906128374
+          ],
+          "navTo": 12
+        }
+      ],
+      "orientation": {
+        "latitude": -10,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
+      "id": 12,
       "type": "panorama",
       "name": "Paesaggio 3",
       "likes": 134,
@@ -403,7 +528,7 @@
       "envMapFile": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg",
       "items": [
         {
-          "id": 100,
+          "id": 1,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
@@ -413,19 +538,7 @@
             -0.040979491906128374
           ],
           "navTo": 1
-        },
-        {
-          "id": 101,
-          "type": "nav",
-          "title": "Paesaggio 1",
-          "abstract": "Abstract",
-          "position": [
-            0.9981761632814652,
-            -0.060145352361237046,
-            0.0051849441690719434
-        ],
-        "navTo": 7
-      }    
+        } 
       ],
       "orientation": {
         "latitude": -10,
@@ -434,7 +547,7 @@
       "fov": 75
     },
     {
-      "id": 62,
+      "id": 60,
       "type": "panorama",
       "name": "Live",
       "likes": 235,
@@ -446,7 +559,7 @@
       "envMapFolder": "",
       "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
       "items": [{
-        "id": 100,
+        "id": 1,
         "type": "nav",
         "title": "Welcome Room",
         "abstract": "Abstract",
@@ -465,7 +578,7 @@
       "fov": 75
     },
     {
-      "id": 63,
+      "id": 61,
       "type": "panorama",
       "name": "Webcam",
       "likes": 235,
@@ -477,7 +590,7 @@
       "envMapFolder": "",
       "envMapFile": "publisherStream",
       "items": [{
-        "id": 6310,
+        "id": 1,
         "type": "nav",
         "title": "Welcome Room",
         "abstract": "Abstract",
@@ -495,7 +608,7 @@
       "fov": 75
     },
     {
-      "id": 308,
+      "id": 20,
       "type": "model",
       "name": "Logo WS",
       "likes": 172,
@@ -507,7 +620,7 @@
       "envMapFolder": "waiting-room/",
       "envMapFile": "amazing.jpg",
       "items": [{
-        "id": 30810,
+        "id": 1,
         "type": "gltf",
         "title": "Model",
         "abstract": "Abstract",
