@@ -81,13 +81,13 @@
       "fov": 70
     },
     {
-      "id": 100,
+      "id": 101,
       "type": "panorama",
-      "name": "Orogel",
+      "name": "Orogel1",
       "likes": 175,
       "liked": false,
       "envMapFolder": "video/",
-      "envMapFile": "orogel.mp4",
+      "envMapFile": "orogel1.mp4",
       "items": [
         {
           "id": 2020,
@@ -100,10 +100,62 @@
             -0.03163849785884536
           ],
           "navTo": 1
+        },
+        {
+          "id": 2021,
+          "type": "nav",
+          "title": "Next Video",
+          "abstract": "Abstract",
+          "position": [
+            0.9214551957293822,
+            -0.386534168946469,
+            -0.03888005272872574
+          ],
+          "navTo": 102
         }
       ],
       "orientation": {
-        "latitude": 0,
+        "latitude": -2,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
+      "id": 102,
+      "type": "panorama",
+      "name": "Orogel2",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "orogel2.mp4",
+      "items": [
+        {
+          "id": 2020,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.8628288555626449,
+            -0.5045050757541418,
+            -0.03163849785884536
+          ],
+          "navTo": 1
+        },
+        {
+          "id": 2021,
+          "type": "nav",
+          "title": "Prev Video",
+          "abstract": "Abstract",
+          "position": [
+            0.9214551957293822,
+            -0.386534168946469,
+            -0.03888005272872574
+          ],
+          "navTo": 101
+        }
+      ],
+      "orientation": {
+        "latitude": -2,
         "longitude": 360
       },
       "fov": 75
