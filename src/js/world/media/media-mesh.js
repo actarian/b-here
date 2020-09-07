@@ -168,7 +168,7 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	static getStreamId$(item) {
-		const file = item.file;
+		const file = item.asset.file;
 		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
 			return of(file);
 		}
@@ -183,7 +183,7 @@ export default class MediaMesh extends InteractiveMesh {
 						let i = 0;
 						streams.forEach(x => {
 							if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-								if (i === item.fileIndex) {
+								if (i === item.asset.index) {
 									stream = x;
 								}
 								i++;
@@ -223,7 +223,11 @@ export default class MediaMesh extends InteractiveMesh {
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
 		if (mediaLoader.isPlayableVideo) {
-			const textureB = MediaLoader.loadTexture({ folder: 'ui/', file: 'play.png' }, (textureB) => {
+			const textureB = MediaLoader.loadTexture({
+				asset: {
+					folder: 'ui/', file: 'play.png'
+				}
+			}, (textureB) => {
 				// console.log('MediaMesh.textureB', textureB);
 				textureB.minFilter = THREE.LinearFilter;
 				textureB.magFilter = THREE.LinearFilter;
@@ -261,13 +265,13 @@ export default class MediaMesh extends InteractiveMesh {
 	events$() {
 		const item = this.item;
 		const items = this.items;
-		if (item.linkedPlayId) {
+		if (item.asset && item.asset.linkedPlayId) {
 			this.freeze();
 		}
 		return MediaLoader.events$.pipe(
 			map(event => {
-				if (item.linkedPlayId) {
-					const eventItem = items.find(x => event.src.indexOf(x.file) !== -1 && event.id === item.linkedPlayId);
+				if (item.asset && item.asset.linkedPlayId) {
+					const eventItem = items.find(x => x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId);
 					if (eventItem) {
 						// console.log('MediaLoader.events$.eventItem', event, eventItem);
 						if (event instanceof MediaLoaderPlayEvent) {

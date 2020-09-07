@@ -14,7 +14,7 @@ export class VR extends Emittable {
 			renderer.vr.setFrameOfReferenceType(options.frameOfReferenceType);
 		}
 		if (onError) {
-			console.log(onError);
+			console.log('VR.onError', onError);
 			this.on('error', onError);
 		}
 		this.renderer = renderer;
@@ -72,7 +72,7 @@ export class VR extends Emittable {
 			}
 			this.element = element;
 		} catch (error) {
-			// console.log(error);
+			// console.log('VR.initElement.error', error);
 			this.emit('error', error);
 		}
 	}
@@ -104,7 +104,7 @@ export class VR extends Emittable {
 				this.setVRNotFound();
 			}
 		}).catch((e) => {
-			console.log('getVR.error', e);
+			console.log('VR.getVR.error', e);
 			this.setVRNotFound();
 		});
 	}
@@ -118,7 +118,7 @@ export class VR extends Emittable {
 				this.setEnterXR(device);
 			}).catch(() => this.setVRNotFound());
 		}).catch((e) => {
-			console.log('getXR.error', e);
+			console.log('VR.getXR.error', e);
 			this.setVRNotFound();
 		});
 	}
@@ -193,7 +193,7 @@ export class VR extends Emittable {
 			}]).then(() => {
 				this.emit('presenting');
 			}, (error) => {
-				console.log(error);
+				console.log('VR.onVRDisplayActivate.error', error);
 				this.emit('error', error);
 			});
 		} catch (error) {
@@ -221,7 +221,7 @@ export class VR extends Emittable {
 				}]).then(() => {
 					this.emit('presenting');
 				}, (error) => {
-					console.log(error);
+					console.log('VR.onVRClick.error', error);
 					this.emit('error', error);
 				});
 				/*

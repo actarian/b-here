@@ -57,7 +57,6 @@ export default class AvatarElement {
 			const remote = this.remote = agora.remoteById(clientId);
 			/*
 			if (remote) {
-				console.log('remote', remote);
 				this.subscription = AudioStreamService.volume$(remote.stream).pipe(
 					auditTime(Math.floor(1000 / 15)),
 					tap(meter => {

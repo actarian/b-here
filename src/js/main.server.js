@@ -65,7 +65,7 @@ app.post('/api/token/rtm', function(request, response) {
 });
 
 app.listen(PORT, () => {
-	console.log(`Listening on ${ PORT }`);
+	console.log(`Listening on http://localhost:${PORT}/`);
 });
 
 /*
@@ -75,7 +75,7 @@ https
 		key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
 	}, app)
 	.listen(PORT, function() {
-		console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
+		// console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
 	});
 */
 

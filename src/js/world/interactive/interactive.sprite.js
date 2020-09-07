@@ -17,7 +17,7 @@ export default class InteractiveSprite extends EmittableSprite {
 		const hash = {};
 		// let has = false;
 		intersections.forEach((intersection, i) => {
-			console.log(intersection);
+			// console.log(intersection);
 			const object = intersection.object;
 			// console.log('InteractiveSprite.hittest', i, object.name);
 			// has = has || object.name.indexOf('nav') !== -1;

@@ -1,4 +1,3 @@
-<!-- SLIDER -->
 <div class="slider-container" slider [items]="view.items" (tween)="onTween($event)" (change)="onChange($event)" *if="view.items.length">
 	<div class="slider-inner">
 		<div class="slider-slide" *for="let item of items; let index = index;">

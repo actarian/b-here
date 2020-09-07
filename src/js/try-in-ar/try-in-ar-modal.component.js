@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { environment } from '../environment';
+import { environment, STATIC } from '../environment';
 import ModalOutletComponent from '../modal/modal-outlet.component';
 import ModalService from '../modal/modal.service';
 
@@ -13,8 +13,8 @@ export default class TryInARModalComponent extends Component {
 			// console.log('data', data);
 			if (data && data.ar) {
 				// const url = `${environment.host}${data.ar.usdz}`;
-				const url = `${environment.host}try-in-ar.html?viewId=${data.id}`;
-				console.log(url);
+				const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/viewdoc.cshtml?co_id=${environment.views.tryInAryModal}&viewId=${data.id}`;
+				console.log('TryInARModalComponent.onInit.url', url);
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
 					value: url,

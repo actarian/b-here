@@ -98,7 +98,7 @@ var AudioStreamService = /*#__PURE__*/function () {
         	return Math.max(c, p);
         }, 0);
         if (max > 0) {
-        	console.log(max);
+        	// console.log(max);
         }
         */
         // Update the visualisation
@@ -121,8 +121,7 @@ var AudioStreamService = /*#__PURE__*/function () {
       volume: 0,
       clipped: false
     };
-    var context = this.context;
-    console.log('AudioStreamService.volume$', context, state);
+    var context = this.context; // console.log('AudioStreamService.volume$', context, state);
 
     if (context) {
       var source = this.addSource(streamOrElement);
@@ -515,27 +514,28 @@ var PARAMS = NODE ? {
 } : new URLSearchParams(window.location.search);
 var DEBUG =  PARAMS.get('debug') != null;
 var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-var STATIC = NODE ? false : window && (window.location.port === '41999' || window.location.host === 'actarian.github.io');
+var HEROKU = NODE ? false : window && (window.location.host.indexOf('herokuapp') !== -1 || window.location.port === '5000');
+var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.host === 'actarian.github.io');
 var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
 var Environment = /*#__PURE__*/function () {
   var _proto = Environment.prototype;
 
   _proto.getModelPath = function getModelPath(path) {
-    return this.href + this.paths.models + path;
+    return STATIC ? this.href + this.paths.models + path : path;
   };
 
   _proto.getTexturePath = function getTexturePath(path) {
-    return this.href + this.paths.textures + path;
+    return STATIC ? this.href + this.paths.textures + path : path;
   };
 
   _proto.getFontPath = function getFontPath(path) {
-    return this.href + this.paths.fonts + path;
+    return STATIC ? this.href + this.paths.fonts + path : path;
   };
 
   _createClass(Environment, [{
     key: "href",
     get: function get() {
-      if (window.location.host.indexOf('herokuapp') !== -1) {
+      if (HEROKU) {
         return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
       } else {
         return BASE_HREF;
@@ -570,6 +570,10 @@ var environment = new Environment({
   debugMeetingId: '1591366622325',
   port: 5000,
   apiEnabled: false,
+  views: {
+    tryInArModal: 2162,
+    controlRequestModal: 2163
+  },
   paths: {
     models: 'models/',
     textures: 'textures/',
@@ -1430,10 +1434,10 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
           element.play().then(success => {
           	const stream = element.captureStream();
           	options.videoSource = stream.getVideoTracks()[0];
-          	console.log('getVideoOptions', element, stream, stream.getVideoTracks());
+          	// console.log('getVideoOptions', element, stream, stream.getVideoTracks());
           	resolve(options);
           }, error => {
-          	console.log('AgoraService.getVideoOptions.error', error);
+          	// console.log('AgoraService.getVideoOptions.error', error);
           });
           */
         } else {
@@ -1485,10 +1489,10 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
           element.play().then(success => {
           	const stream = element.captureStream();
           	options.audioSource = stream.getAudioTracks()[0];
-          	console.log('AgoraService.getAudioOptions', element, stream, stream.getAudioTracks());
+          	// console.log('AgoraService.getAudioOptions', element, stream, stream.getAudioTracks());
           	resolve(options);
           }, error => {
-          	console.log('AgoraService.getAudioOptions.error', error);
+          	// console.log('AgoraService.getAudioOptions.error', error);
           });
           */
         } else {
@@ -1925,7 +1929,7 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       /*
       // this.emit('wrc-message', message);
       if (message.type === WRCMessageType.WRC_CLOSE) {
-        console.log('receive wrc close')
+        // console.log('receive wrc close')
         this.cleanRemote()
         this.emit('remote-close')
       }
@@ -2329,8 +2333,8 @@ AgoraDeviceComponent.meta = {
 
   _proto.replaceUrl = function replaceUrl() {
     if ('history' in window) {
-      var url = this.getUrl();
-      console.log('AgoraLinkComponent.url', url);
+      var url = this.getUrl(); // console.log('AgoraLinkComponent.url', url);
+
       window.history.replaceState({
         'pageTitle': window.pageTitle
       }, '', url);
@@ -2397,8 +2401,8 @@ AgoraLinkComponent.meta = {
     if ('history' in window) {
       var role = LocationService.get('role') || null;
       var link = LocationService.get('link') || null;
-      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + "&name=" + this.controls.name.value + (role ? "&role=" + role : '');
-      console.log('AgoraNameComponent.url', url);
+      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + "&name=" + this.controls.name.value + (role ? "&role=" + role : ''); // console.log('AgoraNameComponent.url', url);
+
       window.history.replaceState({
         'pageTitle': window.pageTitle
       }, '', url);
@@ -2433,8 +2437,7 @@ AgoraNameComponent.meta = {
   };
 
   _proto.onLoadedMetadata = function onLoadedMetadata(event) {
-    this.videoNode.play().then(function (success) {
-      console.log('AgoraStreamComponent.play.success', success);
+    this.videoNode.play().then(function (success) {// console.log('AgoraStreamComponent.play.success', success);
     }, function (error) {
       console.log('AgoraStreamComponent.play.error', error);
     });
@@ -2711,8 +2714,8 @@ ModalService.events$ = new rxjs.Subject();var View = function View(options) {
       options.items.forEach(function (item, index) {
         item.index = index;
 
-        if (item.file === 'nextAttendeeStream') {
-          item.fileIndex = nextAttendeeStreamIndex++;
+        if (item.asset && item.asset.file === 'nextAttendeeStream') {
+          item.asset.index = nextAttendeeStreamIndex++;
         }
       });
     }
@@ -2738,8 +2741,8 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     set: function set(index) {
       if (this.index_ !== index) {
         this.index_ = index;
-        this.items = this.originalItems.concat(this.tiles[index].navs);
-        console.log('PanoramaGridView.index.set', index, this.items);
+        this.items = this.originalItems.concat(this.tiles[index].navs); // console.log('PanoramaGridView.index.set', index, this.items);
+
         this.index$.next(index);
       }
     },
@@ -2755,10 +2758,13 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
       options.tiles = options.tiles.map(function (tile, i) {
         var indices = new THREE.Vector2();
         tile = typeof tile === 'string' ? {
-          file: tile,
+          asset: {
+            folder: options.asset.folder,
+            file: tile
+          },
           navs: []
         } : tile;
-        tile.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+        tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
           var flipAxes = options.flipAxes ? -1 : 1;
 
           if (options.invertAxes) {
@@ -2772,8 +2778,7 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
         });
         return {
           id: i + 1,
-          envMapFolder: options.envMapFolder,
-          envMapFile: tile.file,
+          asset: tile.asset,
           navs: tile.navs || [],
           indices: indices
         };
@@ -3041,8 +3046,8 @@ var VRService = /*#__PURE__*/function () {
   };
 
   return VRService;
-}();var CONTROL_REQUEST = BASE_HREF + 'control-request-modal.html';
-var TRY_IN_AR = BASE_HREF + 'try-in-ar-modal.html';
+}();var CONTROL_REQUEST = STATIC ? BASE_HREF + 'control-request-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.controlRequestModal;
+var TRY_IN_AR = STATIC ? BASE_HREF + 'try-in-ar-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.tryInArModal;
 
 var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
@@ -3243,8 +3248,10 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
       name: 'Waiting Room',
       likes: 40,
       liked: false,
-      envMapFolder: 'waiting-room/',
-      envMapFile: 'waiting-room-02.jpg',
+      asset: {
+        folder: 'waiting-room/',
+        file: 'waiting-room-02.jpg'
+      },
       items: [],
       orientation: {
         latitude: 0,
@@ -3471,6 +3478,96 @@ AgoraComponent.meta = {
 }(rxcomp.Component);
 AppComponent.meta = {
   selector: '[app-component]'
+};var AssetType = {
+  Image: 'image',
+  // jpg, png, ...
+  Video: 'video',
+  // mp4, webm, ...
+  Model: 'model',
+  // gltf, glb, …
+  PublisherStream: 'publisher-stream',
+  // valore fisso di file a 'publisherStream' e folder string.empty
+  NextAttendeeStream: 'next-attendee-stream' // valore fisso di file a 'nextAttendeeStream' // e folder string.empty
+
+};
+var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
+var MIME_VIDEO = ['avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
+var MIME_MODEL = ['gltf', 'glb', 'obj', 'usdz'];
+var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
+function isImage(path) {
+  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/").test(path);
+}
+function isVideo(path) {
+  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/").test(path);
+}
+function isModel(path) {
+  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/").test(path);
+}
+function isStream(path) {
+  return MIME_STREAM.indexOf(path) !== -1;
+}
+
+var AssetPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(AssetPipe, _Pipe);
+
+  function AssetPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  AssetPipe.transform = function transform(asset, type) {
+    if (type === void 0) {
+      type = null;
+    }
+
+    if (type != null) {
+      // keep loose equality
+      asset = asset.type === type ? asset : null;
+    }
+
+    if (asset) {
+      switch (asset.type) {
+        case AssetType.Image:
+        case AssetType.Video:
+          asset = asset.folder + asset.file;
+          asset = environment.getTexturePath(asset);
+          break;
+
+        case AssetType.Model:
+          asset = asset.folder + asset.file;
+          asset = environment.getModelPath(asset);
+          break;
+
+        case AssetType.PublisherStream:
+        case AssetType.NextAttendeeStream:
+          asset = environment.getModelPath(asset.file);
+          break;
+
+        default:
+          if (isImage(asset.file) || isVideo(asset.file)) {
+            asset = asset.folder + asset.file;
+            asset = environment.getTexturePath(asset);
+          } else if (isModel(asset.file)) {
+            asset = asset.folder + asset.file;
+            asset = environment.getModelPath(asset);
+          } else if (isStream(asset.file)) {
+            asset = asset.file;
+          }
+
+      }
+
+      asset = asset;
+    } else {
+      asset = null;
+    } // console.log('AssetPipe.transform', asset);
+
+
+    return asset;
+  };
+
+  return AssetPipe;
+}(rxcomp.Pipe);
+AssetPipe.meta = {
+  name: 'asset'
 };var ModalOutletComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModalOutletComponent, _Component);
 
@@ -4449,8 +4546,8 @@ SliderDirective.meta = {
 
       if (data && data.ar) {
         // const url = `${environment.host}${data.ar.usdz}`;
-        var url = environment.host + "try-in-ar.html?viewId=" + data.id;
-        console.log(url);
+        var url = STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/viewdoc.cshtml?co_id=" + environment.views.tryInAryModal + "&viewId=" + data.id;
+        console.log('TryInARModalComponent.onInit.url', url);
         var qrcode = new QRious({
           element: node.querySelector('.qrcode'),
           value: url,
@@ -4608,7 +4705,7 @@ ValueDirective.meta = {
       hls.on(Hls.Events.MEDIA_ATTACHED, function () {
         hls.loadSource(src);
         hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          console.log('HlsDirective', data.levels);
+          // console.log('HlsDirective', data.levels);
           node.play();
         });
       });
@@ -55059,16 +55156,20 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
   EnvMapLoader.load = function load(item, renderer, callback) {
     this.video = null;
 
-    if (item.envMapFile === 'publisherStream') {
+    if (!item.asset) {
+      return;
+    }
+
+    if (item.asset.file === 'publisherStream') {
       return this.loadPublisherStreamBackground(renderer, callback);
-    } else if (item.envMapFile.indexOf('.hdr') !== -1) {
-      return this.loadRgbeBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
-    } else if (item.envMapFile.indexOf('.mp4') !== -1 || item.envMapFile.indexOf('.webm') !== -1) {
-      return this.loadVideoBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
-    } else if (item.envMapFile.indexOf('.m3u8') !== -1) {
-      return this.loadHlslVideoBackground(item.envMapFile, renderer, callback);
+    } else if (item.asset.file.indexOf('.hdr') !== -1) {
+      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
+      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.m3u8') !== -1) {
+      return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
     } else {
-      return this.loadBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
+      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
     }
   };
 
@@ -55175,14 +55276,14 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
 
 
     video.oncanplay = function () {
-      console.log('EnvMapLoader.loadVideoBackground.oncanplay');
+      // console.log('EnvMapLoader.loadVideoBackground.oncanplay');
       onPlaying();
     };
 
     video.src = path + file;
     video.load();
     video.play().then(function () {
-      console.log('EnvMapLoader.loadVideoBackground.play');
+      // console.log('EnvMapLoader.loadVideoBackground.play');
       debugService.setMessage("play " + video.src);
     }, function (error) {
       console.log('EnvMapLoader.loadVideoBackground.play.error', error);
@@ -55228,7 +55329,7 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
       hls.on(Hls.Events.MEDIA_ATTACHED, function () {
         hls.loadSource(src);
         hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          console.log('HlsDirective', data.levels);
+          // console.log('HlsDirective', data.levels);
           video.play();
         });
       });
@@ -59969,7 +60070,6 @@ var AvatarElement = /*#__PURE__*/function () {
       var remote = this.remote = agora.remoteById(clientId);
       /*
       if (remote) {
-      	console.log('remote', remote);
       	this.subscription = AudioStreamService.volume$(remote.stream).pipe(
       		auditTime(Math.floor(1000 / 15)),
       		tap(meter => {
@@ -60644,7 +60744,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   	if (DEBUG) {
   		const scene = this.scene;
   		scene.traverse((object) => {
-  			console.log(object.name !== '' ? object.name : object.type);
+  			// console.log(object.name !== '' ? object.name : object.type);
   		});
   	}
   }
@@ -60764,11 +60864,11 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       if (!this.renderer.xr.isPresenting) {
         if (this.infoResultMessage) {
           this.orbit.setOrientation(this.infoResultMessage.orientation);
-          this.orbit.zoom = this.infoResultMessage.fov;
+          this.orbit.zoom = this.infoResultMessage.zoom;
           this.camera.updateProjectionMatrix();
         } else {
           this.orbit.setOrientation(view.orientation);
-          this.orbit.zoom = view.fov;
+          this.orbit.zoom = view.zoom;
           this.camera.updateProjectionMatrix();
         }
       }
@@ -61243,7 +61343,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }
     /*
     if (this.view_ instanceof ModelView) {
-    	console.log(this.view_);
+    	// console.log(this.view_);
     }
     */
 
@@ -61264,7 +61364,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onVRStateDidChange = function onVRStateDidChange(state) {
     /*
     if (DEBUG) {
-    	console.log('WorldComponent.onVRStateDidChange', state.camera.array);
+    	// console.log('WorldComponent.onVRStateDidChange', state.camera.array);
     }
     */
     var agora = this.agora;
@@ -61294,7 +61394,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onNavOver = function onNavOver(event) {
     // console.log('WorldComponent.onNavOver', event);
-    // console.log(this);
     if (this.menu) {
       this.menu.removeMenu();
     }
@@ -61315,7 +61414,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onNavDown = function onNavDown(event) {
     // console.log('WorldComponent.onNavDown', event);
     event.showPanel = false;
-    this.navTo.next(event.navTo);
+    this.navTo.next(event.viewId);
   };
 
   _proto.onPanelDown = function onPanelDown(event) {
@@ -61420,7 +61519,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
               message.type = MessageType.RequestInfoResult;
               message.viewId = _this6.view.id;
               message.orientation = _this6.orbit.getOrientation();
-              message.fov = _this6.orbit.zoom;
+              message.zoom = _this6.orbit.zoom;
 
               if (_this6.view instanceof PanoramaGridView) {
                 message.gridIndex = _this6.view.index;
@@ -61451,7 +61550,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
                 _this6.orbit.setOrientation(message.orientation);
 
                 if (!_this6.renderer.xr.isPresenting) {
-                  _this6.orbit.zoom = message.fov;
+                  _this6.orbit.zoom = message.zoom;
 
                   _this6.camera.updateProjectionMatrix();
                 }
@@ -61471,7 +61570,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
               _this6.orbit.setOrientation(message.orientation);
 
               if (!_this6.renderer.xr.isPresenting) {
-                _this6.orbit.zoom = message.fov;
+                _this6.orbit.zoom = message.zoom;
 
                 _this6.camera.updateProjectionMatrix();
               } // this.render();
@@ -61890,7 +61989,7 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.getPath = function getPath(item) {
-    return environment.getTexturePath(item.folder + item.file);
+    return environment.getTexturePath(item.asset.folder + item.asset.file);
   };
 
   MediaLoader.loadTexture = function loadTexture(item, callback) {
@@ -61899,15 +61998,15 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.isVideo = function isVideo(item) {
-    return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
+    return item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
   };
 
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.file === 'publisherStream';
+    return item.asset.file === 'publisherStream';
   };
 
   MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.file === 'nextAttendeeStream';
+    return item.asset.file === 'nextAttendeeStream';
   };
 
   _createClass(MediaLoader, [{
@@ -61928,12 +62027,12 @@ var MediaLoader = /*#__PURE__*/function () {
   }, {
     key: "isPlayableVideo",
     get: function get() {
-      return !this.isAutoplayVideo;
+      return this.isVideo && !this.item.asset.autoplay;
     }
   }, {
     key: "isAutoplayVideo",
     get: function get() {
-      return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.autoplay;
+      return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.asset.autoplay != null;
     }
   }]);
 
@@ -61989,7 +62088,7 @@ var MediaLoader = /*#__PURE__*/function () {
       _video.muted = true;
       _video.playsinline = _video.playsInline = true;
 
-      if (item.autoplay) {
+      if (item.asset && item.asset.autoplay) {
         _video.loop = true;
       }
 
@@ -62004,7 +62103,7 @@ var MediaLoader = /*#__PURE__*/function () {
         texture.format = THREE$1.RGBFormat;
         texture.needsUpdate = true;
 
-        if (!item.autoplay) {
+        if (!item.asset || !item.asset.autoplay) {
           _video.pause();
         }
 
@@ -62042,10 +62141,9 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this2 = this;
 
     // console.log('MediaLoader.play');
-    this.video.play().then(function () {
-      console.log('MediaLoader.play.success', _this2.item.file);
+    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.file);
     }, function (error) {
-      console.log('MediaLoader.play.error', _this2.item.file, error);
+      console.log('MediaLoader.play.error', _this2.item.asset.file, error);
     });
 
     if (!silent) {
@@ -62185,7 +62283,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   MediaMesh.getStreamId$ = function getStreamId$(item) {
-    var file = item.file;
+    var file = item.asset.file;
 
     if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
       return rxjs.of(file);
@@ -62205,7 +62303,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
           var i = 0;
           streams.forEach(function (x) {
             if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-              if (i === item.fileIndex) {
+              if (i === item.asset.index) {
                 stream = x;
               }
 
@@ -62257,8 +62355,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
     if (mediaLoader.isPlayableVideo) {
       var textureB = MediaLoader.loadTexture({
-        folder: 'ui/',
-        file: 'play.png'
+        asset: {
+          folder: 'ui/',
+          file: 'play.png'
+        }
       }, function (textureB) {
         // console.log('MediaMesh.textureB', textureB);
         textureB.minFilter = THREE$1.LinearFilter;
@@ -62307,14 +62407,14 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     var item = this.item;
     var items = this.items;
 
-    if (item.linkedPlayId) {
+    if (item.asset && item.asset.linkedPlayId) {
       this.freeze();
     }
 
     return MediaLoader.events$.pipe(operators.map(function (event) {
-      if (item.linkedPlayId) {
+      if (item.asset && item.asset.linkedPlayId) {
         var eventItem = items.find(function (x) {
-          return event.src.indexOf(x.file) !== -1 && event.id === item.linkedPlayId;
+          return x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId;
         });
 
         if (eventItem) {
@@ -62460,7 +62560,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     geometry.scale(-1, 1, 1);
     var mesh;
     var subscription;
-    MediaMesh.getStreamId$(item).pipe(takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
+    MediaMesh.getStreamId$(item).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
       if (_this.streamId !== streamId) {
         _this.streamId = streamId;
 
@@ -62475,7 +62575,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
         if (streamId) {
           item.streamId = streamId;
-          mesh = new MediaMesh(item, items, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
+          mesh = new MediaMesh(item, items, geometry, item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null);
 
           if (item.position) {
             mesh.position.set(item.position.x, item.position.y, item.position.z);
@@ -62494,7 +62594,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
               mount(mesh);
             }
 
-            subscription = mesh.events$().pipe(takeUntil(_this.unsubscribe$)).subscribe(function () {});
+            subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
         } // console.log('streamId', streamId, mesh);
 
@@ -62745,7 +62845,7 @@ ModelDebugComponent.meta = {
     var _this = this;
 
     // this.renderOrder = environment.renderOrder.model;
-    this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, function (mesh) {
+    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
       // scale
       var box = new THREE$1.Box3().setFromObject(mesh);
       var size = box.max.clone().sub(box.min);
@@ -62796,8 +62896,8 @@ ModelDebugComponent.meta = {
       _this.pushChanges();
     });
     /*
-    this.loadRgbeBackground(environment.getTexturePath(this.item.envMapFolder), this.item.envMapFile, (envMap) => {
-    	this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (mesh) => {
+    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
+    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
     		const box = new THREE.Box3().setFromObject(mesh);
     		const center = box.getCenter(new THREE.Vector3());
     		mesh.position.x += (mesh.position.x - center.x);
@@ -62817,8 +62917,8 @@ ModelDebugComponent.meta = {
 
   /*
   loadAssets() {
-  	this.loadRgbeBackground(environment.getTexturePath(this.item.envMapFolder), this.item.envMapFile, (envMap) => {
-  		this.loadGltfModel(environment.getModelPath(this.item.gltfFolder), this.item.gltfFile, (model) => {
+  	this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
+  		this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (model) => {
   			const scene = this.host.scene;
   			scene.add(model);
   			this.host.render();
@@ -63967,7 +64067,7 @@ ModelNavComponent.meta = {
     var hash = {}; // let has = false;
 
     intersections.forEach(function (intersection, i) {
-      console.log(intersection);
+      // console.log(intersection);
       var object = intersection.object; // console.log('InteractiveSprite.hittest', i, object.name);
       // has = has || object.name.indexOf('nav') !== -1;
 
@@ -64115,12 +64215,11 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
         var xy = {
           x: parseInt(event.intersection.uv.x * node.offsetWidth),
           y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
-        };
-        console.log('ModelPanelComponent.down.xy', xy);
+        }; // console.log('ModelPanelComponent.down.xy', xy);
+
         var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
           return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-        });
-        console.log('ModelPanelComponent.down.link', link);
+        }); // console.log('ModelPanelComponent.down.link', link);
 
         if (link) {
           _this.down.next(link);
@@ -64335,7 +64434,7 @@ ModelPictureComponent.meta = {
 
         if (streamId) {
           item.streamId = streamId;
-          mesh = new MediaMesh(item, items, geometry, item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null);
+          mesh = new MediaMesh(item, items, geometry, item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null);
 
           if (item.position) {
             mesh.position.set(item.position.x, item.position.y, item.position.z);
@@ -69291,6 +69390,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule],
-  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, ModelCurvedPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AssetPipe, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, ModelCurvedPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

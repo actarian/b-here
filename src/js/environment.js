@@ -1,8 +1,9 @@
 export const NODE = (typeof module !== 'undefined' && module.exports);
-export const PARAMS = NODE ? { get: () => {} } : new URLSearchParams(window.location.search);
+export const PARAMS = NODE ? { get: () => { } } : new URLSearchParams(window.location.search);
 export const DEBUG = false || (PARAMS.get('debug') != null);
 export const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-export const STATIC = NODE ? false : (window && (window.location.port === '41999' || window.location.host === 'actarian.github.io'));
+export const HEROKU = NODE ? false : (window && (window.location.host.indexOf('herokuapp') !== -1 || window.location.port === '5000'));
+export const STATIC = NODE ? false : (HEROKU || (window && (window.location.port === '41789' || window.location.host === 'actarian.github.io')));
 export const DEVELOPMENT = NODE ? false : (window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1);
 export const PRODUCTION = !DEVELOPMENT;
 export const ENV = {
@@ -14,7 +15,7 @@ export const ENV = {
 export class Environment {
 
 	get href() {
-		if (window.location.host.indexOf('herokuapp') !== -1) {
+		if (HEROKU) {
 			return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
 		} else {
 			return BASE_HREF;
@@ -31,15 +32,15 @@ export class Environment {
 	}
 
 	getModelPath(path) {
-		return this.href + this.paths.models + path;
+		return STATIC ? (this.href + this.paths.models + path) : path;
 	}
 
 	getTexturePath(path) {
-		return this.href + this.paths.textures + path;
+		return STATIC ? (this.href + this.paths.textures + path) : path;
 	}
 
 	getFontPath(path) {
-		return this.href + this.paths.fonts + path;
+		return STATIC ? (this.href + this.paths.fonts + path) : path;
 	}
 
 	constructor(options) {
@@ -58,6 +59,10 @@ export const environment = new Environment({
 	debugMeetingId: '1591366622325',
 	port: 5000,
 	apiEnabled: false,
+	views: {
+		tryInArModal: 2162,
+		controlRequestModal: 2163,
+	},
 	paths: {
 		models: 'models/',
 		textures: 'textures/',

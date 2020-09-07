@@ -57,7 +57,7 @@ export default class Gamepads extends Emittable {
 				}
 			}
 		} catch (e) {
-			console.log(e);
+			console.log('Gamepads.connect.error', error);
 		}
 	}
 
@@ -77,8 +77,8 @@ export default class Gamepads extends Emittable {
 				delete this.hands[gamepad.hand];
 				this.emit('disconnect', gamepad);
 			}
-		} catch (e) {
-			console.log(e);
+		} catch (error) {
+			console.log('Gamepads.disconnect.error', error);
 		}
 	}
 
@@ -200,12 +200,12 @@ export class Gamepad extends Emittable {
 					if (axis.left !== left) {
 						axis.left = left;
 						this.emit((left ? 'left' : 'none'), axis);
-						console.log(`${axis.gamepad.hand} ${axis.gamepad.index} left ${left}`);
+						// console.log(`${axis.gamepad.hand} ${axis.gamepad.index} left ${left}`);
 					}
 					if (axis.right !== right) {
 						axis.right = right;
 						this.emit((right ? 'right' : 'none'), axis);
-						console.log(`${axis.gamepad.hand} ${axis.gamepad.index} right ${right}`);
+						// console.log(`${axis.gamepad.hand} ${axis.gamepad.index} right ${right}`);
 					}
 				} else {
 					const up = y < -0.85;
@@ -213,12 +213,12 @@ export class Gamepad extends Emittable {
 					if (axis.up !== up) {
 						axis.up = up;
 						this.emit((up ? 'up' : 'none'), axis);
-						console.log(`${axis.gamepad.hand} ${axis.gamepad.index} up ${up}`);
+						// console.log(`${axis.gamepad.hand} ${axis.gamepad.index} up ${up}`);
 					}
 					if (axis.down !== down) {
 						axis.down = down;
 						this.emit((down ? 'down' : 'none'), axis);
-						console.log(`${axis.gamepad.hand} ${axis.gamepad.index} down ${down}`);
+						// console.log(`${axis.gamepad.hand} ${axis.gamepad.index} down ${down}`);
 					}
 				}
 				this.emit('axis', axis);

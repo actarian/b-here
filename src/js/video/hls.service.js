@@ -1,4 +1,4 @@
-import { fromEventPattern, of , throwError } from "rxjs";
+import { fromEventPattern, of, throwError } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
 export const HlsQuality = {
@@ -54,7 +54,7 @@ export default class HlsService {
 		const hls = this.hls;
 		return this.load$(src).pipe(
 			switchMap(data => {
-				console.log('HlsService.data.levels', data.levels);
+				// console.log('HlsService.data.levels', data.levels);
 				switch (this.options.quality) {
 					case HlsQuality.Min:
 						hls.loadLevel = 0;
