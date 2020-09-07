@@ -81,6 +81,34 @@
       "fov": 70
     },
     {
+      "id": 100,
+      "type": "panorama",
+      "name": "Orogel",
+      "likes": 175,
+      "liked": false,
+      "envMapFolder": "video/",
+      "envMapFile": "orogel.mp4",
+      "items": [
+        {
+          "id": 2020,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.8628288555626449,
+            -0.5045050757541418,
+            -0.03163849785884536
+          ],
+          "navTo": 1
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "fov": 75
+    },
+    {
       "id": 11,
       "type": "panorama",
       "name": "Interior 01",
