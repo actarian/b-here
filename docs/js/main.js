@@ -3041,8 +3041,8 @@ var VRService = /*#__PURE__*/function () {
   };
 
   return VRService;
-}();var CONTROL_REQUEST = BASE_HREF + 'control-request-modal.html';
-var TRY_IN_AR = BASE_HREF + 'try-in-ar-modal.html';
+}();var CONTROL_REQUEST = STATIC ? BASE_HREF + 'control-request-modal.html' : '/viewdoc.cshtml?co_id=2164';
+var TRY_IN_AR = STATIC ? BASE_HREF + 'try-in-ar-modal.html' : '/viewdoc.cshtml?co_id=2163';
 
 var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
@@ -4449,7 +4449,7 @@ SliderDirective.meta = {
 
       if (data && data.ar) {
         // const url = `${environment.host}${data.ar.usdz}`;
-        var url = environment.host + "try-in-ar.html?viewId=" + data.id;
+        var url = STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/viewdoc.cshtml?co_id=2162&viewId=" + data.id;
         console.log(url);
         var qrcode = new QRious({
           element: node.querySelector('.qrcode'),

@@ -2,7 +2,7 @@ import { fromEvent, of } from 'rxjs';
 import { filter, finalize, first, map } from 'rxjs/operators';
 import { STATIC } from '../environment';
 
-const PATH = STATIC ? './' : '/Client/docs/';
+const PATH = STATIC ? './' : '/Modules/B-Here/Client/docs/';
 
 let UID = 0;
 

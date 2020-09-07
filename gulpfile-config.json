@@ -64,6 +64,13 @@
           ],
           "output": "docs/js/vendors.js",
           "minify": true
+        },
+        {
+          "input": [
+            "node_modules/rxcomp/dist/rxcomp-dark.css"
+          ],
+          "output": "docs/css/vendors.css",
+          "minify": true
         }
       ]
     },
