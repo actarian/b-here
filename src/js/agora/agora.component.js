@@ -9,8 +9,8 @@ import ViewService, { PanoramaGridView } from '../view/view.service';
 import VRService from '../world/vr.service';
 import AgoraService, { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.service';
 
-const CONTROL_REQUEST = STATIC ? BASE_HREF + 'control-request-modal.html' : '/viewdoc.cshtml?co_id=2164';
-const TRY_IN_AR = STATIC ? BASE_HREF + 'try-in-ar-modal.html' : '/viewdoc.cshtml?co_id=2163';
+const CONTROL_REQUEST = STATIC ? BASE_HREF + 'control-request-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.controlRequestModal}`;
+const TRY_IN_AR = STATIC ? BASE_HREF + 'try-in-ar-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.tryInArModal}`;
 
 export default class AgoraComponent extends Component {
 
@@ -198,8 +198,10 @@ export default class AgoraComponent extends Component {
 			name: 'Waiting Room',
 			likes: 40,
 			liked: false,
-			envMapFolder: 'waiting-room/',
-			envMapFile: 'waiting-room-02.jpg',
+			asset: {
+				folder: 'waiting-room/',
+				file: 'waiting-room-02.jpg',
+			},
 			items: [],
 			orientation: {
 				latitude: 0,

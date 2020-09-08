@@ -81,7 +81,7 @@ export default class AudioStreamService {
 						return Math.max(c, p);
 					}, 0);
 					if (max > 0) {
-						console.log(max);
+						// console.log(max);
 					}
 					*/
 					// Update the visualisation
@@ -100,7 +100,7 @@ export default class AudioStreamService {
 	static volume$(streamOrElement) {
 		const state = { volume: 0, clipped: false };
 		const context = this.context;
-		console.log('AudioStreamService.volume$', context, state);
+		// console.log('AudioStreamService.volume$', context, state);
 		if (context) {
 			const source = this.addSource(streamOrElement);
 			const meter = AudioStreamService.audioMeterCreate();
@@ -221,7 +221,7 @@ export default class AudioStreamService {
 }
 
 AudioStreamService.sources_ = {};
-AudioStreamService.frame$ = of (undefined).pipe(
+AudioStreamService.frame$ = of(undefined).pipe(
 	expand((value) => AudioStreamService.step$(value)),
 	// Expand emits the first value provided to it, and in this
 	//  case we just want to ignore the undefined input frame

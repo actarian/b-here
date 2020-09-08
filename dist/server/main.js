@@ -28,27 +28,29 @@ var PARAMS = NODE ? {
 } : new URLSearchParams(window.location.search);
 var DEBUG =  PARAMS.get('debug') != null;
 var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+var HEROKU = NODE ? false : window && (window.location.host.indexOf('herokuapp') !== -1 || window.location.port === '5000');
+var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.host === 'actarian.github.io');
 var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
 var Environment = /*#__PURE__*/function () {
   var _proto = Environment.prototype;
 
   _proto.getModelPath = function getModelPath(path) {
-    return this.href + this.paths.models + path;
+    return STATIC ? this.href + this.paths.models + path : path;
   };
 
   _proto.getTexturePath = function getTexturePath(path) {
-    return this.href + this.paths.textures + path;
+    return STATIC ? this.href + this.paths.textures + path : path;
   };
 
   _proto.getFontPath = function getFontPath(path) {
-    return this.href + this.paths.fonts + path;
+    return STATIC ? this.href + this.paths.fonts + path : path;
   };
 
   _createClass(Environment, [{
     key: "href",
     get: function get() {
-      if (window.location.host.indexOf('herokuapp') !== -1) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/';
+      if (HEROKU) {
+        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
       } else {
         return BASE_HREF;
       }
@@ -82,6 +84,10 @@ var environment = new Environment({
   debugMeetingId: '1591366622325',
   port: 5000,
   apiEnabled: false,
+  views: {
+    tryInArModal: 2162,
+    controlRequestModal: 2163
+  },
   paths: {
     models: 'models/',
     textures: 'textures/',
@@ -170,7 +176,7 @@ app.post('/api/token/rtm', function (request, response) {
   }));
 });
 app.listen(PORT, function () {
-  console.log("Listening on " + PORT);
+  console.log("Listening on http://localhost:" + PORT + "/");
 });
 /*
 https
@@ -179,7 +185,7 @@ https
 		key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
 	}, app)
 	.listen(PORT, function() {
-		console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
+		// console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
 	});
 */
 // IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.

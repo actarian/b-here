@@ -418,7 +418,7 @@ export default class DomService extends Dom {
 					});
 			}
 		} catch (e) {
-			console.log('no webgl');
+			console.log('DomService.hasWebgl.error no webgl');
 		}
 		if (gl) {
 			debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
@@ -426,7 +426,7 @@ export default class DomService extends Dom {
 			renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
 			has = true;
 		}
-		console.log(`WebGLCapabilities debugInfo: ${debugInfo} vendor: ${vendor} renderer: ${renderer} `);
+		console.log(`DomService.hasWebgl WebGLCapabilities debugInfo: ${debugInfo} vendor: ${vendor} renderer: ${renderer} `);
 		return has;
 	}
 

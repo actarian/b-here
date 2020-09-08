@@ -13,8 +13,8 @@ export default class TryInARModalComponent extends Component {
 			// console.log('data', data);
 			if (data && data.ar) {
 				// const url = `${environment.host}${data.ar.usdz}`;
-				const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/viewdoc.cshtml?co_id=2162&viewId=${data.id}`;
-				console.log(url);
+				const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/viewdoc.cshtml?co_id=${environment.views.tryInAryModal}&viewId=${data.id}`;
+				console.log('TryInARModalComponent.onInit.url', url);
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
 					value: url,

@@ -38,11 +38,11 @@ export default class ModelPanelComponent extends ModelComponent {
 			panel.position.set(position.x, position.y, position.z);
 			panel.on('down', (event) => {
 				const xy = { x: parseInt(event.intersection.uv.x * node.offsetWidth), y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight) };
-				console.log('ModelPanelComponent.down.xy', xy);
+				// console.log('ModelPanelComponent.down.xy', xy);
 				const link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(link => {
 					return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= (link.offsetLeft + link.offsetWidth) && xy.y <= (link.offsetTop + link.offsetHeight);
 				});
-				console.log('ModelPanelComponent.down.link', link);
+				// console.log('ModelPanelComponent.down.link', link);
 				if (link) {
 					this.down.next(link);
 					const rect = node.getBoundingClientRect();

@@ -81,7 +81,7 @@ export default class AgoraLinkComponent extends Component {
 	replaceUrl() {
 		if ('history' in window) {
 			const url = this.getUrl();
-			console.log('AgoraLinkComponent.url', url);
+			// console.log('AgoraLinkComponent.url', url);
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
 	}

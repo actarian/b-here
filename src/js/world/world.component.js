@@ -60,7 +60,7 @@ export default class WorldComponent extends Component {
 		if (DEBUG) {
 			const scene = this.scene;
 			scene.traverse((object) => {
-				console.log(object.name !== '' ? object.name : object.type);
+				// console.log(object.name !== '' ? object.name : object.type);
 			});
 		}
 	}
@@ -188,11 +188,11 @@ export default class WorldComponent extends Component {
 			if (!this.renderer.xr.isPresenting) {
 				if (this.infoResultMessage) {
 					this.orbit.setOrientation(this.infoResultMessage.orientation);
-					this.orbit.zoom = this.infoResultMessage.fov;
+					this.orbit.zoom = this.infoResultMessage.zoom;
 					this.camera.updateProjectionMatrix();
 				} else {
 					this.orbit.setOrientation(view.orientation);
-					this.orbit.zoom = view.fov;
+					this.orbit.zoom = view.zoom;
 					this.camera.updateProjectionMatrix();
 				}
 			}
@@ -645,7 +645,7 @@ export default class WorldComponent extends Component {
 		}
 		/*
 		if (this.view_ instanceof ModelView) {
-			console.log(this.view_);
+			// console.log(this.view_);
 		}
 		*/
 	}
@@ -664,7 +664,7 @@ export default class WorldComponent extends Component {
 	onVRStateDidChange(state) {
 		/*
 		if (DEBUG) {
-			console.log('WorldComponent.onVRStateDidChange', state.camera.array);
+			// console.log('WorldComponent.onVRStateDidChange', state.camera.array);
 		}
 		*/
 		const agora = this.agora;
@@ -691,7 +691,6 @@ export default class WorldComponent extends Component {
 
 	onNavOver(event) {
 		// console.log('WorldComponent.onNavOver', event);
-		// console.log(this);
 		if (this.menu) {
 			this.menu.removeMenu();
 		}
@@ -709,7 +708,7 @@ export default class WorldComponent extends Component {
 	onNavDown(event) {
 		// console.log('WorldComponent.onNavDown', event);
 		event.showPanel = false;
-		this.navTo.next(event.navTo);
+		this.navTo.next(event.viewId);
 	}
 
 	onPanelDown(event) {
@@ -815,7 +814,7 @@ export default class WorldComponent extends Component {
 							message.type = MessageType.RequestInfoResult;
 							message.viewId = this.view.id;
 							message.orientation = this.orbit.getOrientation();
-							message.fov = this.orbit.zoom;
+							message.zoom = this.orbit.zoom;
 							if (this.view instanceof PanoramaGridView) {
 								message.gridIndex = this.view.index;
 							}
@@ -838,7 +837,7 @@ export default class WorldComponent extends Component {
 							if (message.viewId === this.view.id) {
 								this.orbit.setOrientation(message.orientation);
 								if (!this.renderer.xr.isPresenting) {
-									this.orbit.zoom = message.fov;
+									this.orbit.zoom = message.zoom;
 									this.camera.updateProjectionMatrix();
 								}
 								if (this.view instanceof PanoramaGridView && message.gridIndex) {
@@ -853,7 +852,7 @@ export default class WorldComponent extends Component {
 						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
 							this.orbit.setOrientation(message.orientation);
 							if (!this.renderer.xr.isPresenting) {
-								this.orbit.zoom = message.fov;
+								this.orbit.zoom = message.zoom;
 								this.camera.updateProjectionMatrix();
 							}
 							// this.render();

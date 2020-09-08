@@ -110,7 +110,7 @@ export default class AgoraStreamComponent extends Component {
 
 	onLoadedMetadata(event) {
 		this.videoNode.play().then(success => {
-			console.log('AgoraStreamComponent.play.success', success);
+			// console.log('AgoraStreamComponent.play.success', success);
 		}, error => {
 			console.log('AgoraStreamComponent.play.error', error);
 		});

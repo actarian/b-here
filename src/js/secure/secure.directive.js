@@ -33,7 +33,7 @@ export default class SecureDirective extends Directive {
 		).subscribe(blob => {
 			DownloadService.download(blob, this.href.split('/').pop());
 		}, error => {
-			console.log(error);
+			console.log('SecureDirective.tryDownloadHref.error', error);
 			this.onLogin(event);
 		});
 	}

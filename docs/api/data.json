@@ -1,18 +1,22 @@
 {
-  "views": [{
+  "views": [
+    {
       "id": "waiting-room",
       "type": "waiting-room",
       "name": "Waiting Room",
       "likes": 40,
       "liked": false,
-      "envMapFolder": "waiting-room/",
-      "envMapFile": "waiting-room.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "waiting-room.jpg"
+      },
       "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 1,
@@ -20,14 +24,22 @@
       "name": "Welcome Room",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "waiting-room/",
-      "envMapFile": "IPF WELCOME.jpg",
-      "items": [{
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "IPF WELCOME.jpg"
+      },
+      "items": [
+        {
           "id": 1,
           "type": "nav",
           "title": "IPF Experience",
           "abstract": "Abstract",
-          "image": "/img/logo-ipf.png",
+          "asset": {
+            "type": "image",
+            "folder": "ipf/",
+            "file": "logo-ipf.png"
+          },
           "link": {
             "title": "Scopri di più...",
             "href": "https://www.ipfparquet.com/",
@@ -38,7 +50,7 @@
             -0.13283004910650417,
             -0.3460489754524545
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
@@ -50,7 +62,7 @@
             -0.046553812125665825,
             -0.976326324113342
           ],
-          "navTo": 2
+          "viewId": 2
         },
         {
           "id": 3,
@@ -62,7 +74,7 @@
             -0.031437694960594904,
             0.10129214999707196
           ],
-          "navTo": 4
+          "viewId": 4
         },
         {
           "id": 4,
@@ -74,7 +86,7 @@
             -0.025826583120471387,
             0.6663760239876656
           ],
-          "navTo": 5
+          "viewId": 5
         },
         {
           "id": 5,
@@ -86,7 +98,7 @@
             -0.02228653842611006,
             0.9773276505373021
           ],
-          "navTo": 6
+          "viewId": 6
         },
         {
           "id": 6,
@@ -98,7 +110,7 @@
             -0.032228276380236016,
             -0.49407500142996114
           ],
-          "navTo": 3
+          "viewId": 3
         },
         {
           "id": 7,
@@ -110,7 +122,7 @@
             -0.043653776361458126,
             -0.9098074725095608
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 8,
@@ -122,7 +134,7 @@
             -0.017823494378604976,
             0.9135079010392757
           ],
-          "navTo": 7
+          "viewId": 7
         },
         {
           "id": 9,
@@ -134,14 +146,14 @@
             -0.020841779548457492,
             0.5047801882617173
           ],
-          "navTo": 8
-        }                         
+          "viewId": 8
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 2,
@@ -149,14 +161,20 @@
       "name": "Cinema",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "01_cinema.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "01_cinema.jpg"
+      },
       "items": [
         {
           "id": 1,
           "type": "plane",
-          "folder": "video/",
-          "file": "IPF PARQUET.mp4",
+          "asset": {
+            "type": "video",
+            "folder": "video/",
+            "file": "IPF PARQUET.mp4"
+          },
           "position": {
             "x": 86,
             "y": 0.5,
@@ -183,14 +201,14 @@
             -0.08714067158337428,
             -0.6237768484438497
           ],
-          "navTo": 1
-        }    
+          "viewId": 1
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 3,
@@ -198,8 +216,11 @@
       "name": "Gallery Vision",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "02_galleryvision.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "02_galleryvision.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -211,7 +232,7 @@
             -0.03805309790943292,
             0.060259468983974794
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
@@ -223,14 +244,14 @@
             -0.043530668787042835,
             0.16478076924951143
           ],
-          "navTo": 10
-        }       
+          "viewId": 10
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 4,
@@ -238,8 +259,11 @@
       "name": "Collezione 1",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "03_collezione1.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "03_collezione1.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -251,14 +275,18 @@
             -0.030171472667230893,
             -0.21292177195326667
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Rovere",
-          "image": "/img/logo-ipf.png",
+          "asset": {
+            "type": "image",
+            "folder": "ipf/",
+            "file": "logo-ipf.png"
+          },
           "link": {
             "title": "Scopri di più...",
             "href": "https://www.ipfparquet.com/collezioni-ipf/",
@@ -269,14 +297,14 @@
             -0.0759471808804943,
             0.9284316051782305
           ],
-          "navTo": 4
-        }  
+          "viewId": 4
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 5,
@@ -284,8 +312,11 @@
       "name": "Collezione 2",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "04_collezione2.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "04_collezione2.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -297,14 +328,18 @@
             -0.021509848800496244,
             -0.07299034735663476
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Quercia",
-          "image": "/img/logo-ipf.png",
+          "asset": {
+            "type": "image",
+            "folder": "ipf/",
+            "file": "logo-ipf.png"
+          },
           "link": {
             "title": "Scopri di più...",
             "href": "https://www.ipfparquet.com/collezioni-ipf/",
@@ -315,14 +350,14 @@
             0.03332111387733693,
             -0.9743448104604446
           ],
-          "navTo": 5
-        }      
+          "viewId": 5
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 6,
@@ -330,8 +365,11 @@
       "name": "Collezione 3",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "05_collezione3.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "05_collezione3.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -343,14 +381,18 @@
             -0.07097963819952634,
             -0.0351694224011555
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Quercia",
-          "image": "/img/logo-ipf.png",
+          "asset": {
+            "type": "image",
+            "folder": "ipf/",
+            "file": "logo-ipf.png"
+          },
           "link": {
             "title": "Scopri di più...",
             "href": "https://www.ipfparquet.com/collezioni-ipf/",
@@ -361,14 +403,14 @@
             0.04054145963749951,
             -0.9833976596097861
           ],
-          "navTo": 6
-        }      
+          "viewId": 6
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 7,
@@ -376,8 +418,11 @@
       "name": "Collezione 4",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "06_collezione4.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "06_collezione4.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -389,14 +434,18 @@
             0.0001824169568976166,
             0.28714225726827636
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Resina",
-          "image": "/img/logo-ipf.png",
+          "asset": {
+            "type": "image",
+            "folder": "ipf/",
+            "file": "logo-ipf.png"
+          },
           "link": {
             "title": "Scopri di più...",
             "href": "https://www.ipfparquet.com/collezioni-ipf/",
@@ -407,14 +456,14 @@
             0.016819332038556466,
             -0.994494835726935
           ],
-          "navTo": 7
-        }      
+          "viewId": 7
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 8,
@@ -422,8 +471,11 @@
       "name": "Collezione 5",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "07_collezione5.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "07_collezione5.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -435,14 +487,18 @@
             -0.08632242341657502,
             0.13800562321556384
           ],
-          "navTo": 1
+          "viewId": 1
         },
         {
           "id": 2,
           "type": "nav",
           "title": "Material",
           "abstract": "Idro Oil",
-          "image": "/img/logo-ipf.png",
+          "asset": {
+            "type": "image",
+            "folder": "ipf/",
+            "file": "logo-ipf.png"
+          },
           "link": {
             "title": "Scopri di più...",
             "href": "https://www.ipfparquet.com/collezioni-ipf/",
@@ -453,14 +509,14 @@
             0.22789123821306526,
             -0.9710714058301487
           ],
-          "navTo": 8
-        }      
+          "viewId": 8
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 10,
@@ -468,8 +524,11 @@
       "name": "Paesaggio 1",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -481,14 +540,14 @@
             -0.0394442548923739,
             -0.040979491906128374
           ],
-          "navTo": 11
+          "viewId": 11
         }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 11,
@@ -496,8 +555,11 @@
       "name": "Paesaggio 2",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -509,14 +571,14 @@
             -0.0394442548923739,
             -0.040979491906128374
           ],
-          "navTo": 12
+          "viewId": 12
         }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 12,
@@ -524,8 +586,11 @@
       "name": "Paesaggio 3",
       "likes": 134,
       "liked": false,
-      "envMapFolder": "rendering/",
-      "envMapFile": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg",
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg"
+      },
       "items": [
         {
           "id": 1,
@@ -537,14 +602,14 @@
             -0.0394442548923739,
             -0.040979491906128374
           ],
-          "navTo": 1
-        } 
+          "viewId": 1
+        }
       ],
       "orientation": {
         "latitude": -10,
         "longitude": 360
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 60,
@@ -556,26 +621,30 @@
         "gltf": "/logo/logowsGLTF.gltf",
         "usdz": "/logo/logows.usdz"
       },
-      "envMapFolder": "",
-      "envMapFile": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8",
-      "items": [{
-        "id": 1,
-        "type": "nav",
-        "title": "Welcome Room",
-        "abstract": "Abstract",
-        "position": [
-          0.04713776229380867,
-          -0.16372888464057858,
-          0.9853785484270928
-        ],
-        "navTo": 1
-      }
-    ],
+      "asset": {
+        "type": "video",
+        "folder": "",
+        "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
+      },
+      "items": [
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "viewId": 1
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 61,
@@ -587,25 +656,30 @@
         "gltf": "/logo/logowsGLTF.gltf",
         "usdz": "/logo/logows.usdz"
       },
-      "envMapFolder": "",
-      "envMapFile": "publisherStream",
-      "items": [{
-        "id": 1,
-        "type": "nav",
-        "title": "Welcome Room",
-        "abstract": "Abstract",
-        "position": [
-          0.04713776229380867,
-          -0.16372888464057858,
-          0.9853785484270928
-        ],
-        "navTo": 1
-      }],
+      "asset": {
+        "type": "publisher-stream",
+        "folder": "",
+        "file": "publisherStream"
+      },
+      "items": [
+        {
+          "id": 1,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "viewId": 1
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
-      "fov": 75
+      "zoom": 75
     },
     {
       "id": 20,
@@ -617,21 +691,29 @@
         "gltf": "/logo/logowsGLTF.gltf",
         "usdz": "/logo/logows.usdz"
       },
-      "envMapFolder": "waiting-room/",
-      "envMapFile": "amazing.jpg",
-      "items": [{
-        "id": 1,
-        "type": "gltf",
-        "title": "Model",
-        "abstract": "Abstract",
-        "gltfFolder": "logo/",
-        "gltfFile": "logowsGLB.glb"
-      }],
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "amazing.jpg"
+      },
+      "items": [
+        {
+          "id": 1,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "type": "model",
+            "folder": "logo/",
+            "file": "logowsGLB.glb"
+          }
+        }
+      ],
       "orientation": {
         "latitude": 18,
         "longitude": 150
       },
-      "fov": 55
+      "zoom": 55
     }
   ]
 }

@@ -22,7 +22,7 @@ export default class HlsDirective extends Directive {
 			hls.on(Hls.Events.MEDIA_ATTACHED, () => {
 				hls.loadSource(src);
 				hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-					console.log('HlsDirective', data.levels);
+					// console.log('HlsDirective', data.levels);
 					node.play();
 				});
 			});
