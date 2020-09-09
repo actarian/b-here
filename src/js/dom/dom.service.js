@@ -1,5 +1,3 @@
-/* jshint esversion: 6 */
-
 import LocomotiveScroll from 'locomotive-scroll';
 import { combineLatest, fromEvent, fromEventPattern, range } from 'rxjs';
 import { animationFrame } from 'rxjs/internal/scheduler/animationFrame';
@@ -212,10 +210,10 @@ export default class DomService extends Dom {
 						has = true;
 					}
 				});
-				const noop = function() {};
+				const noop = function() { };
 				window.addEventListener('testPassiveEventSupport', noop, options);
 				window.removeEventListener('testPassiveEventSupport', noop, options);
-			} catch (e) {}
+			} catch (e) { }
 			return has;
 		};
 		this.hasPassiveEvents = hasPassiveEvents();
@@ -413,14 +411,14 @@ export default class DomService extends Dom {
 			const canvas = document.createElement('canvas');
 			if (!!window.WebGLRenderingContext) {
 				gl = canvas.getContext('webgl', {
-						failIfMajorPerformanceCaveat: true
-					}) ||
+					failIfMajorPerformanceCaveat: true
+				}) ||
 					canvas.getContext('experimental-webgl', {
 						failIfMajorPerformanceCaveat: true
 					});
 			}
 		} catch (e) {
-			console.log('no webgl');
+			console.log('DomService.hasWebgl.error no webgl');
 		}
 		if (gl) {
 			debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
@@ -428,7 +426,7 @@ export default class DomService extends Dom {
 			renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
 			has = true;
 		}
-		console.log(`WebGLCapabilities debugInfo: ${debugInfo} vendor: ${vendor} renderer: ${renderer} `);
+		console.log(`DomService.hasWebgl WebGLCapabilities debugInfo: ${debugInfo} vendor: ${vendor} renderer: ${renderer} `);
 		return has;
 	}
 

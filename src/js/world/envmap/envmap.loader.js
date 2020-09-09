@@ -46,16 +46,19 @@ export class EnvMapLoader {
 
 	static load(item, renderer, callback) {
 		this.video = null;
-		if (item.envMapFile === 'publisherStream') {
+		if (!item.asset) {
+			return;
+		}
+		if (item.asset.file === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
-		} else if (item.envMapFile.indexOf('.hdr') !== -1) {
-			return this.loadRgbeBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
-		} else if (item.envMapFile.indexOf('.mp4') !== -1 || item.envMapFile.indexOf('.webm') !== -1) {
-			return this.loadVideoBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
-		} else if (item.envMapFile.indexOf('.m3u8') !== -1) {
-			return this.loadHlslVideoBackground(item.envMapFile, renderer, callback);
+		} else if (item.asset.file.indexOf('.hdr') !== -1) {
+			return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+		} else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
+			return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+		} else if (item.asset.file.indexOf('.m3u8') !== -1) {
+			return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
 		} else {
-			return this.loadBackground(environment.getTexturePath(item.envMapFolder), item.envMapFile, renderer, callback);
+			return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
 		}
 	}
 
@@ -150,13 +153,13 @@ export class EnvMapLoader {
 		};
 		// video.addEventListener('playing', onPlaying);
 		video.oncanplay = () => {
-			console.log('EnvMapLoader.loadVideoBackground.oncanplay');
+			// console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
 		video.src = path + file;
 		video.load();
 		video.play().then(() => {
-			console.log('EnvMapLoader.loadVideoBackground.play');
+			// console.log('EnvMapLoader.loadVideoBackground.play');
 			debugService.setMessage(`play ${video.src}`);
 		}, error => {
 			console.log('EnvMapLoader.loadVideoBackground.play.error', error);
@@ -199,7 +202,7 @@ export class EnvMapLoader {
 			hls.on(Hls.Events.MEDIA_ATTACHED, () => {
 				hls.loadSource(src);
 				hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-					console.log('HlsDirective', data.levels);
+					// console.log('HlsDirective', data.levels);
 					video.play();
 				});
 			});

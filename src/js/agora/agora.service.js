@@ -2,7 +2,7 @@
 // const AgoraRTC = require('agora-rtc-sdk');
 
 import AgoraRTM from 'agora-rtm-sdk';
-import { BehaviorSubject, combineLatest, from, of , Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
@@ -133,13 +133,13 @@ export class AgoraEvent {
 		Object.assign(this, options);
 	}
 }
-export class AgoraPeerEvent extends AgoraEvent {}
-export class AgoraRemoteEvent extends AgoraEvent {}
-export class AgoraMuteVideoEvent extends AgoraEvent {}
-export class AgoraUnmuteVideoEvent extends AgoraEvent {}
-export class AgoraMuteAudioEvent extends AgoraEvent {}
-export class AgoraUnmuteAudioEvent extends AgoraEvent {}
-export class AgoraVolumeLevelsEvent extends AgoraEvent {}
+export class AgoraPeerEvent extends AgoraEvent { }
+export class AgoraRemoteEvent extends AgoraEvent { }
+export class AgoraMuteVideoEvent extends AgoraEvent { }
+export class AgoraUnmuteVideoEvent extends AgoraEvent { }
+export class AgoraMuteAudioEvent extends AgoraEvent { }
+export class AgoraUnmuteAudioEvent extends AgoraEvent { }
+export class AgoraVolumeLevelsEvent extends AgoraEvent { }
 
 export default class AgoraService extends Emittable {
 
@@ -554,10 +554,10 @@ export default class AgoraService extends Emittable {
 					element.play().then(success => {
 						const stream = element.captureStream();
 						options.videoSource = stream.getVideoTracks()[0];
-						console.log('getVideoOptions', element, stream, stream.getVideoTracks());
+						// console.log('getVideoOptions', element, stream, stream.getVideoTracks());
 						resolve(options);
 					}, error => {
-						console.log('AgoraService.getVideoOptions.error', error);
+						// console.log('AgoraService.getVideoOptions.error', error);
 					});
 					*/
 				} else {
@@ -607,10 +607,10 @@ export default class AgoraService extends Emittable {
 					element.play().then(success => {
 						const stream = element.captureStream();
 						options.audioSource = stream.getAudioTracks()[0];
-						console.log('AgoraService.getAudioOptions', element, stream, stream.getAudioTracks());
+						// console.log('AgoraService.getAudioOptions', element, stream, stream.getAudioTracks());
 						resolve(options);
 					}, error => {
-						console.log('AgoraService.getAudioOptions.error', error);
+						// console.log('AgoraService.getAudioOptions.error', error);
 					});
 					*/
 				} else {
@@ -980,7 +980,7 @@ export default class AgoraService extends Emittable {
 			/*
 			// this.emit('wrc-message', message);
 			if (message.type === WRCMessageType.WRC_CLOSE) {
-			  console.log('receive wrc close')
+			  // console.log('receive wrc close')
 			  this.cleanRemote()
 			  this.emit('remote-close')
 			}

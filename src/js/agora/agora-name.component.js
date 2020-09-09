@@ -46,7 +46,7 @@ export default class AgoraNameComponent extends Component {
 			const role = LocationService.get('role') || null;
 			const link = LocationService.get('link') || null;
 			const url = `${window.location.origin}${window.location.pathname}?link=${link}&name=${this.controls.name.value}` + (role ? `&role=${role}` : '');
-			console.log('AgoraNameComponent.url', url);
+			// console.log('AgoraNameComponent.url', url);
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
 	}

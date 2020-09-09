@@ -7,6 +7,7 @@ import AgoraNameComponent from './agora/agora-name.component';
 import AgoraStreamComponent from './agora/agora-stream.component';
 import AgoraComponent from './agora/agora.component';
 import AppComponent from './app.component';
+import AssetPipe from './asset/asset.pipe';
 import ControlRequestModalComponent from './control-request/control-request-modal.component';
 import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
@@ -36,7 +37,7 @@ import ModelTextComponent from './world/model/model-text.component';
 import ModelComponent from './world/model/model.component';
 import WorldComponent from './world/world.component';
 
-export class AppModule extends Module {}
+export class AppModule extends Module { }
 
 AppModule.meta = {
 	imports: [
@@ -44,6 +45,7 @@ AppModule.meta = {
 		FormModule,
 	],
 	declarations: [
+		AssetPipe,
 		AgoraComponent,
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,

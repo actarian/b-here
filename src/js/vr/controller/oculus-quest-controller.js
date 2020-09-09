@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import { cm, deg, mm, TEST_ENABLED } from '../../const';
 import { GAMEPAD_HANDS } from '../gamepads';
 import Controller from './controller';
@@ -119,7 +116,7 @@ export default class OculusQuestController extends Controller {
 		}, (xhr) => {
 			this.progress = xhr.loaded / xhr.total;
 		}, (error) => {
-			console.log(`OculusQuestController.addModel not found ${path}.obj`);
+			console.log(`OculusQuestController.addModel.error not found ${path}.obj`);
 		});
 		return mesh;
 	}

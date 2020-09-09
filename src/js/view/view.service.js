@@ -3,7 +3,6 @@ import { map } from "rxjs/operators";
 import HttpService from "../http/http.service";
 
 export class View {
-
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -11,42 +10,41 @@ export class View {
 				let nextAttendeeStreamIndex = 0;
 				options.items.forEach((item, index) => {
 					item.index = index;
-					if (item.file === 'nextAttendeeStream') {
-						item.fileIndex = nextAttendeeStreamIndex++;
+					if (item.asset && item.asset.file === 'nextAttendeeStream') {
+						item.asset.index = nextAttendeeStreamIndex++;
 					}
 				});
 			}
 		}
+		this.items = this.items || [];
+		this.originalItems = this.items.slice();
 	}
-
 }
 
 export class PanoramaView extends View {
-
 	constructor(options) {
 		super(options);
 	}
-
 }
 
 export class PanoramaGridView extends View {
-
 	set index(index) {
 		if (this.index_ !== index) {
 			this.index_ = index;
+			this.items = this.originalItems.concat(this.tiles[index].navs);
+			// console.log('PanoramaGridView.index.set', index, this.items);
 			this.index$.next(index);
 		}
 	}
-
 	get index() {
 		return this.index_;
 	}
-
 	constructor(options) {
 		if (options.tiles) {
 			options.tiles = options.tiles.map((tile, i) => {
 				const indices = new THREE.Vector2();
-				tile.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
+				tile = typeof tile === 'string' ? { asset: { folder: options.asset.folder, file: tile }, navs: [] } : tile;
+				tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
 					const flipAxes = options.flipAxes ? -1 : 1;
 					if (options.invertAxes) {
 						indices.y = parseInt(b);
@@ -59,17 +57,20 @@ export class PanoramaGridView extends View {
 				});
 				return {
 					id: i + 1,
-					envMapFolder: options.envMapFolder,
-					envMapFile: tile,
+					asset: tile.asset,
+					navs: tile.navs || [],
 					indices,
 				};
 			});
 		}
 		super(options);
+		if (!this.tiles.length) {
+			throw new Error('PanoramaGridView.constructor tile list is empty!');
+		}
 		this.index_ = 0;
 		this.index$ = new Subject();
+		this.items = this.originalItems.concat(this.tiles[0].navs);
 	}
-
 	getTileIndex(x, y) {
 		return this.tiles.reduce((p, c, i) => {
 			if (c.indices.x === x && c.indices.y === y) {
@@ -79,11 +80,9 @@ export class PanoramaGridView extends View {
 			}
 		}, -1);
 	}
-
 	hasTile(x, y) {
 		return this.getTileIndex(x, y) !== -1;
 	}
-
 	getTile(x, y) {
 		const index = this.getTileIndex(x, y);
 		if (index !== -1) {
@@ -91,15 +90,12 @@ export class PanoramaGridView extends View {
 			return this.tiles[index];
 		}
 	}
-
 }
 
 export class ModelView extends View {
-
 	constructor(options) {
 		super(options);
 	}
-
 }
 
 export const ViewType = {
@@ -110,7 +106,6 @@ export const ViewType = {
 };
 
 export default class ViewService {
-
 	static data$() {
 		return HttpService.get$('./api/data.json').pipe(
 			map(data => {
@@ -134,5 +129,4 @@ export default class ViewService {
 			}),
 		);
 	}
-
 }

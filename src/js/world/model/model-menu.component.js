@@ -4,65 +4,33 @@ import { environment } from '../../environment';
 import { ViewType } from '../../view/view.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
+import OrbitService, { OrbitMode } from '../orbit/orbit';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
-const NAV_RADIUS = 100;
-const ORIGIN = new THREE.Vector3();
-const ORIGIN_HEAD = new THREE.Vector3(0, 1.66, 0);
-
-const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-void main() {
-	vUv = uv;
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-uniform float opacity;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-
-void main() {
-	vec4 colorA = texture2D(textureA, vUv);
-	vec4 colorB = texture2D(textureB, vUv);
-	vec4 color = vec4(mix(colorA.rgb, colorB.rgb, tween), opacity);
-	gl_FragColor = color;
-}
-`;
-
 export class MenuButton extends InteractiveMesh {
 
 	static getGrid(total) {
-		const cols = Math.ceil(total / 5);
+		const cols = Math.ceil(total / MenuButton.ROWS);
 		const rows = Math.ceil(total / cols);
 		return [rows, cols];
 	}
 
 	static getX(index, total) {
-		const cols = Math.ceil(total / 5);
+		const cols = Math.ceil(total / MenuButton.ROWS);
 		const rows = Math.ceil(total / cols);
 		const c = index % cols;
-		const w = (1 / MenuButton.w * (MenuButton.w + MenuButton.g));
+		const w = (1 / MenuButton.W * (MenuButton.W + MenuButton.G));
 		return (w / 2 - cols * w / 2) + c * w;
 	}
 
 	static getY(index, total) {
-		const cols = Math.ceil(total / 5);
+		const cols = Math.ceil(total / MenuButton.ROWS);
 		const rows = Math.ceil(total / cols);
 		const c = index % cols;
 		const r = Math.floor(index / cols);
-		const h = (1 / MenuButton.w * (MenuButton.h + MenuButton.g));
+		const h = (1 / MenuButton.W * (MenuButton.H + MenuButton.G));
 		return (rows * h / 2 - h / 2) + r * -h; // y flipped
 	}
 
@@ -70,7 +38,7 @@ export class MenuButton extends InteractiveMesh {
 		if (this.geometry_) {
 			return this.geometry_;
 		}
-		const geometry = new THREE.PlaneBufferGeometry(1, 1 / MenuButton.w * MenuButton.h, 2, 2);
+		const geometry = new THREE.PlaneBufferGeometry(1, 1 / MenuButton.W * MenuButton.H, 2, 2);
 		// geometry.rotateX(-Math.PI);
 		// geometry.scale(-1, 1, 1);
 		this.geometry_ = geometry;
@@ -81,8 +49,8 @@ export class MenuButton extends InteractiveMesh {
 		const material = new THREE.ShaderMaterial({
 			depthTest: false,
 			transparent: true,
-			vertexShader: VERTEX_SHADER,
-			fragmentShader: FRAGMENT_SHADER,
+			vertexShader: ModelMenuComponent.VERTEX_SHADER,
+			fragmentShader: ModelMenuComponent.FRAGMENT_SHADER,
 			uniforms: {
 				textureA: { type: "t", value: null },
 				textureB: { type: "t", value: null },
@@ -133,8 +101,8 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	getTextureA(text) {
-		const w = MenuButton.w;
-		const h = MenuButton.h;
+		const w = MenuButton.W;
+		const h = MenuButton.H;
 		const canvas = document.createElement('canvas');
 		canvas.width = w;
 		canvas.height = h;
@@ -154,8 +122,8 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	getTextureB(text) {
-		const w = MenuButton.w;
-		const h = MenuButton.h;
+		const w = MenuButton.W;
+		const h = MenuButton.H;
 		const canvas = document.createElement('canvas');
 		canvas.width = w;
 		canvas.height = h;
@@ -210,9 +178,10 @@ export class MenuButton extends InteractiveMesh {
 
 }
 
-MenuButton.w = 256;
-MenuButton.h = 64;
-MenuButton.g = 2;
+MenuButton.W = 256;
+MenuButton.H = 64;
+MenuButton.G = 2;
+MenuButton.ROWS = 6;
 
 export class BackButton extends MenuButton {
 
@@ -221,8 +190,8 @@ export class BackButton extends MenuButton {
 	}
 
 	getTextureA(text) {
-		const w = MenuButton.w;
-		const h = MenuButton.h;
+		const w = MenuButton.W;
+		const h = MenuButton.H;
 		const canvas = document.createElement('canvas');
 		canvas.width = w;
 		canvas.height = h;
@@ -241,8 +210,8 @@ export class BackButton extends MenuButton {
 	}
 
 	getTextureB(text) {
-		const w = MenuButton.w;
-		const h = MenuButton.h;
+		const w = MenuButton.W;
+		const h = MenuButton.H;
 		const canvas = document.createElement('canvas');
 		canvas.width = w;
 		canvas.height = h;
@@ -266,7 +235,6 @@ export default class ModelMenuComponent extends ModelComponent {
 	get items() {
 		return this.items_;
 	}
-
 	set items(items) {
 		if (this.items_ !== items) {
 			this.items_ = items;
@@ -301,7 +269,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
-		menuGroup.lookAt(ORIGIN);
+		menuGroup.lookAt(ModelMenuComponent.ORIGIN);
 		if (typeof mount === 'function') {
 			mount(menuGroup);
 		}
@@ -321,12 +289,20 @@ export default class ModelMenuComponent extends ModelComponent {
 		// if (position.lengthSq() > 0.01) {
 		// normalize so we can get a constant speed
 		// position.normalize();
-		position.multiplyScalar(3);
+		switch (OrbitService.mode) {
+			case OrbitMode.Model:
+				position.multiplyScalar(0.01);
+				break;
+			default:
+				position.multiplyScalar(3);
+		}
 		// move body, not the camera
 		// VR.body.position.add(lookDirection);
 		// console.log(position.x + '|' + position.y + '|' + position.z);
 		group.position.copy(position);
-		group.lookAt(ORIGIN);
+		const s = 1 / camera.zoom;
+		group.scale.set(s, s, s);
+		group.lookAt(ModelMenuComponent.ORIGIN);
 		// }
 	}
 
@@ -365,8 +341,10 @@ export default class ModelMenuComponent extends ModelComponent {
 	onToggle() {
 		if (this.buttons) {
 			this.removeMenu();
+			this.toggle.next();
 		} else {
 			this.addMenu();
+			this.toggle.next(this);
 		}
 	}
 
@@ -395,7 +373,7 @@ export default class ModelMenuComponent extends ModelComponent {
 				if (this.host.renderer.xr.isPresenting) {
 					this.addToggler();
 				}
-				this.open.next(item);
+				this.nav.next(item);
 				return;
 			}
 		} else {
@@ -491,10 +469,39 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 }
 
+ModelMenuComponent.ORIGIN = new THREE.Vector3();
+ModelMenuComponent.VERTEX_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+void main() {
+	vUv = uv;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+ModelMenuComponent.FRAGMENT_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+uniform float opacity;
+uniform float tween;
+uniform sampler2D textureA;
+uniform sampler2D textureB;
+uniform vec2 resolutionA;
+uniform vec2 resolutionB;
+
+void main() {
+	vec4 colorA = texture2D(textureA, vUv);
+	vec4 colorB = texture2D(textureB, vUv);
+	vec4 color = vec4(mix(colorA.rgb, colorB.rgb, tween), opacity);
+	gl_FragColor = color;
+}
+`;
+
 ModelMenuComponent.meta = {
 	selector: '[model-menu]',
 	hosts: { host: WorldComponent },
-	// outputs: ['over', 'out', 'down', 'open'],
-	outputs: ['open'],
+	// outputs: ['over', 'out', 'down', 'nav'],
+	outputs: ['nav', 'toggle'],
 	inputs: ['items'],
 };

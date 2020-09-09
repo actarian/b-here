@@ -40,6 +40,8 @@ export class DragUpEvent extends DragEvent {
 	}
 }
 
+let upEvent;
+
 export default class DragService {
 
 	static getPosition(event, point) {
@@ -68,7 +70,7 @@ export default class DragService {
 	static down$(target, events$) {
 		let downEvent;
 		return merge(
-			fromEvent(target, 'mousedown'),
+			fromEvent(target, 'mousedown').pipe(filter(event => event.button === 0)),
 			fromEvent(target, 'touchstart')
 		).pipe(
 			map((event) => {
@@ -120,34 +122,39 @@ export default class DragService {
 		);
 	}
 
+	static dismissEvent(event, events$, dismiss$, downEvent) {
+		// console.log('DragService.dismissEvent', event);
+		upEvent = upEvent || new DragUpEvent();
+		events$.next(upEvent);
+		dismiss$.next();
+		// console.log(downEvent.distance);
+		if (downEvent && Math.abs(downEvent.distance.x) > 10) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+		return upEvent;
+	}
+
 	static up$(target, events$, dismiss$, downEvent) {
-		let upEvent;
 		return fromEvent(document, downEvent.originalEvent instanceof MouseEvent ? 'mouseup' : 'touchend').pipe(
-			map(event => {
-				upEvent = upEvent || new DragUpEvent();
-				events$.next(upEvent);
-				dismiss$.next();
-				// console.log(downEvent.distance);
-				if (Math.abs(downEvent.distance.x) > 10) {
-					event.preventDefault();
-					event.stopImmediatePropagation();
-				}
-				return upEvent;
-			})
+			map(event => this.dismissEvent(event, events$, dismiss$, downEvent)),
 		);
 	}
 
 	static events$(target) {
 		target = target || document;
-		const events$ = new ReplaySubject(1);
-		const dismiss$ = new Subject();
+		const events$ = DragService.events$ = new ReplaySubject(1);
+		const dismiss$ = DragService.dismiss$ = new Subject();
 		return this.down$(target, events$).pipe(
-			switchMap((downEvent) => merge(
-				this.move$(target, events$, dismiss$, downEvent),
-				this.up$(target, events$, dismiss$, downEvent),
-			).pipe(
-				takeUntil(dismiss$),
-			)),
+			switchMap((downEvent) => {
+				DragService.downEvent = downEvent;
+				return merge(
+					this.move$(target, events$, dismiss$, downEvent),
+					this.up$(target, events$, dismiss$, downEvent),
+				).pipe(
+					takeUntil(dismiss$),
+				);
+			}),
 			switchMap(() => events$),
 		);
 	}

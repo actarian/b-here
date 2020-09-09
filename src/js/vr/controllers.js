@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 import { POINTER_RADIUS, TEST_ENABLED } from '../const';
 import Emittable from '../interactive/emittable';
 import Menu from '../menu/menu';

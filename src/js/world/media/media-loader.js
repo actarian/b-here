@@ -9,9 +9,9 @@ export class MediaLoaderEvent {
 	}
 }
 
-export class MediaLoaderPlayEvent extends MediaLoaderEvent {}
+export class MediaLoaderPlayEvent extends MediaLoaderEvent { }
 
-export class MediaLoaderPauseEvent extends MediaLoaderEvent {}
+export class MediaLoaderPauseEvent extends MediaLoaderEvent { }
 
 export default class MediaLoader {
 
@@ -20,7 +20,7 @@ export default class MediaLoader {
 	}
 
 	static getPath(item) {
-		return environment.getTexturePath(item.folder + item.file);
+		return environment.getTexturePath(item.asset.folder + item.asset.file);
 	}
 
 	static loadTexture(item, callback) {
@@ -29,15 +29,15 @@ export default class MediaLoader {
 	}
 
 	static isVideo(item) {
-		return item.file && (item.file.indexOf('.mp4') !== -1 || item.file.indexOf('.webm') !== -1);
+		return item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
 	}
 
 	static isPublisherStream(item) {
-		return item.file === 'publisherStream';
+		return item.asset.file === 'publisherStream';
 	}
 
 	static isNextAttendeeStream(item) {
-		return item.file === 'nextAttendeeStream';
+		return item.asset.file === 'nextAttendeeStream';
 	}
 
 	get isVideo() {
@@ -53,11 +53,11 @@ export default class MediaLoader {
 	}
 
 	get isPlayableVideo() {
-		return !this.isAutoplayVideo;
+		return this.isVideo && !this.item.asset.autoplay;
 	}
 
 	get isAutoplayVideo() {
-		return this.isPublisherStream || this.isNextAttendeeStream || (this.isVideo && this.item.autoplay);
+		return this.isPublisherStream || this.isNextAttendeeStream || (this.isVideo && (this.item.asset.autoplay != null));
 	}
 
 	constructor(item) {
@@ -100,7 +100,7 @@ export default class MediaLoader {
 			video.volume = 0.5;
 			video.muted = true;
 			video.playsinline = video.playsInline = true;
-			if (item.autoplay) {
+			if (item.asset && item.asset.autoplay) {
 				video.loop = true;
 			}
 			video.crossOrigin = 'anonymous';
@@ -112,7 +112,7 @@ export default class MediaLoader {
 				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
 				texture.needsUpdate = true;
-				if (!item.autoplay) {
+				if (!item.asset || !item.asset.autoplay) {
 					video.pause();
 				}
 				if (typeof callback === 'function') {
@@ -142,9 +142,9 @@ export default class MediaLoader {
 	play(silent) {
 		// console.log('MediaLoader.play');
 		this.video.play().then(() => {
-			console.log('MediaLoader.play.success', this.item.file);
+			// console.log('MediaLoader.play.success', this.item.asset.file);
 		}, error => {
-			console.log('MediaLoader.play.error', this.item.file, error);
+			console.log('MediaLoader.play.error', this.item.asset.file, error);
 		});
 		if (!silent) {
 			MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));

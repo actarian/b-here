@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* global window, document */
-
 export default class FreezableGroup extends THREE.Group {
 
 	get freezed() {

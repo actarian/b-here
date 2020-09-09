@@ -51,11 +51,11 @@ export default class YoutubeComponent extends Component {
 		this.player$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(player => {
-			console.log('YoutubeComponent.player$', player);
+			// console.log('YoutubeComponent.player$', player);
 		});
 		this.interval$().pipe(
 			takeUntil(this.unsubscribe$)
-		).subscribe(() => {});
+		).subscribe(() => { });
 		this.id$.next(this.youtubeId);
 	}
 

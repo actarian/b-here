@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
@@ -33,7 +34,7 @@ export default class ModelCurvedPlaneComponent extends ModelComponent {
 				}
 				if (streamId) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, items, geometry, (item.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.chromaKeyColor) : null));
+					mesh = new MediaMesh(item, items, geometry, (item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null));
 					if (item.position) {
 						mesh.position.set(item.position.x, item.position.y, item.position.z);
 					}
@@ -49,7 +50,7 @@ export default class ModelCurvedPlaneComponent extends ModelComponent {
 						}
 						subscription = mesh.events$().pipe(
 							takeUntil(this.unsubscribe$)
-						).subscribe(() => {});
+						).subscribe(() => { });
 					});
 				}
 				// console.log('streamId', streamId, mesh);
