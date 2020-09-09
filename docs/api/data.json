@@ -33,24 +33,14 @@
         {
           "id": 110,
           "type": "nav",
-          "title": "Barilla Experience",
+          "title": "Muse Museum",
           "abstract": "Abstract",
-          "asset": {
-            "type": "image",
-            "folder": "barilla/",
-            "file": "logo-barilla.jpg"
-          },
-          "link": {
-            "title": "Scopri di più...",
-            "href": "https://www.barilla.com/it-it/",
-            "target": "_blank"
-          },
           "position": [
-            0.9491595148619703,
-            -0.3147945860255039,
-            0
+            0.9208826615335884,
+            -0.3029713518017443,
+            -0.0
           ],
-          "viewId": 23
+          "viewId": 400
         },
         {
           "id": 120,
@@ -58,9 +48,9 @@
           "title": "House Experience",
           "abstract": "Abstract",
           "position": [
-            0.9338663469245624,
-            -0.3071003935285657,
-            0.1832566352860737
+            0.9208826615335884,
+            -0.3029713518017443,
+            -0.24532322285963504
           ],
           "viewId": 11
         },
@@ -70,9 +60,9 @@
           "title": "Benelli Experience",
           "abstract": "Abstract",
           "position": [
-            0.9338663469245624,
-            -0.3071003935285657,
-            -0.1832566352860737
+            0.9208826615335884,
+            -0.3029713518017443,
+            0.24532322285963504
           ],
           "viewId": 303
         },
@@ -104,6 +94,145 @@
       "orientation": {
         "latitude": -10,
         "longitude": 360
+      },
+      "zoom": 75
+    },
+    {
+      "id": 150,
+      "type": "panorama",
+      "name": "Orogel 1",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "video/",
+        "file": "orogel1.mp4"
+      },
+      "items": [
+        {
+          "id": 2020,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.8628288555626449,
+            -0.5045050757541418,
+            -0.03163849785884536
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 2021,
+          "type": "nav",
+          "title": "Next Video",
+          "abstract": "Abstract",
+          "position": [
+            0.9214551957293822,
+            -0.386534168946469,
+            -0.03888005272872574
+          ],
+          "viewId": 151
+        }
+      ],
+      "orientation": {
+        "latitude": -2,
+        "longitude": 360
+      },
+      "zoom": 75
+    },
+    {
+      "id": 151,
+      "type": "panorama",
+      "name": "Orogel 2",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "video/",
+        "file": "orogel2.mp4"
+      },
+      "items": [
+        {
+          "id": 2020,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.8628288555626449,
+            -0.5045050757541418,
+            -0.03163849785884536
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 2021,
+          "type": "nav",
+          "title": "Prev Video",
+          "abstract": "Abstract",
+          "position": [
+            0.9214551957293822,
+            -0.386534168946469,
+            -0.03888005272872574
+          ],
+          "viewId": 150
+        }
+      ],
+      "orientation": {
+        "latitude": -2,
+        "longitude": 360
+      },
+      "zoom": 75
+    },
+    {
+      "id": 400,
+      "type": "panorama",
+      "name": "Muse-Piano 0",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "muse-piano0.jpg"
+      },
+      "items": [
+        {
+          "id": 1140,
+          "type": "nav",
+          "title": "WelcomeRoom",
+          "abstract": "Abstract",
+          "position": [
+            0.3693613844466277,
+            0.09287729987893509,
+            0.9246328865267928
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 2,
+          "type": "nav",
+          "title": "Instagram",
+          "abstract": "Post",
+          "asset": {
+            "type": "image",
+            "folder": "ig/",
+            "file": "ig.jpg"
+          },
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.instagram.com/p/CDySfoxBZPT/",
+            "target": "_blank"
+          },
+          "position": [
+            0.9491595148619703,
+            -0.3147945860255039,
+            0
+          ],
+          "viewId": 400
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 90
       },
       "zoom": 75
     },
@@ -741,8 +870,8 @@
           "type": "plane",
           "asset": {
             "type": "video",
-            "folder": "room-3d/",
-            "file": "plane-01.mp4"
+            "folder": "video/",
+            "file": "websolute.mp4"
           },
           "position": {
             "x": 20,
@@ -761,58 +890,16 @@
           }
         },
         {
-          "id": 2320,
-          "type": "plane",
-          "asset": {
-            "type": "video",
-            "folder": "green-screen/",
-            "file": "green-screen.mp4",
-            "linkedPlayId": 2310,
-            "chromaKeyColor": [
-              0.0,
-              1.0,
-              0.0
-            ]
-          },
-          "position": {
-            "x": 14,
-            "y": -2,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": -1.57079632679,
-            "z": 0
-          },
-          "scale": {
-            "x": 6,
-            "y": 4,
-            "z": 1
-          }
-        },
-        {
-          "id": 2330,
-          "type": "nav",
-          "title": "Cinema Stream",
-          "abstract": "Abstract",
-          "position": [
-            0.8002543789009917,
-            -0.19439701223042613,
-            -0.5672765909903842
-          ],
-          "viewId": 205
-        },
-        {
           "id": 2340,
           "type": "nav",
-          "title": "Time Square",
+          "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
             0.8012228950677142,
             -0.19355223904603844,
             0.5661973182377114
           ],
-          "viewId": 80
+          "viewId": 1
         }
       ],
       "orientation": {
@@ -838,8 +925,8 @@
           "type": "plane",
           "asset": {
             "type": "video",
-            "folder": "room-3d/",
-            "file": "plane-01.mp4"
+            "folder": "video/",
+            "file": "websolute.mp4"
           },
           "position": {
             "x": 20,
@@ -909,126 +996,6 @@
             0.5661973182377114
           ],
           "viewId": 29
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 25,
-      "type": "panorama",
-      "name": "White Room",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "whiteroom.jpeg"
-      },
-      "items": [
-        {
-          "id": 2510,
-          "type": "plane",
-          "asset": {
-            "type": "video",
-            "folder": "green-screen/",
-            "file": "green-screen.mp4",
-            "chromaKeyColor": [
-              0.0,
-              1.0,
-              0.0
-            ]
-          },
-          "position": {
-            "x": 20,
-            "y": 2.5,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": -1.57079632679,
-            "z": 0
-          },
-          "scale": {
-            "x": 16,
-            "y": 12,
-            "z": 1
-          }
-        },
-        {
-          "id": 2520,
-          "type": "plane",
-          "asset": {
-            "type": "video",
-            "folder": "green-screen/",
-            "file": "green-screen.mp4",
-            "linkedPlayId": 2510,
-            "chromaKeyColor": [
-              0.0,
-              1.0,
-              0.0
-            ]
-          },
-          "position": {
-            "x": 8,
-            "y": 0,
-            "z": -6.5
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0.00,
-            "z": 0
-          },
-          "scale": {
-            "x": 8,
-            "y": 6,
-            "z": 1
-          }
-        },
-        {
-          "id": 2530,
-          "type": "plane",
-          "asset": {
-            "type": "video",
-            "folder": "green-screen/",
-            "file": "green-screen.mp4",
-            "linkedPlayId": 2510,
-            "chromaKeyColor": [
-              0.0,
-              1.0,
-              0.0
-            ]
-          },
-          "position": {
-            "x": 8,
-            "y": 0,
-            "z": 5.8
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0.0,
-            "z": 0
-          },
-          "scale": {
-            "x": 8,
-            "y": 6,
-            "z": 1
-          }
-        },
-        {
-          "id": 2440,
-          "type": "nav",
-          "title": "Welcome Room",
-          "abstract": "Abstract",
-          "position": [
-            0.925340065062613,
-            -0.3789150666212419,
-            0.0
-          ],
-          "viewId": 1
         }
       ],
       "orientation": {
@@ -1930,123 +1897,6 @@
       "zoom": 75
     },
     {
-      "id": 100,
-      "type": "room-3d",
-      "name": "Room 3D Barilla",
-      "likes": 321,
-      "liked": false,
-      "modelFolder": "room-3d/",
-      "modelFile": "room-3d.fbx",
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
-      },
-      "items": [
-        {
-          "id": "plane-01",
-          "type": "texture",
-          "asset": {
-            "type": "video",
-            "folder": "room-3d/",
-            "file": "plane-01.mp4"
-          }
-        },
-        {
-          "id": "plane-02",
-          "type": "texture",
-          "asset": {
-            "type": "image",
-            "folder": "room-3d/",
-            "file": "plane-02.jpg"
-          }
-        },
-        {
-          "id": "plane-03",
-          "type": "texture",
-          "asset": {
-            "type": "image",
-            "folder": "room-3d/",
-            "file": "plane-03.jpg"
-          }
-        },
-        {
-          "id": "plane-04",
-          "type": "texture",
-          "asset": {
-            "type": "image",
-            "folder": "room-3d/",
-            "file": "plane-04.jpg"
-          }
-        },
-        {
-          "id": "plane-05",
-          "type": "texture",
-          "asset": {
-            "type": "video",
-            "folder": "room-3d/",
-            "file": "plane-05.mp4"
-          }
-        },
-        {
-          "id": "plane-06",
-          "type": "texture",
-          "asset": {
-            "type": "image",
-            "folder": "room-3d/",
-            "file": "plane-06.jpg"
-          }
-        },
-        {
-          "id": "plane-07",
-          "type": "texture",
-          "asset": {
-            "type": "image",
-            "folder": "room-3d/",
-            "file": "plane-07.jpg"
-          }
-        },
-        {
-          "id": "plane-08",
-          "type": "texture",
-          "asset": {
-            "type": "image",
-            "folder": "room-3d/",
-            "file": "plane-08.jpg"
-          }
-        },
-        {
-          "id": 10010,
-          "type": "nav",
-          "title": "Welcome Room",
-          "abstract": "Abstract",
-          "position": [
-            0.9206193140260596,
-            -0.033554493274472665,
-            0.38901693359451694
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 10020,
-          "type": "nav",
-          "title": "Pesto alla Genovese",
-          "abstract": "Abstract",
-          "position": [
-            0.9210009978552354,
-            -0.027991828533736385,
-            -0.38855323893258004
-          ],
-          "viewId": 305
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 52
-    },
-    {
       "id": 101,
       "type": "room-3d",
       "name": "Room 3D Benelli",
@@ -2523,444 +2373,6 @@
       ],
       "orientation": {
         "latitude": -8,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 203,
-      "type": "panorama-grid",
-      "name": "From Basil To Pesto p1",
-      "likes": 225,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "ambiente2a/",
-        "file": "ambiente2a_x0_y0.jpg"
-      },
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        {
-          "asset": {
-            "type": "image",
-            "folder": "ambiente2a/",
-            "file": "ambiente2a_x0_y0.jpg"
-          },
-          "navs": [
-            {
-              "id": 20310,
-              "type": "nav",
-              "title": "Pesto Dashboard",
-              "abstract": "Abstract",
-              "position": [
-                -0.043581652820426996,
-                0.05878153966605557,
-                -0.9973190914305851
-              ],
-              "viewId": 206
-            },
-            {
-              "id": 20320,
-              "type": "nav",
-              "title": "From Basil To Pesto p2",
-              "abstract": "Abstract",
-              "position": [
-                -0.1301986455646018,
-                -0.011244252437772512,
-                0.9914241672867666
-              ],
-              "viewId": 204
-            }
-          ]
-        },
-        "ambiente2a_x0_y1.jpg",
-        "ambiente2a_x0_y2.jpg",
-        "ambiente2a_x0_y3.jpg",
-        "ambiente2a_x1_y0.jpg",
-        "ambiente2a_x1_y3.jpg",
-        "ambiente2a_x2_y0.jpg",
-        "ambiente2a_x2_y1.jpg",
-        "ambiente2a_x2_y2.jpg",
-        "ambiente2a_x2_y3.jpg"
-      ],
-      "items": [],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 204,
-      "type": "panorama-grid",
-      "name": "From Basil To Pesto p2",
-      "likes": 225,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "ambiente2b/",
-        "file": "ambiente2b_x0_y0.jpg"
-      },
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        {
-          "asset": {
-            "type": "image",
-            "folder": "ambiente2b/",
-            "file": "ambiente2b_x0_y0.jpg"
-          },
-          "navs": [
-            {
-              "id": 20410,
-              "type": "nav",
-              "title": "From Basil To Pesto p1",
-              "abstract": "Abstract",
-              "position": [
-                -0.036975130634405856,
-                -0.3220820753941067,
-                -0.9459894166555954
-              ],
-              "viewId": 203
-            },
-            {
-              "id": 20420,
-              "type": "nav",
-              "title": "Pesto alla genovese",
-              "abstract": "Abstract",
-              "position": [
-                -0.12304766752980198,
-                0.09983112648644324,
-                0.9873667088270309
-              ],
-              "viewId": 305
-            }
-          ]
-        },
-        "ambiente2b_x0_y1.jpg",
-        "ambiente2b_x0_y2.jpg",
-        "ambiente2b_x0_y3.jpg",
-        "ambiente2b_x1_y0.jpg",
-        "ambiente2b_x1_y3.jpg",
-        "ambiente2b_x2_y0.jpg",
-        "ambiente2b_x2_y1.jpg",
-        "ambiente2b_x2_y2.jpg",
-        "ambiente2b_x2_y3.jpg"
-      ],
-      "items": [],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 70,
-      "type": "panorama",
-      "name": "Video Basil Story",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "virtual-room/",
-        "file": "virtual-room.jpg"
-      },
-      "items": [
-        {
-          "id": 7010,
-          "type": "curved-plane",
-          "asset": {
-            "type": "video",
-            "folder": "video/",
-            "file": "panel-01-plane.mp4"
-          },
-          "radius": 70,
-          "arc": 90,
-          "height": 40,
-          "position": {
-            "x": 0,
-            "y": 8,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
-          }
-        },
-        {
-          "id": 7020,
-          "type": "nav",
-          "title": "Video Virtual Chef",
-          "abstract": "Abstract",
-          "position": [
-            0.7269271285325771,
-            -0.2212886850676967,
-            0.6500832774840404
-          ],
-          "viewId": 71
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 71,
-      "type": "panorama",
-      "name": "Video Virtual Chef",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "virtual-room/",
-        "file": "virtual-room.jpg"
-      },
-      "items": [
-        {
-          "id": 7110,
-          "type": "curved-plane",
-          "asset": {
-            "type": "video",
-            "folder": "video/",
-            "file": "panel-02-plane.mp4"
-          },
-          "radius": 70,
-          "arc": 90,
-          "height": 40,
-          "position": {
-            "x": 0,
-            "y": 8,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
-          }
-        },
-        {
-          "id": 7120,
-          "type": "nav",
-          "title": "Video Cooking Show",
-          "abstract": "Abstract",
-          "position": [
-            0.7138064498616354,
-            -0.23218082284626923,
-            0.6607362693528771
-          ],
-          "viewId": 72
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 72,
-      "type": "panorama",
-      "name": "Video Cooking Show",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "virtual-room/",
-        "file": "virtual-room.jpg"
-      },
-      "items": [
-        {
-          "id": 7210,
-          "type": "curved-plane",
-          "asset": {
-            "type": "video",
-            "folder": "video/",
-            "file": "panel-04-plane.mp4"
-          },
-          "radius": 70,
-          "arc": 90,
-          "height": 40,
-          "position": {
-            "x": 0,
-            "y": 8,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
-          }
-        },
-        {
-          "id": 7220,
-          "type": "nav",
-          "title": "Room 3D",
-          "abstract": "Abstract",
-          "position": [
-            0.7138064498616354,
-            -0.23218082284626923,
-            0.6607362693528771
-          ],
-          "viewId": 100
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 205,
-      "type": "panorama-grid",
-      "name": "Social Media",
-      "likes": 225,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "ambiente1a/",
-        "file": "ambiente1a_x0_y0.jpg"
-      },
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        {
-          "asset": {
-            "type": "image",
-            "folder": "ambiente1a/",
-            "file": "ambiente1a_x0_y0.jpg"
-          },
-          "navs": [
-            {
-              "id": 20510,
-              "type": "nav",
-              "title": "Video Basil Story",
-              "abstract": "Abstract",
-              "position": [
-                0.7441952273141098,
-                0.1306860755524518,
-                0.6550531377679213
-              ],
-              "viewId": 70
-            },
-            {
-              "id": 20520,
-              "type": "nav",
-              "title": "Pesto Dashboard",
-              "abstract": "Abstract",
-              "position": [
-                -0.09502457077161766,
-                -0.02100718985272462,
-                0.9952532486378336
-              ],
-              "viewId": 206
-            }
-          ]
-        },
-        "ambiente1a_x0_y1.jpg",
-        "ambiente1a_x0_y2.jpg",
-        "ambiente1a_x0_y3.jpg",
-        "ambiente1a_x1_y0.jpg",
-        "ambiente1a_x1_y3.jpg",
-        "ambiente1a_x2_y0.jpg",
-        "ambiente1a_x2_y3.jpg",
-        "ambiente1a_x3_y0.jpg",
-        "ambiente1a_x3_y3.jpg",
-        "ambiente1a_x4_y0.jpg",
-        "ambiente1a_x4_y1.jpg",
-        "ambiente1a_x4_y2.jpg",
-        "ambiente1a_x4_y3.jpg"
-      ],
-      "items": [],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 206,
-      "type": "panorama-grid",
-      "name": "Pesto Dashboard",
-      "likes": 225,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "ambiente1b/",
-        "file": "ambiente1b_x0_y0.jpg"
-      },
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        {
-          "asset": {
-            "type": "image",
-            "folder": "ambiente1b/",
-            "file": "ambiente1b_x0_y0.jpg"
-          },
-          "navs": [
-            {
-              "id": 20610,
-              "type": "nav",
-              "title": "Social Media",
-              "abstract": "Abstract",
-              "position": [
-                0.803095276916137,
-                0.13288630184456648,
-                0.5808435305459363
-              ],
-              "viewId": 205
-            },
-            {
-              "id": 20620,
-              "type": "nav",
-              "title": "From Basil To Pesto p1",
-              "abstract": "Abstract",
-              "position": [
-                -0.27016786337746956,
-                -0.0714928886374919,
-                0.9601552439435616
-              ],
-              "viewId": 203
-            }
-          ]
-        },
-        "ambiente1b_x0_y1.jpg",
-        "ambiente1b_x0_y2.jpg",
-        "ambiente1b_x0_y3.jpg",
-        "ambiente1b_x1_y0.jpg",
-        "ambiente1b_x1_y3.jpg",
-        "ambiente1b_x2_y0.jpg",
-        "ambiente1b_x2_y3.jpg",
-        "ambiente1b_x3_y0.jpg",
-        "ambiente1b_x3_y3.jpg",
-        "ambiente1b_x4_y0.jpg",
-        "ambiente1b_x4_y1.jpg",
-        "ambiente1b_x4_y2.jpg",
-        "ambiente1b_x4_y3.jpg"
-      ],
-      "items": [],
-      "orientation": {
-        "latitude": 0,
         "longitude": 90
       },
       "zoom": 75
