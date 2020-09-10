@@ -552,28 +552,6 @@
         },
         {
           "id": 20,
-          "type": "nav",
-          "title": "Instagram",
-          "abstract": "Post",
-          "asset": {
-            "type": "image",
-            "folder": "ig/",
-            "file": "ig.jpg"
-          },
-          "link": {
-            "title": "Scopri di più...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
-            "target": "_blank"
-          },
-          "position": [
-            0.9367524683618346,
-            -0.2756928140970166,
-            -0.2156114219453092
-          ],
-          "viewId": 412
-        },
-        {
-          "id": 30,
           "type": "plane",
           "asset": {
             "type": "video",
