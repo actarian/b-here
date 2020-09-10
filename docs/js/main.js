@@ -64279,9 +64279,11 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
     var images = Array.prototype.slice.call(node.querySelectorAll('img'));
     var promises = images.map(function (x) {
       return new Promise(function (resolve, reject) {
+        var cors = x.src && x.src.indexOf(location.origin) === -1;
+
         if (x.complete) {
           return setTimeout(function () {
-            resolve(x);
+            resolve(cors);
           }, 10);
         }
 
@@ -64294,14 +64296,14 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
           // console.log('loaded!');
           removeListeners();
           setTimeout(function () {
-            resolve(x);
+            resolve(cors);
           }, 10);
         };
 
         var onError = function onError() {
           // console.log('error!');
           removeListeners();
-          resolve(null);
+          resolve(false);
         };
 
         var addListeners = function addListeners() {
@@ -64328,10 +64330,16 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
         if (_this2.item.panelTexture) {
           resolve(_this2.item.panelTexture);
         } else {
-          _this2.imagesLoaded().then(function () {
+          _this2.imagesLoaded().then(function (results) {
+            var useCORS = results.find(function (x) {
+              return x === true;
+            }) != null; // !!! keep loose equality
+
+            console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
             html2canvas(node, {
               backgroundColor: '#ffffff00',
-              scale: 2 // logging: true,
+              scale: 2,
+              useCORS: useCORS // logging: true,
 
             }).then(function (canvas) {
               // !!!

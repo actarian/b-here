@@ -92,9 +92,10 @@ export default class ModelPanelComponent extends ModelComponent {
 		const { node } = getContext(this);
 		const images = Array.prototype.slice.call(node.querySelectorAll('img'));
 		const promises = images.map(x => new Promise(function(resolve, reject) {
+			const cors = x.src && x.src.indexOf(location.origin) === -1;
 			if (x.complete) {
 				return setTimeout(() => {
-					resolve(x);
+					resolve(cors);
 				}, 10);
 			}
 			const removeListeners = () => {
@@ -105,13 +106,13 @@ export default class ModelPanelComponent extends ModelComponent {
 				// console.log('loaded!');
 				removeListeners();
 				setTimeout(() => {
-					resolve(x);
+					resolve(cors);
 				}, 10);
 			};
 			const onError = () => {
 				// console.log('error!');
 				removeListeners();
-				resolve(null);
+				resolve(false);
 			};
 			const addListeners = () => {
 				x.addEventListener('load', onLoad);
@@ -132,10 +133,13 @@ export default class ModelPanelComponent extends ModelComponent {
 				if (this.item.panelTexture) {
 					resolve(this.item.panelTexture);
 				} else {
-					this.imagesLoaded().then(() => {
+					this.imagesLoaded().then((results) => {
+						const useCORS = results.find(x => x === true) != null; // !!! keep loose equality
+						console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
 						html2canvas(node, {
 							backgroundColor: '#ffffff00',
 							scale: 2,
+							useCORS,
 							// logging: true,
 						}).then(canvas => {
 							// !!!
