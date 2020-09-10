@@ -186,7 +186,7 @@
     {
       "id": 400,
       "type": "panorama",
-      "name": "Muse Piano -1a",
+      "name": "Muse Piano -1 Ingresso",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -241,7 +241,7 @@
     {
       "id": 401,
       "type": "panorama",
-      "name": "Muse Piano -1b",
+      "name": "Muse Piano -1 3DObject",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -308,7 +308,7 @@
     {
       "id": 402,
       "type": "panorama",
-      "name": "Muse Piano -1c",
+      "name": "Muse Piano -1 PostIG",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -417,7 +417,7 @@
     {
       "id": 410,
       "type": "panorama",
-      "name": "Muse Piano 0-ing",
+      "name": "Muse Piano 0 Ingresso",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -496,7 +496,7 @@
     {
       "id": 411,
       "type": "panorama",
-      "name": "Muse Piano 0-plastico",
+      "name": "Muse Piano 0 Plastico",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -551,7 +551,7 @@
     {
       "id": 412,
       "type": "panorama",
-      "name": "Muse Piano 0-video",
+      "name": "Muse Piano 0 Video",
       "likes": 134,
       "liked": false,
       "asset": {
