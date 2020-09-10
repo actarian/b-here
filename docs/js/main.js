@@ -64331,7 +64331,7 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
           resolve(_this2.item.panelTexture);
         } else {
           _this2.imagesLoaded().then(function (results) {
-            var useCORS = results.find(function (x) {
+            var useCORS = results && results.find(function (x) {
               return x === true;
             }) != null; // !!! keep loose equality
 
