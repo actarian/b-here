@@ -2631,10 +2631,55 @@
         "latitude": 18,
         "longitude": 360
       },
-      "zoom": 40
+      "zoom": 50
     },
     {
       "id": 310,
+      "type": "model",
+      "name": "Skeleton",
+      "likes": 172,
+      "liked": false,
+      "ar": {
+        "gltf": "/triceratopo/scene.gltf",
+        "usdz": "/triceratopo/triceratopsSkeleton.usdz"
+      },
+      "asset": {
+        "type": "image",
+        "folder": "muse/",
+        "file": "piano-1_3.jpg"
+      },
+      "items": [
+        {
+          "id": 100,
+          "type": "gltf",
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "triceratopo/",
+            "file": "triceratopsSkeleton.glb"
+          }
+        },
+        {
+          "id": 101,
+          "type": "nav",
+          "title": "Map",
+          "abstract": "torna alla vista precedente",
+          "position": [
+            -0.7442462435821044,
+            -0.4310192288704094,
+            -0.5102155948791495
+          ],
+          "viewId": 401
+        }
+      ],
+      "orientation": {
+        "latitude": 18,
+        "longitude": 360
+      },
+      "zoom": 50
+    },
+    {
+      "id": 311,
       "type": "model",
       "name": "Skeletons",
       "likes": 172,
@@ -2658,25 +2703,13 @@
             "folder": "dinosaurs/",
             "file": "dinosaurs.glb"
           }
-        },
-        {
-          "id": 101,
-          "type": "nav",
-          "title": "Map",
-          "abstract": "torna alla vista precedente",
-          "position": [
-            -0.7442462435821044,
-            -0.4310192288704094,
-            -0.5102155948791495
-          ],
-          "viewId": 401
         }
       ],
       "orientation": {
         "latitude": 18,
         "longitude": 360
       },
-      "zoom": 30
+      "zoom": 50
     },
     {
       "id": 300,
