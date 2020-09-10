@@ -134,7 +134,7 @@ export default class ModelPanelComponent extends ModelComponent {
 					resolve(this.item.panelTexture);
 				} else {
 					this.imagesLoaded().then((results) => {
-						const useCORS = results.find(x => x === true) != null; // !!! keep loose equality
+						const useCORS = results && (results.find(x => x === true) != null); // !!! keep loose equality
 						console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
 						html2canvas(node, {
 							backgroundColor: '#ffffff00',
