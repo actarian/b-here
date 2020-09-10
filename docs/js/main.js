@@ -61052,7 +61052,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         if (DEBUG) {
           console.log(JSON.stringify('DragUpEvent', {
             orientation: _this3.orbit.getOrientation(),
-            fov: _this3.orbit.zoom
+            zoom: _this3.orbit.zoom
           }));
         }
       }
@@ -61326,7 +61326,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         type: MessageType.CameraOrientation,
         clientId: agora.state.uid,
         orientation: this.orbit.getOrientation(),
-        fov: this.orbit.zoom
+        zoom: this.orbit.zoom
       });
     }
   };
@@ -61570,9 +61570,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
               _this6.orbit.setOrientation(message.orientation);
 
               if (!_this6.renderer.xr.isPresenting) {
-                _this6.orbit.zoom = message.zoom;
-
-                _this6.camera.updateProjectionMatrix();
+                _this6.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
               } // this.render();
 
             }
@@ -64282,7 +64280,9 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
     var promises = images.map(function (x) {
       return new Promise(function (resolve, reject) {
         if (x.complete) {
-          return resolve(x);
+          return setTimeout(function () {
+            resolve(x);
+          }, 10);
         }
 
         var removeListeners = function removeListeners() {
@@ -64293,7 +64293,9 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
         var onLoad = function onLoad() {
           // console.log('loaded!');
           removeListeners();
-          resolve(x);
+          setTimeout(function () {
+            resolve(x);
+          }, 10);
         };
 
         var onError = function onError() {

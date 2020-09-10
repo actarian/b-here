@@ -365,7 +365,7 @@ export default class WorldComponent extends Component {
 					}
 				} else if (event instanceof DragUpEvent) {
 					if (DEBUG) {
-						console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), fov: this.orbit.zoom }));
+						console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
 					}
 				}
 			})
@@ -629,7 +629,7 @@ export default class WorldComponent extends Component {
 				type: MessageType.CameraOrientation,
 				clientId: agora.state.uid,
 				orientation: this.orbit.getOrientation(),
-				fov: this.orbit.zoom,
+				zoom: this.orbit.zoom,
 			});
 		}
 	}
@@ -853,7 +853,7 @@ export default class WorldComponent extends Component {
 							this.orbit.setOrientation(message.orientation);
 							if (!this.renderer.xr.isPresenting) {
 								this.orbit.zoom = message.zoom;
-								this.camera.updateProjectionMatrix();
+								// this.camera.updateProjectionMatrix();
 							}
 							// this.render();
 						}

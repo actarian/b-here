@@ -93,7 +93,9 @@ export default class ModelPanelComponent extends ModelComponent {
 		const images = Array.prototype.slice.call(node.querySelectorAll('img'));
 		const promises = images.map(x => new Promise(function(resolve, reject) {
 			if (x.complete) {
-				return resolve(x);
+				return setTimeout(() => {
+					resolve(x);
+				}, 10);
 			}
 			const removeListeners = () => {
 				x.removeEventListener('load', onLoad);
@@ -102,7 +104,9 @@ export default class ModelPanelComponent extends ModelComponent {
 			const onLoad = () => {
 				// console.log('loaded!');
 				removeListeners();
-				resolve(x);
+				setTimeout(() => {
+					resolve(x);
+				}, 10);
 			};
 			const onError = () => {
 				// console.log('error!');
