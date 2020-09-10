@@ -297,28 +297,6 @@
             0.012464665993772472
           ],
           "viewId": 402
-        },
-        {
-          "id": 40,
-          "type": "nav",
-          "title": "Instagram",
-          "abstract": "Post",
-          "asset": {
-            "type": "image",
-            "folder": "ig/",
-            "file": "ig.jpg"
-          },
-          "link": {
-            "title": "Scopri di più...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
-            "target": "_blank"
-          },
-          "position": [
-            0.3718293794247922,
-            -0.506419723116841,
-            -0.7779986996356971
-          ],
-          "viewId": 401
         }
       ],
       "orientation": {
@@ -354,28 +332,6 @@
         {
           "id": 20,
           "type": "nav",
-          "title": "Instagram",
-          "abstract": "Post",
-          "asset": {
-            "type": "image",
-            "folder": "ig/",
-            "file": "ig.jpg"
-          },
-          "link": {
-            "title": "Scopri di più...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
-            "target": "_blank"
-          },
-          "position": [
-            0.9727209877449248,
-            -0.22606556542744885,
-            0.05204075449593221
-          ],
-          "viewId": 402
-        },
-        {
-          "id": 30,
-          "type": "nav",
           "title": "Ingresso",
           "abstract": "Ritorna all'ingresso",
           "position": [
@@ -384,6 +340,72 @@
             0.7420231267542828
           ],
           "viewId": 400
+        },
+        {
+          "id": 30,
+          "type": "nav",
+          "title": "Instagram",
+          "abstract": "Post1",
+          "asset": {
+            "type": "image",
+            "folder": "ig/",
+            "file": "ig.jpg"
+          },
+          "link": {
+            "title": "Visita la pagina...",
+            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "target": "_blank"
+          },
+          "position": [
+            0.9737485463190955,
+            -0.22266549613876618,
+            0.047263573401991776
+          ],
+          "viewId": 402
+        },
+        {
+          "id": 40,
+          "type": "nav",
+          "title": "Instagram",
+          "abstract": "Post2",
+          "asset": {
+            "type": "image",
+            "folder": "ig/",
+            "file": "ig.jpg"
+          },
+          "link": {
+            "title": "Visita la pagina...",
+            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "target": "_blank"
+          },
+          "position": [
+            -0.6818610137505103,
+            -0.531453464709927,
+            -0.5026159296868145
+          ],
+          "viewId": 402
+        },
+        {
+          "id": 50,
+          "type": "nav",
+          "title": "Instagram",
+          "abstract": "Post3",
+          "asset": {
+            "type": "image",
+            "folder": "ig/",
+            "file": "ig.jpg"
+          },
+          "link": {
+            "title": "Visita la pagina...",
+            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "target": "_blank"
+          },
+          "position": [
+            -0.5918676194474686,
+            -0.3019348345700535,
+            0.7473473601497105
+          ],
+          "viewId": 402
         }
       ],
       "orientation": {
