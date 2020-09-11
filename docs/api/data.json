@@ -356,16 +356,11 @@
         {
           "id": 30,
           "type": "nav",
-          "title": "Instagram",
-          "abstract": "Post1",
-          "asset": {
-            "type": "image",
-            "folder": "ig/",
-            "file": "ig.jpg"
-          },
+          "title": "Hominidae",
+          "abstract": "Non è possibile comprendere alcun fenomeno biologico se non alla luce del PROCESSO EVOLUTIVO, che continua a modellare e rimodellare i GENOMI degli individui delle specie, e attraverso questi, le strutture e le funzioni di ciascuna di esse.",
+          
           "link": {
-            "title": "Visita la pagina...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "title": "Prova la nostra guida interattiva...",
             "target": "_blank"
           },
           "position": [
@@ -373,13 +368,13 @@
             -0.22266549613876618,
             0.047263573401991776
           ],
-          "viewId": 402
+          "viewId": 403
         },
         {
           "id": 40,
           "type": "nav",
           "title": "Instagram",
-          "abstract": "Post2",
+          "abstract": "Delfino",
           "asset": {
             "type": "image",
             "folder": "ig/",
@@ -401,7 +396,7 @@
           "id": 50,
           "type": "nav",
           "title": "Instagram",
-          "abstract": "Post3",
+          "abstract": "Cervo",
           "asset": {
             "type": "image",
             "folder": "ig/",
@@ -423,6 +418,122 @@
       "orientation": {
         "latitude": -8,
         "longitude": 90
+      },
+      "zoom": 75
+    },
+    {
+      "id": 403,
+      "type": "panorama",
+      "name": "Muse Piano -1 Live",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "muse/",
+        "file": "piano-1_4.jpg"
+      },
+      "items": [   
+        {
+          "id": 10,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            -0.011515052400424932,
+            -0.16054413026752945,
+            -0.9869614915511434
+          ],
+          "viewId": 401
+        },
+        {
+          "id": 20,
+          "type": "nav",
+          "title": "Ingresso",
+          "abstract": "Ritorna all'ingresso",
+          "position": [
+            0.6662256235609915,
+            -0.07446541393536767,
+            0.7420231267542828
+          ],
+          "viewId": 400
+        },
+        {
+          "id": 30,
+          "type": "nav",
+          "title": "Instagram",
+          "abstract": "Delfino",
+          "asset": {
+            "type": "image",
+            "folder": "ig/",
+            "file": "ig.jpg"
+          },
+          "link": {
+            "title": "Visita la pagina...",
+            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "target": "_blank"
+          },
+          "position": [
+            -0.6818610137505103,
+            -0.531453464709927,
+            -0.5026159296868145
+          ],
+          "viewId": 403
+        },
+        {
+          "id": 40,
+          "type": "nav",
+          "title": "Instagram",
+          "abstract": "Cervo",
+          "asset": {
+            "type": "image",
+            "folder": "ig/",
+            "file": "ig.jpg"
+          },
+          "link": {
+            "title": "Visita la pagina...",
+            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "target": "_blank"
+          },
+          "position": [
+            -0.5918676194474686,
+            -0.3019348345700535,
+            0.7473473601497105
+          ],
+          "viewId": 403
+        },
+        {
+          "id": 50,
+          "type": "plane",
+          "asset": {
+            "type": "publisher-stream",
+            "folder": "",
+            "file": "publisherStream",
+            "chromaKeyColor": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          },
+          "position": {
+            "x": 15,
+            "y": -0.5,
+            "z": 0.65
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 4.8,
+            "y": 3.8,
+            "z": 1
+          }
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 0
       },
       "zoom": 75
     },
@@ -2475,6 +2586,53 @@
         "NEWONESET2_x3_y5.jpg",
         "NEWONESET2_x3_y6.jpg",
         "NEWONESET2_x3_y7.jpg"
+      ],
+      "items": [],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "zoom": 75
+    },
+    {
+      "id": 203,
+      "type": "panorama-grid",
+      "name": "Muse Nav",
+      "likes": 225,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "muse_grid/",
+        "file": "muse_x0_y0.jpg"
+      },
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        {
+          "asset": {
+            "type": "image",
+            "folder": "muse_grid/",
+            "file": "muse_x0_y0.jpg"
+          },
+          "navs": [
+            {
+              "id": 20210,
+              "type": "nav",
+              "title": "Welcome Room",
+              "abstract": "Abstract",
+              "position": [
+                0.9895859099478105,
+                0.0015676209690798433,
+                -0.14393494849153685
+              ],
+              "viewId": 1
+            }
+          ]
+        },
+        "muse_x0_y0.jpg",
+        "muse_x0_y2.jpg",
+        "muse_x0_y4.jpg",
+        "muse_x0_y6.jpg"
       ],
       "items": [],
       "orientation": {
