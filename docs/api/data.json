@@ -361,6 +361,7 @@
           
           "link": {
             "title": "Prova la nostra guida interattiva...",
+            "href": "https://www.youtube.com/watch?time_continue=1&v=OOOcqcvA7do&ab_channel=MUSEMuseodelleScienze",
             "target": "_blank"
           },
           "position": [
@@ -374,21 +375,21 @@
           "id": 40,
           "type": "nav",
           "title": "Instagram",
-          "abstract": "Delfino",
+          "abstract": "Tasso",
           "asset": {
             "type": "image",
             "folder": "ig/",
-            "file": "ig.jpg"
+            "file": "tasso.jpg"
           },
           "link": {
             "title": "Visita la pagina...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "href": "https://www.instagram.com/p/CDySfoxBZPT/",
             "target": "_blank"
           },
           "position": [
-            -0.6818610137505103,
-            -0.531453464709927,
-            -0.5026159296868145
+            0.37845688373169384,
+            -0.31414519365202975,
+            0.8706797255371368
           ],
           "viewId": 402
         },
@@ -400,11 +401,11 @@
           "asset": {
             "type": "image",
             "folder": "ig/",
-            "file": "ig.jpg"
+            "file": "cervo.jpg"
           },
           "link": {
             "title": "Visita la pagina...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "href": "https://www.instagram.com/p/BxR9BgenhnK/",
             "target": "_blank"
           },
           "position": [
@@ -461,21 +462,21 @@
           "id": 30,
           "type": "nav",
           "title": "Instagram",
-          "abstract": "Delfino",
+          "abstract": "Tasso",
           "asset": {
             "type": "image",
             "folder": "ig/",
-            "file": "ig.jpg"
+            "file": "tasso.jpg"
           },
           "link": {
             "title": "Visita la pagina...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "href": "https://www.instagram.com/p/CDySfoxBZPT/",
             "target": "_blank"
           },
           "position": [
-            -0.6818610137505103,
-            -0.531453464709927,
-            -0.5026159296868145
+            0.37845688373169384,
+            -0.31414519365202975,
+            0.8706797255371368
           ],
           "viewId": 403
         },
@@ -487,11 +488,11 @@
           "asset": {
             "type": "image",
             "folder": "ig/",
-            "file": "ig.jpg"
+            "file": "cervo.jpg"
           },
           "link": {
             "title": "Visita la pagina...",
-            "href": "https://www.instagram.com/museomuse/?hl=it",
+            "href": "https://www.instagram.com/p/BxR9BgenhnK/",
             "target": "_blank"
           },
           "position": [
