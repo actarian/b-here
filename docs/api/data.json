@@ -714,6 +714,52 @@
         "longitude": 150
       },
       "zoom": 55
+    },
+    {
+      "id": 100,
+      "type": "panorama-grid",
+      "name": "Ambiente 1",
+      "likes": 225,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "grid/",
+        "file": "collezione3_x0_y0.jpg"
+      },
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        {
+          "asset": {
+            "type": "image",
+            "folder": "grid/",
+            "file": "collezione3_x0_y0.jpg"
+          },
+          "navs": [
+            
+            {
+              "id": 10,
+              "type": "nav",
+              "title": "Welcome Room",
+              "abstract": "Abstract",
+              "position": [
+                -0.27016786337746956,
+                -0.0714928886374919,
+                0.9601552439435616
+              ],
+              "viewId": 1
+            }
+          ]
+        },
+        "collezione3_x0_y0.jpg",
+        "collezione3_x1_y0.jpg"
+      ],
+      "items": [],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 90
+      },
+      "zoom": 75
     }
   ]
 }
