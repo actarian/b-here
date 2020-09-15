@@ -1,0 +1,292 @@
+.btn--add {
+	@extend %btn-circle;
+	pointer-events: all;
+
+	svg {
+		width: 28px;
+		height: 28px;
+	}
+
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		// border: 2px solid rgba(0, 0, 0, 0.2);
+		background: $background; // rgba(0, 0, 0, 0.0);
+		color: $foreground;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+
+	&:hover {
+		// border-color: rgba(0, 0, 0, 0.0);
+		background: rgba($background-negative, 0.8);
+		color: $foreground-negative;
+	}
+
+	&.active {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			border-color: rgba(0, 0, 0, 0.0);
+			background: rgba(0, 0, 0, 0.8);
+			color: $foreground-negative;
+		}
+	}
+}
+
+[editor-component] {
+
+	.ui {
+		&.open {
+			width: calc(100% - 300px);
+		}
+	}
+
+	.ui__body {
+		position: relative;
+		width: 100%;
+		flex: 1 1 calc(100% - 90px);
+	}
+}
+
+.ui__navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex: 0 0 90px;
+	width: 100%;
+	padding: 0 20px;
+}
+
+.headline {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	height: 50px;
+
+	&__id {
+		font-weight: 900;
+		font-size: 14px;
+		line-height: 1;
+		color: #666;
+	}
+
+	&__type {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 40px;
+		height: 40px;
+		margin: 0 10px 0 10px;
+		font-weight: 900;
+		font-size: 14px;
+		line-height: 1;
+		letter-spacing: 1px;
+		border-radius: 20px;
+		border: 4px solid #666;
+		color: #666;
+	}
+
+	&__name {
+		font-weight: 600;
+	}
+
+}
+
+.aside {
+	position: absolute;
+	width: 300px;
+	height: 100%;
+	top: 0;
+	right: 0;
+	background: white;
+	color: $foreground-primary;
+	// border-left: 4px solid currentColor;
+	transform: translateX(100%);
+	transition: transform ease-out 400ms;
+
+	&.active {
+		transition: none;
+		transform: translateX(0);
+	}
+
+	.headline {
+		margin: 20px;
+	}
+
+	.scrollable {
+		height: calc(100% - 90px);
+
+		&>.container>.nav--editor {
+			margin: 15px 0;
+		}
+	}
+}
+
+.scrollable {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.nav--editor {
+	@extend %nav-vertical;
+	align-items: flex-start;
+
+	&>li {
+		@extend %nav-item;
+		flex: 1 1 100%;
+		width: 100%;
+		margin-bottom: 0;
+		padding: 15px;
+		border-top: 1px solid rgba($foreground-primary, 0.15);
+		border-bottom: 1px solid rgba($foreground-primary, 0.15);
+
+		&>.btn {
+			padding: 4px 0 4px 4px;
+		}
+
+		&>.title,
+		&>.btn>.title {
+			margin-bottom: 15px;
+			font-size: 14px;
+			font-weight: 900;
+		}
+
+		&>.nav--editor {
+
+			&>li {
+				margin-bottom: 1px;
+				padding: 0;
+				border: none;
+
+				margin-bottom: 1px;
+
+				&>.title,
+				&>.btn>.title {
+					margin-bottom: 0;
+					font-size: 11px;
+					font-weight: 600;
+				}
+			}
+		}
+	}
+
+	&>li+li {
+		border-top: none;
+	}
+
+	.icon {
+		width: 30px;
+		height: 30px;
+		margin-right: 10px;
+		color: $foreground-primary;
+
+		svg {
+			fill: currentColor;
+			stroke: currentColor;
+		}
+	}
+
+	.btn {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 4px;
+		border-radius: 4px;
+		transition: all ease-out 350ms;
+		cursor: pointer;
+
+		&:hover {
+			background: rgba(0, 120, 256, 0.15);
+		}
+	}
+}
+
+.upload-drop {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 120px;
+	margin-top: 20px;
+	border: 3px solid rgba(0, 0, 0, .1);
+	border-radius: 10px;
+	font-weight: 600;
+	font-size: 13px;
+	text-transform: uppercase;
+	color: rgba(0, 0, 0, 0.25);
+}
+
+.listing--transfers {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	margin: 20px 0 20px 0;
+
+	@include media-up(md) {
+		$gutter: 12px;
+		margin-left: - $gutter / 2;
+		margin-right: - $gutter / 2;
+		align-items: stretch;
+
+		&>.listing__item {
+			@include as-col(3, 12, $gutter);
+		}
+	}
+
+	@include media-down(sm) {
+		&>.listing__item {
+			@include as-col(12, 12, 0px);
+		}
+	}
+}
+
+.btn--browse,
+.btn--upload,
+.btn--pause,
+.btn--resume,
+.btn--cancel,
+.btn--remove {
+	@extend %btn-rect;
+}
+
+.upload-item {
+	overflow: hidden;
+	border-radius: 8px;
+	box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+	.name {
+		font-size: 11px;
+		font-weight: 600;
+		padding: 4px;
+		line-height: 1;
+	}
+
+	.group--info {
+		display: none;
+	}
+
+	.btn--pause,
+	.btn--resume,
+	.btn--cancel,
+	.btn--remove {
+		font-size: 10px;
+		padding: 5px 7px;
+		height: auto;
+		line-height: 1;
+	}
+
+	.group--cta {
+		&>*+* {
+			margin-left: 10px;
+		}
+	}
+}

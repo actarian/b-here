@@ -2,13 +2,15 @@ import { Component, getContext } from 'rxcomp';
 import { auditTime, takeUntil, tap } from 'rxjs/operators';
 import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+import { MessageType } from '../agora/agora.types';
 // import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import AgoraService, { MessageType, RoleType } from '../agora/agora.service';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
 import { DEBUG } from '../environment';
+import MessageService from '../message/message.service';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
-import { PanoramaGridView } from '../view/view.service';
+import StateService from '../state/state.service';
+import { PanoramaGridView } from '../view/view';
 import AvatarElement from './avatar/avatar-element';
 import Camera from './camera/camera';
 import Interactive from './interactive/interactive';
@@ -356,13 +358,10 @@ export default class WorldComponent extends Component {
 					group.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01, 0);
 					this.panorama.mesh.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01 + Math.PI, 0);
 					this.render();
-					if (this.agora && this.agora.state.control) {
-						this.agora.sendMessage({
-							type: MessageType.CameraRotate,
-							clientId: this.agora.state.uid,
-							coords: [group.rotation.x, group.rotation.y, group.rotation.z]
-						});
-					}
+					MessageService.send({
+						type: MessageType.CameraRotate,
+						coords: [group.rotation.x, group.rotation.y, group.rotation.z]
+					});
 				} else if (event instanceof DragUpEvent) {
 					if (DEBUG) {
 						console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
@@ -478,9 +477,8 @@ export default class WorldComponent extends Component {
 			}
 			*/
 			renderer.render(this.scene, this.camera);
-			if (this.agora && !this.agora.state.hosted) {
-				const orbit = this.orbit;
-				orbit.render();
+			if (this.state && !this.state.hosted) {
+				this.orbit.render();
 			}
 		} catch (error) {
 			this.error = error;
@@ -598,8 +596,7 @@ export default class WorldComponent extends Component {
 	onMouseWheel(event) {
 		// !!! fov zoom
 		try {
-			const agora = this.agora;
-			if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
+			if ((!this.state || !this.state.locked) && !this.renderer.xr.isPresenting) {
 				const orbit = this.orbit;
 				gsap.to(orbit, {
 					duration: 0.5,
@@ -623,26 +620,18 @@ export default class WorldComponent extends Component {
 	}
 
 	onOrientationDidChange() {
-		const agora = this.agora;
-		if (agora && (agora.state.control || agora.state.spyed)) {
-			agora.sendMessage({
-				type: MessageType.CameraOrientation,
-				clientId: agora.state.uid,
-				orientation: this.orbit.getOrientation(),
-				zoom: this.orbit.zoom,
-			});
-		}
+		MessageService.send({
+			type: MessageType.CameraOrientation,
+			orientation: this.orbit.getOrientation(),
+			zoom: this.orbit.zoom,
+		});
 	}
 
 	onVRStarted() {
 		this.scene.add(this.pointer.mesh);
-		const agora = this.agora;
-		if (agora) {
-			agora.sendMessage({
-				type: MessageType.VRStarted,
-				clientId: agora.state.uid,
-			});
-		}
+		MessageService.send({
+			type: MessageType.VRStarted,
+		});
 		/*
 		if (this.view_ instanceof ModelView) {
 			// console.log(this.view_);
@@ -652,13 +641,9 @@ export default class WorldComponent extends Component {
 
 	onVREnded() {
 		this.scene.remove(this.pointer.mesh);
-		const agora = this.agora;
-		if (agora) {
-			agora.sendMessage({
-				type: MessageType.VREnded,
-				clientId: agora.state.uid,
-			});
-		}
+		MessageService.send({
+			type: MessageType.VREnded,
+		});
 	}
 
 	onVRStateDidChange(state) {
@@ -667,14 +652,10 @@ export default class WorldComponent extends Component {
 			// console.log('WorldComponent.onVRStateDidChange', state.camera.array);
 		}
 		*/
-		const agora = this.agora;
-		if (agora) {
-			agora.sendMessage({
-				type: MessageType.VRState,
-				clientId: agora.state.uid,
-				camera: state.camera.array,
-			});
-		}
+		MessageService.send({
+			type: MessageType.VRState,
+			camera: state.camera.array,
+		});
 	}
 
 	onMenuNav(event) {
@@ -742,15 +723,11 @@ export default class WorldComponent extends Component {
 
 	onGridNav(event) {
 		// console.log('WorldComponent.onGridNav', event);
-		const agora = this.agora;
-		if (agora && (agora.state.control || agora.state.spyed)) {
-			agora.sendMessage({
-				type: MessageType.NavToGrid,
-				clientId: this.agora.state.uid,
-				viewId: this.view.id,
-				gridIndex: event,
-			});
-		}
+		MessageService.send({
+			type: MessageType.NavToGrid,
+			viewId: this.view.id,
+			gridIndex: event,
+		});
 		this.pushChanges();
 	}
 
@@ -784,122 +761,98 @@ export default class WorldComponent extends Component {
 		).subscribe((state) => {
 			this.onVRStateDidChange(state);
 		});
-
 		this.orbit.observe$().pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			// this.render();
 			this.onOrientationDidChange();
 		});
-
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.events$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(event => {
-				/*
-				if (event instanceof AgoraRemoteEvent) {
-					setTimeout(() => {
-						this.panorama.setVideo(event.element.querySelector('video'));
-					}, 500);
-				}
-				*/
-			});
-			agora.message$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(message => {
-				switch (message.type) {
-					case MessageType.RequestInfo:
-						if (message.clientId === agora.state.uid) {
-							message.type = MessageType.RequestInfoResult;
-							message.viewId = this.view.id;
-							message.orientation = this.orbit.getOrientation();
-							message.zoom = this.orbit.zoom;
-							if (this.view instanceof PanoramaGridView) {
-								message.gridIndex = this.view.index;
-							}
-							agora.sendMessage(message);
+		MessageService.out$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			switch (message.type) {
+				case MessageType.AgoraEvent:
+					/*
+					if (message.event instanceof AgoraRemoteEvent) {
+						setTimeout(() => {
+							this.panorama.setVideo(event.element.querySelector('video'));
+						}, 500);
+					}
+					*/
+					break;
+				case MessageType.RequestInfo:
+					message.type = MessageType.RequestInfoResult;
+					message.viewId = this.view.id;
+					message.orientation = this.orbit.getOrientation();
+					message.zoom = this.orbit.zoom;
+					if (this.view instanceof PanoramaGridView) {
+						message.gridIndex = this.view.index;
+					}
+					MessageService.sendBack(message);
+					break;
+				case MessageType.RequestControlAccepted:
+					message = {
+						type: MessageType.NavToView,
+						viewId: this.view.id,
+					};
+					if (this.view instanceof PanoramaGridView) {
+						message.gridIndex = this.view.index;
+					}
+					MessageService.send(message);
+					break;
+				case MessageType.RequestInfoResult:
+					if (message.viewId === this.view.id) {
+						this.orbit.setOrientation(message.orientation);
+						if (!this.renderer.xr.isPresenting) {
+							this.orbit.zoom = message.zoom;
+							this.camera.updateProjectionMatrix();
 						}
-						break;
-					case MessageType.RequestControlAccepted:
-						message = {
-							type: MessageType.NavToView,
-							clientId: agora.state.uid,
-							viewId: this.view.id,
-						};
-						if (this.view instanceof PanoramaGridView) {
-							message.gridIndex = this.view.index;
+						if (this.view instanceof PanoramaGridView && message.gridIndex) {
+							this.view.index = message.gridIndex;
 						}
-						agora.sendMessage(message);
-						break;
-					case MessageType.RequestInfoResult:
-						if (agora.state.role === RoleType.Publisher) {
-							if (message.viewId === this.view.id) {
-								this.orbit.setOrientation(message.orientation);
-								if (!this.renderer.xr.isPresenting) {
-									this.orbit.zoom = message.zoom;
-									this.camera.updateProjectionMatrix();
-								}
-								if (this.view instanceof PanoramaGridView && message.gridIndex) {
-									this.view.index = message.gridIndex;
-								}
-							} else {
-								this.infoResultMessage = message;
-							}
-						}
-						break;
-					case MessageType.CameraOrientation:
-						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							this.orbit.setOrientation(message.orientation);
-							if (!this.renderer.xr.isPresenting) {
-								this.orbit.zoom = message.zoom;
-								// this.camera.updateProjectionMatrix();
-							}
-							// this.render();
-						}
-						break;
-					case MessageType.CameraRotate:
-						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							if (!this.renderer.xr.isPresenting) {
-								const camera = this.camera;
-								camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
-								camera.lookAt(ORIGIN);
-								// this.render();
-							}
-						}
-						break;
-					case MessageType.NavToGrid:
-						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							if (this.view.id === message.viewId) {
-								this.view.index = message.gridIndex;
-							}
-						}
-						break;
-					case MessageType.VRStarted:
-						if (agora.state.uid !== message.clientId) {
-							this.addOffCanvasScene(message);
-						}
-						break;
-					case MessageType.VREnded:
-						if (agora.state.uid !== message.clientId) {
-							this.removeOffCanvasScene(message);
-						}
-						break;
-					case MessageType.VRState:
-						if (agora.state.uid !== message.clientId) {
-							this.updateOffCanvasScene(message);
-						}
-						break;
-				}
-			});
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				this.state = state;
-				// console.log(state);
-				// this.pushChanges();
-			});
-		}
+					} else {
+						this.infoResultMessage = message;
+					}
+					break;
+				case MessageType.CameraOrientation:
+					this.orbit.setOrientation(message.orientation);
+					if (!this.renderer.xr.isPresenting) {
+						this.orbit.zoom = message.zoom;
+						// this.camera.updateProjectionMatrix();
+					}
+					// this.render();
+					break;
+				case MessageType.CameraRotate:
+					if (!this.renderer.xr.isPresenting) {
+						const camera = this.camera;
+						camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
+						camera.lookAt(ORIGIN);
+						// this.render();
+					}
+					break;
+				case MessageType.NavToGrid:
+					if (this.view.id === message.viewId) {
+						this.view.index = message.gridIndex;
+					}
+					break;
+				case MessageType.VRStarted:
+					this.addOffCanvasScene(message);
+					break;
+				case MessageType.VREnded:
+					this.removeOffCanvasScene(message);
+					break;
+				case MessageType.VRState:
+					this.updateOffCanvasScene(message);
+					break;
+			}
+		});
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			this.state = state;
+			// console.log(state);
+			// this.pushChanges();
+		});
 	}
 
 	removeListeners() {

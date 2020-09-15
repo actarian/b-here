@@ -1,8 +1,9 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as THREE from 'three';
-import AgoraService, { RoleType } from '../../agora/agora.service';
+import { RoleType } from '../../agora/agora.types';
 import { environment } from '../../environment';
+import StreamService from '../../stream/stream.service';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
 
@@ -172,34 +173,29 @@ export default class MediaMesh extends InteractiveMesh {
 		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
 			return of(file);
 		}
-		const agora = AgoraService.getSingleton();
-		if (agora) {
-			return agora.streams$.pipe(
-				map((streams) => {
-					let stream;
-					if (file === 'publisherStream') {
-						stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
-					} else if (file === 'nextAttendeeStream') {
-						let i = 0;
-						streams.forEach(x => {
-							if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-								if (i === item.asset.index) {
-									stream = x;
-								}
-								i++;
+		return StreamService.streams$.pipe(
+			map((streams) => {
+				let stream;
+				if (file === 'publisherStream') {
+					stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+				} else if (file === 'nextAttendeeStream') {
+					let i = 0;
+					streams.forEach(x => {
+						if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+							if (i === item.asset.index) {
+								stream = x;
 							}
-						});
-					}
-					if (stream) {
-						return stream.getId();
-					} else {
-						return null;
-					}
-				}),
-			);
-		} else {
-			return of(null);
-		}
+							i++;
+						}
+					});
+				}
+				if (stream) {
+					return stream.getId();
+				} else {
+					return null;
+				}
+			}),
+		);
 	}
 
 	constructor(item, items, geometry, material) {

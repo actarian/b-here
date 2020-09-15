@@ -20,6 +20,21 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
@@ -447,7 +462,28 @@ AgoraDevicePreviewComponent.meta = {
   selector: '[agora-device-preview]',
   outputs: ['stream', 'change'],
   inputs: ['video', 'audio']
-};var Emittable = /*#__PURE__*/function () {
+};var StateService = /*#__PURE__*/function () {
+  function StateService() {}
+
+  StateService.patchState = function patchState(state) {
+    state = Object.assign({}, this.state, state);
+    this.state = state;
+  };
+
+  _createClass(StateService, null, [{
+    key: "state",
+    set: function set(state) {
+      this.state$.next(state);
+    },
+    get: function get() {
+      return this.state$.getValue();
+    }
+  }]);
+
+  return StateService;
+}();
+
+_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emittable = /*#__PURE__*/function () {
   function Emittable() {
     this.events = {};
   }
@@ -507,12 +543,18 @@ AgoraDevicePreviewComponent.meta = {
     }
   };
 
+  _proto.has = function has(type) {
+    var callbacks = this.events[type];
+    return callbacks && callbacks.length;
+  };
+
   return Emittable;
 }();var NODE = typeof module !== 'undefined' && module.exports;
 var PARAMS = NODE ? {
   get: function get() {}
 } : new URLSearchParams(window.location.search);
 var DEBUG =  PARAMS.get('debug') != null;
+var EDITOR =  PARAMS.get('editor') != null;
 var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
 var HEROKU = NODE ? false : window && (window.location.host.indexOf('herokuapp') !== -1 || window.location.port === '5000');
 var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.host === 'actarian.github.io');
@@ -521,15 +563,19 @@ var Environment = /*#__PURE__*/function () {
   var _proto = Environment.prototype;
 
   _proto.getModelPath = function getModelPath(path) {
-    return STATIC ? this.href + this.paths.models + path : path;
+    return this.isLocal(path) ? this.href + this.paths.models + path : path;
   };
 
   _proto.getTexturePath = function getTexturePath(path) {
-    return STATIC ? this.href + this.paths.textures + path : path;
+    return this.isLocal(path) ? this.href + this.paths.textures + path : path;
   };
 
   _proto.getFontPath = function getFontPath(path) {
-    return STATIC ? this.href + this.paths.fonts + path : path;
+    return this.isLocal(path) ? this.href + this.paths.fonts + path : path;
+  };
+
+  _proto.isLocal = function isLocal(path) {
+    return path.indexOf('://') === -1;
   };
 
   _createClass(Environment, [{
@@ -602,8 +648,9 @@ var environment = new Environment({
     }
 
     var methods = ['POST', 'PUT', 'PATCH'];
-    var response_ = null;
-    return rxjs.from(fetch(this.getUrl(url, format), {
+    var response_ = null; // url = this.getUrl(url, format);
+
+    return rxjs.from(fetch(url, {
       method: method,
       headers: {
         'Accept': 'application/json',
@@ -752,7 +799,39 @@ var environment = new Environment({
   };
 
   return LocationService;
-}();var StreamQualities = [{
+}();var MessageService = /*#__PURE__*/function () {
+  function MessageService() {}
+
+  MessageService.message = function message(_message) {
+    this.message$.next(_message);
+  };
+
+  MessageService.in = function _in(message) {
+    this.in$.next(message);
+  };
+
+  MessageService.sendBack = function sendBack(message) {
+    message = Object.assign({}, message, {
+      remoteId: message.clientId
+    }); // console.log('MessageService.sendBack', message);
+
+    this.in$.next(message);
+  };
+
+  MessageService.out = function out(message) {
+    this.out$.next(message);
+  };
+
+  return MessageService;
+}();
+
+_defineProperty(MessageService, "message$", new rxjs.ReplaySubject(1));
+
+_defineProperty(MessageService, "in$", new rxjs.ReplaySubject(1));
+
+_defineProperty(MessageService, "send", MessageService.in);
+
+_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamQualities = [{
   id: 1,
   name: '4K 2160p 3840x2160',
   resolution: {
@@ -841,6 +920,7 @@ var RoleType = {
   Publisher: 'publisher'
 };
 var MessageType = {
+  AgoraEvent: 'agoraEvent',
   Ping: 'ping',
   RequestControl: 'requestControl',
   RequestControlAccepted: 'requestControlAccepted',
@@ -928,55 +1008,66 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   }
 
   return AgoraVolumeLevelsEvent;
-}(AgoraEvent);
+}(AgoraEvent);var StreamService = /*#__PURE__*/function () {
+  function StreamService() {}
 
-var AgoraService = /*#__PURE__*/function (_Emittable) {
-  _inheritsLoose(AgoraService, _Emittable);
-
-  AgoraService.getSingleton = function getSingleton(defaultDevices) {
-    if (DEBUG) {
-      return;
-    }
-
-    if (!this.AGORA) {
-      this.AGORA = new AgoraService(defaultDevices);
-    } // console.log('AgoraService', this.AGORA.state);
-
-
-    return this.AGORA;
-  };
-
-  var _proto = AgoraService.prototype;
-
-  _proto.getPublisherStreamId$ = function getPublisherStreamId$() {
-    var _this2 = this;
+  StreamService.getPublisherStreamId$ = function getPublisherStreamId$() {
+    var _this = this;
 
     var publisherStreamId = this.publisherStreamId;
 
     if (publisherStreamId) {
-      return rxjs.of(publisherStreamId);
+      return of(publisherStreamId);
     } else {
       return this.streams$.pipe(operators.map(function () {
-        return _this2.publisherStreamId;
-      }), operators.filter(function (x) {
+        return _this.publisherStreamId;
+      }), filter(function (x) {
         return x;
       }));
     }
   };
 
-  _createClass(AgoraService, [{
-    key: "state",
-    set: function set(state) {
-      this.state$.next(state);
+  StreamService.getRemoteById = function getRemoteById(streamId) {
+    // console.log('StreamService.getRemoteById', streamId);
+    var remotes = StreamService.remotes;
+    var remote = remotes.find(function (x) {
+      return x.getId() === streamId;
+    });
+
+    if (remote) {
+      return remote;
+    }
+  };
+
+  _createClass(StreamService, null, [{
+    key: "local",
+    set: function set(local) {
+      this.local$.next(local);
     },
     get: function get() {
-      return this.state$.getValue();
+      return this.local$.getValue();
+    }
+  }, {
+    key: "remotes",
+    set: function set(remotes) {
+      this.remotes$.next(remotes);
+    },
+    get: function get() {
+      return this.remotes$.getValue();
+    }
+  }, {
+    key: "peers",
+    set: function set(peers) {
+      this.peers$.next(peers);
+    },
+    get: function get() {
+      return this.peers$.getValue();
     }
   }, {
     key: "publisherStreamId",
     get: function get() {
-      var streams = this.remotes$.getValue().slice();
-      var local = this.local$.getValue();
+      var streams = this.remotes.slice();
+      var local = this.local;
 
       if (local) {
         streams.unshift(local);
@@ -993,6 +1084,41 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       return null;
     }
   }]);
+
+  return StreamService;
+}();
+
+_defineProperty(StreamService, "local$", new rxjs.BehaviorSubject(null));
+
+_defineProperty(StreamService, "remotes$", new rxjs.BehaviorSubject([]));
+
+_defineProperty(StreamService, "peers$", new rxjs.BehaviorSubject([]));
+
+_defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.local$, StreamService.remotes$).pipe(operators.map(function (data) {
+  var local = data[0];
+  var remotes = data[1];
+  var streams = remotes;
+
+  if (local) {
+    streams = streams.slice();
+    streams.push(local);
+  }
+
+  return streams;
+}), operators.shareReplay(1)));var AgoraService = /*#__PURE__*/function (_Emittable) {
+  _inheritsLoose(AgoraService, _Emittable);
+
+  AgoraService.getSingleton = function getSingleton(defaultDevices) {
+    if (DEBUG) {
+      return;
+    }
+
+    if (!this.AGORA) {
+      this.AGORA = new AgoraService(defaultDevices);
+    }
+
+    return this.AGORA;
+  };
 
   function AgoraService(defaultDevices) {
     var _this;
@@ -1043,32 +1169,12 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       },
       quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
     };
-    _this.state$ = new rxjs.BehaviorSubject(state);
-    _this.local$ = new rxjs.BehaviorSubject(null);
-    _this.remotes$ = new rxjs.BehaviorSubject([]);
-    _this.streams$ = rxjs.combineLatest(_this.local$, _this.remotes$).pipe(operators.map(function (data) {
-      var local = data[0];
-      var remotes = data[1];
-      var streams = remotes;
+    StateService.state = state; // !!! StateService.patchState({ ... })
 
-      if (local) {
-        streams = streams.slice();
-        streams.push(local);
-      }
-
-      return streams;
-    }));
-    _this.peers$ = new rxjs.BehaviorSubject([]);
-    _this.message$ = new rxjs.Subject();
-    _this.events$ = new rxjs.Subject();
     return _this;
   }
 
-  _proto.patchState = function patchState(state) {
-    state = Object.assign({}, this.state, state);
-    state.channelNameLink = state.channelName + "-" + (state.link || '');
-    this.state = state; // console.log('AgoraService.patchState', this.state);
-  };
+  var _proto = AgoraService.prototype;
 
   _proto.addStreamDevice = function addStreamDevice(src) {
     this.removeStreamDevice();
@@ -1084,29 +1190,29 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       kind: 'videostream',
       src: src
     };
-    var devices = this.state.devices;
+    var devices = StateService.state.devices;
     devices.videos.push(video);
     devices.audios.push(audio);
-    this.patchState({
+    StateService.patchState({
       devices: devices
     });
   };
 
   _proto.removeStreamDevice = function removeStreamDevice() {
-    var devices = this.state.devices;
+    var devices = StateService.state.devices;
     devices.videos = devices.videos.filter(function (x) {
       return x.kind !== 'videostream';
     });
     devices.audios = devices.audios.filter(function (x) {
       return x.kind !== 'videostream';
     });
-    this.patchState({
+    StateService.patchState({
       devices: devices
     });
   };
 
   _proto.devices$ = function devices$() {
-    var inputs = this.state.devices;
+    var inputs = StateService.state.devices;
     var defaultVideos = this.defaultVideos = this.defaultVideos || inputs.videos.slice();
     var defaultAudios = this.defaultAudios = this.defaultAudios || inputs.videos.slice();
     inputs.videos = defaultVideos.slice();
@@ -1157,9 +1263,9 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.connect$ = function connect$(preferences) {
-    var _this3 = this;
+    var _this2 = this;
 
-    var devices = this.state.devices;
+    var devices = StateService.state.devices;
 
     if (preferences) {
       devices.video = preferences.video;
@@ -1167,23 +1273,23 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     } // console.log('AgoraService.connect$', preferences, devices);
 
 
-    if (!this.state.connecting) {
-      this.patchState({
+    if (!StateService.state.connecting) {
+      StateService.patchState({
         status: AgoraStatus.Connecting,
         connecting: true,
         devices: devices
       });
       setTimeout(function () {
-        _this3.createClient(function () {
-          _this3.getRtcToken().subscribe(function (token) {
+        _this2.createClient(function () {
+          _this2.getRtcToken().subscribe(function (token) {
             // console.log('token', token);
-            _this3.joinChannel(token.token);
+            _this2.joinChannel(token.token);
           });
         });
       }, 250);
     }
 
-    return this.state$;
+    return StateService.state$;
   };
 
   _proto.getRtcToken = function getRtcToken() {
@@ -1211,7 +1317,7 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.createClient = function createClient(next) {
-    var _this4 = this;
+    var _this3 = this;
 
     if (this.client) {
       next();
@@ -1230,7 +1336,7 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       next();
     }, function (error) {
       // console.log('AgoraRTC client init failed', error);
-      _this4.client = null;
+      _this3.client = null;
     });
     client.on('stream-published', this.onStreamPublished);
     client.on('stream-unpublished', this.onStreamUnpublished); //subscribe remote stream
@@ -1270,31 +1376,33 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.joinChannel = function joinChannel(token) {
-    var _this5 = this;
+    var _this4 = this;
 
     var client = this.client;
-    var clientId = null; // this.state.role === RoleType.Publisher ? this.state.publisherId : null;
+    var clientId = null; // StateService.state.role === RoleType.Publisher ? StateService.state.publisherId : null;
 
     token = null; // !!!
 
-    client.join(token, this.state.channelNameLink, clientId, function (uid) {
+    var channelNameLink = StateService.state.channelName + "-" + (StateService.state.link || '');
+    client.join(token, channelNameLink, clientId, function (uid) {
       // console.log('AgoraService.joinChannel', uid);
-      _this5.patchState({
+      StateService.patchState({
         status: AgoraStatus.Connected,
+        channelNameLink: channelNameLink,
         connected: true,
         uid: uid
       });
 
       {
-        _this5.getRtmToken(uid).subscribe(function (token) {
+        _this4.getRtmToken(uid).subscribe(function (token) {
           // console.log('token', token);
-          _this5.joinMessageChannel(token.token, uid).then(function (success) {
+          _this4.joinMessageChannel(token.token, uid).then(function (success) {
             // console.log('joinMessageChannel.success', success);
-            _this5.emit('messageChannel', _this5.messageChannel);
+            _this4.emit('messageChannel', _this4.messageChannel);
 
-            _this5.autoDetectDevice();
+            _this4.autoDetectDevice();
 
-            _this5.createMediaStream(uid, _this5.state.devices.video, _this5.state.devices.audio);
+            _this4.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
           }, function (error) {// console.log('joinMessageChannel.error', error);
           });
         });
@@ -1305,64 +1413,22 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.joinMessageChannel = function joinMessageChannel(token, uid) {
-    var _this6 = this;
+    var _this5 = this;
 
     return new Promise(function (resolve, reject) {
-      var messageClient = _this6.messageClient;
+      var messageClient = _this5.messageClient;
 
       messageClient.login({
         uid: uid.toString()
       }).then(function () {
-        _this6.messageChannel = messageClient.createChannel(_this6.state.channelNameLink);
-        return _this6.messageChannel.join();
+        _this5.messageChannel = messageClient.createChannel(StateService.state.channelNameLink);
+        return _this5.messageChannel.join();
       }).then(function () {
-        _this6.messageChannel.on('ChannelMessage', _this6.onMessage);
+        _this5.messageChannel.on('ChannelMessage', _this5.onMessage);
 
         resolve(uid);
       }).catch(reject);
     });
-  };
-
-  _proto.sendMessage = function sendMessage(message) {
-    var _this7 = this;
-
-    if (this.state.connected) {
-      message.wrc_version = 'beta';
-      message.uid = this.state.uid;
-      var messageChannel = this.messageChannel;
-
-      if (messageChannel) {
-        messageChannel.sendMessage({
-          text: JSON.stringify(message)
-        }); // console.log('wrc: send', message);
-
-        if (message.rpcid) {
-          return new Promise(function (resolve) {
-            _this7.once("message-" + message.rpcid, function (message) {
-              resolve(message);
-            });
-          });
-        } else {
-          return Promise.resolve(message);
-        }
-      } else {
-        return new Promise(function (resolve) {
-          _this7.once("messageChannel", function (messageChannel) {
-            messageChannel.sendMessage({
-              text: JSON.stringify(message)
-            }); // console.log('wrc: send', message);
-
-            if (message.rpcid) {
-              _this7.once("message-" + message.rpcid, function (message) {
-                resolve(message);
-              });
-            } else {
-              resolve(message);
-            }
-          });
-        });
-      }
-    }
   };
 
   _proto.detectDevices = function detectDevices(next) {
@@ -1509,7 +1575,7 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.createMediaStream = function createMediaStream(uid, video, audio) {
-    var _this8 = this;
+    var _this6 = this;
 
     // this.releaseStream('_mediaVideoStream')
     var options = {
@@ -1519,23 +1585,47 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       screen: false
     };
     Promise.all([this.getVideoOptions(options, video), this.getAudioOptions(options, audio)]).then(function (success) {
+      var quality = Object.assign({}, StateService.state.quality);
+
+      _this6.createLocalStreamWithOptions(options, quality);
+      /*
       // console.log('AgoraService.createMediaStream', uid, options);
-      var local = _this8.local = AgoraRTC.createStream(options); // console.log('AgoraService.createMediaStream', uid, local.getId());
-
-      var quality = Object.assign({}, _this8.state.quality); // console.log('AgoraService.setVideoEncoderConfiguration', quality);
-
+      const local = AgoraRTC.createStream(options);
+      StreamService.local = local;
+      // console.log('AgoraService.createMediaStream', uid, local.getId());
+      // console.log('AgoraService.setVideoEncoderConfiguration', quality);
       local.setVideoEncoderConfiguration(quality);
+      this.initLocalStream(options);
+      */
 
-      _this8.initLocalStream(options);
     });
   };
 
-  _proto.initLocalStream = function initLocalStream(options) {
-    var _this9 = this;
+  _proto.createLocalStreamWithOptions = function createLocalStreamWithOptions(options, quality) {
+    var _this7 = this;
 
-    var local = this.local;
+    var local = AgoraRTC.createStream(options);
+
+    if (quality) {
+      local.setVideoEncoderConfiguration(quality);
+    }
+
     local.init(function () {
-      _this9.publishLocalStream();
+      StreamService.local = local;
+      setTimeout(function () {
+        _this7.publishLocalStream();
+      }, 1);
+    }, function (error) {
+      console.log('AgoraService.initLocalStream.init.error', error);
+    });
+  };
+
+  _proto.initLocalStream = function initLocalStream() {
+    var _this8 = this;
+
+    var local = StreamService.local;
+    local.init(function () {
+      _this8.publishLocalStream();
     }, function (error) {
       console.log('AgoraService.initLocalStream.init.error', error);
     });
@@ -1544,15 +1634,26 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   _proto.createLocalStream = function createLocalStream(uid, microphoneId, cameraId) {
     // console.log('createLocalStream', uid, microphoneId, cameraId);
     if (microphoneId || cameraId) {
-      var local = this.local = AgoraRTC.createStream({
+      var options = {
         streamID: uid,
         microphoneId: microphoneId,
         cameraId: cameraId,
         audio: microphoneId ? true : false,
         video: cameraId ? true : false,
         screen: false
+      };
+      this.createLocalStreamWithOptions(options);
+      /*
+      StreamService.local = AgoraRTC.createStream({
+      	streamID: uid,
+      	microphoneId: microphoneId,
+      	cameraId: cameraId,
+      	audio: microphoneId ? true : false,
+      	video: cameraId ? true : false,
+      	screen: false,
       });
       this.initLocalStream();
+      */
     }
   };
 
@@ -1572,22 +1673,22 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
 
   _proto.publishLocalStream = function publishLocalStream() {
     var client = this.client;
-    var local = this.local; // publish local stream
+    var local = StreamService.local; // publish local stream
 
     client.publish(local, function (error) {
       console.log('AgoraService.publishLocalStream.error', local.getId(), error);
     });
     local.clientInfo = {
-      role: this.state.role,
-      name: this.state.name,
-      uid: this.state.uid
+      role: StateService.state.role,
+      name: StateService.state.name,
+      uid: StateService.state.uid
     };
-    this.local$.next(local);
+    StreamService.local = local;
   };
 
   _proto.unpublishLocalStream = function unpublishLocalStream() {
     var client = this.client;
-    var local = this.local;
+    var local = StreamService.local;
 
     if (local) {
       client.unpublish(local, function (error) {
@@ -1595,27 +1696,27 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       });
     }
 
-    this.local$.next(null);
+    StreamService.local = null;
   };
 
   _proto.leaveChannel = function leaveChannel() {
-    var _this10 = this;
+    var _this9 = this;
 
-    this.patchState({
+    StateService.patchState({
       connecting: false
     });
     this.unpublishLocalStream();
-    this.remotes$.next([]);
-    this.peers$.next([]);
+    StreamService.remotes = [];
+    StreamService.peers = [];
     var client = this.client;
     client.leave(function () {
       // console.log('Leave channel successfully');
-      _this10.patchState({
+      StateService.patchState({
         status: AgoraStatus.Disconnected,
         connected: false
       });
 
-      _this10.leaveMessageChannel();
+      _this9.leaveMessageChannel();
     }, function (error) {
       console.log('AgoraService.leaveChannel.error', error);
     });
@@ -1631,23 +1732,23 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.toggleCamera = function toggleCamera() {
-    var local = this.local; // console.log('toggleCamera', local);
+    var local = StreamService.local; // console.log('toggleCamera', local);
 
     if (local && local.video) {
       if (local.userMuteVideo) {
         local.unmuteVideo();
-        this.patchState({
+        StateService.patchState({
           cameraMuted: false
         });
-        this.events$.next(new AgoraUnmuteVideoEvent({
+        this.broadcastEvent(new AgoraUnmuteVideoEvent({
           streamId: local.getId()
         }));
       } else {
         local.muteVideo();
-        this.patchState({
+        StateService.patchState({
           cameraMuted: true
         });
-        this.events$.next(new AgoraMuteVideoEvent({
+        this.broadcastEvent(new AgoraMuteVideoEvent({
           streamId: local.getId()
         }));
       }
@@ -1655,23 +1756,23 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.toggleAudio = function toggleAudio() {
-    var local = this.local; // console.log(local);
+    var local = StreamService.local; // console.log(local);
 
     if (local && local.audio) {
       if (local.userMuteAudio) {
         local.unmuteAudio();
-        this.patchState({
+        StateService.patchState({
           audioMuted: false
         });
-        this.events$.next(new AgoraUnmuteAudioEvent({
+        this.broadcastEvent(new AgoraUnmuteAudioEvent({
           streamId: local.getId()
         }));
       } else {
         local.muteAudio();
-        this.patchState({
+        StateService.patchState({
           audioMuted: true
         });
-        this.events$.next(new AgoraMuteAudioEvent({
+        this.broadcastEvent(new AgoraMuteAudioEvent({
           streamId: local.getId()
         }));
       }
@@ -1679,25 +1780,25 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.toggleControl = function toggleControl() {
-    var _this11 = this;
+    var _this10 = this;
 
-    if (this.state.control) {
+    if (StateService.state.control) {
       this.sendRemoteControlDismiss().then(function (control) {
         // console.log('AgoraService.sendRemoteControlDismiss', control);
-        _this11.patchState({
+        StateService.patchState({
           control: !control
         });
       });
-    } else if (this.state.spying) {
-      this.sendRemoteInfoDismiss(this.state.spying).then(function (spying) {
+    } else if (StateService.state.spying) {
+      this.sendRemoteInfoDismiss(StateService.state.spying).then(function (spying) {
         // console.log('AgoraService.sendRemoteInfoDismiss', spying);
-        _this11.patchState({
+        StateService.patchState({
           spying: false
         });
 
-        _this11.sendRemoteControlRequest().then(function (control) {
+        _this10.sendRemoteControlRequest().then(function (control) {
           // console.log('AgoraService.sendRemoteControlRequest', control);
-          _this11.patchState({
+          StateService.patchState({
             control: control
           });
         });
@@ -1705,68 +1806,58 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     } else {
       this.sendRemoteControlRequest().then(function (control) {
         // console.log('AgoraService.sendRemoteControlRequest', control);
-        _this11.patchState({
+        StateService.patchState({
           control: control
         });
       });
     }
   };
 
-  _proto.toggleSpy = function toggleSpy(clientId) {
-    var _this12 = this;
+  _proto.toggleSpy = function toggleSpy(remoteId) {
+    var _this11 = this;
 
-    if (this.state.control) {
+    if (StateService.state.control) {
       this.sendRemoteControlDismiss().then(function (control) {
-        _this12.patchState({
+        StateService.patchState({
           control: false
         });
 
-        _this12.sendRemoteRequestInfo(clientId).then(function (info) {
-          _this12.patchState({
-            spying: clientId
+        _this11.sendRemoteRequestInfo(remoteId).then(function (info) {
+          StateService.patchState({
+            spying: remoteId
           });
         });
       });
-    } else if (this.state.spying) {
-      this.sendRemoteInfoDismiss(this.state.spying).then(function (spying) {
+    } else if (StateService.state.spying) {
+      this.sendRemoteInfoDismiss(StateService.state.spying).then(function (spying) {
         // console.log('AgoraService.sendRemoteInfoDismiss', spying);
-        // this.patchState({ spying: !spying });
-        if (_this12.state.spying !== clientId) {
-          _this12.sendRemoteRequestInfo(clientId).then(function (info) {
-            _this12.patchState({
-              spying: clientId
+        // StateService.patchState({ spying: !spying });
+        if (StateService.state.spying !== remoteId) {
+          _this11.sendRemoteRequestInfo(remoteId).then(function (info) {
+            StateService.patchState({
+              spying: remoteId
             });
           });
         } else {
-          _this12.patchState({
+          StateService.patchState({
             spying: false
           });
         }
       });
     } else {
-      this.sendRemoteRequestInfo(clientId).then(function (info) {
-        _this12.patchState({
-          spying: clientId
+      this.sendRemoteRequestInfo(remoteId).then(function (info) {
+        StateService.patchState({
+          spying: remoteId
         });
       });
     }
   };
 
-  _proto.navToView = function navToView(viewId) {
-    if (this.state.control || this.state.spyed) {
-      this.sendMessage({
-        type: MessageType.NavToView,
-        clientId: this.state.uid,
-        viewId: viewId
-      });
-    }
-  };
-
   _proto.sendRemoteControlDismiss = function sendRemoteControlDismiss() {
-    var _this13 = this;
+    var _this12 = this;
 
     return new Promise(function (resolve, reject) {
-      _this13.sendMessage({
+      _this12.sendMessage({
         type: MessageType.RequestControlDismiss,
         rpcid: Date.now().toString()
       }).then(function (message) {
@@ -1780,15 +1871,15 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     });
   };
 
-  _proto.sendRemoteControlRequest = function sendRemoteControlRequest(message) {
-    var _this14 = this;
+  _proto.sendRemoteControlRequest = function sendRemoteControlRequest() {
+    var _this13 = this;
 
     return new Promise(function (resolve, reject) {
-      _this14.sendMessage({
+      _this13.sendMessage({
         type: MessageType.RequestControl,
         rpcid: Date.now().toString()
       }).then(function (message) {
-        // console.log('AgoraService.sendRemoteControlRequest return', message);
+        // console.log('AgoraService.sendRemoteControlRequest.response', message);
         if (message.type === MessageType.RequestControlAccepted) {
           resolve(true);
         } else if (message.type === MessageType.RequestControlRejected) {
@@ -1799,18 +1890,19 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     });
   };
 
-  _proto.sendRemoteRequestPeerInfo = function sendRemoteRequestPeerInfo(streamId) {
-    var _this15 = this;
+  _proto.sendRemoteRequestPeerInfo = function sendRemoteRequestPeerInfo(remoteId) {
+    var _this14 = this;
 
     return new Promise(function (resolve, reject) {
-      _this15.sendMessage({
+      _this14.sendMessage({
         type: MessageType.RequestPeerInfo,
-        streamId: streamId,
-        rpcid: Date.now().toString()
+        rpcid: Date.now().toString(),
+        remoteId: remoteId
       }).then(function (message) {
+        // console.log('AgoraService.sendRemoteRequestPeerInfo.response', message);
         if (message.type === MessageType.RequestPeerInfoResult) {
           if (message.clientInfo.role === RoleType.Publisher) {
-            _this15.patchState({
+            StateService.patchState({
               hosted: true
             });
           }
@@ -1821,36 +1913,36 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     });
   };
 
-  _proto.sendRemoteRequestInfo = function sendRemoteRequestInfo(clientId) {
-    var _this16 = this;
+  _proto.sendRemoteRequestInfo = function sendRemoteRequestInfo(remoteId) {
+    var _this15 = this;
 
     return new Promise(function (resolve, reject) {
-      _this16.sendMessage({
+      _this15.sendMessage({
         type: MessageType.RequestInfo,
-        clientId: clientId,
-        rpcid: Date.now().toString()
+        rpcid: Date.now().toString(),
+        remoteId: remoteId
       }).then(function (message) {
+        // console.log('AgoraService.sendRemoteRequestInfo.response', message);
         if (message.type === MessageType.RequestInfoResult) {
-          _this16.patchState({
-            spying: clientId
+          StateService.patchState({
+            spying: remoteId
           });
-
           resolve(message);
         }
       });
     });
   };
 
-  _proto.sendRemoteInfoDismiss = function sendRemoteInfoDismiss(clientId) {
-    var _this17 = this;
+  _proto.sendRemoteInfoDismiss = function sendRemoteInfoDismiss(remoteId) {
+    var _this16 = this;
 
     return new Promise(function (resolve, reject) {
-      _this17.sendMessage({
+      _this16.sendMessage({
         type: MessageType.RequestInfoDismiss,
-        clientId: clientId,
-        rpcid: Date.now().toString()
+        rpcid: Date.now().toString(),
+        remoteId: remoteId
       }).then(function (message) {
-        // console.log('AgoraService.sendRemoteInfoDismiss return', message);
+        // console.log('AgoraService.sendRemoteInfoDismiss.response', message);
         if (message.type === MessageType.RequestInfoDismissed) {
           resolve(true);
         } else if (message.type === MessageType.RequestInfoRejected) {
@@ -1858,6 +1950,15 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
         }
       });
     });
+  };
+
+  _proto.navToView = function navToView(viewId) {
+    if (StateService.state.control || StateService.state.spyed) {
+      this.sendMessage({
+        type: MessageType.NavToView,
+        viewId: viewId
+      });
+    }
   };
 
   _proto.getSessionStats = function getSessionStats() {
@@ -1877,20 +1978,147 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     client.getSystemStats(function (stats) {
       console.log("Current battery level: " + stats.BatteryLevel);
     });
-  } // events
-  ;
+  };
 
-  _proto.onError = function onError(error) {
-    console.log('AgoraService.onError', error);
+  _proto.sendMessage = function sendMessage(message) {
+    var _this17 = this;
+
+    return new Promise(function (resolve, reject) {
+      if (StateService.state.connected) {
+        message.clientId = StateService.state.uid;
+
+        switch (message.type) {
+          case MessageType.CameraOrientation:
+          case MessageType.NavToGrid:
+            if (!StateService.state.control && !StateService.state.spyed) {
+              return;
+            }
+
+            break;
+
+          case MessageType.CameraRotate:
+          case MessageType.SlideChange:
+            if (!StateService.state.control) {
+              return;
+            }
+
+            break;
+        } // message.wrc_version = 'beta';
+        // message.uid = StateService.state.uid;
+
+
+        var send = function send(message, channel) {
+          try {
+            channel.sendMessage({
+              text: JSON.stringify(message)
+            });
+
+            if (message.rpcid) {
+              _this17.once("message-" + message.rpcid, function (message) {
+                resolve(message);
+              });
+            } else {
+              resolve(message);
+            }
+          } catch (error) {
+            reject(error);
+          }
+        };
+
+        var messageChannel = _this17.messageChannel;
+
+        if (messageChannel) {
+          send(message, messageChannel);
+        } else {
+          try {
+            _this17.once("messageChannel", function (messageChannel) {
+              send(message, messageChannel);
+            });
+          } catch (error) {
+            reject(error);
+          }
+        }
+      } else {
+        reject(null);
+      }
+    });
+  };
+
+  _proto.checkBroadcastMessage = function checkBroadcastMessage(message) {
+    // filter for broadcast
+    // !!! filter events here
+    switch (message.type) {
+      case MessageType.RequestControlDismiss:
+        StateService.patchState({
+          locked: false
+        });
+        this.sendMessage({
+          type: MessageType.RequestControlDismissed,
+          rpcid: message.rpcid
+        });
+        break;
+
+      case MessageType.RequestInfoDismiss:
+        // console.log('checkBroadcastMessage.RequestInfoDismiss', message);
+        StateService.patchState({
+          spyed: false
+        });
+        this.sendMessage({
+          type: MessageType.RequestInfoDismissed,
+          rpcid: message.rpcid,
+          remoteId: message.remoteId
+        });
+        break;
+
+      case MessageType.RequestInfoResult:
+        // console.log('checkBroadcastMessage.RequestInfoResult', message);
+        if (StateService.state.role === RoleType.Publisher) {
+          this.broadcastMessage(message);
+        }
+
+      case MessageType.CameraOrientation:
+      case MessageType.CameraRotate:
+      case MessageType.NavToView:
+      case MessageType.NavToGrid:
+      case MessageType.SlideChange:
+        if (StateService.state.locked || StateService.state.spying && StateService.state.spying === message.clientId) {
+          this.broadcastMessage(message);
+        }
+
+        break;
+
+      default:
+        this.broadcastMessage(message);
+    }
+  };
+
+  _proto.broadcastMessage = function broadcastMessage(message) {
+    MessageService.out(message);
+  };
+
+  _proto.broadcastEvent = function broadcastEvent(event) {
+    MessageService.out({
+      type: MessageType.AgoraEvent,
+      event: event
+    });
   };
 
   _proto.onMessage = function onMessage(data, uid) {
-    if (uid !== this.state.uid) {
-      var message = JSON.parse(data.text); // console.log('wrc: receive', message);
+    // console.log('AgoraService.onMessage', data, uid, StateService.state.uid);
+    // discard message delivered by current state uid;
+    if (uid !== StateService.state.uid) {
+      var message = JSON.parse(data.text);
 
-      if (message.rpcid) {
-        this.emit("message-" + message.rpcid, message);
-      }
+      if (message.rpcid && this.has("message-" + message.rpcid)) {
+        // !!! added return
+        return this.emit("message-" + message.rpcid, message);
+      } // discard message delivered to specific remoteId when differs from current state uid;
+
+
+      if (message.remoteId && message.remoteId !== StateService.state.uid) {
+        return;
+      } // !!! check position !!!
+
 
       if (message.type === MessageType.VRStarted) {
         var container = document.createElement('div');
@@ -1898,67 +2126,36 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
         message.container = container;
       }
 
-      this.message$.next(message);
-
-      switch (message.type) {
-        case MessageType.RequestControlDismiss:
-          this.patchState({
-            locked: false
-          });
-          this.sendMessage({
-            type: MessageType.RequestControlDismissed,
-            rpcid: message.rpcid
-          });
-          break;
-
-        case MessageType.RequestInfoDismiss:
-          // console.log('MessageType.RequestInfoDismiss', message.clientId, this.state.uid);
-          if (message.clientId === this.state.uid) {
-            this.patchState({
-              spyed: false
-            });
-            this.sendMessage({
-              type: MessageType.RequestInfoDismissed,
-              clientId: message.clientId,
-              rpcid: message.rpcid
-            });
-          }
-
-          break;
-      }
-      /*
-      // this.emit('wrc-message', message);
-      if (message.type === WRCMessageType.WRC_CLOSE) {
-        // console.log('receive wrc close')
-        this.cleanRemote()
-        this.emit('remote-close')
-      }
-      */
-
+      this.checkBroadcastMessage(message);
     }
+  };
+
+  _proto.onError = function onError(error) {
+    console.log('AgoraService.onError', error);
   };
 
   _proto.onStreamPublished = function onStreamPublished(event) {
     // console.log('AgoraService.onStreamPublished');
-    this.local.clientInfo = {
-      role: this.state.role,
-      name: this.state.name,
-      uid: this.state.uid
+    var local = StreamService.local;
+    local.clientInfo = {
+      role: StateService.state.role,
+      name: StateService.state.name,
+      uid: StateService.state.uid
     };
-    this.local$.next(this.local);
+    StreamService.local = local;
   };
 
   _proto.onStreamUnpublished = function onStreamUnpublished(event) {
     // console.log('AgoraService.onStreamUnpublished');
-    this.local$.next(null);
+    StreamService.local = null;
   };
 
   _proto.onStreamAdded = function onStreamAdded(event) {
     var client = this.client;
     var stream = event.stream;
-    var streamId = stream.getId(); // console.log('AgoraService.onStreamAdded', streamId, this.state.uid);
+    var streamId = stream.getId(); // console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid);
 
-    if (streamId !== this.state.uid) {
+    if (streamId !== StateService.state.uid) {
       client.subscribe(stream, function (error) {
         console.log('AgoraService.onStreamAdded.subscribe.error', error);
       });
@@ -1967,10 +2164,10 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
 
   _proto.onStreamRemoved = function onStreamRemoved(event) {
     var stream = event.stream;
-    var id = stream.getId(); // console.log('AgoraService.onStreamRemoved', id, this.state.uid);
+    var streamId = stream.getId(); // console.log('AgoraService.onStreamRemoved', streamId, StateService.state.uid);
 
-    if (id !== this.state.uid) {
-      this.remoteRemove(id);
+    if (streamId !== StateService.state.uid) {
+      this.remoteRemove(streamId);
     }
   };
 
@@ -1984,14 +2181,14 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
   };
 
   _proto.onPeerLeaved = function onPeerLeaved(event) {
-    var id = event.uid;
+    var clientId = event.uid;
 
-    if (id !== this.state.uid) {
-      this.remoteRemove(id);
+    if (clientId !== StateService.state.uid) {
+      this.remoteRemove(clientId);
     }
 
-    this.peerRemove(id);
-    this.patchState({
+    this.peerRemove(clientId);
+    StateService.patchState({
       locked: false,
       control: false,
       spyed: false
@@ -2003,56 +2200,53 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     var peer = {
       uid: event.uid
     };
-    var peers = this.peers$.getValue();
+    var peers = StreamService.peers;
     peers.push(peer);
-    this.peers$.next(peers);
-    this.events$.next(new AgoraPeerEvent({
+    StreamService.peers = peers;
+    this.broadcastEvent(new AgoraPeerEvent({
       peer: peer
     }));
   };
 
   _proto.peerRemove = function peerRemove(peerId) {
     // console.log('AgoraService.peerRemove', peerId);
-    var peers = this.peers$.getValue();
+    var peers = StreamService.peers;
     var peer = peers.find(function (x) {
       return x.uid === peerId;
     });
 
     if (peer) {
       peers.splice(peers.indexOf(peer), 1);
-      this.peers$.next(peers);
+      StreamService.peers = peers;
     }
   };
 
   _proto.remoteAdd = function remoteAdd(stream) {
-    var _this18 = this;
-
     // console.log('AgoraService.remoteAdd', stream);
-    var remotes = this.remotes$.getValue();
+    var remotes = StreamService.remotes;
     remotes.push(stream);
-    this.remotes$.next(remotes);
-    this.events$.next(new AgoraRemoteEvent({
+    StreamService.remotes = remotes;
+    this.broadcastEvent(new AgoraRemoteEvent({
       stream: stream
     }));
-    var streamId = stream.getId();
-    this.sendRemoteRequestPeerInfo(streamId).then(function (message) {
-      var remotes = _this18.remotes$.getValue();
-
+    var remoteId = stream.getId();
+    this.sendRemoteRequestPeerInfo(remoteId).then(function (message) {
+      var remotes = StreamService.remotes;
       var remote = remotes.find(function (x) {
-        return x.getId() === streamId;
+        return x.getId() === remoteId;
       });
 
       if (remote) {
         remote.clientInfo = message.clientInfo;
       }
 
-      _this18.remotes$.next(remotes);
+      StreamService.remotes = remotes;
     });
   };
 
   _proto.remoteRemove = function remoteRemove(streamId) {
     // console.log('AgoraService.remoteRemove', streamId);
-    var remotes = this.remotes$.getValue();
+    var remotes = StreamService.remotes;
     var remote = remotes.find(function (x) {
       return x.getId() === streamId;
     });
@@ -2063,52 +2257,40 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
       }
 
       remotes.splice(remotes.indexOf(remote), 1);
-      this.remotes$.next(remotes);
+      StreamService.remotes = remotes;
 
       if (remote.clientInfo && remote.clientInfo.role === RoleType.Publisher) {
-        this.patchState({
+        StateService.patchState({
           hosted: false
         });
       }
     }
   };
 
-  _proto.remoteById = function remoteById(streamId) {
-    // console.log('AgoraService.remoteById', streamId);
-    var remotes = this.remotes$.getValue();
-    var remote = remotes.find(function (x) {
-      return x.getId() === streamId;
-    });
-
-    if (remote) {
-      return remote;
-    }
-  };
-
   _proto.onMuteVideo = function onMuteVideo(event) {
     // console.log('AgoraService.onMuteVideo', event);
-    this.events$.next(new AgoraMuteVideoEvent({
+    this.broadcastEvent(new AgoraMuteVideoEvent({
       streamId: event.uid
     }));
   };
 
   _proto.onUnmuteVideo = function onUnmuteVideo(event) {
     // console.log('AgoraService.onUnmuteVideo', event);
-    this.events$.next(new AgoraUnmuteVideoEvent({
+    this.broadcastEvent(new AgoraUnmuteVideoEvent({
       streamId: event.uid
     }));
   };
 
   _proto.onMuteAudio = function onMuteAudio(event) {
     // console.log('AgoraService.onMuteAudio', event);
-    this.events$.next(new AgoraMuteAudioEvent({
+    this.broadcastEvent(new AgoraMuteAudioEvent({
       streamId: event.uid
     }));
   };
 
   _proto.onUnmuteAudio = function onUnmuteAudio(event) {
     // console.log('AgoraService.onUnmuteAudio', event);
-    this.events$.next(new AgoraUnmuteAudioEvent({
+    this.broadcastEvent(new AgoraUnmuteAudioEvent({
       streamId: event.uid
     }));
   };
@@ -2121,7 +2303,7 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
         level: x.level
       };
     });
-    this.events$.next(new AgoraVolumeLevelsEvent({
+    this.broadcastEvent(new AgoraVolumeLevelsEvent({
       streams: streams
     }));
   };
@@ -2163,14 +2345,14 @@ var AgoraService = /*#__PURE__*/function (_Emittable) {
     this.stream = null;
     this.form = null;
     var agora = this.agora = AgoraService.getSingleton();
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      // console.log('AgoraDeviceComponent.state', state);
+      _this.state = state;
+
+      _this.pushChanges();
+    });
 
     if (agora) {
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        // console.log('AgoraDeviceComponent.state', state);
-        _this.state = state;
-
-        _this.pushChanges();
-      });
       agora.devices$().subscribe(function (devices) {
         // console.log(devices);
         _this.devices = devices;
@@ -2273,16 +2455,12 @@ AgoraDeviceComponent.meta = {
       // console.log('AgoraLinkComponent.changes$', form.value);
       _this.pushChanges();
     });
-    var agora = this.agora = AgoraService.getSingleton();
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      // console.log('AgoraLinkComponent.state', state);
+      _this.state = state;
 
-    if (agora) {
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        // console.log('AgoraLinkComponent.state', state);
-        _this.state = state;
-
-        _this.pushChanges();
-      });
-    }
+      _this.pushChanges();
+    });
   };
 
   _proto.onGenerateMeetingId = function onGenerateMeetingId($event) {
@@ -2375,16 +2553,12 @@ AgoraLinkComponent.meta = {
       // console.log('AgoraNameComponent.changes$', form.value);
       _this.pushChanges();
     });
-    var agora = this.agora = AgoraService.getSingleton();
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      // console.log('AgoraNameComponent.state', state);
+      _this.state = state;
 
-    if (agora) {
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        // console.log('AgoraNameComponent.state', state);
-        _this.state = state;
-
-        _this.pushChanges();
-      });
-    }
+      _this.pushChanges();
+    });
   };
 
   _proto.isValid = function isValid() {
@@ -2407,10 +2581,7 @@ AgoraLinkComponent.meta = {
         'pageTitle': window.pageTitle
       }, '', url);
     }
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-  // onDestroy() {}
-  ;
+  };
 
   return AgoraNameComponent;
 }(rxcomp.Component);
@@ -2426,6 +2597,64 @@ AgoraNameComponent.meta = {
 
   var _proto = AgoraStreamComponent.prototype;
 
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.videoMuted = false;
+    this.audioMuted = false;
+    this.shouldUseResumeGesture = false;
+    this.state = {};
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this.state = state;
+
+      _this.pushChanges(); // console.log('AgoraStreamComponent.StateService.state$', this.streamId, state);
+
+    });
+    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      // console.log('AgoraStreamComponent.MessageService.out$', this.streamId, message);
+      switch (message.type) {
+        case MessageType.AgoraEvent:
+          var event = message.event; // console.log('AgoraStreamComponent.AgoraEvent', message.event);
+
+          if (_this.streamId && event.streamId === _this.streamId) {
+            if (event instanceof AgoraMuteVideoEvent) {
+              _this.videoMuted = true;
+            }
+
+            if (event instanceof AgoraUnmuteVideoEvent) {
+              _this.videoMuted = false;
+            }
+
+            if (event instanceof AgoraMuteAudioEvent) {
+              _this.audioMuted = true;
+            }
+
+            if (event instanceof AgoraUnmuteAudioEvent) {
+              _this.audioMuted = false;
+            }
+          }
+
+          break;
+
+        case MessageType.VRStarted:
+          // console.log('AgoraStreamComponent.VRStarted', this.streamId, message.clientId, message.container);
+          if (_this.streamId === message.clientId) {
+            _this.vrContainer = message.container;
+          }
+
+          break;
+
+        case MessageType.VREnded:
+          // console.log('AgoraStreamComponent.VREnded', this.streamId, message.clientId);
+          if (_this.streamId === message.clientId) {
+            _this.vrContainer = null;
+          }
+
+          break;
+      }
+    });
+  };
+
   _proto.setMediaStream = function setMediaStream(mediaStream) {
     var videoNode = this.videoNode;
 
@@ -2437,77 +2666,16 @@ AgoraNameComponent.meta = {
   };
 
   _proto.onLoadedMetadata = function onLoadedMetadata(event) {
+    // console.log('AgoraStreamComponent.onLoadedMetadata', event);
     this.videoNode.play().then(function (success) {// console.log('AgoraStreamComponent.play.success', success);
     }, function (error) {
       console.log('AgoraStreamComponent.play.error', error);
     });
   };
 
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.videoMuted = false;
-    this.audioMuted = false;
-    this.shouldUseResumeGesture = false;
-    this.state = {};
-    var agora = this.agora = AgoraService.getSingleton();
-
-    if (agora) {
-      agora.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        // console.log('AgoraStreamEvent', event, this.streamId);
-        if (_this.streamId && event.streamId === _this.streamId) {
-          if (event instanceof AgoraMuteVideoEvent) {
-            _this.videoMuted = true;
-          }
-
-          if (event instanceof AgoraUnmuteVideoEvent) {
-            _this.videoMuted = false;
-          }
-
-          if (event instanceof AgoraMuteAudioEvent) {
-            _this.audioMuted = true;
-          }
-
-          if (event instanceof AgoraUnmuteAudioEvent) {
-            _this.audioMuted = false;
-          }
-        }
-      });
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        _this.state = state;
-
-        _this.pushChanges(); // console.log('AgoraStreamComponent', this.state.spying, this.streamId);
-
-      });
-      agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-        // console.log('AgoraStreamComponent.message', message.type);
-        switch (message.type) {
-          case MessageType.VRStarted:
-            // console.log('AgoraStreamComponent.VRStarted', this.streamId, message.clientId, message.container);
-            if (_this.streamId === message.clientId) {
-              _this.vrContainer = message.container;
-            }
-
-            break;
-
-          case MessageType.VREnded:
-            // console.log('AgoraStreamComponent.VREnded', this.streamId, message.clientId);
-            if (_this.streamId === message.clientId) {
-              _this.vrContainer = null;
-            }
-
-            break;
-        }
-      });
-    }
-  };
-
   _proto.onToggleSpy = function onToggleSpy($event) {
     this.toggleSpy.next($event);
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-  // onDestroy() {}
-  ;
+  };
 
   _createClass(AgoraStreamComponent, [{
     key: "videoMuted",
@@ -2548,6 +2716,7 @@ AgoraNameComponent.meta = {
     },
     set: function set(stream) {
       if (this.stream_ !== stream) {
+        // console.log('AgoraStreamComponent set stream', stream);
         var _getContext3 = rxcomp.getContext(this),
             node = _getContext3.node;
 
@@ -2559,7 +2728,7 @@ AgoraNameComponent.meta = {
 
 
         if (this.stream_ && this.stream_.isPlaying() && this.stream_.player.div.parentNode === player) {
-          // console.log('stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
+          // console.log('AgoraStreamComponent stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
           this.stream_.stop();
         }
 
@@ -2571,7 +2740,7 @@ AgoraNameComponent.meta = {
         }
 
         var streamId = stream ? stream.getId() : null;
-        this.streamId = streamId;
+        this.streamId = streamId; // console.log('AgoraStreamComponent streamId', streamId);
 
         if (streamId) {
           var name = "stream-" + streamId;
@@ -2705,7 +2874,21 @@ var ModalService = /*#__PURE__*/function () {
   return ModalService;
 }();
 ModalService.modal$ = new rxjs.Subject();
-ModalService.events$ = new rxjs.Subject();var View = function View(options) {
+ModalService.events$ = new rxjs.Subject();var ViewType = {
+  WaitingRoom: 'waiting-room',
+  Panorama: 'panorama',
+  PanoramaGrid: 'panorama-grid',
+  Room3d: 'room-3d',
+  Model: 'model'
+};
+var ViewItemType = {
+  Nav: 'nav',
+  Gltf: 'gltf',
+  Plane: 'plane',
+  CurvedPlane: 'curved-plane',
+  Texture: 'texture'
+};
+var View = function View(options) {
   if (options) {
     Object.assign(this, options);
 
@@ -2833,37 +3016,32 @@ var ModelView = /*#__PURE__*/function (_View3) {
 
   return ModelView;
 }(View);
-var ViewType = {
-  Panorama: 'panorama',
-  PanoramaGrid: 'panorama-grid',
-  Room3d: 'room-3d',
-  Model: 'model'
-};
+function mapView(view) {
+  switch (view.type) {
+    case ViewType.Panorama:
+      view = new PanoramaView(view);
+      break;
 
-var ViewService = /*#__PURE__*/function () {
+    case ViewType.PanoramaGrid:
+      view = new PanoramaGridView(view);
+      break;
+
+    case ViewType.Model:
+      view = new ModelView(view);
+      break;
+
+    default:
+      view = new View(view);
+  }
+
+  return view;
+}var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
   ViewService.data$ = function data$() {
     return HttpService.get$('./api/data.json').pipe(operators.map(function (data) {
       data.views = data.views.map(function (view) {
-        switch (view.type) {
-          case ViewType.Panorama:
-            view = new PanoramaView(view);
-            break;
-
-          case ViewType.PanoramaGrid:
-            view = new PanoramaGridView(view);
-            break;
-
-          case ViewType.Model:
-            view = new ModelView(view);
-            break;
-
-          default:
-            view = new View(view);
-        }
-
-        return view;
+        return mapView(view);
       });
       return data;
     }));
@@ -3046,8 +3224,8 @@ var VRService = /*#__PURE__*/function () {
   };
 
   return VRService;
-}();var CONTROL_REQUEST = STATIC ? BASE_HREF + 'control-request-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.controlRequestModal;
-var TRY_IN_AR = STATIC ? BASE_HREF + 'try-in-ar-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.tryInArModal;
+}();var CONTROL_REQUEST = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.controlRequestModal;
+var TRY_IN_AR = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.tryInArModal;
 
 var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
@@ -3091,94 +3269,11 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
 
     var agora = this.agora = AgoraService.getSingleton();
 
-    if (agora) {
-      agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-        // console.log('AgoraComponent.message', message);
-        switch (message.type) {
-          case MessageType.RequestPeerInfo:
-            if (message.streamId === agora.state.uid) {
-              message.type = MessageType.RequestPeerInfoResult;
-              message.clientInfo = {
-                role: agora.state.role,
-                name: agora.state.name,
-                uid: agora.state.uid
-              };
-              agora.sendMessage(message);
-            }
-
-            break;
-
-          case MessageType.RequestControl:
-            message.type = MessageType.RequestControlAccepted;
-            agora.sendMessage(message);
-            agora.patchState({
-              locked: true
-            }); // !!! control request permission not required
-            // this.onRemoteControlRequest(message);
-
-            break;
-
-          case MessageType.RequestInfo:
-            if (message.clientId === agora.state.uid) {
-              agora.patchState({
-                spyed: true
-              });
-            }
-
-            break;
-
-          case MessageType.RequestInfoResult:
-            if (agora.state.role === RoleType.Publisher && _this2.controls.view.value !== message.viewId) {
-              _this2.controls.view.value = message.viewId; // console.log('AgoraComponent.RequestInfoResult', message.viewId);
-            }
-
-            break;
-
-          case MessageType.NavToView:
-            if ((agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) && message.viewId) {
-              if (_this2.controls.view.value !== message.viewId) {
-                _this2.controls.view.value = message.viewId;
-
-                if (message.gridIndex !== undefined) {
-                  var view = _this2.data.views.find(function (x) {
-                    return x.id === message.viewId;
-                  });
-
-                  if (view instanceof PanoramaGridView) {
-                    view.index = message.gridIndex;
-                  }
-                } // console.log('AgoraComponent.NavToView', message.viewId);
-
-              }
-            }
-
-            break;
-        }
-      });
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        // console.log('AgoraComponent.state', state);
-        _this2.state = state;
-        _this2.hosted = state.hosted;
-
-        _this2.pushChanges();
-      });
-      agora.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
-        // console.log('AgoraComponent.local', local);
-        _this2.local = local;
-
-        _this2.pushChanges();
-      });
-      agora.remotes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
-        // console.log('AgoraComponent.remotes', remotes);
-        _this2.remotes = remotes;
-
-        _this2.pushChanges();
-      });
-    } else {
+    if (!agora) {
       var role = LocationService.get('role') || RoleType.Attendee;
       var link = LocationService.get('link') || null;
       var name = LocationService.get('name') || null;
-      this.state = {
+      StateService.state = {
         role: role,
         link: link,
         name: name,
@@ -3198,6 +3293,87 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
         quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
       };
     }
+
+    StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
+      // console.log('AgoraComponent.local', local);
+      _this2.local = local;
+
+      _this2.pushChanges();
+    });
+    StreamService.remotes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
+      // console.log('AgoraComponent.remotes', remotes);
+      _this2.remotes = remotes;
+
+      _this2.pushChanges();
+    });
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this2.state = state;
+      _this2.hosted = state.hosted;
+
+      _this2.pushChanges();
+    });
+    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      // console.log('AgoraComponent.message', message);
+      switch (message.type) {
+        case MessageType.RequestPeerInfo:
+          message.type = MessageType.RequestPeerInfoResult;
+          message.clientInfo = {
+            role: StateService.state.role,
+            name: StateService.state.name,
+            uid: StateService.state.uid
+          };
+          MessageService.sendBack(message);
+          break;
+
+        case MessageType.RequestControl:
+          message.type = MessageType.RequestControlAccepted;
+          MessageService.sendBack(message);
+          StateService.patchState({
+            locked: true
+          }); // !!! control request permission not required
+          // this.onRemoteControlRequest(message);
+
+          break;
+
+        case MessageType.RequestInfo:
+          StateService.patchState({
+            spyed: true
+          });
+          break;
+
+        case MessageType.RequestInfoResult:
+          if (_this2.controls.view.value !== message.viewId) {
+            _this2.controls.view.value = message.viewId; // console.log('AgoraComponent.RequestInfoResult', message.viewId);
+          }
+
+          break;
+
+        case MessageType.NavToView:
+          if (message.viewId) {
+            if (_this2.controls.view.value !== message.viewId) {
+              _this2.controls.view.value = message.viewId;
+
+              if (message.gridIndex !== undefined) {
+                var view = _this2.data.views.find(function (x) {
+                  return x.id === message.viewId;
+                });
+
+                if (view instanceof PanoramaGridView) {
+                  view.index = message.gridIndex;
+                }
+              } // console.log('AgoraComponent.NavToView', message.viewId);
+
+            }
+          }
+
+          break;
+      }
+    });
+    MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      if (agora) {
+        agora.sendMessage(message);
+      }
+    });
   };
 
   _proto.initForm = function initForm() {
@@ -3261,13 +3437,13 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onLink = function onLink(link) {
-    if (this.agora.state.name) {
-      this.agora.patchState({
+    if (StateService.state.name) {
+      StateService.patchState({
         link: link,
         status: AgoraStatus.Device
       });
     } else {
-      this.agora.patchState({
+      StateService.patchState({
         link: link,
         status: AgoraStatus.Name
       });
@@ -3275,7 +3451,7 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onName = function onName(name) {
-    this.agora.patchState({
+    StateService.patchState({
       name: name,
       status: AgoraStatus.Device
     });
@@ -3286,10 +3462,7 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.connect = function connect(preferences) {
-    this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      console.log('AgoraComponent.connect.state', state); // this.state = Object.assign(this.state, state);
-      // this.pushChanges();
-    });
+    this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
   };
 
   _proto.disconnect = function disconnect() {
@@ -3305,9 +3478,8 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onSlideChange = function onSlideChange(index) {
     if (!DEBUG) {
-      this.agora.sendMessage({
+      MessageService.send({
         type: MessageType.SlideChange,
-        clientId: this.agora.state.uid,
         index: index
       });
     }
@@ -3335,7 +3507,7 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
           _this4.state.locked = false;
         }
 
-        _this4.agora.sendMessage(message);
+        MessageService.sendBack(message);
 
         _this4.pushChanges();
       } else {
@@ -3352,9 +3524,7 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
         }
       }
     });
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-  // onDestroy() {}
+  } // !!! why locally?
   ;
 
   _proto.patchState = function patchState(state) {
@@ -3394,9 +3564,9 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
-  _proto.onToggleSpy = function onToggleSpy(clientId) {
+  _proto.onToggleSpy = function onToggleSpy(remoteId) {
     if (!DEBUG) {
-      this.agora.toggleSpy(clientId);
+      this.agora.toggleSpy(remoteId);
     } else {
       this.patchState({
         spying: !this.state.spying,
@@ -3469,10 +3639,9 @@ AgoraComponent.meta = {
         node = _getContext.node;
 
     node.classList.remove('hidden');
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-  // onDestroy() {}
-  ;
+    this.debug = DEBUG;
+    this.editor = EDITOR;
+  };
 
   return AppComponent;
 }(rxcomp.Component);
@@ -3876,6 +4045,523 @@ DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDir
 DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
+};var STATIC_MODALS = {
+  controlRequest: 'control-request-modal.html',
+  tryInAr: 'try-in-ar-modal.html',
+  view: {
+    'panorama': 'panorama-modal.html',
+    'panorama-grid': 'panorama-grid-modal.html',
+    'room-3d': 'room-3d-modal.html',
+    'model': 'model-modal.html'
+  },
+  viewItem: {
+    'nav': 'nav-modal.html',
+    'plane': 'plane-modal.html',
+    'curved-plane': 'curved-plane-modal.html',
+    'texture': 'texture-modal.html',
+    'gltf': 'gltf-modal.html'
+  }
+};
+var SERVER_MODALS = {
+  controlRequest: environment.views.controlRequestModal,
+  tryInAr: environment.views.tryInArModal,
+  view: {
+    'panorama': 2000,
+    'panorama-grid': 2001,
+    'room-3d': 2002,
+    'model': 2003
+  },
+  viewItem: {
+    'nav': 2004,
+    'plane': 2005,
+    'curved-plane': 2006,
+    'texture': 2007,
+    'gltf': 2008
+  }
+};
+
+var ModalSrcService = /*#__PURE__*/function () {
+  function ModalSrcService() {}
+
+  ModalSrcService.get = function get() {
+    var src = STATIC_MODALS;
+
+    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
+      keys[_key] = arguments[_key];
+    }
+
+    keys.forEach(function (key) {
+      return src = typeof src === 'object' ? src[key] : null;
+    });
+    return STATIC ? BASE_HREF + src : "/viewdoc.cshtml?co_id=" + src;
+  };
+
+  return ModalSrcService;
+}();var EditorService = /*#__PURE__*/function () {
+  function EditorService() {}
+
+  EditorService.data$ = function data$() {
+    return HttpService.get$('./api/editor.json').pipe(operators.map(function (data) {
+      data.views = data.views.map(function (view) {
+        return mapView(view);
+      });
+      return data;
+    }));
+  };
+
+  EditorService.viewCreate$ = function viewCreate$(data) {
+    return HttpService.post$('/api/view', data).pipe(operators.map(function (view) {
+      return mapView(view);
+    }));
+  };
+
+  return EditorService;
+}();var CONTROL_REQUEST$1 = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.controlRequestModal;
+var TRY_IN_AR$1 = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.tryInArModal;
+
+var EditorComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(EditorComponent, _Component);
+
+  function EditorComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = EditorComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.remove('hidden');
+    this.aside = false;
+    this.debug = DEBUG;
+    this.editor = EDITOR;
+    this.state = {};
+    this.data = null;
+    this.views = null;
+    this.view = null;
+    this.form = null;
+    this.local = null;
+    this.remotes = [];
+    var vrService = this.vrService = VRService.getService();
+    vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+      return _this.pushChanges();
+    });
+    EditorService.data$().pipe(operators.first()).subscribe(function (data) {
+      _this.data = data;
+      var role = LocationService.get('role') || RoleType.Publisher;
+      var link = LocationService.get('link') || null;
+      var name = LocationService.get('name') || null;
+      StateService.state = {
+        role: role,
+        link: link,
+        name: name,
+        channelName: environment.channelName,
+        publisherId: role === RoleType.Publisher ? environment.publisherId : null,
+        uid: null,
+        status: AgoraStatus.Connected,
+        connecting: false,
+        connected: true,
+        locked: false,
+        control: false,
+        spyed: false,
+        hosted: role === RoleType.Publisher ? true : false,
+        cameraMuted: false,
+        audioMuted: false,
+        devices: [],
+        quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
+      };
+
+      _this.initForm();
+    });
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this.state = state;
+      _this.hosted = state.hosted;
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.initForm = function initForm() {
+    var _this2 = this;
+
+    var data = this.data; // const views = this.views = data.views.filter(x => x.type !== 'waiting-room');
+
+    var views = this.views = data.views.slice();
+    var initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
+    var form = this.form = new rxcompForm.FormGroup({
+      view: new rxcompForm.FormControl(initialViewId, rxcompForm.Validators.RequiredValidator())
+    });
+    var controls = this.controls = form.controls;
+    controls.view.options = views;
+    form.changes$.pipe(operators.takeUntil(this.unsubscribe$), operators.map(function (changes) {
+      // console.log('EditorComponent.form.changes$', changes, form.valid);
+      var view = data.views.find(function (x) {
+        return x.id === changes.view;
+      });
+      _this2.view = null;
+
+      _this2.pushChanges();
+
+      return view;
+    }), operators.delay(1), operators.map(function (view) {
+      /*
+      if (!this.state.hosted) {
+      	view = this.getWaitingRoom();
+      } else {
+      	if (!DEBUG) {
+      		this.agora.navToView(view.id);
+      	}
+      }
+      */
+      // collect items publisherStream & nextAttendeeStream ?
+      _this2.view = view;
+
+      _this2.pushChanges();
+    })).subscribe(console.log);
+  };
+
+  _proto.getWaitingRoom = function getWaitingRoom() {
+    return this.data && this.data.views.find(function (x) {
+      return x.type === 'waiting-room';
+    }) || {
+      id: 'waiting-room',
+      type: 'waiting-room',
+      name: 'Waiting Room',
+      likes: 40,
+      liked: false,
+      asset: {
+        folder: 'waiting-room/',
+        file: 'waiting-room-02.jpg'
+      },
+      items: [],
+      orientation: {
+        latitude: 0,
+        longitude: 0
+      }
+    };
+  };
+
+  _proto.onNavTo = function onNavTo(viewId) {
+    if (this.controls.view.value !== viewId) {
+      this.controls.view.value = viewId;
+    }
+  };
+
+  _proto.onRemoteControlRequest = function onRemoteControlRequest(message) {
+    var _this3 = this;
+
+    ModalService.open$({
+      src: CONTROL_REQUEST$1,
+      data: null
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        _this3.patchState({
+          control: true,
+          spying: false
+        });
+      } else {
+        _this3.patchState({
+          control: false,
+          spying: false
+        });
+      }
+    });
+  };
+
+  _proto.patchState = function patchState(state) {
+    this.state = Object.assign({}, this.state, state);
+    this.pushChanges(); // console.log(this.state);
+  };
+
+  _proto.tryInAr = function tryInAr() {
+    ModalService.open$({
+      src: TRY_IN_AR$1,
+      data: this.view
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
+    });
+  };
+
+  _proto.onPrevent = function onPrevent(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  };
+
+  _proto.replaceUrl = function replaceUrl() {
+    if ('history' in window) {
+      var params = new URLSearchParams(window.location.search);
+      var debug = params.get('debug') || null;
+      var editor = params.get('editor') || null;
+      var role = params.get('role') || null;
+      var link = params.get('link') || null;
+      var name = params.get('name') || null;
+      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + (name ? "&name=" + name : '') + (role ? "&role=" + role : '') + (debug ? "&debug" : '') + (editor ? "&editor" : ''); // console.log('AgoraNameComponent.url', url);
+
+      window.history.replaceState({
+        'pageTitle': window.pageTitle
+      }, '', url);
+    }
+  };
+
+  _proto.getViewTypeLabel = function getViewTypeLabel(type) {
+    return type ? type.split('-').map(function (x) {
+      return x.substring(0, 1).toUpperCase();
+    }).join('') : '??';
+  };
+
+  _proto.onToggleAside = function onToggleAside() {
+    this.aside = !this.aside;
+    this.pushChanges();
+    window.dispatchEvent(new Event('resize'));
+  } // editor
+  ;
+
+  _proto.onMenuSelect = function onMenuSelect(event) {
+    var _this4 = this;
+
+    console.log('onMenuSelect', event);
+    ModalService.open$({
+      src: ModalSrcService.get(event.type, event.value),
+      data: null
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        console.log('onMenuSelect.resolve', event);
+      }
+
+      _this4.pushChanges();
+    });
+  };
+
+  _createClass(EditorComponent, [{
+    key: "hosted",
+    get: function get() {
+      return this.hosted_;
+    },
+    set: function set(hosted) {
+      var _this5 = this;
+
+      if (this.hosted_ !== hosted) {
+        this.hosted_ = hosted;
+
+        if (this.data && this.controls) {
+          if (hosted) {
+            var view = this.data.views.find(function (x) {
+              return x.id === _this5.controls.view.value;
+            });
+            this.view = view;
+          } else {
+            this.view = this.getWaitingRoom();
+          }
+        }
+      }
+    }
+  }]);
+
+  return EditorComponent;
+}(rxcomp.Component);
+EditorComponent.meta = {
+  selector: '[editor-component]'
+};/*
+{
+	"id": 110,
+	"type": "nav",
+	"title": "Barilla Experience",
+	"abstract": "Abstract",
+	"asset": {
+		"type": "image",
+		"folder": "barilla/",
+		"file": "logo-barilla.jpg"
+	},
+	"link": {
+		"title": "Scopri di più...",
+		"href": "https://www.barilla.com/it-it/",
+		"target": "_blank"
+	},
+	"position": [0.9491595148619703,-0.3147945860255039,0],
+	"viewId": 23
+}
+*/
+
+var NavModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(NavModalComponent, _Component);
+
+  function NavModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = NavModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Nav,
+      title: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      abstract: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // upload: new FormControl(null, RequiredValidator()),
+      // items: new FormArray([null, null, null], RequiredValidator()),
+
+    });
+    this.controls = form.controls;
+    /*
+    this.controls.viewId.options = [{
+    	name: "Name",
+    	id: 2,
+    }];
+    */
+
+    form.changes$.subscribe(function (changes) {
+      console.log('NavModalComponent.form.changes$', changes, form.valid, form);
+
+      _this.pushChanges();
+    });
+    EditorService.data$().pipe(operators.first()).subscribe(function (data) {
+      _this.controls.viewId.options = data.views.map(function (view) {
+        return {
+          id: view.id,
+          name: view.name
+        };
+      });
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      console.log('NavModalComponent.onSubmit', this.form.value); // ModalService.resolve(this.form.value);
+      // this.form.submitted = true;
+      // this.form.reset();
+    }
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  return NavModalComponent;
+}(rxcomp.Component);
+NavModalComponent.meta = {
+  selector: '[nav-modal]'
+};/*
+{
+	"id": 1,
+	"type": "panorama",
+	"name": "Welcome Room",
+	"likes": 134,
+	"liked": false,
+	"asset": {
+		"type": "image",
+		"folder": "waiting-room/",
+		"file": "mod2.jpg"
+	},
+	"items": [{
+		"id": 110,
+		"type": "nav",
+		"title": "Barilla Experience",
+		"abstract": "Abstract",
+		"asset": {
+			"type": "image",
+			"folder": "barilla/",
+			"file": "logo-barilla.jpg"
+		},
+		"link": {
+			"title": "Scopri di più...",
+			"href": "https://www.barilla.com/it-it/",
+			"target": "_blank"
+		},
+		"position": [0.9491595148619703,-0.3147945860255039,0],
+		"viewId": 23
+	}],
+	"orientation": {
+		"latitude": -10,
+		"longitude": 360
+	},
+	"zoom": 75
+}
+*/
+
+var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PanoramaModalComponent, _Component);
+
+  function PanoramaModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PanoramaModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Panorama,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      upload: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // items: new FormArray([null, null, null], RequiredValidator()),
+
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
+
+      _this.pushChanges();
+    });
+    EditorService.viewCreate$({
+      "id": 1,
+      "type": "panorama",
+      "name": "Welcome Room",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "mod2.jpg"
+      },
+      "items": [{
+        "id": 110,
+        "type": "nav",
+        "title": "Barilla Experience",
+        "abstract": "Abstract",
+        "asset": {
+          "type": "image",
+          "folder": "barilla/",
+          "file": "logo-barilla.jpg"
+        },
+        "link": {
+          "title": "Scopri di più...",
+          "href": "https://www.barilla.com/it-it/",
+          "target": "_blank"
+        },
+        "position": [0.9491595148619703, -0.3147945860255039, 0],
+        "viewId": 23
+      }],
+      "orientation": {
+        "latitude": -10,
+        "longitude": 360
+      },
+      "zoom": 75
+    }).pipe(operators.first()).subscribe(function (data) {
+      console.log('EditorService.viewCreate$', data);
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      console.log('PanoramaModalComponent.onSubmit', this.form.value); // ModalService.resolve(this.form.value);
+      // this.form.submitted = true;
+      // this.form.reset();
+    }
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  return PanoramaModalComponent;
+}(rxcomp.Component);
+PanoramaModalComponent.meta = {
+  selector: '[panorama-modal]'
 };var KeyboardService = /*#__PURE__*/function () {
   function KeyboardService() {}
 
@@ -4099,6 +4785,27 @@ ControlCustomSelectComponent.meta = {
 
   /*  <!-- <div class="dropdown" [class]="{ dropped: dropped }"> --> */
 
+};var ControlSelectComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlSelectComponent, _ControlComponent);
+
+  function ControlSelectComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlSelectComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.label = 'label';
+  };
+
+  return ControlSelectComponent;
+}(ControlComponent);
+ControlSelectComponent.meta = {
+  selector: '[control-select]',
+  inputs: ['control', 'label'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<select class=\"control--select\" [formControl]=\"control\" required>\n\t\t\t\t<option value=\"\">Select</option>\n\t\t\t\t<option [value]=\"item.id\" *for=\"let item of control.options\" [innerHTML]=\"item.name\"></option>\n\t\t\t</select>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlTextComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlTextComponent, _ControlComponent);
 
@@ -4121,6 +4828,534 @@ ControlTextComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var FlowService = /*#__PURE__*/function () {
+  function FlowService(options) {
+    var _this = this;
+
+    this.flow = new Flow(options);
+    this.flow$ = new rxjs.ReplaySubject(1);
+    this.pauseOrResumeEvent$ = new rxjs.Subject();
+    /*
+    this.events$ = this.flow$.pipe(
+    	switchMap(flow => merge(this.flowEvents(flow), this.customFlowEvents()))
+    );
+    */
+
+    this.events$ = rxjs.merge(this.flowEvents(this.flow), this.customFlowEvents()).pipe(operators.shareReplay(1));
+    this.transfers$ = this.events$.pipe(operators.map(function () {
+      return _this.flow.files;
+    }), operators.map(function (files) {
+      if (files === void 0) {
+        files = [];
+      }
+
+      return {
+        transfers: files.map(function (flowFile) {
+          return flowFile2Transfer(flowFile);
+        }),
+        flow: _this.flow,
+        totalProgress: _this.flow.progress()
+      };
+    }), operators.shareReplay(1));
+    this.hasItems$ = this.transfers$.pipe(operators.map(function (state) {
+      return state.transfers.some(function (file) {
+        return !file.success;
+      });
+    }, operators.startWith(false)));
+  }
+
+  var _proto = FlowService.prototype;
+
+  _proto.fromEvent_ = function fromEvent_(target, name) {
+    return rxjs.fromEvent(target, name).pipe(operators.map(function (event) {
+      return {
+        type: name,
+        event: event
+      };
+    }));
+  };
+
+  _proto.flowEvents = function flowEvents(flow) {
+    var events = [this.fromEvent_(flow, 'fileSuccess'), this.fromEvent_(flow, 'fileProgress'), this.fromEvent_(flow, 'fileAdded'), this.fromEvent_(flow, 'filesAdded'), this.fromEvent_(flow, 'filesSubmitted'), this.fromEvent_(flow, 'fileRemoved'), this.fromEvent_(flow, 'fileRetry'), this.fromEvent_(flow, 'fileError'), this.fromEvent_(flow, 'uploadStart'), this.fromEvent_(flow, 'complete'), this.fromEvent_(flow, 'progress')];
+    return rxjs.merge.apply(void 0, events);
+  };
+
+  _proto.customFlowEvents = function customFlowEvents() {
+    var pauseOrResumeEvent$ = this.pauseOrResumeEvent$.pipe(operators.map(function () {
+      return {
+        type: 'pauseOrResume'
+      };
+    }));
+    var newFlowInstanceEvent$ = this.flow$.pipe(operators.map(function () {
+      return {
+        type: 'newFlowJsInstance'
+      };
+    }));
+    return rxjs.merge(pauseOrResumeEvent$, newFlowInstanceEvent$);
+  };
+
+  _proto.upload = function upload() {
+    this.flow.upload();
+  };
+
+  _proto.cancel = function cancel() {
+    this.flow.cancel();
+  };
+
+  _proto.cancelFile = function cancelFile(file) {
+    file.flowFile.cancel();
+  };
+
+  _proto.pauseFile = function pauseFile(file) {
+    file.flowFile.pause();
+    this.pauseOrResumeEvent$.next();
+  };
+
+  _proto.resumeFile = function resumeFile(file) {
+    file.flowFile.resume();
+    this.pauseOrResumeEvent$.next();
+  };
+
+  _proto.removeFile = function removeFile(file) {
+    this.flow.removeFile(file);
+  };
+
+  return FlowService;
+}();
+function flowFile2Transfer(flowFile) {
+  return {
+    id: flowFile.uniqueIdentifier,
+    name: flowFile.name,
+    progress: flowFile.progress(),
+    averageSpeed: flowFile.averageSpeed,
+    currentSpeed: flowFile.currentSpeed,
+    size: flowFile.size,
+    paused: flowFile.paused,
+    error: flowFile.error,
+    complete: flowFile.isComplete(),
+    success: flowFile.isComplete() && !flowFile.error,
+    timeRemaining: flowFile.timeRemaining(),
+    flowFile: flowFile
+  };
+}/*
+export interface Transfer {
+	id: string;
+	name: string;
+	flowFile: flowjs.FlowFile;
+	progress: number;
+	error: boolean;
+	paused: boolean;
+	success: boolean;
+	complete: boolean;
+	currentSpeed: number;
+	averageSpeed: number;
+	size: number;
+	timeRemaining: number;
+}
+*/
+
+var ControlUploadComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlUploadComponent, _ControlComponent);
+
+  function ControlUploadComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlUploadComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = 'label';
+    this.required = false;
+    this.uploadAttributes = {
+      accept: 'image/*',
+      multiple: this.multiple
+    };
+    this.uploader = new FlowService({
+      target: '/api/upload',
+      singleFile: !this.multiple
+    });
+    this.uploader.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      // console.log('ControlUploadComponent', event.type);
+      switch (event.type) {
+        case 'filesAdded':
+        case 'fileAdded':
+        case 'fileRemoved':
+        case 'fileError':
+        case 'complete':
+          _this.pushChanges();
+
+          break;
+      }
+    });
+    this.totalProgress = 0;
+    this.transfers = [];
+    this.uploader.transfers$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (data) {
+      _this.totalProgress = data.totalProgress;
+      _this.transfers = data.transfers;
+      console.log('ControlUploadComponent.transfers', _this.transfers);
+
+      _this.pushChanges();
+    });
+    this.hasItems = false;
+    this.uploader.hasItems$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (hasItems) {
+      _this.hasItems = hasItems;
+
+      _this.pushChanges();
+    });
+    console.log('ControlUploadComponent.onInit');
+  };
+
+  _proto.onPause = function onPause(item) {
+    console.log('ControlUploadComponent.onPause', item);
+    this.uploader.pauseFile(item);
+  };
+
+  _proto.onResume = function onResume(item) {
+    console.log('ControlUploadComponent.onResume', item);
+    this.uploader.resumeFile(item);
+  };
+
+  _proto.onCancel = function onCancel(item) {
+    console.log('ControlUploadComponent.onCancel', item);
+    this.uploader.cancelFile(item);
+  };
+
+  _proto.onRemove = function onRemove(item) {
+    console.log('ControlUploadComponent.onRemove', item);
+    this.uploader.removeFile(item);
+  };
+
+  return ControlUploadComponent;
+}(ControlComponent);
+ControlUploadComponent.meta = {
+  selector: '[control-upload]',
+  inputs: ['control', 'label', 'multiple'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<!--\n\t\t\t<p *if=\"uploader.flow.support\">\u2705 FlowJS is supported by your browser</p>\n\t\t\t<p *if=\"!uploader.flow.support\">\uD83D\uDED1 FlowJS is NOT supported by your browser</p>\n\t\t\t-->\n\t\t\t<div class=\"upload-drop\" [uploadDrop]=\"uploader\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<span class=\"btn--browse\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\">Browse</span>\n\t\t\t\t<span class=\"btn--upload\" (click)=\"uploader.upload()\" *if=\"hasItems\">Upload</span>\n\t\t\t\t<span class=\"btn--cancel\" (click)=\"uploader.cancel()\" *if=\"hasItems\">Cancel</span>\n\t\t\t\t<!-- <span class=\"btn--cancel\" (click)=\"uploader.cancel()\" [class]=\"{ disabled: !transfers.length }\">Cancel</span> -->\n\t\t\t</div>\n\t\t\t<!-- <input type=\"file\" class=\"btn btn--upload\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\" /> -->\n\t\t\t<div class=\"listing--transfers\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of transfers\">\n\t\t\t\t\t<div [uploadItem]=\"uploader\" [item]=\"item\" (pause)=\"onPause($event)\" (resume)=\"onResume($event)\" (cancel)=\"onCancel($event)\" (remove)=\"onRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};
+/*
+<p *ngIf="flow.flowJs?.support; else notSupported">
+  ✅ FlowJS is supported by your browser
+</p>
+<ng-template #notSupported>
+  <p>
+	🛑 FlowJS is NOT supported by your browser
+  </p>
+</ng-template>
+
+<ng-container #flow="flow" [flowConfig]="{target: 'http://localhost:3000/upload'}"></ng-container>
+<input type="file"
+	   flowButton
+	   [flow]="flow.flowJs"
+	   [flowAttributes]="{accept: 'image/*'}">
+
+<div class="drop-area"
+	 flowDrop
+	 [flow]="flow.flowJs">
+	 Drop a file here
+</div>
+
+<div class="transfers">
+  <div class="transfer"
+	   [ngClass]="{'transfer--error': transfer.error, 'transfer--success': transfer.success}"
+	   *ngFor="let transfer of (flow.transfers$ | async).transfers; trackBy: trackTransfer">
+	<div class="name">name: {{transfer.name}}</div>
+	<div>progress: {{transfer.progress | percent}}</div>
+	<div>size: {{transfer.size | number: '1.0'}} bytes</div>
+	<div>current speed: {{transfer.currentSpeed | number: '1.0'}} bytes/s</div>
+	<div>average speed: {{transfer.averageSpeed | number: '1.0'}} bytes/s</div>
+	<div>time ramining: {{transfer.timeRemaining}}s</div>
+	<div>paused: {{transfer.paused}}</div>
+	<div>success: {{transfer.success}}</div>
+	<div>complete: {{transfer.complete}}</div>
+	<div>error: {{transfer.error}}</div>
+
+	<img [flowSrc]="transfer">
+
+	<button (click)="flow.pauseFile(transfer)">pause</button>
+	<button (click)="flow.resumeFile(transfer)">resume</button>
+	<button (click)="flow.cancelFile(transfer)">cancel</button>
+  </div>
+</div>
+<button type="button" (click)="flow.upload()" [disabled]="!(flow.somethingToUpload$ | async)">Start upload</button>
+<button type="button" (click)="flow.cancel()" [disabled]="!(flow.transfers$ | async).transfers.length">Cancel all</button>
+Total progress: {{(flow.transfers$ | async).totalProgress | percent}}
+*/var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(UploadButtonDirective, _Directive);
+
+  function UploadButtonDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadButtonDirective.prototype;
+
+  _proto.init_ = function init_() {
+    /*
+    if (!this.uploader) {
+    	return;
+    }
+    const { node } = getContext(this);
+    // console.log('UploadButtonDirective', this.uploader, node);
+    this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
+    */
+  };
+
+  _proto.onInit = function onInit() {
+    if (this.uploader) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
+    }
+  };
+
+  _createClass(UploadButtonDirective, [{
+    key: "directoryOnly",
+    set: function set(directoriesOnly) {
+      if (directoryOnly_ !== directoriesOnly) {
+        this.directoryOnly_ = directoriesOnly;
+        this.init_();
+      }
+    }
+  }, {
+    key: "attributes",
+    set: function set(attributes) {
+      if (this.attributes_ !== attributes) {
+        this.attributes_ = attributes;
+        this.init_();
+      }
+    }
+  }, {
+    key: "uploadButton",
+    set: function set(uploader) {
+      if (this.uploader !== uploader) {
+        this.uploader = uploader; // console.log('UploadButtonDirective.uploader', this.uploader);
+
+        this.init_();
+      }
+    }
+  }]);
+
+  return UploadButtonDirective;
+}(rxcomp.Directive);
+UploadButtonDirective.meta = {
+  selector: '[[uploadButton]]',
+  inputs: ['uploadButton', 'directoryOnly', 'attributes']
+};var UploadDropDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(UploadDropDirective, _Directive);
+
+  function UploadDropDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadDropDirective.prototype;
+
+  _proto.enable = function enable() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // console.log('UploadDropDirective.enable', this.uploader);
+
+
+    this.uploader.flow.assignDrop(node);
+  };
+
+  _proto.disable = function disable() {
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    this.uploader.flow.unAssignDrop(node);
+  };
+
+  _proto.onInit = function onInit() {
+    if (rxcomp.isPlatformBrowser) {
+      var body = document.querySelector('body');
+      rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        event.preventDefault();
+        return;
+      }), operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('UploadDropDirective.onInit');
+    }
+  };
+
+  _createClass(UploadDropDirective, [{
+    key: "uploadDrop",
+    set: function set(uploader) {
+      if (this.uploader !== uploader) {
+        if (this.uploader) {
+          this.disable();
+        }
+
+        this.uploader = uploader;
+
+        if (uploader) {
+          // console.log('UploadDropDirective.flow', this.uploader);
+          this.enable();
+        }
+      }
+    }
+  }]);
+
+  return UploadDropDirective;
+}(rxcomp.Directive);
+UploadDropDirective.meta = {
+  selector: '[[uploadDrop]]',
+  inputs: ['uploadDrop']
+};var UploadItemComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(UploadItemComponent, _Component);
+
+  function UploadItemComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadItemComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    console.log('UploadItemComponent.onInit', this.item, this.uploader);
+  };
+
+  _proto.onPause = function onPause() {
+    this.pause.next(this.item);
+  };
+
+  _proto.onResume = function onResume() {
+    this.resume.next(this.item);
+  };
+
+  _proto.onCancel = function onCancel() {
+    this.cancel.next(this.item);
+  };
+
+  _proto.onRemove = function onRemove() {
+    this.remove.next(this.item);
+  };
+
+  _createClass(UploadItemComponent, [{
+    key: "UploadItem",
+    set: function set(uploader) {
+      this.uploader = uploader;
+    }
+  }]);
+
+  return UploadItemComponent;
+}(rxcomp.Component);
+UploadItemComponent.meta = {
+  selector: '[uploadItem]',
+  outputs: ['pause', 'resume', 'cancel', 'remove'],
+  inputs: ['uploadItem', 'item'],
+  template:
+  /* html */
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [uploadSrc]=\"item\" />\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.progress > 0\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"item.complete\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\">remove</div>\n\t\t</div>\n\t</div>\n\t"
+};var UploadSrcDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(UploadSrcDirective, _Directive);
+
+  function UploadSrcDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadSrcDirective.prototype;
+
+  _proto.resize2Steps = function resize2Steps(blob, callback) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+
+    img.onload = function () {
+      // set size proportional to image
+      canvas.height = canvas.width * (img.height / img.width); // step 1 - resize to 50%
+
+      var oc = document.createElement('canvas');
+      var octx = oc.getContext('2d');
+      oc.width = img.width * 0.5;
+      oc.height = img.height * 0.5;
+      octx.drawImage(img, 0, 0, oc.width, oc.height); // step 2
+
+      octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5); // step 3, resize to final size
+
+      ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5, 0, 0, canvas.width, canvas.height); //
+
+      callback(canvas.toDataURL('image/jpeg', 0.9));
+    };
+
+    img.src = blob;
+  };
+
+  _proto.resize = function resize(blob, callback) {
+    if (typeof callback === 'function') {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 640;
+        var MAX_HEIGHT = 480;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        callback(dataUrl);
+      };
+
+      img.src = blob;
+    }
+  };
+
+  _proto.read = function read(file) {
+    var _this = this;
+
+    if (this.subscription_) {
+      this.subscription_.unsubscribe();
+    }
+
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    this.subscription_ = rxjs.fromEvent(reader, 'load').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      var _getContext = rxcomp.getContext(_this),
+          node = _getContext.node;
+
+      var blob = event.target.result; // node.setAttribute('src', blob);
+
+      _this.resize(blob, function (resized) {
+        node.setAttribute('src', resized);
+      });
+    });
+  };
+
+  _createClass(UploadSrcDirective, [{
+    key: "uploadSrc",
+    set: function set(uploadSrc) {
+      if (uploadSrc !== this.uploadSrc_) {
+        this.uploadSrc_ = uploadSrc;
+
+        if (uploadSrc) {
+          this.read(uploadSrc.flowFile.file);
+        }
+      }
+    }
+  }]);
+
+  return UploadSrcDirective;
+}(rxcomp.Directive);
+UploadSrcDirective.meta = {
+  selector: '[[uploadSrc]]',
+  inputs: ['uploadSrc']
 };var IdDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(IdDirective, _Directive);
 
@@ -4354,31 +5589,26 @@ var DragService = /*#__PURE__*/function () {
     gsap.set(this.inner, {
       x: -100 * this.current + '%'
     });
-    var agora = AgoraService.getSingleton();
+    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      switch (message.type) {
+        case MessageType.SlideChange:
+          // console.log(message);
+          if (message.index !== undefined) {
+            _this.navTo(message.index);
+          }
 
-    if (agora) {
-      agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-        switch (message.type) {
-          case MessageType.SlideChange:
-            // console.log(message);
-            if (agora.state.locked && message.index !== undefined && message.index) {
-              _this.navTo(message.index);
-            }
+          break;
 
-            break;
-
-          case MessageType.RequestControlAccepted:
-            setTimeout(function () {
-              agora.sendMessage({
-                type: MessageType.SlideChange,
-                clientId: agora.state.uid,
-                index: _this.current
-              });
-            }, 500);
-            break;
-        }
-      });
-    }
+        case MessageType.RequestControlAccepted:
+          setTimeout(function () {
+            MessageService.send({
+              type: MessageType.SlideChange,
+              index: _this.current
+            });
+          }, 500);
+          break;
+      }
+    });
     /*
     this.slider$().pipe(
     	takeUntil(this.unsubscribe$),
@@ -4386,7 +5616,6 @@ var DragService = /*#__PURE__*/function () {
     	// console.log('dragService', event);
     });
     */
-
   };
 
   _proto.slider$ = function slider$() {
@@ -4465,13 +5694,10 @@ var DragService = /*#__PURE__*/function () {
 
         _this4.change.next(_this4.current);
 
-        if (_this4.agora && _this4.agora.state.control) {
-          _this4.agora.sendMessage({
-            type: MessageType.SlideChange,
-            clientId: _this4.agora.state.uid,
-            index: index
-          });
-        }
+        MessageService.send({
+          type: MessageType.SlideChange,
+          index: index
+        });
       });
     }
   };
@@ -55192,14 +56418,8 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
   EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
     var _this = this;
 
-    var agora = AgoraService.getSingleton();
-
-    if (!agora) {
-      return;
-    }
-
     var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
-      // const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+      // const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
       var target = "#stream-" + publisherStreamId;
       var video = document.querySelector(target + " video");
 
@@ -55239,7 +56459,7 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
       }
     };
 
-    agora.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
+    StreamService.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
       return onPublisherStreamId(publisherStreamId);
     });
   };
@@ -60064,21 +61284,17 @@ var AvatarElement = /*#__PURE__*/function () {
     scene.add(light);
     var head = this.head = this.addHead();
     scene.add(head);
-    var agora = this.agora = AgoraService.getSingleton();
-
-    if (agora) {
-      var remote = this.remote = agora.remoteById(clientId);
-      /*
-      if (remote) {
-      	this.subscription = AudioStreamService.volume$(remote.stream).pipe(
-      		auditTime(Math.floor(1000 / 15)),
-      		tap(meter => {
-      			this.chalk(meter.volume);
-      		})
-      	);
-      }
-      */
+    var remote = this.remote = StreamService.getRemoteById(clientId);
+    /*
+    if (remote) {
+    	this.subscription = AudioStreamService.volume$(remote.stream).pipe(
+    		auditTime(Math.floor(1000 / 15)),
+    		tap(meter => {
+    			this.chalk(meter.volume);
+    		})
+    	);
     }
+    */
   }
 
   var _proto = AvatarElement.prototype;
@@ -60654,20 +61870,18 @@ var PhoneElement = /*#__PURE__*/function () {
     var phone = this.phone = this.create();
     mesh.add(phone);
     var streams = this.streams = [];
-    var agora = this.agora = AgoraService.getSingleton();
-
+    StreamService.remotes$.subscribe(function (remotes) {
+      _this3.remotes = remotes;
+    });
+    /*
+    const agora = this.agora = AgoraService.getSingleton();
     if (agora) {
-      /*
-      pipe(
-      	takeUntil(this.unsubscribe$)
-      )
-      */
-      agora.remotes$.subscribe(function (remotes) {
-        _this3.remotes = remotes;
-      });
     } else {
-      this.remotes = [1, 2, 3, 4];
+    	this.remotes = [
+    		1, 2, 3, 4
+    	];
     }
+    */
   }
 
   var _proto2 = PhoneElement.prototype;
@@ -61041,13 +62255,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         _this3.render();
 
-        if (_this3.agora && _this3.agora.state.control) {
-          _this3.agora.sendMessage({
-            type: MessageType.CameraRotate,
-            clientId: _this3.agora.state.uid,
-            coords: [group.rotation.x, group.rotation.y, group.rotation.z]
-          });
-        }
+        MessageService.send({
+          type: MessageType.CameraRotate,
+          coords: [group.rotation.x, group.rotation.y, group.rotation.z]
+        });
       } else if (event instanceof DragUpEvent) {
         if (DEBUG) {
           console.log(JSON.stringify('DragUpEvent', {
@@ -61171,9 +62382,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
       renderer.render(this.scene, this.camera);
 
-      if (this.agora && !this.agora.state.hosted) {
-        var orbit = this.orbit;
-        orbit.render();
+      if (this.state && !this.state.hosted) {
+        this.orbit.render();
       }
     } catch (error) {
       this.error = error; // throw (error);
@@ -61294,9 +62504,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onMouseWheel = function onMouseWheel(event) {
     // !!! fov zoom
     try {
-      var agora = this.agora;
-
-      if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
+      if ((!this.state || !this.state.locked) && !this.renderer.xr.isPresenting) {
         var orbit = this.orbit;
         gsap.to(orbit, {
           duration: 0.5,
@@ -61319,46 +62527,30 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onOrientationDidChange = function onOrientationDidChange() {
-    var agora = this.agora;
-
-    if (agora && (agora.state.control || agora.state.spyed)) {
-      agora.sendMessage({
-        type: MessageType.CameraOrientation,
-        clientId: agora.state.uid,
-        orientation: this.orbit.getOrientation(),
-        zoom: this.orbit.zoom
-      });
-    }
+    MessageService.send({
+      type: MessageType.CameraOrientation,
+      orientation: this.orbit.getOrientation(),
+      zoom: this.orbit.zoom
+    });
   };
 
   _proto.onVRStarted = function onVRStarted() {
     this.scene.add(this.pointer.mesh);
-    var agora = this.agora;
-
-    if (agora) {
-      agora.sendMessage({
-        type: MessageType.VRStarted,
-        clientId: agora.state.uid
-      });
-    }
+    MessageService.send({
+      type: MessageType.VRStarted
+    });
     /*
     if (this.view_ instanceof ModelView) {
     	// console.log(this.view_);
     }
     */
-
   };
 
   _proto.onVREnded = function onVREnded() {
     this.scene.remove(this.pointer.mesh);
-    var agora = this.agora;
-
-    if (agora) {
-      agora.sendMessage({
-        type: MessageType.VREnded,
-        clientId: agora.state.uid
-      });
-    }
+    MessageService.send({
+      type: MessageType.VREnded
+    });
   };
 
   _proto.onVRStateDidChange = function onVRStateDidChange(state) {
@@ -61367,15 +62559,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     	// console.log('WorldComponent.onVRStateDidChange', state.camera.array);
     }
     */
-    var agora = this.agora;
-
-    if (agora) {
-      agora.sendMessage({
-        type: MessageType.VRState,
-        clientId: agora.state.uid,
-        camera: state.camera.array
-      });
-    }
+    MessageService.send({
+      type: MessageType.VRState,
+      camera: state.camera.array
+    });
   };
 
   _proto.onMenuNav = function onMenuNav(event) {
@@ -61454,17 +62641,11 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onGridNav = function onGridNav(event) {
     // console.log('WorldComponent.onGridNav', event);
-    var agora = this.agora;
-
-    if (agora && (agora.state.control || agora.state.spyed)) {
-      agora.sendMessage({
-        type: MessageType.NavToGrid,
-        clientId: this.agora.state.uid,
-        viewId: this.view.id,
-        gridIndex: event
-      });
-    }
-
+    MessageService.send({
+      type: MessageType.NavToGrid,
+      viewId: this.view.id,
+      gridIndex: event
+    });
     this.pushChanges();
   };
 
@@ -61500,130 +62681,109 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       // this.render();
       _this6.onOrientationDidChange();
     });
-    var agora = this.agora = AgoraService.getSingleton();
+    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      switch (message.type) {
+        case MessageType.AgoraEvent:
+          /*
+          if (message.event instanceof AgoraRemoteEvent) {
+          	setTimeout(() => {
+          		this.panorama.setVideo(event.element.querySelector('video'));
+          	}, 500);
+          }
+          */
+          break;
 
-    if (agora) {
-      agora.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        /*
-        if (event instanceof AgoraRemoteEvent) {
-        	setTimeout(() => {
-        		this.panorama.setVideo(event.element.querySelector('video'));
-        	}, 500);
-        }
-        */
-      });
-      agora.message$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-        switch (message.type) {
-          case MessageType.RequestInfo:
-            if (message.clientId === agora.state.uid) {
-              message.type = MessageType.RequestInfoResult;
-              message.viewId = _this6.view.id;
-              message.orientation = _this6.orbit.getOrientation();
-              message.zoom = _this6.orbit.zoom;
+        case MessageType.RequestInfo:
+          message.type = MessageType.RequestInfoResult;
+          message.viewId = _this6.view.id;
+          message.orientation = _this6.orbit.getOrientation();
+          message.zoom = _this6.orbit.zoom;
 
-              if (_this6.view instanceof PanoramaGridView) {
-                message.gridIndex = _this6.view.index;
-              }
+          if (_this6.view instanceof PanoramaGridView) {
+            message.gridIndex = _this6.view.index;
+          }
 
-              agora.sendMessage(message);
+          MessageService.sendBack(message);
+          break;
+
+        case MessageType.RequestControlAccepted:
+          message = {
+            type: MessageType.NavToView,
+            viewId: _this6.view.id
+          };
+
+          if (_this6.view instanceof PanoramaGridView) {
+            message.gridIndex = _this6.view.index;
+          }
+
+          MessageService.send(message);
+          break;
+
+        case MessageType.RequestInfoResult:
+          if (message.viewId === _this6.view.id) {
+            _this6.orbit.setOrientation(message.orientation);
+
+            if (!_this6.renderer.xr.isPresenting) {
+              _this6.orbit.zoom = message.zoom;
+
+              _this6.camera.updateProjectionMatrix();
             }
 
-            break;
-
-          case MessageType.RequestControlAccepted:
-            message = {
-              type: MessageType.NavToView,
-              clientId: agora.state.uid,
-              viewId: _this6.view.id
-            };
-
-            if (_this6.view instanceof PanoramaGridView) {
-              message.gridIndex = _this6.view.index;
+            if (_this6.view instanceof PanoramaGridView && message.gridIndex) {
+              _this6.view.index = message.gridIndex;
             }
+          } else {
+            _this6.infoResultMessage = message;
+          }
 
-            agora.sendMessage(message);
-            break;
+          break;
 
-          case MessageType.RequestInfoResult:
-            if (agora.state.role === RoleType.Publisher) {
-              if (message.viewId === _this6.view.id) {
-                _this6.orbit.setOrientation(message.orientation);
+        case MessageType.CameraOrientation:
+          _this6.orbit.setOrientation(message.orientation);
 
-                if (!_this6.renderer.xr.isPresenting) {
-                  _this6.orbit.zoom = message.zoom;
+          if (!_this6.renderer.xr.isPresenting) {
+            _this6.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
+          } // this.render();
 
-                  _this6.camera.updateProjectionMatrix();
-                }
 
-                if (_this6.view instanceof PanoramaGridView && message.gridIndex) {
-                  _this6.view.index = message.gridIndex;
-                }
-              } else {
-                _this6.infoResultMessage = message;
-              }
-            }
+          break;
 
-            break;
+        case MessageType.CameraRotate:
+          if (!_this6.renderer.xr.isPresenting) {
+            var camera = _this6.camera;
+            camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
+            camera.lookAt(ORIGIN$1); // this.render();
+          }
 
-          case MessageType.CameraOrientation:
-            if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
-              _this6.orbit.setOrientation(message.orientation);
+          break;
 
-              if (!_this6.renderer.xr.isPresenting) {
-                _this6.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
-              } // this.render();
+        case MessageType.NavToGrid:
+          if (_this6.view.id === message.viewId) {
+            _this6.view.index = message.gridIndex;
+          }
 
-            }
+          break;
 
-            break;
+        case MessageType.VRStarted:
+          _this6.addOffCanvasScene(message);
 
-          case MessageType.CameraRotate:
-            if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
-              if (!_this6.renderer.xr.isPresenting) {
-                var camera = _this6.camera;
-                camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
-                camera.lookAt(ORIGIN$1); // this.render();
-              }
-            }
+          break;
 
-            break;
+        case MessageType.VREnded:
+          _this6.removeOffCanvasScene(message);
 
-          case MessageType.NavToGrid:
-            if (agora.state.locked || agora.state.spying && message.clientId === agora.state.spying) {
-              if (_this6.view.id === message.viewId) {
-                _this6.view.index = message.gridIndex;
-              }
-            }
+          break;
 
-            break;
+        case MessageType.VRState:
+          _this6.updateOffCanvasScene(message);
 
-          case MessageType.VRStarted:
-            if (agora.state.uid !== message.clientId) {
-              _this6.addOffCanvasScene(message);
-            }
-
-            break;
-
-          case MessageType.VREnded:
-            if (agora.state.uid !== message.clientId) {
-              _this6.removeOffCanvasScene(message);
-            }
-
-            break;
-
-          case MessageType.VRState:
-            if (agora.state.uid !== message.clientId) {
-              _this6.updateOffCanvasScene(message);
-            }
-
-            break;
-        }
-      });
-      agora.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-        _this6.state = state; // console.log(state);
-        // this.pushChanges();
-      });
-    }
+          break;
+      }
+    });
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this6.state = state; // console.log(state);
+      // this.pushChanges();
+    });
   };
 
   _proto.removeListeners = function removeListeners() {
@@ -62287,38 +63447,32 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       return rxjs.of(file);
     }
 
-    var agora = AgoraService.getSingleton();
+    return StreamService.streams$.pipe(operators.map(function (streams) {
+      var stream;
 
-    if (agora) {
-      return agora.streams$.pipe(operators.map(function (streams) {
-        var stream;
-
-        if (file === 'publisherStream') {
-          stream = streams.find(function (x) {
-            return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
-          });
-        } else if (file === 'nextAttendeeStream') {
-          var i = 0;
-          streams.forEach(function (x) {
-            if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-              if (i === item.asset.index) {
-                stream = x;
-              }
-
-              i++;
+      if (file === 'publisherStream') {
+        stream = streams.find(function (x) {
+          return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
+        });
+      } else if (file === 'nextAttendeeStream') {
+        var i = 0;
+        streams.forEach(function (x) {
+          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+            if (i === item.asset.index) {
+              stream = x;
             }
-          });
-        }
 
-        if (stream) {
-          return stream.getId();
-        } else {
-          return null;
-        }
-      }));
-    } else {
-      return rxjs.of(null);
-    }
+            i++;
+          }
+        });
+      }
+
+      if (stream) {
+        return stream.getId();
+      } else {
+        return null;
+      }
+    }));
   };
 
   function MediaMesh(item, items, geometry, material) {
@@ -63582,24 +64736,30 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   _proto3.buildMenu = function buildMenu() {
     var _this5 = this;
 
-    if (this.menu) {
+    if (this.menu || !this.items) {
       return;
     }
 
     var menu = this.menu = {};
     this.items.forEach(function (item) {
-      var group = menu[item.type];
+      if (item.type !== ViewType.WaitingRoom) {
+        var group = menu[item.type];
 
-      if (!group) {
-        group = menu[item.type] = [];
+        if (!group) {
+          group = menu[item.type] = [];
+        }
+
+        group.push(item);
       }
-
-      group.push(item);
     });
     this.groups = Object.keys(menu).map(function (type) {
       var name = 'Button';
 
       switch (type) {
+        case ViewType.WaitingRoom:
+          name = 'Waiting Room';
+          break;
+
         case ViewType.Panorama:
           name = 'Experience';
           break;
@@ -64334,8 +65494,8 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
             var useCORS = results && results.find(function (x) {
               return x === true;
             }) != null; // !!! keep loose equality
+            // console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
 
-            console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
             html2canvas(node, {
               backgroundColor: '#ffffff00',
               scale: 2,
@@ -69400,6 +70560,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule],
-  declarations: [AssetPipe, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, DropDirective, DropdownDirective, DropdownItemDirective, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelPictureComponent, ModelRoomComponent, ModelTextComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPlaneComponent, ModelCurvedPlaneComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, ControlUploadComponent, ControlSelectComponent, DropDirective, DropdownDirective, DropdownItemDirective, EditorComponent, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, PanoramaModalComponent, NavModalComponent, SliderDirective, TryInARComponent, TryInARModalComponent, UploadButtonDirective, UploadDropDirective, UploadSrcDirective, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

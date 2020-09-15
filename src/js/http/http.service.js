@@ -7,7 +7,8 @@ export default class HttpService {
 	static http$(method, url, data, format = 'json') {
 		const methods = ['POST', 'PUT', 'PATCH'];
 		let response_ = null;
-		return from(fetch(this.getUrl(url, format), {
+		// url = this.getUrl(url, format);
+		return from(fetch(url, {
 			method: method,
 			headers: {
 				'Accept': 'application/json',

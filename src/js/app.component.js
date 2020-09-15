@@ -1,18 +1,13 @@
 import { Component, getContext } from 'rxcomp';
+import { DEBUG, EDITOR } from './environment';
 
 export default class AppComponent extends Component {
-
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
+		this.debug = DEBUG;
+		this.editor = EDITOR;
 	}
-
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
 }
 
 AppComponent.meta = {

@@ -1,7 +1,7 @@
 import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import { environment } from '../../environment';
-import { ViewType } from '../../view/view.service';
+import { ViewType } from '../../view/view';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import OrbitService, { OrbitMode } from '../orbit/orbit';
@@ -307,20 +307,25 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	buildMenu() {
-		if (this.menu) {
+		if (this.menu || !this.items) {
 			return;
 		}
 		const menu = this.menu = {};
 		this.items.forEach(item => {
-			let group = menu[item.type];
-			if (!group) {
-				group = menu[item.type] = [];
+			if (item.type !== ViewType.WaitingRoom) {
+				let group = menu[item.type];
+				if (!group) {
+					group = menu[item.type] = [];
+				}
+				group.push(item);
 			}
-			group.push(item);
 		});
 		this.groups = Object.keys(menu).map(type => {
 			let name = 'Button';
 			switch (type) {
+				case ViewType.WaitingRoom:
+					name = 'Waiting Room';
+					break;
 				case ViewType.Panorama:
 					name = 'Experience';
 					break;

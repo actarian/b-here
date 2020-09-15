@@ -1,8 +1,8 @@
 import { first } from 'rxjs/operators';
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import AgoraService from '../../agora/agora.service';
 import { environment } from '../../environment';
+import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
 
 export class EnvMapLoader {
@@ -80,12 +80,8 @@ export class EnvMapLoader {
 	}
 
 	static loadPublisherStreamBackground(renderer, callback) {
-		const agora = AgoraService.getSingleton();
-		if (!agora) {
-			return;
-		}
 		const onPublisherStreamId = (publisherStreamId) => {
-			// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+			// const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
 			const target = `#stream-${publisherStreamId}`;
 			const video = document.querySelector(`${target} video`);
 			if (!video) {
@@ -120,7 +116,7 @@ export class EnvMapLoader {
 				};
 			}
 		};
-		agora.getPublisherStreamId$().pipe(
+		StreamService.getPublisherStreamId$().pipe(
 			first(),
 		).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 	}

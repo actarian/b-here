@@ -1,0 +1,22 @@
+{
+  "views": [
+    {
+      "id": 1792,
+      "type": "waiting-room",
+      "name": "Waiting Room",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "waiting-room-02.jpg"
+      },
+      "items": [],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75
+    }
+  ]
+}

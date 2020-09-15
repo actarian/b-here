@@ -3,7 +3,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import LocationService from '../location/location.service';
-import AgoraService from './agora.service';
+import StateService from '../state/state.service';
 
 export default class AgoraLinkComponent extends Component {
 
@@ -20,16 +20,13 @@ export default class AgoraLinkComponent extends Component {
 			// console.log('AgoraLinkComponent.changes$', form.value);
 			this.pushChanges();
 		});
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				// console.log('AgoraLinkComponent.state', state);
-				this.state = state;
-				this.pushChanges();
-			});
-		}
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			// console.log('AgoraLinkComponent.state', state);
+			this.state = state;
+			this.pushChanges();
+		});
 	}
 
 	onGenerateMeetingId($event) {

@@ -1,5 +1,5 @@
 // import { auditTime, tap } from "rxjs/operators";
-import AgoraService from "../../agora/agora.service";
+import StreamService from "../../stream/stream.service";
 // import AudioStreamService from "../../audio/audio-stream.service";
 
 export const W = 320;
@@ -18,7 +18,6 @@ export default class AvatarElement {
 	constructor(message) {
 		const clientId = this.clientId = message.clientId;
 		const container = this.container = message.container;
-
 		const renderer = this.renderer = new THREE.WebGLRenderer({
 			antialias: true,
 			alpha: false,
@@ -52,20 +51,17 @@ export default class AvatarElement {
 		const head = this.head = this.addHead();
 		scene.add(head);
 
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			const remote = this.remote = agora.remoteById(clientId);
-			/*
-			if (remote) {
-				this.subscription = AudioStreamService.volume$(remote.stream).pipe(
-					auditTime(Math.floor(1000 / 15)),
-					tap(meter => {
-						this.chalk(meter.volume);
-					})
-				);
-			}
-			*/
+		const remote = this.remote = StreamService.getRemoteById(clientId);
+		/*
+		if (remote) {
+			this.subscription = AudioStreamService.volume$(remote.stream).pipe(
+				auditTime(Math.floor(1000 / 15)),
+				tap(meter => {
+					this.chalk(meter.volume);
+				})
+			);
 		}
+		*/
 	}
 
 	addHead() {

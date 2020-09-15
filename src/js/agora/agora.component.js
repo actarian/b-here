@@ -4,13 +4,18 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { BASE_HREF, DEBUG, environment, STATIC } from '../environment';
 import LocationService from '../location/location.service';
+import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
-import ViewService, { PanoramaGridView } from '../view/view.service';
+import StateService from '../state/state.service';
+import StreamService from '../stream/stream.service';
+import { PanoramaGridView } from '../view/view';
+import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
-import AgoraService, { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.service';
+import AgoraService from './agora.service';
+import { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.types';
 
-const CONTROL_REQUEST = STATIC ? BASE_HREF + 'control-request-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.controlRequestModal}`;
-const TRY_IN_AR = STATIC ? BASE_HREF + 'try-in-ar-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.tryInArModal}`;
+const CONTROL_REQUEST = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.controlRequestModal}`;
+const TRY_IN_AR = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.tryInArModal}`;
 
 export default class AgoraComponent extends Component {
 
@@ -58,84 +63,11 @@ export default class AgoraComponent extends Component {
 
 	init() {
 		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.message$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(message => {
-				// console.log('AgoraComponent.message', message);
-				switch (message.type) {
-					case MessageType.RequestPeerInfo:
-						if (message.streamId === agora.state.uid) {
-							message.type = MessageType.RequestPeerInfoResult;
-							message.clientInfo = {
-								role: agora.state.role,
-								name: agora.state.name,
-								uid: agora.state.uid,
-							};
-							agora.sendMessage(message);
-						}
-						break;
-					case MessageType.RequestControl:
-						message.type = MessageType.RequestControlAccepted;
-						agora.sendMessage(message);
-						agora.patchState({ locked: true });
-						// !!! control request permission not required
-						// this.onRemoteControlRequest(message);
-						break;
-					case MessageType.RequestInfo:
-						if (message.clientId === agora.state.uid) {
-							agora.patchState({ spyed: true });
-						}
-						break;
-					case MessageType.RequestInfoResult:
-						if (agora.state.role === RoleType.Publisher && this.controls.view.value !== message.viewId) {
-							this.controls.view.value = message.viewId;
-							// console.log('AgoraComponent.RequestInfoResult', message.viewId);
-						}
-						break;
-					case MessageType.NavToView:
-						if ((agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) && message.viewId) {
-							if (this.controls.view.value !== message.viewId) {
-								this.controls.view.value = message.viewId;
-								if (message.gridIndex !== undefined) {
-									const view = this.data.views.find(x => x.id === message.viewId);
-									if (view instanceof PanoramaGridView) {
-										view.index = message.gridIndex;
-									}
-								}
-								// console.log('AgoraComponent.NavToView', message.viewId);
-							}
-						}
-						break;
-				}
-			});
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				// console.log('AgoraComponent.state', state);
-				this.state = state;
-				this.hosted = state.hosted;
-				this.pushChanges();
-			});
-			agora.local$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(local => {
-				// console.log('AgoraComponent.local', local);
-				this.local = local;
-				this.pushChanges();
-			});
-			agora.remotes$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(remotes => {
-				// console.log('AgoraComponent.remotes', remotes);
-				this.remotes = remotes;
-				this.pushChanges();
-			});
-		} else {
+		if (!agora) {
 			const role = LocationService.get('role') || RoleType.Attendee;
 			const link = LocationService.get('link') || null;
 			const name = LocationService.get('name') || null;
-			this.state = {
+			StateService.state = {
 				role: role,
 				link: link,
 				name: name,
@@ -155,6 +87,80 @@ export default class AgoraComponent extends Component {
 				quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1],
 			};
 		}
+		StreamService.local$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(local => {
+			// console.log('AgoraComponent.local', local);
+			this.local = local;
+			this.pushChanges();
+		});
+		StreamService.remotes$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(remotes => {
+			// console.log('AgoraComponent.remotes', remotes);
+			this.remotes = remotes;
+			this.pushChanges();
+		});
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			this.state = state;
+			this.hosted = state.hosted;
+			this.pushChanges();
+		});
+		MessageService.out$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			// console.log('AgoraComponent.message', message);
+			switch (message.type) {
+				case MessageType.RequestPeerInfo:
+					message.type = MessageType.RequestPeerInfoResult;
+					message.clientInfo = {
+						role: StateService.state.role,
+						name: StateService.state.name,
+						uid: StateService.state.uid,
+					};
+					MessageService.sendBack(message);
+					break;
+				case MessageType.RequestControl:
+					message.type = MessageType.RequestControlAccepted;
+					MessageService.sendBack(message);
+					StateService.patchState({ locked: true });
+					// !!! control request permission not required
+					// this.onRemoteControlRequest(message);
+					break;
+				case MessageType.RequestInfo:
+					StateService.patchState({ spyed: true });
+					break;
+				case MessageType.RequestInfoResult:
+					if (this.controls.view.value !== message.viewId) {
+						this.controls.view.value = message.viewId;
+						// console.log('AgoraComponent.RequestInfoResult', message.viewId);
+					}
+					break;
+				case MessageType.NavToView:
+					if (message.viewId) {
+						if (this.controls.view.value !== message.viewId) {
+							this.controls.view.value = message.viewId;
+							if (message.gridIndex !== undefined) {
+								const view = this.data.views.find(x => x.id === message.viewId);
+								if (view instanceof PanoramaGridView) {
+									view.index = message.gridIndex;
+								}
+							}
+							// console.log('AgoraComponent.NavToView', message.viewId);
+						}
+					}
+					break;
+			}
+		});
+		MessageService.in$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			if (agora) {
+				agora.sendMessage(message);
+			}
+		});
 	}
 
 	initForm() {
@@ -211,15 +217,15 @@ export default class AgoraComponent extends Component {
 	}
 
 	onLink(link) {
-		if (this.agora.state.name) {
-			this.agora.patchState({ link, status: AgoraStatus.Device });
+		if (StateService.state.name) {
+			StateService.patchState({ link, status: AgoraStatus.Device });
 		} else {
-			this.agora.patchState({ link, status: AgoraStatus.Name });
+			StateService.patchState({ link, status: AgoraStatus.Name });
 		}
 	}
 
 	onName(name) {
-		this.agora.patchState({ name, status: AgoraStatus.Device });
+		StateService.patchState({ name, status: AgoraStatus.Device });
 	}
 
 	onEnter(preferences) {
@@ -229,11 +235,7 @@ export default class AgoraComponent extends Component {
 	connect(preferences) {
 		this.agora.connect$(preferences).pipe(
 			takeUntil(this.unsubscribe$)
-		).subscribe((state) => {
-			console.log('AgoraComponent.connect.state', state);
-			// this.state = Object.assign(this.state, state);
-			// this.pushChanges();
-		});
+		).subscribe();
 	}
 
 	disconnect() {
@@ -246,9 +248,8 @@ export default class AgoraComponent extends Component {
 
 	onSlideChange(index) {
 		if (!DEBUG) {
-			this.agora.sendMessage({
+			MessageService.send({
 				type: MessageType.SlideChange,
-				clientId: this.agora.state.uid,
 				index
 			});
 		}
@@ -272,7 +273,7 @@ export default class AgoraComponent extends Component {
 					message.type = MessageType.RequestControlRejected;
 					this.state.locked = false;
 				}
-				this.agora.sendMessage(message);
+				MessageService.sendBack(message);
 				this.pushChanges();
 			} else {
 				if (event instanceof ModalResolveEvent) {
@@ -284,12 +285,7 @@ export default class AgoraComponent extends Component {
 		});
 	}
 
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
+	// !!! why locally?
 	patchState(state) {
 		this.state = Object.assign({}, this.state, state);
 		this.pushChanges();
@@ -322,9 +318,9 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	onToggleSpy(clientId) {
+	onToggleSpy(remoteId) {
 		if (!DEBUG) {
-			this.agora.toggleSpy(clientId);
+			this.agora.toggleSpy(remoteId);
 		} else {
 			this.patchState({ spying: !this.state.spying, control: false });
 		}

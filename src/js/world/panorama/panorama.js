@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PanoramaGridView } from '../../view/view.service';
+import { PanoramaGridView } from '../../view/view';
 import { EnvMapLoader } from '../envmap/envmap.loader';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import { VideoTexture } from '../video-texture';

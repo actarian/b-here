@@ -1,7 +1,8 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil, tap } from 'rxjs/operators';
-import AgoraService, { MessageType } from '../agora/agora.service';
+import { MessageType } from '../agora/agora.types';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
+import MessageService from '../message/message.service';
 
 export default class SliderDirective extends Component {
 
@@ -25,30 +26,26 @@ export default class SliderDirective extends Component {
 		gsap.set(this.inner, {
 			x: -100 * this.current + '%',
 		});
-		const agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.message$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(message => {
-				switch (message.type) {
-					case MessageType.SlideChange:
-						// console.log(message);
-						if (agora.state.locked && message.index !== undefined && message.index) {
-							this.navTo(message.index);
-						}
-						break;
-					case MessageType.RequestControlAccepted:
-						setTimeout(() => {
-							agora.sendMessage({
-								type: MessageType.SlideChange,
-								clientId: agora.state.uid,
-								index: this.current,
-							});
-						}, 500);
-						break;
-				}
-			});
-		}
+		MessageService.out$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			switch (message.type) {
+				case MessageType.SlideChange:
+					// console.log(message);
+					if (message.index !== undefined) {
+						this.navTo(message.index);
+					}
+					break;
+				case MessageType.RequestControlAccepted:
+					setTimeout(() => {
+						MessageService.send({
+							type: MessageType.SlideChange,
+							index: this.current,
+						});
+					}, 500);
+					break;
+			}
+		});
 		/*
 		this.slider$().pipe(
 			takeUntil(this.unsubscribe$),
@@ -125,13 +122,10 @@ export default class SliderDirective extends Component {
 				this.current = index;
 				this.pushChanges();
 				this.change.next(this.current);
-				if (this.agora && this.agora.state.control) {
-					this.agora.sendMessage({
-						type: MessageType.SlideChange,
-						clientId: this.agora.state.uid,
-						index: index
-					});
-				}
+				MessageService.send({
+					type: MessageType.SlideChange,
+					index: index
+				});
 			});
 		}
 	}
