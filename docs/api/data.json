@@ -2760,6 +2760,123 @@
       "zoom": 52
     },
     {
+      "id": 102,
+      "type": "room-3d",
+      "name": "Room 3D Muse",
+      "likes": 321,
+      "liked": false,
+      "modelFolder": "room-3d/",
+      "modelFile": "room-3d.fbx",
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "waiting-room-02.jpg"
+      },
+      "items": [
+        {
+          "id": "plane-01",
+          "type": "texture",
+          "asset": {
+            "type": "video",
+            "folder": "room-3d/",
+            "file": "plane-01.mp4"
+          }
+        },
+        {
+          "id": "plane-02",
+          "type": "texture",
+          "asset": {
+            "type": "image",
+            "folder": "room-3d/",
+            "file": "plane-02.jpg"
+          }
+        },
+        {
+          "id": "plane-03",
+          "type": "texture",
+          "asset": {
+            "type": "image",
+            "folder": "room-3d/",
+            "file": "plane-03.jpg"
+          }
+        },
+        {
+          "id": "plane-04",
+          "type": "texture",
+          "asset": {
+            "type": "image",
+            "folder": "room-3d/",
+            "file": "plane-04.jpg"
+          }
+        },
+        {
+          "id": "plane-05",
+          "type": "texture",
+          "asset": {
+            "type": "video",
+            "folder": "room-3d/",
+            "file": "plane-05.mp4"
+          }
+        },
+        {
+          "id": "plane-06",
+          "type": "texture",
+          "asset": {
+            "type": "image",
+            "folder": "room-3d/",
+            "file": "plane-06.jpg"
+          }
+        },
+        {
+          "id": "plane-07",
+          "type": "texture",
+          "asset": {
+            "type": "image",
+            "folder": "room-3d/",
+            "file": "plane-07.jpg"
+          }
+        },
+        {
+          "id": "plane-08",
+          "type": "texture",
+          "asset": {
+            "type": "image",
+            "folder": "room-3d/",
+            "file": "plane-08.jpg"
+          }
+        },
+        {
+          "id": 10110,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.9206193140260596,
+            -0.033554493274472665,
+            0.38901693359451694
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 10120,
+          "type": "nav",
+          "title": "Ducati",
+          "abstract": "Abstract",
+          "position": [
+            0.9210009978552354,
+            -0.027991828533736385,
+            -0.38855323893258004
+          ],
+          "viewId": 303
+        }
+      ],
+      "orientation": {
+        "latitude": 2,
+        "longitude": 360
+      },
+      "zoom": 52
+    },
+    {
       "id": 309,
       "type": "model",
       "name": "Triceratopo",
@@ -3236,7 +3353,7 @@
       "asset": {
         "type": "video",
         "folder": "video/",
-        "file": "time-square-composition.mp4"
+        "file": "time-square-01.mp4"
       },
       "items": [
         {
@@ -3249,7 +3366,7 @@
             -0.3908767257744284,
             0.27755040190862934
           ],
-          "viewId": 70
+          "viewId": 1
         }
       ],
       "orientation": {
