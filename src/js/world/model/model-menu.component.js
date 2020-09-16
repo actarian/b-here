@@ -307,7 +307,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	buildMenu() {
-		if (this.menu) {
+		if (this.menu || !this.items) {
 			return;
 		}
 		const menu = this.menu = {};
