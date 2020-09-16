@@ -78,6 +78,10 @@ export default class ModelComponent extends Component {
 	}
 
 	onMount(mesh) {
+		if (this.mesh) {
+			console.log('ModelComponent.dismount.mesh');
+			this.onDismount(this.mesh);
+		}
 		mesh.name = this.getName('mesh');
 		this.mesh = mesh;
 		this.group.add(mesh);

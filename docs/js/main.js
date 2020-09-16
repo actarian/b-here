@@ -61754,6 +61754,11 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onMount = function onMount(mesh) {
+    if (this.mesh) {
+      console.log('ModelComponent.dismount.mesh');
+      this.onDismount(this.mesh);
+    }
+
     mesh.name = this.getName('mesh');
     this.mesh = mesh;
     this.group.add(mesh); // this.host.render(); !!!
@@ -63582,7 +63587,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   _proto3.buildMenu = function buildMenu() {
     var _this5 = this;
 
-    if (this.menu) {
+    if (this.menu || !this.items) {
       return;
     }
 
@@ -64191,75 +64196,77 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
         node = _getContext.node;
 
     this.getCanvasTexture(node).then(function (texture) {
-      var scale = 0.2;
-      var aspect = texture.width / texture.height;
-      var width = ModelPanelComponent.PANEL_RADIUS * scale;
-      var height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
-      var dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
+      if (_this.mesh) {
+        var scale = 0.2;
+        var aspect = texture.width / texture.height;
+        var width = ModelPanelComponent.PANEL_RADIUS * scale;
+        var height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
+        var dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
 
-      var position = _this.item.nav.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+        var position = _this.item.nav.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 
-      var material = new THREE$1.SpriteMaterial({
-        depthTest: false,
-        transparent: true,
-        map: texture.map,
-        sizeAttenuation: false
-      });
-      var panel = _this.panel = new InteractiveSprite(material);
-      panel.renderOrder = environment.renderOrder.panel;
-      panel.scale.set(0.02 * width, 0.02 * height, 1);
-      panel.position.set(position.x, position.y, position.z);
-      panel.on('down', function (event) {
-        var xy = {
-          x: parseInt(event.intersection.uv.x * node.offsetWidth),
-          y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
-        }; // console.log('ModelPanelComponent.down.xy', xy);
+        var material = new THREE$1.SpriteMaterial({
+          depthTest: false,
+          transparent: true,
+          map: texture.map,
+          sizeAttenuation: false
+        });
+        var panel = _this.panel = new InteractiveSprite(material);
+        panel.renderOrder = environment.renderOrder.panel;
+        panel.scale.set(0.02 * width, 0.02 * height, 1);
+        panel.position.set(position.x, position.y, position.z);
+        panel.on('down', function (event) {
+          var xy = {
+            x: parseInt(event.intersection.uv.x * node.offsetWidth),
+            y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
+          }; // console.log('ModelPanelComponent.down.xy', xy);
 
-        var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
-          return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-        }); // console.log('ModelPanelComponent.down.link', link);
+          var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
+            return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
+          }); // console.log('ModelPanelComponent.down.link', link);
 
-        if (link) {
-          _this.down.next(link);
+          if (link) {
+            _this.down.next(link);
 
-          var rect = node.getBoundingClientRect();
+            var rect = node.getBoundingClientRect();
 
-          var _event = new MouseEvent('mouseup', {
-            button: 0,
-            buttons: 0,
-            clientX: xy.x + rect.left,
-            clientY: xy.y + rect.top,
-            movementX: 0,
-            movementY: 0,
-            relatedTarget: link,
-            screenX: xy.x,
-            screenY: xy.y
-          }); // console.log('ModelPanelComponent.dispatchEvent', event);
+            var _event = new MouseEvent('mouseup', {
+              button: 0,
+              buttons: 0,
+              clientX: xy.x + rect.left,
+              clientY: xy.y + rect.top,
+              movementX: 0,
+              movementY: 0,
+              relatedTarget: link,
+              screenX: xy.x,
+              screenY: xy.y
+            }); // console.log('ModelPanelComponent.dispatchEvent', event);
 
 
-          link.dispatchEvent(_event);
-          setTimeout(function () {
-            DragService.dismissEvent(_event, DragService.events$, DragService.dismiss$, DragService.downEvent);
-          }, 1);
-        }
-      });
+            link.dispatchEvent(_event);
+            setTimeout(function () {
+              DragService.dismissEvent(_event, DragService.events$, DragService.dismiss$, DragService.downEvent);
+            }, 1);
+          }
+        });
 
-      _this.mesh.add(panel);
+        _this.mesh.add(panel);
 
-      var from = {
-        value: 0
-      };
-      gsap.to(from, 0.5, {
-        value: 1,
-        delay: 0.0,
-        ease: Power2.easeInOut,
-        onUpdate: function onUpdate() {
-          panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
-          panel.lookAt(ModelPanelComponent.ORIGIN);
-          panel.material.opacity = from.value;
-          panel.material.needsUpdate = true;
-        }
-      });
+        var from = {
+          value: 0
+        };
+        gsap.to(from, 0.5, {
+          value: 1,
+          delay: 0.0,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
+            panel.lookAt(ModelPanelComponent.ORIGIN);
+            panel.material.opacity = from.value;
+            panel.material.needsUpdate = true;
+          }
+        });
+      }
     });
   };
 
@@ -64270,6 +64277,31 @@ InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_M
     if (typeof mount === 'function') {
       mount(mesh);
     }
+  };
+
+  _proto.onDestroy = function onDestroy() {
+    console.log('ModelPanelComponent.onDestroy');
+
+    _ModelComponent.prototype.onDestroy.call(this);
+    /*
+    const group = this.group;
+    this.host.objects.remove(group);
+    delete group.userData.render;
+    group.traverse(child => {
+    	if (child instanceof InteractiveMesh) {
+    		Interactive.dispose(child);
+    	}
+    	if (child.isMesh) {
+    		if (child.material.map && child.material.map.disposable !== false) {
+    			child.material.map.dispose();
+    		}
+    		child.material.dispose();
+    		child.geometry.dispose();
+    	}
+    });
+    this.group = null;
+    */
+
   };
 
   _proto.imagesLoaded = function imagesLoaded() {
