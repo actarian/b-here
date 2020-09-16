@@ -423,8 +423,11 @@ operators.filter(function (frame) {
     set: function set(video) {
       if (this.video_ !== video) {
         this.video_ = video;
-        this.change.next();
-        this.initStream();
+
+        if (this.change) {
+          this.change.next();
+          this.initStream();
+        }
       }
     }
   }, {
@@ -435,8 +438,11 @@ operators.filter(function (frame) {
     set: function set(audio) {
       if (this.audio_ !== audio) {
         this.audio_ = audio;
-        this.change.next();
-        this.initStream();
+
+        if (this.change) {
+          this.change.next();
+          this.initStream();
+        }
       }
     }
   }]);
