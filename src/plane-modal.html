@@ -1,4 +1,4 @@
-<div class="nav-modal" nav-modal>
+<div class="plane-modal" plane-modal>
 	<div class="modal__header">
 		<button type="button" class="btn--close" (click)="close()">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
@@ -9,13 +9,20 @@
 			<div class="title">Create Nav.</div>
 			<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 				<fieldset>
-					<div control-text [control]="controls.title" label="Title"></div>
-					<div control-text [control]="controls.abstract" label="Abstract"></div>
-					<div control-select [control]="controls.viewId" label="NavToView"></div>
+					<!-- <div control-text [control]="controls.title" label="Title"></div> -->
 					<div class="group--form">
 						<label>Position</label>
 						<input type="text" class="control--text" formControlName="position" disabled />
 					</div>
+					<div class="group--form">
+						<label>Rotation</label>
+						<input type="text" class="control--text" formControlName="rotation" disabled />
+					</div>
+					<div class="group--form">
+						<label>Scale</label>
+						<input type="text" class="control--text" formControlName="scale" disabled />
+					</div>
+					<div control-vector [control]="controls.scale" label="Scale"></div>
 					<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 				</fieldset>
 				<div class="group--cta">

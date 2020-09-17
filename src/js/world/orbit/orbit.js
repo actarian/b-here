@@ -1,12 +1,20 @@
 import { ReplaySubject } from 'rxjs';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
+import * as THREE from 'three';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
+import { EDITOR } from '../../environment';
 
 export const OrbitMode = {
 	Panorama: 'panorama',
 	PanoramaGrid: 'panorama-grid',
 	Model: 'model',
 };
+
+export class OrbitEvent { }
+export class OrbitDragEvent extends OrbitEvent { }
+export class OrbitMoveEvent extends OrbitEvent { }
+const orbitMoveEvent = new OrbitMoveEvent();
+const orbitDragEvent = new OrbitDragEvent();
 
 export const USE_DOLLY = false;
 export const DOLLY_MIN = 15;
@@ -159,8 +167,13 @@ export default class OrbitService {
 					latitude = this.latitude;
 					longitude = this.longitude;
 				} else if (event instanceof DragMoveEvent) {
-					const flip = this.mode_ === OrbitMode.Model ? -1 : 1;
-					this.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+					if (EDITOR && event.shiftKey) {
+						// console.log('shifting!');
+						this.events$.next(orbitDragEvent);
+					} else {
+						const flip = this.mode_ === OrbitMode.Model ? -1 : 1;
+						this.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+					}
 				} else if (event instanceof DragUpEvent) {
 
 				}
@@ -212,7 +225,7 @@ export default class OrbitService {
 		}
 		camera.lookAt(camera.target);
 		camera.updateProjectionMatrix();
-		this.events$.next(this);
+		this.events$.next(orbitMoveEvent);
 	}
 
 	inverse() {

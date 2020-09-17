@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs/operators'),require('rxjs'),require('agora-rtm-sdk'),require('html2canvas'),require('three')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs/operators','rxjs','agora-rtm-sdk','html2canvas','three'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs.operators,g.rxjs,g.AgoraRTM,g.html2canvas,g.THREE));}(this,(function(rxcomp, rxcompForm, operators, rxjs, AgoraRTM, html2canvas, THREE$1){'use strict';AgoraRTM=AgoraRTM&&Object.prototype.hasOwnProperty.call(AgoraRTM,'default')?AgoraRTM['default']:AgoraRTM;html2canvas=html2canvas&&Object.prototype.hasOwnProperty.call(html2canvas,'default')?html2canvas['default']:html2canvas;function _defineProperties(target, props) {
+(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs/operators'),require('rxjs'),require('agora-rtm-sdk'),require('three'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs/operators','rxjs','agora-rtm-sdk','three','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs.operators,g.rxjs,g.AgoraRTM,g.THREE,g.html2canvas));}(this,(function(rxcomp, rxcompForm, operators, rxjs, AgoraRTM, THREE$1, html2canvas){'use strict';AgoraRTM=AgoraRTM&&Object.prototype.hasOwnProperty.call(AgoraRTM,'default')?AgoraRTM['default']:AgoraRTM;html2canvas=html2canvas&&Object.prototype.hasOwnProperty.call(html2canvas,'default')?html2canvas['default']:html2canvas;function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
     descriptor.enumerable = descriptor.enumerable || false;
@@ -438,8 +438,11 @@ operators.filter(function (frame) {
     set: function set(video) {
       if (this.video_ !== video) {
         this.video_ = video;
-        this.change.next();
-        this.initStream();
+
+        if (this.change) {
+          this.change.next();
+          this.initStream();
+        }
       }
     }
   }, {
@@ -450,8 +453,11 @@ operators.filter(function (frame) {
     set: function set(audio) {
       if (this.audio_ !== audio) {
         this.audio_ = audio;
-        this.change.next();
-        this.initStream();
+
+        if (this.change) {
+          this.change.next();
+          this.initStream();
+        }
       }
     }
   }]);
@@ -556,8 +562,8 @@ var PARAMS = NODE ? {
 var DEBUG =  PARAMS.get('debug') != null;
 var EDITOR =  PARAMS.get('editor') != null;
 var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-var HEROKU = NODE ? false : window && (window.location.host.indexOf('herokuapp') !== -1 || window.location.port === '5000');
-var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.host === 'actarian.github.io');
+var HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
+var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.host === 'actarian.github.io');
 var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
 var Environment = /*#__PURE__*/function () {
   var _proto = Environment.prototype;
@@ -616,6 +622,7 @@ var environment = new Environment({
   debugMeetingId: '1591366622325',
   port: 5000,
   apiEnabled: false,
+  fontFamily: 'GT Walsheim',
   views: {
     tryInArModal: 2162,
     controlRequestModal: 2163
@@ -2855,7 +2862,7 @@ var ModalService = /*#__PURE__*/function () {
   };
 
   ModalService.getNode = function getNode(template) {
-    var div = document.createElement("div");
+    var div = document.createElement('div');
     div.innerHTML = template;
     var node = div.firstElementChild;
     return node;
@@ -2881,32 +2888,49 @@ ModalService.events$ = new rxjs.Subject();var ViewType = {
   Room3d: 'room-3d',
   Model: 'model'
 };
-var ViewItemType = {
-  Nav: 'nav',
-  Gltf: 'gltf',
-  Plane: 'plane',
-  CurvedPlane: 'curved-plane',
-  Texture: 'texture'
-};
-var View = function View(options) {
-  if (options) {
-    Object.assign(this, options);
+var View = /*#__PURE__*/function () {
+  function View(options) {
+    if (options) {
+      Object.assign(this, options);
 
-    if (options.items) {
-      var nextAttendeeStreamIndex = 0;
-      options.items.forEach(function (item, index) {
-        item.index = index;
+      if (options.items) {
+        var nextAttendeeStreamIndex = 0;
+        options.items.forEach(function (item, index) {
+          item.index = index;
 
-        if (item.asset && item.asset.file === 'nextAttendeeStream') {
-          item.asset.index = nextAttendeeStreamIndex++;
-        }
-      });
+          if (item.asset && item.asset.file === 'nextAttendeeStream') {
+            item.asset.index = nextAttendeeStreamIndex++;
+          }
+        });
+      }
     }
+
+    this.items = (this.items || []).map(function (item) {
+      return mapViewItem(item);
+    });
+    this.originalItems = this.items.slice();
   }
 
-  this.items = this.items || [];
-  this.originalItems = this.items.slice();
-};
+  _createClass(View, [{
+    key: "payload",
+    get: function get() {
+      var _this = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (ViewItem.allowedProps.indexOf(key) !== -1) {
+          payload[key] = _this[key];
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return View;
+}();
+
+_defineProperty(View, "allowedProps", ['id', 'type', 'name', 'likes', 'liked', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes']);
+
 var PanoramaView = /*#__PURE__*/function (_View) {
   _inheritsLoose(PanoramaView, _View);
 
@@ -2935,11 +2959,11 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
   }]);
 
   function PanoramaGridView(options) {
-    var _this;
+    var _this2;
 
     if (options.tiles) {
       options.tiles = options.tiles.map(function (tile, i) {
-        var indices = new THREE.Vector2();
+        var indices = new THREE$1.Vector2();
         tile = typeof tile === 'string' ? {
           asset: {
             folder: options.asset.folder,
@@ -2968,16 +2992,16 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
       });
     }
 
-    _this = _View2.call(this, options) || this;
+    _this2 = _View2.call(this, options) || this;
 
-    if (!_this.tiles.length) {
+    if (!_this2.tiles.length) {
       throw new Error('PanoramaGridView.constructor tile list is empty!');
     }
 
-    _this.index_ = 0;
-    _this.index$ = new rxjs.Subject();
-    _this.items = _this.originalItems.concat(_this.tiles[0].navs);
-    return _this;
+    _this2.index_ = 0;
+    _this2.index$ = new rxjs.Subject();
+    _this2.items = _this2.originalItems.concat(_this2.tiles[0].navs);
+    return _this2;
   }
 
   var _proto = PanoramaGridView.prototype;
@@ -3016,6 +3040,49 @@ var ModelView = /*#__PURE__*/function (_View3) {
 
   return ModelView;
 }(View);
+var ViewItemType = {
+  Nav: 'nav',
+  Gltf: 'gltf',
+  Plane: 'plane',
+  CurvedPlane: 'curved-plane',
+  Texture: 'texture'
+};
+var ViewItem = /*#__PURE__*/function () {
+  function ViewItem(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  _createClass(ViewItem, [{
+    key: "payload",
+    get: function get() {
+      var _this3 = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (ViewItem.allowedProps.indexOf(key) !== -1) {
+          payload[key] = _this3[key];
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return ViewItem;
+}();
+
+_defineProperty(ViewItem, "allowedProps", ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'position', 'rotation', 'scale', 'radius', 'arc', 'height']);
+
+var NavViewItem = /*#__PURE__*/function (_ViewItem) {
+  _inheritsLoose(NavViewItem, _ViewItem);
+
+  function NavViewItem() {
+    return _ViewItem.apply(this, arguments) || this;
+  }
+
+  return NavViewItem;
+}(ViewItem);
 function mapView(view) {
   switch (view.type) {
     case ViewType.Panorama:
@@ -3035,6 +3102,18 @@ function mapView(view) {
   }
 
   return view;
+}
+function mapViewItem(item) {
+  switch (item.type) {
+    case ViewItemType.Nav:
+      item = new NavViewItem(item);
+      break;
+
+    default:
+      item = new ViewItem(item);
+  }
+
+  return item;
 }var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
@@ -3088,9 +3167,9 @@ var VRService = /*#__PURE__*/function () {
 
     var state = this.state_ = {
       camera: {
-        position: new THREE.Vector3(),
-        quaternion: new THREE.Quaternion(),
-        scale: new THREE.Vector3(),
+        position: new THREE$1.Vector3(),
+        quaternion: new THREE$1.Quaternion(),
+        scale: new THREE$1.Vector3(),
         array: new Array(3 + 4 + 3).fill(0)
       }
     };
@@ -3758,16 +3837,6 @@ AssetPipe.meta = {
     });
   };
 
-  _proto.onRegister = function onRegister(event) {
-    // console.log('ModalComponent.onRegister');
-    this.pushChanges();
-  };
-
-  _proto.onLogin = function onLogin(event) {
-    // console.log('ModalComponent.onLogin');
-    this.pushChanges();
-  };
-
   _proto.reject = function reject(event) {
     ModalService.reject();
   };
@@ -4045,6 +4114,353 @@ DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDir
 DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
+};var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(UploadButtonDirective, _Directive);
+
+  function UploadButtonDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadButtonDirective.prototype;
+
+  _proto.init_ = function init_() {
+    /*
+    if (!this.uploader) {
+    	return;
+    }
+    const { node } = getContext(this);
+    // console.log('UploadButtonDirective', this.uploader, node);
+    this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
+    */
+  };
+
+  _proto.onInit = function onInit() {
+    if (this.uploader) {
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
+    }
+  };
+
+  _createClass(UploadButtonDirective, [{
+    key: "directoryOnly",
+    set: function set(directoriesOnly) {
+      if (directoryOnly_ !== directoriesOnly) {
+        this.directoryOnly_ = directoriesOnly;
+        this.init_();
+      }
+    }
+  }, {
+    key: "attributes",
+    set: function set(attributes) {
+      if (this.attributes_ !== attributes) {
+        this.attributes_ = attributes;
+        this.init_();
+      }
+    }
+  }, {
+    key: "uploadButton",
+    set: function set(uploader) {
+      if (this.uploader !== uploader) {
+        this.uploader = uploader; // console.log('UploadButtonDirective.uploader', this.uploader);
+
+        this.init_();
+      }
+    }
+  }]);
+
+  return UploadButtonDirective;
+}(rxcomp.Directive);
+UploadButtonDirective.meta = {
+  selector: '[[uploadButton]]',
+  inputs: ['uploadButton', 'directoryOnly', 'attributes']
+};var UploadDropDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(UploadDropDirective, _Directive);
+
+  function UploadDropDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadDropDirective.prototype;
+
+  _proto.enable = function enable() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // console.log('UploadDropDirective.enable', this.uploader);
+
+
+    this.uploader.flow.assignDrop(node);
+  };
+
+  _proto.disable = function disable() {
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    this.uploader.flow.unAssignDrop(node);
+  };
+
+  _proto.onInit = function onInit() {
+    if (rxcomp.isPlatformBrowser) {
+      var body = document.querySelector('body');
+      rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        event.preventDefault();
+        return;
+      }), operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('UploadDropDirective.onInit');
+    }
+  };
+
+  _createClass(UploadDropDirective, [{
+    key: "uploadDrop",
+    set: function set(uploader) {
+      if (this.uploader !== uploader) {
+        if (this.uploader) {
+          this.disable();
+        }
+
+        this.uploader = uploader;
+
+        if (uploader) {
+          // console.log('UploadDropDirective.flow', this.uploader);
+          this.enable();
+        }
+      }
+    }
+  }]);
+
+  return UploadDropDirective;
+}(rxcomp.Directive);
+UploadDropDirective.meta = {
+  selector: '[[uploadDrop]]',
+  inputs: ['uploadDrop']
+};var UploadItemComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(UploadItemComponent, _Component);
+
+  function UploadItemComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadItemComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    console.log('UploadItemComponent.onInit', this.item, this.uploader);
+  };
+
+  _proto.onPause = function onPause() {
+    this.pause.next(this.item);
+  };
+
+  _proto.onResume = function onResume() {
+    this.resume.next(this.item);
+  };
+
+  _proto.onCancel = function onCancel() {
+    this.cancel.next(this.item);
+  };
+
+  _proto.onRemove = function onRemove() {
+    this.remove.next(this.item);
+  };
+
+  _createClass(UploadItemComponent, [{
+    key: "UploadItem",
+    set: function set(uploader) {
+      this.uploader = uploader;
+    }
+  }]);
+
+  return UploadItemComponent;
+}(rxcomp.Component);
+UploadItemComponent.meta = {
+  selector: '[uploadItem]',
+  outputs: ['pause', 'resume', 'cancel', 'remove'],
+  inputs: ['uploadItem', 'item'],
+  template:
+  /* html */
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [uploadSrc]=\"item\" />\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.progress > 0\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"item.complete\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\">remove</div>\n\t\t</div>\n\t</div>\n\t"
+};var UploadSrcDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(UploadSrcDirective, _Directive);
+
+  function UploadSrcDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadSrcDirective.prototype;
+
+  _proto.resize2Steps = function resize2Steps(blob, callback) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 480;
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+
+    img.onload = function () {
+      // set size proportional to image
+      canvas.height = canvas.width * (img.height / img.width); // step 1 - resize to 50%
+
+      var oc = document.createElement('canvas');
+      var octx = oc.getContext('2d');
+      oc.width = img.width * 0.5;
+      oc.height = img.height * 0.5;
+      octx.drawImage(img, 0, 0, oc.width, oc.height); // step 2
+
+      octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5); // step 3, resize to final size
+
+      ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5, 0, 0, canvas.width, canvas.height); //
+
+      callback(canvas.toDataURL('image/jpeg', 0.9));
+    };
+
+    img.src = blob;
+  };
+
+  _proto.resize = function resize(blob, callback) {
+    if (typeof callback === 'function') {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 640;
+        var MAX_HEIGHT = 480;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        callback(dataUrl);
+      };
+
+      img.src = blob;
+    }
+  };
+
+  _proto.read = function read(file) {
+    var _this = this;
+
+    if (this.subscription_) {
+      this.subscription_.unsubscribe();
+    }
+
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    this.subscription_ = rxjs.fromEvent(reader, 'load').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      var _getContext = rxcomp.getContext(_this),
+          node = _getContext.node;
+
+      var blob = event.target.result; // node.setAttribute('src', blob);
+
+      _this.resize(blob, function (resized) {
+        node.setAttribute('src', resized);
+      });
+    });
+  };
+
+  _createClass(UploadSrcDirective, [{
+    key: "uploadSrc",
+    set: function set(uploadSrc) {
+      if (uploadSrc !== this.uploadSrc_) {
+        this.uploadSrc_ = uploadSrc;
+
+        if (uploadSrc) {
+          this.read(uploadSrc.flowFile.file);
+        }
+      }
+    }
+  }]);
+
+  return UploadSrcDirective;
+}(rxcomp.Directive);
+UploadSrcDirective.meta = {
+  selector: '[[uploadSrc]]',
+  inputs: ['uploadSrc']
+};var ToastEvent = function ToastEvent(toast) {
+  this.toast = toast;
+};
+var ToastResolveEvent = /*#__PURE__*/function (_ToastEvent) {
+  _inheritsLoose(ToastResolveEvent, _ToastEvent);
+
+  function ToastResolveEvent() {
+    return _ToastEvent.apply(this, arguments) || this;
+  }
+
+  return ToastResolveEvent;
+}(ToastEvent);
+
+var ToastService = /*#__PURE__*/function () {
+  function ToastService() {}
+
+  ToastService.open$ = function open$(toast) {
+    var _this = this;
+
+    toast.id = new Date().getTime();
+    this.toast$.next(toast);
+    setTimeout(function () {
+      _this.resolve(toast);
+    }, toast.duration || 3000);
+    return this.events$;
+    /*
+    return of(toast).pipe(
+    	tap(toast => this.toast$.next(toast)),
+    	switchMap(toast => this.events$),
+    );
+    */
+  };
+
+  ToastService.resolve = function resolve(toast) {
+    this.toast$.next(null);
+    this.events$.next(new ToastResolveEvent(toast));
+  };
+
+  return ToastService;
+}();
+ToastService.toast$ = new rxjs.Subject();
+ToastService.events$ = new rxjs.Subject();var ToastOutletComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ToastOutletComponent, _Component);
+
+  function ToastOutletComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ToastOutletComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.toast = null;
+    this.lastMessage = '';
+    ToastService.toast$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (toast) {
+      if (toast) {
+        _this.lastMessage = toast.message;
+      }
+
+      _this.toast = toast;
+
+      _this.pushChanges();
+    });
+    console.log('ToastOutletComponent.onInit');
+  };
+
+  return ToastOutletComponent;
+}(rxcomp.Component);
+ToastOutletComponent.meta = {
+  selector: '[toast-outlet]',
+  template:
+  /* html */
+  "\n\t<div class=\"toast-outlet__container\" [class]=\"{ active: toast }\">\n\t\t<div class=\"toast-outlet__toast\" [innerHTML]=\"lastMessage\"></div>\n\t</div>\n\t"
 };var STATIC_MODALS = {
   controlRequest: 'control-request-modal.html',
   tryInAr: 'try-in-ar-modal.html',
@@ -4101,7 +4517,7 @@ var ModalSrcService = /*#__PURE__*/function () {
   function EditorService() {}
 
   EditorService.data$ = function data$() {
-    return HttpService.get$('./api/editor.json').pipe(operators.map(function (data) {
+    return HttpService.get$("/api/view").pipe(operators.map(function (data) {
       data.views = data.views.map(function (view) {
         return mapView(view);
       });
@@ -4109,9 +4525,21 @@ var ModalSrcService = /*#__PURE__*/function () {
     }));
   };
 
-  EditorService.viewCreate$ = function viewCreate$(data) {
-    return HttpService.post$('/api/view', data).pipe(operators.map(function (view) {
+  EditorService.viewCreate$ = function viewCreate$(view) {
+    return HttpService.post$("/api/view", view).pipe(operators.map(function (view) {
       return mapView(view);
+    }));
+  };
+
+  EditorService.itemCreate$ = function itemCreate$(view, item) {
+    return HttpService.post$("/api/view/" + view.id + "/item", item).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.itemUpdate$ = function itemUpdate$(view, item) {
+    return HttpService.put$("/api/view/" + view.id + "/item", item.payload).pipe(operators.map(function (item) {
+      return mapViewItem(item);
     }));
   };
 
@@ -4145,6 +4573,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     this.form = null;
     this.local = null;
     this.remotes = [];
+    this.viewHit = new rxjs.Subject();
     var vrService = this.vrService = VRService.getService();
     vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
       return _this.pushChanges();
@@ -4245,8 +4674,14 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onNavTo = function onNavTo(viewId) {
-    if (this.controls.view.value !== viewId) {
-      this.controls.view.value = viewId;
+    var view = this.data.views.find(function (x) {
+      return x.id === viewId;
+    });
+
+    if (view) {
+      if (this.controls.view.value !== viewId) {
+        this.controls.view.value = viewId;
+      }
     }
   };
 
@@ -4318,20 +4753,85 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   } // editor
   ;
 
-  _proto.onMenuSelect = function onMenuSelect(event) {
+  _proto.onViewHit = function onViewHit(event) {
+    this.viewHit.next(event);
+  };
+
+  _proto.onViewHitted = function onViewHitted(callback) {
+    if (this.viewHitSubscription) {
+      this.viewHitSubscription.unsubscribe();
+      this.viewHitSubscription = null;
+    }
+
+    if (typeof callback === 'function') {
+      this.viewHitSubscription = this.viewHit.pipe(operators.first()).subscribe(function (position) {
+        return callback(position);
+      });
+    }
+  };
+
+  _proto.onDragEnd = function onDragEnd(event) {
+    EditorService.itemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
+      console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
+    }, function (error) {
+      return console.log('EditorComponent.onDragEnd.itemUpdate$.error', error);
+    });
+  };
+
+  _proto.onOpenModal = function onOpenModal(modal, data) {
     var _this4 = this;
 
-    console.log('onMenuSelect', event);
     ModalService.open$({
-      src: ModalSrcService.get(event.type, event.value),
-      data: null
+      src: ModalSrcService.get(modal.type, modal.value),
+      data: data
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         console.log('onMenuSelect.resolve', event);
+
+        switch (modal.value) {
+          case 'nav':
+            var item = event.data;
+            var items = _this4.view.items || [];
+            items.push(item);
+            Object.assign(_this4.view, {
+              items: items
+            });
+
+            _this4.pushChanges();
+
+            break;
+        }
       }
 
       _this4.pushChanges();
     });
+  };
+
+  _proto.onMenuSelect = function onMenuSelect(event) {
+    var _this5 = this;
+
+    console.log('onMenuSelect', event);
+
+    switch (event.value) {
+      case 'nav':
+      case 'plane':
+      case 'curved-plane':
+        this.onViewHitted(function (position) {
+          _this5.onOpenModal(event, {
+            view: _this5.view,
+            position: position
+          });
+        });
+        ToastService.open$({
+          message: 'Click a point on the view'
+        });
+        break;
+
+      default:
+        this.onOpenModal(event, {
+          view: this.view
+        });
+    }
   };
 
   _createClass(EditorComponent, [{
@@ -4340,7 +4840,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
       return this.hosted_;
     },
     set: function set(hosted) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.hosted_ !== hosted) {
         this.hosted_ = hosted;
@@ -4348,7 +4848,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
         if (this.data && this.controls) {
           if (hosted) {
             var view = this.data.views.find(function (x) {
-              return x.id === _this5.controls.view.value;
+              return x.id === _this6.controls.view.value;
             });
             this.view = view;
           } else {
@@ -4400,7 +4900,8 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
       type: ViewItemType.Nav,
       title: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
       abstract: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // upload: new FormControl(null, RequiredValidator()),
+      viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      position: this.position.toArray() // upload: new FormControl(null, RequiredValidator()),
       // items: new FormArray([null, null, null], RequiredValidator()),
 
     });
@@ -4413,8 +4914,7 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
     */
 
     form.changes$.subscribe(function (changes) {
-      console.log('NavModalComponent.form.changes$', changes, form.valid, form);
-
+      // console.log('NavModalComponent.form.changes$', changes, form.valid, form);
       _this.pushChanges();
     });
     EditorService.data$().pipe(operators.first()).subscribe(function (data) {
@@ -4431,15 +4931,65 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
-      console.log('NavModalComponent.onSubmit', this.form.value); // ModalService.resolve(this.form.value);
+      var item = Object.assign({}, this.form.value);
+      item.viewId = parseInt(item.viewId);
+      console.log('NavModalComponent.onSubmit', this.view, item);
+      EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        console.log('NavModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('NavModalComponent.onSubmit.error', error);
+      }); // ModalService.resolve(this.form.value);
       // this.form.submitted = true;
       // this.form.reset();
+    } else {
+      this.form.touched = true;
     }
   };
 
   _proto.close = function close() {
     ModalService.reject();
   };
+
+  _createClass(NavModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "position",
+    get: function get() {
+      var position = null;
+      var data = this.data;
+
+      if (data) {
+        position = data.position;
+      }
+
+      return position;
+    }
+  }]);
 
   return NavModalComponent;
 }(rxcomp.Component);
@@ -4507,43 +5057,6 @@ var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
 
       _this.pushChanges();
     });
-    EditorService.viewCreate$({
-      "id": 1,
-      "type": "panorama",
-      "name": "Welcome Room",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "mod2.jpg"
-      },
-      "items": [{
-        "id": 110,
-        "type": "nav",
-        "title": "Barilla Experience",
-        "abstract": "Abstract",
-        "asset": {
-          "type": "image",
-          "folder": "barilla/",
-          "file": "logo-barilla.jpg"
-        },
-        "link": {
-          "title": "Scopri di più...",
-          "href": "https://www.barilla.com/it-it/",
-          "target": "_blank"
-        },
-        "position": [0.9491595148619703, -0.3147945860255039, 0],
-        "viewId": 23
-      }],
-      "orientation": {
-        "latitude": -10,
-        "longitude": 360
-      },
-      "zoom": 75
-    }).pipe(operators.first()).subscribe(function (data) {
-      console.log('EditorService.viewCreate$', data);
-    });
   };
 
   _proto.onSubmit = function onSubmit() {
@@ -4551,6 +5064,56 @@ var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
       console.log('PanoramaModalComponent.onSubmit', this.form.value); // ModalService.resolve(this.form.value);
       // this.form.submitted = true;
       // this.form.reset();
+
+      /*
+      	EditorService.viewCreate$({
+      "id": 1,
+      "type": "panorama",
+      "name": "Welcome Room",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+      	"type": "image",
+      	"folder": "waiting-room/",
+      	"file": "mod2.jpg"
+      },
+      "items": [
+      	{
+      		"id": 110,
+      		"type": "nav",
+      		"title": "Barilla Experience",
+      		"abstract": "Abstract",
+      		"asset": {
+      			"type": "image",
+      			"folder": "barilla/",
+      			"file": "logo-barilla.jpg"
+      		},
+      		"link": {
+      			"title": "Scopri di più...",
+      			"href": "https://www.barilla.com/it-it/",
+      			"target": "_blank"
+      		},
+      		"position": [
+      			0.9491595148619703,
+      			-0.3147945860255039,
+      			0
+      		],
+      		"viewId": 23
+      	}
+      ],
+      "orientation": {
+      	"latitude": -10,
+      	"longitude": 360
+      },
+      "zoom": 75
+      }).pipe(
+      first(),
+      ).subscribe(data => {
+      console.log('EditorService.viewCreate$', data);
+      });
+      */
+    } else {
+      this.form.touched = true;
     }
   };
 
@@ -4562,44 +5125,226 @@ var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
 }(rxcomp.Component);
 PanoramaModalComponent.meta = {
   selector: '[panorama-modal]'
+};var ORIGIN = new THREE.Vector3();
+/*
+{
+	"id": 2310,
+	"type": "plane",
+	"asset": {
+	"type": "video",
+	"folder": "room-3d/",
+	"file": "plane-01.mp4"
+	},
+	"position": { "x": 20, "y": 1.7, "z": 0 },
+	"rotation": { "x": 0, "y": -1.57079632679, "z": 0 },
+	"scale": { "x": 22, "y": 12, "z": 1 }
+}
+*/
+
+var PlaneModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PlaneModalComponent, _Component);
+
+  function PlaneModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PlaneModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = new THREE.Object3D();
+    object.position.copy(this.position);
+    object.lookAt(ORIGIN);
+    console.log(object.rotation);
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Plane,
+      // title: new FormControl(null, RequiredValidator()),
+      // upload: new FormControl(null, RequiredValidator()),
+      position: this.position.multiplyScalar(20).toArray(),
+      rotation: object.rotation.toArray(),
+      // [0, -Math.PI / 2, 0],
+      scale: [3.2, 1.8, 1]
+    });
+    this.controls = form.controls;
+    /*
+    this.controls.viewId.options = [{
+    	name: "Name",
+    	id: 2,
+    }];
+    */
+
+    form.changes$.subscribe(function (changes) {
+      // console.log('PlaneModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+    /*
+    EditorService.data$().pipe(
+    	first(),
+    ).subscribe(data => {
+    	this.controls.viewId.options = data.views.map(view => ({ id: view.id, name: view.name }));
+    	this.pushChanges();
+    });
+    */
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+
+      console.log('PlaneModalComponent.onSubmit', this.view, item);
+      EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        console.log('PlaneModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('PlaneModalComponent.onSubmit.error', error);
+      }); // ModalService.resolve(this.form.value);
+      // this.form.submitted = true;
+      // this.form.reset();
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  _createClass(PlaneModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "position",
+    get: function get() {
+      var position = null;
+      var data = this.data;
+
+      if (data) {
+        position = data.position;
+      }
+
+      return position;
+    }
+  }]);
+
+  return PlaneModalComponent;
+}(rxcomp.Component);
+PlaneModalComponent.meta = {
+  selector: '[plane-modal]'
+};var factories = [EditorComponent, NavModalComponent, PanoramaModalComponent, PlaneModalComponent, ToastOutletComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
+var pipes = [];
+var EditorModule = /*#__PURE__*/function (_Module) {
+  _inheritsLoose(EditorModule, _Module);
+
+  function EditorModule() {
+    return _Module.apply(this, arguments) || this;
+  }
+
+  return EditorModule;
+}(rxcomp.Module);
+EditorModule.meta = {
+  imports: [],
+  declarations: [].concat(factories, pipes),
+  exports: [].concat(factories, pipes)
 };var KeyboardService = /*#__PURE__*/function () {
   function KeyboardService() {}
 
   KeyboardService.keydown$ = function keydown$() {
-    return rxjs.fromEvent(window, 'keydown').pipe(operators.shareReplay(1));
+    if (!this.keydown$_) {
+      this.keydown$_ = rxjs.fromEvent(window, 'keydown').pipe(operators.shareReplay(1));
+    }
+
+    return this.keydown$_;
   };
 
   KeyboardService.keyup$ = function keyup$() {
-    return rxjs.fromEvent(window, 'keyup').pipe(operators.shareReplay(1));
+    if (!this.keyup$_) {
+      this.keyup$_ = rxjs.fromEvent(window, 'keyup').pipe(operators.shareReplay(1));
+    }
+
+    return this.keyup$_;
   };
 
-  KeyboardService.typing$ = function typing$() {
-    var typing = '',
-        to;
-    return this.key$().pipe(operators.map(function (key) {
-      if (to) {
-        clearTimeout(to);
-      }
+  KeyboardService.keys$ = function keys$() {
+    var _this = this;
 
-      typing += key;
-      to = setTimeout(function () {
-        typing = '';
-      }, 1500);
-      return typing;
-    }), operators.shareReplay(1));
+    if (!this.keys$_) {
+      this.keys$_ = rxjs.merge(this.keydown$(), this.keyup$()).pipe(operators.map(function (event) {
+        var keys = _this.keys;
+
+        if (event.type === 'keydown') {
+          keys[event.key] = true;
+        } else {
+          delete keys[event.key];
+        }
+
+        return _this.keys;
+      }), operators.startWith(this.keys), operators.shareReplay(1));
+    }
+
+    return this.keys$_;
   };
 
   KeyboardService.key$ = function key$() {
-    var regexp = /\w/;
-    return this.keydown$().pipe(operators.filter(function (event) {
-      return event.key && event.key.match(regexp);
-    }), operators.map(function (event) {
-      return event.key;
-    }), operators.shareReplay(1));
+    if (!this.key$_) {
+      var regexp = /\w/;
+      this.key$_ = this.keydown$().pipe(operators.filter(function (event) {
+        return event.key && event.key.match(regexp);
+      }), operators.map(function (event) {
+        return event.key;
+      }), operators.shareReplay(1));
+    }
+
+    return this.key$_;
+  };
+
+  KeyboardService.typing$ = function typing$() {
+    if (!this.typing$_) {
+      var typing = '',
+          to;
+      this.typing$_ = this.key$().pipe(operators.map(function (key) {
+        if (to) {
+          clearTimeout(to);
+        }
+
+        typing += key;
+        to = setTimeout(function () {
+          typing = '';
+        }, 1500);
+        return typing;
+      }), operators.shareReplay(1));
+    }
+
+    return this.typing$_;
   };
 
   return KeyboardService;
-}();var ControlComponent = /*#__PURE__*/function (_Component) {
+}();
+
+_defineProperty(KeyboardService, "keys", {});var ControlComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlComponent, _Component);
 
   function ControlComponent() {
@@ -5083,279 +5828,71 @@ ControlUploadComponent.meta = {
 <button type="button" (click)="flow.upload()" [disabled]="!(flow.somethingToUpload$ | async)">Start upload</button>
 <button type="button" (click)="flow.cancel()" [disabled]="!(flow.transfers$ | async).transfers.length">Cancel all</button>
 Total progress: {{(flow.transfers$ | async).totalProgress | percent}}
-*/var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(UploadButtonDirective, _Directive);
+*/var ControlVectorComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlVectorComponent, _ControlComponent);
 
-  function UploadButtonDirective() {
-    return _Directive.apply(this, arguments) || this;
+  function ControlVectorComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
   }
 
-  var _proto = UploadButtonDirective.prototype;
-
-  _proto.init_ = function init_() {
-    /*
-    if (!this.uploader) {
-    	return;
-    }
-    const { node } = getContext(this);
-    // console.log('UploadButtonDirective', this.uploader, node);
-    this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
-    */
-  };
+  var _proto = ControlVectorComponent.prototype;
 
   _proto.onInit = function onInit() {
-    if (this.uploader) {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
-    }
+    this.label = 'vector';
+    this.required = false;
   };
 
-  _createClass(UploadButtonDirective, [{
-    key: "directoryOnly",
-    set: function set(directoriesOnly) {
-      if (directoryOnly_ !== directoriesOnly) {
-        this.directoryOnly_ = directoriesOnly;
-        this.init_();
-      }
+  _createClass(ControlVectorComponent, [{
+    key: "x",
+    get: function get() {
+      return this.control.value[0];
     }
   }, {
-    key: "attributes",
-    set: function set(attributes) {
-      if (this.attributes_ !== attributes) {
-        this.attributes_ = attributes;
-        this.init_();
-      }
+    key: "y",
+    get: function get() {
+      return this.control.value[1];
     }
   }, {
-    key: "uploadButton",
-    set: function set(uploader) {
-      if (this.uploader !== uploader) {
-        this.uploader = uploader; // console.log('UploadButtonDirective.uploader', this.uploader);
-
-        this.init_();
-      }
+    key: "z",
+    get: function get() {
+      return this.control.value[2];
     }
   }]);
 
-  return UploadButtonDirective;
-}(rxcomp.Directive);
-UploadButtonDirective.meta = {
-  selector: '[[uploadButton]]',
-  inputs: ['uploadButton', 'directoryOnly', 'attributes']
-};var UploadDropDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(UploadDropDirective, _Directive);
-
-  function UploadDropDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = UploadDropDirective.prototype;
-
-  _proto.enable = function enable() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node; // console.log('UploadDropDirective.enable', this.uploader);
-
-
-    this.uploader.flow.assignDrop(node);
-  };
-
-  _proto.disable = function disable() {
-    var _getContext2 = rxcomp.getContext(this),
-        node = _getContext2.node;
-
-    this.uploader.flow.unAssignDrop(node);
-  };
-
-  _proto.onInit = function onInit() {
-    if (rxcomp.isPlatformBrowser) {
-      var body = document.querySelector('body');
-      rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        event.preventDefault();
-        return;
-      }), operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('UploadDropDirective.onInit');
-    }
-  };
-
-  _createClass(UploadDropDirective, [{
-    key: "uploadDrop",
-    set: function set(uploader) {
-      if (this.uploader !== uploader) {
-        if (this.uploader) {
-          this.disable();
-        }
-
-        this.uploader = uploader;
-
-        if (uploader) {
-          // console.log('UploadDropDirective.flow', this.uploader);
-          this.enable();
-        }
-      }
-    }
-  }]);
-
-  return UploadDropDirective;
-}(rxcomp.Directive);
-UploadDropDirective.meta = {
-  selector: '[[uploadDrop]]',
-  inputs: ['uploadDrop']
-};var UploadItemComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(UploadItemComponent, _Component);
-
-  function UploadItemComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = UploadItemComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    console.log('UploadItemComponent.onInit', this.item, this.uploader);
-  };
-
-  _proto.onPause = function onPause() {
-    this.pause.next(this.item);
-  };
-
-  _proto.onResume = function onResume() {
-    this.resume.next(this.item);
-  };
-
-  _proto.onCancel = function onCancel() {
-    this.cancel.next(this.item);
-  };
-
-  _proto.onRemove = function onRemove() {
-    this.remove.next(this.item);
-  };
-
-  _createClass(UploadItemComponent, [{
-    key: "UploadItem",
-    set: function set(uploader) {
-      this.uploader = uploader;
-    }
-  }]);
-
-  return UploadItemComponent;
-}(rxcomp.Component);
-UploadItemComponent.meta = {
-  selector: '[uploadItem]',
-  outputs: ['pause', 'resume', 'cancel', 'remove'],
-  inputs: ['uploadItem', 'item'],
+  return ControlVectorComponent;
+}(ControlComponent);
+ControlVectorComponent.meta = {
+  selector: '[control-vector]',
+  inputs: ['control', 'label'],
   template:
   /* html */
-  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [uploadSrc]=\"item\" />\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.progress > 0\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"item.complete\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\">remove</div>\n\t\t</div>\n\t</div>\n\t"
-};var UploadSrcDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(UploadSrcDirective, _Directive);
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"x\" [placeholder]=\"x\" />\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"y\" [placeholder]=\"y\" />\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"z\" [placeholder]=\"z\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ErrorsComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ErrorsComponent, _ControlComponent);
 
-  function UploadSrcDirective() {
-    return _Directive.apply(this, arguments) || this;
+  function ErrorsComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
   }
 
-  var _proto = UploadSrcDirective.prototype;
+  var _proto = ErrorsComponent.prototype;
 
-  _proto.resize2Steps = function resize2Steps(blob, callback) {
-    var canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 480;
-    var ctx = canvas.getContext('2d');
-    var img = new Image();
-
-    img.onload = function () {
-      // set size proportional to image
-      canvas.height = canvas.width * (img.height / img.width); // step 1 - resize to 50%
-
-      var oc = document.createElement('canvas');
-      var octx = oc.getContext('2d');
-      oc.width = img.width * 0.5;
-      oc.height = img.height * 0.5;
-      octx.drawImage(img, 0, 0, oc.width, oc.height); // step 2
-
-      octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5); // step 3, resize to final size
-
-      ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5, 0, 0, canvas.width, canvas.height); //
-
-      callback(canvas.toDataURL('image/jpeg', 0.9));
-    };
-
-    img.src = blob;
+  _proto.onInit = function onInit() {
+    this.labels = window.labels || {};
   };
 
-  _proto.resize = function resize(blob, callback) {
-    if (typeof callback === 'function') {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 640;
-        var MAX_HEIGHT = 480;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        callback(dataUrl);
-      };
-
-      img.src = blob;
-    }
+  _proto.getLabel = function getLabel(key, value) {
+    var label = this.labels["error_" + key];
+    return label;
   };
 
-  _proto.read = function read(file) {
-    var _this = this;
-
-    if (this.subscription_) {
-      this.subscription_.unsubscribe();
-    }
-
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    this.subscription_ = rxjs.fromEvent(reader, 'load').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      var _getContext = rxcomp.getContext(_this),
-          node = _getContext.node;
-
-      var blob = event.target.result; // node.setAttribute('src', blob);
-
-      _this.resize(blob, function (resized) {
-        node.setAttribute('src', resized);
-      });
-    });
-  };
-
-  _createClass(UploadSrcDirective, [{
-    key: "uploadSrc",
-    set: function set(uploadSrc) {
-      if (uploadSrc !== this.uploadSrc_) {
-        this.uploadSrc_ = uploadSrc;
-
-        if (uploadSrc) {
-          this.read(uploadSrc.flowFile.file);
-        }
-      }
-    }
-  }]);
-
-  return UploadSrcDirective;
-}(rxcomp.Directive);
-UploadSrcDirective.meta = {
-  selector: '[[uploadSrc]]',
-  inputs: ['uploadSrc']
+  return ErrorsComponent;
+}(ControlComponent);
+ErrorsComponent.meta = {
+  selector: 'errors-component',
+  inputs: ['control'],
+  template:
+  /* html */
+  "\n\t<div class=\"inner\" [style]=\"{ display: control.invalid && control.touched ? 'block' : 'none' }\">\n\t\t<div class=\"error\" *for=\"let [key, value] of control.errors\">\n\t\t\t<span [innerHTML]=\"getLabel(key, value)\"></span>\n\t\t\t<!-- <span class=\"key\" [innerHTML]=\"key\"></span> <span class=\"value\" [innerHTML]=\"value | json\"></span> -->\n\t\t</div>\n\t</div>\n\t"
 };var IdDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(IdDirective, _Directive);
 
@@ -5524,6 +6061,7 @@ var DragService = /*#__PURE__*/function () {
         downEvent.speed.y = moveEvent.speed.y;
         downEvent.strength.x = moveEvent.strength.x;
         downEvent.strength.y = moveEvent.strength.y;
+        moveEvent.shiftKey = event.shiftKey;
         events$.next(moveEvent);
         return moveEvent;
       }
@@ -5956,7 +6494,1245 @@ ValueDirective.meta = {
 HlsDirective.meta = {
   selector: '[[hls]]',
   inputs: ['hls']
-};// Polyfills
+};/**
+ * @author Nikos M. / https://github.com/foo123/
+ */
+// http://en.wikipedia.org/wiki/RGBE_image_format
+
+var RGBELoader = function RGBELoader(manager) {
+  THREE$1.DataTextureLoader.call(this, manager);
+  this.type = THREE$1.UnsignedByteType;
+};
+
+RGBELoader.prototype = Object.assign(Object.create(THREE$1.DataTextureLoader.prototype), {
+  constructor: RGBELoader,
+  // adapted from http://www.graphics.cornell.edu/~bjw/rgbe.html
+  parse: function parse(buffer) {
+    var
+    /* return codes for rgbe routines */
+    //RGBE_RETURN_SUCCESS = 0,
+    RGBE_RETURN_FAILURE = -1,
+
+    /* default error routine.  change this to change error handling */
+    rgbe_read_error = 1,
+        rgbe_write_error = 2,
+        rgbe_format_error = 3,
+        rgbe_memory_error = 4,
+        rgbe_error = function rgbe_error(rgbe_error_code, msg) {
+      switch (rgbe_error_code) {
+        case rgbe_read_error:
+          console.error("RGBELoader Read Error: " + (msg || ''));
+          break;
+
+        case rgbe_write_error:
+          console.error("RGBELoader Write Error: " + (msg || ''));
+          break;
+
+        case rgbe_format_error:
+          console.error("RGBELoader Bad File Format: " + (msg || ''));
+          break;
+
+        default:
+        case rgbe_memory_error:
+          console.error("RGBELoader: Error: " + (msg || ''));
+      }
+
+      return RGBE_RETURN_FAILURE;
+    },
+
+    /* offsets to red, green, and blue components in a data (float) pixel */
+    //RGBE_DATA_RED = 0,
+    //RGBE_DATA_GREEN = 1,
+    //RGBE_DATA_BLUE = 2,
+
+    /* number of floats per pixel, use 4 since stored in rgba image format */
+    //RGBE_DATA_SIZE = 4,
+
+    /* flags indicating which fields in an rgbe_header_info are valid */
+    RGBE_VALID_PROGRAMTYPE = 1,
+        RGBE_VALID_FORMAT = 2,
+        RGBE_VALID_DIMENSIONS = 4,
+        NEWLINE = "\n",
+        fgets = function fgets(buffer, lineLimit, consume) {
+      lineLimit = !lineLimit ? 1024 : lineLimit;
+      var p = buffer.pos,
+          i = -1,
+          len = 0,
+          s = '',
+          chunkSize = 128,
+          chunk = String.fromCharCode.apply(null, new Uint16Array(buffer.subarray(p, p + chunkSize)));
+
+      while (0 > (i = chunk.indexOf(NEWLINE)) && len < lineLimit && p < buffer.byteLength) {
+        s += chunk;
+        len += chunk.length;
+        p += chunkSize;
+        chunk += String.fromCharCode.apply(null, new Uint16Array(buffer.subarray(p, p + chunkSize)));
+      }
+
+      if (-1 < i) {
+        /*for (i=l-1; i>=0; i--) {
+        	byteCode = m.charCodeAt(i);
+        	if (byteCode > 0x7f && byteCode <= 0x7ff) byteLen++;
+        	else if (byteCode > 0x7ff && byteCode <= 0xffff) byteLen += 2;
+        	if (byteCode >= 0xDC00 && byteCode <= 0xDFFF) i--; //trail surrogate
+        }*/
+        if (false !== consume) buffer.pos += len + i + 1;
+        return s + chunk.slice(0, i);
+      }
+
+      return false;
+    },
+
+    /* minimal header reading.  modify if you want to parse more information */
+    RGBE_ReadHeader = function RGBE_ReadHeader(buffer) {
+      var line,
+          match,
+          // regexes to parse header info fields
+      magic_token_re = /^#\?(\S+)$/,
+          gamma_re = /^\s*GAMMA\s*=\s*(\d+(\.\d+)?)\s*$/,
+          exposure_re = /^\s*EXPOSURE\s*=\s*(\d+(\.\d+)?)\s*$/,
+          format_re = /^\s*FORMAT=(\S+)\s*$/,
+          dimensions_re = /^\s*\-Y\s+(\d+)\s+\+X\s+(\d+)\s*$/,
+          // RGBE format header struct
+      header = {
+        valid: 0,
+
+        /* indicate which fields are valid */
+        string: '',
+
+        /* the actual header string */
+        comments: '',
+
+        /* comments found in header */
+        programtype: 'RGBE',
+
+        /* listed at beginning of file to identify it after "#?". defaults to "RGBE" */
+        format: '',
+
+        /* RGBE format, default 32-bit_rle_rgbe */
+        gamma: 1.0,
+
+        /* image has already been gamma corrected with given gamma. defaults to 1.0 (no correction) */
+        exposure: 1.0,
+
+        /* a value of 1.0 in an image corresponds to <exposure> watts/steradian/m^2. defaults to 1.0 */
+        width: 0,
+        height: 0
+        /* image dimensions, width/height */
+
+      };
+
+      if (buffer.pos >= buffer.byteLength || !(line = fgets(buffer))) {
+        return rgbe_error(rgbe_read_error, "no header found");
+      }
+      /* if you want to require the magic token then uncomment the next line */
+
+
+      if (!(match = line.match(magic_token_re))) {
+        return rgbe_error(rgbe_format_error, "bad initial token");
+      }
+
+      header.valid |= RGBE_VALID_PROGRAMTYPE;
+      header.programtype = match[1];
+      header.string += line + "\n";
+
+      while (true) {
+        line = fgets(buffer);
+        if (false === line) break;
+        header.string += line + "\n";
+
+        if ('#' === line.charAt(0)) {
+          header.comments += line + "\n";
+          continue; // comment line
+        }
+
+        if (match = line.match(gamma_re)) {
+          header.gamma = parseFloat(match[1], 10);
+        }
+
+        if (match = line.match(exposure_re)) {
+          header.exposure = parseFloat(match[1], 10);
+        }
+
+        if (match = line.match(format_re)) {
+          header.valid |= RGBE_VALID_FORMAT;
+          header.format = match[1]; //'32-bit_rle_rgbe';
+        }
+
+        if (match = line.match(dimensions_re)) {
+          header.valid |= RGBE_VALID_DIMENSIONS;
+          header.height = parseInt(match[1], 10);
+          header.width = parseInt(match[2], 10);
+        }
+
+        if (header.valid & RGBE_VALID_FORMAT && header.valid & RGBE_VALID_DIMENSIONS) break;
+      }
+
+      if (!(header.valid & RGBE_VALID_FORMAT)) {
+        return rgbe_error(rgbe_format_error, "missing format specifier");
+      }
+
+      if (!(header.valid & RGBE_VALID_DIMENSIONS)) {
+        return rgbe_error(rgbe_format_error, "missing image size specifier");
+      }
+
+      return header;
+    },
+        RGBE_ReadPixels_RLE = function RGBE_ReadPixels_RLE(buffer, w, h) {
+      var data_rgba,
+          offset,
+          pos,
+          count,
+          byteValue,
+          scanline_buffer,
+          ptr,
+          ptr_end,
+          i,
+          l,
+          off,
+          isEncodedRun,
+          scanline_width = w,
+          num_scanlines = h,
+          rgbeStart;
+
+      if ( // run length encoding is not allowed so read flat
+      scanline_width < 8 || scanline_width > 0x7fff || // this file is not run length encoded
+      2 !== buffer[0] || 2 !== buffer[1] || buffer[2] & 0x80) {
+        // return the flat buffer
+        return new Uint8Array(buffer);
+      }
+
+      if (scanline_width !== (buffer[2] << 8 | buffer[3])) {
+        return rgbe_error(rgbe_format_error, "wrong scanline width");
+      }
+
+      data_rgba = new Uint8Array(4 * w * h);
+
+      if (!data_rgba.length) {
+        return rgbe_error(rgbe_memory_error, "unable to allocate buffer space");
+      }
+
+      offset = 0;
+      pos = 0;
+      ptr_end = 4 * scanline_width;
+      rgbeStart = new Uint8Array(4);
+      scanline_buffer = new Uint8Array(ptr_end); // read in each successive scanline
+
+      while (num_scanlines > 0 && pos < buffer.byteLength) {
+        if (pos + 4 > buffer.byteLength) {
+          return rgbe_error(rgbe_read_error);
+        }
+
+        rgbeStart[0] = buffer[pos++];
+        rgbeStart[1] = buffer[pos++];
+        rgbeStart[2] = buffer[pos++];
+        rgbeStart[3] = buffer[pos++];
+
+        if (2 != rgbeStart[0] || 2 != rgbeStart[1] || (rgbeStart[2] << 8 | rgbeStart[3]) != scanline_width) {
+          return rgbe_error(rgbe_format_error, "bad rgbe scanline format");
+        } // read each of the four channels for the scanline into the buffer
+        // first red, then green, then blue, then exponent
+
+
+        ptr = 0;
+
+        while (ptr < ptr_end && pos < buffer.byteLength) {
+          count = buffer[pos++];
+          isEncodedRun = count > 128;
+          if (isEncodedRun) count -= 128;
+
+          if (0 === count || ptr + count > ptr_end) {
+            return rgbe_error(rgbe_format_error, "bad scanline data");
+          }
+
+          if (isEncodedRun) {
+            // a (encoded) run of the same value
+            byteValue = buffer[pos++];
+
+            for (i = 0; i < count; i++) {
+              scanline_buffer[ptr++] = byteValue;
+            } //ptr += count;
+
+          } else {
+            // a literal-run
+            scanline_buffer.set(buffer.subarray(pos, pos + count), ptr);
+            ptr += count;
+            pos += count;
+          }
+        } // now convert data from buffer into rgba
+        // first red, then green, then blue, then exponent (alpha)
+
+
+        l = scanline_width; //scanline_buffer.byteLength;
+
+        for (i = 0; i < l; i++) {
+          off = 0;
+          data_rgba[offset] = scanline_buffer[i + off];
+          off += scanline_width; //1;
+
+          data_rgba[offset + 1] = scanline_buffer[i + off];
+          off += scanline_width; //1;
+
+          data_rgba[offset + 2] = scanline_buffer[i + off];
+          off += scanline_width; //1;
+
+          data_rgba[offset + 3] = scanline_buffer[i + off];
+          offset += 4;
+        }
+
+        num_scanlines--;
+      }
+
+      return data_rgba;
+    };
+
+    var RGBEByteToRGBFloat = function RGBEByteToRGBFloat(sourceArray, sourceOffset, destArray, destOffset) {
+      var e = sourceArray[sourceOffset + 3];
+      var scale = Math.pow(2.0, e - 128.0) / 255.0;
+      destArray[destOffset + 0] = sourceArray[sourceOffset + 0] * scale;
+      destArray[destOffset + 1] = sourceArray[sourceOffset + 1] * scale;
+      destArray[destOffset + 2] = sourceArray[sourceOffset + 2] * scale;
+    };
+
+    var RGBEByteToRGBHalf = function () {
+      // Source: http://gamedev.stackexchange.com/questions/17326/conversion-of-a-number-from-single-precision-floating-point-representation-to-a/17410#17410
+      var floatView = new Float32Array(1);
+      var int32View = new Int32Array(floatView.buffer);
+      /* This method is faster than the OpenEXR implementation (very often
+       * used, eg. in Ogre), with the additional benefit of rounding, inspired
+       * by James Tursa?s half-precision code. */
+
+      function toHalf(val) {
+        floatView[0] = val;
+        var x = int32View[0];
+        var bits = x >> 16 & 0x8000;
+        /* Get the sign */
+
+        var m = x >> 12 & 0x07ff;
+        /* Keep one extra bit for rounding */
+
+        var e = x >> 23 & 0xff;
+        /* Using int is faster here */
+
+        /* If zero, or denormal, or exponent underflows too much for a denormal
+         * half, return signed zero. */
+
+        if (e < 103) return bits;
+        /* If NaN, return NaN. If Inf or exponent overflow, return Inf. */
+
+        if (e > 142) {
+          bits |= 0x7c00;
+          /* If exponent was 0xff and one mantissa bit was set, it means NaN,
+          		 * not Inf, so make sure we set one mantissa bit too. */
+
+          bits |= (e == 255 ? 0 : 1) && x & 0x007fffff;
+          return bits;
+        }
+        /* If exponent underflows but not too much, return a denormal */
+
+
+        if (e < 113) {
+          m |= 0x0800;
+          /* Extra rounding may overflow and set mantissa to 0 and exponent
+           * to 1, which is OK. */
+
+          bits |= (m >> 114 - e) + (m >> 113 - e & 1);
+          return bits;
+        }
+
+        bits |= e - 112 << 10 | m >> 1;
+        /* Extra rounding. An overflow will set mantissa to 0 and increment
+         * the exponent, which is OK. */
+
+        bits += m & 1;
+        return bits;
+      }
+
+      return function (sourceArray, sourceOffset, destArray, destOffset) {
+        var e = sourceArray[sourceOffset + 3];
+        var scale = Math.pow(2.0, e - 128.0) / 255.0;
+        destArray[destOffset + 0] = toHalf(sourceArray[sourceOffset + 0] * scale);
+        destArray[destOffset + 1] = toHalf(sourceArray[sourceOffset + 1] * scale);
+        destArray[destOffset + 2] = toHalf(sourceArray[sourceOffset + 2] * scale);
+      };
+    }();
+
+    var byteArray = new Uint8Array(buffer);
+    byteArray.pos = 0;
+    var rgbe_header_info = RGBE_ReadHeader(byteArray);
+
+    if (RGBE_RETURN_FAILURE !== rgbe_header_info) {
+      var w = rgbe_header_info.width,
+          h = rgbe_header_info.height,
+          image_rgba_data = RGBE_ReadPixels_RLE(byteArray.subarray(byteArray.pos), w, h);
+
+      if (RGBE_RETURN_FAILURE !== image_rgba_data) {
+        switch (this.type) {
+          case THREE$1.UnsignedByteType:
+            var data = image_rgba_data;
+            var format = THREE$1.RGBEFormat; // handled as THREE.RGBAFormat in shaders
+
+            var type = THREE$1.UnsignedByteType;
+            break;
+
+          case THREE$1.FloatType:
+            var numElements = image_rgba_data.length / 4 * 3;
+            var floatArray = new Float32Array(numElements);
+
+            for (var j = 0; j < numElements; j++) {
+              RGBEByteToRGBFloat(image_rgba_data, j * 4, floatArray, j * 3);
+            }
+
+            var data = floatArray;
+            var format = THREE$1.RGBFormat;
+            var type = THREE$1.FloatType;
+            break;
+
+          case THREE$1.HalfFloatType:
+            var numElements = image_rgba_data.length / 4 * 3;
+            var halfArray = new Uint16Array(numElements);
+
+            for (var j = 0; j < numElements; j++) {
+              RGBEByteToRGBHalf(image_rgba_data, j * 4, halfArray, j * 3);
+            }
+
+            var data = halfArray;
+            var format = THREE$1.RGBFormat;
+            var type = THREE$1.HalfFloatType;
+            break;
+
+          default:
+            console.error('THREE.RGBELoader: unsupported type: ', this.type);
+            break;
+        }
+
+        return {
+          width: w,
+          height: h,
+          data: data,
+          header: rgbe_header_info.string,
+          gamma: rgbe_header_info.gamma,
+          exposure: rgbe_header_info.exposure,
+          format: format,
+          type: type
+        };
+      }
+    }
+
+    return null;
+  },
+  setDataType: function setDataType(value) {
+    this.type = value;
+    return this;
+  },
+  load: function load(url, onLoad, onProgress, onError) {
+    function onLoadCallback(texture, texData) {
+      switch (texture.type) {
+        case THREE$1.UnsignedByteType:
+          texture.encoding = THREE$1.RGBEEncoding;
+          texture.minFilter = THREE$1.NearestFilter;
+          texture.magFilter = THREE$1.NearestFilter;
+          texture.generateMipmaps = false;
+          texture.flipY = true;
+          break;
+
+        case THREE$1.FloatType:
+          texture.encoding = THREE$1.LinearEncoding;
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.generateMipmaps = false;
+          texture.flipY = true;
+          break;
+
+        case THREE$1.HalfFloatType:
+          texture.encoding = THREE$1.LinearEncoding;
+          texture.minFilter = THREE$1.LinearFilter;
+          texture.magFilter = THREE$1.LinearFilter;
+          texture.generateMipmaps = false;
+          texture.flipY = true;
+          break;
+      }
+
+      if (onLoad) onLoad(texture, texData);
+    }
+
+    return THREE$1.DataTextureLoader.prototype.load.call(this, url, onLoadCallback, onProgress, onError);
+  }
+});var DebugService = /*#__PURE__*/function () {
+  DebugService.getService = function getService() {
+    if (!this.service_) {
+      this.service_ = new DebugService();
+    }
+
+    return this.service_;
+  };
+
+  _createClass(DebugService, [{
+    key: "message",
+    get: function get() {
+      return this.message$.getValue();
+    }
+  }]);
+
+  function DebugService() {
+    if (DebugService.service_) {
+      throw 'DebugService is a singleton class!';
+    }
+
+    this.message$ = new rxjs.BehaviorSubject(null);
+  }
+
+  var _proto = DebugService.prototype;
+
+  _proto.setMessage = function setMessage(message) {
+    if (this.message !== message) {
+      this.message$.next(message);
+    }
+  };
+
+  return DebugService;
+}();var EnvMapLoader = /*#__PURE__*/function () {
+  function EnvMapLoader() {}
+
+  EnvMapLoader.load = function load(item, renderer, callback) {
+    this.video = null;
+
+    if (!item.asset) {
+      return;
+    }
+
+    if (item.asset.file === 'publisherStream') {
+      return this.loadPublisherStreamBackground(renderer, callback);
+    } else if (item.asset.file.indexOf('.hdr') !== -1) {
+      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
+      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.m3u8') !== -1) {
+      return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
+    } else {
+      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    }
+  };
+
+  EnvMapLoader.loadBackground = function loadBackground(path, file, renderer, callback) {
+    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    var loader = new THREE$1.TextureLoader();
+    loader.setPath(path).load(file, function (texture) {
+      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
+
+      pmremGenerator.dispose();
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, false);
+      }
+    });
+    return loader;
+  };
+
+  EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
+    var _this = this;
+
+    var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
+      // const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+      var target = "#stream-" + publisherStreamId;
+      var video = document.querySelector(target + " video");
+
+      if (!video) {
+        return;
+      }
+
+      var onPlaying = function onPlaying() {
+        var texture = _this.texture = new THREE$1.VideoTexture(video);
+        texture.minFilter = THREE$1.LinearFilter;
+        texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
+        texture.format = THREE$1.RGBFormat;
+        texture.needsUpdate = true;
+        var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+          generateMipmaps: true,
+          // minFilter: THREE.LinearMipmapLinearFilter,
+          minFilter: THREE$1.LinearFilter,
+          magFilter: THREE$1.LinearFilter,
+          mapping: THREE$1.UVMapping,
+          format: THREE$1.RGBFormat
+        }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
+
+        if (typeof callback === 'function') {
+          callback(cubeRenderTarget.texture, texture, false);
+        }
+      };
+
+      video.crossOrigin = 'anonymous';
+
+      if (video.readyState >= video.HAVE_FUTURE_DATA) {
+        onPlaying();
+      } else {
+        video.oncanplay = function () {
+          onPlaying();
+        };
+      }
+    };
+
+    StreamService.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
+      return onPublisherStreamId(publisherStreamId);
+    });
+  };
+
+  EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
+    var _this2 = this;
+
+    var debugService = DebugService.getService();
+    this.video = true;
+    var video = this.video;
+
+    var onPlaying = function onPlaying() {
+      video.oncanplay = null;
+      var texture = new THREE$1.VideoTexture(video);
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.format = THREE$1.RGBFormat;
+      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
+
+      var cubeRenderTarget = _this2.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+        generateMipmaps: true,
+        // minFilter: THREE.LinearMipmapLinearFilter,
+        minFilter: THREE$1.LinearFilter,
+        magFilter: THREE$1.LinearFilter,
+        mapping: THREE$1.UVMapping,
+        format: THREE$1.RGBFormat
+      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
+
+      if (typeof callback === 'function') {
+        callback(cubeRenderTarget.texture, texture, false);
+      }
+    }; // video.addEventListener('playing', onPlaying);
+
+
+    video.oncanplay = function () {
+      // console.log('EnvMapLoader.loadVideoBackground.oncanplay');
+      onPlaying();
+    };
+
+    video.src = path + file;
+    video.load();
+    video.play().then(function () {
+      // console.log('EnvMapLoader.loadVideoBackground.play');
+      debugService.setMessage("play " + video.src);
+    }, function (error) {
+      console.log('EnvMapLoader.loadVideoBackground.play.error', error);
+      debugService.setMessage("play.error " + video.src);
+    });
+  };
+
+  EnvMapLoader.loadHlslVideoBackground = function loadHlslVideoBackground(src, renderer, callback) {
+    var video = document.createElement('video');
+
+    var onPlaying = function onPlaying() {
+      video.oncanplay = null;
+      var texture = new THREE$1.VideoTexture(video);
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.format = THREE$1.RGBFormat;
+      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
+
+      var cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+        generateMipmaps: true,
+        // minFilter: THREE.LinearMipmapLinearFilter,
+        minFilter: THREE$1.LinearFilter,
+        magFilter: THREE$1.LinearFilter,
+        mapping: THREE$1.UVMapping,
+        format: THREE$1.RGBFormat
+      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
+
+      if (typeof callback === 'function') {
+        callback(cubeRenderTarget.texture, texture, false);
+      }
+    };
+
+    video.oncanplay = function () {
+      // console.log('videoReady', videoReady);
+      onPlaying();
+    };
+
+    if (Hls.isSupported()) {
+      var hls = new Hls(); // bind them together
+
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        hls.loadSource(src);
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          // console.log('HlsDirective', data.levels);
+          video.play();
+        });
+      });
+    }
+  };
+
+  EnvMapLoader.loadRgbeBackground = function loadRgbeBackground(path, file, renderer, callback) {
+    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    var loader = new RGBELoader();
+    loader.setDataType(THREE$1.UnsignedByteType) // .setDataType(THREE.FloatType)
+    .setPath(path).load(file, function (texture) {
+      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
+
+      pmremGenerator.dispose();
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, true);
+      }
+    });
+    return loader;
+  };
+
+  _createClass(EnvMapLoader, null, [{
+    key: "video",
+    get: function get() {
+      return this.video_;
+    },
+    set: function set(video) {
+      if (this.video_) {
+        this.video_.pause();
+
+        if (this.video_.parentNode) {
+          this.video_.parentNode.removeChild(this.video_);
+        }
+
+        this.video_ = null;
+      }
+
+      if (video) {
+        var _video = this.video_ = document.createElement('video');
+
+        _video.loop = true;
+        _video.muted = true;
+        _video.playsInline = true;
+        _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
+      }
+    }
+  }, {
+    key: "cubeRenderTarget",
+    set: function set(cubeRenderTarget) {
+      if (this.cubeRenderTarget_) {
+        this.cubeRenderTarget_.texture.dispose();
+        this.cubeRenderTarget_.dispose();
+      }
+
+      this.cubeRenderTarget_ = cubeRenderTarget;
+    }
+  }, {
+    key: "texture",
+    set: function set(texture) {
+      if (this.texture_) {
+        this.texture_.dispose();
+      }
+
+      this.texture_ = texture;
+    }
+  }]);
+
+  return EnvMapLoader;
+}();var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
+  _inheritsLoose(FreezableMesh, _THREE$Mesh);
+
+  _createClass(FreezableMesh, [{
+    key: "freezed",
+    get: function get() {
+      return this.freezed_;
+    },
+    set: function set(freezed) {
+      // !!! cycle through freezable and not freezable
+      this.freezed_ = freezed;
+      this.children.filter(function (x) {
+        return x.__lookupGetter__('freezed');
+      }).forEach(function (x) {
+        return x.freezed = freezed;
+      });
+    }
+  }]);
+
+  function FreezableMesh(geometry, material) {
+    var _this;
+
+    geometry = geometry || new THREE$1.BoxGeometry(5, 5, 5);
+    material = material || new THREE$1.MeshBasicMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _THREE$Mesh.call(this, geometry, material) || this;
+    _this.freezed = false;
+    return _this;
+  }
+
+  var _proto = FreezableMesh.prototype;
+
+  _proto.freeze = function freeze() {
+    this.freezed = true;
+  };
+
+  _proto.unfreeze = function unfreeze() {
+    this.freezed = false;
+  };
+
+  return FreezableMesh;
+}(THREE$1.Mesh);var EmittableMesh = /*#__PURE__*/function (_FreezableMesh) {
+  _inheritsLoose(EmittableMesh, _FreezableMesh);
+
+  function EmittableMesh(geometry, material) {
+    var _this;
+
+    geometry = geometry || new THREE$1.BoxGeometry(5, 5, 5);
+    material = material || new THREE$1.MeshBasicMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _FreezableMesh.call(this, geometry, material) || this;
+    _this.events = {};
+    return _this;
+  }
+
+  var _proto = EmittableMesh.prototype;
+
+  _proto.on = function on(type, callback) {
+    var _this2 = this;
+
+    var event = this.events[type] = this.events[type] || [];
+    event.push(callback);
+    return function () {
+      _this2.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    };
+  };
+
+  _proto.off = function off(type, callback) {
+    var event = this.events[type];
+
+    if (event) {
+      this.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    }
+  };
+
+  _proto.emit = function emit(type, data) {
+    var event = this.events[type];
+
+    if (event) {
+      event.forEach(function (callback) {
+        // callback.call(this, data);
+        callback(data);
+      });
+    }
+
+    var broadcast = this.events.broadcast;
+
+    if (broadcast) {
+      broadcast.forEach(function (callback) {
+        callback(type, data);
+      });
+    }
+  };
+
+  return EmittableMesh;
+}(FreezableMesh);var Interactive = function Interactive() {};
+Interactive.items = [];
+Interactive.hittest = interactiveHittest.bind(Interactive);
+Interactive.dispose = interactiveDispose.bind(Interactive);
+function interactiveHittest(raycaster, down, event) {
+  var _this = this;
+
+  if (down === void 0) {
+    down = false;
+  }
+
+  var debugService = DebugService.getService();
+
+  if (this.down !== down) {
+    this.down = down;
+    this.lock = false;
+  }
+
+  var items = this.items.filter(function (x) {
+    return !x.freezed;
+  });
+  var intersections = raycaster.intersectObjects(items);
+  var key, hit;
+  var hash = {};
+  intersections.forEach(function (intersection, i) {
+    var object = intersection.object;
+    key = object.uuid;
+
+    if (i === 0) {
+      if (_this.lastIntersectedObject !== object) {
+        _this.lastIntersectedObject = object;
+        hit = object;
+        debugService.setMessage(hit.name || hit.id); // haptic feedback
+      } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
+        object.intersection = intersection;
+        object.emit('move', object);
+      }
+    }
+
+    hash[key] = intersection;
+  });
+
+  if (intersections.length === 0) {
+    this.lastIntersectedObject = null;
+  }
+
+  items.forEach(function (x) {
+    x.intersection = hash[x.uuid];
+    x.over = x === _this.lastIntersectedObject || !x.depthTest && x.intersection && (!_this.lastIntersectedObject || _this.lastIntersectedObject.depthTest);
+    x.down = down && x.over && !_this.lock;
+
+    if (x.down) {
+      _this.lock = true;
+    }
+  });
+  return hit;
+}
+function interactiveDispose(object) {
+  if (object) {
+    var index = this.items.indexOf(object);
+
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
+  }
+}var InteractiveMesh = /*#__PURE__*/function (_EmittableMesh) {
+  _inheritsLoose(InteractiveMesh, _EmittableMesh);
+
+  /*
+  static hittest(raycaster, down = false, event = defaultEvent) {
+  	const debugService = DebugService.getService();
+  	if (InteractiveMesh.down !== down) {
+  		InteractiveMesh.down = down;
+  		InteractiveMesh.lock = false;
+  	}
+  	const items = InteractiveMesh.items.filter(x => !x.freezed);
+  	const intersections = raycaster.intersectObjects(items);
+  	let key, hit;
+  	const hash = {};
+  	intersections.forEach((intersection, i) => {
+  		const object = intersection.object;
+  		key = object.uuid;
+  		if (i === 0) {
+  			if (InteractiveMesh.lastIntersectedObject !== object) {
+  				InteractiveMesh.lastIntersectedObject = object;
+  				hit = object;
+  				debugService.setMessage(hit.name || hit.id);
+  				// haptic feedback
+  			} else if (
+  				Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 ||
+  				Math.abs(object.intersection.point.y - intersection.point.y) > 0.01
+  			) {
+  				object.intersection = intersection;
+  				object.emit('move', object);
+  			}
+  		}
+  		hash[key] = intersection;
+  	});
+  	items.forEach(x => {
+  		x.intersection = hash[x.uuid];
+  		x.over = (x === InteractiveMesh.lastIntersectedObject) || (!x.depthTest && x.intersection);
+  		x.down = down && x.over && !InteractiveMesh.lock;
+  		if (x.down) {
+  			InteractiveMesh.lock = true;
+  		}
+  	});
+  	return hit;
+  }
+  
+  static dispose(object) {
+  	if (object) {
+  		const index = InteractiveMesh.items.indexOf(object);
+  		if (index !== -1) {
+  			InteractiveMesh.items.splice(index, 1);
+  		}
+  	}
+  }
+  */
+  function InteractiveMesh(geometry, material) {
+    var _this;
+
+    _this = _EmittableMesh.call(this, geometry, material) || this;
+    _this.depthTest = true;
+    _this.over_ = false;
+    _this.down_ = false;
+    Interactive.items.push(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(InteractiveMesh, [{
+    key: "over",
+    get: function get() {
+      return this.over_;
+    },
+    set: function set(over) {
+      if (this.over_ != over) {
+        this.over_ = over;
+        /*
+        if (over) {
+        	this.emit('hit', this);
+        }
+        */
+
+        if (over) {
+          this.emit('over', this);
+        } else {
+          this.emit('out', this);
+        }
+      }
+    }
+  }, {
+    key: "down",
+    get: function get() {
+      return this.down_;
+    },
+    set: function set(down) {
+      down = down && this.over;
+
+      if (this.down_ != down) {
+        this.down_ = down;
+
+        if (down) {
+          this.emit('down', this);
+        } else {
+          this.emit('up', this);
+        }
+      }
+    }
+  }]);
+
+  return InteractiveMesh;
+}(EmittableMesh);function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
+  THREE$1.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
+  this.format = format !== undefined ? format : THREE.RGBFormat;
+  this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
+  this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
+  this.mapping = THREE.UVMapping;
+  this.generateMipmaps = false;
+}
+
+VideoTexture.prototype = Object.assign(Object.create(THREE$1.Texture.prototype), {
+  constructor: VideoTexture,
+  isVideoTexture: true,
+  update: function update() {
+    var video = this.image;
+
+    if (video.readyState >= video.HAVE_CURRENT_DATA) {
+      this.needsUpdate = true;
+    }
+  }
+});var PANORAMA_RADIUS = 101;
+var VERTEX_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\t// gl_PointSize = 8.0;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
+var FRAGMENT_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float tween;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
+
+var Panorama = /*#__PURE__*/function () {
+  function Panorama() {
+    this.tween = 0;
+    this.create();
+  }
+
+  var _proto = Panorama.prototype;
+
+  _proto.create = function create() {
+    var geometry = new THREE$1.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
+    geometry.scale(-1, 1, 1);
+    geometry.rotateY(Math.PI);
+    var material = new THREE$1.ShaderMaterial({
+      // depthTest: false,
+      depthWrite: false,
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: FRAGMENT_SHADER,
+      uniforms: {
+        texture: {
+          type: "t",
+          value: null
+        },
+        resolution: {
+          value: new THREE$1.Vector2()
+        },
+        tween: {
+          value: 0
+        },
+        rgbe: {
+          value: false
+        }
+      }
+    });
+    /*
+    const material = new THREE.MeshBasicMaterial({
+    	transparent: true,
+    	opacity: 0,
+    });
+    */
+
+    var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
+
+    mesh.name = '[panorama]';
+  };
+
+  _proto.swap = function swap(view, renderer, callback, onexit) {
+    var _this = this;
+
+    var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
+    var material = this.mesh.material;
+
+    if (this.tween > 0) {
+      gsap.to(this, 0.5, {
+        tween: 0,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          material.uniforms.tween.value = _this.tween;
+          material.needsUpdate = true;
+        },
+        onComplete: function onComplete() {
+          if (typeof onexit === 'function') {
+            onexit(view);
+          }
+
+          _this.load(item, renderer, function (envMap, texture, rgbe) {
+            gsap.to(_this, 0.5, {
+              tween: 1,
+              ease: Power2.easeInOut,
+              onUpdate: function onUpdate() {
+                material.uniforms.tween.value = _this.tween;
+                material.needsUpdate = true;
+              }
+            });
+
+            if (typeof callback === 'function') {
+              callback(envMap, texture, rgbe);
+            }
+          });
+        }
+      });
+    } else {
+      if (typeof onexit === 'function') {
+        onexit(view);
+      }
+
+      this.load(item, renderer, function (envMap, texture, rgbe) {
+        gsap.to(_this, 0.5, {
+          tween: 1,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            material.uniforms.tween.value = _this.tween;
+            material.needsUpdate = true;
+          }
+        });
+
+        if (typeof callback === 'function') {
+          callback(envMap, texture, rgbe);
+        }
+      });
+    }
+  };
+
+  _proto.crossfade = function crossfade(item, renderer, callback) {
+    var material = this.mesh.material;
+    this.load(item, renderer, function (envMap, texture, rgbe) {
+      material.uniforms.tween.value = 1;
+      material.needsUpdate = true;
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, rgbe);
+      }
+    });
+  };
+
+  _proto.load = function load(item, renderer, callback) {
+    var material = this.mesh.material;
+    EnvMapLoader.load(item, renderer, function (envMap, texture, rgbe, video, pmremGenerator) {
+      if (material.uniforms.texture.value) {
+        material.uniforms.texture.value.dispose();
+        material.uniforms.texture.value = null;
+      }
+
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.needsUpdate = true; // material.map = texture;
+
+      material.uniforms.texture.value = texture;
+      material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height);
+      material.uniforms.tween.value = 0;
+      material.uniforms.rgbe.value = rgbe; // console.log(texture.width, texture.height);
+
+      material.needsUpdate = true;
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, rgbe);
+      }
+    });
+  };
+
+  _proto.loadVideo = function loadVideo(src) {
+    var video = document.createElement('video');
+    /*
+    const temp = document.querySelector('.temp');
+    temp.appendChild(video);
+    */
+
+    video.src = src;
+    video.muted = true;
+    video.playsinline = video.playsInline = true;
+    video.play();
+    this.setVideo(video);
+  };
+
+  _proto.setVideo = function setVideo(video) {
+    var _this2 = this;
+
+    // console.log('Panorama.setVideo', video);
+    if (video) {
+
+      var onPlaying = function onPlaying() {
+        var texture = new VideoTexture(video);
+        texture.minFilter = THREE$1.LinearFilter;
+        texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
+        texture.format = THREE$1.RGBFormat;
+        texture.needsUpdate = true;
+        var material = _this2.mesh.material;
+        material.map = texture;
+        material.uniforms.texture.value = texture;
+        material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
+
+        material.needsUpdate = true; // video.currentTime = 1;
+        // video.load();
+      }; // video.addEventListener('playing', onPlaying);
+
+
+      video.crossOrigin = 'anonymous';
+
+      video.oncanplay = function () {
+
+        onPlaying();
+      };
+      /*
+      video.width = 640;
+      video.height = 480;
+      */
+
+      /*
+      video.addEventListener("play", function() {
+      	frameloop();
+      });
+      */
+
+    }
+  };
+
+  return Panorama;
+}();// Polyfills
 
 if ( Number.EPSILON === undefined ) {
 
@@ -6134,7 +7910,6 @@ const RGBFormat = 1022;
 const RGBAFormat = 1023;
 const LuminanceFormat = 1024;
 const LuminanceAlphaFormat = 1025;
-const RGBEFormat = RGBAFormat;
 const DepthFormat = 1026;
 const DepthStencilFormat = 1027;
 const RedFormat = 1028;
@@ -34193,7 +35968,7 @@ function testPoint( point, index, localThresholdSq, matrixWorld, raycaster, inte
  * @author mrdoob / http://mrdoob.com/
  */
 
-function VideoTexture( video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy ) {
+function VideoTexture$1( video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy ) {
 
 	Texture.call( this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy );
 
@@ -34206,9 +35981,9 @@ function VideoTexture( video, mapping, wrapS, wrapT, magFilter, minFilter, forma
 
 }
 
-VideoTexture.prototype = Object.assign( Object.create( Texture.prototype ), {
+VideoTexture$1.prototype = Object.assign( Object.create( Texture.prototype ), {
 
-	constructor: VideoTexture,
+	constructor: VideoTexture$1,
 
 	isVideoTexture: true,
 
@@ -55811,1325 +57586,6 @@ if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 	/* eslint-enable no-undef */
 
 }/**
- * @author Nikos M. / https://github.com/foo123/
- */
-
-// https://github.com/mrdoob/three.js/issues/5552
-// http://en.wikipedia.org/wiki/RGBE_image_format
-
-var RGBELoader = function ( manager ) {
-
-	DataTextureLoader.call( this, manager );
-
-	this.type = UnsignedByteType;
-
-};
-
-RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype ), {
-
-	constructor: RGBELoader,
-
-	// adapted from http://www.graphics.cornell.edu/~bjw/rgbe.html
-
-	parse: function ( buffer ) {
-
-		var
-			/* return codes for rgbe routines */
-			//RGBE_RETURN_SUCCESS = 0,
-			RGBE_RETURN_FAILURE = - 1,
-
-			/* default error routine.  change this to change error handling */
-			rgbe_read_error = 1,
-			rgbe_write_error = 2,
-			rgbe_format_error = 3,
-			rgbe_memory_error = 4,
-			rgbe_error = function ( rgbe_error_code, msg ) {
-
-				switch ( rgbe_error_code ) {
-
-					case rgbe_read_error: console.error( "RGBELoader Read Error: " + ( msg || '' ) );
-						break;
-					case rgbe_write_error: console.error( "RGBELoader Write Error: " + ( msg || '' ) );
-						break;
-					case rgbe_format_error: console.error( "RGBELoader Bad File Format: " + ( msg || '' ) );
-						break;
-					default:
-					case rgbe_memory_error: console.error( "RGBELoader: Error: " + ( msg || '' ) );
-
-				}
-
-				return RGBE_RETURN_FAILURE;
-
-			},
-
-			/* offsets to red, green, and blue components in a data (float) pixel */
-			//RGBE_DATA_RED = 0,
-			//RGBE_DATA_GREEN = 1,
-			//RGBE_DATA_BLUE = 2,
-
-			/* number of floats per pixel, use 4 since stored in rgba image format */
-			//RGBE_DATA_SIZE = 4,
-
-			/* flags indicating which fields in an rgbe_header_info are valid */
-			RGBE_VALID_PROGRAMTYPE = 1,
-			RGBE_VALID_FORMAT = 2,
-			RGBE_VALID_DIMENSIONS = 4,
-
-			NEWLINE = "\n",
-
-			fgets = function ( buffer, lineLimit, consume ) {
-
-				lineLimit = ! lineLimit ? 1024 : lineLimit;
-				var p = buffer.pos,
-					i = - 1, len = 0, s = '', chunkSize = 128,
-					chunk = String.fromCharCode.apply( null, new Uint16Array( buffer.subarray( p, p + chunkSize ) ) )
-				;
-				while ( ( 0 > ( i = chunk.indexOf( NEWLINE ) ) ) && ( len < lineLimit ) && ( p < buffer.byteLength ) ) {
-
-					s += chunk; len += chunk.length;
-					p += chunkSize;
-					chunk += String.fromCharCode.apply( null, new Uint16Array( buffer.subarray( p, p + chunkSize ) ) );
-
-				}
-
-				if ( - 1 < i ) {
-
-					/*for (i=l-1; i>=0; i--) {
-						byteCode = m.charCodeAt(i);
-						if (byteCode > 0x7f && byteCode <= 0x7ff) byteLen++;
-						else if (byteCode > 0x7ff && byteCode <= 0xffff) byteLen += 2;
-						if (byteCode >= 0xDC00 && byteCode <= 0xDFFF) i--; //trail surrogate
-					}*/
-					if ( false !== consume ) buffer.pos += len + i + 1;
-					return s + chunk.slice( 0, i );
-
-				}
-
-				return false;
-
-			},
-
-			/* minimal header reading.  modify if you want to parse more information */
-			RGBE_ReadHeader = function ( buffer ) {
-
-				var line, match,
-
-					// regexes to parse header info fields
-					magic_token_re = /^#\?(\S+)$/,
-					gamma_re = /^\s*GAMMA\s*=\s*(\d+(\.\d+)?)\s*$/,
-					exposure_re = /^\s*EXPOSURE\s*=\s*(\d+(\.\d+)?)\s*$/,
-					format_re = /^\s*FORMAT=(\S+)\s*$/,
-					dimensions_re = /^\s*\-Y\s+(\d+)\s+\+X\s+(\d+)\s*$/,
-
-					// RGBE format header struct
-					header = {
-
-						valid: 0, /* indicate which fields are valid */
-
-						string: '', /* the actual header string */
-
-						comments: '', /* comments found in header */
-
-						programtype: 'RGBE', /* listed at beginning of file to identify it after "#?". defaults to "RGBE" */
-
-						format: '', /* RGBE format, default 32-bit_rle_rgbe */
-
-						gamma: 1.0, /* image has already been gamma corrected with given gamma. defaults to 1.0 (no correction) */
-
-						exposure: 1.0, /* a value of 1.0 in an image corresponds to <exposure> watts/steradian/m^2. defaults to 1.0 */
-
-						width: 0, height: 0 /* image dimensions, width/height */
-
-					};
-
-				if ( buffer.pos >= buffer.byteLength || ! ( line = fgets( buffer ) ) ) {
-
-					return rgbe_error( rgbe_read_error, "no header found" );
-
-				}
-
-				/* if you want to require the magic token then uncomment the next line */
-				if ( ! ( match = line.match( magic_token_re ) ) ) {
-
-					return rgbe_error( rgbe_format_error, "bad initial token" );
-
-				}
-
-				header.valid |= RGBE_VALID_PROGRAMTYPE;
-				header.programtype = match[ 1 ];
-				header.string += line + "\n";
-
-				while ( true ) {
-
-					line = fgets( buffer );
-					if ( false === line ) break;
-					header.string += line + "\n";
-
-					if ( '#' === line.charAt( 0 ) ) {
-
-						header.comments += line + "\n";
-						continue; // comment line
-
-					}
-
-					if ( match = line.match( gamma_re ) ) {
-
-						header.gamma = parseFloat( match[ 1 ], 10 );
-
-					}
-
-					if ( match = line.match( exposure_re ) ) {
-
-						header.exposure = parseFloat( match[ 1 ], 10 );
-
-					}
-
-					if ( match = line.match( format_re ) ) {
-
-						header.valid |= RGBE_VALID_FORMAT;
-						header.format = match[ 1 ];//'32-bit_rle_rgbe';
-
-					}
-
-					if ( match = line.match( dimensions_re ) ) {
-
-						header.valid |= RGBE_VALID_DIMENSIONS;
-						header.height = parseInt( match[ 1 ], 10 );
-						header.width = parseInt( match[ 2 ], 10 );
-
-					}
-
-					if ( ( header.valid & RGBE_VALID_FORMAT ) && ( header.valid & RGBE_VALID_DIMENSIONS ) ) break;
-
-				}
-
-				if ( ! ( header.valid & RGBE_VALID_FORMAT ) ) {
-
-					return rgbe_error( rgbe_format_error, "missing format specifier" );
-
-				}
-
-				if ( ! ( header.valid & RGBE_VALID_DIMENSIONS ) ) {
-
-					return rgbe_error( rgbe_format_error, "missing image size specifier" );
-
-				}
-
-				return header;
-
-			},
-
-			RGBE_ReadPixels_RLE = function ( buffer, w, h ) {
-
-				var data_rgba, offset, pos, count, byteValue,
-					scanline_buffer, ptr, ptr_end, i, l, off, isEncodedRun,
-					scanline_width = w, num_scanlines = h, rgbeStart
-				;
-
-				if (
-					// run length encoding is not allowed so read flat
-					( ( scanline_width < 8 ) || ( scanline_width > 0x7fff ) ) ||
-					// this file is not run length encoded
-					( ( 2 !== buffer[ 0 ] ) || ( 2 !== buffer[ 1 ] ) || ( buffer[ 2 ] & 0x80 ) )
-				) {
-
-					// return the flat buffer
-					return new Uint8Array( buffer );
-
-				}
-
-				if ( scanline_width !== ( ( buffer[ 2 ] << 8 ) | buffer[ 3 ] ) ) {
-
-					return rgbe_error( rgbe_format_error, "wrong scanline width" );
-
-				}
-
-				data_rgba = new Uint8Array( 4 * w * h );
-
-				if ( ! data_rgba.length ) {
-
-					return rgbe_error( rgbe_memory_error, "unable to allocate buffer space" );
-
-				}
-
-				offset = 0; pos = 0; ptr_end = 4 * scanline_width;
-				rgbeStart = new Uint8Array( 4 );
-				scanline_buffer = new Uint8Array( ptr_end );
-
-				// read in each successive scanline
-				while ( ( num_scanlines > 0 ) && ( pos < buffer.byteLength ) ) {
-
-					if ( pos + 4 > buffer.byteLength ) {
-
-						return rgbe_error( rgbe_read_error );
-
-					}
-
-					rgbeStart[ 0 ] = buffer[ pos ++ ];
-					rgbeStart[ 1 ] = buffer[ pos ++ ];
-					rgbeStart[ 2 ] = buffer[ pos ++ ];
-					rgbeStart[ 3 ] = buffer[ pos ++ ];
-
-					if ( ( 2 != rgbeStart[ 0 ] ) || ( 2 != rgbeStart[ 1 ] ) || ( ( ( rgbeStart[ 2 ] << 8 ) | rgbeStart[ 3 ] ) != scanline_width ) ) {
-
-						return rgbe_error( rgbe_format_error, "bad rgbe scanline format" );
-
-					}
-
-					// read each of the four channels for the scanline into the buffer
-					// first red, then green, then blue, then exponent
-					ptr = 0;
-					while ( ( ptr < ptr_end ) && ( pos < buffer.byteLength ) ) {
-
-						count = buffer[ pos ++ ];
-						isEncodedRun = count > 128;
-						if ( isEncodedRun ) count -= 128;
-
-						if ( ( 0 === count ) || ( ptr + count > ptr_end ) ) {
-
-							return rgbe_error( rgbe_format_error, "bad scanline data" );
-
-						}
-
-						if ( isEncodedRun ) {
-
-							// a (encoded) run of the same value
-							byteValue = buffer[ pos ++ ];
-							for ( i = 0; i < count; i ++ ) {
-
-								scanline_buffer[ ptr ++ ] = byteValue;
-
-							}
-							//ptr += count;
-
-						} else {
-
-							// a literal-run
-							scanline_buffer.set( buffer.subarray( pos, pos + count ), ptr );
-							ptr += count; pos += count;
-
-						}
-
-					}
-
-
-					// now convert data from buffer into rgba
-					// first red, then green, then blue, then exponent (alpha)
-					l = scanline_width; //scanline_buffer.byteLength;
-					for ( i = 0; i < l; i ++ ) {
-
-						off = 0;
-						data_rgba[ offset ] = scanline_buffer[ i + off ];
-						off += scanline_width; //1;
-						data_rgba[ offset + 1 ] = scanline_buffer[ i + off ];
-						off += scanline_width; //1;
-						data_rgba[ offset + 2 ] = scanline_buffer[ i + off ];
-						off += scanline_width; //1;
-						data_rgba[ offset + 3 ] = scanline_buffer[ i + off ];
-						offset += 4;
-
-					}
-
-					num_scanlines --;
-
-				}
-
-				return data_rgba;
-
-			};
-
-		var RGBEByteToRGBFloat = function ( sourceArray, sourceOffset, destArray, destOffset ) {
-
-			var e = sourceArray[ sourceOffset + 3 ];
-			var scale = Math.pow( 2.0, e - 128.0 ) / 255.0;
-
-			destArray[ destOffset + 0 ] = sourceArray[ sourceOffset + 0 ] * scale;
-			destArray[ destOffset + 1 ] = sourceArray[ sourceOffset + 1 ] * scale;
-			destArray[ destOffset + 2 ] = sourceArray[ sourceOffset + 2 ] * scale;
-
-		};
-
-		var RGBEByteToRGBHalf = ( function () {
-
-			// Source: http://gamedev.stackexchange.com/questions/17326/conversion-of-a-number-from-single-precision-floating-point-representation-to-a/17410#17410
-
-			var floatView = new Float32Array( 1 );
-			var int32View = new Int32Array( floatView.buffer );
-
-			/* This method is faster than the OpenEXR implementation (very often
-			 * used, eg. in Ogre), with the additional benefit of rounding, inspired
-			 * by James Tursa?s half-precision code. */
-			function toHalf( val ) {
-
-				floatView[ 0 ] = val;
-				var x = int32View[ 0 ];
-
-				var bits = ( x >> 16 ) & 0x8000; /* Get the sign */
-				var m = ( x >> 12 ) & 0x07ff; /* Keep one extra bit for rounding */
-				var e = ( x >> 23 ) & 0xff; /* Using int is faster here */
-
-				/* If zero, or denormal, or exponent underflows too much for a denormal
-				 * half, return signed zero. */
-				if ( e < 103 ) return bits;
-
-				/* If NaN, return NaN. If Inf or exponent overflow, return Inf. */
-				if ( e > 142 ) {
-
-					bits |= 0x7c00;
-					/* If exponent was 0xff and one mantissa bit was set, it means NaN,
-							 * not Inf, so make sure we set one mantissa bit too. */
-					bits |= ( ( e == 255 ) ? 0 : 1 ) && ( x & 0x007fffff );
-					return bits;
-
-				}
-
-				/* If exponent underflows but not too much, return a denormal */
-				if ( e < 113 ) {
-
-					m |= 0x0800;
-					/* Extra rounding may overflow and set mantissa to 0 and exponent
-					 * to 1, which is OK. */
-					bits |= ( m >> ( 114 - e ) ) + ( ( m >> ( 113 - e ) ) & 1 );
-					return bits;
-
-				}
-
-				bits |= ( ( e - 112 ) << 10 ) | ( m >> 1 );
-				/* Extra rounding. An overflow will set mantissa to 0 and increment
-				 * the exponent, which is OK. */
-				bits += m & 1;
-				return bits;
-
-			}
-
-			return function ( sourceArray, sourceOffset, destArray, destOffset ) {
-
-				var e = sourceArray[ sourceOffset + 3 ];
-				var scale = Math.pow( 2.0, e - 128.0 ) / 255.0;
-
-				destArray[ destOffset + 0 ] = toHalf( sourceArray[ sourceOffset + 0 ] * scale );
-				destArray[ destOffset + 1 ] = toHalf( sourceArray[ sourceOffset + 1 ] * scale );
-				destArray[ destOffset + 2 ] = toHalf( sourceArray[ sourceOffset + 2 ] * scale );
-
-			};
-
-		} )();
-
-		var byteArray = new Uint8Array( buffer );
-		byteArray.pos = 0;
-		var rgbe_header_info = RGBE_ReadHeader( byteArray );
-
-		if ( RGBE_RETURN_FAILURE !== rgbe_header_info ) {
-
-			var w = rgbe_header_info.width,
-				h = rgbe_header_info.height,
-				image_rgba_data = RGBE_ReadPixels_RLE( byteArray.subarray( byteArray.pos ), w, h );
-
-			if ( RGBE_RETURN_FAILURE !== image_rgba_data ) {
-
-				switch ( this.type ) {
-
-					case UnsignedByteType:
-
-						var data = image_rgba_data;
-						var format = RGBEFormat; // handled as THREE.RGBAFormat in shaders
-						var type = UnsignedByteType;
-						break;
-
-					case FloatType:
-
-						var numElements = ( image_rgba_data.length / 4 ) * 3;
-						var floatArray = new Float32Array( numElements );
-
-						for ( var j = 0; j < numElements; j ++ ) {
-
-							RGBEByteToRGBFloat( image_rgba_data, j * 4, floatArray, j * 3 );
-
-						}
-
-						var data = floatArray;
-						var format = RGBFormat;
-						var type = FloatType;
-						break;
-
-					case HalfFloatType:
-
-						var numElements = ( image_rgba_data.length / 4 ) * 3;
-						var halfArray = new Uint16Array( numElements );
-
-						for ( var j = 0; j < numElements; j ++ ) {
-
-							RGBEByteToRGBHalf( image_rgba_data, j * 4, halfArray, j * 3 );
-
-						}
-
-						var data = halfArray;
-						var format = RGBFormat;
-						var type = HalfFloatType;
-						break;
-
-					default:
-
-						console.error( 'THREE.RGBELoader: unsupported type: ', this.type );
-						break;
-
-				}
-
-				return {
-					width: w, height: h,
-					data: data,
-					header: rgbe_header_info.string,
-					gamma: rgbe_header_info.gamma,
-					exposure: rgbe_header_info.exposure,
-					format: format,
-					type: type
-				};
-
-			}
-
-		}
-
-		return null;
-
-	},
-
-	setDataType: function ( value ) {
-
-		this.type = value;
-		return this;
-
-	},
-
-	load: function ( url, onLoad, onProgress, onError ) {
-
-		function onLoadCallback( texture, texData ) {
-
-			switch ( texture.type ) {
-
-				case UnsignedByteType:
-
-					texture.encoding = RGBEEncoding;
-					texture.minFilter = NearestFilter;
-					texture.magFilter = NearestFilter;
-					texture.generateMipmaps = false;
-					texture.flipY = true;
-					break;
-
-				case FloatType:
-
-					texture.encoding = LinearEncoding;
-					texture.minFilter = LinearFilter;
-					texture.magFilter = LinearFilter;
-					texture.generateMipmaps = false;
-					texture.flipY = true;
-					break;
-
-				case HalfFloatType:
-
-					texture.encoding = LinearEncoding;
-					texture.minFilter = LinearFilter;
-					texture.magFilter = LinearFilter;
-					texture.generateMipmaps = false;
-					texture.flipY = true;
-					break;
-
-			}
-
-			if ( onLoad ) onLoad( texture, texData );
-
-		}
-
-		return DataTextureLoader.prototype.load.call( this, url, onLoadCallback, onProgress, onError );
-
-	}
-
-} );var DebugService = /*#__PURE__*/function () {
-  DebugService.getService = function getService() {
-    if (!this.service_) {
-      this.service_ = new DebugService();
-    }
-
-    return this.service_;
-  };
-
-  _createClass(DebugService, [{
-    key: "message",
-    get: function get() {
-      return this.message$.getValue();
-    }
-  }]);
-
-  function DebugService() {
-    if (DebugService.service_) {
-      throw 'DebugService is a singleton class!';
-    }
-
-    this.message$ = new rxjs.BehaviorSubject(null);
-  }
-
-  var _proto = DebugService.prototype;
-
-  _proto.setMessage = function setMessage(message) {
-    if (this.message !== message) {
-      this.message$.next(message);
-    }
-  };
-
-  return DebugService;
-}();var EnvMapLoader = /*#__PURE__*/function () {
-  function EnvMapLoader() {}
-
-  EnvMapLoader.load = function load(item, renderer, callback) {
-    this.video = null;
-
-    if (!item.asset) {
-      return;
-    }
-
-    if (item.asset.file === 'publisherStream') {
-      return this.loadPublisherStreamBackground(renderer, callback);
-    } else if (item.asset.file.indexOf('.hdr') !== -1) {
-      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-    } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-    } else if (item.asset.file.indexOf('.m3u8') !== -1) {
-      return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
-    } else {
-      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-    }
-  };
-
-  EnvMapLoader.loadBackground = function loadBackground(path, file, renderer, callback) {
-    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
-    pmremGenerator.compileEquirectangularShader();
-    var loader = new THREE$1.TextureLoader();
-    loader.setPath(path).load(file, function (texture) {
-      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
-
-      pmremGenerator.dispose();
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, false);
-      }
-    });
-    return loader;
-  };
-
-  EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
-    var _this = this;
-
-    var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
-      // const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-      var target = "#stream-" + publisherStreamId;
-      var video = document.querySelector(target + " video");
-
-      if (!video) {
-        return;
-      }
-
-      var onPlaying = function onPlaying() {
-        var texture = _this.texture = new THREE$1.VideoTexture(video);
-        texture.minFilter = THREE$1.LinearFilter;
-        texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
-        texture.format = THREE$1.RGBFormat;
-        texture.needsUpdate = true;
-        var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-          generateMipmaps: true,
-          // minFilter: THREE.LinearMipmapLinearFilter,
-          minFilter: THREE$1.LinearFilter,
-          magFilter: THREE$1.LinearFilter,
-          mapping: THREE$1.UVMapping,
-          format: THREE$1.RGBFormat
-        }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-        if (typeof callback === 'function') {
-          callback(cubeRenderTarget.texture, texture, false);
-        }
-      };
-
-      video.crossOrigin = 'anonymous';
-
-      if (video.readyState >= video.HAVE_FUTURE_DATA) {
-        onPlaying();
-      } else {
-        video.oncanplay = function () {
-          onPlaying();
-        };
-      }
-    };
-
-    StreamService.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
-      return onPublisherStreamId(publisherStreamId);
-    });
-  };
-
-  EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
-    var _this2 = this;
-
-    var debugService = DebugService.getService();
-    this.video = true;
-    var video = this.video;
-
-    var onPlaying = function onPlaying() {
-      video.oncanplay = null;
-      var texture = new THREE$1.VideoTexture(video);
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
-      texture.format = THREE$1.RGBFormat;
-      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
-
-      var cubeRenderTarget = _this2.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-        generateMipmaps: true,
-        // minFilter: THREE.LinearMipmapLinearFilter,
-        minFilter: THREE$1.LinearFilter,
-        magFilter: THREE$1.LinearFilter,
-        mapping: THREE$1.UVMapping,
-        format: THREE$1.RGBFormat
-      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-      if (typeof callback === 'function') {
-        callback(cubeRenderTarget.texture, texture, false);
-      }
-    }; // video.addEventListener('playing', onPlaying);
-
-
-    video.oncanplay = function () {
-      // console.log('EnvMapLoader.loadVideoBackground.oncanplay');
-      onPlaying();
-    };
-
-    video.src = path + file;
-    video.load();
-    video.play().then(function () {
-      // console.log('EnvMapLoader.loadVideoBackground.play');
-      debugService.setMessage("play " + video.src);
-    }, function (error) {
-      console.log('EnvMapLoader.loadVideoBackground.play.error', error);
-      debugService.setMessage("play.error " + video.src);
-    });
-  };
-
-  EnvMapLoader.loadHlslVideoBackground = function loadHlslVideoBackground(src, renderer, callback) {
-    var video = document.createElement('video');
-
-    var onPlaying = function onPlaying() {
-      video.oncanplay = null;
-      var texture = new THREE$1.VideoTexture(video);
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
-      texture.format = THREE$1.RGBFormat;
-      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
-
-      var cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-        generateMipmaps: true,
-        // minFilter: THREE.LinearMipmapLinearFilter,
-        minFilter: THREE$1.LinearFilter,
-        magFilter: THREE$1.LinearFilter,
-        mapping: THREE$1.UVMapping,
-        format: THREE$1.RGBFormat
-      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-      if (typeof callback === 'function') {
-        callback(cubeRenderTarget.texture, texture, false);
-      }
-    };
-
-    video.oncanplay = function () {
-      // console.log('videoReady', videoReady);
-      onPlaying();
-    };
-
-    if (Hls.isSupported()) {
-      var hls = new Hls(); // bind them together
-
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        hls.loadSource(src);
-        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          // console.log('HlsDirective', data.levels);
-          video.play();
-        });
-      });
-    }
-  };
-
-  EnvMapLoader.loadRgbeBackground = function loadRgbeBackground(path, file, renderer, callback) {
-    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
-    pmremGenerator.compileEquirectangularShader();
-    var loader = new RGBELoader();
-    loader.setDataType(THREE$1.UnsignedByteType) // .setDataType(THREE.FloatType)
-    .setPath(path).load(file, function (texture) {
-      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
-
-      pmremGenerator.dispose();
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, true);
-      }
-    });
-    return loader;
-  };
-
-  _createClass(EnvMapLoader, null, [{
-    key: "video",
-    get: function get() {
-      return this.video_;
-    },
-    set: function set(video) {
-      if (this.video_) {
-        this.video_.pause();
-
-        if (this.video_.parentNode) {
-          this.video_.parentNode.removeChild(this.video_);
-        }
-
-        this.video_ = null;
-      }
-
-      if (video) {
-        var _video = this.video_ = document.createElement('video');
-
-        _video.loop = true;
-        _video.muted = true;
-        _video.playsInline = true;
-        _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
-      }
-    }
-  }, {
-    key: "cubeRenderTarget",
-    set: function set(cubeRenderTarget) {
-      if (this.cubeRenderTarget_) {
-        this.cubeRenderTarget_.texture.dispose();
-        this.cubeRenderTarget_.dispose();
-      }
-
-      this.cubeRenderTarget_ = cubeRenderTarget;
-    }
-  }, {
-    key: "texture",
-    set: function set(texture) {
-      if (this.texture_) {
-        this.texture_.dispose();
-      }
-
-      this.texture_ = texture;
-    }
-  }]);
-
-  return EnvMapLoader;
-}();var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
-  _inheritsLoose(FreezableMesh, _THREE$Mesh);
-
-  _createClass(FreezableMesh, [{
-    key: "freezed",
-    get: function get() {
-      return this.freezed_;
-    },
-    set: function set(freezed) {
-      // !!! cycle through freezable and not freezable
-      this.freezed_ = freezed;
-      this.children.filter(function (x) {
-        return x.__lookupGetter__('freezed');
-      }).forEach(function (x) {
-        return x.freezed = freezed;
-      });
-    }
-  }]);
-
-  function FreezableMesh(geometry, material) {
-    var _this;
-
-    geometry = geometry || new THREE.BoxGeometry(5, 5, 5);
-    material = material || new THREE.MeshBasicMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _THREE$Mesh.call(this, geometry, material) || this;
-    _this.freezed = false;
-    return _this;
-  }
-
-  var _proto = FreezableMesh.prototype;
-
-  _proto.freeze = function freeze() {
-    this.freezed = true;
-  };
-
-  _proto.unfreeze = function unfreeze() {
-    this.freezed = false;
-  };
-
-  return FreezableMesh;
-}(THREE.Mesh);var EmittableMesh = /*#__PURE__*/function (_FreezableMesh) {
-  _inheritsLoose(EmittableMesh, _FreezableMesh);
-
-  function EmittableMesh(geometry, material) {
-    var _this;
-
-    geometry = geometry || new THREE.BoxGeometry(5, 5, 5);
-    material = material || new THREE.MeshBasicMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _FreezableMesh.call(this, geometry, material) || this;
-    _this.events = {};
-    return _this;
-  }
-
-  var _proto = EmittableMesh.prototype;
-
-  _proto.on = function on(type, callback) {
-    var _this2 = this;
-
-    var event = this.events[type] = this.events[type] || [];
-    event.push(callback);
-    return function () {
-      _this2.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    };
-  };
-
-  _proto.off = function off(type, callback) {
-    var event = this.events[type];
-
-    if (event) {
-      this.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    }
-  };
-
-  _proto.emit = function emit(type, data) {
-    var event = this.events[type];
-
-    if (event) {
-      event.forEach(function (callback) {
-        // callback.call(this, data);
-        callback(data);
-      });
-    }
-
-    var broadcast = this.events.broadcast;
-
-    if (broadcast) {
-      broadcast.forEach(function (callback) {
-        callback(type, data);
-      });
-    }
-  };
-
-  return EmittableMesh;
-}(FreezableMesh);var Interactive = /*#__PURE__*/function () {
-  function Interactive() {}
-
-  Interactive.hittest = function hittest(raycaster, down) {
-    var debugService = DebugService.getService();
-
-    if (Interactive.down !== down) {
-      Interactive.down = down;
-      Interactive.lock = false;
-    } // !!! da rivedere per consentire eventi multipli (nav-items)
-
-
-    var items = Interactive.items.filter(function (x) {
-      return !x.freezed;
-    });
-    var intersections = raycaster.intersectObjects(items);
-    var key, hit;
-    var hash = {}; // let has = false;
-
-    intersections.forEach(function (intersection, i) {
-      var object = intersection.object; // console.log('Interactive.hittest', i, object.name);
-      // has = has || object.name.indexOf('nav') !== -1;
-
-      key = object.uuid;
-
-      if (i === 0) {
-        if (Interactive.lastIntersectedObject !== object) {
-          Interactive.lastIntersectedObject = object;
-          hit = object;
-          debugService.setMessage(hit.name || hit.id); // haptic feedback
-        } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
-          object.intersection = intersection;
-          object.emit('move', object);
-        }
-      }
-
-      hash[key] = intersection;
-    });
-
-    if (intersections.length === 0) {
-      Interactive.lastIntersectedObject = null;
-    } // console.log(has);
-
-
-    items.forEach(function (x) {
-      x.intersection = hash[x.uuid];
-      x.over = x === Interactive.lastIntersectedObject || !x.depthTest && x.intersection && (!Interactive.lastIntersectedObject || Interactive.lastIntersectedObject.depthTest);
-      x.down = down && x.over && !Interactive.lock;
-
-      if (x.down) {
-        Interactive.lock = true;
-      }
-    });
-    return hit;
-  };
-
-  Interactive.dispose = function dispose(object) {
-    if (object) {
-      var index = Interactive.items.indexOf(object);
-
-      if (index !== -1) {
-        Interactive.items.splice(index, 1);
-      }
-    }
-  };
-
-  return Interactive;
-}();
-Interactive.items = [];var InteractiveMesh = /*#__PURE__*/function (_EmittableMesh) {
-  _inheritsLoose(InteractiveMesh, _EmittableMesh);
-
-  InteractiveMesh.hittest = function hittest(raycaster, down) {
-    var debugService = DebugService.getService();
-
-    if (InteractiveMesh.down !== down) {
-      InteractiveMesh.down = down;
-      InteractiveMesh.lock = false;
-    } // !!! da rivedere per consentire eventi multipli (nav-items)
-
-
-    var items = InteractiveMesh.items.filter(function (x) {
-      return !x.freezed;
-    });
-    var intersections = raycaster.intersectObjects(items);
-    var key, hit;
-    var hash = {}; // let has = false;
-
-    intersections.forEach(function (intersection, i) {
-      var object = intersection.object; // console.log('InteractiveMesh.hittest', i, object.name);
-      // has = has || object.name.indexOf('nav') !== -1;
-
-      key = object.uuid;
-
-      if (i === 0) {
-        if (InteractiveMesh.lastIntersectedObject !== object) {
-          InteractiveMesh.lastIntersectedObject = object;
-          hit = object;
-          debugService.setMessage(hit.name || hit.id); // haptic feedback
-        } else if (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01) {
-          object.intersection = intersection;
-          object.emit('move', object);
-        }
-      }
-
-      hash[key] = intersection;
-    }); // console.log(has);
-
-    items.forEach(function (x) {
-      x.intersection = hash[x.uuid];
-      x.over = x === InteractiveMesh.lastIntersectedObject || !x.depthTest && x.intersection;
-      x.down = down && x.over && !InteractiveMesh.lock;
-
-      if (x.down) {
-        InteractiveMesh.lock = true;
-      }
-    });
-    return hit;
-  };
-
-  InteractiveMesh.dispose = function dispose(object) {
-    if (object) {
-      var index = InteractiveMesh.items.indexOf(object);
-
-      if (index !== -1) {
-        InteractiveMesh.items.splice(index, 1);
-      }
-    }
-  };
-
-  function InteractiveMesh(geometry, material) {
-    var _this;
-
-    _this = _EmittableMesh.call(this, geometry, material) || this;
-    _this.depthTest = true;
-    _this.over_ = false;
-    _this.down_ = false;
-    Interactive.items.push(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(InteractiveMesh, [{
-    key: "over",
-    get: function get() {
-      return this.over_;
-    },
-    set: function set(over) {
-      if (this.over_ != over) {
-        this.over_ = over;
-        /*
-        if (over) {
-        	this.emit('hit', this);
-        }
-        */
-
-        if (over) {
-          this.emit('over', this);
-        } else {
-          this.emit('out', this);
-        }
-      }
-    }
-  }, {
-    key: "down",
-    get: function get() {
-      return this.down_;
-    },
-    set: function set(down) {
-      down = down && this.over;
-
-      if (this.down_ != down) {
-        this.down_ = down;
-
-        if (down) {
-          this.emit('down', this);
-        } else {
-          this.emit('up', this);
-        }
-      }
-    }
-  }]);
-
-  return InteractiveMesh;
-}(EmittableMesh);
-InteractiveMesh.items = [];function VideoTexture$1(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-  THREE$1.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-  this.format = format !== undefined ? format : THREE.RGBFormat;
-  this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
-  this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
-  this.mapping = THREE.UVMapping;
-  this.generateMipmaps = false;
-}
-
-VideoTexture$1.prototype = Object.assign(Object.create(THREE$1.Texture.prototype), {
-  constructor: VideoTexture$1,
-  isVideoTexture: true,
-  update: function update() {
-    var video = this.image;
-
-    if (video.readyState >= video.HAVE_CURRENT_DATA) {
-      this.needsUpdate = true;
-    }
-  }
-});var PANORAMA_RADIUS = 101;
-var VERTEX_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\t// gl_PointSize = 8.0;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-var FRAGMENT_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float tween;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
-
-var Panorama = /*#__PURE__*/function () {
-  function Panorama() {
-    this.tween = 0;
-    this.create();
-  }
-
-  var _proto = Panorama.prototype;
-
-  _proto.create = function create() {
-    var geometry = new THREE$1.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
-    geometry.scale(-1, 1, 1);
-    geometry.rotateY(Math.PI);
-    var material = new THREE$1.ShaderMaterial({
-      // depthTest: false,
-      depthWrite: false,
-      vertexShader: VERTEX_SHADER,
-      fragmentShader: FRAGMENT_SHADER,
-      uniforms: {
-        texture: {
-          type: "t",
-          value: null
-        },
-        resolution: {
-          value: new THREE$1.Vector2()
-        },
-        tween: {
-          value: 0
-        },
-        rgbe: {
-          value: false
-        }
-      }
-    });
-    /*
-    const material = new THREE.MeshBasicMaterial({
-    	transparent: true,
-    	opacity: 0,
-    });
-    */
-
-    var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
-
-    mesh.name = '[panorama]';
-  };
-
-  _proto.swap = function swap(view, renderer, callback, onexit) {
-    var _this = this;
-
-    var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
-    var material = this.mesh.material;
-
-    if (this.tween > 0) {
-      gsap.to(this, 0.5, {
-        tween: 0,
-        ease: Power2.easeInOut,
-        onUpdate: function onUpdate() {
-          material.uniforms.tween.value = _this.tween;
-          material.needsUpdate = true;
-        },
-        onComplete: function onComplete() {
-          if (typeof onexit === 'function') {
-            onexit(view);
-          }
-
-          _this.load(item, renderer, function (envMap, texture, rgbe) {
-            gsap.to(_this, 0.5, {
-              tween: 1,
-              ease: Power2.easeInOut,
-              onUpdate: function onUpdate() {
-                material.uniforms.tween.value = _this.tween;
-                material.needsUpdate = true;
-              }
-            });
-
-            if (typeof callback === 'function') {
-              callback(envMap, texture, rgbe);
-            }
-          });
-        }
-      });
-    } else {
-      if (typeof onexit === 'function') {
-        onexit(view);
-      }
-
-      this.load(item, renderer, function (envMap, texture, rgbe) {
-        gsap.to(_this, 0.5, {
-          tween: 1,
-          ease: Power2.easeInOut,
-          onUpdate: function onUpdate() {
-            material.uniforms.tween.value = _this.tween;
-            material.needsUpdate = true;
-          }
-        });
-
-        if (typeof callback === 'function') {
-          callback(envMap, texture, rgbe);
-        }
-      });
-    }
-  };
-
-  _proto.crossfade = function crossfade(item, renderer, callback) {
-    var material = this.mesh.material;
-    this.load(item, renderer, function (envMap, texture, rgbe) {
-      material.uniforms.tween.value = 1;
-      material.needsUpdate = true;
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, rgbe);
-      }
-    });
-  };
-
-  _proto.load = function load(item, renderer, callback) {
-    var material = this.mesh.material;
-    EnvMapLoader.load(item, renderer, function (envMap, texture, rgbe, video, pmremGenerator) {
-      if (material.uniforms.texture.value) {
-        material.uniforms.texture.value.dispose();
-        material.uniforms.texture.value = null;
-      }
-
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
-      texture.needsUpdate = true; // material.map = texture;
-
-      material.uniforms.texture.value = texture;
-      material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height);
-      material.uniforms.tween.value = 0;
-      material.uniforms.rgbe.value = rgbe; // console.log(texture.width, texture.height);
-
-      material.needsUpdate = true;
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, rgbe);
-      }
-    });
-  };
-
-  _proto.loadVideo = function loadVideo(src) {
-    var video = document.createElement('video');
-    /*
-    const temp = document.querySelector('.temp');
-    temp.appendChild(video);
-    */
-
-    video.src = src;
-    video.muted = true;
-    video.playsinline = video.playsInline = true;
-    video.play();
-    this.setVideo(video);
-  };
-
-  _proto.setVideo = function setVideo(video) {
-    var _this2 = this;
-
-    // console.log('Panorama.setVideo', video);
-    if (video) {
-
-      var onPlaying = function onPlaying() {
-        var texture = new VideoTexture$1(video);
-        texture.minFilter = THREE$1.LinearFilter;
-        texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
-        texture.format = THREE$1.RGBFormat;
-        texture.needsUpdate = true;
-        var material = _this2.mesh.material;
-        material.map = texture;
-        material.uniforms.texture.value = texture;
-        material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
-
-        material.needsUpdate = true; // video.currentTime = 1;
-        // video.load();
-      }; // video.addEventListener('playing', onPlaying);
-
-
-      video.crossOrigin = 'anonymous';
-
-      video.oncanplay = function () {
-
-        onPlaying();
-      };
-      /*
-      video.width = 640;
-      video.height = 480;
-      */
-
-      /*
-      video.addEventListener("play", function() {
-      	frameloop();
-      });
-      */
-
-    }
-  };
-
-  return Panorama;
-}();/**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
  * @author Tony Parisi / http://www.tonyparisi.com/
@@ -61246,7 +61702,7 @@ var AvatarElement = /*#__PURE__*/function () {
     key: "headGeometry",
     get: function get() {
       if (!this.headGeometry_) {
-        this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 48, 48);
+        this.headGeometry_ = new THREE$1.SphereBufferGeometry(0.2, 48, 48);
       }
 
       return this.headGeometry_;
@@ -61256,7 +61712,7 @@ var AvatarElement = /*#__PURE__*/function () {
   function AvatarElement(message) {
     var clientId = this.clientId = message.clientId;
     var container = this.container = message.container;
-    var renderer = this.renderer = new THREE.WebGLRenderer({
+    var renderer = this.renderer = new THREE$1.WebGLRenderer({
       antialias: true,
       alpha: false,
       premultipliedAlpha: true // physicallyCorrectLights: true,
@@ -61265,21 +61721,21 @@ var AvatarElement = /*#__PURE__*/function () {
     renderer.setClearColor(0x000000, 1);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(W, H);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMapping = THREE$1.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.8;
-    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.outputEncoding = THREE$1.sRGBEncoding;
     container.appendChild(renderer.domElement);
-    var camera = this.camera = new THREE.PerspectiveCamera(70, W / H, 0.01, 1000);
+    var camera = this.camera = new THREE$1.PerspectiveCamera(70, W / H, 0.01, 1000);
     camera.position.set(0, 0, -0.5);
-    camera.target = new THREE.Vector3();
+    camera.target = new THREE$1.Vector3();
     camera.lookAt(camera.target);
-    var scene = this.scene = new THREE.Scene();
+    var scene = this.scene = new THREE$1.Scene();
     /*
     const ambient = this.ambient = new THREE.AmbientLight(0x202020);
     scene.add(ambient);
     */
 
-    var light = this.light = new THREE.PointLight(0xffffff, 1, 100);
+    var light = this.light = new THREE$1.PointLight(0xffffff, 1, 100);
     light.position.set(0, 2, -2);
     scene.add(light);
     var head = this.head = this.addHead();
@@ -61305,15 +61761,15 @@ var AvatarElement = /*#__PURE__*/function () {
     canvas.width = 1024;
     canvas.height = 512;
     var ctx = this.ctx = this.canvas.getContext('2d');
-    var map = this.map = new THREE.CanvasTexture(canvas);
+    var map = this.map = new THREE$1.CanvasTexture(canvas);
     map.offset.x = -0.25;
     var color = COLORS[this.clientId % COLORS.length];
-    var material = new THREE.MeshStandardMaterial({
+    var material = new THREE$1.MeshStandardMaterial({
       map: map,
       color: color
     });
     this.chalk(0);
-    return new THREE.Mesh(geometry, material);
+    return new THREE$1.Mesh(geometry, material);
   };
 
   _proto.render = function render() {
@@ -61398,8 +61854,8 @@ var AvatarElement = /*#__PURE__*/function () {
     }
 
     _this = _THREE$PerspectiveCam.call(this, fov, aspect, near, far) || this;
-    _this.target = new THREE.Vector3();
-    _this.box = new THREE.Group();
+    _this.target = new THREE$1.Vector3();
+    _this.box = new THREE$1.Group();
 
     _this.add(_this.box);
 
@@ -61407,11 +61863,32 @@ var AvatarElement = /*#__PURE__*/function () {
   }
 
   return Camera;
-}(THREE.PerspectiveCamera);var OrbitMode = {
+}(THREE$1.PerspectiveCamera);var OrbitMode = {
   Panorama: 'panorama',
   PanoramaGrid: 'panorama-grid',
   Model: 'model'
 };
+var OrbitEvent = function OrbitEvent() {};
+var OrbitDragEvent = /*#__PURE__*/function (_OrbitEvent) {
+  _inheritsLoose(OrbitDragEvent, _OrbitEvent);
+
+  function OrbitDragEvent() {
+    return _OrbitEvent.apply(this, arguments) || this;
+  }
+
+  return OrbitDragEvent;
+}(OrbitEvent);
+var OrbitMoveEvent = /*#__PURE__*/function (_OrbitEvent2) {
+  _inheritsLoose(OrbitMoveEvent, _OrbitEvent2);
+
+  function OrbitMoveEvent() {
+    return _OrbitEvent2.apply(this, arguments) || this;
+  }
+
+  return OrbitMoveEvent;
+}(OrbitEvent);
+var orbitMoveEvent = new OrbitMoveEvent();
+var orbitDragEvent = new OrbitDragEvent();
 var DOLLY_MIN = 15;
 var DOLLY_MAX = 75;
 var ZOOM_MIN = 15;
@@ -61434,7 +61911,7 @@ var OrbitService = /*#__PURE__*/function () {
       return this.dolly_;
     },
     set: function set(dolly) {
-      var clampedDolly = THREE.Math.clamp(dolly, DOLLY_MIN, DOLLY_MAX);
+      var clampedDolly = THREE$1.Math.clamp(dolly, DOLLY_MIN, DOLLY_MAX);
 
       if (this.dolly_ !== clampedDolly) {
         this.dolly_ = clampedDolly;
@@ -61447,7 +61924,7 @@ var OrbitService = /*#__PURE__*/function () {
       return this.zoom_;
     },
     set: function set(zoom) {
-      var clampedDolly = THREE.Math.clamp(zoom, DOLLY_MIN, DOLLY_MAX);
+      var clampedDolly = THREE$1.Math.clamp(zoom, DOLLY_MIN, DOLLY_MAX);
 
       if (this.zoom_ !== clampedDolly) {
         this.zoom_ = clampedDolly;
@@ -61476,13 +61953,13 @@ var OrbitService = /*#__PURE__*/function () {
     this.latitude = 0;
     this.direction = 1;
     this.radius = 101;
-    this.position = new THREE.Vector3(); // this.speed = 1;
+    this.position = new THREE$1.Vector3(); // this.speed = 1;
 
-    this.inertia = new THREE.Vector2();
-    this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
-    this.target = new THREE.Vector3();
-    this.updatePosition = new THREE.Vector3();
-    this.updateTarget = new THREE.Vector3();
+    this.inertia = new THREE$1.Vector2();
+    this.rotation = new THREE$1.Euler(0, 0, 0, 'XYZ');
+    this.target = new THREE$1.Vector3();
+    this.updatePosition = new THREE$1.Vector3();
+    this.updateTarget = new THREE$1.Vector3();
     this.camera = camera;
     this.setLongitudeLatitude(0, 0);
     this.events$ = new rxjs.ReplaySubject(1);
@@ -61507,8 +61984,8 @@ var OrbitService = /*#__PURE__*/function () {
     this.longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
     this.latitude = latitude; // console.log(this.longitude);
 
-    var phi = THREE.Math.degToRad(90 - latitude);
-    var theta = THREE.Math.degToRad(longitude);
+    var phi = THREE$1.Math.degToRad(90 - latitude);
+    var theta = THREE$1.Math.degToRad(longitude);
     this.phi = phi;
     this.theta = theta;
   };
@@ -61577,9 +62054,14 @@ var OrbitService = /*#__PURE__*/function () {
         latitude = _this2.latitude;
         longitude = _this2.longitude;
       } else if (event instanceof DragMoveEvent) {
-        var flip = _this2.mode_ === OrbitMode.Model ? -1 : 1;
+        if (EDITOR && event.shiftKey) {
+          // console.log('shifting!');
+          _this2.events$.next(orbitDragEvent);
+        } else {
+          var flip = _this2.mode_ === OrbitMode.Model ? -1 : 1;
 
-        _this2.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+          _this2.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+        }
       }
     }), operators.filter(function (event) {
       return event instanceof DragMoveEvent;
@@ -61600,8 +62082,8 @@ var OrbitService = /*#__PURE__*/function () {
     var zoom = this.getZoomValue();
     var dolly = this.getDollyValue(); // console.log('dolly', dolly);
 
-    var phi = THREE.MathUtils.degToRad(90 - this.latitude);
-    var theta = THREE.MathUtils.degToRad(this.longitude);
+    var phi = THREE$1.MathUtils.degToRad(90 - this.latitude);
+    var theta = THREE$1.MathUtils.degToRad(this.longitude);
     var camera = this.camera;
 
     switch (this.mode_) {
@@ -61639,7 +62121,7 @@ var OrbitService = /*#__PURE__*/function () {
 
     camera.lookAt(camera.target);
     camera.updateProjectionMatrix();
-    this.events$.next(this);
+    this.events$.next(orbitMoveEvent);
   };
 
   _proto.inverse = function inverse() {
@@ -61680,9 +62162,9 @@ var OrbitService = /*#__PURE__*/function () {
         radius = this.radius;
     }
 
-    var heading = new THREE.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
+    var heading = new THREE$1.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
     var headingTheta = Math.atan2(heading.y, heading.x);
-    var headingLongitude = THREE.MathUtils.radToDeg(headingTheta);
+    var headingLongitude = THREE$1.MathUtils.radToDeg(headingTheta);
     headingLongitude = (headingLongitude < 0 ? 360 + headingLongitude : headingLongitude) % 360;
     var headingLatitude = 0;
     var latitude = this.latitude;
@@ -61790,11 +62272,11 @@ var PhoneStreamElement = /*#__PURE__*/function () {
     }
 
     var onPlaying = function onPlaying() {
-      var texture = new THREE.VideoTexture(video);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.mapping = THREE.UVMapping;
-      texture.format = THREE.RGBFormat;
+      var texture = new THREE$1.VideoTexture(video);
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.format = THREE$1.RGBFormat;
       texture.needsUpdate = true;
 
       if (typeof callback === 'function') {
@@ -61816,19 +62298,19 @@ var PhoneStreamElement = /*#__PURE__*/function () {
   _createClass(PhoneStreamElement, null, [{
     key: "geometry",
     get: function get() {
-      var geometry = new THREE.PlaneBufferGeometry(0.01 * W$1, 0.01 * W$1 / R, 2, 2);
+      var geometry = new THREE$1.PlaneBufferGeometry(0.01 * W$1, 0.01 * W$1 / R, 2, 2);
       return geometry;
     }
   }]);
 
   function PhoneStreamElement() {
     var geometry = PhoneStreamElement.geometry;
-    var material = new THREE.MeshStandardMaterial({
+    var material = new THREE$1.MeshStandardMaterial({
       // depthTest: false,
       color: 0xffffff,
-      side: THREE.DoubleSide
+      side: THREE$1.DoubleSide
     });
-    var plane = this.plane = new THREE.Mesh(geometry, material);
+    var plane = this.plane = new THREE$1.Mesh(geometry, material);
   }
 
   return PhoneStreamElement;
@@ -61866,7 +62348,7 @@ var PhoneElement = /*#__PURE__*/function () {
   function PhoneElement() {
     var _this3 = this;
 
-    var mesh = this.mesh = new THREE.Group();
+    var mesh = this.mesh = new THREE$1.Group();
     var phone = this.phone = this.create();
     mesh.add(phone);
     var streams = this.streams = [];
@@ -61887,32 +62369,32 @@ var PhoneElement = /*#__PURE__*/function () {
   var _proto2 = PhoneElement.prototype;
 
   _proto2.create = function create() {
-    var geometry = new THREE.BoxBufferGeometry(0.01 * W$1, 0.01 * H$1, 0.01 * D, 2, 2, 1);
-    var material = new THREE.MeshStandardMaterial({
+    var geometry = new THREE$1.BoxBufferGeometry(0.01 * W$1, 0.01 * H$1, 0.01 * D, 2, 2, 1);
+    var material = new THREE$1.MeshStandardMaterial({
       // depthTest: false,
       color: 0x202020
     });
-    var phone = new THREE.Mesh(geometry, material);
+    var phone = new THREE$1.Mesh(geometry, material);
     phone.rotation.set(-Math.PI / 4, 0, 0);
     return phone;
   };
 
   return PhoneElement;
-}();var ORIGIN = new THREE.Vector3();
+}();var ORIGIN$1 = new THREE$1.Vector3();
 
 var PointerElement = /*#__PURE__*/function () {
   function PointerElement() {
-    var geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
-    var loader = new THREE.TextureLoader();
+    var geometry = new THREE$1.PlaneBufferGeometry(1.2, 1.2, 2, 2);
+    var loader = new THREE$1.TextureLoader();
     var texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
-    var material = new THREE.MeshBasicMaterial({
+    var material = new THREE$1.MeshBasicMaterial({
       depthTest: false,
       depthWrite: false,
       map: texture,
       transparent: true,
       opacity: 0.9
     });
-    var mesh = this.mesh = new THREE.Mesh(geometry, material);
+    var mesh = this.mesh = new THREE$1.Mesh(geometry, material);
     mesh.renderOrder = environment.renderOrder.pointer;
     mesh.position.set(-100000, -100000, -100000);
   }
@@ -61926,12 +62408,12 @@ var PointerElement = /*#__PURE__*/function () {
       mesh.position.set(position.x, position.y, position.z);
       var s = mesh.position.length() / 80;
       mesh.scale.set(s, s, s);
-      mesh.lookAt(ORIGIN);
+      mesh.lookAt(ORIGIN$1);
     }
   };
 
   return PointerElement;
-}();var ORIGIN$1 = new THREE$1.Vector3();
+}();var ORIGIN$2 = new THREE$1.Vector3();
 
 var WorldComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(WorldComponent, _Component);
@@ -61943,6 +62425,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   var _proto = WorldComponent.prototype;
 
   _proto.onInit = function onInit() {
+    var _this = this;
+
     // console.log('WorldComponent.onInit');
     this.index = 0;
     this.error_ = null;
@@ -61952,6 +62436,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.setView();
     this.addListeners();
     this.animate(); // !!! no
+
+    KeyboardService.keys$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (keys) {
+      return _this.keys = keys;
+    });
   }
   /*
   onView() {
@@ -61977,6 +62465,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         node = _getContext.node;
 
     this.size = {
+      left: 0,
+      top: 0,
       width: 0,
       height: 0,
       aspect: 0
@@ -62090,7 +62580,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.setView = function setView() {
-    var _this = this;
+    var _this2 = this;
 
     var view = this.view_;
 
@@ -62106,15 +62596,15 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
-          _this.scene.environment = envMap;
+          _this2.scene.environment = envMap;
 
-          if (_this.torus) {
-            _this.torus.material.envMap = envMap;
-            _this.torus.material.needsUpdate = true;
+          if (_this2.torus) {
+            _this2.torus.material.envMap = envMap;
+            _this2.torus.material.needsUpdate = true;
           } // this.render();
 
         }, function (view) {
-          _this.setViewOrientation(view); // this.showNavPoints = true;
+          _this2.setViewOrientation(view); // this.showNavPoints = true;
           // this.pushChanges();
 
         });
@@ -62131,7 +62621,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addControllers = function addControllers() {
-    var _this2 = this;
+    var _this3 = this;
 
     var renderer = this.renderer;
     var scene = this.scene;
@@ -62143,7 +62633,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     controller1.addEventListener('selectstart', this.onSelect1Start);
     controller1.addEventListener('selectend', this.onSelect1End);
     controller1.addEventListener('connected', function (event) {
-      controller1.add(_this2.buildController(event.data));
+      controller1.add(_this3.buildController(event.data));
     });
     controller1.addEventListener('disconnected', function () {
       while (controller1.children.length) {
@@ -62158,10 +62648,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     controller2.addEventListener('selectstart', this.onSelect2Start);
     controller2.addEventListener('selectend', this.onSelect2End);
     controller2.addEventListener('connected', function (event) {
-      controller2.add(_this2.buildController(event.data));
+      controller2.add(_this3.buildController(event.data));
 
       {
-        var phone = _this2.phone = new PhoneElement();
+        var phone = _this3.phone = new PhoneElement();
         controller2.add(phone.mesh);
       }
     });
@@ -62240,35 +62730,33 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   	}
   }
   */
+
+  /*
+  drag$() {
+  	let rotation;
+  	return DragService.events$(this.node).pipe(
+  		tap((event) => {
+  			// const group = this.objects.children[this.index];
+  			if (event instanceof DragDownEvent) {
+  				// rotation = group.rotation.clone();
+  			} else if (event instanceof DragMoveEvent) {
+  				group.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01, 0);
+  				this.panorama.mesh.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01 + Math.PI, 0);
+  				this.render();
+  				MessageService.send({
+  					type: MessageType.CameraRotate,
+  					coords: [group.rotation.x, group.rotation.y, group.rotation.z]
+  				});
+  			} else if (event instanceof DragUpEvent) {
+  				if (DEBUG || EDITOR) {
+  					console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
+  				}
+  			}
+  		})
+  	);
+  }
+  */
   ;
-
-  _proto.drag$ = function drag$() {
-    var _this3 = this;
-
-    var rotation;
-    return DragService.events$(this.node).pipe(operators.tap(function (event) {
-      // const group = this.objects.children[this.index];
-      if (event instanceof DragDownEvent) ; else if (event instanceof DragMoveEvent) {
-        group.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01, 0);
-
-        _this3.panorama.mesh.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01 + Math.PI, 0);
-
-        _this3.render();
-
-        MessageService.send({
-          type: MessageType.CameraRotate,
-          coords: [group.rotation.x, group.rotation.y, group.rotation.z]
-        });
-      } else if (event instanceof DragUpEvent) {
-        if (DEBUG) {
-          console.log(JSON.stringify('DragUpEvent', {
-            orientation: _this3.orbit.getOrientation(),
-            zoom: _this3.orbit.zoom
-          }));
-        }
-      }
-    }));
-  };
 
   _proto.onTween = function onTween() {// this.render();
   };
@@ -62276,20 +62764,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onSlideChange = function onSlideChange(index) {
     this.index = index;
     this.slideChange.next(index);
-  }
-  /*
-  updateRaycaster__(controller, raycaster) {
-  	if (controller) {
-  		const position = controller.getWorldPosition(this.controllerWorldPosition_);
-  		const rotation = controller.getWorldDirection(this.controllerWorldDirection_).multiplyScalar(-1);
-  		raycaster.set(position, rotation);
-  		return raycaster;
-  	}
-  }
-  */
-  ;
+  };
 
-  _proto.updateRaycaster = function updateRaycaster(controller, raycaster) {
+  _proto.updateRaycasterXR = function updateRaycasterXR(controller, raycaster) {
     if (controller) {
       this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
       raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
@@ -62302,7 +62779,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.raycasterHitTest = function raycasterHitTest() {
     try {
       if (this.renderer.xr.isPresenting) {
-        var raycaster = this.updateRaycaster(this.controller, this.raycaster);
+        var raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 
         if (raycaster) {
           var hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
@@ -62313,7 +62790,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           }
           */
         }
-      } else {
+      } else if (!this.dragItem) {
         var _raycaster = this.raycaster;
 
         if (_raycaster) {
@@ -62402,6 +62879,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           camera = this.camera;
       var size = this.size;
       var rect = container.getBoundingClientRect();
+      size.left = Math.floor(rect.left);
+      size.top = Math.floor(rect.top);
       size.width = Math.ceil(rect.width);
       size.height = Math.ceil(rect.height);
       size.aspect = size.width / size.height;
@@ -62428,44 +62907,35 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
+  _proto.updateRaycasterMouse = function updateRaycasterMouse(event) {
+    var w2 = this.size.width / 2;
+    var h2 = this.size.height / 2;
+    this.mouse.x = (event.clientX - this.size.left - w2) / w2;
+    this.mouse.y = -(event.clientY - this.size.top - h2) / h2;
+    var raycaster = this.raycaster;
+    raycaster.setFromCamera(this.mouse, this.camera);
+    return raycaster;
+  };
+
   _proto.onMouseDown = function onMouseDown(event) {
     if (event.button !== 0) {
       return;
     }
-    /*
-    if (TEST_ENABLED) {
-    	this.controllers.setText('down');
-    	return;
-    }
-    */
-
 
     try {
-      /*
-      this.mousedown = true;
-      const raycaster = this.raycaster;
-      raycaster.setFromCamera(this.mouse, this.camera);
-      if (event.shiftKey) {
-      	const intersections = raycaster.intersectObjects(this.pivot.room.children);
-      	if (intersections) {
-      		const intersection = intersections.find(x => x !== undefined);
-      		this.createPoint(intersection);
-      	}
-      }
-      */
-      var w2 = this.size.width / 2;
-      var h2 = this.size.height / 2;
-      this.mouse.x = (event.clientX - w2) / w2;
-      this.mouse.y = -(event.clientY - h2) / h2;
-      var raycaster = this.raycaster;
-      raycaster.setFromCamera(this.mouse, this.camera);
+      var raycaster = this.updateRaycasterMouse(event);
       var hit = Interactive.hittest(raycaster, true);
 
-      if (DEBUG && this.panorama.mesh.intersection) {
+      if (this.panorama.mesh.intersection) {
         var position = new THREE$1.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
-        console.log(JSON.stringify({
-          position: position.toArray()
-        }));
+
+        if (DEBUG || EDITOR) {
+          console.log(JSON.stringify({
+            position: position.toArray()
+          }));
+        }
+
+        this.viewHit.next(position);
       }
     } catch (error) {
       this.error = error; // throw (error);
@@ -62474,31 +62944,39 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onMouseMove = function onMouseMove(event) {
     try {
-      var w2 = this.size.width / 2;
-      var h2 = this.size.height / 2;
-      this.mouse.x = (event.clientX - w2) / w2;
-      this.mouse.y = -(event.clientY - h2) / h2;
-      /*
-      if (TEST_ENABLED) {
-      	return this.controllers.updateTest(this.mouse);
-      }
-      */
+      var raycaster = this.updateRaycasterMouse(event);
 
-      var raycaster = this.raycaster;
-      raycaster.setFromCamera(this.mouse, this.camera); // Interactive.hittest(raycaster, this.mousedown);
+      if (this.dragItem) {
+        if (typeof this.dragItem.onDragMove === 'function') {
+          var intersections = raycaster.intersectObjects([this.panorama.mesh]);
+
+          if (intersections.length) {
+            var intersection = intersections[0]; // this.panorama.mesh.intersection = intersection;
+
+            var position = new THREE$1.Vector3().copy(intersection.point).normalize();
+            this.dragItem.onDragMove(position);
+          }
+        }
+      }
     } catch (error) {
       this.error = error; // throw (error);
     }
   };
 
   _proto.onMouseUp = function onMouseUp(event) {
+    if (this.dragItem) {
+      if (typeof this.dragItem.onDragEnd === 'function') {
+        this.dragItem.onDragEnd();
+        this.dragEnd.next(this.dragItem);
+      }
+    }
+
+    this.dragItem = null;
     /*
-    if (TEST_ENABLED) {
-    	this.controllers.setText('up');
-    	return;
+    if (NavPointDragging) {
+    	stopDragging
     }
     */
-    // this.mousedown = false;
   };
 
   _proto.onMouseWheel = function onMouseWheel(event) {
@@ -62588,20 +63066,34 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.view.items.forEach(function (item) {
       return item.showPanel = false;
     });
-    event.showPanel = true;
+    event.item.showPanel = true;
     this.pushChanges();
   };
 
   _proto.onNavOut = function onNavOut(event) {
     // console.log('WorldComponent.onNavOut', event);
-    // event.showPanel = false;
+    // event.item.showPanel = false;
     this.pushChanges();
   };
 
   _proto.onNavDown = function onNavDown(event) {
-    // console.log('WorldComponent.onNavDown', event);
-    event.showPanel = false;
-    this.navTo.next(event.viewId);
+    event.item.showPanel = false;
+
+    if (this.keys.Shift) {
+      console.log('WorldComponent.onNavDown', this.keys);
+      this.dragItem = event;
+    } else {
+      this.navTo.next(event.item.viewId);
+    }
+  };
+
+  _proto.onPlaneDown = function onPlaneDown(event) {
+    console.log('onPlaneDown', event);
+
+    if (this.keys.Shift) {
+      console.log('WorldComponent.onPlaneDown', this.keys);
+      this.dragItem = event;
+    }
   };
 
   _proto.onPanelDown = function onPanelDown(event) {
@@ -62678,8 +63170,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       _this6.onVRStateDidChange(state);
     });
     this.orbit.observe$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      // this.render();
-      _this6.onOrientationDidChange();
+      if (event instanceof OrbitDragEvent) ; else {
+        // this.render();
+        _this6.onOrientationDidChange();
+      }
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
@@ -62752,7 +63246,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           if (!_this6.renderer.xr.isPresenting) {
             var camera = _this6.camera;
             camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
-            camera.lookAt(ORIGIN$1); // this.render();
+            camera.lookAt(ORIGIN$2); // this.render();
           }
 
           break;
@@ -62829,7 +63323,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views'],
-  outputs: ['slideChange', 'navTo']
+  outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd']
 };var deg = THREE$1.Math.degToRad;
 var GEOMETRY = new THREE$1.BoxGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
@@ -62989,7 +63483,7 @@ ModelComponent.meta = {
   },
   inputs: ['item']
 };var PANEL_RADIUS = PANORAMA_RADIUS - 0.01;
-var ORIGIN$2 = new THREE$1.Vector3();
+var ORIGIN$3 = new THREE$1.Vector3();
 
 var ModelBannerComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelBannerComponent, _ModelComponent);
@@ -63156,15 +63650,15 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.isVideo = function isVideo(item) {
-    return item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
+    return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
   };
 
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.asset.file === 'publisherStream';
+    return item.asset && item.asset.file === 'publisherStream';
   };
 
   MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset.file === 'nextAttendeeStream';
+    return item.asset && item.asset.file === 'nextAttendeeStream';
   };
 
   _createClass(MediaLoader, [{
@@ -63277,7 +63771,7 @@ var MediaLoader = /*#__PURE__*/function () {
 
 
       this.play(true);
-    } else {
+    } else if (item.asset) {
       MediaLoader.loadTexture(item, function (texture) {
         texture.minFilter = THREE$1.LinearFilter;
         texture.magFilter = THREE$1.LinearFilter;
@@ -63290,6 +63784,8 @@ var MediaLoader = /*#__PURE__*/function () {
           callback(texture, _this);
         }
       });
+    } else {
+      callback(null, this);
     }
 
     return this;
@@ -63441,6 +63937,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   MediaMesh.getStreamId$ = function getStreamId$(item) {
+    if (!item.asset) {
+      return rxjs.of(null);
+    }
+
     var file = item.asset.file;
 
     if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
@@ -63479,18 +63979,29 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     var _this;
 
     material = material || MediaMesh.getMaterial();
+
+    if (!item.asset) {
+      material = new THREE$1.MeshBasicMaterial({
+        color: 0x888888
+      });
+    }
+
     _this = _InteractiveMesh.call(this, geometry, material) || this;
     _this.item = item;
     _this.items = items;
     _this.renderOrder = environment.renderOrder.plane;
-    var uniforms = _this.uniforms = {
-      overlay: 0,
-      tween: 1,
-      opacity: 0
-    };
+
+    if (item.asset) {
+      var uniforms = _this.uniforms = {
+        overlay: 0,
+        tween: 1,
+        opacity: 0
+      };
+    }
+
     var mediaLoader = _this.mediaLoader = new MediaLoader(item);
 
-    if (!mediaLoader.isVideo) {
+    if (item.asset && !mediaLoader.isVideo) {
       _this.freeze();
     }
 
@@ -63501,6 +64012,16 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
   _proto.load = function load(callback) {
     var _this2 = this;
+
+    if (!this.item.asset) {
+      this.onAppear();
+
+      if (typeof callback === 'function') {
+        callback(this);
+      }
+
+      return;
+    }
 
     var material = this.material;
     var mediaLoader = this.mediaLoader;
@@ -63527,10 +64048,13 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
 
     mediaLoader.load(function (textureA) {
-      // console.log('MediaMesh.textureA', textureA);
-      material.uniforms.textureA.value = textureA;
-      material.uniforms.resolutionA.value = new THREE$1.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-      material.needsUpdate = true;
+      console.log('MediaMesh.textureA', textureA);
+
+      if (textureA) {
+        material.uniforms.textureA.value = textureA;
+        material.uniforms.resolutionA.value = new THREE$1.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
+        material.needsUpdate = true;
+      }
 
       _this2.onAppear();
 
@@ -63687,17 +64211,67 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   return MediaMesh;
-}(InteractiveMesh);var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelComponent) {
-  _inheritsLoose(ModelCurvedPlaneComponent, _ModelComponent);
+}(InteractiveMesh);var ModelDraggableComponent = /*#__PURE__*/function (_ModelComponent) {
+  _inheritsLoose(ModelDraggableComponent, _ModelComponent);
+
+  function ModelDraggableComponent() {
+    return _ModelComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ModelDraggableComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    _ModelComponent.prototype.onInit.call(this);
+
+    this.RADIUS = 100;
+  };
+
+  _proto.setHelper = function setHelper(showHelper) {
+    if (showHelper) {
+      if (!this.helper) {
+        this.helper = new THREE.BoxHelper(this.mesh, 0x00ff00);
+      }
+
+      this.host.scene.add(this.helper);
+    } else if (this.helper) {
+      this.host.scene.remove(this.helper);
+    }
+  };
+
+  _createClass(ModelDraggableComponent, [{
+    key: "dragging",
+    get: function get() {
+      return this.dragging_;
+    },
+    set: function set(dragging) {
+      if (this.dragging_ !== dragging) {
+        this.dragging_ = dragging;
+        this.setHelper(dragging);
+      }
+    }
+  }]);
+
+  return ModelDraggableComponent;
+}(ModelComponent);
+ModelDraggableComponent.meta = {
+  selector: '[model-draggable]',
+  hosts: {
+    host: WorldComponent
+  },
+  inputs: ['item']
+};var ORIGIN$4 = new THREE$1.Vector3();
+
+var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
+  _inheritsLoose(ModelCurvedPlaneComponent, _ModelDraggableCompon);
 
   function ModelCurvedPlaneComponent() {
-    return _ModelComponent.apply(this, arguments) || this;
+    return _ModelDraggableCompon.apply(this, arguments) || this;
   }
 
   var _proto = ModelCurvedPlaneComponent.prototype;
 
   _proto.onInit = function onInit() {
-    _ModelComponent.prototype.onInit.call(this); // console.log('ModelCurvedPlaneComponent.onInit');
+    _ModelDraggableCompon.prototype.onInit.call(this); // console.log('ModelCurvedPlaneComponent.onInit');
 
   };
 
@@ -63725,20 +64299,20 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
           subscription = null;
         }
 
-        if (streamId) {
+        if (streamId || !item.asset) {
           item.streamId = streamId;
           mesh = new MediaMesh(item, items, geometry, item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null);
 
           if (item.position) {
-            mesh.position.set(item.position.x, item.position.y, item.position.z);
+            mesh.position.fromArray(item.position);
           }
 
           if (item.rotation) {
-            mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+            mesh.rotation.fromArray(item.rotation);
           }
 
           if (item.scale) {
-            mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+            mesh.scale.fromArray(item.scale);
           }
 
           mesh.load(function () {
@@ -63748,32 +64322,51 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
+          mesh.on('down', function () {
+            _this.down.next(_this);
+          });
         } // console.log('streamId', streamId, mesh);
 
       }
     });
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-  ;
+  };
 
   _proto.onDestroy = function onDestroy() {
-    _ModelComponent.prototype.onDestroy.call(this);
+    _ModelDraggableCompon.prototype.onDestroy.call(this);
 
     if (this.mesh) {
       this.mesh.dispose();
     }
+  } // called by WorldComponent
+  ;
+
+  _proto.onDragMove = function onDragMove(position) {
+    this.item.showPanel = false;
+    this.dragging = true;
+    this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
+    this.mesh.lookAt(ORIGIN$4);
+    this.helper.update();
+  } // called by WorldComponent
+  ;
+
+  _proto.onDragEnd = function onDragEnd() {
+    this.item.position = this.mesh.position.toArray();
+    this.item.rotation = this.mesh.rotation.toArray();
+    this.item.scale = this.mesh.scale.toArray();
+    this.dragging = false;
   };
 
   return ModelCurvedPlaneComponent;
-}(ModelComponent);
+}(ModelDraggableComponent);
 ModelCurvedPlaneComponent.textures = {};
 ModelCurvedPlaneComponent.meta = {
   selector: '[model-curved-plane]',
   hosts: {
     host: WorldComponent
   },
+  outputs: ['down'],
   inputs: ['item', 'items']
-};var ORIGIN$3 = new THREE$1.Vector3();
+};var ORIGIN$5 = new THREE$1.Vector3();
 var W$2 = 1024;
 var H$2 = 256;
 
@@ -63899,7 +64492,7 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
     // console.log(position.x + '|' + position.y + '|' + position.z);
 
     group.position.copy(position);
-    group.lookAt(ORIGIN$3); // }
+    group.lookAt(ORIGIN$5); // }
   };
 
   _proto.setText = function setText(message) {
@@ -63912,7 +64505,7 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
         ctx.clearRect(0, 0, W$2, H$2); // ctx.fillRect(0, 0, 10, 10);
         // ctx.fillRect(W - 10, H - 10, 10, 10);
 
-        ctx.font = '30px Maven Pro';
+        ctx.font = "30px " + environment.fontFamily;
         ctx.textBaseline = 'middle';
         ctx.textAlign = "center";
         ctx.fillStyle = '#FFFFFF';
@@ -64525,7 +65118,7 @@ ModelGridComponent.meta = {
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, w, h);
-    ctx.font = '20px Maven Pro';
+    ctx.font = "20px " + environment.fontFamily;
     ctx.fillStyle = '#ffffff';
     ctx.fillText(text, 10, 50, w - 20);
     var texture = new THREE$1.CanvasTexture(canvas);
@@ -64546,7 +65139,7 @@ ModelGridComponent.meta = {
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '0x0099ff';
     ctx.fillRect(0, 0, w, h);
-    ctx.font = '20px Maven Pro';
+    ctx.font = "20px " + environment.fontFamily;
     ctx.fillStyle = '#ffffff';
     ctx.fillText(text, 10, 50, w - 20);
     var texture = new THREE$1.CanvasTexture(canvas);
@@ -64565,7 +65158,7 @@ ModelGridComponent.meta = {
     */
     gsap.to(this, 0.4, {
       tween: 1,
-      ease: Power2.easeInOut,
+      ease: Power2.easeOut,
       onUpdate: function onUpdate() {
         _this2.position.z = 0.1 * _this2.tween;
         _this2.material.uniforms.tween.value = _this2.tween;
@@ -64579,7 +65172,7 @@ ModelGridComponent.meta = {
 
     gsap.to(this, 0.4, {
       tween: 0,
-      ease: Power2.easeInOut,
+      ease: Power2.easeOut,
       onUpdate: function onUpdate() {
         _this3.position.z = 0.1 * _this3.tween;
         _this3.material.uniforms.tween.value = _this3.tween;
@@ -64620,7 +65213,7 @@ var BackButton = /*#__PURE__*/function (_MenuButton) {
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#0099ff';
     ctx.fillRect(0, 0, w, h);
-    ctx.font = '20px Maven Pro';
+    ctx.font = "20px " + environment.fontFamily;
     ctx.fillStyle = '#000000';
     ctx.fillText(text, 10, 50, w - 20);
     var texture = new THREE$1.CanvasTexture(canvas);
@@ -64640,7 +65233,7 @@ var BackButton = /*#__PURE__*/function (_MenuButton) {
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = '#0099ff';
     ctx.fillRect(0, 0, w, h);
-    ctx.font = '20px Maven Pro';
+    ctx.font = "20px " + environment.fontFamily;
     ctx.fillStyle = '#ffffff';
     ctx.fillText(text, 10, 50, w - 20);
     var texture = new THREE$1.CanvasTexture(canvas);
@@ -64866,7 +65459,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       gsap.to(buttons, {
         duration: 0.3,
         opacity: 0.8,
-        ease: "power1.inOut",
+        ease: Power2.easeOut,
         stagger: {
           grid: MenuButton.getGrid(buttons.length),
           from: 0,
@@ -64963,13 +65556,13 @@ ModelMenuComponent.meta = {
   outputs: ['nav', 'toggle'],
   inputs: ['items']
 };var NAV_RADIUS = 100;
-var ORIGIN$4 = new THREE$1.Vector3();
+var ORIGIN$6 = new THREE$1.Vector3();
 
-var ModelNavComponent = /*#__PURE__*/function (_ModelComponent) {
-  _inheritsLoose(ModelNavComponent, _ModelComponent);
+var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
+  _inheritsLoose(ModelNavComponent, _ModelDraggableCompon);
 
   function ModelNavComponent() {
-    return _ModelComponent.apply(this, arguments) || this;
+    return _ModelDraggableCompon.apply(this, arguments) || this;
   }
 
   ModelNavComponent.getLoader = function getLoader() {
@@ -64983,25 +65576,28 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelComponent) {
   var _proto = ModelNavComponent.prototype;
 
   _proto.onInit = function onInit() {
-    var _this = this;
+    _ModelDraggableCompon.prototype.onInit.call(this);
+    /*
+    this.debouncedOver$ = new ReplaySubject(1).pipe(
+    	auditTime(250),
+    	tap(event => this.over.next(event)),
+    	takeUntil(this.unsubscribe$),
+    );
+    this.debouncedOver$.subscribe();
+    */
+    // console.log('ModelNavComponent.onInit');
 
-    _ModelComponent.prototype.onInit.call(this);
-
-    this.debouncedOver$ = new rxjs.ReplaySubject(1).pipe(operators.auditTime(250), operators.tap(function (event) {
-      return _this.over.next(event);
-    }), operators.takeUntil(this.unsubscribe$));
-    this.debouncedOver$.subscribe(); // console.log('ModelNavComponent.onInit');
   };
 
   _proto.onDestroy = function onDestroy() {
     Interactive.dispose(this.sphere);
 
-    _ModelComponent.prototype.onDestroy.call(this);
+    _ModelDraggableCompon.prototype.onDestroy.call(this);
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
     var _THREE$Vector,
-        _this2 = this;
+        _this = this;
 
     // this.renderOrder = environment.renderOrder.nav;
     var nav = new THREE$1.Group();
@@ -65034,7 +65630,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelComponent) {
       opacity: 0.0,
       color: 0x00ffff
     }));
-    sphere.lookAt(ORIGIN$4);
+    sphere.lookAt(ORIGIN$6);
     sphere.depthTest = false;
     sphere.renderOrder = 0;
     nav.add(sphere);
@@ -65042,36 +65638,40 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelComponent) {
       var from = {
         scale: sprite.scale.x
       };
-      gsap.to(from, 0.4, {
+      gsap.to(from, 0.35, {
         scale: 0.04,
         delay: 0,
-        ease: Power2.easeInOut,
+        ease: Power2.easeOut,
         overwrite: true,
         onUpdate: function onUpdate() {
           sprite.scale.set(from.scale, from.scale, from.scale);
+        },
+        onComplete: function onComplete() {
+          if (!_this.dragging) {
+            _this.over.next(_this);
+          }
         }
       });
-
-      _this2.debouncedOver$.next(_this2.item);
     });
     sphere.on('out', function () {
       var from = {
         scale: sprite.scale.x
       };
-      gsap.to(from, 0.4, {
+      gsap.to(from, 0.35, {
         scale: 0.03,
         delay: 0,
-        ease: Power2.easeInOut,
+        ease: Power2.easeOut,
         overwrite: true,
         onUpdate: function onUpdate() {
           sprite.scale.set(from.scale, from.scale, from.scale);
+        },
+        onComplete: function onComplete() {
+          _this.out.next(_this);
         }
       });
-
-      _this2.out.next(_this2.item);
     });
     sphere.on('down', function () {
-      _this2.down.next(_this2.item);
+      _this.down.next(_this);
     });
     var from = {
       opacity: 0
@@ -65091,10 +65691,24 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelComponent) {
     if (typeof mount === 'function') {
       mount(nav);
     }
+  } // called by WorldComponent
+  ;
+
+  _proto.onDragMove = function onDragMove(position) {
+    this.item.showPanel = false;
+    this.dragging = true;
+    this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(NAV_RADIUS);
+    this.helper.update();
+  } // called by WorldComponent
+  ;
+
+  _proto.onDragEnd = function onDragEnd() {
+    this.item.position = new THREE$1.Vector3().copy(this.mesh.position).normalize().toArray();
+    this.dragging = false;
   };
 
   return ModelNavComponent;
-}(ModelComponent);
+}(ModelDraggableComponent);
 ModelNavComponent.meta = {
   selector: '[model-nav]',
   hosts: {
@@ -65124,7 +65738,7 @@ ModelNavComponent.meta = {
   function FreezableSprite(material) {
     var _this;
 
-    material = material || new THREE.SpriteMaterial({
+    material = material || new THREE$1.SpriteMaterial({
       color: 0xff00ff // opacity: 1,
       // transparent: true,
 
@@ -65145,13 +65759,13 @@ ModelNavComponent.meta = {
   };
 
   return FreezableSprite;
-}(THREE.Sprite);var EmittableSprite = /*#__PURE__*/function (_FreezableSprite) {
+}(THREE$1.Sprite);var EmittableSprite = /*#__PURE__*/function (_FreezableSprite) {
   _inheritsLoose(EmittableSprite, _FreezableSprite);
 
   function EmittableSprite(material) {
     var _this;
 
-    material = material || new THREE.SpriteMaterial({
+    material = material || new THREE$1.SpriteMaterial({
       color: 0xff00ff // opacity: 1,
       // transparent: true,
 
@@ -65208,70 +65822,67 @@ ModelNavComponent.meta = {
 }(FreezableSprite);var InteractiveSprite = /*#__PURE__*/function (_EmittableSprite) {
   _inheritsLoose(InteractiveSprite, _EmittableSprite);
 
-  InteractiveSprite.hittest = function hittest(raycaster, down) {
-    var debugService = DebugService.getService();
-
-    if (InteractiveSprite.down !== down) {
-      InteractiveSprite.down = down;
-      InteractiveSprite.lock = false;
-    } // !!! da rivedere per consentire eventi multipli (nav-items)
-
-
-    var items = InteractiveSprite.items.filter(function (x) {
-      return !x.freezed;
-    });
-    var intersections = raycaster.intersectObjects(items);
-    var key, hit;
-    var hash = {}; // let has = false;
-
-    intersections.forEach(function (intersection, i) {
-      // console.log(intersection);
-      var object = intersection.object; // console.log('InteractiveSprite.hittest', i, object.name);
-      // has = has || object.name.indexOf('nav') !== -1;
-
-      key = object.uuid;
-
-      if (i === 0) {
-        if (InteractiveSprite.lastIntersectedObject !== object) {
-          InteractiveSprite.lastIntersectedObject = object;
-          hit = object;
-          debugService.setMessage(hit.name || hit.id); // haptic feedback
-        } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
-          object.intersection = intersection;
-          object.emit('move', object);
-        }
-      }
-
-      hash[key] = intersection;
-    });
-
-    if (intersections.length === 0) {
-      InteractiveSprite.lastIntersectedObject = null;
-    } // console.log(has);
-
-
-    items.forEach(function (x) {
-      x.intersection = hash[x.uuid];
-      x.over = x === InteractiveSprite.lastIntersectedObject || !x.depthTest && x.intersection;
-      x.down = down && x.over && !InteractiveSprite.lock;
-
-      if (x.down) {
-        InteractiveSprite.lock = true;
-      }
-    });
-    return hit;
-  };
-
-  InteractiveSprite.dispose = function dispose(object) {
-    if (object) {
-      var index = InteractiveSprite.items.indexOf(object);
-
-      if (index !== -1) {
-        InteractiveSprite.items.splice(index, 1);
-      }
-    }
-  };
-
+  /*
+  static hittest(raycaster, down = false, event = defaultEvent) {
+  	const debugService = DebugService.getService();
+  	if (InteractiveSprite.down !== down) {
+  		InteractiveSprite.down = down;
+  		InteractiveSprite.lock = false;
+  	}
+  	// !!! da rivedere per consentire eventi multipli (nav-items)
+  	const items = InteractiveSprite.items.filter(x => !x.freezed);
+  	const intersections = raycaster.intersectObjects(items);
+  	let key, hit;
+  	const hash = {};
+  	// let has = false;
+  	intersections.forEach((intersection, i) => {
+  		// console.log(intersection);
+  		const object = intersection.object;
+  		// console.log('InteractiveSprite.hittest', i, object.name);
+  		// has = has || object.name.indexOf('nav') !== -1;
+  		key = object.uuid;
+  		if (i === 0) {
+  			if (InteractiveSprite.lastIntersectedObject !== object) {
+  				InteractiveSprite.lastIntersectedObject = object;
+  				hit = object;
+  				debugService.setMessage(hit.name || hit.id);
+  				// haptic feedback
+  			} else if (
+  				object.intersection && (
+  					Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 ||
+  					Math.abs(object.intersection.point.y - intersection.point.y) > 0.01
+  				)
+  			) {
+  				object.intersection = intersection;
+  				object.emit('move', object);
+  			}
+  		}
+  		hash[key] = intersection;
+  	});
+  	if (intersections.length === 0) {
+  		InteractiveSprite.lastIntersectedObject = null;
+  	}
+  	// console.log(has);
+  	items.forEach(x => {
+  		x.intersection = hash[x.uuid];
+  		x.over = (x === InteractiveSprite.lastIntersectedObject) || (!x.depthTest && x.intersection);
+  		x.down = down && x.over && !InteractiveSprite.lock;
+  		if (x.down) {
+  			InteractiveSprite.lock = true;
+  		}
+  	});
+  	return hit;
+  }
+  
+  static dispose(object) {
+  	if (object) {
+  		const index = InteractiveSprite.items.indexOf(object);
+  		if (index !== -1) {
+  			InteractiveSprite.items.splice(index, 1);
+  		}
+  	}
+  }
+  */
   function InteractiveSprite(material) {
     var _this;
 
@@ -65325,8 +65936,7 @@ ModelNavComponent.meta = {
   }]);
 
   return InteractiveSprite;
-}(EmittableSprite);
-InteractiveSprite.items = [];var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
+}(EmittableSprite);var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelPanelComponent, _ModelComponent);
 
   function ModelPanelComponent() {
@@ -65567,17 +66177,19 @@ ModelPictureComponent.meta = {
     host: WorldComponent
   },
   inputs: ['item']
-};var ModelPlaneComponent = /*#__PURE__*/function (_ModelComponent) {
-  _inheritsLoose(ModelPlaneComponent, _ModelComponent);
+};var ORIGIN$7 = new THREE$1.Vector3();
+
+var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
+  _inheritsLoose(ModelPlaneComponent, _ModelDraggableCompon);
 
   function ModelPlaneComponent() {
-    return _ModelComponent.apply(this, arguments) || this;
+    return _ModelDraggableCompon.apply(this, arguments) || this;
   }
 
   var _proto = ModelPlaneComponent.prototype;
 
   _proto.onInit = function onInit() {
-    _ModelComponent.prototype.onInit.call(this); // console.log('ModelPlaneComponent.onInit');
+    _ModelDraggableCompon.prototype.onInit.call(this); // console.log('ModelPlaneComponent.onInit');
 
   };
 
@@ -65602,20 +66214,20 @@ ModelPictureComponent.meta = {
           subscription = null;
         }
 
-        if (streamId) {
+        if (streamId || !item.asset) {
           item.streamId = streamId;
           mesh = new MediaMesh(item, items, geometry, item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null);
 
           if (item.position) {
-            mesh.position.set(item.position.x, item.position.y, item.position.z);
+            mesh.position.fromArray(item.position);
           }
 
           if (item.rotation) {
-            mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+            mesh.rotation.fromArray(item.rotation);
           }
 
           if (item.scale) {
-            mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+            mesh.scale.fromArray(item.scale);
           }
 
           mesh.load(function () {
@@ -65625,30 +66237,49 @@ ModelPictureComponent.meta = {
 
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
+          mesh.on('down', function () {
+            _this.down.next(_this);
+          });
         } // console.log('streamId', streamId, mesh);
 
       }
     });
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-  ;
+  };
 
   _proto.onDestroy = function onDestroy() {
-    _ModelComponent.prototype.onDestroy.call(this);
+    _ModelDraggableCompon.prototype.onDestroy.call(this);
 
     if (this.mesh) {
       this.mesh.dispose();
     }
+  } // called by WorldComponent
+  ;
+
+  _proto.onDragMove = function onDragMove(position) {
+    this.item.showPanel = false;
+    this.dragging = true;
+    this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
+    this.mesh.lookAt(ORIGIN$7);
+    this.helper.update();
+  } // called by WorldComponent
+  ;
+
+  _proto.onDragEnd = function onDragEnd() {
+    this.item.position = this.mesh.position.toArray();
+    this.item.rotation = this.mesh.rotation.toArray();
+    this.item.scale = this.mesh.scale.toArray();
+    this.dragging = false;
   };
 
   return ModelPlaneComponent;
-}(ModelComponent);
+}(ModelDraggableComponent);
 ModelPlaneComponent.textures = {};
 ModelPlaneComponent.meta = {
   selector: '[model-plane]',
   hosts: {
     host: WorldComponent
   },
+  outputs: ['down'],
   inputs: ['item', 'items']
 };/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */var mod={}, l=void 0,aa=mod;function r(c,d){var a=c.split("."),b=aa;!(a[0]in b)&&b.execScript&&b.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)!a.length&&d!==l?b[e]=d:b=b[e]?b[e]:b[e]={};}var t="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;function v(c){var d=c.length,a=0,b=Number.POSITIVE_INFINITY,e,f,g,h,k,m,n,p,s,x;for(p=0;p<d;++p)c[p]>a&&(a=c[p]),c[p]<b&&(b=c[p]);e=1<<a;f=new (t?Uint32Array:Array)(e);g=1;h=0;for(k=2;g<=a;){for(p=0;p<d;++p)if(c[p]===g){m=0;n=h;for(s=0;s<g;++s)m=m<<1|n&1,n>>=1;x=g<<16|p;for(s=m;s<e;s+=k)f[s]=x;++h;}++g;h<<=1;k<<=1;}return [f,a,b]}function w(c,d){this.g=[];this.h=32768;this.d=this.f=this.a=this.l=0;this.input=t?new Uint8Array(c):c;this.m=!1;this.i=y;this.r=!1;if(d||!(d={}))d.index&&(this.a=d.index),d.bufferSize&&(this.h=d.bufferSize),d.bufferType&&(this.i=d.bufferType),d.resize&&(this.r=d.resize);switch(this.i){case A:this.b=32768;this.c=new (t?Uint8Array:Array)(32768+this.h+258);break;case y:this.b=0;this.c=new (t?Uint8Array:Array)(this.h);this.e=this.z;this.n=this.v;this.j=this.w;break;default:throw Error("invalid inflate mode");
 }}var A=0,y=1,B={t:A,s:y};
@@ -70559,7 +71190,7 @@ ModelTextComponent.meta = {
   return AppModule;
 }(rxcomp.Module);
 AppModule.meta = {
-  imports: [rxcomp.CoreModule, rxcompForm.FormModule],
-  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlTextComponent, ControlUploadComponent, ControlSelectComponent, DropDirective, DropdownDirective, DropdownItemDirective, EditorComponent, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, PanoramaModalComponent, NavModalComponent, SliderDirective, TryInARComponent, TryInARModalComponent, UploadButtonDirective, UploadDropDirective, UploadSrcDirective, UploadItemComponent, ValueDirective, WorldComponent],
+  imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
+  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

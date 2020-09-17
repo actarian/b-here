@@ -1,10 +1,12 @@
-import DebugService from '../debug.service';
 import EmittableSprite from './emittable.sprite';
 import Interactive from './interactive';
 
+// const defaultEvent = {};
+
 export default class InteractiveSprite extends EmittableSprite {
 
-	static hittest(raycaster, down) {
+	/*
+	static hittest(raycaster, down = false, event = defaultEvent) {
 		const debugService = DebugService.getService();
 		if (InteractiveSprite.down !== down) {
 			InteractiveSprite.down = down;
@@ -63,6 +65,7 @@ export default class InteractiveSprite extends EmittableSprite {
 			}
 		}
 	}
+	*/
 
 	constructor(material) {
 		super(material);
@@ -108,4 +111,8 @@ export default class InteractiveSprite extends EmittableSprite {
 
 }
 
+/*
 InteractiveSprite.items = [];
+InteractiveSprite.hittest = interactiveHittest.bind(InteractiveSprite);
+InteractiveSprite.dispose = interactiveDispose.bind(InteractiveSprite);
+*/

@@ -1,7 +1,7 @@
 import { first } from 'rxjs/operators';
 import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
+import { RGBELoader } from '../../loaders/RGBELoader.js';
 import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
 

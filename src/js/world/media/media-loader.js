@@ -29,15 +29,15 @@ export default class MediaLoader {
 	}
 
 	static isVideo(item) {
-		return item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
+		return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
 	}
 
 	static isPublisherStream(item) {
-		return item.asset.file === 'publisherStream';
+		return item.asset && item.asset.file === 'publisherStream';
 	}
 
 	static isNextAttendeeStream(item) {
-		return item.asset.file === 'nextAttendeeStream';
+		return item.asset && item.asset.file === 'nextAttendeeStream';
 	}
 
 	get isVideo() {
@@ -123,7 +123,7 @@ export default class MediaLoader {
 			video.src = MediaLoader.getPath(item);
 			video.load(); // must call after setting/changing source
 			this.play(true);
-		} else {
+		} else if (item.asset) {
 			MediaLoader.loadTexture(item, texture => {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
@@ -135,6 +135,8 @@ export default class MediaLoader {
 					callback(texture, this);
 				}
 			});
+		} else {
+			callback(null, this);
 		}
 		return this;
 	}

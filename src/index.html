@@ -206,14 +206,14 @@
 			</div>
 		</div>
 		<div class="ui__body">
-			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)">
+			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)">
 				<div class="world__view" *if="view">
 					<div model-room [item]="view" *if="view.type === 'room-3d'"></div>
 					<div class="grid" model-grid *if="view.type === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div class="world__item" *for="let item of view.items; let index = index;">
 						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type == 'nav'"></div>
-						<div model-plane [item]="item" [items]="view.items" *if="item.type == 'plane'"></div>
-						<div model-curved-plane [item]="item" [items]="view.items" *if="item.type == 'curved-plane'"></div>
+						<div model-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type == 'plane'"></div>
+						<div model-curved-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type == 'curved-plane'"></div>
 						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type == 'gltf'">
 							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 						</div>
@@ -250,10 +250,10 @@
 			<div class="right"></div>
 		</div>
 	</div>
-	<div class="aside" [class]="{ active: aside }">
+	<div class="aside" [class]="{ active: aside }" *if="view">
 		<div class="headline">
-			<div class="headline__id" [innerHTML]="view?.id"></div>
-			<div class="headline__type" [innerHTML]="getViewTypeLabel(view?.type)"></div>
+			<div class="headline__id" [innerHTML]="view.id"></div>
+			<div class="headline__type" [innerHTML]="getViewTypeLabel(view.type)"></div>
 		</div>
 		<div class="scrollable">
 			<ul class="nav--editor">
@@ -286,7 +286,7 @@
 						</li>
 					</ul>
 				</li>
-				<li>
+				<li *if="view.type !== 'waiting-room'">
 					<div class="title">View Item</div>
 					<ul class="nav--editor">
 						<li>

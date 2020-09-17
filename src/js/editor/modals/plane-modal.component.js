@@ -1,33 +1,29 @@
 import { Component, getContext } from 'rxcomp';
-import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
+import { FormGroup } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
 import EditorService from '../editor.service';
 
+const ORIGIN = new THREE.Vector3();
+
 /*
 {
-	"id": 110,
-	"type": "nav",
-	"title": "Barilla Experience",
-	"abstract": "Abstract",
+	"id": 2310,
+	"type": "plane",
 	"asset": {
-		"type": "image",
-		"folder": "barilla/",
-		"file": "logo-barilla.jpg"
+	"type": "video",
+	"folder": "room-3d/",
+	"file": "plane-01.mp4"
 	},
-	"link": {
-		"title": "Scopri di più...",
-		"href": "https://www.barilla.com/it-it/",
-		"target": "_blank"
-	},
-	"position": [0.9491595148619703,-0.3147945860255039,0],
-	"viewId": 23
+	"position": { "x": 20, "y": 1.7, "z": 0 },
+	"rotation": { "x": 0, "y": -1.57079632679, "z": 0 },
+	"scale": { "x": 22, "y": 12, "z": 1 }
 }
 */
 
-export default class NavModalComponent extends Component {
+export default class PlaneModalComponent extends Component {
 
 	get data() {
 		let data = null;
@@ -57,14 +53,19 @@ export default class NavModalComponent extends Component {
 	}
 
 	onInit() {
+
+		const object = new THREE.Object3D();
+		object.position.copy(this.position);
+		object.lookAt(ORIGIN);
+		console.log(object.rotation);
+
 		const form = this.form = new FormGroup({
-			type: ViewItemType.Nav,
-			title: new FormControl(null, RequiredValidator()),
-			abstract: new FormControl(null, RequiredValidator()),
-			viewId: new FormControl(null, RequiredValidator()),
-			position: this.position.toArray(),
+			type: ViewItemType.Plane,
+			// title: new FormControl(null, RequiredValidator()),
 			// upload: new FormControl(null, RequiredValidator()),
-			// items: new FormArray([null, null, null], RequiredValidator()),
+			position: this.position.multiplyScalar(20).toArray(),
+			rotation: object.rotation.toArray(), // [0, -Math.PI / 2, 0],
+			scale: [3.2, 1.8, 1],
 		});
 		this.controls = form.controls;
 		/*
@@ -74,28 +75,30 @@ export default class NavModalComponent extends Component {
 		}];
 		*/
 		form.changes$.subscribe((changes) => {
-			// console.log('NavModalComponent.form.changes$', changes, form.valid, form);
+			// console.log('PlaneModalComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
+		/*
 		EditorService.data$().pipe(
 			first(),
 		).subscribe(data => {
 			this.controls.viewId.options = data.views.map(view => ({ id: view.id, name: view.name }));
 			this.pushChanges();
 		});
+		*/
 	}
 
 	onSubmit() {
 		if (this.form.valid) {
 			const item = Object.assign({}, this.form.value);
-			item.viewId = parseInt(item.viewId);
-			console.log('NavModalComponent.onSubmit', this.view, item);
+			// item.viewId = parseInt(item.viewId);
+			console.log('PlaneModalComponent.onSubmit', this.view, item);
 			EditorService.itemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('NavModalComponent.onSubmit.success', response);
+				console.log('PlaneModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
-			}, error => console.log('NavModalComponent.onSubmit.error', error));
+			}, error => console.log('PlaneModalComponent.onSubmit.error', error));
 			// ModalService.resolve(this.form.value);
 			// this.form.submitted = true;
 			// this.form.reset();
@@ -110,6 +113,6 @@ export default class NavModalComponent extends Component {
 
 }
 
-NavModalComponent.meta = {
-	selector: '[nav-modal]'
+PlaneModalComponent.meta = {
+	selector: '[plane-modal]'
 };

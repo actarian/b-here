@@ -63,6 +63,10 @@ function saveStore() {
 	});
 }
 
+function sendError(response, status, message) {
+	response.status(status).send(JSON.stringify({ status, message }));
+}
+
 function doCreate(request, response, params, items) {
 	const body = request.body;
 	const id = new Date().getTime();
@@ -80,7 +84,7 @@ function doUpdate(request, response, params, items) {
 		saveStore();
 		response.send(JSON.stringify(item));
 	} else {
-		response.status(404).error('Not Found');
+		sendError(response, 404, 'Not Found');
 	}
 }
 
@@ -92,22 +96,50 @@ function doDelete(request, response, params, items) {
 		saveStore();
 		response.send(JSON.stringify(item));
 	} else {
-		response.status(404).error('Not Found');
+		sendError(response, 404, 'Not Found');
 	}
+}
+
+function doGet(request, response, params, items) {
+	let item = items.find(x => x.id === params.id);
+	if (!item) {
+		sendError(response, 404, 'Not Found');
+	}
+	return item;
 }
 
 // /api/upload
 const ROUTES = [{
+	path: '/api/view', method: 'GET', callback: function(request, response, params) {
+		response.send(JSON.stringify(db));
+	}
+}, {
 	path: '/api/view', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.views);
 	}
 }, {
-	path: '/api/view/:viewId', method: 'UPDATE', callback: function(request, response, params) {
-		doUpdate(request, response, { id: params.viewId }, db.views);
+	path: '/api/view/:viewId', method: 'PUT', callback: function(request, response, params) {
+		doUpdate(request, response, params, db.views);
 	}
 }, {
 	path: '/api/view/:viewId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.viewId }, db.views);
+	}
+}, {
+	path: '/api/view/:viewId/item', method: 'POST', callback: function(request, response, params) {
+		const view = doGet(request, response, { id: params.viewId }, db.views);
+		if (view) {
+			view.items = view.items || [];
+			doCreate(request, response, params, view.items);
+		}
+	}
+}, {
+	path: '/api/view/:viewId/item', method: 'PUT', callback: function(request, response, params) {
+		const view = doGet(request, response, { id: params.viewId }, db.views);
+		if (view) {
+			view.items = view.items || [];
+			doUpdate(request, response, params, view.items);
+		}
 	}
 }, {
 	path: '/api/asset', method: 'POST', callback: function(request, response, params) {
@@ -130,14 +162,14 @@ ROUTES.forEach(route => {
 			if (g1) {
 				this.relative = !(g1 === '//' || g1 === '/');
 			} else if (g2) {
-				matchers.push('\/' + g2);
-				segments.push(g2);
+				matchers.push(`\/(${g2})`);
+				segments.push({ name: g2, param: null, value: null });
 			} else if (g3) {
-				matchers.push('(\/[^\/]+)');
+				matchers.push('\/([^\/]+)');
 				const params = {};
 				params[g3] = null;
 				route.params = params;
-				segments.push('');
+				segments.push({ name: '', param: g3, value: null });
 			}
 		}
 		matchers.push('$');
@@ -157,18 +189,27 @@ function apiMiddleware(vars) {
 	}
 	return (request, response, next) => {
 		const url = request.baseUrl.replace(/\\/g, '/');
-		console.log('apiMiddleware.url', url);
 		const params = {};
 		const method = ROUTES.find(route => {
 			if (route.method.toLowerCase() === request.method.toLowerCase()) {
 				const match = url.match(route.matcher);
 				if (match) {
-					console.log('match', match);
+					route.segments.forEach((x, i) => {
+						if (x.param) {
+							let value = match[i + 1];
+							if (parseInt(value).toString() === value) {
+								value = parseInt(value);
+							}
+							params[x.param] = value;
+						}
+					});
+					// console.log('match', match, route);
 					return true;
 				}
 			}
 		});
 		if (method) {
+			console.log('apiMiddleware.url', url, method.path, method.method, params);
 			method.callback(request, response, params);
 		} else {
 			next();

@@ -20,7 +20,7 @@ $invalid: $foreground-primary;
 	flex: 0 0 100%;
 	font-family: $font-secondary;
 	font-size: 13px;
-	opacity: 0.3;
+	// opacity: 0.3;
 	font-weight: $font-semibold;
 	line-height: $line;
 	margin-bottom: -1px;
@@ -80,7 +80,7 @@ $invalid: $foreground-primary;
 		font-size: $size;
 		font-weight: $weight;
 		letter-spacing: $spacing;
-		line-height: $line;
+		line-height: $line * 2;
 		@extend %placeholder;
 	}
 }
@@ -226,8 +226,8 @@ fieldset,
 	position: relative;
 	background: $background;
 	border: none;
-	border-radius: 6px;
-	padding: 8px 15px;
+	border-bottom: 2px solid $foreground;
+	border-radius: 0;
 	cursor: pointer;
 
 	input {
@@ -237,14 +237,16 @@ fieldset,
 	.icon--caret-down {
 		width: 12px;
 		height: 12px;
-		margin: 0;
+		margin: 4px 0 0 0;
 		fill: #ccc;
 		pointer-events: none;
 	}
 
+	/*
 	&.required .required__badge {
 		display: none;
 	}
+	*/
 
 	@include media-down(xs) {
 		margin: 0 0 10px 0;
@@ -253,9 +255,10 @@ fieldset,
 
 .control--select {
 	@extend %control--text;
-	font-size: 21px;
-	text-transform: uppercase;
-	line-height: 1;
+	font-size: 18px;
+	text-transform: none;
+	line-height: 1.2;
+	cursor: pointer;
 
 	.multiple>& {
 		white-space: nowrap;
@@ -540,14 +543,12 @@ errors-component {
 		position: absolute;
 		font-size: 11px;
 		right: 0px;
-		top: 10px;
+		top: 0;
 	}
+}
 
-	&.group--form--select,
-	&.group--form--file {
-		.required__badge {
-			top: 8px;
-			right: 10px;
-		}
+.invalid.touched {
+	.required__badge {
+		color: red;
 	}
 }

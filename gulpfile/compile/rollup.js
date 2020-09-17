@@ -91,15 +91,15 @@ function rollup_(item) {
 		};
 
 		rollup.rollup(inputOptions).then(bundle => {
-				// console.log(bundle);
-				const outputs = rollupOutput(item);
-				// console.log(outputs);
-				if (inputOptions.cache !== false) {
-					rollupCache.set(inputOptions.input, bundle);
-				}
-				return Promise.all(outputs.map((output, i) => rollupGenerate(bundle, output, i)));
-				// return bundle.write(outputs);
-			})
+			// console.log(bundle);
+			const outputs = rollupOutput(item);
+			// console.log(outputs);
+			if (inputOptions.cache !== false) {
+				rollupCache.set(inputOptions.input, bundle);
+			}
+			return Promise.all(outputs.map((output, i) => rollupGenerate(bundle, output, i)));
+			// return bundle.write(outputs);
+		})
 			.then((results) => {
 				results.forEach(x => {
 					const outputs = x.output;
@@ -168,6 +168,8 @@ function rollupInput(item) {
 	};
 	// const watchGlob = path.dirname(input) + '/**/*' + path.extname(input);
 	// console.log('watchGlob', watchGlob);
+	const globals = Object.keys(output.globals);
+	const externals = globals.length ? globals : (item.external || []);
 	const plugins = [
 		// Resolve source maps to the original source
 		rollupPluginSourcemaps(),
@@ -175,7 +177,9 @@ function rollupInput(item) {
 		// which external modules to include in the bundle
 		// https://github.com/rollup/rollup-plugin-node-resolve#usage
 		// import node modules
-		output.format === 'cjs' ? null : rollupPluginNodeResolve(),
+		output.format === 'cjs' ? null : (typeof rollupPluginNodeResolve === 'function' ? rollupPluginNodeResolve : rollupPluginNodeResolve.nodeResolve)({
+			resolveOnly: [new RegExp(`^(?!(${externals.join('$|')}$))`)]
+		}),
 		// exclude: Object.keys(output.globals).map(x => `node_module/${x}/**`),
 		// Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
 		rollupPluginCommonJs({
@@ -217,11 +221,10 @@ function rollupInput(item) {
 		}),
 
 	].filter(x => x);
-	const globals = Object.keys(output.globals);
 	const input = {
 		input: item.input,
 		plugins: plugins,
-		external: globals.length ? globals : (item.external || []),
+		external: externals,
 		cache: false, // !! break babel if true
 		treeshake: true,
 		/*
@@ -241,7 +244,7 @@ function rollupOutput(item) {
 		name: item.name || null,
 		globals: (typeof output === 'object' && output.globals) || item.globals || {},
 		sourcemap: true,
-		minify: item.minify || false,
+		compact: item.minify || false,
 	};
 	return outputs.map(x => {
 		let output = Object.assign({}, default_);

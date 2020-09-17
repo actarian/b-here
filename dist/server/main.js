@@ -552,6 +552,13 @@ function saveStore() {
   });
 }
 
+function sendError(response, status, message) {
+  response.status(status).send(JSON.stringify({
+    status: status,
+    message: message
+  }));
+}
+
 function doCreate(request, response, params, items) {
   var body = request.body;
   var id = new Date().getTime();
@@ -574,7 +581,7 @@ function doUpdate(request, response, params, items) {
     saveStore();
     response.send(JSON.stringify(item));
   } else {
-    response.status(404).error('Not Found');
+    sendError(response, 404, 'Not Found');
   }
 }
 
@@ -589,12 +596,30 @@ function doDelete(request, response, params, items) {
     saveStore();
     response.send(JSON.stringify(item));
   } else {
-    response.status(404).error('Not Found');
+    sendError(response, 404, 'Not Found');
   }
+}
+
+function doGet(request, response, params, items) {
+  var item = items.find(function (x) {
+    return x.id === params.id;
+  });
+
+  if (!item) {
+    sendError(response, 404, 'Not Found');
+  }
+
+  return item;
 } // /api/upload
 
 
 var ROUTES = [{
+  path: '/api/view',
+  method: 'GET',
+  callback: function callback(request, response, params) {
+    response.send(JSON.stringify(db));
+  }
+}, {
   path: '/api/view',
   method: 'POST',
   callback: function callback(request, response, params) {
@@ -602,11 +627,9 @@ var ROUTES = [{
   }
 }, {
   path: '/api/view/:viewId',
-  method: 'UPDATE',
+  method: 'PUT',
   callback: function callback(request, response, params) {
-    doUpdate(request, response, {
-      id: params.viewId
-    }, db.views);
+    doUpdate(request, response, params, db.views);
   }
 }, {
   path: '/api/view/:viewId',
@@ -615,6 +638,32 @@ var ROUTES = [{
     doDelete(request, response, {
       id: params.viewId
     }, db.views);
+  }
+}, {
+  path: '/api/view/:viewId/item',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      view.items = view.items || [];
+      doCreate(request, response, params, view.items);
+    }
+  }
+}, {
+  path: '/api/view/:viewId/item',
+  method: 'PUT',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      view.items = view.items || [];
+      doUpdate(request, response, params, view.items);
+    }
   }
 }, {
   path: '/api/asset',
@@ -643,14 +692,22 @@ ROUTES.forEach(function (route) {
       if (g1) {
         _this.relative = !(g1 === '//' || g1 === '/');
       } else if (g2) {
-        matchers.push('\/' + g2);
-        segments.push(g2);
+        matchers.push("/(" + g2 + ")");
+        segments.push({
+          name: g2,
+          param: null,
+          value: null
+        });
       } else if (g3) {
-        matchers.push('(\/[^\/]+)');
+        matchers.push('\/([^\/]+)');
         var params = {};
         params[g3] = null;
         route.params = params;
-        segments.push('');
+        segments.push({
+          name: '',
+          param: g3,
+          value: null
+        });
       }
     }
 
@@ -674,20 +731,31 @@ function apiMiddleware(vars) {
 
   return function (request, response, next) {
     var url = request.baseUrl.replace(/\\/g, '/');
-    console.log('apiMiddleware.url', url);
     var params = {};
     var method = ROUTES.find(function (route) {
       if (route.method.toLowerCase() === request.method.toLowerCase()) {
         var match = url.match(route.matcher);
 
         if (match) {
-          console.log('match', match);
+          route.segments.forEach(function (x, i) {
+            if (x.param) {
+              var value = match[i + 1];
+
+              if (parseInt(value).toString() === value) {
+                value = parseInt(value);
+              }
+
+              params[x.param] = value;
+            }
+          }); // console.log('match', match, route);
+
           return true;
         }
       }
     });
 
     if (method) {
+      console.log('apiMiddleware.url', url, method.path, method.method, params);
       method.callback(request, response, params);
     } else {
       next();

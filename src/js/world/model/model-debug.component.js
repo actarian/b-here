@@ -150,7 +150,7 @@ export default class ModelDebugComponent extends ModelComponent {
 				ctx.clearRect(0, 0, W, H);
 				// ctx.fillRect(0, 0, 10, 10);
 				// ctx.fillRect(W - 10, H - 10, 10, 10);
-				ctx.font = '30px Maven Pro';
+				ctx.font = `30px ${environment.fontFamily}`;
 				ctx.textBaseline = 'middle';
 				ctx.textAlign = "center";
 				ctx.fillStyle = '#FFFFFF';

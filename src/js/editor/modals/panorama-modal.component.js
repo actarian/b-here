@@ -1,9 +1,7 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
-import { first } from 'rxjs/operators';
 import ModalService from '../../modal/modal.service';
 import { ViewType } from '../../view/view';
-import EditorService from '../editor.service';
 
 /*
 {
@@ -57,6 +55,16 @@ export default class PanoramaModalComponent extends Component {
 			console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
+	}
+
+	onSubmit() {
+		if (this.form.valid) {
+			console.log('PanoramaModalComponent.onSubmit', this.form.value);
+			// ModalService.resolve(this.form.value);
+			// this.form.submitted = true;
+			// this.form.reset();
+			/*
+
 		EditorService.viewCreate$({
 			"id": 1,
 			"type": "panorama",
@@ -102,14 +110,9 @@ export default class PanoramaModalComponent extends Component {
 		).subscribe(data => {
 			console.log('EditorService.viewCreate$', data);
 		});
-	}
-
-	onSubmit() {
-		if (this.form.valid) {
-			console.log('PanoramaModalComponent.onSubmit', this.form.value);
-			// ModalService.resolve(this.form.value);
-			// this.form.submitted = true;
-			// this.form.reset();
+			*/
+		} else {
+			this.form.touched = true;
 		}
 	}
 

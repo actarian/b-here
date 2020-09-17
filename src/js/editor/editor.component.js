@@ -1,6 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 // import UserService from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
+import { Subject } from 'rxjs';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { AgoraStatus, RoleType, StreamQualities } from '../agora/agora.types';
 import { BASE_HREF, DEBUG, EDITOR, environment, STATIC } from '../environment';
@@ -8,6 +9,7 @@ import LocationService from '../location/location.service';
 import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
+import ToastService from '../toast/toast.service';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
 
@@ -47,6 +49,7 @@ export default class EditorComponent extends Component {
 		this.form = null;
 		this.local = null;
 		this.remotes = [];
+		this.viewHit = new Subject();
 		const vrService = this.vrService = VRService.getService();
 		vrService.status$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -145,8 +148,11 @@ export default class EditorComponent extends Component {
 	}
 
 	onNavTo(viewId) {
-		if (this.controls.view.value !== viewId) {
-			this.controls.view.value = viewId;
+		const view = this.data.views.find(x => x.id === viewId);
+		if (view) {
+			if (this.controls.view.value !== viewId) {
+				this.controls.view.value = viewId;
+			}
 		}
 	}
 
@@ -207,16 +213,65 @@ export default class EditorComponent extends Component {
 
 	// editor
 
-	onMenuSelect(event) {
-		console.log('onMenuSelect', event);
-		ModalService.open$({ src: ModalSrcService.get(event.type, event.value), data: null }).pipe(
+	onViewHit(event) {
+		this.viewHit.next(event);
+	}
+
+	onViewHitted(callback) {
+		if (this.viewHitSubscription) {
+			this.viewHitSubscription.unsubscribe();
+			this.viewHitSubscription = null;
+		}
+		if (typeof callback === 'function') {
+			this.viewHitSubscription = this.viewHit.pipe(
+				first(),
+			).subscribe(position => callback(position))
+		}
+	}
+
+	onDragEnd(event) {
+		EditorService.itemUpdate$(this.view, event.item).pipe(
+			first(),
+		).subscribe(response => {
+			console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
+		}, error => console.log('EditorComponent.onDragEnd.itemUpdate$.error', error));
+	}
+
+	onOpenModal(modal, data) {
+		ModalService.open$({ src: ModalSrcService.get(modal.type, modal.value), data }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				console.log('onMenuSelect.resolve', event);
+				switch (modal.value) {
+					case 'nav':
+						const item = event.data;
+						const items = this.view.items || [];
+						items.push(item);
+						Object.assign(this.view, { items });
+						this.pushChanges();
+						break;
+					default:
+				}
 			}
 			this.pushChanges();
 		});
+	}
+
+	onMenuSelect(event) {
+		console.log('onMenuSelect', event);
+		switch (event.value) {
+			case 'nav':
+			case 'plane':
+			case 'curved-plane':
+				this.onViewHitted((position) => {
+					this.onOpenModal(event, { view: this.view, position });
+				});
+				ToastService.open$({ message: 'Click a point on the view' });
+				break;
+			default:
+				this.onOpenModal(event, { view: this.view });
+		}
 	}
 
 }

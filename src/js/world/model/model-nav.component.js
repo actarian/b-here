@@ -1,5 +1,3 @@
-import { ReplaySubject } from 'rxjs';
-import { auditTime, takeUntil, tap } from 'rxjs/operators';
 import * as THREE from 'three';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 // import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
@@ -7,12 +5,12 @@ import { environment } from '../../environment';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
-import ModelComponent from './model.component';
+import ModelDraggableComponent from './model-draggable.component';
 
 const NAV_RADIUS = 100;
 const ORIGIN = new THREE.Vector3();
 
-export default class ModelNavComponent extends ModelComponent {
+export default class ModelNavComponent extends ModelDraggableComponent {
 
 	static getLoader() {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
@@ -24,12 +22,14 @@ export default class ModelNavComponent extends ModelComponent {
 
 	onInit() {
 		super.onInit();
+		/*
 		this.debouncedOver$ = new ReplaySubject(1).pipe(
 			auditTime(250),
 			tap(event => this.over.next(event)),
 			takeUntil(this.unsubscribe$),
 		);
 		this.debouncedOver$.subscribe();
+		*/
 		// console.log('ModelNavComponent.onInit');
 	}
 
@@ -42,10 +42,8 @@ export default class ModelNavComponent extends ModelComponent {
 		// this.renderOrder = environment.renderOrder.nav;
 		const nav = new THREE.Group();
 		this.item.nav = nav;
-
 		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(NAV_RADIUS);
 		nav.position.set(position.x, position.y, position.z);
-
 		const map = ModelNavComponent.getTexture();
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
@@ -61,7 +59,6 @@ export default class ModelNavComponent extends ModelComponent {
 		const sprite = new THREE.Sprite(material);
 		sprite.scale.set(0.03, 0.03, 0.03);
 		nav.add(sprite);
-
 		// const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
 		const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
 		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
@@ -77,32 +74,38 @@ export default class ModelNavComponent extends ModelComponent {
 		nav.add(sphere);
 		sphere.on('over', () => {
 			const from = { scale: sprite.scale.x };
-			gsap.to(from, 0.4, {
+			gsap.to(from, 0.35, {
 				scale: 0.04,
 				delay: 0,
-				ease: Power2.easeInOut,
+				ease: Power2.easeOut,
 				overwrite: true,
 				onUpdate: () => {
 					sprite.scale.set(from.scale, from.scale, from.scale);
+				},
+				onComplete: () => {
+					if (!this.dragging) {
+						this.over.next(this);
+					}
 				}
 			});
-			this.debouncedOver$.next(this.item);
 		});
 		sphere.on('out', () => {
 			const from = { scale: sprite.scale.x };
-			gsap.to(from, 0.4, {
+			gsap.to(from, 0.35, {
 				scale: 0.03,
 				delay: 0,
-				ease: Power2.easeInOut,
+				ease: Power2.easeOut,
 				overwrite: true,
 				onUpdate: () => {
 					sprite.scale.set(from.scale, from.scale, from.scale);
+				},
+				onComplete: () => {
+					this.out.next(this);
 				}
 			});
-			this.out.next(this.item);
 		});
 		sphere.on('down', () => {
-			this.down.next(this.item);
+			this.down.next(this);
 		});
 		const from = { opacity: 0 };
 		gsap.to(from, 0.7, {
@@ -119,6 +122,20 @@ export default class ModelNavComponent extends ModelComponent {
 		if (typeof mount === 'function') {
 			mount(nav);
 		}
+	}
+
+	// called by WorldComponent
+	onDragMove(position) {
+		this.item.showPanel = false;
+		this.dragging = true;
+		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(NAV_RADIUS);
+		this.helper.update();
+	}
+
+	// called by WorldComponent
+	onDragEnd() {
+		this.item.position = new THREE.Vector3().copy(this.mesh.position).normalize().toArray();
+		this.dragging = false;
 	}
 }
 

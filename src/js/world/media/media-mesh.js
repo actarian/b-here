@@ -169,6 +169,9 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	static getStreamId$(item) {
+		if (!item.asset) {
+			return of(null);
+		}
 		const file = item.asset.file;
 		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
 			return of(file);
@@ -200,22 +203,34 @@ export default class MediaMesh extends InteractiveMesh {
 
 	constructor(item, items, geometry, material) {
 		material = material || MediaMesh.getMaterial();
+		if (!item.asset) {
+			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+		}
 		super(geometry, material);
 		this.item = item;
 		this.items = items;
 		this.renderOrder = environment.renderOrder.plane;
-		const uniforms = this.uniforms = {
-			overlay: 0,
-			tween: 1,
-			opacity: 0,
-		};
+		if (item.asset) {
+			const uniforms = this.uniforms = {
+				overlay: 0,
+				tween: 1,
+				opacity: 0,
+			};
+		}
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
-		if (!mediaLoader.isVideo) {
+		if (item.asset && !mediaLoader.isVideo) {
 			this.freeze();
 		}
 	}
 
 	load(callback) {
+		if (!this.item.asset) {
+			this.onAppear();
+			if (typeof callback === 'function') {
+				callback(this);
+			}
+			return;
+		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
 		if (mediaLoader.isPlayableVideo) {
@@ -238,10 +253,12 @@ export default class MediaMesh extends InteractiveMesh {
 			});
 		}
 		mediaLoader.load((textureA) => {
-			// console.log('MediaMesh.textureA', textureA);
-			material.uniforms.textureA.value = textureA;
-			material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-			material.needsUpdate = true;
+			console.log('MediaMesh.textureA', textureA);
+			if (textureA) {
+				material.uniforms.textureA.value = textureA;
+				material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
+				material.needsUpdate = true;
+			}
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
 				material.uniforms.video.value = true;

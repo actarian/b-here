@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import * as THREE from 'three';
 
 export const ViewType = {
 	WaitingRoom: 'waiting-room',
@@ -6,14 +7,6 @@ export const ViewType = {
 	PanoramaGrid: 'panorama-grid',
 	Room3d: 'room-3d',
 	Model: 'model',
-};
-
-export const ViewItemType = {
-	Nav: 'nav',
-	Gltf: 'gltf',
-	Plane: 'plane',
-	CurvedPlane: 'curved-plane',
-	Texture: 'texture',
 };
 
 export const AssetType = {
@@ -25,6 +18,7 @@ export const AssetType = {
 };
 
 export class View {
+	static allowedProps = ['id', 'type', 'name', 'likes', 'liked', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -38,8 +32,17 @@ export class View {
 				});
 			}
 		}
-		this.items = this.items || [];
+		this.items = (this.items || []).map(item => mapViewItem(item));
 		this.originalItems = this.items.slice();
+	}
+	get payload() {
+		const payload = {};
+		Object.keys(this).forEach(key => {
+			if (ViewItem.allowedProps.indexOf(key) !== -1) {
+				payload[key] = this[key];
+			}
+		});
+		return payload;
 	}
 }
 
@@ -120,6 +123,36 @@ export class ModelView extends View {
 	}
 }
 
+export const ViewItemType = {
+	Nav: 'nav',
+	Gltf: 'gltf',
+	Plane: 'plane',
+	CurvedPlane: 'curved-plane',
+	Texture: 'texture',
+};
+
+export class ViewItem {
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'position', 'rotation', 'scale', 'radius', 'arc', 'height'];
+	constructor(options) {
+		if (options) {
+			Object.assign(this, options);
+		}
+	}
+	get payload() {
+		const payload = {};
+		Object.keys(this).forEach(key => {
+			if (ViewItem.allowedProps.indexOf(key) !== -1) {
+				payload[key] = this[key];
+			}
+		});
+		return payload;
+	}
+}
+
+export class NavViewItem extends ViewItem {
+
+}
+
 export function mapView(view) {
 	switch (view.type) {
 		case ViewType.Panorama:
@@ -135,4 +168,15 @@ export function mapView(view) {
 			view = new View(view);
 	}
 	return view;
+}
+
+export function mapViewItem(item) {
+	switch (item.type) {
+		case ViewItemType.Nav:
+			item = new NavViewItem(item);
+			break;
+		default:
+			item = new ViewItem(item);
+	}
+	return item;
 }

@@ -1,6 +1,7 @@
 // import { auditTime, tap } from "rxjs/operators";
-import StreamService from "../../stream/stream.service";
 // import AudioStreamService from "../../audio/audio-stream.service";
+import * as THREE from 'three';
+import StreamService from "../../stream/stream.service";
 
 export const W = 320;
 export const H = 240;

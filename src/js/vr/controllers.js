@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { POINTER_RADIUS, TEST_ENABLED } from '../const';
 import Emittable from '../interactive/emittable';
 import Menu from '../menu/menu';

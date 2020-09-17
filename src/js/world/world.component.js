@@ -1,11 +1,10 @@
 import { Component, getContext } from 'rxcomp';
-import { auditTime, takeUntil, tap } from 'rxjs/operators';
+import { auditTime, takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { MessageType } from '../agora/agora.types';
-// import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
-import { DEBUG } from '../environment';
+import { DEBUG, EDITOR } from '../environment';
+import KeyboardService from '../keyboard/keyboard.service';
 import MessageService from '../message/message.service';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
@@ -14,7 +13,7 @@ import { PanoramaGridView } from '../view/view';
 import AvatarElement from './avatar/avatar-element';
 import Camera from './camera/camera';
 import Interactive from './interactive/interactive';
-import OrbitService from './orbit/orbit';
+import OrbitService, { OrbitDragEvent } from './orbit/orbit';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
@@ -46,6 +45,7 @@ export default class WorldComponent extends Component {
 	get debugging() {
 		return DEBUG;
 	}
+
 	onInit() {
 		// console.log('WorldComponent.onInit');
 		this.index = 0;
@@ -56,7 +56,11 @@ export default class WorldComponent extends Component {
 		this.setView();
 		this.addListeners();
 		this.animate(); // !!! no
+		KeyboardService.keys$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(keys => this.keys = keys);
 	}
+
 	/*
 	onView() {
 		if (DEBUG) {
@@ -78,7 +82,7 @@ export default class WorldComponent extends Component {
 
 	createScene() {
 		const { node } = getContext(this);
-		this.size = { width: 0, height: 0, aspect: 0 };
+		this.size = { left: 0, top: 0, width: 0, height: 0, aspect: 0 };
 		this.mouse = new THREE.Vector2();
 		this.controllerMatrix_ = new THREE.Matrix4();
 		this.controllerWorldPosition_ = new THREE.Vector3();
@@ -138,7 +142,6 @@ export default class WorldComponent extends Component {
 		scene.add(panorama.mesh);
 
 		const pointer = this.pointer = new PointerElement();
-
 
 		const mainLight = new THREE.PointLight(0xffffff);
 		mainLight.position.set(-50, 0, -50);
@@ -347,6 +350,7 @@ export default class WorldComponent extends Component {
 	}
 	*/
 
+	/*
 	drag$() {
 		let rotation;
 		return DragService.events$(this.node).pipe(
@@ -363,13 +367,14 @@ export default class WorldComponent extends Component {
 						coords: [group.rotation.x, group.rotation.y, group.rotation.z]
 					});
 				} else if (event instanceof DragUpEvent) {
-					if (DEBUG) {
+					if (DEBUG || EDITOR) {
 						console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
 					}
 				}
 			})
 		);
 	}
+	*/
 
 	onTween() {
 		// this.render();
@@ -380,18 +385,7 @@ export default class WorldComponent extends Component {
 		this.slideChange.next(index);
 	}
 
-	/*
-	updateRaycaster__(controller, raycaster) {
-		if (controller) {
-			const position = controller.getWorldPosition(this.controllerWorldPosition_);
-			const rotation = controller.getWorldDirection(this.controllerWorldDirection_).multiplyScalar(-1);
-			raycaster.set(position, rotation);
-			return raycaster;
-		}
-	}
-	*/
-
-	updateRaycaster(controller, raycaster) {
+	updateRaycasterXR(controller, raycaster) {
 		if (controller) {
 			this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
 			raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
@@ -404,7 +398,7 @@ export default class WorldComponent extends Component {
 	raycasterHitTest() {
 		try {
 			if (this.renderer.xr.isPresenting) {
-				const raycaster = this.updateRaycaster(this.controller, this.raycaster);
+				const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 				if (raycaster) {
 					const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
 					this.pointer.update();
@@ -414,7 +408,7 @@ export default class WorldComponent extends Component {
 					}
 					*/
 				}
-			} else {
+			} else if (!this.dragItem) {
 				const raycaster = this.raycaster;
 				if (raycaster) {
 					const hit = Interactive.hittest(raycaster);
@@ -498,6 +492,8 @@ export default class WorldComponent extends Component {
 				camera = this.camera;
 			const size = this.size;
 			const rect = container.getBoundingClientRect();
+			size.left = Math.floor(rect.left);
+			size.top = Math.floor(rect.top);
 			size.width = Math.ceil(rect.width);
 			size.height = Math.ceil(rect.height);
 			size.aspect = size.width / size.height;
@@ -523,39 +519,29 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	updateRaycasterMouse(event) {
+		const w2 = this.size.width / 2;
+		const h2 = this.size.height / 2;
+		this.mouse.x = (event.clientX - this.size.left - w2) / w2;
+		this.mouse.y = -(event.clientY - this.size.top - h2) / h2;
+		const raycaster = this.raycaster;
+		raycaster.setFromCamera(this.mouse, this.camera);
+		return raycaster;
+	}
+
 	onMouseDown(event) {
 		if (event.button !== 0) {
 			return;
 		}
-		/*
-		if (TEST_ENABLED) {
-			this.controllers.setText('down');
-			return;
-		}
-		*/
 		try {
-			/*
-			this.mousedown = true;
-			const raycaster = this.raycaster;
-			raycaster.setFromCamera(this.mouse, this.camera);
-			if (event.shiftKey) {
-				const intersections = raycaster.intersectObjects(this.pivot.room.children);
-				if (intersections) {
-					const intersection = intersections.find(x => x !== undefined);
-					this.createPoint(intersection);
-				}
-			}
-			*/
-			const w2 = this.size.width / 2;
-			const h2 = this.size.height / 2;
-			this.mouse.x = (event.clientX - w2) / w2;
-			this.mouse.y = -(event.clientY - h2) / h2;
-			const raycaster = this.raycaster;
-			raycaster.setFromCamera(this.mouse, this.camera);
+			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
-			if (DEBUG && this.panorama.mesh.intersection) {
+			if (this.panorama.mesh.intersection) {
 				const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
-				console.log(JSON.stringify({ position: position.toArray() }));
+				if (DEBUG || EDITOR) {
+					console.log(JSON.stringify({ position: position.toArray() }));
+				}
+				this.viewHit.next(position);
 			}
 		} catch (error) {
 			this.error = error;
@@ -565,18 +551,18 @@ export default class WorldComponent extends Component {
 
 	onMouseMove(event) {
 		try {
-			const w2 = this.size.width / 2;
-			const h2 = this.size.height / 2;
-			this.mouse.x = (event.clientX - w2) / w2;
-			this.mouse.y = -(event.clientY - h2) / h2;
-			/*
-			if (TEST_ENABLED) {
-				return this.controllers.updateTest(this.mouse);
+			const raycaster = this.updateRaycasterMouse(event);
+			if (this.dragItem) {
+				if (typeof this.dragItem.onDragMove === 'function') {
+					const intersections = raycaster.intersectObjects([this.panorama.mesh]);
+					if (intersections.length) {
+						const intersection = intersections[0];
+						// this.panorama.mesh.intersection = intersection;
+						const position = new THREE.Vector3().copy(intersection.point).normalize();
+						this.dragItem.onDragMove(position);
+					}
+				}
 			}
-			*/
-			const raycaster = this.raycaster;
-			raycaster.setFromCamera(this.mouse, this.camera);
-			// Interactive.hittest(raycaster, this.mousedown);
 		} catch (error) {
 			this.error = error;
 			// throw (error);
@@ -584,13 +570,18 @@ export default class WorldComponent extends Component {
 	}
 
 	onMouseUp(event) {
+		if (this.dragItem) {
+			if (typeof this.dragItem.onDragEnd === 'function') {
+				this.dragItem.onDragEnd();
+				this.dragEnd.next(this.dragItem);
+			}
+		}
+		this.dragItem = null;
 		/*
-		if (TEST_ENABLED) {
-			this.controllers.setText('up');
-			return;
+		if (NavPointDragging) {
+			stopDragging
 		}
 		*/
-		// this.mousedown = false;
 	}
 
 	onMouseWheel(event) {
@@ -676,20 +667,32 @@ export default class WorldComponent extends Component {
 			this.menu.removeMenu();
 		}
 		this.view.items.forEach(item => item.showPanel = false);
-		event.showPanel = true;
+		event.item.showPanel = true;
 		this.pushChanges();
 	}
 
 	onNavOut(event) {
 		// console.log('WorldComponent.onNavOut', event);
-		// event.showPanel = false;
+		// event.item.showPanel = false;
 		this.pushChanges();
 	}
 
 	onNavDown(event) {
-		// console.log('WorldComponent.onNavDown', event);
-		event.showPanel = false;
-		this.navTo.next(event.viewId);
+		event.item.showPanel = false;
+		if (this.keys.Shift) {
+			console.log('WorldComponent.onNavDown', this.keys);
+			this.dragItem = event;
+		} else {
+			this.navTo.next(event.item.viewId);
+		}
+	}
+
+	onPlaneDown(event) {
+		console.log('onPlaneDown', event);
+		if (this.keys.Shift) {
+			console.log('WorldComponent.onPlaneDown', this.keys);
+			this.dragItem = event;
+		}
 	}
 
 	onPanelDown(event) {
@@ -764,8 +767,12 @@ export default class WorldComponent extends Component {
 		this.orbit.observe$().pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
-			// this.render();
-			this.onOrientationDidChange();
+			if (event instanceof OrbitDragEvent) {
+
+			} else {
+				// this.render();
+				this.onOrientationDidChange();
+			}
 		});
 		MessageService.out$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -869,5 +876,5 @@ export default class WorldComponent extends Component {
 WorldComponent.meta = {
 	selector: '[world]',
 	inputs: ['view', 'views'],
-	outputs: ['slideChange', 'navTo'],
+	outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd'],
 };

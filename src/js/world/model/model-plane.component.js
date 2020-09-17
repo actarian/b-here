@@ -2,9 +2,11 @@ import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
-import ModelComponent from './model.component';
+import ModelDraggableComponent from './model-draggable.component';
 
-export default class ModelPlaneComponent extends ModelComponent {
+const ORIGIN = new THREE.Vector3();
+
+export default class ModelPlaneComponent extends ModelDraggableComponent {
 
 	onInit() {
 		super.onInit();
@@ -29,17 +31,17 @@ export default class ModelPlaneComponent extends ModelComponent {
 					subscription.unsubscribe();
 					subscription = null;
 				}
-				if (streamId) {
+				if (streamId || !item.asset) {
 					item.streamId = streamId;
 					mesh = new MediaMesh(item, items, geometry, (item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null));
 					if (item.position) {
-						mesh.position.set(item.position.x, item.position.y, item.position.z);
+						mesh.position.fromArray(item.position);
 					}
 					if (item.rotation) {
-						mesh.rotation.set(item.rotation.x, item.rotation.y, item.rotation.z);
+						mesh.rotation.fromArray(item.rotation);
 					}
 					if (item.scale) {
-						mesh.scale.set(item.scale.x, item.scale.y, item.scale.z);
+						mesh.scale.fromArray(item.scale);
 					}
 					mesh.load(() => {
 						if (typeof mount === 'function') {
@@ -49,21 +51,37 @@ export default class ModelPlaneComponent extends ModelComponent {
 							takeUntil(this.unsubscribe$)
 						).subscribe(() => { });
 					});
+					mesh.on('down', () => {
+						this.down.next(this);
+					});
 				}
 				// console.log('streamId', streamId, mesh);
 			}
 		});
 	}
 
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
 	onDestroy() {
 		super.onDestroy();
 		if (this.mesh) {
 			this.mesh.dispose();
 		}
+	}
+
+	// called by WorldComponent
+	onDragMove(position) {
+		this.item.showPanel = false;
+		this.dragging = true;
+		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
+		this.mesh.lookAt(ORIGIN);
+		this.helper.update();
+	}
+
+	// called by WorldComponent
+	onDragEnd() {
+		this.item.position = this.mesh.position.toArray();
+		this.item.rotation = this.mesh.rotation.toArray();
+		this.item.scale = this.mesh.scale.toArray();
+		this.dragging = false;
 	}
 
 }
@@ -73,5 +91,6 @@ ModelPlaneComponent.textures = {};
 ModelPlaneComponent.meta = {
 	selector: '[model-plane]',
 	hosts: { host: WorldComponent },
+	outputs: ['down'],
 	inputs: ['item', 'items'],
 };

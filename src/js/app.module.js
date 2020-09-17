@@ -12,17 +12,13 @@ import ControlRequestModalComponent from './control-request/control-request-moda
 import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
-import EditorComponent from './editor/editor.component';
-import NavModalComponent from './editor/modals/nav-modal.component';
-import PanoramaModalComponent from './editor/modals/panorama-modal.component';
+import { EditorModule } from './editor/editor.module';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
 import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
 import ControlUploadComponent from './forms/control-upload.component';
-import UploadButtonDirective from './forms/upload/upload-button.directive';
-import UploadDropDirective from './forms/upload/upload-drop.directive';
-import UploadItemComponent from './forms/upload/upload-item.component';
-import UploadSrcDirective from './forms/upload/upload-src.directive';
+import ControlVectorComponent from './forms/control-vector.component';
+import ErrorsComponent from './forms/errors.component';
 import IdDirective from './id/id.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
@@ -52,6 +48,7 @@ AppModule.meta = {
 	imports: [
 		CoreModule,
 		FormModule,
+		EditorModule,
 	],
 	declarations: [
 		AgoraComponent,
@@ -63,13 +60,14 @@ AppModule.meta = {
 		AssetPipe,
 		ControlCustomSelectComponent,
 		ControlRequestModalComponent,
+		ControlSelectComponent,
 		ControlTextComponent,
 		ControlUploadComponent,
-		ControlSelectComponent,
+		ControlVectorComponent,
 		DropDirective,
 		DropdownDirective,
 		DropdownItemDirective,
-		EditorComponent,
+		ErrorsComponent,
 		HlsDirective,
 		IdDirective,
 		ModalComponent,
@@ -87,15 +85,9 @@ AppModule.meta = {
 		ModelPlaneComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
-		PanoramaModalComponent,
-		NavModalComponent,
 		SliderDirective,
 		TryInARComponent,
 		TryInARModalComponent,
-		UploadButtonDirective,
-		UploadDropDirective,
-		UploadSrcDirective,
-		UploadItemComponent,
 		ValueDirective,
 		WorldComponent,
 	],
