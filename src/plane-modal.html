@@ -10,19 +10,9 @@
 			<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 				<fieldset>
 					<!-- <div control-text [control]="controls.title" label="Title"></div> -->
-					<div class="group--form">
-						<label>Position</label>
-						<input type="text" class="control--text" formControlName="position" disabled />
-					</div>
-					<div class="group--form">
-						<label>Rotation</label>
-						<input type="text" class="control--text" formControlName="rotation" disabled />
-					</div>
-					<div class="group--form">
-						<label>Scale</label>
-						<input type="text" class="control--text" formControlName="scale" disabled />
-					</div>
-					<div control-vector [control]="controls.scale" label="Scale"></div>
+					<div control-vector label="Position" [control]="controls.position" [precision]="1" [disabled]="true"></div>
+					<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360" [disabled]="true"></div>
+					<div control-vector label="Scale" [control]="controls.scale" [precision]="2" [disabled]="true"></div>
 					<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 				</fieldset>
 				<div class="group--cta">

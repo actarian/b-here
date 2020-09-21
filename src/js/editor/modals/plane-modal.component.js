@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { FormGroup } from 'rxcomp-form';
+import { FormControl, FormGroup } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
@@ -59,13 +59,15 @@ export default class PlaneModalComponent extends Component {
 		object.lookAt(ORIGIN);
 		console.log(object.rotation);
 
+
+
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Plane,
 			// title: new FormControl(null, RequiredValidator()),
 			// upload: new FormControl(null, RequiredValidator()),
-			position: this.position.multiplyScalar(20).toArray(),
-			rotation: object.rotation.toArray(), // [0, -Math.PI / 2, 0],
-			scale: [3.2, 1.8, 1],
+			position: new FormControl(this.position.multiplyScalar(20).toArray(), RequiredValidator()),
+			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
+			scale: new FormControl([3.2, 1.8, 1], RequiredValidator()),
 		});
 		this.controls = form.controls;
 		/*

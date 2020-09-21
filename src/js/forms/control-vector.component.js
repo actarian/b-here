@@ -2,31 +2,34 @@ import ControlComponent from './control.component';
 
 export default class ControlVectorComponent extends ControlComponent {
 	onInit() {
-		this.label = 'vector';
+		this.label = this.label || 'label';
+		this.precision = this.precision || 3;
+		this.increment = this.increment || 1 / Math.pow(10, this.precision);
+		this.disabled = this.disabled || false;
 		this.required = false;
 	}
-	get x() {
-		return this.control.value[0];
-	}
-	get y() {
-		return this.control.value[1];
-	}
-	get z() {
-		return this.control.value[2];
+	updateValue(index, value) {
+		const values = this.control.value;
+		values[index] = value;
+		this.control.value = values.slice();
 	}
 }
 
 ControlVectorComponent.meta = {
 	selector: '[control-vector]',
-	inputs: ['control', 'label'],
+	inputs: ['control', 'label', 'precision', 'increment', 'disabled'],
 	template: /* html */ `
-		<div class="group--form" [class]="{ required: control.validators.length }">
-			<label [innerHTML]="label"></label>
-			<input type="text" class="control--text" [value]="x" [placeholder]="x" />
-			<input type="text" class="control--text" [value]="y" [placeholder]="y" />
-			<input type="text" class="control--text" [value]="z" [placeholder]="z" />
-			<span class="required__badge">required</span>
-		</div>
+    <div class="group--form" [class]="{ required: control.validators.length }">
+      <div class="control--head">
+			  <label [innerHTML]="label"></label>
+			  <span class="required__badge">required</span>
+      </div>
+      <div class="control--content control--vector">
+        <input-value label="x" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[0]" (change)="updateValue(0, $event)"></input-value>
+        <input-value label="y" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[1]" (change)="updateValue(1, $event)"></input-value>
+        <input-value label="z" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[2]" (change)="updateValue(2, $event)"></input-value>
+      </div>
+    </div>
 		<errors-component [control]="control"></errors-component>
 	`
 };

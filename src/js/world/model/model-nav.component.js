@@ -7,9 +7,6 @@ import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelDraggableComponent from './model-draggable.component';
 
-const NAV_RADIUS = 100;
-const ORIGIN = new THREE.Vector3();
-
 export default class ModelNavComponent extends ModelDraggableComponent {
 
 	static getLoader() {
@@ -41,8 +38,7 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.nav;
 		const nav = new THREE.Group();
-		this.item.nav = nav;
-		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(NAV_RADIUS);
+		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 		nav.position.set(position.x, position.y, position.z);
 		const map = ModelNavComponent.getTexture();
 		map.disposable = false;
@@ -68,7 +64,7 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 			opacity: 0.0,
 			color: 0x00ffff,
 		}));
-		sphere.lookAt(ORIGIN);
+		sphere.lookAt(ModelNavComponent.ORIGIN);
 		sphere.depthTest = false;
 		sphere.renderOrder = 0;
 		nav.add(sphere);
@@ -124,11 +120,16 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 		}
 	}
 
+	onUpdate(item, mesh) {
+		const position = new THREE.Vector3().set(...item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
+		item.mesh.position.set(position.x, position.y, position.z);
+	}
+
 	// called by WorldComponent
 	onDragMove(position) {
 		this.item.showPanel = false;
 		this.dragging = true;
-		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(NAV_RADIUS);
+		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
 		this.helper.update();
 	}
 
@@ -138,6 +139,9 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 		this.dragging = false;
 	}
 }
+
+ModelNavComponent.ORIGIN = new THREE.Vector3();
+ModelNavComponent.RADIUS = 100;
 
 ModelNavComponent.meta = {
 	selector: '[model-nav]',

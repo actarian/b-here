@@ -77,9 +77,17 @@ export default class ModelComponent extends Component {
 		return mesh;
 	}
 
+	onUpdate(item, mesh) { }
+
 	onMount(mesh) {
 		mesh.name = this.getName('mesh');
 		this.mesh = mesh;
+		if (this.item) {
+			this.item.mesh = mesh;
+			this.item.onUpdate = () => {
+				this.onUpdate(this.item, mesh);
+			};
+		}
 		this.group.add(mesh);
 		// this.host.render(); !!!
 		/*
@@ -99,6 +107,10 @@ export default class ModelComponent extends Component {
 			mesh.dispose();
 		}
 		this.mesh = null;
+		if (this.item) {
+			delete this.item.mesh;
+			delete this.item.onUpdate;
+		}
 	}
 
 	calculateScaleAndPosition() {

@@ -12,20 +12,26 @@ import ControlRequestModalComponent from './control-request/control-request-moda
 import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
+import AsideComponent from './editor/aside/aside.component';
 import { EditorModule } from './editor/editor.module';
+import UpdateViewItemComponent from './editor/update/update-view-item.component';
+import UpdateViewComponent from './editor/update/update-view.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
 import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
 import ControlUploadComponent from './forms/control-upload.component';
 import ControlVectorComponent from './forms/control-vector.component';
+import DisabledDirective from './forms/disabled.directive';
 import ErrorsComponent from './forms/errors.component';
+import InputValueComponent from './forms/input-value.component';
+import ValueDirective from './forms/value.directive';
 import IdDirective from './id/id.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
 import SliderDirective from './slider/slider.directive';
+import SvgIconStructure from './svg/svg-icon.structure';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
-import ValueDirective from './value/value.directive';
 import HlsDirective from './video/hls.directive';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
@@ -57,6 +63,7 @@ AppModule.meta = {
 		AgoraLinkComponent,
 		AgoraNameComponent,
 		AgoraStreamComponent,
+		AsideComponent,
 		AssetPipe,
 		ControlCustomSelectComponent,
 		ControlRequestModalComponent,
@@ -64,12 +71,14 @@ AppModule.meta = {
 		ControlTextComponent,
 		ControlUploadComponent,
 		ControlVectorComponent,
+		DisabledDirective,
 		DropDirective,
 		DropdownDirective,
 		DropdownItemDirective,
 		ErrorsComponent,
 		HlsDirective,
 		IdDirective,
+		InputValueComponent,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,
@@ -86,10 +95,13 @@ AppModule.meta = {
 		ModelRoomComponent,
 		ModelTextComponent,
 		SliderDirective,
+		SvgIconStructure,
 		TryInARComponent,
 		TryInARModalComponent,
+		UpdateViewComponent,
+		UpdateViewItemComponent,
 		ValueDirective,
-		WorldComponent,
+		WorldComponent
 	],
 	bootstrap: AppComponent,
 };

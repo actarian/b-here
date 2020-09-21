@@ -201,10 +201,6 @@ export default class EditorComponent extends Component {
 		}
 	}
 
-	getViewTypeLabel(type) {
-		return type ? type.split('-').map(x => x.substring(0, 1).toUpperCase()).join('') : '??';
-	}
-
 	onToggleAside() {
 		this.aside = !this.aside;
 		this.pushChanges();

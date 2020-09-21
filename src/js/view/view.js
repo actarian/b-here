@@ -1,6 +1,14 @@
 import { Subject } from "rxjs";
 import * as THREE from 'three';
 
+export const AssetType = {
+	Image: 'image', // jpg, png, ...
+	Video: 'video', // mp4, webm, ...
+	Model: 'model', // gltf, glb, …
+	PublisherStream: 'publisher-stream', // valore fisso di file a ‘publisherStream’ e folder string.empty
+	NextAttendeeStream: 'next-attendee-stream', // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+};
+
 export const ViewType = {
 	WaitingRoom: 'waiting-room',
 	Panorama: 'panorama',
@@ -9,12 +17,12 @@ export const ViewType = {
 	Model: 'model',
 };
 
-export const AssetType = {
-	Image: 'image', // jpg, png, ...
-	Video: 'video', // mp4, webm, ...
-	Model: 'model', // gltf, glb, …
-	PublisherStream: 'publisher-stream', // valore fisso di file a ‘publisherStream’ e folder string.empty
-	NextAttendeeStream: 'next-attendee-stream', // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+export const ViewItemType = {
+	Nav: 'nav',
+	Gltf: 'gltf',
+	Plane: 'plane',
+	CurvedPlane: 'curved-plane',
+	Texture: 'texture',
 };
 
 export class View {
@@ -44,6 +52,11 @@ export class View {
 		});
 		return payload;
 	}
+
+	get shortType() {
+		return this.type ? this.type.split('-').map(x => x.substring(0, 1).toUpperCase()).join('') : '??';
+	}
+
 }
 
 export class PanoramaView extends View {
@@ -122,14 +135,6 @@ export class ModelView extends View {
 		super(options);
 	}
 }
-
-export const ViewItemType = {
-	Nav: 'nav',
-	Gltf: 'gltf',
-	Plane: 'plane',
-	CurvedPlane: 'curved-plane',
-	Texture: 'texture',
-};
 
 export class ViewItem {
 	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'position', 'rotation', 'scale', 'radius', 'arc', 'height'];

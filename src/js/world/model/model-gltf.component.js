@@ -114,6 +114,18 @@ export default class ModelGltfComponent extends ModelComponent {
 		*/
 	}
 
+	onUpdate(item, mesh) {
+		if (item.position) {
+			mesh.position.fromArray(item.position);
+		}
+		if (item.rotation) {
+			mesh.rotation.fromArray(item.rotation);
+		}
+		if (item.scale) {
+			mesh.scale.fromArray(item.scale);
+		}
+	}
+
 	// onView() { const context = getContext(this); }
 
 	// onChanges() {}

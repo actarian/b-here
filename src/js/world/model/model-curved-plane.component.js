@@ -63,6 +63,18 @@ export default class ModelCurvedPlaneComponent extends ModelDraggableComponent {
 		});
 	}
 
+	onUpdate(item, mesh) {
+		if (item.position) {
+			mesh.position.fromArray(item.position);
+		}
+		if (item.rotation) {
+			mesh.rotation.fromArray(item.rotation);
+		}
+		if (item.scale) {
+			mesh.scale.fromArray(item.scale);
+		}
+	}
+
 	onDestroy() {
 		super.onDestroy();
 		if (this.mesh) {

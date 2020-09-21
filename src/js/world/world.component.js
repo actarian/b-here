@@ -743,10 +743,10 @@ export default class WorldComponent extends Component {
 		this.onMouseWheel = this.onMouseWheel.bind(this);
 		// this.controls.addEventListener('change', this.render); // use if there is no animation loop
 		window.addEventListener('resize', this.resize, false);
-		document.addEventListener('wheel', this.onMouseWheel, false);
-		document.addEventListener('mousemove', this.onMouseMove, false);
+		this.container.addEventListener('wheel', this.onMouseWheel, false);
 		this.container.addEventListener('mousedown', this.onMouseDown, false);
 		this.container.addEventListener('mouseup', this.onMouseUp, false);
+		document.addEventListener('mousemove', this.onMouseMove, false);
 		const vrService = this.vrService = VRService.getService();
 		vrService.session$.pipe(
 			takeUntil(this.unsubscribe$),

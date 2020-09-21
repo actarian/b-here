@@ -2888,6 +2888,13 @@ ModalService.events$ = new rxjs.Subject();var ViewType = {
   Room3d: 'room-3d',
   Model: 'model'
 };
+var ViewItemType = {
+  Nav: 'nav',
+  Gltf: 'gltf',
+  Plane: 'plane',
+  CurvedPlane: 'curved-plane',
+  Texture: 'texture'
+};
 var View = /*#__PURE__*/function () {
   function View(options) {
     if (options) {
@@ -2923,6 +2930,13 @@ var View = /*#__PURE__*/function () {
         }
       });
       return payload;
+    }
+  }, {
+    key: "shortType",
+    get: function get() {
+      return this.type ? this.type.split('-').map(function (x) {
+        return x.substring(0, 1).toUpperCase();
+      }).join('') : '??';
     }
   }]);
 
@@ -3040,13 +3054,6 @@ var ModelView = /*#__PURE__*/function (_View3) {
 
   return ModelView;
 }(View);
-var ViewItemType = {
-  Nav: 'nav',
-  Gltf: 'gltf',
-  Plane: 'plane',
-  CurvedPlane: 'curved-plane',
-  Texture: 'texture'
-};
 var ViewItem = /*#__PURE__*/function () {
   function ViewItem(options) {
     if (options) {
@@ -4114,6 +4121,126 @@ DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDir
 DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
+};var _EditorLocale;
+var EditorLocale = (_EditorLocale = {
+  'image': 'Image',
+  'video': 'Video',
+  'model': 'Model',
+  'publisher-stream': 'Publisher Stream',
+  'next-attendee-stream': 'Next Attendee Stream',
+  'waiting-room': 'Waiting Room',
+  'panorama': 'Panorama',
+  'panorama-grid': 'Panorama Grid',
+  'room-3d': 'Room 3D'
+}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);
+
+var AsideComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AsideComponent, _Component);
+
+  function AsideComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AsideComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.mode = 1;
+    this.viewTypes = Object.keys(ViewType).map(function (key) {
+      var value = ViewType[key];
+      return {
+        type: value,
+        name: EditorLocale[value]
+      };
+    });
+    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
+      var value = ViewItemType[key];
+      return {
+        type: value,
+        name: EditorLocale[value]
+      };
+    });
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
+    var _this = this;
+
+    this.supportedViewTypes = this.viewTypes.filter(function (x) {
+      return _this.supportedViewType(x.type);
+    });
+  };
+
+  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
+    var _this2 = this;
+
+    if (this.view) {
+      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
+        return _this2.supportedViewItemType(_this2.view.type, x.type);
+      });
+    } else {
+      this.supportedViewItemTypes = [];
+    }
+  };
+
+  _proto.setMode = function setMode(mode) {
+    if (this.mode !== mode) {
+      this.mode = mode;
+      this.pushChanges();
+    }
+  };
+
+  _proto.supportedViewType = function supportedViewType(viewType) {
+    var supported = [ViewType.Panorama, ViewType.PanoramaGrid, ViewType.Room3d, ViewType.Model].indexOf(viewType) !== -1; // ViewType.WaitingRoom,
+    // console.log('supportedViewType', viewType, supported);
+
+    return supported;
+  };
+
+  _proto.supportedViewItemType = function supportedViewItemType(viewType, viewItemType) {
+    var supported;
+
+    switch (viewType) {
+      case ViewType.WaitingRoom:
+        supported = false;
+        break;
+
+      case ViewType.Panorama:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+        break;
+
+      case ViewType.PanoramaGrid:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+        break;
+
+      case ViewType.Room3d:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+        break;
+
+      case ViewType.Model:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+        break;
+    } // console.log('supportedViewItemType', viewType, viewItemType, supported);
+
+
+    return supported;
+  };
+
+  _proto.onSelect = function onSelect(event) {
+    this.select.next(event);
+  };
+
+  return AsideComponent;
+}(rxcomp.Component);
+AsideComponent.meta = {
+  selector: '[aside]',
+  outputs: ['select'],
+  inputs: ['view']
 };var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(UploadButtonDirective, _Directive);
 
@@ -4740,12 +4867,6 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
-  _proto.getViewTypeLabel = function getViewTypeLabel(type) {
-    return type ? type.split('-').map(function (x) {
-      return x.substring(0, 1).toUpperCase();
-    }).join('') : '??';
-  };
-
   _proto.onToggleAside = function onToggleAside() {
     this.aside = !this.aside;
     this.pushChanges();
@@ -5161,10 +5282,10 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
       type: ViewItemType.Plane,
       // title: new FormControl(null, RequiredValidator()),
       // upload: new FormControl(null, RequiredValidator()),
-      position: this.position.multiplyScalar(20).toArray(),
-      rotation: object.rotation.toArray(),
+      position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), RequiredValidator()),
       // [0, -Math.PI / 2, 0],
-      scale: [3.2, 1.8, 1]
+      scale: new rxcompForm.FormControl([3.2, 1.8, 1], RequiredValidator())
     });
     this.controls = form.controls;
     /*
@@ -5269,6 +5390,196 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
+};var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(UpdateViewItemComponent, _Component);
+
+  function UpdateViewItemComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = UpdateViewItemComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.active = false;
+    var form = this.form = new rxcompForm.FormGroup();
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('UpdateViewItemComponent.form.changes$', changes, form.valid, form);
+      if (typeof _this.item.onUpdate === 'function') {
+        _this.item.onUpdate();
+      }
+
+      _this.pushChanges();
+    });
+    this.update();
+  };
+
+  _proto.update = function update() {
+    var _this2 = this;
+
+    var item = this.item;
+
+    if (this.type !== item.type) {
+      this.type = item.type;
+      var form = this.form;
+      Object.keys(this.controls).forEach(function (key) {
+        form.removeKey(key);
+      });
+      var keys;
+
+      switch (item.type) {
+        case ViewItemType.Nav:
+          keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position']; // link { title, href, target }
+
+          break;
+
+        case ViewItemType.Plane:
+          keys = ['id', 'type', 'position', 'rotation', 'scale'];
+          break;
+
+        case ViewItemType.CurvedPlane:
+          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height'];
+          break;
+
+        case ViewItemType.Texture:
+          keys = ['id', 'type']; // asset, key no id!!
+
+          break;
+
+        case ViewItemType.Model:
+          keys = ['id', 'type']; // title, abstract, asset,
+
+          break;
+
+        default:
+          keys = ['id', 'type'];
+      }
+
+      keys.forEach(function (key) {
+        form.add(new rxcompForm.FormControl(item[key], rxcompForm.RequiredValidator()), key);
+      });
+      this.controls = form.controls;
+
+      if (keys.indexOf('viewId') !== -1) {
+        EditorService.data$().pipe(operators.first()).subscribe(function (data) {
+          _this2.controls.viewId.options = data.views.map(function (view) {
+            return {
+              id: view.id,
+              name: view.name
+            };
+          });
+
+          _this2.pushChanges();
+        });
+      }
+    }
+  };
+
+  _proto.onChanges = function onChanges(changes) {
+    this.update();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      console.log('UpdateViewItemComponent.onSubmit', this.form.value);
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onRemove = function onRemove(event) {
+    console.log('UpdateViewItemComponent.onRemove');
+  };
+
+  _proto.onToggle = function onToggle(event) {
+    this.active = !this.active;
+    this.pushChanges();
+  };
+
+  return UpdateViewItemComponent;
+}(rxcomp.Component);
+UpdateViewItemComponent.meta = {
+  selector: 'update-view-item',
+  inputs: ['item'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: active }\" (click)=\"onToggle($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"item.name || item.title || item.id\"></div>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"active\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+};var UpdateViewComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(UpdateViewComponent, _Component);
+
+  function UpdateViewComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = UpdateViewComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.active = false;
+    var form = this.form = new rxcompForm.FormGroup();
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+    this.update();
+  };
+
+  _proto.update = function update() {
+    var view = this.view;
+
+    if (this.type !== view.type) {
+      this.type = view.type;
+      var form = this.form;
+      Object.keys(this.controls).forEach(function (key) {
+        form.removeKey(key);
+      });
+      var keys;
+
+      switch (view.type) {
+        default:
+          keys = ['id', 'type', 'name'];
+      }
+
+      keys.forEach(function (key) {
+        form.add(new rxcompForm.FormControl(view[key], rxcompForm.RequiredValidator()), key);
+      });
+      this.controls = form.controls;
+    }
+  };
+
+  _proto.onChanges = function onChanges(changes) {
+    this.update();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      console.log('UpdateViewComponent.onSubmit', this.form.value);
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onRemove = function onRemove(event) {
+    console.log('UpdateViewComponent.onRemove');
+  };
+
+  _proto.onToggle = function onToggle(event) {
+    this.active = !this.active;
+    this.pushChanges();
+  };
+
+  return UpdateViewComponent;
+}(rxcomp.Component);
+UpdateViewComponent.meta = {
+  selector: 'update-view',
+  inputs: ['view'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: active }\" (click)=\"onToggle($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"view.name || view.id\"></div>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"active\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var KeyboardService = /*#__PURE__*/function () {
   function KeyboardService() {}
 
@@ -5561,18 +5872,18 @@ ControlSelectComponent.meta = {
   var _proto = ControlTextComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.label = 'label';
-    this.required = false;
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
   };
 
   return ControlTextComponent;
 }(ControlComponent);
 ControlTextComponent.meta = {
   selector: '[control-text]',
-  inputs: ['control', 'label'],
+  inputs: ['control', 'label', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var FlowService = /*#__PURE__*/function () {
   function FlowService(options) {
     var _this = this;
@@ -5838,35 +6149,55 @@ Total progress: {{(flow.transfers$ | async).totalProgress | percent}}
   var _proto = ControlVectorComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.label = 'vector';
+    this.label = this.label || 'label';
+    this.precision = this.precision || 3;
+    this.increment = this.increment || 1 / Math.pow(10, this.precision);
+    this.disabled = this.disabled || false;
     this.required = false;
   };
 
-  _createClass(ControlVectorComponent, [{
-    key: "x",
-    get: function get() {
-      return this.control.value[0];
-    }
-  }, {
-    key: "y",
-    get: function get() {
-      return this.control.value[1];
-    }
-  }, {
-    key: "z",
-    get: function get() {
-      return this.control.value[2];
-    }
-  }]);
+  _proto.updateValue = function updateValue(index, value) {
+    var values = this.control.value;
+    values[index] = value;
+    this.control.value = values.slice();
+  };
 
   return ControlVectorComponent;
 }(ControlComponent);
 ControlVectorComponent.meta = {
   selector: '[control-vector]',
-  inputs: ['control', 'label'],
+  inputs: ['control', 'label', 'precision', 'increment', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"x\" [placeholder]=\"x\" />\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"y\" [placeholder]=\"y\" />\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"z\" [placeholder]=\"z\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n    <div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n      <div class=\"control--head\">\n\t\t\t  <label [innerHTML]=\"label\"></label>\n\t\t\t  <span class=\"required__badge\">required</span>\n      </div>\n      <div class=\"control--content control--vector\">\n        <input-value label=\"x\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[0]\" (change)=\"updateValue(0, $event)\"></input-value>\n        <input-value label=\"y\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[1]\" (change)=\"updateValue(1, $event)\"></input-value>\n        <input-value label=\"z\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[2]\" (change)=\"updateValue(2, $event)\"></input-value>\n      </div>\n    </div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var DisabledDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DisabledDirective, _Directive);
+
+  function DisabledDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DisabledDirective.prototype;
+
+  _proto.onChanges = function onChanges() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // console.log('DisabledDirective.onChanges', this.disabled);
+
+
+    if (this.disabled === true) {
+      node.disabled = this.disabled;
+      node.setAttribute('disabled', this.disabled);
+    } else {
+      delete node.disabled;
+      node.removeAttribute('disabled');
+    }
+  };
+
+  return DisabledDirective;
+}(rxcomp.Directive);
+DisabledDirective.meta = {
+  selector: 'input[disabled],textarea[disabled]',
+  inputs: ['disabled']
 };var ErrorsComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ErrorsComponent, _ControlComponent);
 
@@ -5893,6 +6224,105 @@ ErrorsComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"inner\" [style]=\"{ display: control.invalid && control.touched ? 'block' : 'none' }\">\n\t\t<div class=\"error\" *for=\"let [key, value] of control.errors\">\n\t\t\t<span [innerHTML]=\"getLabel(key, value)\"></span>\n\t\t\t<!-- <span class=\"key\" [innerHTML]=\"key\"></span> <span class=\"value\" [innerHTML]=\"value | json\"></span> -->\n\t\t</div>\n\t</div>\n\t"
+};var InputValueComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(InputValueComponent, _Component);
+
+  function InputValueComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = InputValueComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.precision = this.precision || 3;
+    this.increment = this.increment || 1 / Math.pow(10, this.precision);
+    this.disabled = this.disabled || false;
+    this.increment$('.btn--more', 1).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      // console.log('InputValueComponent.increment$', event);
+      _this.value += event;
+
+      _this.change.next(_this.value);
+
+      _this.pushChanges();
+    });
+    this.increment$('.btn--less', -1).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      // console.log('InputValueComponent.increment$', event);
+      _this.value += event;
+
+      _this.change.next(_this.value);
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.increment$ = function increment$(selector, sign) {
+    var _this2 = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var element = node.querySelector(selector);
+    var m, increment;
+    return rxjs.race(rxjs.fromEvent(element, 'mousedown'), rxjs.fromEvent(element, 'touchstart')).pipe(operators.tap(function () {
+      increment = _this2.increment;
+      m = 32;
+    }), operators.switchMap(function (e) {
+      return rxjs.interval(30).pipe(operators.filter(function (i) {
+        return i % m === 0;
+      }), operators.map(function () {
+        var i = increment * sign; // increment = Math.min(this.increment * 100, increment * 2);
+
+        m = Math.max(1, Math.floor(m * 0.85));
+        return i;
+      }), // startWith(increment * sign),
+      operators.takeUntil(rxjs.race(rxjs.fromEvent(element, 'mouseup'), rxjs.fromEvent(element, 'touchend'))));
+    }));
+  };
+
+  _proto.getValue = function getValue() {
+    return this.value.toFixed(this.precision);
+  };
+
+  _proto.setValue = function setValue(sign) {
+    this.value += this.increment * sign;
+    this.change.next(this.value);
+    this.pushChanges();
+  };
+
+  return InputValueComponent;
+}(rxcomp.Component);
+InputValueComponent.meta = {
+  selector: 'input-value',
+  outputs: ['change'],
+  inputs: ['value', 'label', 'precision', 'increment', 'disabled'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--control\" [class]=\"{ disabled: disabled }\">\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"getValue()\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<div class=\"control--trigger\">\n\t\t\t\t<div class=\"btn--more\" (click)=\"setValue(1)\">+</div>\n\t\t\t\t<div class=\"btn--less\" (click)=\"setValue(-1)\">-</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};var ValueDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(ValueDirective, _Directive);
+
+  function ValueDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = ValueDirective.prototype;
+
+  _proto.onChanges = function onChanges(changes) {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.value = this.value;
+    node.setAttribute('value', this.value);
+  };
+
+  return ValueDirective;
+}(rxcomp.Directive);
+ValueDirective.meta = {
+  selector: '[value]',
+  inputs: ['value']
 };var IdDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(IdDirective, _Directive);
 
@@ -6289,7 +6719,58 @@ SliderDirective.meta = {
   selector: '[slider]',
   inputs: ['items'],
   outputs: ['change', 'tween']
-};var TryInARModalComponent = /*#__PURE__*/function (_Component) {
+};var SvgIconStructure = /*#__PURE__*/function (_Structure) {
+  _inheritsLoose(SvgIconStructure, _Structure);
+
+  function SvgIconStructure() {
+    return _Structure.apply(this, arguments) || this;
+  }
+
+  var _proto = SvgIconStructure.prototype;
+
+  _proto.onInit = function onInit() {
+    this.update();
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.update();
+  };
+
+  _proto.update = function update() {
+    if (this.name_ !== this.name) {
+      var _element$classList;
+
+      this.name_ = this.name;
+
+      var _getContext = rxcomp.getContext(this),
+          node = _getContext.node;
+
+      var xmlns = 'http://www.w3.org/2000/svg';
+      var element = document.createElementNS(xmlns, "svg");
+      var w = this.width || 24;
+      var h = this.height || 24;
+      element.setAttribute('class', "icon--" + this.name); // element.setAttributeNS(null, 'width', w);
+      // element.setAttributeNS(null, 'height', h);
+
+      element.setAttributeNS(null, 'viewBox', "0 0 " + w + " " + h);
+      element.innerHTML = "<use xlink:href=\"#" + this.name + "\"></use>";
+      element.rxcompId = node.rxcompId;
+
+      (_element$classList = element.classList).add.apply(_element$classList, node.classList);
+
+      node.parentNode.replaceChild(element, node);
+    }
+  };
+
+  return SvgIconStructure;
+}(rxcomp.Structure);
+SvgIconStructure.meta = {
+  selector: 'svg-icon',
+  inputs: ['name', 'width', 'height']
+};
+/*
+<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+*/var TryInARModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(TryInARModalComponent, _Component);
 
   function TryInARModalComponent() {
@@ -6427,28 +6908,6 @@ var TryInARComponent = /*#__PURE__*/function (_Component) {
 }(rxcomp.Component);
 TryInARComponent.meta = {
   selector: '[try-in-ar]'
-};var ValueDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(ValueDirective, _Directive);
-
-  function ValueDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = ValueDirective.prototype;
-
-  _proto.onChanges = function onChanges(changes) {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.value = this.value;
-    node.setAttribute('value', this.value);
-  };
-
-  return ValueDirective;
-}(rxcomp.Directive);
-ValueDirective.meta = {
-  selector: '[value]',
-  inputs: ['value']
 };var HlsDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(HlsDirective, _Directive);
 
@@ -63152,10 +63611,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.onMouseWheel = this.onMouseWheel.bind(this); // this.controls.addEventListener('change', this.render); // use if there is no animation loop
 
     window.addEventListener('resize', this.resize, false);
-    document.addEventListener('wheel', this.onMouseWheel, false);
-    document.addEventListener('mousemove', this.onMouseMove, false);
+    this.container.addEventListener('wheel', this.onMouseWheel, false);
     this.container.addEventListener('mousedown', this.onMouseDown, false);
     this.container.addEventListener('mouseup', this.onMouseUp, false);
+    document.addEventListener('mousemove', this.onMouseMove, false);
     var vrService = this.vrService = VRService.getService();
     vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
       _this6.renderer.xr.setSession(session);
@@ -63407,9 +63866,22 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     return mesh;
   };
 
+  _proto.onUpdate = function onUpdate(item, mesh) {};
+
   _proto.onMount = function onMount(mesh) {
+    var _this2 = this;
+
     mesh.name = this.getName('mesh');
     this.mesh = mesh;
+
+    if (this.item) {
+      this.item.mesh = mesh;
+
+      this.item.onUpdate = function () {
+        _this2.onUpdate(_this2.item, mesh);
+      };
+    }
+
     this.group.add(mesh); // this.host.render(); !!!
 
     /*
@@ -63431,6 +63903,11 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     }
 
     this.mesh = null;
+
+    if (this.item) {
+      delete this.item.mesh;
+      delete this.item.onUpdate;
+    }
   };
 
   _proto.calculateScaleAndPosition = function calculateScaleAndPosition() {
@@ -64331,6 +64808,20 @@ var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
     });
   };
 
+  _proto.onUpdate = function onUpdate(item, mesh) {
+    if (item.position) {
+      mesh.position.fromArray(item.position);
+    }
+
+    if (item.rotation) {
+      mesh.rotation.fromArray(item.rotation);
+    }
+
+    if (item.scale) {
+      mesh.scale.fromArray(item.scale);
+    }
+  };
+
   _proto.onDestroy = function onDestroy() {
     _ModelDraggableCompon.prototype.onDestroy.call(this);
 
@@ -64657,6 +65148,20 @@ ModelDebugComponent.meta = {
     	});
     });
     */
+  };
+
+  _proto.onUpdate = function onUpdate(item, mesh) {
+    if (item.position) {
+      mesh.position.fromArray(item.position);
+    }
+
+    if (item.rotation) {
+      mesh.rotation.fromArray(item.rotation);
+    }
+
+    if (item.scale) {
+      mesh.scale.fromArray(item.scale);
+    }
   } // onView() { const context = getContext(this); }
   // onChanges() {}
 
@@ -65555,10 +66060,7 @@ ModelMenuComponent.meta = {
   // outputs: ['over', 'out', 'down', 'nav'],
   outputs: ['nav', 'toggle'],
   inputs: ['items']
-};var NAV_RADIUS = 100;
-var ORIGIN$6 = new THREE$1.Vector3();
-
-var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
+};var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
   _inheritsLoose(ModelNavComponent, _ModelDraggableCompon);
 
   function ModelNavComponent() {
@@ -65601,9 +66103,8 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
 
     // this.renderOrder = environment.renderOrder.nav;
     var nav = new THREE$1.Group();
-    this.item.nav = nav;
 
-    var position = (_THREE$Vector = new THREE$1.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(NAV_RADIUS);
+    var position = (_THREE$Vector = new THREE$1.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
     nav.position.set(position.x, position.y, position.z);
     var map = ModelNavComponent.getTexture();
@@ -65630,7 +66131,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
       opacity: 0.0,
       color: 0x00ffff
     }));
-    sphere.lookAt(ORIGIN$6);
+    sphere.lookAt(ModelNavComponent.ORIGIN);
     sphere.depthTest = false;
     sphere.renderOrder = 0;
     nav.add(sphere);
@@ -65691,13 +66192,21 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
     if (typeof mount === 'function') {
       mount(nav);
     }
+  };
+
+  _proto.onUpdate = function onUpdate(item, mesh) {
+    var _THREE$Vector2;
+
+    var position = (_THREE$Vector2 = new THREE$1.Vector3()).set.apply(_THREE$Vector2, item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
+
+    item.mesh.position.set(position.x, position.y, position.z);
   } // called by WorldComponent
   ;
 
   _proto.onDragMove = function onDragMove(position) {
     this.item.showPanel = false;
     this.dragging = true;
-    this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(NAV_RADIUS);
+    this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
     this.helper.update();
   } // called by WorldComponent
   ;
@@ -65709,6 +66218,8 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
 
   return ModelNavComponent;
 }(ModelDraggableComponent);
+ModelNavComponent.ORIGIN = new THREE$1.Vector3();
+ModelNavComponent.RADIUS = 100;
 ModelNavComponent.meta = {
   selector: '[model-nav]',
   hosts: {
@@ -65967,7 +66478,7 @@ ModelNavComponent.meta = {
       var height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
       var dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
 
-      var position = _this.item.nav.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+      var position = _this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 
       var material = new THREE$1.SpriteMaterial({
         depthTest: false,
@@ -66177,7 +66688,7 @@ ModelPictureComponent.meta = {
     host: WorldComponent
   },
   inputs: ['item']
-};var ORIGIN$7 = new THREE$1.Vector3();
+};var ORIGIN$6 = new THREE$1.Vector3();
 
 var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
   _inheritsLoose(ModelPlaneComponent, _ModelDraggableCompon);
@@ -66246,6 +66757,20 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
     });
   };
 
+  _proto.onUpdate = function onUpdate(item, mesh) {
+    if (item.position) {
+      mesh.position.fromArray(item.position);
+    }
+
+    if (item.rotation) {
+      mesh.rotation.fromArray(item.rotation);
+    }
+
+    if (item.scale) {
+      mesh.scale.fromArray(item.scale);
+    }
+  };
+
   _proto.onDestroy = function onDestroy() {
     _ModelDraggableCompon.prototype.onDestroy.call(this);
 
@@ -66259,7 +66784,7 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
     this.item.showPanel = false;
     this.dragging = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
-    this.mesh.lookAt(ORIGIN$7);
+    this.mesh.lookAt(ORIGIN$6);
     this.helper.update();
   } // called by WorldComponent
   ;
@@ -71191,6 +71716,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HlsDirective, IdDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AsideComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TryInARComponent, TryInARModalComponent, UpdateViewComponent, UpdateViewItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

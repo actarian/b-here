@@ -12,10 +12,7 @@
 					<div control-text [control]="controls.title" label="Title"></div>
 					<div control-text [control]="controls.abstract" label="Abstract"></div>
 					<div control-select [control]="controls.viewId" label="NavToView"></div>
-					<div class="group--form">
-						<label>Position</label>
-						<input type="text" class="control--text" formControlName="position" disabled />
-					</div>
+					<div control-vector label="Position" [control]="controls.position" [precision]="4" [disabled]="true"></div>
 					<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 				</fieldset>
 				<div class="group--cta">
