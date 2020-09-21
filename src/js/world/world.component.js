@@ -58,21 +58,20 @@ export default class WorldComponent extends Component {
 		this.animate(); // !!! no
 		KeyboardService.keys$().pipe(
 			takeUntil(this.unsubscribe$)
-		).subscribe(keys => this.keys = keys);
+		).subscribe(keys => {
+			this.keys = keys;
+			// console.log(keys);
+		});
 	}
 
-	/*
-	onView() {
-		if (DEBUG) {
-			const scene = this.scene;
-			scene.traverse((object) => {
-				// console.log(object.name !== '' ? object.name : object.type);
-			});
+	onChanges() {
+		if (this.view) {
+			const selected = this.view.items.find(item => item.selected);
+			if (selected && selected.mesh) {
+				this.orbit.lookAt(selected.mesh);
+			}
 		}
 	}
-	*/
-
-	// onChanges() {}
 
 	onDestroy() {
 		this.removeListeners();
@@ -218,10 +217,6 @@ export default class WorldComponent extends Component {
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
-					if (this.torus) {
-						this.torus.material.envMap = envMap;
-						this.torus.material.needsUpdate = true;
-					}
 					// this.render();
 				}, (view) => {
 					this.setViewOrientation(view);
@@ -335,47 +330,6 @@ export default class WorldComponent extends Component {
 		this.controller2.userData.isSelecting = false;
 	}
 
-	/*
-	handleController(controller) {
-		if (controller.userData.isSelecting) {
-			// console.log(controller);
-			var object = room.children[ count ++ ];
-			object.position.copy( controller.position );
-			object.userData.velocity.x = ( Math.random() - 0.5 ) * 3;
-			object.userData.velocity.y = ( Math.random() - 0.5 ) * 3;
-			object.userData.velocity.z = ( Math.random() - 9 );
-			object.userData.velocity.applyQuaternion( controller.quaternion );
-			if ( count === room.children.length ) count = 0;
-		}
-	}
-	*/
-
-	/*
-	drag$() {
-		let rotation;
-		return DragService.events$(this.node).pipe(
-			tap((event) => {
-				// const group = this.objects.children[this.index];
-				if (event instanceof DragDownEvent) {
-					// rotation = group.rotation.clone();
-				} else if (event instanceof DragMoveEvent) {
-					group.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01, 0);
-					this.panorama.mesh.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01 + Math.PI, 0);
-					this.render();
-					MessageService.send({
-						type: MessageType.CameraRotate,
-						coords: [group.rotation.x, group.rotation.y, group.rotation.z]
-					});
-				} else if (event instanceof DragUpEvent) {
-					if (DEBUG || EDITOR) {
-						console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
-					}
-				}
-			})
-		);
-	}
-	*/
-
 	onTween() {
 		// this.render();
 	}
@@ -408,7 +362,7 @@ export default class WorldComponent extends Component {
 					}
 					*/
 				}
-			} else if (!this.dragItem) {
+			} else if (!this.dragItem && !this.resizeItem) {
 				const raycaster = this.raycaster;
 				if (raycaster) {
 					const hit = Interactive.hittest(raycaster);
@@ -562,6 +516,19 @@ export default class WorldComponent extends Component {
 						this.dragItem.onDragMove(position);
 					}
 				}
+			} else if (this.resizeItem) {
+				if (typeof this.resizeItem.onResizeMove === 'function') {
+					/*
+					// calc arc x & y as scale;
+					const intersections = raycaster.intersectObjects([this.panorama.mesh]);
+					if (intersections.length) {
+						const intersection = intersections[0];
+						// this.panorama.mesh.intersection = intersection;
+						const position = new THREE.Vector3().copy(intersection.point).normalize();
+						this.resizeItem.onResizeMove(position);
+					}
+					*/
+				}
 			}
 		} catch (error) {
 			this.error = error;
@@ -577,6 +544,13 @@ export default class WorldComponent extends Component {
 			}
 		}
 		this.dragItem = null;
+		if (this.resizeItem) {
+			if (typeof this.resizeItem.onResizeEnd === 'function') {
+				this.resizeItem.onResizeEnd();
+				this.resizeEnd.next(this.resizeItem);
+			}
+		}
+		this.resizeItem = null;
 		/*
 		if (NavPointDragging) {
 			stopDragging
@@ -679,19 +653,26 @@ export default class WorldComponent extends Component {
 
 	onNavDown(event) {
 		event.item.showPanel = false;
-		if (this.keys.Shift) {
-			console.log('WorldComponent.onNavDown', this.keys);
+		// console.log('WorldComponent.onNavDown', this.keys);
+		if (EDITOR && this.keys.Shift) {
 			this.dragItem = event;
+			this.select.next(event);
+		} else if (EDITOR && this.keys.Control) {
+			this.resizeItem = event;
+			this.select.next(event);
 		} else {
 			this.navTo.next(event.item.viewId);
 		}
 	}
 
 	onPlaneDown(event) {
-		console.log('onPlaneDown', event);
-		if (this.keys.Shift) {
-			console.log('WorldComponent.onPlaneDown', this.keys);
+		// console.log('WorldComponent.onPlaneDown', this.keys);
+		if (EDITOR && this.keys.Shift) {
 			this.dragItem = event;
+			this.select.next(event);
+		} else if (EDITOR && this.keys.Control) {
+			this.resizeItem = event;
+			this.select.next(event);
 		}
 	}
 
@@ -712,10 +693,6 @@ export default class WorldComponent extends Component {
 				this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
-					if (this.torus) {
-						this.torus.material.envMap = envMap;
-						this.torus.material.needsUpdate = true;
-					}
 					this.orbit.walkComplete(headingLongitude, headingLatitude);
 					// this.render();
 					// this.pushChanges();
@@ -764,7 +741,7 @@ export default class WorldComponent extends Component {
 		).subscribe((state) => {
 			this.onVRStateDidChange(state);
 		});
-		this.orbit.observe$().pipe(
+		this.orbit.observe$(this.container).pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			if (event instanceof OrbitDragEvent) {
@@ -876,5 +853,5 @@ export default class WorldComponent extends Component {
 WorldComponent.meta = {
 	selector: '[world]',
 	inputs: ['view', 'views'],
-	outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd'],
+	outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
 };

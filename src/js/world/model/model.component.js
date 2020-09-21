@@ -33,8 +33,8 @@ export default class ModelComponent extends Component {
 		};
 		this.host.objects.add(group);
 		this.onCreate(
-			(mesh) => this.onMount(mesh),
-			(mesh) => this.onDismount(mesh)
+			(mesh, item) => this.onMount(mesh, item),
+			(mesh, item) => this.onDismount(mesh, item)
 		);
 	}
 
@@ -79,13 +79,13 @@ export default class ModelComponent extends Component {
 
 	onUpdate(item, mesh) { }
 
-	onMount(mesh) {
+	onMount(mesh, item) {
 		mesh.name = this.getName('mesh');
 		this.mesh = mesh;
-		if (this.item) {
-			this.item.mesh = mesh;
-			this.item.onUpdate = () => {
-				this.onUpdate(this.item, mesh);
+		if (item) {
+			item.mesh = mesh;
+			item.onUpdate = () => {
+				this.onUpdate(item, mesh);
 			};
 		}
 		this.group.add(mesh);
@@ -101,15 +101,15 @@ export default class ModelComponent extends Component {
 		// console.log('Model.loaded', mesh);
 	}
 
-	onDismount(mesh) {
+	onDismount(mesh, item) {
 		this.group.remove(mesh);
 		if (typeof mesh.dispose === 'function') {
 			mesh.dispose();
 		}
 		this.mesh = null;
-		if (this.item) {
-			delete this.item.mesh;
-			delete this.item.onUpdate;
+		if (item) {
+			delete item.mesh;
+			delete item.onUpdate;
 		}
 	}
 

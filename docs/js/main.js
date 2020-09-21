@@ -4122,6 +4122,7 @@ DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
 };var _EditorLocale;
+
 var EditorLocale = (_EditorLocale = {
   'image': 'Image',
   'video': 'Video',
@@ -4132,9 +4133,7 @@ var EditorLocale = (_EditorLocale = {
   'panorama': 'Panorama',
   'panorama-grid': 'Panorama Grid',
   'room-3d': 'Room 3D'
-}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);
-
-var AsideComponent = /*#__PURE__*/function (_Component) {
+}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);var AsideComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AsideComponent, _Component);
 
   function AsideComponent() {
@@ -4235,11 +4234,19 @@ var AsideComponent = /*#__PURE__*/function (_Component) {
     this.select.next(event);
   };
 
+  _proto.onUpdate = function onUpdate(event) {
+    this.update.next(event);
+  };
+
+  _proto.onDelete = function onDelete(event) {
+    this.delete.next(event);
+  };
+
   return AsideComponent;
 }(rxcomp.Component);
 AsideComponent.meta = {
   selector: '[aside]',
-  outputs: ['select'],
+  outputs: ['select', 'update', 'delete'],
   inputs: ['view']
 };var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(UploadButtonDirective, _Directive);
@@ -4603,7 +4610,8 @@ ToastOutletComponent.meta = {
     'curved-plane': 'curved-plane-modal.html',
     'texture': 'texture-modal.html',
     'gltf': 'gltf-modal.html'
-  }
+  },
+  remove: 'remove-modal.html'
 };
 var SERVER_MODALS = {
   controlRequest: environment.views.controlRequestModal,
@@ -4658,6 +4666,16 @@ var ModalSrcService = /*#__PURE__*/function () {
     }));
   };
 
+  EditorService.viewUpdate$ = function viewUpdate$(view) {
+    return HttpService.put$("/api/view/" + view.id, view.payload).pipe(operators.map(function (view) {
+      return mapView(view);
+    }));
+  };
+
+  EditorService.viewDelete$ = function viewDelete$(view) {
+    return HttpService.delete$("/api/view/" + view.id);
+  };
+
   EditorService.itemCreate$ = function itemCreate$(view, item) {
     return HttpService.post$("/api/view/" + view.id + "/item", item).pipe(operators.map(function (item) {
       return mapViewItem(item);
@@ -4665,9 +4683,13 @@ var ModalSrcService = /*#__PURE__*/function () {
   };
 
   EditorService.itemUpdate$ = function itemUpdate$(view, item) {
-    return HttpService.put$("/api/view/" + view.id + "/item", item.payload).pipe(operators.map(function (item) {
+    return HttpService.put$("/api/view/" + view.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
       return mapViewItem(item);
     }));
+  };
+
+  EditorService.itemDelete$ = function itemDelete$(view, item) {
+    return HttpService.delete$("/api/view/" + view.id + "/item/" + item.id);
   };
 
   return EditorService;
@@ -4892,66 +4914,173 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onDragEnd = function onDragEnd(event) {
+    var _this4 = this;
+
     EditorService.itemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
       console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
+
+      _this4.pushChanges();
     }, function (error) {
       return console.log('EditorComponent.onDragEnd.itemUpdate$.error', error);
     });
   };
 
+  _proto.onResizeEnd = function onResizeEnd(event) {
+    console.log('EditorComponent.onResizeEnd');
+    /*
+    EditorService.itemUpdate$(this.view, event.item).pipe(
+    	first(),
+    ).subscribe(response => {
+    	console.log('EditorComponent.onResizeEnd.itemUpdate$.success', response);
+    	this.pushChanges();
+    }, error => console.log('EditorComponent.onResizeEnd.itemUpdate$.error', error));
+    */
+  };
+
+  _proto.onWorldSelect = function onWorldSelect(event) {
+    this.view.selected = false;
+    this.view.items.forEach(function (item) {
+      return item.selected = item === event.item;
+    });
+    this.pushChanges();
+  };
+
   _proto.onOpenModal = function onOpenModal(modal, data) {
-    var _this4 = this;
+    var _this5 = this;
 
     ModalService.open$({
       src: ModalSrcService.get(modal.type, modal.value),
       data: data
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
-        console.log('onMenuSelect.resolve', event);
+        console.log('EditorComponent.onOpenModal.resolve', event);
 
         switch (modal.value) {
           case 'nav':
             var item = event.data;
-            var items = _this4.view.items || [];
+            var items = _this5.view.items || [];
             items.push(item);
-            Object.assign(_this4.view, {
+            Object.assign(_this5.view, {
               items: items
             });
 
-            _this4.pushChanges();
+            _this5.pushChanges();
 
             break;
         }
       }
 
-      _this4.pushChanges();
+      _this5.pushChanges();
     });
   };
 
-  _proto.onMenuSelect = function onMenuSelect(event) {
-    var _this5 = this;
+  _proto.onAsideSelect = function onAsideSelect(event) {
+    var _this6 = this;
 
-    console.log('onMenuSelect', event);
+    console.log('onAsideSelect', event);
 
-    switch (event.value) {
-      case 'nav':
-      case 'plane':
-      case 'curved-plane':
-        this.onViewHitted(function (position) {
-          _this5.onOpenModal(event, {
-            view: _this5.view,
-            position: position
+    if (event.value) {
+      switch (event.value) {
+        case 'nav':
+        case 'plane':
+        case 'curved-plane':
+          this.onViewHitted(function (position) {
+            _this6.onOpenModal(event, {
+              view: _this6.view,
+              position: position
+            });
           });
-        });
-        ToastService.open$({
-          message: 'Click a point on the view'
-        });
-        break;
+          ToastService.open$({
+            message: 'Click a point on the view'
+          });
+          break;
 
-      default:
-        this.onOpenModal(event, {
-          view: this.view
+        default:
+          this.onOpenModal(event, {
+            view: this.view
+          });
+      }
+    } else if (event.view && (event.item || event.item === null)) {
+      event.view.selected = false;
+      event.view.items.forEach(function (item) {
+        return item.selected = item === event.item;
+      });
+      this.pushChanges();
+    } else if (event.view || event.view === null) {
+      this.view.selected = this.view === event.view;
+      this.view.items.forEach(function (item) {
+        return item.selected = false;
+      });
+      this.pushChanges();
+    }
+  };
+
+  _proto.onAsideUpdate = function onAsideUpdate(event) {
+    var _this7 = this;
+
+    console.log('onAsideUpdate', event);
+
+    if (event.item && event.view) {
+      EditorService.itemUpdate$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
+        console.log('EditorComponent.onAsideUpdate.itemUpdate$.success', response);
+        var item = event.view.items.find(function (item) {
+          return item.id === event.item.id;
         });
+
+        if (item) {
+          Object.assign(item, event.item);
+        }
+
+        _this7.pushChanges();
+      }, function (error) {
+        return console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error);
+      });
+    } else if (event.view) {
+      EditorService.viewUpdate$(event.view).pipe(operators.first()).subscribe(function (response) {
+        console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
+        Object.assign(_this7.view, event.view);
+
+        _this7.pushChanges();
+      }, function (error) {
+        return console.log('EditorComponent.onAsideUpdate.viewUpdate$.error', error);
+      });
+    }
+  };
+
+  _proto.onAsideDelete = function onAsideDelete(event) {
+    var _this8 = this;
+
+    console.log('onAsideDelete', event);
+
+    if (event.item && event.view) {
+      EditorService.itemDelete$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
+        console.log('EditorComponent.onAsideDelete.itemDelete$.success', response);
+        var index = event.view.items.indexOf(event.item);
+
+        if (index !== -1) {
+          event.view.items.splice(index, 1);
+        }
+
+        _this8.pushChanges();
+      }, function (error) {
+        return console.log('EditorComponent.onAsideDelete.itemDelete$.error', error);
+      });
+    } else if (event.view) {
+      EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
+        console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
+
+        var index = _this8.views.indexOf(event.view);
+
+        if (index !== -1) {
+          _this8.views.splice(index, 1);
+        }
+
+        _this8.controls.view.value = _this8.data.views[0].id;
+
+        _this8.pushChanges();
+      }, function (error) {
+        return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
+      });
     }
   };
 
@@ -4961,7 +5090,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
       return this.hosted_;
     },
     set: function set(hosted) {
-      var _this6 = this;
+      var _this9 = this;
 
       if (this.hosted_ !== hosted) {
         this.hosted_ = hosted;
@@ -4969,7 +5098,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
         if (this.data && this.controls) {
           if (hosted) {
             var view = this.data.views.find(function (x) {
-              return x.id === _this6.controls.view.value;
+              return x.id === _this9.controls.view.value;
             });
             this.view = view;
           } else {
@@ -5282,10 +5411,10 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
       type: ViewItemType.Plane,
       // title: new FormControl(null, RequiredValidator()),
       // upload: new FormControl(null, RequiredValidator()),
-      position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), RequiredValidator()),
+      position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
       // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([3.2, 1.8, 1], RequiredValidator())
+      scale: new rxcompForm.FormControl([3.2, 1.8, 1], rxcompForm.RequiredValidator())
     });
     this.controls = form.controls;
     /*
@@ -5390,6 +5519,59 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
+};var RemoveModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(RemoveModalComponent, _Component);
+
+  function RemoveModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = RemoveModalComponent.prototype;
+
+  _proto.onRemove = function onRemove() {
+    ModalService.resolve();
+  };
+
+  _proto.onCancel = function onCancel() {
+    ModalService.reject();
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  _createClass(RemoveModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "item",
+    get: function get() {
+      var item = null;
+      var data = this.data;
+
+      if (data) {
+        item = data.item;
+      }
+
+      return item;
+    }
+  }]);
+
+  return RemoveModalComponent;
+}(rxcomp.Component);
+RemoveModalComponent.meta = {
+  selector: '[remove-modal]'
 };var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewItemComponent, _Component);
 
@@ -5406,24 +5588,27 @@ EditorModule.meta = {
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
     form.changes$.subscribe(function (changes) {
-      // console.log('UpdateViewItemComponent.form.changes$', changes, form.valid, form);
-      if (typeof _this.item.onUpdate === 'function') {
-        _this.item.onUpdate();
+      // console.log('UpdateViewItemComponent.form.changes$', this.item);
+      var item = _this.item;
+      Object.assign(item, changes);
+
+      if (typeof item.onUpdate === 'function') {
+        item.onUpdate();
       }
 
       _this.pushChanges();
     });
-    this.update();
+    this.onUpdate();
   };
 
-  _proto.update = function update() {
+  _proto.onUpdate = function onUpdate() {
     var _this2 = this;
 
     var item = this.item;
+    var form = this.form;
 
     if (this.type !== item.type) {
       this.type = item.type;
-      var form = this.form;
       Object.keys(this.controls).forEach(function (key) {
         form.removeKey(key);
       });
@@ -5474,38 +5659,70 @@ EditorModule.meta = {
           _this2.pushChanges();
         });
       }
+    } else {
+      Object.keys(this.controls).forEach(function (key) {
+        _this2.controls[key].value = item[key];
+      });
     }
   };
 
   _proto.onChanges = function onChanges(changes) {
-    this.update();
+    this.onUpdate();
   };
 
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
-      console.log('UpdateViewItemComponent.onSubmit', this.form.value);
+      this.update.next({
+        view: this.view,
+        item: new ViewItem(this.form.value)
+      });
     } else {
       this.form.touched = true;
     }
   };
 
   _proto.onRemove = function onRemove(event) {
-    console.log('UpdateViewItemComponent.onRemove');
+    var _this3 = this;
+
+    ModalService.open$({
+      src: ModalSrcService.get('remove'),
+      data: {
+        item: this.item
+      }
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        _this3.delete.next({
+          view: _this3.view,
+          item: _this3.item
+        });
+      }
+    });
   };
 
-  _proto.onToggle = function onToggle(event) {
-    this.active = !this.active;
+  _proto.onSelect = function onSelect(event) {
+    this.select.next({
+      view: this.view,
+      item: this.item.selected ? null : this.item
+    });
+    /*
+    this.item.active = !this.item.active;
     this.pushChanges();
+    */
+  };
+
+  _proto.getTitle = function getTitle(item) {
+    return EditorLocale[item.type];
   };
 
   return UpdateViewItemComponent;
 }(rxcomp.Component);
 UpdateViewItemComponent.meta = {
   selector: 'update-view-item',
-  inputs: ['item'],
+  outputs: ['select', 'update', 'delete'],
+  inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: active }\" (click)=\"onToggle($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"item.name || item.title || item.id\"></div>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"active\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewComponent, _Component);
 
@@ -5525,10 +5742,10 @@ UpdateViewItemComponent.meta = {
       // console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
       _this.pushChanges();
     });
-    this.update();
+    this.onUpdate();
   };
 
-  _proto.update = function update() {
+  _proto.onUpdate = function onUpdate() {
     var view = this.view;
 
     if (this.type !== view.type) {
@@ -5552,34 +5769,56 @@ UpdateViewItemComponent.meta = {
   };
 
   _proto.onChanges = function onChanges(changes) {
-    this.update();
+    this.onUpdate();
   };
 
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
-      console.log('UpdateViewComponent.onSubmit', this.form.value);
+      this.update.next({
+        view: new View(this.form.value)
+      });
     } else {
       this.form.touched = true;
     }
   };
 
   _proto.onRemove = function onRemove(event) {
-    console.log('UpdateViewComponent.onRemove');
+    var _this2 = this;
+
+    ModalService.open$({
+      src: ModalSrcService.get('remove'),
+      data: {
+        item: this.item
+      }
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        _this2.delete.next({
+          view: _this2.view
+        });
+      }
+    });
   };
 
-  _proto.onToggle = function onToggle(event) {
-    this.active = !this.active;
-    this.pushChanges();
+  _proto.onSelect = function onSelect(event) {
+    this.select.next({
+      view: this.view.selected ? null : this.view
+    }); // this.active = !this.active;
+    // this.pushChanges();
+  };
+
+  _proto.getTitle = function getTitle(view) {
+    return EditorLocale[view.type];
   };
 
   return UpdateViewComponent;
 }(rxcomp.Component);
 UpdateViewComponent.meta = {
   selector: 'update-view',
+  outputs: ['select', 'update', 'delete'],
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: active }\" (click)=\"onToggle($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"view.name || view.id\"></div>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"active\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var KeyboardService = /*#__PURE__*/function () {
   function KeyboardService() {}
 
@@ -5836,7 +6075,7 @@ ControlCustomSelectComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--select\" [innerHTML]=\"getLabel()\"></span>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t<li *for=\"let item of control.options\" (click)=\"setOption(item)\"><span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span></li>\n\t\t\t</ul>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--select\" [innerHTML]=\"getLabel()\"></span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t<li *for=\"let item of control.options\" (click)=\"setOption(item)\"><span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span></li>\n\t\t\t</ul>\n\t\t</div>\n\t"
   /*  (click)="onClick($event)" (clickOutside)="onClickOutside($event)" */
 
   /*  <!-- <div class="dropdown" [class]="{ dropped: dropped }"> --> */
@@ -5861,7 +6100,7 @@ ControlSelectComponent.meta = {
   inputs: ['control', 'label'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<select class=\"control--select\" [formControl]=\"control\" required>\n\t\t\t\t<option value=\"\">Select</option>\n\t\t\t\t<option [value]=\"item.id\" *for=\"let item of control.options\" [innerHTML]=\"item.name\"></option>\n\t\t\t</select>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t<svg class=\"icon icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<select class=\"control--select\" [formControl]=\"control\" required>\n\t\t\t\t<option value=\"\">Select</option>\n\t\t\t\t<option [value]=\"item.id\" *for=\"let item of control.options\" [innerHTML]=\"item.name\"></option>\n\t\t\t</select>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlTextComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlTextComponent, _ControlComponent);
 
@@ -6491,7 +6730,6 @@ var DragService = /*#__PURE__*/function () {
         downEvent.speed.y = moveEvent.speed.y;
         downEvent.strength.x = moveEvent.strength.x;
         downEvent.strength.y = moveEvent.strength.y;
-        moveEvent.shiftKey = event.shiftKey;
         events$.next(moveEvent);
         return moveEvent;
       }
@@ -62337,17 +62575,27 @@ var OrbitDragEvent = /*#__PURE__*/function (_OrbitEvent) {
 
   return OrbitDragEvent;
 }(OrbitEvent);
-var OrbitMoveEvent = /*#__PURE__*/function (_OrbitEvent2) {
-  _inheritsLoose(OrbitMoveEvent, _OrbitEvent2);
+var OrbitResizeEvent = /*#__PURE__*/function (_OrbitEvent2) {
+  _inheritsLoose(OrbitResizeEvent, _OrbitEvent2);
+
+  function OrbitResizeEvent() {
+    return _OrbitEvent2.apply(this, arguments) || this;
+  }
+
+  return OrbitResizeEvent;
+}(OrbitEvent);
+var OrbitMoveEvent = /*#__PURE__*/function (_OrbitEvent3) {
+  _inheritsLoose(OrbitMoveEvent, _OrbitEvent3);
 
   function OrbitMoveEvent() {
-    return _OrbitEvent2.apply(this, arguments) || this;
+    return _OrbitEvent3.apply(this, arguments) || this;
   }
 
   return OrbitMoveEvent;
 }(OrbitEvent);
 var orbitMoveEvent = new OrbitMoveEvent();
 var orbitDragEvent = new OrbitDragEvent();
+var orbitResizeEvent = new OrbitResizeEvent();
 var DOLLY_MIN = 15;
 var DOLLY_MAX = 75;
 var ZOOM_MIN = 15;
@@ -62449,88 +62697,40 @@ var OrbitService = /*#__PURE__*/function () {
     this.theta = theta;
   };
 
-  _proto.setDragListener = function setDragListener(container) {
+  _proto.observe$ = function observe$(node) {
     var _this = this;
 
-    var longitude, latitude;
-    var dragListener = new DragListener(this.container, function (event) {
-      longitude = _this.longitude;
-      latitude = _this.latitude;
-    }, function (event) {
-      var flip = _this.mode_ === OrbitMode.Model ? -1 : 1;
-      var direction = event.distance.x ? event.distance.x / Math.abs(event.distance.x) * -1 : 1;
-      _this.direction = direction;
-      var lon = longitude - event.distance.x * 0.1 * flip;
-      var lat = latitude + event.distance.y * 0.1;
-
-      _this.setInertia(lon, lat);
-
-      _this.setLongitudeLatitude(lon, lat); // console.log('longitude', this.longitude, 'latitude', this.latitude, 'direction', this.direction);
-
-    }, function (event) {// this.speed = Math.abs(event.strength.x) * 100;
-      // console.log('speed', this.speed);
-    });
-
-    dragListener.move = function () {};
-
-    this.dragListener = dragListener;
-    return dragListener;
-  };
-
-  _proto.setInertia = function setInertia(longitude, latitude) {
-    var inertia = this.inertia;
-    inertia.x = (longitude - this.longitude) * 1;
-    inertia.y = (latitude - this.latitude) * 1;
-    this.inertia = inertia; // console.log(this.inertia);
-  };
-
-  _proto.updateInertia = function updateInertia() {
-    var inertia = this.inertia;
-    inertia.multiplyScalar(0.95);
-    this.inertia = inertia;
-    /*
-    let speed = this.speed;
-    speed = Math.max(1, speed * 0.95);
-    this.speed = speed;
-    */
-  };
-
-  _proto.update_ = function update_() {
-    if (this.dragListener && !this.dragListener.dragging) {
-      this.setLongitudeLatitude(this.longitude + this.inertia.x, this.latitude + this.inertia.y);
-      this.updateInertia();
-    }
-  };
-
-  _proto.observe$ = function observe$(node) {
-    var _this2 = this;
-
-    var camera = this.camera;
+    // const camera = this.camera;
     var latitude, longitude;
-    return DragService.events$(node).pipe(operators.tap(function (event) {
-      // const group = this.objects.children[this.index];
-      if (event instanceof DragDownEvent) {
-        latitude = _this2.latitude;
-        longitude = _this2.longitude;
-      } else if (event instanceof DragMoveEvent) {
-        if (EDITOR && event.shiftKey) {
-          // console.log('shifting!');
-          _this2.events$.next(orbitDragEvent);
-        } else {
-          var flip = _this2.mode_ === OrbitMode.Model ? -1 : 1;
+    return rxjs.combineLatest([KeyboardService.keys$(), DragService.events$(node)]).pipe(operators.map(function (datas) {
+      var keys = datas[0];
+      var event = datas[1]; // const group = this.objects.children[this.index];
 
-          _this2.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+      if (event instanceof DragDownEvent) {
+        latitude = _this.latitude;
+        longitude = _this.longitude;
+      } else if (event instanceof DragMoveEvent) {
+        if (keys.Shift) {
+          _this.events$.next(orbitDragEvent);
+        } else if (keys.Control) {
+          _this.events$.next(orbitResizeEvent);
+        } else {
+          var flip = _this.mode_ === OrbitMode.Model ? -1 : 1;
+
+          _this.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
         }
       }
+
+      return event;
     }), operators.filter(function (event) {
       return event instanceof DragMoveEvent;
     }), operators.startWith({
       latitude: this.latitude,
       longitude: this.longitude
     }), operators.tap(function (event) {
-      return _this2.update();
+      return _this.update();
     }), operators.switchMap(function (event) {
-      return _this2.events$;
+      return _this.events$;
     }));
   };
 
@@ -62608,7 +62808,7 @@ var OrbitService = /*#__PURE__*/function () {
   };
 
   _proto.walk = function walk(position, callback) {
-    var _this3 = this;
+    var _this2 = this;
 
     var radius;
 
@@ -62641,11 +62841,11 @@ var OrbitService = /*#__PURE__*/function () {
       delay: 0,
       ease: Power2.easeInOut,
       onUpdate: function onUpdate() {
-        _this3.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
+        _this2.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
 
-        _this3.position.set(position.x * from.tween, 0, position.y * from.tween);
+        _this2.position.set(position.x * from.tween, 0, position.y * from.tween);
 
-        _this3.update();
+        _this2.update();
       },
       onComplete: function onComplete() {
         // this.walkComplete(headingLongitude, headingLatitude);
@@ -62660,6 +62860,80 @@ var OrbitService = /*#__PURE__*/function () {
     this.setLongitudeLatitude(headingLongitude, headingLatitude);
     this.position.set(0, 0, 0);
     this.update();
+  };
+
+  _proto.lookAt = function lookAt(object3d) {
+    // !!! fix
+    if (object3d) {
+      /*
+      const camera = this.camera;
+      camera.target.copy(object3d.position);
+      camera.lookAt(camera.target);
+      camera.updateProjectionMatrix();
+      */
+      var position = object3d.position;
+      var radius;
+
+      switch (this.mode_) {
+        case OrbitMode.Model:
+          radius = 3;
+          break;
+
+        default:
+          radius = this.radius;
+      }
+
+      var heading = new THREE$1.Vector2(position.x, position.z).normalize().multiplyScalar(radius);
+      var theta = Math.atan2(heading.y, heading.x);
+      var longitude = THREE$1.MathUtils.radToDeg(theta);
+      longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+      var latitude = 0;
+      this.setLongitudeLatitude(longitude, latitude);
+      this.update(); // this.events$.next(orbitMoveEvent);
+    }
+    /*
+    let radius, position = this.updatePosition, target = this.updateTarget;
+    const zoom = this.getZoomValue();
+    const dolly = this.getDollyValue();
+    // console.log('dolly', dolly);
+    const phi = THREE.MathUtils.degToRad(90 - this.latitude);
+    const theta = THREE.MathUtils.degToRad(this.longitude);
+    const camera = this.camera;
+    switch (this.mode_) {
+    	case OrbitMode.Model:
+    		radius = USE_DOLLY ? 3 + 3 * dolly : 3;
+    		position.copy(this.position);
+    		target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+    		target.y = this.position.y + radius * Math.cos(phi);
+    		target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+    		camera.target.copy(position);
+    		camera.position.copy(target);
+    		break;
+    	default:
+    		radius = this.radius;
+    		target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+    		target.y = this.position.y + radius * Math.cos(phi);
+    		target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+    		if (USE_DOLLY) {
+    			position.copy(target).position.multiplyScalar(-1 * dolly);
+    		} else {
+    			position.copy(this.position);
+    		}
+    		camera.position.copy(position);
+    		camera.target.copy(target);
+    }
+    // console.log(camera.position.x, camera.position.y, camera.position.z);
+    // console.log(camera.target.x, camera.target.y, camera.target.z);
+    // console.log('phi', phi, 'theta', theta);
+    // this.inverse();
+    if (!USE_DOLLY) {
+    	camera.zoom = zoom;
+    }
+    camera.lookAt(camera.target);
+    camera.updateProjectionMatrix();
+    this.events$.next(orbitMoveEvent);
+    */
+
   };
 
   return OrbitService;
@@ -62897,21 +63171,21 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.animate(); // !!! no
 
     KeyboardService.keys$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (keys) {
-      return _this.keys = keys;
+      _this.keys = keys; // console.log(keys);
     });
-  }
-  /*
-  onView() {
-  	if (DEBUG) {
-  		const scene = this.scene;
-  		scene.traverse((object) => {
-  			// console.log(object.name !== '' ? object.name : object.type);
-  		});
-  	}
-  }
-  */
-  // onChanges() {}
-  ;
+  };
+
+  _proto.onChanges = function onChanges() {
+    if (this.view) {
+      var selected = this.view.items.find(function (item) {
+        return item.selected;
+      });
+
+      if (selected && selected.mesh) {
+        this.orbit.lookAt(selected.mesh);
+      }
+    }
+  };
 
   _proto.onDestroy = function onDestroy() {
     this.removeListeners();
@@ -63055,13 +63329,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
-          _this2.scene.environment = envMap;
-
-          if (_this2.torus) {
-            _this2.torus.material.envMap = envMap;
-            _this2.torus.material.needsUpdate = true;
-          } // this.render();
-
+          _this2.scene.environment = envMap; // this.render();
         }, function (view) {
           _this2.setViewOrientation(view); // this.showNavPoints = true;
           // this.pushChanges();
@@ -63174,48 +63442,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onSelect2End = function onSelect2End() {
     this.controller2.userData.isSelecting = false;
-  }
-  /*
-  handleController(controller) {
-  	if (controller.userData.isSelecting) {
-  		// console.log(controller);
-  		var object = room.children[ count ++ ];
-  		object.position.copy( controller.position );
-  		object.userData.velocity.x = ( Math.random() - 0.5 ) * 3;
-  		object.userData.velocity.y = ( Math.random() - 0.5 ) * 3;
-  		object.userData.velocity.z = ( Math.random() - 9 );
-  		object.userData.velocity.applyQuaternion( controller.quaternion );
-  		if ( count === room.children.length ) count = 0;
-  	}
-  }
-  */
-
-  /*
-  drag$() {
-  	let rotation;
-  	return DragService.events$(this.node).pipe(
-  		tap((event) => {
-  			// const group = this.objects.children[this.index];
-  			if (event instanceof DragDownEvent) {
-  				// rotation = group.rotation.clone();
-  			} else if (event instanceof DragMoveEvent) {
-  				group.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01, 0);
-  				this.panorama.mesh.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01 + Math.PI, 0);
-  				this.render();
-  				MessageService.send({
-  					type: MessageType.CameraRotate,
-  					coords: [group.rotation.x, group.rotation.y, group.rotation.z]
-  				});
-  			} else if (event instanceof DragUpEvent) {
-  				if (DEBUG || EDITOR) {
-  					console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
-  				}
-  			}
-  		})
-  	);
-  }
-  */
-  ;
+  };
 
   _proto.onTween = function onTween() {// this.render();
   };
@@ -63249,7 +63476,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           }
           */
         }
-      } else if (!this.dragItem) {
+      } else if (!this.dragItem && !this.resizeItem) {
         var _raycaster = this.raycaster;
 
         if (_raycaster) {
@@ -63416,6 +63643,19 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             this.dragItem.onDragMove(position);
           }
         }
+      } else if (this.resizeItem) {
+        if (typeof this.resizeItem.onResizeMove === 'function') {
+          /*
+          // calc arc x & y as scale;
+          const intersections = raycaster.intersectObjects([this.panorama.mesh]);
+          if (intersections.length) {
+          	const intersection = intersections[0];
+          	// this.panorama.mesh.intersection = intersection;
+          	const position = new THREE.Vector3().copy(intersection.point).normalize();
+          	this.resizeItem.onResizeMove(position);
+          }
+          */
+        }
       }
     } catch (error) {
       this.error = error; // throw (error);
@@ -63431,6 +63671,15 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }
 
     this.dragItem = null;
+
+    if (this.resizeItem) {
+      if (typeof this.resizeItem.onResizeEnd === 'function') {
+        this.resizeItem.onResizeEnd();
+        this.resizeEnd.next(this.resizeItem);
+      }
+    }
+
+    this.resizeItem = null;
     /*
     if (NavPointDragging) {
     	stopDragging
@@ -63536,22 +63785,27 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onNavDown = function onNavDown(event) {
-    event.item.showPanel = false;
+    event.item.showPanel = false; // console.log('WorldComponent.onNavDown', this.keys);
 
-    if (this.keys.Shift) {
-      console.log('WorldComponent.onNavDown', this.keys);
+    if (EDITOR && this.keys.Shift) {
       this.dragItem = event;
+      this.select.next(event);
+    } else if (EDITOR && this.keys.Control) {
+      this.resizeItem = event;
+      this.select.next(event);
     } else {
       this.navTo.next(event.item.viewId);
     }
   };
 
   _proto.onPlaneDown = function onPlaneDown(event) {
-    console.log('onPlaneDown', event);
-
-    if (this.keys.Shift) {
-      console.log('WorldComponent.onPlaneDown', this.keys);
+    // console.log('WorldComponent.onPlaneDown', this.keys);
+    if (EDITOR && this.keys.Shift) {
       this.dragItem = event;
+      this.select.next(event);
+    } else if (EDITOR && this.keys.Control) {
+      this.resizeItem = event;
+      this.select.next(event);
     }
   };
 
@@ -63576,11 +63830,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         _this5.panorama.crossfade(item, _this5.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
           _this5.scene.environment = envMap;
-
-          if (_this5.torus) {
-            _this5.torus.material.envMap = envMap;
-            _this5.torus.material.needsUpdate = true;
-          }
 
           _this5.orbit.walkComplete(headingLongitude, headingLatitude); // this.render();
           // this.pushChanges();
@@ -63628,7 +63877,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     vrService.state$.pipe(operators.takeUntil(this.unsubscribe$), operators.auditTime(Math.floor(1000 / 15))).subscribe(function (state) {
       _this6.onVRStateDidChange(state);
     });
-    this.orbit.observe$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    this.orbit.observe$(this.container).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof OrbitDragEvent) ; else {
         // this.render();
         _this6.onOrientationDidChange();
@@ -63782,7 +64031,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views'],
-  outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd']
+  outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
 };var deg = THREE$1.Math.degToRad;
 var GEOMETRY = new THREE$1.BoxGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
@@ -63816,10 +64065,10 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     };
 
     this.host.objects.add(group);
-    this.onCreate(function (mesh) {
-      return _this.onMount(mesh);
-    }, function (mesh) {
-      return _this.onDismount(mesh);
+    this.onCreate(function (mesh, item) {
+      return _this.onMount(mesh, item);
+    }, function (mesh, item) {
+      return _this.onDismount(mesh, item);
     });
   };
 
@@ -63868,17 +64117,17 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onUpdate = function onUpdate(item, mesh) {};
 
-  _proto.onMount = function onMount(mesh) {
+  _proto.onMount = function onMount(mesh, item) {
     var _this2 = this;
 
     mesh.name = this.getName('mesh');
     this.mesh = mesh;
 
-    if (this.item) {
-      this.item.mesh = mesh;
+    if (item) {
+      item.mesh = mesh;
 
-      this.item.onUpdate = function () {
-        _this2.onUpdate(_this2.item, mesh);
+      item.onUpdate = function () {
+        _this2.onUpdate(item, mesh);
       };
     }
 
@@ -63895,7 +64144,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     // console.log('Model.loaded', mesh);
   };
 
-  _proto.onDismount = function onDismount(mesh) {
+  _proto.onDismount = function onDismount(mesh, item) {
     this.group.remove(mesh);
 
     if (typeof mesh.dispose === 'function') {
@@ -63904,9 +64153,9 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
     this.mesh = null;
 
-    if (this.item) {
-      delete this.item.mesh;
-      delete this.item.onUpdate;
+    if (item) {
+      delete item.mesh;
+      delete item.onUpdate;
     }
   };
 
@@ -64688,19 +64937,25 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   return MediaMesh;
-}(InteractiveMesh);var ModelDraggableComponent = /*#__PURE__*/function (_ModelComponent) {
-  _inheritsLoose(ModelDraggableComponent, _ModelComponent);
+}(InteractiveMesh);var ModelEditableComponent = /*#__PURE__*/function (_ModelComponent) {
+  _inheritsLoose(ModelEditableComponent, _ModelComponent);
 
-  function ModelDraggableComponent() {
+  function ModelEditableComponent() {
     return _ModelComponent.apply(this, arguments) || this;
   }
 
-  var _proto = ModelDraggableComponent.prototype;
+  var _proto = ModelEditableComponent.prototype;
 
   _proto.onInit = function onInit() {
     _ModelComponent.prototype.onInit.call(this);
 
     this.RADIUS = 100;
+  };
+
+  _proto.onDestroy = function onDestroy() {
+    this.editing = false;
+
+    _ModelComponent.prototype.onDestroy.call(this);
   };
 
   _proto.setHelper = function setHelper(showHelper) {
@@ -64715,41 +64970,43 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
   };
 
-  _createClass(ModelDraggableComponent, [{
-    key: "dragging",
+  _createClass(ModelEditableComponent, [{
+    key: "editing",
     get: function get() {
-      return this.dragging_;
+      return this.editing_;
     },
-    set: function set(dragging) {
-      if (this.dragging_ !== dragging) {
-        this.dragging_ = dragging;
-        this.setHelper(dragging);
+    set: function set(editing) {
+      if (this.editing_ !== editing) {
+        this.editing_ = editing;
+        this.setHelper(editing);
       }
     }
   }]);
 
-  return ModelDraggableComponent;
+  return ModelEditableComponent;
 }(ModelComponent);
-ModelDraggableComponent.meta = {
-  selector: '[model-draggable]',
+ModelEditableComponent.meta = {
+  selector: '[model-editable]',
   hosts: {
     host: WorldComponent
   },
   inputs: ['item']
-};var ORIGIN$4 = new THREE$1.Vector3();
-
-var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
-  _inheritsLoose(ModelCurvedPlaneComponent, _ModelDraggableCompon);
+};var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelEditableCompone) {
+  _inheritsLoose(ModelCurvedPlaneComponent, _ModelEditableCompone);
 
   function ModelCurvedPlaneComponent() {
-    return _ModelDraggableCompon.apply(this, arguments) || this;
+    return _ModelEditableCompone.apply(this, arguments) || this;
   }
 
   var _proto = ModelCurvedPlaneComponent.prototype;
 
   _proto.onInit = function onInit() {
-    _ModelDraggableCompon.prototype.onInit.call(this); // console.log('ModelCurvedPlaneComponent.onInit');
+    _ModelEditableCompone.prototype.onInit.call(this); // console.log('ModelCurvedPlaneComponent.onInit');
 
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.editing = this.item.selected;
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
@@ -64768,7 +65025,7 @@ var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
         _this.streamId = streamId;
 
         if (mesh) {
-          dismount(mesh);
+          dismount(mesh, item);
         }
 
         if (subscription) {
@@ -64794,7 +65051,7 @@ var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
 
           mesh.load(function () {
             if (typeof mount === 'function') {
-              mount(mesh);
+              mount(mesh, item);
             }
 
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
@@ -64823,7 +65080,7 @@ var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
   };
 
   _proto.onDestroy = function onDestroy() {
-    _ModelDraggableCompon.prototype.onDestroy.call(this);
+    _ModelEditableCompone.prototype.onDestroy.call(this);
 
     if (this.mesh) {
       this.mesh.dispose();
@@ -64833,9 +65090,9 @@ var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
 
   _proto.onDragMove = function onDragMove(position) {
     this.item.showPanel = false;
-    this.dragging = true;
+    this.editing = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
-    this.mesh.lookAt(ORIGIN$4);
+    this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN);
     this.helper.update();
   } // called by WorldComponent
   ;
@@ -64844,11 +65101,12 @@ var ModelCurvedPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
     this.item.position = this.mesh.position.toArray();
     this.item.rotation = this.mesh.rotation.toArray();
     this.item.scale = this.mesh.scale.toArray();
-    this.dragging = false;
+    this.editing = false;
   };
 
   return ModelCurvedPlaneComponent;
-}(ModelDraggableComponent);
+}(ModelEditableComponent);
+ModelCurvedPlaneComponent.ORIGIN = new THREE$1.Vector3();
 ModelCurvedPlaneComponent.textures = {};
 ModelCurvedPlaneComponent.meta = {
   selector: '[model-curved-plane]',
@@ -64857,11 +65115,7 @@ ModelCurvedPlaneComponent.meta = {
   },
   outputs: ['down'],
   inputs: ['item', 'items']
-};var ORIGIN$5 = new THREE$1.Vector3();
-var W$2 = 1024;
-var H$2 = 256;
-
-var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
+};var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelDebugComponent, _ModelComponent);
 
   function ModelDebugComponent() {
@@ -64906,8 +65160,8 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
   _proto.createText = function createText() {
     var canvas = document.createElement('canvas'); // document.querySelector('body').appendChild(canvas);
 
-    canvas.width = W$2;
-    canvas.height = H$2;
+    canvas.width = ModelDebugComponent.W;
+    canvas.height = ModelDebugComponent.H;
     var texture = new THREE$1.CanvasTexture(canvas);
     texture.encoding = THREE$1.sRGBEncoding;
     texture.minFilter = THREE$1.LinearFilter;
@@ -64983,7 +65237,7 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
     // console.log(position.x + '|' + position.y + '|' + position.z);
 
     group.position.copy(position);
-    group.lookAt(ORIGIN$5); // }
+    group.lookAt(ModelDebugComponent.ORIGIN); // }
   };
 
   _proto.setText = function setText(message) {
@@ -64993,8 +65247,8 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
       if (this.host.renderer.xr.isPresenting && message != null) {
         // draw
         var ctx = text.material.map.image.getContext('2d');
-        ctx.clearRect(0, 0, W$2, H$2); // ctx.fillRect(0, 0, 10, 10);
-        // ctx.fillRect(W - 10, H - 10, 10, 10);
+        ctx.clearRect(0, 0, ModelDebugComponent.W, ModelDebugComponent.H); // ctx.fillRect(0, 0, 10, 10);
+        // ctx.fillRect(ModelDebugComponent.W - 10, ModelDebugComponent.H - 10, 10, 10);
 
         ctx.font = "30px " + environment.fontFamily;
         ctx.textBaseline = 'middle';
@@ -65002,7 +65256,7 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 5;
-        ctx.fillText(message, W$2 / 2, H$2 / 2, W$2 - 20);
+        ctx.fillText(message, ModelDebugComponent.W / 2, ModelDebugComponent.H / 2, ModelDebugComponent.W - 20);
         text.material.map.needsUpdate = true; // draw
 
         this.textGroup.add(text);
@@ -65035,6 +65289,9 @@ var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
 
   return ModelDebugComponent;
 }(ModelComponent);
+ModelDebugComponent.ORIGIN = new THREE$1.Vector3();
+ModelDebugComponent.W = 1024;
+ModelDebugComponent.H = 256;
 ModelDebugComponent.meta = {
   selector: '[model-debug]',
   hosts: {
@@ -66060,11 +66317,11 @@ ModelMenuComponent.meta = {
   // outputs: ['over', 'out', 'down', 'nav'],
   outputs: ['nav', 'toggle'],
   inputs: ['items']
-};var ModelNavComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
-  _inheritsLoose(ModelNavComponent, _ModelDraggableCompon);
+};var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
+  _inheritsLoose(ModelNavComponent, _ModelEditableCompone);
 
   function ModelNavComponent() {
-    return _ModelDraggableCompon.apply(this, arguments) || this;
+    return _ModelEditableCompone.apply(this, arguments) || this;
   }
 
   ModelNavComponent.getLoader = function getLoader() {
@@ -66078,7 +66335,7 @@ ModelMenuComponent.meta = {
   var _proto = ModelNavComponent.prototype;
 
   _proto.onInit = function onInit() {
-    _ModelDraggableCompon.prototype.onInit.call(this);
+    _ModelEditableCompone.prototype.onInit.call(this);
     /*
     this.debouncedOver$ = new ReplaySubject(1).pipe(
     	auditTime(250),
@@ -66091,10 +66348,14 @@ ModelMenuComponent.meta = {
 
   };
 
+  _proto.onChanges = function onChanges() {
+    this.editing = this.item.selected;
+  };
+
   _proto.onDestroy = function onDestroy() {
     Interactive.dispose(this.sphere);
 
-    _ModelDraggableCompon.prototype.onDestroy.call(this);
+    _ModelEditableCompone.prototype.onDestroy.call(this);
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
@@ -66148,7 +66409,7 @@ ModelMenuComponent.meta = {
           sprite.scale.set(from.scale, from.scale, from.scale);
         },
         onComplete: function onComplete() {
-          if (!_this.dragging) {
+          if (!_this.editing) {
             _this.over.next(_this);
           }
         }
@@ -66190,7 +66451,7 @@ ModelMenuComponent.meta = {
     });
 
     if (typeof mount === 'function') {
-      mount(nav);
+      mount(nav, this.item);
     }
   };
 
@@ -66199,13 +66460,13 @@ ModelMenuComponent.meta = {
 
     var position = (_THREE$Vector2 = new THREE$1.Vector3()).set.apply(_THREE$Vector2, item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
-    item.mesh.position.set(position.x, position.y, position.z);
+    mesh.position.set(position.x, position.y, position.z); // console.log('onUpdate', mesh.position);
   } // called by WorldComponent
   ;
 
   _proto.onDragMove = function onDragMove(position) {
+    this.editing = true;
     this.item.showPanel = false;
-    this.dragging = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
     this.helper.update();
   } // called by WorldComponent
@@ -66213,11 +66474,11 @@ ModelMenuComponent.meta = {
 
   _proto.onDragEnd = function onDragEnd() {
     this.item.position = new THREE$1.Vector3().copy(this.mesh.position).normalize().toArray();
-    this.dragging = false;
+    this.editing = false;
   };
 
   return ModelNavComponent;
-}(ModelDraggableComponent);
+}(ModelEditableComponent);
 ModelNavComponent.ORIGIN = new THREE$1.Vector3();
 ModelNavComponent.RADIUS = 100;
 ModelNavComponent.meta = {
@@ -66480,6 +66741,7 @@ ModelNavComponent.meta = {
 
       var position = _this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 
+      console.log('ModelPanelComponent.position', _this.item.mesh.position);
       var material = new THREE$1.SpriteMaterial({
         depthTest: false,
         transparent: true,
@@ -66688,20 +66950,22 @@ ModelPictureComponent.meta = {
     host: WorldComponent
   },
   inputs: ['item']
-};var ORIGIN$6 = new THREE$1.Vector3();
-
-var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
-  _inheritsLoose(ModelPlaneComponent, _ModelDraggableCompon);
+};var ModelPlaneComponent = /*#__PURE__*/function (_ModelEditableCompone) {
+  _inheritsLoose(ModelPlaneComponent, _ModelEditableCompone);
 
   function ModelPlaneComponent() {
-    return _ModelDraggableCompon.apply(this, arguments) || this;
+    return _ModelEditableCompone.apply(this, arguments) || this;
   }
 
   var _proto = ModelPlaneComponent.prototype;
 
   _proto.onInit = function onInit() {
-    _ModelDraggableCompon.prototype.onInit.call(this); // console.log('ModelPlaneComponent.onInit');
+    _ModelEditableCompone.prototype.onInit.call(this); // console.log('ModelPlaneComponent.onInit');
 
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.editing = this.item.selected;
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
@@ -66717,7 +66981,7 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
         _this.streamId = streamId;
 
         if (mesh) {
-          dismount(mesh);
+          dismount(mesh, item);
         }
 
         if (subscription) {
@@ -66743,7 +67007,7 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
 
           mesh.load(function () {
             if (typeof mount === 'function') {
-              mount(mesh);
+              mount(mesh, item);
             }
 
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
@@ -66772,7 +67036,7 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
   };
 
   _proto.onDestroy = function onDestroy() {
-    _ModelDraggableCompon.prototype.onDestroy.call(this);
+    _ModelEditableCompone.prototype.onDestroy.call(this);
 
     if (this.mesh) {
       this.mesh.dispose();
@@ -66782,9 +67046,9 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
 
   _proto.onDragMove = function onDragMove(position) {
     this.item.showPanel = false;
-    this.dragging = true;
+    this.editing = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
-    this.mesh.lookAt(ORIGIN$6);
+    this.mesh.lookAt(ModelPlaneComponent.ORIGIN);
     this.helper.update();
   } // called by WorldComponent
   ;
@@ -66793,11 +67057,12 @@ var ModelPlaneComponent = /*#__PURE__*/function (_ModelDraggableCompon) {
     this.item.position = this.mesh.position.toArray();
     this.item.rotation = this.mesh.rotation.toArray();
     this.item.scale = this.mesh.scale.toArray();
-    this.dragging = false;
+    this.editing = false;
   };
 
   return ModelPlaneComponent;
-}(ModelDraggableComponent);
+}(ModelEditableComponent);
+ModelPlaneComponent.ORIGIN = new THREE$1.Vector3();
 ModelPlaneComponent.textures = {};
 ModelPlaneComponent.meta = {
   selector: '[model-plane]',
@@ -66811,7 +67076,7 @@ ModelPlaneComponent.meta = {
 w.prototype.k=function(){for(;!this.m;){var c=C(this,3);c&1&&(this.m=!0);c>>>=1;switch(c){case 0:var d=this.input,a=this.a,b=this.c,e=this.b,f=d.length,g=l,h=l,k=b.length,m=l;this.d=this.f=0;if(a+1>=f)throw Error("invalid uncompressed block header: LEN");g=d[a++]|d[a++]<<8;if(a+1>=f)throw Error("invalid uncompressed block header: NLEN");h=d[a++]|d[a++]<<8;if(g===~h)throw Error("invalid uncompressed block header: length verify");if(a+g>d.length)throw Error("input buffer is broken");switch(this.i){case A:for(;e+
 g>b.length;){m=k-e;g-=m;if(t)b.set(d.subarray(a,a+m),e),e+=m,a+=m;else for(;m--;)b[e++]=d[a++];this.b=e;b=this.e();e=this.b;}break;case y:for(;e+g>b.length;)b=this.e({p:2});break;default:throw Error("invalid inflate mode");}if(t)b.set(d.subarray(a,a+g),e),e+=g,a+=g;else for(;g--;)b[e++]=d[a++];this.a=a;this.b=e;this.c=b;break;case 1:this.j(ba,ca);break;case 2:for(var n=C(this,5)+257,p=C(this,5)+1,s=C(this,4)+4,x=new (t?Uint8Array:Array)(D$1.length),S=l,T=l,U=l,u=l,M=l,F=l,z=l,q=l,V=l,q=0;q<s;++q)x[D$1[q]]=
 C(this,3);if(!t){q=s;for(s=x.length;q<s;++q)x[D$1[q]]=0;}S=v(x);u=new (t?Uint8Array:Array)(n+p);q=0;for(V=n+p;q<V;)switch(M=E(this,S),M){case 16:for(z=3+C(this,2);z--;)u[q++]=F;break;case 17:for(z=3+C(this,3);z--;)u[q++]=0;F=0;break;case 18:for(z=11+C(this,7);z--;)u[q++]=0;F=0;break;default:F=u[q++]=M;}T=t?v(u.subarray(0,n)):v(u.slice(0,n));U=t?v(u.subarray(n)):v(u.slice(n));this.j(T,U);break;default:throw Error("unknown BTYPE: "+c);}}return this.n()};
-var G=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],D$1=t?new Uint16Array(G):G,H$3=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,258,258],I=t?new Uint16Array(H$3):H$3,J=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0],K=t?new Uint8Array(J):J,L=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],da=t?new Uint16Array(L):L,ea=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,
+var G=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],D$1=t?new Uint16Array(G):G,H$2=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,258,258],I=t?new Uint16Array(H$2):H$2,J=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0],K=t?new Uint8Array(J):J,L=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],da=t?new Uint16Array(L):L,ea=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,
 13,13],N=t?new Uint8Array(ea):ea,O=new (t?Uint8Array:Array)(288),P,fa;P=0;for(fa=O.length;P<fa;++P)O[P]=143>=P?8:255>=P?9:279>=P?7:8;var ba=v(O),Q=new (t?Uint8Array:Array)(30),R$1,ga;R$1=0;for(ga=Q.length;R$1<ga;++R$1)Q[R$1]=5;var ca=v(Q);function C(c,d){for(var a=c.f,b=c.d,e=c.input,f=c.a,g=e.length,h;b<d;){if(f>=g)throw Error("input buffer is broken");a|=e[f++]<<b;b+=8;}h=a&(1<<d)-1;c.f=a>>>d;c.d=b-d;c.a=f;return h}
 function E(c,d){for(var a=c.f,b=c.d,e=c.input,f=c.a,g=e.length,h=d[0],k=d[1],m,n;b<k&&!(f>=g);)a|=e[f++]<<b,b+=8;m=h[a&(1<<k)-1];n=m>>>16;if(n>b)throw Error("invalid code length: "+n);c.f=a>>n;c.d=b-n;c.a=f;return m&65535}
 w.prototype.j=function(c,d){var a=this.c,b=this.b;this.o=c;for(var e=a.length-258,f,g,h,k;256!==(f=E(this,c));)if(256>f)b>=e&&(this.b=b,a=this.e(),b=this.b),a[b++]=f;else {g=f-257;k=I[g];0<K[g]&&(k+=C(this,K[g]));f=E(this,d);h=da[f];0<N[f]&&(h+=C(this,N[f]));b>=e&&(this.b=b,a=this.e(),b=this.b);for(;k--;)a[b]=a[b++-h];}for(;8<=this.d;)this.d-=8,this.a--;this.b=b;};
@@ -66819,8 +67084,8 @@ w.prototype.w=function(c,d){var a=this.c,b=this.b;this.o=c;for(var e=a.length,f,
 w.prototype.e=function(){var c=new (t?Uint8Array:Array)(this.b-32768),d=this.b-32768,a,b,e=this.c;if(t)c.set(e.subarray(32768,c.length));else {a=0;for(b=c.length;a<b;++a)c[a]=e[a+32768];}this.g.push(c);this.l+=c.length;if(t)e.set(e.subarray(d,d+32768));else for(a=0;32768>a;++a)e[a]=e[d+a];this.b=32768;return e};
 w.prototype.z=function(c){var d,a=this.input.length/this.a+1|0,b,e,f,g=this.input,h=this.c;c&&("number"===typeof c.p&&(a=c.p),"number"===typeof c.u&&(a+=c.u));2>a?(b=(g.length-this.a)/this.o[2],f=258*(b/2)|0,e=f<h.length?h.length+f:h.length<<1):e=h.length*a;t?(d=new Uint8Array(e),d.set(h)):d=h;return this.c=d};
 w.prototype.n=function(){var c=0,d=this.c,a=this.g,b,e=new (t?Uint8Array:Array)(this.l+(this.b-32768)),f,g,h,k;if(0===a.length)return t?this.c.subarray(32768,this.b):this.c.slice(32768,this.b);f=0;for(g=a.length;f<g;++f){b=a[f];h=0;for(k=b.length;h<k;++h)e[c++]=b[h];}f=32768;for(g=this.b;f<g;++f)e[c++]=d[f];this.g=[];return this.buffer=e};
-w.prototype.v=function(){var c,d=this.b;t?this.r?(c=new Uint8Array(d),c.set(this.c.subarray(0,d))):c=this.c.subarray(0,d):(this.c.length>d&&(this.c.length=d),c=this.c);return this.buffer=c};function W$3(c,d){var a,b;this.input=c;this.a=0;if(d||!(d={}))d.index&&(this.a=d.index),d.verify&&(this.A=d.verify);a=c[this.a++];b=c[this.a++];switch(a&15){case ha:this.method=ha;break;default:throw Error("unsupported compression method");}if(0!==((a<<8)+b)%31)throw Error("invalid fcheck flag:"+((a<<8)+b)%31);if(b&32)throw Error("fdict flag is not supported");this.q=new w(c,{index:this.a,bufferSize:d.bufferSize,bufferType:d.bufferType,resize:d.resize});}
-W$3.prototype.k=function(){var c=this.input,d,a;d=this.q.k();this.a=this.q.a;if(this.A){a=(c[this.a++]<<24|c[this.a++]<<16|c[this.a++]<<8|c[this.a++])>>>0;var b=d;if("string"===typeof b){var e=b.split(""),f,g;f=0;for(g=e.length;f<g;f++)e[f]=(e[f].charCodeAt(0)&255)>>>0;b=e;}for(var h=1,k=0,m=b.length,n,p=0;0<m;){n=1024<m?1024:m;m-=n;do h+=b[p++],k+=h;while(--n);h%=65521;k%=65521;}if(a!==(k<<16|h)>>>0)throw Error("invalid adler-32 checksum");}return d};var ha=8;r("Zlib.Inflate",W$3);r("Zlib.Inflate.prototype.decompress",W$3.prototype.k);var X={ADAPTIVE:B.s,BLOCK:B.t},Y,Z,$,ia;if(Object.keys)Y=Object.keys(X);else for(Z in Y=[],$=0,X)Y[$++]=Z;$=0;for(ia=Y.length;$<ia;++$)Z=Y[$],r("Zlib.Inflate.BufferType."+Z,X[Z]);
+w.prototype.v=function(){var c,d=this.b;t?this.r?(c=new Uint8Array(d),c.set(this.c.subarray(0,d))):c=this.c.subarray(0,d):(this.c.length>d&&(this.c.length=d),c=this.c);return this.buffer=c};function W$2(c,d){var a,b;this.input=c;this.a=0;if(d||!(d={}))d.index&&(this.a=d.index),d.verify&&(this.A=d.verify);a=c[this.a++];b=c[this.a++];switch(a&15){case ha:this.method=ha;break;default:throw Error("unsupported compression method");}if(0!==((a<<8)+b)%31)throw Error("invalid fcheck flag:"+((a<<8)+b)%31);if(b&32)throw Error("fdict flag is not supported");this.q=new w(c,{index:this.a,bufferSize:d.bufferSize,bufferType:d.bufferType,resize:d.resize});}
+W$2.prototype.k=function(){var c=this.input,d,a;d=this.q.k();this.a=this.q.a;if(this.A){a=(c[this.a++]<<24|c[this.a++]<<16|c[this.a++]<<8|c[this.a++])>>>0;var b=d;if("string"===typeof b){var e=b.split(""),f,g;f=0;for(g=e.length;f<g;f++)e[f]=(e[f].charCodeAt(0)&255)>>>0;b=e;}for(var h=1,k=0,m=b.length,n,p=0;0<m;){n=1024<m?1024:m;m-=n;do h+=b[p++],k+=h;while(--n);h%=65521;k%=65521;}if(a!==(k<<16|h)>>>0)throw Error("invalid adler-32 checksum");}return d};var ha=8;r("Zlib.Inflate",W$2);r("Zlib.Inflate.prototype.decompress",W$2.prototype.k);var X={ADAPTIVE:B.s,BLOCK:B.t},Y,Z,$,ia;if(Object.keys)Y=Object.keys(X);else for(Z in Y=[],$=0,X)Y[$++]=Z;$=0;for(ia=Y.length;$<ia;++$)Z=Y[$],r("Zlib.Inflate.BufferType."+Z,X[Z]);
 var Zlib=mod.Zlib;/**
  * @author renej
  * NURBS utils
@@ -71716,6 +71981,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AsideComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TryInARComponent, TryInARModalComponent, UpdateViewComponent, UpdateViewItemComponent, ValueDirective, WorldComponent],
+  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AsideComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, RemoveModalComponent, SliderDirective, SvgIconStructure, TryInARComponent, TryInARModalComponent, UpdateViewComponent, UpdateViewItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

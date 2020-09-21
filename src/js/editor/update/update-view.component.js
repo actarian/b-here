@@ -1,5 +1,10 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
+import { takeUntil } from 'rxjs/operators';
+import ModalSrcService from '../../modal/modal-src.service';
+import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import { View } from '../../view/view';
+import { EditorLocale } from '../editor.locale';
 
 export default class UpdateViewComponent extends Component {
 
@@ -11,10 +16,10 @@ export default class UpdateViewComponent extends Component {
 			// console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
-		this.update();
+		this.onUpdate();
 	}
 
-	update() {
+	onUpdate() {
 		const view = this.view;
 		if (this.type !== view.type) {
 			this.type = view.type;
@@ -35,40 +40,52 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	onChanges(changes) {
-		this.update();
+		this.onUpdate();
 	}
 
 	onSubmit() {
 		if (this.form.valid) {
-			console.log('UpdateViewComponent.onSubmit', this.form.value);
+			this.update.next({ view: new View(this.form.value) });
 		} else {
 			this.form.touched = true;
 		}
 	}
 
 	onRemove(event) {
-		console.log('UpdateViewComponent.onRemove');
+		ModalService.open$({ src: ModalSrcService.get('remove'), data: { item: this.item } }).pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				this.delete.next({ view: this.view });
+			}
+		});
 	}
 
-	onToggle(event) {
-		this.active = !this.active;
-		this.pushChanges();
+	onSelect(event) {
+		this.select.next({ view: this.view.selected ? null : this.view });
+		// this.active = !this.active;
+		// this.pushChanges();
+	}
+
+	getTitle(view) {
+		return EditorLocale[view.type];
 	}
 }
 
 UpdateViewComponent.meta = {
 	selector: 'update-view',
+	outputs: ['select', 'update', 'delete'],
 	inputs: ['view'],
 	template: /* html */`
-		<div class="group--headline" [class]="{ active: active }" (click)="onToggle($event)">
+		<div class="group--headline" [class]="{ active: view.selected }" (click)="onSelect($event)">
 			<!-- <div class="id" [innerHTML]="view.id"></div> -->
 			<div class="icon">
 				<svg-icon [name]="view.type"></svg-icon>
 			</div>
-			<div class="title" [innerHTML]="view.name || view.id"></div>
-			<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+			<div class="title" [innerHTML]="getTitle(view)"></div>
+			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 		</div>
-		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="active">
+		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="view.selected">
 			<fieldset>
 				<div control-text [control]="controls.id" label="Id" [disabled]="true"></div>
 				<div control-text [control]="controls.type" label="Type" [disabled]="true"></div>

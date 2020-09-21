@@ -80,6 +80,7 @@
 	background: white;
 	color: $foreground-primary;
 	// border-left: 4px solid currentColor;
+	z-index: 4;
 	transform: translateX(100%);
 	transition: transform ease-out 400ms;
 
@@ -116,7 +117,7 @@
 		flex: 1 1 100%;
 		width: 100%;
 		margin-bottom: 0;
-		padding: 15px;
+		padding: 10px 10px;
 		border-top: 1px solid rgba($foreground-primary, 0.15);
 		border-bottom: 1px solid rgba($foreground-primary, 0.15);
 
@@ -386,6 +387,20 @@ update-view-item {
 		margin-top: 10px;
 	}
 
+	.required__badge {
+		display: none;
+	}
+
+	.group--form,
+	.group--form--checkbox,
+	.group--form--file,
+	.group--form--select,
+	.group--form--textarea {
+		padding: 3px 1px;
+		margin-bottom: 8px;
+		border-bottom: 1px solid rgba($foreground-primary, 0.15);
+	}
+
 	.group--cta {
 		display: flex;
 		justify-content: space-between;
@@ -397,5 +412,12 @@ update-view-item {
 		padding: 5px 7px;
 		height: auto;
 		line-height: 1;
+	}
+}
+
+.modal-outlet {
+	.abstract {
+		font-size: 19px;
+		margin-bottom: 20px;
 	}
 }

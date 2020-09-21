@@ -2,15 +2,17 @@ import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
-import ModelDraggableComponent from './model-draggable.component';
+import ModelEditableComponent from './model-editable.component';
 
-const ORIGIN = new THREE.Vector3();
-
-export default class ModelPlaneComponent extends ModelDraggableComponent {
+export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	onInit() {
 		super.onInit();
 		// console.log('ModelPlaneComponent.onInit');
+	}
+
+	onChanges() {
+		this.editing = this.item.selected;
 	}
 
 	onCreate(mount, dismount) {
@@ -25,7 +27,7 @@ export default class ModelPlaneComponent extends ModelDraggableComponent {
 			if (this.streamId !== streamId) {
 				this.streamId = streamId;
 				if (mesh) {
-					dismount(mesh);
+					dismount(mesh, item);
 				}
 				if (subscription) {
 					subscription.unsubscribe();
@@ -45,7 +47,7 @@ export default class ModelPlaneComponent extends ModelDraggableComponent {
 					}
 					mesh.load(() => {
 						if (typeof mount === 'function') {
-							mount(mesh);
+							mount(mesh, item);
 						}
 						subscription = mesh.events$().pipe(
 							takeUntil(this.unsubscribe$)
@@ -82,9 +84,9 @@ export default class ModelPlaneComponent extends ModelDraggableComponent {
 	// called by WorldComponent
 	onDragMove(position) {
 		this.item.showPanel = false;
-		this.dragging = true;
+		this.editing = true;
 		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
-		this.mesh.lookAt(ORIGIN);
+		this.mesh.lookAt(ModelPlaneComponent.ORIGIN);
 		this.helper.update();
 	}
 
@@ -93,11 +95,12 @@ export default class ModelPlaneComponent extends ModelDraggableComponent {
 		this.item.position = this.mesh.position.toArray();
 		this.item.rotation = this.mesh.rotation.toArray();
 		this.item.scale = this.mesh.scale.toArray();
-		this.dragging = false;
+		this.editing = false;
 	}
 
 }
 
+ModelPlaneComponent.ORIGIN = new THREE.Vector3();
 ModelPlaneComponent.textures = {};
 
 ModelPlaneComponent.meta = {

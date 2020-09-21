@@ -15,7 +15,8 @@ const STATIC_MODALS = {
 		'curved-plane': 'curved-plane-modal.html',
 		'texture': 'texture-modal.html',
 		'gltf': 'gltf-modal.html',
-	}
+	},
+	remove: 'remove-modal.html',
 };
 
 const SERVER_MODALS = {

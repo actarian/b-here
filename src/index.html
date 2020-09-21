@@ -63,7 +63,7 @@
 							<option value="">Seleziona</option>
 							<option [value]="item.id" *for="let item of controls.audio.options" [innerHTML]="item.name"></option>
 						</select>
-						<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 					</div>
 					<!-- VIDEO -->
 					<div class="group--form--select" [class]="{ required: controls.video.validators.length }">
@@ -72,7 +72,7 @@
 							<option value="">Seleziona</option>
 							<option [value]="item.id" *for="let item of controls.video.options" [innerHTML]="item.name"></option>
 						</select>
-						<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 					</div>
 					<div class="info" *if="!isValid()">seleziona sorgente audio e video</div>
 					<div class="info" *if="isValid()">audio e video connessi</div>
@@ -208,7 +208,7 @@
 			</div>
 		</div>
 		<div class="ui__body">
-			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)">
+			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
 				<div class="world__view" *if="view">
 					<div model-room [item]="view" *if="view.type === 'room-3d'"></div>
 					<div class="grid" model-grid *if="view.type === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
@@ -252,7 +252,7 @@
 			<div class="right"></div>
 		</div>
 	</div>
-	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onMenuSelect($event)" *if="view">
+	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view">
 		<div class="headline">
 			<div class="btn--mode" [class]="{ active: mode === 1 }" (click)="setMode(1)">Properties</div>
 			<div class="btn--mode" [class]="{ active: mode === 2 }" (click)="setMode(2)">Views</div>
@@ -262,10 +262,10 @@
 			<ul class="nav--editor" *if="mode === 1">
 				<li>
 					<div class="title">Properties</div>
-					<update-view [view]="view"></update-view>
+					<update-view [view]="view" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)"></update-view>
 				</li>
 				<li *for="let item of view.items">
-					<update-view-item [item]="item"></update-view-item>
+					<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)"></update-view-item>
 				</li>
 				<li *if="view.items.length == 0">
 					This view has no items.

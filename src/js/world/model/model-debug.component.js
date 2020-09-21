@@ -6,10 +6,6 @@ import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
-const ORIGIN = new THREE.Vector3();
-const W = 1024;
-const H = 256;
-
 export default class ModelDebugComponent extends ModelComponent {
 
 	static getLoader() {
@@ -65,8 +61,8 @@ export default class ModelDebugComponent extends ModelComponent {
 	createText() {
 		const canvas = document.createElement('canvas');
 		// document.querySelector('body').appendChild(canvas);
-		canvas.width = W;
-		canvas.height = H;
+		canvas.width = ModelDebugComponent.W;
+		canvas.height = ModelDebugComponent.H;
 		const texture = new THREE.CanvasTexture(canvas);
 		texture.encoding = THREE.sRGBEncoding;
 		texture.minFilter = THREE.LinearFilter;
@@ -137,7 +133,7 @@ export default class ModelDebugComponent extends ModelComponent {
 		// VR.body.position.add(lookDirection);
 		// console.log(position.x + '|' + position.y + '|' + position.z);
 		group.position.copy(position);
-		group.lookAt(ORIGIN);
+		group.lookAt(ModelDebugComponent.ORIGIN);
 		// }
 	}
 
@@ -147,16 +143,16 @@ export default class ModelDebugComponent extends ModelComponent {
 			if (this.host.renderer.xr.isPresenting && message != null) {
 				// draw
 				const ctx = text.material.map.image.getContext('2d');
-				ctx.clearRect(0, 0, W, H);
+				ctx.clearRect(0, 0, ModelDebugComponent.W, ModelDebugComponent.H);
 				// ctx.fillRect(0, 0, 10, 10);
-				// ctx.fillRect(W - 10, H - 10, 10, 10);
+				// ctx.fillRect(ModelDebugComponent.W - 10, ModelDebugComponent.H - 10, 10, 10);
 				ctx.font = `30px ${environment.fontFamily}`;
 				ctx.textBaseline = 'middle';
 				ctx.textAlign = "center";
 				ctx.fillStyle = '#FFFFFF';
 				ctx.strokeStyle = '#000000';
 				ctx.lineWidth = 5;
-				ctx.fillText(message, W / 2, H / 2, W - 20);
+				ctx.fillText(message, ModelDebugComponent.W / 2, ModelDebugComponent.H / 2, ModelDebugComponent.W - 20);
 				text.material.map.needsUpdate = true;
 				// draw
 				this.textGroup.add(text);
@@ -167,6 +163,10 @@ export default class ModelDebugComponent extends ModelComponent {
 	}
 
 }
+
+ModelDebugComponent.ORIGIN = new THREE.Vector3();
+ModelDebugComponent.W = 1024;
+ModelDebugComponent.H = 256;
 
 ModelDebugComponent.meta = {
 	selector: '[model-debug]',

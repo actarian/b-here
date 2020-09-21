@@ -1,23 +1,6 @@
 import { Component } from 'rxcomp';
 import { ViewItemType, ViewType } from '../../view/view';
-
-export const EditorLocale = {
-	'image': 'Image',
-	'video': 'Video',
-	'model': 'Model',
-	'publisher-stream': 'Publisher Stream',
-	'next-attendee-stream': 'Next Attendee Stream',
-	'waiting-room': 'Waiting Room',
-	'panorama': 'Panorama',
-	'panorama-grid': 'Panorama Grid',
-	'room-3d': 'Room 3D',
-	'model': 'Model',
-	'nav': 'Nav with tooltip',
-	'gltf': 'Gltf Model',
-	'plane': 'Plane',
-	'curved-plane': 'CurvedPlane',
-	'texture': 'Texture',
-};
+import { EditorLocale } from '../editor.locale';
 
 export default class AsideComponent extends Component {
 
@@ -98,10 +81,17 @@ export default class AsideComponent extends Component {
 		this.select.next(event);
 	}
 
+	onUpdate(event) {
+		this.update.next(event);
+	}
+
+	onDelete(event) {
+		this.delete.next(event);
+	}
 }
 
 AsideComponent.meta = {
 	selector: '[aside]',
-	outputs: ['select'],
+	outputs: ['select', 'update', 'delete'],
 	inputs: ['view'],
 };

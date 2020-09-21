@@ -14,6 +14,7 @@ import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
 import AsideComponent from './editor/aside/aside.component';
 import { EditorModule } from './editor/editor.module';
+import RemoveModalComponent from './editor/modals/remove-modal.component';
 import UpdateViewItemComponent from './editor/update/update-view-item.component';
 import UpdateViewComponent from './editor/update/update-view.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
@@ -94,6 +95,7 @@ AppModule.meta = {
 		ModelPlaneComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
+		RemoveModalComponent,
 		SliderDirective,
 		SvgIconStructure,
 		TryInARComponent,

@@ -16,15 +16,26 @@ export default class EditorService {
 			map(view => mapView(view)),
 		);
 	}
+	static viewUpdate$(view) {
+		return HttpService.put$(`/api/view/${view.id}`, view.payload).pipe(
+			map(view => mapView(view)),
+		);
+	}
+	static viewDelete$(view) {
+		return HttpService.delete$(`/api/view/${view.id}`);
+	}
 	static itemCreate$(view, item) {
 		return HttpService.post$(`/api/view/${view.id}/item`, item).pipe(
 			map(item => mapViewItem(item)),
 		);
 	}
 	static itemUpdate$(view, item) {
-		return HttpService.put$(`/api/view/${view.id}/item`, item.payload).pipe(
+		return HttpService.put$(`/api/view/${view.id}/item/${item.id}`, item.payload).pipe(
 			map(item => mapViewItem(item)),
 		);
+	}
+	static itemDelete$(view, item) {
+		return HttpService.delete$(`/api/view/${view.id}/item/${item.id}`);
 	}
 
 }

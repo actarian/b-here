@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { FormControl, FormGroup } from 'rxcomp-form';
+import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';

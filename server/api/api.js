@@ -134,11 +134,18 @@ const ROUTES = [{
 		}
 	}
 }, {
-	path: '/api/view/:viewId/item', method: 'PUT', callback: function(request, response, params) {
+	path: '/api/view/:viewId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
 		if (view) {
 			view.items = view.items || [];
 			doUpdate(request, response, params, view.items);
+		}
+	}
+}, {
+	path: '/api/view/:viewId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
+		const view = doGet(request, response, { id: params.viewId }, db.views);
+		if (view) {
+			doDelete(request, response, { id: params.viewItemId }, view.items);
 		}
 	}
 }, {

@@ -115,7 +115,6 @@ export default class DragService {
 					downEvent.speed.y = moveEvent.speed.y;
 					downEvent.strength.x = moveEvent.strength.x;
 					downEvent.strength.y = moveEvent.strength.y;
-					moveEvent.shiftKey = event.shiftKey;
 					events$.next(moveEvent);
 					return moveEvent;
 				}

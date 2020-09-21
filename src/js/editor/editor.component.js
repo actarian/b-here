@@ -230,7 +230,26 @@ export default class EditorComponent extends Component {
 			first(),
 		).subscribe(response => {
 			console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
+			this.pushChanges();
 		}, error => console.log('EditorComponent.onDragEnd.itemUpdate$.error', error));
+	}
+
+	onResizeEnd(event) {
+		console.log('EditorComponent.onResizeEnd');
+		/*
+		EditorService.itemUpdate$(this.view, event.item).pipe(
+			first(),
+		).subscribe(response => {
+			console.log('EditorComponent.onResizeEnd.itemUpdate$.success', response);
+			this.pushChanges();
+		}, error => console.log('EditorComponent.onResizeEnd.itemUpdate$.error', error));
+		*/
+	}
+
+	onWorldSelect(event) {
+		this.view.selected = false;
+		this.view.items.forEach(item => item.selected = item === event.item);
+		this.pushChanges();
 	}
 
 	onOpenModal(modal, data) {
@@ -238,7 +257,7 @@ export default class EditorComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
-				console.log('onMenuSelect.resolve', event);
+				console.log('EditorComponent.onOpenModal.resolve', event);
 				switch (modal.value) {
 					case 'nav':
 						const item = event.data;
@@ -254,19 +273,81 @@ export default class EditorComponent extends Component {
 		});
 	}
 
-	onMenuSelect(event) {
-		console.log('onMenuSelect', event);
-		switch (event.value) {
-			case 'nav':
-			case 'plane':
-			case 'curved-plane':
-				this.onViewHitted((position) => {
-					this.onOpenModal(event, { view: this.view, position });
-				});
-				ToastService.open$({ message: 'Click a point on the view' });
-				break;
-			default:
-				this.onOpenModal(event, { view: this.view });
+	onAsideSelect(event) {
+		console.log('onAsideSelect', event);
+		if (event.value) {
+			switch (event.value) {
+				case 'nav':
+				case 'plane':
+				case 'curved-plane':
+					this.onViewHitted((position) => {
+						this.onOpenModal(event, { view: this.view, position });
+					});
+					ToastService.open$({ message: 'Click a point on the view' });
+					break;
+				default:
+					this.onOpenModal(event, { view: this.view });
+			}
+		} else if (event.view && (event.item || event.item === null)) {
+			event.view.selected = false;
+			event.view.items.forEach(item => item.selected = item === event.item);
+			this.pushChanges();
+		} else if (event.view || event.view === null) {
+			this.view.selected = (this.view === event.view);
+			this.view.items.forEach(item => item.selected = false);
+			this.pushChanges();
+		}
+	}
+
+	onAsideUpdate(event) {
+		console.log('onAsideUpdate', event);
+		if (event.item && event.view) {
+			EditorService.itemUpdate$(event.view, event.item).pipe(
+				first(),
+			).subscribe(response => {
+				console.log('EditorComponent.onAsideUpdate.itemUpdate$.success', response);
+				const item = event.view.items.find(item => item.id === event.item.id);
+				if (item) {
+					Object.assign(item, event.item);
+				}
+				this.pushChanges();
+			}, error => console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error));
+		} else if (event.view) {
+			EditorService.viewUpdate$(event.view).pipe(
+				first(),
+			).subscribe(response => {
+				console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
+				Object.assign(this.view, event.view);
+				this.pushChanges();
+			}, error => console.log('EditorComponent.onAsideUpdate.viewUpdate$.error', error));
+		}
+	}
+
+	onAsideDelete(event) {
+		console.log('onAsideDelete', event);
+		if (event.item && event.view) {
+			EditorService.itemDelete$(event.view, event.item).pipe(
+				first(),
+			).subscribe(response => {
+				console.log('EditorComponent.onAsideDelete.itemDelete$.success', response);
+				const index = event.view.items.indexOf(event.item);
+				if (index !== -1) {
+					event.view.items.splice(index, 1);
+				}
+				this.pushChanges();
+			}, error => console.log('EditorComponent.onAsideDelete.itemDelete$.error', error));
+		} else if (event.view) {
+			EditorService.viewDelete$(event.view).pipe(
+				first(),
+			).subscribe(response => {
+				console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
+				const index = this.views.indexOf(event.view);
+				if (index !== -1) {
+					this.views.splice(index, 1);
+				}
+				this.controls.view.value = this.data.views[0].id;
+				this.pushChanges();
+			}, error => console.log('EditorComponent.onAsideDelete.viewDelete$.error', error));
 		}
 	}
 

@@ -1,5 +1,5 @@
 $family: $font-secondary;
-$size: 18px;
+$size: 0.8em;
 $weight: $font-light;
 $spacing: 0;
 $line: 1; // always
@@ -19,7 +19,7 @@ $invalid: $foreground-primary;
 	display: block;
 	flex: 0 0 100%;
 	font-family: $font-secondary;
-	font-size: 13px;
+	font-size: 0.6em;
 	// opacity: 0.3;
 	font-weight: $font-semibold;
 	line-height: $line;
@@ -88,6 +88,7 @@ $invalid: $foreground-primary;
 %control--text {
 	@include autofill($size, $weight, $line, $spacing, $family, $foreground, transparent);
 	flex: 1 1 auto;
+	width: 1px;
 	max-width: 100%;
 	margin: 0;
 	padding: 0 20px 0 0;
@@ -255,7 +256,7 @@ fieldset,
 
 .control--select {
 	@extend %control--text;
-	font-size: 18px;
+	font-size: $size;
 	text-transform: none;
 	line-height: 1.2;
 	cursor: pointer;
@@ -541,7 +542,7 @@ errors-component {
 		@extend %label;
 		display: block;
 		position: absolute;
-		font-size: 11px;
+		font-size: 0.6em;
 		right: 0px;
 		top: 0;
 	}
@@ -644,13 +645,12 @@ input-value {
 	}
 }
 
-.group--form.disabled,
 .disabled {
 
-	.label,
+	label,
 	.control--text,
 	.required__badge {
-		color: #888;
+		color: #bbb;
 		pointer-events: none;
 	}
 

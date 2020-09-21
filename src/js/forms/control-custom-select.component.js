@@ -140,7 +140,7 @@ ControlCustomSelectComponent.meta = {
 		<div class="group--form--select" [class]="{ required: control.validators.length, multiple: isMultiple }" [dropdown]="dropdownId" (dropped)="onDropped($event)">
 			<label [innerHTML]="label"></label>
 			<span class="control--select" [innerHTML]="getLabel()"></span>
-			<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 			<span class="required__badge">required</span>
 		</div>
 		<errors-component [control]="control"></errors-component>

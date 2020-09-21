@@ -653,7 +653,7 @@ var ROUTES = [{
     }
   }
 }, {
-  path: '/api/view/:viewId/item',
+  path: '/api/view/:viewId/item/:viewItemId',
   method: 'PUT',
   callback: function callback(request, response, params) {
     var view = doGet(request, response, {
@@ -663,6 +663,20 @@ var ROUTES = [{
     if (view) {
       view.items = view.items || [];
       doUpdate(request, response, params, view.items);
+    }
+  }
+}, {
+  path: '/api/view/:viewId/item/:viewItemId',
+  method: 'DELETE',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      doDelete(request, response, {
+        id: params.viewItemId
+      }, view.items);
     }
   }
 }, {

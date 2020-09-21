@@ -26,6 +26,7 @@ export default class ModelPanelComponent extends ModelComponent {
 			const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
 			const dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
 			const position = this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+			console.log('ModelPanelComponent.position', this.item.mesh.position);
 			const material = new THREE.SpriteMaterial({
 				depthTest: false,
 				transparent: true,

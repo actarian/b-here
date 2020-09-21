@@ -1,21 +1,26 @@
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
-export default class ModelDraggableComponent extends ModelComponent {
+export default class ModelEditableComponent extends ModelComponent {
 
-	get dragging() {
-		return this.dragging_;
+	get editing() {
+		return this.editing_;
 	}
-	set dragging(dragging) {
-		if (this.dragging_ !== dragging) {
-			this.dragging_ = dragging;
-			this.setHelper(dragging);
+	set editing(editing) {
+		if (this.editing_ !== editing) {
+			this.editing_ = editing;
+			this.setHelper(editing);
 		}
 	}
 
 	onInit() {
 		super.onInit();
 		this.RADIUS = 100;
+	}
+
+	onDestroy() {
+		this.editing = false;
+		super.onDestroy();
 	}
 
 	setHelper(showHelper) {
@@ -30,8 +35,8 @@ export default class ModelDraggableComponent extends ModelComponent {
 	}
 }
 
-ModelDraggableComponent.meta = {
-	selector: '[model-draggable]',
+ModelEditableComponent.meta = {
+	selector: '[model-editable]',
 	hosts: { host: WorldComponent },
 	inputs: ['item'],
 };

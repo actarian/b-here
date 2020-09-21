@@ -5,9 +5,9 @@ import { environment } from '../../environment';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
-import ModelDraggableComponent from './model-draggable.component';
+import ModelEditableComponent from './model-editable.component';
 
-export default class ModelNavComponent extends ModelDraggableComponent {
+export default class ModelNavComponent extends ModelEditableComponent {
 
 	static getLoader() {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
@@ -28,6 +28,10 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 		this.debouncedOver$.subscribe();
 		*/
 		// console.log('ModelNavComponent.onInit');
+	}
+
+	onChanges() {
+		this.editing = this.item.selected;
 	}
 
 	onDestroy() {
@@ -79,7 +83,7 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 					sprite.scale.set(from.scale, from.scale, from.scale);
 				},
 				onComplete: () => {
-					if (!this.dragging) {
+					if (!this.editing) {
 						this.over.next(this);
 					}
 				}
@@ -116,19 +120,20 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 			}
 		});
 		if (typeof mount === 'function') {
-			mount(nav);
+			mount(nav, this.item);
 		}
 	}
 
 	onUpdate(item, mesh) {
 		const position = new THREE.Vector3().set(...item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
-		item.mesh.position.set(position.x, position.y, position.z);
+		mesh.position.set(position.x, position.y, position.z);
+		// console.log('onUpdate', mesh.position);
 	}
 
 	// called by WorldComponent
 	onDragMove(position) {
+		this.editing = true;
 		this.item.showPanel = false;
-		this.dragging = true;
 		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
 		this.helper.update();
 	}
@@ -136,7 +141,7 @@ export default class ModelNavComponent extends ModelDraggableComponent {
 	// called by WorldComponent
 	onDragEnd() {
 		this.item.position = new THREE.Vector3().copy(this.mesh.position).normalize().toArray();
-		this.dragging = false;
+		this.editing = false;
 	}
 }
 

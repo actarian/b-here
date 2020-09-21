@@ -423,7 +423,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   display: block;
   flex: 0 0 100%;
   font-family: "GT Walsheim", "Maven Pro", sans-serif;
-  font-size: 13px;
+  font-size: 0.6em;
   font-weight: 600;
   line-height: 1;
   margin-bottom: -1px;
@@ -456,6 +456,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   border-radius: 0px;
   outline: none;
   flex: 1 1 auto;
+  width: 1px;
   max-width: 100%;
   margin: 0;
   padding: 0 20px 0 0;
@@ -467,7 +468,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
           appearance: none;
   color: #101010;
   font-family: "GT Walsheim", "Maven Pro", sans-serif;
-  font-size: 18px;
+  font-size: 0.8em;
   font-weight: 300;
   letter-spacing: 0;
   line-height: 1; }
@@ -477,7 +478,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     border: 0px solid transparent;
     border-radius: 0px;
     font-family: "GT Walsheim", "Maven Pro", sans-serif;
-    font-size: 18px;
+    font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
     line-height: 1;
@@ -488,13 +489,13 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     transition: background-color 5000s ease-in-out 0s; }
   .control--text:-ms-input-placeholder, .control--select:-ms-input-placeholder {
     font-family: "GT Walsheim", "Maven Pro", sans-serif;
-    font-size: 18px;
+    font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
     line-height: 2; }
   .control--text::placeholder, .control--select::placeholder {
     font-family: "GT Walsheim", "Maven Pro", sans-serif;
-    font-size: 18px;
+    font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
     line-height: 2; }
@@ -595,7 +596,7 @@ fieldset,
       margin: 0 0 10px 0; } }
 
 .control--select {
-  font-size: 18px;
+  font-size: 0.8em;
   text-transform: none;
   line-height: 1.2;
   cursor: pointer; }
@@ -841,7 +842,7 @@ errors-component {
   .required .required__badge {
     display: block;
     position: absolute;
-    font-size: 11px;
+    font-size: 0.6em;
     right: 0px;
     top: 0; }
 
@@ -918,16 +919,12 @@ input-value {
     background: rgba(0, 0, 0, 0.15);
     pointer-events: none; }
 
-.group--form.disabled .label,
-.group--form.disabled .control--text,
-.group--form.disabled .required__badge,
-.disabled .label,
+.disabled label,
 .disabled .control--text,
 .disabled .required__badge {
-  color: #888;
+  color: #bbb;
   pointer-events: none; }
 
-.group--form.disabled .control--text,
 .disabled .control--text {
   border-color: rgba(0, 0, 0, 0.15); }
 
@@ -4483,6 +4480,7 @@ model-viewer {
   right: 0;
   background: white;
   color: #0099ff;
+  z-index: 4;
   transform: translateX(100%);
   transition: transform ease-out 400ms; }
   .aside.active {
@@ -4506,7 +4504,7 @@ model-viewer {
     flex: 1 1 100%;
     width: 100%;
     margin-bottom: 0;
-    padding: 15px;
+    padding: 10px 10px;
     border-top: 1px solid rgba(0, 153, 255, 0.15);
     border-bottom: 1px solid rgba(0, 153, 255, 0.15); }
     .nav--editor > li > .btn {
@@ -4687,6 +4685,22 @@ update-view-item {
   update-view form,
   update-view-item form {
     margin-top: 10px; }
+  update-view .required__badge,
+  update-view-item .required__badge {
+    display: none; }
+  update-view .group--form,
+  update-view .group--form--checkbox,
+  update-view .group--form--file,
+  update-view .group--form--select,
+  update-view .group--form--textarea,
+  update-view-item .group--form,
+  update-view-item .group--form--checkbox,
+  update-view-item .group--form--file,
+  update-view-item .group--form--select,
+  update-view-item .group--form--textarea {
+    padding: 3px 1px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 153, 255, 0.15); }
   update-view .group--cta,
   update-view-item .group--cta {
     display: flex;
@@ -4699,3 +4713,7 @@ update-view-item {
     padding: 5px 7px;
     height: auto;
     line-height: 1; }
+
+.modal-outlet .abstract {
+  font-size: 19px;
+  margin-bottom: 20px; }
