@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { Subject } from 'rxjs';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { AgoraStatus, RoleType, StreamQualities } from '../agora/agora.types';
-import { BASE_HREF, DEBUG, EDITOR, environment, STATIC } from '../environment';
+import { DEBUG, EDITOR, environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
@@ -12,9 +12,6 @@ import StateService from '../state/state.service';
 import ToastService from '../toast/toast.service';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
-
-const CONTROL_REQUEST = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.controlRequestModal}`;
-const TRY_IN_AR = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.tryInArModal}`;
 
 export default class EditorComponent extends Component {
 
@@ -157,7 +154,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onRemoteControlRequest(message) {
-		ModalService.open$({ src: CONTROL_REQUEST, data: null }).pipe(
+		ModalService.open$({ src: ModalSrcService.get('controlRequest'), data: null }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -175,7 +172,7 @@ export default class EditorComponent extends Component {
 	}
 
 	tryInAr() {
-		ModalService.open$({ src: TRY_IN_AR, data: this.view }).pipe(
+		ModalService.open$({ src: ModalSrcService.get('tryInAr'), data: this.view }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			// this.pushChanges();

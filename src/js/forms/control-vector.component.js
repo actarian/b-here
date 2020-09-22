@@ -19,17 +19,17 @@ ControlVectorComponent.meta = {
 	selector: '[control-vector]',
 	inputs: ['control', 'label', 'precision', 'increment', 'disabled'],
 	template: /* html */ `
-    <div class="group--form" [class]="{ required: control.validators.length }">
-      <div class="control--head">
-			  <label [innerHTML]="label"></label>
-			  <span class="required__badge">required</span>
-      </div>
-      <div class="control--content control--vector">
-        <input-value label="x" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[0]" (change)="updateValue(0, $event)"></input-value>
-        <input-value label="y" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[1]" (change)="updateValue(1, $event)"></input-value>
-        <input-value label="z" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[2]" (change)="updateValue(2, $event)"></input-value>
-      </div>
-    </div>
+		<div class="group--form" [class]="{ required: control.validators.length }">
+			<div class="control--head">
+				<label [innerHTML]="label"></label>
+				<span class="required__badge">required</span>
+			</div>
+			<div class="control--content control--vector">
+				<input-value label="x" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[0]" (change)="updateValue(0, $event)"></input-value>
+				<input-value label="y" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[1]" (change)="updateValue(1, $event)"></input-value>
+				<input-value label="z" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[2]" (change)="updateValue(2, $event)"></input-value>
+			</div>
+		</div>
 		<errors-component [control]="control"></errors-component>
 	`
 };

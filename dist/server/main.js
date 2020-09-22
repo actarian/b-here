@@ -535,7 +535,7 @@ function readStore() {
       console.log('NodeJs.Api.readStore.error', error, pathname);
     } else {
       try {
-        db = JSON.parse(data);
+        db = Object.assign(db, JSON.parse(data));
       } catch (error) {
         console.log('NodeJs.Api.readStore.error', error, pathname);
       }
@@ -684,6 +684,20 @@ var ROUTES = [{
   method: 'POST',
   callback: function callback(request, response, params) {
     doCreate(request, response, params, db.assets);
+  }
+}, {
+  path: '/api/asset/:assetId',
+  method: 'PUT',
+  callback: function callback(request, response, params) {
+    doUpdate(request, response, params, db.assets);
+  }
+}, {
+  path: '/api/asset/:assetId',
+  method: 'DELETE',
+  callback: function callback(request, response, params) {
+    doDelete(request, response, {
+      id: params.assetId
+    }, db.assets);
   }
 }];
 ROUTES.forEach(function (route) {

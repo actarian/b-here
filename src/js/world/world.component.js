@@ -490,12 +490,16 @@ export default class WorldComponent extends Component {
 		try {
 			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
-			if (this.panorama.mesh.intersection) {
-				const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
-				if (DEBUG || EDITOR) {
-					console.log(JSON.stringify({ position: position.toArray() }));
+			if (DEBUG || EDITOR) {
+				if (this.keys.Shift || this.keys.Control) {
+				} else {
+					this.select.next({ item: null });
+					if (this.panorama.mesh.intersection) {
+						const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
+						console.log(JSON.stringify({ position: position.toArray() }));
+						this.viewHit.next(position);
+					}
 				}
-				this.viewHit.next(position);
 			}
 		} catch (error) {
 			this.error = error;

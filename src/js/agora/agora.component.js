@@ -2,9 +2,10 @@ import { Component, getContext } from 'rxcomp';
 // import UserService from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
-import { BASE_HREF, DEBUG, environment, STATIC } from '../environment';
+import { DEBUG, environment } from '../environment';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
+import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
@@ -13,9 +14,6 @@ import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import AgoraService from './agora.service';
 import { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.types';
-
-const CONTROL_REQUEST = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.controlRequestModal}`;
-const TRY_IN_AR = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : `/viewdoc.cshtml?co_id=${environment.views.tryInArModal}`;
 
 export default class AgoraComponent extends Component {
 
@@ -262,7 +260,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onRemoteControlRequest(message) {
-		ModalService.open$({ src: CONTROL_REQUEST, data: null }).pipe(
+		ModalService.open$({ src: ModalSrcService.get('controlRequest'), data: null }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (!DEBUG) {
@@ -335,7 +333,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	tryInAr() {
-		ModalService.open$({ src: TRY_IN_AR, data: this.view }).pipe(
+		ModalService.open$({ src: ModalSrcService.get('tryInAr'), data: this.view }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			// this.pushChanges();

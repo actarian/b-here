@@ -14,7 +14,7 @@ export default class UpdateViewItemComponent extends Component {
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		form.changes$.subscribe((changes) => {
-			// console.log('UpdateViewItemComponent.form.changes$', this.item);
+			console.log('UpdateViewItemComponent.form.changes$', this.item);
 			const item = this.item;
 			Object.assign(item, changes);
 			if (typeof item.onUpdate === 'function') {

@@ -1,4 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
+import { environment } from '../environment';
 import ControlComponent from './control.component';
 import FlowService from './upload/flow.service';
 
@@ -55,7 +56,18 @@ export default class ControlUploadComponent extends ControlComponent {
 		).subscribe(data => {
 			this.totalProgress = data.totalProgress;
 			this.transfers = data.transfers;
-			console.log('ControlUploadComponent.transfers', this.transfers);
+			console.log('ControlUploadComponent.transfers$', data);
+			if (data.totalProgress === 1) {
+				const completed = data.transfers.filter(x => x.complete).map(x => {
+					// !!! retrieve correct url
+					return `${window.location.origin}${environment.href}uploads/${x.id}_${x.name}`;
+				});
+				if (this.multiple) {
+					this.control.value = completed;
+				} else {
+					this.control.value = completed[0];
+				}
+			}
 			this.pushChanges();
 		});
 		this.hasItems = false;
@@ -87,7 +99,6 @@ export default class ControlUploadComponent extends ControlComponent {
 		console.log('ControlUploadComponent.onRemove', item);
 		this.uploader.removeFile(item);
 	}
-
 }
 
 ControlUploadComponent.meta = {
@@ -95,27 +106,29 @@ ControlUploadComponent.meta = {
 	inputs: ['control', 'label', 'multiple'],
 	template: /* html */ `
 		<div class="group--form" [class]="{ required: control.validators.length }">
-			<label [innerHTML]="label"></label>
+			<div class="control--head">
+				<label [innerHTML]="label"></label>
+				<span class="required__badge">required</span>
+			</div>
+			<div class="listing--transfers">
+				<div class="listing__item" *for="let item of transfers">
+					<div [uploadItem]="uploader" [item]="item" (pause)="onPause($event)" (resume)="onResume($event)" (cancel)="onCancel($event)" (remove)="onRemove($event)"></div>
+				</div>
+			</div>
 			<!--
 			<p *if="uploader.flow.support">✅ FlowJS is supported by your browser</p>
 			<p *if="!uploader.flow.support">🛑 FlowJS is NOT supported by your browser</p>
 			-->
-			<div class="upload-drop" [uploadDrop]="uploader">
-    			<span>Drag And Drop your images here</span>
-			</div>
 			<div class="group--cta">
 				<span class="btn--browse" [uploadButton]="uploader" [attributes]="uploadAttributes">Browse</span>
 				<span class="btn--upload" (click)="uploader.upload()" *if="hasItems">Upload</span>
 				<span class="btn--cancel" (click)="uploader.cancel()" *if="hasItems">Cancel</span>
 				<!-- <span class="btn--cancel" (click)="uploader.cancel()" [class]="{ disabled: !transfers.length }">Cancel</span> -->
 			</div>
-			<!-- <input type="file" class="btn btn--upload" [uploadButton]="uploader" [attributes]="uploadAttributes" /> -->
-			<div class="listing--transfers">
-				<div class="listing__item" *for="let item of transfers">
-					<div [uploadItem]="uploader" [item]="item" (pause)="onPause($event)" (resume)="onResume($event)" (cancel)="onCancel($event)" (remove)="onRemove($event)"></div>
-				</div>
+			<div class="upload-drop" [uploadDrop]="uploader">
+    			<span>Drag And Drop your images here</span>
 			</div>
-			<span class="required__badge">required</span>
+			<!-- <input type="file" class="btn btn--upload" [uploadButton]="uploader" [attributes]="uploadAttributes" /> -->
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`

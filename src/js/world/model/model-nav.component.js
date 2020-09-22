@@ -124,10 +124,12 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		}
 	}
 
+	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
 		const position = new THREE.Vector3().set(...item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 		mesh.position.set(position.x, position.y, position.z);
 		// console.log('onUpdate', mesh.position);
+		this.updateHelper();
 	}
 
 	// called by WorldComponent
@@ -135,7 +137,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		this.editing = true;
 		this.item.showPanel = false;
 		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
-		this.helper.update();
+		this.updateHelper();
 	}
 
 	// called by WorldComponent

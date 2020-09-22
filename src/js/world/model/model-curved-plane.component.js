@@ -65,6 +65,14 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		});
 	}
 
+	onDestroy() {
+		super.onDestroy();
+		if (this.mesh) {
+			this.mesh.dispose();
+		}
+	}
+
+	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
 		if (item.position) {
 			mesh.position.fromArray(item.position);
@@ -75,13 +83,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		if (item.scale) {
 			mesh.scale.fromArray(item.scale);
 		}
-	}
-
-	onDestroy() {
-		super.onDestroy();
-		if (this.mesh) {
-			this.mesh.dispose();
-		}
+		this.updateHelper();
 	}
 
 	// called by WorldComponent
@@ -90,7 +92,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		this.editing = true;
 		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
 		this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN);
-		this.helper.update();
+		this.updateHelper();
 	}
 
 	// called by WorldComponent

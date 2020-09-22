@@ -158,6 +158,34 @@ export class NavViewItem extends ViewItem {
 
 }
 
+export class Asset {
+	static allowedProps = ['id', 'type', 'folder', 'file', 'fileName', 'linkedPlayId', 'chromaKeyColor'];
+	constructor(options) {
+		if (options) {
+			Object.assign(this, options);
+		}
+	}
+	get payload() {
+		const payload = {};
+		Object.keys(this).forEach(key => {
+			if (Asset.allowedProps.indexOf(key) !== -1) {
+				payload[key] = this[key];
+			}
+		});
+		return payload;
+	}
+	static fromUrl(url) {
+		const segments = url.split('/');
+		const fileName = segments.pop();
+		const folder = segments.join('/') + '/';
+		return new Asset({
+			type: AssetType.Image,
+			folder: folder,
+			fileName: fileName,
+		});
+	}
+}
+
 export function mapView(view) {
 	switch (view.type) {
 		case ViewType.Panorama:
@@ -184,4 +212,12 @@ export function mapViewItem(item) {
 			item = new ViewItem(item);
 	}
 	return item;
+}
+
+export function mapAsset(asset) {
+	switch (asset.type) {
+		default:
+			asset = new Asset(asset);
+	}
+	return asset;
 }

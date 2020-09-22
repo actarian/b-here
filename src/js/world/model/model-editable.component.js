@@ -33,6 +33,12 @@ export default class ModelEditableComponent extends ModelComponent {
 			this.host.scene.remove(this.helper);
 		}
 	}
+
+	updateHelper() {
+		if (this.helper) {
+			this.helper.update();
+		}
+	}
 }
 
 ModelEditableComponent.meta = {

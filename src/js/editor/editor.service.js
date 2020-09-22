@@ -1,6 +1,6 @@
 import { map } from "rxjs/operators";
 import HttpService from "../http/http.service";
-import { mapView, mapViewItem } from '../view/view';
+import { mapAsset, mapView, mapViewItem } from '../view/view';
 
 export default class EditorService {
 	static data$() {
@@ -9,6 +9,11 @@ export default class EditorService {
 				data.views = data.views.map(view => mapView(view));
 				return data;
 			}),
+		);
+	}
+	static assetCreate$(asset) {
+		return HttpService.post$(`/api/asset`, asset).pipe(
+			map(asset => mapAsset(asset)),
 		);
 	}
 	static viewCreate$(view) {

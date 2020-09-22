@@ -114,59 +114,6 @@ export default class ModelGltfComponent extends ModelComponent {
 		*/
 	}
 
-	onUpdate(item, mesh) {
-		if (item.position) {
-			mesh.position.fromArray(item.position);
-		}
-		if (item.rotation) {
-			mesh.rotation.fromArray(item.rotation);
-		}
-		if (item.scale) {
-			mesh.scale.fromArray(item.scale);
-		}
-	}
-
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	/*
-	loadAssets() {
-		this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-			this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (model) => {
-				const scene = this.host.scene;
-				scene.add(model);
-				this.host.render();
-			});
-		});
-	}
-	*/
-
-	/*
-	loadRgbeBackground(path, file, callback) {
-		const scene = this.host.scene;
-		const renderer = this.host.renderer;
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
-		pmremGenerator.compileEquirectangularShader();
-		const loader = new RGBELoader();
-		loader
-			.setDataType(THREE.UnsignedByteType)
-			.setPath(path)
-			.load(file, (texture) => {
-				const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-				scene.background = envMap;
-				scene.environment = envMap;
-				this.host.render();
-				texture.dispose();
-				pmremGenerator.dispose();
-				if (typeof callback === 'function') {
-					callback(envMap);
-				}
-			});
-		return loader;
-	}
-	*/
-
 	loadGltfModel(path, file, callback) {
 		const renderer = this.host.renderer;
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
@@ -197,6 +144,18 @@ export default class ModelGltfComponent extends ModelComponent {
 		});
 	}
 
+	// called by UpdateViewItemComponent
+	onUpdate(item, mesh) {
+		if (item.position) {
+			mesh.position.fromArray(item.position);
+		}
+		if (item.rotation) {
+			mesh.rotation.fromArray(item.rotation);
+		}
+		if (item.scale) {
+			mesh.scale.fromArray(item.scale);
+		}
+	}
 }
 
 ModelGltfComponent.meta = {

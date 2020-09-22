@@ -6,16 +6,14 @@ import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
 import EditorService from '../editor.service';
 
-const ORIGIN = new THREE.Vector3();
-
 /*
 {
 	"id": 2310,
 	"type": "plane",
 	"asset": {
-	"type": "video",
-	"folder": "room-3d/",
-	"file": "plane-01.mp4"
+		"type": "video",
+		"folder": "room-3d/",
+		"file": "plane-01.mp4"
 	},
 	"position": { "x": 20, "y": 1.7, "z": 0 },
 	"rotation": { "x": 0, "y": -1.57079632679, "z": 0 },
@@ -53,13 +51,10 @@ export default class PlaneModalComponent extends Component {
 	}
 
 	onInit() {
-
 		const object = new THREE.Object3D();
 		object.position.copy(this.position);
-		object.lookAt(ORIGIN);
+		object.lookAt(PlaneModalComponent.ORIGIN);
 		console.log(object.rotation);
-
-
 
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Plane,
@@ -114,6 +109,8 @@ export default class PlaneModalComponent extends Component {
 	}
 
 }
+
+PlaneModalComponent.ORIGIN = new THREE.Vector3();
 
 PlaneModalComponent.meta = {
 	selector: '[plane-modal]'

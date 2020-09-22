@@ -57,6 +57,7 @@ export default class NavModalComponent extends Component {
 	}
 
 	onInit() {
+		this.error = null;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Nav,
 			title: new FormControl(null, RequiredValidator()),
@@ -87,6 +88,7 @@ export default class NavModalComponent extends Component {
 
 	onSubmit() {
 		if (this.form.valid) {
+			this.form.submitted = true;
 			const item = Object.assign({}, this.form.value);
 			item.viewId = parseInt(item.viewId);
 			console.log('NavModalComponent.onSubmit', this.view, item);
@@ -95,10 +97,11 @@ export default class NavModalComponent extends Component {
 			).subscribe(response => {
 				console.log('NavModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
-			}, error => console.log('NavModalComponent.onSubmit.error', error));
-			// ModalService.resolve(this.form.value);
-			// this.form.submitted = true;
-			// this.form.reset();
+			}, error => {
+				console.log('NavModalComponent.onSubmit.error', error);
+				this.error = error;
+				this.form.reset();
+			});
 		} else {
 			this.form.touched = true;
 		}

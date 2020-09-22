@@ -2812,7 +2812,60 @@ AgoraStreamComponent.meta = {
   selector: '[agora-stream]',
   outputs: ['toggleSpy'],
   inputs: ['stream']
-};var ModalEvent = function ModalEvent(data) {
+};var STATIC_MODALS = {
+  controlRequest: 'control-request-modal.html',
+  tryInAr: 'try-in-ar-modal.html',
+  view: {
+    'panorama': 'panorama-modal.html',
+    'panorama-grid': 'panorama-grid-modal.html',
+    'room-3d': 'room-3d-modal.html',
+    'model': 'model-modal.html'
+  },
+  viewItem: {
+    'nav': 'nav-modal.html',
+    'plane': 'plane-modal.html',
+    'curved-plane': 'curved-plane-modal.html',
+    'texture': 'texture-modal.html',
+    'gltf': 'gltf-modal.html'
+  },
+  remove: 'remove-modal.html'
+};
+var SERVER_MODALS = {
+  controlRequest: environment.views.controlRequestModal,
+  tryInAr: environment.views.tryInArModal,
+  view: {
+    'panorama': 2000,
+    'panorama-grid': 2001,
+    'room-3d': 2002,
+    'model': 2003
+  },
+  viewItem: {
+    'nav': 2004,
+    'plane': 2005,
+    'curved-plane': 2006,
+    'texture': 2007,
+    'gltf': 2008
+  }
+};
+
+var ModalSrcService = /*#__PURE__*/function () {
+  function ModalSrcService() {}
+
+  ModalSrcService.get = function get() {
+    var src = STATIC_MODALS;
+
+    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
+      keys[_key] = arguments[_key];
+    }
+
+    keys.forEach(function (key) {
+      return src = typeof src === 'object' ? src[key] : null;
+    });
+    return STATIC ? BASE_HREF + src : "/viewdoc.cshtml?co_id=" + src;
+  };
+
+  return ModalSrcService;
+}();var ModalEvent = function ModalEvent(data) {
   this.data = data;
 };
 var ModalResolveEvent = /*#__PURE__*/function (_ModalEvent) {
@@ -2881,7 +2934,19 @@ var ModalService = /*#__PURE__*/function () {
   return ModalService;
 }();
 ModalService.modal$ = new rxjs.Subject();
-ModalService.events$ = new rxjs.Subject();var ViewType = {
+ModalService.events$ = new rxjs.Subject();var AssetType = {
+  Image: 'image',
+  // jpg, png, ...
+  Video: 'video',
+  // mp4, webm, ...
+  Model: 'model',
+  // gltf, glb, …
+  PublisherStream: 'publisher-stream',
+  // valore fisso di file a ‘publisherStream’ e folder string.empty
+  NextAttendeeStream: 'next-attendee-stream' // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+
+};
+var ViewType = {
   WaitingRoom: 'waiting-room',
   Panorama: 'panorama',
   PanoramaGrid: 'panorama-grid',
@@ -3090,6 +3155,44 @@ var NavViewItem = /*#__PURE__*/function (_ViewItem) {
 
   return NavViewItem;
 }(ViewItem);
+var Asset = /*#__PURE__*/function () {
+  function Asset(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  Asset.fromUrl = function fromUrl(url) {
+    var segments = url.split('/');
+    var fileName = segments.pop();
+    var folder = segments.join('/') + '/';
+    return new Asset({
+      type: AssetType.Image,
+      folder: folder,
+      fileName: fileName
+    });
+  };
+
+  _createClass(Asset, [{
+    key: "payload",
+    get: function get() {
+      var _this4 = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (Asset.allowedProps.indexOf(key) !== -1) {
+          payload[key] = _this4[key];
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return Asset;
+}();
+
+_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'fileName', 'linkedPlayId', 'chromaKeyColor']);
+
 function mapView(view) {
   switch (view.type) {
     case ViewType.Panorama:
@@ -3121,6 +3224,14 @@ function mapViewItem(item) {
   }
 
   return item;
+}
+function mapAsset(asset) {
+  switch (asset.type) {
+    default:
+      asset = new Asset(asset);
+  }
+
+  return asset;
 }var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
@@ -3310,10 +3421,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   return VRService;
-}();var CONTROL_REQUEST = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.controlRequestModal;
-var TRY_IN_AR = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.tryInArModal;
-
-var AgoraComponent = /*#__PURE__*/function (_Component) {
+}();var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
 
   function AgoraComponent() {
@@ -3581,7 +3689,7 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
     var _this4 = this;
 
     ModalService.open$({
-      src: CONTROL_REQUEST,
+      src: ModalSrcService.get('controlRequest'),
       data: null
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (!DEBUG) {
@@ -3671,7 +3779,7 @@ var AgoraComponent = /*#__PURE__*/function (_Component) {
 
   _proto.tryInAr = function tryInAr() {
     ModalService.open$({
-      src: TRY_IN_AR,
+      src: ModalSrcService.get('tryInAr'),
       data: this.view
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
     });
@@ -3733,7 +3841,7 @@ AgoraComponent.meta = {
 }(rxcomp.Component);
 AppComponent.meta = {
   selector: '[app-component]'
-};var AssetType = {
+};var AssetType$1 = {
   Image: 'image',
   // jpg, png, ...
   Video: 'video',
@@ -3781,19 +3889,19 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
 
     if (asset) {
       switch (asset.type) {
-        case AssetType.Image:
-        case AssetType.Video:
+        case AssetType$1.Image:
+        case AssetType$1.Video:
           asset = asset.folder + asset.file;
           asset = environment.getTexturePath(asset);
           break;
 
-        case AssetType.Model:
+        case AssetType$1.Model:
           asset = asset.folder + asset.file;
           asset = environment.getModelPath(asset);
           break;
 
-        case AssetType.PublisherStream:
-        case AssetType.NextAttendeeStream:
+        case AssetType$1.PublisherStream:
+        case AssetType$1.NextAttendeeStream:
           asset = environment.getModelPath(asset.file);
           break;
 
@@ -4595,60 +4703,7 @@ ToastOutletComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"toast-outlet__container\" [class]=\"{ active: toast }\">\n\t\t<div class=\"toast-outlet__toast\" [innerHTML]=\"lastMessage\"></div>\n\t</div>\n\t"
-};var STATIC_MODALS = {
-  controlRequest: 'control-request-modal.html',
-  tryInAr: 'try-in-ar-modal.html',
-  view: {
-    'panorama': 'panorama-modal.html',
-    'panorama-grid': 'panorama-grid-modal.html',
-    'room-3d': 'room-3d-modal.html',
-    'model': 'model-modal.html'
-  },
-  viewItem: {
-    'nav': 'nav-modal.html',
-    'plane': 'plane-modal.html',
-    'curved-plane': 'curved-plane-modal.html',
-    'texture': 'texture-modal.html',
-    'gltf': 'gltf-modal.html'
-  },
-  remove: 'remove-modal.html'
-};
-var SERVER_MODALS = {
-  controlRequest: environment.views.controlRequestModal,
-  tryInAr: environment.views.tryInArModal,
-  view: {
-    'panorama': 2000,
-    'panorama-grid': 2001,
-    'room-3d': 2002,
-    'model': 2003
-  },
-  viewItem: {
-    'nav': 2004,
-    'plane': 2005,
-    'curved-plane': 2006,
-    'texture': 2007,
-    'gltf': 2008
-  }
-};
-
-var ModalSrcService = /*#__PURE__*/function () {
-  function ModalSrcService() {}
-
-  ModalSrcService.get = function get() {
-    var src = STATIC_MODALS;
-
-    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
-      keys[_key] = arguments[_key];
-    }
-
-    keys.forEach(function (key) {
-      return src = typeof src === 'object' ? src[key] : null;
-    });
-    return STATIC ? BASE_HREF + src : "/viewdoc.cshtml?co_id=" + src;
-  };
-
-  return ModalSrcService;
-}();var EditorService = /*#__PURE__*/function () {
+};var EditorService = /*#__PURE__*/function () {
   function EditorService() {}
 
   EditorService.data$ = function data$() {
@@ -4657,6 +4712,12 @@ var ModalSrcService = /*#__PURE__*/function () {
         return mapView(view);
       });
       return data;
+    }));
+  };
+
+  EditorService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
     }));
   };
 
@@ -4693,10 +4754,7 @@ var ModalSrcService = /*#__PURE__*/function () {
   };
 
   return EditorService;
-}();var CONTROL_REQUEST$1 = STATIC ? BASE_HREF + 'modals/control-request-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.controlRequestModal;
-var TRY_IN_AR$1 = STATIC ? BASE_HREF + 'modals/try-in-ar-modal.html' : "/viewdoc.cshtml?co_id=" + environment.views.tryInArModal;
-
-var EditorComponent = /*#__PURE__*/function (_Component) {
+}();var EditorComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(EditorComponent, _Component);
 
   function EditorComponent() {
@@ -4838,7 +4896,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     var _this3 = this;
 
     ModalService.open$({
-      src: CONTROL_REQUEST$1,
+      src: ModalSrcService.get('controlRequest'),
       data: null
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
@@ -4862,7 +4920,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
 
   _proto.tryInAr = function tryInAr() {
     ModalService.open$({
-      src: TRY_IN_AR$1,
+      src: ModalSrcService.get('tryInAr'),
       data: this.view
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
     });
@@ -5146,6 +5204,7 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    this.error = null;
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Nav,
       title: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
@@ -5180,7 +5239,10 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
     if (this.form.valid) {
+      this.form.submitted = true;
       var item = Object.assign({}, this.form.value);
       item.viewId = parseInt(item.viewId);
       console.log('NavModalComponent.onSubmit', this.view, item);
@@ -5188,10 +5250,11 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
         console.log('NavModalComponent.onSubmit.success', response);
         ModalService.resolve(response);
       }, function (error) {
-        return console.log('NavModalComponent.onSubmit.error', error);
-      }); // ModalService.resolve(this.form.value);
-      // this.form.submitted = true;
-      // this.form.reset();
+        console.log('NavModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
     } else {
       this.form.touched = true;
     }
@@ -5245,7 +5308,125 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
 }(rxcomp.Component);
 NavModalComponent.meta = {
   selector: '[nav-modal]'
-};/*
+};var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PanoramaModalComponent, _Component);
+
+  function PanoramaModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PanoramaModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Panorama,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      upload: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // items: new FormArray([null, null, null], RequiredValidator()),
+
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var asset = Asset.fromUrl(this.form.value.upload);
+      console.log('PanoramaModalComponent.onSubmit.asset', asset);
+      EditorService.assetCreate$(asset).pipe(operators.first(), operators.switchMap(function (response) {
+        var view = {
+          type: _this2.form.value.type,
+          name: _this2.form.value.name,
+          asset: response,
+          orientation: {
+            latitude: 0,
+            longitude: 0
+          },
+          zoom: 75
+        };
+        console.log('PanoramaModalComponent.onSubmit.view', view);
+        return EditorService.viewCreate$(view).pipe(operators.first());
+      })).subscribe(function (response) {
+        console.log('PanoramaModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PanoramaModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+    /*
+    EditorService.viewCreate$({
+    	"id": 1,
+    	"type": "panorama",
+    	"name": "Welcome Room",
+    	"likes": 134,
+    	"liked": false,
+    	"asset": {
+    		"type": "image",
+    		"folder": "waiting-room/",
+    		"file": "mod2.jpg"
+    	},
+    	"items": [
+    		{
+    			"id": 110,
+    			"type": "nav",
+    			"title": "Barilla Experience",
+    			"abstract": "Abstract",
+    			"asset": {
+    				"type": "image",
+    				"folder": "barilla/",
+    				"file": "logo-barilla.jpg"
+    			},
+    			"link": {
+    				"title": "Scopri di più...",
+    				"href": "https://www.barilla.com/it-it/",
+    				"target": "_blank"
+    			},
+    			"position": [
+    				0.9491595148619703,
+    				-0.3147945860255039,
+    				0
+    			],
+    			"viewId": 23
+    		}
+    	],
+    	"orientation": {
+    		"latitude": -10,
+    		"longitude": 360
+    	},
+    	"zoom": 75
+    }).pipe(
+    	first(),
+    ).subscribe(data => {
+    	console.log('EditorService.viewCreate$', data);
+    });
+    	*/
+
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  return PanoramaModalComponent;
+}(rxcomp.Component);
+PanoramaModalComponent.meta = {
+  selector: '[panorama-modal]'
+};
+/*
 {
 	"id": 1,
 	"type": "panorama",
@@ -5281,109 +5462,14 @@ NavModalComponent.meta = {
 	},
 	"zoom": 75
 }
-*/
-
-var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(PanoramaModalComponent, _Component);
-
-  function PanoramaModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = PanoramaModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Panorama,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      upload: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // items: new FormArray([null, null, null], RequiredValidator()),
-
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
-
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    if (this.form.valid) {
-      console.log('PanoramaModalComponent.onSubmit', this.form.value); // ModalService.resolve(this.form.value);
-      // this.form.submitted = true;
-      // this.form.reset();
-
-      /*
-      	EditorService.viewCreate$({
-      "id": 1,
-      "type": "panorama",
-      "name": "Welcome Room",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-      	"type": "image",
-      	"folder": "waiting-room/",
-      	"file": "mod2.jpg"
-      },
-      "items": [
-      	{
-      		"id": 110,
-      		"type": "nav",
-      		"title": "Barilla Experience",
-      		"abstract": "Abstract",
-      		"asset": {
-      			"type": "image",
-      			"folder": "barilla/",
-      			"file": "logo-barilla.jpg"
-      		},
-      		"link": {
-      			"title": "Scopri di più...",
-      			"href": "https://www.barilla.com/it-it/",
-      			"target": "_blank"
-      		},
-      		"position": [
-      			0.9491595148619703,
-      			-0.3147945860255039,
-      			0
-      		],
-      		"viewId": 23
-      	}
-      ],
-      "orientation": {
-      	"latitude": -10,
-      	"longitude": 360
-      },
-      "zoom": 75
-      }).pipe(
-      first(),
-      ).subscribe(data => {
-      console.log('EditorService.viewCreate$', data);
-      });
-      */
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.close = function close() {
-    ModalService.reject();
-  };
-
-  return PanoramaModalComponent;
-}(rxcomp.Component);
-PanoramaModalComponent.meta = {
-  selector: '[panorama-modal]'
-};var ORIGIN = new THREE.Vector3();
-/*
+*//*
 {
 	"id": 2310,
 	"type": "plane",
 	"asset": {
-	"type": "video",
-	"folder": "room-3d/",
-	"file": "plane-01.mp4"
+		"type": "video",
+		"folder": "room-3d/",
+		"file": "plane-01.mp4"
 	},
 	"position": { "x": 20, "y": 1.7, "z": 0 },
 	"rotation": { "x": 0, "y": -1.57079632679, "z": 0 },
@@ -5405,7 +5491,7 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
 
     var object = new THREE.Object3D();
     object.position.copy(this.position);
-    object.lookAt(ORIGIN);
+    object.lookAt(PlaneModalComponent.ORIGIN);
     console.log(object.rotation);
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Plane,
@@ -5502,6 +5588,7 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
 
   return PlaneModalComponent;
 }(rxcomp.Component);
+PlaneModalComponent.ORIGIN = new THREE.Vector3();
 PlaneModalComponent.meta = {
   selector: '[plane-modal]'
 };var factories = [EditorComponent, NavModalComponent, PanoramaModalComponent, PlaneModalComponent, ToastOutletComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
@@ -5588,7 +5675,7 @@ RemoveModalComponent.meta = {
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
     form.changes$.subscribe(function (changes) {
-      // console.log('UpdateViewItemComponent.form.changes$', this.item);
+      console.log('UpdateViewItemComponent.form.changes$', _this.item);
       var item = _this.item;
       Object.assign(item, changes);
 
@@ -6289,7 +6376,22 @@ var ControlUploadComponent = /*#__PURE__*/function (_ControlComponent) {
     this.uploader.transfers$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (data) {
       _this.totalProgress = data.totalProgress;
       _this.transfers = data.transfers;
-      console.log('ControlUploadComponent.transfers', _this.transfers);
+      console.log('ControlUploadComponent.transfers$', data);
+
+      if (data.totalProgress === 1) {
+        var completed = data.transfers.filter(function (x) {
+          return x.complete;
+        }).map(function (x) {
+          // !!! retrieve correct url
+          return "" + window.location.origin + environment.href + "uploads/" + x.id + "_" + x.name;
+        });
+
+        if (_this.multiple) {
+          _this.control.value = completed;
+        } else {
+          _this.control.value = completed[0];
+        }
+      }
 
       _this.pushChanges();
     });
@@ -6329,7 +6431,7 @@ ControlUploadComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<!--\n\t\t\t<p *if=\"uploader.flow.support\">\u2705 FlowJS is supported by your browser</p>\n\t\t\t<p *if=\"!uploader.flow.support\">\uD83D\uDED1 FlowJS is NOT supported by your browser</p>\n\t\t\t-->\n\t\t\t<div class=\"upload-drop\" [uploadDrop]=\"uploader\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<span class=\"btn--browse\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\">Browse</span>\n\t\t\t\t<span class=\"btn--upload\" (click)=\"uploader.upload()\" *if=\"hasItems\">Upload</span>\n\t\t\t\t<span class=\"btn--cancel\" (click)=\"uploader.cancel()\" *if=\"hasItems\">Cancel</span>\n\t\t\t\t<!-- <span class=\"btn--cancel\" (click)=\"uploader.cancel()\" [class]=\"{ disabled: !transfers.length }\">Cancel</span> -->\n\t\t\t</div>\n\t\t\t<!-- <input type=\"file\" class=\"btn btn--upload\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\" /> -->\n\t\t\t<div class=\"listing--transfers\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of transfers\">\n\t\t\t\t\t<div [uploadItem]=\"uploader\" [item]=\"item\" (pause)=\"onPause($event)\" (resume)=\"onResume($event)\" (cancel)=\"onCancel($event)\" (remove)=\"onRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--transfers\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of transfers\">\n\t\t\t\t\t<div [uploadItem]=\"uploader\" [item]=\"item\" (pause)=\"onPause($event)\" (resume)=\"onResume($event)\" (cancel)=\"onCancel($event)\" (remove)=\"onRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<p *if=\"uploader.flow.support\">\u2705 FlowJS is supported by your browser</p>\n\t\t\t<p *if=\"!uploader.flow.support\">\uD83D\uDED1 FlowJS is NOT supported by your browser</p>\n\t\t\t-->\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<span class=\"btn--browse\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\">Browse</span>\n\t\t\t\t<span class=\"btn--upload\" (click)=\"uploader.upload()\" *if=\"hasItems\">Upload</span>\n\t\t\t\t<span class=\"btn--cancel\" (click)=\"uploader.cancel()\" *if=\"hasItems\">Cancel</span>\n\t\t\t\t<!-- <span class=\"btn--cancel\" (click)=\"uploader.cancel()\" [class]=\"{ disabled: !transfers.length }\">Cancel</span> -->\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\" [uploadDrop]=\"uploader\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t\t<!-- <input type=\"file\" class=\"btn btn--upload\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\" /> -->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };
 /*
 <p *ngIf="flow.flowJs?.support; else notSupported">
@@ -6408,7 +6510,7 @@ ControlVectorComponent.meta = {
   inputs: ['control', 'label', 'precision', 'increment', 'disabled'],
   template:
   /* html */
-  "\n    <div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n      <div class=\"control--head\">\n\t\t\t  <label [innerHTML]=\"label\"></label>\n\t\t\t  <span class=\"required__badge\">required</span>\n      </div>\n      <div class=\"control--content control--vector\">\n        <input-value label=\"x\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[0]\" (change)=\"updateValue(0, $event)\"></input-value>\n        <input-value label=\"y\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[1]\" (change)=\"updateValue(1, $event)\"></input-value>\n        <input-value label=\"z\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[2]\" (change)=\"updateValue(2, $event)\"></input-value>\n      </div>\n    </div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"control--content control--vector\">\n\t\t\t\t<input-value label=\"x\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[0]\" (change)=\"updateValue(0, $event)\"></input-value>\n\t\t\t\t<input-value label=\"y\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[1]\" (change)=\"updateValue(1, $event)\"></input-value>\n\t\t\t\t<input-value label=\"z\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[2]\" (change)=\"updateValue(2, $event)\"></input-value>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var DisabledDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(DisabledDirective, _Directive);
 
@@ -63113,7 +63215,7 @@ var PhoneElement = /*#__PURE__*/function () {
   };
 
   return PhoneElement;
-}();var ORIGIN$1 = new THREE$1.Vector3();
+}();var ORIGIN = new THREE$1.Vector3();
 
 var PointerElement = /*#__PURE__*/function () {
   function PointerElement() {
@@ -63141,12 +63243,12 @@ var PointerElement = /*#__PURE__*/function () {
       mesh.position.set(position.x, position.y, position.z);
       var s = mesh.position.length() / 80;
       mesh.scale.set(s, s, s);
-      mesh.lookAt(ORIGIN$1);
+      mesh.lookAt(ORIGIN);
     }
   };
 
   return PointerElement;
-}();var ORIGIN$2 = new THREE$1.Vector3();
+}();var ORIGIN$1 = new THREE$1.Vector3();
 
 var WorldComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(WorldComponent, _Component);
@@ -63612,16 +63714,20 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       var raycaster = this.updateRaycasterMouse(event);
       var hit = Interactive.hittest(raycaster, true);
 
-      if (this.panorama.mesh.intersection) {
-        var position = new THREE$1.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
+      if (DEBUG || EDITOR) {
+        if (this.keys.Shift || this.keys.Control) {} else {
+          this.select.next({
+            item: null
+          });
 
-        if (DEBUG || EDITOR) {
-          console.log(JSON.stringify({
-            position: position.toArray()
-          }));
+          if (this.panorama.mesh.intersection) {
+            var position = new THREE$1.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
+            console.log(JSON.stringify({
+              position: position.toArray()
+            }));
+            this.viewHit.next(position);
+          }
         }
-
-        this.viewHit.next(position);
       }
     } catch (error) {
       this.error = error; // throw (error);
@@ -63954,7 +64060,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           if (!_this6.renderer.xr.isPresenting) {
             var camera = _this6.camera;
             camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
-            camera.lookAt(ORIGIN$2); // this.render();
+            camera.lookAt(ORIGIN$1); // this.render();
           }
 
           break;
@@ -64115,8 +64221,6 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     return mesh;
   };
 
-  _proto.onUpdate = function onUpdate(item, mesh) {};
-
   _proto.onMount = function onMount(mesh, item) {
     var _this2 = this;
 
@@ -64189,9 +64293,10 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
     tween -= 1;
     return tween;
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
+  } // called by UpdateViewItemComponent
   ;
+
+  _proto.onUpdate = function onUpdate(item, mesh) {};
 
   _createClass(ModelComponent, [{
     key: "renderOrder",
@@ -64209,7 +64314,7 @@ ModelComponent.meta = {
   },
   inputs: ['item']
 };var PANEL_RADIUS = PANORAMA_RADIUS - 0.01;
-var ORIGIN$3 = new THREE$1.Vector3();
+var ORIGIN$2 = new THREE$1.Vector3();
 
 var ModelBannerComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelBannerComponent, _ModelComponent);
@@ -64970,6 +65075,12 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
   };
 
+  _proto.updateHelper = function updateHelper() {
+    if (this.helper) {
+      this.helper.update();
+    }
+  };
+
   _createClass(ModelEditableComponent, [{
     key: "editing",
     get: function get() {
@@ -65065,6 +65176,15 @@ ModelEditableComponent.meta = {
     });
   };
 
+  _proto.onDestroy = function onDestroy() {
+    _ModelEditableCompone.prototype.onDestroy.call(this);
+
+    if (this.mesh) {
+      this.mesh.dispose();
+    }
+  } // called by UpdateViewItemComponent
+  ;
+
   _proto.onUpdate = function onUpdate(item, mesh) {
     if (item.position) {
       mesh.position.fromArray(item.position);
@@ -65077,14 +65197,8 @@ ModelEditableComponent.meta = {
     if (item.scale) {
       mesh.scale.fromArray(item.scale);
     }
-  };
 
-  _proto.onDestroy = function onDestroy() {
-    _ModelEditableCompone.prototype.onDestroy.call(this);
-
-    if (this.mesh) {
-      this.mesh.dispose();
-    }
+    this.updateHelper();
   } // called by WorldComponent
   ;
 
@@ -65093,7 +65207,7 @@ ModelEditableComponent.meta = {
     this.editing = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
     this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN);
-    this.helper.update();
+    this.updateHelper();
   } // called by WorldComponent
   ;
 
@@ -65407,59 +65521,6 @@ ModelDebugComponent.meta = {
     */
   };
 
-  _proto.onUpdate = function onUpdate(item, mesh) {
-    if (item.position) {
-      mesh.position.fromArray(item.position);
-    }
-
-    if (item.rotation) {
-      mesh.rotation.fromArray(item.rotation);
-    }
-
-    if (item.scale) {
-      mesh.scale.fromArray(item.scale);
-    }
-  } // onView() { const context = getContext(this); }
-  // onChanges() {}
-
-  /*
-  loadAssets() {
-  	this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-  		this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (model) => {
-  			const scene = this.host.scene;
-  			scene.add(model);
-  			this.host.render();
-  		});
-  	});
-  }
-  */
-
-  /*
-  loadRgbeBackground(path, file, callback) {
-  	const scene = this.host.scene;
-  	const renderer = this.host.renderer;
-  	const pmremGenerator = new THREE.PMREMGenerator(renderer);
-  	pmremGenerator.compileEquirectangularShader();
-  	const loader = new RGBELoader();
-  	loader
-  		.setDataType(THREE.UnsignedByteType)
-  		.setPath(path)
-  		.load(file, (texture) => {
-  			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-  			scene.background = envMap;
-  			scene.environment = envMap;
-  			this.host.render();
-  			texture.dispose();
-  			pmremGenerator.dispose();
-  			if (typeof callback === 'function') {
-  				callback(envMap);
-  			}
-  		});
-  	return loader;
-  }
-  */
-  ;
-
   _proto.loadGltfModel = function loadGltfModel(path, file, callback) {
     var _this2 = this;
 
@@ -65493,6 +65554,21 @@ ModelDebugComponent.meta = {
 
       _this2.pushChanges();
     });
+  } // called by UpdateViewItemComponent
+  ;
+
+  _proto.onUpdate = function onUpdate(item, mesh) {
+    if (item.position) {
+      mesh.position.fromArray(item.position);
+    }
+
+    if (item.rotation) {
+      mesh.rotation.fromArray(item.rotation);
+    }
+
+    if (item.scale) {
+      mesh.scale.fromArray(item.scale);
+    }
   };
 
   return ModelGltfComponent;
@@ -66453,7 +66529,8 @@ ModelMenuComponent.meta = {
     if (typeof mount === 'function') {
       mount(nav, this.item);
     }
-  };
+  } // called by UpdateViewItemComponent
+  ;
 
   _proto.onUpdate = function onUpdate(item, mesh) {
     var _THREE$Vector2;
@@ -66461,6 +66538,8 @@ ModelMenuComponent.meta = {
     var position = (_THREE$Vector2 = new THREE$1.Vector3()).set.apply(_THREE$Vector2, item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
     mesh.position.set(position.x, position.y, position.z); // console.log('onUpdate', mesh.position);
+
+    this.updateHelper();
   } // called by WorldComponent
   ;
 
@@ -66468,7 +66547,7 @@ ModelMenuComponent.meta = {
     this.editing = true;
     this.item.showPanel = false;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
-    this.helper.update();
+    this.updateHelper();
   } // called by WorldComponent
   ;
 
@@ -67021,7 +67100,18 @@ ModelPictureComponent.meta = {
     });
   };
 
+  _proto.onDestroy = function onDestroy() {
+    _ModelEditableCompone.prototype.onDestroy.call(this);
+
+    if (this.mesh) {
+      this.mesh.dispose();
+    }
+  } // called by UpdateViewItemComponent
+  ;
+
   _proto.onUpdate = function onUpdate(item, mesh) {
+    console.log('ModelPlaneComponent.onUpdate', item);
+
     if (item.position) {
       mesh.position.fromArray(item.position);
     }
@@ -67033,27 +67123,23 @@ ModelPictureComponent.meta = {
     if (item.scale) {
       mesh.scale.fromArray(item.scale);
     }
-  };
 
-  _proto.onDestroy = function onDestroy() {
-    _ModelEditableCompone.prototype.onDestroy.call(this);
-
-    if (this.mesh) {
-      this.mesh.dispose();
-    }
+    this.updateHelper();
   } // called by WorldComponent
   ;
 
   _proto.onDragMove = function onDragMove(position) {
+    console.log('ModelPlaneComponent.onDragMove', position);
     this.item.showPanel = false;
     this.editing = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
     this.mesh.lookAt(ModelPlaneComponent.ORIGIN);
-    this.helper.update();
+    this.updateHelper();
   } // called by WorldComponent
   ;
 
   _proto.onDragEnd = function onDragEnd() {
+    console.log('ModelPlaneComponent.onDragEnd');
     this.item.position = this.mesh.position.toArray();
     this.item.rotation = this.mesh.rotation.toArray();
     this.item.scale = this.mesh.scale.toArray();

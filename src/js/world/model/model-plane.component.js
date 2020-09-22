@@ -62,7 +62,16 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 		});
 	}
 
+	onDestroy() {
+		super.onDestroy();
+		if (this.mesh) {
+			this.mesh.dispose();
+		}
+	}
+
+	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
+		console.log('ModelPlaneComponent.onUpdate', item);
 		if (item.position) {
 			mesh.position.fromArray(item.position);
 		}
@@ -72,26 +81,22 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 		if (item.scale) {
 			mesh.scale.fromArray(item.scale);
 		}
-	}
-
-	onDestroy() {
-		super.onDestroy();
-		if (this.mesh) {
-			this.mesh.dispose();
-		}
+		this.updateHelper();
 	}
 
 	// called by WorldComponent
 	onDragMove(position) {
+		console.log('ModelPlaneComponent.onDragMove', position);
 		this.item.showPanel = false;
 		this.editing = true;
 		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
 		this.mesh.lookAt(ModelPlaneComponent.ORIGIN);
-		this.helper.update();
+		this.updateHelper();
 	}
 
 	// called by WorldComponent
 	onDragEnd() {
+		console.log('ModelPlaneComponent.onDragEnd');
 		this.item.position = this.mesh.position.toArray();
 		this.item.rotation = this.mesh.rotation.toArray();
 		this.item.scale = this.mesh.scale.toArray();

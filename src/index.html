@@ -252,7 +252,7 @@
 			<div class="right"></div>
 		</div>
 	</div>
-	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view">
+	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view && aside">
 		<div class="headline">
 			<div class="btn--mode" [class]="{ active: mode === 1 }" (click)="setMode(1)">Properties</div>
 			<div class="btn--mode" [class]="{ active: mode === 2 }" (click)="setMode(2)">Views</div>

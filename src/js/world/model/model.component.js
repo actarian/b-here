@@ -77,8 +77,6 @@ export default class ModelComponent extends Component {
 		return mesh;
 	}
 
-	onUpdate(item, mesh) { }
-
 	onMount(mesh, item) {
 		mesh.name = this.getName('mesh');
 		this.mesh = mesh;
@@ -144,9 +142,8 @@ export default class ModelComponent extends Component {
 		return tween;
 	}
 
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
+	// called by UpdateViewItemComponent
+	onUpdate(item, mesh) { }
 
 }
 
