@@ -2434,7 +2434,7 @@
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
-      "modelFile": "room-3d-1.fbx",
+      "modelFile": "room-3d-2.fbx",
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
@@ -2551,7 +2551,7 @@
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
-      "modelFile": "room-3d-1.fbx",
+      "modelFile": "room-3d-1.FBX",
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
