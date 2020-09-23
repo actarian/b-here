@@ -33,14 +33,14 @@
         {
           "id": 110,
           "type": "nav",
-          "title": "Muse Museum",
+          "title": "Gedi Tour",
           "abstract": "Abstract",
           "position": [
-            0.9208826615335884,
-            -0.3029713518017443,
-            -0.0
+            0.9334758544674777,
+            -0.35862009166258646,
+            0
           ],
-          "viewId": 400
+          "viewId": 500
         },
         {
           "id": 120,
@@ -72,9 +72,9 @@
           "title": "Camera Stream",
           "abstract": "Abstract",
           "position": [
-            0.8201441012515654,
-            -0.2708323847069249,
-            0.5039974926289039
+            0.8127104096620694,
+            -0.3035373322761011,
+            0.4973599078550856
           ],
           "viewId": 29
         },
@@ -84,9 +84,9 @@
           "title": "Ernestomeda",
           "abstract": "Abstract",
           "position": [
-            0.8201441012515654,
-            -0.2708323847069249,
-            -0.5039974926289039
+            0.8127104096620694,
+            -0.3035373322761011,
+            -0.4973599078550856
           ],
           "viewId": 17
         }
@@ -98,143 +98,366 @@
       "zoom": 75
     },
     {
-      "id": 150,
+      "id": 500,
       "type": "panorama",
-      "name": "Orogel 1",
+      "name": "Gedi Reception",
       "likes": 134,
       "liked": false,
       "asset": {
         "type": "image",
-        "folder": "video/",
-        "file": "orogel1.mp4"
+        "folder": "gedi/",
+        "file": "reception.jpeg"
       },
       "items": [
         {
-          "id": 2020,
+          "id": 1,
+          "type": "nav",
+          "title": "Office",
+          "abstract": "Abstract",
+          "position": [
+            0.9993856349615997,
+            0.034445214602431856,
+            0.006471462229846942
+          ],
+          "viewId": 501
+        },
+        {
+          "id": 2,
+          "type": "nav",
+          "title": "Cinema",
+          "abstract": "Abstract",
+          "position": [
+            0.009741040177953715,
+            -0.042035346438884715,
+            -0.9990686371746512
+          ],
+          "viewId": 502
+        },
+        {
+          "id": 3,
+          "type": "nav",
+          "title": "Studio TV",
+          "abstract": "Abstract",
+          "position": [
+            -0.005935156356969579,
+            -0.050402719292637455,
+            0.9987113395806247
+          ],
+          "viewId": 504
+        },
+        {
+          "id": 4,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
-            0.8628288555626449,
-            -0.5045050757541418,
-            -0.03163849785884536
+            -0.9931302726117304,
+            -0.11685200383352391,
+            0.002219041419509381
           ],
           "viewId": 1
         },
         {
-          "id": 2021,
+          "id": 5,
           "type": "nav",
-          "title": "Next Video",
+          "title": "Room 3D",
           "abstract": "Abstract",
           "position": [
-            0.9214551957293822,
-            -0.386534168946469,
-            -0.03888005272872574
+            0.8280899958915072,
+            -0.22941246995755266,
+            0.511504523276558
           ],
-          "viewId": 151
+          "viewId": 102
         }
       ],
       "orientation": {
-        "latitude": -2,
-        "longitude": 360
+        "latitude": -8,
+        "longitude": 0
       },
       "zoom": 75
     },
     {
-      "id": 151,
+      "id": 501,
       "type": "panorama",
-      "name": "Orogel 2",
+      "name": "Gedi Office",
       "likes": 134,
       "liked": false,
       "asset": {
         "type": "image",
-        "folder": "video/",
-        "file": "orogel2.mp4"
+        "folder": "gedi/",
+        "file": "office.jpeg"
       },
       "items": [
         {
-          "id": 2020,
+          "id": 5,
           "type": "nav",
-          "title": "Welcome Room",
+          "title": "Reception",
           "abstract": "Abstract",
           "position": [
-            0.8628288555626449,
-            -0.5045050757541418,
-            -0.03163849785884536
+            0.9918489471377363,
+            -0.12680811552667867,
+            0.012464665993772472
           ],
-          "viewId": 1
-        },
-        {
-          "id": 2021,
-          "type": "nav",
-          "title": "Prev Video",
-          "abstract": "Abstract",
-          "position": [
-            0.9214551957293822,
-            -0.386534168946469,
-            -0.03888005272872574
-          ],
-          "viewId": 150
+          "viewId": 500
         }
       ],
       "orientation": {
-        "latitude": -2,
-        "longitude": 360
+        "latitude": -8,
+        "longitude": 0
       },
       "zoom": 75
     },
     {
-      "id": 400,
+      "id": 502,
       "type": "panorama",
-      "name": "Muse Piano -1 Ingresso",
+      "name": "Gedi Cinema",
       "likes": 134,
       "liked": false,
       "asset": {
         "type": "image",
-        "folder": "muse/",
-        "file": "piano-1_1.jpg"
+        "folder": "gedi/",
+        "file": "cinema.jpg"
+      },
+      "items": [
+        {
+          "id": 6,
+          "type": "nav",
+          "title": "Reception",
+          "abstract": "Abstract",
+          "position": [
+            0.8004363875093843,
+            -0.12412776862278327,
+            0.5864246640512794
+          ],
+          "viewId": 500
+        },
+        {
+          "id": 7,
+          "type": "plane",
+          "asset": {
+            "type": "video",
+            "folder": "video/",
+            "file": "gedi.mp4"
+          },
+          "position": {
+            "x": 20,
+            "y": 2.35,
+            "z": -1
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 25,
+            "y": 10.5,
+            "z": 1
+          }
+        },
+        {
+          "id": 8,
+          "type": "nav",
+          "title": "Live Cam",
+          "abstract": "Abstract",
+          "position": [
+            0.9863430394706457,
+            -0.16305753759709832,
+            -0.02093564591489645
+          ],
+          "viewId": 503
+        }
+      ],
+      "orientation": {
+        "latitude": -8,
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 503,
+      "type": "panorama",
+      "name": "Gedi Cinema Live",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "gedi/",
+        "file": "cinema.jpg"
       },
       "items": [
         {
           "id": 10,
           "type": "nav",
-          "title": "WelcomeRoom",
+          "title": "Reception",
           "abstract": "Abstract",
           "position": [
-            -0.9587529301484169,
-            -0.03494085861861478,
-            0.28208501436768785
+            0.8004363875093843,
+            -0.12412776862278327,
+            0.5864246640512794
           ],
-          "viewId": 1
+          "viewId": 500
         },
         {
-          "id": 20,
-          "type": "nav",
-          "title": "Piano 0",
-          "abstract": "Abstract",
-          "position": [
-            0.00832077755022945,
-            0.08450236895450906,
-            0.9963885358142351
-          ],
-          "viewId": 410
+          "id": 11,
+          "type": "plane",
+          "asset": {
+            "type": "video",
+            "folder": "video/",
+            "file": "gedi.mp4"
+          },
+          "position": {
+            "x": 20,
+            "y": 2.35,
+            "z": -1
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 25,
+            "y": 10.5,
+            "z": 1
+          }
         },
         {
-          "id": 30,
-          "type": "nav",
-          "title": "Next",
-          "abstract": "Abstract",
-          "position": [
-            0.7225190646924047,
-            -0.18003957690324512,
-            -0.6674967804450542
-          ],
-          "viewId": 401
-        }                
+          "id": 12,
+          "type": "plane",
+          "asset": {
+            "type": "publisher-stream",
+            "folder": "",
+            "file": "publisherStream",
+            "chromaKeyColor": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          },
+          "position": {
+            "x": 14,
+            "y": -2,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": -1.57079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 6,
+            "y": 4.5,
+            "z": 1
+          }
+        }
       ],
       "orientation": {
         "latitude": -8,
-        "longitude": 360
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 504,
+      "type": "panorama",
+      "name": "Gedi Studio TV",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "gedi/",
+        "file": "test.jpg"
+      },
+      "items": [
+        {
+          "id": 21,
+          "type": "nav",
+          "title": "Reception",
+          "abstract": "Abstract",
+          "position": [
+            -0.14765245236953023,
+            -0.009513482004953831,
+            0.9889935525418784
+          ],
+          "viewId": 500
+        },
+        {
+          "id": 22,
+          "type": "nav",
+          "title": "Live Cam",
+          "abstract": "Abstract",
+          "position": [
+            0.9471469912668565,
+            -0.14327746495764754,
+            0.28702638375147876
+          ],
+          "viewId": 505
+        }
+      ],
+      "orientation": {
+        "latitude": -5,
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 505,
+      "type": "panorama",
+      "name": "Gedi Studio TV Live",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "gedi/",
+        "file": "test.jpg"
+      },
+      "items": [
+        {
+          "id": 30,
+          "type": "plane",
+          "asset": {
+            "type": "publisher-stream",
+            "folder": "",
+            "file": "publisherStream",
+            "chromaKeyColor": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          },
+          "position": {
+            "x": 11,
+            "y": 0.55,
+            "z": 3.55
+          },
+          "rotation": {
+            "x": 0,
+            "y": -2.37079632679,
+            "z": 0
+          },
+          "scale": {
+            "x": 3.3,
+            "y": 2.5,
+            "z": 1
+          }
+        },
+        {
+          "id": 31,
+          "type": "nav",
+          "title": "Reception",
+          "abstract": "Abstract",
+          "position": [
+            -0.14765245236953023,
+            -0.009513482004953831,
+            0.9889935525418784
+          ],
+          "viewId": 500
+        }
+      ],
+      "orientation": {
+        "latitude": -5,
+        "longitude": 0
       },
       "zoom": 75
     },
@@ -250,18 +473,6 @@
         "file": "piano-1_3.jpg"
       },
       "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "Prev",
-          "abstract": "Abstract",
-          "position": [
-            -0.6235485333166748,
-            -0.10254216640728835,
-            0.7750305353385268
-          ],
-          "viewId": 400
-        },
         {
           "id": 20,
           "type": "nav",
@@ -342,23 +553,10 @@
           "viewId": 401
         },
         {
-          "id": 20,
-          "type": "nav",
-          "title": "Ingresso",
-          "abstract": "Ritorna all'ingresso",
-          "position": [
-            0.6662256235609915,
-            -0.07446541393536767,
-            0.7420231267542828
-          ],
-          "viewId": 400
-        },
-        {
           "id": 30,
           "type": "nav",
           "title": "Hominidae",
           "abstract": "Non è possibile comprendere alcun fenomeno biologico se non alla luce del PROCESSO EVOLUTIVO, che continua a modellare e rimodellare i GENOMI degli individui delle specie, e attraverso questi, le strutture e le funzioni di ciascuna di esse.",
-          
           "link": {
             "title": "Prova la nostra guida interattiva...",
             "href": "https://www.youtube.com/watch?time_continue=1&v=OOOcqcvA7do&ab_channel=MUSEMuseodelleScienze",
@@ -433,7 +631,7 @@
         "folder": "muse/",
         "file": "piano-1_4.jpg"
       },
-      "items": [   
+      "items": [
         {
           "id": 10,
           "type": "nav",
@@ -447,19 +645,7 @@
           "viewId": 401
         },
         {
-          "id": 20,
-          "type": "nav",
-          "title": "Ingresso",
-          "abstract": "Ritorna all'ingresso",
-          "position": [
-            0.6662256235609915,
-            -0.07446541393536767,
-            0.7420231267542828
-          ],
-          "viewId": 400
-        },
-        {
-          "id": 30,
+          "id": 31,
           "type": "nav",
           "title": "Instagram",
           "abstract": "Tasso",
@@ -481,7 +667,7 @@
           "viewId": 403
         },
         {
-          "id": 40,
+          "id": 41,
           "type": "nav",
           "title": "Instagram",
           "abstract": "Cervo",
@@ -503,7 +689,7 @@
           "viewId": 403
         },
         {
-          "id": 50,
+          "id": 51,
           "type": "plane",
           "asset": {
             "type": "publisher-stream",
@@ -539,140 +725,6 @@
       "zoom": 75
     },
     {
-      "id": 410,
-      "type": "panorama",
-      "name": "Muse Piano 0 Ingresso",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse/",
-        "file": "piano0_1.jpg"
-      },
-      "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "WelcomeRoom",
-          "abstract": "Abstract",
-          "position": [
-            -0.9587529301484169,
-            -0.03494085861861478,
-            0.28208501436768785
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 20,
-          "type": "nav",
-          "title": "Piano 1",
-          "abstract": "Abstract",
-          "position": [
-            0.2298198167568764,
-            0.07478168703127136,
-            0.9703558888936537
-          ],
-          "viewId": 420
-        },
-        {
-          "id": 30,
-          "type": "nav",
-          "title": "Piano -1",
-          "abstract": "Abstract",
-          "position": [
-            -0.003425343914209809,
-            -0.4127866080329186,
-            0.9108213234480993
-          ],
-          "viewId": 400
-        },
-        {
-          "id": 40,
-          "type": "nav",
-          "title": "Stanza Creativa",
-          "abstract": "Abstract",
-          "position": [
-            0.9941965248053541,
-            -0.012570622794481724,
-            -0.10684217101648426
-          ],
-          "viewId": 412
-        },
-        {
-          "id": 50,
-          "type": "nav",
-          "title": "Plastico",
-          "abstract": "Abstract",
-          "position": [
-            -0.979529968183399,
-            -0.19060099664259428,
-            -0.06474798459781546
-          ],
-          "viewId": 411
-        }                 
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 360
-      },
-      "zoom": 75
-    },
-    {
-      "id": 411,
-      "type": "panorama",
-      "name": "Muse Piano 0 Plastico",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse/",
-        "file": "piano0_2.jpg"
-      },
-      "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "Ingresso",
-          "abstract": "Abstract",
-          "position": [
-            0.8506490769726206,
-            -0.07343985252053792,
-            0.520579231152559
-          ],
-          "viewId": 410
-        },
-        {
-          "id": 20,
-          "type": "plane",
-          "asset": {
-            "type": "video",
-            "folder": "video/",
-            "file": "Bizzarre forme di vita.mp4"
-          },
-          "position": {
-            "x": -0.57,
-            "y": -0.27,
-            "z": 10
-          },
-          "rotation": {
-            "x": 0,
-            "y": 3.14,
-            "z": 0
-          },
-          "scale": {
-            "x": 1.75,
-            "y": 1,
-            "z": 1
-          }
-        }             
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 270
-      },
-      "zoom": 75
-    },
-    {
       "id": 412,
       "type": "panorama",
       "name": "Muse Piano 0 Video",
@@ -684,18 +736,6 @@
         "file": "piano0_3.jpg"
       },
       "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "Ingresso",
-          "abstract": "Abstract",
-          "position": [
-            -0.9708366418863368,
-            -0.02860586407175775,
-            0.23802924045496804
-          ],
-          "viewId": 410
-        },
         {
           "id": 20,
           "type": "plane",
@@ -719,215 +759,7 @@
             "y": 3,
             "z": 1
           }
-        }          
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 420,
-      "type": "panorama",
-      "name": "Muse Piano 1",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse/",
-        "file": "piano1_1.jpg"
-      },
-      "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "WelcomeRoom",
-          "abstract": "Abstract",
-          "position": [
-            -0.9587529301484169,
-            -0.03494085861861478,
-            0.28208501436768785
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 20,
-          "type": "nav",
-          "title": "Piano 2",
-          "abstract": "Abstract",
-          "position": [
-            0.2298198167568764,
-            0.07478168703127136,
-            0.9703558888936537
-          ],
-          "viewId": 430
-        },
-        {
-          "id": 30,
-          "type": "nav",
-          "title": "Piano 0",
-          "abstract": "Abstract",
-          "position": [
-            0.02556244267373778,
-            -0.3531849103984236,
-            0.9352042453878241
-          ],
-          "viewId": 410
-        }          
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 360
-      },
-      "zoom": 75
-    },
-    {
-      "id": 430,
-      "type": "panorama",
-      "name": "Muse Piano 2",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse/",
-        "file": "piano2_1.jpg"
-      },
-      "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "WelcomeRoom",
-          "abstract": "Abstract",
-          "position": [
-            -0.23033254099258083,
-            -0.019910879373574046,
-            -0.9729082574644292
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 20,
-          "type": "nav",
-          "title": "Piano 3",
-          "abstract": "Abstract",
-          "position": [
-            -0.9679422353936546,
-            0.0604422260002918,
-            0.2437920553612530
-          ],
-          "viewId": 440
-        },
-        {
-          "id": 30,
-          "type": "nav",
-          "title": "Piano 1",
-          "abstract": "Abstract",
-          "position": [
-            -0.9127538311936216,
-            -0.40806283993518083,
-            0.019109220428908318
-          ],
-          "viewId": 420
-        }          
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 440,
-      "type": "panorama",
-      "name": "Muse Piano 3",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse/",
-        "file": "piano3_1.jpg"
-      },
-      "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "WelcomeRoom",
-          "abstract": "Abstract",
-          "position": [
-            -0.23033254099258083,
-            -0.019910879373574046,
-            -0.9729082574644292
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 20,
-          "type": "nav",
-          "title": "Piano 4",
-          "abstract": "Abstract",
-          "position": [
-            -0.9679422353936546,
-            0.0604422260002918,
-            0.2437920553612530
-          ],
-          "viewId": 450
-        },
-        {
-          "id": 30,
-          "type": "nav",
-          "title": "Piano 2",
-          "abstract": "Abstract",
-          "position": [
-            -0.9127538311936216,
-            -0.40806283993518083,
-            0.019109220428908318
-          ],
-          "viewId": 430
-        }          
-      ],
-      "orientation": {
-        "latitude": -8,
-        "longitude": 90
-      },
-      "zoom": 75
-    },
-    {
-      "id": 450,
-      "type": "panorama",
-      "name": "Muse Piano 4",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse/",
-        "file": "piano4_1.jpg"
-      },
-      "items": [
-        {
-          "id": 10,
-          "type": "nav",
-          "title": "WelcomeRoom",
-          "abstract": "Abstract",
-          "position": [
-            -0.23033254099258083,
-            -0.019910879373574046,
-            -0.9729082574644292
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 20,
-          "type": "nav",
-          "title": "Piano 3",
-          "abstract": "Abstract",
-          "position": [
-            -0.9164170000740759,
-            -0.4000784888913185,
-            0.010820568454123887
-          ],
-          "viewId": 440
-        }          
+        }
       ],
       "orientation": {
         "latitude": -8,
@@ -2596,64 +2428,17 @@
       "zoom": 75
     },
     {
-      "id": 203,
-      "type": "panorama-grid",
-      "name": "Muse Nav",
-      "likes": 225,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "muse_grid/",
-        "file": "muse_x0_y0.jpg"
-      },
-      "invertAxes": true,
-      "flipAxes": false,
-      "tiles": [
-        {
-          "asset": {
-            "type": "image",
-            "folder": "muse_grid/",
-            "file": "muse_x0_y0.jpg"
-          },
-          "navs": [
-            {
-              "id": 20210,
-              "type": "nav",
-              "title": "Welcome Room",
-              "abstract": "Abstract",
-              "position": [
-                0.9895859099478105,
-                0.0015676209690798433,
-                -0.14393494849153685
-              ],
-              "viewId": 1
-            }
-          ]
-        },
-        "muse_x0_y0.jpg",
-        "muse_x0_y2.jpg",
-        "muse_x0_y4.jpg",
-        "muse_x0_y6.jpg"
-      ],
-      "items": [],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 360
-      },
-      "zoom": 75
-    },
-    {
       "id": 101,
       "type": "room-3d",
       "name": "Room 3D Benelli",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
-      "modelFile": "room-3d-2.fbx",
+      "modelFile": "room-3d-1.fbx",
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "file": "spaceroom.jpeg"
       },
       "items": [
         {
@@ -2757,20 +2542,20 @@
         "latitude": 2,
         "longitude": 360
       },
-      "zoom": 52
+      "zoom": 55
     },
     {
       "id": 102,
       "type": "room-3d",
-      "name": "Room 3D Muse",
+      "name": "Room 3D Gedi",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
-      "modelFile": "room-3d.fbx",
+      "modelFile": "room-3d-1.fbx",
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "file": "spaceroom2.jpeg"
       },
       "items": [
         {
@@ -2848,33 +2633,21 @@
         {
           "id": 10110,
           "type": "nav",
-          "title": "Welcome Room",
+          "title": "Reception",
           "abstract": "Abstract",
           "position": [
             0.9206193140260596,
             -0.033554493274472665,
             0.38901693359451694
           ],
-          "viewId": 1
-        },
-        {
-          "id": 10120,
-          "type": "nav",
-          "title": "Ducati",
-          "abstract": "Abstract",
-          "position": [
-            0.9210009978552354,
-            -0.027991828533736385,
-            -0.38855323893258004
-          ],
-          "viewId": 303
+          "viewId": 500
         }
       ],
       "orientation": {
-        "latitude": 2,
-        "longitude": 360
+        "latitude": 0,
+        "longitude": 0
       },
-      "zoom": 52
+      "zoom": 55
     },
     {
       "id": 309,
