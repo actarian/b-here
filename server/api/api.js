@@ -114,6 +114,13 @@ const ROUTES = [{
 		response.send(JSON.stringify(db));
 	}
 }, {
+	path: '/api/view/:viewId', method: 'GET', callback: function(request, response, params) {
+		const view = doGet(request, response, { id: params.viewId }, db.views);
+		if (view) {
+			response.send(JSON.stringify(view));
+		}
+	}
+}, {
 	path: '/api/view', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.views);
 	}
