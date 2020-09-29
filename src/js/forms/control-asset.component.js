@@ -10,7 +10,7 @@ export default class ControlAssetComponent extends ControlComponent {
 	get image() {
 		let image = null;
 		if (this.control.value) {
-			image = `${this.control.value.folder}${this.control.value.fileName}`;
+			image = `${this.control.value.folder}${this.control.value.file}`;
 		} else if (this.previews && this.previews.length) {
 			image = this.previews[0];
 		}
@@ -50,7 +50,7 @@ export default class ControlAssetComponent extends ControlComponent {
 							/*
 							id: 1601303293569
 							type: "image/jpeg"
-							fileName: "1601303293569_ambiente1_x0_y2.jpg"
+							file: "1601303293569_ambiente1_x0_y2.jpg"
 							originalFileName: "ambiente1_x0_y2.jpg"
 							url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
 							*/

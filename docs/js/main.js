@@ -2984,7 +2984,7 @@ var View = /*#__PURE__*/function () {
         options.items.forEach(function (item, index) {
           item.index = index;
 
-          if (item.asset && item.asset.fileName === 'nextAttendeeStream') {
+          if (item.asset && item.asset.file === 'nextAttendeeStream') {
             item.asset.index = nextAttendeeStreamIndex++;
           }
         });
@@ -3060,11 +3060,11 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
         tile = typeof tile === 'string' ? {
           asset: {
             folder: options.asset.folder,
-            fileName: tile
+            file: tile
           },
           navs: []
         } : tile;
-        tile.asset.fileName.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+        tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
           var flipAxes = options.flipAxes ? -1 : 1;
 
           if (options.invertAxes) {
@@ -3187,13 +3187,13 @@ var Asset = /*#__PURE__*/function () {
     }
 
     var segments = url.split('/');
-    var fileName = segments.pop();
+    var file = segments.pop();
     var folder = segments.join('/') + '/';
-    var type = assetTypeFromPath(fileName);
+    var type = assetTypeFromPath(file);
     return new Asset({
       type: type,
       folder: folder,
-      fileName: fileName
+      file: file
     });
   };
 
@@ -3215,7 +3215,7 @@ var Asset = /*#__PURE__*/function () {
   return Asset;
 }();
 
-_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'fileName', 'linkedPlayId', 'chromaKeyColor']);
+_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor']);
 
 function mapView(view) {
   switch (view.type) {
@@ -3915,29 +3915,29 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
       switch (asset.type) {
         case AssetType$1.Image:
         case AssetType$1.Video:
-          asset = asset.folder + asset.fileName;
+          asset = asset.folder + asset.file;
           asset = environment.getTexturePath(asset);
           break;
 
         case AssetType$1.Model:
-          asset = asset.folder + asset.fileName;
+          asset = asset.folder + asset.file;
           asset = environment.getModelPath(asset);
           break;
 
         case AssetType$1.PublisherStream:
         case AssetType$1.NextAttendeeStream:
-          asset = environment.getModelPath(asset.fileName);
+          asset = environment.getModelPath(asset.file);
           break;
 
         default:
-          if (isImage(asset.fileName) || isVideo(asset.fileName)) {
-            asset = asset.folder + asset.fileName;
+          if (isImage(asset.file) || isVideo(asset.file)) {
+            asset = asset.folder + asset.file;
             asset = environment.getTexturePath(asset);
-          } else if (isModel(asset.fileName)) {
-            asset = asset.folder + asset.fileName;
+          } else if (isModel(asset.file)) {
+            asset = asset.folder + asset.file;
             asset = environment.getModelPath(asset);
-          } else if (isStream(asset.fileName)) {
-            asset = asset.fileName;
+          } else if (isStream(asset.file)) {
+            asset = asset.file;
           }
 
       }
@@ -6333,7 +6333,7 @@ ControlComponent.meta = {
             /*
             id: 1601303293569
             type: "image/jpeg"
-            fileName: "1601303293569_ambiente1_x0_y2.jpg"
+            file: "1601303293569_ambiente1_x0_y2.jpg"
             originalFileName: "ambiente1_x0_y2.jpg"
             url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
             */
@@ -6425,7 +6425,7 @@ ControlComponent.meta = {
       var image = null;
 
       if (this.control.value) {
-        image = "" + this.control.value.folder + this.control.value.fileName;
+        image = "" + this.control.value.folder + this.control.value.file;
       } else if (this.previews && this.previews.length) {
         image = this.previews[0];
       }
@@ -6654,7 +6654,7 @@ var AssetService = /*#__PURE__*/function () {
       /*
       id: 1601303293569
       type: "image/jpeg"
-      fileName: "1601303293569_ambiente1_x0_y2.jpg"
+      file: "1601303293569_ambiente1_x0_y2.jpg"
       originalFileName: "ambiente1_x0_y2.jpg"
       url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
       */
@@ -6828,7 +6828,7 @@ ControlAssetsComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.fileName\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlCheckboxComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCheckboxComponent, _ControlComponent);
 
@@ -8363,1245 +8363,7 @@ TryInARComponent.meta = {
 HlsDirective.meta = {
   selector: '[[hls]]',
   inputs: ['hls']
-};/**
- * @author Nikos M. / https://github.com/foo123/
- */
-// http://en.wikipedia.org/wiki/RGBE_image_format
-
-var RGBELoader = function RGBELoader(manager) {
-  THREE$1.DataTextureLoader.call(this, manager);
-  this.type = THREE$1.UnsignedByteType;
-};
-
-RGBELoader.prototype = Object.assign(Object.create(THREE$1.DataTextureLoader.prototype), {
-  constructor: RGBELoader,
-  // adapted from http://www.graphics.cornell.edu/~bjw/rgbe.html
-  parse: function parse(buffer) {
-    var
-    /* return codes for rgbe routines */
-    //RGBE_RETURN_SUCCESS = 0,
-    RGBE_RETURN_FAILURE = -1,
-
-    /* default error routine.  change this to change error handling */
-    rgbe_read_error = 1,
-        rgbe_write_error = 2,
-        rgbe_format_error = 3,
-        rgbe_memory_error = 4,
-        rgbe_error = function rgbe_error(rgbe_error_code, msg) {
-      switch (rgbe_error_code) {
-        case rgbe_read_error:
-          console.error("RGBELoader Read Error: " + (msg || ''));
-          break;
-
-        case rgbe_write_error:
-          console.error("RGBELoader Write Error: " + (msg || ''));
-          break;
-
-        case rgbe_format_error:
-          console.error("RGBELoader Bad File Format: " + (msg || ''));
-          break;
-
-        default:
-        case rgbe_memory_error:
-          console.error("RGBELoader: Error: " + (msg || ''));
-      }
-
-      return RGBE_RETURN_FAILURE;
-    },
-
-    /* offsets to red, green, and blue components in a data (float) pixel */
-    //RGBE_DATA_RED = 0,
-    //RGBE_DATA_GREEN = 1,
-    //RGBE_DATA_BLUE = 2,
-
-    /* number of floats per pixel, use 4 since stored in rgba image format */
-    //RGBE_DATA_SIZE = 4,
-
-    /* flags indicating which fields in an rgbe_header_info are valid */
-    RGBE_VALID_PROGRAMTYPE = 1,
-        RGBE_VALID_FORMAT = 2,
-        RGBE_VALID_DIMENSIONS = 4,
-        NEWLINE = "\n",
-        fgets = function fgets(buffer, lineLimit, consume) {
-      lineLimit = !lineLimit ? 1024 : lineLimit;
-      var p = buffer.pos,
-          i = -1,
-          len = 0,
-          s = '',
-          chunkSize = 128,
-          chunk = String.fromCharCode.apply(null, new Uint16Array(buffer.subarray(p, p + chunkSize)));
-
-      while (0 > (i = chunk.indexOf(NEWLINE)) && len < lineLimit && p < buffer.byteLength) {
-        s += chunk;
-        len += chunk.length;
-        p += chunkSize;
-        chunk += String.fromCharCode.apply(null, new Uint16Array(buffer.subarray(p, p + chunkSize)));
-      }
-
-      if (-1 < i) {
-        /*for (i=l-1; i>=0; i--) {
-        	byteCode = m.charCodeAt(i);
-        	if (byteCode > 0x7f && byteCode <= 0x7ff) byteLen++;
-        	else if (byteCode > 0x7ff && byteCode <= 0xffff) byteLen += 2;
-        	if (byteCode >= 0xDC00 && byteCode <= 0xDFFF) i--; //trail surrogate
-        }*/
-        if (false !== consume) buffer.pos += len + i + 1;
-        return s + chunk.slice(0, i);
-      }
-
-      return false;
-    },
-
-    /* minimal header reading.  modify if you want to parse more information */
-    RGBE_ReadHeader = function RGBE_ReadHeader(buffer) {
-      var line,
-          match,
-          // regexes to parse header info fields
-      magic_token_re = /^#\?(\S+)$/,
-          gamma_re = /^\s*GAMMA\s*=\s*(\d+(\.\d+)?)\s*$/,
-          exposure_re = /^\s*EXPOSURE\s*=\s*(\d+(\.\d+)?)\s*$/,
-          format_re = /^\s*FORMAT=(\S+)\s*$/,
-          dimensions_re = /^\s*\-Y\s+(\d+)\s+\+X\s+(\d+)\s*$/,
-          // RGBE format header struct
-      header = {
-        valid: 0,
-
-        /* indicate which fields are valid */
-        string: '',
-
-        /* the actual header string */
-        comments: '',
-
-        /* comments found in header */
-        programtype: 'RGBE',
-
-        /* listed at beginning of file to identify it after "#?". defaults to "RGBE" */
-        format: '',
-
-        /* RGBE format, default 32-bit_rle_rgbe */
-        gamma: 1.0,
-
-        /* image has already been gamma corrected with given gamma. defaults to 1.0 (no correction) */
-        exposure: 1.0,
-
-        /* a value of 1.0 in an image corresponds to <exposure> watts/steradian/m^2. defaults to 1.0 */
-        width: 0,
-        height: 0
-        /* image dimensions, width/height */
-
-      };
-
-      if (buffer.pos >= buffer.byteLength || !(line = fgets(buffer))) {
-        return rgbe_error(rgbe_read_error, "no header found");
-      }
-      /* if you want to require the magic token then uncomment the next line */
-
-
-      if (!(match = line.match(magic_token_re))) {
-        return rgbe_error(rgbe_format_error, "bad initial token");
-      }
-
-      header.valid |= RGBE_VALID_PROGRAMTYPE;
-      header.programtype = match[1];
-      header.string += line + "\n";
-
-      while (true) {
-        line = fgets(buffer);
-        if (false === line) break;
-        header.string += line + "\n";
-
-        if ('#' === line.charAt(0)) {
-          header.comments += line + "\n";
-          continue; // comment line
-        }
-
-        if (match = line.match(gamma_re)) {
-          header.gamma = parseFloat(match[1], 10);
-        }
-
-        if (match = line.match(exposure_re)) {
-          header.exposure = parseFloat(match[1], 10);
-        }
-
-        if (match = line.match(format_re)) {
-          header.valid |= RGBE_VALID_FORMAT;
-          header.format = match[1]; //'32-bit_rle_rgbe';
-        }
-
-        if (match = line.match(dimensions_re)) {
-          header.valid |= RGBE_VALID_DIMENSIONS;
-          header.height = parseInt(match[1], 10);
-          header.width = parseInt(match[2], 10);
-        }
-
-        if (header.valid & RGBE_VALID_FORMAT && header.valid & RGBE_VALID_DIMENSIONS) break;
-      }
-
-      if (!(header.valid & RGBE_VALID_FORMAT)) {
-        return rgbe_error(rgbe_format_error, "missing format specifier");
-      }
-
-      if (!(header.valid & RGBE_VALID_DIMENSIONS)) {
-        return rgbe_error(rgbe_format_error, "missing image size specifier");
-      }
-
-      return header;
-    },
-        RGBE_ReadPixels_RLE = function RGBE_ReadPixels_RLE(buffer, w, h) {
-      var data_rgba,
-          offset,
-          pos,
-          count,
-          byteValue,
-          scanline_buffer,
-          ptr,
-          ptr_end,
-          i,
-          l,
-          off,
-          isEncodedRun,
-          scanline_width = w,
-          num_scanlines = h,
-          rgbeStart;
-
-      if ( // run length encoding is not allowed so read flat
-      scanline_width < 8 || scanline_width > 0x7fff || // this file is not run length encoded
-      2 !== buffer[0] || 2 !== buffer[1] || buffer[2] & 0x80) {
-        // return the flat buffer
-        return new Uint8Array(buffer);
-      }
-
-      if (scanline_width !== (buffer[2] << 8 | buffer[3])) {
-        return rgbe_error(rgbe_format_error, "wrong scanline width");
-      }
-
-      data_rgba = new Uint8Array(4 * w * h);
-
-      if (!data_rgba.length) {
-        return rgbe_error(rgbe_memory_error, "unable to allocate buffer space");
-      }
-
-      offset = 0;
-      pos = 0;
-      ptr_end = 4 * scanline_width;
-      rgbeStart = new Uint8Array(4);
-      scanline_buffer = new Uint8Array(ptr_end); // read in each successive scanline
-
-      while (num_scanlines > 0 && pos < buffer.byteLength) {
-        if (pos + 4 > buffer.byteLength) {
-          return rgbe_error(rgbe_read_error);
-        }
-
-        rgbeStart[0] = buffer[pos++];
-        rgbeStart[1] = buffer[pos++];
-        rgbeStart[2] = buffer[pos++];
-        rgbeStart[3] = buffer[pos++];
-
-        if (2 != rgbeStart[0] || 2 != rgbeStart[1] || (rgbeStart[2] << 8 | rgbeStart[3]) != scanline_width) {
-          return rgbe_error(rgbe_format_error, "bad rgbe scanline format");
-        } // read each of the four channels for the scanline into the buffer
-        // first red, then green, then blue, then exponent
-
-
-        ptr = 0;
-
-        while (ptr < ptr_end && pos < buffer.byteLength) {
-          count = buffer[pos++];
-          isEncodedRun = count > 128;
-          if (isEncodedRun) count -= 128;
-
-          if (0 === count || ptr + count > ptr_end) {
-            return rgbe_error(rgbe_format_error, "bad scanline data");
-          }
-
-          if (isEncodedRun) {
-            // a (encoded) run of the same value
-            byteValue = buffer[pos++];
-
-            for (i = 0; i < count; i++) {
-              scanline_buffer[ptr++] = byteValue;
-            } //ptr += count;
-
-          } else {
-            // a literal-run
-            scanline_buffer.set(buffer.subarray(pos, pos + count), ptr);
-            ptr += count;
-            pos += count;
-          }
-        } // now convert data from buffer into rgba
-        // first red, then green, then blue, then exponent (alpha)
-
-
-        l = scanline_width; //scanline_buffer.byteLength;
-
-        for (i = 0; i < l; i++) {
-          off = 0;
-          data_rgba[offset] = scanline_buffer[i + off];
-          off += scanline_width; //1;
-
-          data_rgba[offset + 1] = scanline_buffer[i + off];
-          off += scanline_width; //1;
-
-          data_rgba[offset + 2] = scanline_buffer[i + off];
-          off += scanline_width; //1;
-
-          data_rgba[offset + 3] = scanline_buffer[i + off];
-          offset += 4;
-        }
-
-        num_scanlines--;
-      }
-
-      return data_rgba;
-    };
-
-    var RGBEByteToRGBFloat = function RGBEByteToRGBFloat(sourceArray, sourceOffset, destArray, destOffset) {
-      var e = sourceArray[sourceOffset + 3];
-      var scale = Math.pow(2.0, e - 128.0) / 255.0;
-      destArray[destOffset + 0] = sourceArray[sourceOffset + 0] * scale;
-      destArray[destOffset + 1] = sourceArray[sourceOffset + 1] * scale;
-      destArray[destOffset + 2] = sourceArray[sourceOffset + 2] * scale;
-    };
-
-    var RGBEByteToRGBHalf = function () {
-      // Source: http://gamedev.stackexchange.com/questions/17326/conversion-of-a-number-from-single-precision-floating-point-representation-to-a/17410#17410
-      var floatView = new Float32Array(1);
-      var int32View = new Int32Array(floatView.buffer);
-      /* This method is faster than the OpenEXR implementation (very often
-       * used, eg. in Ogre), with the additional benefit of rounding, inspired
-       * by James Tursa?s half-precision code. */
-
-      function toHalf(val) {
-        floatView[0] = val;
-        var x = int32View[0];
-        var bits = x >> 16 & 0x8000;
-        /* Get the sign */
-
-        var m = x >> 12 & 0x07ff;
-        /* Keep one extra bit for rounding */
-
-        var e = x >> 23 & 0xff;
-        /* Using int is faster here */
-
-        /* If zero, or denormal, or exponent underflows too much for a denormal
-         * half, return signed zero. */
-
-        if (e < 103) return bits;
-        /* If NaN, return NaN. If Inf or exponent overflow, return Inf. */
-
-        if (e > 142) {
-          bits |= 0x7c00;
-          /* If exponent was 0xff and one mantissa bit was set, it means NaN,
-          		 * not Inf, so make sure we set one mantissa bit too. */
-
-          bits |= (e == 255 ? 0 : 1) && x & 0x007fffff;
-          return bits;
-        }
-        /* If exponent underflows but not too much, return a denormal */
-
-
-        if (e < 113) {
-          m |= 0x0800;
-          /* Extra rounding may overflow and set mantissa to 0 and exponent
-           * to 1, which is OK. */
-
-          bits |= (m >> 114 - e) + (m >> 113 - e & 1);
-          return bits;
-        }
-
-        bits |= e - 112 << 10 | m >> 1;
-        /* Extra rounding. An overflow will set mantissa to 0 and increment
-         * the exponent, which is OK. */
-
-        bits += m & 1;
-        return bits;
-      }
-
-      return function (sourceArray, sourceOffset, destArray, destOffset) {
-        var e = sourceArray[sourceOffset + 3];
-        var scale = Math.pow(2.0, e - 128.0) / 255.0;
-        destArray[destOffset + 0] = toHalf(sourceArray[sourceOffset + 0] * scale);
-        destArray[destOffset + 1] = toHalf(sourceArray[sourceOffset + 1] * scale);
-        destArray[destOffset + 2] = toHalf(sourceArray[sourceOffset + 2] * scale);
-      };
-    }();
-
-    var byteArray = new Uint8Array(buffer);
-    byteArray.pos = 0;
-    var rgbe_header_info = RGBE_ReadHeader(byteArray);
-
-    if (RGBE_RETURN_FAILURE !== rgbe_header_info) {
-      var w = rgbe_header_info.width,
-          h = rgbe_header_info.height,
-          image_rgba_data = RGBE_ReadPixels_RLE(byteArray.subarray(byteArray.pos), w, h);
-
-      if (RGBE_RETURN_FAILURE !== image_rgba_data) {
-        switch (this.type) {
-          case THREE$1.UnsignedByteType:
-            var data = image_rgba_data;
-            var format = THREE$1.RGBEFormat; // handled as THREE.RGBAFormat in shaders
-
-            var type = THREE$1.UnsignedByteType;
-            break;
-
-          case THREE$1.FloatType:
-            var numElements = image_rgba_data.length / 4 * 3;
-            var floatArray = new Float32Array(numElements);
-
-            for (var j = 0; j < numElements; j++) {
-              RGBEByteToRGBFloat(image_rgba_data, j * 4, floatArray, j * 3);
-            }
-
-            var data = floatArray;
-            var format = THREE$1.RGBFormat;
-            var type = THREE$1.FloatType;
-            break;
-
-          case THREE$1.HalfFloatType:
-            var numElements = image_rgba_data.length / 4 * 3;
-            var halfArray = new Uint16Array(numElements);
-
-            for (var j = 0; j < numElements; j++) {
-              RGBEByteToRGBHalf(image_rgba_data, j * 4, halfArray, j * 3);
-            }
-
-            var data = halfArray;
-            var format = THREE$1.RGBFormat;
-            var type = THREE$1.HalfFloatType;
-            break;
-
-          default:
-            console.error('THREE.RGBELoader: unsupported type: ', this.type);
-            break;
-        }
-
-        return {
-          width: w,
-          height: h,
-          data: data,
-          header: rgbe_header_info.string,
-          gamma: rgbe_header_info.gamma,
-          exposure: rgbe_header_info.exposure,
-          format: format,
-          type: type
-        };
-      }
-    }
-
-    return null;
-  },
-  setDataType: function setDataType(value) {
-    this.type = value;
-    return this;
-  },
-  load: function load(url, onLoad, onProgress, onError) {
-    function onLoadCallback(texture, texData) {
-      switch (texture.type) {
-        case THREE$1.UnsignedByteType:
-          texture.encoding = THREE$1.RGBEEncoding;
-          texture.minFilter = THREE$1.NearestFilter;
-          texture.magFilter = THREE$1.NearestFilter;
-          texture.generateMipmaps = false;
-          texture.flipY = true;
-          break;
-
-        case THREE$1.FloatType:
-          texture.encoding = THREE$1.LinearEncoding;
-          texture.minFilter = THREE$1.LinearFilter;
-          texture.magFilter = THREE$1.LinearFilter;
-          texture.generateMipmaps = false;
-          texture.flipY = true;
-          break;
-
-        case THREE$1.HalfFloatType:
-          texture.encoding = THREE$1.LinearEncoding;
-          texture.minFilter = THREE$1.LinearFilter;
-          texture.magFilter = THREE$1.LinearFilter;
-          texture.generateMipmaps = false;
-          texture.flipY = true;
-          break;
-      }
-
-      if (onLoad) onLoad(texture, texData);
-    }
-
-    return THREE$1.DataTextureLoader.prototype.load.call(this, url, onLoadCallback, onProgress, onError);
-  }
-});var DebugService = /*#__PURE__*/function () {
-  DebugService.getService = function getService() {
-    if (!this.service_) {
-      this.service_ = new DebugService();
-    }
-
-    return this.service_;
-  };
-
-  _createClass(DebugService, [{
-    key: "message",
-    get: function get() {
-      return this.message$.getValue();
-    }
-  }]);
-
-  function DebugService() {
-    if (DebugService.service_) {
-      throw 'DebugService is a singleton class!';
-    }
-
-    this.message$ = new rxjs.BehaviorSubject(null);
-  }
-
-  var _proto = DebugService.prototype;
-
-  _proto.setMessage = function setMessage(message) {
-    if (this.message !== message) {
-      this.message$.next(message);
-    }
-  };
-
-  return DebugService;
-}();var EnvMapLoader = /*#__PURE__*/function () {
-  function EnvMapLoader() {}
-
-  EnvMapLoader.load = function load(item, renderer, callback) {
-    this.video = null;
-
-    if (!item.asset) {
-      return;
-    }
-
-    if (item.asset.fileName === 'publisherStream') {
-      return this.loadPublisherStreamBackground(renderer, callback);
-    } else if (item.asset.fileName.indexOf('.hdr') !== -1) {
-      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
-    } else if (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1) {
-      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
-    } else if (item.asset.fileName.indexOf('.m3u8') !== -1) {
-      return this.loadHlslVideoBackground(item.asset.fileName, renderer, callback);
-    } else {
-      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
-    }
-  };
-
-  EnvMapLoader.loadBackground = function loadBackground(path, file, renderer, callback) {
-    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
-    pmremGenerator.compileEquirectangularShader();
-    var loader = new THREE$1.TextureLoader();
-    loader.setPath(path).load(file, function (texture) {
-      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
-
-      pmremGenerator.dispose();
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, false);
-      }
-    });
-    return loader;
-  };
-
-  EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
-    var _this = this;
-
-    var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
-      // const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-      var target = "#stream-" + publisherStreamId;
-      var video = document.querySelector(target + " video");
-
-      if (!video) {
-        return;
-      }
-
-      var onPlaying = function onPlaying() {
-        var texture = _this.texture = new THREE$1.VideoTexture(video);
-        texture.minFilter = THREE$1.LinearFilter;
-        texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
-        texture.format = THREE$1.RGBFormat;
-        texture.needsUpdate = true;
-        var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-          generateMipmaps: true,
-          // minFilter: THREE.LinearMipmapLinearFilter,
-          minFilter: THREE$1.LinearFilter,
-          magFilter: THREE$1.LinearFilter,
-          mapping: THREE$1.UVMapping,
-          format: THREE$1.RGBFormat
-        }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-        if (typeof callback === 'function') {
-          callback(cubeRenderTarget.texture, texture, false);
-        }
-      };
-
-      video.crossOrigin = 'anonymous';
-
-      if (video.readyState >= video.HAVE_FUTURE_DATA) {
-        onPlaying();
-      } else {
-        video.oncanplay = function () {
-          onPlaying();
-        };
-      }
-    };
-
-    StreamService.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
-      return onPublisherStreamId(publisherStreamId);
-    });
-  };
-
-  EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
-    var _this2 = this;
-
-    var debugService = DebugService.getService();
-    this.video = true;
-    var video = this.video;
-
-    var onPlaying = function onPlaying() {
-      video.oncanplay = null;
-      var texture = new THREE$1.VideoTexture(video);
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
-      texture.format = THREE$1.RGBFormat;
-      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
-
-      var cubeRenderTarget = _this2.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-        generateMipmaps: true,
-        // minFilter: THREE.LinearMipmapLinearFilter,
-        minFilter: THREE$1.LinearFilter,
-        magFilter: THREE$1.LinearFilter,
-        mapping: THREE$1.UVMapping,
-        format: THREE$1.RGBFormat
-      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-      if (typeof callback === 'function') {
-        callback(cubeRenderTarget.texture, texture, false);
-      }
-    }; // video.addEventListener('playing', onPlaying);
-
-
-    video.oncanplay = function () {
-      // console.log('EnvMapLoader.loadVideoBackground.oncanplay');
-      onPlaying();
-    };
-
-    video.src = path + file;
-    video.load();
-    video.play().then(function () {
-      // console.log('EnvMapLoader.loadVideoBackground.play');
-      debugService.setMessage("play " + video.src);
-    }, function (error) {
-      console.log('EnvMapLoader.loadVideoBackground.play.error', error);
-      debugService.setMessage("play.error " + video.src);
-    });
-  };
-
-  EnvMapLoader.loadHlslVideoBackground = function loadHlslVideoBackground(src, renderer, callback) {
-    var video = document.createElement('video');
-
-    var onPlaying = function onPlaying() {
-      video.oncanplay = null;
-      var texture = new THREE$1.VideoTexture(video);
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
-      texture.format = THREE$1.RGBFormat;
-      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
-
-      var cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
-        generateMipmaps: true,
-        // minFilter: THREE.LinearMipmapLinearFilter,
-        minFilter: THREE$1.LinearFilter,
-        magFilter: THREE$1.LinearFilter,
-        mapping: THREE$1.UVMapping,
-        format: THREE$1.RGBFormat
-      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
-
-      if (typeof callback === 'function') {
-        callback(cubeRenderTarget.texture, texture, false);
-      }
-    };
-
-    video.oncanplay = function () {
-      // console.log('videoReady', videoReady);
-      onPlaying();
-    };
-
-    if (Hls.isSupported()) {
-      var hls = new Hls(); // bind them together
-
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        hls.loadSource(src);
-        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-          // console.log('HlsDirective', data.levels);
-          video.play();
-        });
-      });
-    }
-  };
-
-  EnvMapLoader.loadRgbeBackground = function loadRgbeBackground(path, file, renderer, callback) {
-    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
-    pmremGenerator.compileEquirectangularShader();
-    var loader = new RGBELoader();
-    loader.setDataType(THREE$1.UnsignedByteType) // .setDataType(THREE.FloatType)
-    .setPath(path).load(file, function (texture) {
-      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
-
-      pmremGenerator.dispose();
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, true);
-      }
-    });
-    return loader;
-  };
-
-  _createClass(EnvMapLoader, null, [{
-    key: "video",
-    get: function get() {
-      return this.video_;
-    },
-    set: function set(video) {
-      if (this.video_) {
-        this.video_.pause();
-
-        if (this.video_.parentNode) {
-          this.video_.parentNode.removeChild(this.video_);
-        }
-
-        this.video_ = null;
-      }
-
-      if (video) {
-        var _video = this.video_ = document.createElement('video');
-
-        _video.loop = true;
-        _video.muted = true;
-        _video.playsInline = true;
-        _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
-      }
-    }
-  }, {
-    key: "cubeRenderTarget",
-    set: function set(cubeRenderTarget) {
-      if (this.cubeRenderTarget_) {
-        this.cubeRenderTarget_.texture.dispose();
-        this.cubeRenderTarget_.dispose();
-      }
-
-      this.cubeRenderTarget_ = cubeRenderTarget;
-    }
-  }, {
-    key: "texture",
-    set: function set(texture) {
-      if (this.texture_) {
-        this.texture_.dispose();
-      }
-
-      this.texture_ = texture;
-    }
-  }]);
-
-  return EnvMapLoader;
-}();var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
-  _inheritsLoose(FreezableMesh, _THREE$Mesh);
-
-  _createClass(FreezableMesh, [{
-    key: "freezed",
-    get: function get() {
-      return this.freezed_;
-    },
-    set: function set(freezed) {
-      // !!! cycle through freezable and not freezable
-      this.freezed_ = freezed;
-      this.children.filter(function (x) {
-        return x.__lookupGetter__('freezed');
-      }).forEach(function (x) {
-        return x.freezed = freezed;
-      });
-    }
-  }]);
-
-  function FreezableMesh(geometry, material) {
-    var _this;
-
-    geometry = geometry || new THREE$1.BoxGeometry(5, 5, 5);
-    material = material || new THREE$1.MeshBasicMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _THREE$Mesh.call(this, geometry, material) || this;
-    _this.freezed = false;
-    return _this;
-  }
-
-  var _proto = FreezableMesh.prototype;
-
-  _proto.freeze = function freeze() {
-    this.freezed = true;
-  };
-
-  _proto.unfreeze = function unfreeze() {
-    this.freezed = false;
-  };
-
-  return FreezableMesh;
-}(THREE$1.Mesh);var EmittableMesh = /*#__PURE__*/function (_FreezableMesh) {
-  _inheritsLoose(EmittableMesh, _FreezableMesh);
-
-  function EmittableMesh(geometry, material) {
-    var _this;
-
-    geometry = geometry || new THREE$1.BoxGeometry(5, 5, 5);
-    material = material || new THREE$1.MeshBasicMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _FreezableMesh.call(this, geometry, material) || this;
-    _this.events = {};
-    return _this;
-  }
-
-  var _proto = EmittableMesh.prototype;
-
-  _proto.on = function on(type, callback) {
-    var _this2 = this;
-
-    var event = this.events[type] = this.events[type] || [];
-    event.push(callback);
-    return function () {
-      _this2.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    };
-  };
-
-  _proto.off = function off(type, callback) {
-    var event = this.events[type];
-
-    if (event) {
-      this.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    }
-  };
-
-  _proto.emit = function emit(type, data) {
-    var event = this.events[type];
-
-    if (event) {
-      event.forEach(function (callback) {
-        // callback.call(this, data);
-        callback(data);
-      });
-    }
-
-    var broadcast = this.events.broadcast;
-
-    if (broadcast) {
-      broadcast.forEach(function (callback) {
-        callback(type, data);
-      });
-    }
-  };
-
-  return EmittableMesh;
-}(FreezableMesh);var Interactive = function Interactive() {};
-Interactive.items = [];
-Interactive.hittest = interactiveHittest.bind(Interactive);
-Interactive.dispose = interactiveDispose.bind(Interactive);
-function interactiveHittest(raycaster, down, event) {
-  var _this = this;
-
-  if (down === void 0) {
-    down = false;
-  }
-
-  var debugService = DebugService.getService();
-
-  if (this.down !== down) {
-    this.down = down;
-    this.lock = false;
-  }
-
-  var items = this.items.filter(function (x) {
-    return !x.freezed;
-  });
-  var intersections = raycaster.intersectObjects(items);
-  var key, hit;
-  var hash = {};
-  intersections.forEach(function (intersection, i) {
-    var object = intersection.object;
-    key = object.uuid;
-
-    if (i === 0) {
-      if (_this.lastIntersectedObject !== object) {
-        _this.lastIntersectedObject = object;
-        hit = object;
-        debugService.setMessage(hit.name || hit.id); // haptic feedback
-      } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
-        object.intersection = intersection;
-        object.emit('move', object);
-      }
-    }
-
-    hash[key] = intersection;
-  });
-
-  if (intersections.length === 0) {
-    this.lastIntersectedObject = null;
-  }
-
-  items.forEach(function (x) {
-    x.intersection = hash[x.uuid];
-    x.over = x === _this.lastIntersectedObject || !x.depthTest && x.intersection && (!_this.lastIntersectedObject || _this.lastIntersectedObject.depthTest);
-    x.down = down && x.over && !_this.lock;
-
-    if (x.down) {
-      _this.lock = true;
-    }
-  });
-  return hit;
-}
-function interactiveDispose(object) {
-  if (object) {
-    var index = this.items.indexOf(object);
-
-    if (index !== -1) {
-      this.items.splice(index, 1);
-    }
-  }
-}var InteractiveMesh = /*#__PURE__*/function (_EmittableMesh) {
-  _inheritsLoose(InteractiveMesh, _EmittableMesh);
-
-  /*
-  static hittest(raycaster, down = false, event = defaultEvent) {
-  	const debugService = DebugService.getService();
-  	if (InteractiveMesh.down !== down) {
-  		InteractiveMesh.down = down;
-  		InteractiveMesh.lock = false;
-  	}
-  	const items = InteractiveMesh.items.filter(x => !x.freezed);
-  	const intersections = raycaster.intersectObjects(items);
-  	let key, hit;
-  	const hash = {};
-  	intersections.forEach((intersection, i) => {
-  		const object = intersection.object;
-  		key = object.uuid;
-  		if (i === 0) {
-  			if (InteractiveMesh.lastIntersectedObject !== object) {
-  				InteractiveMesh.lastIntersectedObject = object;
-  				hit = object;
-  				debugService.setMessage(hit.name || hit.id);
-  				// haptic feedback
-  			} else if (
-  				Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 ||
-  				Math.abs(object.intersection.point.y - intersection.point.y) > 0.01
-  			) {
-  				object.intersection = intersection;
-  				object.emit('move', object);
-  			}
-  		}
-  		hash[key] = intersection;
-  	});
-  	items.forEach(x => {
-  		x.intersection = hash[x.uuid];
-  		x.over = (x === InteractiveMesh.lastIntersectedObject) || (!x.depthTest && x.intersection);
-  		x.down = down && x.over && !InteractiveMesh.lock;
-  		if (x.down) {
-  			InteractiveMesh.lock = true;
-  		}
-  	});
-  	return hit;
-  }
-  
-  static dispose(object) {
-  	if (object) {
-  		const index = InteractiveMesh.items.indexOf(object);
-  		if (index !== -1) {
-  			InteractiveMesh.items.splice(index, 1);
-  		}
-  	}
-  }
-  */
-  function InteractiveMesh(geometry, material) {
-    var _this;
-
-    _this = _EmittableMesh.call(this, geometry, material) || this;
-    _this.depthTest = true;
-    _this.over_ = false;
-    _this.down_ = false;
-    Interactive.items.push(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(InteractiveMesh, [{
-    key: "over",
-    get: function get() {
-      return this.over_;
-    },
-    set: function set(over) {
-      if (this.over_ != over) {
-        this.over_ = over;
-        /*
-        if (over) {
-        	this.emit('hit', this);
-        }
-        */
-
-        if (over) {
-          this.emit('over', this);
-        } else {
-          this.emit('out', this);
-        }
-      }
-    }
-  }, {
-    key: "down",
-    get: function get() {
-      return this.down_;
-    },
-    set: function set(down) {
-      down = down && this.over;
-
-      if (this.down_ != down) {
-        this.down_ = down;
-
-        if (down) {
-          this.emit('down', this);
-        } else {
-          this.emit('up', this);
-        }
-      }
-    }
-  }]);
-
-  return InteractiveMesh;
-}(EmittableMesh);function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-  THREE$1.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-  this.format = format !== undefined ? format : THREE.RGBFormat;
-  this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
-  this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
-  this.mapping = THREE.UVMapping;
-  this.generateMipmaps = false;
-}
-
-VideoTexture.prototype = Object.assign(Object.create(THREE$1.Texture.prototype), {
-  constructor: VideoTexture,
-  isVideoTexture: true,
-  update: function update() {
-    var video = this.image;
-
-    if (video.readyState >= video.HAVE_CURRENT_DATA) {
-      this.needsUpdate = true;
-    }
-  }
-});var PANORAMA_RADIUS = 101;
-var VERTEX_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\t// gl_PointSize = 8.0;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-var FRAGMENT_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float tween;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
-
-var Panorama = /*#__PURE__*/function () {
-  function Panorama() {
-    this.tween = 0;
-    this.create();
-  }
-
-  var _proto = Panorama.prototype;
-
-  _proto.create = function create() {
-    var geometry = new THREE$1.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
-    geometry.scale(-1, 1, 1);
-    geometry.rotateY(Math.PI);
-    var material = new THREE$1.ShaderMaterial({
-      // depthTest: false,
-      depthWrite: false,
-      vertexShader: VERTEX_SHADER,
-      fragmentShader: FRAGMENT_SHADER,
-      uniforms: {
-        texture: {
-          type: "t",
-          value: null
-        },
-        resolution: {
-          value: new THREE$1.Vector2()
-        },
-        tween: {
-          value: 0
-        },
-        rgbe: {
-          value: false
-        }
-      }
-    });
-    /*
-    const material = new THREE.MeshBasicMaterial({
-    	transparent: true,
-    	opacity: 0,
-    });
-    */
-
-    var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
-
-    mesh.name = '[panorama]';
-  };
-
-  _proto.swap = function swap(view, renderer, callback, onexit) {
-    var _this = this;
-
-    var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
-    var material = this.mesh.material;
-
-    if (this.tween > 0) {
-      gsap.to(this, 0.5, {
-        tween: 0,
-        ease: Power2.easeInOut,
-        onUpdate: function onUpdate() {
-          material.uniforms.tween.value = _this.tween;
-          material.needsUpdate = true;
-        },
-        onComplete: function onComplete() {
-          if (typeof onexit === 'function') {
-            onexit(view);
-          }
-
-          _this.load(item, renderer, function (envMap, texture, rgbe) {
-            gsap.to(_this, 0.5, {
-              tween: 1,
-              ease: Power2.easeInOut,
-              onUpdate: function onUpdate() {
-                material.uniforms.tween.value = _this.tween;
-                material.needsUpdate = true;
-              }
-            });
-
-            if (typeof callback === 'function') {
-              callback(envMap, texture, rgbe);
-            }
-          });
-        }
-      });
-    } else {
-      if (typeof onexit === 'function') {
-        onexit(view);
-      }
-
-      this.load(item, renderer, function (envMap, texture, rgbe) {
-        gsap.to(_this, 0.5, {
-          tween: 1,
-          ease: Power2.easeInOut,
-          onUpdate: function onUpdate() {
-            material.uniforms.tween.value = _this.tween;
-            material.needsUpdate = true;
-          }
-        });
-
-        if (typeof callback === 'function') {
-          callback(envMap, texture, rgbe);
-        }
-      });
-    }
-  };
-
-  _proto.crossfade = function crossfade(item, renderer, callback) {
-    var material = this.mesh.material;
-    this.load(item, renderer, function (envMap, texture, rgbe) {
-      material.uniforms.tween.value = 1;
-      material.needsUpdate = true;
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, rgbe);
-      }
-    });
-  };
-
-  _proto.load = function load(item, renderer, callback) {
-    var material = this.mesh.material;
-    EnvMapLoader.load(item, renderer, function (envMap, texture, rgbe, video, pmremGenerator) {
-      if (material.uniforms.texture.value) {
-        material.uniforms.texture.value.dispose();
-        material.uniforms.texture.value = null;
-      }
-
-      texture.minFilter = THREE$1.LinearFilter;
-      texture.magFilter = THREE$1.LinearFilter;
-      texture.mapping = THREE$1.UVMapping;
-      texture.needsUpdate = true; // material.map = texture;
-
-      material.uniforms.texture.value = texture;
-      material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height);
-      material.uniforms.tween.value = 0;
-      material.uniforms.rgbe.value = rgbe; // console.log(texture.width, texture.height);
-
-      material.needsUpdate = true;
-
-      if (typeof callback === 'function') {
-        callback(envMap, texture, rgbe);
-      }
-    });
-  };
-
-  _proto.loadVideo = function loadVideo(src) {
-    var video = document.createElement('video');
-    /*
-    const temp = document.querySelector('.temp');
-    temp.appendChild(video);
-    */
-
-    video.src = src;
-    video.muted = true;
-    video.playsinline = video.playsInline = true;
-    video.play();
-    this.setVideo(video);
-  };
-
-  _proto.setVideo = function setVideo(video) {
-    var _this2 = this;
-
-    // console.log('Panorama.setVideo', video);
-    if (video) {
-
-      var onPlaying = function onPlaying() {
-        var texture = new VideoTexture(video);
-        texture.minFilter = THREE$1.LinearFilter;
-        texture.magFilter = THREE$1.LinearFilter;
-        texture.mapping = THREE$1.UVMapping;
-        texture.format = THREE$1.RGBFormat;
-        texture.needsUpdate = true;
-        var material = _this2.mesh.material;
-        material.map = texture;
-        material.uniforms.texture.value = texture;
-        material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
-
-        material.needsUpdate = true; // video.currentTime = 1;
-        // video.load();
-      }; // video.addEventListener('playing', onPlaying);
-
-
-      video.crossOrigin = 'anonymous';
-
-      video.oncanplay = function () {
-
-        onPlaying();
-      };
-      /*
-      video.width = 640;
-      video.height = 480;
-      */
-
-      /*
-      video.addEventListener("play", function() {
-      	frameloop();
-      });
-      */
-
-    }
-  };
-
-  return Panorama;
-}();// Polyfills
+};// Polyfills
 
 if ( Number.EPSILON === undefined ) {
 
@@ -9779,6 +8541,7 @@ const RGBFormat = 1022;
 const RGBAFormat = 1023;
 const LuminanceFormat = 1024;
 const LuminanceAlphaFormat = 1025;
+const RGBEFormat = RGBAFormat;
 const DepthFormat = 1026;
 const DepthStencilFormat = 1027;
 const RedFormat = 1028;
@@ -37837,7 +36600,7 @@ function testPoint( point, index, localThresholdSq, matrixWorld, raycaster, inte
  * @author mrdoob / http://mrdoob.com/
  */
 
-function VideoTexture$1( video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy ) {
+function VideoTexture( video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy ) {
 
 	Texture.call( this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy );
 
@@ -37850,9 +36613,9 @@ function VideoTexture$1( video, mapping, wrapS, wrapT, magFilter, minFilter, for
 
 }
 
-VideoTexture$1.prototype = Object.assign( Object.create( Texture.prototype ), {
+VideoTexture.prototype = Object.assign( Object.create( Texture.prototype ), {
 
-	constructor: VideoTexture$1,
+	constructor: VideoTexture,
 
 	isVideoTexture: true,
 
@@ -59455,6 +58218,1313 @@ if ( typeof __THREE_DEVTOOLS__ !== 'undefined' ) {
 	/* eslint-enable no-undef */
 
 }/**
+ * @author Nikos M. / https://github.com/foo123/
+ */
+
+// https://github.com/mrdoob/three.js/issues/5552
+// http://en.wikipedia.org/wiki/RGBE_image_format
+
+var RGBELoader = function ( manager ) {
+
+	DataTextureLoader.call( this, manager );
+
+	this.type = UnsignedByteType;
+
+};
+
+RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype ), {
+
+	constructor: RGBELoader,
+
+	// adapted from http://www.graphics.cornell.edu/~bjw/rgbe.html
+
+	parse: function ( buffer ) {
+
+		var
+			/* return codes for rgbe routines */
+			//RGBE_RETURN_SUCCESS = 0,
+			RGBE_RETURN_FAILURE = - 1,
+
+			/* default error routine.  change this to change error handling */
+			rgbe_read_error = 1,
+			rgbe_write_error = 2,
+			rgbe_format_error = 3,
+			rgbe_memory_error = 4,
+			rgbe_error = function ( rgbe_error_code, msg ) {
+
+				switch ( rgbe_error_code ) {
+
+					case rgbe_read_error: console.error( "RGBELoader Read Error: " + ( msg || '' ) );
+						break;
+					case rgbe_write_error: console.error( "RGBELoader Write Error: " + ( msg || '' ) );
+						break;
+					case rgbe_format_error: console.error( "RGBELoader Bad File Format: " + ( msg || '' ) );
+						break;
+					default:
+					case rgbe_memory_error: console.error( "RGBELoader: Error: " + ( msg || '' ) );
+
+				}
+
+				return RGBE_RETURN_FAILURE;
+
+			},
+
+			/* offsets to red, green, and blue components in a data (float) pixel */
+			//RGBE_DATA_RED = 0,
+			//RGBE_DATA_GREEN = 1,
+			//RGBE_DATA_BLUE = 2,
+
+			/* number of floats per pixel, use 4 since stored in rgba image format */
+			//RGBE_DATA_SIZE = 4,
+
+			/* flags indicating which fields in an rgbe_header_info are valid */
+			RGBE_VALID_PROGRAMTYPE = 1,
+			RGBE_VALID_FORMAT = 2,
+			RGBE_VALID_DIMENSIONS = 4,
+
+			NEWLINE = "\n",
+
+			fgets = function ( buffer, lineLimit, consume ) {
+
+				lineLimit = ! lineLimit ? 1024 : lineLimit;
+				var p = buffer.pos,
+					i = - 1, len = 0, s = '', chunkSize = 128,
+					chunk = String.fromCharCode.apply( null, new Uint16Array( buffer.subarray( p, p + chunkSize ) ) )
+				;
+				while ( ( 0 > ( i = chunk.indexOf( NEWLINE ) ) ) && ( len < lineLimit ) && ( p < buffer.byteLength ) ) {
+
+					s += chunk; len += chunk.length;
+					p += chunkSize;
+					chunk += String.fromCharCode.apply( null, new Uint16Array( buffer.subarray( p, p + chunkSize ) ) );
+
+				}
+
+				if ( - 1 < i ) {
+
+					/*for (i=l-1; i>=0; i--) {
+						byteCode = m.charCodeAt(i);
+						if (byteCode > 0x7f && byteCode <= 0x7ff) byteLen++;
+						else if (byteCode > 0x7ff && byteCode <= 0xffff) byteLen += 2;
+						if (byteCode >= 0xDC00 && byteCode <= 0xDFFF) i--; //trail surrogate
+					}*/
+					if ( false !== consume ) buffer.pos += len + i + 1;
+					return s + chunk.slice( 0, i );
+
+				}
+
+				return false;
+
+			},
+
+			/* minimal header reading.  modify if you want to parse more information */
+			RGBE_ReadHeader = function ( buffer ) {
+
+				var line, match,
+
+					// regexes to parse header info fields
+					magic_token_re = /^#\?(\S+)$/,
+					gamma_re = /^\s*GAMMA\s*=\s*(\d+(\.\d+)?)\s*$/,
+					exposure_re = /^\s*EXPOSURE\s*=\s*(\d+(\.\d+)?)\s*$/,
+					format_re = /^\s*FORMAT=(\S+)\s*$/,
+					dimensions_re = /^\s*\-Y\s+(\d+)\s+\+X\s+(\d+)\s*$/,
+
+					// RGBE format header struct
+					header = {
+
+						valid: 0, /* indicate which fields are valid */
+
+						string: '', /* the actual header string */
+
+						comments: '', /* comments found in header */
+
+						programtype: 'RGBE', /* listed at beginning of file to identify it after "#?". defaults to "RGBE" */
+
+						format: '', /* RGBE format, default 32-bit_rle_rgbe */
+
+						gamma: 1.0, /* image has already been gamma corrected with given gamma. defaults to 1.0 (no correction) */
+
+						exposure: 1.0, /* a value of 1.0 in an image corresponds to <exposure> watts/steradian/m^2. defaults to 1.0 */
+
+						width: 0, height: 0 /* image dimensions, width/height */
+
+					};
+
+				if ( buffer.pos >= buffer.byteLength || ! ( line = fgets( buffer ) ) ) {
+
+					return rgbe_error( rgbe_read_error, "no header found" );
+
+				}
+
+				/* if you want to require the magic token then uncomment the next line */
+				if ( ! ( match = line.match( magic_token_re ) ) ) {
+
+					return rgbe_error( rgbe_format_error, "bad initial token" );
+
+				}
+
+				header.valid |= RGBE_VALID_PROGRAMTYPE;
+				header.programtype = match[ 1 ];
+				header.string += line + "\n";
+
+				while ( true ) {
+
+					line = fgets( buffer );
+					if ( false === line ) break;
+					header.string += line + "\n";
+
+					if ( '#' === line.charAt( 0 ) ) {
+
+						header.comments += line + "\n";
+						continue; // comment line
+
+					}
+
+					if ( match = line.match( gamma_re ) ) {
+
+						header.gamma = parseFloat( match[ 1 ], 10 );
+
+					}
+
+					if ( match = line.match( exposure_re ) ) {
+
+						header.exposure = parseFloat( match[ 1 ], 10 );
+
+					}
+
+					if ( match = line.match( format_re ) ) {
+
+						header.valid |= RGBE_VALID_FORMAT;
+						header.format = match[ 1 ];//'32-bit_rle_rgbe';
+
+					}
+
+					if ( match = line.match( dimensions_re ) ) {
+
+						header.valid |= RGBE_VALID_DIMENSIONS;
+						header.height = parseInt( match[ 1 ], 10 );
+						header.width = parseInt( match[ 2 ], 10 );
+
+					}
+
+					if ( ( header.valid & RGBE_VALID_FORMAT ) && ( header.valid & RGBE_VALID_DIMENSIONS ) ) break;
+
+				}
+
+				if ( ! ( header.valid & RGBE_VALID_FORMAT ) ) {
+
+					return rgbe_error( rgbe_format_error, "missing format specifier" );
+
+				}
+
+				if ( ! ( header.valid & RGBE_VALID_DIMENSIONS ) ) {
+
+					return rgbe_error( rgbe_format_error, "missing image size specifier" );
+
+				}
+
+				return header;
+
+			},
+
+			RGBE_ReadPixels_RLE = function ( buffer, w, h ) {
+
+				var data_rgba, offset, pos, count, byteValue,
+					scanline_buffer, ptr, ptr_end, i, l, off, isEncodedRun,
+					scanline_width = w, num_scanlines = h, rgbeStart
+				;
+
+				if (
+					// run length encoding is not allowed so read flat
+					( ( scanline_width < 8 ) || ( scanline_width > 0x7fff ) ) ||
+					// this file is not run length encoded
+					( ( 2 !== buffer[ 0 ] ) || ( 2 !== buffer[ 1 ] ) || ( buffer[ 2 ] & 0x80 ) )
+				) {
+
+					// return the flat buffer
+					return new Uint8Array( buffer );
+
+				}
+
+				if ( scanline_width !== ( ( buffer[ 2 ] << 8 ) | buffer[ 3 ] ) ) {
+
+					return rgbe_error( rgbe_format_error, "wrong scanline width" );
+
+				}
+
+				data_rgba = new Uint8Array( 4 * w * h );
+
+				if ( ! data_rgba.length ) {
+
+					return rgbe_error( rgbe_memory_error, "unable to allocate buffer space" );
+
+				}
+
+				offset = 0; pos = 0; ptr_end = 4 * scanline_width;
+				rgbeStart = new Uint8Array( 4 );
+				scanline_buffer = new Uint8Array( ptr_end );
+
+				// read in each successive scanline
+				while ( ( num_scanlines > 0 ) && ( pos < buffer.byteLength ) ) {
+
+					if ( pos + 4 > buffer.byteLength ) {
+
+						return rgbe_error( rgbe_read_error );
+
+					}
+
+					rgbeStart[ 0 ] = buffer[ pos ++ ];
+					rgbeStart[ 1 ] = buffer[ pos ++ ];
+					rgbeStart[ 2 ] = buffer[ pos ++ ];
+					rgbeStart[ 3 ] = buffer[ pos ++ ];
+
+					if ( ( 2 != rgbeStart[ 0 ] ) || ( 2 != rgbeStart[ 1 ] ) || ( ( ( rgbeStart[ 2 ] << 8 ) | rgbeStart[ 3 ] ) != scanline_width ) ) {
+
+						return rgbe_error( rgbe_format_error, "bad rgbe scanline format" );
+
+					}
+
+					// read each of the four channels for the scanline into the buffer
+					// first red, then green, then blue, then exponent
+					ptr = 0;
+					while ( ( ptr < ptr_end ) && ( pos < buffer.byteLength ) ) {
+
+						count = buffer[ pos ++ ];
+						isEncodedRun = count > 128;
+						if ( isEncodedRun ) count -= 128;
+
+						if ( ( 0 === count ) || ( ptr + count > ptr_end ) ) {
+
+							return rgbe_error( rgbe_format_error, "bad scanline data" );
+
+						}
+
+						if ( isEncodedRun ) {
+
+							// a (encoded) run of the same value
+							byteValue = buffer[ pos ++ ];
+							for ( i = 0; i < count; i ++ ) {
+
+								scanline_buffer[ ptr ++ ] = byteValue;
+
+							}
+							//ptr += count;
+
+						} else {
+
+							// a literal-run
+							scanline_buffer.set( buffer.subarray( pos, pos + count ), ptr );
+							ptr += count; pos += count;
+
+						}
+
+					}
+
+
+					// now convert data from buffer into rgba
+					// first red, then green, then blue, then exponent (alpha)
+					l = scanline_width; //scanline_buffer.byteLength;
+					for ( i = 0; i < l; i ++ ) {
+
+						off = 0;
+						data_rgba[ offset ] = scanline_buffer[ i + off ];
+						off += scanline_width; //1;
+						data_rgba[ offset + 1 ] = scanline_buffer[ i + off ];
+						off += scanline_width; //1;
+						data_rgba[ offset + 2 ] = scanline_buffer[ i + off ];
+						off += scanline_width; //1;
+						data_rgba[ offset + 3 ] = scanline_buffer[ i + off ];
+						offset += 4;
+
+					}
+
+					num_scanlines --;
+
+				}
+
+				return data_rgba;
+
+			};
+
+		var RGBEByteToRGBFloat = function ( sourceArray, sourceOffset, destArray, destOffset ) {
+
+			var e = sourceArray[ sourceOffset + 3 ];
+			var scale = Math.pow( 2.0, e - 128.0 ) / 255.0;
+
+			destArray[ destOffset + 0 ] = sourceArray[ sourceOffset + 0 ] * scale;
+			destArray[ destOffset + 1 ] = sourceArray[ sourceOffset + 1 ] * scale;
+			destArray[ destOffset + 2 ] = sourceArray[ sourceOffset + 2 ] * scale;
+
+		};
+
+		var RGBEByteToRGBHalf = ( function () {
+
+			// Source: http://gamedev.stackexchange.com/questions/17326/conversion-of-a-number-from-single-precision-floating-point-representation-to-a/17410#17410
+
+			var floatView = new Float32Array( 1 );
+			var int32View = new Int32Array( floatView.buffer );
+
+			/* This method is faster than the OpenEXR implementation (very often
+			 * used, eg. in Ogre), with the additional benefit of rounding, inspired
+			 * by James Tursa?s half-precision code. */
+			function toHalf( val ) {
+
+				floatView[ 0 ] = val;
+				var x = int32View[ 0 ];
+
+				var bits = ( x >> 16 ) & 0x8000; /* Get the sign */
+				var m = ( x >> 12 ) & 0x07ff; /* Keep one extra bit for rounding */
+				var e = ( x >> 23 ) & 0xff; /* Using int is faster here */
+
+				/* If zero, or denormal, or exponent underflows too much for a denormal
+				 * half, return signed zero. */
+				if ( e < 103 ) return bits;
+
+				/* If NaN, return NaN. If Inf or exponent overflow, return Inf. */
+				if ( e > 142 ) {
+
+					bits |= 0x7c00;
+					/* If exponent was 0xff and one mantissa bit was set, it means NaN,
+							 * not Inf, so make sure we set one mantissa bit too. */
+					bits |= ( ( e == 255 ) ? 0 : 1 ) && ( x & 0x007fffff );
+					return bits;
+
+				}
+
+				/* If exponent underflows but not too much, return a denormal */
+				if ( e < 113 ) {
+
+					m |= 0x0800;
+					/* Extra rounding may overflow and set mantissa to 0 and exponent
+					 * to 1, which is OK. */
+					bits |= ( m >> ( 114 - e ) ) + ( ( m >> ( 113 - e ) ) & 1 );
+					return bits;
+
+				}
+
+				bits |= ( ( e - 112 ) << 10 ) | ( m >> 1 );
+				/* Extra rounding. An overflow will set mantissa to 0 and increment
+				 * the exponent, which is OK. */
+				bits += m & 1;
+				return bits;
+
+			}
+
+			return function ( sourceArray, sourceOffset, destArray, destOffset ) {
+
+				var e = sourceArray[ sourceOffset + 3 ];
+				var scale = Math.pow( 2.0, e - 128.0 ) / 255.0;
+
+				destArray[ destOffset + 0 ] = toHalf( sourceArray[ sourceOffset + 0 ] * scale );
+				destArray[ destOffset + 1 ] = toHalf( sourceArray[ sourceOffset + 1 ] * scale );
+				destArray[ destOffset + 2 ] = toHalf( sourceArray[ sourceOffset + 2 ] * scale );
+
+			};
+
+		} )();
+
+		var byteArray = new Uint8Array( buffer );
+		byteArray.pos = 0;
+		var rgbe_header_info = RGBE_ReadHeader( byteArray );
+
+		if ( RGBE_RETURN_FAILURE !== rgbe_header_info ) {
+
+			var w = rgbe_header_info.width,
+				h = rgbe_header_info.height,
+				image_rgba_data = RGBE_ReadPixels_RLE( byteArray.subarray( byteArray.pos ), w, h );
+
+			if ( RGBE_RETURN_FAILURE !== image_rgba_data ) {
+
+				switch ( this.type ) {
+
+					case UnsignedByteType:
+
+						var data = image_rgba_data;
+						var format = RGBEFormat; // handled as THREE.RGBAFormat in shaders
+						var type = UnsignedByteType;
+						break;
+
+					case FloatType:
+
+						var numElements = ( image_rgba_data.length / 4 ) * 3;
+						var floatArray = new Float32Array( numElements );
+
+						for ( var j = 0; j < numElements; j ++ ) {
+
+							RGBEByteToRGBFloat( image_rgba_data, j * 4, floatArray, j * 3 );
+
+						}
+
+						var data = floatArray;
+						var format = RGBFormat;
+						var type = FloatType;
+						break;
+
+					case HalfFloatType:
+
+						var numElements = ( image_rgba_data.length / 4 ) * 3;
+						var halfArray = new Uint16Array( numElements );
+
+						for ( var j = 0; j < numElements; j ++ ) {
+
+							RGBEByteToRGBHalf( image_rgba_data, j * 4, halfArray, j * 3 );
+
+						}
+
+						var data = halfArray;
+						var format = RGBFormat;
+						var type = HalfFloatType;
+						break;
+
+					default:
+
+						console.error( 'THREE.RGBELoader: unsupported type: ', this.type );
+						break;
+
+				}
+
+				return {
+					width: w, height: h,
+					data: data,
+					header: rgbe_header_info.string,
+					gamma: rgbe_header_info.gamma,
+					exposure: rgbe_header_info.exposure,
+					format: format,
+					type: type
+				};
+
+			}
+
+		}
+
+		return null;
+
+	},
+
+	setDataType: function ( value ) {
+
+		this.type = value;
+		return this;
+
+	},
+
+	load: function ( url, onLoad, onProgress, onError ) {
+
+		function onLoadCallback( texture, texData ) {
+
+			switch ( texture.type ) {
+
+				case UnsignedByteType:
+
+					texture.encoding = RGBEEncoding;
+					texture.minFilter = NearestFilter;
+					texture.magFilter = NearestFilter;
+					texture.generateMipmaps = false;
+					texture.flipY = true;
+					break;
+
+				case FloatType:
+
+					texture.encoding = LinearEncoding;
+					texture.minFilter = LinearFilter;
+					texture.magFilter = LinearFilter;
+					texture.generateMipmaps = false;
+					texture.flipY = true;
+					break;
+
+				case HalfFloatType:
+
+					texture.encoding = LinearEncoding;
+					texture.minFilter = LinearFilter;
+					texture.magFilter = LinearFilter;
+					texture.generateMipmaps = false;
+					texture.flipY = true;
+					break;
+
+			}
+
+			if ( onLoad ) onLoad( texture, texData );
+
+		}
+
+		return DataTextureLoader.prototype.load.call( this, url, onLoadCallback, onProgress, onError );
+
+	}
+
+} );var DebugService = /*#__PURE__*/function () {
+  DebugService.getService = function getService() {
+    if (!this.service_) {
+      this.service_ = new DebugService();
+    }
+
+    return this.service_;
+  };
+
+  _createClass(DebugService, [{
+    key: "message",
+    get: function get() {
+      return this.message$.getValue();
+    }
+  }]);
+
+  function DebugService() {
+    if (DebugService.service_) {
+      throw 'DebugService is a singleton class!';
+    }
+
+    this.message$ = new rxjs.BehaviorSubject(null);
+  }
+
+  var _proto = DebugService.prototype;
+
+  _proto.setMessage = function setMessage(message) {
+    if (this.message !== message) {
+      this.message$.next(message);
+    }
+  };
+
+  return DebugService;
+}();var EnvMapLoader = /*#__PURE__*/function () {
+  function EnvMapLoader() {}
+
+  EnvMapLoader.load = function load(item, renderer, callback) {
+    this.video = null;
+
+    if (!item.asset) {
+      return;
+    }
+
+    if (item.asset.file === 'publisherStream') {
+      return this.loadPublisherStreamBackground(renderer, callback);
+    } else if (item.asset.file.indexOf('.hdr') !== -1) {
+      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
+      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.m3u8') !== -1) {
+      return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
+    } else {
+      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    }
+  };
+
+  EnvMapLoader.loadBackground = function loadBackground(path, file, renderer, callback) {
+    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    var loader = new THREE$1.TextureLoader();
+    loader.setPath(path).load(file, function (texture) {
+      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
+
+      pmremGenerator.dispose();
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, false);
+      }
+    });
+    return loader;
+  };
+
+  EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
+    var _this = this;
+
+    var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
+      // const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+      var target = "#stream-" + publisherStreamId;
+      var video = document.querySelector(target + " video");
+
+      if (!video) {
+        return;
+      }
+
+      var onPlaying = function onPlaying() {
+        var texture = _this.texture = new THREE$1.VideoTexture(video);
+        texture.minFilter = THREE$1.LinearFilter;
+        texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
+        texture.format = THREE$1.RGBFormat;
+        texture.needsUpdate = true;
+        var cubeRenderTarget = _this.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+          generateMipmaps: true,
+          // minFilter: THREE.LinearMipmapLinearFilter,
+          minFilter: THREE$1.LinearFilter,
+          magFilter: THREE$1.LinearFilter,
+          mapping: THREE$1.UVMapping,
+          format: THREE$1.RGBFormat
+        }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
+
+        if (typeof callback === 'function') {
+          callback(cubeRenderTarget.texture, texture, false);
+        }
+      };
+
+      video.crossOrigin = 'anonymous';
+
+      if (video.readyState >= video.HAVE_FUTURE_DATA) {
+        onPlaying();
+      } else {
+        video.oncanplay = function () {
+          onPlaying();
+        };
+      }
+    };
+
+    StreamService.getPublisherStreamId$().pipe(operators.first()).subscribe(function (publisherStreamId) {
+      return onPublisherStreamId(publisherStreamId);
+    });
+  };
+
+  EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
+    var _this2 = this;
+
+    var debugService = DebugService.getService();
+    this.video = true;
+    var video = this.video;
+
+    var onPlaying = function onPlaying() {
+      video.oncanplay = null;
+      var texture = new THREE$1.VideoTexture(video);
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.format = THREE$1.RGBFormat;
+      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
+
+      var cubeRenderTarget = _this2.cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+        generateMipmaps: true,
+        // minFilter: THREE.LinearMipmapLinearFilter,
+        minFilter: THREE$1.LinearFilter,
+        magFilter: THREE$1.LinearFilter,
+        mapping: THREE$1.UVMapping,
+        format: THREE$1.RGBFormat
+      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
+
+      if (typeof callback === 'function') {
+        callback(cubeRenderTarget.texture, texture, false);
+      }
+    }; // video.addEventListener('playing', onPlaying);
+
+
+    video.oncanplay = function () {
+      // console.log('EnvMapLoader.loadVideoBackground.oncanplay');
+      onPlaying();
+    };
+
+    video.src = path + file;
+    video.load();
+    video.play().then(function () {
+      // console.log('EnvMapLoader.loadVideoBackground.play');
+      debugService.setMessage("play " + video.src);
+    }, function (error) {
+      console.log('EnvMapLoader.loadVideoBackground.play.error', error);
+      debugService.setMessage("play.error " + video.src);
+    });
+  };
+
+  EnvMapLoader.loadHlslVideoBackground = function loadHlslVideoBackground(src, renderer, callback) {
+    var video = document.createElement('video');
+
+    var onPlaying = function onPlaying() {
+      video.oncanplay = null;
+      var texture = new THREE$1.VideoTexture(video);
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.format = THREE$1.RGBFormat;
+      texture.needsUpdate = true; // const envMap = new THREE.VideoTexture(video);
+
+      var cubeRenderTarget = new THREE$1.WebGLCubeRenderTarget(1024, {
+        generateMipmaps: true,
+        // minFilter: THREE.LinearMipmapLinearFilter,
+        minFilter: THREE$1.LinearFilter,
+        magFilter: THREE$1.LinearFilter,
+        mapping: THREE$1.UVMapping,
+        format: THREE$1.RGBFormat
+      }).fromEquirectangularTexture(renderer, texture); // texture.dispose();
+
+      if (typeof callback === 'function') {
+        callback(cubeRenderTarget.texture, texture, false);
+      }
+    };
+
+    video.oncanplay = function () {
+      // console.log('videoReady', videoReady);
+      onPlaying();
+    };
+
+    if (Hls.isSupported()) {
+      var hls = new Hls(); // bind them together
+
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        hls.loadSource(src);
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          // console.log('HlsDirective', data.levels);
+          video.play();
+        });
+      });
+    }
+  };
+
+  EnvMapLoader.loadRgbeBackground = function loadRgbeBackground(path, file, renderer, callback) {
+    var pmremGenerator = new THREE$1.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    var loader = new RGBELoader();
+    loader.setDataType(THREE$1.UnsignedByteType) // .setDataType(THREE.FloatType)
+    .setPath(path).load(file, function (texture) {
+      var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
+
+      pmremGenerator.dispose();
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, true);
+      }
+    });
+    return loader;
+  };
+
+  _createClass(EnvMapLoader, null, [{
+    key: "video",
+    get: function get() {
+      return this.video_;
+    },
+    set: function set(video) {
+      if (this.video_) {
+        this.video_.pause();
+
+        if (this.video_.parentNode) {
+          this.video_.parentNode.removeChild(this.video_);
+        }
+
+        this.video_ = null;
+      }
+
+      if (video) {
+        var _video = this.video_ = document.createElement('video');
+
+        _video.loop = true;
+        _video.muted = true;
+        _video.playsInline = true;
+        _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
+      }
+    }
+  }, {
+    key: "cubeRenderTarget",
+    set: function set(cubeRenderTarget) {
+      if (this.cubeRenderTarget_) {
+        this.cubeRenderTarget_.texture.dispose();
+        this.cubeRenderTarget_.dispose();
+      }
+
+      this.cubeRenderTarget_ = cubeRenderTarget;
+    }
+  }, {
+    key: "texture",
+    set: function set(texture) {
+      if (this.texture_) {
+        this.texture_.dispose();
+      }
+
+      this.texture_ = texture;
+    }
+  }]);
+
+  return EnvMapLoader;
+}();var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
+  _inheritsLoose(FreezableMesh, _THREE$Mesh);
+
+  _createClass(FreezableMesh, [{
+    key: "freezed",
+    get: function get() {
+      return this.freezed_;
+    },
+    set: function set(freezed) {
+      // !!! cycle through freezable and not freezable
+      this.freezed_ = freezed;
+      this.children.filter(function (x) {
+        return x.__lookupGetter__('freezed');
+      }).forEach(function (x) {
+        return x.freezed = freezed;
+      });
+    }
+  }]);
+
+  function FreezableMesh(geometry, material) {
+    var _this;
+
+    geometry = geometry || new THREE$1.BoxGeometry(5, 5, 5);
+    material = material || new THREE$1.MeshBasicMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _THREE$Mesh.call(this, geometry, material) || this;
+    _this.freezed = false;
+    return _this;
+  }
+
+  var _proto = FreezableMesh.prototype;
+
+  _proto.freeze = function freeze() {
+    this.freezed = true;
+  };
+
+  _proto.unfreeze = function unfreeze() {
+    this.freezed = false;
+  };
+
+  return FreezableMesh;
+}(THREE$1.Mesh);var EmittableMesh = /*#__PURE__*/function (_FreezableMesh) {
+  _inheritsLoose(EmittableMesh, _FreezableMesh);
+
+  function EmittableMesh(geometry, material) {
+    var _this;
+
+    geometry = geometry || new THREE$1.BoxGeometry(5, 5, 5);
+    material = material || new THREE$1.MeshBasicMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _FreezableMesh.call(this, geometry, material) || this;
+    _this.events = {};
+    return _this;
+  }
+
+  var _proto = EmittableMesh.prototype;
+
+  _proto.on = function on(type, callback) {
+    var _this2 = this;
+
+    var event = this.events[type] = this.events[type] || [];
+    event.push(callback);
+    return function () {
+      _this2.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    };
+  };
+
+  _proto.off = function off(type, callback) {
+    var event = this.events[type];
+
+    if (event) {
+      this.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    }
+  };
+
+  _proto.emit = function emit(type, data) {
+    var event = this.events[type];
+
+    if (event) {
+      event.forEach(function (callback) {
+        // callback.call(this, data);
+        callback(data);
+      });
+    }
+
+    var broadcast = this.events.broadcast;
+
+    if (broadcast) {
+      broadcast.forEach(function (callback) {
+        callback(type, data);
+      });
+    }
+  };
+
+  return EmittableMesh;
+}(FreezableMesh);var Interactive = function Interactive() {};
+Interactive.items = [];
+Interactive.hittest = interactiveHittest.bind(Interactive);
+Interactive.dispose = interactiveDispose.bind(Interactive);
+function interactiveHittest(raycaster, down, event) {
+  var _this = this;
+
+  if (down === void 0) {
+    down = false;
+  }
+
+  var debugService = DebugService.getService();
+
+  if (this.down !== down) {
+    this.down = down;
+    this.lock = false;
+  }
+
+  var items = this.items.filter(function (x) {
+    return !x.freezed;
+  });
+  var intersections = raycaster.intersectObjects(items);
+  var key, hit;
+  var hash = {};
+  intersections.forEach(function (intersection, i) {
+    var object = intersection.object;
+    key = object.uuid;
+
+    if (i === 0) {
+      if (_this.lastIntersectedObject !== object) {
+        _this.lastIntersectedObject = object;
+        hit = object;
+        debugService.setMessage(hit.name || hit.id); // haptic feedback
+      } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
+        object.intersection = intersection;
+        object.emit('move', object);
+      }
+    }
+
+    hash[key] = intersection;
+  });
+
+  if (intersections.length === 0) {
+    this.lastIntersectedObject = null;
+  }
+
+  items.forEach(function (x) {
+    x.intersection = hash[x.uuid];
+    x.over = x === _this.lastIntersectedObject || !x.depthTest && x.intersection && (!_this.lastIntersectedObject || _this.lastIntersectedObject.depthTest);
+    x.down = down && x.over && !_this.lock;
+
+    if (x.down) {
+      _this.lock = true;
+    }
+  });
+  return hit;
+}
+function interactiveDispose(object) {
+  if (object) {
+    var index = this.items.indexOf(object);
+
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
+  }
+}var InteractiveMesh = /*#__PURE__*/function (_EmittableMesh) {
+  _inheritsLoose(InteractiveMesh, _EmittableMesh);
+
+  /*
+  static hittest(raycaster, down = false, event = defaultEvent) {
+  	const debugService = DebugService.getService();
+  	if (InteractiveMesh.down !== down) {
+  		InteractiveMesh.down = down;
+  		InteractiveMesh.lock = false;
+  	}
+  	const items = InteractiveMesh.items.filter(x => !x.freezed);
+  	const intersections = raycaster.intersectObjects(items);
+  	let key, hit;
+  	const hash = {};
+  	intersections.forEach((intersection, i) => {
+  		const object = intersection.object;
+  		key = object.uuid;
+  		if (i === 0) {
+  			if (InteractiveMesh.lastIntersectedObject !== object) {
+  				InteractiveMesh.lastIntersectedObject = object;
+  				hit = object;
+  				debugService.setMessage(hit.name || hit.id);
+  				// haptic feedback
+  			} else if (
+  				Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 ||
+  				Math.abs(object.intersection.point.y - intersection.point.y) > 0.01
+  			) {
+  				object.intersection = intersection;
+  				object.emit('move', object);
+  			}
+  		}
+  		hash[key] = intersection;
+  	});
+  	items.forEach(x => {
+  		x.intersection = hash[x.uuid];
+  		x.over = (x === InteractiveMesh.lastIntersectedObject) || (!x.depthTest && x.intersection);
+  		x.down = down && x.over && !InteractiveMesh.lock;
+  		if (x.down) {
+  			InteractiveMesh.lock = true;
+  		}
+  	});
+  	return hit;
+  }
+  
+  static dispose(object) {
+  	if (object) {
+  		const index = InteractiveMesh.items.indexOf(object);
+  		if (index !== -1) {
+  			InteractiveMesh.items.splice(index, 1);
+  		}
+  	}
+  }
+  */
+  function InteractiveMesh(geometry, material) {
+    var _this;
+
+    _this = _EmittableMesh.call(this, geometry, material) || this;
+    _this.depthTest = true;
+    _this.over_ = false;
+    _this.down_ = false;
+    Interactive.items.push(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(InteractiveMesh, [{
+    key: "over",
+    get: function get() {
+      return this.over_;
+    },
+    set: function set(over) {
+      if (this.over_ != over) {
+        this.over_ = over;
+        /*
+        if (over) {
+        	this.emit('hit', this);
+        }
+        */
+
+        if (over) {
+          this.emit('over', this);
+        } else {
+          this.emit('out', this);
+        }
+      }
+    }
+  }, {
+    key: "down",
+    get: function get() {
+      return this.down_;
+    },
+    set: function set(down) {
+      down = down && this.over;
+
+      if (this.down_ != down) {
+        this.down_ = down;
+
+        if (down) {
+          this.emit('down', this);
+        } else {
+          this.emit('up', this);
+        }
+      }
+    }
+  }]);
+
+  return InteractiveMesh;
+}(EmittableMesh);function VideoTexture$1(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
+  THREE$1.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
+  this.format = format !== undefined ? format : THREE.RGBFormat;
+  this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
+  this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
+  this.mapping = THREE.UVMapping;
+  this.generateMipmaps = false;
+}
+
+VideoTexture$1.prototype = Object.assign(Object.create(THREE$1.Texture.prototype), {
+  constructor: VideoTexture$1,
+  isVideoTexture: true,
+  update: function update() {
+    var video = this.image;
+
+    if (video.readyState >= video.HAVE_CURRENT_DATA) {
+      this.needsUpdate = true;
+    }
+  }
+});var PANORAMA_RADIUS = 101;
+var VERTEX_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\t// gl_PointSize = 8.0;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
+var FRAGMENT_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float tween;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
+
+var Panorama = /*#__PURE__*/function () {
+  function Panorama() {
+    this.tween = 0;
+    this.create();
+  }
+
+  var _proto = Panorama.prototype;
+
+  _proto.create = function create() {
+    var geometry = new THREE$1.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
+    geometry.scale(-1, 1, 1);
+    geometry.rotateY(Math.PI);
+    var material = new THREE$1.ShaderMaterial({
+      // depthTest: false,
+      depthWrite: false,
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: FRAGMENT_SHADER,
+      uniforms: {
+        texture: {
+          type: "t",
+          value: null
+        },
+        resolution: {
+          value: new THREE$1.Vector2()
+        },
+        tween: {
+          value: 0
+        },
+        rgbe: {
+          value: false
+        }
+      }
+    });
+    /*
+    const material = new THREE.MeshBasicMaterial({
+    	transparent: true,
+    	opacity: 0,
+    });
+    */
+
+    var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
+
+    mesh.name = '[panorama]';
+  };
+
+  _proto.swap = function swap(view, renderer, callback, onexit) {
+    var _this = this;
+
+    var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
+    var material = this.mesh.material;
+
+    if (this.tween > 0) {
+      gsap.to(this, 0.5, {
+        tween: 0,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          material.uniforms.tween.value = _this.tween;
+          material.needsUpdate = true;
+        },
+        onComplete: function onComplete() {
+          if (typeof onexit === 'function') {
+            onexit(view);
+          }
+
+          _this.load(item, renderer, function (envMap, texture, rgbe) {
+            gsap.to(_this, 0.5, {
+              tween: 1,
+              ease: Power2.easeInOut,
+              onUpdate: function onUpdate() {
+                material.uniforms.tween.value = _this.tween;
+                material.needsUpdate = true;
+              }
+            });
+
+            if (typeof callback === 'function') {
+              callback(envMap, texture, rgbe);
+            }
+          });
+        }
+      });
+    } else {
+      if (typeof onexit === 'function') {
+        onexit(view);
+      }
+
+      this.load(item, renderer, function (envMap, texture, rgbe) {
+        gsap.to(_this, 0.5, {
+          tween: 1,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            material.uniforms.tween.value = _this.tween;
+            material.needsUpdate = true;
+          }
+        });
+
+        if (typeof callback === 'function') {
+          callback(envMap, texture, rgbe);
+        }
+      });
+    }
+  };
+
+  _proto.crossfade = function crossfade(item, renderer, callback) {
+    var material = this.mesh.material;
+    this.load(item, renderer, function (envMap, texture, rgbe) {
+      material.uniforms.tween.value = 1;
+      material.needsUpdate = true;
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, rgbe);
+      }
+    });
+  };
+
+  _proto.load = function load(item, renderer, callback) {
+    var material = this.mesh.material;
+    EnvMapLoader.load(item, renderer, function (envMap, texture, rgbe, video, pmremGenerator) {
+      if (material.uniforms.texture.value) {
+        material.uniforms.texture.value.dispose();
+        material.uniforms.texture.value = null;
+      }
+
+      texture.minFilter = THREE$1.LinearFilter;
+      texture.magFilter = THREE$1.LinearFilter;
+      texture.mapping = THREE$1.UVMapping;
+      texture.needsUpdate = true; // material.map = texture;
+
+      material.uniforms.texture.value = texture;
+      material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height);
+      material.uniforms.tween.value = 0;
+      material.uniforms.rgbe.value = rgbe; // console.log(texture.width, texture.height);
+
+      material.needsUpdate = true;
+
+      if (typeof callback === 'function') {
+        callback(envMap, texture, rgbe);
+      }
+    });
+  };
+
+  _proto.loadVideo = function loadVideo(src) {
+    var video = document.createElement('video');
+    /*
+    const temp = document.querySelector('.temp');
+    temp.appendChild(video);
+    */
+
+    video.src = src;
+    video.muted = true;
+    video.playsinline = video.playsInline = true;
+    video.play();
+    this.setVideo(video);
+  };
+
+  _proto.setVideo = function setVideo(video) {
+    var _this2 = this;
+
+    // console.log('Panorama.setVideo', video);
+    if (video) {
+
+      var onPlaying = function onPlaying() {
+        var texture = new VideoTexture$1(video);
+        texture.minFilter = THREE$1.LinearFilter;
+        texture.magFilter = THREE$1.LinearFilter;
+        texture.mapping = THREE$1.UVMapping;
+        texture.format = THREE$1.RGBFormat;
+        texture.needsUpdate = true;
+        var material = _this2.mesh.material;
+        material.map = texture;
+        material.uniforms.texture.value = texture;
+        material.uniforms.resolution.value = new THREE$1.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
+
+        material.needsUpdate = true; // video.currentTime = 1;
+        // video.load();
+      }; // video.addEventListener('playing', onPlaying);
+
+
+      video.crossOrigin = 'anonymous';
+
+      video.oncanplay = function () {
+
+        onPlaying();
+      };
+      /*
+      video.width = 640;
+      video.height = 480;
+      */
+
+      /*
+      video.addEventListener("play", function() {
+      	frameloop();
+      });
+      */
+
+    }
+  };
+
+  return Panorama;
+}();/**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
  * @author Tony Parisi / http://www.tonyparisi.com/
@@ -65542,7 +65612,7 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.getPath = function getPath(item) {
-    return environment.getTexturePath(item.asset.folder + item.asset.fileName);
+    return environment.getTexturePath(item.asset.folder + item.asset.file);
   };
 
   MediaLoader.loadTexture = function loadTexture(item, callback) {
@@ -65551,15 +65621,15 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.isVideo = function isVideo(item) {
-    return item.asset && item.asset.fileName && (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1);
+    return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
   };
 
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.asset && item.asset.fileName === 'publisherStream';
+    return item.asset && item.asset.file === 'publisherStream';
   };
 
   MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.fileName === 'nextAttendeeStream';
+    return item.asset && item.asset.file === 'nextAttendeeStream';
   };
 
   _createClass(MediaLoader, [{
@@ -65696,9 +65766,9 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this2 = this;
 
     // console.log('MediaLoader.play');
-    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.fileName);
+    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.file);
     }, function (error) {
-      console.log('MediaLoader.play.error', _this2.item.asset.fileName, error);
+      console.log('MediaLoader.play.error', _this2.item.asset.file, error);
     });
 
     if (!silent) {
@@ -65842,7 +65912,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       return rxjs.of(null);
     }
 
-    var file = item.asset.fileName;
+    var file = item.asset.file;
 
     if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
       return rxjs.of(file);
@@ -65931,7 +66001,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var textureB = MediaLoader.loadTexture({
         asset: {
           folder: 'ui/',
-          fileName: 'play.png'
+          file: 'play.png'
         }
       }, function (textureB) {
         // console.log('MediaMesh.textureB', textureB);
@@ -65990,7 +66060,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return MediaLoader.events$.pipe(operators.map(function (event) {
       if (item.asset && item.asset.linkedPlayId) {
         var eventItem = items.find(function (x) {
-          return x.asset && event.src.indexOf(x.asset.fileName) !== -1 && event.id === item.asset.linkedPlayId;
+          return x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId;
         });
 
         if (eventItem) {
@@ -66521,7 +66591,7 @@ ModelDebugComponent.meta = {
     var _this = this;
 
     // this.renderOrder = environment.renderOrder.model;
-    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, function (mesh) {
+    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
       // scale
       var box = new THREE$1.Box3().setFromObject(mesh);
       var size = box.max.clone().sub(box.min);
@@ -66572,8 +66642,8 @@ ModelDebugComponent.meta = {
       _this.pushChanges();
     });
     /*
-    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.fileName, (envMap) => {
-    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
+    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
+    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
     		const box = new THREE.Box3().setFromObject(mesh);
     		const center = box.getCenter(new THREE.Vector3());
     		mesh.position.x += (mesh.position.x - center.x);

@@ -44,26 +44,26 @@ export default class AssetPipe extends Pipe {
 			switch (asset.type) {
 				case AssetType.Image:
 				case AssetType.Video:
-					asset = asset.folder + asset.fileName;
+					asset = asset.folder + asset.file;
 					asset = environment.getTexturePath(asset);
 					break;
 				case AssetType.Model:
-					asset = asset.folder + asset.fileName;
+					asset = asset.folder + asset.file;
 					asset = environment.getModelPath(asset);
 					break;
 				case AssetType.PublisherStream:
 				case AssetType.NextAttendeeStream:
-					asset = environment.getModelPath(asset.fileName);
+					asset = environment.getModelPath(asset.file);
 					break;
 				default:
-					if (isImage(asset.fileName) || isVideo(asset.fileName)) {
-						asset = asset.folder + asset.fileName;
+					if (isImage(asset.file) || isVideo(asset.file)) {
+						asset = asset.folder + asset.file;
 						asset = environment.getTexturePath(asset);
-					} else if (isModel(asset.fileName)) {
-						asset = asset.folder + asset.fileName;
+					} else if (isModel(asset.file)) {
+						asset = asset.folder + asset.file;
 						asset = environment.getModelPath(asset);
-					} else if (isStream(asset.fileName)) {
-						asset = asset.fileName;
+					} else if (isStream(asset.file)) {
+						asset = asset.file;
 					}
 			}
 			asset = asset;

@@ -5,7 +5,7 @@ import { environment } from '../environment';
 export class RgbeLoader {
 
 	static load(item, renderer, callback) {
-		return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
+		return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
 	}
 
 	static loadRgbeBackground(path, file, renderer, callback) {

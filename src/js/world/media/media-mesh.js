@@ -172,7 +172,7 @@ export default class MediaMesh extends InteractiveMesh {
 		if (!item.asset) {
 			return of(null);
 		}
-		const file = item.asset.fileName;
+		const file = item.asset.file;
 		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
 			return of(file);
 		}
@@ -236,7 +236,7 @@ export default class MediaMesh extends InteractiveMesh {
 		if (mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({
 				asset: {
-					folder: 'ui/', fileName: 'play.png'
+					folder: 'ui/', file: 'play.png'
 				}
 			}, (textureB) => {
 				// console.log('MediaMesh.textureB', textureB);
@@ -284,7 +284,7 @@ export default class MediaMesh extends InteractiveMesh {
 		return MediaLoader.events$.pipe(
 			map(event => {
 				if (item.asset && item.asset.linkedPlayId) {
-					const eventItem = items.find(x => x.asset && event.src.indexOf(x.asset.fileName) !== -1 && event.id === item.asset.linkedPlayId);
+					const eventItem = items.find(x => x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId);
 					if (eventItem) {
 						// console.log('MediaLoader.events$.eventItem', event, eventItem);
 						if (event instanceof MediaLoaderPlayEvent) {

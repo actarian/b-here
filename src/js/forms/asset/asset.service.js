@@ -172,7 +172,7 @@ export default class AssetService {
 				/*
 				id: 1601303293569
 				type: "image/jpeg"
-				fileName: "1601303293569_ambiente1_x0_y2.jpg"
+				file: "1601303293569_ambiente1_x0_y2.jpg"
 				originalFileName: "ambiente1_x0_y2.jpg"
 				url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
 				*/

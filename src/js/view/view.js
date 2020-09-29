@@ -60,7 +60,7 @@ export class View {
 				let nextAttendeeStreamIndex = 0;
 				options.items.forEach((item, index) => {
 					item.index = index;
-					if (item.asset && item.asset.fileName === 'nextAttendeeStream') {
+					if (item.asset && item.asset.file === 'nextAttendeeStream') {
 						item.asset.index = nextAttendeeStreamIndex++;
 					}
 				});
@@ -107,8 +107,8 @@ export class PanoramaGridView extends View {
 		if (options.tiles) {
 			options.tiles = options.tiles.map((tile, i) => {
 				const indices = new THREE.Vector2();
-				tile = typeof tile === 'string' ? { asset: { folder: options.asset.folder, fileName: tile }, navs: [] } : tile;
-				tile.asset.fileName.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
+				tile = typeof tile === 'string' ? { asset: { folder: options.asset.folder, file: tile }, navs: [] } : tile;
+				tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
 					const flipAxes = options.flipAxes ? -1 : 1;
 					if (options.invertAxes) {
 						indices.y = parseInt(b);
@@ -189,7 +189,7 @@ export class NavViewItem extends ViewItem {
 }
 
 export class Asset {
-	static allowedProps = ['id', 'type', 'folder', 'file', 'fileName', 'linkedPlayId', 'chromaKeyColor'];
+	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -209,13 +209,13 @@ export class Asset {
 			url = 'http://localhost:5000/b-here' + url;
 		}
 		const segments = url.split('/');
-		const fileName = segments.pop();
+		const file = segments.pop();
 		const folder = segments.join('/') + '/';
-		const type = assetTypeFromPath(fileName);
+		const type = assetTypeFromPath(file);
 		return new Asset({
 			type: type,
 			folder: folder,
-			fileName: fileName,
+			file: file,
 		});
 	}
 }
