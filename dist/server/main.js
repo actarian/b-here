@@ -622,6 +622,18 @@ var ROUTES = [{
     response.send(JSON.stringify(db));
   }
 }, {
+  path: '/api/view/:viewId',
+  method: 'GET',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      response.send(JSON.stringify(view));
+    }
+  }
+}, {
   path: '/api/view',
   method: 'POST',
   callback: function callback(request, response, params) {
