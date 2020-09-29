@@ -9,7 +9,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "fileName": "waiting-room.jpg"
+        "file": "waiting-room.jpg"
       },
       "orientation": {
         "latitude": 0,
@@ -26,7 +26,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "fileName": "mod2.jpg"
+        "file": "mod2.jpg"
       },
       "orientation": {
         "latitude": 0,

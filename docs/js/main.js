@@ -2984,7 +2984,7 @@ var View = /*#__PURE__*/function () {
         options.items.forEach(function (item, index) {
           item.index = index;
 
-          if (item.asset && item.asset.fileName === 'nextAttendeeStream') {
+          if (item.asset && item.asset.file === 'nextAttendeeStream') {
             item.asset.index = nextAttendeeStreamIndex++;
           }
         });
@@ -3060,11 +3060,11 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
         tile = typeof tile === 'string' ? {
           asset: {
             folder: options.asset.folder,
-            fileName: tile
+            file: tile
           },
           navs: []
         } : tile;
-        tile.asset.fileName.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+        tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
           var flipAxes = options.flipAxes ? -1 : 1;
 
           if (options.invertAxes) {
@@ -3187,13 +3187,13 @@ var Asset = /*#__PURE__*/function () {
     }
 
     var segments = url.split('/');
-    var fileName = segments.pop();
+    var file = segments.pop();
     var folder = segments.join('/') + '/';
-    var type = assetTypeFromPath(fileName);
+    var type = assetTypeFromPath(file);
     return new Asset({
       type: type,
       folder: folder,
-      fileName: fileName
+      file: file
     });
   };
 
@@ -3215,7 +3215,7 @@ var Asset = /*#__PURE__*/function () {
   return Asset;
 }();
 
-_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'fileName', 'linkedPlayId', 'chromaKeyColor']);
+_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor']);
 
 function mapView(view) {
   switch (view.type) {
@@ -3915,29 +3915,29 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
       switch (asset.type) {
         case AssetType$1.Image:
         case AssetType$1.Video:
-          asset = asset.folder + asset.fileName;
+          asset = asset.folder + asset.file;
           asset = environment.getTexturePath(asset);
           break;
 
         case AssetType$1.Model:
-          asset = asset.folder + asset.fileName;
+          asset = asset.folder + asset.file;
           asset = environment.getModelPath(asset);
           break;
 
         case AssetType$1.PublisherStream:
         case AssetType$1.NextAttendeeStream:
-          asset = environment.getModelPath(asset.fileName);
+          asset = environment.getModelPath(asset.file);
           break;
 
         default:
-          if (isImage(asset.fileName) || isVideo(asset.fileName)) {
-            asset = asset.folder + asset.fileName;
+          if (isImage(asset.file) || isVideo(asset.file)) {
+            asset = asset.folder + asset.file;
             asset = environment.getTexturePath(asset);
-          } else if (isModel(asset.fileName)) {
-            asset = asset.folder + asset.fileName;
+          } else if (isModel(asset.file)) {
+            asset = asset.folder + asset.file;
             asset = environment.getModelPath(asset);
-          } else if (isStream(asset.fileName)) {
-            asset = asset.fileName;
+          } else if (isStream(asset.file)) {
+            asset = asset.file;
           }
 
       }
@@ -6333,7 +6333,7 @@ ControlComponent.meta = {
             /*
             id: 1601303293569
             type: "image/jpeg"
-            fileName: "1601303293569_ambiente1_x0_y2.jpg"
+            file: "1601303293569_ambiente1_x0_y2.jpg"
             originalFileName: "ambiente1_x0_y2.jpg"
             url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
             */
@@ -6425,7 +6425,7 @@ ControlComponent.meta = {
       var image = null;
 
       if (this.control.value) {
-        image = "" + this.control.value.folder + this.control.value.fileName;
+        image = "" + this.control.value.folder + this.control.value.file;
       } else if (this.previews && this.previews.length) {
         image = this.previews[0];
       }
@@ -6654,7 +6654,7 @@ var AssetService = /*#__PURE__*/function () {
       /*
       id: 1601303293569
       type: "image/jpeg"
-      fileName: "1601303293569_ambiente1_x0_y2.jpg"
+      file: "1601303293569_ambiente1_x0_y2.jpg"
       originalFileName: "ambiente1_x0_y2.jpg"
       url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
       */
@@ -6828,7 +6828,7 @@ ControlAssetsComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.fileName\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlCheckboxComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCheckboxComponent, _ControlComponent);
 
@@ -58793,16 +58793,16 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
       return;
     }
 
-    if (item.asset.fileName === 'publisherStream') {
+    if (item.asset.file === 'publisherStream') {
       return this.loadPublisherStreamBackground(renderer, callback);
-    } else if (item.asset.fileName.indexOf('.hdr') !== -1) {
-      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
-    } else if (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1) {
-      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
-    } else if (item.asset.fileName.indexOf('.m3u8') !== -1) {
-      return this.loadHlslVideoBackground(item.asset.fileName, renderer, callback);
+    } else if (item.asset.file.indexOf('.hdr') !== -1) {
+      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
+      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+    } else if (item.asset.file.indexOf('.m3u8') !== -1) {
+      return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
     } else {
-      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
+      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
     }
   };
 
@@ -65617,7 +65617,7 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.getPath = function getPath(item) {
-    return environment.getTexturePath(item.asset.folder + item.asset.fileName);
+    return environment.getTexturePath(item.asset.folder + item.asset.file);
   };
 
   MediaLoader.loadTexture = function loadTexture(item, callback) {
@@ -65626,15 +65626,15 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.isVideo = function isVideo(item) {
-    return item.asset && item.asset.fileName && (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1);
+    return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
   };
 
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.asset && item.asset.fileName === 'publisherStream';
+    return item.asset && item.asset.file === 'publisherStream';
   };
 
   MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.fileName === 'nextAttendeeStream';
+    return item.asset && item.asset.file === 'nextAttendeeStream';
   };
 
   _createClass(MediaLoader, [{
@@ -65771,9 +65771,9 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this2 = this;
 
     // console.log('MediaLoader.play');
-    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.fileName);
+    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.file);
     }, function (error) {
-      console.log('MediaLoader.play.error', _this2.item.asset.fileName, error);
+      console.log('MediaLoader.play.error', _this2.item.asset.file, error);
     });
 
     if (!silent) {
@@ -65917,7 +65917,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       return rxjs.of(null);
     }
 
-    var file = item.asset.fileName;
+    var file = item.asset.file;
 
     if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
       return rxjs.of(file);
@@ -66006,7 +66006,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var textureB = MediaLoader.loadTexture({
         asset: {
           folder: 'ui/',
-          fileName: 'play.png'
+          file: 'play.png'
         }
       }, function (textureB) {
         // console.log('MediaMesh.textureB', textureB);
@@ -66065,7 +66065,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return MediaLoader.events$.pipe(operators.map(function (event) {
       if (item.asset && item.asset.linkedPlayId) {
         var eventItem = items.find(function (x) {
-          return x.asset && event.src.indexOf(x.asset.fileName) !== -1 && event.id === item.asset.linkedPlayId;
+          return x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId;
         });
 
         if (eventItem) {
@@ -66596,7 +66596,7 @@ ModelDebugComponent.meta = {
     var _this = this;
 
     // this.renderOrder = environment.renderOrder.model;
-    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, function (mesh) {
+    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
       // scale
       var box = new THREE$1.Box3().setFromObject(mesh);
       var size = box.max.clone().sub(box.min);
@@ -66647,8 +66647,8 @@ ModelDebugComponent.meta = {
       _this.pushChanges();
     });
     /*
-    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.fileName, (envMap) => {
-    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
+    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
+    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
     		const box = new THREE.Box3().setFromObject(mesh);
     		const center = box.getCenter(new THREE.Vector3());
     		mesh.position.x += (mesh.position.x - center.x);
