@@ -3,10 +3,9 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import LocationService from '../location/location.service';
-import AgoraService from './agora.service';
+import StateService from '../state/state.service';
 
 export default class AgoraNameComponent extends Component {
-
 	onInit() {
 		this.state = {};
 		const form = this.form = new FormGroup({
@@ -19,16 +18,13 @@ export default class AgoraNameComponent extends Component {
 			// console.log('AgoraNameComponent.changes$', form.value);
 			this.pushChanges();
 		});
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				// console.log('AgoraNameComponent.state', state);
-				this.state = state;
-				this.pushChanges();
-			});
-		}
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			// console.log('AgoraNameComponent.state', state);
+			this.state = state;
+			this.pushChanges();
+		});
 	}
 
 	isValid() {
@@ -50,13 +46,6 @@ export default class AgoraNameComponent extends Component {
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
 	}
-
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
 }
 
 AgoraNameComponent.meta = {

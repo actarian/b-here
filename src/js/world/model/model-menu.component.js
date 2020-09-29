@@ -1,7 +1,7 @@
 import { takeUntil } from 'rxjs/operators';
 import * as THREE from 'three';
 import { environment } from '../../environment';
-import { ViewType } from '../../view/view.service';
+import { ViewType } from '../../view/view';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import OrbitService, { OrbitMode } from '../orbit/orbit';
@@ -109,7 +109,7 @@ export class MenuButton extends InteractiveMesh {
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = '#000000';
 		ctx.fillRect(0, 0, w, h);
-		ctx.font = '20px Maven Pro';
+		ctx.font = `20px ${environment.fontFamily}`;
 		ctx.fillStyle = '#ffffff';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
@@ -130,7 +130,7 @@ export class MenuButton extends InteractiveMesh {
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = '0x0099ff';
 		ctx.fillRect(0, 0, w, h);
-		ctx.font = '20px Maven Pro';
+		ctx.font = `20px ${environment.fontFamily}`;
 		ctx.fillStyle = '#ffffff';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
@@ -147,7 +147,7 @@ export class MenuButton extends InteractiveMesh {
 		*/
 		gsap.to(this, 0.4, {
 			tween: 1,
-			ease: Power2.easeInOut,
+			ease: Power2.easeOut,
 			onUpdate: () => {
 				this.position.z = 0.1 * this.tween;
 				this.material.uniforms.tween.value = this.tween;
@@ -159,7 +159,7 @@ export class MenuButton extends InteractiveMesh {
 	onOut() {
 		gsap.to(this, 0.4, {
 			tween: 0,
-			ease: Power2.easeInOut,
+			ease: Power2.easeOut,
 			onUpdate: () => {
 				this.position.z = 0.1 * this.tween;
 				this.material.uniforms.tween.value = this.tween;
@@ -198,7 +198,7 @@ export class BackButton extends MenuButton {
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = '#0099ff';
 		ctx.fillRect(0, 0, w, h);
-		ctx.font = '20px Maven Pro';
+		ctx.font = `20px ${environment.fontFamily}`;
 		ctx.fillStyle = '#000000';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
@@ -218,7 +218,7 @@ export class BackButton extends MenuButton {
 		const ctx = canvas.getContext('2d');
 		ctx.fillStyle = '#0099ff';
 		ctx.fillRect(0, 0, w, h);
-		ctx.font = '20px Maven Pro';
+		ctx.font = `20px ${environment.fontFamily}`;
 		ctx.fillStyle = '#ffffff';
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
@@ -312,15 +312,20 @@ export default class ModelMenuComponent extends ModelComponent {
 		}
 		const menu = this.menu = {};
 		this.items.forEach(item => {
-			let group = menu[item.type];
-			if (!group) {
-				group = menu[item.type] = [];
+			if (item.type !== ViewType.WaitingRoom) {
+				let group = menu[item.type];
+				if (!group) {
+					group = menu[item.type] = [];
+				}
+				group.push(item);
 			}
-			group.push(item);
 		});
 		this.groups = Object.keys(menu).map(type => {
 			let name = 'Button';
 			switch (type) {
+				case ViewType.WaitingRoom:
+					name = 'Waiting Room';
+					break;
 				case ViewType.Panorama:
 					name = 'Experience';
 					break;
@@ -405,7 +410,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			gsap.to(buttons, {
 				duration: 0.3,
 				opacity: 0.8,
-				ease: "power1.inOut",
+				ease: Power2.easeOut,
 				stagger: {
 					grid: MenuButton.getGrid(buttons.length),
 					from: 0, // index

@@ -51,7 +51,7 @@ export default class DragService {
 				point.y = event.clientY
 			) : point = {
 				x: event.clientX,
-				y: event.clientY
+				y: event.clientY,
 			};
 		} else if (event instanceof TouchEvent) {
 			if (event.touches.length > 0) {

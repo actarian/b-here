@@ -9,8 +9,8 @@ export class ModalEvent {
 
 }
 
-export class ModalResolveEvent extends ModalEvent {}
-export class ModalRejectEvent extends ModalEvent {}
+export class ModalResolveEvent extends ModalEvent { }
+export class ModalRejectEvent extends ModalEvent { }
 
 export default class ModalService {
 
@@ -35,7 +35,7 @@ export default class ModalService {
 	}
 
 	static getNode(template) {
-		const div = document.createElement("div");
+		const div = document.createElement('div');
 		div.innerHTML = template;
 		const node = div.firstElementChild;
 		return node;

@@ -12,15 +12,29 @@ import ControlRequestModalComponent from './control-request/control-request-moda
 import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
+import { EditorModule } from './editor/editor.module';
+import AssetItemComponent from './forms/asset/asset-item.component';
+import ControlAssetComponent from './forms/control-asset.component';
+import ControlAssetsComponent from './forms/control-assets.component';
+import ControlCheckboxComponent from './forms/control-checkbox.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
+import ControlLinkComponent from './forms/control-link.component';
+import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
+import ControlUploadComponent from './forms/control-upload.component';
+import ControlVectorComponent from './forms/control-vector.component';
+import DisabledDirective from './forms/disabled.directive';
+import ErrorsComponent from './forms/errors.component';
+import InputValueComponent from './forms/input-value.component';
+import ValueDirective from './forms/value.directive';
+import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
 import SliderDirective from './slider/slider.directive';
+import SvgIconStructure from './svg/svg-icon.structure';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
-import ValueDirective from './value/value.directive';
 import HlsDirective from './video/hls.directive';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
@@ -43,43 +57,57 @@ AppModule.meta = {
 	imports: [
 		CoreModule,
 		FormModule,
+		EditorModule,
 	],
 	declarations: [
-		AssetPipe,
 		AgoraComponent,
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,
 		AgoraLinkComponent,
 		AgoraNameComponent,
 		AgoraStreamComponent,
+		AssetPipe,
+		AssetItemComponent,
+		ControlAssetComponent,
+		ControlAssetsComponent,
+		ControlCheckboxComponent,
 		ControlCustomSelectComponent,
+		ControlLinkComponent,
 		ControlRequestModalComponent,
+		ControlSelectComponent,
 		ControlTextComponent,
+		ControlUploadComponent,
+		ControlVectorComponent,
+		DisabledDirective,
 		DropDirective,
 		DropdownDirective,
 		DropdownItemDirective,
+		ErrorsComponent,
+		HtmlPipe,
 		HlsDirective,
 		IdDirective,
+		InputValueComponent,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,
 		ModelComponent,
+		ModelCurvedPlaneComponent,
 		ModelDebugComponent,
 		ModelGltfComponent,
 		ModelGridComponent,
-		ModelPictureComponent,
-		ModelRoomComponent,
-		ModelTextComponent,
 		ModelMenuComponent,
 		ModelNavComponent,
 		ModelPanelComponent,
+		ModelPictureComponent,
 		ModelPlaneComponent,
-		ModelCurvedPlaneComponent,
+		ModelRoomComponent,
+		ModelTextComponent,
 		SliderDirective,
+		SvgIconStructure,
 		TryInARComponent,
 		TryInARModalComponent,
 		ValueDirective,
-		WorldComponent,
+		WorldComponent
 	],
 	bootstrap: AppComponent,
 };

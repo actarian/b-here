@@ -1,8 +1,8 @@
 import { first } from 'rxjs/operators';
 import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import AgoraService from '../../agora/agora.service';
 import { environment } from '../../environment';
+import { RGBELoader } from '../../loaders/RGBELoader.js';
+import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
 
 export class EnvMapLoader {
@@ -49,16 +49,16 @@ export class EnvMapLoader {
 		if (!item.asset) {
 			return;
 		}
-		if (item.asset.file === 'publisherStream') {
+		if (item.asset.fileName === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
-		} else if (item.asset.file.indexOf('.hdr') !== -1) {
-			return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-		} else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-			return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-		} else if (item.asset.file.indexOf('.m3u8') !== -1) {
-			return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
+		} else if (item.asset.fileName.indexOf('.hdr') !== -1) {
+			return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
+		} else if (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1) {
+			return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
+		} else if (item.asset.fileName.indexOf('.m3u8') !== -1) {
+			return this.loadHlslVideoBackground(item.asset.fileName, renderer, callback);
 		} else {
-			return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
 		}
 	}
 
@@ -80,12 +80,8 @@ export class EnvMapLoader {
 	}
 
 	static loadPublisherStreamBackground(renderer, callback) {
-		const agora = AgoraService.getSingleton();
-		if (!agora) {
-			return;
-		}
 		const onPublisherStreamId = (publisherStreamId) => {
-			// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+			// const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
 			const target = `#stream-${publisherStreamId}`;
 			const video = document.querySelector(`${target} video`);
 			if (!video) {
@@ -120,7 +116,7 @@ export class EnvMapLoader {
 				};
 			}
 		};
-		agora.getPublisherStreamId$().pipe(
+		StreamService.getPublisherStreamId$().pipe(
 			first(),
 		).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 	}

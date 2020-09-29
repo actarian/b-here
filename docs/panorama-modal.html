@@ -1,0 +1,13 @@
+<div class="panorama-modal" panorama-modal><div class="modal__header"><button type="button" class="btn--close" (click)="close()"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg></button></div><div class="container"><div class="form"><div class="title">Create Panorama.</div><form [formgroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off"><fieldset><!--
+					<div class="group--form">
+						<i class="icon--remove" [class]="{ active: form.get('name').dirty }" (click)="form.get('name').reset()"></i>
+						<input type="text" class="control--text" formControlName="name" placeholder="name" required />
+						<i class="icon--check"></i>
+					</div>
+					<errors-component [control]="form.get('name')"></errors-component>
+					--><div control-text [control]="controls.name" label="Name"></div><div control-upload [control]="controls.upload" label="Upload"></div></fieldset><div class="group--cta"><button type="submit" class="btn--accept"><span *if="!form.submitted">Create</span> <span *if="form.submitted">Created!</span></button></div><!--
+				<div class="group--form group--form--fixed">
+					<code [innerHTML]="form.value | json"></code>
+					<button type="button" class="btn--test" (click)="test()"><span>test</span></button>
+				</div>
+				--></form></div></div></div>

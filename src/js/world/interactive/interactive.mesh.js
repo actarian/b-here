@@ -1,25 +1,23 @@
-import DebugService from '../debug.service';
 import EmittableMesh from './emittable.mesh';
 import Interactive from './interactive';
 
+// const defaultEvent = {};
+
 export default class InteractiveMesh extends EmittableMesh {
 
-	static hittest(raycaster, down) {
+	/*
+	static hittest(raycaster, down = false, event = defaultEvent) {
 		const debugService = DebugService.getService();
 		if (InteractiveMesh.down !== down) {
 			InteractiveMesh.down = down;
 			InteractiveMesh.lock = false;
 		}
-		// !!! da rivedere per consentire eventi multipli (nav-items)
 		const items = InteractiveMesh.items.filter(x => !x.freezed);
 		const intersections = raycaster.intersectObjects(items);
 		let key, hit;
 		const hash = {};
-		// let has = false;
 		intersections.forEach((intersection, i) => {
 			const object = intersection.object;
-			// console.log('InteractiveMesh.hittest', i, object.name);
-			// has = has || object.name.indexOf('nav') !== -1;
 			key = object.uuid;
 			if (i === 0) {
 				if (InteractiveMesh.lastIntersectedObject !== object) {
@@ -37,7 +35,6 @@ export default class InteractiveMesh extends EmittableMesh {
 			}
 			hash[key] = intersection;
 		});
-		// console.log(has);
 		items.forEach(x => {
 			x.intersection = hash[x.uuid];
 			x.over = (x === InteractiveMesh.lastIntersectedObject) || (!x.depthTest && x.intersection);
@@ -57,6 +54,7 @@ export default class InteractiveMesh extends EmittableMesh {
 			}
 		}
 	}
+	*/
 
 	constructor(geometry, material) {
 		super(geometry, material);
@@ -102,4 +100,8 @@ export default class InteractiveMesh extends EmittableMesh {
 
 }
 
+/*
 InteractiveMesh.items = [];
+InteractiveMesh.hittest = interactiveHittest.bind(InteractiveMesh);
+InteractiveMesh.dispose = interactiveDispose.bind(InteractiveMesh);
+*/

@@ -1,3 +1,6 @@
+src/js/loaders
+src/js/webxr
+
 # Logs
 logs
 *.log

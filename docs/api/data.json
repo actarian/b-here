@@ -9,7 +9,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room.jpg"
+        "fileName": "waiting-room.jpg"
       },
       "items": [],
       "orientation": {
@@ -27,7 +27,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "IPF WELCOME.jpg"
+        "fileName": "IPF WELCOME.jpg"
       },
       "items": [
         {
@@ -38,7 +38,7 @@
           "asset": {
             "type": "image",
             "folder": "ipf/",
-            "file": "logo-ipf.png"
+            "fileName": "logo-ipf.png"
           },
           "link": {
             "title": "Scopri di più...",
@@ -164,7 +164,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "01_cinema.jpg"
+        "fileName": "01_cinema.jpg"
       },
       "items": [
         {
@@ -173,7 +173,7 @@
           "asset": {
             "type": "video",
             "folder": "video/",
-            "file": "IPF PARQUET.mp4"
+            "fileName": "IPF PARQUET.mp4"
           },
           "position": {
             "x": 86,
@@ -219,7 +219,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "02_galleryvision.jpg"
+        "fileName": "02_galleryvision.jpg"
       },
       "items": [
         {
@@ -262,7 +262,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "03_collezione1.jpg"
+        "fileName": "03_collezione1.jpg"
       },
       "items": [
         {
@@ -285,7 +285,7 @@
           "asset": {
             "type": "image",
             "folder": "ipf/",
-            "file": "logo-ipf.png"
+            "fileName": "logo-ipf.png"
           },
           "link": {
             "title": "Scopri di più...",
@@ -315,7 +315,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "04_collezione2.jpg"
+        "fileName": "04_collezione2.jpg"
       },
       "items": [
         {
@@ -338,7 +338,7 @@
           "asset": {
             "type": "image",
             "folder": "ipf/",
-            "file": "logo-ipf.png"
+            "fileName": "logo-ipf.png"
           },
           "link": {
             "title": "Scopri di più...",
@@ -368,7 +368,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "05_collezione3.jpg"
+        "fileName": "05_collezione3.jpg"
       },
       "items": [
         {
@@ -391,7 +391,7 @@
           "asset": {
             "type": "image",
             "folder": "ipf/",
-            "file": "logo-ipf.png"
+            "fileName": "logo-ipf.png"
           },
           "link": {
             "title": "Scopri di più...",
@@ -421,7 +421,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "06_collezione4.jpg"
+        "fileName": "06_collezione4.jpg"
       },
       "items": [
         {
@@ -444,7 +444,7 @@
           "asset": {
             "type": "image",
             "folder": "ipf/",
-            "file": "logo-ipf.png"
+            "fileName": "logo-ipf.png"
           },
           "link": {
             "title": "Scopri di più...",
@@ -474,7 +474,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "07_collezione5.jpg"
+        "fileName": "07_collezione5.jpg"
       },
       "items": [
         {
@@ -497,7 +497,7 @@
           "asset": {
             "type": "image",
             "folder": "ipf/",
-            "file": "logo-ipf.png"
+            "fileName": "logo-ipf.png"
           },
           "link": {
             "title": "Scopri di più...",
@@ -527,7 +527,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg"
+        "fileName": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg"
       },
       "items": [
         {
@@ -558,7 +558,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg"
+        "fileName": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg"
       },
       "items": [
         {
@@ -589,7 +589,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg"
+        "fileName": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg"
       },
       "items": [
         {
@@ -624,7 +624,7 @@
       "asset": {
         "type": "video",
         "folder": "",
-        "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
+        "fileName": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
       },
       "items": [
         {
@@ -659,7 +659,7 @@
       "asset": {
         "type": "publisher-stream",
         "folder": "",
-        "file": "publisherStream"
+        "fileName": "publisherStream"
       },
       "items": [
         {
@@ -690,7 +690,7 @@
       "asset": {
         "type": "image",
         "folder": "grid/",
-        "file": "collezione3_x0_y0.jpg"
+        "fileName": "collezione3_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -699,7 +699,7 @@
           "asset": {
             "type": "image",
             "folder": "grid/",
-            "file": "collezione3_x0_y0.jpg"
+            "fileName": "collezione3_x0_y0.jpg"
           },
           "navs": []
         },
@@ -739,7 +739,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "amazing.jpg"
+        "fileName": "amazing.jpg"
       },
       "items": [
         {
@@ -750,7 +750,7 @@
           "asset": {
             "type": "model",
             "folder": "logo/",
-            "file": "logowsGLB.glb"
+            "fileName": "logowsGLB.glb"
           }
         }
       ],

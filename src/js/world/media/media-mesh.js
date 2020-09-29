@@ -1,8 +1,9 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as THREE from 'three';
-import AgoraService, { RoleType } from '../../agora/agora.service';
+import { RoleType } from '../../agora/agora.types';
 import { environment } from '../../environment';
+import StreamService from '../../stream/stream.service';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
 
@@ -168,64 +169,74 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	static getStreamId$(item) {
-		const file = item.asset.file;
+		if (!item.asset) {
+			return of(null);
+		}
+		const file = item.asset.fileName;
 		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
 			return of(file);
 		}
-		const agora = AgoraService.getSingleton();
-		if (agora) {
-			return agora.streams$.pipe(
-				map((streams) => {
-					let stream;
-					if (file === 'publisherStream') {
-						stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
-					} else if (file === 'nextAttendeeStream') {
-						let i = 0;
-						streams.forEach(x => {
-							if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-								if (i === item.asset.index) {
-									stream = x;
-								}
-								i++;
+		return StreamService.streams$.pipe(
+			map((streams) => {
+				let stream;
+				if (file === 'publisherStream') {
+					stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+				} else if (file === 'nextAttendeeStream') {
+					let i = 0;
+					streams.forEach(x => {
+						if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+							if (i === item.asset.index) {
+								stream = x;
 							}
-						});
-					}
-					if (stream) {
-						return stream.getId();
-					} else {
-						return null;
-					}
-				}),
-			);
-		} else {
-			return of(null);
-		}
+							i++;
+						}
+					});
+				}
+				if (stream) {
+					return stream.getId();
+				} else {
+					return null;
+				}
+			}),
+		);
 	}
 
 	constructor(item, items, geometry, material) {
 		material = material || MediaMesh.getMaterial();
+		if (!item.asset) {
+			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+		}
 		super(geometry, material);
 		this.item = item;
 		this.items = items;
 		this.renderOrder = environment.renderOrder.plane;
-		const uniforms = this.uniforms = {
-			overlay: 0,
-			tween: 1,
-			opacity: 0,
-		};
+		if (item.asset) {
+			const uniforms = this.uniforms = {
+				overlay: 0,
+				tween: 1,
+				opacity: 0,
+			};
+		}
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
-		if (!mediaLoader.isVideo) {
+		if (item.asset && !mediaLoader.isVideo) {
 			this.freeze();
 		}
 	}
 
 	load(callback) {
+		if (!this.item.asset) {
+			this.onAppear();
+			if (typeof callback === 'function') {
+				callback(this);
+			}
+			return;
+		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
 		if (mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({
 				asset: {
-					folder: 'ui/', file: 'play.png'
+					folder: 'ui/', fileName: 'play.png'
 				}
 			}, (textureB) => {
 				// console.log('MediaMesh.textureB', textureB);
@@ -243,9 +254,11 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		mediaLoader.load((textureA) => {
 			// console.log('MediaMesh.textureA', textureA);
-			material.uniforms.textureA.value = textureA;
-			material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-			material.needsUpdate = true;
+			if (textureA) {
+				material.uniforms.textureA.value = textureA;
+				material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
+				material.needsUpdate = true;
+			}
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
 				material.uniforms.video.value = true;
@@ -271,7 +284,7 @@ export default class MediaMesh extends InteractiveMesh {
 		return MediaLoader.events$.pipe(
 			map(event => {
 				if (item.asset && item.asset.linkedPlayId) {
-					const eventItem = items.find(x => x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId);
+					const eventItem = items.find(x => x.asset && event.src.indexOf(x.asset.fileName) !== -1 && event.id === item.asset.linkedPlayId);
 					if (eventItem) {
 						// console.log('MediaLoader.events$.eventItem', event, eventItem);
 						if (event instanceof MediaLoaderPlayEvent) {

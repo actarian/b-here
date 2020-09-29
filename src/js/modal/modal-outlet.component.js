@@ -3,7 +3,6 @@ import { takeUntil } from 'rxjs/operators';
 import ModalService from './modal.service';
 
 export default class ModalOutletComponent extends Component {
-
 	get modal() {
 		return this.modal_;
 	}
@@ -34,20 +33,9 @@ export default class ModalOutletComponent extends Component {
 		});
 	}
 
-	onRegister(event) {
-		// console.log('ModalComponent.onRegister');
-		this.pushChanges();
-	}
-
-	onLogin(event) {
-		// console.log('ModalComponent.onLogin');
-		this.pushChanges();
-	}
-
 	reject(event) {
 		ModalService.reject();
 	}
-
 }
 
 ModalOutletComponent.meta = {

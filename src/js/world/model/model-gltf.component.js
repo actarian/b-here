@@ -48,7 +48,7 @@ export default class ModelGltfComponent extends ModelComponent {
 
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.model;
-		this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
+		this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
 			// scale
 			const box = new THREE.Box3().setFromObject(mesh);
 			const size = box.max.clone().sub(box.min);
@@ -96,8 +96,8 @@ export default class ModelGltfComponent extends ModelComponent {
 			this.pushChanges();
 		});
 		/*
-		this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-			this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
+		this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.fileName, (envMap) => {
+			this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
 				const box = new THREE.Box3().setFromObject(mesh);
 				const center = box.getCenter(new THREE.Vector3());
 				mesh.position.x += (mesh.position.x - center.x);
@@ -113,47 +113,6 @@ export default class ModelGltfComponent extends ModelComponent {
 		});
 		*/
 	}
-
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	/*
-	loadAssets() {
-		this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-			this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (model) => {
-				const scene = this.host.scene;
-				scene.add(model);
-				this.host.render();
-			});
-		});
-	}
-	*/
-
-	/*
-	loadRgbeBackground(path, file, callback) {
-		const scene = this.host.scene;
-		const renderer = this.host.renderer;
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
-		pmremGenerator.compileEquirectangularShader();
-		const loader = new RGBELoader();
-		loader
-			.setDataType(THREE.UnsignedByteType)
-			.setPath(path)
-			.load(file, (texture) => {
-				const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-				scene.background = envMap;
-				scene.environment = envMap;
-				this.host.render();
-				texture.dispose();
-				pmremGenerator.dispose();
-				if (typeof callback === 'function') {
-					callback(envMap);
-				}
-			});
-		return loader;
-	}
-	*/
 
 	loadGltfModel(path, file, callback) {
 		const renderer = this.host.renderer;
@@ -185,6 +144,18 @@ export default class ModelGltfComponent extends ModelComponent {
 		});
 	}
 
+	// called by UpdateViewItemComponent
+	onUpdate(item, mesh) {
+		if (item.position) {
+			mesh.position.fromArray(item.position);
+		}
+		if (item.rotation) {
+			mesh.rotation.fromArray(item.rotation);
+		}
+		if (item.scale) {
+			mesh.scale.fromArray(item.scale);
+		}
+	}
 }
 
 ModelGltfComponent.meta = {

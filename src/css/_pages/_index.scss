@@ -136,7 +136,7 @@ body {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	border: $foreground-primary solid 5px;
+	border: $foreground-secondary solid 5px;
 	z-index: 2;
 
 	&.control {
@@ -499,10 +499,10 @@ body {
 
 	&__info {
 		&.spyed {
-			border-color: $foreground-primary;
+			border-color: $foreground-secondary;
 
 			.spy {
-				fill: $foreground-primary;
+				fill: $foreground-secondary;
 			}
 		}
 	}
@@ -588,8 +588,8 @@ body {
 		&:focus,
 		&:hover,
 		&:visited {
-			border: 2px solid rgba($foreground-primary, 1.0);
-			background: $foreground-primary;
+			border: 2px solid rgba($foreground-secondary, 1.0);
+			background: $foreground-secondary;
 			color: $foreground-negative;
 
 			svg {
@@ -623,7 +623,7 @@ body {
 	&:focus,
 	&:hover,
 	&:visited {
-		background: $foreground-primary;
+		background: $foreground-secondary;
 		color: $foreground-negative;
 
 		svg {

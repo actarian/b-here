@@ -1,0 +1,65 @@
+{
+  "views": [
+    {
+      "id": 1792,
+      "type": "waiting-room",
+      "name": "Waiting Room",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "fileName": "waiting-room-02.jpg"
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 10000,
+      "type": "panorama",
+      "name": "Welcome Room",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "fileName": "mod2.jpg"
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "items": [
+        {
+          "type": "nav",
+          "title": "Waiting Room",
+          "abstract": "nav to waiting room",
+          "viewId": "1600773895526",
+          "position": [
+            0.906979880242876,
+            0.23493375537033573,
+            -0.3495620508896946
+          ],
+          "id": 1600271574407
+        },
+        {
+          "type": "nav",
+          "title": "Waiting Room",
+          "abstract": "nav to waiting room",
+          "viewId": 1792,
+          "position": [
+            0.7504471741049891,
+            -0.20406595230134555,
+            -0.6286383109461124
+          ],
+          "id": 1600759466891
+        }
+      ]
+    }
+  ],
+  "assets": []
+}

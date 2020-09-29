@@ -1,6 +1,7 @@
 import { Component } from 'rxcomp';
 import { FormGroup } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
+import StateService from '../state/state.service';
 import AgoraService from './agora.service';
 
 export default class AgoraDeviceComponent extends Component {
@@ -11,14 +12,14 @@ export default class AgoraDeviceComponent extends Component {
 		this.stream = null;
 		this.form = null;
 		const agora = this.agora = AgoraService.getSingleton();
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			// console.log('AgoraDeviceComponent.state', state);
+			this.state = state;
+			this.pushChanges();
+		});
 		if (agora) {
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				// console.log('AgoraDeviceComponent.state', state);
-				this.state = state;
-				this.pushChanges();
-			});
 			agora.devices$().subscribe(devices => {
 				// console.log(devices);
 				this.devices = devices;

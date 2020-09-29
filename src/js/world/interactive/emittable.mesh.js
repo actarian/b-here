@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import FreezableMesh from "./freezable.mesh";
 
 export default class EmittableMesh extends FreezableMesh {

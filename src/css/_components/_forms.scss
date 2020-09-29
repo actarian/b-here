@@ -1,5 +1,5 @@
 $family: $font-secondary;
-$size: 34px;
+$size: 0.8em;
 $weight: $font-light;
 $spacing: 0;
 $line: 1; // always
@@ -19,17 +19,17 @@ $invalid: $foreground-primary;
 	display: block;
 	flex: 0 0 100%;
 	font-family: $font-secondary;
-	font-size: 13px;
-	opacity: 0.3;
+	font-size: 0.6em;
+	// opacity: 0.3;
 	font-weight: $font-semibold;
 	line-height: $line;
 	margin-bottom: -1px;
 	color: $pristine;
-	text-transform: uppercase;
+	text-transform: none;
 }
 
 %placeholder {
-	text-transform: uppercase;
+	text-transform: none;
 	color: rgba($pristine, 0.4);
 }
 
@@ -69,7 +69,7 @@ $invalid: $foreground-primary;
 		font-weight: $weight;
 		letter-spacing: $spacing;
 		line-height: $line;
-		text-transform: uppercase;
+		text-transform: none; // uppercase;
 		-webkit-text-fill-color: $color;
 		box-shadow: 0 0 0px 1000px $background inset;
 		transition: background-color 5000s ease-in-out 0s;
@@ -80,7 +80,7 @@ $invalid: $foreground-primary;
 		font-size: $size;
 		font-weight: $weight;
 		letter-spacing: $spacing;
-		line-height: $line;
+		line-height: $line * 2;
 		@extend %placeholder;
 	}
 }
@@ -88,6 +88,7 @@ $invalid: $foreground-primary;
 %control--text {
 	@include autofill($size, $weight, $line, $spacing, $family, $foreground, transparent);
 	flex: 1 1 auto;
+	width: 1px;
 	max-width: 100%;
 	margin: 0;
 	padding: 0 20px 0 0;
@@ -125,17 +126,29 @@ $invalid: $foreground-primary;
 }
 
 .form {
+	min-width: 375px;
 
 	.title {
-		@extend %subtitle;
+		margin-bottom: 15px;
+		font-family: $font-secondary;
+		font-size: 21px;
+		font-weight: 600;
+		line-height: 1.15;
+		text-transform: none;
 	}
 
 	.group--cta {
 		display: flex;
+		align-items: center;
 		justify-content: center;
-		margin-top: 30px;
+		width: 100%;
+		margin: 0;
 		padding: 20px 0;
 		border-bottom: 1px solid rgba(#16255b, 0.2);
+
+		&>*+* {
+			margin-left: 10px;
+		}
 	}
 
 	.group--info {
@@ -214,8 +227,8 @@ fieldset,
 	position: relative;
 	background: $background;
 	border: none;
-	border-radius: 6px;
-	padding: 8px 15px;
+	border-bottom: 2px solid $foreground;
+	border-radius: 0;
 	cursor: pointer;
 
 	input {
@@ -225,14 +238,16 @@ fieldset,
 	.icon--caret-down {
 		width: 12px;
 		height: 12px;
-		margin: 0;
+		margin: 4px 0 0 0;
 		fill: #ccc;
 		pointer-events: none;
 	}
 
+	/*
 	&.required .required__badge {
 		display: none;
 	}
+	*/
 
 	@include media-down(xs) {
 		margin: 0 0 10px 0;
@@ -241,9 +256,10 @@ fieldset,
 
 .control--select {
 	@extend %control--text;
-	font-size: 21px;
-	text-transform: uppercase;
-	line-height: 1;
+	font-size: $size;
+	text-transform: none;
+	line-height: 1.2;
+	cursor: pointer;
 
 	.multiple>& {
 		white-space: nowrap;
@@ -366,11 +382,11 @@ errors-component {
 
 	.inner {
 		@extend %label;
-		margin-top: -10px;
+		margin-top: -15px;
 		margin-bottom: 10px;
 		padding: 7px 7px;
-		font-size: 14px;
-		background: $invalid;
+		font-size: 10px;
+		background: $background-secondary;
 		color: $foreground-negative;
 	}
 }
@@ -526,16 +542,164 @@ errors-component {
 		@extend %label;
 		display: block;
 		position: absolute;
-		font-size: 11px;
+		font-size: 0.6em;
 		right: 0px;
-		top: 10px;
+		top: 0;
+	}
+}
+
+.invalid.touched {
+	.required__badge {
+		color: $foreground-secondary;
+	}
+}
+
+// control-values
+
+.control--head {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	margin-bottom: 4px;
+	flex: 1 1 100%;
+}
+
+.control--content {
+	display: flex;
+	justify-content: flex-start;
+	width: 100%;
+	flex: 1 1 100%;
+}
+
+.group--control {
+	display: flex;
+}
+
+.control--vector {
+	justify-content: space-between;
+
+	/*
+	.group--form {
+		display: block;
+		justify-content: flex-start;
+	}
+	*/
+
+	input-value {
+		flex: 0 1 calc(33.3333% - 5px);
+	}
+}
+
+input-value {
+	display: flex;
+
+	.group--control {
+		flex: 1 1 auto;
 	}
 
-	&.group--form--select,
-	&.group--form--file {
-		.required__badge {
-			top: 8px;
-			right: 10px;
+	/*
+	.control--text {
+		font-size: 16px;
+		font-weight: normal;
+		border: 1px solid rgba($foreground-primary, 0.2);
+		padding: 4px;
+	}
+	*/
+
+	.control--text {
+		font-size: 11px;
+		border-radius: 3px 0 0 3px;
+		border: 1px solid rgba($foreground-primary, 0.5);
+		border-right: none;
+		padding: 4px;
+		font-weight: 500;
+	}
+
+	.control--trigger {
+		font-size: 13px;
+
+		.btn--more {
+			border-radius: 0 3px 0 0;
+		}
+
+		.btn--less {
+			border-radius: 0 0 3px 0;
+		}
+	}
+}
+
+.btn--less,
+.btn--more {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 16px;
+	height: 16px;
+	background: rgba($foreground-primary, 0.5);
+	user-select: none;
+	cursor: pointer;
+
+	.disabled & {
+		background: rgba(#000, 0.15);
+		pointer-events: none;
+	}
+}
+
+.disabled {
+
+	label,
+	.control--text,
+	.required__badge {
+		color: #bbb;
+		pointer-events: none;
+	}
+
+	.control--text {
+		border-color: rgba(#000, 0.15);
+	}
+}
+
+[control-asset] {
+
+	.group--picture {
+		@include aspect-clip(3, 1);
+		border-radius: 6px;
+
+		&>img {
+			opacity: 1;
+		}
+
+		&__info {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			font-size: 10px;
+			font-weight: 600;
+			border: 2px solid rgba(0, 0, 0, .15);
+			border-radius: 6px;
+
+			svg {
+				width: 24px;
+				height: 24px;
+				fill: currentColor;
+			}
+		}
+
+		input[type="file"] {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			appearance: none;
+			opacity: 0;
+			cursor: pointer;
 		}
 	}
 }

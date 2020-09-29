@@ -6,191 +6,963 @@
 
 'use strict';
 
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+require('https');
+var fs = _interopDefault(require('fs'));
+require('serve-static');
+var express = _interopDefault(require('express'));
+var bodyParser = _interopDefault(require('body-parser'));
+var path = _interopDefault(require('path'));
+var connectMultiparty = _interopDefault(require('connect-multiparty'));
+var mv = _interopDefault(require('mv'));
+
+function upload(temporaryFolder) {
+  var this_ = this;
+  this_.temporaryFolder = temporaryFolder;
+  this_.maxFileSize = null;
+  this_.fileParameterName = 'file';
+
+  try {
+    fs.mkdirSync(this_.temporaryFolder);
+  } catch (e) {}
+
+  function cleanIdentifier(identifier) {
+    return identifier.replace(/[^0-9A-Za-z_-]/g, '');
   }
-}
 
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
+  function getChunkFilename(chunkNumber, identifier) {
+    // Clean up the identifier
+    identifier = cleanIdentifier(identifier); // What would the file name be?
 
-var NODE = typeof module !== 'undefined' && module.exports;
-var PARAMS = NODE ? {
-  get: function get() {}
-} : new URLSearchParams(window.location.search);
-var DEBUG =  PARAMS.get('debug') != null;
-var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-var HEROKU = NODE ? false : window && (window.location.host.indexOf('herokuapp') !== -1 || window.location.port === '5000');
-var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.host === 'actarian.github.io');
-var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
-var Environment = /*#__PURE__*/function () {
-  var _proto = Environment.prototype;
+    return path.resolve(this_.temporaryFolder, './chunk-' + identifier + '.' + chunkNumber);
+  }
 
-  _proto.getModelPath = function getModelPath(path) {
-    return STATIC ? this.href + this.paths.models + path : path;
-  };
+  function validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, fileSize) {
+    // Clean up the identifier
+    identifier = cleanIdentifier(identifier); // Check if the request is sane
 
-  _proto.getTexturePath = function getTexturePath(path) {
-    return STATIC ? this.href + this.paths.textures + path : path;
-  };
+    if (chunkNumber == 0 || chunkSize == 0 || totalSize == 0 || identifier.length == 0 || filename.length == 0) {
+      return 'non_flow_request';
+    }
 
-  _proto.getFontPath = function getFontPath(path) {
-    return STATIC ? this.href + this.paths.fonts + path : path;
-  };
+    var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
 
-  _createClass(Environment, [{
-    key: "href",
-    get: function get() {
-      if (HEROKU) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
-      } else {
-        return BASE_HREF;
+    if (chunkNumber > numberOfChunks) {
+      return 'invalid_flow_request1';
+    } // Is the file too big?
+
+
+    if (this_.maxFileSize && totalSize > this_.maxFileSize) {
+      return 'invalid_flow_request2';
+    }
+
+    if (typeof fileSize != 'undefined') {
+      if (chunkNumber < numberOfChunks && fileSize != chunkSize) {
+        // The chunk in the POST request isn't the correct size
+        return 'invalid_flow_request3';
+      }
+
+      if (numberOfChunks > 1 && chunkNumber == numberOfChunks && fileSize != totalSize % chunkSize + parseInt(chunkSize)) {
+        // The chunks in the POST is the last one, and the fil is not the correct size
+        return 'invalid_flow_request4';
+      }
+
+      if (numberOfChunks == 1 && fileSize != totalSize) {
+        // The file is only a single chunk, and the data size does not fit
+        return 'invalid_flow_request5';
       }
     }
-  }, {
-    key: "host",
-    get: function get() {
-      var host = window.location.host.replace('127.0.0.1', '192.168.1.2'); // let host = window.location.host;
 
-      if (host.substr(host.length - 1, 1) === '/') {
-        host = host.substr(0, host.length - 1);
-      }
+    return 'valid';
+  } //'found', filename, original_filename, identifier
+  //'not_found', null, null, null
 
-      return window.location.protocol + "//" + host + BASE_HREF;
+
+  this_.get = function (req, callback) {
+    var chunkNumber = req.param('flowChunkNumber', 0);
+    var chunkSize = req.param('flowChunkSize', 0);
+    var totalSize = req.param('flowTotalSize', 0);
+    var identifier = req.param('flowIdentifier', "");
+    var filename = req.param('flowFilename', "");
+
+    if (validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename) == 'valid') {
+      var chunkFilename = getChunkFilename(chunkNumber, identifier); // console.log('test chunkFilename', chunkFilename);
+
+      fs.access(chunkFilename, fs.constants.F_OK, function (error) {
+        if (error) {
+          callback('not_found', null, null, null);
+        } else {
+          callback('found', chunkFilename, filename, identifier);
+        }
+      });
+    } else {
+      callback('not_found', null, null, null);
     }
-  }]);
+  }; //'partly_done', filename, original_filename, identifier
+  //'done', filename, original_filename, identifier
+  //'invalid_flow_request', null, null, null
+  //'non_flow_request', null, null, null
 
-  function Environment(options) {
-    if (options) {
-      Object.assign(this, options);
+
+  this_.post = function (req, callback) {
+    var fields = req.body;
+    var files = req.files;
+    var chunkNumber = fields['flowChunkNumber'];
+    var chunkSize = fields['flowChunkSize'];
+    var totalSize = fields['flowTotalSize'];
+    var identifier = cleanIdentifier(fields['flowIdentifier']);
+    var filename = fields['flowFilename'];
+
+    if (!files[this_.fileParameterName] || !files[this_.fileParameterName].size) {
+      callback('invalid_flow_request', null, null, null);
+      return;
     }
+
+    var original_filename = files[this_.fileParameterName]['originalFilename'];
+    var validation = validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, files[this_.fileParameterName].size);
+
+    if (validation == 'valid') {
+      var chunkFilename = getChunkFilename(chunkNumber, identifier); // Save the chunk (TODO: OVERWRITE)
+
+      mv(files[this_.fileParameterName].path, chunkFilename, function () {
+        // Do we have all the chunks?
+        var currentTestChunk = 1;
+        var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
+
+        var testChunkExists = function testChunkExists() {
+          var chunkFilename = getChunkFilename(currentTestChunk, identifier); // console.log('test chunkFilename', chunkFilename);
+
+          fs.access(chunkFilename, fs.constants.F_OK, function (error) {
+            if (error) {
+              callback('partly_done', filename, original_filename, identifier);
+            } else {
+              currentTestChunk++;
+
+              if (currentTestChunk > numberOfChunks) {
+                callback('done', filename, original_filename, identifier);
+              } else {
+                // Recursion
+                testChunkExists();
+              }
+            }
+          });
+        };
+
+        testChunkExists();
+      });
+    } else {
+      callback(validation, filename, original_filename, identifier);
+    }
+  }; // Pipe chunks directly in to an existsing WritableStream
+  //   r.write(identifier, response);
+  //   r.write(identifier, response, {end:false});
+  //
+  //   const stream = fs.createWriteStream(filename);
+  //   r.write(identifier, stream);
+  //   stream.on('data', function(data){...});
+  //   stream.on('finish', function(){...});
+
+
+  this_.write = function (identifier, stream, options) {
+    options = options || {};
+    options.end = typeof options['end'] == 'undefined' ? true : options['end']; // Iterate over each chunk
+
+    var pipeChunk = function pipeChunk(number) {
+      var chunkFilename = getChunkFilename(number, identifier);
+      fs.access(chunkFilename, fs.constants.F_OK, function (error) {
+        if (error) {
+          // When all the chunks have been piped, end the stream
+          if (options.end) {
+            stream.end();
+            this_.clean(identifier, options);
+          } // if (options.onDone) options.onDone();
+
+        } else {
+          // If the chunk with the current number exists,
+          // then create a ReadStream from the file
+          // and pipe it to the specified stream.
+          var source = fs.createReadStream(chunkFilename);
+          source.pipe(stream, {
+            end: false
+          });
+          source.on('end', function () {
+            // When the chunk is fully streamed,
+            // jump to the next one
+            pipeChunk(number + 1);
+          });
+        }
+      });
+    };
+
+    pipeChunk(1);
+  };
+
+  this_.clean = function (identifier, options) {
+    options = options || {}; // Iterate over each chunk
+
+    var pipeChunkRm = function pipeChunkRm(number) {
+      var chunkFilename = getChunkFilename(number, identifier); //console.log('removing pipeChunkRm ', number, 'chunkFilename', chunkFilename);
+
+      fs.access(chunkFilename, fs.constants.F_OK, function (error) {
+        if (error) {
+          if (options.onDone) options.onDone();
+        } else {
+          console.log('exist removing ', chunkFilename);
+          fs.unlink(chunkFilename, function (err) {
+            if (err && options.onError) options.onError(err);
+          });
+          pipeChunkRm(number + 1);
+        }
+      });
+    };
+
+    pipeChunkRm(1);
+  };
+
+  return this_;
+}
+
+var upload_1 = {
+  upload: upload
+};
+
+// const serveStatic = require('serve-static');
+
+var MIME_CONTENT_TYPES = {
+  "css": "text/css",
+  // Cascading Style Sheets (CSS)
+  "csv": "text/csv",
+  // Comma-separated values (CSV)
+  "htm": "text/html",
+  // HyperText Markup Language (HTML)
+  "html": "text/html",
+  // HyperText Markup Language (HTML)
+  "ics": "text/calendar",
+  // iCalendar format
+  "js": "text/javascript",
+  // per the following specifications: https://html.spec.whatwg.org/multipage/#scriptingLanguages, https://html.spec.whatwg.org/multipage/#dependencies:willful-violation, https://datatracker.ietf.org/doc/draft-ietf-dispatch-javascript-mjs/ JavaScript
+  "mjs": "text/javascript",
+  // JavaScript module
+  "txt": "text/plain",
+  // Text, (generally ASCII or ISO 8859-n)
+  "xml": "text/xml",
+  // if readable from casual users (RFC 3023, section 3) "application/xml" if not readable from casual users (RFC 3023, section 3)", // XML
+  "bmp": "image/bmp",
+  // Windows OS/2 Bitmap Graphics
+  "gif": "image/gif",
+  // Graphics Interchange Format (GIF)
+  "ico": "image/vnd.microsoft.icon",
+  // Icon format
+  "jpeg": "image/jpeg",
+  // JPEG images
+  "jpg": "image/jpeg",
+  // JPEG images
+  "png": "image/png",
+  // Portable Network Graphics
+  "svg": "image/svg+xml",
+  // Scalable Vector Graphics (SVG)
+  "tif": "image/tiff",
+  // Tagged Image File Format (TIFF)
+  "tiff": "image/tiff",
+  // Tagged Image File Format (TIFF)
+  "webp": "image/webp",
+  // WEBP image
+  "otf": "font/otf",
+  // OpenType font
+  "ttf": "font/ttf",
+  // TrueType Font
+  "woff": "font/woff",
+  // Web Open Font Format (WOFF)
+  "woff2": "font/woff2",
+  // Web Open Font Format (WOFF)
+  "aac": "audio/aac",
+  // AAC audio
+  "mid": "audio/midi audio/x-midi",
+  // Musical Instrument Digital Interface (MIDI)
+  "midi": "audio/midi audio/x-midi",
+  // Musical Instrument Digital Interface (MIDI)
+  "mp3": "audio/mpeg",
+  // MP3 audio
+  "mp4": "audio/mp4",
+  // MP4 video
+  "oga": "audio/ogg",
+  // OGG audio
+  "opus": "audio/opus",
+  // Opus audio
+  "wav": "audio/wav",
+  // Waveform Audio Format
+  "weba": "audio/webm",
+  // WEBM audio
+  "avi": "video/x-msvideo",
+  // AVI: Audio Video Interleave
+  "mpeg": "video/mpeg",
+  // MPEG Video
+  "ogv": "video/ogg",
+  // OGG video
+  "ts": "video/mp2t",
+  // MPEG transport stream
+  "webm": "video/webm",
+  // WEBM video
+  "3gp": "video/3gpp",
+  //	audio/3gpp if it doesn't contain video", // 3GPP audio/video container
+  "3g2": "video/3gpp2",
+  // audio/3gpp2 if it doesn't contain video", // 3GPP2 audio/video container
+  "abw": "application/x-abiword",
+  // AbiWord document
+  "arc": "application/x-freearc",
+  // Archive document (multiple files embedded)
+  "azw": "application/vnd.amazon.ebook",
+  // Amazon Kindle eBook format
+  "bin": "application/octet-stream",
+  // Any kind of binary data
+  "bz": "application/x-bzip",
+  // BZip archive
+  "bz2": "application/x-bzip2",
+  // BZip2 archive
+  "csh": "application/x-csh",
+  // C-Shell script
+  "doc": "application/msword",
+  // Microsoft Word
+  "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  // Microsoft Word (OpenXML)
+  "eot": "application/vnd.ms-fontobject",
+  // MS Embedded OpenType fonts
+  "epub": "application/epub+zip",
+  // Electronic publication (EPUB)
+  "gz": "application/gzip",
+  // GZip Compressed Archive
+  "jar": "application/java-archive",
+  // Java Archive (JAR)
+  "json": "application/json",
+  // JSON format
+  "jsonld": "application/ld+json",
+  // JSON-LD format
+  "map": "application/ld+json",
+  // sourcemaps
+  "mpkg": "application/vnd.apple.installer+xml",
+  // Apple Installer Package
+  "odp": "application/vnd.oasis.opendocument.presentation",
+  // OpenDocument presentation document
+  "ods": "application/vnd.oasis.opendocument.spreadsheet",
+  // OpenDocument spreadsheet document
+  "odt": "application/vnd.oasis.opendocument.text",
+  // OpenDocument text document
+  "ogx": "application/ogg",
+  // OGG
+  "pdf": "application/pdf",
+  // Adobe Portable Document Format (PDF)
+  "php": "application/x-httpd-php",
+  // Hypertext Preprocessor (Personal Home Page)
+  "ppt": "application/vnd.ms-powerpoint",
+  // Microsoft PowerPoint
+  "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  // Microsoft PowerPoint (OpenXML)
+  "rar": "application/vnd.rar",
+  // RAR archive
+  "rtf": "application/rtf",
+  // Rich Text Format (RTF)
+  "sh": "application/x-sh",
+  // Bourne shell script
+  "swf": "application/x-shockwave-flash",
+  // Small web format (SWF) or Adobe Flash document
+  "tar": "application/x-tar",
+  // Tape Archive (TAR)
+  "vsd": "application/vnd.visio",
+  // Microsoft Visio
+  "webmanifest": "application/json",
+  // webmanifest
+  "xhtml": "application/xhtml+xml",
+  // XHTML
+  "xls": "application/vnd.ms-excel",
+  // Microsoft Excel
+  "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  // Microsoft Excel (OpenXML)
+  "xul": "application/vnd.mozilla.xul+xml",
+  // XUL
+  "zip": "application/zip",
+  // ZIP archive
+  "7z": "application/x-7z-compressed" // 7-zip archive
+
+};
+var MIME_TEXT = ['css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml'];
+var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
+var MIME_FONTS = ['otf', 'ttf', 'woff', 'woff2'];
+var MIME_AUDIO = ['aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba'];
+var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
+var MIME_APPLICATION = ['abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z'];
+var MIME_TYPES = [].concat(MIME_TEXT, MIME_IMAGE, MIME_FONTS, MIME_AUDIO, MIME_VIDEO, MIME_APPLICATION);
+
+function staticMiddleware(vars) {
+  if (!vars.root) {
+    throw new Error('missing Vars.root!');
   }
 
-  return Environment;
-}();
-var environment = new Environment({
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  appCertificate: '',
-  channelName: 'BHere',
-  publisherId: '999',
-  debugMeetingId: '1591366622325',
-  port: 5000,
-  apiEnabled: false,
-  views: {
-    tryInArModal: 2162,
-    controlRequestModal: 2163
-  },
-  paths: {
-    models: 'models/',
-    textures: 'textures/',
-    fonts: 'fonts/'
-  },
-  renderOrder: {
-    panorama: 0,
-    model: 10,
-    plane: 20,
-    tile: 30,
-    banner: 40,
-    nav: 50,
-    panel: 60,
-    menu: 70,
-    debug: 80,
-    pointer: 90
+  if (!vars.baseHref) {
+    throw new Error('missing Vars.baseHref!');
   }
+
+  return function (request, response, next) {
+    var url = request.baseUrl.replace(/\\/g, '/');
+    var baseHref = vars.baseHref.substr(0, vars.baseHref.length - 1).replace(/\\/g, '/');
+    var regExpText = "^(" + baseHref + ")?(\\/[^\\?\\#]+)(\\.(" + MIME_TYPES.join('|') + "))(\\?.+)?(\\#.+)?$"; // console.log('regExpText', url, regExpText);
+
+    var regExp = new RegExp(regExpText); // console.log('NodeJs.regExp', regExp);
+
+    var matches = regExp.exec(url); // console.log(request.url, request.baseUrl, request.originalUrl, match);
+
+    if (matches) {
+      var extension = matches[4];
+      var file = path.join(matches[2] + '.' + extension);
+      var filePath = path.join(__dirname, '../', vars.root, file);
+      fs.readFile(filePath, {}, function (error, data) {
+        if (error) {
+          console.log('NodeJs.staticMiddleware.notFound', file);
+          return next();
+        }
+
+        console.log('NodeJs.staticMiddleware.serving', file);
+        response.set('Content-Type', MIME_CONTENT_TYPES[extension]);
+        response.send(data);
+      });
+    } else {
+      // console.log('NodeJs.staticMiddleware.unmatch', file);
+      next();
+    }
+  };
+}
+// app.use(express.static('/', { index: false, extensions: MIME_TYPES }));
+// app.use(STATIC_REGEXP, serveStatic(path.join(__dirname, `${ROOT}`)));
+// app.use('/', serveStatic(path.join(__dirname, `${ROOT}`)));
+// app.use(express.static(path.join(__dirname, ROOT)));
+
+var _static = {
+  mimeContentTypes: MIME_CONTENT_TYPES,
+  mimeText: MIME_TEXT,
+  mimeImage: MIME_IMAGE,
+  mimeFonts: MIME_FONTS,
+  mimeAudio: MIME_AUDIO,
+  mimeVideo: MIME_VIDEO,
+  mimeApplication: MIME_APPLICATION,
+  staticMiddleware: staticMiddleware
+};
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+  var it;
+
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
+      return function () {
+        if (i >= o.length) return {
+          done: true
+        };
+        return {
+          done: false,
+          value: o[i++]
+        };
+      };
+    }
+
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  it = o[Symbol.iterator]();
+  return it.next.bind(it);
+}
+
+var _this = undefined;
+/*
+const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
+
+app.post('/api/token/rtc', function(request, response) {
+	const payload = request.body || {};
+	const duration = 3600;
+	const timestamp = Math.floor(Date.now() / 1000);
+	const expirationTime = timestamp + duration;
+	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
+	const role = RtcRole.PUBLISHER;
+	const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
+	response.send(JSON.stringify({
+		token: token,
+	}));
 });
 
-var express = require('express');
+app.post('/api/token/rtm', function(request, response) {
+	const payload = request.body || {};
+	const duration = 3600;
+	const timestamp = Math.floor(Date.now() / 1000);
+	const expirationTime = timestamp + duration;
+	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
+	const role = RtmRole.PUBLISHER;
+	const token = RtmTokenBuilder.buildToken(environment.appKey, environment.appCertificate, uid, role, expirationTime);
+	response.send(JSON.stringify({
+		token: token,
+	}));
+});
+*/
 
-var https = require('https');
+var db = {
+  views: [],
+  assets: []
+};
+var pathname = path.join(__dirname, "../../docs/api/editor.json");
+readStore();
 
-var fs = require('fs');
+function useApi() {
+  return null;
+}
 
-var bodyParser = require('body-parser');
+function readStore() {
+  fs.readFile(pathname, 'utf8', function (error, data) {
+    if (error) {
+      console.log('NodeJs.Api.readStore.error', error, pathname);
+    } else {
+      try {
+        db = Object.assign(db, JSON.parse(data));
+      } catch (error) {
+        console.log('NodeJs.Api.readStore.error', error, pathname);
+      }
+    }
+  });
+}
 
-var serveStatic = require('serve-static');
+function saveStore() {
+  var data = JSON.stringify(db, null, 2);
+  fs.writeFile(pathname, data, 'utf8', function (error, data) {
+    if (error) {
+      console.log('NodeJs.Api.saveStore.error', error, pathname);
+    }
+  });
+}
 
-var path = require('path');
+function sendError(response, status, message) {
+  response.status(status).send(JSON.stringify({
+    status: status,
+    message: message
+  }));
+}
 
-var _require = require('agora-access-token'),
-    RtcTokenBuilder = _require.RtcTokenBuilder,
-    RtmTokenBuilder = _require.RtmTokenBuilder,
-    RtcRole = _require.RtcRole,
-    RtmRole = _require.RtmRole;
-var PORT = process.env.PORT || environment.port;
+function doCreate(request, response, params, items) {
+  var body = request.body;
+  var id = new Date().getTime();
+  var item = Object.assign({}, body, {
+    id: id
+  });
+  items.push(item);
+  saveStore();
+  response.send(JSON.stringify(item));
+}
+
+function doUpdate(request, response, params, items) {
+  var body = request.body;
+  var item = items.find(function (x) {
+    return x.id === body.id;
+  });
+
+  if (item) {
+    Object.assign(item, body);
+    saveStore();
+    response.send(JSON.stringify(item));
+  } else {
+    sendError(response, 404, 'Not Found');
+  }
+}
+
+function doDelete(request, response, params, items) {
+  var index = items.reduce(function (p, x, i) {
+    return x.id === params.id ? i : p;
+  }, -1);
+
+  if (index !== -1) {
+    var item = items[index];
+    items.splice(index, 1);
+    saveStore();
+    response.send(JSON.stringify(item));
+  } else {
+    sendError(response, 404, 'Not Found');
+  }
+}
+
+function doGet(request, response, params, items) {
+  var item = items.find(function (x) {
+    return x.id === params.id;
+  });
+
+  if (!item) {
+    sendError(response, 404, 'Not Found');
+  }
+
+  return item;
+} // /api/upload
+
+
+var ROUTES = [{
+  path: '/api/view',
+  method: 'GET',
+  callback: function callback(request, response, params) {
+    response.send(JSON.stringify(db));
+  }
+}, {
+  path: '/api/view/:viewId',
+  method: 'GET',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      response.send(JSON.stringify(view));
+    }
+  }
+}, {
+  path: '/api/view',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    doCreate(request, response, params, db.views);
+  }
+}, {
+  path: '/api/view/:viewId',
+  method: 'PUT',
+  callback: function callback(request, response, params) {
+    doUpdate(request, response, params, db.views);
+  }
+}, {
+  path: '/api/view/:viewId',
+  method: 'DELETE',
+  callback: function callback(request, response, params) {
+    doDelete(request, response, {
+      id: params.viewId
+    }, db.views);
+  }
+}, {
+  path: '/api/view/:viewId/item',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      view.items = view.items || [];
+      doCreate(request, response, params, view.items);
+    }
+  }
+}, {
+  path: '/api/view/:viewId/item/:viewItemId',
+  method: 'PUT',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      view.items = view.items || [];
+      doUpdate(request, response, params, view.items);
+    }
+  }
+}, {
+  path: '/api/view/:viewId/item/:viewItemId',
+  method: 'DELETE',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      doDelete(request, response, {
+        id: params.viewItemId
+      }, view.items);
+    }
+  }
+}, {
+  path: '/api/asset',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    doCreate(request, response, params, db.assets);
+  }
+}, {
+  path: '/api/asset/:assetId',
+  method: 'PUT',
+  callback: function callback(request, response, params) {
+    doUpdate(request, response, params, db.assets);
+  }
+}, {
+  path: '/api/asset/:assetId',
+  method: 'DELETE',
+  callback: function callback(request, response, params) {
+    doDelete(request, response, {
+      id: params.assetId
+    }, db.assets);
+  }
+}];
+ROUTES.forEach(function (route) {
+  var segments = [];
+
+  if (route.path === '**') {
+    segments.push(route.path);
+    route.matcher = new RegExp('^.*$');
+  } else {
+    var matchers = ["^"];
+    var regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
+    var matches = route.path.matchAll(regExp);
+
+    for (var _iterator = _createForOfIteratorHelperLoose(matches), _step; !(_step = _iterator()).done;) {
+      var match = _step.value;
+      var g1 = match[1];
+      var g2 = match[2];
+      var g3 = match[3];
+
+      if (g1) {
+        _this.relative = !(g1 === '//' || g1 === '/');
+      } else if (g2) {
+        matchers.push("/(" + g2 + ")");
+        segments.push({
+          name: g2,
+          param: null,
+          value: null
+        });
+      } else if (g3) {
+        matchers.push('\/([^\/]+)');
+        var params = {};
+        params[g3] = null;
+        route.params = params;
+        segments.push({
+          name: '',
+          param: g3,
+          value: null
+        });
+      }
+    }
+
+    matchers.push('$');
+    var regexp = matchers.join('');
+    console.log(regexp);
+    route.matcher = new RegExp(regexp);
+  }
+
+  route.segments = segments;
+});
+
+function apiMiddleware(vars) {
+  if (!vars.root) {
+    throw new Error('missing Vars.root!');
+  }
+
+  if (!vars.baseHref) {
+    throw new Error('missing Vars.baseHref!');
+  }
+
+  return function (request, response, next) {
+    var url = request.baseUrl.replace(/\\/g, '/');
+    var params = {};
+    var method = ROUTES.find(function (route) {
+      if (route.method.toLowerCase() === request.method.toLowerCase()) {
+        var match = url.match(route.matcher);
+
+        if (match) {
+          route.segments.forEach(function (x, i) {
+            if (x.param) {
+              var value = match[i + 1];
+
+              if (parseInt(value).toString() === value) {
+                value = parseInt(value);
+              }
+
+              params[x.param] = value;
+            }
+          }); // console.log('match', match, route);
+
+          return true;
+        }
+      }
+    });
+
+    if (method) {
+      console.log('apiMiddleware.url', url, method.path, method.method, params);
+      method.callback(request, response, params);
+    } else {
+      next();
+    }
+  };
+}
+var api = {
+  apiMiddleware: apiMiddleware,
+  useApi: useApi
+};
+
+var multipartMiddleware = connectMultiparty({
+  uploadDir: path.join(__dirname, '../docs/temp/')
+});
+var upload$1 = upload_1.upload;
+var uploader = upload$1(path.join(__dirname, '../docs/temp/'));
+var staticMiddleware$1 = _static.staticMiddleware; // const { spaMiddleware } = require('./spa/spa.js');
+
+var apiMiddleware$1 = api.apiMiddleware;
+ // const router = express.Router();
+// const https = require('https');
+
+var BASE_HREF = '/b-here/';
+var ASSETS = "assets/";
+var ROOT = "../docs/";
+var PORT = process.env.PORT || 5000;
+var Vars = {
+  port: PORT,
+  host: "http://localhost:" + PORT,
+  charset: 'utf8',
+  assets: ASSETS,
+  baseHref: BASE_HREF,
+  cacheMode: 'file',
+  cache: path.join(__dirname, "../cache/"),
+  root: ROOT,
+  template: path.join(__dirname, ROOT + "index.html"),
+  accessControlAllowOrigin: true
+};
+var staticMiddleware_ = staticMiddleware$1(Vars);
+var apiMiddleware_ = apiMiddleware$1(Vars); // const spaMiddleware_ = spaMiddleware(Vars);
+
 var app = express();
 app.disable('x-powered-by');
-app.use(express.static(path.join(__dirname, '../../docs/')));
-app.use('/b-here', serveStatic(path.join(__dirname, '../../docs/')));
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-app.use(bodyParser.raw()); // app.use(express.favicon());
+app.use(bodyParser.raw());
+app.use('*', staticMiddleware_);
+app.use('*', apiMiddleware_);
+app.post('/api/upload2', multipartMiddleware, function (request, response) {
+  if (Vars.accessControlAllowOrigin) {
+    response.header('Access-Control-Allow-Origin', '*');
+  }
 
-/*
-app.get('/', function(request, response) {
-	response.send('Hello World!');
+  console.log(request.body, request.files);
+  /*
+  file: {
+  	fieldName: 'file',
+  	originalFilename: 'ambiente1_x3_y3.jpg',
+  	path: 'C:\\WORK\\GIT\\TFS\\Websolute\\b-here\\docs\\temp\\CVvHZ4YYkiQdWmiAtTjhb6kF.jpg',
+  	headers: {
+  	  'content-disposition': 'form-data; name="file"; filename="ambiente1_x3_y3.jpg"',
+  	  'content-type': 'image/jpeg'
+  	},
+  	size: 3888620,
+  	name: 'ambiente1_x3_y3.jpg',
+  	type: 'image/jpeg'
+    }
+  */
+
+  var file = request.files.file;
+  var id = new Date().getTime();
+  var fileName = id + "_" + file.name;
+  var filePath = "/uploads/" + fileName;
+  var input = file.path;
+  var output = path.join(__dirname, '../docs/uploads/', fileName);
+  var item = {
+    id: id,
+    fileName: fileName,
+    type: file.type,
+    originalFileName: file.name,
+    url: filePath
+  };
+  fs.copyFile(input, output, function (error) {
+    fs.unlink(input, function () {});
+
+    if (error) {
+      throw error;
+    } else {
+      response.status(200).send(JSON.stringify(item));
+    }
+  });
 });
-*/
+app.options('/api/upload2', function (request, response) {
+  console.log('OPTIONS');
 
-/*
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.get('/', (request, response) => response.render('pages/index'));
-*/
-// app.set('view engine', 'handlebars');
+  if (Vars.accessControlAllowOrigin) {
+    response.header('Access-Control-Allow-Origin', '*');
+  }
+
+  response.status(200).send();
+}); // Handle uploads through Flow.js
+
+app.post('/api/upload', multipartMiddleware, function (request, response) {
+  uploader.post(request, function (status, filename, original_filename, identifier) {
+    console.log('POST', status, original_filename, identifier);
+
+    if (Vars.accessControlAllowOrigin) {
+      response.header('Access-Control-Allow-Origin', '*');
+    }
+
+    if (status === 'done') {
+      filename = identifier + '_' + filename;
+      var stream = fs.createWriteStream(path.join(__dirname, '../docs/uploads/', filename));
+      stream.on('finish', function () {
+        response.status(200).send(JSON.stringify({
+          filename: filename,
+          url: "/uploads/" + filename
+        }));
+      });
+      uploader.write(identifier, stream, {
+        end: true
+      });
+    } else {
+      response.status(/^(partly_done|done)$/.test(status) ? 200 : 500).send();
+    }
+  });
+});
+app.options('/api/upload', function (request, response) {
+  console.log('OPTIONS');
+
+  if (Vars.accessControlAllowOrigin) {
+    response.header('Access-Control-Allow-Origin', '*');
+  }
+
+  response.status(200).send();
+}); // Handle status checks on chunks through Flow.js
+
+app.get('/api/upload', function (request, response) {
+  uploader.get(request, function (status, filename, original_filename, identifier) {
+    console.log('GET', status);
+
+    if (Vars.accessControlAllowOrigin) {
+      response.header('Access-Control-Allow-Origin', '*');
+    }
+
+    if (status == 'found') {
+      status = 200;
+    } else {
+      status = 204;
+    }
+
+    response.status(status).send();
+  });
+});
+app.get('/api/download/:identifier', function (request, response) {
+  uploader.write(request.params.identifier, response);
+}); // Handle uploads through Flow.js
+// app.get('*', spaMiddleware_);
 
 app.get('/', function (request, response) {
-  response.sendFile(path.join(__dirname, '../../docs/index.html')); // response.render('docs/index');
+  response.sendFile(path.join(__dirname, '../docs/index.html')); // response.render('docs/index');
 });
-app.post('/api/token/rtc', function (request, response) {
-  var payload = request.body || {};
-  var duration = 3600;
-  var timestamp = Math.floor(Date.now() / 1000);
-  var expirationTime = timestamp + duration;
-  var uid = payload.uid ? String(payload.uid) : timestamp.toString();
-  var role = RtcRole.PUBLISHER;
-  var token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
-  response.send(JSON.stringify({
-    token: token
-  }));
+app.listen(Vars.port, function () {
+  console.log("NodeJs Running server at " + Vars.host);
 });
-app.post('/api/token/rtm', function (request, response) {
-  var payload = request.body || {};
-  var duration = 3600;
-  var timestamp = Math.floor(Date.now() / 1000);
-  var expirationTime = timestamp + duration;
-  var uid = payload.uid ? String(payload.uid) : timestamp.toString();
-  var role = RtmRole.PUBLISHER;
-  var token = RtmTokenBuilder.buildToken(environment.appKey, environment.appCertificate, uid, role, expirationTime);
-  response.send(JSON.stringify({
-    token: token
-  }));
-});
-app.listen(PORT, function () {
-  console.log("Listening on http://localhost:" + PORT + "/");
-});
-/*
-https
-	.createServer({
-		cert: fs.readFileSync(path.join(__dirname, '../../certs/server.crt'), 'utf8'),
-		key: fs.readFileSync(path.join(__dirname, '../../certs/server.key'), 'utf8')
-	}, app)
-	.listen(PORT, function() {
-		// console.log(`Example app listening on port ${PORT}! Go to https://192.168.1.2:${PORT}/`);
-	});
-*/
-// IMPORTANT! Build token with either the uid or with the user account. Comment out the option you do not want to use below.
-// Build token with uid
-// const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
-// Build token with user account
-// const token = RtcTokenBuilder.buildTokenWithAccount(environment.appKey, environment.appCertificate, environment.channelName, account, role, expirationTime);
 //# sourceMappingURL=main.js.map

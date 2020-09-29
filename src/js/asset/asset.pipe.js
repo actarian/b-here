@@ -15,7 +15,7 @@ export const MIME_AUDIO = [
 	'aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba',
 ];
 export const MIME_VIDEO = [
-	'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2',
+	'mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2',
 ];
 export const MIME_MODEL = [
 	'gltf', 'glb', 'obj', 'usdz',
@@ -44,26 +44,26 @@ export default class AssetPipe extends Pipe {
 			switch (asset.type) {
 				case AssetType.Image:
 				case AssetType.Video:
-					asset = asset.folder + asset.file;
+					asset = asset.folder + asset.fileName;
 					asset = environment.getTexturePath(asset);
 					break;
 				case AssetType.Model:
-					asset = asset.folder + asset.file;
+					asset = asset.folder + asset.fileName;
 					asset = environment.getModelPath(asset);
 					break;
 				case AssetType.PublisherStream:
 				case AssetType.NextAttendeeStream:
-					asset = environment.getModelPath(asset.file);
+					asset = environment.getModelPath(asset.fileName);
 					break;
 				default:
-					if (isImage(asset.file) || isVideo(asset.file)) {
-						asset = asset.folder + asset.file;
+					if (isImage(asset.fileName) || isVideo(asset.fileName)) {
+						asset = asset.folder + asset.fileName;
 						asset = environment.getTexturePath(asset);
-					} else if (isModel(asset.file)) {
-						asset = asset.folder + asset.file;
+					} else if (isModel(asset.fileName)) {
+						asset = asset.folder + asset.fileName;
 						asset = environment.getModelPath(asset);
-					} else if (isStream(asset.file)) {
-						asset = asset.file;
+					} else if (isStream(asset.fileName)) {
+						asset = asset.fileName;
 					}
 			}
 			asset = asset;
