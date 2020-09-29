@@ -25,9 +25,9 @@ ControlVectorComponent.meta = {
 				<span class="required__badge">required</span>
 			</div>
 			<div class="control--content control--vector">
-				<input-value label="x" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[0]" (change)="updateValue(0, $event)"></input-value>
-				<input-value label="y" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[1]" (change)="updateValue(1, $event)"></input-value>
-				<input-value label="z" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[2]" (change)="updateValue(2, $event)"></input-value>
+				<input-value label="x" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[0]" (update)="updateValue(0, $event)"></input-value>
+				<input-value label="y" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[1]" (update)="updateValue(1, $event)"></input-value>
+				<input-value label="z" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[2]" (update)="updateValue(2, $event)"></input-value>
 			</div>
 		</div>
 		<errors-component [control]="control"></errors-component>

@@ -20,7 +20,7 @@ export default class MediaLoader {
 	}
 
 	static getPath(item) {
-		return environment.getTexturePath(item.asset.folder + item.asset.file);
+		return environment.getTexturePath(item.asset.folder + item.asset.fileName);
 	}
 
 	static loadTexture(item, callback) {
@@ -29,15 +29,15 @@ export default class MediaLoader {
 	}
 
 	static isVideo(item) {
-		return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
+		return item.asset && item.asset.fileName && (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1);
 	}
 
 	static isPublisherStream(item) {
-		return item.asset && item.asset.file === 'publisherStream';
+		return item.asset && item.asset.fileName === 'publisherStream';
 	}
 
 	static isNextAttendeeStream(item) {
-		return item.asset && item.asset.file === 'nextAttendeeStream';
+		return item.asset && item.asset.fileName === 'nextAttendeeStream';
 	}
 
 	get isVideo() {
@@ -144,9 +144,9 @@ export default class MediaLoader {
 	play(silent) {
 		// console.log('MediaLoader.play');
 		this.video.play().then(() => {
-			// console.log('MediaLoader.play.success', this.item.asset.file);
+			// console.log('MediaLoader.play.success', this.item.asset.fileName);
 		}, error => {
-			console.log('MediaLoader.play.error', this.item.asset.file, error);
+			console.log('MediaLoader.play.error', this.item.asset.fileName, error);
 		});
 		if (!silent) {
 			MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));

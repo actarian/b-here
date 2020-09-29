@@ -382,11 +382,11 @@ errors-component {
 
 	.inner {
 		@extend %label;
-		margin-top: -10px;
+		margin-top: -15px;
 		margin-bottom: 10px;
 		padding: 7px 7px;
-		font-size: 14px;
-		background: $invalid;
+		font-size: 10px;
+		background: $background-secondary;
 		color: $foreground-negative;
 	}
 }
@@ -656,5 +656,50 @@ input-value {
 
 	.control--text {
 		border-color: rgba(#000, 0.15);
+	}
+}
+
+[control-asset] {
+
+	.group--picture {
+		@include aspect-clip(3, 1);
+		border-radius: 6px;
+
+		&>img {
+			opacity: 1;
+		}
+
+		&__info {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			font-size: 10px;
+			font-weight: 600;
+			border: 2px solid rgba(0, 0, 0, .15);
+			border-radius: 6px;
+
+			svg {
+				width: 24px;
+				height: 24px;
+				fill: currentColor;
+			}
+		}
+
+		input[type="file"] {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			appearance: none;
+			opacity: 0;
+			cursor: pointer;
+		}
 	}
 }

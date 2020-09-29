@@ -64,6 +64,12 @@ export default class NavModalComponent extends Component {
 			abstract: new FormControl(null, RequiredValidator()),
 			viewId: new FormControl(null, RequiredValidator()),
 			position: this.position.toArray(),
+			asset: null,
+			link: new FormGroup({
+				title: new FormControl(null),
+				href: new FormControl(null),
+				target: '_blank',
+			}),
 			// upload: new FormControl(null, RequiredValidator()),
 			// items: new FormArray([null, null, null], RequiredValidator()),
 		});
@@ -91,6 +97,9 @@ export default class NavModalComponent extends Component {
 			this.form.submitted = true;
 			const item = Object.assign({}, this.form.value);
 			item.viewId = parseInt(item.viewId);
+			if (item.link && (!item.link.title || !item.link.href)) {
+				item.link = null;
+			}
 			console.log('NavModalComponent.onSubmit', this.view, item);
 			EditorService.itemCreate$(this.view, item).pipe(
 				first(),

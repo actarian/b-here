@@ -284,6 +284,8 @@ var MIME_CONTENT_TYPES = {
   // Musical Instrument Digital Interface (MIDI)
   "mp3": "audio/mpeg",
   // MP3 audio
+  "mp4": "audio/mp4",
+  // MP4 video
   "oga": "audio/ogg",
   // OGG audio
   "opus": "audio/opus",
@@ -387,7 +389,7 @@ var MIME_TEXT = ['css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml'];
 var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
 var MIME_FONTS = ['otf', 'ttf', 'woff', 'woff2'];
 var MIME_AUDIO = ['aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba'];
-var MIME_VIDEO = ['avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
+var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_APPLICATION = ['abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z'];
 var MIME_TYPES = [].concat(MIME_TEXT, MIME_IMAGE, MIME_FONTS, MIME_AUDIO, MIME_VIDEO, MIME_APPLICATION);
 
@@ -795,7 +797,9 @@ var api = {
   useApi: useApi
 };
 
-var multipartMiddleware = connectMultiparty();
+var multipartMiddleware = connectMultiparty({
+  uploadDir: path.join(__dirname, '../docs/temp/')
+});
 var upload$1 = upload_1.upload;
 var uploader = upload$1(path.join(__dirname, '../docs/temp/'));
 var staticMiddleware$1 = _static.staticMiddleware; // const { spaMiddleware } = require('./spa/spa.js');
@@ -831,7 +835,60 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use('*', staticMiddleware_);
-app.use('*', apiMiddleware_); // Handle uploads through Flow.js
+app.use('*', apiMiddleware_);
+app.post('/api/upload2', multipartMiddleware, function (request, response) {
+  if (Vars.accessControlAllowOrigin) {
+    response.header('Access-Control-Allow-Origin', '*');
+  }
+
+  console.log(request.body, request.files);
+  /*
+  file: {
+  	fieldName: 'file',
+  	originalFilename: 'ambiente1_x3_y3.jpg',
+  	path: 'C:\\WORK\\GIT\\TFS\\Websolute\\b-here\\docs\\temp\\CVvHZ4YYkiQdWmiAtTjhb6kF.jpg',
+  	headers: {
+  	  'content-disposition': 'form-data; name="file"; filename="ambiente1_x3_y3.jpg"',
+  	  'content-type': 'image/jpeg'
+  	},
+  	size: 3888620,
+  	name: 'ambiente1_x3_y3.jpg',
+  	type: 'image/jpeg'
+    }
+  */
+
+  var file = request.files.file;
+  var id = new Date().getTime();
+  var fileName = id + "_" + file.name;
+  var filePath = "/uploads/" + fileName;
+  var input = file.path;
+  var output = path.join(__dirname, '../docs/uploads/', fileName);
+  var item = {
+    id: id,
+    fileName: fileName,
+    type: file.type,
+    originalFileName: file.name,
+    url: filePath
+  };
+  fs.copyFile(input, output, function (error) {
+    fs.unlink(input, function () {});
+
+    if (error) {
+      throw error;
+    } else {
+      response.status(200).send(JSON.stringify(item));
+    }
+  });
+});
+app.options('/api/upload2', function (request, response) {
+  console.log('OPTIONS');
+
+  if (Vars.accessControlAllowOrigin) {
+    response.header('Access-Control-Allow-Origin', '*');
+  }
+
+  response.status(200).send();
+}); // Handle uploads through Flow.js
 
 app.post('/api/upload', multipartMiddleware, function (request, response) {
   uploader.post(request, function (status, filename, original_filename, identifier) {

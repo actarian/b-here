@@ -17,7 +17,7 @@ export default class PanoramaModalComponent extends Component {
 		});
 		this.controls = form.controls;
 		form.changes$.subscribe((changes) => {
-			console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
+			// console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
 	}

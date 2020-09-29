@@ -77,7 +77,7 @@ export default class ControlUploadComponent extends ControlComponent {
 			this.hasItems = hasItems;
 			this.pushChanges();
 		});
-		console.log('ControlUploadComponent.onInit');
+		// console.log('ControlUploadComponent.onInit');
 	}
 
 	onPause(item) {
@@ -110,7 +110,7 @@ ControlUploadComponent.meta = {
 				<label [innerHTML]="label"></label>
 				<span class="required__badge">required</span>
 			</div>
-			<div class="listing--transfers">
+			<div class="listing--assets">
 				<div class="listing__item" *for="let item of transfers">
 					<div [uploadItem]="uploader" [item]="item" (pause)="onPause($event)" (resume)="onResume($event)" (cancel)="onCancel($event)" (remove)="onRemove($event)"></div>
 				</div>

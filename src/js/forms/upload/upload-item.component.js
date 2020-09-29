@@ -37,6 +37,7 @@ UploadItemComponent.meta = {
 			<img [uploadSrc]="item" />
 		</div>
 		<div class="name">{{item.name}}</div>
+		<!--
 		<div class="group--info">
 			<div>progress: {{item.progress}}</div>
 			<div>size: {{item.size}} bytes</div>
@@ -48,6 +49,7 @@ UploadItemComponent.meta = {
 			<div>complete: {{item.complete}}</div>
 			<div>error: {{item.error}}</div>
 		</div>
+		-->
 		<div class="group--cta" *if="!item.complete && item.progress > 0">
 			<div class="btn--pause" (click)="onPause()">pause</div>
 			<div class="btn--resume" (click)="onResume()">resume</div>

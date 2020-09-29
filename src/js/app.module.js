@@ -12,12 +12,13 @@ import ControlRequestModalComponent from './control-request/control-request-moda
 import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
-import AsideComponent from './editor/aside/aside.component';
 import { EditorModule } from './editor/editor.module';
-import RemoveModalComponent from './editor/modals/remove-modal.component';
-import UpdateViewItemComponent from './editor/update/update-view-item.component';
-import UpdateViewComponent from './editor/update/update-view.component';
+import AssetItemComponent from './forms/asset/asset-item.component';
+import ControlAssetComponent from './forms/control-asset.component';
+import ControlAssetsComponent from './forms/control-assets.component';
+import ControlCheckboxComponent from './forms/control-checkbox.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
+import ControlLinkComponent from './forms/control-link.component';
 import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
 import ControlUploadComponent from './forms/control-upload.component';
@@ -26,6 +27,7 @@ import DisabledDirective from './forms/disabled.directive';
 import ErrorsComponent from './forms/errors.component';
 import InputValueComponent from './forms/input-value.component';
 import ValueDirective from './forms/value.directive';
+import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
@@ -64,9 +66,13 @@ AppModule.meta = {
 		AgoraLinkComponent,
 		AgoraNameComponent,
 		AgoraStreamComponent,
-		AsideComponent,
 		AssetPipe,
+		AssetItemComponent,
+		ControlAssetComponent,
+		ControlAssetsComponent,
+		ControlCheckboxComponent,
 		ControlCustomSelectComponent,
+		ControlLinkComponent,
 		ControlRequestModalComponent,
 		ControlSelectComponent,
 		ControlTextComponent,
@@ -77,6 +83,7 @@ AppModule.meta = {
 		DropdownDirective,
 		DropdownItemDirective,
 		ErrorsComponent,
+		HtmlPipe,
 		HlsDirective,
 		IdDirective,
 		InputValueComponent,
@@ -95,13 +102,10 @@ AppModule.meta = {
 		ModelPlaneComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
-		RemoveModalComponent,
 		SliderDirective,
 		SvgIconStructure,
 		TryInARComponent,
 		TryInARModalComponent,
-		UpdateViewComponent,
-		UpdateViewItemComponent,
 		ValueDirective,
 		WorldComponent
 	],

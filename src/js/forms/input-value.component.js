@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { fromEvent, interval, race } from 'rxjs';
+import { fromEvent, interval, merge, race } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 export default class InputValueComponent extends Component {
@@ -13,7 +13,7 @@ export default class InputValueComponent extends Component {
 			.subscribe((event) => {
 				// console.log('InputValueComponent.increment$', event);
 				this.value += event;
-				this.change.next(this.value);
+				this.update.next(this.value);
 				this.pushChanges();
 			});
 		this.increment$('.btn--less', -1)
@@ -21,10 +21,56 @@ export default class InputValueComponent extends Component {
 			.subscribe((event) => {
 				// console.log('InputValueComponent.increment$', event);
 				this.value += event;
-				this.change.next(this.value);
+				this.update.next(this.value);
 				this.pushChanges();
 			});
+		const { node } = getContext(this);
+		const input = this.input = node.querySelector('input');
+		// fromEvent(input, 'change')
+		merge(fromEvent(input, 'input')).pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidChange(event));
+		fromEvent(input, 'blur').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidBlur(event));
+		// fromEvent(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
 	}
+
+	onInputDidChange(event) {
+		// const node = getContext(this).node;
+		// const value = node.value === '' ? null : node.value;
+		event.target.value = event.target.value.replace(/[^\d|\.]/g, '');
+		// console.log('InputValueComponent.onInputDidChange', event.target.value);
+		/*
+		const value = parseFloat(event.target.value);
+		if (this.value !== value) {
+			if (value !== NaN) {
+				this.value = value;
+				this.update.next(this.value);
+			}
+		}
+		*/
+	}
+
+	onInputDidBlur(event) {
+		// this.control.touched = true;
+		// console.log('InputValueComponent.onInputDidBlur', event.target.value);
+		const value = parseFloat(this.input.value);
+		if (this.value !== value) {
+			if (value !== NaN) {
+				this.value = value;
+				this.update.next(this.value);
+			} else {
+				this.input.value = this.getValue();
+			}
+		}
+	}
+
+
+	/*
+	onChanges() {
+		const { node } = getContext(this);
+		const input = node.querySelector('input');
+		input.value = this.getValue();
+		console.log(this, node, input);
+	}
+	*/
 	increment$(selector, sign) {
 		const { node } = getContext(this);
 		const element = node.querySelector(selector);
@@ -56,18 +102,18 @@ export default class InputValueComponent extends Component {
 	}
 	setValue(sign) {
 		this.value += this.increment * sign;
-		this.change.next(this.value);
+		this.update.next(this.value);
 		this.pushChanges();
 	}
 }
 
 InputValueComponent.meta = {
 	selector: 'input-value',
-	outputs: ['change'],
+	outputs: ['update'],
 	inputs: ['value', 'label', 'precision', 'increment', 'disabled'],
 	template: /* html */ `
 		<div class="group--control" [class]="{ disabled: disabled }">
-			<input type="text" class="control--text" [value]="getValue()" [placeholder]="label" [disabled]="disabled" />
+			<input type="text" class="control--text" [placeholder]="label" [value]="getValue()" [disabled]="disabled" />
 			<div class="control--trigger">
 				<div class="btn--more" (click)="setValue(1)">+</div>
 				<div class="btn--less" (click)="setValue(-1)">-</div>

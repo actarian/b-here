@@ -9,7 +9,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "orientation": {
         "latitude": 0,
@@ -26,7 +26,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "mod2.jpg"
+        "fileName": "mod2.jpg"
       },
       "orientation": {
         "latitude": 0,
@@ -44,7 +44,14 @@
             0.23493375537033573,
             -0.3495620508896946
           ],
-          "id": 1600271574407
+          "id": 1600271574407,
+          "link": null,
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601304763322_ambiente1_x2_y3.jpg",
+            "id": 1601304763645
+          }
         },
         {
           "type": "nav",
@@ -72,51 +79,43 @@
             "XYZ"
           ],
           "scale": [
-            4.699999999999968,
-            2.7399999999999842,
+            8,
+            5,
             1
           ],
-          "id": 1600361557593
+          "id": 1600361557593,
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601306439199_ambiente1_x4_y2.jpg",
+            "id": 1601306439575
+          }
         },
         {
           "type": "plane",
           "position": [
-            -0.24028926702321862,
-            0.8577594868871066,
-            19.98015289558137
+            -19.992108798121695,
+            -0.35265491960229317,
+            -0.43728744750493515
           ],
           "rotation": [
-            3.0986884219135473,
-            0.012045209859203264,
-            -3.141075558334023,
+            -0.6786676900408233,
+            1.5427057293008737,
+            0.6784748796575164,
             "XYZ"
           ],
           "scale": [
-            4.909999999999964,
-            3.3399999999999714,
+            14,
+            8,
             1
           ],
-          "id": 1600362002887
-        },
-        {
-          "type": "plane",
-          "position": [
-            -0.2328375758736972,
-            -3.8629402301262266,
-            19.622015172803568
-          ],
-          "rotation": [
-            -2.947210764449863,
-            0.011672599368087358,
-            3.139294752481878,
-            "XYZ"
-          ],
-          "scale": [
-            3.2,
-            1.8,
-            1
-          ],
-          "id": 1600362019221
+          "id": 1600362019221,
+          "asset": {
+            "type": "video",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601309984705_file_example_MP4_640_3MG.mp4",
+            "id": 1601309984726
+          }
         },
         {
           "type": "nav",
@@ -141,34 +140,392 @@
             -0.9571218076754323
           ],
           "id": 1600769916219
+        },
+        {
+          "type": "plane",
+          "position": [
+            -1.1129419422715803,
+            0.6057422134621625,
+            19.959820555404868
+          ],
+          "rotation": [
+            3.1112538862433645,
+            0.055675856668614895,
+            -3.139903872689179,
+            "XYZ"
+          ],
+          "scale": [
+            3.2,
+            1.8,
+            1
+          ],
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601377001298_ambiente1_x3_y3.jpg",
+            "id": 1601377001664
+          },
+          "id": 1601377003659
         }
       ]
     },
     {
-      "type": "panorama",
-      "name": "Ambiente",
+      "type": "panorama-grid",
+      "name": "Kitchen",
       "asset": {
         "type": "image",
         "folder": "http://localhost:5000/b-here/uploads/",
-        "file": "4088278-ambiente1_x0_y0jpg_ambiente1_x0_y0.jpg",
-        "id": 1600773895498
+        "fileName": "1601378291330_ambiente1_x0_y1.jpg",
+        "id": 1601378291354
       },
-      "id": 1600773895526,
-      "likes": 40,
-      "liked": false,
+      "tiles": [
+        {
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601378291330_ambiente1_x0_y1.jpg",
+            "id": 1601378291354
+          },
+          "navs": []
+        },
+        {
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601378291335_ambiente1_x0_y3.jpg",
+            "id": 1601378291362
+          },
+          "navs": []
+        },
+        {
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601378291346_ambiente1_x0_y2.jpg",
+            "id": 1601378291367
+          },
+          "navs": []
+        },
+        {
+          "asset": {
+            "type": "image",
+            "folder": "http://localhost:5000/b-here/uploads/",
+            "fileName": "1601378291351_ambiente1_x0_y0.jpg",
+            "id": 1601378291372
+          },
+          "navs": []
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
-      "zoom": 75
+      "zoom": 75,
+      "id": 1601378297177
     }
   ],
   "assets": [
     {
       "type": "image",
       "folder": "http://localhost:5000/b-here/uploads/",
-      "file": "4088278-ambiente1_x0_y0jpg_ambiente1_x0_y0.jpg",
-      "id": 1600773895498
+      "fileName": "1601303728983_ambiente1_x4_y1.jpg",
+      "id": 1601303729364
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601303781460_ambiente1_x4_y3.jpg",
+      "id": 1601303781836
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601304763322_ambiente1_x2_y3.jpg",
+      "id": 1601304763645
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601306439199_ambiente1_x4_y2.jpg",
+      "id": 1601306439575
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601308961696_ambiente1_x4_y3.jpg",
+      "id": 1601308962154
+    },
+    {
+      "type": "video",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601308970115_file_example_MP4_640_3MG.mp4",
+      "id": 1601308970139
+    },
+    {
+      "type": "video",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601309460438_file_example_MP4_640_3MG.mp4",
+      "id": 1601309460452
+    },
+    {
+      "type": "video",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601309984705_file_example_MP4_640_3MG.mp4",
+      "id": 1601309984726
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601310444606_ambiente1_x0_y0.jpg",
+      "id": 1601310444968
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601371797028_ambiente1_x0_y2.jpg",
+      "id": 1601371797124
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601371797038_ambiente1_x0_y1.jpg",
+      "id": 1601371797129
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601371797059_ambiente1_x0_y0.jpg",
+      "id": 1601371797140
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601371838743_ambiente1_x0_y1.jpg",
+      "id": 1601371838755
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601371838763_ambiente1_x0_y2.jpg",
+      "id": 1601371838776
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601371838769_ambiente1_x0_y0.jpg",
+      "id": 1601371838782
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373027254_ambiente1_x0_y1.jpg",
+      "id": 1601373027279
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373027264_ambiente1_x0_y0.jpg",
+      "id": 1601373027282
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373027260_ambiente1_x0_y2.jpg",
+      "id": 1601373027287
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373365704_ambiente1_x0_y2.jpg",
+      "id": 1601373365719
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373365708_ambiente1_x0_y1.jpg",
+      "id": 1601373365725
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373365716_ambiente1_x0_y0.jpg",
+      "id": 1601373365731
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373435194_ambiente1_x0_y2.jpg",
+      "id": 1601373435214
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373435206_ambiente1_x0_y0.jpg",
+      "id": 1601373435223
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373435210_ambiente1_x0_y1.jpg",
+      "id": 1601373435229
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373535747_ambiente1_x0_y1.jpg",
+      "id": 1601373535766
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373535754_ambiente1_x0_y0.jpg",
+      "id": 1601373535774
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601373535762_ambiente1_x0_y2.jpg",
+      "id": 1601373535780
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601375844489_ambiente1_x0_y1.jpg",
+      "id": 1601375844510
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601375844480_ambiente1_x0_y2.jpg",
+      "id": 1601375844515
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601375844496_ambiente1_x0_y0.jpg",
+      "id": 1601375844520
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601376139834_ambiente1_x0_y1.jpg",
+      "id": 1601376139852
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601376139840_ambiente1_x0_y2.jpg",
+      "id": 1601376139861
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601376139847_ambiente1_x0_y0.jpg",
+      "id": 1601376139869
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377001298_ambiente1_x3_y3.jpg",
+      "id": 1601377001664
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377507835_ambiente1_x0_y3.jpg",
+      "id": 1601377507902
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377507849_ambiente1_x0_y1.jpg",
+      "id": 1601377507905
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377507884_ambiente1_x0_y2.jpg",
+      "id": 1601377507945
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377507926_ambiente1_x0_y0.jpg",
+      "id": 1601377507994
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377782367_ambiente1_x0_y3.jpg",
+      "id": 1601377782382
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377782376_ambiente1_x0_y1.jpg",
+      "id": 1601377782395
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377782388_ambiente1_x0_y2.jpg",
+      "id": 1601377782417
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601377782393_ambiente1_x0_y0.jpg",
+      "id": 1601377782427
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378019546_ambiente1_x0_y3.jpg",
+      "id": 1601378019569
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378019565_ambiente1_x0_y0.jpg",
+      "id": 1601378019580
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378019554_ambiente1_x0_y1.jpg",
+      "id": 1601378019584
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378019550_ambiente1_x0_y2.jpg",
+      "id": 1601378019588
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378291330_ambiente1_x0_y1.jpg",
+      "id": 1601378291354
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378291335_ambiente1_x0_y3.jpg",
+      "id": 1601378291362
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378291346_ambiente1_x0_y2.jpg",
+      "id": 1601378291367
+    },
+    {
+      "type": "image",
+      "folder": "http://localhost:5000/b-here/uploads/",
+      "fileName": "1601378291351_ambiente1_x0_y0.jpg",
+      "id": 1601378291372
     }
   ]
 }

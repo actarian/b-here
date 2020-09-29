@@ -264,11 +264,17 @@
 					<div class="title">Properties</div>
 					<update-view [view]="view" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)"></update-view>
 				</li>
-				<li *for="let item of view.items">
-					<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)"></update-view-item>
+				<li *if="!view.tiles">
+					<div class="title">Items</div>
+					<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)" *for="let item of view.items"></update-view-item>
+					<div class="abstract" *if="view.items.length == 0">This view has no items.</div>
+					<div class="btn--mode" (click)="setMode(3)">Add Item</div>
 				</li>
-				<li *if="view.items.length == 0">
-					This view has no items.
+				<li *if="view.tiles">
+					<div class="title">Tiles</div>
+					<update-view-tile [view]="view" [tile]="tile" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)" *for="let tile of view.tiles"></update-view-tile>
+					<div class="abstract" *if="view.tiles.length == 0">This view has no tiles.</div>
+					<div class="btn--mode" (click)="setMode(3)">Add Tile</div>
 				</li>
 				<li *if="false">
 					<div class="title">Icons</div>
@@ -623,7 +629,7 @@
 					<div class="title">Views</div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewTypes">
-							<div class="btn" (click)="onSelect({ type:'view', value: item.type })">
+							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'view', value: item.type })">
 								<div class="icon">
 									<svg-icon [name]="item.type"></svg-icon>
 								</div>
@@ -638,7 +644,7 @@
 					<div class="title">View Items</div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewItemTypes">
-							<div class="btn" (click)="onSelect({ type:'viewItem', value: item.type })">
+							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'viewItem', value: item.type })">
 								<div class="icon">
 									<svg-icon [name]="item.type"></svg-icon>
 								</div>

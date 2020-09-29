@@ -9,7 +9,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "items": [],
       "orientation": {
@@ -27,7 +27,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "mod2.jpg"
+        "fileName": "mod2.jpg"
       },
       "items": [
         {
@@ -38,7 +38,7 @@
           "asset": {
             "type": "image",
             "folder": "barilla/",
-            "file": "logo-barilla.jpg"
+            "fileName": "logo-barilla.jpg"
           },
           "link": {
             "title": "Scopri di più...",
@@ -116,7 +116,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "render_1.jpeg"
+        "fileName": "render_1.jpeg"
       },
       "items": [
         {
@@ -183,7 +183,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "render_2.jpeg"
+        "fileName": "render_2.jpeg"
       },
       "items": [
         {
@@ -250,7 +250,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "render_3.jpeg"
+        "fileName": "render_3.jpeg"
       },
       "items": [
         {
@@ -317,7 +317,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "wood1.jpeg"
+        "fileName": "wood1.jpeg"
       },
       "items": [
         {
@@ -372,7 +372,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "brochure.jpg"
+        "fileName": "brochure.jpg"
       },
       "items": [
         {
@@ -415,7 +415,7 @@
       "asset": {
         "type": "video",
         "folder": "video/",
-        "file": "360_1.mp4"
+        "fileName": "360_1.mp4"
       },
       "items": [
         {
@@ -458,7 +458,7 @@
       "asset": {
         "type": "video",
         "folder": "video/",
-        "file": "Render_2.mp4"
+        "fileName": "Render_2.mp4"
       },
       "items": [
         {
@@ -501,7 +501,7 @@
       "asset": {
         "type": "video",
         "folder": "video/",
-        "file": "moto.mp4"
+        "fileName": "moto.mp4"
       },
       "items": [
         {
@@ -532,7 +532,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Living-0.jpg"
+        "fileName": "Living-0.jpg"
       },
       "items": [
         {
@@ -599,7 +599,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Living-1.jpg"
+        "fileName": "Living-1.jpg"
       },
       "items": [
         {
@@ -666,7 +666,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Living-2.jpg"
+        "fileName": "Living-2.jpg"
       },
       "items": [
         {
@@ -733,7 +733,7 @@
       "asset": {
         "type": "image",
         "folder": "cinema/",
-        "file": "cinema.jpg"
+        "fileName": "cinema.jpg"
       },
       "items": [
         {
@@ -742,7 +742,7 @@
           "asset": {
             "type": "video",
             "folder": "room-3d/",
-            "file": "plane-01.mp4"
+            "fileName": "plane-01.mp4"
           },
           "position": {
             "x": 20,
@@ -766,7 +766,7 @@
           "asset": {
             "type": "video",
             "folder": "green-screen/",
-            "file": "green-screen.mp4",
+            "fileName": "green-screen.mp4",
             "linkedPlayId": 2310,
             "chromaKeyColor": [
               0.0,
@@ -830,7 +830,7 @@
       "asset": {
         "type": "image",
         "folder": "cinema/",
-        "file": "cinema.jpg"
+        "fileName": "cinema.jpg"
       },
       "items": [
         {
@@ -839,7 +839,7 @@
           "asset": {
             "type": "video",
             "folder": "room-3d/",
-            "file": "plane-01.mp4"
+            "fileName": "plane-01.mp4"
           },
           "position": {
             "x": 20,
@@ -863,7 +863,7 @@
           "asset": {
             "type": "publisher-stream",
             "folder": "",
-            "file": "publisherStream",
+            "fileName": "publisherStream",
             "chromaKeyColor": [
               0.0,
               1.0,
@@ -926,7 +926,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "whiteroom.jpeg"
+        "fileName": "whiteroom.jpeg"
       },
       "items": [
         {
@@ -935,7 +935,7 @@
           "asset": {
             "type": "video",
             "folder": "green-screen/",
-            "file": "green-screen.mp4",
+            "fileName": "green-screen.mp4",
             "chromaKeyColor": [
               0.0,
               1.0,
@@ -964,7 +964,7 @@
           "asset": {
             "type": "video",
             "folder": "green-screen/",
-            "file": "green-screen.mp4",
+            "fileName": "green-screen.mp4",
             "linkedPlayId": 2510,
             "chromaKeyColor": [
               0.0,
@@ -994,7 +994,7 @@
           "asset": {
             "type": "video",
             "folder": "green-screen/",
-            "file": "green-screen.mp4",
+            "fileName": "green-screen.mp4",
             "linkedPlayId": 2510,
             "chromaKeyColor": [
               0.0,
@@ -1046,7 +1046,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "whiteroom.jpeg"
+        "fileName": "whiteroom.jpeg"
       },
       "items": [
         {
@@ -1055,7 +1055,7 @@
           "asset": {
             "type": "publisher-stream",
             "folder": "",
-            "file": "publisherStream",
+            "fileName": "publisherStream",
             "chromaKeyColor": [
               0.0,
               1.0,
@@ -1084,7 +1084,7 @@
           "asset": {
             "type": "next-attendee-stream",
             "folder": "",
-            "file": "nextAttendeeStream",
+            "fileName": "nextAttendeeStream",
             "chromaKeyColor": [
               0.0,
               1.0,
@@ -1113,7 +1113,7 @@
           "asset": {
             "type": "next-attendee-stream",
             "folder": "",
-            "file": "nextAttendeeStream",
+            "fileName": "nextAttendeeStream",
             "chromaKeyColor": [
               0.0,
               1.0,
@@ -1176,7 +1176,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "ue_set.jpg"
+        "fileName": "ue_set.jpg"
       },
       "items": [
         {
@@ -1185,7 +1185,7 @@
           "asset": {
             "type": "publisher-stream",
             "folder": "",
-            "file": "publisherStream",
+            "fileName": "publisherStream",
             "chromaKeyColor": [
               0.0,
               1.0,
@@ -1248,7 +1248,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "ernestomeda.jpg"
+        "fileName": "ernestomeda.jpg"
       },
       "items": [
         {
@@ -1291,7 +1291,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Kitchen-1.jpg"
+        "fileName": "Kitchen-1.jpg"
       },
       "items": [
         {
@@ -1358,7 +1358,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Kitchen-2.jpg"
+        "fileName": "Kitchen-2.jpg"
       },
       "items": [
         {
@@ -1425,7 +1425,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Kitchen-3.jpg"
+        "fileName": "Kitchen-3.jpg"
       },
       "items": [
         {
@@ -1492,7 +1492,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Kitchen-4.jpg"
+        "fileName": "Kitchen-4.jpg"
       },
       "items": [
         {
@@ -1559,7 +1559,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Bathroom-1.jpg"
+        "fileName": "Bathroom-1.jpg"
       },
       "items": [
         {
@@ -1626,7 +1626,7 @@
       "asset": {
         "type": "image",
         "folder": "rendering/",
-        "file": "Bathroom-2.jpg"
+        "fileName": "Bathroom-2.jpg"
       },
       "items": [
         {
@@ -1693,7 +1693,7 @@
       "asset": {
         "type": "video",
         "folder": "video/",
-        "file": "garden-01.mp4"
+        "fileName": "garden-01.mp4"
       },
       "items": [
         {
@@ -1728,7 +1728,7 @@
       "asset": {
         "type": "video",
         "folder": "",
-        "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
+        "fileName": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
       },
       "items": [
         {
@@ -1763,7 +1763,7 @@
       "asset": {
         "type": "publisher-stream",
         "folder": "",
-        "file": "publisherStream"
+        "fileName": "publisherStream"
       },
       "items": [
         {
@@ -1794,7 +1794,7 @@
       "asset": {
         "type": "image",
         "folder": "newoneset2/",
-        "file": "NEWONESET2_x0_y0.jpg"
+        "fileName": "NEWONESET2_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -1803,7 +1803,7 @@
           "asset": {
             "type": "image",
             "folder": "newoneset2/",
-            "file": "NEWONESET2_x0_y0.jpg"
+            "fileName": "NEWONESET2_x0_y0.jpg"
           },
           "navs": [
             {
@@ -1866,7 +1866,7 @@
       "asset": {
         "type": "image",
         "folder": "newoneset2_low/",
-        "file": "NEWONESET2_x0_y0.jpg"
+        "fileName": "NEWONESET2_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -1875,7 +1875,7 @@
           "asset": {
             "type": "image",
             "folder": "newoneset2_low/",
-            "file": "NEWONESET2_x0_y0.jpg"
+            "fileName": "NEWONESET2_x0_y0.jpg"
           },
           "navs": [
             {
@@ -1940,7 +1940,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "items": [
         {
@@ -1949,7 +1949,7 @@
           "asset": {
             "type": "video",
             "folder": "room-3d/",
-            "file": "plane-01.mp4"
+            "fileName": "plane-01.mp4"
           }
         },
         {
@@ -1958,7 +1958,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d/",
-            "file": "plane-02.jpg"
+            "fileName": "plane-02.jpg"
           }
         },
         {
@@ -1967,7 +1967,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d/",
-            "file": "plane-03.jpg"
+            "fileName": "plane-03.jpg"
           }
         },
         {
@@ -1976,7 +1976,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d/",
-            "file": "plane-04.jpg"
+            "fileName": "plane-04.jpg"
           }
         },
         {
@@ -1985,7 +1985,7 @@
           "asset": {
             "type": "video",
             "folder": "room-3d/",
-            "file": "plane-05.mp4"
+            "fileName": "plane-05.mp4"
           }
         },
         {
@@ -1994,7 +1994,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d/",
-            "file": "plane-06.jpg"
+            "fileName": "plane-06.jpg"
           }
         },
         {
@@ -2003,7 +2003,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d/",
-            "file": "plane-07.jpg"
+            "fileName": "plane-07.jpg"
           }
         },
         {
@@ -2012,7 +2012,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d/",
-            "file": "plane-08.jpg"
+            "fileName": "plane-08.jpg"
           }
         },
         {
@@ -2057,7 +2057,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "items": [
         {
@@ -2066,7 +2066,7 @@
           "asset": {
             "type": "video",
             "folder": "room-3d_2/",
-            "file": "benelli.mp4"
+            "fileName": "benelli.mp4"
           }
         },
         {
@@ -2075,7 +2075,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d_2/",
-            "file": "plane-02.jpg"
+            "fileName": "plane-02.jpg"
           }
         },
         {
@@ -2084,7 +2084,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d_2/",
-            "file": "plane-03.jpg"
+            "fileName": "plane-03.jpg"
           }
         },
         {
@@ -2093,7 +2093,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d_2/",
-            "file": "plane-04.jpg"
+            "fileName": "plane-04.jpg"
           }
         },
         {
@@ -2102,7 +2102,7 @@
           "asset": {
             "type": "video",
             "folder": "room-3d_2/",
-            "file": "benelli2.mp4"
+            "fileName": "benelli2.mp4"
           }
         },
         {
@@ -2111,7 +2111,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d_2/",
-            "file": "plane-06.jpg"
+            "fileName": "plane-06.jpg"
           }
         },
         {
@@ -2120,7 +2120,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d_2/",
-            "file": "plane-07.jpg"
+            "fileName": "plane-07.jpg"
           }
         },
         {
@@ -2129,7 +2129,7 @@
           "asset": {
             "type": "image",
             "folder": "room-3d_2/",
-            "file": "plane-08.jpg"
+            "fileName": "plane-08.jpg"
           }
         },
         {
@@ -2176,7 +2176,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "dark.jpeg"
+        "fileName": "dark.jpeg"
       },
       "items": [
         {
@@ -2186,7 +2186,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "watch/",
-            "file": "casio.glb"
+            "fileName": "casio.glb"
           }
         }
       ],
@@ -2209,7 +2209,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "dark.jpeg"
+        "fileName": "dark.jpeg"
       },
       "items": [
         {
@@ -2219,7 +2219,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "watch/",
-            "file": "watch-ao.glb"
+            "fileName": "watch-ao.glb"
           }
         }
       ],
@@ -2242,7 +2242,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "dark.jpeg"
+        "fileName": "dark.jpeg"
       },
       "items": [
         {
@@ -2252,7 +2252,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "watch/",
-            "file": "watchfree.glb"
+            "fileName": "watchfree.glb"
           }
         }
       ],
@@ -2275,7 +2275,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "road1.jpeg"
+        "fileName": "road1.jpeg"
       },
       "items": [
         {
@@ -2285,7 +2285,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "moto/",
-            "file": "moto_ducati.glb"
+            "fileName": "moto_ducati.glb"
           }
         },
         {
@@ -2320,7 +2320,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "road2.jpeg"
+        "fileName": "road2.jpeg"
       },
       "items": [
         {
@@ -2330,7 +2330,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "moto/",
-            "file": "moto_suzuki.glb"
+            "fileName": "moto_suzuki.glb"
           }
         },
         {
@@ -2365,7 +2365,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "items": [
         {
@@ -2375,7 +2375,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "barattolo-pesto/",
-            "file": "barattolo-pesto.glb"
+            "fileName": "barattolo-pesto.glb"
           }
         },
         {
@@ -2410,7 +2410,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "items": [
         {
@@ -2420,7 +2420,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "washing-machine/",
-            "file": "glb.glb"
+            "fileName": "glb.glb"
           }
         }
       ],
@@ -2443,7 +2443,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "fileName": "waiting-room-02.jpg"
       },
       "items": [
         {
@@ -2453,7 +2453,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "damaged-helmet/",
-            "file": "damaged-helmet.glb"
+            "fileName": "damaged-helmet.glb"
           }
         }
       ],
@@ -2476,7 +2476,7 @@
       "asset": {
         "type": "image",
         "folder": "waiting-room/",
-        "file": "amazing.jpg"
+        "fileName": "amazing.jpg"
       },
       "items": [
         {
@@ -2486,7 +2486,7 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "logo/",
-            "file": "logows2.glb"
+            "fileName": "logows2.glb"
           }
         }
       ],
@@ -2505,7 +2505,7 @@
       "asset": {
         "type": "video",
         "folder": "video/",
-        "file": "time-square-composition.mp4"
+        "fileName": "time-square-composition.mp4"
       },
       "items": [
         {
@@ -2536,7 +2536,7 @@
       "asset": {
         "type": "image",
         "folder": "ambiente2a/",
-        "file": "ambiente2a_x0_y0.jpg"
+        "fileName": "ambiente2a_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -2545,7 +2545,7 @@
           "asset": {
             "type": "image",
             "folder": "ambiente2a/",
-            "file": "ambiente2a_x0_y0.jpg"
+            "fileName": "ambiente2a_x0_y0.jpg"
           },
           "navs": [
             {
@@ -2600,7 +2600,7 @@
       "asset": {
         "type": "image",
         "folder": "ambiente2b/",
-        "file": "ambiente2b_x0_y0.jpg"
+        "fileName": "ambiente2b_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -2609,7 +2609,7 @@
           "asset": {
             "type": "image",
             "folder": "ambiente2b/",
-            "file": "ambiente2b_x0_y0.jpg"
+            "fileName": "ambiente2b_x0_y0.jpg"
           },
           "navs": [
             {
@@ -2664,7 +2664,7 @@
       "asset": {
         "type": "image",
         "folder": "virtual-room/",
-        "file": "virtual-room.jpg"
+        "fileName": "virtual-room.jpg"
       },
       "items": [
         {
@@ -2673,7 +2673,7 @@
           "asset": {
             "type": "video",
             "folder": "video/",
-            "file": "panel-01-plane.mp4"
+            "fileName": "panel-01-plane.mp4"
           },
           "radius": 70,
           "arc": 90,
@@ -2722,7 +2722,7 @@
       "asset": {
         "type": "image",
         "folder": "virtual-room/",
-        "file": "virtual-room.jpg"
+        "fileName": "virtual-room.jpg"
       },
       "items": [
         {
@@ -2731,7 +2731,7 @@
           "asset": {
             "type": "video",
             "folder": "video/",
-            "file": "panel-02-plane.mp4"
+            "fileName": "panel-02-plane.mp4"
           },
           "radius": 70,
           "arc": 90,
@@ -2780,7 +2780,7 @@
       "asset": {
         "type": "image",
         "folder": "virtual-room/",
-        "file": "virtual-room.jpg"
+        "fileName": "virtual-room.jpg"
       },
       "items": [
         {
@@ -2789,7 +2789,7 @@
           "asset": {
             "type": "video",
             "folder": "video/",
-            "file": "panel-04-plane.mp4"
+            "fileName": "panel-04-plane.mp4"
           },
           "radius": 70,
           "arc": 90,
@@ -2838,7 +2838,7 @@
       "asset": {
         "type": "image",
         "folder": "ambiente1a/",
-        "file": "ambiente1a_x0_y0.jpg"
+        "fileName": "ambiente1a_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -2847,7 +2847,7 @@
           "asset": {
             "type": "image",
             "folder": "ambiente1a/",
-            "file": "ambiente1a_x0_y0.jpg"
+            "fileName": "ambiente1a_x0_y0.jpg"
           },
           "navs": [
             {
@@ -2906,7 +2906,7 @@
       "asset": {
         "type": "image",
         "folder": "ambiente1b/",
-        "file": "ambiente1b_x0_y0.jpg"
+        "fileName": "ambiente1b_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -2915,7 +2915,7 @@
           "asset": {
             "type": "image",
             "folder": "ambiente1b/",
-            "file": "ambiente1b_x0_y0.jpg"
+            "fileName": "ambiente1b_x0_y0.jpg"
           },
           "navs": [
             {

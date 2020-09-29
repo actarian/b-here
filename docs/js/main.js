@@ -2934,7 +2934,10 @@ var ModalService = /*#__PURE__*/function () {
   return ModalService;
 }();
 ModalService.modal$ = new rxjs.Subject();
-ModalService.events$ = new rxjs.Subject();var AssetType = {
+ModalService.events$ = new rxjs.Subject();var EXT_IMAGE = ['jpeg', 'jpg', 'png'];
+var EXT_VIDEO = ['mp4', 'webm'];
+var EXT_MODEL = ['gltf', 'glb'];
+var AssetType = {
   Image: 'image',
   // jpg, png, ...
   Video: 'video',
@@ -2946,6 +2949,17 @@ ModalService.events$ = new rxjs.Subject();var AssetType = {
   NextAttendeeStream: 'next-attendee-stream' // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
 
 };
+function assetTypeFromPath(path) {
+  var extension = path.split('.').pop();
+
+  if (EXT_IMAGE.indexOf(extension) !== -1) {
+    return AssetType.Image;
+  } else if (EXT_VIDEO.indexOf(extension) !== -1) {
+    return AssetType.Video;
+  } else if (EXT_MODEL.indexOf(extension) !== -1) {
+    return AssetType.Model;
+  }
+}
 var ViewType = {
   WaitingRoom: 'waiting-room',
   Panorama: 'panorama',
@@ -2955,9 +2969,9 @@ var ViewType = {
 };
 var ViewItemType = {
   Nav: 'nav',
-  Gltf: 'gltf',
   Plane: 'plane',
   CurvedPlane: 'curved-plane',
+  Gltf: 'gltf',
   Texture: 'texture'
 };
 var View = /*#__PURE__*/function () {
@@ -2970,7 +2984,7 @@ var View = /*#__PURE__*/function () {
         options.items.forEach(function (item, index) {
           item.index = index;
 
-          if (item.asset && item.asset.file === 'nextAttendeeStream') {
+          if (item.asset && item.asset.fileName === 'nextAttendeeStream') {
             item.asset.index = nextAttendeeStreamIndex++;
           }
         });
@@ -3046,11 +3060,11 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
         tile = typeof tile === 'string' ? {
           asset: {
             folder: options.asset.folder,
-            file: tile
+            fileName: tile
           },
           navs: []
         } : tile;
-        tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+        tile.asset.fileName.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
           var flipAxes = options.flipAxes ? -1 : 1;
 
           if (options.invertAxes) {
@@ -3072,14 +3086,19 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     }
 
     _this2 = _View2.call(this, options) || this;
-
-    if (!_this2.tiles.length) {
-      throw new Error('PanoramaGridView.constructor tile list is empty!');
+    /*
+    if (!this.tiles.length) {
+    	throw new Error('PanoramaGridView.constructor tile list is empty!');
     }
+    */
 
     _this2.index_ = 0;
     _this2.index$ = new rxjs.Subject();
-    _this2.items = _this2.originalItems.concat(_this2.tiles[0].navs);
+
+    if (_this2.tiles.length) {
+      _this2.items = _this2.originalItems.concat(_this2.tiles[0].navs);
+    }
+
     return _this2;
   }
 
@@ -3163,11 +3182,16 @@ var Asset = /*#__PURE__*/function () {
   }
 
   Asset.fromUrl = function fromUrl(url) {
+    if (url.indexOf('//') === -1) {
+      url = 'http://localhost:5000/b-here' + url;
+    }
+
     var segments = url.split('/');
     var fileName = segments.pop();
     var folder = segments.join('/') + '/';
+    var type = assetTypeFromPath(fileName);
     return new Asset({
-      type: AssetType.Image,
+      type: type,
       folder: folder,
       fileName: fileName
     });
@@ -3854,7 +3878,7 @@ AppComponent.meta = {
 
 };
 var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
-var MIME_VIDEO = ['avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
+var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_MODEL = ['gltf', 'glb', 'obj', 'usdz'];
 var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
 function isImage(path) {
@@ -3891,29 +3915,29 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
       switch (asset.type) {
         case AssetType$1.Image:
         case AssetType$1.Video:
-          asset = asset.folder + asset.file;
+          asset = asset.folder + asset.fileName;
           asset = environment.getTexturePath(asset);
           break;
 
         case AssetType$1.Model:
-          asset = asset.folder + asset.file;
+          asset = asset.folder + asset.fileName;
           asset = environment.getModelPath(asset);
           break;
 
         case AssetType$1.PublisherStream:
         case AssetType$1.NextAttendeeStream:
-          asset = environment.getModelPath(asset.file);
+          asset = environment.getModelPath(asset.fileName);
           break;
 
         default:
-          if (isImage(asset.file) || isVideo(asset.file)) {
-            asset = asset.folder + asset.file;
+          if (isImage(asset.fileName) || isVideo(asset.fileName)) {
+            asset = asset.folder + asset.fileName;
             asset = environment.getTexturePath(asset);
-          } else if (isModel(asset.file)) {
-            asset = asset.folder + asset.file;
+          } else if (isModel(asset.fileName)) {
+            asset = asset.folder + asset.fileName;
             asset = environment.getModelPath(asset);
-          } else if (isStream(asset.file)) {
-            asset = asset.file;
+          } else if (isStream(asset.fileName)) {
+            asset = asset.fileName;
           }
 
       }
@@ -4229,133 +4253,6 @@ DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDir
 DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
-};var _EditorLocale;
-
-var EditorLocale = (_EditorLocale = {
-  'image': 'Image',
-  'video': 'Video',
-  'model': 'Model',
-  'publisher-stream': 'Publisher Stream',
-  'next-attendee-stream': 'Next Attendee Stream',
-  'waiting-room': 'Waiting Room',
-  'panorama': 'Panorama',
-  'panorama-grid': 'Panorama Grid',
-  'room-3d': 'Room 3D'
-}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);var AsideComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AsideComponent, _Component);
-
-  function AsideComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AsideComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    this.mode = 1;
-    this.viewTypes = Object.keys(ViewType).map(function (key) {
-      var value = ViewType[key];
-      return {
-        type: value,
-        name: EditorLocale[value]
-      };
-    });
-    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
-      var value = ViewItemType[key];
-      return {
-        type: value,
-        name: EditorLocale[value]
-      };
-    });
-    this.setSupportedViewTypes();
-    this.setSupportedViewItemTypes();
-  };
-
-  _proto.onChanges = function onChanges() {
-    this.setSupportedViewTypes();
-    this.setSupportedViewItemTypes();
-  };
-
-  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
-    var _this = this;
-
-    this.supportedViewTypes = this.viewTypes.filter(function (x) {
-      return _this.supportedViewType(x.type);
-    });
-  };
-
-  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
-    var _this2 = this;
-
-    if (this.view) {
-      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
-        return _this2.supportedViewItemType(_this2.view.type, x.type);
-      });
-    } else {
-      this.supportedViewItemTypes = [];
-    }
-  };
-
-  _proto.setMode = function setMode(mode) {
-    if (this.mode !== mode) {
-      this.mode = mode;
-      this.pushChanges();
-    }
-  };
-
-  _proto.supportedViewType = function supportedViewType(viewType) {
-    var supported = [ViewType.Panorama, ViewType.PanoramaGrid, ViewType.Room3d, ViewType.Model].indexOf(viewType) !== -1; // ViewType.WaitingRoom,
-    // console.log('supportedViewType', viewType, supported);
-
-    return supported;
-  };
-
-  _proto.supportedViewItemType = function supportedViewItemType(viewType, viewItemType) {
-    var supported;
-
-    switch (viewType) {
-      case ViewType.WaitingRoom:
-        supported = false;
-        break;
-
-      case ViewType.Panorama:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
-        break;
-
-      case ViewType.PanoramaGrid:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
-        break;
-
-      case ViewType.Room3d:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Texture].indexOf(viewItemType) !== -1;
-        break;
-
-      case ViewType.Model:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane, ViewItemType.Texture].indexOf(viewItemType) !== -1;
-        break;
-    } // console.log('supportedViewItemType', viewType, viewItemType, supported);
-
-
-    return supported;
-  };
-
-  _proto.onSelect = function onSelect(event) {
-    this.select.next(event);
-  };
-
-  _proto.onUpdate = function onUpdate(event) {
-    this.update.next(event);
-  };
-
-  _proto.onDelete = function onDelete(event) {
-    this.delete.next(event);
-  };
-
-  return AsideComponent;
-}(rxcomp.Component);
-AsideComponent.meta = {
-  selector: '[aside]',
-  outputs: ['select', 'update', 'delete'],
-  inputs: ['view']
 };var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(UploadButtonDirective, _Directive);
 
@@ -4518,7 +4415,7 @@ UploadItemComponent.meta = {
   inputs: ['uploadItem', 'item'],
   template:
   /* html */
-  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [uploadSrc]=\"item\" />\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.progress > 0\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"item.complete\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\">remove</div>\n\t\t</div>\n\t</div>\n\t"
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [uploadSrc]=\"item\" />\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.progress > 0\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"item.complete\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\">remove</div>\n\t\t</div>\n\t</div>\n\t"
 };var UploadSrcDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(UploadSrcDirective, _Directive);
 
@@ -4703,6 +4600,138 @@ ToastOutletComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"toast-outlet__container\" [class]=\"{ active: toast }\">\n\t\t<div class=\"toast-outlet__toast\" [innerHTML]=\"lastMessage\"></div>\n\t</div>\n\t"
+};var _EditorLocale;
+
+var EditorLocale = (_EditorLocale = {
+  'image': 'Image',
+  'video': 'Video',
+  'model': 'Model',
+  'publisher-stream': 'Publisher Stream',
+  'next-attendee-stream': 'Next Attendee Stream',
+  'waiting-room': 'Waiting Room',
+  'panorama': 'Panorama',
+  'panorama-grid': 'Panorama Grid',
+  'room-3d': 'Room 3D'
+}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);var DISABLED_VIEW_TYPES = [ViewType.WaitingRoom, ViewType.Room3d, ViewType.Model];
+var DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf, ViewItemType.Texture];
+
+var AsideComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AsideComponent, _Component);
+
+  function AsideComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AsideComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.mode = 1;
+    this.viewTypes = Object.keys(ViewType).map(function (key) {
+      var value = ViewType[key];
+      return {
+        type: value,
+        name: EditorLocale[value],
+        disabled: DISABLED_VIEW_TYPES.indexOf(value) !== -1
+      };
+    });
+    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
+      var value = ViewItemType[key];
+      return {
+        type: value,
+        name: EditorLocale[value],
+        disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(value) !== -1
+      };
+    });
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
+    var _this = this;
+
+    this.supportedViewTypes = this.viewTypes.filter(function (x) {
+      return _this.supportedViewType(x.type);
+    });
+  };
+
+  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
+    var _this2 = this;
+
+    if (this.view) {
+      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
+        return _this2.supportedViewItemType(_this2.view.type, x.type);
+      });
+    } else {
+      this.supportedViewItemTypes = [];
+    }
+  };
+
+  _proto.setMode = function setMode(mode) {
+    if (this.mode !== mode) {
+      this.mode = mode;
+      this.pushChanges();
+    }
+  };
+
+  _proto.supportedViewType = function supportedViewType(viewType) {
+    var supported = [ViewType.Panorama, ViewType.PanoramaGrid, ViewType.Room3d, ViewType.Model].indexOf(viewType) !== -1; // ViewType.WaitingRoom,
+    // console.log('supportedViewType', viewType, supported);
+
+    return supported;
+  };
+
+  _proto.supportedViewItemType = function supportedViewItemType(viewType, viewItemType) {
+    var supported;
+
+    switch (viewType) {
+      case ViewType.WaitingRoom:
+        supported = false;
+        break;
+
+      case ViewType.Panorama:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+        break;
+
+      case ViewType.PanoramaGrid:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+        break;
+
+      case ViewType.Room3d:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+        break;
+
+      case ViewType.Model:
+        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+        break;
+    } // console.log('supportedViewItemType', viewType, viewItemType, supported);
+
+
+    return supported;
+  };
+
+  _proto.onSelect = function onSelect(event) {
+    this.select.next(event);
+  };
+
+  _proto.onUpdate = function onUpdate(event) {
+    this.update.next(event);
+  };
+
+  _proto.onDelete = function onDelete(event) {
+    this.delete.next(event);
+  };
+
+  return AsideComponent;
+}(rxcomp.Component);
+AsideComponent.meta = {
+  selector: '[aside]',
+  outputs: ['select', 'update', 'delete'],
+  inputs: ['view']
 };var EditorService = /*#__PURE__*/function () {
   function EditorService() {}
 
@@ -4712,12 +4741,6 @@ ToastOutletComponent.meta = {
         return mapView(view);
       });
       return data;
-    }));
-  };
-
-  EditorService.assetCreate$ = function assetCreate$(asset) {
-    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
     }));
   };
 
@@ -4751,6 +4774,42 @@ ToastOutletComponent.meta = {
 
   EditorService.itemDelete$ = function itemDelete$(view, item) {
     return HttpService.delete$("/api/view/" + view.id + "/item/" + item.id);
+  };
+
+  EditorService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  EditorService.assetDelete$ = function assetDelete$(asset) {
+    return HttpService.delete$("/api/asset/" + asset.id);
+  };
+
+  EditorService.upload$ = function upload$(files) {
+    var formData = new FormData();
+    files.forEach(function (file) {
+      return formData.append('file', file, file.name);
+    });
+    var xhr = new XMLHttpRequest();
+    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
+      switch (event.type) {
+        case 'readystatechange':
+          if (xhr.readyState === 4) {
+            return JSON.parse(xhr.responseText);
+          } else {
+            return null;
+          }
+
+        default:
+          return null;
+      }
+    }), operators.filter(function (event) {
+      return event !== null;
+    }));
+    xhr.open('POST', "/api/upload2/", true);
+    xhr.send(formData);
+    return events$;
   };
 
   return EditorService;
@@ -5015,12 +5074,23 @@ ToastOutletComponent.meta = {
 
         switch (modal.value) {
           case 'nav':
-            var item = event.data;
+          case 'panel':
+          case 'curved-panel':
             var items = _this5.view.items || [];
-            items.push(item);
+            items.push(event.data);
             Object.assign(_this5.view, {
               items: items
             });
+
+            _this5.pushChanges();
+
+            break;
+
+          case 'panorama':
+          case 'panorama-grid':
+            _this5.data.views.push(event.data);
+
+            _this5.controls.view.value = event.data.id;
 
             _this5.pushChanges();
 
@@ -5035,8 +5105,7 @@ ToastOutletComponent.meta = {
   _proto.onAsideSelect = function onAsideSelect(event) {
     var _this6 = this;
 
-    console.log('onAsideSelect', event);
-
+    // console.log('onAsideSelect', event);
     if (event.value) {
       switch (event.value) {
         case 'nav':
@@ -5062,6 +5131,12 @@ ToastOutletComponent.meta = {
       event.view.selected = false;
       event.view.items.forEach(function (item) {
         return item.selected = item === event.item;
+      });
+      this.pushChanges();
+    } else if (event.view && (event.tile || event.tile === null)) {
+      event.view.selected = false;
+      event.view.tiles.forEach(function (tile) {
+        return tile.selected = tile === event.tile;
       });
       this.pushChanges();
     } else if (event.view || event.view === null) {
@@ -5210,7 +5285,13 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
       title: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
       abstract: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
       viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      position: this.position.toArray() // upload: new FormControl(null, RequiredValidator()),
+      position: this.position.toArray(),
+      asset: null,
+      link: new rxcompForm.FormGroup({
+        title: new rxcompForm.FormControl(null),
+        href: new rxcompForm.FormControl(null),
+        target: '_blank'
+      }) // upload: new FormControl(null, RequiredValidator()),
       // items: new FormArray([null, null, null], RequiredValidator()),
 
     });
@@ -5245,6 +5326,11 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
       this.form.submitted = true;
       var item = Object.assign({}, this.form.value);
       item.viewId = parseInt(item.viewId);
+
+      if (item.link && (!item.link.title || !item.link.href)) {
+        item.link = null;
+      }
+
       console.log('NavModalComponent.onSubmit', this.view, item);
       EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
         console.log('NavModalComponent.onSubmit.success', response);
@@ -5308,6 +5394,79 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
 }(rxcomp.Component);
 NavModalComponent.meta = {
   selector: '[nav-modal]'
+};var PanoramaGridModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PanoramaGridModalComponent, _Component);
+
+  function PanoramaGridModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PanoramaGridModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.PanoramaGrid,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      assets: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PanoramaGridModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
+      var assets = this.form.value.assets;
+      var asset = assets[0];
+      var view = {
+        type: this.form.value.type,
+        name: this.form.value.name,
+        asset: asset,
+        tiles: assets.map(function (asset) {
+          return {
+            asset: asset,
+            navs: []
+          };
+        }),
+        invertAxes: true,
+        flipAxes: false,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      };
+      EditorService.viewCreate$(view).pipe(operators.first()).subscribe(function (response) {
+        console.log('PanoramaGridModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PanoramaGridModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  return PanoramaGridModalComponent;
+}(rxcomp.Component);
+PanoramaGridModalComponent.meta = {
+  selector: '[panorama-grid-modal]'
 };var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(PanoramaModalComponent, _Component);
 
@@ -5329,8 +5488,7 @@ NavModalComponent.meta = {
     });
     this.controls = form.controls;
     form.changes$.subscribe(function (changes) {
-      console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
-
+      // console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
       _this.pushChanges();
     });
   };
@@ -5462,22 +5620,7 @@ PanoramaModalComponent.meta = {
 	},
 	"zoom": 75
 }
-*//*
-{
-	"id": 2310,
-	"type": "plane",
-	"asset": {
-		"type": "video",
-		"folder": "room-3d/",
-		"file": "plane-01.mp4"
-	},
-	"position": { "x": 20, "y": 1.7, "z": 0 },
-	"rotation": { "x": 0, "y": -1.57079632679, "z": 0 },
-	"scale": { "x": 22, "y": 12, "z": 1 }
-}
-*/
-
-var PlaneModalComponent = /*#__PURE__*/function (_Component) {
+*/var PlaneModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(PlaneModalComponent, _Component);
 
   function PlaneModalComponent() {
@@ -5492,36 +5635,19 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
     var object = new THREE.Object3D();
     object.position.copy(this.position);
     object.lookAt(PlaneModalComponent.ORIGIN);
-    console.log(object.rotation);
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Plane,
-      // title: new FormControl(null, RequiredValidator()),
-      // upload: new FormControl(null, RequiredValidator()),
       position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), rxcompForm.RequiredValidator()),
       rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
       // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([3.2, 1.8, 1], rxcompForm.RequiredValidator())
+      scale: new rxcompForm.FormControl([3.2, 1.8, 1], rxcompForm.RequiredValidator()),
+      asset: null
     });
     this.controls = form.controls;
-    /*
-    this.controls.viewId.options = [{
-    	name: "Name",
-    	id: 2,
-    }];
-    */
-
     form.changes$.subscribe(function (changes) {
       // console.log('PlaneModalComponent.form.changes$', changes, form.valid, form);
       _this.pushChanges();
     });
-    /*
-    EditorService.data$().pipe(
-    	first(),
-    ).subscribe(data => {
-    	this.controls.viewId.options = data.views.map(view => ({ id: view.id, name: view.name }));
-    	this.pushChanges();
-    });
-    */
   };
 
   _proto.onSubmit = function onSubmit() {
@@ -5534,9 +5660,7 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
         ModalService.resolve(response);
       }, function (error) {
         return console.log('PlaneModalComponent.onSubmit.error', error);
-      }); // ModalService.resolve(this.form.value);
-      // this.form.submitted = true;
-      // this.form.reset();
+      });
     } else {
       this.form.touched = true;
     }
@@ -5591,21 +5715,6 @@ var PlaneModalComponent = /*#__PURE__*/function (_Component) {
 PlaneModalComponent.ORIGIN = new THREE.Vector3();
 PlaneModalComponent.meta = {
   selector: '[plane-modal]'
-};var factories = [EditorComponent, NavModalComponent, PanoramaModalComponent, PlaneModalComponent, ToastOutletComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
-var pipes = [];
-var EditorModule = /*#__PURE__*/function (_Module) {
-  _inheritsLoose(EditorModule, _Module);
-
-  function EditorModule() {
-    return _Module.apply(this, arguments) || this;
-  }
-
-  return EditorModule;
-}(rxcomp.Module);
-EditorModule.meta = {
-  imports: [],
-  declarations: [].concat(factories, pipes),
-  exports: [].concat(factories, pipes)
 };var RemoveModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(RemoveModalComponent, _Component);
 
@@ -5675,7 +5784,7 @@ RemoveModalComponent.meta = {
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
     form.changes$.subscribe(function (changes) {
-      console.log('UpdateViewItemComponent.form.changes$', _this.item);
+      // console.log('UpdateViewItemComponent.form.changes$', changes);
       var item = _this.item;
       Object.assign(item, changes);
 
@@ -5703,25 +5812,25 @@ RemoveModalComponent.meta = {
 
       switch (item.type) {
         case ViewItemType.Nav:
-          keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position']; // link { title, href, target }
+          keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?']; // , 'addAsset', 'addLink' link { title, href, target }
 
           break;
 
         case ViewItemType.Plane:
-          keys = ['id', 'type', 'position', 'rotation', 'scale'];
+          keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
           break;
 
         case ViewItemType.CurvedPlane:
-          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height'];
+          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height', 'asset?'];
           break;
 
         case ViewItemType.Texture:
-          keys = ['id', 'type']; // asset, key no id!!
+          keys = ['id', 'type', 'asset?']; // asset, key no id!!
 
           break;
 
         case ViewItemType.Model:
-          keys = ['id', 'type']; // title, abstract, asset,
+          keys = ['id', 'type', 'asset?']; // title, abstract, asset,
 
           break;
 
@@ -5730,9 +5839,33 @@ RemoveModalComponent.meta = {
       }
 
       keys.forEach(function (key) {
-        form.add(new rxcompForm.FormControl(item[key], rxcompForm.RequiredValidator()), key);
+        switch (key) {
+          case 'link?':
+            var title = item.link ? item.link.title : null;
+            var href = item.link ? item.link.href : null;
+            var target = '_blank';
+            form.add(new rxcompForm.FormGroup({
+              title: new rxcompForm.FormControl(title),
+              href: new rxcompForm.FormControl(href),
+              target: target
+            }), 'link');
+            break;
+
+          case 'addAsset':
+          case 'addLink':
+            var addKey = key.substring(3, key.length).toLowerCase();
+            console.log(addKey);
+            var check = item[addKey] != null;
+            form.add(new rxcompForm.FormControl(check), key);
+            break;
+
+          default:
+            var optional = key.indexOf('?') !== -1;
+            key = key.replace('?', '');
+            form.add(new rxcompForm.FormControl(item[key], optional ? undefined : rxcompForm.RequiredValidator()), key);
+        }
       });
-      this.controls = form.controls;
+      this.controls = form.controls; // console.log(form.controls);
 
       if (keys.indexOf('viewId') !== -1) {
         EditorService.data$().pipe(operators.first()).subscribe(function (data) {
@@ -5748,7 +5881,21 @@ RemoveModalComponent.meta = {
       }
     } else {
       Object.keys(this.controls).forEach(function (key) {
-        _this2.controls[key].value = item[key];
+        switch (key) {
+          case 'link':
+            var title = item.link ? item.link.title : null;
+            var href = item.link ? item.link.href : null;
+            var target = '_blank';
+            _this2.controls[key].value = {
+              title: title,
+              href: href,
+              target: target
+            };
+            break;
+
+          default:
+            _this2.controls[key].value = item[key];
+        }
       });
     }
   };
@@ -5759,9 +5906,15 @@ RemoveModalComponent.meta = {
 
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
+      var payload = Object.assign({}, this.form.value);
+
+      if (payload.link && (!payload.link.title || !payload.link.href)) {
+        payload.link = null;
+      }
+
       this.update.next({
         view: this.view,
-        item: new ViewItem(this.form.value)
+        item: new ViewItem(payload)
       });
     } else {
       this.form.touched = true;
@@ -5809,7 +5962,89 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+};var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(UpdateViewTileComponent, _Component);
+
+  function UpdateViewTileComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = UpdateViewTileComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.active = false;
+    var form = this.form = new rxcompForm.FormGroup({
+      id: new rxcompForm.FormControl(this.tile.id, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(this.tile.asset, rxcompForm.RequiredValidator()),
+      navs: new rxcompForm.FormControl(this.tile.navs, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('UpdateViewTileComponent.form.changes$', changes);
+      var tile = _this.tile;
+      Object.assign(tile, changes);
+
+      if (typeof tile.onUpdate === 'function') {
+        tile.onUpdate();
+      }
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var payload = Object.assign({}, this.form.value);
+      this.update.next({
+        view: this.view,
+        tile: payload
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onRemove = function onRemove(event) {
+    var _this2 = this;
+
+    ModalService.open$({
+      src: ModalSrcService.get('remove'),
+      data: {
+        tile: this.tile
+      }
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        _this2.delete.next({
+          view: _this2.view,
+          tile: _this2.tile
+        });
+      }
+    });
+  };
+
+  _proto.onSelect = function onSelect(event) {
+    this.select.next({
+      view: this.view,
+      tile: this.tile.selected ? null : this.tile
+    });
+    /*
+    this.tile.active = !this.tile.active;
+    this.pushChanges();
+    */
+  };
+
+  return UpdateViewTileComponent;
+}(rxcomp.Component);
+UpdateViewTileComponent.meta = {
+  selector: 'update-view-tile',
+  outputs: ['select', 'update', 'delete'],
+  inputs: ['view', 'tile'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewComponent, _Component);
 
@@ -5906,6 +6141,715 @@ UpdateViewComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+};var factories = [AsideComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
+var pipes = [];
+var EditorModule = /*#__PURE__*/function (_Module) {
+  _inheritsLoose(EditorModule, _Module);
+
+  function EditorModule() {
+    return _Module.apply(this, arguments) || this;
+  }
+
+  return EditorModule;
+}(rxcomp.Module);
+EditorModule.meta = {
+  imports: [],
+  declarations: [].concat(factories, pipes),
+  exports: [].concat(factories, pipes)
+};var AssetItemComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AssetItemComponent, _Component);
+
+  function AssetItemComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AssetItemComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    // console.log('AssetItemComponent.onInit', this.item);
+    if (this.item.preview === null) {
+      this.read$(this.item.file).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (preview) {
+        _this.item.preview = preview;
+
+        _this.pushChanges();
+      });
+    }
+  };
+
+  _proto.read$ = function read$(file) {
+    var _this2 = this;
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
+      var blob = event.target.result;
+
+      if (_this2.item.type === AssetType.Image) {
+        return _this2.resize$(blob);
+      } else {
+        return rxjs.of(blob);
+      }
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  _proto.resize$ = function resize$(blob) {
+    return new Promise(function (resolve, reject) {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(dataUrl);
+      };
+
+      img.onerror = function (error) {
+        reject(error);
+      };
+
+      img.src = blob;
+    });
+  };
+
+  _proto.onPause = function onPause() {
+    this.pause.next(this.item);
+  };
+
+  _proto.onResume = function onResume() {
+    this.resume.next(this.item);
+  };
+
+  _proto.onCancel = function onCancel() {
+    this.cancel.next(this.item);
+  };
+
+  _proto.onRemove = function onRemove() {
+    this.remove.next(this.item);
+  };
+
+  return AssetItemComponent;
+}(rxcomp.Component);
+AssetItemComponent.meta = {
+  selector: '[asset-item]',
+  outputs: ['pause', 'resume', 'cancel', 'remove'],
+  inputs: ['item'],
+  template:
+  /* html */
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [src]=\"item.preview\" *if=\"item.preview && item.type === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
+};var ControlComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlComponent, _Component);
+
+  function ControlComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlComponent.prototype;
+
+  _proto.onChanges = function onChanges() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // console.log(this, node, this.control);
+
+
+    var control = this.control;
+    var flags = control.flags;
+    Object.keys(flags).forEach(function (key) {
+      flags[key] ? node.classList.add(key) : node.classList.remove(key);
+    });
+  };
+
+  return ControlComponent;
+}(rxcomp.Component);
+ControlComponent.meta = {
+  selector: '[control]',
+  inputs: ['control']
+};var ControlAssetComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlAssetComponent, _ControlComponent);
+
+  function ControlAssetComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlAssetComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+    this.accept = this.accept || 'image/png, image/jpeg';
+    this.previews = [];
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    this.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+      console.log('ControlAssetComponent.change$', assets);
+      _this.control.value = assets[0];
+    });
+  };
+
+  _proto.change$ = function change$(input) {
+    var _this2 = this;
+
+    if (rxcomp.isPlatformBrowser && input) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.switchMap(function (event) {
+        console.log('ControlAssetComponent.change$', input.files);
+        var fileArray = Array.from(input.files);
+        _this2.previews = fileArray.map(function () {
+          return null;
+        });
+        var uploads$ = fileArray.map(function (file, i) {
+          return _this2.read$(file, i).pipe(operators.switchMap(function () {
+            return EditorService.upload$([file]);
+          }), operators.tap(function (upload) {
+            return console.log('upload', upload);
+          }), operators.switchMap(function (upload) {
+            /*
+            id: 1601303293569
+            type: "image/jpeg"
+            fileName: "1601303293569_ambiente1_x0_y2.jpg"
+            originalFileName: "ambiente1_x0_y2.jpg"
+            url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
+            */
+            var asset = Asset.fromUrl(upload.url);
+            return EditorService.assetCreate$(asset);
+          }));
+        });
+        return rxjs.combineLatest(uploads$);
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.read$ = function read$(file, i) {
+    var _this3 = this;
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.tap(function (event) {
+      var blob = event.target.result;
+
+      _this3.resize_(blob, function (resized) {
+        _this3.previews[i] = resized;
+        console.log('resized', resized);
+
+        _this3.pushChanges();
+      });
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  _proto.drop$ = function drop$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      var body = document.querySelector('body');
+      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        console.log('ControlAssetComponent.drop$', event);
+        event.preventDefault();
+
+        if (event.target === input) {
+          input.files = event.dataTransfer.files;
+        }
+
+        return;
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.resize_ = function resize_(blob, callback) {
+    if (typeof callback === 'function') {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        callback(dataUrl);
+      };
+
+      img.src = blob;
+    }
+  };
+
+  _createClass(ControlAssetComponent, [{
+    key: "image",
+    get: function get() {
+      var image = null;
+
+      if (this.control.value) {
+        image = "" + this.control.value.folder + this.control.value.fileName;
+      } else if (this.previews && this.previews.length) {
+        image = this.previews[0];
+      }
+
+      return image;
+    }
+  }]);
+
+  return ControlAssetComponent;
+}(ControlComponent);
+ControlAssetComponent.meta = {
+  selector: '[control-asset]',
+  inputs: ['control', 'label', 'disabled', 'accept'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [src]=\"control.value | asset\" *if=\"control.value && control.value.type === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var AssetUploadItem = function AssetUploadItem(file) {
+  this.file = file;
+  this.name = file.name;
+  this.type = assetTypeFromPath(file.name);
+  this.progress = 0;
+  this.size = file.size;
+  this.uploading = false;
+  this.paused = false;
+  this.success = false;
+  this.complete = false;
+  this.error = null;
+  this.preview = null;
+};
+var AssetEvent = function AssetEvent(options) {
+  if (options) {
+    Object.assign(this, options);
+  }
+};
+var AssetUploadStartEvent = /*#__PURE__*/function (_AssetEvent) {
+  _inheritsLoose(AssetUploadStartEvent, _AssetEvent);
+
+  function AssetUploadStartEvent() {
+    return _AssetEvent.apply(this, arguments) || this;
+  }
+
+  return AssetUploadStartEvent;
+}(AssetEvent);
+var AssetUploadCompleteEvent = /*#__PURE__*/function (_AssetEvent2) {
+  _inheritsLoose(AssetUploadCompleteEvent, _AssetEvent2);
+
+  function AssetUploadCompleteEvent() {
+    return _AssetEvent2.apply(this, arguments) || this;
+  }
+
+  return AssetUploadCompleteEvent;
+}(AssetEvent);
+var AssetUploadAssetEvent = /*#__PURE__*/function (_AssetEvent3) {
+  _inheritsLoose(AssetUploadAssetEvent, _AssetEvent3);
+
+  function AssetUploadAssetEvent() {
+    return _AssetEvent3.apply(this, arguments) || this;
+  }
+
+  return AssetUploadAssetEvent;
+}(AssetEvent);
+
+var AssetService = /*#__PURE__*/function () {
+  function AssetService() {
+    this.items$ = new rxjs.BehaviorSubject([]);
+    this.events$ = new rxjs.ReplaySubject(1);
+  }
+
+  var _proto = AssetService.prototype;
+
+  _proto.upload$ = function upload$() {
+    var _this = this;
+
+    var items = this.items$.getValue();
+    var uploadItems = items.filter(function (item) {
+      return !item.uploading;
+    });
+    return rxjs.combineLatest(uploadItems.map(function (item) {
+      return _this.uploadItem$(item);
+    }));
+  };
+
+  _proto.uploadItem$ = function uploadItem$(item) {
+    var _this2 = this;
+
+    item.uploading = true;
+    this.events$.next(new AssetUploadStartEvent({
+      item: item
+    }));
+    return EditorService.upload$([item.file]).pipe( // tap(upload => console.log('upload', upload)),
+    operators.switchMap(function (upload) {
+      item.uploading = false;
+      item.complete = true;
+      var asset = Asset.fromUrl(upload.url);
+
+      _this2.events$.next(new AssetUploadCompleteEvent({
+        item: item,
+        asset: asset
+      }));
+
+      return EditorService.assetCreate$(asset).pipe(operators.tap(function (asset) {
+        _this2.remove(item);
+
+        _this2.events$.next(new AssetUploadAssetEvent({
+          item: item,
+          asset: asset
+        }));
+      }));
+    }));
+  };
+
+  _proto.addItems = function addItems(files) {
+    if (files && files.length) {
+      // console.log('addItems', files);
+      var items = this.items$.getValue();
+      var newItems = Array.from(files).map(function (file) {
+        return new AssetUploadItem(file);
+      });
+      items.push.apply(items, newItems);
+      this.items$.next(items);
+    }
+  };
+
+  _proto.remove = function remove(item) {
+    var items = this.items$.getValue();
+    var index = items.indexOf(item);
+
+    if (index !== -1) {
+      items.splice(index, 1);
+    }
+
+    this.items$.next(items);
+  };
+
+  _proto.removeAll = function removeAll() {
+    // !!!
+    this.items$.next([]);
+  };
+
+  _proto.drop$ = function drop$(input, dropArea) {
+    var _this3 = this;
+
+    if (rxcomp.isPlatformBrowser && input) {
+      dropArea = dropArea || input;
+      var body = document.querySelector('body');
+      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        // console.log('AssetService.drop$', event);
+        event.preventDefault();
+
+        if (event.target === dropArea) {
+          _this3.addItems(event.dataTransfer.files);
+        }
+
+        return _this3.items$;
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.change$ = function change$(input) {
+    var _this4 = this;
+
+    if (rxcomp.isPlatformBrowser && input) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.switchMap(function (event) {
+        if (input.files.length) {
+          _this4.addItems(input.files);
+
+          input.value = '';
+        }
+
+        return _this4.items$;
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.files$ = function files$(files) {
+    var _this5 = this;
+
+    return rxjs.combineLatest(Array.from(files).map(function (file, i) {
+      return _this5.file$(file, i);
+    }));
+  };
+
+  _proto.file$ = function file$(file, i) {
+    var _this6 = this;
+
+    return this.read$(file, i).pipe(operators.switchMap(function () {
+      return _this6.uploadFile$(file);
+    }));
+  }
+  /*
+  static files$(files) {
+  	const fileArray = Array.from(files);
+  	this.previews = fileArray.map(() => null);
+  	const uploads$ = fileArray.map((file, i) => this.read$(file, i).pipe(
+  		switchMap(() => this.uploadFile$(file)),
+  	));
+  	return combineLatest(uploads$);
+  }
+  */
+  ;
+
+  _proto.read$ = function read$(file, i) {
+    var _this7 = this;
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.tap(function (event) {
+      var blob = event.target.result;
+
+      _this7.resize(blob, function (resized) {
+        _this7.previews[i] = resized; // console.log('resized', resized);
+
+        _this7.pushChanges();
+      });
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  _proto.uploadFile$ = function uploadFile$(file) {
+    return EditorService.upload$([file]).pipe( // tap(upload => console.log('upload', upload)),
+    operators.switchMap(function (upload) {
+      /*
+      id: 1601303293569
+      type: "image/jpeg"
+      fileName: "1601303293569_ambiente1_x0_y2.jpg"
+      originalFileName: "ambiente1_x0_y2.jpg"
+      url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
+      */
+      var asset = Asset.fromUrl(upload.url);
+      return EditorService.assetCreate$(asset);
+    }));
+  };
+
+  _proto.resize = function resize(blob, callback) {
+    if (typeof callback === 'function') {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        callback(dataUrl);
+      };
+
+      img.src = blob;
+    }
+  };
+
+  _proto.supported = function supported() {
+    return supportFileAPI() && supportAjaxUploadProgressEvents() && supportFormData();
+
+    function supportFileAPI() {
+      var input = document.createElement('input');
+      input.type = 'file';
+      return 'files' in input;
+    }
+
+    function supportAjaxUploadProgressEvents() {
+      var xhr = new XMLHttpRequest();
+      return !!(xhr && 'upload' in xhr && 'onprogress' in xhr.upload);
+    }
+
+    function supportFormData() {
+      return !!window.FormData;
+    }
+  };
+
+  return AssetService;
+}();var ControlAssetsComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlAssetsComponent, _ControlComponent);
+
+  function ControlAssetsComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlAssetsComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = 'label';
+    this.required = false;
+    this.accept = this.accept || 'image/png, image/jpeg';
+    this.multiple = this.multiple !== false;
+    this.items = [];
+    this.assets = this.control.value || [];
+    this.hasFiles = false;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    var dropArea = node.querySelector('.upload-drop');
+    var service = this.service = new AssetService();
+    service.drop$(input, dropArea).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (items) {
+      // console.log('ControlAssetComponent.drop$', items);
+      _this.items = items;
+
+      _this.pushChanges();
+    });
+    service.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (items) {
+      // console.log('ControlAssetComponent.change$', items);
+      _this.items = items;
+
+      _this.pushChanges();
+    });
+    service.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      // console.log('ControlAssetComponent.events$', event);
+      if (event instanceof AssetUploadAssetEvent) {
+        _this.assets.push(event.asset);
+
+        _this.control.value = _this.assets;
+      }
+
+      _this.items = _this.items;
+
+      _this.pushChanges(); // this.control.value = assets;
+
+    });
+  };
+
+  _proto.onUpload = function onUpload() {
+    // console.log('ControlAssetsComponent.onUpload');
+    this.service.upload$().pipe(operators.first()).subscribe();
+  };
+
+  _proto.onCancel = function onCancel() {
+    // console.log('ControlAssetsComponent.onCancel');
+    this.service.removeAll();
+  };
+
+  _proto.onItemPause = function onItemPause(item) {// console.log('ControlAssetsComponent.onPause', item);
+  };
+
+  _proto.onItemResume = function onItemResume(item) {// console.log('ControlAssetsComponent.onResume', item);
+  };
+
+  _proto.onItemCancel = function onItemCancel(item) {// console.log('ControlAssetsComponent.onCancel', item);
+  };
+
+  _proto.onItemRemove = function onItemRemove(item) {
+    // console.log('ControlAssetsComponent.onRemove', item);
+    this.service.remove(item);
+  };
+
+  _createClass(ControlAssetsComponent, [{
+    key: "items",
+
+    /*
+    get assets() {
+    	return this.assets_;
+    }
+    set assets(assets) {
+    	assets = assets || [];
+    	this.assets_ = assets;
+    	this.control.value = assets.length ? assets : null;
+    	console.log('ControlAssetsComponent.assets.set', assets);
+    }
+    */
+    get: function get() {
+      return this.items_;
+    },
+    set: function set(items) {
+      this.items_ = items;
+      this.uploadCount = items.reduce(function (p, c) {
+        return p + (c.uploading || c.completed ? 0 : 1);
+      }, 0);
+    }
+  }]);
+
+  return ControlAssetsComponent;
+}(ControlComponent);
+ControlAssetsComponent.meta = {
+  selector: '[control-assets]',
+  inputs: ['control', 'label', 'multiple'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.fileName\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlCheckboxComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlCheckboxComponent, _ControlComponent);
+
+  function ControlCheckboxComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlCheckboxComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.label = 'label';
+  };
+
+  return ControlCheckboxComponent;
+}(ControlComponent);
+ControlCheckboxComponent.meta = {
+  selector: '[control-checkbox]',
+  inputs: ['control', 'label'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form--checkbox\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label>\n\t\t\t\t<input type=\"checkbox\" class=\"control--checkbox\" [formControl]=\"control\" [value]=\"true\" />\n\t\t\t\t<span [innerHTML]=\"label | html\"></span>\n\t\t\t</label>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var KeyboardService = /*#__PURE__*/function () {
   function KeyboardService() {}
 
@@ -5981,33 +6925,7 @@ UpdateViewComponent.meta = {
   return KeyboardService;
 }();
 
-_defineProperty(KeyboardService, "keys", {});var ControlComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ControlComponent, _Component);
-
-  function ControlComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlComponent.prototype;
-
-  _proto.onChanges = function onChanges() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node; // console.log(this, node, this.control);
-
-
-    var control = this.control;
-    var flags = control.flags;
-    Object.keys(flags).forEach(function (key) {
-      flags[key] ? node.classList.add(key) : node.classList.remove(key);
-    });
-  };
-
-  return ControlComponent;
-}(rxcomp.Component);
-ControlComponent.meta = {
-  selector: '[control]',
-  inputs: ['control']
-};var ControlCustomSelectComponent = /*#__PURE__*/function (_ControlComponent) {
+_defineProperty(KeyboardService, "keys", {});var ControlCustomSelectComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCustomSelectComponent, _ControlComponent);
 
   function ControlCustomSelectComponent() {
@@ -6167,6 +7085,61 @@ ControlCustomSelectComponent.meta = {
 
   /*  <!-- <div class="dropdown" [class]="{ dropped: dropped }"> --> */
 
+};var ControlLinkComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlLinkComponent, _ControlComponent);
+
+  function ControlLinkComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlLinkComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+
+    var _getContext = getContext(this),
+        node = _getContext.node;
+
+    var input = this.input = node.querySelector('input');
+    merge(fromEvent(input, 'input')).pipe(takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      return _this.onInputDidChange(event);
+    });
+    fromEvent(input, 'blur').pipe(takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      return _this.onInputDidBlur(event);
+    });
+  };
+
+  _proto.onInputDidChange = function onInputDidChange(event) {
+    console.log('ControlLinkComponent.onInputDidChange', event.target.value); // event.target.value = event.target.value.replace(/[^\d|\.]/g, '');
+
+    /*
+    const value = parseFloat(event.target.value);
+    if (this.value !== value) {
+    	if (value !== NaN) {
+    		this.value = value;
+    		this.update.next(this.value);
+    	}
+    }
+    */
+  };
+
+  _proto.onInputDidBlur = function onInputDidBlur(event) {
+    console.log('ControlLinkComponent.onInputDidBlur', event.target.value);
+    this.control.touched = true;
+    this.value = this.input.value;
+  };
+
+  return ControlLinkComponent;
+}(ControlComponent);
+ControlLinkComponent.meta = {
+  selector: '[control-link]',
+  inputs: ['control', 'label', 'disabled'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlSelectComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlSelectComponent, _ControlComponent);
 
@@ -6400,8 +7373,7 @@ var ControlUploadComponent = /*#__PURE__*/function (_ControlComponent) {
       _this.hasItems = hasItems;
 
       _this.pushChanges();
-    });
-    console.log('ControlUploadComponent.onInit');
+    }); // console.log('ControlUploadComponent.onInit');
   };
 
   _proto.onPause = function onPause(item) {
@@ -6431,7 +7403,7 @@ ControlUploadComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--transfers\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of transfers\">\n\t\t\t\t\t<div [uploadItem]=\"uploader\" [item]=\"item\" (pause)=\"onPause($event)\" (resume)=\"onResume($event)\" (cancel)=\"onCancel($event)\" (remove)=\"onRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<p *if=\"uploader.flow.support\">\u2705 FlowJS is supported by your browser</p>\n\t\t\t<p *if=\"!uploader.flow.support\">\uD83D\uDED1 FlowJS is NOT supported by your browser</p>\n\t\t\t-->\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<span class=\"btn--browse\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\">Browse</span>\n\t\t\t\t<span class=\"btn--upload\" (click)=\"uploader.upload()\" *if=\"hasItems\">Upload</span>\n\t\t\t\t<span class=\"btn--cancel\" (click)=\"uploader.cancel()\" *if=\"hasItems\">Cancel</span>\n\t\t\t\t<!-- <span class=\"btn--cancel\" (click)=\"uploader.cancel()\" [class]=\"{ disabled: !transfers.length }\">Cancel</span> -->\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\" [uploadDrop]=\"uploader\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t\t<!-- <input type=\"file\" class=\"btn btn--upload\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\" /> -->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of transfers\">\n\t\t\t\t\t<div [uploadItem]=\"uploader\" [item]=\"item\" (pause)=\"onPause($event)\" (resume)=\"onResume($event)\" (cancel)=\"onCancel($event)\" (remove)=\"onRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<p *if=\"uploader.flow.support\">\u2705 FlowJS is supported by your browser</p>\n\t\t\t<p *if=\"!uploader.flow.support\">\uD83D\uDED1 FlowJS is NOT supported by your browser</p>\n\t\t\t-->\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<span class=\"btn--browse\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\">Browse</span>\n\t\t\t\t<span class=\"btn--upload\" (click)=\"uploader.upload()\" *if=\"hasItems\">Upload</span>\n\t\t\t\t<span class=\"btn--cancel\" (click)=\"uploader.cancel()\" *if=\"hasItems\">Cancel</span>\n\t\t\t\t<!-- <span class=\"btn--cancel\" (click)=\"uploader.cancel()\" [class]=\"{ disabled: !transfers.length }\">Cancel</span> -->\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\" [uploadDrop]=\"uploader\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t\t<!-- <input type=\"file\" class=\"btn btn--upload\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\" /> -->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };
 /*
 <p *ngIf="flow.flowJs?.support; else notSupported">
@@ -6510,7 +7482,7 @@ ControlVectorComponent.meta = {
   inputs: ['control', 'label', 'precision', 'increment', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"control--content control--vector\">\n\t\t\t\t<input-value label=\"x\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[0]\" (change)=\"updateValue(0, $event)\"></input-value>\n\t\t\t\t<input-value label=\"y\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[1]\" (change)=\"updateValue(1, $event)\"></input-value>\n\t\t\t\t<input-value label=\"z\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[2]\" (change)=\"updateValue(2, $event)\"></input-value>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"control--content control--vector\">\n\t\t\t\t<input-value label=\"x\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[0]\" (update)=\"updateValue(0, $event)\"></input-value>\n\t\t\t\t<input-value label=\"y\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[1]\" (update)=\"updateValue(1, $event)\"></input-value>\n\t\t\t\t<input-value label=\"z\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value[2]\" (update)=\"updateValue(2, $event)\"></input-value>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var DisabledDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(DisabledDirective, _Directive);
 
@@ -6539,7 +7511,15 @@ ControlVectorComponent.meta = {
 DisabledDirective.meta = {
   selector: 'input[disabled],textarea[disabled]',
   inputs: ['disabled']
-};var ErrorsComponent = /*#__PURE__*/function (_ControlComponent) {
+};var LABELS = {
+  'select': 'Select',
+  'select_file': 'Select a file...',
+  'error_required': 'Field is required',
+  'error_email': 'Invalid email',
+  'error_match': 'Fields do not match'
+};
+
+var ErrorsComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ErrorsComponent, _ControlComponent);
 
   function ErrorsComponent() {
@@ -6549,7 +7529,7 @@ DisabledDirective.meta = {
   var _proto = ErrorsComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.labels = window.labels || {};
+    this.labels = LABELS;
   };
 
   _proto.getLabel = function getLabel(key, value) {
@@ -6585,7 +7565,7 @@ ErrorsComponent.meta = {
       // console.log('InputValueComponent.increment$', event);
       _this.value += event;
 
-      _this.change.next(_this.value);
+      _this.update.next(_this.value);
 
       _this.pushChanges();
     });
@@ -6593,17 +7573,69 @@ ErrorsComponent.meta = {
       // console.log('InputValueComponent.increment$', event);
       _this.value += event;
 
-      _this.change.next(_this.value);
+      _this.update.next(_this.value);
 
       _this.pushChanges();
     });
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = this.input = node.querySelector('input'); // fromEvent(input, 'change')
+
+    rxjs.merge(rxjs.fromEvent(input, 'input')).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      return _this.onInputDidChange(event);
+    });
+    rxjs.fromEvent(input, 'blur').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      return _this.onInputDidBlur(event);
+    }); // fromEvent(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
   };
+
+  _proto.onInputDidChange = function onInputDidChange(event) {
+    // const node = getContext(this).node;
+    // const value = node.value === '' ? null : node.value;
+    event.target.value = event.target.value.replace(/[^\d|\.]/g, ''); // console.log('InputValueComponent.onInputDidChange', event.target.value);
+
+    /*
+    const value = parseFloat(event.target.value);
+    if (this.value !== value) {
+    	if (value !== NaN) {
+    		this.value = value;
+    		this.update.next(this.value);
+    	}
+    }
+    */
+  };
+
+  _proto.onInputDidBlur = function onInputDidBlur(event) {
+    // this.control.touched = true;
+    // console.log('InputValueComponent.onInputDidBlur', event.target.value);
+    var value = parseFloat(this.input.value);
+
+    if (this.value !== value) {
+      if (value !== NaN) {
+        this.value = value;
+        this.update.next(this.value);
+      } else {
+        this.input.value = this.getValue();
+      }
+    }
+  }
+  /*
+  onChanges() {
+  	const { node } = getContext(this);
+  	const input = node.querySelector('input');
+  	input.value = this.getValue();
+  	console.log(this, node, input);
+  }
+  */
+  ;
 
   _proto.increment$ = function increment$(selector, sign) {
     var _this2 = this;
 
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
 
     var element = node.querySelector(selector);
     var m, increment;
@@ -6629,7 +7661,7 @@ ErrorsComponent.meta = {
 
   _proto.setValue = function setValue(sign) {
     this.value += this.increment * sign;
-    this.change.next(this.value);
+    this.update.next(this.value);
     this.pushChanges();
   };
 
@@ -6637,11 +7669,11 @@ ErrorsComponent.meta = {
 }(rxcomp.Component);
 InputValueComponent.meta = {
   selector: 'input-value',
-  outputs: ['change'],
+  outputs: ['update'],
   inputs: ['value', 'label', 'precision', 'increment', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--control\" [class]=\"{ disabled: disabled }\">\n\t\t\t<input type=\"text\" class=\"control--text\" [value]=\"getValue()\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<div class=\"control--trigger\">\n\t\t\t\t<div class=\"btn--more\" (click)=\"setValue(1)\">+</div>\n\t\t\t\t<div class=\"btn--less\" (click)=\"setValue(-1)\">-</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"group--control\" [class]=\"{ disabled: disabled }\">\n\t\t\t<input type=\"text\" class=\"control--text\" [placeholder]=\"label\" [value]=\"getValue()\" [disabled]=\"disabled\" />\n\t\t\t<div class=\"control--trigger\">\n\t\t\t\t<div class=\"btn--more\" (click)=\"setValue(1)\">+</div>\n\t\t\t\t<div class=\"btn--less\" (click)=\"setValue(-1)\">-</div>\n\t\t\t</div>\n\t\t</div>\n\t"
 };var ValueDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(ValueDirective, _Directive);
 
@@ -6653,7 +7685,8 @@ InputValueComponent.meta = {
 
   _proto.onChanges = function onChanges(changes) {
     var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
+        node = _getContext.node; // console.log('ValueDirective.onChanges', this.value);
+
 
     node.value = this.value;
     node.setAttribute('value', this.value);
@@ -6664,6 +7697,43 @@ InputValueComponent.meta = {
 ValueDirective.meta = {
   selector: '[value]',
   inputs: ['value']
+};/*
+['quot', 'amp', 'apos', 'lt', 'gt', 'nbsp', 'iexcl', 'cent', 'pound', 'curren', 'yen', 'brvbar', 'sect', 'uml', 'copy', 'ordf', 'laquo', 'not', 'shy', 'reg', 'macr', 'deg', 'plusmn', 'sup2', 'sup3', 'acute', 'micro', 'para', 'middot', 'cedil', 'sup1', 'ordm', 'raquo', 'frac14', 'frac12', 'frac34', 'iquest', 'Agrave', 'Aacute', 'Acirc', 'Atilde', 'Auml', 'Aring', 'AElig', 'Ccedil', 'Egrave', 'Eacute', 'Ecirc', 'Euml', 'Igrave', 'Iacute', 'Icirc', 'Iuml', 'ETH', 'Ntilde', 'Ograve', 'Oacute', 'Ocirc', 'Otilde', 'Ouml', 'times', 'Oslash', 'Ugrave', 'Uacute', 'Ucirc', 'Uuml', 'Yacute', 'THORN', 'szlig', 'agrave', 'aacute', 'atilde', 'auml', 'aring', 'aelig', 'ccedil', 'egrave', 'eacute', 'ecirc', 'euml', 'igrave', 'iacute', 'icirc', 'iuml', 'eth', 'ntilde', 'ograve', 'oacute', 'ocirc', 'otilde', 'ouml', 'divide', 'oslash', 'ugrave', 'uacute', 'ucirc', 'uuml', 'yacute', 'thorn', 'yuml', 'amp', 'bull', 'deg', 'infin', 'permil', 'sdot', 'plusmn', 'dagger', 'mdash', 'not', 'micro', 'perp', 'par', 'euro', 'pound', 'yen', 'cent', 'copy', 'reg', 'trade', 'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega', 'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega'];
+['"', '&', ''', '<', '>', ' ', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 'ª', '«', '¬', '­', '®', '¯', '°', '±', '²', '³', '´', 'µ', '¶', '·', '¸', '¹', 'º', '»', '¼', '½', '¾', '¿', 'À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'Þ', 'ß', 'à', 'á', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', '÷', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ', 'ÿ', '&', '•', '°', '∞', '‰', '⋅', '±', '†', '—', '¬', 'µ', '⊥', '∥', '€', '£', '¥', '¢', '©', '®', '™', 'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω', 'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω'];
+*/
+
+var HtmlPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(HtmlPipe, _Pipe);
+
+  function HtmlPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  HtmlPipe.transform = function transform(value) {
+    if (value) {
+      value = value.replace(/&#(\d+);/g, function (m, n) {
+        return String.fromCharCode(parseInt(n));
+      });
+      var escapes = ['quot', 'amp', 'apos', 'lt', 'gt', 'nbsp', 'iexcl', 'cent', 'pound', 'curren', 'yen', 'brvbar', 'sect', 'uml', 'copy', 'ordf', 'laquo', 'not', 'shy', 'reg', 'macr', 'deg', 'plusmn', 'sup2', 'sup3', 'acute', 'micro', 'para', 'middot', 'cedil', 'sup1', 'ordm', 'raquo', 'frac14', 'frac12', 'frac34', 'iquest', 'Agrave', 'Aacute', 'Acirc', 'Atilde', 'Auml', 'Aring', 'AElig', 'Ccedil', 'Egrave', 'Eacute', 'Ecirc', 'Euml', 'Igrave', 'Iacute', 'Icirc', 'Iuml', 'ETH', 'Ntilde', 'Ograve', 'Oacute', 'Ocirc', 'Otilde', 'Ouml', 'times', 'Oslash', 'Ugrave', 'Uacute', 'Ucirc', 'Uuml', 'Yacute', 'THORN', 'szlig', 'agrave', 'aacute', 'atilde', 'auml', 'aring', 'aelig', 'ccedil', 'egrave', 'eacute', 'ecirc', 'euml', 'igrave', 'iacute', 'icirc', 'iuml', 'eth', 'ntilde', 'ograve', 'oacute', 'ocirc', 'otilde', 'ouml', 'divide', 'oslash', 'ugrave', 'uacute', 'ucirc', 'uuml', 'yacute', 'thorn', 'yuml', 'amp', 'bull', 'deg', 'infin', 'permil', 'sdot', 'plusmn', 'dagger', 'mdash', 'not', 'micro', 'perp', 'par', 'euro', 'pound', 'yen', 'cent', 'copy', 'reg', 'trade', 'alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi', 'rho', 'sigma', 'tau', 'upsilon', 'phi', 'chi', 'psi', 'omega', 'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega'];
+      var unescapes = ['"', '&', '\'', '<', '>', ' ', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 'ª', '«', '¬', '­', '®', '¯', '°', '±', '²', '³', '´', 'µ', '¶', '·', '¸', '¹', 'º', '»', '¼', '½', '¾', '¿', 'À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'Þ', 'ß', 'à', 'á', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', '÷', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ', 'ÿ', '&', '•', '°', '∞', '‰', '⋅', '±', '†', '—', '¬', 'µ', '⊥', '∥', '€', '£', '¥', '¢', '©', '®', '™', 'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω', 'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω'];
+      var rx = new RegExp("(&" + escapes.join(';)|(&') + ";)", 'g');
+      value = value.replace(rx, function () {
+        for (var i = 1; i < arguments.length; i++) {
+          if (arguments[i]) {
+            // console.log(arguments[i], unescapes[i - 1]);
+            return unescapes[i - 1];
+          }
+        }
+      }); // console.log(value);
+
+      return value;
+    }
+  };
+
+  return HtmlPipe;
+}(rxcomp.Pipe);
+HtmlPipe.meta = {
+  name: 'html'
 };var IdDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(IdDirective, _Directive);
 
@@ -7800,16 +8870,16 @@ RGBELoader.prototype = Object.assign(Object.create(THREE$1.DataTextureLoader.pro
       return;
     }
 
-    if (item.asset.file === 'publisherStream') {
+    if (item.asset.fileName === 'publisherStream') {
       return this.loadPublisherStreamBackground(renderer, callback);
-    } else if (item.asset.file.indexOf('.hdr') !== -1) {
-      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-    } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
-    } else if (item.asset.file.indexOf('.m3u8') !== -1) {
-      return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
+    } else if (item.asset.fileName.indexOf('.hdr') !== -1) {
+      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
+    } else if (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1) {
+      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
+    } else if (item.asset.fileName.indexOf('.m3u8') !== -1) {
+      return this.loadHlslVideoBackground(item.asset.fileName, renderer, callback);
     } else {
-      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.fileName, renderer, callback);
     }
   };
 
@@ -64472,7 +65542,7 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.getPath = function getPath(item) {
-    return environment.getTexturePath(item.asset.folder + item.asset.file);
+    return environment.getTexturePath(item.asset.folder + item.asset.fileName);
   };
 
   MediaLoader.loadTexture = function loadTexture(item, callback) {
@@ -64481,15 +65551,15 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.isVideo = function isVideo(item) {
-    return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
+    return item.asset && item.asset.fileName && (item.asset.fileName.indexOf('.mp4') !== -1 || item.asset.fileName.indexOf('.webm') !== -1);
   };
 
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.asset && item.asset.file === 'publisherStream';
+    return item.asset && item.asset.fileName === 'publisherStream';
   };
 
   MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.file === 'nextAttendeeStream';
+    return item.asset && item.asset.fileName === 'nextAttendeeStream';
   };
 
   _createClass(MediaLoader, [{
@@ -64626,9 +65696,9 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this2 = this;
 
     // console.log('MediaLoader.play');
-    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.file);
+    this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.fileName);
     }, function (error) {
-      console.log('MediaLoader.play.error', _this2.item.asset.file, error);
+      console.log('MediaLoader.play.error', _this2.item.asset.fileName, error);
     });
 
     if (!silent) {
@@ -64772,7 +65842,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       return rxjs.of(null);
     }
 
-    var file = item.asset.file;
+    var file = item.asset.fileName;
 
     if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
       return rxjs.of(file);
@@ -64861,7 +65931,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var textureB = MediaLoader.loadTexture({
         asset: {
           folder: 'ui/',
-          file: 'play.png'
+          fileName: 'play.png'
         }
       }, function (textureB) {
         // console.log('MediaMesh.textureB', textureB);
@@ -64879,8 +65949,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
 
     mediaLoader.load(function (textureA) {
-      console.log('MediaMesh.textureA', textureA);
-
+      // console.log('MediaMesh.textureA', textureA);
       if (textureA) {
         material.uniforms.textureA.value = textureA;
         material.uniforms.resolutionA.value = new THREE$1.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
@@ -64921,7 +65990,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return MediaLoader.events$.pipe(operators.map(function (event) {
       if (item.asset && item.asset.linkedPlayId) {
         var eventItem = items.find(function (x) {
-          return x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId;
+          return x.asset && event.src.indexOf(x.asset.fileName) !== -1 && event.id === item.asset.linkedPlayId;
         });
 
         if (eventItem) {
@@ -65452,7 +66521,7 @@ ModelDebugComponent.meta = {
     var _this = this;
 
     // this.renderOrder = environment.renderOrder.model;
-    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
+    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, function (mesh) {
       // scale
       var box = new THREE$1.Box3().setFromObject(mesh);
       var size = box.max.clone().sub(box.min);
@@ -65503,8 +66572,8 @@ ModelDebugComponent.meta = {
       _this.pushChanges();
     });
     /*
-    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
+    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.fileName, (envMap) => {
+    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
     		const box = new THREE.Box3().setFromObject(mesh);
     		const center = box.getCenter(new THREE.Vector3());
     		mesh.position.x += (mesh.position.x - center.x);
@@ -67110,8 +68179,7 @@ ModelPictureComponent.meta = {
   ;
 
   _proto.onUpdate = function onUpdate(item, mesh) {
-    console.log('ModelPlaneComponent.onUpdate', item);
-
+    // console.log('ModelPlaneComponent.onUpdate', item);
     if (item.position) {
       mesh.position.fromArray(item.position);
     }
@@ -72067,6 +73135,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AsideComponent, AssetPipe, ControlCustomSelectComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, RemoveModalComponent, SliderDirective, SvgIconStructure, TryInARComponent, TryInARModalComponent, UpdateViewComponent, UpdateViewItemComponent, ValueDirective, WorldComponent],
+  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

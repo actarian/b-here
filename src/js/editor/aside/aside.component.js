@@ -2,6 +2,9 @@ import { Component } from 'rxcomp';
 import { ViewItemType, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
 
+export const DISABLED_VIEW_TYPES = [ViewType.WaitingRoom, ViewType.Room3d, ViewType.Model];
+export const DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf, ViewItemType.Texture];
+
 export default class AsideComponent extends Component {
 
 	onInit() {
@@ -11,6 +14,7 @@ export default class AsideComponent extends Component {
 			return {
 				type: value,
 				name: EditorLocale[value],
+				disabled: DISABLED_VIEW_TYPES.indexOf(value) !== -1,
 			};
 		});
 		this.viewItemTypes = Object.keys(ViewItemType).map(key => {
@@ -18,6 +22,7 @@ export default class AsideComponent extends Component {
 			return {
 				type: value,
 				name: EditorLocale[value],
+				disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(value) !== -1,
 			};
 		});
 		this.setSupportedViewTypes();

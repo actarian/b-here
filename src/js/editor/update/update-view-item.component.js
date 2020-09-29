@@ -14,7 +14,7 @@ export default class UpdateViewItemComponent extends Component {
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		form.changes$.subscribe((changes) => {
-			console.log('UpdateViewItemComponent.form.changes$', this.item);
+			// console.log('UpdateViewItemComponent.form.changes$', changes);
 			const item = this.item;
 			Object.assign(item, changes);
 			if (typeof item.onUpdate === 'function') {
@@ -36,27 +36,50 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type) {
 				case ViewItemType.Nav:
-					keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position']; // link { title, href, target }
+					keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?']; // , 'addAsset', 'addLink' link { title, href, target }
 					break;
 				case ViewItemType.Plane:
-					keys = ['id', 'type', 'position', 'rotation', 'scale'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
 					break;
 				case ViewItemType.CurvedPlane:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height', 'asset?'];
 					break;
 				case ViewItemType.Texture:
-					keys = ['id', 'type']; // asset, key no id!!
+					keys = ['id', 'type', 'asset?']; // asset, key no id!!
 					break;
 				case ViewItemType.Model:
-					keys = ['id', 'type']; // title, abstract, asset,
+					keys = ['id', 'type', 'asset?']; // title, abstract, asset,
 					break;
 				default:
 					keys = ['id', 'type'];
 			}
 			keys.forEach(key => {
-				form.add(new FormControl(item[key], RequiredValidator()), key);
+				switch (key) {
+					case 'link?':
+						const title = item.link ? item.link.title : null;
+						const href = item.link ? item.link.href : null;
+						const target = '_blank';
+						form.add(new FormGroup({
+							title: new FormControl(title),
+							href: new FormControl(href),
+							target
+						}), 'link');
+						break;
+					case 'addAsset':
+					case 'addLink':
+						const addKey = key.substring(3, key.length).toLowerCase();
+						console.log(addKey);
+						const check = item[addKey] != null;
+						form.add(new FormControl(check), key);
+						break;
+					default:
+						const optional = key.indexOf('?') !== -1;
+						key = key.replace('?', '');
+						form.add(new FormControl(item[key], optional ? undefined : RequiredValidator()), key);
+				}
 			});
 			this.controls = form.controls;
+			// console.log(form.controls);
 			if (keys.indexOf('viewId') !== -1) {
 				EditorService.data$().pipe(
 					first(),
@@ -67,7 +90,16 @@ export default class UpdateViewItemComponent extends Component {
 			}
 		} else {
 			Object.keys(this.controls).forEach(key => {
-				this.controls[key].value = item[key];
+				switch (key) {
+					case 'link':
+						const title = item.link ? item.link.title : null;
+						const href = item.link ? item.link.href : null;
+						const target = '_blank';
+						this.controls[key].value = { title, href, target };
+						break;
+					default:
+						this.controls[key].value = item[key];
+				}
 			});
 		}
 	}
@@ -78,7 +110,11 @@ export default class UpdateViewItemComponent extends Component {
 
 	onSubmit() {
 		if (this.form.valid) {
-			this.update.next({ view: this.view, item: new ViewItem(this.form.value) });
+			const payload = Object.assign({}, this.form.value);
+			if (payload.link && (!payload.link.title || !payload.link.href)) {
+				payload.link = null;
+			}
+			this.update.next({ view: this.view, item: new ViewItem(payload) });
 		} else {
 			this.form.touched = true;
 		}
@@ -130,16 +166,21 @@ UpdateViewItemComponent.meta = {
 				<div control-text label="Abstract" [control]="controls.abstract"></div>
 				<div control-select label="NavToView" [control]="controls.viewId"></div>
 				<div control-vector label="Position" [control]="controls.position" [precision]="3"></div>
+				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
+				<div control-text label="Link Title" [control]="controls.link.controls.title"></div>
+				<div control-text label="Link Url" [control]="controls.link.controls.href"></div>
 			</fieldset>
 			<fieldset *if="item.type == 'plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
+				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
 			</fieldset>
 			<fieldset *if="item.type == 'curved-plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
+				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
 			</fieldset>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">

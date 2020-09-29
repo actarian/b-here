@@ -48,7 +48,7 @@ export default class ModelGltfComponent extends ModelComponent {
 
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.model;
-		this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
+		this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
 			// scale
 			const box = new THREE.Box3().setFromObject(mesh);
 			const size = box.max.clone().sub(box.min);
@@ -96,8 +96,8 @@ export default class ModelGltfComponent extends ModelComponent {
 			this.pushChanges();
 		});
 		/*
-		this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-			this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
+		this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.fileName, (envMap) => {
+			this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.fileName, (mesh) => {
 				const box = new THREE.Box3().setFromObject(mesh);
 				const center = box.getCenter(new THREE.Vector3());
 				mesh.position.x += (mesh.position.x - center.x);

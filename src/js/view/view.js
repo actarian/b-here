@@ -1,6 +1,16 @@
 import { Subject } from "rxjs";
 import * as THREE from 'three';
 
+export const EXT_IMAGE = [
+	'jpeg', 'jpg', 'png',
+];
+export const EXT_VIDEO = [
+	'mp4', 'webm',
+];
+export const EXT_MODEL = [
+	'gltf', 'glb',
+];
+
 export const AssetType = {
 	Image: 'image', // jpg, png, ...
 	Video: 'video', // mp4, webm, ...
@@ -8,6 +18,22 @@ export const AssetType = {
 	PublisherStream: 'publisher-stream', // valore fisso di file a ‘publisherStream’ e folder string.empty
 	NextAttendeeStream: 'next-attendee-stream', // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
 };
+
+export function assetTypeFromPath(path) {
+	const extension = path.split('.').pop();
+	if (EXT_IMAGE.indexOf(extension) !== -1) {
+		return AssetType.Image;
+	} else if (EXT_VIDEO.indexOf(extension) !== -1) {
+		return AssetType.Video;
+	} else if (EXT_MODEL.indexOf(extension) !== -1) {
+		return AssetType.Model;
+	}
+}
+
+export function isAssetType(path, type) {
+	const assetType = assetTypeFromPath(path);
+	return assetType === type;
+}
 
 export const ViewType = {
 	WaitingRoom: 'waiting-room',
@@ -19,9 +45,9 @@ export const ViewType = {
 
 export const ViewItemType = {
 	Nav: 'nav',
-	Gltf: 'gltf',
 	Plane: 'plane',
 	CurvedPlane: 'curved-plane',
+	Gltf: 'gltf',
 	Texture: 'texture',
 };
 
@@ -34,7 +60,7 @@ export class View {
 				let nextAttendeeStreamIndex = 0;
 				options.items.forEach((item, index) => {
 					item.index = index;
-					if (item.asset && item.asset.file === 'nextAttendeeStream') {
+					if (item.asset && item.asset.fileName === 'nextAttendeeStream') {
 						item.asset.index = nextAttendeeStreamIndex++;
 					}
 				});
@@ -81,8 +107,8 @@ export class PanoramaGridView extends View {
 		if (options.tiles) {
 			options.tiles = options.tiles.map((tile, i) => {
 				const indices = new THREE.Vector2();
-				tile = typeof tile === 'string' ? { asset: { folder: options.asset.folder, file: tile }, navs: [] } : tile;
-				tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
+				tile = typeof tile === 'string' ? { asset: { folder: options.asset.folder, fileName: tile }, navs: [] } : tile;
+				tile.asset.fileName.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
 					const flipAxes = options.flipAxes ? -1 : 1;
 					if (options.invertAxes) {
 						indices.y = parseInt(b);
@@ -102,12 +128,16 @@ export class PanoramaGridView extends View {
 			});
 		}
 		super(options);
+		/*
 		if (!this.tiles.length) {
 			throw new Error('PanoramaGridView.constructor tile list is empty!');
 		}
+		*/
 		this.index_ = 0;
 		this.index$ = new Subject();
-		this.items = this.originalItems.concat(this.tiles[0].navs);
+		if (this.tiles.length) {
+			this.items = this.originalItems.concat(this.tiles[0].navs);
+		}
 	}
 	getTileIndex(x, y) {
 		return this.tiles.reduce((p, c, i) => {
@@ -175,11 +205,15 @@ export class Asset {
 		return payload;
 	}
 	static fromUrl(url) {
+		if (url.indexOf('//') === -1) {
+			url = 'http://localhost:5000/b-here' + url;
+		}
 		const segments = url.split('/');
 		const fileName = segments.pop();
 		const folder = segments.join('/') + '/';
+		const type = assetTypeFromPath(fileName);
 		return new Asset({
-			type: AssetType.Image,
+			type: type,
 			folder: folder,
 			fileName: fileName,
 		});

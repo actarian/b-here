@@ -71,7 +71,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
-		console.log('ModelPlaneComponent.onUpdate', item);
+		// console.log('ModelPlaneComponent.onUpdate', item);
 		if (item.position) {
 			mesh.position.fromArray(item.position);
 		}

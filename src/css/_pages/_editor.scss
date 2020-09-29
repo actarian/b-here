@@ -123,6 +123,11 @@
 
 		&>.btn {
 			padding: 4px 0 4px 4px;
+
+			&.disabled {
+				opacity: 0.25;
+				pointer-events: none;
+			}
 		}
 
 		&>.title,
@@ -130,6 +135,12 @@
 			margin-bottom: 15px;
 			font-size: 14px;
 			font-weight: 900;
+		}
+
+		&>.abstract {
+			margin-bottom: 20px;
+			font-size: 13px;
+			text-align: center;
 		}
 
 		&>.nav--editor {
@@ -198,7 +209,7 @@
 	color: rgba(0, 0, 0, 0.25);
 }
 
-.listing--transfers {
+.listing--assets {
 	flex: 1 1 100%;
 	position: relative;
 	display: flex;
@@ -314,6 +325,20 @@
 	line-height: 1;
 }
 
+.btn--browse {
+	position: relative;
+
+	input[type="file"] {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		cursor: pointer;
+	}
+}
+
 .upload-item {
 	overflow: hidden;
 	border-radius: 8px;
@@ -348,11 +373,13 @@
 }
 
 update-view,
-update-view-item {
+update-view-item,
+update-view-tile {
 	display: block;
+	margin-bottom: 10px;
 	padding: 10px;
 	border-radius: 12px;
-	box-shadow: 0 20px 20px -10px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 10px 20px -5px rgba(0, 0, 0, .15);
 
 	.group--headline {
 		display: flex;

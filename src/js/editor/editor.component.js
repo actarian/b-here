@@ -257,10 +257,17 @@ export default class EditorComponent extends Component {
 				console.log('EditorComponent.onOpenModal.resolve', event);
 				switch (modal.value) {
 					case 'nav':
-						const item = event.data;
+					case 'panel':
+					case 'curved-panel':
 						const items = this.view.items || [];
-						items.push(item);
+						items.push(event.data);
 						Object.assign(this.view, { items });
+						this.pushChanges();
+						break;
+					case 'panorama':
+					case 'panorama-grid':
+						this.data.views.push(event.data);
+						this.controls.view.value = event.data.id;
 						this.pushChanges();
 						break;
 					default:
@@ -271,7 +278,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideSelect(event) {
-		console.log('onAsideSelect', event);
+		// console.log('onAsideSelect', event);
 		if (event.value) {
 			switch (event.value) {
 				case 'nav':
@@ -288,6 +295,10 @@ export default class EditorComponent extends Component {
 		} else if (event.view && (event.item || event.item === null)) {
 			event.view.selected = false;
 			event.view.items.forEach(item => item.selected = item === event.item);
+			this.pushChanges();
+		} else if (event.view && (event.tile || event.tile === null)) {
+			event.view.selected = false;
+			event.view.tiles.forEach(tile => tile.selected = tile === event.tile);
 			this.pushChanges();
 		} else if (event.view || event.view === null) {
 			this.view.selected = (this.view === event.view);

@@ -31,6 +31,7 @@ const MIME_CONTENT_TYPES = {
 	"mid": "audio/midi audio/x-midi", // Musical Instrument Digital Interface (MIDI)
 	"midi": "audio/midi audio/x-midi", // Musical Instrument Digital Interface (MIDI)
 	"mp3": "audio/mpeg", // MP3 audio
+	"mp4": "audio/mp4", // MP4 video
 	"oga": "audio/ogg", // OGG audio
 	"opus": "audio/opus", // Opus audio
 	"wav": "audio/wav", // Waveform Audio Format
@@ -94,7 +95,7 @@ const MIME_AUDIO = [
 	'aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba',
 ];
 const MIME_VIDEO = [
-	'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2',
+	'mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2',
 ];
 const MIME_APPLICATION = [
 	'abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z',
