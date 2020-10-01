@@ -43,51 +43,40 @@ export default class ModelPanelComponent extends ModelComponent {
 					const link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(link => {
 						return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= (link.offsetLeft + link.offsetWidth) && xy.y <= (link.offsetTop + link.offsetHeight);
 					});
-					const panel = this.panel = new InteractiveSprite(material);
-					panel.renderOrder = environment.renderOrder.panel;
-					panel.scale.set(0.02 * width, 0.02 * height, 1);
-					panel.position.set(position.x, position.y, position.z);
-					panel.on('down', (event) => {
-						const xy = { x: parseInt(event.intersection.uv.x * node.offsetWidth), y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight) };
-						// console.log('ModelPanelComponent.down.xy', xy);
-						const link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(link => {
-							return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= (link.offsetLeft + link.offsetWidth) && xy.y <= (link.offsetTop + link.offsetHeight);
+					// console.log('ModelPanelComponent.down.link', link);
+					if (link) {
+						this.down.next(link);
+						const rect = node.getBoundingClientRect();
+						const event = new MouseEvent('mouseup', {
+							button: 0,
+							buttons: 0,
+							clientX: xy.x + rect.left,
+							clientY: xy.y + rect.top,
+							movementX: 0,
+							movementY: 0,
+							relatedTarget: link,
+							screenX: xy.x,
+							screenY: xy.y,
 						});
-						// console.log('ModelPanelComponent.down.link', link);
-						if (link) {
-							this.down.next(link);
-							const rect = node.getBoundingClientRect();
-							const event = new MouseEvent('mouseup', {
-								button: 0,
-								buttons: 0,
-								clientX: xy.x + rect.left,
-								clientY: xy.y + rect.top,
-								movementX: 0,
-								movementY: 0,
-								relatedTarget: link,
-								screenX: xy.x,
-								screenY: xy.y,
-							});
-							// console.log('ModelPanelComponent.dispatchEvent', event);
-							link.dispatchEvent(event);
-							setTimeout(() => {
-								DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
-							}, 1);
-						}
-					});
-					this.mesh.add(panel);
-					const from = { value: 0 };
-					gsap.to(from, 0.5, {
-						value: 1,
-						delay: 0.0,
-						ease: Power2.easeInOut,
-						onUpdate: () => {
-							panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
-							panel.lookAt(ModelPanelComponent.ORIGIN);
-							panel.material.opacity = from.value;
-							panel.material.needsUpdate = true;
-						}
-					});
+						// console.log('ModelPanelComponent.dispatchEvent', event);
+						link.dispatchEvent(event);
+						setTimeout(() => {
+							DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
+						}, 1);
+					}
+				});
+				this.mesh.add(panel);
+				const from = { value: 0 };
+				gsap.to(from, 0.5, {
+					value: 1,
+					delay: 0.0,
+					ease: Power2.easeInOut,
+					onUpdate: () => {
+						panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
+						panel.lookAt(ModelPanelComponent.ORIGIN);
+						panel.material.opacity = from.value;
+						panel.material.needsUpdate = true;
+					}
 				});
 			}
 		});

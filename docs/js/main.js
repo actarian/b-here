@@ -68165,62 +68165,48 @@ ModelNavComponent.meta = {
 
           var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
             return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-          });
-          var panel = _this.panel = new InteractiveSprite(material);
-          panel.renderOrder = environment.renderOrder.panel;
-          panel.scale.set(0.02 * width, 0.02 * height, 1);
-          panel.position.set(position.x, position.y, position.z);
-          panel.on('down', function (event) {
-            var xy = {
-              x: parseInt(event.intersection.uv.x * node.offsetWidth),
-              y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
-            }; // console.log('ModelPanelComponent.down.xy', xy);
+          }); // console.log('ModelPanelComponent.down.link', link);
 
-            var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
-              return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-            }); // console.log('ModelPanelComponent.down.link', link);
+          if (link) {
+            _this.down.next(link);
 
-            if (link) {
-              _this.down.next(link);
+            var rect = node.getBoundingClientRect();
 
-              var rect = node.getBoundingClientRect();
-
-              var _event = new MouseEvent('mouseup', {
-                button: 0,
-                buttons: 0,
-                clientX: xy.x + rect.left,
-                clientY: xy.y + rect.top,
-                movementX: 0,
-                movementY: 0,
-                relatedTarget: link,
-                screenX: xy.x,
-                screenY: xy.y
-              }); // console.log('ModelPanelComponent.dispatchEvent', event);
+            var _event = new MouseEvent('mouseup', {
+              button: 0,
+              buttons: 0,
+              clientX: xy.x + rect.left,
+              clientY: xy.y + rect.top,
+              movementX: 0,
+              movementY: 0,
+              relatedTarget: link,
+              screenX: xy.x,
+              screenY: xy.y
+            }); // console.log('ModelPanelComponent.dispatchEvent', event);
 
 
-              link.dispatchEvent(_event);
-              setTimeout(function () {
-                DragService.dismissEvent(_event, DragService.events$, DragService.dismiss$, DragService.downEvent);
-              }, 1);
-            }
-          });
+            link.dispatchEvent(_event);
+            setTimeout(function () {
+              DragService.dismissEvent(_event, DragService.events$, DragService.dismiss$, DragService.downEvent);
+            }, 1);
+          }
+        });
 
-          _this.mesh.add(panel);
+        _this.mesh.add(panel);
 
-          var from = {
-            value: 0
-          };
-          gsap.to(from, 0.5, {
-            value: 1,
-            delay: 0.0,
-            ease: Power2.easeInOut,
-            onUpdate: function onUpdate() {
-              panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
-              panel.lookAt(ModelPanelComponent.ORIGIN);
-              panel.material.opacity = from.value;
-              panel.material.needsUpdate = true;
-            }
-          });
+        var from = {
+          value: 0
+        };
+        gsap.to(from, 0.5, {
+          value: 1,
+          delay: 0.0,
+          ease: Power2.easeInOut,
+          onUpdate: function onUpdate() {
+            panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
+            panel.lookAt(ModelPanelComponent.ORIGIN);
+            panel.material.opacity = from.value;
+            panel.material.needsUpdate = true;
+          }
         });
       }
     });
