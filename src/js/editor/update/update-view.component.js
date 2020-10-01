@@ -1,9 +1,11 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
-import { takeUntil } from 'rxjs/operators';
+import { auditTime, takeUntil } from 'rxjs/operators';
+import { MessageType } from '../../agora/agora.types';
+import MessageService from '../../message/message.service';
 import ModalSrcService from '../../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
-import { View } from '../../view/view';
+import { View, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
 
 export default class UpdateViewComponent extends Component {
@@ -17,6 +19,24 @@ export default class UpdateViewComponent extends Component {
 			this.pushChanges();
 		});
 		this.onUpdate();
+		MessageService.in$.pipe(
+			auditTime(500),
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			switch (message.type) {
+				case MessageType.CameraOrientation:
+					switch (this.view.type.name) {
+						case ViewType.Panorama.name:
+							this.form.patch({
+								latitude: message.orientation.latitude,
+								longitude: message.orientation.longitude,
+								zoom: message.zoom,
+							})
+							break;
+					}
+					break;
+			}
+		});
 	}
 
 	onUpdate() {
@@ -29,11 +49,22 @@ export default class UpdateViewComponent extends Component {
 			});
 			let keys;
 			switch (view.type.name) {
+				case ViewType.Panorama.name:
+					keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom'];
+					break;
 				default:
 					keys = ['id', 'type', 'name'];
 			}
 			keys.forEach(key => {
-				form.add(new FormControl(view[key], RequiredValidator()), key);
+				switch (key) {
+					case 'latitude':
+					case 'longitude':
+						const orientation = view.orientation || { latitude: 0, longitude: 0 };
+						form.add(new FormControl(orientation[key], RequiredValidator()), key);
+						break;
+					default:
+						form.add(new FormControl(view[key], RequiredValidator()), key);
+				}
 			});
 			this.controls = form.controls;
 		}
@@ -45,7 +76,16 @@ export default class UpdateViewComponent extends Component {
 
 	onSubmit() {
 		if (this.form.valid) {
-			this.update.next({ view: new View(this.form.value) });
+			const payload = Object.assign({}, this.view, this.form.value);
+			if (payload.latitude !== undefined) {
+				payload.orientation = {
+					latitude: payload.latitude,
+					longitude: payload.longitude,
+				};
+				delete payload.latitude;
+				delete payload.longitude;
+			}
+			this.update.next({ view: new View(payload) });
 		} else {
 			this.form.touched = true;
 		}
@@ -92,10 +132,11 @@ UpdateViewComponent.meta = {
 				<div control-text [control]="controls.name" label="Name"></div>
 			</fieldset>
 			<fieldset *if="view.type.name == 'waiting-room'">
-				<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 			</fieldset>
 			<fieldset *if="view.type.name == 'panorama'">
-				<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
+				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
+				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
+				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
 			</fieldset>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">

@@ -68,7 +68,6 @@ export default class UpdateViewItemComponent extends Component {
 					case 'addAsset':
 					case 'addLink':
 						const addKey = key.substring(3, key.length).toLowerCase();
-						console.log(addKey);
 						const check = item[addKey] != null;
 						form.add(new FormControl(check), key);
 						break;
@@ -79,7 +78,6 @@ export default class UpdateViewItemComponent extends Component {
 				}
 			});
 			this.controls = form.controls;
-			// console.log(form.controls);
 			if (keys.indexOf('viewId') !== -1) {
 				EditorService.data$().pipe(
 					first(),

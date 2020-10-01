@@ -246,8 +246,8 @@ export default class EditorComponent extends Component {
 	}
 
 	onWorldSelect(event) {
-		this.view.selected = false;
 		this.view.items.forEach(item => item.selected = item === event.item);
+		this.view.selected = this.view.items.find(item => item.selected) === undefined;
 		this.pushChanges();
 	}
 

@@ -34,8 +34,7 @@ export function isAssetType(path, type) {
 	const assetType = assetTypeFromPath(path);
 	return assetType === type;
 }
-id: 1
-name: "waiting-room"
+
 export const ViewType = {
 	WaitingRoom: { id: 1, name: 'waiting-room' },
 	Panorama: { id: 2, name: 'panorama' },
@@ -68,13 +67,25 @@ export class View {
 			}
 		}
 		this.items = (this.items || []).map(item => mapViewItem(item));
+		if (this.tiles) {
+			this.tiles = this.tiles.map(tile => mapViewTile(tile));
+		}
 		this.originalItems = this.items.slice();
 	}
 	get payload() {
 		const payload = {};
 		Object.keys(this).forEach(key => {
-			if (ViewItem.allowedProps.indexOf(key) !== -1) {
-				payload[key] = this[key];
+			if (View.allowedProps.indexOf(key) !== -1) {
+				switch (key) {
+					case 'items':
+						payload[key] = this[key].map(item => mapViewItem(item).payload);
+						break;
+					case 'tiles':
+						payload[key] = this[key].map(tile => mapViewTile(tile).payload);
+						break;
+					default:
+						payload[key] = this[key];
+				}
 			}
 		});
 		return payload;
@@ -189,6 +200,32 @@ export class NavViewItem extends ViewItem {
 
 }
 
+export class ViewTile {
+	static allowedProps = ['id', 'asset', 'navs'];
+	constructor(options) {
+		if (options) {
+			Object.assign(this, options);
+		}
+		this.navs = (this.navs || []).map(nav => mapViewItem(nav));
+		this.originalItems = this.navs.slice();
+	}
+	get payload() {
+		const payload = {};
+		Object.keys(this).forEach(key => {
+			if (ViewTile.allowedProps.indexOf(key) !== -1) {
+				switch (key) {
+					case 'navs':
+						payload[key] = this[key].map(nav => mapViewItem(nav).payload);
+						break;
+					default:
+						payload[key] = this[key];
+				}
+			}
+		});
+		return payload;
+	}
+}
+
 export class Asset {
 	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor'];
 	constructor(options) {
@@ -247,6 +284,10 @@ export function mapViewItem(item) {
 			item = new ViewItem(item);
 	}
 	return item;
+}
+
+export function mapViewTile(tile) {
+	return new ViewTile(tile);
 }
 
 export function mapAsset(asset) {

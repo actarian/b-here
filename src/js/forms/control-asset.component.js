@@ -73,7 +73,6 @@ export default class ControlAssetComponent extends ControlComponent {
 				const blob = event.target.result;
 				this.resize_(blob, (resized) => {
 					this.previews[i] = resized;
-					console.log('resized', resized);
 					this.pushChanges();
 				});
 			}),

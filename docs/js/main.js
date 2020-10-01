@@ -2994,7 +2994,6 @@ function assetTypeFromPath(path) {
     return AssetType.Model;
   }
 }
-
 var ViewType = {
   WaitingRoom: {
     id: 1,
@@ -3059,6 +3058,13 @@ var View = /*#__PURE__*/function () {
     this.items = (this.items || []).map(function (item) {
       return mapViewItem(item);
     });
+
+    if (this.tiles) {
+      this.tiles = this.tiles.map(function (tile) {
+        return mapViewTile(tile);
+      });
+    }
+
     this.originalItems = this.items.slice();
   }
 
@@ -3069,8 +3075,23 @@ var View = /*#__PURE__*/function () {
 
       var payload = {};
       Object.keys(this).forEach(function (key) {
-        if (ViewItem.allowedProps.indexOf(key) !== -1) {
-          payload[key] = _this[key];
+        if (View.allowedProps.indexOf(key) !== -1) {
+          switch (key) {
+            case 'items':
+              payload[key] = _this[key].map(function (item) {
+                return mapViewItem(item).payload;
+              });
+              break;
+
+            case 'tiles':
+              payload[key] = _this[key].map(function (tile) {
+                return mapViewTile(tile).payload;
+              });
+              break;
+
+            default:
+              payload[key] = _this[key];
+          }
         }
       });
       return payload;
@@ -3239,6 +3260,47 @@ var NavViewItem = /*#__PURE__*/function (_ViewItem) {
 
   return NavViewItem;
 }(ViewItem);
+var ViewTile = /*#__PURE__*/function () {
+  function ViewTile(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+
+    this.navs = (this.navs || []).map(function (nav) {
+      return mapViewItem(nav);
+    });
+    this.originalItems = this.navs.slice();
+  }
+
+  _createClass(ViewTile, [{
+    key: "payload",
+    get: function get() {
+      var _this4 = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (ViewTile.allowedProps.indexOf(key) !== -1) {
+          switch (key) {
+            case 'navs':
+              payload[key] = _this4[key].map(function (nav) {
+                return mapViewItem(nav).payload;
+              });
+              break;
+
+            default:
+              payload[key] = _this4[key];
+          }
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return ViewTile;
+}();
+
+_defineProperty(ViewTile, "allowedProps", ['id', 'asset', 'navs']);
+
 var Asset = /*#__PURE__*/function () {
   function Asset(options) {
     if (options) {
@@ -3265,12 +3327,12 @@ var Asset = /*#__PURE__*/function () {
   _createClass(Asset, [{
     key: "payload",
     get: function get() {
-      var _this4 = this;
+      var _this5 = this;
 
       var payload = {};
       Object.keys(this).forEach(function (key) {
         if (Asset.allowedProps.indexOf(key) !== -1) {
-          payload[key] = _this4[key];
+          payload[key] = _this5[key];
         }
       });
       return payload;
@@ -3313,6 +3375,9 @@ function mapViewItem(item) {
   }
 
   return item;
+}
+function mapViewTile(tile) {
+  return new ViewTile(tile);
 }
 function mapAsset(asset) {
   switch (asset.type) {
@@ -3972,8 +4037,7 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
     }
 
     if (asset) {
-      console.log(asset.type.name, AssetType.Image.name);
-
+      // console.log(asset.type.name, AssetType.Image.name);
       switch (asset.type.name) {
         case AssetType.Image.name:
         case AssetType.Video.name:
@@ -5136,10 +5200,12 @@ AsideComponent.meta = {
   };
 
   _proto.onWorldSelect = function onWorldSelect(event) {
-    this.view.selected = false;
     this.view.items.forEach(function (item) {
       return item.selected = item === event.item;
     });
+    this.view.selected = this.view.items.find(function (item) {
+      return item.selected;
+    }) === undefined;
     this.pushChanges();
   };
 
@@ -5659,7 +5725,8 @@ PanoramaGridModalComponent.meta = {
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewType.Panorama,
       name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      upload: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // items: new FormArray([null, null, null], RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // upload: new FormControl(null, RequiredValidator()),
+      // items: new FormArray([null, null, null], RequiredValidator()),
 
     });
     this.controls = form.controls;
@@ -5674,22 +5741,19 @@ PanoramaGridModalComponent.meta = {
 
     if (this.form.valid) {
       this.form.submitted = true;
-      var asset = Asset.fromUrl(this.form.value.upload);
-      console.log('PanoramaModalComponent.onSubmit.asset', asset);
-      EditorService.assetCreate$(asset).pipe(operators.first(), operators.switchMap(function (response) {
-        var view = {
-          type: _this2.form.value.type,
-          name: _this2.form.value.name,
-          asset: response,
-          orientation: {
-            latitude: 0,
-            longitude: 0
-          },
-          zoom: 75
-        };
-        console.log('PanoramaModalComponent.onSubmit.view', view);
-        return EditorService.viewCreate$(view).pipe(operators.first());
-      })).subscribe(function (response) {
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      };
+      console.log('PanoramaModalComponent.onSubmit.view', view);
+      return EditorService.viewCreate$(view).pipe(operators.first()).subscribe(function (response) {
         console.log('PanoramaModalComponent.onSubmit.success', response);
         ModalService.resolve(response);
       }, function (error) {
@@ -5698,6 +5762,36 @@ PanoramaGridModalComponent.meta = {
 
         _this2.form.reset();
       });
+      /*
+      const asset = Asset.fromUrl(this.form.value.upload);
+      console.log('PanoramaModalComponent.onSubmit.asset', asset);
+      EditorService.assetCreate$(asset).pipe(
+      	first(),
+      	switchMap(response => {
+      		const view = {
+      			type: this.form.value.type,
+      			name: this.form.value.name,
+      			asset: response,
+      			orientation: {
+      				latitude: 0,
+      				longitude: 0
+      			},
+      			zoom: 75
+      		};
+      		console.log('PanoramaModalComponent.onSubmit.view', view);
+      		return EditorService.viewCreate$(view).pipe(
+      			first(),
+      		);
+      	})
+      ).subscribe(response => {
+      	console.log('PanoramaModalComponent.onSubmit.success', response);
+      	ModalService.resolve(response);
+      }, error => {
+      	console.log('PanoramaModalComponent.onSubmit.error', error);
+      	this.error = error;
+      	this.form.reset();
+      });
+      */
     } else {
       this.form.touched = true;
     }
@@ -6030,7 +6124,6 @@ RemoveModalComponent.meta = {
           case 'addAsset':
           case 'addLink':
             var addKey = key.substring(3, key.length).toLowerCase();
-            console.log(addKey);
             var check = item[addKey] != null;
             form.add(new rxcompForm.FormControl(check), key);
             break;
@@ -6041,7 +6134,7 @@ RemoveModalComponent.meta = {
             form.add(new rxcompForm.FormControl(item[key], optional ? undefined : rxcompForm.RequiredValidator()), key);
         }
       });
-      this.controls = form.controls; // console.log(form.controls);
+      this.controls = form.controls;
 
       if (keys.indexOf('viewId') !== -1) {
         EditorService.data$().pipe(operators.first()).subscribe(function (data) {
@@ -6241,6 +6334,23 @@ UpdateViewTileComponent.meta = {
       _this.pushChanges();
     });
     this.onUpdate();
+    MessageService.in$.pipe(operators.auditTime(500), operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      switch (message.type) {
+        case MessageType.CameraOrientation:
+          switch (_this.view.type.name) {
+            case ViewType.Panorama.name:
+              _this.form.patch({
+                latitude: message.orientation.latitude,
+                longitude: message.orientation.longitude,
+                zoom: message.zoom
+              });
+
+              break;
+          }
+
+          break;
+      }
+    });
   };
 
   _proto.onUpdate = function onUpdate() {
@@ -6255,12 +6365,28 @@ UpdateViewTileComponent.meta = {
       var keys;
 
       switch (view.type.name) {
+        case ViewType.Panorama.name:
+          keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom'];
+          break;
+
         default:
           keys = ['id', 'type', 'name'];
       }
 
       keys.forEach(function (key) {
-        form.add(new rxcompForm.FormControl(view[key], rxcompForm.RequiredValidator()), key);
+        switch (key) {
+          case 'latitude':
+          case 'longitude':
+            var orientation = view.orientation || {
+              latitude: 0,
+              longitude: 0
+            };
+            form.add(new rxcompForm.FormControl(orientation[key], rxcompForm.RequiredValidator()), key);
+            break;
+
+          default:
+            form.add(new rxcompForm.FormControl(view[key], rxcompForm.RequiredValidator()), key);
+        }
       });
       this.controls = form.controls;
     }
@@ -6272,8 +6398,19 @@ UpdateViewTileComponent.meta = {
 
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
+      var payload = Object.assign({}, this.view, this.form.value);
+
+      if (payload.latitude !== undefined) {
+        payload.orientation = {
+          latitude: payload.latitude,
+          longitude: payload.longitude
+        };
+        delete payload.latitude;
+        delete payload.longitude;
+      }
+
       this.update.next({
-        view: new View(this.form.value)
+        view: new View(payload)
       });
     } else {
       this.form.touched = true;
@@ -6316,7 +6453,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -6533,7 +6670,6 @@ ControlComponent.meta = {
 
       _this3.resize_(blob, function (resized) {
         _this3.previews[i] = resized;
-        console.log('resized', resized);
 
         _this3.pushChanges();
       });
@@ -68138,77 +68274,75 @@ ModelNavComponent.meta = {
         node = _getContext.node;
 
     this.getCanvasTexture(node).then(function (texture) {
-      if (_this.mesh) {
-        var scale = 0.2;
-        var aspect = texture.width / texture.height;
-        var width = ModelPanelComponent.PANEL_RADIUS * scale;
-        var height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
-        var dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
+      var scale = 0.2;
+      var aspect = texture.width / texture.height;
+      var width = ModelPanelComponent.PANEL_RADIUS * scale;
+      var height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
+      var dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
 
-        var position = _this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+      var position = _this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 
-        var material = new THREE$1.SpriteMaterial({
-          depthTest: false,
-          transparent: true,
-          map: texture.map,
-          sizeAttenuation: false
-        });
-        var panel = _this.panel = new InteractiveSprite(material);
-        panel.renderOrder = environment.renderOrder.panel;
-        panel.scale.set(0.02 * width, 0.02 * height, 1);
-        panel.position.set(position.x, position.y, position.z);
-        panel.on('down', function (event) {
-          var xy = {
-            x: parseInt(event.intersection.uv.x * node.offsetWidth),
-            y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
-          }; // console.log('ModelPanelComponent.down.xy', xy);
+      var material = new THREE$1.SpriteMaterial({
+        depthTest: false,
+        transparent: true,
+        map: texture.map,
+        sizeAttenuation: false
+      });
+      var panel = _this.panel = new InteractiveSprite(material);
+      panel.renderOrder = environment.renderOrder.panel;
+      panel.scale.set(0.02 * width, 0.02 * height, 1);
+      panel.position.set(position.x, position.y, position.z);
+      panel.on('down', function (event) {
+        var xy = {
+          x: parseInt(event.intersection.uv.x * node.offsetWidth),
+          y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
+        }; // console.log('ModelPanelComponent.down.xy', xy);
 
-          var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
-            return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-          }); // console.log('ModelPanelComponent.down.link', link);
+        var link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(function (link) {
+          return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
+        }); // console.log('ModelPanelComponent.down.link', link);
 
-          if (link) {
-            _this.down.next(link);
+        if (link) {
+          _this.down.next(link);
 
-            var rect = node.getBoundingClientRect();
+          var rect = node.getBoundingClientRect();
 
-            var _event = new MouseEvent('mouseup', {
-              button: 0,
-              buttons: 0,
-              clientX: xy.x + rect.left,
-              clientY: xy.y + rect.top,
-              movementX: 0,
-              movementY: 0,
-              relatedTarget: link,
-              screenX: xy.x,
-              screenY: xy.y
-            }); // console.log('ModelPanelComponent.dispatchEvent', event);
+          var _event = new MouseEvent('mouseup', {
+            button: 0,
+            buttons: 0,
+            clientX: xy.x + rect.left,
+            clientY: xy.y + rect.top,
+            movementX: 0,
+            movementY: 0,
+            relatedTarget: link,
+            screenX: xy.x,
+            screenY: xy.y
+          }); // console.log('ModelPanelComponent.dispatchEvent', event);
 
 
-            link.dispatchEvent(_event);
-            setTimeout(function () {
-              DragService.dismissEvent(_event, DragService.events$, DragService.dismiss$, DragService.downEvent);
-            }, 1);
-          }
-        });
+          link.dispatchEvent(_event);
+          setTimeout(function () {
+            DragService.dismissEvent(_event, DragService.events$, DragService.dismiss$, DragService.downEvent);
+          }, 1);
+        }
+      });
 
-        _this.mesh.add(panel);
+      _this.mesh.add(panel);
 
-        var from = {
-          value: 0
-        };
-        gsap.to(from, 0.5, {
-          value: 1,
-          delay: 0.0,
-          ease: Power2.easeInOut,
-          onUpdate: function onUpdate() {
-            panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
-            panel.lookAt(ModelPanelComponent.ORIGIN);
-            panel.material.opacity = from.value;
-            panel.material.needsUpdate = true;
-          }
-        });
-      }
+      var from = {
+        value: 0
+      };
+      gsap.to(from, 0.5, {
+        value: 1,
+        delay: 0.0,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
+          panel.lookAt(ModelPanelComponent.ORIGIN);
+          panel.material.opacity = from.value;
+          panel.material.needsUpdate = true;
+        }
+      });
     });
   };
 
