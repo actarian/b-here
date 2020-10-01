@@ -117,7 +117,7 @@ function staticMiddleware(vars) {
 		throw new Error('missing Vars.baseHref!');
 	}
 	return (request, response, next) => {
-		const url = request.baseUrl.replace(/\\/g, '/');
+		const url = unescape(request.baseUrl.replace(/\\/g, '/'));
 		const baseHref = vars.baseHref.substr(0, vars.baseHref.length - 1).replace(/\\/g, '/');
 		const regExpText = `^(${baseHref})?(\\/[^\\?\\#]+)(\\.(${MIME_TYPES.join('|')}))(\\?.+)?(\\#.+)?$`;
 		// console.log('regExpText', url, regExpText);

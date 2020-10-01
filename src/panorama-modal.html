@@ -9,16 +9,9 @@
 			<div class="title">Create Panorama.</div>
 			<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 				<fieldset>
-					<!--
-					<div class="group--form">
-						<i class="icon--remove" [class]="{ active: form.get('name').dirty }" (click)="form.get('name').reset()"></i>
-						<input type="text" class="control--text" formControlName="name" placeholder="name" required />
-						<i class="icon--check"></i>
-					</div>
-					<errors-component [control]="form.get('name')"></errors-component>
-					-->
 					<div control-text [control]="controls.name" label="Name"></div>
-					<div control-upload [control]="controls.upload" label="Upload"></div>
+					<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg"></div>
+					<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 				</fieldset>
 				<div class="group--cta">
 					<button type="submit" class="btn--accept">

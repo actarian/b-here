@@ -403,7 +403,7 @@ function staticMiddleware(vars) {
   }
 
   return function (request, response, next) {
-    var url = request.baseUrl.replace(/\\/g, '/');
+    var url = unescape(request.baseUrl.replace(/\\/g, '/'));
     var baseHref = vars.baseHref.substr(0, vars.baseHref.length - 1).replace(/\\/g, '/');
     var regExpText = "^(" + baseHref + ")?(\\/[^\\?\\#]+)(\\.(" + MIME_TYPES.join('|') + "))(\\?.+)?(\\#.+)?$"; // console.log('regExpText', url, regExpText);
 

@@ -35,7 +35,7 @@ export default class AssetPipe extends Pipe {
 			asset = asset.type.name === type ? asset : null;
 		}
 		if (asset) {
-			console.log(asset.type.name, AssetType.Image.name);
+			// console.log(asset.type.name, AssetType.Image.name);
 			switch (asset.type.name) {
 				case AssetType.Image.name:
 				case AssetType.Video.name:
