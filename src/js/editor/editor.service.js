@@ -1,7 +1,7 @@
 import { fromEvent, merge } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import HttpService from "../http/http.service";
-import { mapAsset, mapView, mapViewItem } from '../view/view';
+import { mapAsset, mapView, mapViewItem, ViewType } from '../view/view';
 
 export default class EditorService {
 	static data$() {
@@ -14,7 +14,16 @@ export default class EditorService {
 	}
 
 	static viewCreate$(view) {
-		return HttpService.post$(`/api/view`, view).pipe(
+		let create = '';
+		switch (view.type.name) {
+			case ViewType.Panorama.name:
+				create = '/panorama';
+				break;
+			case ViewType.PanoramaGrid.name:
+				create = '/panorama-grid';
+				break;
+		}
+		return HttpService.post$(`/api/view${create}`, view).pipe(
 			map(view => mapView(view)),
 		);
 	}

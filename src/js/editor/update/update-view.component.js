@@ -21,14 +21,14 @@ export default class UpdateViewComponent extends Component {
 
 	onUpdate() {
 		const view = this.view;
-		if (this.type !== view.type) {
+		if (!this.type || this.type.name !== view.type.name) {
 			this.type = view.type;
 			const form = this.form;
 			Object.keys(this.controls).forEach(key => {
 				form.removeKey(key);
 			});
 			let keys;
-			switch (view.type) {
+			switch (view.type.name) {
 				default:
 					keys = ['id', 'type', 'name'];
 			}
@@ -68,7 +68,7 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	getTitle(view) {
-		return EditorLocale[view.type];
+		return EditorLocale[view.type.name];
 	}
 }
 
@@ -80,7 +80,7 @@ UpdateViewComponent.meta = {
 		<div class="group--headline" [class]="{ active: view.selected }" (click)="onSelect($event)">
 			<!-- <div class="id" [innerHTML]="view.id"></div> -->
 			<div class="icon">
-				<svg-icon [name]="view.type"></svg-icon>
+				<svg-icon [name]="view.type.name"></svg-icon>
 			</div>
 			<div class="title" [innerHTML]="getTitle(view)"></div>
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
@@ -88,13 +88,13 @@ UpdateViewComponent.meta = {
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="view.selected">
 			<fieldset>
 				<div control-text [control]="controls.id" label="Id" [disabled]="true"></div>
-				<div control-text [control]="controls.type" label="Type" [disabled]="true"></div>
+				<!-- <div control-text [control]="controls.type" label="Type" [disabled]="true"></div> -->
 				<div control-text [control]="controls.name" label="Name"></div>
 			</fieldset>
-			<fieldset *if="view.type == 'waiting-room'">
+			<fieldset *if="view.type.name == 'waiting-room'">
 				<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 			</fieldset>
-			<fieldset *if="view.type == 'panorama'">
+			<fieldset *if="view.type.name == 'panorama'">
 				<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 			</fieldset>
 			<div class="group--cta">

@@ -228,7 +228,7 @@ export default class WorldComponent extends Component {
 			}
 			this.infoResultMessage = null;
 		}
-		this.banner = (view && view.type === 'waiting-room') ? {
+		this.banner = (view && view.type.name === 'waiting-room') ? {
 			title: 'waiting host'
 		} : null;
 	}

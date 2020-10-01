@@ -163,7 +163,7 @@ export default class AgoraComponent extends Component {
 
 	initForm() {
 		const data = this.data;
-		const views = this.views = data.views.filter(x => x.type !== 'waiting-room');
+		const views = this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
 		const form = this.form = new FormGroup({
 			view: new FormControl(initialViewId, Validators.RequiredValidator()),
@@ -196,13 +196,14 @@ export default class AgoraComponent extends Component {
 	}
 
 	getWaitingRoom() {
-		return this.data && this.data.views.find(x => x.type === 'waiting-room') || {
+		return this.data && this.data.views.find(x => x.type.name === 'waiting-room') || {
 			id: 'waiting-room',
-			type: 'waiting-room',
+			type: { id: 1, name: 'waiting-room' },
 			name: 'Waiting Room',
 			likes: 40,
 			liked: false,
 			asset: {
+				type: { id: 1, name: 'image' },
 				folder: 'waiting-room/',
 				file: 'waiting-room-02.jpg',
 			},

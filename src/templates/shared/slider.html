@@ -1,13 +1,13 @@
 <div class="slider-container" slider [items]="view.items" (tween)="onTween($event)" (change)="onChange($event)" *if="view.items.length">
 	<div class="slider-inner">
 		<div class="slider-slide" *for="let item of items; let index = index;">
-			<div class="world__item" model-gltf [item]="item" *if="item.type == 'gltf'">
+			<div class="world__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
 				<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 			</div>
-			<div class="world__item" model-picture [item]="item" *if="item.type == 'picture'">
+			<div class="world__item" model-picture [item]="item" *if="item.type.name == 'picture'">
 				<img [src]="item.image" />
 			</div>
-			<div class="world__item" model-text [item]="item" *if="item.type == 'text'">
+			<div class="world__item" model-text [item]="item" *if="item.type.name == 'text'">
 				<div class="title" [innerHTML]="item.title" *if="item.title"></div>
 				<div class="abstract" [innerHTML]="item.abstract" *if="item.abstract"></div>
 				<div class="description" [innerHTML]="item.description" *if="item.description"></div>

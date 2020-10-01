@@ -23,6 +23,25 @@ const SERVER_MODALS = {
 	controlRequest: environment.views.controlRequestModal,
 	tryInAr: environment.views.tryInArModal,
 	view: {
+		'panorama': 'panorama-modal.cshtml',
+		'panorama-grid': 'panorama-grid-modal.cshtml',
+		'room-3d': 'room-3d-modal.cshtml',
+		'model': 'model-modal.cshtml',
+	},
+	viewItem: {
+		'nav': 'nav-modal.cshtml',
+		'plane': 'plane-modal.cshtml',
+		'curved-plane': 'curved-plane-modal.cshtml',
+		'texture': 'texture-modal.cshtml',
+		'gltf': 'gltf-modal.cshtml',
+	},
+};
+
+/*
+const SERVER_MODALS = {
+	controlRequest: environment.views.controlRequestModal,
+	tryInAr: environment.views.tryInArModal,
+	view: {
 		'panorama': 2000,
 		'panorama-grid': 2001,
 		'room-3d': 2002,
@@ -36,13 +55,15 @@ const SERVER_MODALS = {
 		'gltf': 2008,
 	}
 };
+*/
 
 export default class ModalSrcService {
 
 	static get(...keys) {
-		let src = STATIC_MODALS;
+		let src = STATIC ? STATIC_MODALS : SERVER_MODALS;
 		keys.forEach(key => src = typeof src === 'object' ? src[key] : null);
-		return STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
+		return STATIC ? BASE_HREF + src : `/template/modules/b-here/${src}`;
+		// return STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
 	}
 
 }

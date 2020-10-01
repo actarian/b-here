@@ -22,7 +22,7 @@ export default class AssetItemComponent extends Component {
 		const reader$ = fromEvent(reader, 'load').pipe(
 			switchMap(event => {
 				const blob = event.target.result;
-				if (this.item.type === AssetType.Image) {
+				if (this.item.type.name === AssetType.Image) {
 					return this.resize$(blob);
 				} else {
 					return of(blob);
@@ -91,8 +91,8 @@ AssetItemComponent.meta = {
 	template: /* html */`
 	<div class="upload-item" [class]="{ 'error': item.error, 'success': item.success }">
 		<div class="picture">
-			<img [src]="item.preview" *if="item.preview && item.type === 'image'" />
-			<video [src]="item.preview" *if="item.preview && item.type === 'video'"></video>
+			<img [src]="item.preview" *if="item.preview && item.type.name === 'image'" />
+			<video [src]="item.preview" *if="item.preview && item.type.name === 'video'"></video>
 			<svg class="spinner" width="24" height="24" viewBox="0 0 24 24" [class]="{ uploading: item.uploading }" *if="item.uploading"><use xlink:href="#spinner"></use></svg>
 		</div>
 		<div class="name">{{item.name}}</div>

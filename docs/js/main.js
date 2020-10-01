@@ -2834,25 +2834,44 @@ var SERVER_MODALS = {
   controlRequest: environment.views.controlRequestModal,
   tryInAr: environment.views.tryInArModal,
   view: {
-    'panorama': 2000,
-    'panorama-grid': 2001,
-    'room-3d': 2002,
-    'model': 2003
+    'panorama': 'panorama-modal.cshtml',
+    'panorama-grid': 'panorama-grid-modal.cshtml',
+    'room-3d': 'room-3d-modal.cshtml',
+    'model': 'model-modal.cshtml'
   },
   viewItem: {
-    'nav': 2004,
-    'plane': 2005,
-    'curved-plane': 2006,
-    'texture': 2007,
-    'gltf': 2008
+    'nav': 'nav-modal.cshtml',
+    'plane': 'plane-modal.cshtml',
+    'curved-plane': 'curved-plane-modal.cshtml',
+    'texture': 'texture-modal.cshtml',
+    'gltf': 'gltf-modal.cshtml'
   }
 };
+/*
+const SERVER_MODALS = {
+	controlRequest: environment.views.controlRequestModal,
+	tryInAr: environment.views.tryInArModal,
+	view: {
+		'panorama': 2000,
+		'panorama-grid': 2001,
+		'room-3d': 2002,
+		'model': 2003,
+	},
+	viewItem: {
+		'nav': 2004,
+		'plane': 2005,
+		'curved-plane': 2006,
+		'texture': 2007,
+		'gltf': 2008,
+	}
+};
+*/
 
 var ModalSrcService = /*#__PURE__*/function () {
   function ModalSrcService() {}
 
   ModalSrcService.get = function get() {
-    var src = STATIC_MODALS;
+    var src = STATIC ? STATIC_MODALS : SERVER_MODALS;
 
     for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
       keys[_key] = arguments[_key];
@@ -2861,7 +2880,7 @@ var ModalSrcService = /*#__PURE__*/function () {
     keys.forEach(function (key) {
       return src = typeof src === 'object' ? src[key] : null;
     });
-    return STATIC ? BASE_HREF + src : "/viewdoc.cshtml?co_id=" + src;
+    return STATIC ? BASE_HREF + src : "/template/modules/b-here/" + src; // return STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
   };
 
   return ModalSrcService;
@@ -2938,15 +2957,30 @@ ModalService.events$ = new rxjs.Subject();var EXT_IMAGE = ['jpeg', 'jpg', 'png']
 var EXT_VIDEO = ['mp4', 'webm'];
 var EXT_MODEL = ['gltf', 'glb'];
 var AssetType = {
-  Image: 'image',
+  Image: {
+    id: 1,
+    name: 'image'
+  },
   // jpg, png, ...
-  Video: 'video',
+  Video: {
+    id: 2,
+    name: 'video'
+  },
   // mp4, webm, ...
-  Model: 'model',
+  Model: {
+    id: 3,
+    name: 'model'
+  },
   // gltf, glb, …
-  PublisherStream: 'publisher-stream',
+  PublisherStream: {
+    id: 4,
+    name: 'publisher-stream'
+  },
   // valore fisso di file a ‘publisherStream’ e folder string.empty
-  NextAttendeeStream: 'next-attendee-stream' // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+  NextAttendeeStream: {
+    id: 5,
+    name: 'next-attendee-stream'
+  } // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
 
 };
 function assetTypeFromPath(path) {
@@ -2960,19 +2994,50 @@ function assetTypeFromPath(path) {
     return AssetType.Model;
   }
 }
+
 var ViewType = {
-  WaitingRoom: 'waiting-room',
-  Panorama: 'panorama',
-  PanoramaGrid: 'panorama-grid',
-  Room3d: 'room-3d',
-  Model: 'model'
+  WaitingRoom: {
+    id: 1,
+    name: 'waiting-room'
+  },
+  Panorama: {
+    id: 2,
+    name: 'panorama'
+  },
+  PanoramaGrid: {
+    id: 3,
+    name: 'panorama-grid'
+  },
+  Room3d: {
+    id: 4,
+    name: 'room-3d'
+  },
+  Model: {
+    id: 5,
+    name: 'model'
+  }
 };
 var ViewItemType = {
-  Nav: 'nav',
-  Plane: 'plane',
-  CurvedPlane: 'curved-plane',
-  Gltf: 'gltf',
-  Texture: 'texture'
+  Nav: {
+    id: 1,
+    name: 'nav'
+  },
+  Plane: {
+    id: 2,
+    name: 'plane'
+  },
+  CurvedPlane: {
+    id: 3,
+    name: 'curved-plane'
+  },
+  Gltf: {
+    id: 4,
+    name: 'gltf'
+  },
+  Texture: {
+    id: 5,
+    name: 'texture'
+  }
 };
 var View = /*#__PURE__*/function () {
   function View(options) {
@@ -3218,16 +3283,16 @@ var Asset = /*#__PURE__*/function () {
 _defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor']);
 
 function mapView(view) {
-  switch (view.type) {
-    case ViewType.Panorama:
+  switch (view.type.name) {
+    case ViewType.Panorama.name:
       view = new PanoramaView(view);
       break;
 
-    case ViewType.PanoramaGrid:
+    case ViewType.PanoramaGrid.name:
       view = new PanoramaGridView(view);
       break;
 
-    case ViewType.Model:
+    case ViewType.Model.name:
       view = new ModelView(view);
       break;
 
@@ -3238,8 +3303,8 @@ function mapView(view) {
   return view;
 }
 function mapViewItem(item) {
-  switch (item.type) {
-    case ViewItemType.Nav:
+  switch (item.type.name) {
+    case ViewItemType.Nav.name:
       item = new NavViewItem(item);
       break;
 
@@ -3599,7 +3664,7 @@ var VRService = /*#__PURE__*/function () {
 
     var data = this.data;
     var views = this.views = data.views.filter(function (x) {
-      return x.type !== 'waiting-room';
+      return x.type.name !== 'waiting-room';
     });
     var initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
     var form = this.form = new rxcompForm.FormGroup({
@@ -3635,14 +3700,21 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.getWaitingRoom = function getWaitingRoom() {
     return this.data && this.data.views.find(function (x) {
-      return x.type === 'waiting-room';
+      return x.type.name === 'waiting-room';
     }) || {
       id: 'waiting-room',
-      type: 'waiting-room',
+      type: {
+        id: 1,
+        name: 'waiting-room'
+      },
       name: 'Waiting Room',
       likes: 40,
       liked: false,
       asset: {
+        type: {
+          id: 1,
+          name: 'image'
+        },
         folder: 'waiting-room/',
         file: 'waiting-room-02.jpg'
       },
@@ -3865,19 +3937,7 @@ AgoraComponent.meta = {
 }(rxcomp.Component);
 AppComponent.meta = {
   selector: '[app-component]'
-};var AssetType$1 = {
-  Image: 'image',
-  // jpg, png, ...
-  Video: 'video',
-  // mp4, webm, ...
-  Model: 'model',
-  // gltf, glb, …
-  PublisherStream: 'publisher-stream',
-  // valore fisso di file a 'publisherStream' e folder string.empty
-  NextAttendeeStream: 'next-attendee-stream' // valore fisso di file a 'nextAttendeeStream' // e folder string.empty
-
-};
-var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
+};var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_MODEL = ['gltf', 'glb', 'obj', 'usdz'];
 var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
@@ -3908,24 +3968,26 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
 
     if (type != null) {
       // keep loose equality
-      asset = asset.type === type ? asset : null;
+      asset = asset.type.name === type ? asset : null;
     }
 
     if (asset) {
-      switch (asset.type) {
-        case AssetType$1.Image:
-        case AssetType$1.Video:
+      console.log(asset.type.name, AssetType.Image.name);
+
+      switch (asset.type.name) {
+        case AssetType.Image.name:
+        case AssetType.Video.name:
           asset = asset.folder + asset.file;
           asset = environment.getTexturePath(asset);
           break;
 
-        case AssetType$1.Model:
+        case AssetType.Model.name:
           asset = asset.folder + asset.file;
           asset = environment.getModelPath(asset);
           break;
 
-        case AssetType$1.PublisherStream:
-        case AssetType$1.NextAttendeeStream:
+        case AssetType.PublisherStream.name:
+        case AssetType.NextAttendeeStream.name:
           asset = environment.getModelPath(asset.file);
           break;
 
@@ -4612,8 +4674,8 @@ var EditorLocale = (_EditorLocale = {
   'panorama': 'Panorama',
   'panorama-grid': 'Panorama Grid',
   'room-3d': 'Room 3D'
-}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);var DISABLED_VIEW_TYPES = [ViewType.WaitingRoom, ViewType.Room3d, ViewType.Model];
-var DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf, ViewItemType.Texture];
+}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav with tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'CurvedPlane', _EditorLocale['texture'] = 'Texture', _EditorLocale);var DISABLED_VIEW_TYPES = [ViewType.WaitingRoom.name, ViewType.Room3d.name, ViewType.Model.name];
+var DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf.name, ViewItemType.Texture.name];
 
 var AsideComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AsideComponent, _Component);
@@ -4627,19 +4689,19 @@ var AsideComponent = /*#__PURE__*/function (_Component) {
   _proto.onInit = function onInit() {
     this.mode = 1;
     this.viewTypes = Object.keys(ViewType).map(function (key) {
-      var value = ViewType[key];
+      var type = ViewType[key];
       return {
-        type: value,
-        name: EditorLocale[value],
-        disabled: DISABLED_VIEW_TYPES.indexOf(value) !== -1
+        type: type,
+        name: EditorLocale[type.name],
+        disabled: DISABLED_VIEW_TYPES.indexOf(type.name) !== -1
       };
     });
     this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
-      var value = ViewItemType[key];
+      var type = ViewItemType[key];
       return {
-        type: value,
-        name: EditorLocale[value],
-        disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(value) !== -1
+        type: type,
+        name: EditorLocale[type.name],
+        disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(type.name) !== -1
       };
     });
     this.setSupportedViewTypes();
@@ -4655,7 +4717,7 @@ var AsideComponent = /*#__PURE__*/function (_Component) {
     var _this = this;
 
     this.supportedViewTypes = this.viewTypes.filter(function (x) {
-      return _this.supportedViewType(x.type);
+      return _this.supportedViewType(x.type.name);
     });
   };
 
@@ -4664,7 +4726,7 @@ var AsideComponent = /*#__PURE__*/function (_Component) {
 
     if (this.view) {
       this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
-        return _this2.supportedViewItemType(_this2.view.type, x.type);
+        return _this2.supportedViewItemType(_this2.view.type.name, x.type.name);
       });
     } else {
       this.supportedViewItemTypes = [];
@@ -4678,37 +4740,37 @@ var AsideComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
-  _proto.supportedViewType = function supportedViewType(viewType) {
-    var supported = [ViewType.Panorama, ViewType.PanoramaGrid, ViewType.Room3d, ViewType.Model].indexOf(viewType) !== -1; // ViewType.WaitingRoom,
+  _proto.supportedViewType = function supportedViewType(viewTypeName) {
+    var supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
     // console.log('supportedViewType', viewType, supported);
 
     return supported;
   };
 
-  _proto.supportedViewItemType = function supportedViewItemType(viewType, viewItemType) {
+  _proto.supportedViewItemType = function supportedViewItemType(viewTypeName, viewItemTypeName) {
     var supported;
 
-    switch (viewType) {
-      case ViewType.WaitingRoom:
+    switch (viewTypeName) {
+      case ViewType.WaitingRoom.name:
         supported = false;
         break;
 
-      case ViewType.Panorama:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+      case ViewType.Panorama.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
         break;
 
-      case ViewType.PanoramaGrid:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+      case ViewType.PanoramaGrid.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
         break;
 
-      case ViewType.Room3d:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+      case ViewType.Room3d.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
         break;
 
-      case ViewType.Model:
-        supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+      case ViewType.Model.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
         break;
-    } // console.log('supportedViewItemType', viewType, viewItemType, supported);
+    } // console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
 
 
     return supported;
@@ -4745,7 +4807,19 @@ AsideComponent.meta = {
   };
 
   EditorService.viewCreate$ = function viewCreate$(view) {
-    return HttpService.post$("/api/view", view).pipe(operators.map(function (view) {
+    var create = '';
+
+    switch (view.type.name) {
+      case ViewType.Panorama.name:
+        create = '/panorama';
+        break;
+
+      case ViewType.PanoramaGrid.name:
+        create = '/panorama-grid';
+        break;
+    }
+
+    return HttpService.post$("/api/view" + create, view).pipe(operators.map(function (view) {
       return mapView(view);
     }));
   };
@@ -4882,7 +4956,7 @@ AsideComponent.meta = {
   _proto.initForm = function initForm() {
     var _this2 = this;
 
-    var data = this.data; // const views = this.views = data.views.filter(x => x.type !== 'waiting-room');
+    var data = this.data; // const views = this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 
     var views = this.views = data.views.slice();
     var initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
@@ -4920,14 +4994,21 @@ AsideComponent.meta = {
 
   _proto.getWaitingRoom = function getWaitingRoom() {
     return this.data && this.data.views.find(function (x) {
-      return x.type === 'waiting-room';
+      return x.type.name === 'waiting-room';
     }) || {
       id: 'waiting-room',
-      type: 'waiting-room',
+      type: {
+        id: 1,
+        name: 'waiting-room'
+      },
       name: 'Waiting Room',
       likes: 40,
       liked: false,
       asset: {
+        type: {
+          id: 1,
+          name: 'image'
+        },
         folder: 'waiting-room/',
         file: 'waiting-room-02.jpg'
       },
@@ -5073,9 +5154,9 @@ AsideComponent.meta = {
         console.log('EditorComponent.onOpenModal.resolve', event);
 
         switch (modal.value) {
-          case 'nav':
-          case 'panel':
-          case 'curved-panel':
+          case ViewItemType.Nav.name:
+          case ViewItemType.Plane.name:
+          case ViewItemType.CurvedPlane.name:
             var items = _this5.view.items || [];
             items.push(event.data);
             Object.assign(_this5.view, {
@@ -5086,8 +5167,8 @@ AsideComponent.meta = {
 
             break;
 
-          case 'panorama':
-          case 'panorama-grid':
+          case ViewType.Panorama.name:
+          case ViewType.PanoramaGrid.name:
             _this5.data.views.push(event.data);
 
             _this5.controls.view.value = event.data.id;
@@ -5108,9 +5189,9 @@ AsideComponent.meta = {
     // console.log('onAsideSelect', event);
     if (event.value) {
       switch (event.value) {
-        case 'nav':
-        case 'plane':
-        case 'curved-plane':
+        case ViewItemType.Nav.name:
+        case ViewItemType.Plane.name:
+        case ViewItemType.CurvedPlane.name:
           this.onViewHitted(function (position) {
             _this6.onOpenModal(event, {
               view: _this6.view,
@@ -5246,6 +5327,101 @@ AsideComponent.meta = {
 }(rxcomp.Component);
 EditorComponent.meta = {
   selector: '[editor-component]'
+};var CurvedPlaneModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(CurvedPlaneModalComponent, _Component);
+
+  function CurvedPlaneModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = CurvedPlaneModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = new THREE.Object3D();
+    object.position.copy(this.position);
+    object.lookAt(CurvedPlaneModalComponent.ORIGIN);
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.CurvedPlane,
+      position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      // [0, -Math.PI / 2, 0],
+      scale: new rxcompForm.FormControl([3.2, 1.8, 1], rxcompForm.RequiredValidator()),
+      asset: null
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('CurvedPlaneModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+
+      console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
+      EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        console.log('CurvedPlaneModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('CurvedPlaneModalComponent.onSubmit.error', error);
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.close = function close() {
+    ModalService.reject();
+  };
+
+  _createClass(CurvedPlaneModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "position",
+    get: function get() {
+      var position = null;
+      var data = this.data;
+
+      if (data) {
+        position = data.position;
+      }
+
+      return position;
+    }
+  }]);
+
+  return CurvedPlaneModalComponent;
+}(rxcomp.Component);
+CurvedPlaneModalComponent.ORIGIN = new THREE.Vector3();
+CurvedPlaneModalComponent.meta = {
+  selector: '[curved-plane-modal]'
 };/*
 {
 	"id": 110,
@@ -5803,33 +5979,33 @@ RemoveModalComponent.meta = {
     var item = this.item;
     var form = this.form;
 
-    if (this.type !== item.type) {
+    if (!this.type || this.type.name !== item.type.name) {
       this.type = item.type;
       Object.keys(this.controls).forEach(function (key) {
         form.removeKey(key);
       });
       var keys;
 
-      switch (item.type) {
-        case ViewItemType.Nav:
+      switch (item.type.name) {
+        case ViewItemType.Nav.name:
           keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?']; // , 'addAsset', 'addLink' link { title, href, target }
 
           break;
 
-        case ViewItemType.Plane:
+        case ViewItemType.Plane.name:
           keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
           break;
 
-        case ViewItemType.CurvedPlane:
+        case ViewItemType.CurvedPlane.name:
           keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height', 'asset?'];
           break;
 
-        case ViewItemType.Texture:
+        case ViewItemType.Texture.name:
           keys = ['id', 'type', 'asset?']; // asset, key no id!!
 
           break;
 
-        case ViewItemType.Model:
+        case ViewItemType.Model.name:
           keys = ['id', 'type', 'asset?']; // title, abstract, asset,
 
           break;
@@ -5951,7 +6127,7 @@ RemoveModalComponent.meta = {
   };
 
   _proto.getTitle = function getTitle(item) {
-    return EditorLocale[item.type];
+    return EditorLocale[item.type.name];
   };
 
   return UpdateViewItemComponent;
@@ -5962,7 +6138,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -6070,7 +6246,7 @@ UpdateViewTileComponent.meta = {
   _proto.onUpdate = function onUpdate() {
     var view = this.view;
 
-    if (this.type !== view.type) {
+    if (!this.type || this.type.name !== view.type.name) {
       this.type = view.type;
       var form = this.form;
       Object.keys(this.controls).forEach(function (key) {
@@ -6078,7 +6254,7 @@ UpdateViewTileComponent.meta = {
       });
       var keys;
 
-      switch (view.type) {
+      switch (view.type.name) {
         default:
           keys = ['id', 'type', 'name'];
       }
@@ -6129,7 +6305,7 @@ UpdateViewTileComponent.meta = {
   };
 
   _proto.getTitle = function getTitle(view) {
-    return EditorLocale[view.type];
+    return EditorLocale[view.type.name];
   };
 
   return UpdateViewComponent;
@@ -6140,8 +6316,8 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
-};var factories = [AsideComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<!-- <div control-upload [control]=\"controls.upload\" label=\"Upload\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
   _inheritsLoose(EditorModule, _Module);
@@ -6185,7 +6361,7 @@ EditorModule.meta = {
     var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
       var blob = event.target.result;
 
-      if (_this2.item.type === AssetType.Image) {
+      if (_this2.item.type.name === AssetType.Image) {
         return _this2.resize$(blob);
       } else {
         return rxjs.of(blob);
@@ -6258,7 +6434,7 @@ AssetItemComponent.meta = {
   inputs: ['item'],
   template:
   /* html */
-  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [src]=\"item.preview\" *if=\"item.preview && item.type === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
 };var ControlComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlComponent, _Component);
 
@@ -6441,7 +6617,7 @@ ControlAssetComponent.meta = {
   inputs: ['control', 'label', 'disabled', 'accept'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [src]=\"control.value | asset\" *if=\"control.value && control.value.type === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var AssetUploadItem = function AssetUploadItem(file) {
   this.file = file;
   this.name = file.name;
@@ -6828,7 +7004,7 @@ ControlAssetsComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type.name === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type.name === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlCheckboxComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCheckboxComponent, _ControlComponent);
 
@@ -64584,7 +64760,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       this.infoResultMessage = null;
     }
 
-    this.banner = view && view.type === 'waiting-room' ? {
+    this.banner = view && view.type.name === 'waiting-room' ? {
       title: 'waiting host'
     } : null;
   };
@@ -67312,46 +67488,48 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
 
     var menu = this.menu = {};
     this.items.forEach(function (item) {
-      if (item.type !== ViewType.WaitingRoom) {
-        var group = menu[item.type];
+      if (item.type.name !== ViewType.WaitingRoom.name) {
+        var group = menu[item.type.name];
 
         if (!group) {
-          group = menu[item.type] = [];
+          group = menu[item.type.name] = [];
         }
 
         group.push(item);
       }
     });
-    this.groups = Object.keys(menu).map(function (type) {
+    this.groups = Object.keys(menu).map(function (typeName) {
       var name = 'Button';
 
-      switch (type) {
-        case ViewType.WaitingRoom:
+      switch (typeName) {
+        case ViewType.WaitingRoom.name:
           name = 'Waiting Room';
           break;
 
-        case ViewType.Panorama:
+        case ViewType.Panorama.name:
           name = 'Experience';
           break;
 
-        case ViewType.PanoramaGrid:
+        case ViewType.PanoramaGrid.name:
           name = 'Virtual Tour';
           break;
 
-        case ViewType.Room3d:
+        case ViewType.Room3d.name:
           name = 'Stanze 3D';
           break;
 
-        case ViewType.Model:
+        case ViewType.Model.name:
           name = 'Modelli 3D';
           break;
       }
 
       return {
         name: name,
-        type: 'menu-group',
+        type: {
+          name: 'menu-group'
+        },
         items: _this5.items.filter(function (x) {
-          return x.type === type;
+          return x.type.name === typeName;
         })
       };
     });
@@ -67369,7 +67547,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
 
   _proto3.onDown = function onDown(button) {
     // this.down.next(this.item);
-    if (button.item && button.item.type === 'back') {
+    if (button.item && button.item.type.name === 'back') {
       this.removeMenu();
 
       if (button.item.backItem) {
@@ -67393,7 +67571,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     var items;
 
     if (item) {
-      if (item.type === 'menu-group') {
+      if (item.type.name === 'menu-group') {
         items = item.items;
       } else {
         this.removeMenu();
@@ -67412,13 +67590,15 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     if (items) {
       items = items.slice();
       var back = {
-        type: 'back',
+        type: {
+          name: 'back'
+        },
         name: item ? 'Back' : 'Close',
         backItem: item
       };
       items.push(back);
       var buttons = this.buttons = items.map(function (x, i, a) {
-        return x.type === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
+        return x.type.name === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
       });
       buttons.forEach(function (button) {
         button.depthTest = false;
@@ -67479,7 +67659,9 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   _proto3.addToggler = function addToggler() {
     this.removeMenu();
     var toggler = this.toggler = new MenuButton({
-      type: 'menu',
+      type: {
+        name: 'menu'
+      },
       name: 'Menu'
     }, 0, 1);
     toggler.position.y = -0.5;

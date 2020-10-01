@@ -130,13 +130,13 @@
 		<div class="ui__body">
 			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)">
 				<div class="world__view" *if="view">
-					<div model-room [item]="view" *if="view.type === 'room-3d'"></div>
-					<div class="grid" model-grid *if="view.type === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
+					<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
+					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div class="world__item" *for="let item of view.items; let index = index;">
-						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type == 'nav'"></div>
-						<div model-plane [item]="item" [items]="view.items" *if="item.type == 'plane'"></div>
-						<div model-curved-plane [item]="item" [items]="view.items" *if="item.type == 'curved-plane'"></div>
-						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type == 'gltf'">
+						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
+						<div model-plane [item]="item" [items]="view.items" *if="item.type.name == 'plane'"></div>
+						<div model-curved-plane [item]="item" [items]="view.items" *if="item.type.name == 'curved-plane'"></div>
+						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
 							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 						</div>
 						<div class="panel" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
@@ -199,7 +199,7 @@
 			<div class="headline" *if="view">
 				<div class="headline__id" [innerHTML]="view.id"></div>
 				<div class="headline__icon">
-					<svg-icon [name]="view.type"></svg-icon>
+					<svg-icon [name]="view.type.name"></svg-icon>
 				</div>
 				<div class="headline__name" [innerHTML]="view.name"></div>
 			</div>
@@ -210,13 +210,13 @@
 		<div class="ui__body">
 			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
 				<div class="world__view" *if="view">
-					<div model-room [item]="view" *if="view.type === 'room-3d'"></div>
-					<div class="grid" model-grid *if="view.type === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
+					<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
+					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div class="world__item" *for="let item of view.items; let index = index;">
-						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type == 'nav'"></div>
-						<div model-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type == 'plane'"></div>
-						<div model-curved-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type == 'curved-plane'"></div>
-						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type == 'gltf'">
+						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
+						<div model-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type.name == 'plane'"></div>
+						<div model-curved-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type.name == 'curved-plane'"></div>
+						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
 							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 						</div>
 						<div class="panel" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
@@ -629,9 +629,9 @@
 					<div class="title">Views</div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewTypes">
-							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'view', value: item.type })">
+							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'view', value: item.type.name })">
 								<div class="icon">
-									<svg-icon [name]="item.type"></svg-icon>
+									<svg-icon [name]="item.type.name"></svg-icon>
 								</div>
 								<div class="title" [innerHTML]="item.name"></div>
 							</div>
@@ -644,9 +644,9 @@
 					<div class="title">View Items</div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewItemTypes">
-							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'viewItem', value: item.type })">
+							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'viewItem', value: item.type.name })">
 								<div class="icon">
-									<svg-icon [name]="item.type"></svg-icon>
+									<svg-icon [name]="item.type.name"></svg-icon>
 								</div>
 								<div class="title" [innerHTML]="item.name"></div>
 							</div>
