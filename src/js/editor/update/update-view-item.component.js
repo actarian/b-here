@@ -28,26 +28,26 @@ export default class UpdateViewItemComponent extends Component {
 	onUpdate() {
 		const item = this.item;
 		const form = this.form;
-		if (this.type !== item.type) {
+		if (!this.type || this.type.name !== item.type.name) {
 			this.type = item.type;
 			Object.keys(this.controls).forEach(key => {
 				form.removeKey(key);
 			});
 			let keys;
-			switch (item.type) {
-				case ViewItemType.Nav:
+			switch (item.type.name) {
+				case ViewItemType.Nav.name:
 					keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?']; // , 'addAsset', 'addLink' link { title, href, target }
 					break;
-				case ViewItemType.Plane:
+				case ViewItemType.Plane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
 					break;
-				case ViewItemType.CurvedPlane:
+				case ViewItemType.CurvedPlane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height', 'asset?'];
 					break;
-				case ViewItemType.Texture:
+				case ViewItemType.Texture.name:
 					keys = ['id', 'type', 'asset?']; // asset, key no id!!
 					break;
-				case ViewItemType.Model:
+				case ViewItemType.Model.name:
 					keys = ['id', 'type', 'asset?']; // title, abstract, asset,
 					break;
 				default:
@@ -139,7 +139,7 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	getTitle(item) {
-		return EditorLocale[item.type];
+		return EditorLocale[item.type.name];
 	}
 }
 
@@ -151,7 +151,7 @@ UpdateViewItemComponent.meta = {
 		<div class="group--headline" [class]="{ active: item.selected }" (click)="onSelect($event)">
 			<!-- <div class="id" [innerHTML]="item.id"></div> -->
 			<div class="icon">
-				<svg-icon [name]="item.type"></svg-icon>
+				<svg-icon [name]="item.type.name"></svg-icon>
 			</div>
 			<div class="title" [innerHTML]="getTitle(item)"></div>
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
@@ -159,9 +159,9 @@ UpdateViewItemComponent.meta = {
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="item.selected">
 			<fieldset>
 				<div control-text label="Id" [control]="controls.id" [disabled]="true"></div>
-				<div control-text label="Type" [control]="controls.type" [disabled]="true"></div>
+				<!-- <div control-text label="Type" [control]="controls.type" [disabled]="true"></div> -->
 			</fieldset>
-			<fieldset *if="item.type == 'nav'">
+			<fieldset *if="item.type.name == 'nav'">
 				<div control-text label="Title" [control]="controls.title"></div>
 				<div control-text label="Abstract" [control]="controls.abstract"></div>
 				<div control-select label="NavToView" [control]="controls.viewId"></div>
@@ -170,13 +170,13 @@ UpdateViewItemComponent.meta = {
 				<div control-text label="Link Title" [control]="controls.link.controls.title"></div>
 				<div control-text label="Link Url" [control]="controls.link.controls.href"></div>
 			</fieldset>
-			<fieldset *if="item.type == 'plane'">
+			<fieldset *if="item.type.name == 'plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
 				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
 			</fieldset>
-			<fieldset *if="item.type == 'curved-plane'">
+			<fieldset *if="item.type.name == 'curved-plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>

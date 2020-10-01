@@ -6,6 +6,7 @@ import UploadSrcDirective from '../forms/upload/upload-src.directive';
 import ToastOutletComponent from '../toast/toast-outlet.component';
 import AsideComponent from './aside/aside.component';
 import EditorComponent from './editor.component';
+import CurvedPlaneModalComponent from './modals/curved-plane-modal.component';
 import NavModalComponent from './modals/nav-modal.component';
 import PanoramaGridModalComponent from './modals/panorama-grid-modal.component';
 import PanoramaModalComponent from './modals/panorama-modal.component';
@@ -17,6 +18,7 @@ import UpdateViewComponent from './update/update-view.component';
 
 const factories = [
 	AsideComponent,
+	CurvedPlaneModalComponent,
 	EditorComponent,
 	NavModalComponent,
 	PanoramaModalComponent,

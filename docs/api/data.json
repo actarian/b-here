@@ -2,12 +2,18 @@
   "views": [
     {
       "id": "waiting-room",
-      "type": "waiting-room",
+      "type": {
+        "id": 1,
+        "name": "waiting-room"
+      },
       "name": "Waiting Room",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "waiting-room/",
         "file": "waiting-room.jpg"
       },
@@ -20,23 +26,35 @@
     },
     {
       "id": 1,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Welcome Room",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "waiting-room/",
         "file": "IPF WELCOME.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "IPF Experience",
           "abstract": "Abstract",
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "ipf/",
             "file": "logo-ipf.png"
           },
@@ -54,7 +72,10 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Cinema",
           "abstract": "Abstract",
           "position": [
@@ -66,7 +87,10 @@
         },
         {
           "id": 3,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Collezione 1",
           "abstract": "Abstract",
           "position": [
@@ -78,7 +102,10 @@
         },
         {
           "id": 4,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Collezione 2",
           "abstract": "Abstract",
           "position": [
@@ -90,7 +117,10 @@
         },
         {
           "id": 5,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Collezione 3",
           "abstract": "Abstract",
           "position": [
@@ -102,7 +132,10 @@
         },
         {
           "id": 6,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Gallery Vision",
           "abstract": "Abstract",
           "position": [
@@ -114,7 +147,10 @@
         },
         {
           "id": 7,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Company",
           "abstract": "Abstract",
           "position": [
@@ -126,7 +162,10 @@
         },
         {
           "id": 8,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Collezione 4",
           "abstract": "Abstract",
           "position": [
@@ -138,7 +177,10 @@
         },
         {
           "id": 9,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Collezione 5",
           "abstract": "Abstract",
           "position": [
@@ -157,21 +199,33 @@
     },
     {
       "id": 2,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Cinema",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "01_cinema.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "plane",
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": "video",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
             "folder": "video/",
             "file": "IPF PARQUET.mp4"
           },
@@ -193,7 +247,10 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -212,19 +269,28 @@
     },
     {
       "id": 3,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Gallery Vision",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "02_galleryvision.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -236,7 +302,10 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Paesaggio 1",
           "abstract": "Abstract",
           "position": [
@@ -255,19 +324,28 @@
     },
     {
       "id": 4,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Collezione 1",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "03_collezione1.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -279,11 +357,17 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Material",
           "abstract": "Rovere",
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "ipf/",
             "file": "logo-ipf.png"
           },
@@ -308,19 +392,28 @@
     },
     {
       "id": 5,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Collezione 2",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "04_collezione2.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -332,11 +425,17 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Material",
           "abstract": "Quercia",
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "ipf/",
             "file": "logo-ipf.png"
           },
@@ -361,19 +460,28 @@
     },
     {
       "id": 6,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Collezione 3",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "05_collezione3.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -385,11 +493,17 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Material",
           "abstract": "Quercia",
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "ipf/",
             "file": "logo-ipf.png"
           },
@@ -414,19 +528,28 @@
     },
     {
       "id": 7,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Collezione 4",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "06_collezione4.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -438,11 +561,17 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Material",
           "abstract": "Resina",
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "ipf/",
             "file": "logo-ipf.png"
           },
@@ -467,19 +596,28 @@
     },
     {
       "id": 8,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Collezione 5",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "07_collezione5.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -491,11 +629,17 @@
         },
         {
           "id": 2,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Material",
           "abstract": "Idro Oil",
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "ipf/",
             "file": "logo-ipf.png"
           },
@@ -520,19 +664,28 @@
     },
     {
       "id": 10,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Paesaggio 1",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Paesaggio 2",
           "abstract": "Abstract",
           "position": [
@@ -551,19 +704,28 @@
     },
     {
       "id": 11,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Paesaggio 2",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Paesaggio 3",
           "abstract": "Abstract",
           "position": [
@@ -582,19 +744,28 @@
     },
     {
       "id": 12,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Paesaggio 3",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "rendering/",
         "file": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -613,7 +784,10 @@
     },
     {
       "id": 60,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Live",
       "likes": 235,
       "liked": false,
@@ -622,14 +796,20 @@
         "usdz": "/logo/logows.usdz"
       },
       "asset": {
-        "type": "video",
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
         "folder": "",
         "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -648,7 +828,10 @@
     },
     {
       "id": 61,
-      "type": "panorama",
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Webcam",
       "likes": 235,
       "liked": false,
@@ -657,14 +840,20 @@
         "usdz": "/logo/logows.usdz"
       },
       "asset": {
-        "type": "publisher-stream",
+        "type": {
+          "id": 4,
+          "name": "publisher-stream"
+        },
         "folder": "",
         "file": "publisherStream"
       },
       "items": [
         {
           "id": 1,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -683,12 +872,18 @@
     },
     {
       "id": 100,
-      "type": "panorama-grid",
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Ambiente 1",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "grid/",
         "file": "collezione3_x0_y0.jpg"
       },
@@ -697,7 +892,10 @@
       "tiles": [
         {
           "asset": {
-            "type": "image",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
             "folder": "grid/",
             "file": "collezione3_x0_y0.jpg"
           },
@@ -709,7 +907,10 @@
       "items": [
         {
           "id": 10,
-          "type": "nav",
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -728,7 +929,10 @@
     },
     {
       "id": 20,
-      "type": "model",
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Logo WS",
       "likes": 172,
       "liked": false,
@@ -737,18 +941,27 @@
         "usdz": "/logo/logows.usdz"
       },
       "asset": {
-        "type": "image",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
         "folder": "waiting-room/",
         "file": "amazing.jpg"
       },
       "items": [
         {
           "id": 1,
-          "type": "gltf",
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": "model",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
             "folder": "logo/",
             "file": "logowsGLB.glb"
           }

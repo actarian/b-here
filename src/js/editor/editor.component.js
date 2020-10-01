@@ -10,6 +10,7 @@ import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import ToastService from '../toast/toast.service';
+import { ViewItemType, ViewType } from '../view/view';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
 
@@ -90,7 +91,7 @@ export default class EditorComponent extends Component {
 
 	initForm() {
 		const data = this.data;
-		// const views = this.views = data.views.filter(x => x.type !== 'waiting-room');
+		// const views = this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 		const views = this.views = data.views.slice();
 		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
 		const form = this.form = new FormGroup({
@@ -126,13 +127,14 @@ export default class EditorComponent extends Component {
 	}
 
 	getWaitingRoom() {
-		return this.data && this.data.views.find(x => x.type === 'waiting-room') || {
+		return this.data && this.data.views.find(x => x.type.name === 'waiting-room') || {
 			id: 'waiting-room',
-			type: 'waiting-room',
+			type: { id: 1, name: 'waiting-room' },
 			name: 'Waiting Room',
 			likes: 40,
 			liked: false,
 			asset: {
+				type: { id: 1, name: 'image' },
 				folder: 'waiting-room/',
 				file: 'waiting-room-02.jpg',
 			},
@@ -256,16 +258,16 @@ export default class EditorComponent extends Component {
 			if (event instanceof ModalResolveEvent) {
 				console.log('EditorComponent.onOpenModal.resolve', event);
 				switch (modal.value) {
-					case 'nav':
-					case 'panel':
-					case 'curved-panel':
+					case ViewItemType.Nav.name:
+					case ViewItemType.Plane.name:
+					case ViewItemType.CurvedPlane.name:
 						const items = this.view.items || [];
 						items.push(event.data);
 						Object.assign(this.view, { items });
 						this.pushChanges();
 						break;
-					case 'panorama':
-					case 'panorama-grid':
+					case ViewType.Panorama.name:
+					case ViewType.PanoramaGrid.name:
 						this.data.views.push(event.data);
 						this.controls.view.value = event.data.id;
 						this.pushChanges();
@@ -281,9 +283,9 @@ export default class EditorComponent extends Component {
 		// console.log('onAsideSelect', event);
 		if (event.value) {
 			switch (event.value) {
-				case 'nav':
-				case 'plane':
-				case 'curved-plane':
+				case ViewItemType.Nav.name:
+				case ViewItemType.Plane.name:
+				case ViewItemType.CurvedPlane.name:
 					this.onViewHitted((position) => {
 						this.onOpenModal(event, { view: this.view, position });
 					});

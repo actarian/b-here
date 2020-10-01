@@ -640,6 +640,18 @@ var ROUTES = [{
     doCreate(request, response, params, db.views);
   }
 }, {
+  path: '/api/view/panorama',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    doCreate(request, response, params, db.views);
+  }
+}, {
+  path: '/api/view/panorama-grid',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    doCreate(request, response, params, db.views);
+  }
+}, {
   path: '/api/view/:viewId',
   method: 'PUT',
   callback: function callback(request, response, params) {

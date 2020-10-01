@@ -2,27 +2,27 @@ import { Component } from 'rxcomp';
 import { ViewItemType, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
 
-export const DISABLED_VIEW_TYPES = [ViewType.WaitingRoom, ViewType.Room3d, ViewType.Model];
-export const DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf, ViewItemType.Texture];
+export const DISABLED_VIEW_TYPES = [ViewType.WaitingRoom.name, ViewType.Room3d.name, ViewType.Model.name];
+export const DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf.name, ViewItemType.Texture.name];
 
 export default class AsideComponent extends Component {
 
 	onInit() {
 		this.mode = 1;
 		this.viewTypes = Object.keys(ViewType).map(key => {
-			const value = ViewType[key];
+			const type = ViewType[key];
 			return {
-				type: value,
-				name: EditorLocale[value],
-				disabled: DISABLED_VIEW_TYPES.indexOf(value) !== -1,
+				type: type,
+				name: EditorLocale[type.name],
+				disabled: DISABLED_VIEW_TYPES.indexOf(type.name) !== -1,
 			};
 		});
 		this.viewItemTypes = Object.keys(ViewItemType).map(key => {
-			const value = ViewItemType[key];
+			const type = ViewItemType[key];
 			return {
-				type: value,
-				name: EditorLocale[value],
-				disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(value) !== -1,
+				type: type,
+				name: EditorLocale[type.name],
+				disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(type.name) !== -1,
 			};
 		});
 		this.setSupportedViewTypes();
@@ -35,12 +35,12 @@ export default class AsideComponent extends Component {
 	}
 
 	setSupportedViewTypes() {
-		this.supportedViewTypes = this.viewTypes.filter(x => this.supportedViewType(x.type));
+		this.supportedViewTypes = this.viewTypes.filter(x => this.supportedViewType(x.type.name));
 	}
 
 	setSupportedViewItemTypes() {
 		if (this.view) {
-			this.supportedViewItemTypes = this.viewItemTypes.filter(x => this.supportedViewItemType(this.view.type, x.type));
+			this.supportedViewItemTypes = this.viewItemTypes.filter(x => this.supportedViewItemType(this.view.type.name, x.type.name));
 		} else {
 			this.supportedViewItemTypes = [];
 		}
@@ -53,32 +53,32 @@ export default class AsideComponent extends Component {
 		}
 	}
 
-	supportedViewType(viewType) {
-		let supported = [ViewType.Panorama, ViewType.PanoramaGrid, ViewType.Room3d, ViewType.Model].indexOf(viewType) !== -1; // ViewType.WaitingRoom,
+	supportedViewType(viewTypeName) {
+		let supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
 		// console.log('supportedViewType', viewType, supported);
 		return supported;
 	}
 
-	supportedViewItemType(viewType, viewItemType) {
+	supportedViewItemType(viewTypeName, viewItemTypeName) {
 		let supported;
-		switch (viewType) {
-			case ViewType.WaitingRoom:
+		switch (viewTypeName) {
+			case ViewType.WaitingRoom.name:
 				supported = false;
 				break;
-			case ViewType.Panorama:
-				supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+			case ViewType.Panorama.name:
+				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
-			case ViewType.PanoramaGrid:
-				supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane].indexOf(viewItemType) !== -1;
+			case ViewType.PanoramaGrid.name:
+				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
-			case ViewType.Room3d:
-				supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+			case ViewType.Room3d.name:
+				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
 				break;
-			case ViewType.Model:
-				supported = [ViewItemType.Nav, ViewItemType.Gltf, ViewItemType.Plane, ViewItemType.CurvedPlane, ViewItemType.Texture].indexOf(viewItemType) !== -1;
+			case ViewType.Model.name:
+				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
 				break;
 		}
-		// console.log('supportedViewItemType', viewType, viewItemType, supported);
+		// console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
 		return supported;
 	}
 

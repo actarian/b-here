@@ -1,13 +1,7 @@
-import { Pipe } from "rxcomp";
-import { environment } from "../environment";
+import { Pipe } from 'rxcomp';
+import { environment } from '../environment';
+import { AssetType } from '../view/view';
 
-export const AssetType = {
-	Image: 'image', // jpg, png, ...
-	Video: 'video', // mp4, webm, ...
-	Model: 'model', // gltf, glb, …
-	PublisherStream: 'publisher-stream', // valore fisso di file a 'publisherStream' e folder string.empty
-	NextAttendeeStream: 'next-attendee-stream', // valore fisso di file a 'nextAttendeeStream' // e folder string.empty
-};
 export const MIME_IMAGE = [
 	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp',
 ];
@@ -38,21 +32,22 @@ export function isStream(path) {
 export default class AssetPipe extends Pipe {
 	static transform(asset, type = null) {
 		if (type != null) { // keep loose equality
-			asset = asset.type === type ? asset : null;
+			asset = asset.type.name === type ? asset : null;
 		}
 		if (asset) {
-			switch (asset.type) {
-				case AssetType.Image:
-				case AssetType.Video:
+			console.log(asset.type.name, AssetType.Image.name);
+			switch (asset.type.name) {
+				case AssetType.Image.name:
+				case AssetType.Video.name:
 					asset = asset.folder + asset.file;
 					asset = environment.getTexturePath(asset);
 					break;
-				case AssetType.Model:
+				case AssetType.Model.name:
 					asset = asset.folder + asset.file;
 					asset = environment.getModelPath(asset);
 					break;
-				case AssetType.PublisherStream:
-				case AssetType.NextAttendeeStream:
+				case AssetType.PublisherStream.name:
+				case AssetType.NextAttendeeStream.name:
 					asset = environment.getModelPath(asset.file);
 					break;
 				default:

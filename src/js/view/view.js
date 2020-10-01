@@ -12,11 +12,11 @@ export const EXT_MODEL = [
 ];
 
 export const AssetType = {
-	Image: 'image', // jpg, png, ...
-	Video: 'video', // mp4, webm, ...
-	Model: 'model', // gltf, glb, …
-	PublisherStream: 'publisher-stream', // valore fisso di file a ‘publisherStream’ e folder string.empty
-	NextAttendeeStream: 'next-attendee-stream', // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+	Image: { id: 1, name: 'image' }, // jpg, png, ...
+	Video: { id: 2, name: 'video' }, // mp4, webm, ...
+	Model: { id: 3, name: 'model' }, // gltf, glb, …
+	PublisherStream: { id: 4, name: 'publisher-stream' }, // valore fisso di file a ‘publisherStream’ e folder string.empty
+	NextAttendeeStream: { id: 5, name: 'next-attendee-stream' }, // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
 };
 
 export function assetTypeFromPath(path) {
@@ -34,21 +34,22 @@ export function isAssetType(path, type) {
 	const assetType = assetTypeFromPath(path);
 	return assetType === type;
 }
-
+id: 1
+name: "waiting-room"
 export const ViewType = {
-	WaitingRoom: 'waiting-room',
-	Panorama: 'panorama',
-	PanoramaGrid: 'panorama-grid',
-	Room3d: 'room-3d',
-	Model: 'model',
+	WaitingRoom: { id: 1, name: 'waiting-room' },
+	Panorama: { id: 2, name: 'panorama' },
+	PanoramaGrid: { id: 3, name: 'panorama-grid' },
+	Room3d: { id: 4, name: 'room-3d' },
+	Model: { id: 5, name: 'model' },
 };
 
 export const ViewItemType = {
-	Nav: 'nav',
-	Plane: 'plane',
-	CurvedPlane: 'curved-plane',
-	Gltf: 'gltf',
-	Texture: 'texture',
+	Nav: { id: 1, name: 'nav' },
+	Plane: { id: 2, name: 'plane' },
+	CurvedPlane: { id: 3, name: 'curved-plane' },
+	Gltf: { id: 4, name: 'gltf' },
+	Texture: { id: 5, name: 'texture' },
 };
 
 export class View {
@@ -221,14 +222,14 @@ export class Asset {
 }
 
 export function mapView(view) {
-	switch (view.type) {
-		case ViewType.Panorama:
+	switch (view.type.name) {
+		case ViewType.Panorama.name:
 			view = new PanoramaView(view);
 			break;
-		case ViewType.PanoramaGrid:
+		case ViewType.PanoramaGrid.name:
 			view = new PanoramaGridView(view);
 			break;
-		case ViewType.Model:
+		case ViewType.Model.name:
 			view = new ModelView(view);
 			break;
 		default:
@@ -238,8 +239,8 @@ export function mapView(view) {
 }
 
 export function mapViewItem(item) {
-	switch (item.type) {
-		case ViewItemType.Nav:
+	switch (item.type.name) {
+		case ViewItemType.Nav.name:
 			item = new NavViewItem(item);
 			break;
 		default:

@@ -312,34 +312,34 @@ export default class ModelMenuComponent extends ModelComponent {
 		}
 		const menu = this.menu = {};
 		this.items.forEach(item => {
-			if (item.type !== ViewType.WaitingRoom) {
-				let group = menu[item.type];
+			if (item.type.name !== ViewType.WaitingRoom.name) {
+				let group = menu[item.type.name];
 				if (!group) {
-					group = menu[item.type] = [];
+					group = menu[item.type.name] = [];
 				}
 				group.push(item);
 			}
 		});
-		this.groups = Object.keys(menu).map(type => {
+		this.groups = Object.keys(menu).map(typeName => {
 			let name = 'Button';
-			switch (type) {
-				case ViewType.WaitingRoom:
+			switch (typeName) {
+				case ViewType.WaitingRoom.name:
 					name = 'Waiting Room';
 					break;
-				case ViewType.Panorama:
+				case ViewType.Panorama.name:
 					name = 'Experience';
 					break;
-				case ViewType.PanoramaGrid:
+				case ViewType.PanoramaGrid.name:
 					name = 'Virtual Tour';
 					break;
-				case ViewType.Room3d:
+				case ViewType.Room3d.name:
 					name = 'Stanze 3D';
 					break;
-				case ViewType.Model:
+				case ViewType.Model.name:
 					name = 'Modelli 3D';
 					break;
 			}
-			return { name, type: 'menu-group', items: this.items.filter(x => x.type === type) };
+			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName) };
 		});
 	}
 
@@ -355,7 +355,7 @@ export default class ModelMenuComponent extends ModelComponent {
 
 	onDown(button) {
 		// this.down.next(this.item);
-		if (button.item && button.item.type === 'back') {
+		if (button.item && button.item.type.name === 'back') {
 			this.removeMenu();
 			if (button.item.backItem) {
 				this.addMenu();
@@ -371,7 +371,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		this.removeMenu();
 		let items;
 		if (item) {
-			if (item.type === 'menu-group') {
+			if (item.type.name === 'menu-group') {
 				items = item.items;
 			} else {
 				this.removeMenu();
@@ -388,13 +388,13 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (items) {
 			items = items.slice();
 			const back = {
-				type: 'back',
+				type: { name: 'back' },
 				name: item ? 'Back' : 'Close',
 				backItem: item,
 			};
 			items.push(back);
 			const buttons = this.buttons = items.map((x, i, a) => {
-				return (x.type === 'back') ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
+				return (x.type.name === 'back') ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
 			});
 			buttons.forEach(button => {
 				button.depthTest = false;
@@ -448,7 +448,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	addToggler() {
 		this.removeMenu();
 		const toggler = this.toggler = new MenuButton({
-			type: 'menu',
+			type: { name: 'menu' },
 			name: 'Menu'
 		}, 0, 1);
 		toggler.position.y = -0.5;

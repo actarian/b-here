@@ -111,8 +111,8 @@ ControlAssetsComponent.meta = {
 				<div class="listing__item" *for="let item of assets">
 					<div class="upload-item">
 						<div class="picture">
-							<img [src]="item | asset" *if="item.type === 'image'" />
-							<video [src]="item | asset" *if="item.type === 'video'"></video>
+							<img [src]="item | asset" *if="item.type.name === 'image'" />
+							<video [src]="item | asset" *if="item.type.name === 'video'"></video>
 						</div>
 						<div class="name" [innerHTML]="item.file"></div>
 					</div>

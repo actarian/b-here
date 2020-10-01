@@ -125,6 +125,14 @@ const ROUTES = [{
 		doCreate(request, response, params, db.views);
 	}
 }, {
+	path: '/api/view/panorama', method: 'POST', callback: function(request, response, params) {
+		doCreate(request, response, params, db.views);
+	}
+}, {
+	path: '/api/view/panorama-grid', method: 'POST', callback: function(request, response, params) {
+		doCreate(request, response, params, db.views);
+	}
+}, {
 	path: '/api/view/:viewId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.views);
 	}
