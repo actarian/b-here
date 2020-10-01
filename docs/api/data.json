@@ -2,13 +2,19 @@
   "views": [
     {
       "id": "waiting-room",
-      "type": { "id": 1, "name": "waiting-room" },
+      "type": {
+        "id": 1,
+        "name": "waiting-room"
+      },
       "name": "Waiting Room",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "items": [],
@@ -20,24 +26,36 @@
     },
     {
       "id": 1,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Welcome Room",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "mod2.jpg"
       },
       "items": [
         {
           "id": 110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Barilla Experience",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "barilla/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/barilla/",
             "file": "logo-barilla.jpg"
           },
           "link": {
@@ -54,7 +72,10 @@
         },
         {
           "id": 120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "House Experience",
           "abstract": "Abstract",
           "position": [
@@ -66,7 +87,10 @@
         },
         {
           "id": 130,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Benelli Experience",
           "abstract": "Abstract",
           "position": [
@@ -78,7 +102,10 @@
         },
         {
           "id": 140,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Camera Stream",
           "abstract": "Abstract",
           "position": [
@@ -90,7 +117,10 @@
         },
         {
           "id": 150,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Ernestomeda",
           "abstract": "Abstract",
           "position": [
@@ -109,19 +139,28 @@
     },
     {
       "id": 11,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Interior 01",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "render_1.jpeg"
       },
       "items": [
         {
           "id": 1110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 02",
           "abstract": "Abstract",
           "position": [
@@ -133,7 +172,10 @@
         },
         {
           "id": 1120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 03",
           "abstract": "Abstract",
           "position": [
@@ -145,7 +187,10 @@
         },
         {
           "id": 1130,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "WoodHouse",
           "abstract": "Abstract",
           "position": [
@@ -157,7 +202,10 @@
         },
         {
           "id": 1140,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Brochure",
           "abstract": "Abstract",
           "position": [
@@ -176,19 +224,28 @@
     },
     {
       "id": 12,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Interior 02",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "render_2.jpeg"
       },
       "items": [
         {
           "id": 1210,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
@@ -200,7 +257,10 @@
         },
         {
           "id": 1220,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 03",
           "abstract": "Abstract",
           "position": [
@@ -212,7 +272,10 @@
         },
         {
           "id": 1230,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "WoodHouse",
           "abstract": "Abstract",
           "position": [
@@ -224,7 +287,10 @@
         },
         {
           "id": 1240,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Brochure",
           "abstract": "Abstract",
           "position": [
@@ -243,19 +309,28 @@
     },
     {
       "id": 13,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Interior 03",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "render_3.jpeg"
       },
       "items": [
         {
           "id": 1310,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 02",
           "abstract": "Abstract",
           "position": [
@@ -267,7 +342,10 @@
         },
         {
           "id": 1320,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
@@ -279,7 +357,10 @@
         },
         {
           "id": 1330,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "WoodHouse",
           "abstract": "Abstract",
           "position": [
@@ -291,7 +372,10 @@
         },
         {
           "id": 1340,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Brochure",
           "abstract": "Abstract",
           "position": [
@@ -310,19 +394,28 @@
     },
     {
       "id": 15,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Wood House",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "wood1.jpeg"
       },
       "items": [
         {
           "id": 1510,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
@@ -334,7 +427,10 @@
         },
         {
           "id": 1520,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Tour House",
           "abstract": "Abstract",
           "position": [
@@ -346,7 +442,10 @@
         },
         {
           "id": 1530,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Brochure",
           "abstract": "Abstract",
           "position": [
@@ -365,19 +464,28 @@
     },
     {
       "id": 16,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Brochure Corte Trastevere",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "brochure.jpg"
       },
       "items": [
         {
           "id": 1610,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
@@ -389,7 +497,10 @@
         },
         {
           "id": 1620,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Tour House",
           "abstract": "Abstract",
           "position": [
@@ -408,19 +519,28 @@
     },
     {
       "id": 20,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Tour House",
       "likes": 175,
       "liked": false,
       "asset": {
-        "type": { "id": 2, "name": "video" },
-        "folder": "video/",
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "textures/video/",
         "file": "360_1.mp4"
       },
       "items": [
         {
           "id": 2010,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
@@ -432,7 +552,10 @@
         },
         {
           "id": 2020,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Tour Render",
           "abstract": "Abstract",
           "position": [
@@ -451,19 +574,28 @@
     },
     {
       "id": 21,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Tour Render",
       "likes": 175,
       "liked": false,
       "asset": {
-        "type": { "id": 2, "name": "video" },
-        "folder": "video/",
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "textures/video/",
         "file": "Render_2.mp4"
       },
       "items": [
         {
           "id": 2110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
@@ -475,7 +607,10 @@
         },
         {
           "id": 2120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -494,19 +629,28 @@
     },
     {
       "id": 22,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Moto VR",
       "likes": 175,
       "liked": false,
       "asset": {
-        "type": { "id": 2, "name": "video" },
-        "folder": "video/",
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "textures/video/",
         "file": "moto.mp4"
       },
       "items": [
         {
           "id": 2210,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Room 3D",
           "abstract": "Abstract",
           "position": [
@@ -525,19 +669,28 @@
     },
     {
       "id": 31,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Living 01",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Living-0.jpg"
       },
       "items": [
         {
           "id": 3110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 02",
           "abstract": "Abstract",
           "position": [
@@ -549,7 +702,10 @@
         },
         {
           "id": 3120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -561,7 +717,10 @@
         },
         {
           "id": 3130,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 03",
           "abstract": "Abstract",
           "position": [
@@ -573,7 +732,10 @@
         },
         {
           "id": 3140,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -592,19 +754,28 @@
     },
     {
       "id": 32,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Living 02",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Living-1.jpg"
       },
       "items": [
         {
           "id": 3210,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 03",
           "abstract": "Abstract",
           "position": [
@@ -616,7 +787,10 @@
         },
         {
           "id": 3220,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -628,7 +802,10 @@
         },
         {
           "id": 3230,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
@@ -640,7 +817,10 @@
         },
         {
           "id": 3240,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -659,19 +839,28 @@
     },
     {
       "id": 33,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Living 03",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Living-2.jpg"
       },
       "items": [
         {
           "id": 3310,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 02",
           "abstract": "Abstract",
           "position": [
@@ -683,7 +872,10 @@
         },
         {
           "id": 3320,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
@@ -695,7 +887,10 @@
         },
         {
           "id": 3330,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -707,7 +902,10 @@
         },
         {
           "id": 3340,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -726,22 +924,34 @@
     },
     {
       "id": 23,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Cinema",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "cinema/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/cinema/",
         "file": "cinema.jpg"
       },
       "items": [
         {
           "id": 2310,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-01.mp4"
           },
           "position": {
@@ -762,10 +972,16 @@
         },
         {
           "id": 2320,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "green-screen/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/green-screen/",
             "file": "green-screen.mp4",
             "linkedPlayId": 2310,
             "chromaKeyColor": [
@@ -792,7 +1008,10 @@
         },
         {
           "id": 2330,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Social Media",
           "abstract": "Abstract",
           "position": [
@@ -804,7 +1023,10 @@
         },
         {
           "id": 2340,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Time Square",
           "abstract": "Abstract",
           "position": [
@@ -823,22 +1045,34 @@
     },
     {
       "id": 24,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Cinema Stream",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "cinema/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/cinema/",
         "file": "cinema.jpg"
       },
       "items": [
         {
           "id": 2410,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-01.mp4"
           },
           "position": {
@@ -859,9 +1093,15 @@
         },
         {
           "id": 2420,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -888,7 +1128,10 @@
         },
         {
           "id": 2430,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -900,7 +1143,10 @@
         },
         {
           "id": 2440,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Set Cinematografico",
           "abstract": "Abstract",
           "position": [
@@ -919,22 +1165,34 @@
     },
     {
       "id": 25,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "White Room",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "whiteroom.jpeg"
       },
       "items": [
         {
           "id": 2510,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "green-screen/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/green-screen/",
             "file": "green-screen.mp4",
             "chromaKeyColor": [
               0.0,
@@ -960,10 +1218,16 @@
         },
         {
           "id": 2520,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "green-screen/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/green-screen/",
             "file": "green-screen.mp4",
             "linkedPlayId": 2510,
             "chromaKeyColor": [
@@ -990,10 +1254,16 @@
         },
         {
           "id": 2530,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "green-screen/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/green-screen/",
             "file": "green-screen.mp4",
             "linkedPlayId": 2510,
             "chromaKeyColor": [
@@ -1020,7 +1290,10 @@
         },
         {
           "id": 2440,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -1039,21 +1312,33 @@
     },
     {
       "id": 26,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "White Room Stream",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "whiteroom.jpeg"
       },
       "items": [
         {
           "id": 26100,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -1080,9 +1365,15 @@
         },
         {
           "id": 2620,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 5, "name": "next-attendee-stream" },
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
             "folder": "",
             "file": "nextAttendeeStream",
             "chromaKeyColor": [
@@ -1109,9 +1400,15 @@
         },
         {
           "id": 2630,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 5, "name": "next-attendee-stream" },
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
             "folder": "",
             "file": "nextAttendeeStream",
             "chromaKeyColor": [
@@ -1138,7 +1435,10 @@
         },
         {
           "id": 2640,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -1150,7 +1450,10 @@
         },
         {
           "id": 2650,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Cinema Stream",
           "abstract": "Abstract",
           "position": [
@@ -1169,21 +1472,33 @@
     },
     {
       "id": 29,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Set Cinematografico",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "ue_set.jpg"
       },
       "items": [
         {
           "id": 2910,
-          "type": { "id": 2, "name": "plane" },
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -1210,7 +1525,10 @@
         },
         {
           "id": 2920,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -1222,7 +1540,10 @@
         },
         {
           "id": 2930,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "White Room",
           "abstract": "Abstract",
           "position": [
@@ -1241,19 +1562,28 @@
     },
     {
       "id": 17,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Ernestomeda",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "ernestomeda.jpg"
       },
       "items": [
         {
           "id": 1710,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -1265,7 +1595,10 @@
         },
         {
           "id": 1720,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 4096",
           "abstract": "Abstract",
           "position": [
@@ -1284,19 +1617,28 @@
     },
     {
       "id": 41,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Kitchen 01",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Kitchen-1.jpg"
       },
       "items": [
         {
           "id": 4110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 02",
           "abstract": "Abstract",
           "position": [
@@ -1308,7 +1650,10 @@
         },
         {
           "id": 4120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 03",
           "abstract": "Abstract",
           "position": [
@@ -1320,7 +1665,10 @@
         },
         {
           "id": 4130,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 04",
           "abstract": "Abstract",
           "position": [
@@ -1332,7 +1680,10 @@
         },
         {
           "id": 4140,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
@@ -1351,19 +1702,28 @@
     },
     {
       "id": 42,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Kitchen 02",
       "likes": 190,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Kitchen-2.jpg"
       },
       "items": [
         {
           "id": 4210,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -1375,7 +1735,10 @@
         },
         {
           "id": 4220,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 03",
           "abstract": "Abstract",
           "position": [
@@ -1387,7 +1750,10 @@
         },
         {
           "id": 4230,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 04",
           "abstract": "Abstract",
           "position": [
@@ -1399,7 +1765,10 @@
         },
         {
           "id": 4240,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
@@ -1418,19 +1787,28 @@
     },
     {
       "id": 43,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Kitchen 03",
       "likes": 165,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Kitchen-3.jpg"
       },
       "items": [
         {
           "id": 4310,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -1442,7 +1820,10 @@
         },
         {
           "id": 4320,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 02",
           "abstract": "Abstract",
           "position": [
@@ -1454,7 +1835,10 @@
         },
         {
           "id": 4330,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 04",
           "abstract": "Abstract",
           "position": [
@@ -1466,7 +1850,10 @@
         },
         {
           "id": 4340,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
@@ -1485,19 +1872,28 @@
     },
     {
       "id": 44,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Kitchen 04",
       "likes": 143,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Kitchen-4.jpg"
       },
       "items": [
         {
           "id": 4410,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -1509,7 +1905,10 @@
         },
         {
           "id": 4420,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 02",
           "abstract": "Abstract",
           "position": [
@@ -1521,7 +1920,10 @@
         },
         {
           "id": 4430,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 03",
           "abstract": "Abstract",
           "position": [
@@ -1533,7 +1935,10 @@
         },
         {
           "id": 4440,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
@@ -1552,19 +1957,28 @@
     },
     {
       "id": 51,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Bathroom 01",
       "likes": 156,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Bathroom-1.jpg"
       },
       "items": [
         {
           "id": 5110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Bathroom 02",
           "abstract": "Abstract",
           "position": [
@@ -1576,7 +1990,10 @@
         },
         {
           "id": 5120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
@@ -1588,7 +2005,10 @@
         },
         {
           "id": 5130,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
@@ -1600,7 +2020,10 @@
         },
         {
           "id": 5140,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -1619,19 +2042,28 @@
     },
     {
       "id": 52,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Bathroom 02",
       "likes": 134,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "rendering/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/rendering/",
         "file": "Bathroom-2.jpg"
       },
       "items": [
         {
           "id": 5210,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Living 01",
           "abstract": "Abstract",
           "position": [
@@ -1643,7 +2075,10 @@
         },
         {
           "id": 5220,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -1655,7 +2090,10 @@
         },
         {
           "id": 5230,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Bathroom 01",
           "abstract": "Abstract",
           "position": [
@@ -1667,7 +2105,10 @@
         },
         {
           "id": 5240,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Interior 01",
           "abstract": "Abstract",
           "position": [
@@ -1686,19 +2127,28 @@
     },
     {
       "id": 61,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Garden",
       "likes": 235,
       "liked": false,
       "asset": {
-        "type": { "id": 2, "name": "video" },
-        "folder": "video/",
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "textures/video/",
         "file": "garden-01.mp4"
       },
       "items": [
         {
           "id": 6110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -1717,7 +2167,10 @@
     },
     {
       "id": 62,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Live",
       "likes": 235,
       "liked": false,
@@ -1726,14 +2179,20 @@
         "usdz": "/washing-machine/washing-machine.usdz"
       },
       "asset": {
-        "type": { "id": 2, "name": "video" },
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
         "folder": "",
         "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
       },
       "items": [
         {
           "id": 6210,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -1752,7 +2211,10 @@
     },
     {
       "id": 63,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Webcam",
       "likes": 235,
       "liked": false,
@@ -1761,14 +2223,20 @@
         "usdz": "/washing-machine/washing-machine.usdz"
       },
       "asset": {
-        "type": { "id": 4, "name": "publisher-stream" },
+        "type": {
+          "id": 4,
+          "name": "publisher-stream"
+        },
         "folder": "",
         "file": "publisherStream"
       },
       "items": [
         {
           "id": 6310,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Kitchen 01",
           "abstract": "Abstract",
           "position": [
@@ -1787,13 +2255,19 @@
     },
     {
       "id": 201,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Kitchen 8192",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "newoneset2/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/newoneset2/",
         "file": "NEWONESET2_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -1801,14 +2275,20 @@
       "tiles": [
         {
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "newoneset2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/newoneset2/",
             "file": "NEWONESET2_x0_y0.jpg"
           },
           "navs": [
             {
               "id": 20110,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Welcome Room",
               "abstract": "Abstract",
               "position": [
@@ -1820,7 +2300,10 @@
             },
             {
               "id": 20120,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Ernestomeda",
               "abstract": "Abstract",
               "position": [
@@ -1859,13 +2342,19 @@
     },
     {
       "id": 202,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Kitchen 4096",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "newoneset2_low/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/newoneset2_low/",
         "file": "NEWONESET2_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -1873,14 +2362,20 @@
       "tiles": [
         {
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "newoneset2_low/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/newoneset2_low/",
             "file": "NEWONESET2_x0_y0.jpg"
           },
           "navs": [
             {
               "id": 20210,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Welcome Room",
               "abstract": "Abstract",
               "position": [
@@ -1892,7 +2387,10 @@
             },
             {
               "id": 20220,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Kitchen 8192",
               "abstract": "Abstract",
               "position": [
@@ -1931,93 +2429,150 @@
     },
     {
       "id": 100,
-      "type": { "id": 4, "name": "room-3d" },
+      "type": {
+        "id": 4,
+        "name": "room-3d"
+      },
       "name": "Room 3D Barilla",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
       "modelFile": "room-3d.fbx",
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "items": [
         {
           "id": "plane-01",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-01.mp4"
           }
         },
         {
           "id": "plane-02",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-02.jpg"
           }
         },
         {
           "id": "plane-03",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-03.jpg"
           }
         },
         {
           "id": "plane-04",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-04.jpg"
           }
         },
         {
           "id": "plane-05",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-05.mp4"
           }
         },
         {
           "id": "plane-06",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-06.jpg"
           }
         },
         {
           "id": "plane-07",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-07.jpg"
           }
         },
         {
           "id": "plane-08",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d/",
             "file": "plane-08.jpg"
           }
         },
         {
           "id": 10010,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -2029,7 +2584,10 @@
         },
         {
           "id": 10020,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Pesto alla Genovese",
           "abstract": "Abstract",
           "position": [
@@ -2048,93 +2606,150 @@
     },
     {
       "id": 101,
-      "type": { "id": 4, "name": "room-3d" },
+      "type": {
+        "id": 4,
+        "name": "room-3d"
+      },
       "name": "Room 3D Benelli",
       "likes": 321,
       "liked": false,
       "modelFolder": "room-3d/",
       "modelFile": "room-3d-2.fbx",
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "items": [
         {
           "id": "plane-01",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "benelli.mp4"
           }
         },
         {
           "id": "plane-02",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "plane-02.jpg"
           }
         },
         {
           "id": "plane-03",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "plane-03.jpg"
           }
         },
         {
           "id": "plane-04",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "plane-04.jpg"
           }
         },
         {
           "id": "plane-05",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "benelli2.mp4"
           }
         },
         {
           "id": "plane-06",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "plane-06.jpg"
           }
         },
         {
           "id": "plane-07",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "plane-07.jpg"
           }
         },
         {
           "id": "plane-08",
-          "type": { "id": 5, "name": "texture" },
+          "type": {
+            "id": 5,
+            "name": "texture"
+          },
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "room-3d_2/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/room-3d_2/",
             "file": "plane-08.jpg"
           }
         },
         {
           "id": 10110,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Welcome Room",
           "abstract": "Abstract",
           "position": [
@@ -2146,7 +2761,10 @@
         },
         {
           "id": 10120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Ducati",
           "abstract": "Abstract",
           "position": [
@@ -2165,28 +2783,40 @@
     },
     {
       "id": 300,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Watch 1",
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/watch/casio.glb",
-        "usdz": "/watch/casio.usdz"
+        "gltf": "models/watch/casio.glb",
+        "usdz": "models/watch/casio.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "dark.jpeg"
       },
       "items": [
         {
           "id": 30010,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "watch/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/watch/",
             "file": "casio.glb"
           }
         }
@@ -2199,28 +2829,40 @@
     },
     {
       "id": 301,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Watch 2",
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/watch/watch-ao.glb",
-        "usdz": "/watch/watch-ao.usdz"
+        "gltf": "models/watch/watch-ao.glb",
+        "usdz": "models/watch/watch-ao.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "dark.jpeg"
       },
       "items": [
         {
           "id": 30110,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "watch/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/watch/",
             "file": "watch-ao.glb"
           }
         }
@@ -2233,28 +2875,40 @@
     },
     {
       "id": 302,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Watch 3",
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/watch/watch-ao.glb",
-        "usdz": "/watch/watch-ao.usdz"
+        "gltf": "models/watch/watch-ao.glb",
+        "usdz": "models/watch/watch-ao.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "dark.jpeg"
       },
       "items": [
         {
           "id": 30210,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "watch/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/watch/",
             "file": "watchfree.glb"
           }
         }
@@ -2267,7 +2921,10 @@
     },
     {
       "id": 303,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Ducati",
       "likes": 172,
       "liked": false,
@@ -2276,25 +2933,37 @@
         "usdz": "/moto/moto.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "road1.jpeg"
       },
       "items": [
         {
           "id": 30310,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "moto/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/moto/",
             "file": "moto_ducati.glb"
           }
         },
         {
           "id": 30320,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Suzuki",
           "abstract": "Abstract",
           "position": [
@@ -2313,7 +2982,10 @@
     },
     {
       "id": 304,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Suzuki",
       "likes": 172,
       "liked": false,
@@ -2322,25 +2994,37 @@
         "usdz": "/moto/moto.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "road2.jpeg"
       },
       "items": [
         {
           "id": 30410,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "moto/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/moto/",
             "file": "moto_suzuki.glb"
           }
         },
         {
           "id": 30420,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Moto VR",
           "abstract": "Abstract",
           "position": [
@@ -2359,7 +3043,10 @@
     },
     {
       "id": 305,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Pesto alla genovese",
       "likes": 172,
       "liked": false,
@@ -2368,25 +3055,37 @@
         "usdz": "/barattolo-pesto/barattolo-pesto.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "items": [
         {
           "id": 30510,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "barattolo-pesto/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/barattolo-pesto/",
             "file": "barattolo-pesto.glb"
           }
         },
         {
           "id": 30520,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Time Square",
           "abstract": "Abstract",
           "position": [
@@ -2405,7 +3104,10 @@
     },
     {
       "id": 306,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Washing Machine",
       "likes": 172,
       "liked": false,
@@ -2414,19 +3116,28 @@
         "usdz": "/washing-machine/washing-machine.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "items": [
         {
           "id": 30610,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "washing-machine/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/washing-machine/",
             "file": "glb.glb"
           }
         }
@@ -2439,7 +3150,10 @@
     },
     {
       "id": 307,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Helmet",
       "likes": 172,
       "liked": false,
@@ -2448,19 +3162,28 @@
         "usdz": "/damaged-helmet/damaged-helmet.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "items": [
         {
           "id": 30710,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "damaged-helmet/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/damaged-helmet/",
             "file": "damaged-helmet.glb"
           }
         }
@@ -2473,7 +3196,10 @@
     },
     {
       "id": 308,
-      "type": { "id": 5, "name": "model" },
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
       "name": "Logo WS",
       "likes": 172,
       "liked": false,
@@ -2482,19 +3208,28 @@
         "usdz": "/logo/logows.usdz"
       },
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "waiting-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/waiting-room/",
         "file": "amazing.jpg"
       },
       "items": [
         {
           "id": 30810,
-          "type": { "id": 4, "name": "gltf" },
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
           "title": "Model",
           "abstract": "Abstract",
           "asset": {
-            "type": { "id": 3, "name": "model" },
-            "folder": "logo/",
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "models/logo/",
             "file": "logows2.glb"
           }
         }
@@ -2507,19 +3242,28 @@
     },
     {
       "id": 80,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Time Square",
       "likes": 175,
       "liked": false,
       "asset": {
-        "type": { "id": 2, "name": "video" },
-        "folder": "video/",
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "textures/video/",
         "file": "time-square-composition.mp4"
       },
       "items": [
         {
           "id": 8010,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Video Basil Story",
           "abstract": "Abstract",
           "position": [
@@ -2538,13 +3282,19 @@
     },
     {
       "id": 203,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "From Basil To Pesto p1",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "ambiente2a/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/ambiente2a/",
         "file": "ambiente2a_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -2552,14 +3302,20 @@
       "tiles": [
         {
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "ambiente2a/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/ambiente2a/",
             "file": "ambiente2a_x0_y0.jpg"
           },
           "navs": [
             {
               "id": 20310,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Pesto Dashboard",
               "abstract": "Abstract",
               "position": [
@@ -2571,7 +3327,10 @@
             },
             {
               "id": 20320,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "From Basil To Pesto p2",
               "abstract": "Abstract",
               "position": [
@@ -2602,13 +3361,19 @@
     },
     {
       "id": 204,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "From Basil To Pesto p2",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "ambiente2b/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/ambiente2b/",
         "file": "ambiente2b_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -2616,14 +3381,20 @@
       "tiles": [
         {
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "ambiente2b/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/ambiente2b/",
             "file": "ambiente2b_x0_y0.jpg"
           },
           "navs": [
             {
               "id": 20410,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "From Basil To Pesto p1",
               "abstract": "Abstract",
               "position": [
@@ -2635,7 +3406,10 @@
             },
             {
               "id": 20420,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Pesto alla genovese",
               "abstract": "Abstract",
               "position": [
@@ -2666,22 +3440,34 @@
     },
     {
       "id": 70,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Video Basil Story",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "virtual-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/virtual-room/",
         "file": "virtual-room.jpg"
       },
       "items": [
         {
           "id": 7010,
-          "type": { "id": 3, "name": "curved-plane" },
+          "type": {
+            "id": 3,
+            "name": "curved-plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "video/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/video/",
             "file": "panel-01-plane.mp4"
           },
           "radius": 70,
@@ -2705,7 +3491,10 @@
         },
         {
           "id": 7020,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Video Virtual Chef",
           "abstract": "Abstract",
           "position": [
@@ -2724,22 +3513,34 @@
     },
     {
       "id": 71,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Video Virtual Chef",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "virtual-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/virtual-room/",
         "file": "virtual-room.jpg"
       },
       "items": [
         {
           "id": 7110,
-          "type": { "id": 3, "name": "curved-plane" },
+          "type": {
+            "id": 3,
+            "name": "curved-plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "video/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/video/",
             "file": "panel-02-plane.mp4"
           },
           "radius": 70,
@@ -2763,7 +3564,10 @@
         },
         {
           "id": 7120,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Video Cooking Show",
           "abstract": "Abstract",
           "position": [
@@ -2782,22 +3586,34 @@
     },
     {
       "id": 72,
-      "type": { "id": 2, "name": "panorama" },
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Video Cooking Show",
       "likes": 40,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "virtual-room/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/virtual-room/",
         "file": "virtual-room.jpg"
       },
       "items": [
         {
           "id": 7210,
-          "type": { "id": 3, "name": "curved-plane" },
+          "type": {
+            "id": 3,
+            "name": "curved-plane"
+          },
           "asset": {
-            "type": { "id": 2, "name": "video" },
-            "folder": "video/",
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "textures/video/",
             "file": "panel-04-plane.mp4"
           },
           "radius": 70,
@@ -2821,7 +3637,10 @@
         },
         {
           "id": 7220,
-          "type": { "id": 1, "name": "nav" },
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
           "title": "Room 3D",
           "abstract": "Abstract",
           "position": [
@@ -2840,13 +3659,19 @@
     },
     {
       "id": 205,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Social Media",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "ambiente1a/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/ambiente1a/",
         "file": "ambiente1a_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -2854,14 +3679,20 @@
       "tiles": [
         {
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "ambiente1a/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/ambiente1a/",
             "file": "ambiente1a_x0_y0.jpg"
           },
           "navs": [
             {
               "id": 20510,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Video Basil Story",
               "abstract": "Abstract",
               "position": [
@@ -2873,7 +3704,10 @@
             },
             {
               "id": 20520,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Pesto Dashboard",
               "abstract": "Abstract",
               "position": [
@@ -2908,13 +3742,19 @@
     },
     {
       "id": 206,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Pesto Dashboard",
       "likes": 225,
       "liked": false,
       "asset": {
-        "type": { "id": 1, "name": "image" },
-        "folder": "ambiente1b/",
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "textures/ambiente1b/",
         "file": "ambiente1b_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -2922,14 +3762,20 @@
       "tiles": [
         {
           "asset": {
-            "type": { "id": 1, "name": "image" },
-            "folder": "ambiente1b/",
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "textures/ambiente1b/",
             "file": "ambiente1b_x0_y0.jpg"
           },
           "navs": [
             {
               "id": 20610,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "Social Media",
               "abstract": "Abstract",
               "position": [
@@ -2941,7 +3787,10 @@
             },
             {
               "id": 20620,
-              "type": { "id": 1, "name": "nav" },
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
               "title": "From Basil To Pesto p1",
               "abstract": "Abstract",
               "position": [

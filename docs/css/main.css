@@ -4209,6 +4209,8 @@ body {
     margin-left: 200px; }
   .group--local.publisher .agora-stream {
     margin-left: 20px; }
+  .group--local.guest .agora-stream {
+    display: none; }
 
 .btn--control svg {
   width: 28px;

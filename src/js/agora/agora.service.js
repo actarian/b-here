@@ -10,7 +10,9 @@ import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
-import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, MessageType, RoleType, StreamQualities, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
+import { RoleType } from '../user/user';
+import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, MessageType, StreamQualities, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
+
 export default class AgoraService extends Emittable {
 
 	static getSingleton(defaultDevices) {
@@ -47,6 +49,7 @@ export default class AgoraService extends Emittable {
 		const role = LocationService.get('role') || RoleType.Attendee;
 		const link = LocationService.get('link') || null;
 		const name = LocationService.get('name') || null;
+		const status = this.getInitialStatus(role, link, name);
 		const state = {
 			role: role,
 			link: link,
@@ -54,7 +57,7 @@ export default class AgoraService extends Emittable {
 			channelName: environment.channelName,
 			publisherId: role === RoleType.Publisher ? environment.publisherId : null,
 			uid: null,
-			status: link ? (name ? AgoraStatus.Device : AgoraStatus.Name) : AgoraStatus.Link,
+			status: status,
 			connecting: false,
 			connected: false,
 			locked: false,
@@ -68,6 +71,19 @@ export default class AgoraService extends Emittable {
 		};
 		StateService.state = state;
 		// !!! StateService.patchState({ ... })
+	}
+
+	getInitialStatus(role, link, name) {
+		if (!link) {
+			return AgoraStatus.Link;
+		}
+		if (!name) {
+			return AgoraStatus.Name;
+		}
+		if (role !== RoleType.Guest) {
+			return AgoraStatus.Device;
+		}
+		return AgoraStatus.ShouldConnect;
 	}
 
 	addStreamDevice(src) {
@@ -186,13 +202,24 @@ export default class AgoraService extends Emittable {
 		// AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
 		AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 		const client = this.client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc
-		client.init(environment.appKey, () => {
-			// console.log('AgoraRTC client initialized');
-			next();
-		}, (error) => {
-			// console.log('AgoraRTC client init failed', error);
-			this.client = null;
-		});
+		const clientInit = () => {
+			client.init(environment.appKey, () => {
+				// console.log('AgoraRTC client initialized');
+				next();
+			}, (error) => {
+				// console.log('AgoraRTC client init failed', error);
+				this.client = null;
+			});
+		}
+		if (StateService.state.role === RoleType.Guest) {
+			client.setClientRole('audience', function(error) {
+				if (!error) {
+					clientInit();
+				}
+			});
+		} else {
+			clientInit();
+		}
 		client.on('stream-published', this.onStreamPublished);
 		client.on('stream-unpublished', this.onStreamUnpublished);
 		//subscribe remote stream
@@ -243,15 +270,19 @@ export default class AgoraService extends Emittable {
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
 						this.emit('messageChannel', this.messageChannel);
-						this.autoDetectDevice();
-						this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+						if (StateService.state.role !== RoleType.Guest) {
+							this.autoDetectDevice();
+							this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+						}
 					}, error => {
 						// console.log('joinMessageChannel.error', error);
 					});
 				});
 			} else {
-				this.autoDetectDevice();
-				this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+				if (StateService.state.role !== RoleType.Guest) {
+					this.autoDetectDevice();
+					this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+				}
 			}
 		}, (error) => {
 			console.log('AgoraService.joinChannel.error', error);

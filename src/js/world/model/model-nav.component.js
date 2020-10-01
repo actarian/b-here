@@ -14,7 +14,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	static getTexture() {
-		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getTexturePath('ui/wall-nav.png')));
+		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/wall-nav.png')));
 	}
 
 	onInit() {

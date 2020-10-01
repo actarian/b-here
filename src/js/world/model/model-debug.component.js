@@ -13,7 +13,7 @@ export default class ModelDebugComponent extends ModelComponent {
 	}
 
 	static getFontLoader(callback) {
-		return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(environment.getFontPath('helvetiker/helvetiker_regular.typeface.json'), callback));
+		return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(environment.getPath('fonts/helvetiker/helvetiker_regular.typeface.json'), callback));
 	}
 
 	get message() {

@@ -29,7 +29,7 @@ export default class TryInARComponent extends Component {
 					const { node } = getContext(this);
 					node.appendChild(modelViewerNode);
 				} else if (this.devicePlatform === DevicePlatform.IOS) {
-					const usdzSrc = environment.getModelPath(view.ar.usdz);
+					const usdzSrc = environment.getPath(view.ar.usdz);
 					window.location.href = usdzSrc;
 				}
 			});
@@ -61,8 +61,8 @@ export default class TryInARComponent extends Component {
 	}
 
 	getModelViewerNode(view) {
-		const gltfSrc = environment.getModelPath(view.ar.gltf);
-		const usdzSrc = environment.getModelPath(view.ar.usdz);
+		const gltfSrc = environment.getPath(view.ar.gltf);
+		const usdzSrc = environment.getPath(view.ar.usdz);
 		const template = `<model-viewer alt="${view.name}" src="${gltfSrc}" ios-src="${usdzSrc}" magic-leap ar ar_preferred></model-viewer>`;
 		const div = document.createElement("div");
 		div.innerHTML = template;

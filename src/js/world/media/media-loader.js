@@ -20,7 +20,7 @@ export default class MediaLoader {
 	}
 
 	static getPath(item) {
-		return environment.getTexturePath(item.asset.folder + item.asset.file);
+		return environment.getPath(item.asset.folder + item.asset.file);
 	}
 
 	static loadTexture(item, callback) {

@@ -50,7 +50,7 @@ export default class UpdateViewComponent extends Component {
 			let keys;
 			switch (view.type.name) {
 				case ViewType.Panorama.name:
-					keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom'];
+					keys = ['id', 'type', 'name', 'asset', 'latitude', 'longitude', 'zoom'];
 					break;
 				default:
 					keys = ['id', 'type', 'name'];
@@ -134,6 +134,7 @@ UpdateViewComponent.meta = {
 			<fieldset *if="view.type.name == 'waiting-room'">
 			</fieldset>
 			<fieldset *if="view.type.name == 'panorama'">
+				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>

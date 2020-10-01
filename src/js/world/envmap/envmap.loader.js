@@ -52,13 +52,13 @@ export class EnvMapLoader {
 		if (item.asset.file === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
 		} else if (item.asset.file.indexOf('.hdr') !== -1) {
-			return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 		} else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-			return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadVideoBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 		} else if (item.asset.file.indexOf('.m3u8') !== -1) {
 			return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
 		} else {
-			return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 		}
 	}
 

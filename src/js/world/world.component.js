@@ -188,7 +188,7 @@ export default class WorldComponent extends Component {
 
 	setViewOrientation(view) {
 		if (this.orbit) {
-			this.orbit.mode = view.type;
+			this.orbit.mode = view.type.name;
 			if (!this.renderer.xr.isPresenting) {
 				if (this.infoResultMessage) {
 					this.orbit.setOrientation(this.infoResultMessage.orientation);

@@ -1,6 +1,6 @@
 import { BehaviorSubject, combineLatest } from "rxjs";
 import { map, shareReplay } from "rxjs/operators";
-import { RoleType } from "../agora/agora.types";
+import { RoleType } from '../user/user';
 
 export default class StreamService {
 

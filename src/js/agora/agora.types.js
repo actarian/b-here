@@ -84,14 +84,10 @@ export const AgoraStatus = {
 	Link: 'link',
 	Name: 'name',
 	Device: 'device',
+	ShouldConnect: 'should-connect',
 	Connecting: 'connecting',
 	Connected: 'connected',
 	Disconnected: 'disconnected',
-};
-
-export const RoleType = {
-	Attendee: 'attendee',
-	Publisher: 'publisher',
 };
 
 export const MessageType = {

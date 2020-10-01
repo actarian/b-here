@@ -14,7 +14,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "waiting-room-02.jpg"
       },
       "orientation": {
@@ -24,7 +24,7 @@
       "zoom": 75
     },
     {
-      "id": 10000,
+      "id": 1601561173968,
       "type": {
         "id": 2,
         "name": "panorama"
@@ -37,7 +37,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "mod2.jpg"
       },
       "orientation": {
