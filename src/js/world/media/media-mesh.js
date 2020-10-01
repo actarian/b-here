@@ -1,9 +1,9 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as THREE from 'three';
-import { RoleType } from '../../agora/agora.types';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
+import { RoleType } from '../../user/user';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
 
@@ -236,7 +236,7 @@ export default class MediaMesh extends InteractiveMesh {
 		if (mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({
 				asset: {
-					folder: 'ui/', file: 'play.png'
+					folder: 'textures/ui/', file: 'play.png'
 				}
 			}, (textureB) => {
 				// console.log('MediaMesh.textureB', textureB);

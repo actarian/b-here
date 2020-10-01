@@ -36,7 +36,7 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
-					keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?']; // , 'addAsset', 'addLink' link { title, href, target }
+					keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
@@ -64,12 +64,6 @@ export default class UpdateViewItemComponent extends Component {
 							href: new FormControl(href),
 							target
 						}), 'link');
-						break;
-					case 'addAsset':
-					case 'addLink':
-						const addKey = key.substring(3, key.length).toLowerCase();
-						const check = item[addKey] != null;
-						form.add(new FormControl(check), key);
 						break;
 					default:
 						const optional = key.indexOf('?') !== -1;

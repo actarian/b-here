@@ -12,7 +12,7 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	static getTexture() {
-		return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getTexturePath('ui/floor-nav-circle-v2.png')));
+		return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getPath('textures/ui/floor-nav-circle-v2.png')));
 	}
 
 	set coords(coords) {

@@ -80,7 +80,9 @@ const MIME_CONTENT_TYPES = {
 	"xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Microsoft Excel (OpenXML)
 	"xul": "application/vnd.mozilla.xul+xml", // XUL
 	"zip": "application/zip", // ZIP archive
-	"7z": "application/x-7z-compressed", // 7-zip archive
+	"7z": "application/x-7z-compressed", // 7-zip archive,
+	"glb": "application/octet-stream", // Glb
+	"gltf": "application/octet-stream", // Gltf
 };
 const MIME_TEXT = [
 	'css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml',
@@ -99,6 +101,7 @@ const MIME_VIDEO = [
 ];
 const MIME_APPLICATION = [
 	'abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z',
+	'glb', 'gltf',
 ];
 const MIME_TYPES = [
 	...MIME_TEXT,

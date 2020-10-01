@@ -568,16 +568,8 @@ var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0']
 var Environment = /*#__PURE__*/function () {
   var _proto = Environment.prototype;
 
-  _proto.getModelPath = function getModelPath(path) {
-    return this.isLocal(path) ? this.href + this.paths.models + path : path;
-  };
-
-  _proto.getTexturePath = function getTexturePath(path) {
-    return this.isLocal(path) ? this.href + this.paths.textures + path : path;
-  };
-
-  _proto.getFontPath = function getFontPath(path) {
-    return this.isLocal(path) ? this.href + this.paths.fonts + path : path;
+  _proto.getPath = function getPath(path) {
+    return this.isLocal(path) ? this.href + path : path;
   };
 
   _proto.isLocal = function isLocal(path) {
@@ -623,15 +615,6 @@ var environment = new Environment({
   port: 5000,
   apiEnabled: false,
   fontFamily: 'GT Walsheim',
-  views: {
-    tryInArModal: 2162,
-    controlRequestModal: 2163
-  },
-  paths: {
-    models: 'models/',
-    textures: 'textures/',
-    fonts: 'fonts/'
-  },
   renderOrder: {
     panorama: 0,
     model: 10,
@@ -838,184 +821,13 @@ _defineProperty(MessageService, "in$", new rxjs.ReplaySubject(1));
 
 _defineProperty(MessageService, "send", MessageService.in);
 
-_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamQualities = [{
-  id: 1,
-  name: '4K 2160p 3840x2160',
-  resolution: {
-    width: 3840,
-    height: 2160
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 8910,
-    max: 13500
-  }
-}, {
-  id: 2,
-  name: 'HD 1440p 2560×1440',
-  resolution: {
-    width: 2560,
-    height: 1440
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 4850,
-    max: 7350
-  }
-}, {
-  id: 3,
-  name: 'HD 1080p 1920x1080',
-  resolution: {
-    width: 1920,
-    height: 1080
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 2080,
-    max: 4780
-  }
-}, {
-  id: 4,
-  name: 'LOW 720p 960x720',
-  resolution: {
-    width: 960,
-    height: 720
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 910,
-    max: 1380
-  }
-}, {
-  id: 5,
-  name: 'LOWEST 240p 320x240',
-  resolution: {
-    width: 320,
-    height: 240
-  },
-  frameRate: {
-    min: 15,
-    max: 15
-  },
-  bitrate: {
-    min: 140,
-    max: 200
-  }
-}];
-var AgoraStatus = {
-  Link: 'link',
-  Name: 'name',
-  Device: 'device',
-  Connecting: 'connecting',
-  Connected: 'connected',
-  Disconnected: 'disconnected'
-};
-var RoleType = {
+_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var RoleType = {
+  Publisher: 'publisher',
   Attendee: 'attendee',
-  Publisher: 'publisher'
-};
-var MessageType = {
-  AgoraEvent: 'agoraEvent',
-  Ping: 'ping',
-  RequestControl: 'requestControl',
-  RequestControlAccepted: 'requestControlAccepted',
-  RequestControlRejected: 'requestControlRejected',
-  RequestControlDismiss: 'requestControlDismiss',
-  RequestControlDismissed: 'requestControlDismissed',
-  RequestPeerInfo: 'requestPeerInfo',
-  RequestPeerInfoResult: 'requestPeerInfoResult',
-  RequestInfo: 'requestInfo',
-  RequestInfoResult: 'requestInfoResult',
-  RequestInfoDismiss: 'requestInfoDismiss',
-  RequestInfoDismissed: 'requestInfoDismissed',
-  RequestInfoRejected: 'requestInfoRejected',
-  SlideChange: 'slideChange',
-  CameraRotate: 'cameraRotate',
-  CameraOrientation: 'cameraOrientation',
-  NavToView: 'navToView',
-  NavToGrid: 'navToGrid',
-  VRStarted: 'vrStarted',
-  VREnded: 'vrEnded',
-  VRState: 'vrState'
-};
-var AgoraEvent = function AgoraEvent(options) {
-  Object.assign(this, options);
-};
-var AgoraPeerEvent = /*#__PURE__*/function (_AgoraEvent) {
-  _inheritsLoose(AgoraPeerEvent, _AgoraEvent);
-
-  function AgoraPeerEvent() {
-    return _AgoraEvent.apply(this, arguments) || this;
-  }
-
-  return AgoraPeerEvent;
-}(AgoraEvent);
-var AgoraRemoteEvent = /*#__PURE__*/function (_AgoraEvent2) {
-  _inheritsLoose(AgoraRemoteEvent, _AgoraEvent2);
-
-  function AgoraRemoteEvent() {
-    return _AgoraEvent2.apply(this, arguments) || this;
-  }
-
-  return AgoraRemoteEvent;
-}(AgoraEvent);
-var AgoraMuteVideoEvent = /*#__PURE__*/function (_AgoraEvent3) {
-  _inheritsLoose(AgoraMuteVideoEvent, _AgoraEvent3);
-
-  function AgoraMuteVideoEvent() {
-    return _AgoraEvent3.apply(this, arguments) || this;
-  }
-
-  return AgoraMuteVideoEvent;
-}(AgoraEvent);
-var AgoraUnmuteVideoEvent = /*#__PURE__*/function (_AgoraEvent4) {
-  _inheritsLoose(AgoraUnmuteVideoEvent, _AgoraEvent4);
-
-  function AgoraUnmuteVideoEvent() {
-    return _AgoraEvent4.apply(this, arguments) || this;
-  }
-
-  return AgoraUnmuteVideoEvent;
-}(AgoraEvent);
-var AgoraMuteAudioEvent = /*#__PURE__*/function (_AgoraEvent5) {
-  _inheritsLoose(AgoraMuteAudioEvent, _AgoraEvent5);
-
-  function AgoraMuteAudioEvent() {
-    return _AgoraEvent5.apply(this, arguments) || this;
-  }
-
-  return AgoraMuteAudioEvent;
-}(AgoraEvent);
-var AgoraUnmuteAudioEvent = /*#__PURE__*/function (_AgoraEvent6) {
-  _inheritsLoose(AgoraUnmuteAudioEvent, _AgoraEvent6);
-
-  function AgoraUnmuteAudioEvent() {
-    return _AgoraEvent6.apply(this, arguments) || this;
-  }
-
-  return AgoraUnmuteAudioEvent;
-}(AgoraEvent);
-var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
-  _inheritsLoose(AgoraVolumeLevelsEvent, _AgoraEvent7);
-
-  function AgoraVolumeLevelsEvent() {
-    return _AgoraEvent7.apply(this, arguments) || this;
-  }
-
-  return AgoraVolumeLevelsEvent;
-}(AgoraEvent);var StreamService = /*#__PURE__*/function () {
+  Streamer: 'streamer',
+  Guest: 'guest',
+  SelfService: 'self-service'
+};var StreamService = /*#__PURE__*/function () {
   function StreamService() {}
 
   StreamService.getPublisherStreamId$ = function getPublisherStreamId$() {
@@ -1112,7 +924,181 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.loca
   }
 
   return streams;
-}), operators.shareReplay(1)));var AgoraService = /*#__PURE__*/function (_Emittable) {
+}), operators.shareReplay(1)));var StreamQualities = [{
+  id: 1,
+  name: '4K 2160p 3840x2160',
+  resolution: {
+    width: 3840,
+    height: 2160
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 8910,
+    max: 13500
+  }
+}, {
+  id: 2,
+  name: 'HD 1440p 2560×1440',
+  resolution: {
+    width: 2560,
+    height: 1440
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 4850,
+    max: 7350
+  }
+}, {
+  id: 3,
+  name: 'HD 1080p 1920x1080',
+  resolution: {
+    width: 1920,
+    height: 1080
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 2080,
+    max: 4780
+  }
+}, {
+  id: 4,
+  name: 'LOW 720p 960x720',
+  resolution: {
+    width: 960,
+    height: 720
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 910,
+    max: 1380
+  }
+}, {
+  id: 5,
+  name: 'LOWEST 240p 320x240',
+  resolution: {
+    width: 320,
+    height: 240
+  },
+  frameRate: {
+    min: 15,
+    max: 15
+  },
+  bitrate: {
+    min: 140,
+    max: 200
+  }
+}];
+var AgoraStatus = {
+  Link: 'link',
+  Name: 'name',
+  Device: 'device',
+  ShouldConnect: 'should-connect',
+  Connecting: 'connecting',
+  Connected: 'connected',
+  Disconnected: 'disconnected'
+};
+var MessageType = {
+  AgoraEvent: 'agoraEvent',
+  Ping: 'ping',
+  RequestControl: 'requestControl',
+  RequestControlAccepted: 'requestControlAccepted',
+  RequestControlRejected: 'requestControlRejected',
+  RequestControlDismiss: 'requestControlDismiss',
+  RequestControlDismissed: 'requestControlDismissed',
+  RequestPeerInfo: 'requestPeerInfo',
+  RequestPeerInfoResult: 'requestPeerInfoResult',
+  RequestInfo: 'requestInfo',
+  RequestInfoResult: 'requestInfoResult',
+  RequestInfoDismiss: 'requestInfoDismiss',
+  RequestInfoDismissed: 'requestInfoDismissed',
+  RequestInfoRejected: 'requestInfoRejected',
+  SlideChange: 'slideChange',
+  CameraRotate: 'cameraRotate',
+  CameraOrientation: 'cameraOrientation',
+  NavToView: 'navToView',
+  NavToGrid: 'navToGrid',
+  VRStarted: 'vrStarted',
+  VREnded: 'vrEnded',
+  VRState: 'vrState'
+};
+var AgoraEvent = function AgoraEvent(options) {
+  Object.assign(this, options);
+};
+var AgoraPeerEvent = /*#__PURE__*/function (_AgoraEvent) {
+  _inheritsLoose(AgoraPeerEvent, _AgoraEvent);
+
+  function AgoraPeerEvent() {
+    return _AgoraEvent.apply(this, arguments) || this;
+  }
+
+  return AgoraPeerEvent;
+}(AgoraEvent);
+var AgoraRemoteEvent = /*#__PURE__*/function (_AgoraEvent2) {
+  _inheritsLoose(AgoraRemoteEvent, _AgoraEvent2);
+
+  function AgoraRemoteEvent() {
+    return _AgoraEvent2.apply(this, arguments) || this;
+  }
+
+  return AgoraRemoteEvent;
+}(AgoraEvent);
+var AgoraMuteVideoEvent = /*#__PURE__*/function (_AgoraEvent3) {
+  _inheritsLoose(AgoraMuteVideoEvent, _AgoraEvent3);
+
+  function AgoraMuteVideoEvent() {
+    return _AgoraEvent3.apply(this, arguments) || this;
+  }
+
+  return AgoraMuteVideoEvent;
+}(AgoraEvent);
+var AgoraUnmuteVideoEvent = /*#__PURE__*/function (_AgoraEvent4) {
+  _inheritsLoose(AgoraUnmuteVideoEvent, _AgoraEvent4);
+
+  function AgoraUnmuteVideoEvent() {
+    return _AgoraEvent4.apply(this, arguments) || this;
+  }
+
+  return AgoraUnmuteVideoEvent;
+}(AgoraEvent);
+var AgoraMuteAudioEvent = /*#__PURE__*/function (_AgoraEvent5) {
+  _inheritsLoose(AgoraMuteAudioEvent, _AgoraEvent5);
+
+  function AgoraMuteAudioEvent() {
+    return _AgoraEvent5.apply(this, arguments) || this;
+  }
+
+  return AgoraMuteAudioEvent;
+}(AgoraEvent);
+var AgoraUnmuteAudioEvent = /*#__PURE__*/function (_AgoraEvent6) {
+  _inheritsLoose(AgoraUnmuteAudioEvent, _AgoraEvent6);
+
+  function AgoraUnmuteAudioEvent() {
+    return _AgoraEvent6.apply(this, arguments) || this;
+  }
+
+  return AgoraUnmuteAudioEvent;
+}(AgoraEvent);
+var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
+  _inheritsLoose(AgoraVolumeLevelsEvent, _AgoraEvent7);
+
+  function AgoraVolumeLevelsEvent() {
+    return _AgoraEvent7.apply(this, arguments) || this;
+  }
+
+  return AgoraVolumeLevelsEvent;
+}(AgoraEvent);var AgoraService = /*#__PURE__*/function (_Emittable) {
   _inheritsLoose(AgoraService, _Emittable);
 
   AgoraService.getSingleton = function getSingleton(defaultDevices) {
@@ -1154,6 +1140,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.loca
     var role = LocationService.get('role') || RoleType.Attendee;
     var link = LocationService.get('link') || null;
     var name = LocationService.get('name') || null;
+
+    var status = _this.getInitialStatus(role, link, name);
+
     var state = {
       role: role,
       link: link,
@@ -1161,7 +1150,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.loca
       channelName: environment.channelName,
       publisherId: role === RoleType.Publisher ? environment.publisherId : null,
       uid: null,
-      status: link ? name ? AgoraStatus.Device : AgoraStatus.Name : AgoraStatus.Link,
+      status: status,
       connecting: false,
       connected: false,
       locked: false,
@@ -1182,6 +1171,22 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.loca
   }
 
   var _proto = AgoraService.prototype;
+
+  _proto.getInitialStatus = function getInitialStatus(role, link, name) {
+    if (!link) {
+      return AgoraStatus.Link;
+    }
+
+    if (!name) {
+      return AgoraStatus.Name;
+    }
+
+    if (role !== RoleType.Guest) {
+      return AgoraStatus.Device;
+    }
+
+    return AgoraStatus.ShouldConnect;
+  };
 
   _proto.addStreamDevice = function addStreamDevice(src) {
     this.removeStreamDevice();
@@ -1338,13 +1343,26 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.loca
       codec: 'h264'
     }); // rtc
 
-    client.init(environment.appKey, function () {
-      // console.log('AgoraRTC client initialized');
-      next();
-    }, function (error) {
-      // console.log('AgoraRTC client init failed', error);
-      _this3.client = null;
-    });
+    var clientInit = function clientInit() {
+      client.init(environment.appKey, function () {
+        // console.log('AgoraRTC client initialized');
+        next();
+      }, function (error) {
+        // console.log('AgoraRTC client init failed', error);
+        _this3.client = null;
+      });
+    };
+
+    if (StateService.state.role === RoleType.Guest) {
+      client.setClientRole('audience', function (error) {
+        if (!error) {
+          clientInit();
+        }
+      });
+    } else {
+      clientInit();
+    }
+
     client.on('stream-published', this.onStreamPublished);
     client.on('stream-unpublished', this.onStreamUnpublished); //subscribe remote stream
 
@@ -1407,9 +1425,11 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.loca
             // console.log('joinMessageChannel.success', success);
             _this4.emit('messageChannel', _this4.messageChannel);
 
-            _this4.autoDetectDevice();
+            if (StateService.state.role !== RoleType.Guest) {
+              _this4.autoDetectDevice();
 
-            _this4.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+              _this4.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+            }
           }, function (error) {// console.log('joinMessageChannel.error', error);
           });
         });
@@ -2831,8 +2851,8 @@ AgoraStreamComponent.meta = {
   remove: 'remove-modal.html'
 };
 var SERVER_MODALS = {
-  controlRequest: environment.views.controlRequestModal,
-  tryInAr: environment.views.tryInArModal,
+  controlRequest: 'control-request-modal.cshtml',
+  tryInAr: 'try-in-ar-modal.cshtml',
   view: {
     'panorama': 'panorama-modal.cshtml',
     'panorama-grid': 'panorama-grid-modal.cshtml',
@@ -2847,25 +2867,6 @@ var SERVER_MODALS = {
     'gltf': 'gltf-modal.cshtml'
   }
 };
-/*
-const SERVER_MODALS = {
-	controlRequest: environment.views.controlRequestModal,
-	tryInAr: environment.views.tryInArModal,
-	view: {
-		'panorama': 2000,
-		'panorama-grid': 2001,
-		'room-3d': 2002,
-		'model': 2003,
-	},
-	viewItem: {
-		'nav': 2004,
-		'plane': 2005,
-		'curved-plane': 2006,
-		'texture': 2007,
-		'gltf': 2008,
-	}
-};
-*/
 
 var ModalSrcService = /*#__PURE__*/function () {
   function ModalSrcService() {}
@@ -3615,10 +3616,14 @@ var VRService = /*#__PURE__*/function () {
   _proto.init = function init() {
     var _this2 = this;
 
-    var agora = this.agora = AgoraService.getSingleton();
+    var agora = null;
+    var role = LocationService.get('role') || RoleType.Attendee;
+
+    if (role !== RoleType.SelfService || DEBUG) {
+      agora = this.agora = AgoraService.getSingleton();
+    }
 
     if (!agora) {
-      var role = LocationService.get('role') || RoleType.Attendee;
       var link = LocationService.get('link') || null;
       var name = LocationService.get('name') || null;
       StateService.state = {
@@ -3722,6 +3727,10 @@ var VRService = /*#__PURE__*/function () {
         agora.sendMessage(message);
       }
     });
+
+    if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
+      this.connect();
+    }
   };
 
   _proto.initForm = function initForm() {
@@ -3754,12 +3763,13 @@ var VRService = /*#__PURE__*/function () {
         if (!DEBUG) {
           _this3.agora.navToView(view.id);
         }
-      } // collect items publisherStream & nextAttendeeStream ?
-
+      }
 
       _this3.view = view;
 
       _this3.pushChanges();
+
+      LocationService.set('viewId', view.id);
     })).subscribe(console.log);
   };
 
@@ -3793,10 +3803,14 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.onLink = function onLink(link) {
     if (StateService.state.name) {
-      StateService.patchState({
-        link: link,
-        status: AgoraStatus.Device
-      });
+      if (StateService.state.role === RoleType.Guest) {
+        this.connect();
+      } else {
+        StateService.patchState({
+          link: link,
+          status: AgoraStatus.Device
+        });
+      }
     } else {
       StateService.patchState({
         link: link,
@@ -3806,10 +3820,14 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onName = function onName(name) {
-    StateService.patchState({
-      name: name,
-      status: AgoraStatus.Device
-    });
+    if (StateService.state.role === RoleType.Guest) {
+      this.connect();
+    } else {
+      StateService.patchState({
+        name: name,
+        status: AgoraStatus.Device
+      });
+    }
   };
 
   _proto.onEnter = function onEnter(preferences) {
@@ -4042,26 +4060,26 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
         case AssetType.Image.name:
         case AssetType.Video.name:
           asset = asset.folder + asset.file;
-          asset = environment.getTexturePath(asset);
+          asset = environment.getPath(asset);
           break;
 
         case AssetType.Model.name:
           asset = asset.folder + asset.file;
-          asset = environment.getModelPath(asset);
+          asset = environment.getPath(asset);
           break;
 
         case AssetType.PublisherStream.name:
         case AssetType.NextAttendeeStream.name:
-          asset = environment.getModelPath(asset.file);
+          asset = environment.getPath(asset.file);
           break;
 
         default:
           if (isImage(asset.file) || isVideo(asset.file)) {
             asset = asset.folder + asset.file;
-            asset = environment.getTexturePath(asset);
+            asset = environment.getPath(asset);
           } else if (isModel(asset.file)) {
             asset = asset.folder + asset.file;
-            asset = environment.getModelPath(asset);
+            asset = environment.getPath(asset);
           } else if (isStream(asset.file)) {
             asset = asset.file;
           }
@@ -5049,10 +5067,11 @@ AsideComponent.meta = {
       	}
       }
       */
-      // collect items publisherStream & nextAttendeeStream ?
       _this2.view = view;
 
       _this2.pushChanges();
+
+      LocationService.set('viewId', view.id);
     })).subscribe(console.log);
   };
 
@@ -5318,9 +5337,14 @@ AsideComponent.meta = {
     } else if (event.view) {
       EditorService.viewUpdate$(event.view).pipe(operators.first()).subscribe(function (response) {
         console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
+        var assetDidChange = _this7.view.asset.id !== event.view.asset.id;
         Object.assign(_this7.view, event.view);
 
-        _this7.pushChanges();
+        if (assetDidChange) {
+          _this7.controls.view.value = event.view.id;
+        } else {
+          _this7.pushChanges();
+        }
       }, function (error) {
         return console.log('EditorComponent.onAsideUpdate.viewUpdate$.error', error);
       });
@@ -6082,8 +6106,7 @@ RemoveModalComponent.meta = {
 
       switch (item.type.name) {
         case ViewItemType.Nav.name:
-          keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?']; // , 'addAsset', 'addLink' link { title, href, target }
-
+          keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?'];
           break;
 
         case ViewItemType.Plane.name:
@@ -6119,13 +6142,6 @@ RemoveModalComponent.meta = {
               href: new rxcompForm.FormControl(href),
               target: target
             }), 'link');
-            break;
-
-          case 'addAsset':
-          case 'addLink':
-            var addKey = key.substring(3, key.length).toLowerCase();
-            var check = item[addKey] != null;
-            form.add(new rxcompForm.FormControl(check), key);
             break;
 
           default:
@@ -6366,7 +6382,7 @@ UpdateViewTileComponent.meta = {
 
       switch (view.type.name) {
         case ViewType.Panorama.name:
-          keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom'];
+          keys = ['id', 'type', 'name', 'asset', 'latitude', 'longitude', 'zoom'];
           break;
 
         default:
@@ -6453,7 +6469,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -8513,7 +8529,7 @@ SvgIconStructure.meta = {
 
       if (data && data.ar) {
         // const url = `${environment.host}${data.ar.usdz}`;
-        var url = STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/viewdoc.cshtml?co_id=" + environment.views.tryInAryModal + "&viewId=" + data.id;
+        var url = STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/template/modules/b-here/try-in-ar.cshtml?viewId=" + data.id;
         console.log('TryInARModalComponent.onInit.url', url);
         var qrcode = new QRious({
           element: node.querySelector('.qrcode'),
@@ -8569,7 +8585,7 @@ var TryInARComponent = /*#__PURE__*/function (_Component) {
 
           node.appendChild(modelViewerNode);
         } else if (_this.devicePlatform === DevicePlatform.IOS) {
-          var usdzSrc = environment.getModelPath(view.ar.usdz);
+          var usdzSrc = environment.getPath(view.ar.usdz);
           window.location.href = usdzSrc;
         }
       });
@@ -8606,8 +8622,8 @@ var TryInARComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.getModelViewerNode = function getModelViewerNode(view) {
-    var gltfSrc = environment.getModelPath(view.ar.gltf);
-    var usdzSrc = environment.getModelPath(view.ar.usdz);
+    var gltfSrc = environment.getPath(view.ar.gltf);
+    var usdzSrc = environment.getPath(view.ar.usdz);
     var template = "<model-viewer alt=\"" + view.name + "\" src=\"" + gltfSrc + "\" ios-src=\"" + usdzSrc + "\" magic-leap ar ar_preferred></model-viewer>";
     var div = document.createElement("div");
     div.innerHTML = template;
@@ -59108,13 +59124,13 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
     if (item.asset.file === 'publisherStream') {
       return this.loadPublisherStreamBackground(renderer, callback);
     } else if (item.asset.file.indexOf('.hdr') !== -1) {
-      return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+      return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
     } else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-      return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+      return this.loadVideoBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
     } else if (item.asset.file.indexOf('.m3u8') !== -1) {
       return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
     } else {
-      return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+      return this.loadBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
     }
   };
 
@@ -64642,15 +64658,6 @@ var PhoneElement = /*#__PURE__*/function () {
     StreamService.remotes$.subscribe(function (remotes) {
       _this3.remotes = remotes;
     });
-    /*
-    const agora = this.agora = AgoraService.getSingleton();
-    if (agora) {
-    } else {
-    	this.remotes = [
-    		1, 2, 3, 4
-    	];
-    }
-    */
   }
 
   var _proto2 = PhoneElement.prototype;
@@ -64673,7 +64680,7 @@ var PointerElement = /*#__PURE__*/function () {
   function PointerElement() {
     var geometry = new THREE$1.PlaneBufferGeometry(1.2, 1.2, 2, 2);
     var loader = new THREE$1.TextureLoader();
-    var texture = loader.load(environment.getTexturePath('ui/wall-nav.png'));
+    var texture = loader.load(environment.getPath('textures/ui/wall-nav.png'));
     var material = new THREE$1.MeshBasicMaterial({
       depthTest: false,
       depthWrite: false,
@@ -64850,7 +64857,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.setViewOrientation = function setViewOrientation(view) {
     if (this.orbit) {
-      this.orbit.mode = view.type;
+      this.orbit.mode = view.type.name;
 
       if (!this.renderer.xr.isPresenting) {
         if (this.infoResultMessage) {
@@ -65929,7 +65936,7 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.getPath = function getPath(item) {
-    return environment.getTexturePath(item.asset.folder + item.asset.file);
+    return environment.getPath(item.asset.folder + item.asset.file);
   };
 
   MediaLoader.loadTexture = function loadTexture(item, callback) {
@@ -66317,7 +66324,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     if (mediaLoader.isPlayableVideo) {
       var textureB = MediaLoader.loadTexture({
         asset: {
-          folder: 'ui/',
+          folder: 'textures/ui/',
           file: 'play.png'
         }
       }, function (textureB) {
@@ -66697,7 +66704,7 @@ ModelCurvedPlaneComponent.meta = {
   };
 
   ModelDebugComponent.getFontLoader = function getFontLoader(callback) {
-    return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(environment.getFontPath('helvetiker/helvetiker_regular.typeface.json'), callback));
+    return ModelDebugComponent.fontLoader || (ModelDebugComponent.fontLoader = ModelDebugComponent.getLoader().load(environment.getPath('fonts/helvetiker/helvetiker_regular.typeface.json'), callback));
   };
 
   var _proto = ModelDebugComponent.prototype;
@@ -66908,7 +66915,7 @@ ModelDebugComponent.meta = {
     var _this = this;
 
     // this.renderOrder = environment.renderOrder.model;
-    this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
+    this.loadGltfModel(environment.getPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
       // scale
       var box = new THREE$1.Box3().setFromObject(mesh);
       var size = box.max.clone().sub(box.min);
@@ -66959,8 +66966,8 @@ ModelDebugComponent.meta = {
       _this.pushChanges();
     });
     /*
-    this.loadRgbeBackground(environment.getTexturePath(this.item.asset.folder), this.item.asset.file, (envMap) => {
-    	this.loadGltfModel(environment.getModelPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
+    this.loadRgbeBackground(environment.getPath(this.item.asset.folder), this.item.asset.file, (envMap) => {
+    	this.loadGltfModel(environment.getPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
     		const box = new THREE.Box3().setFromObject(mesh);
     		const center = box.getCenter(new THREE.Vector3());
     		mesh.position.x += (mesh.position.x - center.x);
@@ -67047,7 +67054,7 @@ ModelGltfComponent.meta = {
   };
 
   ModelGridComponent.getTexture = function getTexture() {
-    return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getTexturePath('ui/floor-nav-circle-v2.png')));
+    return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getPath('textures/ui/floor-nav-circle-v2.png')));
   };
 
   var _proto = ModelGridComponent.prototype;
@@ -67867,7 +67874,7 @@ ModelMenuComponent.meta = {
   };
 
   ModelNavComponent.getTexture = function getTexture() {
-    return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getTexturePath('ui/wall-nav.png')));
+    return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/wall-nav.png')));
   };
 
   var _proto = ModelNavComponent.prototype;
@@ -73342,7 +73349,7 @@ var FBXLoader = ( function () {
   _proto.onCreate = function onCreate(mount, dismount) {
     var _this = this;
 
-    this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, function (mesh) {
+    this.loadModel(environment.getPath(this.item.modelFolder), this.item.modelFile, function (mesh) {
       if (typeof mount === 'function') {
         mount(mesh);
       }

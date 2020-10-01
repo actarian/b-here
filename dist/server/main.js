@@ -382,7 +382,11 @@ var MIME_CONTENT_TYPES = {
   // XUL
   "zip": "application/zip",
   // ZIP archive
-  "7z": "application/x-7z-compressed" // 7-zip archive
+  "7z": "application/x-7z-compressed",
+  // 7-zip archive,
+  "glb": "application/octet-stream",
+  // Glb
+  "gltf": "application/octet-stream" // Gltf
 
 };
 var MIME_TEXT = ['css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml'];
@@ -390,7 +394,7 @@ var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff
 var MIME_FONTS = ['otf', 'ttf', 'woff', 'woff2'];
 var MIME_AUDIO = ['aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
-var MIME_APPLICATION = ['abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z'];
+var MIME_APPLICATION = ['abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z', 'glb', 'gltf'];
 var MIME_TYPES = [].concat(MIME_TEXT, MIME_IMAGE, MIME_FONTS, MIME_AUDIO, MIME_VIDEO, MIME_APPLICATION);
 
 function staticMiddleware(vars) {

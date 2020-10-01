@@ -553,6 +553,12 @@ body {
 			margin-left: 20px;
 		}
 	}
+
+	&.guest {
+		.agora-stream {
+			display: none;
+		}
+	}
 }
 
 .btn--control {

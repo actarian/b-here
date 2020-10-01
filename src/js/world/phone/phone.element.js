@@ -120,15 +120,6 @@ export default class PhoneElement {
 		StreamService.remotes$.subscribe(remotes => {
 			this.remotes = remotes;
 		});
-		/*
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-		} else {
-			this.remotes = [
-				1, 2, 3, 4
-			];
-		}
-		*/
 	}
 
 	create() {

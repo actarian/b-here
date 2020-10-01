@@ -14,7 +14,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "waiting-room.jpg"
       },
       "orientation": {
@@ -24,7 +24,7 @@
       "zoom": 75
     },
     {
-      "id": 10000,
+      "id": 1601561173968,
       "type": {
         "id": 2,
         "name": "panorama"
@@ -37,7 +37,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "IPF WELCOME.jpg"
       },
       "orientation": {
@@ -55,9 +55,9 @@
           "abstract": "nav to waiting room",
           "viewId": "1600773895526",
           "position": [
-            0.8727309729837255,
-            0.21783401223787396,
-            -0.4369084479696284
+            0.7944839286378842,
+            0.02945181797221884,
+            0.606570587445719
           ],
           "id": 1600271574407,
           "link": {
@@ -75,11 +75,16 @@
           "abstract": "nav to waiting room",
           "viewId": 1792,
           "position": [
-            0.7504471741049891,
-            -0.20406595230134555,
-            -0.6286383109461124
+            0.9960812828102876,
+            0.0241429959658672,
+            0.08508345186229699
           ],
-          "id": 1600759466891
+          "id": 1600759466891,
+          "link": {
+            "title": null,
+            "href": null,
+            "target": "_blank"
+          }
         }
       ]
     }

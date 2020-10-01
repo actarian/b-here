@@ -14,7 +14,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "waiting-room.jpg"
       },
       "items": [],
@@ -38,7 +38,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "IPF WELCOME.jpg"
       },
       "items": [
@@ -55,7 +55,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "ipf/",
+            "folder": "textures/ipf/",
             "file": "logo-ipf.png"
           },
           "link": {
@@ -211,7 +211,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "01_cinema.jpg"
       },
       "items": [
@@ -226,7 +226,7 @@
               "id": 2,
               "name": "video"
             },
-            "folder": "video/",
+            "folder": "textures/video/",
             "file": "IPF PARQUET.mp4"
           },
           "position": {
@@ -281,7 +281,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "02_galleryvision.jpg"
       },
       "items": [
@@ -336,7 +336,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "03_collezione1.jpg"
       },
       "items": [
@@ -368,7 +368,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "ipf/",
+            "folder": "textures/ipf/",
             "file": "logo-ipf.png"
           },
           "link": {
@@ -404,7 +404,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "04_collezione2.jpg"
       },
       "items": [
@@ -436,7 +436,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "ipf/",
+            "folder": "textures/ipf/",
             "file": "logo-ipf.png"
           },
           "link": {
@@ -472,7 +472,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "05_collezione3.jpg"
       },
       "items": [
@@ -504,7 +504,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "ipf/",
+            "folder": "textures/ipf/",
             "file": "logo-ipf.png"
           },
           "link": {
@@ -540,7 +540,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "06_collezione4.jpg"
       },
       "items": [
@@ -572,7 +572,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "ipf/",
+            "folder": "textures/ipf/",
             "file": "logo-ipf.png"
           },
           "link": {
@@ -608,7 +608,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "07_collezione5.jpg"
       },
       "items": [
@@ -640,7 +640,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "ipf/",
+            "folder": "textures/ipf/",
             "file": "logo-ipf.png"
           },
           "link": {
@@ -676,7 +676,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "IPF STANZA PAESAGGI 360 IPF_lounge art rovere bianco idro oil.jpg"
       },
       "items": [
@@ -716,7 +716,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "IPF STANZA PANORAMICA 36 0IPF_CAMELOT Excalibur.jpg"
       },
       "items": [
@@ -756,7 +756,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "rendering/",
+        "folder": "textures/rendering/",
         "file": "IPF STANZA PANORAMICA 36 0IPF_segato a mano_rovere_cemento.jpg"
       },
       "items": [
@@ -792,8 +792,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "/logo/logowsGLTF.gltf",
-        "usdz": "/logo/logows.usdz"
+        "gltf": "models/logo/logowsGLTF.gltf",
+        "usdz": "models/logo/logows.usdz"
       },
       "asset": {
         "type": {
@@ -836,8 +836,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "/logo/logowsGLTF.gltf",
-        "usdz": "/logo/logows.usdz"
+        "gltf": "models/logo/logowsGLTF.gltf",
+        "usdz": "models/logo/logows.usdz"
       },
       "asset": {
         "type": {
@@ -884,7 +884,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "grid/",
+        "folder": "textures/grid/",
         "file": "collezione3_x0_y0.jpg"
       },
       "invertAxes": true,
@@ -896,7 +896,7 @@
               "id": 1,
               "name": "image"
             },
-            "folder": "grid/",
+            "folder": "textures/grid/",
             "file": "collezione3_x0_y0.jpg"
           },
           "navs": []
@@ -937,15 +937,15 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/logo/logowsGLTF.gltf",
-        "usdz": "/logo/logows.usdz"
+        "gltf": "models/logo/logowsGLTF.gltf",
+        "usdz": "models/logo/logows.usdz"
       },
       "asset": {
         "type": {
           "id": 1,
           "name": "image"
         },
-        "folder": "waiting-room/",
+        "folder": "textures/waiting-room/",
         "file": "amazing.jpg"
       },
       "items": [
@@ -962,7 +962,7 @@
               "id": 3,
               "name": "model"
             },
-            "folder": "logo/",
+            "folder": "models/logo/",
             "file": "logowsGLB.glb"
           }
         }

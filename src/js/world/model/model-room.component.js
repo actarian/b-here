@@ -20,7 +20,7 @@ export default class ModelRoomComponent extends ModelComponent {
 	}
 
 	onCreate(mount, dismount) {
-		this.loadModel(environment.getModelPath(this.item.modelFolder), this.item.modelFile, (mesh) => {
+		this.loadModel(environment.getPath(this.item.modelFolder), this.item.modelFile, (mesh) => {
 			if (typeof mount === 'function') {
 				mount(mesh);
 			}

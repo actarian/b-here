@@ -1,4 +1,4 @@
-import { BASE_HREF, environment, STATIC } from "../environment";
+import { BASE_HREF, STATIC } from "../environment";
 
 const STATIC_MODALS = {
 	controlRequest: 'control-request-modal.html',
@@ -20,8 +20,8 @@ const STATIC_MODALS = {
 };
 
 const SERVER_MODALS = {
-	controlRequest: environment.views.controlRequestModal,
-	tryInAr: environment.views.tryInArModal,
+	controlRequest: 'control-request-modal.cshtml',
+	tryInAr: 'try-in-ar-modal.cshtml',
 	view: {
 		'panorama': 'panorama-modal.cshtml',
 		'panorama-grid': 'panorama-grid-modal.cshtml',
@@ -36,26 +36,6 @@ const SERVER_MODALS = {
 		'gltf': 'gltf-modal.cshtml',
 	},
 };
-
-/*
-const SERVER_MODALS = {
-	controlRequest: environment.views.controlRequestModal,
-	tryInAr: environment.views.tryInArModal,
-	view: {
-		'panorama': 2000,
-		'panorama-grid': 2001,
-		'room-3d': 2002,
-		'model': 2003,
-	},
-	viewItem: {
-		'nav': 2004,
-		'plane': 2005,
-		'curved-plane': 2006,
-		'texture': 2007,
-		'gltf': 2008,
-	}
-};
-*/
 
 export default class ModalSrcService {
 

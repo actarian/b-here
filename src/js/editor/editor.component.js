@@ -3,13 +3,14 @@ import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { Subject } from 'rxjs';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
-import { AgoraStatus, RoleType, StreamQualities } from '../agora/agora.types';
+import { AgoraStatus, StreamQualities } from '../agora/agora.types';
 import { DEBUG, EDITOR, environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import ToastService from '../toast/toast.service';
+import { RoleType } from '../user/user';
 import { ViewItemType, ViewType } from '../view/view';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
@@ -119,9 +120,9 @@ export default class EditorComponent extends Component {
 					}
 				}
 				*/
-				// collect items publisherStream & nextAttendeeStream ?
 				this.view = view;
 				this.pushChanges();
+				LocationService.set('viewId', view.id);
 			}),
 		).subscribe(console.log);
 	}
@@ -327,8 +328,13 @@ export default class EditorComponent extends Component {
 				first(),
 			).subscribe(response => {
 				console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
+				const assetDidChange = this.view.asset.id !== event.view.asset.id;
 				Object.assign(this.view, event.view);
-				this.pushChanges();
+				if (assetDidChange) {
+					this.controls.view.value = event.view.id;
+				} else {
+					this.pushChanges();
+				}
 			}, error => console.log('EditorComponent.onAsideUpdate.viewUpdate$.error', error));
 		}
 	}

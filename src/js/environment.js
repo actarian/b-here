@@ -32,16 +32,8 @@ export class Environment {
 		return `${window.location.protocol}//${host}${BASE_HREF}`;
 	}
 
-	getModelPath(path) {
-		return this.isLocal(path) ? (this.href + this.paths.models + path) : path;
-	}
-
-	getTexturePath(path) {
-		return this.isLocal(path) ? (this.href + this.paths.textures + path) : path;
-	}
-
-	getFontPath(path) {
-		return this.isLocal(path) ? (this.href + this.paths.fonts + path) : path;
+	getPath(path) {
+		return this.isLocal(path) ? (this.href + path) : path;
 	}
 
 	isLocal(path) {
@@ -65,15 +57,6 @@ export const environment = new Environment({
 	port: 5000,
 	apiEnabled: false,
 	fontFamily: 'GT Walsheim',
-	views: {
-		tryInArModal: 2162,
-		controlRequestModal: 2163,
-	},
-	paths: {
-		models: 'models/',
-		textures: 'textures/',
-		fonts: 'fonts/',
-	},
 	renderOrder: {
 		panorama: 0,
 		model: 10,

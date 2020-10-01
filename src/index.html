@@ -108,7 +108,7 @@
 				</form>
 			</div>
 			-->
-			<div class="group--local" [class]="{ publisher: state.role == 'publisher' }">
+			<div class="group--local" [class]="{ publisher: state.role == 'publisher', guest: state.role == 'guest' }">
 				<!--
 				<button type="button" class="btn--spy" [class]="{ active: state.spying }" (click)="onToggleSpy($event)" *if="state.role == 'publisher'">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>

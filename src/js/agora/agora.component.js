@@ -9,11 +9,12 @@ import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
+import { RoleType } from '../user/user';
 import { PanoramaGridView } from '../view/view';
 import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import AgoraService from './agora.service';
-import { AgoraStatus, MessageType, RoleType, StreamQualities } from './agora.types';
+import { AgoraStatus, MessageType, StreamQualities } from './agora.types';
 
 export default class AgoraComponent extends Component {
 
@@ -60,9 +61,12 @@ export default class AgoraComponent extends Component {
 	}
 
 	init() {
-		const agora = this.agora = AgoraService.getSingleton();
+		let agora = null;
+		const role = LocationService.get('role') || RoleType.Attendee;
+		if (role !== RoleType.SelfService || DEBUG) {
+			agora = this.agora = AgoraService.getSingleton();
+		}
 		if (!agora) {
-			const role = LocationService.get('role') || RoleType.Attendee;
 			const link = LocationService.get('link') || null;
 			const name = LocationService.get('name') || null;
 			StateService.state = {
@@ -159,6 +163,9 @@ export default class AgoraComponent extends Component {
 				agora.sendMessage(message);
 			}
 		});
+		if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
+			this.connect();
+		}
 	}
 
 	initForm() {
@@ -188,9 +195,9 @@ export default class AgoraComponent extends Component {
 						this.agora.navToView(view.id);
 					}
 				}
-				// collect items publisherStream & nextAttendeeStream ?
 				this.view = view;
 				this.pushChanges();
+				LocationService.set('viewId', view.id);
 			}),
 		).subscribe(console.log);
 	}
@@ -217,14 +224,22 @@ export default class AgoraComponent extends Component {
 
 	onLink(link) {
 		if (StateService.state.name) {
-			StateService.patchState({ link, status: AgoraStatus.Device });
+			if (StateService.state.role === RoleType.Guest) {
+				this.connect();
+			} else {
+				StateService.patchState({ link, status: AgoraStatus.Device });
+			}
 		} else {
 			StateService.patchState({ link, status: AgoraStatus.Name });
 		}
 	}
 
 	onName(name) {
-		StateService.patchState({ name, status: AgoraStatus.Device });
+		if (StateService.state.role === RoleType.Guest) {
+			this.connect();
+		} else {
+			StateService.patchState({ name, status: AgoraStatus.Device });
+		}
 	}
 
 	onEnter(preferences) {
