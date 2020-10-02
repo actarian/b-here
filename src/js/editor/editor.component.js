@@ -398,12 +398,13 @@ export default class EditorComponent extends Component {
 				first(),
 			).subscribe(response => {
 				console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-				const index = this.views.indexOf(event.view);
+				const index = this.data.views.indexOf(event.view);
 				if (index !== -1) {
-					this.views.splice(index, 1);
+					this.data.views.splice(index, 1);
 				}
-				this.controls.view.value = this.data.views[0].id;
-				this.pushChanges();
+				this.views = this.data.views.slice();
+				this.controls.view.value = this.views[0].id;
+				// this.pushChanges();
 			}, error => console.log('EditorComponent.onAsideDelete.viewDelete$.error', error));
 		}
 	}

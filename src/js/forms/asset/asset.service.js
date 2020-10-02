@@ -60,7 +60,8 @@ export default class AssetService {
 			)),
 			tap(() => this.concurrent$.next(this.concurrent$.getValue() + 1)),
 			switchMap(files => EditorService.upload$(files)),
-			switchMap((upload) => {
+			switchMap((uploads) => {
+				const upload = uploads[0];
 				item.uploading = false;
 				item.complete = true;
 				const asset = Asset.fromUrl(upload.url);
@@ -76,7 +77,8 @@ export default class AssetService {
 		);
 		return EditorService.upload$([item.file]).pipe(
 			// tap(upload => console.log('upload', upload)),
-			switchMap((upload) => {
+			switchMap((uploads) => {
+				const upload = uploads[0];
 				item.uploading = false;
 				item.complete = true;
 				const asset = Asset.fromUrl(upload.url);
@@ -190,7 +192,8 @@ export default class AssetService {
 	uploadFile$(file) {
 		return EditorService.upload$([file]).pipe(
 			// tap(upload => console.log('upload', upload)),
-			switchMap((upload) => {
+			switchMap((uploads) => {
+				const upload = uploads[0];
 				/*
 				id: 1601303293569
 				type: "image/jpeg"

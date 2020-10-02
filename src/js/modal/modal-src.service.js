@@ -35,6 +35,7 @@ const SERVER_MODALS = {
 		'texture': 'texture-modal.cshtml',
 		'gltf': 'gltf-modal.cshtml',
 	},
+	remove: 'remove-modal.cshtml',
 };
 
 export default class ModalSrcService {

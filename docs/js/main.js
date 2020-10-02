@@ -2865,7 +2865,8 @@ var SERVER_MODALS = {
     'curved-plane': 'curved-plane-modal.cshtml',
     'texture': 'texture-modal.cshtml',
     'gltf': 'gltf-modal.cshtml'
-  }
+  },
+  remove: 'remove-modal.cshtml'
 };
 
 var ModalSrcService = /*#__PURE__*/function () {
@@ -5480,15 +5481,14 @@ AsideComponent.meta = {
       EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
         console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
 
-        var index = _this8.views.indexOf(event.view);
+        var index = _this8.data.views.indexOf(event.view);
 
         if (index !== -1) {
-          _this8.views.splice(index, 1);
+          _this8.data.views.splice(index, 1);
         }
 
-        _this8.controls.view.value = _this8.data.views[0].id;
-
-        _this8.pushChanges();
+        _this8.views = _this8.data.views.slice();
+        _this8.controls.view.value = _this8.views[0].id; // this.pushChanges();
       }, function (error) {
         return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
       });
@@ -6966,7 +6966,8 @@ var AssetService = /*#__PURE__*/function () {
       return _this2.concurrent$.next(_this2.concurrent$.getValue() + 1);
     }), operators.switchMap(function (files) {
       return EditorService.upload$(files);
-    }), operators.switchMap(function (upload) {
+    }), operators.switchMap(function (uploads) {
+      var upload = uploads[0];
       item.uploading = false;
       item.complete = true;
       var asset = Asset.fromUrl(upload.url);
@@ -7102,7 +7103,8 @@ var AssetService = /*#__PURE__*/function () {
 
   _proto.uploadFile$ = function uploadFile$(file) {
     return EditorService.upload$([file]).pipe( // tap(upload => console.log('upload', upload)),
-    operators.switchMap(function (upload) {
+    operators.switchMap(function (uploads) {
+      var upload = uploads[0];
       /*
       id: 1601303293569
       type: "image/jpeg"
@@ -7110,6 +7112,7 @@ var AssetService = /*#__PURE__*/function () {
       originalFileName: "ambiente1_x0_y2.jpg"
       url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
       */
+
       var asset = Asset.fromUrl(upload.url);
       return EditorService.assetCreate$(asset);
     }));
