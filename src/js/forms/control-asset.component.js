@@ -45,8 +45,9 @@ export default class ControlAssetComponent extends ControlComponent {
 					this.previews = fileArray.map(() => null);
 					const uploads$ = fileArray.map((file, i) => this.read$(file, i).pipe(
 						switchMap(() => EditorService.upload$([file])),
-						tap(upload => console.log('upload', upload)),
-						switchMap((upload) => {
+						tap(uploads => console.log('upload', uploads)),
+						switchMap((uploads) => {
+							const upload = uploads[0];
 							/*
 							id: 1601303293569
 							type: "image/jpeg"
