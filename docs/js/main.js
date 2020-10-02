@@ -3123,12 +3123,49 @@ var PanoramaView = /*#__PURE__*/function (_View) {
 var PanoramaGridView = /*#__PURE__*/function (_View2) {
   _inheritsLoose(PanoramaGridView, _View2);
 
+  PanoramaGridView.mapTiles = function mapTiles(tiles, flipAxes, invertAxes, folder) {
+    if (folder === void 0) {
+      folder = '';
+    }
+
+    var axes = flipAxes ? -1 : 1;
+    return tiles.map(function (tile, i) {
+      var indices = new THREE$1.Vector2();
+      tile = typeof tile === 'string' ? {
+        id: i + 1,
+        asset: {
+          folder: folder,
+          file: tile
+        },
+        navs: []
+      } : tile;
+      tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
+        if (invertAxes) {
+          indices.y = parseInt(b);
+          indices.x = parseInt(c) * axes;
+        } else {
+          indices.x = parseInt(b);
+          indices.y = parseInt(c) * axes;
+        }
+      });
+      return {
+        id: tile.id,
+        asset: tile.asset,
+        navs: tile.navs || [],
+        indices: indices
+      };
+    });
+  };
+
   _createClass(PanoramaGridView, [{
     key: "index",
     set: function set(index) {
       if (this.index_ !== index) {
         this.index_ = index;
-        this.items = this.originalItems.concat(this.tiles[index].navs); // console.log('PanoramaGridView.index.set', index, this.items);
+        this.tiles.forEach(function (tile, i) {
+          return tile.selected = i === index;
+        });
+        this.updateCurrentItems(); // console.log('PanoramaGridView.index.set', index, this.items);
 
         this.index$.next(index);
       }
@@ -3142,34 +3179,7 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     var _this2;
 
     if (options.tiles) {
-      options.tiles = options.tiles.map(function (tile, i) {
-        var indices = new THREE$1.Vector2();
-        tile = typeof tile === 'string' ? {
-          asset: {
-            folder: options.asset.folder,
-            file: tile
-          },
-          navs: []
-        } : tile;
-        tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, function (a, b, c) {
-          var flipAxes = options.flipAxes ? -1 : 1;
-
-          if (options.invertAxes) {
-            indices.y = parseInt(b);
-            indices.x = parseInt(c) * flipAxes;
-          } else {
-            indices.x = parseInt(b);
-            indices.y = parseInt(c) * flipAxes;
-          } // console.log('PanoramaGridView', tile, indices);
-
-        });
-        return {
-          id: i + 1,
-          asset: tile.asset,
-          navs: tile.navs || [],
-          indices: indices
-        };
-      });
+      options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset.folder);
     }
 
     _this2 = _View2.call(this, options) || this;
@@ -3182,14 +3192,23 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     _this2.index_ = 0;
     _this2.index$ = new rxjs.Subject();
 
+    _this2.tiles.forEach(function (tile, i) {
+      return tile.selected = i === 0;
+    });
+
     if (_this2.tiles.length) {
       _this2.items = _this2.originalItems.concat(_this2.tiles[0].navs);
+      _this2.asset = _this2.tiles[0].asset;
     }
 
     return _this2;
   }
 
   var _proto = PanoramaGridView.prototype;
+
+  _proto.updateCurrentItems = function updateCurrentItems() {
+    this.items = this.originalItems.concat(this.tiles[this.index_].navs);
+  };
 
   _proto.getTileIndex = function getTileIndex(x, y) {
     return this.tiles.reduce(function (p, c, i) {
@@ -4733,8 +4752,7 @@ ToastService.events$ = new rxjs.Subject();var ToastOutletComponent = /*#__PURE__
       _this.toast = toast;
 
       _this.pushChanges();
-    });
-    console.log('ToastOutletComponent.onInit');
+    }); // console.log('ToastOutletComponent.onInit');
   };
 
   return ToastOutletComponent;
@@ -4889,19 +4907,7 @@ AsideComponent.meta = {
   };
 
   EditorService.viewCreate$ = function viewCreate$(view) {
-    var create = '';
-
-    switch (view.type.name) {
-      case ViewType.Panorama.name:
-        create = '/panorama';
-        break;
-
-      case ViewType.PanoramaGrid.name:
-        create = '/panorama-grid';
-        break;
-    }
-
-    return HttpService.post$("/api/view" + create, view).pipe(operators.map(function (view) {
+    return HttpService.post$("/api/view", view).pipe(operators.map(function (view) {
       return mapView(view);
     }));
   };
@@ -4914,6 +4920,46 @@ AsideComponent.meta = {
 
   EditorService.viewDelete$ = function viewDelete$(view) {
     return HttpService.delete$("/api/view/" + view.id);
+  };
+
+  EditorService.getTile = function getTile(view) {
+    var tile;
+
+    if (view.type.name === ViewType.PanoramaGrid.name) {
+      tile = view.tiles[view.index];
+    }
+
+    return tile;
+  };
+
+  EditorService.inferItemCreate$ = function inferItemCreate$(view, item) {
+    var tile = this.getTile(view);
+
+    if (tile) {
+      return this.tileItemCreate$(view, tile, item);
+    } else {
+      return this.itemCreate$(view, item);
+    }
+  };
+
+  EditorService.inferItemUpdate$ = function inferItemUpdate$(view, item) {
+    var tile = this.getTile(view);
+
+    if (tile) {
+      return this.tileItemUpdate$(view, tile, item);
+    } else {
+      return this.itemUpdate$(view, item);
+    }
+  };
+
+  EditorService.inferItemDelete$ = function inferItemDelete$(view, item) {
+    var tile = this.getTile(view);
+
+    if (tile) {
+      return this.tileItemDelete$(view, tile, item);
+    } else {
+      return this.itemDelete$(view, item);
+    }
   };
 
   EditorService.itemCreate$ = function itemCreate$(view, item) {
@@ -4930,6 +4976,22 @@ AsideComponent.meta = {
 
   EditorService.itemDelete$ = function itemDelete$(view, item) {
     return HttpService.delete$("/api/view/" + view.id + "/item/" + item.id);
+  };
+
+  EditorService.tileItemCreate$ = function tileItemCreate$(view, tile, item) {
+    return HttpService.post$("/api/view/" + view.id + "/tile/" + tile.id + "/item", item).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.tileItemUpdate$ = function tileItemUpdate$(view, tile, item) {
+    return HttpService.put$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.tileItemDelete$ = function tileItemDelete$(view, tile, item) {
+    return HttpService.delete$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id);
   };
 
   EditorService.assetCreate$ = function assetCreate$(asset) {
@@ -5197,7 +5259,7 @@ AsideComponent.meta = {
   _proto.onDragEnd = function onDragEnd(event) {
     var _this4 = this;
 
-    EditorService.itemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
+    EditorService.inferItemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
       console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
 
       _this4.pushChanges();
@@ -5209,7 +5271,7 @@ AsideComponent.meta = {
   _proto.onResizeEnd = function onResizeEnd(event) {
     console.log('EditorComponent.onResizeEnd');
     /*
-    EditorService.itemUpdate$(this.view, event.item).pipe(
+    EditorService.inferItemUpdate$(this.view, event.item).pipe(
     	first(),
     ).subscribe(response => {
     	console.log('EditorComponent.onResizeEnd.itemUpdate$.success', response);
@@ -5219,6 +5281,9 @@ AsideComponent.meta = {
   };
 
   _proto.onWorldSelect = function onWorldSelect(event) {
+    this.view.items.forEach(function (item) {
+      return item.showPanel = false;
+    });
     this.view.items.forEach(function (item) {
       return item.selected = item === event.item;
     });
@@ -5234,7 +5299,7 @@ AsideComponent.meta = {
     ModalService.open$({
       src: ModalSrcService.get(modal.type, modal.value),
       data: data
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         console.log('EditorComponent.onOpenModal.resolve', event);
 
@@ -5242,11 +5307,23 @@ AsideComponent.meta = {
           case ViewItemType.Nav.name:
           case ViewItemType.Plane.name:
           case ViewItemType.CurvedPlane.name:
-            var items = _this5.view.items || [];
-            items.push(event.data);
-            Object.assign(_this5.view, {
-              items: items
-            });
+            var tile = EditorService.getTile(_this5.view);
+
+            if (tile) {
+              var navs = tile.navs || [];
+              navs.push(event.data);
+              Object.assign(tile, {
+                navs: navs
+              });
+
+              _this5.view.updateCurrentItems();
+            } else {
+              var items = _this5.view.items || [];
+              items.push(event.data);
+              Object.assign(_this5.view, {
+                items: items
+              });
+            }
 
             _this5.pushChanges();
 
@@ -5271,7 +5348,8 @@ AsideComponent.meta = {
   _proto.onAsideSelect = function onAsideSelect(event) {
     var _this6 = this;
 
-    // console.log('onAsideSelect', event);
+    console.log('onAsideSelect', event);
+
     if (event.value) {
       switch (event.value) {
         case ViewItemType.Nav.name:
@@ -5304,12 +5382,36 @@ AsideComponent.meta = {
       event.view.tiles.forEach(function (tile) {
         return tile.selected = tile === event.tile;
       });
+      /*
+      // if tile selected
+      // send ChangeTile message to world component
+      this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
+      	const item = this.view.getTile(event.indices.x, event.indices.y);
+      	if (item) {
+      		this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
+      			// this.scene.background = envMap;
+      			this.scene.environment = envMap;
+      			this.orbit.walkComplete(headingLongitude, headingLatitude);
+      			// this.render();
+      			// this.pushChanges();
+      		});
+      	}
+      });
+      */
+
       this.pushChanges();
     } else if (event.view || event.view === null) {
       this.view.selected = this.view === event.view;
       this.view.items.forEach(function (item) {
         return item.selected = false;
       });
+
+      if (this.view.tiles) {
+        this.view.tiles.forEach(function (tile) {
+          return tile.selected = false;
+        });
+      }
+
       this.pushChanges();
     }
   };
@@ -5320,7 +5422,7 @@ AsideComponent.meta = {
     console.log('onAsideUpdate', event);
 
     if (event.item && event.view) {
-      EditorService.itemUpdate$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
+      EditorService.inferItemUpdate$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
         console.log('EditorComponent.onAsideUpdate.itemUpdate$.success', response);
         var item = event.view.items.find(function (item) {
           return item.id === event.item.id;
@@ -5334,7 +5436,7 @@ AsideComponent.meta = {
       }, function (error) {
         return console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error);
       });
-    } else if (event.view) {
+    } else if (event.tile && event.view) ; else if (event.view) {
       EditorService.viewUpdate$(event.view).pipe(operators.first()).subscribe(function (response) {
         console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
         var assetDidChange = _this7.view.asset.id !== event.view.asset.id;
@@ -5452,7 +5554,7 @@ EditorComponent.meta = {
       var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
 
       console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
-      EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
         console.log('CurvedPlaneModalComponent.onSubmit.success', response);
         ModalService.resolve(response);
       }, function (error) {
@@ -5595,10 +5697,10 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
 
       if (item.link && (!item.link.title || !item.link.href)) {
         item.link = null;
-      }
+      } // console.log('NavModalComponent.onSubmit', this.view, item);
 
-      console.log('NavModalComponent.onSubmit', this.view, item);
-      EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
         console.log('NavModalComponent.onSubmit.success', response);
         ModalService.resolve(response);
       }, function (error) {
@@ -5692,17 +5794,24 @@ NavModalComponent.meta = {
       this.form.submitted = true;
       console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
       var assets = this.form.value.assets;
-      var asset = assets[0];
+      var tiles = PanoramaGridView.mapTiles(assets.map(function (asset) {
+        return {
+          asset: asset,
+          navs: []
+        };
+      }), false, true);
+      tiles.sort(function (a, b) {
+        var ai = a.indices.x * 10000 + a.indices.y;
+        var bi = b.indices.x * 10000 + b.indices.y;
+        return ai - bi;
+      });
+      console.log('PanoramaGridModalComponent.onSubmit', tiles);
+      var asset = tiles[0].asset;
       var view = {
         type: this.form.value.type,
         name: this.form.value.name,
         asset: asset,
-        tiles: assets.map(function (asset) {
-          return {
-            asset: asset,
-            navs: []
-          };
-        }),
+        tiles: tiles,
         invertAxes: true,
         flipAxes: false,
         orientation: {
@@ -5949,7 +6058,7 @@ PanoramaModalComponent.meta = {
       var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
 
       console.log('PlaneModalComponent.onSubmit', this.view, item);
-      EditorService.itemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
         console.log('PlaneModalComponent.onSubmit.success', response);
         ModalService.resolve(response);
       }, function (error) {
@@ -6278,6 +6387,7 @@ UpdateViewItemComponent.meta = {
 
       _this.pushChanges();
     });
+    console.log('UpdateViewTileComponent.onInit', this.view, this.tile);
   };
 
   _proto.onSubmit = function onSubmit() {
@@ -6315,10 +6425,6 @@ UpdateViewItemComponent.meta = {
       view: this.view,
       tile: this.tile.selected ? null : this.tile
     });
-    /*
-    this.tile.active = !this.tile.active;
-    this.pushChanges();
-    */
   };
 
   return UpdateViewTileComponent;
@@ -6329,7 +6435,7 @@ UpdateViewTileComponent.meta = {
   inputs: ['view', 'tile'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewComponent, _Component);
 
@@ -6514,7 +6620,7 @@ EditorModule.meta = {
     var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
       var blob = event.target.result;
 
-      if (_this2.item.type.name === AssetType.Image) {
+      if (_this2.item.type.name === AssetType.Image.name) {
         return _this2.resize$(blob);
       } else {
         return rxjs.of(blob);
@@ -6769,7 +6875,7 @@ ControlAssetComponent.meta = {
   inputs: ['control', 'label', 'disabled', 'accept'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var AssetUploadItem = function AssetUploadItem(file) {
   this.file = file;
   this.name = file.name;
@@ -6818,6 +6924,7 @@ var AssetUploadAssetEvent = /*#__PURE__*/function (_AssetEvent3) {
 
 var AssetService = /*#__PURE__*/function () {
   function AssetService() {
+    this.concurrent$ = new rxjs.BehaviorSubject(0);
     this.items$ = new rxjs.BehaviorSubject([]);
     this.events$ = new rxjs.ReplaySubject(1);
   }
@@ -6843,8 +6950,16 @@ var AssetService = /*#__PURE__*/function () {
     this.events$.next(new AssetUploadStartEvent({
       item: item
     }));
-    return EditorService.upload$([item.file]).pipe( // tap(upload => console.log('upload', upload)),
-    operators.switchMap(function (upload) {
+    var files = [item.file];
+    return rxjs.of(files).pipe(operators.delayWhen(function () {
+      return _this2.concurrent$.pipe(operators.filter(function (x) {
+        return x < 4;
+      }));
+    }), operators.tap(function () {
+      return _this2.concurrent$.next(_this2.concurrent$.getValue() + 1);
+    }), operators.switchMap(function (files) {
+      return EditorService.upload$(files);
+    }), operators.switchMap(function (upload) {
       item.uploading = false;
       item.complete = true;
       var asset = Asset.fromUrl(upload.url);
@@ -6861,6 +6976,8 @@ var AssetService = /*#__PURE__*/function () {
           item: item,
           asset: asset
         }));
+
+        _this2.concurrent$.next(_this2.concurrent$.getValue() - 1);
       }));
     }));
   };
@@ -65387,16 +65504,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onGridMove = function onGridMove(event) {
     var _this5 = this;
 
-    // console.log('WorldComponent.onGridMove', event);
+    console.log('WorldComponent.onGridMove', event, this.view);
+    this.view.items = [];
+    this.pushChanges();
     this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
-      var item = _this5.view.getTile(event.indices.x, event.indices.y);
+      var tile = _this5.view.getTile(event.indices.x, event.indices.y);
 
-      if (item) {
-        _this5.panorama.crossfade(item, _this5.renderer, function (envMap, texture, rgbe) {
+      if (tile) {
+        _this5.panorama.crossfade(tile, _this5.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
           _this5.scene.environment = envMap;
 
-          _this5.orbit.walkComplete(headingLongitude, headingLatitude); // this.render();
+          _this5.orbit.walkComplete(headingLongitude, headingLatitude);
+
+          _this5.view.updateCurrentItems();
+
+          _this5.pushChanges(); // this.render();
           // this.pushChanges();
 
         });

@@ -23,6 +23,7 @@ export default class UpdateViewTileComponent extends Component {
 			}
 			this.pushChanges();
 		});
+		console.log('UpdateViewTileComponent.onInit', this.view, this.tile);
 	}
 
 	onSubmit() {
@@ -46,10 +47,6 @@ export default class UpdateViewTileComponent extends Component {
 
 	onSelect(event) {
 		this.select.next({ view: this.view, tile: this.tile.selected ? null : this.tile });
-		/*
-		this.tile.active = !this.tile.active;
-		this.pushChanges();
-		*/
 	}
 }
 
@@ -62,7 +59,7 @@ UpdateViewTileComponent.meta = {
 			<div class="icon">
 				<svg-icon name="tile"></svg-icon>
 			</div>
-			<div class="title">Tile</div>
+			<div class="title">Tile {{tile.id}}</div>
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 		</div>
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="tile.selected">
@@ -75,9 +72,11 @@ UpdateViewTileComponent.meta = {
 					<span *if="!form.submitted">Update</span>
 					<span *if="form.submitted">Update!</span>
 				</button>
+				<!--
 				<button type="button" class="btn--remove" (click)="onRemove($event)">
 					<span>Remove</span>
 				</button>
+				-->
 			</div>
 		</form>
 	`,

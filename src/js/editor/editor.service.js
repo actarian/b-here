@@ -14,16 +14,7 @@ export default class EditorService {
 	}
 
 	static viewCreate$(view) {
-		let create = '';
-		switch (view.type.name) {
-			case ViewType.Panorama.name:
-				create = '/panorama';
-				break;
-			case ViewType.PanoramaGrid.name:
-				create = '/panorama-grid';
-				break;
-		}
-		return HttpService.post$(`/api/view${create}`, view).pipe(
+		return HttpService.post$(`/api/view`, view).pipe(
 			map(view => mapView(view)),
 		);
 	}
@@ -34,6 +25,39 @@ export default class EditorService {
 	}
 	static viewDelete$(view) {
 		return HttpService.delete$(`/api/view/${view.id}`);
+	}
+
+	static getTile(view) {
+		let tile;
+		if (view.type.name === ViewType.PanoramaGrid.name) {
+			tile = view.tiles[view.index];
+		}
+		return tile;
+	}
+
+	static inferItemCreate$(view, item) {
+		const tile = this.getTile(view);
+		if (tile) {
+			return this.tileItemCreate$(view, tile, item);
+		} else {
+			return this.itemCreate$(view, item);
+		}
+	}
+	static inferItemUpdate$(view, item) {
+		const tile = this.getTile(view);
+		if (tile) {
+			return this.tileItemUpdate$(view, tile, item);
+		} else {
+			return this.itemUpdate$(view, item);
+		}
+	}
+	static inferItemDelete$(view, item) {
+		const tile = this.getTile(view);
+		if (tile) {
+			return this.tileItemDelete$(view, tile, item);
+		} else {
+			return this.itemDelete$(view, item);
+		}
 	}
 
 	static itemCreate$(view, item) {
@@ -48,6 +72,20 @@ export default class EditorService {
 	}
 	static itemDelete$(view, item) {
 		return HttpService.delete$(`/api/view/${view.id}/item/${item.id}`);
+	}
+
+	static tileItemCreate$(view, tile, item) {
+		return HttpService.post$(`/api/view/${view.id}/tile/${tile.id}/item`, item).pipe(
+			map(item => mapViewItem(item)),
+		);
+	}
+	static tileItemUpdate$(view, tile, item) {
+		return HttpService.put$(`/api/view/${view.id}/tile/${tile.id}/item/${item.id}`, item.payload).pipe(
+			map(item => mapViewItem(item)),
+		);
+	}
+	static tileItemDelete$(view, tile, item) {
+		return HttpService.delete$(`/api/view/${view.id}/tile/${tile.id}/item/${item.id}`);
 	}
 
 	static assetCreate$(asset) {

@@ -22,7 +22,7 @@ export default class AssetItemComponent extends Component {
 		const reader$ = fromEvent(reader, 'load').pipe(
 			switchMap(event => {
 				const blob = event.target.result;
-				if (this.item.type.name === AssetType.Image) {
+				if (this.item.type.name === AssetType.Image.name) {
 					return this.resize$(blob);
 				} else {
 					return of(blob);

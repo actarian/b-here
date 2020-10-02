@@ -150,6 +150,7 @@ ControlAssetComponent.meta = {
 				<video [src]="control.value | asset" *if="control.value && control.value.type.name === 'video'"></video>
 				<input type="file">
 			</div>
+			<div class="file-name" *if="control.value" [innerHTML]="control.value.file"></div>
 			<!--
 			<input type="text" class="control--text" [formControl]="control" [placeholder]="label" [disabled]="disabled" />
 			-->

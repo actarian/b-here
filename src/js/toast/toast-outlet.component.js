@@ -15,7 +15,7 @@ export default class ToastOutletComponent extends Component {
 			this.toast = toast;
 			this.pushChanges();
 		});
-		console.log('ToastOutletComponent.onInit');
+		// console.log('ToastOutletComponent.onInit');
 	}
 }
 

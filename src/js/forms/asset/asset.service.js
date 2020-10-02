@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from 'rxcomp';
-import { BehaviorSubject, combineLatest, EMPTY, fromEvent, merge, ReplaySubject } from "rxjs";
-import { map, switchMap, tap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, EMPTY, fromEvent, merge, of, ReplaySubject } from "rxjs";
+import { delayWhen, filter, map, switchMap, tap } from "rxjs/operators";
 import EditorService from '../../editor/editor.service';
 import { Asset, assetTypeFromPath } from '../../view/view';
 
@@ -39,6 +39,7 @@ export class AssetUploadAssetEvent extends AssetEvent { }
 export default class AssetService {
 
 	constructor() {
+		this.concurrent$ = new BehaviorSubject(0);
 		this.items$ = new BehaviorSubject([]);
 		this.events$ = new ReplaySubject(1);
 	}
@@ -52,6 +53,27 @@ export default class AssetService {
 	uploadItem$(item) {
 		item.uploading = true;
 		this.events$.next(new AssetUploadStartEvent({ item }));
+		const files = [item.file];
+		return of(files).pipe(
+			delayWhen(() => this.concurrent$.pipe(
+				filter(x => x < 4)
+			)),
+			tap(() => this.concurrent$.next(this.concurrent$.getValue() + 1)),
+			switchMap(files => EditorService.upload$(files)),
+			switchMap((upload) => {
+				item.uploading = false;
+				item.complete = true;
+				const asset = Asset.fromUrl(upload.url);
+				this.events$.next(new AssetUploadCompleteEvent({ item, asset }));
+				return EditorService.assetCreate$(asset).pipe(
+					tap(asset => {
+						this.remove(item);
+						this.events$.next(new AssetUploadAssetEvent({ item, asset }));
+						this.concurrent$.next(this.concurrent$.getValue() - 1);
+					}),
+				);
+			}),
+		);
 		return EditorService.upload$([item.file]).pipe(
 			// tap(upload => console.log('upload', upload)),
 			switchMap((upload) => {
