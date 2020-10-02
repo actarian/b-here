@@ -58,7 +58,7 @@ export default class CurvedPlaneModalComponent extends Component {
 			const item = Object.assign({}, this.form.value);
 			// item.viewId = parseInt(item.viewId);
 			console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
-			EditorService.itemCreate$(this.view, item).pipe(
+			EditorService.inferItemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
 				console.log('CurvedPlaneModalComponent.onSubmit.success', response);

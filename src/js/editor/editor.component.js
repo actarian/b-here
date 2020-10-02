@@ -226,7 +226,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onDragEnd(event) {
-		EditorService.itemUpdate$(this.view, event.item).pipe(
+		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
 		).subscribe(response => {
 			console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
@@ -237,7 +237,7 @@ export default class EditorComponent extends Component {
 	onResizeEnd(event) {
 		console.log('EditorComponent.onResizeEnd');
 		/*
-		EditorService.itemUpdate$(this.view, event.item).pipe(
+		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
 		).subscribe(response => {
 			console.log('EditorComponent.onResizeEnd.itemUpdate$.success', response);
@@ -247,6 +247,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onWorldSelect(event) {
+		this.view.items.forEach(item => item.showPanel = false);
 		this.view.items.forEach(item => item.selected = item === event.item);
 		this.view.selected = this.view.items.find(item => item.selected) === undefined;
 		this.pushChanges();
@@ -254,7 +255,7 @@ export default class EditorComponent extends Component {
 
 	onOpenModal(modal, data) {
 		ModalService.open$({ src: ModalSrcService.get(modal.type, modal.value), data }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				console.log('EditorComponent.onOpenModal.resolve', event);
@@ -262,9 +263,17 @@ export default class EditorComponent extends Component {
 					case ViewItemType.Nav.name:
 					case ViewItemType.Plane.name:
 					case ViewItemType.CurvedPlane.name:
-						const items = this.view.items || [];
-						items.push(event.data);
-						Object.assign(this.view, { items });
+						const tile = EditorService.getTile(this.view);
+						if (tile) {
+							const navs = tile.navs || [];
+							navs.push(event.data);
+							Object.assign(tile, { navs });
+							this.view.updateCurrentItems();
+						} else {
+							const items = this.view.items || [];
+							items.push(event.data);
+							Object.assign(this.view, { items });
+						}
 						this.pushChanges();
 						break;
 					case ViewType.Panorama.name:
@@ -281,7 +290,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideSelect(event) {
-		// console.log('onAsideSelect', event);
+		console.log('onAsideSelect', event);
 		if (event.value) {
 			switch (event.value) {
 				case ViewItemType.Nav.name:
@@ -302,10 +311,29 @@ export default class EditorComponent extends Component {
 		} else if (event.view && (event.tile || event.tile === null)) {
 			event.view.selected = false;
 			event.view.tiles.forEach(tile => tile.selected = tile === event.tile);
+			/*
+			// if tile selected
+			// send ChangeTile message to world component
+			this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
+				const item = this.view.getTile(event.indices.x, event.indices.y);
+				if (item) {
+					this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
+						// this.scene.background = envMap;
+						this.scene.environment = envMap;
+						this.orbit.walkComplete(headingLongitude, headingLatitude);
+						// this.render();
+						// this.pushChanges();
+					});
+				}
+			});
+			*/
 			this.pushChanges();
 		} else if (event.view || event.view === null) {
 			this.view.selected = (this.view === event.view);
 			this.view.items.forEach(item => item.selected = false);
+			if (this.view.tiles) {
+				this.view.tiles.forEach(tile => tile.selected = false);
+			}
 			this.pushChanges();
 		}
 	}
@@ -313,7 +341,7 @@ export default class EditorComponent extends Component {
 	onAsideUpdate(event) {
 		console.log('onAsideUpdate', event);
 		if (event.item && event.view) {
-			EditorService.itemUpdate$(event.view, event.item).pipe(
+			EditorService.inferItemUpdate$(event.view, event.item).pipe(
 				first(),
 			).subscribe(response => {
 				console.log('EditorComponent.onAsideUpdate.itemUpdate$.success', response);
@@ -323,6 +351,19 @@ export default class EditorComponent extends Component {
 				}
 				this.pushChanges();
 			}, error => console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error));
+		} else if (event.tile && event.view) {
+			/*
+			EditorService.tileUpdate$(event.view, event.item).pipe(
+				first(),
+			).subscribe(response => {
+				console.log('EditorComponent.onAsideUpdate.tileUpdate$.success', response);
+				const item = event.view.items.find(item => item.id === event.item.id);
+				if (item) {
+					Object.assign(item, event.item);
+				}
+				this.pushChanges();
+			}, error => console.log('EditorComponent.onAsideUpdate.tileUpdate$.error', error));
+			*/
 		} else if (event.view) {
 			EditorService.viewUpdate$(event.view).pipe(
 				first(),

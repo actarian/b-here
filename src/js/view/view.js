@@ -104,10 +104,35 @@ export class PanoramaView extends View {
 }
 
 export class PanoramaGridView extends View {
+
+	static mapTiles(tiles, flipAxes, invertAxes, folder = '') {
+		const axes = flipAxes ? -1 : 1;
+		return tiles.map((tile, i) => {
+			const indices = new THREE.Vector2();
+			tile = typeof tile === 'string' ? { id: i + 1, asset: { folder: folder, file: tile }, navs: [] } : tile;
+			tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
+				if (invertAxes) {
+					indices.y = parseInt(b);
+					indices.x = parseInt(c) * axes;
+				} else {
+					indices.x = parseInt(b);
+					indices.y = parseInt(c) * axes;
+				}
+			});
+			return {
+				id: tile.id,
+				asset: tile.asset,
+				navs: tile.navs || [],
+				indices,
+			};
+		});
+	}
+
 	set index(index) {
 		if (this.index_ !== index) {
 			this.index_ = index;
-			this.items = this.originalItems.concat(this.tiles[index].navs);
+			this.tiles.forEach((tile, i) => tile.selected = i === index);
+			this.updateCurrentItems();
 			// console.log('PanoramaGridView.index.set', index, this.items);
 			this.index$.next(index);
 		}
@@ -115,29 +140,10 @@ export class PanoramaGridView extends View {
 	get index() {
 		return this.index_;
 	}
+
 	constructor(options) {
 		if (options.tiles) {
-			options.tiles = options.tiles.map((tile, i) => {
-				const indices = new THREE.Vector2();
-				tile = typeof tile === 'string' ? { asset: { folder: options.asset.folder, file: tile }, navs: [] } : tile;
-				tile.asset.file.replace(/_x([-|\d]+)_y([-|\d]+)/g, (a, b, c) => {
-					const flipAxes = options.flipAxes ? -1 : 1;
-					if (options.invertAxes) {
-						indices.y = parseInt(b);
-						indices.x = parseInt(c) * flipAxes;
-					} else {
-						indices.x = parseInt(b);
-						indices.y = parseInt(c) * flipAxes;
-					}
-					// console.log('PanoramaGridView', tile, indices);
-				});
-				return {
-					id: i + 1,
-					asset: tile.asset,
-					navs: tile.navs || [],
-					indices,
-				};
-			});
+			options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset.folder);
 		}
 		super(options);
 		/*
@@ -147,10 +153,17 @@ export class PanoramaGridView extends View {
 		*/
 		this.index_ = 0;
 		this.index$ = new Subject();
+		this.tiles.forEach((tile, i) => tile.selected = i === 0);
 		if (this.tiles.length) {
 			this.items = this.originalItems.concat(this.tiles[0].navs);
+			this.asset = this.tiles[0].asset;
 		}
 	}
+
+	updateCurrentItems() {
+		this.items = this.originalItems.concat(this.tiles[this.index_].navs);
+	}
+
 	getTileIndex(x, y) {
 		return this.tiles.reduce((p, c, i) => {
 			if (c.indices.x === x && c.indices.y === y) {

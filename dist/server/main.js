@@ -571,6 +571,25 @@ function doCreate(request, response, params, items) {
   var item = Object.assign({}, body, {
     id: id
   });
+
+  if (item.items) {
+    item.items.forEach(function (x) {
+      return x.id = new Date().getTime();
+    });
+  }
+
+  if (item.tiles) {
+    item.tiles.forEach(function (x) {
+      return x.id = new Date().getTime();
+    });
+  }
+
+  if (item.navs) {
+    item.navs.forEach(function (x) {
+      return x.id = new Date().getTime();
+    });
+  }
+
   items.push(item);
   saveStore();
   response.send(JSON.stringify(item));
@@ -635,22 +654,12 @@ var ROUTES = [{
 
     if (view) {
       response.send(JSON.stringify(view));
+    } else {
+      sendError(response, 404, 'Not Found');
     }
   }
 }, {
   path: '/api/view',
-  method: 'POST',
-  callback: function callback(request, response, params) {
-    doCreate(request, response, params, db.views);
-  }
-}, {
-  path: '/api/view/panorama',
-  method: 'POST',
-  callback: function callback(request, response, params) {
-    doCreate(request, response, params, db.views);
-  }
-}, {
-  path: '/api/view/panorama-grid',
   method: 'POST',
   callback: function callback(request, response, params) {
     doCreate(request, response, params, db.views);
@@ -680,6 +689,8 @@ var ROUTES = [{
     if (view) {
       view.items = view.items || [];
       doCreate(request, response, params, view.items);
+    } else {
+      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -693,6 +704,8 @@ var ROUTES = [{
     if (view) {
       view.items = view.items || [];
       doUpdate(request, response, params, view.items);
+    } else {
+      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -707,6 +720,79 @@ var ROUTES = [{
       doDelete(request, response, {
         id: params.viewItemId
       }, view.items);
+    } else {
+      sendError(response, 404, 'Not Found');
+    }
+  }
+}, {
+  path: '/api/view/:viewId/tile/:tileId/item',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      var tile = view.tiles.find(function (x) {
+        return x.id === params.tileId;
+      });
+
+      if (tile) {
+        tile.navs = tile.navs || [];
+        doCreate(request, response, params, tile.navs);
+      } else {
+        sendError(response, 404, 'Not Found');
+      }
+    } else {
+      sendError(response, 404, 'Not Found');
+    }
+  }
+}, {
+  path: '/api/view/:viewId/tile/:tileId/item/:viewItemId',
+  method: 'PUT',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      var tile = view.tiles.find(function (x) {
+        return x.id === params.tileId;
+      });
+
+      if (tile) {
+        tile.navs = tile.navs || [];
+        doUpdate(request, response, params, tile.navs);
+      } else {
+        sendError(response, 404, 'Not Found');
+      }
+    } else {
+      sendError(response, 404, 'Not Found');
+    }
+  }
+}, {
+  path: '/api/view/:viewId/tile/:tileId/item/:viewItemId',
+  method: 'DELETE',
+  callback: function callback(request, response, params) {
+    var view = doGet(request, response, {
+      id: params.viewId
+    }, db.views);
+
+    if (view) {
+      var tile = view.tiles.find(function (x) {
+        return x.id === params.tileId;
+      });
+
+      if (tile) {
+        tile.navs = tile.navs || [];
+        doDelete(request, response, {
+          id: params.viewItemId
+        }, tile.navs);
+      } else {
+        sendError(response, 404, 'Not Found');
+      }
+    } else {
+      sendError(response, 404, 'Not Found');
     }
   }
 }, {

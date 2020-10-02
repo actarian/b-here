@@ -690,14 +690,18 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridMove(event) {
-		// console.log('WorldComponent.onGridMove', event);
+		console.log('WorldComponent.onGridMove', event, this.view);
+		this.view.items = [];
+		this.pushChanges();
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
-			const item = this.view.getTile(event.indices.x, event.indices.y);
-			if (item) {
-				this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
+			const tile = this.view.getTile(event.indices.x, event.indices.y);
+			if (tile) {
+				this.panorama.crossfade(tile, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
 					this.orbit.walkComplete(headingLongitude, headingLatitude);
+					this.view.updateCurrentItems();
+					this.pushChanges();
 					// this.render();
 					// this.pushChanges();
 				});

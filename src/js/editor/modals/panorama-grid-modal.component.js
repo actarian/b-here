@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import ModalService from '../../modal/modal.service';
-import { ViewType } from '../../view/view';
+import { PanoramaGridView, ViewType } from '../../view/view';
 import EditorService from '../editor.service';
 
 export default class PanoramaGridModalComponent extends Component {
@@ -26,15 +26,22 @@ export default class PanoramaGridModalComponent extends Component {
 			this.form.submitted = true;
 			console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
 			const assets = this.form.value.assets;
-			const asset = assets[0];
+			const tiles = PanoramaGridView.mapTiles(assets.map(asset => ({
+				asset,
+				navs: [],
+			})), false, true);
+			tiles.sort((a, b) => {
+				const ai = a.indices.x * 10000 + a.indices.y;
+				const bi = b.indices.x * 10000 + b.indices.y;
+				return ai - bi;
+			});
+			console.log('PanoramaGridModalComponent.onSubmit', tiles);
+			const asset = tiles[0].asset;
 			const view = {
 				type: this.form.value.type,
 				name: this.form.value.name,
 				asset,
-				tiles: assets.map(asset => ({
-					asset,
-					navs: [],
-				})),
+				tiles: tiles,
 				invertAxes: true,
 				flipAxes: false,
 				orientation: {

@@ -100,8 +100,8 @@ export default class NavModalComponent extends Component {
 			if (item.link && (!item.link.title || !item.link.href)) {
 				item.link = null;
 			}
-			console.log('NavModalComponent.onSubmit', this.view, item);
-			EditorService.itemCreate$(this.view, item).pipe(
+			// console.log('NavModalComponent.onSubmit', this.view, item);
+			EditorService.inferItemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
 				console.log('NavModalComponent.onSubmit.success', response);
