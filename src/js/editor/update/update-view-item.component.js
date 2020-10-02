@@ -103,9 +103,6 @@ export default class UpdateViewItemComponent extends Component {
 	onSubmit() {
 		if (this.form.valid) {
 			const payload = Object.assign({}, this.form.value);
-			if (payload.link && (!payload.link.title || !payload.link.href)) {
-				payload.link = null;
-			}
 			this.update.next({ view: this.view, item: new ViewItem(payload) });
 		} else {
 			this.form.touched = true;

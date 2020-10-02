@@ -26,7 +26,7 @@ export default class ControlUploadComponent extends ControlComponent {
 		this.label = 'label';
 		this.required = false;
 		this.uploadAttributes = { accept: 'image/*', multiple: this.multiple };
-		this.uploader = new FlowService({ target: '/api/upload', singleFile: !this.multiple });
+		this.uploader = new FlowService({ target: '/api/upload_', singleFile: !this.multiple });
 		this.uploader.events$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {

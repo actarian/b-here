@@ -143,7 +143,7 @@ export class PanoramaGridView extends View {
 
 	constructor(options) {
 		if (options.tiles) {
-			options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset.folder);
+			options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset ? options.asset.folder : '');
 		}
 		super(options);
 		/*
@@ -205,6 +205,9 @@ export class ViewItem {
 				payload[key] = this[key];
 			}
 		});
+		if (payload.link && (!payload.link.title || !payload.link.href)) {
+			delete payload.link;
+		}
 		return payload;
 	}
 }

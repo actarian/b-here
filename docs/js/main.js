@@ -3179,7 +3179,7 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     var _this2;
 
     if (options.tiles) {
-      options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset.folder);
+      options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset ? options.asset.folder : '');
     }
 
     _this2 = _View2.call(this, options) || this;
@@ -3262,6 +3262,11 @@ var ViewItem = /*#__PURE__*/function () {
           payload[key] = _this3[key];
         }
       });
+
+      if (payload.link && (!payload.link.title || !payload.link.href)) {
+        delete payload.link;
+      }
+
       return payload;
     }
   }]);
@@ -5025,7 +5030,7 @@ AsideComponent.meta = {
     }), operators.filter(function (event) {
       return event !== null;
     }));
-    xhr.open('POST', "/api/upload2/", true);
+    xhr.open('POST', "/api/upload/", true);
     xhr.send(formData);
     return events$;
   };
@@ -6301,11 +6306,6 @@ RemoveModalComponent.meta = {
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
       var payload = Object.assign({}, this.form.value);
-
-      if (payload.link && (!payload.link.title || !payload.link.href)) {
-        payload.link = null;
-      }
-
       this.update.next({
         view: this.view,
         item: new ViewItem(payload)
@@ -6461,6 +6461,7 @@ UpdateViewTileComponent.meta = {
         case MessageType.CameraOrientation:
           switch (_this.view.type.name) {
             case ViewType.Panorama.name:
+            case ViewType.PanoramaGrid.name:
               _this.form.patch({
                 latitude: message.orientation.latitude,
                 longitude: message.orientation.longitude,
@@ -6488,7 +6489,11 @@ UpdateViewTileComponent.meta = {
 
       switch (view.type.name) {
         case ViewType.Panorama.name:
-          keys = ['id', 'type', 'name', 'asset', 'latitude', 'longitude', 'zoom'];
+          keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom', 'asset'];
+          break;
+
+        case ViewType.PanoramaGrid.name:
+          keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom'];
           break;
 
         default:
@@ -6575,7 +6580,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -6762,9 +6767,10 @@ ControlComponent.meta = {
         var uploads$ = fileArray.map(function (file, i) {
           return _this2.read$(file, i).pipe(operators.switchMap(function () {
             return EditorService.upload$([file]);
-          }), operators.tap(function (upload) {
-            return console.log('upload', upload);
-          }), operators.switchMap(function (upload) {
+          }), operators.tap(function (uploads) {
+            return console.log('upload', uploads);
+          }), operators.switchMap(function (uploads) {
+            var upload = uploads[0];
             /*
             id: 1601303293569
             type: "image/jpeg"
@@ -6772,6 +6778,7 @@ ControlComponent.meta = {
             originalFileName: "ambiente1_x0_y2.jpg"
             url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
             */
+
             var asset = Asset.fromUrl(upload.url);
             return EditorService.assetCreate$(asset);
           }));
@@ -7773,7 +7780,7 @@ var ControlUploadComponent = /*#__PURE__*/function (_ControlComponent) {
       multiple: this.multiple
     };
     this.uploader = new FlowService({
-      target: '/api/upload',
+      target: '/api/upload_',
       singleFile: !this.multiple
     });
     this.uploader.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {

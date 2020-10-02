@@ -43,7 +43,7 @@ app.use('*', staticMiddleware_);
 app.use('*', apiMiddleware_);
 
 
-app.post('/api/upload2', multipartMiddleware, function(request, response) {
+app.post('/api/upload', multipartMiddleware, function(request, response) {
 	if (Vars.accessControlAllowOrigin) {
 		response.header('Access-Control-Allow-Origin', '*');
 	}
@@ -68,23 +68,24 @@ app.post('/api/upload2', multipartMiddleware, function(request, response) {
 	const filePath = `/uploads/${fileName}`;
 	const input = file.path;
 	const output = path.join(__dirname, '../docs/uploads/', fileName);
-	const item = {
+	const upload = {
 		id,
 		fileName,
 		type: file.type,
 		originalFileName: file.name,
 		url: filePath,
 	};
+	const uploads = [upload];
 	fs.copyFile(input, output, (error) => {
 		fs.unlink(input, () => { });
 		if (error) {
 			throw error;
 		} else {
-			response.status(200).send(JSON.stringify(item));
+			response.status(200).send(JSON.stringify(uploads));
 		}
 	});
 });
-app.options('/api/upload2', function(request, response) {
+app.options('/api/upload', function(request, response) {
 	console.log('OPTIONS');
 	if (Vars.accessControlAllowOrigin) {
 		response.header('Access-Control-Allow-Origin', '*');
@@ -92,10 +93,8 @@ app.options('/api/upload2', function(request, response) {
 	response.status(200).send();
 });
 
-
-
 // Handle uploads through Flow.js
-app.post('/api/upload', multipartMiddleware, function(request, response) {
+app.post('/api/upload_', multipartMiddleware, function(request, response) {
 	uploader.post(request, function(status, filename, original_filename, identifier) {
 		console.log('POST', status, original_filename, identifier);
 		if (Vars.accessControlAllowOrigin) {
@@ -116,7 +115,7 @@ app.post('/api/upload', multipartMiddleware, function(request, response) {
 		}
 	});
 });
-app.options('/api/upload', function(request, response) {
+app.options('/api/upload_', function(request, response) {
 	console.log('OPTIONS');
 	if (Vars.accessControlAllowOrigin) {
 		response.header('Access-Control-Allow-Origin', '*');
@@ -124,7 +123,7 @@ app.options('/api/upload', function(request, response) {
 	response.status(200).send();
 });
 // Handle status checks on chunks through Flow.js
-app.get('/api/upload', function(request, response) {
+app.get('/api/upload_', function(request, response) {
 	uploader.get(request, function(status, filename, original_filename, identifier) {
 		console.log('GET', status);
 		if (Vars.accessControlAllowOrigin) {

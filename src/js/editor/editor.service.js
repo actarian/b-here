@@ -122,7 +122,7 @@ export default class EditorService {
 			}),
 			filter(event => event !== null)
 		);
-		xhr.open('POST', `/api/upload2/`, true);
+		xhr.open('POST', `/api/upload/`, true);
 		xhr.send(formData);
 		return events$;
 	}
