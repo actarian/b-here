@@ -16,7 +16,7 @@ export class Environment {
 
 	get href() {
 		if (HEROKU) {
-			return 'https://raw.githubusercontent.com/actarian/b-here/cantinavirtuali/docs/';
+			return 'https://raw.githubusercontent.com/actarian/b-here/cantinavirtuale/docs/';
 		} else {
 			return BASE_HREF;
 		}
