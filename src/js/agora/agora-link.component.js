@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-// import UserService from './user/user.service';
+// import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import LocationService from '../location/location.service';
@@ -33,14 +33,8 @@ export default class AgoraLinkComponent extends Component {
 		// const timestamp = (performance.now() * 10000000000000).toString();
 		const timestamp = new Date().valueOf().toString();
 		this.form.patch({
-			link: `${this.padded(this.state.publisherId, 9)}-${timestamp}`,
+			link: `${this.padded(this.state.user.id, 9)}-${timestamp}`,
 		});
-		/*
-		this.controls.link.value = `${this.padded(this.state.publisherId, 9)}-${timestamp}`;
-		setTimeout(() => {
-			this.pushChanges();
-		}, 1);
-		*/
 	}
 
 	onCopyToClipBoard(event) {

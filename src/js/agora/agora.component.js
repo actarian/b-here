@@ -1,5 +1,4 @@
 import { Component, getContext } from 'rxcomp';
-// import UserService from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { DEBUG, environment } from '../environment';
@@ -10,11 +9,12 @@ import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import { RoleType } from '../user/user';
+import { UserService } from '../user/user.service';
 import { PanoramaGridView } from '../view/view';
 import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import AgoraService from './agora.service';
-import { AgoraStatus, MessageType, StreamQualities } from './agora.types';
+import { AgoraStatus, MessageType } from './agora.types';
 
 export default class AgoraComponent extends Component {
 
@@ -51,43 +51,86 @@ export default class AgoraComponent extends Component {
 		vrService.status$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(status => this.pushChanges());
+		this.resolveUser();
+	}
+
+	resolveUser() {
+		UserService.me$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(user => {
+			if (user) {
+				this.user = user;
+				this.initState();
+			} else {
+				window.location.href = '/';
+			}
+		});
+	}
+
+	initState() {
+		const user = this.user;
+		const userName = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
+		const role = LocationService.get('role') || user.type;
+		const name = LocationService.get('name') || userName;
+		const link = LocationService.get('link') || null;
+		const hosted = role === RoleType.Publisher ? true : false;
+		const live = (DEBUG || role === RoleType.SelfService) ? false : true;
+		const state = {
+			user: user,
+			role: role,
+			name: name,
+			link: link,
+			channelName: environment.channelName,
+			uid: null,
+			status: 'idle',
+			connecting: false,
+			connected: false,
+			locked: false,
+			control: false,
+			spyed: false,
+			hosted: hosted,
+			live: live,
+			cameraMuted: false,
+			audioMuted: false,
+		};
+		StateService.state = state;
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			this.state = state;
+			this.hosted = state.hosted;
+			this.pushChanges();
+		});
+		this.loadData();
+	}
+
+	loadData() {
 		ViewService.data$().pipe(
 			first()
 		).subscribe(data => {
 			this.data = data;
-			this.init();
+			this.initAgora();
 			this.initForm();
 		});
 	}
 
-	init() {
+	initAgora() {
 		let agora = null;
-		const role = LocationService.get('role') || RoleType.Attendee;
-		if (role !== RoleType.SelfService || DEBUG) {
+		if (DEBUG || this.state.role === RoleType.SelfService) {
+			StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
+		} else {
 			agora = this.agora = AgoraService.getSingleton();
-		}
-		if (!agora) {
-			const link = LocationService.get('link') || null;
-			const name = LocationService.get('name') || null;
-			StateService.state = {
-				role: role,
-				link: link,
-				name: name,
-				channelName: environment.channelName,
-				publisherId: role === RoleType.Publisher ? environment.publisherId : null,
-				uid: null,
-				status: AgoraStatus.Connected,
-				connecting: false,
-				connected: true,
-				locked: false,
-				control: false,
-				spyed: false,
-				hosted: role === RoleType.Publisher ? true : false,
-				cameraMuted: false,
-				audioMuted: false,
-				devices: [],
-				quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1],
-			};
+			let status;
+			if (!this.state.link) {
+				status = AgoraStatus.Link;
+			} else if (!this.state.name) {
+				status = AgoraStatus.Name;
+			} else if (this.state.role !== RoleType.Guest) {
+				status = AgoraStatus.Device;
+			} else {
+				status = AgoraStatus.ShouldConnect;
+			}
+			StateService.patchState({ status });
 		}
 		StreamService.local$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -101,13 +144,6 @@ export default class AgoraComponent extends Component {
 		).subscribe(remotes => {
 			// console.log('AgoraComponent.remotes', remotes);
 			this.remotes = remotes;
-			this.pushChanges();
-		});
-		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(state => {
-			this.state = state;
-			this.hosted = state.hosted;
 			this.pushChanges();
 		});
 		MessageService.out$.pipe(
@@ -188,16 +224,17 @@ export default class AgoraComponent extends Component {
 			}),
 			delay(1),
 			map(view => {
+				const waitingRoom = this.getWaitingRoom();
 				if (!this.state.hosted) {
-					view = this.getWaitingRoom();
-				} else {
-					if (!DEBUG) {
-						this.agora.navToView(view.id);
-					}
+					view = waitingRoom;
+				} else if (this.agora) {
+					this.agora.navToView(view.id);
 				}
 				this.view = view;
 				this.pushChanges();
-				LocationService.set('viewId', view.id);
+				if (view.id !== waitingRoom.id) {
+					LocationService.set('viewId', view.id);
+				}
 			}),
 		).subscribe(console.log);
 	}
@@ -253,7 +290,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	disconnect() {
-		if (!DEBUG) {
+		if (this.agora) {
 			this.agora.leaveChannel();
 		} else {
 			this.patchState({ connecting: false, connected: false });
@@ -261,12 +298,10 @@ export default class AgoraComponent extends Component {
 	}
 
 	onSlideChange(index) {
-		if (!DEBUG) {
-			MessageService.send({
-				type: MessageType.SlideChange,
-				index
-			});
-		}
+		MessageService.send({
+			type: MessageType.SlideChange,
+			index
+		});
 	}
 
 	onNavTo(viewId) {
@@ -307,7 +342,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	toggleCamera() {
-		if (!DEBUG) {
+		if (this.agora) {
 			this.agora.toggleCamera();
 		} else {
 			this.patchState({ cameraMuted: !this.state.cameraMuted });
@@ -315,7 +350,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	toggleAudio() {
-		if (!DEBUG) {
+		if (this.agora) {
 			this.agora.toggleAudio();
 		} else {
 			this.patchState({ audioMuted: !this.state.audioMuted });
@@ -323,7 +358,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onToggleControl() {
-		if (!DEBUG) {
+		if (this.agora) {
 			this.agora.toggleControl();
 		} else if (this.state.control) {
 			this.patchState({ control: false });
@@ -333,7 +368,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onToggleSpy(remoteId) {
-		if (!DEBUG) {
+		if (this.agora) {
 			this.agora.toggleSpy(remoteId);
 		} else {
 			this.patchState({ spying: !this.state.spying, control: false });

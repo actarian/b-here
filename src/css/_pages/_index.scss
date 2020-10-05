@@ -15,7 +15,7 @@ body {
 }
 
 .app,
-.agora {
+.page {
 	width: 100%;
 	height: 100%;
 }
@@ -145,24 +145,34 @@ body {
 }
 
 .group--info {
-	margin: 0 10px;
-
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	border-radius: 7px;
 	max-width: 400px;
+	margin: 0 10px;
+	border-radius: 7px;
+	background: $background;
 	box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2);
 
 	&__content {
 		padding: 20px;
 	}
 
+	.title {
+		margin-bottom: 25px;
+		font-size: 22px;
+		font-weight: 900;
+		line-height: 1.15;
+		text-align: center;
+	}
+
 	.info {
-		margin: 0 0 15px 0;
+		margin: 15px 0;
 		font-size: 15px;
-		color: #a5b3bd;
+		line-height: 1;
+		color: #89959d;
 		text-align: center;
 	}
 
@@ -385,7 +395,8 @@ body {
 
 .btn--generate,
 .btn--next,
-.btn--connect {
+.btn--connect,
+.btn--editor {
 	@extend %btn-rect;
 
 	svg {
@@ -404,6 +415,13 @@ body {
 			pointer-events: none;
 		}
 	}
+}
+
+.btn--editor {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	z-index: 10000;
 }
 
 .agora-stream {
@@ -978,6 +996,38 @@ model-viewer {
 			border-color: rgba(0, 0, 0, 0.0);
 			background: rgba(0, 0, 0, 0.8);
 			color: $foreground-negative;
+		}
+	}
+}
+
+[access-component] {
+	.background {
+		position: absolute;
+		left: -5vw;
+		top: -5vh;
+		width: 110vw;
+		height: 110vh;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: black;
+
+		&>img {
+			object-fit: cover;
+			width: 100%;
+			height: 100%;
+			filter: blur(24px);
+		}
+
+		&:after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.8);
 		}
 	}
 }

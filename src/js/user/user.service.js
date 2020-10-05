@@ -1,18 +1,25 @@
-import { BehaviorSubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { STATIC } from '../environment';
+import { BehaviorSubject, of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import HttpService from '../http/http.service';
-import LocalStorageService from '../local-storage/local-storage.service';
+import { User } from './user';
 
-export default class UserService {
+export class UserService {
 
 	static setUser(user) {
 		this.user$.next(user);
 	}
 
 	static me$() {
-		return HttpService.get$('/api/users/me').pipe(
-			map((user) => this.mapStatic__(user, 'me')),
+		return HttpService.get$('/api/user/me').pipe(
+			map((user) => this.mapUser(user)),
+			catchError(error => {
+				console.log(error);
+				if (error.status === 404) {
+					return of(null);
+				} else {
+					throw (error);
+				}
+			}),
 			switchMap(user => {
 				this.setUser(user);
 				return this.user$;
@@ -20,56 +27,68 @@ export default class UserService {
 		);
 	}
 
-	static register$(payload) {
-		return HttpService.post$('/api/users/register', payload).pipe(
-			map((user) => this.mapStatic__(user, 'register')),
-		);
-	}
-
-	static update(payload) {
-		return HttpService.post$('/api/users/updateprofile', payload).pipe(
-			map((user) => this.mapStatic__(user, 'register')),
-		);
-	}
-
 	static login$(payload) {
-		return HttpService.post$('/api/users/login', payload).pipe(
-			map((user) => this.mapStatic__(user, 'login')),
+		return HttpService.post$('/api/user/login', payload).pipe(
+			map((user) => this.mapUser(user)),
+			tap((user) => this.setUser(user)),
 		);
 	}
 
 	static logout$() {
-		return HttpService.post$('/api/users/logout').pipe(
-			map((user) => this.mapStatic__(user, 'logout')),
-		);
-	}
-	static retrieve$(payload) {
-		return HttpService.post$('/api/users/retrievepassword', payload).pipe(
-			map((user) => this.mapStatic__(user, 'retrieve')),
+		return HttpService.post$('/api/user/logout').pipe(
+			map((user) => this.mapUser(user)),
+			tap((user) => this.setUser(null)),
 		);
 	}
 
-	static mapStatic__(user, action = 'me') {
-		if (!STATIC) {
-			return user;
-		};
-		switch (action) {
-			case 'me':
-				if (!LocalStorageService.exist('user')) {
-					user = null;
-				};
-				break;
-			case 'register':
-				LocalStorageService.set('user', user);
-				break;
-			case 'login':
-				LocalStorageService.set('user', user);
-				break;
-			case 'logout':
-				LocalStorageService.delete('user');
-				break;
+	static guidedTour$(payload) {
+		return HttpService.post$('/api/user/guided-tour', payload).pipe(
+			map((user) => this.mapUser(user)),
+			tap((user) => this.setUser(user)),
+		);
+	}
+
+	static selfServiceTour$(payload) {
+		return HttpService.post$('/api/user/self-service-tour', payload).pipe(
+			map((user) => this.mapUser(user)),
+			tap((user) => this.setUser(user)),
+		);
+	}
+
+	static resolve$(payload, status) {
+		if (status === 'login') {
+			return this.login$(payload);
 		}
-		return user;
+		if (status === 'guided-tour') {
+			return this.guidedTour$(payload);
+		}
+		if (status === 'self-service-tour') {
+			return this.selfServiceTour$(payload);
+		}
+	}
+
+	/*
+	static retrieve$(payload) {
+		return HttpService.post$('/api/user/retrievepassword', payload).pipe(
+			map((user) => this.mapUser(user)),
+		);
+	}
+
+	static register$(payload) {
+		return HttpService.post$('/api/user/register', payload).pipe(
+			map((user) => this.mapUser(user)),
+		);
+	}
+
+	static update(payload) {
+		return HttpService.post$('/api/user/updateprofile', payload).pipe(
+			map((user) => this.mapUser(user)),
+		);
+	}
+	*/
+
+	static mapUser(user) {
+		return new User(user);
 	}
 
 }

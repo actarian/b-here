@@ -6,3 +6,11 @@ export const RoleType = {
 	Guest: 'guest',
 	SelfService: 'self-service',
 };
+
+export class User {
+	constructor(options) {
+		if (options) {
+			Object.assign(this, options);
+		}
+	}
+}

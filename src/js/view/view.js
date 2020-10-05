@@ -259,9 +259,6 @@ export class Asset {
 		return payload;
 	}
 	static fromUrl(url) {
-		if (url.indexOf('//') === -1) {
-			url = 'http://localhost:5000/b-here' + url;
-		}
 		const segments = url.split('/');
 		const file = segments.pop();
 		const folder = segments.join('/') + '/';

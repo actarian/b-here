@@ -47,7 +47,462 @@ function _assertThisInitialized(self) {
   }
 
   return self;
-}var BUFF_SIZE = 512;
+}var NODE = typeof module !== 'undefined' && module.exports;
+var PARAMS = NODE ? {
+  get: function get() {}
+} : new URLSearchParams(window.location.search);
+var DEBUG =  PARAMS.get('debug') != null;
+var EDITOR =  PARAMS.get('editor') != null;
+var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+var HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
+var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.host === 'actarian.github.io');
+var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+var PRODUCTION = !DEVELOPMENT;
+var ENV = {
+  STATIC: STATIC,
+  DEVELOPMENT: DEVELOPMENT,
+  PRODUCTION: PRODUCTION
+};
+var Environment = /*#__PURE__*/function () {
+  var _proto = Environment.prototype;
+
+  _proto.getPath = function getPath(path) {
+    return this.isLocal(path) ? this.href + path : path;
+  };
+
+  _proto.isLocal = function isLocal(path) {
+    return path.indexOf('://') === -1;
+  };
+
+  _createClass(Environment, [{
+    key: "href",
+    get: function get() {
+      if (HEROKU) {
+        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
+      } else {
+        return BASE_HREF;
+      }
+    }
+  }, {
+    key: "host",
+    get: function get() {
+      var host = window.location.host.replace('127.0.0.1', '192.168.1.2'); // let host = window.location.host;
+
+      if (host.substr(host.length - 1, 1) === '/') {
+        host = host.substr(0, host.length - 1);
+      }
+
+      return window.location.protocol + "//" + host + BASE_HREF;
+    }
+  }]);
+
+  function Environment(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  return Environment;
+}();
+var environment = new Environment({
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  appCertificate: '',
+  channelName: 'BHere',
+  debugMeetingId: '1591366622325',
+  port: 5000,
+  apiEnabled: false,
+  fontFamily: 'GT Walsheim',
+  renderOrder: {
+    panorama: 0,
+    model: 10,
+    plane: 20,
+    tile: 30,
+    banner: 40,
+    nav: 50,
+    panel: 60,
+    menu: 70,
+    debug: 80,
+    pointer: 90
+  }
+});var HttpService = /*#__PURE__*/function () {
+  function HttpService() {}
+
+  HttpService.http$ = function http$(method, url, data, format) {
+    var _this = this;
+
+    if (format === void 0) {
+      format = 'json';
+    }
+
+    var methods = ['POST', 'PUT', 'PATCH'];
+    var response_ = null; // url = this.getUrl(url, format);
+
+    return rxjs.from(fetch(url, {
+      method: method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: methods.indexOf(method) !== -1 ? JSON.stringify(data) : undefined
+    }).then(function (response) {
+      response_ = response; // console.log(response);
+
+      if (response.ok) {
+        return response[format]();
+      } else {
+        return response.json().then(function (json) {
+          return Promise.reject(json);
+        });
+      }
+    })).pipe(operators.catchError(function (error) {
+      return rxjs.throwError(_this.getError(error, response_));
+    }));
+  };
+
+  HttpService.get$ = function get$(url, data, format) {
+    var query = this.query(data);
+    return this.http$('GET', "" + url + query, undefined, format);
+  };
+
+  HttpService.delete$ = function delete$(url) {
+    return this.http$('DELETE', url);
+  };
+
+  HttpService.post$ = function post$(url, data) {
+    return this.http$('POST', url, data);
+  };
+
+  HttpService.put$ = function put$(url, data) {
+    return this.http$('PUT', url, data);
+  };
+
+  HttpService.patch$ = function patch$(url, data) {
+    return this.http$('PATCH', url, data);
+  };
+
+  HttpService.query = function query(data) {
+    return ''; // todo
+  };
+
+  HttpService.getUrl = function getUrl(url, format) {
+    if (format === void 0) {
+      format = 'json';
+    }
+
+    // console.log(url);
+    return STATIC && format === 'json' && url.indexOf('/') === 0 ? "." + url + ".json" : url;
+  };
+
+  HttpService.getError = function getError(object, response) {
+    var error = typeof object === 'object' ? object : {};
+
+    if (!error.statusCode) {
+      error.statusCode = response ? response.status : 0;
+    }
+
+    if (!error.statusMessage) {
+      error.statusMessage = response ? response.statusText : object;
+    }
+
+    console.log('HttpService.getError', error, object);
+    return error;
+  };
+
+  return HttpService;
+}();var RoleType = {
+  Publisher: 'publisher',
+  Attendee: 'attendee',
+  Streamer: 'streamer',
+  Guest: 'guest',
+  SelfService: 'self-service'
+};
+var User = function User(options) {
+  if (options) {
+    Object.assign(this, options);
+  }
+};var UserService = /*#__PURE__*/function () {
+  function UserService() {}
+
+  UserService.setUser = function setUser(user) {
+    this.user$.next(user);
+  };
+
+  UserService.me$ = function me$() {
+    var _this = this;
+
+    return HttpService.get$('/api/user/me').pipe(operators.map(function (user) {
+      return _this.mapUser(user);
+    }), operators.catchError(function (error) {
+      console.log(error);
+
+      if (error.status === 404) {
+        return rxjs.of(null);
+      } else {
+        throw error;
+      }
+    }), operators.switchMap(function (user) {
+      _this.setUser(user);
+
+      return _this.user$;
+    }));
+  };
+
+  UserService.login$ = function login$(payload) {
+    var _this2 = this;
+
+    return HttpService.post$('/api/user/login', payload).pipe(operators.map(function (user) {
+      return _this2.mapUser(user);
+    }), operators.tap(function (user) {
+      return _this2.setUser(user);
+    }));
+  };
+
+  UserService.logout$ = function logout$() {
+    var _this3 = this;
+
+    return HttpService.post$('/api/user/logout').pipe(operators.map(function (user) {
+      return _this3.mapUser(user);
+    }), operators.tap(function (user) {
+      return _this3.setUser(null);
+    }));
+  };
+
+  UserService.guidedTour$ = function guidedTour$(payload) {
+    var _this4 = this;
+
+    return HttpService.post$('/api/user/guided-tour', payload).pipe(operators.map(function (user) {
+      return _this4.mapUser(user);
+    }), operators.tap(function (user) {
+      return _this4.setUser(user);
+    }));
+  };
+
+  UserService.selfServiceTour$ = function selfServiceTour$(payload) {
+    var _this5 = this;
+
+    return HttpService.post$('/api/user/self-service-tour', payload).pipe(operators.map(function (user) {
+      return _this5.mapUser(user);
+    }), operators.tap(function (user) {
+      return _this5.setUser(user);
+    }));
+  };
+
+  UserService.resolve$ = function resolve$(payload, status) {
+    if (status === 'login') {
+      return this.login$(payload);
+    }
+
+    if (status === 'guided-tour') {
+      return this.guidedTour$(payload);
+    }
+
+    if (status === 'self-service-tour') {
+      return this.selfServiceTour$(payload);
+    }
+  }
+  /*
+  static retrieve$(payload) {
+  	return HttpService.post$('/api/user/retrievepassword', payload).pipe(
+  		map((user) => this.mapUser(user)),
+  	);
+  }
+  
+  static register$(payload) {
+  	return HttpService.post$('/api/user/register', payload).pipe(
+  		map((user) => this.mapUser(user)),
+  	);
+  }
+  
+  static update(payload) {
+  	return HttpService.post$('/api/user/updateprofile', payload).pipe(
+  		map((user) => this.mapUser(user)),
+  	);
+  }
+  */
+  ;
+
+  UserService.mapUser = function mapUser(user) {
+    return new User(user);
+  };
+
+  return UserService;
+}();
+UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AccessComponent, _Component);
+
+  function AccessComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AccessComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.debug = DEBUG;
+    this.editor = EDITOR;
+    this.state = {
+      status: 'access'
+    };
+    /*
+    StateService.state$.pipe(
+    	takeUntil(this.unsubscribe$)
+    ).subscribe(state => {
+    	console.log('AccessComponent.state', state);
+    	this.state = state;
+    	this.pushChanges();
+    });
+    */
+  };
+
+  _proto.onSelfServiceTourRequest = function onSelfServiceTourRequest() {
+    this.initRequestForm();
+    this.state.status = 'self-service-tour';
+    this.pushChanges();
+  };
+
+  _proto.onGuidedTourRequest = function onGuidedTourRequest() {
+    this.initRequestForm();
+    this.state.status = 'guided-tour';
+    this.pushChanges();
+  };
+
+  _proto.onLogin = function onLogin() {
+    this.initLoginForm();
+    this.state.status = 'login';
+    this.pushChanges();
+  };
+
+  _proto.initRequestForm = function initRequestForm() {
+    var _this = this;
+
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+
+    var form = this.form = new rxcompForm.FormGroup({
+      firstName: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      lastName: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      email: new rxcompForm.FormControl(null, [rxcompForm.Validators.RequiredValidator(), rxcompForm.Validators.EmailValidator()]),
+      role: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      privacy: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredTrueValidator()),
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+    var data = this.data = window.data || {
+      roles: [{
+        id: 1,
+        name: 'Show room'
+      }, {
+        id: 2,
+        name: 'Architetto'
+      }, {
+        id: 3,
+        name: 'Interior designer'
+      }, {
+        id: 4,
+        name: 'Privato'
+      }, {
+        id: 5,
+        name: 'Altro'
+      }]
+    };
+    var controls = this.controls = form.controls;
+    controls.role.options = data.roles;
+    this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      _this.pushChanges();
+    });
+    this.error = null;
+  };
+
+  _proto.initLoginForm = function initLoginForm() {
+    var _this2 = this;
+
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+
+    var form = this.form = new rxcompForm.FormGroup({
+      username: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      password: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+    var controls = this.controls = form.controls;
+    this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      _this2.pushChanges();
+    });
+    this.error = null;
+  };
+
+  _proto.test = function test() {
+    this.form.patch({
+      firstName: 'Jhon',
+      lastName: 'Appleseed',
+      email: 'jhonappleseed@gmail.com',
+      role: this.controls.role.options[0].id,
+      privacy: true,
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+  };
+
+  _proto.reset = function reset() {
+    this.form.reset();
+  };
+
+  _proto.onBack = function onBack() {
+    this.state.status = 'access';
+    this.pushChanges();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this3 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var payload = this.form.value;
+      var status = this.state.status;
+      UserService.resolve$(payload, status).pipe(operators.first()).subscribe(function (response) {
+        console.log('AccessComponent.onSubmit', response);
+
+        switch (status) {
+          case 'guided-tour':
+            _this3.state.status = 'guided-tour-success';
+
+            _this3.pushChanges();
+
+            break;
+
+          case 'self-service-tour':
+            window.location.href = '/self-service-tour';
+            break;
+
+          case 'login':
+            window.location.href = '/b-here';
+            break;
+        }
+
+        _this3.form.reset();
+      }, function (error) {
+        console.log('AccessComponent.error', error);
+        _this3.error = error;
+
+        _this3.pushChanges();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.isValid = function isValid() {
+    var isValid = this.form.valid;
+    return isValid;
+  };
+
+  return AccessComponent;
+}(rxcomp.Component);
+AccessComponent.meta = {
+  selector: '[access-component]'
+};var BUFF_SIZE = 512;
 
 var AudioStreamService = /*#__PURE__*/function () {
   function AudioStreamService() {}
@@ -555,240 +1010,6 @@ _defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emitta
   };
 
   return Emittable;
-}();var NODE = typeof module !== 'undefined' && module.exports;
-var PARAMS = NODE ? {
-  get: function get() {}
-} : new URLSearchParams(window.location.search);
-var DEBUG =  PARAMS.get('debug') != null;
-var EDITOR =  PARAMS.get('editor') != null;
-var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-var HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
-var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.host === 'actarian.github.io');
-var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
-var Environment = /*#__PURE__*/function () {
-  var _proto = Environment.prototype;
-
-  _proto.getPath = function getPath(path) {
-    return this.isLocal(path) ? this.href + path : path;
-  };
-
-  _proto.isLocal = function isLocal(path) {
-    return path.indexOf('://') === -1;
-  };
-
-  _createClass(Environment, [{
-    key: "href",
-    get: function get() {
-      if (HEROKU) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
-      } else {
-        return BASE_HREF;
-      }
-    }
-  }, {
-    key: "host",
-    get: function get() {
-      var host = window.location.host.replace('127.0.0.1', '192.168.1.2'); // let host = window.location.host;
-
-      if (host.substr(host.length - 1, 1) === '/') {
-        host = host.substr(0, host.length - 1);
-      }
-
-      return window.location.protocol + "//" + host + BASE_HREF;
-    }
-  }]);
-
-  function Environment(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-  return Environment;
-}();
-var environment = new Environment({
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  appCertificate: '',
-  channelName: 'BHere',
-  publisherId: '999',
-  debugMeetingId: '1591366622325',
-  port: 5000,
-  apiEnabled: false,
-  fontFamily: 'GT Walsheim',
-  renderOrder: {
-    panorama: 0,
-    model: 10,
-    plane: 20,
-    tile: 30,
-    banner: 40,
-    nav: 50,
-    panel: 60,
-    menu: 70,
-    debug: 80,
-    pointer: 90
-  }
-});var HttpService = /*#__PURE__*/function () {
-  function HttpService() {}
-
-  HttpService.http$ = function http$(method, url, data, format) {
-    var _this = this;
-
-    if (format === void 0) {
-      format = 'json';
-    }
-
-    var methods = ['POST', 'PUT', 'PATCH'];
-    var response_ = null; // url = this.getUrl(url, format);
-
-    return rxjs.from(fetch(url, {
-      method: method,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: methods.indexOf(method) !== -1 ? JSON.stringify(data) : undefined
-    }).then(function (response) {
-      response_ = response; // console.log(response);
-
-      if (response.ok) {
-        return response[format]();
-      } else {
-        return response.json().then(function (json) {
-          return Promise.reject(json);
-        });
-      }
-    })).pipe(operators.catchError(function (error) {
-      return rxjs.throwError(_this.getError(error, response_));
-    }));
-  };
-
-  HttpService.get$ = function get$(url, data, format) {
-    var query = this.query(data);
-    return this.http$('GET', "" + url + query, undefined, format);
-  };
-
-  HttpService.delete$ = function delete$(url) {
-    return this.http$('DELETE', url);
-  };
-
-  HttpService.post$ = function post$(url, data) {
-    return this.http$('POST', url, data);
-  };
-
-  HttpService.put$ = function put$(url, data) {
-    return this.http$('PUT', url, data);
-  };
-
-  HttpService.patch$ = function patch$(url, data) {
-    return this.http$('PATCH', url, data);
-  };
-
-  HttpService.query = function query(data) {
-    return ''; // todo
-  };
-
-  HttpService.getUrl = function getUrl(url, format) {
-    if (format === void 0) {
-      format = 'json';
-    }
-
-    // console.log(url);
-    return STATIC && format === 'json' && url.indexOf('/') === 0 ? "." + url + ".json" : url;
-  };
-
-  HttpService.getError = function getError(object, response) {
-    var error = typeof object === 'object' ? object : {};
-
-    if (!error.statusCode) {
-      error.statusCode = response ? response.status : 0;
-    }
-
-    if (!error.statusMessage) {
-      error.statusMessage = response ? response.statusText : object;
-    }
-
-    console.log('HttpService.getError', error, object);
-    return error;
-  };
-
-  return HttpService;
-}();var LocationService = /*#__PURE__*/function () {
-  function LocationService() {}
-
-  LocationService.has = function has(key) {
-    var params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
-
-    return params.has(key);
-  };
-
-  LocationService.get = function get(key) {
-    var params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
-
-    return params.get(key);
-  };
-
-  LocationService.set = function set(keyOrValue, value) {
-    var params = new URLSearchParams(window.location.search);
-
-    if (typeof keyOrValue === 'string') {
-      params.set(keyOrValue, value);
-    } else {
-      params.set(keyOrValue, '');
-    }
-
-    this.replace(params); // console.log('LocationService.set', params, keyOrValue, value);
-  };
-
-  LocationService.replace = function replace(params) {
-    if (window.history && window.history.pushState) {
-      var title = document.title;
-      var url = window.location.href.split('?')[0] + "?" + params.toString();
-      window.history.pushState(params.toString(), title, url);
-    }
-  };
-
-  LocationService.deserialize = function deserialize(key) {
-    var encoded = this.get('params');
-    return this.decode(key, encoded);
-  };
-
-  LocationService.serialize = function serialize(keyOrValue, value) {
-    var params = this.deserialize();
-    var encoded = this.encode(keyOrValue, value, params);
-    this.set('params', encoded);
-  };
-
-  LocationService.decode = function decode(key, encoded) {
-    var decoded = null;
-
-    if (encoded) {
-      var json = window.atob(encoded);
-      decoded = JSON.parse(json);
-    }
-
-    if (key && decoded) {
-      decoded = decoded[key];
-    }
-
-    return decoded || null;
-  };
-
-  LocationService.encode = function encode(keyOrValue, value, params) {
-    params = params || {};
-    var encoded = null;
-
-    if (typeof keyOrValue === 'string') {
-      params[keyOrValue] = value;
-    } else {
-      params = keyOrValue;
-    }
-
-    var json = JSON.stringify(params);
-    encoded = window.btoa(json);
-    return encoded;
-  };
-
-  return LocationService;
 }();var MessageService = /*#__PURE__*/function () {
   function MessageService() {}
 
@@ -821,13 +1042,7 @@ _defineProperty(MessageService, "in$", new rxjs.ReplaySubject(1));
 
 _defineProperty(MessageService, "send", MessageService.in);
 
-_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var RoleType = {
-  Publisher: 'publisher',
-  Attendee: 'attendee',
-  Streamer: 'streamer',
-  Guest: 'guest',
-  SelfService: 'self-service'
-};var StreamService = /*#__PURE__*/function () {
+_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamService = /*#__PURE__*/function () {
   function StreamService() {}
 
   StreamService.getPublisherStreamId$ = function getPublisherStreamId$() {
@@ -1137,56 +1352,60 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     _this.onTokenPrivilegeWillExpire = _this.onTokenPrivilegeWillExpire.bind(_assertThisInitialized(_this));
     _this.onTokenPrivilegeDidExpire = _this.onTokenPrivilegeDidExpire.bind(_assertThisInitialized(_this));
     _this.onMessage = _this.onMessage.bind(_assertThisInitialized(_this));
-    var role = LocationService.get('role') || RoleType.Attendee;
-    var link = LocationService.get('link') || null;
-    var name = LocationService.get('name') || null;
-
-    var status = _this.getInitialStatus(role, link, name);
-
-    var state = {
-      role: role,
-      link: link,
-      name: name,
-      channelName: environment.channelName,
-      publisherId: role === RoleType.Publisher ? environment.publisherId : null,
-      uid: null,
-      status: status,
-      connecting: false,
-      connected: false,
-      locked: false,
-      control: false,
-      spyed: false,
-      hosted: role === RoleType.Publisher ? true : false,
-      cameraMuted: false,
-      audioMuted: false,
-      devices: role !== RoleType.Attendee && defaultDevices ? defaultDevices : {
+    var state = StateService.state;
+    StateService.patchState({
+      devices: state.role !== RoleType.Attendee && defaultDevices ? defaultDevices : {
         videos: [],
         audios: []
       },
-      quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
+      quality: state.role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
+    });
+    /*
+    const role = LocationService.get('role') || RoleType.Attendee;
+    const link = LocationService.get('link') || null;
+    const name = LocationService.get('name') || null;
+    const status = this.getInitialStatus(role, link, name);
+    const state = {
+    	role: role,
+    	link: link,
+    	name: name,
+    	channelName: environment.channelName,
+    	uid: null,
+    	status: status,
+    	connecting: false,
+    	connected: false,
+    	locked: false,
+    	control: false,
+    	spyed: false,
+    	hosted: role === RoleType.Publisher ? true : false,
+    	cameraMuted: false,
+    	audioMuted: false,
+    	devices: (role !== RoleType.Attendee && defaultDevices) ? defaultDevices : { videos: [], audios: [] },
+    	quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1],
     };
-    StateService.state = state; // !!! StateService.patchState({ ... })
+    StateService.state = state;
+    // !!! StateService.patchState({ ... })
+    */
 
     return _this;
   }
+  /*
+  getInitialStatus(role, link, name) {
+  	if (!link) {
+  		return AgoraStatus.Link;
+  	}
+  	if (!name) {
+  		return AgoraStatus.Name;
+  	}
+  	if (role !== RoleType.Guest) {
+  		return AgoraStatus.Device;
+  	}
+  	return AgoraStatus.ShouldConnect;
+  }
+  */
+
 
   var _proto = AgoraService.prototype;
-
-  _proto.getInitialStatus = function getInitialStatus(role, link, name) {
-    if (!link) {
-      return AgoraStatus.Link;
-    }
-
-    if (!name) {
-      return AgoraStatus.Name;
-    }
-
-    if (role !== RoleType.Guest) {
-      return AgoraStatus.Device;
-    }
-
-    return AgoraStatus.ShouldConnect;
-  };
 
   _proto.addStreamDevice = function addStreamDevice(src) {
     this.removeStreamDevice();
@@ -1404,8 +1623,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     var _this4 = this;
 
     var client = this.client;
-    var clientId = null; // StateService.state.role === RoleType.Publisher ? StateService.state.publisherId : null;
-
+    var clientId = null;
     token = null; // !!!
 
     var channelNameLink = StateService.state.channelName + "-" + (StateService.state.link || '');
@@ -2460,7 +2678,84 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
 AgoraDeviceComponent.meta = {
   selector: '[agora-device]',
   outputs: ['enter']
-};var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
+};var LocationService = /*#__PURE__*/function () {
+  function LocationService() {}
+
+  LocationService.has = function has(key) {
+    var params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+
+    return params.has(key);
+  };
+
+  LocationService.get = function get(key) {
+    var params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
+
+    return params.get(key);
+  };
+
+  LocationService.set = function set(keyOrValue, value) {
+    var params = new URLSearchParams(window.location.search);
+
+    if (typeof keyOrValue === 'string') {
+      params.set(keyOrValue, value);
+    } else {
+      params.set(keyOrValue, '');
+    }
+
+    this.replace(params); // console.log('LocationService.set', params, keyOrValue, value);
+  };
+
+  LocationService.replace = function replace(params) {
+    if (window.history && window.history.pushState) {
+      var title = document.title;
+      var url = window.location.href.split('?')[0] + "?" + params.toString();
+      window.history.pushState(params.toString(), title, url);
+    }
+  };
+
+  LocationService.deserialize = function deserialize(key) {
+    var encoded = this.get('params');
+    return this.decode(key, encoded);
+  };
+
+  LocationService.serialize = function serialize(keyOrValue, value) {
+    var params = this.deserialize();
+    var encoded = this.encode(keyOrValue, value, params);
+    this.set('params', encoded);
+  };
+
+  LocationService.decode = function decode(key, encoded) {
+    var decoded = null;
+
+    if (encoded) {
+      var json = window.atob(encoded);
+      decoded = JSON.parse(json);
+    }
+
+    if (key && decoded) {
+      decoded = decoded[key];
+    }
+
+    return decoded || null;
+  };
+
+  LocationService.encode = function encode(keyOrValue, value, params) {
+    params = params || {};
+    var encoded = null;
+
+    if (typeof keyOrValue === 'string') {
+      params[keyOrValue] = value;
+    } else {
+      params = keyOrValue;
+    }
+
+    var json = JSON.stringify(params);
+    encoded = window.btoa(json);
+    return encoded;
+  };
+
+  return LocationService;
+}();var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLinkComponent, _Component);
 
   function AgoraLinkComponent() {
@@ -2494,14 +2789,8 @@ AgoraDeviceComponent.meta = {
     // const timestamp = (performance.now() * 10000000000000).toString();
     var timestamp = new Date().valueOf().toString();
     this.form.patch({
-      link: this.padded(this.state.publisherId, 9) + "-" + timestamp
+      link: this.padded(this.state.user.id, 9) + "-" + timestamp
     });
-    /*
-    this.controls.link.value = `${this.padded(this.state.publisherId, 9)}-${timestamp}`;
-    setTimeout(() => {
-    	this.pushChanges();
-    }, 1);
-    */
   };
 
   _proto.onCopyToClipBoard = function onCopyToClipBoard(event) {
@@ -3335,10 +3624,6 @@ var Asset = /*#__PURE__*/function () {
   }
 
   Asset.fromUrl = function fromUrl(url) {
-    if (url.indexOf('//') === -1) {
-      url = 'http://localhost:5000/b-here' + url;
-    }
-
     var segments = url.split('/');
     var file = segments.pop();
     var folder = segments.join('/') + '/';
@@ -3629,66 +3914,113 @@ var VRService = /*#__PURE__*/function () {
     vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
       return _this.pushChanges();
     });
-    ViewService.data$().pipe(operators.first()).subscribe(function (data) {
-      _this.data = data;
+    this.resolveUser();
+  };
 
-      _this.init();
+  _proto.resolveUser = function resolveUser() {
+    var _this2 = this;
 
-      _this.initForm();
+    UserService.me$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (user) {
+      if (user) {
+        _this2.user = user;
+
+        _this2.initState();
+      } else {
+        window.location.href = '/';
+      }
     });
   };
 
-  _proto.init = function init() {
-    var _this2 = this;
+  _proto.initState = function initState() {
+    var _this3 = this;
+
+    var user = this.user;
+    var userName = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
+    var role = LocationService.get('role') || user.type;
+    var name = LocationService.get('name') || userName;
+    var link = LocationService.get('link') || null;
+    var hosted = role === RoleType.Publisher ? true : false;
+    var live = DEBUG || role === RoleType.SelfService ? false : true;
+    var state = {
+      user: user,
+      role: role,
+      name: name,
+      link: link,
+      channelName: environment.channelName,
+      uid: null,
+      status: 'idle',
+      connecting: false,
+      connected: false,
+      locked: false,
+      control: false,
+      spyed: false,
+      hosted: hosted,
+      live: live,
+      cameraMuted: false,
+      audioMuted: false
+    };
+    StateService.state = state;
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this3.state = state;
+      _this3.hosted = state.hosted;
+
+      _this3.pushChanges();
+    });
+    this.loadData();
+  };
+
+  _proto.loadData = function loadData() {
+    var _this4 = this;
+
+    ViewService.data$().pipe(operators.first()).subscribe(function (data) {
+      _this4.data = data;
+
+      _this4.initAgora();
+
+      _this4.initForm();
+    });
+  };
+
+  _proto.initAgora = function initAgora() {
+    var _this5 = this;
 
     var agora = null;
-    var role = LocationService.get('role') || RoleType.Attendee;
 
-    if (role !== RoleType.SelfService || DEBUG) {
-      agora = this.agora = AgoraService.getSingleton();
-    }
-
-    if (!agora) {
-      var link = LocationService.get('link') || null;
-      var name = LocationService.get('name') || null;
-      StateService.state = {
-        role: role,
-        link: link,
-        name: name,
-        channelName: environment.channelName,
-        publisherId: role === RoleType.Publisher ? environment.publisherId : null,
-        uid: null,
+    if (DEBUG || this.state.role === RoleType.SelfService) {
+      StateService.patchState({
         status: AgoraStatus.Connected,
-        connecting: false,
-        connected: true,
-        locked: false,
-        control: false,
-        spyed: false,
-        hosted: role === RoleType.Publisher ? true : false,
-        cameraMuted: false,
-        audioMuted: false,
-        devices: [],
-        quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
-      };
+        hosted: true
+      });
+    } else {
+      agora = this.agora = AgoraService.getSingleton();
+      var status;
+
+      if (!this.state.link) {
+        status = AgoraStatus.Link;
+      } else if (!this.state.name) {
+        status = AgoraStatus.Name;
+      } else if (this.state.role !== RoleType.Guest) {
+        status = AgoraStatus.Device;
+      } else {
+        status = AgoraStatus.ShouldConnect;
+      }
+
+      StateService.patchState({
+        status: status
+      });
     }
 
     StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
       // console.log('AgoraComponent.local', local);
-      _this2.local = local;
+      _this5.local = local;
 
-      _this2.pushChanges();
+      _this5.pushChanges();
     });
     StreamService.remotes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
       // console.log('AgoraComponent.remotes', remotes);
-      _this2.remotes = remotes;
+      _this5.remotes = remotes;
 
-      _this2.pushChanges();
-    });
-    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this2.state = state;
-      _this2.hosted = state.hosted;
-
-      _this2.pushChanges();
+      _this5.pushChanges();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       // console.log('AgoraComponent.message', message);
@@ -3720,19 +4052,19 @@ var VRService = /*#__PURE__*/function () {
           break;
 
         case MessageType.RequestInfoResult:
-          if (_this2.controls.view.value !== message.viewId) {
-            _this2.controls.view.value = message.viewId; // console.log('AgoraComponent.RequestInfoResult', message.viewId);
+          if (_this5.controls.view.value !== message.viewId) {
+            _this5.controls.view.value = message.viewId; // console.log('AgoraComponent.RequestInfoResult', message.viewId);
           }
 
           break;
 
         case MessageType.NavToView:
           if (message.viewId) {
-            if (_this2.controls.view.value !== message.viewId) {
-              _this2.controls.view.value = message.viewId;
+            if (_this5.controls.view.value !== message.viewId) {
+              _this5.controls.view.value = message.viewId;
 
               if (message.gridIndex !== undefined) {
-                var view = _this2.data.views.find(function (x) {
+                var view = _this5.data.views.find(function (x) {
                   return x.id === message.viewId;
                 });
 
@@ -3759,7 +4091,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.initForm = function initForm() {
-    var _this3 = this;
+    var _this6 = this;
 
     var data = this.data;
     var views = this.views = data.views.filter(function (x) {
@@ -3776,25 +4108,27 @@ var VRService = /*#__PURE__*/function () {
       var view = data.views.find(function (x) {
         return x.id === changes.view;
       });
-      _this3.view = null;
+      _this6.view = null;
 
-      _this3.pushChanges();
+      _this6.pushChanges();
 
       return view;
     }), operators.delay(1), operators.map(function (view) {
-      if (!_this3.state.hosted) {
-        view = _this3.getWaitingRoom();
-      } else {
-        if (!DEBUG) {
-          _this3.agora.navToView(view.id);
-        }
+      var waitingRoom = _this6.getWaitingRoom();
+
+      if (!_this6.state.hosted) {
+        view = waitingRoom;
+      } else if (_this6.agora) {
+        _this6.agora.navToView(view.id);
       }
 
-      _this3.view = view;
+      _this6.view = view;
 
-      _this3.pushChanges();
+      _this6.pushChanges();
 
-      LocationService.set('viewId', view.id);
+      if (view.id !== waitingRoom.id) {
+        LocationService.set('viewId', view.id);
+      }
     })).subscribe(console.log);
   };
 
@@ -3864,7 +4198,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.disconnect = function disconnect() {
-    if (!DEBUG) {
+    if (this.agora) {
       this.agora.leaveChannel();
     } else {
       this.patchState({
@@ -3875,12 +4209,10 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onSlideChange = function onSlideChange(index) {
-    if (!DEBUG) {
-      MessageService.send({
-        type: MessageType.SlideChange,
-        index: index
-      });
-    }
+    MessageService.send({
+      type: MessageType.SlideChange,
+      index: index
+    });
   };
 
   _proto.onNavTo = function onNavTo(viewId) {
@@ -3890,7 +4222,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onRemoteControlRequest = function onRemoteControlRequest(message) {
-    var _this4 = this;
+    var _this7 = this;
 
     ModalService.open$({
       src: ModalSrcService.get('controlRequest'),
@@ -3899,23 +4231,23 @@ var VRService = /*#__PURE__*/function () {
       if (!DEBUG) {
         if (event instanceof ModalResolveEvent) {
           message.type = MessageType.RequestControlAccepted;
-          _this4.state.locked = true;
+          _this7.state.locked = true;
         } else {
           message.type = MessageType.RequestControlRejected;
-          _this4.state.locked = false;
+          _this7.state.locked = false;
         }
 
         MessageService.sendBack(message);
 
-        _this4.pushChanges();
+        _this7.pushChanges();
       } else {
         if (event instanceof ModalResolveEvent) {
-          _this4.patchState({
+          _this7.patchState({
             control: true,
             spying: false
           });
         } else {
-          _this4.patchState({
+          _this7.patchState({
             control: false,
             spying: false
           });
@@ -3931,7 +4263,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.toggleCamera = function toggleCamera() {
-    if (!DEBUG) {
+    if (this.agora) {
       this.agora.toggleCamera();
     } else {
       this.patchState({
@@ -3941,7 +4273,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.toggleAudio = function toggleAudio() {
-    if (!DEBUG) {
+    if (this.agora) {
       this.agora.toggleAudio();
     } else {
       this.patchState({
@@ -3951,7 +4283,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onToggleControl = function onToggleControl() {
-    if (!DEBUG) {
+    if (this.agora) {
       this.agora.toggleControl();
     } else if (this.state.control) {
       this.patchState({
@@ -3963,7 +4295,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onToggleSpy = function onToggleSpy(remoteId) {
-    if (!DEBUG) {
+    if (this.agora) {
       this.agora.toggleSpy(remoteId);
     } else {
       this.patchState({
@@ -4000,7 +4332,7 @@ var VRService = /*#__PURE__*/function () {
       return this.hosted_;
     },
     set: function set(hosted) {
-      var _this5 = this;
+      var _this8 = this;
 
       if (this.hosted_ !== hosted) {
         this.hosted_ = hosted;
@@ -4008,7 +4340,7 @@ var VRService = /*#__PURE__*/function () {
         if (this.data && this.controls) {
           if (hosted) {
             var view = this.data.views.find(function (x) {
-              return x.id === _this5.controls.view.value;
+              return x.id === _this8.controls.view.value;
             });
             this.view = view;
           } else {
@@ -5068,43 +5400,69 @@ AsideComponent.meta = {
     vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
       return _this.pushChanges();
     });
-    EditorService.data$().pipe(operators.first()).subscribe(function (data) {
-      _this.data = data;
-      var role = LocationService.get('role') || RoleType.Publisher;
-      var link = LocationService.get('link') || null;
-      var name = LocationService.get('name') || null;
-      StateService.state = {
-        role: role,
-        link: link,
-        name: name,
-        channelName: environment.channelName,
-        publisherId: role === RoleType.Publisher ? environment.publisherId : null,
-        uid: null,
-        status: AgoraStatus.Connected,
-        connecting: false,
-        connected: true,
-        locked: false,
-        control: false,
-        spyed: false,
-        hosted: role === RoleType.Publisher ? true : false,
-        cameraMuted: false,
-        audioMuted: false,
-        devices: [],
-        quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
-      };
+    this.resolveUser();
+  };
 
-      _this.initForm();
+  _proto.resolveUser = function resolveUser() {
+    var _this2 = this;
+
+    UserService.me$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (user) {
+      if (user && user.type === RoleType.Publisher) {
+        _this2.user = user;
+
+        _this2.initState();
+      } else {
+        window.location.href = '/';
+      }
     });
-    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this.state = state;
-      _this.hosted = state.hosted;
+  };
 
-      _this.pushChanges();
+  _proto.initState = function initState() {
+    var _this3 = this;
+
+    var user = this.user;
+    var role = user.type;
+    var name = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
+    var state = {
+      user: user,
+      role: role,
+      name: name,
+      link: null,
+      channelName: environment.channelName,
+      uid: null,
+      status: AgoraStatus.Connected,
+      connecting: false,
+      connected: true,
+      locked: false,
+      control: false,
+      spyed: false,
+      hosted: true,
+      live: false,
+      cameraMuted: false,
+      audioMuted: false
+    };
+    StateService.state = state;
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this3.state = state;
+      _this3.hosted = state.hosted;
+
+      _this3.pushChanges();
+    });
+    this.loadData();
+  };
+
+  _proto.loadData = function loadData() {
+    var _this4 = this;
+
+    EditorService.data$().pipe(operators.first()).subscribe(function (data) {
+      _this4.data = data;
+
+      _this4.initForm();
     });
   };
 
   _proto.initForm = function initForm() {
-    var _this2 = this;
+    var _this5 = this;
 
     var data = this.data; // const views = this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 
@@ -5120,26 +5478,21 @@ AsideComponent.meta = {
       var view = data.views.find(function (x) {
         return x.id === changes.view;
       });
-      _this2.view = null;
+      _this5.view = null;
 
-      _this2.pushChanges();
+      _this5.pushChanges();
 
       return view;
     }), operators.delay(1), operators.map(function (view) {
-      /*
-      if (!this.state.hosted) {
-      	view = this.getWaitingRoom();
-      } else {
-      	if (!DEBUG) {
-      		this.agora.navToView(view.id);
-      	}
+      var waitingRoom = _this5.getWaitingRoom();
+
+      _this5.view = view;
+
+      _this5.pushChanges();
+
+      if (view.id !== waitingRoom.id) {
+        LocationService.set('viewId', view.id);
       }
-      */
-      _this2.view = view;
-
-      _this2.pushChanges();
-
-      LocationService.set('viewId', view.id);
     })).subscribe(console.log);
   };
 
@@ -5184,19 +5537,19 @@ AsideComponent.meta = {
   };
 
   _proto.onRemoteControlRequest = function onRemoteControlRequest(message) {
-    var _this3 = this;
+    var _this6 = this;
 
     ModalService.open$({
       src: ModalSrcService.get('controlRequest'),
       data: null
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
-        _this3.patchState({
+        _this6.patchState({
           control: true,
           spying: false
         });
       } else {
-        _this3.patchState({
+        _this6.patchState({
           control: false,
           spying: false
         });
@@ -5263,12 +5616,12 @@ AsideComponent.meta = {
   };
 
   _proto.onDragEnd = function onDragEnd(event) {
-    var _this4 = this;
+    var _this7 = this;
 
     EditorService.inferItemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
       console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
 
-      _this4.pushChanges();
+      _this7.pushChanges();
     }, function (error) {
       return console.log('EditorComponent.onDragEnd.itemUpdate$.error', error);
     });
@@ -5300,7 +5653,7 @@ AsideComponent.meta = {
   };
 
   _proto.onOpenModal = function onOpenModal(modal, data) {
-    var _this5 = this;
+    var _this8 = this;
 
     ModalService.open$({
       src: ModalSrcService.get(modal.type, modal.value),
@@ -5313,7 +5666,7 @@ AsideComponent.meta = {
           case ViewItemType.Nav.name:
           case ViewItemType.Plane.name:
           case ViewItemType.CurvedPlane.name:
-            var tile = EditorService.getTile(_this5.view);
+            var tile = EditorService.getTile(_this8.view);
 
             if (tile) {
               var navs = tile.navs || [];
@@ -5322,37 +5675,37 @@ AsideComponent.meta = {
                 navs: navs
               });
 
-              _this5.view.updateCurrentItems();
+              _this8.view.updateCurrentItems();
             } else {
-              var items = _this5.view.items || [];
+              var items = _this8.view.items || [];
               items.push(event.data);
-              Object.assign(_this5.view, {
+              Object.assign(_this8.view, {
                 items: items
               });
             }
 
-            _this5.pushChanges();
+            _this8.pushChanges();
 
             break;
 
           case ViewType.Panorama.name:
           case ViewType.PanoramaGrid.name:
-            _this5.data.views.push(event.data);
+            _this8.data.views.push(event.data);
 
-            _this5.controls.view.value = event.data.id;
+            _this8.controls.view.value = event.data.id;
 
-            _this5.pushChanges();
+            _this8.pushChanges();
 
             break;
         }
       }
 
-      _this5.pushChanges();
+      _this8.pushChanges();
     });
   };
 
   _proto.onAsideSelect = function onAsideSelect(event) {
-    var _this6 = this;
+    var _this9 = this;
 
     console.log('onAsideSelect', event);
 
@@ -5362,8 +5715,8 @@ AsideComponent.meta = {
         case ViewItemType.Plane.name:
         case ViewItemType.CurvedPlane.name:
           this.onViewHitted(function (position) {
-            _this6.onOpenModal(event, {
-              view: _this6.view,
+            _this9.onOpenModal(event, {
+              view: _this9.view,
               position: position
             });
           });
@@ -5423,7 +5776,7 @@ AsideComponent.meta = {
   };
 
   _proto.onAsideUpdate = function onAsideUpdate(event) {
-    var _this7 = this;
+    var _this10 = this;
 
     console.log('onAsideUpdate', event);
 
@@ -5438,20 +5791,20 @@ AsideComponent.meta = {
           Object.assign(item, event.item);
         }
 
-        _this7.pushChanges();
+        _this10.pushChanges();
       }, function (error) {
         return console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error);
       });
     } else if (event.tile && event.view) ; else if (event.view) {
       EditorService.viewUpdate$(event.view).pipe(operators.first()).subscribe(function (response) {
         console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
-        var assetDidChange = _this7.view.asset.id !== event.view.asset.id;
-        Object.assign(_this7.view, event.view);
+        var assetDidChange = _this10.view.asset.id !== event.view.asset.id;
+        Object.assign(_this10.view, event.view);
 
         if (assetDidChange) {
-          _this7.controls.view.value = event.view.id;
+          _this10.controls.view.value = event.view.id;
         } else {
-          _this7.pushChanges();
+          _this10.pushChanges();
         }
       }, function (error) {
         return console.log('EditorComponent.onAsideUpdate.viewUpdate$.error', error);
@@ -5460,7 +5813,7 @@ AsideComponent.meta = {
   };
 
   _proto.onAsideDelete = function onAsideDelete(event) {
-    var _this8 = this;
+    var _this11 = this;
 
     console.log('onAsideDelete', event);
 
@@ -5473,7 +5826,7 @@ AsideComponent.meta = {
           event.view.items.splice(index, 1);
         }
 
-        _this8.pushChanges();
+        _this11.pushChanges();
       }, function (error) {
         return console.log('EditorComponent.onAsideDelete.itemDelete$.error', error);
       });
@@ -5481,14 +5834,14 @@ AsideComponent.meta = {
       EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
         console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
 
-        var index = _this8.data.views.indexOf(event.view);
+        var index = _this11.data.views.indexOf(event.view);
 
         if (index !== -1) {
-          _this8.data.views.splice(index, 1);
+          _this11.data.views.splice(index, 1);
         }
 
-        _this8.views = _this8.data.views.slice();
-        _this8.controls.view.value = _this8.views[0].id; // this.pushChanges();
+        _this11.views = _this11.data.views.slice();
+        _this11.controls.view.value = _this11.views[0].id; // this.pushChanges();
       }, function (error) {
         return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
       });
@@ -5501,7 +5854,7 @@ AsideComponent.meta = {
       return this.hosted_;
     },
     set: function set(hosted) {
-      var _this9 = this;
+      var _this12 = this;
 
       if (this.hosted_ !== hosted) {
         this.hosted_ = hosted;
@@ -5509,7 +5862,7 @@ AsideComponent.meta = {
         if (this.data && this.controls) {
           if (hosted) {
             var view = this.data.views.find(function (x) {
-              return x.id === _this9.controls.view.value;
+              return x.id === _this12.controls.view.value;
             });
             this.view = view;
           } else {
@@ -7595,6 +7948,28 @@ ControlLinkComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlPasswordComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlPasswordComponent, _ControlComponent);
+
+  function ControlPasswordComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlPasswordComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.label = 'label';
+    this.required = false;
+  };
+
+  return ControlPasswordComponent;
+}(ControlComponent);
+ControlPasswordComponent.meta = {
+  selector: '[control-password]',
+  inputs: ['control', 'label'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"password\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlSelectComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlSelectComponent, _ControlComponent);
 
@@ -7637,7 +8012,7 @@ ControlTextComponent.meta = {
   inputs: ['control', 'label', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var FlowService = /*#__PURE__*/function () {
   function FlowService(options) {
     var _this = this;
@@ -8129,6 +8504,36 @@ InputValueComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--control\" [class]=\"{ disabled: disabled }\">\n\t\t\t<input type=\"text\" class=\"control--text\" [placeholder]=\"label\" [value]=\"getValue()\" [disabled]=\"disabled\" />\n\t\t\t<div class=\"control--trigger\">\n\t\t\t\t<div class=\"btn--more\" (click)=\"setValue(1)\">+</div>\n\t\t\t\t<div class=\"btn--less\" (click)=\"setValue(-1)\">-</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};var TestComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(TestComponent, _Component);
+
+  function TestComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = TestComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.env = ENV;
+  };
+
+  _proto.onTest = function onTest(event) {
+    this.test.next(event);
+  };
+
+  _proto.onReset = function onReset(event) {
+    this.reset.next(event);
+  };
+
+  return TestComponent;
+}(rxcomp.Component);
+TestComponent.meta = {
+  selector: 'test-component',
+  inputs: ['form'],
+  outputs: ['test', 'reset'],
+  template:
+  /* html */
+  "\n\t<div class=\"group--form--results\" *if=\"env.DEVELOPMENT\">\n\t\t<code [innerHTML]=\"form.value | json\"></code>\n\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onTest($event)\"><span>test</span></button>\n\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onReset($event)\"><span>reset</span></button>\n\t</div>\n\t"
 };var ValueDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(ValueDirective, _Directive);
 
@@ -73692,6 +74097,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

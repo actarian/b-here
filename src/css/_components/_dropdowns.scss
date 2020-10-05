@@ -29,13 +29,12 @@
 		padding: 0 15px;
 
 		font-family: $font-secondary;
-		font-size: 13px;
+		font-size: 11px;
 		opacity: 0.3;
 
 		font-weight: $font-semibold;
-		text-transform: uppercase;
 		line-height: 1;
-		color: $foreground;
+		color: #a5b3bd;
 		z-index: 2;
 	}
 
@@ -74,9 +73,8 @@
 			@extend %nav-item;
 			font-family: $font-secondary;
 			line-height: 1;
-			font-size: 17px;
+			font-size: 15px;
 			padding: 15px;
-			text-transform: uppercase;
 			white-space: nowrap;
 			width: 100%;
 			overflow: hidden;
@@ -110,7 +108,7 @@
 	}
 
 	&>li+li {
-		border-top: 1px solid rgba(#16255b, 0.15);
+		border-top: 1px solid rgb(198, 227, 247);
 	}
 
 	&.multiple {
@@ -155,7 +153,6 @@
 
 			&>a,
 			&>span {
-				font-size: 19px;
 				padding: 8px 15px;
 
 				.icon:first-child {

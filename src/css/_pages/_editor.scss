@@ -474,6 +474,11 @@ update-view-tile {
 		display: none;
 	}
 
+	.required .required__badge {
+		right: 0px;
+		top: 0;
+	}
+
 	.group--form,
 	.group--form--checkbox,
 	.group--form--file,
