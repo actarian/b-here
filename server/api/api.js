@@ -1,6 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
+const RoleType = {
+	Publisher: 'publisher',
+	Attendee: 'attendee',
+	Streamer: 'streamer',
+	Guest: 'guest',
+	SelfService: 'self-service',
+};
+
 /*
 const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
 
@@ -31,7 +39,25 @@ app.post('/api/token/rtm', function(request, response) {
 });
 */
 
-let db = { views: [], assets: [] };
+let db = {
+	views: [], assets: [], users: [
+		{
+			id: '1601892639985',
+			username: 'publisher',
+			password: 'publisher',
+			type: 'publisher',
+			firstName: 'Jhon',
+			lastName: 'Appleseed',
+		}, {
+			id: '1601892639986',
+			username: 'attendee',
+			password: 'attendee',
+			type: 'attendee',
+			firstName: 'Jhon',
+			lastName: 'Appleseed',
+		}
+	]
+};
 
 const pathname = path.join(__dirname, `../../docs/api/editor.json`);
 readStore();
@@ -228,6 +254,52 @@ const ROUTES = [{
 }, {
 	path: '/api/asset/:assetId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.assetId }, db.assets);
+	}
+}, {
+	path: '/api/user/me', method: 'GET', callback: function(request, response, params) {
+		const user = request.session.user;
+		if (!user) {
+			sendError(response, 404, 'Not Found');
+		} else {
+			response.send(JSON.stringify(user));
+		}
+	}
+}, {
+	path: '/api/user/login', method: 'POST', callback: function(request, response, params) {
+		const body = request.body;
+		const user = db.users.find(x => x.username === body.username && x.password === body.password);
+		if (!user) {
+			sendError(response, 404, 'Not Found');
+		} else {
+			request.session.user = user;
+			response.send(JSON.stringify(user));
+		}
+	}
+}, {
+	path: '/api/user/logout', method: 'GET', callback: function(request, response, params) {
+		const user = request.session.user;
+		request.session.user = null;
+		response.status(200).send(JSON.stringify(user));
+	}
+}, {
+	path: '/api/user/guided-tour', method: 'POST', callback: function(request, response, params) {
+		const body = request.body;
+		const id = new Date().getTime();
+		const user = Object.assign({ type: RoleType.Streamer }, body, { id });
+		request.session.user = null;
+		db.users.push(user);
+		saveStore();
+		response.send(JSON.stringify(user));
+	}
+}, {
+	path: '/api/user/self-service-tour', method: 'POST', callback: function(request, response, params) {
+		const body = request.body;
+		const id = new Date().getTime();
+		const user = Object.assign({ type: RoleType.SelfService }, body, { id });
+		request.session.user = user;
+		db.users.push(user);
+		saveStore();
+		response.send(JSON.stringify(user));
 	}
 }];
 ROUTES.forEach(route => {

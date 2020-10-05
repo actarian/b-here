@@ -88,6 +88,29 @@ export default class ModelPanelComponent extends ModelComponent {
 		}
 	}
 
+	onDestroy() {
+		console.log('ModelPanelComponent.onDestroy');
+		super.onDestroy();
+		/*
+		const group = this.group;
+		this.host.objects.remove(group);
+		delete group.userData.render;
+		group.traverse(child => {
+			if (child instanceof InteractiveMesh) {
+				Interactive.dispose(child);
+			}
+			if (child.isMesh) {
+				if (child.material.map && child.material.map.disposable !== false) {
+					child.material.map.dispose();
+				}
+				child.material.dispose();
+				child.geometry.dispose();
+			}
+		});
+		this.group = null;
+		*/
+	}
+
 	imagesLoaded() {
 		const { node } = getContext(this);
 		const images = Array.prototype.slice.call(node.querySelectorAll('img'));

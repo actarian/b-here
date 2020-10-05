@@ -1,9 +1,8 @@
 import { Component, getContext } from 'rxcomp';
-// import UserService from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { Subject } from 'rxjs';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
-import { AgoraStatus, StreamQualities } from '../agora/agora.types';
+import { AgoraStatus } from '../agora/agora.types';
 import { DEBUG, EDITOR, environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalSrcService from '../modal/modal-src.service';
@@ -11,6 +10,7 @@ import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import ToastService from '../toast/toast.service';
 import { RoleType } from '../user/user';
+import { UserService } from '../user/user.service';
 import { ViewItemType, ViewType } from '../view/view';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
@@ -53,40 +53,61 @@ export default class EditorComponent extends Component {
 		vrService.status$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(status => this.pushChanges());
-		EditorService.data$().pipe(
-			first()
-		).subscribe(data => {
-			this.data = data;
-			const role = LocationService.get('role') || RoleType.Publisher;
-			const link = LocationService.get('link') || null;
-			const name = LocationService.get('name') || null;
-			StateService.state = {
-				role: role,
-				link: link,
-				name: name,
-				channelName: environment.channelName,
-				publisherId: role === RoleType.Publisher ? environment.publisherId : null,
-				uid: null,
-				status: AgoraStatus.Connected,
-				connecting: false,
-				connected: true,
-				locked: false,
-				control: false,
-				spyed: false,
-				hosted: role === RoleType.Publisher ? true : false,
-				cameraMuted: false,
-				audioMuted: false,
-				devices: [],
-				quality: role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1],
-			};
-			this.initForm();
+		this.resolveUser();
+	}
+
+	resolveUser() {
+		UserService.me$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(user => {
+			if (user && user.type === RoleType.Publisher) {
+				this.user = user;
+				this.initState();
+			} else {
+				window.location.href = '/';
+			}
 		});
+	}
+
+	initState() {
+		const user = this.user;
+		const role = user.type;
+		const name = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
+		const state = {
+			user: user,
+			role: role,
+			name: name,
+			link: null,
+			channelName: environment.channelName,
+			uid: null,
+			status: AgoraStatus.Connected,
+			connecting: false,
+			connected: true,
+			locked: false,
+			control: false,
+			spyed: false,
+			hosted: true,
+			live: false,
+			cameraMuted: false,
+			audioMuted: false,
+		};
+		StateService.state = state;
 		StateService.state$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(state => {
 			this.state = state;
 			this.hosted = state.hosted;
 			this.pushChanges();
+		});
+		this.loadData();
+	}
+
+	loadData() {
+		EditorService.data$().pipe(
+			first()
+		).subscribe(data => {
+			this.data = data;
+			this.initForm();
 		});
 	}
 
@@ -111,18 +132,12 @@ export default class EditorComponent extends Component {
 			}),
 			delay(1),
 			map(view => {
-				/*
-				if (!this.state.hosted) {
-					view = this.getWaitingRoom();
-				} else {
-					if (!DEBUG) {
-						this.agora.navToView(view.id);
-					}
-				}
-				*/
+				const waitingRoom = this.getWaitingRoom();
 				this.view = view;
 				this.pushChanges();
-				LocationService.set('viewId', view.id);
+				if (view.id !== waitingRoom.id) {
+					LocationService.set('viewId', view.id);
+				}
 			}),
 		).subscribe(console.log);
 	}

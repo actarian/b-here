@@ -6,7 +6,7 @@ import { from, of } from 'rxjs';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
-import LocationService from '../location/location.service';
+// import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
@@ -46,6 +46,12 @@ export default class AgoraService extends Emittable {
 		this.onTokenPrivilegeWillExpire = this.onTokenPrivilegeWillExpire.bind(this);
 		this.onTokenPrivilegeDidExpire = this.onTokenPrivilegeDidExpire.bind(this);
 		this.onMessage = this.onMessage.bind(this);
+		const state = StateService.state;
+		StateService.patchState({
+			devices: (state.role !== RoleType.Attendee && defaultDevices) ? defaultDevices : { videos: [], audios: [] },
+			quality: state.role === RoleType.Publisher ? StreamQualities[0] : StreamQualities[StreamQualities.length - 1]
+		});
+		/*
 		const role = LocationService.get('role') || RoleType.Attendee;
 		const link = LocationService.get('link') || null;
 		const name = LocationService.get('name') || null;
@@ -55,7 +61,6 @@ export default class AgoraService extends Emittable {
 			link: link,
 			name: name,
 			channelName: environment.channelName,
-			publisherId: role === RoleType.Publisher ? environment.publisherId : null,
 			uid: null,
 			status: status,
 			connecting: false,
@@ -71,8 +76,10 @@ export default class AgoraService extends Emittable {
 		};
 		StateService.state = state;
 		// !!! StateService.patchState({ ... })
+		*/
 	}
 
+	/*
 	getInitialStatus(role, link, name) {
 		if (!link) {
 			return AgoraStatus.Link;
@@ -85,6 +92,7 @@ export default class AgoraService extends Emittable {
 		}
 		return AgoraStatus.ShouldConnect;
 	}
+	*/
 
 	addStreamDevice(src) {
 		this.removeStreamDevice();
@@ -258,7 +266,7 @@ export default class AgoraService extends Emittable {
 
 	joinChannel(token) {
 		const client = this.client;
-		const clientId = null; // StateService.state.role === RoleType.Publisher ? StateService.state.publisherId : null;
+		const clientId = null;
 		token = null; // !!!
 		const channelNameLink = `${StateService.state.channelName}-${StateService.state.link || ''}`;
 		client.join(token, channelNameLink, clientId, (uid) => {

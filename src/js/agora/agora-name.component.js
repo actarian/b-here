@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-// import UserService from './user/user.service';
+// import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import LocationService from '../location/location.service';

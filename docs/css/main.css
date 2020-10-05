@@ -201,7 +201,8 @@ strong {
 .btn--mic,
 .btn--call, .btn--menu, .btn--add, .btn--generate,
 .btn--next,
-.btn--connect, .btn--ar,
+.btn--connect,
+.btn--editor, .btn--ar,
 .btn--vr, .btn--cancel,
 .btn--accept, .btn--browse,
 .btn--upload,
@@ -226,7 +227,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mic,
   .btn--call, .btn--menu, .btn--add, .btn--generate,
   .btn--next,
-  .btn--connect, .btn--ar,
+  .btn--connect,
+  .btn--editor, .btn--ar,
   .btn--vr, .btn--cancel,
   .btn--accept, .btn--browse,
   .btn--upload,
@@ -239,7 +241,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mic:active,
   .btn--call:active, .btn--menu:active, .btn--add:active, .btn--generate:active,
   .btn--next:active,
-  .btn--connect:active, .btn--ar:active,
+  .btn--connect:active,
+  .btn--editor:active, .btn--ar:active,
   .btn--vr:active, .btn--cancel:active,
   .btn--accept:active, .btn--browse:active,
   .btn--upload:active,
@@ -252,7 +255,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mic:focus,
   .btn--call:focus, .btn--menu:focus, .btn--add:focus, .btn--generate:focus,
   .btn--next:focus,
-  .btn--connect:focus, .btn--ar:focus,
+  .btn--connect:focus,
+  .btn--editor:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--cancel:focus,
   .btn--accept:focus, .btn--browse:focus,
   .btn--upload:focus,
@@ -265,7 +269,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mic:hover,
   .btn--call:hover, .btn--menu:hover, .btn--add:hover, .btn--generate:hover,
   .btn--next:hover,
-  .btn--connect:hover, .btn--ar:hover,
+  .btn--connect:hover,
+  .btn--editor:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--cancel:hover,
   .btn--accept:hover, .btn--browse:hover,
   .btn--upload:hover,
@@ -278,7 +283,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mic:visited,
   .btn--call:visited, .btn--menu:visited, .btn--add:visited, .btn--generate:visited,
   .btn--next:visited,
-  .btn--connect:visited, .btn--ar:visited,
+  .btn--connect:visited,
+  .btn--editor:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--cancel:visited,
   .btn--accept:visited, .btn--browse:visited,
   .btn--upload:visited,
@@ -296,7 +302,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 .btn--mic[disabled],
 .btn--call[disabled], .btn--menu[disabled], .btn--add[disabled], .btn--generate[disabled],
 .btn--next[disabled],
-.btn--connect[disabled], .btn--ar[disabled],
+.btn--connect[disabled],
+.btn--editor[disabled], .btn--ar[disabled],
 .btn--vr[disabled], .btn--cancel[disabled],
 .btn--accept[disabled], .btn--browse[disabled],
 .btn--upload[disabled],
@@ -339,7 +346,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 
 .btn--generate,
 .btn--next,
-.btn--connect, .btn--ar,
+.btn--connect,
+.btn--editor, .btn--ar,
 .btn--vr, .btn--cancel,
 .btn--accept, .btn--browse,
 .btn--upload,
@@ -356,16 +364,17 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   border-radius: 25px;
   padding: 0 25px;
   font-weight: 900; }
-  .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg {
+  .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--editor svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg {
     width: 24px;
     height: 24px;
     margin-left: -10px;
     margin-right: 10px; }
-  .btn--generate span, .btn--next span, .btn--connect span, .btn--ar span, .btn--vr span, .btn--cancel span, .btn--accept span, .btn--browse span, .btn--upload span, .btn--pause span, .btn--resume span, .btn--remove span, .btn--update span, .btn--mode span {
+  .btn--generate span, .btn--next span, .btn--connect span, .btn--editor span, .btn--ar span, .btn--vr span, .btn--cancel span, .btn--accept span, .btn--browse span, .btn--upload span, .btn--pause span, .btn--resume span, .btn--remove span, .btn--update span, .btn--mode span {
     display: block; }
   .btn--generate,
   .btn--next,
-  .btn--connect, .btn--ar,
+  .btn--connect,
+  .btn--editor, .btn--ar,
   .btn--vr, .btn--cancel,
   .btn--accept, .btn--browse,
   .btn--upload,
@@ -375,7 +384,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--update,
   .btn--mode, .btn--generate:active,
   .btn--next:active,
-  .btn--connect:active, .btn--ar:active,
+  .btn--connect:active,
+  .btn--editor:active, .btn--ar:active,
   .btn--vr:active, .btn--cancel:active,
   .btn--accept:active, .btn--browse:active,
   .btn--upload:active,
@@ -385,7 +395,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--update:active,
   .btn--mode:active, .btn--generate:focus,
   .btn--next:focus,
-  .btn--connect:focus, .btn--ar:focus,
+  .btn--connect:focus,
+  .btn--editor:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--cancel:focus,
   .btn--accept:focus, .btn--browse:focus,
   .btn--upload:focus,
@@ -395,7 +406,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--update:focus,
   .btn--mode:focus, .btn--generate:hover,
   .btn--next:hover,
-  .btn--connect:hover, .btn--ar:hover,
+  .btn--connect:hover,
+  .btn--editor:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--cancel:hover,
   .btn--accept:hover, .btn--browse:hover,
   .btn--upload:hover,
@@ -405,7 +417,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--update:hover,
   .btn--mode:hover, .btn--generate:visited,
   .btn--next:visited,
-  .btn--connect:visited, .btn--ar:visited,
+  .btn--connect:visited,
+  .btn--editor:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--cancel:visited,
   .btn--accept:visited, .btn--browse:visited,
   .btn--upload:visited,
@@ -416,7 +429,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mode:visited {
     background: #0099ff;
     color: white; }
-    .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg, .btn--generate:active svg, .btn--next:active svg, .btn--connect:active svg, .btn--ar:active svg, .btn--vr:active svg, .btn--cancel:active svg, .btn--accept:active svg, .btn--browse:active svg, .btn--upload:active svg, .btn--pause:active svg, .btn--resume:active svg, .btn--remove:active svg, .btn--update:active svg, .btn--mode:active svg, .btn--generate:focus svg, .btn--next:focus svg, .btn--connect:focus svg, .btn--ar:focus svg, .btn--vr:focus svg, .btn--cancel:focus svg, .btn--accept:focus svg, .btn--browse:focus svg, .btn--upload:focus svg, .btn--pause:focus svg, .btn--resume:focus svg, .btn--remove:focus svg, .btn--update:focus svg, .btn--mode:focus svg, .btn--generate:hover svg, .btn--next:hover svg, .btn--connect:hover svg, .btn--ar:hover svg, .btn--vr:hover svg, .btn--cancel:hover svg, .btn--accept:hover svg, .btn--browse:hover svg, .btn--upload:hover svg, .btn--pause:hover svg, .btn--resume:hover svg, .btn--remove:hover svg, .btn--update:hover svg, .btn--mode:hover svg, .btn--generate:visited svg, .btn--next:visited svg, .btn--connect:visited svg, .btn--ar:visited svg, .btn--vr:visited svg, .btn--cancel:visited svg, .btn--accept:visited svg, .btn--browse:visited svg, .btn--upload:visited svg, .btn--pause:visited svg, .btn--resume:visited svg, .btn--remove:visited svg, .btn--update:visited svg, .btn--mode:visited svg {
+    .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--editor svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg, .btn--generate:active svg, .btn--next:active svg, .btn--connect:active svg, .btn--editor:active svg, .btn--ar:active svg, .btn--vr:active svg, .btn--cancel:active svg, .btn--accept:active svg, .btn--browse:active svg, .btn--upload:active svg, .btn--pause:active svg, .btn--resume:active svg, .btn--remove:active svg, .btn--update:active svg, .btn--mode:active svg, .btn--generate:focus svg, .btn--next:focus svg, .btn--connect:focus svg, .btn--editor:focus svg, .btn--ar:focus svg, .btn--vr:focus svg, .btn--cancel:focus svg, .btn--accept:focus svg, .btn--browse:focus svg, .btn--upload:focus svg, .btn--pause:focus svg, .btn--resume:focus svg, .btn--remove:focus svg, .btn--update:focus svg, .btn--mode:focus svg, .btn--generate:hover svg, .btn--next:hover svg, .btn--connect:hover svg, .btn--editor:hover svg, .btn--ar:hover svg, .btn--vr:hover svg, .btn--cancel:hover svg, .btn--accept:hover svg, .btn--browse:hover svg, .btn--upload:hover svg, .btn--pause:hover svg, .btn--resume:hover svg, .btn--remove:hover svg, .btn--update:hover svg, .btn--mode:hover svg, .btn--generate:visited svg, .btn--next:visited svg, .btn--connect:visited svg, .btn--editor:visited svg, .btn--ar:visited svg, .btn--vr:visited svg, .btn--cancel:visited svg, .btn--accept:visited svg, .btn--browse:visited svg, .btn--upload:visited svg, .btn--pause:visited svg, .btn--resume:visited svg, .btn--remove:visited svg, .btn--update:visited svg, .btn--mode:visited svg {
       fill: white; }
 
 .group--form label, .group--form--textarea label, .group--form--select label, .group--form--checkbox label, .group--form--file label, errors-component .inner, .required .required__badge {
@@ -426,7 +439,6 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   font-size: 0.6em;
   font-weight: 600;
   line-height: 1;
-  margin-bottom: -1px;
   color: #101010;
   text-transform: none; }
 
@@ -599,6 +611,7 @@ fieldset,
   font-size: 0.8em;
   text-transform: none;
   line-height: 1.2;
+  min-height: 44px;
   cursor: pointer; }
   .multiple > .control--select {
     white-space: nowrap;
@@ -843,8 +856,8 @@ errors-component {
     display: block;
     position: absolute;
     font-size: 0.6em;
-    right: 0px;
-    top: 0; }
+    right: 4px;
+    top: 5px; }
 
 .invalid.touched .required__badge {
   color: #ff4332; }
@@ -3489,12 +3502,11 @@ input-value {
     margin-bottom: 0;
     padding: 0 15px;
     font-family: "GT Walsheim", "Maven Pro", sans-serif;
-    font-size: 13px;
+    font-size: 11px;
     opacity: 0.3;
     font-weight: 600;
-    text-transform: uppercase;
     line-height: 1;
-    color: #101010;
+    color: #a5b3bd;
     z-index: 2; }
   .dropdown--with-icons > .category {
     padding: 0 40px 0 60px; }
@@ -3519,9 +3531,8 @@ input-value {
     .nav--dropdown > li > span {
       font-family: "GT Walsheim", "Maven Pro", sans-serif;
       line-height: 1;
-      font-size: 17px;
+      font-size: 15px;
       padding: 15px;
-      text-transform: uppercase;
       white-space: nowrap;
       width: 100%;
       overflow: hidden;
@@ -3545,7 +3556,7 @@ input-value {
       .nav--dropdown > li > span.active {
         background: rgba(22, 37, 91, 0.05); }
   .nav--dropdown > li + li {
-    border-top: 1px solid rgba(22, 37, 91, 0.15); }
+    border-top: 1px solid #c6e3f7; }
   .nav--dropdown.multiple > li > a,
   .nav--dropdown.multiple > li > span {
     display: flex;
@@ -3572,7 +3583,6 @@ input-value {
   @media (max-width: 1439.98px) {
     .nav--dropdown > li > a,
     .nav--dropdown > li > span {
-      font-size: 19px;
       padding: 8px 15px; }
       .nav--dropdown > li > a .icon:first-child,
       .nav--dropdown > li > span .icon:first-child {
@@ -3765,7 +3775,7 @@ body {
   overflow: hidden; }
 
 .app,
-.agora {
+.page {
   width: 100%;
   height: 100%; }
 
@@ -3861,20 +3871,29 @@ body {
     pointer-events: none; }
 
 .group--info {
-  margin: 0 10px;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 7px;
   max-width: 400px;
+  margin: 0 10px;
+  border-radius: 7px;
+  background: #ffffff;
   box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2); }
   .group--info__content {
     padding: 20px; }
+  .group--info .title {
+    margin-bottom: 25px;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-align: center; }
   .group--info .info {
-    margin: 0 0 15px 0;
+    margin: 15px 0;
     font-size: 15px;
-    color: #a5b3bd;
+    line-height: 1;
+    color: #89959d;
     text-align: center; }
   .group--info .form {
     width: 100%; }
@@ -4093,7 +4112,8 @@ body {
 
 .btn--generate svg,
 .btn--next svg,
-.btn--connect svg {
+.btn--connect svg,
+.btn--editor svg {
   fill: white;
   margin-right: 10px; }
 
@@ -4107,9 +4127,20 @@ body {
 .btn--connect.disabled:active,
 .btn--connect.disabled:focus,
 .btn--connect.disabled:hover,
-.btn--connect.disabled:visited {
+.btn--connect.disabled:visited,
+.btn--editor.disabled,
+.btn--editor.disabled:active,
+.btn--editor.disabled:focus,
+.btn--editor.disabled:hover,
+.btn--editor.disabled:visited {
   background: #c6e3f7;
   pointer-events: none; }
+
+.btn--editor {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10000; }
 
 .agora-stream {
   position: relative; }
@@ -4471,6 +4502,30 @@ model-viewer {
     background: rgba(0, 0, 0, 0.8);
     color: #ffffff; }
 
+[access-component] .background {
+  position: absolute;
+  left: -5vw;
+  top: -5vh;
+  width: 110vw;
+  height: 110vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black; }
+  [access-component] .background > img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    filter: blur(24px); }
+  [access-component] .background:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); }
+
 [editor-component] .ui.open {
   width: calc(100% - 300px); }
 
@@ -4824,6 +4879,11 @@ update-view-tile {
   update-view-item .required__badge,
   update-view-tile .required__badge {
     display: none; }
+  update-view .required .required__badge,
+  update-view-item .required .required__badge,
+  update-view-tile .required .required__badge {
+    right: 0px;
+    top: 0; }
   update-view .group--form,
   update-view .group--form--checkbox,
   update-view .group--form--file,

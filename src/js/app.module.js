@@ -1,5 +1,6 @@
 import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
+import AccessComponent from './access/access.component';
 import AgoraDevicePreviewComponent from './agora/agora-device-preview.component';
 import AgoraDeviceComponent from './agora/agora-device.component';
 import AgoraLinkComponent from './agora/agora-link.component';
@@ -19,6 +20,7 @@ import ControlAssetsComponent from './forms/control-assets.component';
 import ControlCheckboxComponent from './forms/control-checkbox.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
 import ControlLinkComponent from './forms/control-link.component';
+import ControlPasswordComponent from './forms/control-password.component';
 import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
 import ControlUploadComponent from './forms/control-upload.component';
@@ -26,6 +28,7 @@ import ControlVectorComponent from './forms/control-vector.component';
 import DisabledDirective from './forms/disabled.directive';
 import ErrorsComponent from './forms/errors.component';
 import InputValueComponent from './forms/input-value.component';
+import TestComponent from './forms/test.component';
 import ValueDirective from './forms/value.directive';
 import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
@@ -60,6 +63,7 @@ AppModule.meta = {
 		EditorModule,
 	],
 	declarations: [
+		AccessComponent,
 		AgoraComponent,
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,
@@ -73,6 +77,7 @@ AppModule.meta = {
 		ControlCheckboxComponent,
 		ControlCustomSelectComponent,
 		ControlLinkComponent,
+		ControlPasswordComponent,
 		ControlRequestModalComponent,
 		ControlSelectComponent,
 		ControlTextComponent,
@@ -104,6 +109,7 @@ AppModule.meta = {
 		ModelTextComponent,
 		SliderDirective,
 		SvgIconStructure,
+		TestComponent,
 		TryInARComponent,
 		TryInARModalComponent,
 		ValueDirective,

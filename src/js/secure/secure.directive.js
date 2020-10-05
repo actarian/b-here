@@ -5,7 +5,7 @@ import DownloadService from '../download/download.service';
 import { STATIC } from '../environment';
 import HttpService from '../http/http.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
-import UserService from '../user/user.service';
+import { UserService } from '../user/user.service';
 
 const src = STATIC ? '/b-here/club-modal.html' : '/Viewdoc.cshtml?co_id=23649';
 

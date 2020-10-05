@@ -12,6 +12,7 @@ require('https');
 var fs = _interopDefault(require('fs'));
 require('serve-static');
 var express = _interopDefault(require('express'));
+var expressSession = _interopDefault(require('express-session'));
 var bodyParser = _interopDefault(require('body-parser'));
 var path = _interopDefault(require('path'));
 var connectMultiparty = _interopDefault(require('connect-multiparty'));
@@ -494,6 +495,13 @@ function _createForOfIteratorHelperLoose(o, allowArrayLike) {
 }
 
 var _this = undefined;
+var RoleType = {
+  Publisher: 'publisher',
+  Attendee: 'attendee',
+  Streamer: 'streamer',
+  Guest: 'guest',
+  SelfService: 'self-service'
+};
 /*
 const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
 
@@ -526,7 +534,22 @@ app.post('/api/token/rtm', function(request, response) {
 
 var db = {
   views: [],
-  assets: []
+  assets: [],
+  users: [{
+    id: '1601892639985',
+    username: 'publisher',
+    password: 'publisher',
+    type: 'publisher',
+    firstName: 'Jhon',
+    lastName: 'Appleseed'
+  }, {
+    id: '1601892639986',
+    username: 'attendee',
+    password: 'attendee',
+    type: 'attendee',
+    firstName: 'Jhon',
+    lastName: 'Appleseed'
+  }]
 };
 var pathname = path.join(__dirname, "../../docs/api/editor.json");
 readStore();
@@ -815,6 +838,74 @@ var ROUTES = [{
       id: params.assetId
     }, db.assets);
   }
+}, {
+  path: '/api/user/me',
+  method: 'GET',
+  callback: function callback(request, response, params) {
+    var user = request.session.user;
+
+    if (!user) {
+      sendError(response, 404, 'Not Found');
+    } else {
+      response.send(JSON.stringify(user));
+    }
+  }
+}, {
+  path: '/api/user/login',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    var body = request.body;
+    var user = db.users.find(function (x) {
+      return x.username === body.username && x.password === body.password;
+    });
+
+    if (!user) {
+      sendError(response, 404, 'Not Found');
+    } else {
+      request.session.user = user;
+      response.send(JSON.stringify(user));
+    }
+  }
+}, {
+  path: '/api/user/logout',
+  method: 'GET',
+  callback: function callback(request, response, params) {
+    var user = request.session.user;
+    request.session.user = null;
+    response.status(200).send(JSON.stringify(user));
+  }
+}, {
+  path: '/api/user/guided-tour',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    var body = request.body;
+    var id = new Date().getTime();
+    var user = Object.assign({
+      type: RoleType.Streamer
+    }, body, {
+      id: id
+    });
+    request.session.user = null;
+    db.users.push(user);
+    saveStore();
+    response.send(JSON.stringify(user));
+  }
+}, {
+  path: '/api/user/self-service-tour',
+  method: 'POST',
+  callback: function callback(request, response, params) {
+    var body = request.body;
+    var id = new Date().getTime();
+    var user = Object.assign({
+      type: RoleType.SelfService
+    }, body, {
+      id: id
+    });
+    request.session.user = user;
+    db.users.push(user);
+    saveStore();
+    response.send(JSON.stringify(user));
+  }
 }];
 ROUTES.forEach(function (route) {
   var segments = [];
@@ -942,6 +1033,11 @@ var staticMiddleware_ = staticMiddleware$1(Vars);
 var apiMiddleware_ = apiMiddleware$1(Vars); // const spaMiddleware_ = spaMiddleware(Vars);
 
 var app = express();
+app.use(expressSession({
+  secret: 'b-here-secret-keyword',
+  saveUninitialized: true,
+  resave: true
+}));
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({
   extended: true
@@ -974,15 +1070,15 @@ app.post('/api/upload', multipartMiddleware, function (request, response) {
   var file = request.files.file;
   var id = new Date().getTime();
   var fileName = id + "_" + file.name;
-  var filePath = "/uploads/" + fileName;
+  var folder = "uploads/";
   var input = file.path;
-  var output = path.join(__dirname, '../docs/uploads/', fileName);
+  var output = path.join(__dirname, Vars.root, folder, fileName);
   var upload = {
     id: id,
     fileName: fileName,
     type: file.type,
     originalFileName: file.name,
-    url: filePath
+    url: "" + Vars.host + Vars.baseHref + folder + fileName
   };
   var uploads = [upload];
   fs.copyFile(input, output, function (error) {
@@ -1063,7 +1159,17 @@ app.get('/api/download/:identifier', function (request, response) {
 // app.get('*', spaMiddleware_);
 
 app.get('/', function (request, response) {
-  response.sendFile(path.join(__dirname, '../docs/index.html')); // response.render('docs/index');
+  response.sendFile(path.join(__dirname, '../docs/access.html')); // response.sendFile(path.join(__dirname, '../docs/index.html'));
+  // response.render('docs/index');
+});
+app.get('/self-service-tour', function (request, response) {
+  response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
+app.get('/b-here', function (request, response) {
+  response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
+app.get('/editor', function (request, response) {
+  response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
 app.listen(Vars.port, function () {
   console.log("NodeJs Running server at " + Vars.host);

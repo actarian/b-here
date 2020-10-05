@@ -23,7 +23,7 @@ $invalid: $foreground-primary;
 	// opacity: 0.3;
 	font-weight: $font-semibold;
 	line-height: $line;
-	margin-bottom: -1px;
+	// margin-bottom: -1px;
 	color: $pristine;
 	text-transform: none;
 }
@@ -259,6 +259,7 @@ fieldset,
 	font-size: $size;
 	text-transform: none;
 	line-height: 1.2;
+	min-height: 44px;
 	cursor: pointer;
 
 	.multiple>& {
@@ -543,8 +544,8 @@ errors-component {
 		display: block;
 		position: absolute;
 		font-size: 0.6em;
-		right: 0px;
-		top: 0;
+		right: 4px;
+		top: 5px;
 	}
 }
 

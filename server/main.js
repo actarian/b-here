@@ -2,6 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const serveStatic = require('serve-static');
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multipart = require('connect-multiparty');
@@ -35,6 +36,11 @@ const staticMiddleware_ = staticMiddleware(Vars);
 const apiMiddleware_ = apiMiddleware(Vars);
 // const spaMiddleware_ = spaMiddleware(Vars);
 const app = express();
+app.use(session({
+	secret: 'b-here-secret-keyword',
+	saveUninitialized: true,
+	resave: true
+}));
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -65,15 +71,15 @@ app.post('/api/upload', multipartMiddleware, function(request, response) {
 	const file = request.files.file;
 	const id = new Date().getTime();
 	const fileName = `${id}_${file.name}`;
-	const filePath = `/uploads/${fileName}`;
+	const folder = `uploads/`;
 	const input = file.path;
-	const output = path.join(__dirname, '../docs/uploads/', fileName);
+	const output = path.join(__dirname, Vars.root, folder, fileName);
 	const upload = {
 		id,
 		fileName,
 		type: file.type,
 		originalFileName: file.name,
-		url: filePath,
+		url: `${Vars.host}${Vars.baseHref}${folder}${fileName}`,
 	};
 	const uploads = [upload];
 	fs.copyFile(input, output, (error) => {
@@ -143,8 +149,18 @@ app.get('/api/download/:identifier', function(request, response) {
 // Handle uploads through Flow.js
 // app.get('*', spaMiddleware_);
 app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/index.html'));
+	response.sendFile(path.join(__dirname, '../docs/access.html'));
+	// response.sendFile(path.join(__dirname, '../docs/index.html'));
 	// response.render('docs/index');
+});
+app.get('/self-service-tour', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
+app.get('/b-here', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
+app.get('/editor', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
 app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);
