@@ -8,6 +8,7 @@ import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
+import { UrlService } from '../url/url.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView } from '../view/view';
@@ -62,7 +63,7 @@ export default class AgoraComponent extends Component {
 				this.user = user;
 				this.initState();
 			} else {
-				window.location.href = '/';
+				UrlService.redirect('access');
 			}
 		});
 	}

@@ -3,6 +3,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
 import { DEBUG, EDITOR } from '../environment';
+import { UrlService } from '../url/url.service';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
@@ -138,10 +139,10 @@ export default class AccessComponent extends Component {
 						this.pushChanges();
 						break;
 					case 'self-service-tour':
-						window.location.href = '/self-service-tour';
+						UrlService.redirect('selfServiceTour');
 						break;
 					case 'login':
-						window.location.href = '/b-here';
+						UrlService.redirect('guidedTour');
 						break;
 				}
 				this.form.reset();

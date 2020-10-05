@@ -4,10 +4,12 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
+import { UrlService } from '../url/url.service';
 
 export default class AgoraLinkComponent extends Component {
 
 	onInit() {
+		this.editorLink = UrlService.get('editor');
 		this.state = {};
 		const form = this.form = new FormGroup({
 			link: new FormControl(null, [Validators.PatternValidator(/^\d{9}-\d{13}$/), Validators.RequiredValidator()]),

@@ -124,7 +124,41 @@ var environment = new Environment({
     debug: 80,
     pointer: 90
   }
-});var HttpService = /*#__PURE__*/function () {
+});var URLS = {
+  index: '/',
+  access: '/',
+  editor: '/editor',
+  bHere: '/b-here',
+  selfServiceTour: '/self-service-tour',
+  guidedTour: '/guided-tour'
+};
+var UrlService = /*#__PURE__*/function () {
+  function UrlService() {}
+
+  UrlService.get = function get() {
+    var url = URLS;
+
+    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
+      keys[_key] = arguments[_key];
+    }
+
+    keys.forEach(function (key) {
+      return url = typeof url === 'object' ? url[key] : null;
+    });
+    return STATIC ? url : "/it/it" + url;
+  };
+
+  UrlService.redirect = function redirect() {
+    for (var _len2 = arguments.length, keys = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      keys[_key2] = arguments[_key2];
+    }
+
+    var url = this.get.apply(this, keys);
+    window.location.href = url;
+  };
+
+  return UrlService;
+}();var HttpService = /*#__PURE__*/function () {
   function HttpService() {}
 
   HttpService.http$ = function http$(method, url, data, format) {
@@ -473,11 +507,11 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
             break;
 
           case 'self-service-tour':
-            window.location.href = '/self-service-tour';
+            UrlService.redirect('selfServiceTour');
             break;
 
           case 'login':
-            window.location.href = '/b-here';
+            UrlService.redirect('guidedTour');
             break;
         }
 
@@ -2767,6 +2801,7 @@ AgoraDeviceComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    this.editorLink = UrlService.get('editor');
     this.state = {};
     var form = this.form = new rxcompForm.FormGroup({
       link: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(/^\d{9}-\d{13}$/), rxcompForm.Validators.RequiredValidator()]) // link: new FormControl(null),
@@ -3926,7 +3961,7 @@ var VRService = /*#__PURE__*/function () {
 
         _this2.initState();
       } else {
-        window.location.href = '/';
+        UrlService.redirect('access');
       }
     });
   };
@@ -5412,7 +5447,7 @@ AsideComponent.meta = {
 
         _this2.initState();
       } else {
-        window.location.href = '/';
+        UrlService.redirect('access');
       }
     });
   };

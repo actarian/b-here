@@ -1165,6 +1165,9 @@ app.get('/', function (request, response) {
 app.get('/self-service-tour', function (request, response) {
   response.sendFile(path.join(__dirname, '../docs/b-here.html'));
 });
+app.get('/guided-tour', function (request, response) {
+  response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
 app.get('/b-here', function (request, response) {
   response.sendFile(path.join(__dirname, '../docs/b-here.html'));
 });
