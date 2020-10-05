@@ -134,6 +134,17 @@
       "checkRequest": "",
       "checkField": "",
       "id": 1601895647286
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1601903142565
     }
   ]
 }

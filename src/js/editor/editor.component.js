@@ -9,6 +9,7 @@ import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import ToastService from '../toast/toast.service';
+import { UrlService } from '../url/url.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { ViewItemType, ViewType } from '../view/view';
@@ -64,7 +65,7 @@ export default class EditorComponent extends Component {
 				this.user = user;
 				this.initState();
 			} else {
-				window.location.href = '/';
+				UrlService.redirect('access');
 			}
 		});
 	}
