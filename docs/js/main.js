@@ -542,7 +542,7 @@ var Environment = /*#__PURE__*/function () {
     key: "href",
     get: function get() {
       if (HEROKU) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
+        return 'https://raw.githubusercontent.com/actarian/b-here/cantinevirtuali/docs/';
       } else {
         return BASE_HREF;
       }
