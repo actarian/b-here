@@ -30,7 +30,6 @@
 
 		font-family: $font-secondary;
 		font-size: 11px;
-		opacity: 0.3;
 
 		font-weight: $font-semibold;
 		line-height: 1;
@@ -102,8 +101,12 @@
 
 			&:hover,
 			&.active {
-				background: rgba(#16255b, 0.05);
+				background: #e5f4ff;
 			}
+		}
+
+		&.empty {
+			opacity: 0.5;
 		}
 	}
 

@@ -251,6 +251,10 @@ body {
 		margin-bottom: 20px;
 	}
 
+	.btn--mode {
+		margin: 10px 0 0 0;
+	}
+
 	@include media-down(xs) {
 		max-width: calc(100% - 20px);
 
@@ -396,7 +400,7 @@ body {
 .btn--generate,
 .btn--next,
 .btn--connect,
-.btn--editor {
+.btn--absolute {
 	@extend %btn-rect;
 
 	svg {
@@ -417,7 +421,7 @@ body {
 	}
 }
 
-.btn--editor {
+.btn--absolute {
 	position: absolute;
 	top: 15px;
 	right: 15px;

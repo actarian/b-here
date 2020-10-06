@@ -147,7 +147,9 @@ ControlCustomSelectComponent.meta = {
 		<div class="dropdown" [dropdown-item]="dropdownId">
 			<div class="category" [innerHTML]="label"></div>
 			<ul class="nav--dropdown" [class]="{ multiple: isMultiple }">
-			<li *for="let item of control.options" (click)="setOption(item)"><span [class]="{ active: hasOption(item) }" [innerHTML]="item.name"></span></li>
+				<li (click)="setOption(item)" [class]="{ empty: item.id == null }" *for="let item of control.options">
+					<span [class]="{ active: hasOption(item) }" [innerHTML]="item.name"></span>
+				</li>
 			</ul>
 		</div>
 	`

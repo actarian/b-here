@@ -20,7 +20,6 @@ $invalid: $foreground-primary;
 	flex: 0 0 100%;
 	font-family: $font-secondary;
 	font-size: 0.6em;
-	// opacity: 0.3;
 	font-weight: $font-semibold;
 	line-height: $line;
 	// margin-bottom: -1px;
@@ -171,7 +170,7 @@ $invalid: $foreground-primary;
 		width: 100%;
 		margin-top: 10px;
 		left: 0;
-		border-radius: 12px;
+		border-radius: 5px;
 	}
 
 }
@@ -276,8 +275,7 @@ fieldset,
 	@extend %group--form;
 	align-items: center;
 	flex-wrap: nowrap;
-	min-height: 77px;
-	padding-top: 44px;
+	padding-top: 25px;
 
 	input {
 		width: 11px;
@@ -300,7 +298,10 @@ fieldset,
 
 	label {
 		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
 		cursor: pointer;
+		line-height: 1.5;
 	}
 
 	a {
@@ -702,5 +703,25 @@ input-value {
 			opacity: 0;
 			cursor: pointer;
 		}
+	}
+}
+
+test-component {
+	.group--form--results {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		margin: 10px 0;
+		padding: 0;
+	}
+
+	code {
+		font-size: 10px;
+		letter-spacing: -0.2px;
+	}
+
+	.btn--mode {
+		margin: 5px 0 0 0;
 	}
 }

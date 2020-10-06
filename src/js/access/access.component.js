@@ -69,7 +69,9 @@ export default class AccessComponent extends Component {
 		};
 
 		const controls = this.controls = form.controls;
-		controls.role.options = data.roles;
+		const options = data.roles.slice();
+		options.unshift({ id: null, name: 'Seleziona' });
+		controls.role.options = options;
 
 		this.formSubscription = form.changes$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -108,7 +110,7 @@ export default class AccessComponent extends Component {
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
 			email: 'jhonappleseed@gmail.com',
-			role: this.controls.role.options[0].id,
+			role: this.controls.role.options.find(x => x.id !== null),
 			privacy: true,
 			checkRequest: window.antiforgery || '',
 			checkField: ''
