@@ -421,6 +421,18 @@
             0.13806645140358795
           ],
           "viewId": 15
+        },
+        {
+          "id": 1031,
+          "type": "nav",
+          "title": "Bottiglia 3D",
+          "abstract": "Abstract",
+          "position": [
+            -0.35847238419646094,
+            -0.46486733185336965,
+            -0.8095652620660264
+          ],
+          "viewId": 301
         }
       ],
       "orientation": {
@@ -888,8 +900,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/wine/wine.glb",
-        "usdz": "/wine/wine.glb"
+        "gltf": "/wine/scene.gltf",
+        "usdz": "/wine/wine.usdz"
       },
       "asset": {
         "type": "image",
@@ -904,15 +916,39 @@
           "abstract": "Abstract",
           "asset": {
             "folder": "wine/",
-            "file": "wine.glb"
+            "file": "scene.gltf"
           }
+        },
+        {
+          "id": 1051,
+          "type": "nav",
+          "title": "Negozio",
+          "abstract": "Abstract",
+          "position": [
+            -0.8009096917674511,
+            -0.5878988350344375,
+            0.11366013108437656
+          ],
+          "viewId": 17
+        },
+        {
+          "id": 1051,
+          "type": "nav",
+          "title": "Room 3D",
+          "abstract": "Abstract",
+          "position": [
+            -0.2053227712827104,
+            -0.5812533954230533,
+            0.7873925640377608
+          ],
+          "viewId": 100
         }
       ],
       "orientation": {
         "latitude": 25,
-        "longitude": 119
+        "longitude": -40
       },
-      "zoom": 51
+      "zoom": 55
     },
     {
       "id": 302,
