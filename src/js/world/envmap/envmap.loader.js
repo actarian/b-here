@@ -1,6 +1,8 @@
+/* global THREE, RGBELoader */
+
 import { first } from 'rxjs/operators';
-import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+// import * as THREE from 'three';
+// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
@@ -208,7 +210,7 @@ export class EnvMapLoader {
 	static loadRgbeBackground(path, file, renderer, callback) {
 		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
-		const loader = new RGBELoader();
+		const loader = new THREE.RGBELoader();
 		loader
 			.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)

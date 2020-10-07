@@ -2,7 +2,7 @@ $family: $font-secondary;
 $size: 0.8em;
 $weight: $font-light;
 $spacing: 0;
-$line: 1; // always
+$line: 1;
 $pristine: $foreground;
 $dirty: $foreground;
 $touched: $foreground;
@@ -33,6 +33,7 @@ $invalid: $foreground-primary;
 }
 
 %group--form {
+	position: relative;
 	display: flex;
 	flex-wrap: wrap;
 	padding: 3px 1px;
@@ -125,7 +126,7 @@ $invalid: $foreground-primary;
 }
 
 .form {
-	min-width: 375px;
+	// min-width: 375px;
 
 	.title {
 		margin-bottom: 15px;

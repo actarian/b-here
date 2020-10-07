@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 // import Ease from '../ease/ease';

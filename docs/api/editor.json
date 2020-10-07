@@ -145,6 +145,89 @@
       "checkRequest": "",
       "checkField": "",
       "id": 1601903142565
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": {
+        "id": 1,
+        "name": "Show room"
+      },
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1601998852429
+    },
+    {
+      "type": "streamer",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": {
+        "id": 1,
+        "name": "Show room"
+      },
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1601998866368
+    },
+    {
+      "type": "self-service",
+      "firstName": "Luca",
+      "lastName": "Zampetti",
+      "email": "lzampetti@gmail.com",
+      "role": 4,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602050876040
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602068483842
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602069399700
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602074834586
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602075211057
     }
   ]
 }

@@ -1,6 +1,4 @@
-import * as THREE from 'three';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-// import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -73,8 +71,10 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		sphere.renderOrder = 0;
 		nav.add(sphere);
 		sphere.on('over', () => {
+			// console.log('ModelNavComponent.over');
 			const from = { scale: sprite.scale.x };
-			gsap.to(from, 0.35, {
+			gsap.to(from, {
+				duration: 0.35,
 				scale: 0.04,
 				delay: 0,
 				ease: Power2.easeOut,
@@ -91,7 +91,8 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		});
 		sphere.on('out', () => {
 			const from = { scale: sprite.scale.x };
-			gsap.to(from, 0.35, {
+			gsap.to(from, {
+				duration: 0.35,
 				scale: 0.03,
 				delay: 0,
 				ease: Power2.easeOut,
@@ -108,7 +109,8 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			this.down.next(this);
 		});
 		const from = { opacity: 0 };
-		gsap.to(from, 0.7, {
+		gsap.to(from, {
+			duration: 0.7,
 			opacity: 1,
 			delay: 0.5 + 0.1 * this.item.index,
 			ease: Power2.easeInOut,

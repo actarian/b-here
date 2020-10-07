@@ -5,7 +5,7 @@ const RoleType = {
 	Publisher: 'publisher',
 	Attendee: 'attendee',
 	Streamer: 'streamer',
-	Guest: 'guest',
+	Viewer: 'viewer',
 	SelfService: 'self-service',
 };
 

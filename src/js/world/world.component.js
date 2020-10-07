@@ -1,12 +1,9 @@
 import { Component, getContext } from 'rxcomp';
 import { auditTime, takeUntil } from 'rxjs/operators';
-import * as THREE from 'three';
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { MessageType } from '../agora/agora.types';
 import { DEBUG, EDITOR } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
 import MessageService from '../message/message.service';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Rect } from '../rect/rect';
 import StateService from '../state/state.service';
 import { PanoramaGridView } from '../view/view';
@@ -18,10 +15,15 @@ import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
 import VRService from './vr.service';
+// import * as THREE from 'three';
+import { XRControllerModelFactory } from './webxr/xr-controller-model-factory';
 
 const ORIGIN = new THREE.Vector3();
 const USE_SHADOW = false;
 const USE_PHONE = true;
+
+const loadingBanner = { title: 'loading' };
+const waitingBanner = { title: 'waiting host' };
 
 export default class WorldComponent extends Component {
 	get error() {
@@ -212,11 +214,15 @@ export default class WorldComponent extends Component {
 						view.index_ = message.gridIndex;
 					}
 				}
-				// this.showNavPoints = false;
-				// this.pushChanges();
+				view.ready = false;
+				this.banner = loadingBanner;
+				this.pushChanges();
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
+					view.ready = true;
+					this.banner = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+					this.pushChanges();
 					// this.render();
 				}, (view) => {
 					this.setViewOrientation(view);
@@ -228,9 +234,6 @@ export default class WorldComponent extends Component {
 			}
 			this.infoResultMessage = null;
 		}
-		this.banner = (view && view.type.name === 'waiting-room') ? {
-			title: 'waiting host'
-		} : null;
 	}
 
 	addControllers() {

@@ -100,7 +100,8 @@ export default class SliderDirective extends Component {
 		const container = this.container;
 		const inner = this.inner;
 		const width = this.container.offsetWidth;
-		gsap.to(inner, 0.50, {
+		gsap.to(inner, {
+			duration: 0.50,
 			x: -100 * index + '%',
 			delay: 0,
 			ease: Power3.easeInOut,

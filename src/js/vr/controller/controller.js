@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { cm, mm } from '../../const';
 import { GAMEPAD_HANDS } from '../gamepads';
 

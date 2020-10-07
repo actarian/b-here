@@ -1,8 +1,6 @@
-import * as THREE from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-// import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
+// import * as THREE from 'three';
+// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
@@ -35,9 +33,9 @@ export default class ModelRoomComponent extends ModelComponent {
 	getLoader(path, file) {
 		let loader;
 		if (file.indexOf('.fbx') !== -1) {
-			loader = new FBXLoader();
+			loader = new THREE.FBXLoader();
 		} else {
-			loader = new GLTFLoader();
+			loader = new THREE.GLTFLoader();
 		}
 		loader.setPath(path);
 		return loader;

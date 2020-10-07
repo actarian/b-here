@@ -1,6 +1,6 @@
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
 
@@ -229,7 +229,8 @@ export default class OrbitService {
 		differenceLatitude = Math.abs(differenceLatitude) > 90 ? (differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude))) : differenceLatitude;
 		// console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
 		const from = { tween: 0 };
-		gsap.to(from, 0.7, {
+		gsap.to(from, {
+			duration: 0.7,
 			tween: 1,
 			delay: 0,
 			ease: Power2.easeInOut,

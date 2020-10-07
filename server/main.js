@@ -13,15 +13,17 @@ const { staticMiddleware } = require('./static/static.js');
 // const { spaMiddleware } = require('./spa/spa.js');
 const { apiMiddleware, useApi } = require('./api/api.js');
 // const router = express.Router();
-// const https = require('https');
 const BASE_HREF = '/b-here/';
 const ASSETS = `assets/`;
 const ROOT = `../docs/`;
 const PORT = process.env.PORT || 5000;
+const PORT_HTTPS = 6443;
 
 const Vars = {
 	port: PORT,
+	portHttps: PORT_HTTPS,
 	host: `http://localhost:${PORT}`,
+	hostHttps: `https://localhost:${PORT_HTTPS}`,
 	charset: 'utf8',
 	assets: ASSETS,
 	baseHref: BASE_HREF,
@@ -47,7 +49,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use('*', staticMiddleware_);
 app.use('*', apiMiddleware_);
-
 
 app.post('/api/upload', multipartMiddleware, function(request, response) {
 	if (Vars.accessControlAllowOrigin) {
@@ -165,6 +166,29 @@ app.get('/b-here', function(request, response) {
 app.get('/editor', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
+/*
 app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);
 });
+*/
+
+/*
+const serverHttp = http.createServer(app);
+serverHttp.listen(Vars.port, () => {
+	console.log(`NodeJs Running server at ${Vars.host}`);
+});
+*/
+
+app.listen(Vars.port, () => {
+	console.log(`NodeJs Running server at ${Vars.host}`);
+});
+
+if (!process.env.PORT) {
+	const privateKey = fs.readFileSync('certs/server.key', 'utf8');
+	const certificate = fs.readFileSync('certs/server.crt', 'utf8');
+	const credentials = { key: privateKey, cert: certificate };
+	const serverHttps = https.createServer(credentials, app);
+	serverHttps.listen(Vars.portHttps, () => {
+		console.log(`NodeJs Running server at ${Vars.hostHttps}`);
+	});
+}

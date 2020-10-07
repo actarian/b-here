@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { PanoramaGridView } from '../../view/view';
 import { EnvMapLoader } from '../envmap/envmap.loader';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -110,7 +110,8 @@ export default class Panorama {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
 		if (this.tween > 0) {
-			gsap.to(this, 0.5, {
+			gsap.to(this, {
+				duration: 0.5,
 				tween: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
@@ -122,7 +123,8 @@ export default class Panorama {
 						onexit(view);
 					}
 					this.load(item, renderer, (envMap, texture, rgbe) => {
-						gsap.to(this, 0.5, {
+						gsap.to(this, {
+							duration: 0.5,
 							tween: 1,
 							ease: Power2.easeInOut,
 							onUpdate: () => {
@@ -141,7 +143,8 @@ export default class Panorama {
 				onexit(view);
 			}
 			this.load(item, renderer, (envMap, texture, rgbe) => {
-				gsap.to(this, 0.5, {
+				gsap.to(this, {
+					duration: 0.5,
 					tween: 1,
 					ease: Power2.easeInOut,
 					onUpdate: () => {

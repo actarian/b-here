@@ -8,7 +8,7 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-require('https');
+var https = _interopDefault(require('https'));
 var fs = _interopDefault(require('fs'));
 require('serve-static');
 var express = _interopDefault(require('express'));
@@ -387,7 +387,11 @@ var MIME_CONTENT_TYPES = {
   // 7-zip archive,
   "glb": "application/octet-stream",
   // Glb
-  "gltf": "application/octet-stream" // Gltf
+  "gltf": "application/octet-stream",
+  // Gltf
+  "fbx": "application/octet-stream",
+  // Fbx
+  "usdz": "application/octet-stream" // Usdz
 
 };
 var MIME_TEXT = ['css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml'];
@@ -395,7 +399,7 @@ var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff
 var MIME_FONTS = ['otf', 'ttf', 'woff', 'woff2'];
 var MIME_AUDIO = ['aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
-var MIME_APPLICATION = ['abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z', 'glb', 'gltf'];
+var MIME_APPLICATION = ['abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z', 'glb', 'gltf', 'fbx', 'usdz'];
 var MIME_TYPES = [].concat(MIME_TEXT, MIME_IMAGE, MIME_FONTS, MIME_AUDIO, MIME_VIDEO, MIME_APPLICATION);
 
 function staticMiddleware(vars) {
@@ -499,7 +503,7 @@ var RoleType = {
   Publisher: 'publisher',
   Attendee: 'attendee',
   Streamer: 'streamer',
-  Guest: 'guest',
+  Viewer: 'viewer',
   SelfService: 'self-service'
 };
 /*
@@ -1011,15 +1015,17 @@ var staticMiddleware$1 = _static.staticMiddleware; // const { spaMiddleware } = 
 
 var apiMiddleware$1 = api.apiMiddleware;
  // const router = express.Router();
-// const https = require('https');
 
 var BASE_HREF = '/b-here/';
 var ASSETS = "assets/";
 var ROOT = "../docs/";
 var PORT = process.env.PORT || 5000;
+var PORT_HTTPS = 6443;
 var Vars = {
   port: PORT,
+  portHttps: PORT_HTTPS,
   host: "http://localhost:" + PORT,
+  hostHttps: "https://localhost:" + PORT_HTTPS,
   charset: 'utf8',
   assets: ASSETS,
   baseHref: BASE_HREF,
@@ -1174,7 +1180,33 @@ app.get('/b-here', function (request, response) {
 app.get('/editor', function (request, response) {
   response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
+/*
+app.listen(Vars.port, () => {
+	console.log(`NodeJs Running server at ${Vars.host}`);
+});
+*/
+
+/*
+const serverHttp = http.createServer(app);
+serverHttp.listen(Vars.port, () => {
+	console.log(`NodeJs Running server at ${Vars.host}`);
+});
+*/
+
 app.listen(Vars.port, function () {
   console.log("NodeJs Running server at " + Vars.host);
 });
+
+if (!process.env.PORT) {
+  var privateKey = fs.readFileSync('certs/server.key', 'utf8');
+  var certificate = fs.readFileSync('certs/server.crt', 'utf8');
+  var credentials = {
+    key: privateKey,
+    cert: certificate
+  };
+  var serverHttps = https.createServer(credentials, app);
+  serverHttps.listen(Vars.portHttps, function () {
+    console.log("NodeJs Running server at " + Vars.hostHttps);
+  });
+}
 //# sourceMappingURL=main.js.map

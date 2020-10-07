@@ -12,8 +12,7 @@ export default class TryInARModalComponent extends Component {
 			const data = this.data = parentInstance.modal.data;
 			// console.log('data', data);
 			if (data && data.ar) {
-				// const url = `${environment.host}${data.ar.usdz}`;
-				const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/template/modules/b-here/try-in-ar.cshtml?viewId=${data.id}`;
+				const url = TryInARModalComponent.getUrl(data);
 				console.log('TryInARModalComponent.onInit.url', url);
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
@@ -26,6 +25,17 @@ export default class TryInARModalComponent extends Component {
 
 	close() {
 		ModalService.reject();
+	}
+
+	static getUrl(data) {
+		// const url = `${environment.host}${data.ar.usdz}`;
+		const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/template/modules/b-here/try-in-ar.cshtml?viewId=${data.id}`;
+		return url;
+	}
+
+	static openInAR(data) {
+		const url = this.getUrl(data);
+		window.open(url, '_blank');
 	}
 
 }
