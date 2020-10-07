@@ -107,7 +107,6 @@ export default class ModelBannerComponent extends ModelComponent {
 			}
 		});
 	}
-
 }
 
 ModelBannerComponent.ORIGIN = new THREE.Vector3();

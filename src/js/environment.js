@@ -1,7 +1,6 @@
 export const NODE = (typeof module !== 'undefined' && module.exports);
 export const PARAMS = NODE ? { get: () => { } } : new URLSearchParams(window.location.search);
 export const DEBUG = false || (PARAMS.get('debug') != null);
-export const EDITOR = false || (PARAMS.get('editor') != null);
 export const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
 export const HEROKU = NODE ? false : (window && window.location.host.indexOf('herokuapp') !== -1);
 export const STATIC = NODE ? false : (HEROKU || (window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io')));

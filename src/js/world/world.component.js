@@ -1,7 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 import { auditTime, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../agora/agora.types';
-import { DEBUG, EDITOR } from '../environment';
+import { DEBUG } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
 import MessageService from '../message/message.service';
 import { Rect } from '../rect/rect';
@@ -52,7 +52,8 @@ export default class WorldComponent extends Component {
 		// console.log('WorldComponent.onInit');
 		this.index = 0;
 		this.error_ = null;
-		this.banner = null;
+		this.loading = null;
+		this.waiting = null;
 		this.avatars = {};
 		this.createScene();
 		this.setView();
@@ -215,13 +216,15 @@ export default class WorldComponent extends Component {
 					}
 				}
 				view.ready = false;
-				this.banner = loadingBanner;
+				this.loading = loadingBanner;
+				this.waiting = null;
 				this.pushChanges();
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
 					view.ready = true;
-					this.banner = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+					this.loading = null;
+					this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
 					this.pushChanges();
 					// this.render();
 				}, (view) => {
@@ -493,7 +496,7 @@ export default class WorldComponent extends Component {
 		try {
 			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
-			if (DEBUG || EDITOR) {
+			if (DEBUG || this.editor) {
 				if (this.keys.Shift || this.keys.Control) {
 				} else {
 					this.select.next({ item: null });
@@ -661,10 +664,10 @@ export default class WorldComponent extends Component {
 	onNavDown(event) {
 		event.item.showPanel = false;
 		// console.log('WorldComponent.onNavDown', this.keys);
-		if (EDITOR && this.keys.Shift) {
+		if (this.editor && this.keys.Shift) {
 			this.dragItem = event;
 			this.select.next(event);
-		} else if (EDITOR && this.keys.Control) {
+		} else if (this.editor && this.keys.Control) {
 			this.resizeItem = event;
 			this.select.next(event);
 		} else {
@@ -674,10 +677,10 @@ export default class WorldComponent extends Component {
 
 	onPlaneDown(event) {
 		// console.log('WorldComponent.onPlaneDown', this.keys);
-		if (EDITOR && this.keys.Shift) {
+		if (this.editor && this.keys.Shift) {
 			this.dragItem = event;
 			this.select.next(event);
-		} else if (EDITOR && this.keys.Control) {
+		} else if (this.editor && this.keys.Control) {
 			this.resizeItem = event;
 			this.select.next(event);
 		}
@@ -858,11 +861,10 @@ export default class WorldComponent extends Component {
 		this.container.removeEventListener('mousedown', this.onMouseDown, false);
 		this.container.removeEventListener('mouseup', this.onMouseUp, false);
 	}
-
 }
 
 WorldComponent.meta = {
 	selector: '[world]',
-	inputs: ['view', 'views'],
+	inputs: ['view', 'views', 'editor'],
 	outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
 };

@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import { DEBUG, EDITOR } from '../environment';
+import { DEBUG } from '../environment';
 import { UrlService } from '../url/url.service';
 import { UserService } from '../user/user.service';
 
@@ -10,7 +10,6 @@ export default class AccessComponent extends Component {
 
 	onInit() {
 		this.debug = DEBUG;
-		this.editor = EDITOR;
 		this.state = {
 			status: 'access',
 		};
@@ -35,6 +34,10 @@ export default class AccessComponent extends Component {
 		this.initRequestForm();
 		this.state.status = 'guided-tour';
 		this.pushChanges();
+	}
+
+	onGuidedTourAccess() {
+		UrlService.redirect('guidedTour');
 	}
 
 	onLogin() {

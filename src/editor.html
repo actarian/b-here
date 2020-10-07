@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="ui__body">
-			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
+			<div class="world" world [view]="view" [views]="views" [editor]="true" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
 				<div class="world__view" *if="view">
 					<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
@@ -33,9 +33,12 @@
 							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
 						</div>
 					</div>
-				</div>
-				<div class="banner" model-banner [item]="banner" *if="banner">
-					<div class="banner__title" [innerHTML]="item.title"></div>
+					<div class="banner loading" model-banner [item]="loading" *if="loading">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
+					<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
 				</div>
 				<div model-menu [items]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
