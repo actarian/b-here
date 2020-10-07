@@ -97,6 +97,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	initWithUser(user) {
+		console.log('AgoraComponent.initWithUser', user);
 		const userName = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
 		const role = LocationService.get('role') || user.type;
 		const name = LocationService.get('name') || userName;

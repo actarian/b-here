@@ -90,7 +90,15 @@ function saveStore() {
 }
 
 function sendError(response, status, message) {
-	response.status(status).send(JSON.stringify({ status, message }));
+	response.status(status).set('Content-Type', 'application/json').send(JSON.stringify({ status, message }));
+}
+
+function sendOk(response, data) {
+	if (data) {
+		response.status(200).set('Content-Type', 'application/json').send(JSON.stringify(data));
+	} else {
+		response.status(200).set('Content-Type', 'text/plain').send();
+	}
 }
 
 function doCreate(request, response, params, items) {
@@ -108,7 +116,7 @@ function doCreate(request, response, params, items) {
 	}
 	items.push(item);
 	saveStore();
-	response.send(JSON.stringify(item));
+	sendOk(response, item);
 }
 
 function doUpdate(request, response, params, items) {
@@ -117,7 +125,7 @@ function doUpdate(request, response, params, items) {
 	if (item) {
 		Object.assign(item, body);
 		saveStore();
-		response.send(JSON.stringify(item));
+		sendOk(response, item);
 	} else {
 		sendError(response, 404, 'Not Found');
 	}
@@ -126,10 +134,11 @@ function doUpdate(request, response, params, items) {
 function doDelete(request, response, params, items) {
 	const index = items.reduce((p, x, i) => x.id === params.id ? i : p, -1);
 	if (index !== -1) {
-		const item = items[index];
+		// const item = items[index];
 		items.splice(index, 1);
 		saveStore();
-		response.send(JSON.stringify(item));
+		// sendOk(response, item);
+		sendOk(response);
 	} else {
 		sendError(response, 404, 'Not Found');
 	}
@@ -146,13 +155,13 @@ function doGet(request, response, params, items) {
 // /api/upload
 const ROUTES = [{
 	path: '/api/view', method: 'GET', callback: function(request, response, params) {
-		response.send(JSON.stringify(db));
+		sendOk(response, db);
 	}
 }, {
 	path: '/api/view/:viewId', method: 'GET', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
 		if (view) {
-			response.send(JSON.stringify(view));
+			sendOk(response, view);
 		} else {
 			sendError(response, 404, 'Not Found');
 		}
@@ -261,7 +270,7 @@ const ROUTES = [{
 		if (!user) {
 			sendError(response, 404, 'Not Found');
 		} else {
-			response.send(JSON.stringify(user));
+			sendOk(response, user);
 		}
 	}
 }, {
@@ -272,14 +281,14 @@ const ROUTES = [{
 			sendError(response, 404, 'Not Found');
 		} else {
 			request.session.user = user;
-			response.send(JSON.stringify(user));
+			sendOk(response, user);
 		}
 	}
 }, {
 	path: '/api/user/logout', method: 'GET', callback: function(request, response, params) {
 		const user = request.session.user;
 		request.session.user = null;
-		response.status(200).send(JSON.stringify(user));
+		sendOk(response);
 	}
 }, {
 	path: '/api/user/guided-tour', method: 'POST', callback: function(request, response, params) {
@@ -289,7 +298,7 @@ const ROUTES = [{
 		request.session.user = null;
 		db.users.push(user);
 		saveStore();
-		response.send(JSON.stringify(user));
+		sendOk(response, user);
 	}
 }, {
 	path: '/api/user/self-service-tour', method: 'POST', callback: function(request, response, params) {
@@ -299,7 +308,7 @@ const ROUTES = [{
 		request.session.user = user;
 		db.users.push(user);
 		saveStore();
-		response.send(JSON.stringify(user));
+		sendOk(response, user);
 	}
 }];
 ROUTES.forEach(route => {

@@ -233,10 +233,6 @@ var UrlService = /*#__PURE__*/function () {
   HttpService.http$ = function http$(method, url, data, format) {
     var _this = this;
 
-    if (format === void 0) {
-      format = 'json';
-    }
-
     var methods = ['POST', 'PUT', 'PATCH'];
     var response_ = null; // url = this.getUrl(url, format);
 
@@ -251,16 +247,13 @@ var UrlService = /*#__PURE__*/function () {
       response_ = response; // console.log(response);
 
       var contentType = response.headers.get("content-type");
+      var responseType = contentType && contentType.indexOf("application/json") !== -1 ? response.json() : response.text();
 
       if (response.ok) {
-        return response[format]();
-      } else if (contentType && contentType.indexOf("application/json") !== -1) {
-        return response.json().then(function (json) {
-          return Promise.reject(json);
-        });
+        return responseType;
       } else {
-        return response.text().then(function (text) {
-          return Promise.reject(text);
+        return responseType.then(function (data) {
+          return Promise.reject(data);
         });
       }
     })).pipe(operators.catchError(function (error) {
@@ -4333,6 +4326,7 @@ var VRService = /*#__PURE__*/function () {
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
+    console.log('AgoraComponent.initWithUser', user);
     var userName = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
     var role = LocationService.get('role') || user.type;
     var name = LocationService.get('name') || userName;
