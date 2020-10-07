@@ -1,5 +1,7 @@
+/* global THREE */
+
 import { Subject } from "rxjs";
-import * as THREE from 'three';
+// import * as THREE from 'three';
 
 export const EXT_IMAGE = [
 	'jpeg', 'jpg', 'png',
@@ -105,7 +107,7 @@ export class PanoramaView extends View {
 
 export class PanoramaGridView extends View {
 
-	static mapTiles(tiles, flipAxes, invertAxes, folder = '') {
+	static mapTiles(tiles = [], flipAxes = false, invertAxes = false, folder = '') {
 		const axes = flipAxes ? -1 : 1;
 		return tiles.map((tile, i) => {
 			const indices = new THREE.Vector2();
@@ -142,9 +144,7 @@ export class PanoramaGridView extends View {
 	}
 
 	constructor(options) {
-		if (options.tiles) {
-			options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset ? options.asset.folder : '');
-		}
+		options.tiles = PanoramaGridView.mapTiles(options.tiles, options.flipAxes, options.invertAxes, options.asset ? options.asset.folder : '');
 		super(options);
 		/*
 		if (!this.tiles.length) {

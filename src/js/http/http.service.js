@@ -18,11 +18,16 @@ export default class HttpService {
 		}).then((response) => {
 			response_ = response;
 			// console.log(response);
+			const contentType = response.headers.get("content-type");
 			if (response.ok) {
 				return response[format]();
-			} else {
+			} else if (contentType && contentType.indexOf("application/json") !== -1) {
 				return response.json().then(json => {
 					return Promise.reject(json);
+				});
+			} else {
+				return response.text().then(text => {
+					return Promise.reject(text);
 				});
 			}
 		})).pipe(
@@ -64,6 +69,9 @@ export default class HttpService {
 
 	static getError(object, response) {
 		let error = typeof object === 'object' ? object : {};
+		if (!error.status) {
+			error.status = response ? response.status : 0;
+		}
 		if (!error.statusCode) {
 			error.statusCode = response ? response.status : 0;
 		}

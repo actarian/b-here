@@ -1,5 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import { ViewType } from '../../view/view';
 import Interactive from '../interactive/interactive';
@@ -145,7 +145,8 @@ export class MenuButton extends InteractiveMesh {
 		const debugService = DebugService.getService();
 		debugService.setMessage('over ' + this.name);
 		*/
-		gsap.to(this, 0.4, {
+		gsap.to(this, {
+			duration: 0.4,
 			tween: 1,
 			ease: Power2.easeOut,
 			onUpdate: () => {
@@ -157,7 +158,8 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	onOut() {
-		gsap.to(this, 0.4, {
+		gsap.to(this, {
+			duration: 0.4,
 			tween: 0,
 			ease: Power2.easeOut,
 			onUpdate: () => {

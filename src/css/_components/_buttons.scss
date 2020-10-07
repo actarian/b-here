@@ -64,8 +64,8 @@
 
 %btn-rect {
 	@extend %btn;
-	height: 50px;
-	line-height: 50px;
+	min-height: 50px;
+	line-height: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;

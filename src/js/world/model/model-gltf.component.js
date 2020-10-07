@@ -1,8 +1,6 @@
 import { takeUntil } from 'rxjs/operators';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-// import { RoughnessMipmapper } from 'three/examples/jsm/utils/RoughnessMipmapper.js';
+// import * as THREE from 'three';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
@@ -76,7 +74,8 @@ export default class ModelGltfComponent extends ModelComponent {
 				dummy.rotation.y = 0 + Math.PI * from.tween;
 			};
 			onUpdate();
-			gsap.to(from, 1.5, {
+			gsap.to(from, {
+				duration: 1.5,
 				tween: 0,
 				delay: 0.1,
 				ease: Power2.easeInOut,
@@ -117,7 +116,7 @@ export default class ModelGltfComponent extends ModelComponent {
 	loadGltfModel(path, file, callback) {
 		const renderer = this.host.renderer;
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
-		const loader = new GLTFLoader().setPath(path);
+		const loader = new THREE.GLTFLoader().setPath(path);
 		loader.load(file, (gltf) => {
 			/*
 			gltf.scene.traverse((child) => {

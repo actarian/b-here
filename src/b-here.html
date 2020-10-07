@@ -9,15 +9,36 @@
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
 				<div class="group--info__content">
-					<!-- LINK -->
-					<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
-						<label>Inserisci un Meeting ID</label>
-						<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" />
-						<div class="control--addon" (click)="onCopyToClipBoard($event)" *if="controls.link.valid">
-							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+					<div *if="state.role !== 'publisher'">
+						<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
+							<label>Inserisci un Meeting ID</label>
+							<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" />
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.link.value)" *if="controls.link.valid">
+								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+							</div>
 						</div>
 					</div>
-					<div class="info" *if="controls.link.errors.required">inserisci meeting id</div>
+					<div *if="state.role === 'publisher'">
+						<div class="group--form" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
+							<label>Inserisci un Meeting ID</label>
+							<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" />
+						</div>
+						<div class="group--form group--form--addon addon" *if="controls.linkStreamer.valid && controls.linkStreamer.value !== null">
+							<label>Streamer Meeting ID</label>
+							<input type="text" class="control--text" [formControl]="controls.linkStreamer" placeholder="Viewer Meeting ID" readonly />
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkStreamer.value)" *if="controls.linkStreamer.valid">
+								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+							</div>
+						</div>
+						<div class="group--form group--form--addon addon" *if="controls.linkViewer.valid && controls.linkViewer.value !== null">
+							<label>Viewer Meeting ID</label>
+							<input type="text" class="control--text" [formControl]="controls.linkViewer" placeholder="Viewer Meeting ID" readonly />
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkViewer.value)" *if="controls.linkViewer.valid">
+								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+							</div>
+						</div>
+					</div>
+					<div class="info" *if="controls.link.errors.required">inserisci un meeting id</div>
 					<div class="info" *if="controls.link.errors.pattern">meeting id non valido</div>
 					<div class="info" *if="isValid()">partecipa al meeting</div>
 					<button type="button" class="btn--generate" *if="state.role == 'publisher'" (click)="onGenerateMeetingId($event)">
@@ -54,29 +75,15 @@
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onEnter($event)" name="form" role="form" novalidate autocomplete="off">
 				<!-- PREVIEW -->
-				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)">
+				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="!this.isIOS">
 					<video class="video" muted></video>
 					<div class="audio"></div>
 				</div>
 				<div class="group--info__content">
 					<!-- AUDIO -->
-					<div class="group--form--select" [class]="{ required: controls.audio.validators.length }">
-						<label>Audio</label>
-						<select class="control--select" [formControl]="controls.audio" required>
-							<option value="">Seleziona</option>
-							<option [value]="item.id" *for="let item of controls.audio.options" [innerHTML]="item.name"></option>
-						</select>
-						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
-					</div>
+					<div control-custom-select [control]="controls.audio" label="Audio"></div>
 					<!-- VIDEO -->
-					<div class="group--form--select" [class]="{ required: controls.video.validators.length }">
-						<label>Video</label>
-						<select class="control--select" [formControl]="controls.video">
-							<option value="">Seleziona</option>
-							<option [value]="item.id" *for="let item of controls.video.options" [innerHTML]="item.name"></option>
-						</select>
-						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
-					</div>
+					<div control-custom-select [control]="controls.video" label="Video"></div>
 					<div class="info" *if="!isValid()">seleziona sorgente audio e video</div>
 					<div class="info" *if="isValid()">audio e video connessi</div>
 					<button type="submit" class="btn--connect" [class]="{ disabled: !isValid() }">
@@ -111,7 +118,7 @@
 				</form>
 			</div>
 			-->
-			<div class="group--local" [class]="{ publisher: state.role == 'publisher', guest: state.role == 'guest' }">
+			<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }">
 				<!--
 				<button type="button" class="btn--spy" [class]="{ active: state.spying }" (click)="onToggleSpy($event)" *if="state.role == 'publisher'">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
@@ -135,18 +142,20 @@
 				<div class="world__view" *if="view">
 					<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
-					<div class="world__item" *for="let item of view.items; let index = index;">
-						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
-						<div model-plane [item]="item" [items]="view.items" *if="item.type.name == 'plane'"></div>
-						<div model-curved-plane [item]="item" [items]="view.items" *if="item.type.name == 'curved-plane'"></div>
-						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
-							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
-						</div>
-						<div class="panel" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
-							<div class="panel__title" [innerHTML]="item.title"></div>
-							<div class="panel__abstract" [innerHTML]="item.abstract"></div>
-							<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
+					<div *if="view.ready">
+						<div class="world__item" *for="let item of view.items; let index = index;">
+							<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
+							<div model-plane [item]="item" [items]="view.items" *if="item.type.name == 'plane'"></div>
+							<div model-curved-plane [item]="item" [items]="view.items" *if="item.type.name == 'curved-plane'"></div>
+							<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
+								<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
+							</div>
+							<div class="panel" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
+								<div class="panel__title" [innerHTML]="item.title"></div>
+								<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+								<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
+								<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
+							</div>
 						</div>
 					</div>
 				</div>

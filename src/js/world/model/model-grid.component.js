@@ -1,5 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
@@ -22,7 +22,8 @@ export default class ModelGridComponent extends ModelComponent {
 			if (this.coords_) {
 				const previousTile = tileMap[`${this.coords_.x}_${this.coords_.y}`];
 				const from = { tween: 1 };
-				gsap.to(from, 0.4, {
+				gsap.to(from, {
+					duration: 0.4,
 					tween: 0,
 					delay: 0,
 					ease: Power2.easeInOut,
@@ -35,7 +36,8 @@ export default class ModelGridComponent extends ModelComponent {
 			if (coords) {
 				const currentTile = this.currentTile = tileMap[`${coords.x}_${coords.y}`];
 				const from = { tween: 0 };
-				gsap.to(from, 0.4, {
+				gsap.to(from, {
+					duration: 0.4,
 					tween: 1,
 					delay: 0,
 					ease: Power2.easeInOut,

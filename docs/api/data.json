@@ -229,21 +229,9 @@
             "folder": "textures/video/",
             "file": "IPF PARQUET.mp4"
           },
-          "position": {
-            "x": 86,
-            "y": 0.5,
-            "z": 0
-          },
-          "rotation": {
-            "x": 0,
-            "y": -1.57079632679,
-            "z": 0
-          },
-          "scale": {
-            "x": 164,
-            "y": 60,
-            "z": 1
-          }
+          "position": [86,0.5,0],
+          "rotation": [0,-1.57079632679,0],
+          "scale": [164,60,1]
         },
         {
           "id": 2,

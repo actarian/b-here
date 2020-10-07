@@ -13,7 +13,7 @@ ControlSelectComponent.meta = {
 		<div class="group--form--select" [class]="{ required: control.validators.length }">
 			<label [innerHTML]="label"></label>
 			<select class="control--select" [formControl]="control" required>
-				<option value="">Select</option>
+				<option [value]="null">Select</option>
 				<option [value]="item.id" *for="let item of control.options" [innerHTML]="item.name"></option>
 			</select>
 			<span class="required__badge">required</span>

@@ -83,6 +83,8 @@ const MIME_CONTENT_TYPES = {
 	"7z": "application/x-7z-compressed", // 7-zip archive,
 	"glb": "application/octet-stream", // Glb
 	"gltf": "application/octet-stream", // Gltf
+	"fbx": "application/octet-stream", // Fbx
+	"usdz": "application/octet-stream", // Usdz
 };
 const MIME_TEXT = [
 	'css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml',
@@ -101,7 +103,7 @@ const MIME_VIDEO = [
 ];
 const MIME_APPLICATION = [
 	'abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z',
-	'glb', 'gltf',
+	'glb', 'gltf', 'fbx', 'usdz',
 ];
 const MIME_TYPES = [
 	...MIME_TEXT,

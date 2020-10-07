@@ -1,5 +1,5 @@
 import { ReplaySubject } from 'rxjs';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 
 export class MediaLoaderEvent {

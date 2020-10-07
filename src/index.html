@@ -54,29 +54,15 @@
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onEnter($event)" name="form" role="form" novalidate autocomplete="off">
 				<!-- PREVIEW -->
-				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)">
+				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="!this.isIOS">
 					<video class="video" muted></video>
 					<div class="audio"></div>
 				</div>
 				<div class="group--info__content">
 					<!-- AUDIO -->
-					<div class="group--form--select" [class]="{ required: controls.audio.validators.length }">
-						<label>Audio</label>
-						<select class="control--select" [formControl]="controls.audio" required>
-							<option value="">Seleziona</option>
-							<option [value]="item.id" *for="let item of controls.audio.options" [innerHTML]="item.name"></option>
-						</select>
-						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
-					</div>
+					<div control-custom-select [control]="controls.audio" label="Audio"></div>
 					<!-- VIDEO -->
-					<div class="group--form--select" [class]="{ required: controls.video.validators.length }">
-						<label>Video</label>
-						<select class="control--select" [formControl]="controls.video">
-							<option value="">Seleziona</option>
-							<option [value]="item.id" *for="let item of controls.video.options" [innerHTML]="item.name"></option>
-						</select>
-						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
-					</div>
+					<div control-custom-select [control]="controls.video" label="Video"></div>
 					<div class="info" *if="!isValid()">seleziona sorgente audio e video</div>
 					<div class="info" *if="isValid()">audio e video connessi</div>
 					<button type="submit" class="btn--connect" [class]="{ disabled: !isValid() }">
@@ -111,7 +97,7 @@
 				</form>
 			</div>
 			-->
-			<div class="group--local" [class]="{ publisher: state.role == 'publisher', guest: state.role == 'guest' }">
+			<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }">
 				<!--
 				<button type="button" class="btn--spy" [class]="{ active: state.spying }" (click)="onToggleSpy($event)" *if="state.role == 'publisher'">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>

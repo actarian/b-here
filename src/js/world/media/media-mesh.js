@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
@@ -303,7 +303,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				opacity: 1,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
@@ -318,7 +319,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				opacity: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
@@ -333,7 +335,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				overlay: 1,
 				tween: 0,
 				opacity: 1,
@@ -353,7 +356,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				overlay: 0,
 				tween: this.playing ? 0 : 1,
 				opacity: 1,

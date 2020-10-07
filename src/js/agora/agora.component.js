@@ -1,6 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
+import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
@@ -8,6 +9,7 @@ import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
+import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { UrlService } from '../url/url.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
@@ -40,6 +42,7 @@ export default class AgoraComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
+		this.platform = DeviceService.platform;
 		this.debug = DEBUG;
 		this.state = {};
 		this.data = null;
@@ -55,21 +58,45 @@ export default class AgoraComponent extends Component {
 		this.resolveUser();
 	}
 
+	getLinkRole() {
+		let linkRole = null;
+		const match = (LocationService.get('link') || '').match(/\d{9}-(\d{4})-\d{13}/);
+		if (match) {
+			const index = parseInt(match[1]);
+			linkRole = Object.keys(RoleType).reduce((p, c, i) => {
+				return i === index ? RoleType[c] : p;
+			}, null)
+		}
+		return linkRole;
+	}
+
 	resolveUser() {
 		UserService.me$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(user => {
-			if (user) {
-				this.user = user;
-				this.initState();
+			const linkRole = this.getLinkRole();
+			if (user && (!linkRole || linkRole === user.type)) {
+				this.initWithUser(user);
+			} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
+				UrlService.redirect('access');
 			} else {
+				this.initWithUser({ type: linkRole });
+			}
+			/*
+			const linkRole = this.getLinkRole();
+			if (!user && !linkRole) {
 				UrlService.redirect('access');
 			}
+			if (!user || (linkRole && linkRole !== user.type)) {
+				this.initWithUser({ type: linkRole });
+			} else {
+				this.initWithUser(user);
+			}
+			*/
 		});
 	}
 
-	initState() {
-		const user = this.user;
+	initWithUser(user) {
 		const userName = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
 		const role = LocationService.get('role') || user.type;
 		const name = LocationService.get('name') || userName;
@@ -101,6 +128,7 @@ export default class AgoraComponent extends Component {
 			this.state = state;
 			this.hosted = state.hosted;
 			this.pushChanges();
+			// console.log(state);
 		});
 		this.loadData();
 	}
@@ -385,11 +413,15 @@ export default class AgoraComponent extends Component {
 	}
 
 	tryInAr() {
-		ModalService.open$({ src: ModalSrcService.get('tryInAr'), data: this.view }).pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(event => {
-			// this.pushChanges();
-		});
+		if (this.platform === DevicePlatform.IOS || this.platform === DevicePlatform.Android) {
+			TryInARModalComponent.openInAR(this.view);
+		} else {
+			ModalService.open$({ src: ModalSrcService.get('tryInAr'), data: this.view }).pipe(
+				takeUntil(this.unsubscribe$)
+			).subscribe(event => {
+				// this.pushChanges();
+			});
+		}
 	}
 
 	onPrevent(event) {

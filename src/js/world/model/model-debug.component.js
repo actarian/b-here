@@ -1,5 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import DebugService from '../debug.service';
 import VRService from '../vr.service';

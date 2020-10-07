@@ -224,7 +224,10 @@ body {
 	.group--form--addon {
 		display: flex;
 		align-items: stretch;
-		min-width: 280px;
+
+		@include media-up(sm) {
+			min-width: 280px;
+		}
 	}
 
 	.control--addon {
@@ -255,7 +258,12 @@ body {
 		margin: 10px 0 0 0;
 	}
 
+	@include media-up(sm) {
+		min-width: 375px;
+	}
+
 	@include media-down(xs) {
+		min-width: 70%;
 		max-width: calc(100% - 20px);
 
 		&__content {
@@ -576,7 +584,7 @@ body {
 		}
 	}
 
-	&.guest {
+	&.viewer {
 		.agora-stream {
 			display: none;
 		}
@@ -944,8 +952,8 @@ model-viewer {
 	position: absolute;
 	left: 0;
 	top: 5000px;
-	background: #09f;
-	border: 1px solid #09f;
+	background: #000; // #09f;
+	border: 1px solid #000; // #09f;
 	color: white;
 	padding: 30px;
 

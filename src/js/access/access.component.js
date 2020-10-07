@@ -106,15 +106,24 @@ export default class AccessComponent extends Component {
 	}
 
 	test() {
-		this.form.patch({
-			firstName: 'Jhon',
-			lastName: 'Appleseed',
-			email: 'jhonappleseed@gmail.com',
-			role: this.controls.role.options.find(x => x.id !== null),
-			privacy: true,
-			checkRequest: window.antiforgery || '',
-			checkField: ''
-		});
+		if (this.state.status === 'login') {
+			this.form.patch({
+				username: 'publisher',
+				password: 'publisher',
+				checkRequest: window.antiforgery || '',
+				checkField: ''
+			});
+		} else {
+			this.form.patch({
+				firstName: 'Jhon',
+				lastName: 'Appleseed',
+				email: 'jhonappleseed@gmail.com',
+				role: this.controls.role.options.find(x => x.id !== null).id,
+				privacy: true,
+				checkRequest: window.antiforgery || '',
+				checkField: ''
+			});
+		}
 	}
 
 	reset() {

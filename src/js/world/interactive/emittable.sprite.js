@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import FreezableSprite from "./freezable.sprite";
 
 export default class EmittableSprite extends FreezableSprite {

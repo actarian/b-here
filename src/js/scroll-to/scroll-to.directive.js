@@ -11,7 +11,7 @@ export default class ScrollToDirective extends Directive {
 		this.outputFunction = module.makeFunction(expression, ['$event']);
 		this.scrollTo$().pipe(
 			takeUntil(this.unsubscribe$)
-		).subscribe(() => {});
+		).subscribe(() => { });
 	}
 
 	scrollTo$() {
@@ -29,7 +29,8 @@ export default class ScrollToDirective extends Directive {
 						gsap.set(html, {
 							'scroll-behavior': 'auto'
 						});
-						gsap.to(o, Math.abs((to - from)) / 2000, {
+						gsap.to(o, {
+							duration: Math.abs((to - from)) / 2000,
 							tween: 1,
 							ease: Quad.easeOut,
 							overwrite: 'all',

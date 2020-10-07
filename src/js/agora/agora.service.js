@@ -1,7 +1,5 @@
-// @ts-ignore
-// const AgoraRTC = require('agora-rtc-sdk');
-
-import AgoraRTM from 'agora-rtm-sdk';
+/* global AgoraRTM */
+// import AgoraRTM from 'agora-rtm-sdk';
 import { from, of } from 'rxjs';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
@@ -264,11 +262,23 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	getChannelNameLink() {
+		let link = StateService.state.link || '';
+		const match = link.match(/(\d{9})-(\d{4})-(\d{13})/);
+		if (match) {
+			link = `${match[1]}-${match[3]}`;
+		}
+		const channelName = StateService.state.channelName;
+		const channelNameLink = `${channelName}-${link}`;
+		console.log('AgoraService.getChannelNameLink', channelNameLink);
+		return channelNameLink;
+	}
+
 	joinChannel(token) {
 		const client = this.client;
 		const clientId = null;
 		token = null; // !!!
-		const channelNameLink = `${StateService.state.channelName}-${StateService.state.link || ''}`;
+		const channelNameLink = this.getChannelNameLink();
 		client.join(token, channelNameLink, clientId, (uid) => {
 			// console.log('AgoraService.joinChannel', uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });

@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-import { FormGroup } from 'rxcomp-form';
+import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import StateService from '../state/state.service';
 import AgoraService from './agora.service';
@@ -7,6 +7,7 @@ import AgoraService from './agora.service';
 export default class AgoraDeviceComponent extends Component {
 
 	onInit() {
+		this.isIOS = AgoraDeviceComponent.isIOS();
 		this.state = {};
 		this.devices = { videos: [], audios: [] };
 		this.stream = null;
@@ -31,22 +32,30 @@ export default class AgoraDeviceComponent extends Component {
 
 	initForm(devices) {
 		const form = this.form = new FormGroup({
-			audio: null,
-			video: null,
+			audio: new FormControl(null, Validators.RequiredValidator()),
+			video: new FormControl(null, Validators.RequiredValidator()),
 		});
 		const controls = this.controls = form.controls;
-		controls.video.options = devices.videos.map(x => {
+		const videoOptions = devices.videos.map(x => {
 			return {
 				id: x.deviceId,
 				name: x.label,
 			};
 		});
-		controls.audio.options = devices.audios.map(x => {
+		videoOptions.unshift({
+			id: null, name: 'Seleziona una sorgente video'
+		});
+		controls.video.options = videoOptions;
+		const audioOptions = devices.audios.map(x => {
 			return {
 				id: x.deviceId,
 				name: x.label,
 			};
 		});
+		audioOptions.unshift({
+			id: null, name: 'Seleziona una sorgente audio'
+		});
+		controls.audio.options = audioOptions;
 		form.changes$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((changes) => {
@@ -74,7 +83,7 @@ export default class AgoraDeviceComponent extends Component {
 	}
 
 	isValid() {
-		const isValid = this.form.valid && this.stream;
+		const isValid = this.form.valid && (this.stream || this.isIOS);
 		return isValid;
 	}
 
@@ -86,12 +95,11 @@ export default class AgoraDeviceComponent extends Component {
 		this.enter.next(devices);
 	}
 
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
+	static isIOS() {
+		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+	}
 }
 
 AgoraDeviceComponent.meta = {
