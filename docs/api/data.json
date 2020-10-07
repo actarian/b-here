@@ -98,6 +98,104 @@
       "zoom": 75
     },
     {
+      "id": 17,
+      "type": "panorama",
+      "name": "Ernestomeda",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "waiting-room/",
+        "file": "spaceroom.jpeg"
+      },
+      "items": [
+        {
+          "id": 1710,
+          "type": "nav",
+          "title": "Foto 360",
+          "abstract": "Abstract",
+          "position": [
+            0.9999601397579059,
+            0.006779055870503579,
+            0
+          ],
+          "viewId": 18
+        },
+        {
+          "id": 1720,
+          "type": "nav",
+          "title": "Composizione 1",
+          "abstract": "Abstract",
+          "position": [
+            0.8939132074560319,
+            -0.16237757850308276,
+            -0.30
+          ],
+          "viewId": 201
+        },
+        {
+          "id": 1721,
+          "type": "nav",
+          "title": "Composizione 2",
+          "abstract": "Abstract",
+          "position": [
+            0.8939132074560319,
+            -0.16237757850308276,
+            0
+          ],
+          "viewId": 202
+        },
+        {
+          "id": 1722,
+          "type": "nav",
+          "title": "Composizione 3",
+          "abstract": "Abstract",
+          "position": [
+            0.8939132074560319,
+            -0.16237757850308276,
+            0.30
+          ],
+          "viewId": 203
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 18,
+      "type": "panorama",
+      "name": "Foto 360",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "ernestomeda/",
+        "file": "test.jpg"
+      },
+      "items": [
+        {
+          "id": 1710,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            0.937404337862641,
+            0.1452281558092368,
+            -0.31651522888567557
+          ],
+          "viewId": 17
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
       "id": 500,
       "type": "panorama",
       "name": "Gedi Reception",
@@ -1738,49 +1836,6 @@
       "zoom": 75
     },
     {
-      "id": 17,
-      "type": "panorama",
-      "name": "Ernestomeda",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "rendering/",
-        "file": "ernestomeda.jpg"
-      },
-      "items": [
-        {
-          "id": 1710,
-          "type": "nav",
-          "title": "Welcome Room",
-          "abstract": "Abstract",
-          "position": [
-            0.9895859099478105,
-            0.0015676209690798433,
-            -0.14393494849153685
-          ],
-          "viewId": 1
-        },
-        {
-          "id": 1720,
-          "type": "nav",
-          "title": "Kitchen 4096",
-          "abstract": "Abstract",
-          "position": [
-            0.8939132074560319,
-            -0.16237757850308276,
-            0.41779504489060726
-          ],
-          "viewId": 202
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
       "id": 41,
       "type": "panorama",
       "name": "Kitchen 01",
@@ -2286,13 +2341,13 @@
     {
       "id": 201,
       "type": "panorama-grid",
-      "name": "Kitchen 8192",
+      "name": "Composizione 1",
       "likes": 225,
       "liked": false,
       "asset": {
         "type": "image",
-        "folder": "newoneset2/",
-        "file": "NEWONESET2_x0_y0.jpg"
+        "folder": "ernestomeda/",
+        "file": "Composizione1_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -2300,55 +2355,33 @@
         {
           "asset": {
             "type": "image",
-            "folder": "newoneset2/",
-            "file": "NEWONESET2_x0_y0.jpg"
+            "folder": "ernestomeda/",
+            "file": "Composizione1_x0_y0.jpg"
           },
           "navs": [
-            {
-              "id": 20110,
-              "type": "nav",
-              "title": "Welcome Room",
-              "abstract": "Abstract",
-              "position": [
-                0.9895859099478105,
-                0.0015676209690798433,
-                -0.14393494849153685
-              ],
-              "viewId": 1
-            },
-            {
-              "id": 20120,
-              "type": "nav",
-              "title": "Ernestomeda",
-              "abstract": "Abstract",
-              "position": [
-                0.9171044989783855,
-                -0.14408490583842612,
-                0.3716972933223166
-              ],
-              "viewId": 17
-            }
           ]
         },
-        "NEWONESET2_x0_y1.jpg",
-        "NEWONESET2_x0_y2.jpg",
-        "NEWONESET2_x0_y3.jpg",
-        "NEWONESET2_x0_y4.jpg",
-        "NEWONESET2_x0_y5.jpg",
-        "NEWONESET2_x0_y6.jpg",
-        "NEWONESET2_x0_y7.jpg",
-        "NEWONESET2_x1_y7.jpg",
-        "NEWONESET2_x2_y7.jpg",
-        "NEWONESET2_x3_y0.jpg",
-        "NEWONESET2_x3_y1.jpg",
-        "NEWONESET2_x3_y2.jpg",
-        "NEWONESET2_x3_y3.jpg",
-        "NEWONESET2_x3_y4.jpg",
-        "NEWONESET2_x3_y5.jpg",
-        "NEWONESET2_x3_y6.jpg",
-        "NEWONESET2_x3_y7.jpg"
+        "Composizione1_x0_y0.jpg",
+        "Composizione1_x0_y2.jpg",
+        "Composizione1_x1_y0.jpg",
+        "Composizione1_x1_y2.jpg",
+        "Composizione1_x2_y0.jpg",
+        "Composizione1_x2_y2.jpg"
       ],
-      "items": [],
+      "items": [
+        {
+          "id": 20210,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            0.9226244803336953,
+            0.17960131649980698,
+            -0.34133185523843923
+          ],
+          "viewId": 17
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 360
@@ -2358,13 +2391,13 @@
     {
       "id": 202,
       "type": "panorama-grid",
-      "name": "Kitchen 4096",
+      "name": "Composizione 2",
       "likes": 225,
       "liked": false,
       "asset": {
         "type": "image",
-        "folder": "newoneset2_low/",
-        "file": "NEWONESET2_x0_y0.jpg"
+        "folder": "ernestomeda/",
+        "file": "Composizione2_x0_y0.jpg"
       },
       "invertAxes": true,
       "flipAxes": false,
@@ -2372,55 +2405,85 @@
         {
           "asset": {
             "type": "image",
-            "folder": "newoneset2_low/",
-            "file": "NEWONESET2_x0_y0.jpg"
+            "folder": "ernestomeda/",
+            "file": "Composizione2_x0_y0.jpg"
           },
           "navs": [
-            {
-              "id": 20210,
-              "type": "nav",
-              "title": "Welcome Room",
-              "abstract": "Abstract",
-              "position": [
-                0.9895859099478105,
-                0.0015676209690798433,
-                -0.14393494849153685
-              ],
-              "viewId": 1
-            },
-            {
-              "id": 20220,
-              "type": "nav",
-              "title": "Kitchen 8192",
-              "abstract": "Abstract",
-              "position": [
-                0.9171044989783855,
-                -0.14408490583842612,
-                0.3716972933223166
-              ],
-              "viewId": 201
-            }
           ]
         },
-        "NEWONESET2_x0_y1.jpg",
-        "NEWONESET2_x0_y2.jpg",
-        "NEWONESET2_x0_y3.jpg",
-        "NEWONESET2_x0_y4.jpg",
-        "NEWONESET2_x0_y5.jpg",
-        "NEWONESET2_x0_y6.jpg",
-        "NEWONESET2_x0_y7.jpg",
-        "NEWONESET2_x1_y7.jpg",
-        "NEWONESET2_x2_y7.jpg",
-        "NEWONESET2_x3_y0.jpg",
-        "NEWONESET2_x3_y1.jpg",
-        "NEWONESET2_x3_y2.jpg",
-        "NEWONESET2_x3_y3.jpg",
-        "NEWONESET2_x3_y4.jpg",
-        "NEWONESET2_x3_y5.jpg",
-        "NEWONESET2_x3_y6.jpg",
-        "NEWONESET2_x3_y7.jpg"
+        "Composizione2_x0_y0.jpg",
+        "Composizione2_x0_y2.jpg",
+        "Composizione2_x0_y4.jpg",
+        "Composizione2_x2_y0.jpg",
+        "Composizione2_x2_y2.jpg",
+        "Composizione2_x2_y4.jpg",
+        "Composizione2_x4_y0.jpg",
+        "Composizione2_x4_y2.jpg",
+        "Composizione2_x4_y4.jpg"
       ],
-      "items": [],
+      "items": [
+        {
+          "id": 20211,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            0.8746907006978099,
+            0.11436068879823358,
+            -0.4709966146060584
+          ],
+          "viewId": 17
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 360
+      },
+      "zoom": 75
+    },
+    {
+      "id": 203,
+      "type": "panorama-grid",
+      "name": "Composizione 3",
+      "likes": 225,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "ernestomeda/",
+        "file": "Composizione3_x0_y0.jpg"
+      },
+      "invertAxes": true,
+      "flipAxes": false,
+      "tiles": [
+        {
+          "asset": {
+            "type": "image",
+            "folder": "ernestomeda/",
+            "file": "Composizione3_x0_y0.jpg"
+          },
+          "navs": [
+          ]
+        },
+        "Composizione3_x0_y0.jpg",
+        "Composizione3_x0_y2.jpg",
+        "Composizione3_x0_y4.jpg",
+        "Composizione3_x-2_y4.jpg",
+        "Composizione3_x2_y4.jpg"
+      ],
+      "items": [
+        {
+          "id": 20211,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            0.8501329720935449,
+            0.2659364502345637,
+            0.45447963012222625
+          ],
+          "viewId": 17
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 360
