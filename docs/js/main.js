@@ -122,7 +122,6 @@ var PARAMS = NODE ? {
   get: function get() {}
 } : new URLSearchParams(window.location.search);
 var DEBUG =  PARAMS.get('debug') != null;
-var EDITOR =  PARAMS.get('editor') != null;
 var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
 var HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
 var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
@@ -452,7 +451,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 
   _proto.onInit = function onInit() {
     this.debug = DEBUG;
-    this.editor = EDITOR;
     this.state = {
       status: 'access'
     };
@@ -477,6 +475,10 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
     this.initRequestForm();
     this.state.status = 'guided-tour';
     this.pushChanges();
+  };
+
+  _proto.onGuidedTourAccess = function onGuidedTourAccess() {
+    UrlService.redirect('guidedTour');
   };
 
   _proto.onLogin = function onLogin() {
@@ -4771,7 +4773,6 @@ AgoraComponent.meta = {
 
     node.classList.remove('hidden');
     this.debug = DEBUG;
-    this.editor = EDITOR;
   };
 
   return AppComponent;
@@ -5730,7 +5731,6 @@ AsideComponent.meta = {
     node.classList.remove('hidden');
     this.aside = false;
     this.debug = DEBUG;
-    this.editor = EDITOR;
     this.state = {};
     this.data = null;
     this.views = null;
@@ -5942,6 +5942,7 @@ AsideComponent.meta = {
   ;
 
   _proto.onViewHit = function onViewHit(event) {
+    console.log('onViewHit');
     this.viewHit.next(event);
   };
 
@@ -11916,7 +11917,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     // console.log('WorldComponent.onInit');
     this.index = 0;
     this.error_ = null;
-    this.banner = null;
+    this.loading = null;
+    this.waiting = null;
     this.avatars = {};
     this.createScene();
     this.setView();
@@ -12079,13 +12081,15 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         }
 
         view.ready = false;
-        this.banner = loadingBanner;
+        this.loading = loadingBanner;
+        this.waiting = null;
         this.pushChanges();
         this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
           _this2.scene.environment = envMap;
           view.ready = true;
-          _this2.banner = view && view.type.name === 'waiting-room' ? waitingBanner : null;
+          _this2.loading = null;
+          _this2.waiting = view && view.type.name === 'waiting-room' ? waitingBanner : null;
 
           _this2.pushChanges(); // this.render();
 
@@ -12367,7 +12371,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       var raycaster = this.updateRaycasterMouse(event);
       var hit = Interactive.hittest(raycaster, true);
 
-      if (DEBUG || EDITOR) {
+      if (DEBUG || this.editor) {
         if (this.keys.Shift || this.keys.Control) {} else {
           this.select.next({
             item: null
@@ -12546,10 +12550,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onNavDown = function onNavDown(event) {
     event.item.showPanel = false; // console.log('WorldComponent.onNavDown', this.keys);
 
-    if (EDITOR && this.keys.Shift) {
+    if (this.editor && this.keys.Shift) {
       this.dragItem = event;
       this.select.next(event);
-    } else if (EDITOR && this.keys.Control) {
+    } else if (this.editor && this.keys.Control) {
       this.resizeItem = event;
       this.select.next(event);
     } else {
@@ -12559,10 +12563,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onPlaneDown = function onPlaneDown(event) {
     // console.log('WorldComponent.onPlaneDown', this.keys);
-    if (EDITOR && this.keys.Shift) {
+    if (this.editor && this.keys.Shift) {
       this.dragItem = event;
       this.select.next(event);
-    } else if (EDITOR && this.keys.Control) {
+    } else if (this.editor && this.keys.Control) {
       this.resizeItem = event;
       this.select.next(event);
     }
@@ -12795,7 +12799,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 }(rxcomp.Component);
 WorldComponent.meta = {
   selector: '[world]',
-  inputs: ['view', 'views'],
+  inputs: ['view', 'views', 'editor'],
   outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
 };var deg = THREE.Math.degToRad;
 var GEOMETRY = new THREE.BoxGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);

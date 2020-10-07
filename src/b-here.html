@@ -158,9 +158,12 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="banner" model-banner [item]="banner" *if="banner">
-					<div class="banner__title" [innerHTML]="item.title"></div>
+					<div class="banner loading" model-banner [item]="loading" *if="loading">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
+					<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
 				</div>
 				<div model-menu [items]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">

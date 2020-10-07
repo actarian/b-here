@@ -42,6 +42,7 @@
 		@include media-up(sm) {
 			max-height: calc(100vh - 200px); // Fallback for browsers that do not support Custom Properties
 			max-height: calc(var(--vh, 1vh) * 100 - 200px);
+			min-width: 480px;
 		}
 
 		@include media-down(xs) {
@@ -49,7 +50,6 @@
 			height: 100vh;
 		}
 	}
-
 }
 
 .modal__header {
