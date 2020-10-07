@@ -122,9 +122,21 @@
           "viewId": 18
         },
         {
+          "id": 1711,
+          "type": "nav",
+          "title": "Video 360",
+          "abstract": "Abstract",
+          "position": [
+            0.9729681586481167,
+            0.021672796265337455,
+            0.22992009951053566
+          ],
+          "viewId": 19
+        },
+        {
           "id": 1720,
           "type": "nav",
-          "title": "Composizione 1",
+          "title": "Obliqua Composizione 1",
           "abstract": "Abstract",
           "position": [
             0.8939132074560319,
@@ -136,7 +148,7 @@
         {
           "id": 1721,
           "type": "nav",
-          "title": "Composizione 2",
+          "title": "Obliqua Composizione 2",
           "abstract": "Abstract",
           "position": [
             0.8939132074560319,
@@ -148,7 +160,7 @@
         {
           "id": 1722,
           "type": "nav",
-          "title": "Composizione 3",
+          "title": "Obliqua Composizione 3",
           "abstract": "Abstract",
           "position": [
             0.8939132074560319,
@@ -192,6 +204,37 @@
       "orientation": {
         "latitude": 0,
         "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 19,
+      "type": "panorama",
+      "name": "Video 360",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "video",
+        "folder": "video/",
+        "file": "ernestomeda.mp4"
+      },
+      "items": [
+        {
+          "id": 1710,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            -0.6982720102039862,
+            0.13500579777875724,
+            -0.7029862262746016
+          ],
+          "viewId": 17
+        }
+      ],
+      "orientation": {
+        "latitude": 0,
+        "longitude": 180
       },
       "zoom": 75
     },
