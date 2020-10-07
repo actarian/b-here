@@ -19,15 +19,12 @@ export default class HttpService {
 			response_ = response;
 			// console.log(response);
 			const contentType = response.headers.get("content-type");
+			const responseType = (contentType && contentType.indexOf("application/json") !== -1) ? response.json() : response.text();
 			if (response.ok) {
-				return response[format]();
-			} else if (contentType && contentType.indexOf("application/json") !== -1) {
-				return response.json().then(json => {
-					return Promise.reject(json);
-				});
+				return responseType;
 			} else {
-				return response.text().then(text => {
-					return Promise.reject(text);
+				return responseType.then(data => {
+					return Promise.reject(data);
 				});
 			}
 		})).pipe(
