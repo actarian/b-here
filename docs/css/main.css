@@ -3802,6 +3802,19 @@ body {
   width: 100%;
   height: 100%; }
 
+.page {
+  background: #ffffff; }
+
+.group--logo {
+  position: absolute;
+  z-index: 100;
+  top: 28px;
+  left: 30px;
+  width: 80px;
+  color: #0099ff; }
+  .group--logo svg {
+    fill: currentColor; }
+
 .ui {
   position: relative;
   display: flex;
@@ -3854,8 +3867,8 @@ body {
   .group--info .info {
     margin: 15px 0;
     font-size: 15px;
-    line-height: 1;
-    color: #89959d;
+    line-height: 1.2;
+    color: #6d7b84;
     text-align: center; }
   .group--info .form {
     width: 100%; }
@@ -4146,7 +4159,7 @@ body {
   .agora-device-preview > .video {
     border-radius: 6px 6px 0 0;
     border: none;
-    background: #a5b3bd; }
+    background: #81929e; }
   .agora-device-preview > .audio {
     position: absolute;
     bottom: 10px;

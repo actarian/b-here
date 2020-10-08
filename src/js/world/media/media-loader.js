@@ -82,6 +82,8 @@ export default class MediaLoader {
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
+				// texture.image.width = video.videoWidth;
+				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
 				if (typeof callback === 'function') {
 					callback(texture, this);
@@ -111,6 +113,8 @@ export default class MediaLoader {
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
+				// texture.image.width = video.videoWidth;
+				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
 				if (!item.asset || !item.asset.autoplay) {
 					video.pause();

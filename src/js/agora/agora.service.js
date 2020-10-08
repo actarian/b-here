@@ -128,6 +128,7 @@ export default class AgoraService extends Emittable {
 		return from(new Promise((resolve, reject) => {
 			const getDevices = () => {
 				AgoraRTC.getDevices((devices) => {
+					// console.log('AgoraRTC.getDevices', devices);
 					tempStream.close();
 					for (let i = 0; i < devices.length; i++) {
 						const device = devices[i];
