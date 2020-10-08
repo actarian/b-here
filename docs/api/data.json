@@ -19,33 +19,69 @@
       "zoom": 75
     },
     {
-      "id": 1,
+      "id": 11,
       "type": "panorama",
-      "name": "Welcome Room",
+      "name": "Ingresso",
       "likes": 134,
       "liked": false,
       "asset": {
         "type": "image",
-        "folder": "waiting-room/",
-        "file": "mod2.jpg"
+        "folder": "judeka/",
+        "file": "1_ingresso1.jpg"
       },
       "items": [
         {
-          "id": 1001,
+          "id": 1002,
           "type": "nav",
-          "title": "Cantina Virtuale",
+          "title": "Cantina",
           "abstract": "Abstract",
           "position": [
-            0.9492929854561027,
-            -0.3143229311219038,
-            0
+            -0.996747768320013,
+            -0.012837563377297958,
+            -0.0795555360462599
           ],
-          "viewId": 11
+          "viewId": 12
+        },
+        {
+          "id": 1003,
+          "type": "nav",
+          "title": "Vigna",
+          "abstract": "Abstract",
+          "position": [
+            -0.1898483850302512,
+            -0.007344827944680852,
+            0.9817859462244652
+          ],
+          "viewId": 15
+        },
+        {
+          "id": 1004,
+          "type": "nav",
+          "title": "Camera",
+          "abstract": "Abstract",
+          "position": [
+            0.9650658780900089,
+            -0.0029013902771090985,
+            0.26199128397872273
+          ],
+          "viewId": 18
+        },
+        {
+          "id": 1005,
+          "type": "nav",
+          "title": "Sala Degustazione",
+          "abstract": "Abstract",
+          "position": [
+            0.7836042197639638,
+            -0.015415360527986699,
+            -0.6210690729926114
+          ],
+          "viewId": 16
         }
       ],
       "orientation": {
-        "latitude": -10,
-        "longitude": 360
+        "latitude": 0,
+        "longitude": 150
       },
       "zoom": 75
     },
@@ -93,76 +129,9 @@
       "zoom": 75
     },
     {
-      "id": 11,
-      "type": "panorama",
-      "name": "Ingresso",
-      "likes": 134,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "judeka/",
-        "file": "1_ingresso1.jpg"
-      },
-      "items": [
-        {
-          "id": 1002,
-          "type": "nav",
-          "title": "Vinificazione",
-          "abstract": "Abstract",
-          "position": [
-            -0.996747768320013,
-            -0.012837563377297958,
-            -0.0795555360462599
-          ],
-          "viewId": 12
-        },
-        {
-          "id": 1003,
-          "type": "nav",
-          "title": "Vigna",
-          "abstract": "Abstract",
-          "position": [
-            -0.1898483850302512,
-            -0.007344827944680852,
-            0.9817859462244652
-          ],
-          "viewId": 15
-        },
-        {
-          "id": 1004,
-          "type": "nav",
-          "title": "Camera",
-          "abstract": "Abstract",
-          "position": [
-            0.9650658780900089,
-            -0.0029013902771090985,
-            0.26199128397872273
-          ],
-          "viewId": 18
-        },
-        {
-          "id": 1005,
-          "type": "nav",
-          "title": "Degustazione",
-          "abstract": "Abstract",
-          "position": [
-            0.7836042197639638,
-            -0.015415360527986699,
-            -0.6210690729926114
-          ],
-          "viewId": 16
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 150
-      },
-      "zoom": 75
-    },
-    {
       "id": 12,
       "type": "panorama",
-      "name": "Vinificazione 1",
+      "name": "Cantina 1",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -186,7 +155,7 @@
         {
           "id": 1011,
           "type": "nav",
-          "title": "Vinificazione",
+          "title": "Cantina",
           "abstract": "Abstract",
           "position": [
             0.9958224622717992,
@@ -205,7 +174,7 @@
     {
       "id": 13,
       "type": "panorama",
-      "name": "Vinificazione 2",
+      "name": "Cantina 2",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -217,7 +186,7 @@
         {
           "id": 1015,
           "type": "nav",
-          "title": "Riposo Vino",
+          "title": "Barricaia",
           "abstract": "Abstract",
           "position": [
             0.5059722289390207,
@@ -229,7 +198,7 @@
         {
           "id": 1016,
           "type": "nav",
-          "title": "Vinificazione",
+          "title": "Cantina",
           "abstract": "Abstract",
           "position": [
             -0.478995210768429,
@@ -248,7 +217,7 @@
     {
       "id": 14,
       "type": "panorama",
-      "name": "Riposo",
+      "name": "Barricaia",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -260,7 +229,7 @@
         {
           "id": 1018,
           "type": "nav",
-          "title": "Degustazione",
+          "title": "Sala Degustazione",
           "abstract": "Abstract",
           "position": [
             -0.9999958483750958,
@@ -334,7 +303,7 @@
     {
       "id": 16,
       "type": "panorama",
-      "name": "Degustazione",
+      "name": "Sala Degustazione",
       "likes": 134,
       "liked": false,
       "asset": {
@@ -366,6 +335,55 @@
             0.14986450352726927
           ],
           "viewId": 17
+        },
+        {
+          "id": 1025,
+          "type": "nav",
+          "title": "Bottiglia 3D",
+          "abstract": "Modello 3D",
+          "position": [
+            0.4722381234900542,
+            -0.29088163148949625,
+            -0.8320931625633042
+          ],
+          "viewId": 301
+        },
+        {
+          "id": 1026,
+          "type": "nav",
+          "title": "CERASUOLO DI VITTORIA D.O.C.G.",
+          "abstract": "E’ l’unico vino siciliano che può fregiarsi dell’appellazione «DOCG». Un vino che esprime fortemente il territorio d’origine, attraverso una perfetta sinergia tra la forza la struttura e la fruttuosità del Nero d’Avola con l’eleganza, la delicatezza e la florealità del Frappato.",
+          
+          "link": {
+            "title": "Sheda tecnica CLICCA QUI",
+            "href": "https://www.judeka.com/wp-content/uploads/2019/03/cerasuolo-di-vittoria-judeka-compressed.pdf",
+            "target": "_blank"
+          },
+          
+          "position": [
+            0.00206127259086851,
+            -0.21172300563880223,
+            -0.9773275397933784
+          ],
+          "viewId": 16
+        },
+        {
+          "id": 1027,
+          "type": "nav",
+          "title": "Acquista il vino",
+          "abstract": "Judeca Shop Online",
+          
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.judeka.com/cerasuolo-di-vittoria-d-o-c-g/",
+            "target": "_blank"
+          },
+          "position": [
+            0.5379084961223237,
+            -0.515195116205778,
+            -0.6672544057832329
+          ],
+          "viewId": 16
         }
       ],
       "orientation": {
@@ -401,7 +419,7 @@
         {
           "id": 1029,
           "type": "nav",
-          "title": "Degustazione",
+          "title": "Sala Degustazione",
           "abstract": "Abstract",
           "position": [
             0.833073337817863,
@@ -426,13 +444,49 @@
           "id": 1031,
           "type": "nav",
           "title": "Bottiglia 3D",
-          "abstract": "Abstract",
+          "abstract": "Modello 3D",
           "position": [
-            -0.35847238419646094,
-            -0.46486733185336965,
-            -0.8095652620660264
+            -0.5759504458437006,
+            -0.16288072757745284,
+            -0.8010935978500155
           ],
           "viewId": 301
+        },
+        {
+          "id": 1032,
+          "type": "nav",
+          "title": "Acquista il vino",
+          "abstract": "Judeca Shop Online",
+          
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.judeka.com/cerasuolo-di-vittoria-d-o-c-g/",
+            "target": "_blank"
+          },
+          "position": [
+            0.49853343546029183,
+            -0.18416613646864005,
+            -0.8470816064030507
+          ],
+          "viewId": 17
+        },
+        {
+          "id": 1033,
+          "type": "nav",
+          "title": "Acquista una degustazione",
+          "abstract": "JUDEKA azienda vitivinicola S.R.L.",
+          
+          "link": {
+            "title": "Scopri di più...",
+            "href": "https://www.paypal.com/paypalme/judekasrl/",
+            "target": "_blank"
+          },
+          "position": [
+            -0.9356120590922331,
+            -0.13819343939216727,
+            -0.3248578892225877
+          ],
+          "viewId": 17
         }
       ],
       "orientation": {
@@ -450,7 +504,7 @@
       "asset": {
         "type": "image",
         "folder": "judeka/",
-        "file": "7_Stanza.jpg"
+        "file": "7_stanza.jpeg"
       },
       "items": [
         {
@@ -459,16 +513,16 @@
           "title": "Ingresso",
           "abstract": "Abstract",
           "position": [
-            -0.7270322987422021,
-            -0.17043547398764433,
-            -0.6651133631135646
+            -0.9989060660735645,
+            0.03573237521454312,
+            0.0301640269686012
           ],
-          "viewId": 1
+          "viewId": 11
         }
       ],
       "orientation": {
-        "latitude": -10,
-        "longitude": 45
+        "latitude": -15,
+        "longitude": -50
       },
       "zoom": 75
     },
@@ -740,14 +794,14 @@
         {
           "id": 1040,
           "type": "nav",
-          "title": "Kitchen 01",
+          "title": "Ingresso",
           "abstract": "Abstract",
           "position": [
             0.04713776229380867,
             -0.16372888464057858,
             0.9853785484270928
           ],
-          "viewId": 41
+          "viewId": 11
         }
       ],
       "orientation": {
@@ -925,9 +979,9 @@
           "title": "Negozio",
           "abstract": "Abstract",
           "position": [
-            -0.8009096917674511,
-            -0.5878988350344375,
-            0.11366013108437656
+            -0.2708721376029282,
+            -0.4219780647709135,
+            0.8651952368816042
           ],
           "viewId": 17
         },
@@ -942,110 +996,30 @@
             0.7873925640377608
           ],
           "viewId": 100
+        },
+        {
+          "id": 1052,
+          "type": "nav",
+          "title": "CERASUOLO DI VITTORIA D.O.C.G.",
+          "abstract": "E’ l’unico vino siciliano che può fregiarsi dell’appellazione «DOCG». Un vino che esprime fortemente il territorio d’origine, attraverso una perfetta sinergia tra la forza la struttura e la fruttuosità del Nero d’Avola con l’eleganza, la delicatezza e la florealità del Frappato.",
+          
+          "link": {
+            "title": "Sheda tecnica CLICCA QUI",
+            "href": "https://www.judeka.com/wp-content/uploads/2019/03/cerasuolo-di-vittoria-judeka-compressed.pdf",
+            "target": "_blank"
+          },
+          
+          "position": [
+            -0.7490190918185762,
+            -0.599372358102105,
+            0.2823529288574807
+          ],
+          "viewId": 301
         }
       ],
       "orientation": {
         "latitude": 25,
         "longitude": -40
-      },
-      "zoom": 55
-    },
-    {
-      "id": 302,
-      "type": "model",
-      "name": "Washing Machine",
-      "likes": 172,
-      "liked": false,
-      "ar": {
-        "gltf": "/washing-machine/gltf.gltf",
-        "usdz": "/washing-machine/washing-machine.usdz"
-      },
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
-      },
-      "items": [
-        {
-          "id": 2002,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "asset": {
-            "folder": "washing-machine/",
-            "file": "glb.glb"
-          }
-        }
-      ],
-      "orientation": {
-        "latitude": 20.400000000000002,
-        "longitude": 57.60000000000001
-      },
-      "zoom": 52
-    },
-    {
-      "id": 303,
-      "type": "model",
-      "name": "Helmet",
-      "likes": 172,
-      "liked": false,
-      "ar": {
-        "gltf": "/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "/damaged-helmet/damaged-helmet.usdz"
-      },
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "waiting-room-02.jpg"
-      },
-      "items": [
-        {
-          "id": 2003,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "asset": {
-            "folder": "damaged-helmet/",
-            "file": "damaged-helmet.glb"
-          }
-        }
-      ],
-      "orientation": {
-        "latitude": 14.300000000000002,
-        "longitude": 124.30000000000001
-      },
-      "zoom": 51
-    },
-    {
-      "id": 304,
-      "type": "model",
-      "name": "Logo WS",
-      "likes": 172,
-      "liked": false,
-      "ar": {
-        "gltf": "/logo/logowsGLTF.gltf",
-        "usdz": "/logo/logows.usdz"
-      },
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "amazing.jpg"
-      },
-      "items": [
-        {
-          "id": 2004,
-          "type": "gltf",
-          "title": "Model",
-          "abstract": "Abstract",
-          "asset": {
-            "folder": "logo/",
-            "file": "logows2.glb"
-          }
-        }
-      ],
-      "orientation": {
-        "latitude": 18,
-        "longitude": 150
       },
       "zoom": 55
     },
