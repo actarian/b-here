@@ -31,6 +31,33 @@ uniform vec2 resolutionA;
 uniform vec2 resolutionB;
 uniform vec3 overlayColor;
 
+void main() {
+	vec4 color;
+	vec4 colorA = texture2D(textureA, vUv);
+	if (video) {
+		vec4 colorB = texture2D(textureB, vUv);
+		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
+	} else {
+		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
+	}
+	gl_FragColor = color;
+}
+`;
+
+const FRAGMENT_SHADER_BAK = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+uniform bool video;
+uniform float opacity;
+uniform float overlay;
+uniform float tween;
+uniform sampler2D textureA;
+uniform sampler2D textureB;
+uniform vec2 resolutionA;
+uniform vec2 resolutionB;
+uniform vec3 overlayColor;
+
 mat3 rotate(float a) {
 	return mat3(
 		cos(a), sin(a), 0.0,
@@ -76,12 +103,16 @@ void main() {
 			-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,
 			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
 		);
+		// float dx = (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5;
+		// float dy = (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5;
+		// t = vec2(-0.5 + dx, -0.5 - dy);
 		vec2 uv2 = clamp(
 			getUV2(vUv, t, s, 0.0),
 			vec2(0.0,0.0),
 			vec2(1.0,1.0)
 		);
 		vec4 colorB = texture2D(textureB, uv2);
+		colorB = texture2D(textureB, vUv);
 		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
 	} else {
 		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
@@ -233,7 +264,7 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		if (mediaLoader.isPlayableVideo) {
+		if (false && mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({
 				asset: {
 					folder: 'textures/ui/', file: 'play.png'
@@ -247,6 +278,8 @@ export default class MediaMesh extends InteractiveMesh {
 				textureB.wrapS = THREE.RepeatWrapping;
 				textureB.wrapT = THREE.RepeatWrapping;
 				material.uniforms.textureB.value = textureB;
+				// material.uniforms.resolutionB.value.x = textureB.image.width;
+				// material.uniforms.resolutionB.value.y = textureB.image.height;
 				material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
 				// console.log(material.uniforms.resolutionB.value, textureB);
 				material.needsUpdate = true;
@@ -256,8 +289,27 @@ export default class MediaMesh extends InteractiveMesh {
 			// console.log('MediaMesh.textureA', textureA);
 			if (textureA) {
 				material.uniforms.textureA.value = textureA;
+				// material.uniforms.resolutionA.value.x = textureA.image.width;
+				// material.uniforms.resolutionA.value.y = textureA.image.height;
 				material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
 				material.needsUpdate = true;
+				if (mediaLoader.isPlayableVideo) {
+					this.createTextureB(textureA, (textureB) => {
+						// console.log('MediaMesh.textureB', textureB);
+						textureB.minFilter = THREE.LinearFilter;
+						textureB.magFilter = THREE.LinearFilter;
+						textureB.mapping = THREE.UVMapping;
+						// textureB.format = THREE.RGBFormat;
+						textureB.wrapS = THREE.RepeatWrapping;
+						textureB.wrapT = THREE.RepeatWrapping;
+						material.uniforms.textureB.value = textureB;
+						// material.uniforms.resolutionB.value.x = textureB.image.width;
+						// material.uniforms.resolutionB.value.y = textureB.image.height;
+						material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
+						// console.log(material.uniforms.resolutionB.value, textureB);
+						material.needsUpdate = true;
+					});
+				}
 			}
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
@@ -273,6 +325,39 @@ export default class MediaMesh extends InteractiveMesh {
 				callback(this);
 			}
 		});
+	}
+
+	createTextureB(textureA, callback) {
+		const aw = textureA.image.width || textureA.image.videoWidth;
+		const ah = textureA.image.height || textureA.image.videoHeight;
+		const ar = aw / ah;
+		const canvas = document.createElement('canvas');
+		// document.querySelector('body').appendChild(canvas);
+		canvas.width = aw;
+		canvas.height = ah;
+		const context = canvas.getContext('2d');
+		context.imageSmoothingEnabled = true;
+		context.imageSmoothingQuality = 'high';
+		const image = new Image();
+		image.onload = function() {
+			const bw = image.width;
+			const bh = image.height;
+			const br = bw / bh;
+			let s = 1;
+			if (ar > br) {
+				s = bh / ah * 0.3;
+			} else {
+				s = bw / aw * 0.3;
+			}
+			let w = bw * s;
+			let h = bw * s / br;
+			context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
+			const textureB = new THREE.CanvasTexture(canvas);
+			if (typeof callback === 'function') {
+				callback(textureB);
+			}
+		}
+		image.src = environment.getPath('textures/ui/play.png');
 	}
 
 	events$() {

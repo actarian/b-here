@@ -72,6 +72,17 @@
 	</div>
 	<!-- Status Device -->
 	<div class="ui" *if="state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')" [agora-device] (enter)="onEnter($event)">
+		<div class="group--info" *if="!isHttps">
+			<div class="group--info__content">
+				<div class="title">
+					Protocollo errato.
+				</div>
+				<div class="info">riapri la pagina in https<br>per accedere al microfono e alla webcam.</div>
+				<button type="button" class="btn--connect" (click)="openHttps($event)">
+					<span>Riapri</span>
+				</button>
+			</div>
+		</div>
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onEnter($event)" name="form" role="form" novalidate autocomplete="off">
 				<!-- PREVIEW -->
@@ -84,7 +95,7 @@
 					<div control-custom-select [control]="controls.audio" label="Audio"></div>
 					<!-- VIDEO -->
 					<div control-custom-select [control]="controls.video" label="Video"></div>
-					<div class="info" *if="!isValid()">seleziona sorgente audio e video</div>
+					<div class="info" *if="!isValid()">seleziona una sorgente audio e video</div>
 					<div class="info" *if="isValid()">audio e video connessi</div>
 					<button type="submit" class="btn--connect" [class]="{ disabled: !isValid() }">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
@@ -187,6 +198,9 @@
 		</div>
 		<div class="ui__lock" (mousedown)="onPrevent($event)" (touchstart)="onPrevent($event)" *if="state.locked"></div>
 		<div class="ui__lock control" *if="state.control"></div>
+	</div>
+	<div class="group--logo" *if="state.status != 'connected'">
+		<svg viewBox="0 0 327 98"><use xlink:href="#b-here"></use></svg>
 	</div>
 </div>
 <!-- @@close-->

@@ -8,26 +8,33 @@ export default class AgoraDeviceComponent extends Component {
 
 	onInit() {
 		this.isIOS = AgoraDeviceComponent.isIOS();
+		this.isHttps = window.location.protocol === 'https:';
 		this.state = {};
 		this.devices = { videos: [], audios: [] };
 		this.stream = null;
 		this.form = null;
-		const agora = this.agora = AgoraService.getSingleton();
-		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(state => {
-			// console.log('AgoraDeviceComponent.state', state);
-			this.state = state;
-			this.pushChanges();
-		});
-		if (agora) {
-			agora.devices$().subscribe(devices => {
-				// console.log(devices);
-				this.devices = devices;
-				this.initForm(devices);
+		if (this.isHttps) {
+			const agora = this.agora = AgoraService.getSingleton();
+			StateService.state$.pipe(
+				takeUntil(this.unsubscribe$)
+			).subscribe(state => {
+				// console.log('AgoraDeviceComponent.state', state);
+				this.state = state;
 				this.pushChanges();
 			});
+			if (agora) {
+				agora.devices$().subscribe(devices => {
+					// console.log(devices);
+					this.devices = devices;
+					this.initForm(devices);
+					this.pushChanges();
+				});
+			}
 		}
+	}
+
+	openHttps(event) {
+		window.location.href = window.location.href.replace('http://', 'https://').replace(':5000', ':6443');
 	}
 
 	initForm(devices) {
