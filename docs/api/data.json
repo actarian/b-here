@@ -788,7 +788,7 @@
       "asset": {
         "type": "video",
         "folder": "",
-        "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
+        "file": "http://paoloss.flashmediacast.com:1935/paoloss/livestream/playlist.m3u8"
       },
       "items": [
         {
@@ -797,9 +797,9 @@
           "title": "Ingresso",
           "abstract": "Abstract",
           "position": [
-            0.04713776229380867,
-            -0.16372888464057858,
-            0.9853785484270928
+            0.8835068452993294,
+            -0.31231386707543796,
+            0.34910700758021523
           ],
           "viewId": 11
         }
