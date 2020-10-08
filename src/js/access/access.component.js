@@ -37,7 +37,9 @@ export default class AccessComponent extends Component {
 	}
 
 	onGuidedTourAccess() {
-		UrlService.redirect('guidedTour');
+		UserService.logout$().pipe(
+			first(),
+		).subscribe(() => UrlService.redirect('guidedTour'));
 	}
 
 	onLogin() {

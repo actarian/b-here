@@ -107,6 +107,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 		if (this.frequencySubscription) {
 			this.frequencySubscription.unsubscribe();
 		}
+		// console.log('AgoraDevicePreviewComponent.analyzeData', stream);
 		if (stream) {
 			this.frequencySubscription = AudioStreamService.frequency$(stream, 64).pipe(
 				takeUntil(this.unsubscribe$)

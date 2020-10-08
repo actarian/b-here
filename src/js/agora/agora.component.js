@@ -155,7 +155,7 @@ export default class AgoraComponent extends Component {
 				status = AgoraStatus.Link;
 			} else if (!this.state.name) {
 				status = AgoraStatus.Name;
-			} else if (this.state.role !== RoleType.Guest) {
+			} else if (this.state.role !== RoleType.Viewer) {
 				status = AgoraStatus.Device;
 			} else {
 				status = AgoraStatus.ShouldConnect;
@@ -291,7 +291,7 @@ export default class AgoraComponent extends Component {
 
 	onLink(link) {
 		if (StateService.state.name) {
-			if (StateService.state.role === RoleType.Guest) {
+			if (StateService.state.role === RoleType.Viewer) {
 				this.connect();
 			} else {
 				StateService.patchState({ link, status: AgoraStatus.Device });
@@ -302,7 +302,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onName(name) {
-		if (StateService.state.role === RoleType.Guest) {
+		if (StateService.state.role === RoleType.Viewer) {
 			this.connect();
 		} else {
 			StateService.patchState({ name, status: AgoraStatus.Device });

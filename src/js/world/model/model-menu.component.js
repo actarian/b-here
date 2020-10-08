@@ -361,8 +361,11 @@ export default class ModelMenuComponent extends ModelComponent {
 			this.removeMenu();
 			if (button.item.backItem) {
 				this.addMenu();
-			} else if (this.host.renderer.xr.isPresenting) {
-				this.addToggler();
+			} else {
+				if (this.host.renderer.xr.isPresenting) {
+					this.addToggler();
+				}
+				this.toggle.next();
 			}
 		} else {
 			this.addMenu(button.item);

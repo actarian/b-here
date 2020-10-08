@@ -85,7 +85,7 @@ export default class AgoraService extends Emittable {
 		if (!name) {
 			return AgoraStatus.Name;
 		}
-		if (role !== RoleType.Guest) {
+		if (role !== RoleType.Viewer) {
 			return AgoraStatus.Device;
 		}
 		return AgoraStatus.ShouldConnect;
@@ -217,7 +217,7 @@ export default class AgoraService extends Emittable {
 				this.client = null;
 			});
 		}
-		if (StateService.state.role === RoleType.Guest) {
+		if (StateService.state.role === RoleType.Viewer) {
 			client.setClientRole('audience', function(error) {
 				if (!error) {
 					clientInit();
@@ -288,7 +288,7 @@ export default class AgoraService extends Emittable {
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
 						this.emit('messageChannel', this.messageChannel);
-						if (StateService.state.role !== RoleType.Guest) {
+						if (StateService.state.role !== RoleType.Viewer) {
 							this.autoDetectDevice();
 							this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
 						}
@@ -297,7 +297,7 @@ export default class AgoraService extends Emittable {
 					});
 				});
 			} else {
-				if (StateService.state.role !== RoleType.Guest) {
+				if (StateService.state.role !== RoleType.Viewer) {
 					this.autoDetectDevice();
 					this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
 				}

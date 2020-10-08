@@ -7,9 +7,10 @@ import StateService from '../state/state.service';
 
 export default class AgoraNameComponent extends Component {
 	onInit() {
+		const name = LocationService.get('name') || null;
 		this.state = {};
 		const form = this.form = new FormGroup({
-			name: new FormControl(null, [Validators.PatternValidator(/^\w{2,}\s\w{2,}/), Validators.RequiredValidator()]),
+			name: new FormControl(name, [Validators.PatternValidator(/^\w{2,}\s\w{2,}/), Validators.RequiredValidator()]),
 		});
 		const controls = this.controls = form.controls;
 		form.changes$.pipe(

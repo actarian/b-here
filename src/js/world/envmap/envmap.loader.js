@@ -24,7 +24,7 @@ export class EnvMapLoader {
 		if (video) {
 			const video = this.video_ = document.createElement('video');
 			video.loop = true;
-			video.muted = true;
+			// video.muted = true;
 			video.playsInline = true;
 			video.crossOrigin = 'anonymous';
 			// document.querySelector('body').appendChild(video);

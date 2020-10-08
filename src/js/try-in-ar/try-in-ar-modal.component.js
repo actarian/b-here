@@ -13,7 +13,6 @@ export default class TryInARModalComponent extends Component {
 			// console.log('data', data);
 			if (data && data.ar) {
 				const url = TryInARModalComponent.getUrl(data);
-				console.log('TryInARModalComponent.onInit.url', url);
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
 					value: url,
@@ -30,6 +29,7 @@ export default class TryInARModalComponent extends Component {
 	static getUrl(data) {
 		// const url = `${environment.host}${data.ar.usdz}`;
 		const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/template/modules/b-here/try-in-ar.cshtml?viewId=${data.id}`;
+		console.log('TryInARModalComponent.getUrl', url);
 		return url;
 	}
 

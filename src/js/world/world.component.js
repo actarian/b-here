@@ -635,6 +635,7 @@ export default class WorldComponent extends Component {
 
 	onMenuNav(event) {
 		// console.log('WorldComponent.onMenuNav', event.id, event);
+		this.menu = undefined;
 		this.navTo.next(event.id);
 	}
 
@@ -648,7 +649,8 @@ export default class WorldComponent extends Component {
 	onNavOver(event) {
 		// console.log('WorldComponent.onNavOver', event);
 		if (this.menu) {
-			this.menu.removeMenu();
+			return;
+			// this.menu.removeMenu();
 		}
 		this.view.items.forEach(item => item.showPanel = false);
 		event.item.showPanel = true;
@@ -696,7 +698,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridMove(event) {
-		console.log('WorldComponent.onGridMove', event, this.view);
+		// console.log('WorldComponent.onGridMove', event, this.view);
 		this.view.items = [];
 		this.pushChanges();
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {

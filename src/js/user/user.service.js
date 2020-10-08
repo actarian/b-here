@@ -13,7 +13,7 @@ export class UserService {
 		return HttpService.get$('/api/user/me').pipe(
 			map((user) => this.mapUser(user)),
 			catchError(error => {
-				console.log(error);
+				// console.log(error);
 				if (error.status === 404) {
 					return of(null);
 				} else {
@@ -35,7 +35,7 @@ export class UserService {
 	}
 
 	static logout$() {
-		return HttpService.post$('/api/user/logout').pipe(
+		return HttpService.get$('/api/user/logout').pipe(
 			map((user) => this.mapUser(user)),
 			tap((user) => this.setUser(null)),
 		);

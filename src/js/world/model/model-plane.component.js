@@ -86,7 +86,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	// called by WorldComponent
 	onDragMove(position) {
-		console.log('ModelPlaneComponent.onDragMove', position);
+		// console.log('ModelPlaneComponent.onDragMove', position);
 		this.item.showPanel = false;
 		this.editing = true;
 		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
@@ -96,7 +96,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	// called by WorldComponent
 	onDragEnd() {
-		console.log('ModelPlaneComponent.onDragEnd');
+		// console.log('ModelPlaneComponent.onDragEnd');
 		this.item.position = this.mesh.position.toArray();
 		this.item.rotation = this.mesh.rotation.toArray();
 		this.item.scale = this.mesh.scale.toArray();

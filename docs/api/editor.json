@@ -228,6 +228,50 @@
       "checkRequest": "",
       "checkField": "",
       "id": 1602075211057
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602153529795
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602153643806
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602153746065
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602153887099
     }
   ]
 }
