@@ -113,7 +113,7 @@ export default class OrbitService {
 	observe$(node) {
 		// const camera = this.camera;
 		let latitude, longitude;
-		return combineLatest([KeyboardService.keys$(), DragService.events$(node)]).pipe(
+		return combineLatest([KeyboardService.keys$(), DragService.observe$(node)]).pipe(
 			map((datas) => {
 				const keys = datas[0];
 				const event = datas[1];

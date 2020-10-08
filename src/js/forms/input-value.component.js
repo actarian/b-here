@@ -62,15 +62,6 @@ export default class InputValueComponent extends Component {
 		}
 	}
 
-
-	/*
-	onChanges() {
-		const { node } = getContext(this);
-		const input = node.querySelector('input');
-		input.value = this.getValue();
-		console.log(this, node, input);
-	}
-	*/
 	increment$(selector, sign) {
 		const { node } = getContext(this);
 		const element = node.querySelector(selector);

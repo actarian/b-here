@@ -62,7 +62,7 @@ export default class SliderDirective extends Component {
 			distanceX = 0,
 			distanceY = 0,
 			initialTransformX;
-		return DragService.events$(this.inner).pipe(
+		return DragService.observe$(this.inner).pipe(
 			tap((event) => {
 				if (event instanceof DragDownEvent) {
 					const translation = this.getTranslation(this.inner, this.container);

@@ -141,7 +141,7 @@ export default class DragService {
 		);
 	}
 
-	static events$(target) {
+	static observe$(target) {
 		target = target || document;
 		const events$ = DragService.events$ = new ReplaySubject(1);
 		const dismiss$ = DragService.dismiss$ = new Subject();

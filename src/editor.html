@@ -49,17 +49,13 @@
 				<div class="world__info" *if="error" [innerHTML]="error"></div>
 			</div>
 		</div>
-		<div class="ui__foot">
-			<div class="left"></div>
-			<div class="center">
-				<button type="button" class="btn--ar" [href]="view?.ar" (click)="tryInAr()" *if="view?.ar">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
-				</button>
-				<button type="button" class="btn--vr" [class]="{ disabled: vrService.isDisabled() }" (click)="vrService.toggleVR()">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
-				</button>
-			</div>
-			<div class="right"></div>
+		<div class="group--ar-vr">
+			<button type="button" class="btn--ar" [href]="view?.ar" (click)="tryInAr()" *if="view?.ar">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
+			</button>
+			<button type="button" class="btn--vr" [class]="{ disabled: vrService.isDisabled() }" (click)="vrService.toggleVR()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
+			</button>
 		</div>
 	</div>
 	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view && aside">

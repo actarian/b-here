@@ -5,18 +5,6 @@ import ControlComponent from './control.component';
 
 export default class ControlAssetsComponent extends ControlComponent {
 
-	/*
-	get assets() {
-		return this.assets_;
-	}
-	set assets(assets) {
-		assets = assets || [];
-		this.assets_ = assets;
-		this.control.value = assets.length ? assets : null;
-		console.log('ControlAssetsComponent.assets.set', assets);
-	}
-	*/
-
 	get items() {
 		return this.items_;
 	}

@@ -339,8 +339,7 @@ var User = function User(options) {
     return HttpService.get$('/api/user/me').pipe(operators.map(function (user) {
       return _this.mapUser(user);
     }), operators.catchError(function (error) {
-      console.log(error);
-
+      // console.log(error);
       if (error.status === 404) {
         return rxjs.of(null);
       } else {
@@ -366,7 +365,7 @@ var User = function User(options) {
   UserService.logout$ = function logout$() {
     var _this3 = this;
 
-    return HttpService.post$('/api/user/logout').pipe(operators.map(function (user) {
+    return HttpService.get$('/api/user/logout').pipe(operators.map(function (user) {
       return _this3.mapUser(user);
     }), operators.tap(function (user) {
       return _this3.setUser(null);
@@ -471,7 +470,9 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   };
 
   _proto.onGuidedTourAccess = function onGuidedTourAccess() {
-    UrlService.redirect('guidedTour');
+    UserService.logout$().pipe(operators.first()).subscribe(function () {
+      return UrlService.redirect('guidedTour');
+    });
   };
 
   _proto.onLogin = function onLogin() {
@@ -627,27 +628,46 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 }(rxcomp.Component);
 AccessComponent.meta = {
   selector: '[access-component]'
-};var BUFF_SIZE = 512;
-
-var AudioStreamService = /*#__PURE__*/function () {
+};var AudioStreamService = /*#__PURE__*/function () {
   function AudioStreamService() {}
 
   AudioStreamService.addSource = function addSource(streamOrElement) {
     var key = streamOrElement instanceof MediaStream ? streamOrElement.id : streamOrElement;
 
     if (!this.sources_[key]) {
-      this.sources_[key] = streamOrElement instanceof MediaStream ? this.context.createMediaStreamSource(streamOrElement) : this.context.createMediaElementSource(streamOrElement);
+      if (streamOrElement instanceof MediaStream) {
+        this.sources_[key] = this.context.createMediaStreamSource(streamOrElement.clone());
+      } else {
+        this.sources_[key] = this.context.createMediaElementSource(streamOrElement);
+      } // this.sources_[key] = streamOrElement instanceof MediaStream ? this.context.createMediaStreamSource(streamOrElement) : this.context.createMediaElementSource(streamOrElement);
+
     }
 
     return this.sources_[key];
   };
 
   AudioStreamService.removeSource = function removeSource(streamOrElement) {
-    var source;
     var key = streamOrElement instanceof MediaStream ? streamOrElement.id : streamOrElement;
+    return this.removeSourceKey(key);
+  };
+
+  AudioStreamService.removeSourceKey = function removeSourceKey(key) {
+    // console.log('AudioStreamService.removeSourceKey', key);
+    var source;
 
     if (this.sources_[key]) {
       source = this.sources_[key];
+      /*
+      if (source.mediaStream) {
+      	source.mediaStream.stop();
+      }
+      source.stop();
+      */
+
+      if (this.analyser) {
+        source.disconnect(this.analyser);
+      }
+
       source.disconnect();
       delete this.sources_[key];
     }
@@ -707,7 +727,8 @@ var AudioStreamService = /*#__PURE__*/function () {
     } else {
       return rxjs.of(state);
     }
-  };
+  } // unused
+  ;
 
   AudioStreamService.volume$ = function volume$(streamOrElement) {
     var _this2 = this;
@@ -737,7 +758,8 @@ var AudioStreamService = /*#__PURE__*/function () {
     } else {
       return rxjs.of(state);
     }
-  };
+  } // unused
+  ;
 
   AudioStreamService.audioMeterCreate = function audioMeterCreate(clipLevel, averaging, clipLag) {
     if (clipLevel === void 0) {
@@ -841,15 +863,13 @@ var AudioStreamService = /*#__PURE__*/function () {
   AudioStreamService.dispose = function dispose() {
     var _this3 = this;
 
+    var analyser = this.analyser;
     Object.keys(this.sources_).forEach(function (key) {
-      _this3.sources_[key].disconnect();
+      _this3.removeSourceKey(key);
     });
-    this.analyser.disconnect();
-    this.sources_ = {};
-    this.context_.close().then(function () {
-      return console.log('AudioStreamService.dispose');
-    });
-    this.context_ = null;
+    analyser.disconnect();
+    this.sources_ = {}; // this.context_.close().then(() => console.log('AudioStreamService.dispose'));
+    // this.context_ = null;
   };
 
   _createClass(AudioStreamService, null, [{
@@ -861,24 +881,24 @@ var AudioStreamService = /*#__PURE__*/function () {
 
       return this.context_;
     }
-  }, {
-    key: "processorNode",
-    get: function get() {
-      if (!this.processorNode_) {
-        this.processorNode_ = this.context.createScriptProcessor(BUFF_SIZE, 1, 1);
-      }
-
-      return this.processorNode_;
+    /*
+    static get processorNode() {
+    	if (!this.processorNode_) {
+    		this.processorNode_ = this.context.createScriptProcessor(BUFF_SIZE, 1, 1);
+    	}
+    	return this.processorNode_;
     }
-  }, {
-    key: "gain",
-    get: function get() {
-      if (!this.gain_) {
-        this.gain_ = this.context.createGain();
-      }
+    */
 
-      return this.gain_;
+    /*
+    static get gain() {
+    	if (!this.gain_) {
+    		this.gain_ = this.context.createGain();
+    	}
+    	return this.gain_;
     }
+    */
+
   }, {
     key: "analyser",
     get: function get() {
@@ -1004,7 +1024,8 @@ operators.filter(function (frame) {
 
     if (this.frequencySubscription) {
       this.frequencySubscription.unsubscribe();
-    }
+    } // console.log('AgoraDevicePreviewComponent.analyzeData', stream);
+
 
     if (stream) {
       this.frequencySubscription = AudioStreamService.frequency$(stream, 64).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (frequency) {
@@ -1539,7 +1560,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   	if (!name) {
   		return AgoraStatus.Name;
   	}
-  	if (role !== RoleType.Guest) {
+  	if (role !== RoleType.Viewer) {
   		return AgoraStatus.Device;
   	}
   	return AgoraStatus.ShouldConnect;
@@ -1714,7 +1735,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       });
     };
 
-    if (StateService.state.role === RoleType.Guest) {
+    if (StateService.state.role === RoleType.Viewer) {
       client.setClientRole('audience', function (error) {
         if (!error) {
           clientInit();
@@ -1799,7 +1820,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
             // console.log('joinMessageChannel.success', success);
             _this4.emit('messageChannel', _this4.messageChannel);
 
-            if (StateService.state.role !== RoleType.Guest) {
+            if (StateService.state.role !== RoleType.Viewer) {
               _this4.autoDetectDevice();
 
               _this4.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
@@ -3058,9 +3079,10 @@ AgoraLinkComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    var name = LocationService.get('name') || null;
     this.state = {};
     var form = this.form = new rxcompForm.FormGroup({
-      name: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(/^\w{2,}\s\w{2,}/), rxcompForm.Validators.RequiredValidator()])
+      name: new rxcompForm.FormControl(name, [rxcompForm.Validators.PatternValidator(/^\w{2,}\s\w{2,}/), rxcompForm.Validators.RequiredValidator()])
     });
     var controls = this.controls = form.controls;
     form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
@@ -3567,7 +3589,6 @@ ModalOutletComponent.meta = {
 
       if (data && data.ar) {
         var url = TryInARModalComponent.getUrl(data);
-        console.log('TryInARModalComponent.onInit.url', url);
         var qrcode = new QRious({
           element: node.querySelector('.qrcode'),
           value: url,
@@ -3584,6 +3605,7 @@ ModalOutletComponent.meta = {
   TryInARModalComponent.getUrl = function getUrl(data) {
     // const url = `${environment.host}${data.ar.usdz}`;
     var url = STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/template/modules/b-here/try-in-ar.cshtml?viewId=" + data.id;
+    console.log('TryInARModalComponent.getUrl', url);
     return url;
   };
 
@@ -4392,7 +4414,7 @@ var VRService = /*#__PURE__*/function () {
         status = AgoraStatus.Link;
       } else if (!this.state.name) {
         status = AgoraStatus.Name;
-      } else if (this.state.role !== RoleType.Guest) {
+      } else if (this.state.role !== RoleType.Viewer) {
         status = AgoraStatus.Device;
       } else {
         status = AgoraStatus.ShouldConnect;
@@ -4555,7 +4577,7 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.onLink = function onLink(link) {
     if (StateService.state.name) {
-      if (StateService.state.role === RoleType.Guest) {
+      if (StateService.state.role === RoleType.Viewer) {
         this.connect();
       } else {
         StateService.patchState({
@@ -4572,7 +4594,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onName = function onName(name) {
-    if (StateService.state.role === RoleType.Guest) {
+    if (StateService.state.role === RoleType.Viewer) {
       this.connect();
     } else {
       StateService.patchState({
@@ -7944,18 +7966,6 @@ var AssetService = /*#__PURE__*/function () {
 
   _createClass(ControlAssetsComponent, [{
     key: "items",
-
-    /*
-    get assets() {
-    	return this.assets_;
-    }
-    set assets(assets) {
-    	assets = assets || [];
-    	this.assets_ = assets;
-    	this.control.value = assets.length ? assets : null;
-    	console.log('ControlAssetsComponent.assets.set', assets);
-    }
-    */
     get: function get() {
       return this.items_;
     },
@@ -8788,16 +8798,7 @@ ErrorsComponent.meta = {
         this.input.value = this.getValue();
       }
     }
-  }
-  /*
-  onChanges() {
-  	const { node } = getContext(this);
-  	const input = node.querySelector('input');
-  	input.value = this.getValue();
-  	console.log(this, node, input);
-  }
-  */
-  ;
+  };
 
   _proto.increment$ = function increment$(selector, sign) {
     var _this2 = this;
@@ -9128,7 +9129,7 @@ var DragService = /*#__PURE__*/function () {
     }));
   };
 
-  DragService.events$ = function events$(target) {
+  DragService.observe$ = function observe$(target) {
     var _this6 = this;
 
     target = target || document;
@@ -9203,7 +9204,7 @@ var DragService = /*#__PURE__*/function () {
         distanceX = 0,
         distanceY = 0,
         initialTransformX;
-    return DragService.events$(this.inner).pipe(operators.tap(function (event) {
+    return DragService.observe$(this.inner).pipe(operators.tap(function (event) {
       if (event instanceof DragDownEvent) {
         var translation = _this2.getTranslation(_this2.inner, _this2.container);
 
@@ -9745,8 +9746,8 @@ HlsDirective.meta = {
       if (video) {
         var _video = this.video_ = document.createElement('video');
 
-        _video.loop = true;
-        _video.muted = true;
+        _video.loop = true; // video.muted = true;
+
         _video.playsInline = true;
         _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
       }
@@ -10709,7 +10710,7 @@ var OrbitService = /*#__PURE__*/function () {
 
     // const camera = this.camera;
     var latitude, longitude;
-    return rxjs.combineLatest([KeyboardService.keys$(), DragService.events$(node)]).pipe(operators.map(function (datas) {
+    return rxjs.combineLatest([KeyboardService.keys$(), DragService.observe$(node)]).pipe(operators.map(function (datas) {
       var keys = datas[0];
       var event = datas[1]; // const group = this.objects.children[this.index];
 
@@ -12510,6 +12511,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onMenuNav = function onMenuNav(event) {
     // console.log('WorldComponent.onMenuNav', event.id, event);
+    this.menu = undefined;
     this.navTo.next(event.id);
   };
 
@@ -12525,7 +12527,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onNavOver = function onNavOver(event) {
     // console.log('WorldComponent.onNavOver', event);
     if (this.menu) {
-      this.menu.removeMenu();
+      return; // this.menu.removeMenu();
     }
 
     this.view.items.forEach(function (item) {
@@ -12579,7 +12581,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onGridMove = function onGridMove(event) {
     var _this5 = this;
 
-    console.log('WorldComponent.onGridMove', event, this.view);
+    // console.log('WorldComponent.onGridMove', event, this.view);
     this.view.items = [];
     this.pushChanges();
     this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
@@ -14909,8 +14911,12 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
 
       if (button.item.backItem) {
         this.addMenu();
-      } else if (this.host.renderer.xr.isPresenting) {
-        this.addToggler();
+      } else {
+        if (this.host.renderer.xr.isPresenting) {
+          this.addToggler();
+        }
+
+        this.toggle.next();
       }
     } else {
       this.addMenu(button.item);
@@ -15848,7 +15854,7 @@ ModelPictureComponent.meta = {
   ;
 
   _proto.onDragMove = function onDragMove(position) {
-    console.log('ModelPlaneComponent.onDragMove', position);
+    // console.log('ModelPlaneComponent.onDragMove', position);
     this.item.showPanel = false;
     this.editing = true;
     this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
@@ -15858,7 +15864,7 @@ ModelPictureComponent.meta = {
   ;
 
   _proto.onDragEnd = function onDragEnd() {
-    console.log('ModelPlaneComponent.onDragEnd');
+    // console.log('ModelPlaneComponent.onDragEnd');
     this.item.position = this.mesh.position.toArray();
     this.item.rotation = this.mesh.rotation.toArray();
     this.item.scale = this.mesh.scale.toArray();
