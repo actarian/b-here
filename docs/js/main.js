@@ -1214,7 +1214,7 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamSer
     var publisherStreamId = this.publisherStreamId;
 
     if (publisherStreamId) {
-      return of(publisherStreamId);
+      return rxjs.of(publisherStreamId);
     } else {
       return this.streams$.pipe(operators.map(function () {
         return _this.publisherStreamId;
@@ -2781,7 +2781,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
 
       if (agora) {
         agora.devices$().subscribe(function (devices) {
-          // console.log(devices);
+          console.log(devices);
           _this.devices = devices;
 
           _this.initForm(devices);
@@ -2800,8 +2800,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     var _this2 = this;
 
     var form = this.form = new rxcompForm.FormGroup({
-      audio: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      video: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator())
+      video: new rxcompForm.FormControl(null, devices.videos.length ? rxcompForm.Validators.RequiredValidator() : undefined),
+      audio: new rxcompForm.FormControl(null, devices.audios.length ? rxcompForm.Validators.RequiredValidator() : undefined)
     });
     var controls = this.controls = form.controls;
     var videoOptions = devices.videos.map(function (x) {
@@ -2810,10 +2810,14 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         name: x.label
       };
     });
-    videoOptions.unshift({
-      id: null,
-      name: 'Seleziona una sorgente video'
-    });
+
+    if (videoOptions.length > 0) {
+      videoOptions.unshift({
+        id: null,
+        name: 'Seleziona una sorgente video'
+      });
+    }
+
     controls.video.options = videoOptions;
     var audioOptions = devices.audios.map(function (x) {
       return {
@@ -2821,23 +2825,19 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         name: x.label
       };
     });
-    audioOptions.unshift({
-      id: null,
-      name: 'Seleziona una sorgente audio'
-    });
+
+    if (audioOptions.length > 0) {
+      audioOptions.unshift({
+        id: null,
+        name: 'Seleziona una sorgente audio'
+      });
+    }
+
     controls.audio.options = audioOptions;
     form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
       // console.log('AgoraDeviceComponent.changes$', form.value);
       _this2.pushChanges();
     });
-  };
-
-  _proto.availableVideos = function availableVideos() {
-    return this.state.devices ? this.state.devices.videos : [];
-  };
-
-  _proto.availableAudios = function availableAudios() {
-    return this.state.devices ? this.state.devices.audios : [];
   };
 
   _proto.onStreamDidChange = function onStreamDidChange(event) {
@@ -10974,7 +10974,7 @@ var PhoneStreamElement = /*#__PURE__*/function () {
         h,
         sx,
         sy,
-        sz = 0.01 * D * 0.5 * 1.05;
+        sz = 0.01 * D; // !!! double distance
 
     if (total < 4) {
       s = 1;
@@ -13589,6 +13589,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     var aw = textureA.image.width || textureA.image.videoWidth;
     var ah = textureA.image.height || textureA.image.videoHeight;
     var ar = aw / ah;
+    var scale = 0.32;
     var canvas = document.createElement('canvas'); // document.querySelector('body').appendChild(canvas);
 
     canvas.width = aw;
@@ -13602,16 +13603,17 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var bw = image.width;
       var bh = image.height;
       var br = bw / bh;
-      var s = 1;
+      var w;
+      var h;
 
       if (ar > br) {
-        s = bh / ah * 0.3;
+        w = ah * scale;
+        h = w / br;
       } else {
-        s = bw / aw * 0.3;
+        h = aw * scale;
+        w = h * br;
       }
 
-      var w = bw * s;
-      var h = bw * s / br;
       context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
       var textureB = new THREE.CanvasTexture(canvas);
 
