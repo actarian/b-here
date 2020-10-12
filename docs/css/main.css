@@ -146,7 +146,7 @@ img {
     top: 132px; } }
 
 body {
-  font-family: "GT Walsheim", "Maven Pro", sans-serif;
+  font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
   font-weight: 300;
   line-height: 1.77;
   background: #ffffff;
@@ -167,7 +167,7 @@ strong {
 .h3,
 .h4,
 .h5 {
-  font-family: "GT Walsheim", "Maven Pro", sans-serif;
+  font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
   font-weight: 600; }
 
 .h1 {
@@ -363,7 +363,8 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   align-items: center;
   border-radius: 25px;
   padding: 0 25px;
-  font-weight: 900; }
+  font-weight: 600;
+  font-size: 16px; }
   .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg {
     width: 24px;
     height: 24px;
@@ -435,7 +436,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 .group--form label, .group--form--textarea label, .group--form--select label, .group--form--checkbox label, .group--form--file label, errors-component .inner, .required .required__badge {
   display: block;
   flex: 0 0 100%;
-  font-family: "GT Walsheim", "Maven Pro", sans-serif;
+  font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
   font-size: 0.6em;
   font-weight: 600;
   line-height: 1;
@@ -480,7 +481,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
      -moz-appearance: none;
           appearance: none;
   color: #101010;
-  font-family: "GT Walsheim", "Maven Pro", sans-serif;
+  font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
   font-size: 0.8em;
   font-weight: 300;
   letter-spacing: 0;
@@ -490,7 +491,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     color: #101010;
     border: 0px solid transparent;
     border-radius: 0px;
-    font-family: "GT Walsheim", "Maven Pro", sans-serif;
+    font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
     font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
@@ -501,13 +502,13 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     -webkit-transition: background-color 5000s ease-in-out 0s;
     transition: background-color 5000s ease-in-out 0s; }
   .control--text:-ms-input-placeholder, .control--select:-ms-input-placeholder {
-    font-family: "GT Walsheim", "Maven Pro", sans-serif;
+    font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
     font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
     line-height: 2; }
   .control--text::placeholder, .control--select::placeholder {
-    font-family: "GT Walsheim", "Maven Pro", sans-serif;
+    font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
     font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
@@ -526,7 +527,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 
 .form .title {
   margin-bottom: 15px;
-  font-family: "GT Walsheim", "Maven Pro", sans-serif;
+  font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
   font-size: 21px;
   font-weight: 600;
   line-height: 1.15;
@@ -3523,7 +3524,7 @@ test-component .btn--mode {
     margin-top: 10px;
     margin-bottom: 0;
     padding: 0 15px;
-    font-family: "GT Walsheim", "Maven Pro", sans-serif;
+    font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
     font-size: 11px;
     font-weight: 600;
     line-height: 1;
@@ -3550,7 +3551,7 @@ test-component .btn--mode {
     flex: 1 1 auto; }
     .nav--dropdown > li > a,
     .nav--dropdown > li > span {
-      font-family: "GT Walsheim", "Maven Pro", sans-serif;
+      font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
       line-height: 1;
       font-size: 15px;
       padding: 15px;
@@ -3810,8 +3811,9 @@ body {
   z-index: 100;
   top: 28px;
   left: 30px;
-  width: 80px;
-  color: #0099ff; }
+  width: 80px; }
+  .group--logo, .group--logo:hover, .group--logo:active, .group--logo:visited {
+    color: #0099ff; }
   .group--logo svg {
     fill: currentColor; }
 
@@ -3827,6 +3829,12 @@ body {
   -webkit-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+
+@media (max-width: 1023.98px) {
+  .ui--info {
+    justify-content: flex-start;
+    padding: 80px 0;
+    overflow-y: auto; } }
 
 .ui__body {
   position: absolute;
@@ -3919,7 +3927,7 @@ body {
       color: #101010;
       border: 0px solid transparent;
       border-radius: 0px;
-      font-family: "GT Walsheim", "Maven Pro", sans-serif;
+      font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 0;
@@ -3930,14 +3938,14 @@ body {
       -webkit-transition: background-color 5000s ease-in-out 0s;
       transition: background-color 5000s ease-in-out 0s; }
     .group--info .control--text:-ms-input-placeholder, .group--info .control--select:-ms-input-placeholder {
-      font-family: "GT Walsheim", "Maven Pro", sans-serif;
+      font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 0;
       line-height: 2; }
     .group--info .control--text::placeholder,
     .group--info .control--select::placeholder {
-      font-family: "GT Walsheim", "Maven Pro", sans-serif;
+      font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 0;

@@ -331,6 +331,7 @@ export default class MediaMesh extends InteractiveMesh {
 		const aw = textureA.image.width || textureA.image.videoWidth;
 		const ah = textureA.image.height || textureA.image.videoHeight;
 		const ar = aw / ah;
+		const scale = 0.32;
 		const canvas = document.createElement('canvas');
 		// document.querySelector('body').appendChild(canvas);
 		canvas.width = aw;
@@ -343,14 +344,15 @@ export default class MediaMesh extends InteractiveMesh {
 			const bw = image.width;
 			const bh = image.height;
 			const br = bw / bh;
-			let s = 1;
+			let w;
+			let h;
 			if (ar > br) {
-				s = bh / ah * 0.3;
+				w = ah * scale;
+				h = w / br;
 			} else {
-				s = bw / aw * 0.3;
+				h = aw * scale;
+				w = h * br;
 			}
-			let w = bw * s;
-			let h = bw * s / br;
 			context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
 			const textureB = new THREE.CanvasTexture(canvas);
 			if (typeof callback === 'function') {

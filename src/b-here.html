@@ -2,7 +2,7 @@
 <!-- @@block = main-->
 <div class="page" agora-component>
 	<!-- Status Link -->
-	<div class="ui" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
+	<div class="ui ui--info" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<a [href]="editorLink" class="btn--absolute" *if="state.role == 'publisher'">
 			<span>editor</span>
 		</a>
@@ -52,7 +52,7 @@
 		</div>
 	</div>
 	<!-- Status Name -->
-	<div class="ui" *if="state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')" [agora-name] (name)="onName($event)">
+	<div class="ui ui--info" *if="state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')" [agora-name] (name)="onName($event)">
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
 				<div class="group--info__content">
@@ -71,7 +71,7 @@
 		</div>
 	</div>
 	<!-- Status Device -->
-	<div class="ui" *if="state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')" [agora-device] (enter)="onEnter($event)">
+	<div class="ui ui--info" *if="state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')" [agora-device] (enter)="onEnter($event)">
 		<div class="group--info" *if="!isHttps">
 			<div class="group--info__content">
 				<div class="title">
@@ -91,10 +91,10 @@
 					<div class="audio"></div>
 				</div>
 				<div class="group--info__content">
-					<!-- AUDIO -->
-					<div control-custom-select [control]="controls.audio" label="Audio"></div>
 					<!-- VIDEO -->
-					<div control-custom-select [control]="controls.video" label="Video"></div>
+					<div control-custom-select [control]="controls.video" label="Video" *if="devices.videos.length"></div>
+					<!-- AUDIO -->
+					<div control-custom-select [control]="controls.audio" label="Audio" *if="devices.audios.length"></div>
 					<div class="info" *if="!isValid()">seleziona una sorgente audio e video</div>
 					<div class="info" *if="isValid()">audio e video connessi</div>
 					<button type="submit" class="btn--connect" [class]="{ disabled: !isValid() }">
@@ -199,8 +199,8 @@
 		<div class="ui__lock" (mousedown)="onPrevent($event)" (touchstart)="onPrevent($event)" *if="state.locked"></div>
 		<div class="ui__lock control" *if="state.control"></div>
 	</div>
-	<div class="group--logo" *if="state.status != 'connected'">
+	<a href="/" class="group--logo" *if="state.status != 'connected'">
 		<svg viewBox="0 0 327 98"><use xlink:href="#b-here"></use></svg>
-	</div>
+	</a>
 </div>
 <!-- @@close-->

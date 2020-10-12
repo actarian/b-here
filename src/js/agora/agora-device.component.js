@@ -24,7 +24,7 @@ export default class AgoraDeviceComponent extends Component {
 			});
 			if (agora) {
 				agora.devices$().subscribe(devices => {
-					// console.log(devices);
+					console.log(devices);
 					this.devices = devices;
 					this.initForm(devices);
 					this.pushChanges();
@@ -39,8 +39,8 @@ export default class AgoraDeviceComponent extends Component {
 
 	initForm(devices) {
 		const form = this.form = new FormGroup({
-			audio: new FormControl(null, Validators.RequiredValidator()),
-			video: new FormControl(null, Validators.RequiredValidator()),
+			video: new FormControl(null, devices.videos.length ? Validators.RequiredValidator() : undefined),
+			audio: new FormControl(null, devices.audios.length ? Validators.RequiredValidator() : undefined),
 		});
 		const controls = this.controls = form.controls;
 		const videoOptions = devices.videos.map(x => {
@@ -49,9 +49,11 @@ export default class AgoraDeviceComponent extends Component {
 				name: x.label,
 			};
 		});
-		videoOptions.unshift({
-			id: null, name: 'Seleziona una sorgente video'
-		});
+		if (videoOptions.length > 0) {
+			videoOptions.unshift({
+				id: null, name: 'Seleziona una sorgente video'
+			});
+		}
 		controls.video.options = videoOptions;
 		const audioOptions = devices.audios.map(x => {
 			return {
@@ -59,9 +61,11 @@ export default class AgoraDeviceComponent extends Component {
 				name: x.label,
 			};
 		});
-		audioOptions.unshift({
-			id: null, name: 'Seleziona una sorgente audio'
-		});
+		if (audioOptions.length > 0) {
+			audioOptions.unshift({
+				id: null, name: 'Seleziona una sorgente audio'
+			});
+		}
 		controls.audio.options = audioOptions;
 		form.changes$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -69,14 +73,6 @@ export default class AgoraDeviceComponent extends Component {
 			// console.log('AgoraDeviceComponent.changes$', form.value);
 			this.pushChanges();
 		});
-	}
-
-	availableVideos() {
-		return this.state.devices ? this.state.devices.videos : [];
-	}
-
-	availableAudios() {
-		return this.state.devices ? this.state.devices.audios : [];
 	}
 
 	onStreamDidChange(event) {
