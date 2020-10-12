@@ -55378,8 +55378,8 @@ RGBELoader.prototype = Object.assign( Object.create( DataTextureLoader.prototype
       if (video) {
         var _video = this.video_ = document.createElement('video');
 
-        _video.loop = true;
-        _video.muted = true;
+        _video.loop = true; // video.muted = true;
+
         _video.playsInline = true;
         _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
       }
