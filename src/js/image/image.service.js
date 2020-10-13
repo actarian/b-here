@@ -15,13 +15,13 @@ export default class ImageService {
 		return this.worker_;
 	}
 
-	static load$(src) {
+	static load$(src, size) {
 		if (!('Worker' in window) || this.isBlob(src) || this.isCors(src)) {
 			return of(src);
 		}
 		const id = ++UID;
 		const worker = this.worker();
-		worker.postMessage({ src, id });
+		worker.postMessage({ src, id, size });
 		return fromEvent(worker, 'message').pipe(
 			filter(event => event.data.src === src),
 			map(event => {

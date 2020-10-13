@@ -66,12 +66,16 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			opacity: 0.0,
 			color: 0x00ffff,
 		}));
+		sphere.name = `[nav] ${this.item.id}`;
 		sphere.lookAt(ModelNavComponent.ORIGIN);
 		sphere.depthTest = false;
 		sphere.renderOrder = 0;
 		nav.add(sphere);
 		sphere.on('over', () => {
 			// console.log('ModelNavComponent.over');
+			if (!this.editing) {
+				this.over.next(this);
+			}
 			const from = { scale: sprite.scale.x };
 			gsap.to(from, {
 				duration: 0.35,
@@ -83,13 +87,16 @@ export default class ModelNavComponent extends ModelEditableComponent {
 					sprite.scale.set(from.scale, from.scale, from.scale);
 				},
 				onComplete: () => {
+					/*
 					if (!this.editing) {
 						this.over.next(this);
 					}
+					*/
 				}
 			});
 		});
 		sphere.on('out', () => {
+			this.out.next(this);
 			const from = { scale: sprite.scale.x };
 			gsap.to(from, {
 				duration: 0.35,
@@ -101,7 +108,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 					sprite.scale.set(from.scale, from.scale, from.scale);
 				},
 				onComplete: () => {
+					/*
 					this.out.next(this);
+					*/
 				}
 			});
 		});

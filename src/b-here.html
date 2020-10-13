@@ -8,7 +8,7 @@
 		</a>
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
-				<div class="group--info__content">
+				<div class="group--info__content stagger--childs">
 					<div *if="state.role !== 'publisher'">
 						<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
 							<label>Inserisci un Meeting ID</label>
@@ -55,7 +55,7 @@
 	<div class="ui ui--info" *if="state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')" [agora-name] (name)="onName($event)">
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
-				<div class="group--info__content">
+				<div class="group--info__content stagger--childs">
 					<!-- NAME -->
 					<div class="group--form group--form--addon" [class]="{ required: controls.name.validators.length }">
 						<label>Inserisci il nome completo</label>
@@ -73,7 +73,7 @@
 	<!-- Status Device -->
 	<div class="ui ui--info" *if="state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')" [agora-device] (enter)="onEnter($event)">
 		<div class="group--info" *if="!isHttps">
-			<div class="group--info__content">
+			<div class="group--info__content stagger--childs">
 				<div class="title">
 					Protocollo errato.
 				</div>
@@ -90,7 +90,7 @@
 					<video class="video" muted></video>
 					<div class="audio"></div>
 				</div>
-				<div class="group--info__content">
+				<div class="group--info__content stagger--childs">
 					<!-- VIDEO -->
 					<div control-custom-select [control]="controls.video" label="Video" *if="devices.videos.length"></div>
 					<!-- AUDIO -->
