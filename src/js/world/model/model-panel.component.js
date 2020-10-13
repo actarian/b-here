@@ -15,18 +15,18 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	onView() {
-		if (this.panel) {
+		if (this.viewed) {
 			return;
 		}
+		this.viewed = true;
 		const { node } = getContext(this);
-		// console.log('ModelPanelComponent.onView', node);
 		this.getCanvasTexture(node).then(texture => {
 			if (this.mesh) {
 				const scale = 0.2;
 				const aspect = texture.width / texture.height;
 				const width = ModelPanelComponent.PANEL_RADIUS * scale;
 				const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
-				const dy = height * 0.25;
+				const dy = width * 0.25;
 				const position = this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 				const material = new THREE.SpriteMaterial({
 					depthTest: false,
@@ -87,7 +87,6 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	onCreate(mount, dismount) {
-		// this.renderOrder = environment.renderOrder.panel;
 		const mesh = new THREE.Group();
 		if (typeof mount === 'function') {
 			mount(mesh);
@@ -95,26 +94,8 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	onDestroy() {
-		console.log('ModelPanelComponent.onDestroy');
+		// console.log('ModelPanelComponent.onDestroy');
 		super.onDestroy();
-		/*
-		const group = this.group;
-		this.host.objects.remove(group);
-		delete group.userData.render;
-		group.traverse(child => {
-			if (child instanceof InteractiveMesh) {
-				Interactive.dispose(child);
-			}
-			if (child.isMesh) {
-				if (child.material.map && child.material.map.disposable !== false) {
-					child.material.map.dispose();
-				}
-				child.material.dispose();
-				child.geometry.dispose();
-			}
-		});
-		this.group = null;
-		*/
 	}
 
 	imagesLoaded() {

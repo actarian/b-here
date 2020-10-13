@@ -147,7 +147,7 @@ ControlAssetComponent.meta = {
 					<!-- <svg class="icon--image"><use xlink:href="#image"></use></svg> -->
 					<span>browse...</span>
 				</div>
-				<img [src]="control.value | asset" *if="control.value && control.value.type.name === 'image'" />
+				<img [lazy]="control.value | asset" [size]="{ width: 320, height: 240 }" *if="control.value && control.value.type.name === 'image'" />
 				<video [src]="control.value | asset" *if="control.value && control.value.type.name === 'video'"></video>
 				<input type="file">
 			</div>

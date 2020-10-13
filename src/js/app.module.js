@@ -32,6 +32,7 @@ import TestComponent from './forms/test.component';
 import ValueDirective from './forms/value.directive';
 import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
+import LazyDirective from './lazy/lazy.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
 import SliderDirective from './slider/slider.directive';
@@ -92,6 +93,7 @@ AppModule.meta = {
 		HlsDirective,
 		IdDirective,
 		InputValueComponent,
+		LazyDirective,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,

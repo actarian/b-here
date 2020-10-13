@@ -7604,7 +7604,7 @@ ControlAssetComponent.meta = {
   inputs: ['control', 'label', 'disabled', 'accept'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span>browse...</span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var AssetUploadItem = function AssetUploadItem(file) {
   this.file = file;
   this.name = file.name;
@@ -8963,6 +8963,202 @@ HtmlPipe.meta = {
 IdDirective.meta = {
   selector: '[id]',
   inputs: ['id']
+};var PATH = STATIC ? './' : '/Modules/B-Here/Client/docs/';
+var UID = 0;
+
+var ImageService = /*#__PURE__*/function () {
+  function ImageService() {}
+
+  ImageService.worker = function worker() {
+    if (!this.worker_) {
+      this.worker_ = new Worker(PATH + "js/workers/image.service.worker.js");
+    }
+
+    return this.worker_;
+  };
+
+  ImageService.load$ = function load$(src, size) {
+    if (!('Worker' in window) || this.isBlob(src) || this.isCors(src)) {
+      return rxjs.of(src);
+    }
+
+    var id = ++UID;
+    var worker = this.worker();
+    worker.postMessage({
+      src: src,
+      id: id,
+      size: size
+    });
+    return rxjs.fromEvent(worker, 'message').pipe(operators.filter(function (event) {
+      return event.data.src === src;
+    }), operators.map(function (event) {
+      var url = URL.createObjectURL(event.data.blob);
+      return url;
+    }), operators.first(), operators.finalize(function (url) {
+      worker.postMessage({
+        id: id
+      });
+
+      if (url) {
+        URL.revokeObjectURL(url);
+      }
+    }));
+  };
+
+  ImageService.isCors = function isCors(src) {
+    return src.indexOf('//') !== -1 && src.indexOf(window.location.host) === -1;
+  };
+
+  ImageService.isBlob = function isBlob(src) {
+    return src.indexOf('blob:') === 0;
+  };
+
+  return ImageService;
+}();var IntersectionService = /*#__PURE__*/function () {
+  function IntersectionService() {}
+
+  IntersectionService.observer = function observer() {
+    var _this = this;
+
+    if (!this.observer_) {
+      this.readySubject_ = new rxjs.BehaviorSubject(false);
+      this.observerSubject_ = new rxjs.Subject();
+      this.observer_ = new IntersectionObserver(function (entries) {
+        _this.observerSubject_.next(entries);
+      });
+    }
+
+    return this.observer_;
+  };
+
+  IntersectionService.intersection$ = function intersection$(node) {
+    if ('IntersectionObserver' in window) {
+      var observer = this.observer();
+      observer.observe(node);
+      return this.observerSubject_.pipe( // tap(entries => console.log(entries.length)),
+      operators.map(function (entries) {
+        return entries.find(function (entry) {
+          return entry.target === node;
+        });
+      }), // tap(entry => console.log('IntersectionService.intersection$', entry)),
+      operators.filter(function (entry) {
+        return entry !== undefined && entry.isIntersecting;
+      }), // entry.intersectionRatio > 0
+      operators.first(), operators.finalize(function () {
+        return observer.unobserve(node);
+      }));
+    } else {
+      return rxjs.of({
+        target: node
+      });
+    }
+    /*
+    function observer() {
+    	if ('IntersectionObserver' in window) {
+    		return new IntersectionObserver(entries => {
+    			entries.forEach(function(entry) {
+    				if (entry.isIntersecting) {
+    					entry.target.classList.add('appear');
+    				}
+    			})
+    		});
+    	} else {
+    		return { observe: function(node) { node.classList.add('appear')}, unobserve: function() {} };
+    	}
+    }
+    observer.observe(node);
+    observer.unobserve(node);
+    */
+
+  };
+
+  return IntersectionService;
+}();var LazyCache = /*#__PURE__*/function () {
+  function LazyCache() {}
+
+  LazyCache.get = function get(src) {
+    return this.cache[src];
+  };
+
+  LazyCache.set = function set(src, blob) {
+    this.cache[src] = blob;
+    var keys = Object.keys(this.cache);
+
+    if (keys.length > 100) {
+      this.remove(keys[0]);
+    }
+  };
+
+  LazyCache.remove = function remove(src) {
+    delete this.cache[src];
+  };
+
+  _createClass(LazyCache, null, [{
+    key: "cache",
+    get: function get() {
+      if (!this.cache_) {
+        this.cache_ = {};
+      }
+
+      return this.cache_;
+    }
+  }]);
+
+  return LazyCache;
+}();var LazyDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(LazyDirective, _Directive);
+
+  function LazyDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = LazyDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.add('lazy');
+    this.input$ = new rxjs.Subject().pipe(operators.distinctUntilChanged(), operators.switchMap(function (input) {
+      console.log('input', input);
+      var src = LazyCache.get(input);
+
+      if (src) {
+        return rxjs.of(src);
+      }
+
+      node.classList.remove('lazyed');
+      return _this.lazy$(input);
+    }), operators.takeUntil(this.unsubscribe$));
+    this.input$.subscribe(function (src) {
+      LazyCache.set(_this.lazy, src);
+      node.setAttribute('src', src);
+      node.classList.add('lazyed');
+    });
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.input$.next(this.lazy);
+  };
+
+  _proto.lazy$ = function lazy$(input) {
+    var _this2 = this;
+
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    return IntersectionService.intersection$(node).pipe(operators.first(), operators.switchMap(function () {
+      return ImageService.load$(input, _this2.size);
+    }), operators.takeUntil(this.unsubscribe$));
+  };
+
+  return LazyDirective;
+}(rxcomp.Directive);
+LazyDirective.meta = {
+  selector: '[lazy],[[lazy]]',
+  inputs: ['lazy', 'size']
 };var ModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModalComponent, _Component);
 
@@ -9937,7 +10133,7 @@ function interactiveHittest(raycaster, down, event) {
 
   items.forEach(function (x) {
     x.intersection = hash[x.uuid];
-    x.over = x === _this.lastIntersectedObject || !x.depthTest && x.intersection && (!_this.lastIntersectedObject || _this.lastIntersectedObject.depthTest);
+    x.over = x === _this.lastIntersectedObject || x.intersection && !x.depthTest && (!_this.lastIntersectedObject || _this.lastIntersectedObject.depthTest);
     x.down = down && x.over && !_this.lock;
 
     if (x.down) {
@@ -9957,56 +10153,6 @@ function interactiveDispose(object) {
 }var InteractiveMesh = /*#__PURE__*/function (_EmittableMesh) {
   _inheritsLoose(InteractiveMesh, _EmittableMesh);
 
-  /*
-  static hittest(raycaster, down = false, event = defaultEvent) {
-  	const debugService = DebugService.getService();
-  	if (InteractiveMesh.down !== down) {
-  		InteractiveMesh.down = down;
-  		InteractiveMesh.lock = false;
-  	}
-  	const items = InteractiveMesh.items.filter(x => !x.freezed);
-  	const intersections = raycaster.intersectObjects(items);
-  	let key, hit;
-  	const hash = {};
-  	intersections.forEach((intersection, i) => {
-  		const object = intersection.object;
-  		key = object.uuid;
-  		if (i === 0) {
-  			if (InteractiveMesh.lastIntersectedObject !== object) {
-  				InteractiveMesh.lastIntersectedObject = object;
-  				hit = object;
-  				debugService.setMessage(hit.name || hit.id);
-  				// haptic feedback
-  			} else if (
-  				Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 ||
-  				Math.abs(object.intersection.point.y - intersection.point.y) > 0.01
-  			) {
-  				object.intersection = intersection;
-  				object.emit('move', object);
-  			}
-  		}
-  		hash[key] = intersection;
-  	});
-  	items.forEach(x => {
-  		x.intersection = hash[x.uuid];
-  		x.over = (x === InteractiveMesh.lastIntersectedObject) || (!x.depthTest && x.intersection);
-  		x.down = down && x.over && !InteractiveMesh.lock;
-  		if (x.down) {
-  			InteractiveMesh.lock = true;
-  		}
-  	});
-  	return hit;
-  }
-  
-  static dispose(object) {
-  	if (object) {
-  		const index = InteractiveMesh.items.indexOf(object);
-  		if (index !== -1) {
-  			InteractiveMesh.items.splice(index, 1);
-  		}
-  	}
-  }
-  */
   function InteractiveMesh(geometry, material) {
     var _this;
 
@@ -12806,7 +12952,167 @@ WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views', 'editor'],
   outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
-};var deg = THREE.Math.degToRad;
+};// import * as THREE from 'three';
+var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
+  _inheritsLoose(FreezableSprite, _THREE$Sprite);
+
+  _createClass(FreezableSprite, [{
+    key: "freezed",
+    get: function get() {
+      return this.freezed_;
+    },
+    set: function set(freezed) {
+      // !!! cycle through freezable and not freezable
+      this.freezed_ = freezed;
+      this.children.filter(function (x) {
+        return x.__lookupGetter__('freezed');
+      }).forEach(function (x) {
+        return x.freezed = freezed;
+      });
+    }
+  }]);
+
+  function FreezableSprite(material) {
+    var _this;
+
+    material = material || new THREE.SpriteMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _THREE$Sprite.call(this, material) || this;
+    _this.freezed = false;
+    return _this;
+  }
+
+  var _proto = FreezableSprite.prototype;
+
+  _proto.freeze = function freeze() {
+    this.freezed = true;
+  };
+
+  _proto.unfreeze = function unfreeze() {
+    this.freezed = false;
+  };
+
+  return FreezableSprite;
+}(THREE.Sprite);var EmittableSprite = /*#__PURE__*/function (_FreezableSprite) {
+  _inheritsLoose(EmittableSprite, _FreezableSprite);
+
+  function EmittableSprite(material) {
+    var _this;
+
+    material = material || new THREE.SpriteMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _FreezableSprite.call(this, material) || this;
+    _this.events = {};
+    return _this;
+  }
+
+  var _proto = EmittableSprite.prototype;
+
+  _proto.on = function on(type, callback) {
+    var _this2 = this;
+
+    var event = this.events[type] = this.events[type] || [];
+    event.push(callback);
+    return function () {
+      _this2.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    };
+  };
+
+  _proto.off = function off(type, callback) {
+    var event = this.events[type];
+
+    if (event) {
+      this.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    }
+  };
+
+  _proto.emit = function emit(type, data) {
+    var event = this.events[type];
+
+    if (event) {
+      event.forEach(function (callback) {
+        // callback.call(this, data);
+        callback(data);
+      });
+    }
+
+    var broadcast = this.events.broadcast;
+
+    if (broadcast) {
+      broadcast.forEach(function (callback) {
+        callback(type, data);
+      });
+    }
+  };
+
+  return EmittableSprite;
+}(FreezableSprite);var InteractiveSprite = /*#__PURE__*/function (_EmittableSprite) {
+  _inheritsLoose(InteractiveSprite, _EmittableSprite);
+
+  function InteractiveSprite(material) {
+    var _this;
+
+    _this = _EmittableSprite.call(this, material) || this;
+    _this.depthTest = true;
+    _this.over_ = false;
+    _this.down_ = false;
+    Interactive.items.push(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(InteractiveSprite, [{
+    key: "over",
+    get: function get() {
+      return this.over_;
+    },
+    set: function set(over) {
+      if (this.over_ != over) {
+        this.over_ = over;
+        /*
+        if (over) {
+        	this.emit('hit', this);
+        }
+        */
+
+        if (over) {
+          this.emit('over', this);
+        } else {
+          this.emit('out', this);
+        }
+      }
+    }
+  }, {
+    key: "down",
+    get: function get() {
+      return this.down_;
+    },
+    set: function set(down) {
+      down = down && this.over;
+
+      if (this.down_ != down) {
+        this.down_ = down;
+
+        if (down) {
+          this.emit('down', this);
+        } else {
+          this.emit('up', this);
+        }
+      }
+    }
+  }]);
+
+  return InteractiveSprite;
+}(EmittableSprite);var deg = THREE.Math.degToRad;
 var GEOMETRY = new THREE.BoxGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
 var ModelComponent = /*#__PURE__*/function (_Component) {
@@ -12851,7 +13157,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     this.host.objects.remove(group);
     delete group.userData.render;
     group.traverse(function (child) {
-      if (child instanceof InteractiveMesh) {
+      if (child instanceof InteractiveMesh || child instanceof InteractiveSprite) {
         Interactive.dispose(child);
       }
 
@@ -12862,6 +13168,12 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
         child.material.dispose();
         child.geometry.dispose();
+      } else if (child.isSprite) {
+        if (child.material.map && child.material.map.disposable !== false) {
+          child.material.map.dispose();
+        }
+
+        child.material.dispose();
       }
     });
     this.group = null;
@@ -12893,7 +13205,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     var _this2 = this;
 
     if (this.mesh) {
-      console.log('ModelComponent.dismount.mesh');
+      // console.log('ModelComponent.dismount.mesh');
       this.onDismount(this.mesh);
     }
 
@@ -15204,12 +15516,17 @@ ModelMenuComponent.meta = {
       opacity: 0.0,
       color: 0x00ffff
     }));
+    sphere.name = "[nav] " + this.item.id;
     sphere.lookAt(ModelNavComponent.ORIGIN);
     sphere.depthTest = false;
     sphere.renderOrder = 0;
     nav.add(sphere);
     sphere.on('over', function () {
       // console.log('ModelNavComponent.over');
+      if (!_this.editing) {
+        _this.over.next(_this);
+      }
+
       var from = {
         scale: sprite.scale.x
       };
@@ -15223,13 +15540,17 @@ ModelMenuComponent.meta = {
           sprite.scale.set(from.scale, from.scale, from.scale);
         },
         onComplete: function onComplete() {
-          if (!_this.editing) {
-            _this.over.next(_this);
+          /*
+          if (!this.editing) {
+          	this.over.next(this);
           }
+          */
         }
       });
     });
     sphere.on('out', function () {
+      _this.out.next(_this);
+
       var from = {
         scale: sprite.scale.x
       };
@@ -15243,7 +15564,9 @@ ModelMenuComponent.meta = {
           sprite.scale.set(from.scale, from.scale, from.scale);
         },
         onComplete: function onComplete() {
-          _this.out.next(_this);
+          /*
+          this.out.next(this);
+          */
         }
       });
     });
@@ -15307,228 +15630,7 @@ ModelNavComponent.meta = {
   },
   outputs: ['over', 'out', 'down'],
   inputs: ['item']
-};// import * as THREE from 'three';
-var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
-  _inheritsLoose(FreezableSprite, _THREE$Sprite);
-
-  _createClass(FreezableSprite, [{
-    key: "freezed",
-    get: function get() {
-      return this.freezed_;
-    },
-    set: function set(freezed) {
-      // !!! cycle through freezable and not freezable
-      this.freezed_ = freezed;
-      this.children.filter(function (x) {
-        return x.__lookupGetter__('freezed');
-      }).forEach(function (x) {
-        return x.freezed = freezed;
-      });
-    }
-  }]);
-
-  function FreezableSprite(material) {
-    var _this;
-
-    material = material || new THREE.SpriteMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _THREE$Sprite.call(this, material) || this;
-    _this.freezed = false;
-    return _this;
-  }
-
-  var _proto = FreezableSprite.prototype;
-
-  _proto.freeze = function freeze() {
-    this.freezed = true;
-  };
-
-  _proto.unfreeze = function unfreeze() {
-    this.freezed = false;
-  };
-
-  return FreezableSprite;
-}(THREE.Sprite);var EmittableSprite = /*#__PURE__*/function (_FreezableSprite) {
-  _inheritsLoose(EmittableSprite, _FreezableSprite);
-
-  function EmittableSprite(material) {
-    var _this;
-
-    material = material || new THREE.SpriteMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _FreezableSprite.call(this, material) || this;
-    _this.events = {};
-    return _this;
-  }
-
-  var _proto = EmittableSprite.prototype;
-
-  _proto.on = function on(type, callback) {
-    var _this2 = this;
-
-    var event = this.events[type] = this.events[type] || [];
-    event.push(callback);
-    return function () {
-      _this2.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    };
-  };
-
-  _proto.off = function off(type, callback) {
-    var event = this.events[type];
-
-    if (event) {
-      this.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    }
-  };
-
-  _proto.emit = function emit(type, data) {
-    var event = this.events[type];
-
-    if (event) {
-      event.forEach(function (callback) {
-        // callback.call(this, data);
-        callback(data);
-      });
-    }
-
-    var broadcast = this.events.broadcast;
-
-    if (broadcast) {
-      broadcast.forEach(function (callback) {
-        callback(type, data);
-      });
-    }
-  };
-
-  return EmittableSprite;
-}(FreezableSprite);var InteractiveSprite = /*#__PURE__*/function (_EmittableSprite) {
-  _inheritsLoose(InteractiveSprite, _EmittableSprite);
-
-  /*
-  static hittest(raycaster, down = false, event = defaultEvent) {
-  	const debugService = DebugService.getService();
-  	if (InteractiveSprite.down !== down) {
-  		InteractiveSprite.down = down;
-  		InteractiveSprite.lock = false;
-  	}
-  	// !!! da rivedere per consentire eventi multipli (nav-items)
-  	const items = InteractiveSprite.items.filter(x => !x.freezed);
-  	const intersections = raycaster.intersectObjects(items);
-  	let key, hit;
-  	const hash = {};
-  	// let has = false;
-  	intersections.forEach((intersection, i) => {
-  		// console.log(intersection);
-  		const object = intersection.object;
-  		// console.log('InteractiveSprite.hittest', i, object.name);
-  		// has = has || object.name.indexOf('nav') !== -1;
-  		key = object.uuid;
-  		if (i === 0) {
-  			if (InteractiveSprite.lastIntersectedObject !== object) {
-  				InteractiveSprite.lastIntersectedObject = object;
-  				hit = object;
-  				debugService.setMessage(hit.name || hit.id);
-  				// haptic feedback
-  			} else if (
-  				object.intersection && (
-  					Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 ||
-  					Math.abs(object.intersection.point.y - intersection.point.y) > 0.01
-  				)
-  			) {
-  				object.intersection = intersection;
-  				object.emit('move', object);
-  			}
-  		}
-  		hash[key] = intersection;
-  	});
-  	if (intersections.length === 0) {
-  		InteractiveSprite.lastIntersectedObject = null;
-  	}
-  	// console.log(has);
-  	items.forEach(x => {
-  		x.intersection = hash[x.uuid];
-  		x.over = (x === InteractiveSprite.lastIntersectedObject) || (!x.depthTest && x.intersection);
-  		x.down = down && x.over && !InteractiveSprite.lock;
-  		if (x.down) {
-  			InteractiveSprite.lock = true;
-  		}
-  	});
-  	return hit;
-  }
-  
-  static dispose(object) {
-  	if (object) {
-  		const index = InteractiveSprite.items.indexOf(object);
-  		if (index !== -1) {
-  			InteractiveSprite.items.splice(index, 1);
-  		}
-  	}
-  }
-  */
-  function InteractiveSprite(material) {
-    var _this;
-
-    _this = _EmittableSprite.call(this, material) || this;
-    _this.depthTest = true;
-    _this.over_ = false;
-    _this.down_ = false;
-    Interactive.items.push(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(InteractiveSprite, [{
-    key: "over",
-    get: function get() {
-      return this.over_;
-    },
-    set: function set(over) {
-      if (this.over_ != over) {
-        this.over_ = over;
-        /*
-        if (over) {
-        	this.emit('hit', this);
-        }
-        */
-
-        if (over) {
-          this.emit('over', this);
-        } else {
-          this.emit('out', this);
-        }
-      }
-    }
-  }, {
-    key: "down",
-    get: function get() {
-      return this.down_;
-    },
-    set: function set(down) {
-      down = down && this.over;
-
-      if (this.down_ != down) {
-        this.down_ = down;
-
-        if (down) {
-          this.emit('down', this);
-        } else {
-          this.emit('up', this);
-        }
-      }
-    }
-  }]);
-
-  return InteractiveSprite;
-}(EmittableSprite);var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
+};var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelPanelComponent, _ModelComponent);
 
   function ModelPanelComponent() {
@@ -15545,13 +15647,14 @@ var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
   _proto.onView = function onView() {
     var _this = this;
 
-    if (this.panel) {
+    if (this.viewed) {
       return;
     }
 
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node; // console.log('ModelPanelComponent.onView', node);
+    this.viewed = true;
 
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
 
     this.getCanvasTexture(node).then(function (texture) {
       if (_this.mesh) {
@@ -15559,7 +15662,7 @@ var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
         var aspect = texture.width / texture.height;
         var width = ModelPanelComponent.PANEL_RADIUS * scale;
         var height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
-        var dy = height * 0.25;
+        var dy = width * 0.25;
 
         var position = _this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 
@@ -15632,7 +15735,6 @@ var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
-    // this.renderOrder = environment.renderOrder.panel;
     var mesh = new THREE.Group();
 
     if (typeof mount === 'function') {
@@ -15641,28 +15743,8 @@ var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
   };
 
   _proto.onDestroy = function onDestroy() {
-    console.log('ModelPanelComponent.onDestroy');
-
+    // console.log('ModelPanelComponent.onDestroy');
     _ModelComponent.prototype.onDestroy.call(this);
-    /*
-    const group = this.group;
-    this.host.objects.remove(group);
-    delete group.userData.render;
-    group.traverse(child => {
-    	if (child instanceof InteractiveMesh) {
-    		Interactive.dispose(child);
-    	}
-    	if (child.isMesh) {
-    		if (child.material.map && child.material.map.disposable !== false) {
-    			child.material.map.dispose();
-    		}
-    		child.material.dispose();
-    		child.geometry.dispose();
-    	}
-    });
-    this.group = null;
-    */
-
   };
 
   _proto.imagesLoaded = function imagesLoaded() {
@@ -16162,6 +16244,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

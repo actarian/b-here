@@ -283,6 +283,28 @@
       "checkRequest": "",
       "checkField": "",
       "id": 1602165825107
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602571028864
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1602581680888
     }
   ]
 }

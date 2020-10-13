@@ -9,7 +9,7 @@
 			<span>Accedi</span>
 		</button>
 		<div class="group--info">
-			<div class="group--info__content">
+			<div class="group--info__content stagger--childs">
 				<div class="title">Accesso al tour virtuale</div>
 				<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 					<span>Accedi al tour</span>
@@ -28,7 +28,7 @@
 	<div class="ui ui--info" *if="state.status == 'self-service-tour' || state.status == 'guided-tour'">
 		<div class="group--info">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
-				<div class="group--info__content">
+				<div class="group--info__content stagger--childs">
 					<div class="title" *if="state.status == 'self-service-tour'">
 						Compila i campi per accedere al tour.
 					</div>
@@ -62,7 +62,7 @@
 	</div>
 	<div class="ui ui--info" *if="state.status == 'guided-tour-success'">
 		<div class="group--info">
-			<div class="group--info__content">
+			<div class="group--info__content stagger--childs">
 				<div class="title">
 					Richiesta inviata!
 				</div>
@@ -77,7 +77,7 @@
 	<div class="ui ui--info" *if="state.status == 'login'">
 		<div class="group--info">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
-				<div class="group--info__content">
+				<div class="group--info__content stagger--childs">
 					<div class="title">
 						Login.
 					</div>

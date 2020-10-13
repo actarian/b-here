@@ -517,6 +517,7 @@ errors-component {
 
 [control-custom-select] {
 	position: relative;
+	z-index: 1;
 
 	&.hidden {
 		display: block;
