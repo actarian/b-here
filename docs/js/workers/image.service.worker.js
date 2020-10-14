@@ -59,7 +59,7 @@ self.addEventListener('message', function (event) {
     var controller = controllers[id];
 
     if (controller) {
-      console.log('Aborting', id);
+      // console.log('Aborting', id);
       controller.abort();
     }
 
@@ -75,8 +75,7 @@ self.addEventListener('message', function (event) {
       options = {
         signal: _controller.signal
       };
-      controllers[id] = _controller;
-      console.log('AbortController', id);
+      controllers[id] = _controller; // console.log('AbortController', id);
     }
 
     var _response = fetch(src, options).then(function (response) {

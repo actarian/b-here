@@ -192,7 +192,7 @@ export class ModelView extends View {
 }
 
 export class ViewItem {
-	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'position', 'rotation', 'scale', 'radius', 'arc', 'height'];
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);

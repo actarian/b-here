@@ -579,7 +579,8 @@ errors-component {
 	display: flex;
 }
 
-.control--vector {
+.control--vector,
+.control--number {
 	justify-content: space-between;
 
 	/*

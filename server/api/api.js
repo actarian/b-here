@@ -62,6 +62,11 @@ let db = {
 const pathname = path.join(__dirname, `../../docs/api/editor.json`);
 readStore();
 
+function uuid() {
+	// return new Date().getTime();
+	return parseInt(process.hrtime.bigint().toString());
+}
+
 function useApi() {
 	return null;
 }
@@ -103,16 +108,16 @@ function sendOk(response, data) {
 
 function doCreate(request, response, params, items) {
 	const body = request.body;
-	const id = new Date().getTime();
+	const id = uuid();
 	const item = Object.assign({}, body, { id });
 	if (item.items) {
-		item.items.forEach(x => x.id = new Date().getTime());
+		item.items.forEach(x => x.id = uuid());
 	}
 	if (item.tiles) {
-		item.tiles.forEach(x => x.id = new Date().getTime());
+		item.tiles.forEach(x => x.id = uuid());
 	}
 	if (item.navs) {
-		item.navs.forEach(x => x.id = new Date().getTime());
+		item.navs.forEach(x => x.id = uuid());
 	}
 	items.push(item);
 	saveStore();
@@ -162,8 +167,6 @@ const ROUTES = [{
 		const view = doGet(request, response, { id: params.viewId }, db.views);
 		if (view) {
 			sendOk(response, view);
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -184,8 +187,6 @@ const ROUTES = [{
 		if (view) {
 			view.items = view.items || [];
 			doCreate(request, response, params, view.items);
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -194,8 +195,6 @@ const ROUTES = [{
 		if (view) {
 			view.items = view.items || [];
 			doUpdate(request, response, params, view.items);
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -203,8 +202,6 @@ const ROUTES = [{
 		const view = doGet(request, response, { id: params.viewId }, db.views);
 		if (view) {
 			doDelete(request, response, { id: params.viewItemId }, view.items);
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -218,8 +215,6 @@ const ROUTES = [{
 			} else {
 				sendError(response, 404, 'Not Found');
 			}
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -233,8 +228,6 @@ const ROUTES = [{
 			} else {
 				sendError(response, 404, 'Not Found');
 			}
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -248,8 +241,6 @@ const ROUTES = [{
 			} else {
 				sendError(response, 404, 'Not Found');
 			}
-		} else {
-			sendError(response, 404, 'Not Found');
 		}
 	}
 }, {
@@ -293,7 +284,7 @@ const ROUTES = [{
 }, {
 	path: '/api/user/guided-tour', method: 'POST', callback: function(request, response, params) {
 		const body = request.body;
-		const id = new Date().getTime();
+		const id = uuid();
 		const user = Object.assign({ type: RoleType.Streamer }, body, { id });
 		request.session.user = null;
 		db.users.push(user);
@@ -303,7 +294,7 @@ const ROUTES = [{
 }, {
 	path: '/api/user/self-service-tour', method: 'POST', callback: function(request, response, params) {
 		const body = request.body;
-		const id = new Date().getTime();
+		const id = uuid();
 		const user = Object.assign({ type: RoleType.SelfService }, body, { id });
 		request.session.user = user;
 		db.users.push(user);
@@ -385,4 +376,5 @@ function apiMiddleware(vars) {
 module.exports = {
 	apiMiddleware: apiMiddleware,
 	useApi: useApi,
+	uuid: uuid,
 };

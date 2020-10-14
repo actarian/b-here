@@ -14,7 +14,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "textures/waiting-room/",
+        "folder": "/textures/waiting-room/",
         "file": "waiting-room.jpg"
       },
       "orientation": {
@@ -37,7 +37,7 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "textures/waiting-room/",
+        "folder": "/textures/waiting-room/",
         "file": "IPF WELCOME.jpg"
       },
       "orientation": {

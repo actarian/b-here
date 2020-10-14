@@ -59,6 +59,36 @@ export default class EditorService {
 			return this.itemDelete$(view, item);
 		}
 	}
+	static inferItemUpdateResult$(view, item) {
+		const tile = this.getTile(view);
+		let currentItem;
+		if (tile) {
+			currentItem = tile.navs.find(i => i.id === item.id);
+		} else {
+			currentItem = view.items.find(i => i.id === item.id);
+		}
+		if (currentItem) {
+			Object.assign(currentItem, item);
+		}
+	}
+	static inferItemDeleteResult$(view, item) {
+		const tile = this.getTile(view);
+		let items;
+		if (tile) {
+			items = tile.navs;
+		} else {
+			items = view.items;
+		}
+		if (items) {
+			const index = items.indexOf(item);
+			if (index !== -1) {
+				items.splice(index, 1);
+			}
+			if (tile) {
+				view.updateCurrentItems();
+			}
+		}
+	}
 
 	static itemCreate$(view, item) {
 		return HttpService.post$(`/api/view/${view.id}/item`, item).pipe(

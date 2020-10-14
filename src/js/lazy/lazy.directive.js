@@ -13,7 +13,6 @@ export default class LazyDirective extends Directive {
 		this.input$ = new Subject().pipe(
 			distinctUntilChanged(),
 			switchMap(input => {
-				console.log('input', input);
 				const src = LazyCache.get(input);
 				if (src) {
 					return of(src);

@@ -36,13 +36,13 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
-					keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?'];
+					keys = ['id', 'type', 'title', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
 					break;
 				case ViewItemType.CurvedPlane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height', 'asset?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'asset?'];
 					break;
 				case ViewItemType.Texture.name:
 					keys = ['id', 'type', 'asset?']; // asset, key no id!!
@@ -154,6 +154,7 @@ UpdateViewItemComponent.meta = {
 				<div control-text label="Title" [control]="controls.title"></div>
 				<div control-text label="Abstract" [control]="controls.abstract"></div>
 				<div control-select label="NavToView" [control]="controls.viewId"></div>
+				<!-- <div control-checkbox label="Keep Orientation" [control]="controls.keepOrientation"></div> -->
 				<div control-vector label="Position" [control]="controls.position" [precision]="3"></div>
 				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
 				<div control-text label="Link Title" [control]="controls.link.controls.title"></div>
@@ -168,7 +169,10 @@ UpdateViewItemComponent.meta = {
 			<fieldset *if="item.type.name == 'curved-plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
-				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
+				<!-- <div control-vector label="Scale" [control]="controls.scale" [precision]="2" [disabled]="true"></div> -->
+				<div control-number label="Radius" [control]="controls.radius" [precision]="2"></div>
+				<div control-number label="Height" [control]="controls.height" [precision]="2"></div>
+				<div control-number label="Arc" [control]="controls.arc" [precision]="0"></div>
 				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
 			</fieldset>
 			<div class="group--cta">

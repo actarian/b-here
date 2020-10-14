@@ -11,7 +11,7 @@ const { upload } = require('./upload/upload.js');
 const uploader = upload(path.join(__dirname, '../docs/temp/'));
 const { staticMiddleware } = require('./static/static.js');
 // const { spaMiddleware } = require('./spa/spa.js');
-const { apiMiddleware, useApi } = require('./api/api.js');
+const { apiMiddleware, useApi, uuid } = require('./api/api.js');
 // const router = express.Router();
 const BASE_HREF = '/b-here/';
 const ASSETS = `assets/`;
@@ -70,9 +70,9 @@ app.post('/api/upload', multipartMiddleware, function(request, response) {
 	  }
 	*/
 	const file = request.files.file;
-	const id = new Date().getTime();
+	const id = uuid();
 	const fileName = `${id}_${file.name}`;
-	const folder = `uploads/`;
+	const folder = `/uploads/`; // `uploads/`;
 	const input = file.path;
 	const output = path.join(__dirname, Vars.root, folder, fileName);
 	const upload = {
@@ -80,7 +80,8 @@ app.post('/api/upload', multipartMiddleware, function(request, response) {
 		fileName,
 		type: file.type,
 		originalFileName: file.name,
-		url: `${Vars.host}${Vars.baseHref}${folder}${fileName}`,
+		url: `${folder}${fileName}`,
+		// url: `${request.protocol === 'https' ? Vars.hostHttps : Vars.host}${Vars.baseHref}${folder}${fileName}`,
 	};
 	const uploads = [upload];
 	fs.copyFile(input, output, (error) => {

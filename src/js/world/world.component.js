@@ -496,7 +496,7 @@ export default class WorldComponent extends Component {
 		try {
 			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
-			if (DEBUG || this.editor) {
+			if (this.editor || DEBUG) {
 				if (this.keys.Shift || this.keys.Control) {
 				} else {
 					this.select.next({ item: null });

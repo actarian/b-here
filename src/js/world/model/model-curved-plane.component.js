@@ -18,10 +18,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 	onCreate(mount, dismount) {
 		const item = this.item;
 		const items = this.items;
-		const arc = Math.PI / 180 * item.arc;
-		const geometry = new THREE.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
-		geometry.rotateY(-Math.PI / 2 - arc / 2);
-		geometry.scale(-1, 1, 1);
+		const geometry = this.getCurvedPanelGeometry(item);
 		let mesh;
 		let subscription;
 		MediaMesh.getStreamId$(item).pipe(
@@ -36,9 +33,11 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 					subscription.unsubscribe();
 					subscription = null;
 				}
+				console.log('ModelCurvedPanel', streamId, item.asset)
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
 					mesh = new MediaMesh(item, items, geometry, (item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null));
+					mesh.name = 'curved-plane';
 					if (item.position) {
 						mesh.position.fromArray(item.position);
 					}
@@ -57,6 +56,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 						).subscribe(() => { });
 					});
 					mesh.on('down', () => {
+						console.log('ModelCurvedPanel.down');
 						this.down.next(this);
 					});
 				}
@@ -83,6 +83,12 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		if (item.scale) {
 			mesh.scale.fromArray(item.scale);
 		}
+		// !!! deactivated
+		if (false && (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
+			this.mesh.geometry.dispose();
+			const geometry = this.getCurvedPanelGeometry(item);
+			this.mesh.geometry = geometry;
+		}
 		this.updateHelper();
 	}
 
@@ -101,6 +107,17 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		this.item.rotation = this.mesh.rotation.toArray();
 		this.item.scale = this.mesh.scale.toArray();
 		this.editing = false;
+	}
+
+	getCurvedPanelGeometry(item) {
+		this.radius_ = item.radius;
+		this.height_ = item.height;
+		this.arc_ = item.arc;
+		const arc = Math.PI / 180 * item.arc;
+		const geometry = new THREE.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
+		geometry.rotateY(-Math.PI - arc / 2);
+		geometry.scale(-1, 1, 1);
+		return geometry;
 	}
 
 }

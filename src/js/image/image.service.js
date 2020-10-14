@@ -39,7 +39,7 @@ export default class ImageService {
 	}
 
 	static isCors(src) {
-		return src.indexOf('//') !== -1 && src.indexOf(window.location.host) === -1;
+		return src.indexOf('://') !== -1 && src.indexOf(window.location.host) === -1;
 	}
 
 	static isBlob(src) {
