@@ -558,6 +558,11 @@ var db = {
 var pathname = path.join(__dirname, "../../docs/api/editor.json");
 readStore();
 
+function uuid() {
+  // return new Date().getTime();
+  return parseInt(process.hrtime.bigint().toString());
+}
+
 function useApi() {
   return null;
 }
@@ -602,26 +607,26 @@ function sendOk(response, data) {
 
 function doCreate(request, response, params, items) {
   var body = request.body;
-  var id = new Date().getTime();
+  var id = uuid();
   var item = Object.assign({}, body, {
     id: id
   });
 
   if (item.items) {
     item.items.forEach(function (x) {
-      return x.id = new Date().getTime();
+      return x.id = uuid();
     });
   }
 
   if (item.tiles) {
     item.tiles.forEach(function (x) {
-      return x.id = new Date().getTime();
+      return x.id = uuid();
     });
   }
 
   if (item.navs) {
     item.navs.forEach(function (x) {
-      return x.id = new Date().getTime();
+      return x.id = uuid();
     });
   }
 
@@ -690,8 +695,6 @@ var ROUTES = [{
 
     if (view) {
       sendOk(response, view);
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -725,8 +728,6 @@ var ROUTES = [{
     if (view) {
       view.items = view.items || [];
       doCreate(request, response, params, view.items);
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -740,8 +741,6 @@ var ROUTES = [{
     if (view) {
       view.items = view.items || [];
       doUpdate(request, response, params, view.items);
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -756,8 +755,6 @@ var ROUTES = [{
       doDelete(request, response, {
         id: params.viewItemId
       }, view.items);
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -779,8 +776,6 @@ var ROUTES = [{
       } else {
         sendError(response, 404, 'Not Found');
       }
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -802,8 +797,6 @@ var ROUTES = [{
       } else {
         sendError(response, 404, 'Not Found');
       }
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -827,8 +820,6 @@ var ROUTES = [{
       } else {
         sendError(response, 404, 'Not Found');
       }
-    } else {
-      sendError(response, 404, 'Not Found');
     }
   }
 }, {
@@ -892,7 +883,7 @@ var ROUTES = [{
   method: 'POST',
   callback: function callback(request, response, params) {
     var body = request.body;
-    var id = new Date().getTime();
+    var id = uuid();
     var user = Object.assign({
       type: RoleType.Streamer
     }, body, {
@@ -908,7 +899,7 @@ var ROUTES = [{
   method: 'POST',
   callback: function callback(request, response, params) {
     var body = request.body;
-    var id = new Date().getTime();
+    var id = uuid();
     var user = Object.assign({
       type: RoleType.SelfService
     }, body, {
@@ -1012,7 +1003,8 @@ function apiMiddleware(vars) {
 }
 var api = {
   apiMiddleware: apiMiddleware,
-  useApi: useApi
+  useApi: useApi,
+  uuid: uuid
 };
 
 var multipartMiddleware = connectMultiparty({
@@ -1022,8 +1014,8 @@ var upload$1 = upload_1.upload;
 var uploader = upload$1(path.join(__dirname, '../docs/temp/'));
 var staticMiddleware$1 = _static.staticMiddleware; // const { spaMiddleware } = require('./spa/spa.js');
 
-var apiMiddleware$1 = api.apiMiddleware;
- // const router = express.Router();
+var apiMiddleware$1 = api.apiMiddleware,
+    uuid$1 = api.uuid; // const router = express.Router();
 
 var BASE_HREF = '/b-here/';
 var ASSETS = "assets/";
@@ -1083,9 +1075,10 @@ app.post('/api/upload', multipartMiddleware, function (request, response) {
   */
 
   var file = request.files.file;
-  var id = new Date().getTime();
+  var id = uuid$1();
   var fileName = id + "_" + file.name;
-  var folder = "uploads/";
+  var folder = "/uploads/"; // `uploads/`;
+
   var input = file.path;
   var output = path.join(__dirname, Vars.root, folder, fileName);
   var upload = {
@@ -1093,7 +1086,8 @@ app.post('/api/upload', multipartMiddleware, function (request, response) {
     fileName: fileName,
     type: file.type,
     originalFileName: file.name,
-    url: "" + Vars.host + Vars.baseHref + folder + fileName
+    url: "" + folder + fileName // url: `${request.protocol === 'https' ? Vars.hostHttps : Vars.host}${Vars.baseHref}${folder}${fileName}`,
+
   };
   var uploads = [upload];
   fs.copyFile(input, output, function (error) {

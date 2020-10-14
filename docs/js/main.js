@@ -3956,7 +3956,7 @@ var ViewItem = /*#__PURE__*/function () {
   return ViewItem;
 }();
 
-_defineProperty(ViewItem, "allowedProps", ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'position', 'rotation', 'scale', 'radius', 'arc', 'height']);
+_defineProperty(ViewItem, "allowedProps", ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'position', 'rotation', 'scale', 'radius', 'height', 'arc']);
 
 var NavViewItem = /*#__PURE__*/function (_ViewItem) {
   _inheritsLoose(NavViewItem, _ViewItem);
@@ -5669,6 +5669,48 @@ AsideComponent.meta = {
     }
   };
 
+  EditorService.inferItemUpdateResult$ = function inferItemUpdateResult$(view, item) {
+    var tile = this.getTile(view);
+    var currentItem;
+
+    if (tile) {
+      currentItem = tile.navs.find(function (i) {
+        return i.id === item.id;
+      });
+    } else {
+      currentItem = view.items.find(function (i) {
+        return i.id === item.id;
+      });
+    }
+
+    if (currentItem) {
+      Object.assign(currentItem, item);
+    }
+  };
+
+  EditorService.inferItemDeleteResult$ = function inferItemDeleteResult$(view, item) {
+    var tile = this.getTile(view);
+    var items;
+
+    if (tile) {
+      items = tile.navs;
+    } else {
+      items = view.items;
+    }
+
+    if (items) {
+      var index = items.indexOf(item);
+
+      if (index !== -1) {
+        items.splice(index, 1);
+      }
+
+      if (tile) {
+        view.updateCurrentItems();
+      }
+    }
+  };
+
   EditorService.itemCreate$ = function itemCreate$(view, item) {
     return HttpService.post$("/api/view/" + view.id + "/item", item).pipe(operators.map(function (item) {
       return mapViewItem(item);
@@ -5988,11 +6030,11 @@ AsideComponent.meta = {
     var _this7 = this;
 
     EditorService.inferItemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
-      console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
+      console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
 
       _this7.pushChanges();
     }, function (error) {
-      return console.log('EditorComponent.onDragEnd.itemUpdate$.error', error);
+      return console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error);
     });
   };
 
@@ -6002,9 +6044,9 @@ AsideComponent.meta = {
     EditorService.inferItemUpdate$(this.view, event.item).pipe(
     	first(),
     ).subscribe(response => {
-    	console.log('EditorComponent.onResizeEnd.itemUpdate$.success', response);
+    	console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
     	this.pushChanges();
-    }, error => console.log('EditorComponent.onResizeEnd.itemUpdate$.error', error));
+    }, error => console.log('EditorComponent.onResizeEnd.inferItemUpdate$.error', error));
     */
   };
 
@@ -6133,10 +6175,11 @@ AsideComponent.meta = {
       this.view.items.forEach(function (item) {
         return item.selected = false;
       });
+      var currentTile = EditorService.getTile(this.view);
 
-      if (this.view.tiles) {
+      if (currentTile) {
         this.view.tiles.forEach(function (tile) {
-          return tile.selected = false;
+          return tile.selected = tile === currentTile;
         });
       }
 
@@ -6151,18 +6194,12 @@ AsideComponent.meta = {
 
     if (event.item && event.view) {
       EditorService.inferItemUpdate$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
-        console.log('EditorComponent.onAsideUpdate.itemUpdate$.success', response);
-        var item = event.view.items.find(function (item) {
-          return item.id === event.item.id;
-        });
-
-        if (item) {
-          Object.assign(item, event.item);
-        }
+        console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
+        EditorService.inferItemUpdateResult$(event.view, event.item);
 
         _this10.pushChanges();
       }, function (error) {
-        return console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error);
+        return console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.error', error);
       });
     } else if (event.tile && event.view) ; else if (event.view) {
       EditorService.viewUpdate$(event.view).pipe(operators.first()).subscribe(function (response) {
@@ -6187,17 +6224,13 @@ AsideComponent.meta = {
     console.log('onAsideDelete', event);
 
     if (event.item && event.view) {
-      EditorService.itemDelete$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
-        console.log('EditorComponent.onAsideDelete.itemDelete$.success', response);
-        var index = event.view.items.indexOf(event.item);
-
-        if (index !== -1) {
-          event.view.items.splice(index, 1);
-        }
+      EditorService.inferItemDelete$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
+        console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
+        EditorService.inferItemDeleteResult$(event.view, event.item);
 
         _this11.pushChanges();
       }, function (error) {
-        return console.log('EditorComponent.onAsideDelete.itemDelete$.error', error);
+        return console.log('EditorComponent.onAsideDelete.inferItemDelete$.error', error);
       });
     } else if (event.view) {
       EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
@@ -6266,7 +6299,10 @@ EditorComponent.meta = {
       position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), rxcompForm.RequiredValidator()),
       rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
       // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([3.2, 1.8, 1], rxcompForm.RequiredValidator()),
+      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
+      radius: new rxcompForm.FormControl(35, rxcompForm.RequiredValidator()),
+      height: new rxcompForm.FormControl(20, rxcompForm.RequiredValidator()),
+      arc: new rxcompForm.FormControl(90, rxcompForm.RequiredValidator()),
       asset: null
     });
     this.controls = form.controls;
@@ -6378,8 +6414,9 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Nav,
       title: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      abstract: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      abstract: null,
       viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      // keepOrientation: false,
       position: this.position.toArray(),
       asset: null,
       link: new rxcompForm.FormGroup({
@@ -6433,8 +6470,7 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
       }, function (error) {
         console.log('NavModalComponent.onSubmit.error', error);
         _this2.error = error;
-
-        _this2.form.reset();
+        _this2.form.submitted = false; // this.form.reset();
       });
     } else {
       this.form.touched = true;
@@ -6942,7 +6978,7 @@ RemoveModalComponent.meta = {
 
       switch (item.type.name) {
         case ViewItemType.Nav.name:
-          keys = ['id', 'type', 'title', 'abstract', 'viewId', 'position', 'asset?', 'link?'];
+          keys = ['id', 'type', 'title', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
           break;
 
         case ViewItemType.Plane.name:
@@ -6950,7 +6986,7 @@ RemoveModalComponent.meta = {
           break;
 
         case ViewItemType.CurvedPlane.name:
-          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'arc', 'height', 'asset?'];
+          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'asset?'];
           break;
 
         case ViewItemType.Texture.name:
@@ -7078,7 +7114,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -7420,7 +7456,7 @@ AssetItemComponent.meta = {
   inputs: ['item'],
   template:
   /* html */
-  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [lazy]=\"item.preview\" [size]=\"{ width: 320, height: 240 }\" *if=\"item.preview && item.type.name === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
 };var ControlComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlComponent, _Component);
 
@@ -7993,7 +8029,7 @@ ControlAssetsComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [src]=\"item | asset\" *if=\"item.type.name === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type.name === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [lazy]=\"item | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"item.type.name === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type.name === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span>Browse</span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\">Upload</div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\">Cancel</div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlCheckboxComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCheckboxComponent, _ControlComponent);
 
@@ -8305,6 +8341,35 @@ ControlLinkComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlNumberComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlNumberComponent, _ControlComponent);
+
+  function ControlNumberComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlNumberComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.label = this.label || 'label';
+    this.precision = this.precision || 3;
+    this.increment = this.increment || 1 / Math.pow(10, this.precision);
+    this.disabled = this.disabled || false;
+    this.required = false;
+  };
+
+  _proto.updateValue = function updateValue(value) {
+    this.control.value = value;
+  };
+
+  return ControlNumberComponent;
+}(ControlComponent);
+ControlNumberComponent.meta = {
+  selector: '[control-number]',
+  inputs: ['control', 'label', 'precision', 'increment', 'disabled'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"control--content control--number\">\n\t\t\t\t<input-value label=\"\" [precision]=\"precision\" [increment]=\"increment\" [disabled]=\"disabled\" [value]=\"control.value\" (update)=\"updateValue($event)\"></input-value>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlPasswordComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlPasswordComponent, _ControlComponent);
 
@@ -9006,7 +9071,7 @@ var ImageService = /*#__PURE__*/function () {
   };
 
   ImageService.isCors = function isCors(src) {
-    return src.indexOf('//') !== -1 && src.indexOf(window.location.host) === -1;
+    return src.indexOf('://') !== -1 && src.indexOf(window.location.host) === -1;
   };
 
   ImageService.isBlob = function isBlob(src) {
@@ -9122,7 +9187,6 @@ var ImageService = /*#__PURE__*/function () {
 
     node.classList.add('lazy');
     this.input$ = new rxjs.Subject().pipe(operators.distinctUntilChanged(), operators.switchMap(function (input) {
-      console.log('input', input);
       var src = LazyCache.get(input);
 
       if (src) {
@@ -9553,27 +9617,29 @@ SliderDirective.meta = {
 
   _proto.update = function update() {
     if (this.name_ !== this.name) {
-      var _element$classList;
-
       this.name_ = this.name;
 
       var _getContext = rxcomp.getContext(this),
           node = _getContext.node;
 
-      var xmlns = 'http://www.w3.org/2000/svg';
-      var element = document.createElementNS(xmlns, "svg");
-      var w = this.width || 24;
-      var h = this.height || 24;
-      element.setAttribute('class', "icon--" + this.name); // element.setAttributeNS(null, 'width', w);
-      // element.setAttributeNS(null, 'height', h);
+      if (node.parentNode) {
+        var _element$classList;
 
-      element.setAttributeNS(null, 'viewBox', "0 0 " + w + " " + h);
-      element.innerHTML = "<use xlink:href=\"#" + this.name + "\"></use>";
-      element.rxcompId = node.rxcompId;
+        var xmlns = 'http://www.w3.org/2000/svg';
+        var element = document.createElementNS(xmlns, "svg");
+        var w = this.width || 24;
+        var h = this.height || 24;
+        element.setAttribute('class', "icon--" + this.name); // element.setAttributeNS(null, 'width', w);
+        // element.setAttributeNS(null, 'height', h);
 
-      (_element$classList = element.classList).add.apply(_element$classList, node.classList);
+        element.setAttributeNS(null, 'viewBox', "0 0 " + w + " " + h);
+        element.innerHTML = "<use xlink:href=\"#" + this.name + "\"></use>";
+        element.rxcompId = node.rxcompId;
 
-      node.parentNode.replaceChild(element, node);
+        (_element$classList = element.classList).add.apply(_element$classList, node.classList);
+
+        node.parentNode.replaceChild(element, node);
+      }
     }
   };
 
@@ -12521,7 +12587,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       var raycaster = this.updateRaycasterMouse(event);
       var hit = Interactive.hittest(raycaster, true);
 
-      if (DEBUG || this.editor) {
+      if (this.editor || DEBUG) {
         if (this.keys.Shift || this.keys.Control) {} else {
           this.select.next({
             item: null
@@ -13822,10 +13888,11 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
 
     var mediaLoader = _this.mediaLoader = new MediaLoader(item);
-
+    /*
     if (item.asset && !mediaLoader.isVideo) {
-      _this.freeze();
+    	this.freeze();
     }
+    */
 
     return _this;
   }
@@ -14158,10 +14225,7 @@ ModelEditableComponent.meta = {
 
     var item = this.item;
     var items = this.items;
-    var arc = Math.PI / 180 * item.arc;
-    var geometry = new THREE.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
-    geometry.rotateY(-Math.PI / 2 - arc / 2);
-    geometry.scale(-1, 1, 1);
+    var geometry = this.getCurvedPanelGeometry(item);
     var mesh;
     var subscription;
     MediaMesh.getStreamId$(item).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
@@ -14177,9 +14241,12 @@ ModelEditableComponent.meta = {
           subscription = null;
         }
 
+        console.log('ModelCurvedPanel', streamId, item.asset);
+
         if (streamId || !item.asset) {
           item.streamId = streamId;
           mesh = new MediaMesh(item, items, geometry, item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null);
+          mesh.name = 'curved-plane';
 
           if (item.position) {
             mesh.position.fromArray(item.position);
@@ -14201,6 +14268,8 @@ ModelEditableComponent.meta = {
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
           mesh.on('down', function () {
+            console.log('ModelCurvedPanel.down');
+
             _this.down.next(_this);
           });
         } // console.log('streamId', streamId, mesh);
@@ -14229,7 +14298,7 @@ ModelEditableComponent.meta = {
 
     if (item.scale) {
       mesh.scale.fromArray(item.scale);
-    }
+    } // !!! deactivated
 
     this.updateHelper();
   } // called by WorldComponent
@@ -14249,6 +14318,17 @@ ModelEditableComponent.meta = {
     this.item.rotation = this.mesh.rotation.toArray();
     this.item.scale = this.mesh.scale.toArray();
     this.editing = false;
+  };
+
+  _proto.getCurvedPanelGeometry = function getCurvedPanelGeometry(item) {
+    this.radius_ = item.radius;
+    this.height_ = item.height;
+    this.arc_ = item.arc;
+    var arc = Math.PI / 180 * item.arc;
+    var geometry = new THREE.CylinderBufferGeometry(item.radius, item.radius, item.height, 36, 2, true, 0, arc);
+    geometry.rotateY(-Math.PI - arc / 2);
+    geometry.scale(-1, 1, 1);
+    return geometry;
   };
 
   return ModelCurvedPlaneComponent;
@@ -16244,6 +16324,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

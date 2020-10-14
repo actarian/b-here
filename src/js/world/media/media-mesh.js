@@ -249,9 +249,11 @@ export default class MediaMesh extends InteractiveMesh {
 			};
 		}
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
+		/*
 		if (item.asset && !mediaLoader.isVideo) {
 			this.freeze();
 		}
+		*/
 	}
 
 	load(callback) {

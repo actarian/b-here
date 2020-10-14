@@ -61,8 +61,9 @@ export default class NavModalComponent extends Component {
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Nav,
 			title: new FormControl(null, RequiredValidator()),
-			abstract: new FormControl(null, RequiredValidator()),
+			abstract: null,
 			viewId: new FormControl(null, RequiredValidator()),
+			// keepOrientation: false,
 			position: this.position.toArray(),
 			asset: null,
 			link: new FormGroup({
@@ -109,7 +110,8 @@ export default class NavModalComponent extends Component {
 			}, error => {
 				console.log('NavModalComponent.onSubmit.error', error);
 				this.error = error;
-				this.form.reset();
+				this.form.submitted = false;
+				// this.form.reset();
 			});
 		} else {
 			this.form.touched = true;

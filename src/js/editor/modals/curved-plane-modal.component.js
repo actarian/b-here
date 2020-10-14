@@ -43,7 +43,10 @@ export default class CurvedPlaneModalComponent extends Component {
 			type: ViewItemType.CurvedPlane,
 			position: new FormControl(this.position.multiplyScalar(20).toArray(), RequiredValidator()),
 			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
-			scale: new FormControl([3.2, 1.8, 1], RequiredValidator()),
+			scale: new FormControl([1, 1, 1], RequiredValidator()),
+			radius: new FormControl(35, RequiredValidator()),
+			height: new FormControl(20, RequiredValidator()),
+			arc: new FormControl(90, RequiredValidator()),
 			asset: null,
 		});
 		this.controls = form.controls;

@@ -245,9 +245,9 @@ export default class EditorComponent extends Component {
 		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
 		).subscribe(response => {
-			console.log('EditorComponent.onDragEnd.itemUpdate$.success', response);
+			console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
 			this.pushChanges();
-		}, error => console.log('EditorComponent.onDragEnd.itemUpdate$.error', error));
+		}, error => console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error));
 	}
 
 	onResizeEnd(event) {
@@ -256,9 +256,9 @@ export default class EditorComponent extends Component {
 		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
 		).subscribe(response => {
-			console.log('EditorComponent.onResizeEnd.itemUpdate$.success', response);
+			console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
 			this.pushChanges();
-		}, error => console.log('EditorComponent.onResizeEnd.itemUpdate$.error', error));
+		}, error => console.log('EditorComponent.onResizeEnd.inferItemUpdate$.error', error));
 		*/
 	}
 
@@ -347,8 +347,9 @@ export default class EditorComponent extends Component {
 		} else if (event.view || event.view === null) {
 			this.view.selected = (this.view === event.view);
 			this.view.items.forEach(item => item.selected = false);
-			if (this.view.tiles) {
-				this.view.tiles.forEach(tile => tile.selected = false);
+			const currentTile = EditorService.getTile(this.view);
+			if (currentTile) {
+				this.view.tiles.forEach(tile => tile.selected = tile === currentTile);
 			}
 			this.pushChanges();
 		}
@@ -360,25 +361,13 @@ export default class EditorComponent extends Component {
 			EditorService.inferItemUpdate$(event.view, event.item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('EditorComponent.onAsideUpdate.itemUpdate$.success', response);
-				const item = event.view.items.find(item => item.id === event.item.id);
-				if (item) {
-					Object.assign(item, event.item);
-				}
+				console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
+				EditorService.inferItemUpdateResult$(event.view, event.item);
 				this.pushChanges();
-			}, error => console.log('EditorComponent.onAsideUpdate.itemUpdate$.error', error));
+			}, error => console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.error', error));
 		} else if (event.tile && event.view) {
 			/*
-			EditorService.tileUpdate$(event.view, event.item).pipe(
-				first(),
-			).subscribe(response => {
-				console.log('EditorComponent.onAsideUpdate.tileUpdate$.success', response);
-				const item = event.view.items.find(item => item.id === event.item.id);
-				if (item) {
-					Object.assign(item, event.item);
-				}
-				this.pushChanges();
-			}, error => console.log('EditorComponent.onAsideUpdate.tileUpdate$.error', error));
+			EditorService.tileUpdate$...
 			*/
 		} else if (event.view) {
 			EditorService.viewUpdate$(event.view).pipe(
@@ -399,16 +388,13 @@ export default class EditorComponent extends Component {
 	onAsideDelete(event) {
 		console.log('onAsideDelete', event);
 		if (event.item && event.view) {
-			EditorService.itemDelete$(event.view, event.item).pipe(
+			EditorService.inferItemDelete$(event.view, event.item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('EditorComponent.onAsideDelete.itemDelete$.success', response);
-				const index = event.view.items.indexOf(event.item);
-				if (index !== -1) {
-					event.view.items.splice(index, 1);
-				}
+				console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
+				EditorService.inferItemDeleteResult$(event.view, event.item);
 				this.pushChanges();
-			}, error => console.log('EditorComponent.onAsideDelete.itemDelete$.error', error));
+			}, error => console.log('EditorComponent.onAsideDelete.inferItemDelete$.error', error));
 		} else if (event.view) {
 			EditorService.viewDelete$(event.view).pipe(
 				first(),

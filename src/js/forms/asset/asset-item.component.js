@@ -91,7 +91,7 @@ AssetItemComponent.meta = {
 	template: /* html */`
 	<div class="upload-item" [class]="{ 'error': item.error, 'success': item.success }">
 		<div class="picture">
-			<img [src]="item.preview" *if="item.preview && item.type.name === 'image'" />
+			<img [lazy]="item.preview" [size]="{ width: 320, height: 240 }" *if="item.preview && item.type.name === 'image'" />
 			<video [src]="item.preview" *if="item.preview && item.type.name === 'video'"></video>
 			<svg class="spinner" width="24" height="24" viewBox="0 0 24 24" [class]="{ uploading: item.uploading }" *if="item.uploading"><use xlink:href="#spinner"></use></svg>
 		</div>

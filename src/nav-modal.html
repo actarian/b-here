@@ -12,11 +12,11 @@
 					<div control-text [control]="controls.title" label="Title"></div>
 					<div control-text [control]="controls.abstract" label="Abstract"></div>
 					<div control-select [control]="controls.viewId" label="NavToView"></div>
+					<!-- <div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div> -->
 					<div control-vector label="Position" [control]="controls.position" [precision]="3" [disabled]="true"></div>
 					<div control-asset label="Image" [control]="controls.asset" accept="image/png, image/jpeg"></div>
 					<div control-text label="Link Title" [control]="controls.link.controls.title"></div>
 					<div control-text label="Link Url" [control]="controls.link.controls.href"></div>
-					<!-- <div control-upload [control]="controls.upload" label="Upload"></div> -->
 				</fieldset>
 				<div class="group--cta">
 					<button type="submit" class="btn--accept">
