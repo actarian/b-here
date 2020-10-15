@@ -132,6 +132,18 @@
             0
           ],
           "viewId": 602
+        },
+        {
+          "id": 2003,
+          "type": "nav",
+          "title": "Factory",
+          "abstract": "Abstract",
+          "position": [
+            0.8488706141818273,
+            -0.4542417783586834,
+            -0.27033883770577244
+          ],
+          "viewId": 603
         }
       ],
       "orientation": {
@@ -153,7 +165,7 @@
       },
       "items": [
         {
-          "id": 2003,
+          "id": 2004,
           "type": "nav",
           "title": "Welcome Room",
           "abstract": "Abstract",
@@ -165,7 +177,7 @@
           "viewId": 1
         },
         {
-          "id": 2004,
+          "id": 2005,
           "type": "nav",
           "title": "Prev",
           "abstract": "Abstract",
@@ -175,11 +187,66 @@
             0.006234384921843287
           ],
           "viewId": 601
+        },
+        {
+          "id": 2006,
+          "type": "nav",
+          "title": "Factory",
+          "abstract": "Abstract",
+          "position": [
+            -0.848097668603302,
+            -0.46064049668161094,
+            0.2618027450707161
+          ],
+          "viewId": 603
         }
       ],
       "orientation": {
         "latitude": -2,
         "longitude": 180
+      },
+      "zoom": 75
+    },
+    {
+      "id": 603,
+      "type": "panorama",
+      "name": "Factory Lab",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "image",
+        "folder": "rendering/",
+        "file": "factory.jpg"
+      },
+      "items": [
+        {
+          "id": 2007,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.7851721050078218,
+            -0.5736457844088886,
+            0.23331369344189185
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 2008,
+          "type": "nav",
+          "title": "Video 360",
+          "abstract": "Abstract",
+          "position": [
+            0.8219395390183257,
+            -0.5692152944717641,
+            -0.020232220287574314
+          ],
+          "viewId": 601
+        }
+      ],
+      "orientation": {
+        "latitude": -10,
+        "longitude": 0
       },
       "zoom": 75
     },
