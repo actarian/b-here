@@ -98,6 +98,92 @@
       "zoom": 75
     },
     {
+      "id": 601,
+      "type": "panorama",
+      "name": "Orogel 1",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "video",
+        "folder": "video/",
+        "file": "Orogel1.mp4"
+      },
+      "items": [
+        {
+          "id": 2001,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.8382445840978806,
+            -0.4552888374229576,
+            0.30009680396269267
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 2002,
+          "type": "nav",
+          "title": "Next",
+          "abstract": "Abstract",
+          "position": [
+            0.9041264255330278,
+            -0.42585445722056287,
+            0
+          ],
+          "viewId": 602
+        }
+      ],
+      "orientation": {
+        "latitude": -2,
+        "longitude": 360
+      },
+      "zoom": 75
+    },
+    {
+      "id": 602,
+      "type": "panorama",
+      "name": "Orogel 2",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": "video",
+        "folder": "video/",
+        "file": "Orogel2.mp4"
+      },
+      "items": [
+        {
+          "id": 2003,
+          "type": "nav",
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            -0.8419191362196619,
+            -0.45728465415152764,
+            -0.28646625131881764
+          ],
+          "viewId": 1
+        },
+        {
+          "id": 2004,
+          "type": "nav",
+          "title": "Prev",
+          "abstract": "Abstract",
+          "position": [
+            -0.9053496554191027,
+            -0.42462116513094134,
+            0.006234384921843287
+          ],
+          "viewId": 601
+        }
+      ],
+      "orientation": {
+        "latitude": -2,
+        "longitude": 180
+      },
+      "zoom": 75
+    },
+    {
       "id": 17,
       "type": "panorama",
       "name": "Ernestomeda",
