@@ -85,10 +85,10 @@ export default class NavModalComponent extends Component {
 			// console.log('NavModalComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
-		EditorService.data$().pipe(
+		EditorService.viewIdOptions$().pipe(
 			first(),
-		).subscribe(data => {
-			this.controls.viewId.options = data.views.map(view => ({ id: view.id, name: view.name }));
+		).subscribe(options => {
+			this.controls.viewId.options = options;
 			this.pushChanges();
 		});
 	}

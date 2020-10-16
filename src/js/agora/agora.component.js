@@ -43,7 +43,6 @@ export default class AgoraComponent extends Component {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.platform = DeviceService.platform;
-		this.debug = DEBUG;
 		this.state = {};
 		this.data = null;
 		this.views = null;

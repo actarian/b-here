@@ -4,12 +4,23 @@ import HttpService from "../http/http.service";
 import { mapAsset, mapView, mapViewItem, ViewType } from '../view/view';
 
 export default class EditorService {
+
 	static data$() {
 		return HttpService.get$(`/api/view`).pipe(
 			map(data => {
 				data.views = data.views.map(view => mapView(view));
 				return data;
 			}),
+		);
+	}
+
+	static viewIdOptions$() {
+		return this.data$().pipe(
+			map(data => {
+				const options = data.views.map(view => ({ id: view.id, name: view.name }));
+				options.unshift({ id: null, name: 'Select' });
+				return options;
+			})
 		);
 	}
 

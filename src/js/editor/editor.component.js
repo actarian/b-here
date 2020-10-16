@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { Subject } from 'rxjs';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { AgoraStatus } from '../agora/agora.types';
-import { DEBUG, environment } from '../environment';
+import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
@@ -40,7 +40,6 @@ export default class EditorComponent extends Component {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.aside = false;
-		this.debug = DEBUG;
 		this.state = {};
 		this.data = null;
 		this.views = null;

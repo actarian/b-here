@@ -130,24 +130,24 @@ UpdateViewComponent.meta = {
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 		</div>
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="view.selected">
-			<fieldset>
+			<div class="form-controls">
 				<div control-text [control]="controls.id" label="Id" [disabled]="true"></div>
 				<!-- <div control-text [control]="controls.type" label="Type" [disabled]="true"></div> -->
 				<div control-text [control]="controls.name" label="Name"></div>
-			</fieldset>
-			<fieldset *if="view.type.name == 'waiting-room'">
-			</fieldset>
-			<fieldset *if="view.type.name == 'panorama'">
+			</div>
+			<div class="form-controls" *if="view.type.name == 'waiting-room'">
+			</div>
+			<div class="form-controls" *if="view.type.name == 'panorama'">
 				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
-			</fieldset>
-			<fieldset *if="view.type.name == 'panorama-grid'">
+			</div>
+			<div class="form-controls" *if="view.type.name == 'panorama-grid'">
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
-			</fieldset>
+			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">
 					<span *if="!form.submitted">Update</span>

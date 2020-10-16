@@ -1,4 +1,4 @@
-import { STATIC } from "../environment";
+import { environment } from '../environment';
 
 const URLS = {
 	index: '/',
@@ -14,7 +14,7 @@ export class UrlService {
 	static get(...keys) {
 		let url = URLS;
 		keys.forEach(key => url = typeof url === 'object' ? url[key] : null);
-		return STATIC ? url : `/it/it${url}`;
+		return environment.STATIC ? url : `/it/it${url}`;
 	}
 
 	static redirect(...keys) {

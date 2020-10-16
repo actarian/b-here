@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from 'rxcomp';
 import { BehaviorSubject, combineLatest, EMPTY, fromEvent, merge, of, ReplaySubject } from "rxjs";
-import { delayWhen, filter, map, switchMap, tap } from "rxjs/operators";
+import { delayWhen, filter, first, map, switchMap, tap } from "rxjs/operators";
 import EditorService from '../../editor/editor.service';
 import { Asset, assetTypeFromPath } from '../../view/view';
 
@@ -59,6 +59,7 @@ export default class AssetService {
 				filter(x => x < 4)
 			)),
 			tap(() => this.concurrent$.next(this.concurrent$.getValue() + 1)),
+			first(),
 			switchMap(files => EditorService.upload$(files)),
 			switchMap((uploads) => {
 				const upload = uploads[0];
@@ -75,6 +76,7 @@ export default class AssetService {
 				);
 			}),
 		);
+		/*
 		return EditorService.upload$([item.file]).pipe(
 			// tap(upload => console.log('upload', upload)),
 			switchMap((uploads) => {
@@ -91,6 +93,7 @@ export default class AssetService {
 				);
 			}),
 		);
+		*/
 	}
 
 	addItems(files) {

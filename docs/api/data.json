@@ -2083,8 +2083,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "/washing-machine/gltf.gltf",
-        "usdz": "/washing-machine/washing-machine.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "asset": {
         "type": {
@@ -2127,8 +2127,8 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": "/washing-machine/gltf.gltf",
-        "usdz": "/washing-machine/washing-machine.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "asset": {
         "type": {
@@ -2837,8 +2837,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/moto/ducatiGLTF.gltf",
-        "usdz": "/moto/moto.usdz"
+        "gltf": "models/moto/ducatiGLTF.gltf",
+        "usdz": "models/moto/moto.usdz"
       },
       "asset": {
         "type": {
@@ -2898,8 +2898,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/moto/suzukiGLTF.gltf",
-        "usdz": "/moto/moto.usdz"
+        "gltf": "models/moto/suzukiGLTF.gltf",
+        "usdz": "models/moto/moto.usdz"
       },
       "asset": {
         "type": {
@@ -2959,8 +2959,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/barattolo-pesto/barattolo-pesto.gltf",
-        "usdz": "/barattolo-pesto/barattolo-pesto.usdz"
+        "gltf": "models/barattolo-pesto/barattolo-pesto.gltf",
+        "usdz": "models/barattolo-pesto/barattolo-pesto.usdz"
       },
       "asset": {
         "type": {
@@ -3020,8 +3020,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/washing-machine/gltf.gltf",
-        "usdz": "/washing-machine/washing-machine.usdz"
+        "gltf": "models/washing-machine/gltf.gltf",
+        "usdz": "models/washing-machine/washing-machine.usdz"
       },
       "asset": {
         "type": {
@@ -3066,8 +3066,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/damaged-helmet/gltf/damaged-helmet.gltf",
-        "usdz": "/damaged-helmet/damaged-helmet.usdz"
+        "gltf": "models/damaged-helmet/gltf/damaged-helmet.gltf",
+        "usdz": "models/damaged-helmet/damaged-helmet.usdz"
       },
       "asset": {
         "type": {
@@ -3112,8 +3112,8 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": "/logo/logowsGLTF.gltf",
-        "usdz": "/logo/logows.usdz"
+        "gltf": "models/logo/logowsGLTF.gltf",
+        "usdz": "models/logo/logows.usdz"
       },
       "asset": {
         "type": {

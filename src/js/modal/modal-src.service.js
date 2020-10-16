@@ -1,4 +1,4 @@
-import { BASE_HREF, STATIC } from "../environment";
+import { BASE_HREF, environment } from "../environment";
 
 const STATIC_MODALS = {
 	controlRequest: 'control-request-modal.html',
@@ -41,10 +41,10 @@ const SERVER_MODALS = {
 export default class ModalSrcService {
 
 	static get(...keys) {
-		let src = STATIC ? STATIC_MODALS : SERVER_MODALS;
+		let src = environment.STATIC ? STATIC_MODALS : SERVER_MODALS;
 		keys.forEach(key => src = typeof src === 'object' ? src[key] : null);
-		return STATIC ? BASE_HREF + src : `/template/modules/b-here/${src}`;
-		// return STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
+		return environment.STATIC ? BASE_HREF + src : `/template/modules/b-here/${src}`;
+		// return environment.STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
 	}
 
 }

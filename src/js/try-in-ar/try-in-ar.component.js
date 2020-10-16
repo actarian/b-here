@@ -1,9 +1,9 @@
 import { Component, getContext } from 'rxcomp';
-import { first, map } from 'rxjs/operators';
-import { DevicePlatform, DeviceService } from '../device/device.service';
+import { first } from 'rxjs/operators';
+import { DeviceService } from '../device/device.service';
 import { environment } from '../environment';
-import HttpService from '../http/http.service';
 import LocationService from '../location/location.service';
+import ViewService from '../view/view.service';
 
 export default class TryInARComponent extends Component {
 
@@ -13,11 +13,14 @@ export default class TryInARComponent extends Component {
 		const viewId = this.viewId = this.getViewId();
 		// console.log('TryInARComponent.viewId', viewId);
 		if (viewId) {
-			this.load$().pipe(
+			ViewService.view$(viewId).pipe(
 				first()
-			).subscribe(data => {
-				const view = data.views.find(x => x.id === viewId);
+			).subscribe(view => {
 				// console.log('TryInARComponent.view', view);
+				const modelViewerNode = this.getModelViewerNode(view);
+				const { node } = getContext(this);
+				node.appendChild(modelViewerNode);
+				/*
 				if (this.platform === DevicePlatform.Android) {
 					const modelViewerNode = this.getModelViewerNode(view);
 					const { node } = getContext(this);
@@ -26,6 +29,7 @@ export default class TryInARComponent extends Component {
 					const usdzSrc = environment.getPath(view.ar.usdz);
 					window.location.href = usdzSrc;
 				}
+				*/
 			});
 		}
 	}
@@ -39,26 +43,17 @@ export default class TryInARComponent extends Component {
 	}
 
 	getModelViewerNode(view) {
+		const panorama = environment.getPath(view.asset.folder + view.asset.file);
 		const gltfSrc = environment.getPath(view.ar.gltf);
 		const usdzSrc = environment.getPath(view.ar.usdz);
-		const template = `<model-viewer alt="${view.name}" src="${gltfSrc}" ios-src="${usdzSrc}" magic-leap ar ar_preferred></model-viewer>`;
+		const template = /* html */`
+			<model-viewer alt="${view.name}" skybox-image="${panorama}" ios-src="${usdzSrc}" src="${gltfSrc}" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls></model-viewer>
+		`;
+		// const template = `<model-viewer alt="${view.name}" src="${gltfSrc}" ios-src="${usdzSrc}" magic-leap ar ar_preferred></model-viewer>`;
 		const div = document.createElement("div");
 		div.innerHTML = template;
 		const node = div.firstElementChild;
 		return node;
-	}
-
-	load$() {
-		return HttpService.get$('./api/data.json').pipe(
-			map(data => {
-				data.views.forEach(view => {
-					view.items.forEach((item, index) => {
-						item.index = index;
-					});
-				});
-				return data;
-			})
-		);
 	}
 
 }

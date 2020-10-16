@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { environment, STATIC } from '../environment';
+import { environment } from '../environment';
 import ModalOutletComponent from '../modal/modal-outlet.component';
 import ModalService from '../modal/modal.service';
 
@@ -27,8 +27,7 @@ export default class TryInARModalComponent extends Component {
 	}
 
 	static getUrl(data) {
-		// const url = `${environment.host}${data.ar.usdz}`;
-		const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/template/modules/b-here/try-in-ar.cshtml?viewId=${data.id}`;
+		const url = environment.STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/template/modules/b-here/try-in-ar.cshtml?viewId=${data.id}`;
 		console.log('TryInARModalComponent.getUrl', url);
 		return url;
 	}
