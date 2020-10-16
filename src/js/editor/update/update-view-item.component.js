@@ -68,15 +68,17 @@ export default class UpdateViewItemComponent extends Component {
 					default:
 						const optional = key.indexOf('?') !== -1;
 						key = key.replace('?', '');
-						form.add(new FormControl(item[key], optional ? undefined : RequiredValidator()), key);
+						form.add(new FormControl(item[key] || null, optional ? undefined : RequiredValidator()), key);
 				}
 			});
 			this.controls = form.controls;
 			if (keys.indexOf('viewId') !== -1) {
-				EditorService.data$().pipe(
+				EditorService.viewIdOptions$().pipe(
 					first(),
-				).subscribe(data => {
-					this.controls.viewId.options = data.views.map(view => ({ id: view.id, name: view.name }));
+				).subscribe(options => {
+					this.controls.viewId.options = options;
+					this.controls.viewId.value = this.controls.viewId.value || null;
+					console.log(this.controls.viewId.options, this.controls.viewId.value);
 					this.pushChanges();
 				});
 			}
@@ -90,7 +92,7 @@ export default class UpdateViewItemComponent extends Component {
 						this.controls[key].value = { title, href, target };
 						break;
 					default:
-						this.controls[key].value = item[key];
+						this.controls[key].value = item[key] || null;
 				}
 			});
 		}
@@ -146,27 +148,27 @@ UpdateViewItemComponent.meta = {
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 		</div>
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="item.selected">
-			<fieldset>
+			<div class="form-controls">
 				<div control-text label="Id" [control]="controls.id" [disabled]="true"></div>
 				<!-- <div control-text label="Type" [control]="controls.type" [disabled]="true"></div> -->
-			</fieldset>
-			<fieldset *if="item.type.name == 'nav'">
+			</div>
+			<div class="form-controls" *if="item.type.name == 'nav'">
 				<div control-text label="Title" [control]="controls.title"></div>
 				<div control-text label="Abstract" [control]="controls.abstract"></div>
-				<div control-select label="NavToView" [control]="controls.viewId"></div>
+				<div control-custom-select label="NavToView" [control]="controls.viewId"></div>
 				<!-- <div control-checkbox label="Keep Orientation" [control]="controls.keepOrientation"></div> -->
 				<div control-vector label="Position" [control]="controls.position" [precision]="3"></div>
 				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
 				<div control-text label="Link Title" [control]="controls.link.controls.title"></div>
 				<div control-text label="Link Url" [control]="controls.link.controls.href"></div>
-			</fieldset>
-			<fieldset *if="item.type.name == 'plane'">
+			</div>
+			<div class="form-controls" *if="item.type.name == 'plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
 				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
-			</fieldset>
-			<fieldset *if="item.type.name == 'curved-plane'">
+			</div>
+			<div class="form-controls" *if="item.type.name == 'curved-plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<!-- <div control-vector label="Scale" [control]="controls.scale" [precision]="2" [disabled]="true"></div> -->
@@ -174,7 +176,7 @@ UpdateViewItemComponent.meta = {
 				<div control-number label="Height" [control]="controls.height" [precision]="2"></div>
 				<div control-number label="Arc" [control]="controls.arc" [precision]="0"></div>
 				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
-			</fieldset>
+			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">
 					<span *if="!form.submitted">Update</span>

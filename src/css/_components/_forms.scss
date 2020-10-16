@@ -165,15 +165,6 @@ $invalid: $foreground-primary;
 			opacity: 1;
 		}
 	}
-
-	[control-custom-select] .dropdown {
-		top: 100%;
-		width: 100%;
-		margin-top: 10px;
-		left: 0;
-		border-radius: 5px;
-	}
-
 }
 
 .group--error {
@@ -260,6 +251,18 @@ fieldset,
 	text-transform: none;
 	line-height: 1.2;
 	min-height: 44px;
+	cursor: pointer;
+
+	.multiple>& {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: calc(100% - 23px);
+	}
+}
+
+.control--custom-select {
+	@extend %control--text;
 	cursor: pointer;
 
 	.multiple>& {
@@ -517,21 +520,18 @@ errors-component {
 
 [control-custom-select] {
 	position: relative;
-	z-index: 1;
+
+	.dropdown {
+		top: 100%;
+		width: 100%;
+		left: 0;
+		border-radius: 5px;
+	}
 
 	&.hidden {
 		display: block;
 		visibility: hidden;
 		pointer-events: none;
-	}
-
-	@include media-up(md) {
-
-		.dropdown {
-			top: -65px;
-			left: 100%;
-		}
-
 	}
 }
 

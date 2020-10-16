@@ -18,13 +18,13 @@ export const MIME_STREAM = [
 	'publisherStream', 'nextAttendeeStream',
 ];
 export function isImage(path) {
-	return new RegExp(`/\.(${MIME_IMAGE.join('|')})$/`).test(path);
+	return new RegExp(`/\.(${MIME_IMAGE.join('|')})$/i`).test(path);
 }
 export function isVideo(path) {
-	return new RegExp(`/\.(${MIME_VIDEO.join('|')})$/`).test(path);
+	return new RegExp(`/\.(${MIME_VIDEO.join('|')})$/i`).test(path);
 }
 export function isModel(path) {
-	return new RegExp(`/\.(${MIME_MODEL.join('|')})$/`).test(path);
+	return new RegExp(`/\.(${MIME_MODEL.join('|')})$/i`).test(path);
 }
 export function isStream(path) {
 	return MIME_STREAM.indexOf(path) !== -1;

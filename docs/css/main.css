@@ -60,21 +60,22 @@ body {
   margin: 0;
   padding: 0; }
   body::-webkit-scrollbar {
-    width: 6px;
-    border-radius: 3px; }
+    width: 4px;
+    height: 4px;
+    border-radius: 2px; }
   body::-webkit-scrollbar-button {
     display: none; }
   body::-webkit-scrollbar-button:hover {
     display: none; }
   body::-webkit-scrollbar-thumb {
-    background-color: rgba(22, 37, 91, 0.95);
+    background-color: rgba(0, 0, 0, 0.45);
     box-shadow: none;
-    border-radius: 3px; }
+    border-radius: 2px; }
     body::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(22, 37, 91, 0.95); }
+      background-color: rgba(0, 0, 0, 0.45); }
   body::-webkit-scrollbar-track {
     background-color: transparent;
-    border-radius: 3px; }
+    border-radius: 2px; }
     body::-webkit-scrollbar-track:hover {
       background-color: transparent; }
   body.fixed {
@@ -443,12 +444,13 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   color: #101010;
   text-transform: none; }
 
-.control--text:-ms-input-placeholder, .control--select:-ms-input-placeholder, .group--info .control--text:-ms-input-placeholder, .group--info .control--select:-ms-input-placeholder {
+.control--text:-ms-input-placeholder, .control--select:-ms-input-placeholder, .control--custom-select:-ms-input-placeholder, .group--info .control--text:-ms-input-placeholder, .group--info .control--select:-ms-input-placeholder, .group--info .control--custom-select:-ms-input-placeholder {
   text-transform: none;
   color: rgba(16, 16, 16, 0.4); }
 
-.control--text::placeholder, .control--select::placeholder, .group--info .control--text::placeholder,
-.group--info .control--select::placeholder {
+.control--text::placeholder, .control--select::placeholder, .control--custom-select::placeholder, .group--info .control--text::placeholder,
+.group--info .control--select::placeholder,
+.group--info .control--custom-select::placeholder {
   text-transform: none;
   color: rgba(16, 16, 16, 0.4); }
 
@@ -463,7 +465,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     .group--form, .group--form--textarea, .group--form--select, .group--form--checkbox, .group--form--file {
       margin-bottom: 10px; } }
 
-.control--text, .control--select {
+.control--text, .control--select, .control--custom-select {
   background: transparent;
   color: #101010;
   border: 0px solid transparent;
@@ -486,7 +488,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   font-weight: 300;
   letter-spacing: 0;
   line-height: 1; }
-  .control--text:-webkit-autofill, .control--select:-webkit-autofill, .control--text:-webkit-autofill:hover, .control--select:-webkit-autofill:hover, .control--text:-webkit-autofill:focus, .control--select:-webkit-autofill:focus {
+  .control--text:-webkit-autofill, .control--select:-webkit-autofill, .control--custom-select:-webkit-autofill, .control--text:-webkit-autofill:hover, .control--select:-webkit-autofill:hover, .control--custom-select:-webkit-autofill:hover, .control--text:-webkit-autofill:focus, .control--select:-webkit-autofill:focus, .control--custom-select:-webkit-autofill:focus {
     background: transparent;
     color: #101010;
     border: 0px solid transparent;
@@ -501,28 +503,28 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     box-shadow: 0 0 0px 1000px transparent inset;
     -webkit-transition: background-color 5000s ease-in-out 0s;
     transition: background-color 5000s ease-in-out 0s; }
-  .control--text:-ms-input-placeholder, .control--select:-ms-input-placeholder {
+  .control--text:-ms-input-placeholder, .control--select:-ms-input-placeholder, .control--custom-select:-ms-input-placeholder {
     font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
     font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
     line-height: 2; }
-  .control--text::placeholder, .control--select::placeholder {
+  .control--text::placeholder, .control--select::placeholder, .control--custom-select::placeholder {
     font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
     font-size: 0.8em;
     font-weight: 300;
     letter-spacing: 0;
     line-height: 2; }
-  .pristine.control--text, .pristine.control--select {
+  .pristine.control--text, .pristine.control--select, .pristine.control--custom-select {
     color: #101010; }
-  .dirty.control--text, .dirty.control--select {
+  .dirty.control--text, .dirty.control--select, .dirty.control--custom-select {
     color: #101010; }
-  .touched.control--text, .touched.control--select {
+  .touched.control--text, .touched.control--select, .touched.control--custom-select {
     color: #101010; }
-  .valid.control--text, .valid.control--select {
+  .valid.control--text, .valid.control--select, .valid.control--custom-select {
     border-color: #101010;
     color: #101010; }
-  .invalid.control--text:not(.pristine), .invalid.control--select:not(.pristine) {
+  .invalid.control--text:not(.pristine), .invalid.control--select:not(.pristine), .invalid.control--custom-select:not(.pristine) {
     color: #0099ff; }
 
 .form .title {
@@ -553,13 +555,6 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 
 .form.valid .btn--submit {
   opacity: 1; }
-
-.form [control-custom-select] .dropdown {
-  top: 100%;
-  width: 100%;
-  margin-top: 10px;
-  left: 0;
-  border-radius: 5px; }
 
 .group--error {
   background: #fae6e6;
@@ -619,6 +614,14 @@ fieldset,
   min-height: 44px;
   cursor: pointer; }
   .multiple > .control--select {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 23px); }
+
+.control--custom-select {
+  cursor: pointer; }
+  .multiple > .control--custom-select {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -844,16 +847,16 @@ errors-component {
           margin-right: 0; } }
 
 [control-custom-select] {
-  position: relative;
-  z-index: 1; }
+  position: relative; }
+  [control-custom-select] .dropdown {
+    top: 100%;
+    width: 100%;
+    left: 0;
+    border-radius: 5px; }
   [control-custom-select].hidden {
     display: block;
     visibility: hidden;
     pointer-events: none; }
-  @media (min-width: 1024px) {
-    [control-custom-select] .dropdown {
-      top: -65px;
-      left: 100%; } }
 
 .required__badge {
   display: none; }
@@ -3408,21 +3411,22 @@ test-component .btn--mode {
   background: white;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 10px -5px; }
   .modal-outlet__modal::-webkit-scrollbar {
-    width: 6px;
-    border-radius: 3px; }
+    width: 4px;
+    height: 4px;
+    border-radius: 2px; }
   .modal-outlet__modal::-webkit-scrollbar-button {
     display: none; }
   .modal-outlet__modal::-webkit-scrollbar-button:hover {
     display: none; }
   .modal-outlet__modal::-webkit-scrollbar-thumb {
-    background-color: rgba(22, 37, 91, 0.95);
+    background-color: rgba(0, 0, 0, 0.45);
     box-shadow: none;
-    border-radius: 3px; }
+    border-radius: 2px; }
     .modal-outlet__modal::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(22, 37, 91, 0.95); }
+      background-color: rgba(0, 0, 0, 0.45); }
   .modal-outlet__modal::-webkit-scrollbar-track {
     background-color: transparent;
-    border-radius: 3px; }
+    border-radius: 2px; }
     .modal-outlet__modal::-webkit-scrollbar-track:hover {
       background-color: transparent; }
   .active .modal-outlet__modal {
@@ -3503,21 +3507,22 @@ test-component .btn--mode {
   background: white;
   box-shadow: 0 20px 20px -5px rgba(0, 0, 0, 0.2); }
   .dropdown::-webkit-scrollbar {
-    width: 6px;
-    border-radius: 3px; }
+    width: 4px;
+    height: 4px;
+    border-radius: 2px; }
   .dropdown::-webkit-scrollbar-button {
     display: none; }
   .dropdown::-webkit-scrollbar-button:hover {
     display: none; }
   .dropdown::-webkit-scrollbar-thumb {
-    background-color: rgba(22, 37, 91, 0.95);
+    background-color: rgba(0, 0, 0, 0.45);
     box-shadow: none;
-    border-radius: 3px; }
+    border-radius: 2px; }
     .dropdown::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(22, 37, 91, 0.95); }
+      background-color: rgba(0, 0, 0, 0.45); }
   .dropdown::-webkit-scrollbar-track {
     background-color: transparent;
-    border-radius: 3px; }
+    border-radius: 2px; }
     .dropdown::-webkit-scrollbar-track:hover {
       background-color: transparent; }
   .dropdown.dropped {
@@ -3910,7 +3915,8 @@ body {
       fill: #101010;
       pointer-events: none; }
   .group--info .control--text,
-  .group--info .control--select {
+  .group--info .control--select,
+  .group--info .control--custom-select {
     max-width: 100%;
     font-size: 14px;
     text-transform: none;
@@ -3925,7 +3931,10 @@ body {
     .group--info .control--text:-webkit-autofill, .group--info .control--text:-webkit-autofill:hover, .group--info .control--text:-webkit-autofill:focus,
     .group--info .control--select:-webkit-autofill,
     .group--info .control--select:-webkit-autofill:hover,
-    .group--info .control--select:-webkit-autofill:focus {
+    .group--info .control--select:-webkit-autofill:focus,
+    .group--info .control--custom-select:-webkit-autofill,
+    .group--info .control--custom-select:-webkit-autofill:hover,
+    .group--info .control--custom-select:-webkit-autofill:focus {
       background: transparent;
       color: #101010;
       border: 0px solid transparent;
@@ -3940,14 +3949,15 @@ body {
       box-shadow: 0 0 0px 1000px transparent inset;
       -webkit-transition: background-color 5000s ease-in-out 0s;
       transition: background-color 5000s ease-in-out 0s; }
-    .group--info .control--text:-ms-input-placeholder, .group--info .control--select:-ms-input-placeholder {
+    .group--info .control--text:-ms-input-placeholder, .group--info .control--select:-ms-input-placeholder, .group--info .control--custom-select:-ms-input-placeholder {
       font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 0;
       line-height: 2; }
     .group--info .control--text::placeholder,
-    .group--info .control--select::placeholder {
+    .group--info .control--select::placeholder,
+    .group--info .control--custom-select::placeholder {
       font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
@@ -4594,7 +4604,7 @@ model-viewer {
     background: rgba(0, 0, 0, 0.8); }
 
 .stagger--childs > * {
-  animation: slide-top 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+  animation: slide-top 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards; }
   .stagger--childs > *:nth-child(1) {
     animation-delay: 0.15s; }
   .stagger--childs > *:nth-child(2) {

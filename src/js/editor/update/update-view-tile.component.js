@@ -63,10 +63,10 @@ UpdateViewTileComponent.meta = {
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 		</div>
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="tile.selected">
-			<fieldset>
+			<div class="form-controls">
 				<div control-text label="Id" [control]="controls.id" [disabled]="true"></div>
 				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
-			</fieldset>
+			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">
 					<span *if="!form.submitted">Update</span>

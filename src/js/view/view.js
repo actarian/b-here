@@ -22,7 +22,7 @@ export const AssetType = {
 };
 
 export function assetTypeFromPath(path) {
-	const extension = path.split('.').pop();
+	const extension = path.split('.').pop().toLowerCase();
 	if (EXT_IMAGE.indexOf(extension) !== -1) {
 		return AssetType.Image;
 	} else if (EXT_VIDEO.indexOf(extension) !== -1) {

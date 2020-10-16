@@ -2,12 +2,10 @@ import { Directive, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import DownloadService from '../download/download.service';
-import { STATIC } from '../environment';
+import { environment } from '../environment';
 import HttpService from '../http/http.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import { UserService } from '../user/user.service';
-
-const src = STATIC ? '/b-here/club-modal.html' : '/Viewdoc.cshtml?co_id=23649';
 
 export default class SecureDirective extends Directive {
 
@@ -41,6 +39,7 @@ export default class SecureDirective extends Directive {
 	onLogin(event) {
 		// console.log('SecureDirective.onLogin');
 		// event.preventDefault();
+		const src = environment.STATIC ? '/b-here/club-modal.html' : '/Viewdoc.cshtml?co_id=23649';
 		ModalService.open$({ src: src, data: { view: 1 } }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {

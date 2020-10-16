@@ -153,7 +153,8 @@ body {
 	}
 
 	.control--text,
-	.control--select {
+	.control--select,
+	.control--custom-select {
 		max-width: 100%;
 		font-size: 14px;
 		text-transform: none;
@@ -1063,7 +1064,7 @@ model-viewer {
 
 .stagger--childs {
 	&>* {
-		animation: slide-top 350ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+		animation: slide-top 350ms cubic-bezier(0.250, 0.460, 0.450, 0.940) backwards;
 
 		@for $i from 1 through 20 {
 			&:nth-child(#{$i}) {

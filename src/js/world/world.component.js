@@ -26,6 +26,7 @@ const loadingBanner = { title: 'loading' };
 const waitingBanner = { title: 'waiting host' };
 
 export default class WorldComponent extends Component {
+
 	get error() {
 		return this.error_;
 	}

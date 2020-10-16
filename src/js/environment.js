@@ -14,6 +14,14 @@ export const ENV = {
 
 export class Environment {
 
+	get STATIC() {
+		return ENV.STATIC;
+	}
+	set STATIC(STATIC) {
+		ENV.STATIC = (STATIC === true || STATIC === 'true');
+		console.log('Environment.STATIC.set', ENV.STATIC);
+	}
+
 	get href() {
 		if (HEROKU) {
 			return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';

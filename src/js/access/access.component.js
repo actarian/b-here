@@ -2,14 +2,12 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import { DEBUG } from '../environment';
 import { UrlService } from '../url/url.service';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
 
 	onInit() {
-		this.debug = DEBUG;
 		this.state = {
 			status: 'access',
 		};

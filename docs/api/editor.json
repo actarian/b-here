@@ -53,7 +53,7 @@
           },
           "title": "Waiting Room",
           "abstract": "nav to waiting room",
-          "viewId": "1600773895526",
+          "viewId": 1601561173968,
           "position": [
             0.7944839286378842,
             0.02945181797221884,
@@ -73,7 +73,7 @@
           },
           "title": "Waiting Room",
           "abstract": "nav to waiting room",
-          "viewId": 1792,
+          "viewId": 1601561173968,
           "position": [
             0.9960812828102876,
             0.0241429959658672,
@@ -87,6 +87,66 @@
           }
         }
       ]
+    }
+  ],
+  "assets": [
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "26406629259800_ambiente1_x0_y0.jpg",
+      "id": 26406659061600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "26407017577400_ambiente1_x0_y1.jpg",
+      "id": 26407059561399
+    }
+  ],
+  "users": [
+    {
+      "id": "1601892639985",
+      "username": "publisher",
+      "password": "publisher",
+      "type": "publisher",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "id": "1601892639986",
+      "username": "attendee",
+      "password": "attendee",
+      "type": "attendee",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 1246322641197100
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 30266096716599
     }
   ]
 }

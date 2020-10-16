@@ -144,6 +144,15 @@ var Environment = /*#__PURE__*/function () {
   };
 
   _createClass(Environment, [{
+    key: "STATIC",
+    get: function get() {
+      return ENV.STATIC;
+    },
+    set: function set(STATIC) {
+      ENV.STATIC = STATIC === true || STATIC === 'true';
+      console.log('Environment.STATIC.set', ENV.STATIC);
+    }
+  }, {
     key: "href",
     get: function get() {
       if (HEROKU) {
@@ -214,7 +223,7 @@ var UrlService = /*#__PURE__*/function () {
     keys.forEach(function (key) {
       return url = typeof url === 'object' ? url[key] : null;
     });
-    return STATIC ? url : "/it/it" + url;
+    return environment.STATIC ? url : "/it/it" + url;
   };
 
   UrlService.redirect = function redirect() {
@@ -292,7 +301,7 @@ var UrlService = /*#__PURE__*/function () {
     }
 
     // console.log(url);
-    return STATIC && format === 'json' && url.indexOf('/') === 0 ? "." + url + ".json" : url;
+    return environment.STATIC && format === 'json' && url.indexOf('/') === 0 ? "." + url + ".json" : url;
   };
 
   HttpService.getError = function getError(object, response) {
@@ -442,7 +451,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   var _proto = AccessComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.debug = DEBUG;
     this.state = {
       status: 'access'
     };
@@ -3437,7 +3445,7 @@ var ModalSrcService = /*#__PURE__*/function () {
   function ModalSrcService() {}
 
   ModalSrcService.get = function get() {
-    var src = STATIC ? STATIC_MODALS : SERVER_MODALS;
+    var src = environment.STATIC ? STATIC_MODALS : SERVER_MODALS;
 
     for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
       keys[_key] = arguments[_key];
@@ -3446,7 +3454,7 @@ var ModalSrcService = /*#__PURE__*/function () {
     keys.forEach(function (key) {
       return src = typeof src === 'object' ? src[key] : null;
     });
-    return STATIC ? BASE_HREF + src : "/template/modules/b-here/" + src; // return STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
+    return environment.STATIC ? BASE_HREF + src : "/template/modules/b-here/" + src; // return environment.STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
   };
 
   return ModalSrcService;
@@ -3612,8 +3620,7 @@ ModalOutletComponent.meta = {
   };
 
   TryInARModalComponent.getUrl = function getUrl(data) {
-    // const url = `${environment.host}${data.ar.usdz}`;
-    var url = STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/template/modules/b-here/try-in-ar.cshtml?viewId=" + data.id;
+    var url = environment.STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/template/modules/b-here/try-in-ar.cshtml?viewId=" + data.id;
     console.log('TryInARModalComponent.getUrl', url);
     return url;
   };
@@ -3658,7 +3665,7 @@ var AssetType = {
 
 };
 function assetTypeFromPath(path) {
-  var extension = path.split('.').pop();
+  var extension = path.split('.').pop().toLowerCase();
 
   if (EXT_IMAGE.indexOf(extension) !== -1) {
     return AssetType.Image;
@@ -4101,6 +4108,14 @@ function mapAsset(asset) {
     }));
   };
 
+  ViewService.view$ = function view$(viewId) {
+    return this.data$().pipe(operators.map(function (data) {
+      return data.views.find(function (x) {
+        return x.id === viewId;
+      });
+    }));
+  };
+
   return ViewService;
 }();var XRStatus = {
   Waiting: 'waiting',
@@ -4295,7 +4310,6 @@ var VRService = /*#__PURE__*/function () {
 
     node.classList.remove('hidden');
     this.platform = DeviceService.platform;
-    this.debug = DEBUG;
     this.state = {};
     this.data = null;
     this.views = null;
@@ -4797,7 +4811,7 @@ AgoraComponent.meta = {
         node = _getContext.node;
 
     node.classList.remove('hidden');
-    this.debug = DEBUG;
+    environment.STATIC = window.STATIC;
   };
 
   return AppComponent;
@@ -4809,13 +4823,13 @@ var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_MODEL = ['gltf', 'glb', 'obj', 'usdz'];
 var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
 function isImage(path) {
-  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/").test(path);
+  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
 }
 function isVideo(path) {
-  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/").test(path);
+  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/i").test(path);
 }
 function isModel(path) {
-  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/").test(path);
+  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/i").test(path);
 }
 function isStream(path) {
   return MIME_STREAM.indexOf(path) !== -1;
@@ -5613,6 +5627,22 @@ AsideComponent.meta = {
     }));
   };
 
+  EditorService.viewIdOptions$ = function viewIdOptions$() {
+    return this.data$().pipe(operators.map(function (data) {
+      var options = data.views.map(function (view) {
+        return {
+          id: view.id,
+          name: view.name
+        };
+      });
+      options.unshift({
+        id: null,
+        name: 'Select'
+      });
+      return options;
+    }));
+  };
+
   EditorService.viewCreate$ = function viewCreate$(view) {
     return HttpService.post$("/api/view", view).pipe(operators.map(function (view) {
       return mapView(view);
@@ -5797,7 +5827,6 @@ AsideComponent.meta = {
 
     node.classList.remove('hidden');
     this.aside = false;
-    this.debug = DEBUG;
     this.state = {};
     this.data = null;
     this.views = null;
@@ -6439,13 +6468,8 @@ var NavModalComponent = /*#__PURE__*/function (_Component) {
       // console.log('NavModalComponent.form.changes$', changes, form.valid, form);
       _this.pushChanges();
     });
-    EditorService.data$().pipe(operators.first()).subscribe(function (data) {
-      _this.controls.viewId.options = data.views.map(function (view) {
-        return {
-          id: view.id,
-          name: view.name
-        };
-      });
+    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+      _this.controls.viewId.options = options;
 
       _this.pushChanges();
     });
@@ -7019,19 +7043,16 @@ RemoveModalComponent.meta = {
           default:
             var optional = key.indexOf('?') !== -1;
             key = key.replace('?', '');
-            form.add(new rxcompForm.FormControl(item[key], optional ? undefined : rxcompForm.RequiredValidator()), key);
+            form.add(new rxcompForm.FormControl(item[key] || null, optional ? undefined : rxcompForm.RequiredValidator()), key);
         }
       });
       this.controls = form.controls;
 
       if (keys.indexOf('viewId') !== -1) {
-        EditorService.data$().pipe(operators.first()).subscribe(function (data) {
-          _this2.controls.viewId.options = data.views.map(function (view) {
-            return {
-              id: view.id,
-              name: view.name
-            };
-          });
+        EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+          _this2.controls.viewId.options = options;
+          _this2.controls.viewId.value = _this2.controls.viewId.value || null;
+          console.log(_this2.controls.viewId.options, _this2.controls.viewId.value);
 
           _this2.pushChanges();
         });
@@ -7051,7 +7072,7 @@ RemoveModalComponent.meta = {
             break;
 
           default:
-            _this2.controls[key].value = item[key];
+            _this2.controls[key].value = item[key] || null;
         }
       });
     }
@@ -7114,7 +7135,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -7193,7 +7214,7 @@ UpdateViewTileComponent.meta = {
   inputs: ['view', 'tile'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewComponent, _Component);
 
@@ -7338,7 +7359,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<fieldset>\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<fieldset *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</fieldset>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -7722,7 +7743,7 @@ var AssetService = /*#__PURE__*/function () {
       }));
     }), operators.tap(function () {
       return _this2.concurrent$.next(_this2.concurrent$.getValue() + 1);
-    }), operators.switchMap(function (files) {
+    }), operators.first(), operators.switchMap(function (files) {
       return EditorService.upload$(files);
     }), operators.switchMap(function (uploads) {
       var upload = uploads[0];
@@ -7746,6 +7767,24 @@ var AssetService = /*#__PURE__*/function () {
         _this2.concurrent$.next(_this2.concurrent$.getValue() - 1);
       }));
     }));
+    /*
+    return EditorService.upload$([item.file]).pipe(
+    	// tap(upload => console.log('upload', upload)),
+    	switchMap((uploads) => {
+    		const upload = uploads[0];
+    		item.uploading = false;
+    		item.complete = true;
+    		const asset = Asset.fromUrl(upload.url);
+    		this.events$.next(new AssetUploadCompleteEvent({ item, asset }));
+    		return EditorService.assetCreate$(asset).pipe(
+    			tap(asset => {
+    				this.remove(item);
+    				this.events$.next(new AssetUploadAssetEvent({ item, asset }));
+    			}),
+    		);
+    	}),
+    );
+    */
   };
 
   _proto.addItems = function addItems(files) {
@@ -8281,7 +8320,7 @@ ControlCustomSelectComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--select\" [innerHTML]=\"getLabel()\"></span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t\t<li (click)=\"setOption(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.options\">\n\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"getLabel()\"></span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t\t<li (click)=\"setOption(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.options\">\n\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t"
   /*  (click)="onClick($event)" (clickOutside)="onClickOutside($event)" */
 
   /*  <!-- <div class="dropdown" [class]="{ dropped: dropped }"> --> */
@@ -9028,15 +9067,15 @@ HtmlPipe.meta = {
 IdDirective.meta = {
   selector: '[id]',
   inputs: ['id']
-};var PATH = STATIC ? './' : '/Modules/B-Here/Client/docs/';
-var UID = 0;
+};var UID = 0;
 
 var ImageService = /*#__PURE__*/function () {
   function ImageService() {}
 
   ImageService.worker = function worker() {
     if (!this.worker_) {
-      this.worker_ = new Worker(PATH + "js/workers/image.service.worker.js");
+      var path = environment.STATIC ? './' : '/Modules/B-Here/Client/docs/';
+      this.worker_ = new Worker(path + "js/workers/image.service.worker.js");
     }
 
     return this.worker_;
@@ -9668,22 +9707,24 @@ SvgIconStructure.meta = {
     var viewId = this.viewId = this.getViewId(); // console.log('TryInARComponent.viewId', viewId);
 
     if (viewId) {
-      this.load$().pipe(operators.first()).subscribe(function (data) {
-        var view = data.views.find(function (x) {
-          return x.id === viewId;
-        }); // console.log('TryInARComponent.view', view);
+      ViewService.view$(viewId).pipe(operators.first()).subscribe(function (view) {
+        // console.log('TryInARComponent.view', view);
+        var modelViewerNode = _this.getModelViewerNode(view);
 
-        if (_this.platform === DevicePlatform.Android) {
-          var modelViewerNode = _this.getModelViewerNode(view);
+        var _getContext = rxcomp.getContext(_this),
+            node = _getContext.node;
 
-          var _getContext = rxcomp.getContext(_this),
-              node = _getContext.node;
-
-          node.appendChild(modelViewerNode);
-        } else if (_this.platform === DevicePlatform.IOS) {
-          var usdzSrc = environment.getPath(view.ar.usdz);
-          window.location.href = usdzSrc;
+        node.appendChild(modelViewerNode);
+        /*
+        if (this.platform === DevicePlatform.Android) {
+        	const modelViewerNode = this.getModelViewerNode(view);
+        	const { node } = getContext(this);
+        	node.appendChild(modelViewerNode);
+        } else if (this.platform === DevicePlatform.IOS) {
+        	const usdzSrc = environment.getPath(view.ar.usdz);
+        	window.location.href = usdzSrc;
         }
+        */
       });
     }
   };
@@ -9699,24 +9740,17 @@ SvgIconStructure.meta = {
   };
 
   _proto.getModelViewerNode = function getModelViewerNode(view) {
+    var panorama = environment.getPath(view.asset.folder + view.asset.file);
     var gltfSrc = environment.getPath(view.ar.gltf);
     var usdzSrc = environment.getPath(view.ar.usdz);
-    var template = "<model-viewer alt=\"" + view.name + "\" src=\"" + gltfSrc + "\" ios-src=\"" + usdzSrc + "\" magic-leap ar ar_preferred></model-viewer>";
+    var template =
+    /* html */
+    "\n\t\t\t<model-viewer alt=\"" + view.name + "\" skybox-image=\"" + panorama + "\" ios-src=\"" + usdzSrc + "\" src=\"" + gltfSrc + "\" ar ar-modes=\"webxr scene-viewer quick-look\" ar-scale=\"auto\" camera-controls></model-viewer>\n\t\t"; // const template = `<model-viewer alt="${view.name}" src="${gltfSrc}" ios-src="${usdzSrc}" magic-leap ar ar_preferred></model-viewer>`;
+
     var div = document.createElement("div");
     div.innerHTML = template;
     var node = div.firstElementChild;
     return node;
-  };
-
-  _proto.load$ = function load$() {
-    return HttpService.get$('./api/data.json').pipe(operators.map(function (data) {
-      data.views.forEach(function (view) {
-        view.items.forEach(function (item, index) {
-          item.index = index;
-        });
-      });
-      return data;
-    }));
   };
 
   return TryInARComponent;
