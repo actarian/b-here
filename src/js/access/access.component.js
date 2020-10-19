@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import { UrlService } from '../url/url.service';
+import { environment } from '../environment';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
@@ -37,7 +37,9 @@ export default class AccessComponent extends Component {
 	onGuidedTourAccess() {
 		UserService.logout$().pipe(
 			first(),
-		).subscribe(() => UrlService.redirect('guidedTour'));
+		).subscribe(() => {
+			window.location.href = environment.url.guidedTour;
+		});
 	}
 
 	onLogin() {
@@ -153,10 +155,10 @@ export default class AccessComponent extends Component {
 						this.pushChanges();
 						break;
 					case 'self-service-tour':
-						UrlService.redirect('selfServiceTour');
+						window.location.href = environment.url.selfServiceTour;
 						break;
 					case 'login':
-						UrlService.redirect('guidedTour');
+						window.location.href = environment.url.guidedTour;
 						break;
 				}
 				this.form.reset();

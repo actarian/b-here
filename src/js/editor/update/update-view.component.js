@@ -2,8 +2,8 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { auditTime, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
+import { environment } from '../../environment';
 import MessageService from '../../message/message.service';
-import ModalSrcService from '../../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { View, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
@@ -96,7 +96,7 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	onRemove(event) {
-		ModalService.open$({ src: ModalSrcService.get('remove'), data: { item: this.item } }).pipe(
+		ModalService.open$({ src: environment.template.modal.remove, data: { item: this.item } }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

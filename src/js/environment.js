@@ -1,3 +1,6 @@
+import { environmentServed } from "./environment.served";
+import { environmentStatic } from "./environment.static";
+
 export const NODE = (typeof module !== 'undefined' && module.exports);
 export const PARAMS = NODE ? { get: () => { } } : new URLSearchParams(window.location.search);
 export const DEBUG = false || (PARAMS.get('debug') != null);
@@ -24,19 +27,19 @@ export class Environment {
 
 	get href() {
 		if (HEROKU) {
-			return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
+			return this.githubDocs;
 		} else {
 			return BASE_HREF;
 		}
 	}
 
-	get host() {
-		let host = window.location.host.replace('127.0.0.1', '192.168.1.2');
-		// let host = window.location.host;
-		if (host.substr(host.length - 1, 1) === '/') {
-			host = host.substr(0, host.length - 1);
-		}
-		return `${window.location.protocol}//${host}${BASE_HREF}`;
+	getAbsoluteUrl(path, params) {
+		let url = `${window.location.origin}${path}`;
+		// let url = `${window.location.protocol}//${window.location.host}${path}`;
+		Object.keys(params).forEach(key => {
+			url = url.replace(`$${key}`, params[key]);
+		});
+		return url;
 	}
 
 	getPath(path) {
@@ -52,16 +55,11 @@ export class Environment {
 			Object.assign(this, options);
 		}
 	}
-
 }
 
-export const environment = new Environment({
-	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-	appCertificate: '',
-	channelName: 'BHere',
-	debugMeetingId: '1591366622325',
+const defaultOptions = {
 	port: 5000,
-	apiEnabled: false,
+	useToken: false,
 	fontFamily: 'GT Walsheim',
 	renderOrder: {
 		panorama: 0,
@@ -75,4 +73,19 @@ export const environment = new Environment({
 		debug: 80,
 		pointer: 90,
 	}
-});
+};
+
+const defaultAppOptions = {
+	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	channelName: 'BHere',
+};
+
+const environmentOptions = window.STATIC ? environmentStatic : environmentServed;
+
+const options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
+
+export const environment = new Environment(options);
+
+environment.STATIC = window.STATIC;
+
+console.log('environment', environment);

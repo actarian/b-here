@@ -142,6 +142,39 @@
       "checkRequest": "",
       "checkField": "",
       "id": 30266096716599
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 259890051054900
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 259930320294499
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 259937975036100
     }
   ]
 }
