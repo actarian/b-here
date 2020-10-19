@@ -5,11 +5,9 @@ import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { AgoraStatus } from '../agora/agora.types';
 import { environment } from '../environment';
 import LocationService from '../location/location.service';
-import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import ToastService from '../toast/toast.service';
-import { UrlService } from '../url/url.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { ViewItemType, ViewType } from '../view/view';
@@ -63,7 +61,7 @@ export default class EditorComponent extends Component {
 				this.user = user;
 				this.initState();
 			} else {
-				UrlService.redirect('access');
+				window.location.href = environment.url.access;
 			}
 		});
 	}
@@ -171,7 +169,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onRemoteControlRequest(message) {
-		ModalService.open$({ src: ModalSrcService.get('controlRequest'), data: null }).pipe(
+		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -189,7 +187,7 @@ export default class EditorComponent extends Component {
 	}
 
 	tryInAr() {
-		ModalService.open$({ src: ModalSrcService.get('tryInAr'), data: this.view }).pipe(
+		ModalService.open$({ src: environment.template.modal.tryInAr, data: this.view }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			// this.pushChanges();
@@ -269,7 +267,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onOpenModal(modal, data) {
-		ModalService.open$({ src: ModalSrcService.get(modal.type, modal.value), data }).pipe(
+		ModalService.open$({ src: environment.template.modal[modal.type][modal.value], data }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

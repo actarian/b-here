@@ -117,7 +117,77 @@ function _assertThisInitialized(self) {
   }
 
   return self;
-}var NODE = typeof module !== 'undefined' && module.exports;
+}var environmentServed = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere',
+  assets: '/Modules/B-Here/Client/docs/',
+  worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/',
+  url: {
+    index: '/',
+    access: '/',
+    editor: '/it/it/editor',
+    bHere: '/it/it/b-here',
+    selfServiceTour: '/it/it/self-service-tour',
+    guidedTour: '/it/it/guided-tour'
+  },
+  template: {
+    tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
+    modal: {
+      controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
+      tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
+      view: {
+        'panorama': '/template/modules/b-here/panorama-modal.cshtml',
+        'panorama-grid': '/template/modules/b-here/panorama-grid-modal.cshtml',
+        'room-3d': '/template/modules/b-here/room-3d-modal.cshtml',
+        'model': '/template/modules/b-here/model-modal.cshtml'
+      },
+      viewItem: {
+        'nav': '/template/modules/b-here/nav-modal.cshtml',
+        'plane': '/template/modules/b-here/plane-modal.cshtml',
+        'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
+        'texture': '/template/modules/b-here/texture-modal.cshtml',
+        'gltf': '/template/modules/b-here/gltf-modal.cshtml'
+      },
+      remove: '/template/modules/b-here/remove-modal.cshtml'
+    }
+  }
+};var environmentStatic = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere',
+  assets: './',
+  worker: './js/workers/image.service.worker.js',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/',
+  url: {
+    index: '/',
+    access: '/',
+    editor: '/editor',
+    bHere: '/b-here',
+    selfServiceTour: '/self-service-tour',
+    guidedTour: '/guided-tour'
+  },
+  template: {
+    tryInAr: '/try-in-ar.html?viewId=$viewId',
+    modal: {
+      controlRequest: '/control-request-modal.html',
+      tryInAr: '/try-in-ar-modal.html',
+      view: {
+        'panorama': '/panorama-modal.html',
+        'panorama-grid': '/panorama-grid-modal.html',
+        'room-3d': '/room-3d-modal.html',
+        'model': '/model-modal.html'
+      },
+      viewItem: {
+        'nav': '/nav-modal.html',
+        'plane': '/plane-modal.html',
+        'curved-plane': '/curved-plane-modal.html',
+        'texture': '/texture-modal.html',
+        'gltf': '/gltf-modal.html'
+      },
+      remove: '/remove-modal.html'
+    }
+  }
+};var NODE = typeof module !== 'undefined' && module.exports;
 var PARAMS = NODE ? {
   get: function get() {}
 } : new URLSearchParams(window.location.search);
@@ -134,6 +204,15 @@ var ENV = {
 };
 var Environment = /*#__PURE__*/function () {
   var _proto = Environment.prototype;
+
+  _proto.getAbsoluteUrl = function getAbsoluteUrl(path, params) {
+    var url = "" + window.location.origin + path; // let url = `${window.location.protocol}//${window.location.host}${path}`;
+
+    Object.keys(params).forEach(function (key) {
+      url = url.replace("$" + key, params[key]);
+    });
+    return url;
+  };
 
   _proto.getPath = function getPath(path) {
     return this.isLocal(path) ? this.href + path : path;
@@ -156,21 +235,10 @@ var Environment = /*#__PURE__*/function () {
     key: "href",
     get: function get() {
       if (HEROKU) {
-        return 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/';
+        return this.githubDocs;
       } else {
         return BASE_HREF;
       }
-    }
-  }, {
-    key: "host",
-    get: function get() {
-      var host = window.location.host.replace('127.0.0.1', '192.168.1.2'); // let host = window.location.host;
-
-      if (host.substr(host.length - 1, 1) === '/') {
-        host = host.substr(0, host.length - 1);
-      }
-
-      return window.location.protocol + "//" + host + BASE_HREF;
     }
   }]);
 
@@ -182,13 +250,9 @@ var Environment = /*#__PURE__*/function () {
 
   return Environment;
 }();
-var environment = new Environment({
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  appCertificate: '',
-  channelName: 'BHere',
-  debugMeetingId: '1591366622325',
+var defaultOptions = {
   port: 5000,
-  apiEnabled: false,
+  useToken: false,
   fontFamily: 'GT Walsheim',
   renderOrder: {
     panorama: 0,
@@ -202,41 +266,16 @@ var environment = new Environment({
     debug: 80,
     pointer: 90
   }
-});var URLS = {
-  index: '/',
-  access: '/',
-  editor: '/editor',
-  bHere: '/b-here',
-  selfServiceTour: '/self-service-tour',
-  guidedTour: '/guided-tour'
 };
-var UrlService = /*#__PURE__*/function () {
-  function UrlService() {}
-
-  UrlService.get = function get() {
-    var url = URLS;
-
-    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
-      keys[_key] = arguments[_key];
-    }
-
-    keys.forEach(function (key) {
-      return url = typeof url === 'object' ? url[key] : null;
-    });
-    return environment.STATIC ? url : "/it/it" + url;
-  };
-
-  UrlService.redirect = function redirect() {
-    for (var _len2 = arguments.length, keys = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      keys[_key2] = arguments[_key2];
-    }
-
-    var url = this.get.apply(this, keys);
-    window.location.href = url;
-  };
-
-  return UrlService;
-}();var HttpService = /*#__PURE__*/function () {
+var defaultAppOptions = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere'
+};
+var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
+var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
+var environment = new Environment(options);
+environment.STATIC = window.STATIC;
+console.log('environment', environment);var HttpService = /*#__PURE__*/function () {
   function HttpService() {}
 
   HttpService.http$ = function http$(method, url, data, format) {
@@ -293,16 +332,14 @@ var UrlService = /*#__PURE__*/function () {
 
   HttpService.query = function query(data) {
     return ''; // todo
-  };
-
-  HttpService.getUrl = function getUrl(url, format) {
-    if (format === void 0) {
-      format = 'json';
-    }
-
-    // console.log(url);
-    return environment.STATIC && format === 'json' && url.indexOf('/') === 0 ? "." + url + ".json" : url;
-  };
+  }
+  /*
+  static getUrl(url, format = 'json') {
+  	// console.log(url);
+  	return environment.STATIC && format === 'json' && url.indexOf('/') === 0 ? `.${url}.json` : url;
+  }
+  */
+  ;
 
   HttpService.getError = function getError(object, response) {
     var error = typeof object === 'object' ? object : {};
@@ -479,7 +516,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 
   _proto.onGuidedTourAccess = function onGuidedTourAccess() {
     UserService.logout$().pipe(operators.first()).subscribe(function () {
-      return UrlService.redirect('guidedTour');
+      window.location.href = environment.url.guidedTour;
     });
   };
 
@@ -607,11 +644,11 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
             break;
 
           case 'self-service-tour':
-            UrlService.redirect('selfServiceTour');
+            window.location.href = environment.url.selfServiceTour;
             break;
 
           case 'login':
-            UrlService.redirect('guidedTour');
+            window.location.href = environment.url.guidedTour;
             break;
         }
 
@@ -1696,7 +1733,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.getRtcToken = function getRtcToken() {
-    if (environment.apiEnabled) {
+    if (environment.useToken) {
       return HttpService.post$('/api/token/rtc', {
         uid: null
       });
@@ -1708,7 +1745,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.getRtmToken = function getRtmToken(uid) {
-    if (environment.apiEnabled) {
+    if (environment.useToken) {
       return HttpService.post$('/api/token/rtm', {
         uid: uid
       });
@@ -2974,7 +3011,7 @@ AgoraDeviceComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    this.editorLink = UrlService.get('editor');
+    this.editorLink = environment.url.editor;
     this.state = {};
     var form = this.form = new rxcompForm.FormGroup({
       link: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), rxcompForm.Validators.RequiredValidator()]),
@@ -3404,60 +3441,6 @@ var DeviceService = /*#__PURE__*/function () {
   }]);
 
   return DeviceService;
-}();var STATIC_MODALS = {
-  controlRequest: 'control-request-modal.html',
-  tryInAr: 'try-in-ar-modal.html',
-  view: {
-    'panorama': 'panorama-modal.html',
-    'panorama-grid': 'panorama-grid-modal.html',
-    'room-3d': 'room-3d-modal.html',
-    'model': 'model-modal.html'
-  },
-  viewItem: {
-    'nav': 'nav-modal.html',
-    'plane': 'plane-modal.html',
-    'curved-plane': 'curved-plane-modal.html',
-    'texture': 'texture-modal.html',
-    'gltf': 'gltf-modal.html'
-  },
-  remove: 'remove-modal.html'
-};
-var SERVER_MODALS = {
-  controlRequest: 'control-request-modal.cshtml',
-  tryInAr: 'try-in-ar-modal.cshtml',
-  view: {
-    'panorama': 'panorama-modal.cshtml',
-    'panorama-grid': 'panorama-grid-modal.cshtml',
-    'room-3d': 'room-3d-modal.cshtml',
-    'model': 'model-modal.cshtml'
-  },
-  viewItem: {
-    'nav': 'nav-modal.cshtml',
-    'plane': 'plane-modal.cshtml',
-    'curved-plane': 'curved-plane-modal.cshtml',
-    'texture': 'texture-modal.cshtml',
-    'gltf': 'gltf-modal.cshtml'
-  },
-  remove: 'remove-modal.cshtml'
-};
-
-var ModalSrcService = /*#__PURE__*/function () {
-  function ModalSrcService() {}
-
-  ModalSrcService.get = function get() {
-    var src = environment.STATIC ? STATIC_MODALS : SERVER_MODALS;
-
-    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
-      keys[_key] = arguments[_key];
-    }
-
-    keys.forEach(function (key) {
-      return src = typeof src === 'object' ? src[key] : null;
-    });
-    return environment.STATIC ? BASE_HREF + src : "/template/modules/b-here/" + src; // return environment.STATIC ? BASE_HREF + src : `/viewdoc.cshtml?co_id=${src}`;
-  };
-
-  return ModalSrcService;
 }();var ModalEvent = function ModalEvent(data) {
   this.data = data;
 };
@@ -3620,7 +3603,9 @@ ModalOutletComponent.meta = {
   };
 
   TryInARModalComponent.getUrl = function getUrl(data) {
-    var url = environment.STATIC ? environment.host + "try-in-ar.html?viewId=" + data.id : "/template/modules/b-here/try-in-ar.cshtml?viewId=" + data.id;
+    var url = environment.getAbsoluteUrl(environment.template.tryInAr, {
+      viewId: data.id
+    });
     console.log('TryInARModalComponent.getUrl', url);
     return url;
   };
@@ -4347,24 +4332,12 @@ var VRService = /*#__PURE__*/function () {
       if (user && (!linkRole || linkRole === user.type)) {
         _this2.initWithUser(user);
       } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-        UrlService.redirect('access');
+        window.location.href = environment.url.access;
       } else {
         _this2.initWithUser({
           type: linkRole
         });
       }
-      /*
-      const linkRole = this.getLinkRole();
-      if (!user && !linkRole) {
-      	UrlService.redirect('access');
-      }
-      if (!user || (linkRole && linkRole !== user.type)) {
-      	this.initWithUser({ type: linkRole });
-      } else {
-      	this.initWithUser(user);
-      }
-      */
-
     });
   };
 
@@ -4663,7 +4636,7 @@ var VRService = /*#__PURE__*/function () {
     var _this7 = this;
 
     ModalService.open$({
-      src: ModalSrcService.get('controlRequest'),
+      src: environment.template.modal.controlRequest,
       data: null
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (!DEBUG) {
@@ -4756,7 +4729,7 @@ var VRService = /*#__PURE__*/function () {
       TryInARModalComponent.openInAR(this.view);
     } else {
       ModalService.open$({
-        src: ModalSrcService.get('tryInAr'),
+        src: environment.template.modal.tryInAr,
         data: this.view
       }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
       });
@@ -4811,7 +4784,6 @@ AgoraComponent.meta = {
         node = _getContext.node;
 
     node.classList.remove('hidden');
-    environment.STATIC = window.STATIC;
   };
 
   return AppComponent;
@@ -5851,7 +5823,7 @@ AsideComponent.meta = {
 
         _this2.initState();
       } else {
-        UrlService.redirect('access');
+        window.location.href = environment.url.access;
       }
     });
   };
@@ -5979,7 +5951,7 @@ AsideComponent.meta = {
     var _this6 = this;
 
     ModalService.open$({
-      src: ModalSrcService.get('controlRequest'),
+      src: environment.template.modal.controlRequest,
       data: null
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
@@ -6003,7 +5975,7 @@ AsideComponent.meta = {
 
   _proto.tryInAr = function tryInAr() {
     ModalService.open$({
-      src: ModalSrcService.get('tryInAr'),
+      src: environment.template.modal.tryInAr,
       data: this.view
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
     });
@@ -6096,7 +6068,7 @@ AsideComponent.meta = {
     var _this8 = this;
 
     ModalService.open$({
-      src: ModalSrcService.get(modal.type, modal.value),
+      src: environment.template.modal[modal.type][modal.value],
       data: data
     }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
@@ -7051,8 +7023,7 @@ RemoveModalComponent.meta = {
       if (keys.indexOf('viewId') !== -1) {
         EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
           _this2.controls.viewId.options = options;
-          _this2.controls.viewId.value = _this2.controls.viewId.value || null;
-          console.log(_this2.controls.viewId.options, _this2.controls.viewId.value);
+          _this2.controls.viewId.value = _this2.controls.viewId.value || null; // console.log(this.controls.viewId.options, this.controls.viewId.value);
 
           _this2.pushChanges();
         });
@@ -7098,7 +7069,7 @@ RemoveModalComponent.meta = {
     var _this3 = this;
 
     ModalService.open$({
-      src: ModalSrcService.get('remove'),
+      src: environment.template.modal.remove,
       data: {
         item: this.item
       }
@@ -7185,7 +7156,7 @@ UpdateViewItemComponent.meta = {
     var _this2 = this;
 
     ModalService.open$({
-      src: ModalSrcService.get('remove'),
+      src: environment.template.modal.remove,
       data: {
         tile: this.tile
       }
@@ -7327,7 +7298,7 @@ UpdateViewTileComponent.meta = {
     var _this2 = this;
 
     ModalService.open$({
-      src: ModalSrcService.get('remove'),
+      src: environment.template.modal.remove,
       data: {
         item: this.item
       }
@@ -9074,8 +9045,7 @@ var ImageService = /*#__PURE__*/function () {
 
   ImageService.worker = function worker() {
     if (!this.worker_) {
-      var path = environment.STATIC ? './' : '/Modules/B-Here/Client/docs/';
-      this.worker_ = new Worker(path + "js/workers/image.service.worker.js");
+      this.worker_ = new Worker(environment.worker);
     }
 
     return this.worker_;

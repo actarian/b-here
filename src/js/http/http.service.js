@@ -1,6 +1,5 @@
 import { from, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../environment';
 
 export default class HttpService {
 
@@ -59,10 +58,12 @@ export default class HttpService {
 		return ''; // todo
 	}
 
+	/*
 	static getUrl(url, format = 'json') {
 		// console.log(url);
 		return environment.STATIC && format === 'json' && url.indexOf('/') === 0 ? `.${url}.json` : url;
 	}
+	*/
 
 	static getError(object, response) {
 		let error = typeof object === 'object' ? object : {};

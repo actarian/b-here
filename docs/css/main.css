@@ -4015,7 +4015,7 @@ body {
   bottom: 25px; }
   .group--controls > button + button {
     margin-left: 10px; }
-  @media (max-width: 1023.98px) {
+  @media (max-width: 767.98px) {
     .group--controls .btn--cam,
     .group--controls .btn--mic {
       display: none; } }
@@ -4050,67 +4050,40 @@ body {
     .group--heart .btn--heart {
       margin: 0; } }
 
-.group--remote {
-  position: absolute;
-  display: flex;
-  flex-wrap: wrap;
-  top: 0;
-  left: 0;
-  /*
-	.agora-stream {
-		@include ratio(320px, 4 / 3);
-		background: black;
-
-		// border: 2px solid rgba(0, 0, 0, 0.1);
-		// &.playing {
-		// 	border-color: transparent;
-		// }
-	}
-
-	&--0 {
-		flex: 1 1 0;
-		max-width: 0;
-	}
-
-	&--1 {
-		flex: 1 1 320px;
-		max-width: 320px;
-	}
-
-	&--2,
-	&--3,
-	&--48 {
-		flex: 1 1 400px;
-		max-width: 400px;
-
-		.agora-stream {
-			@include ratio(200px, 4 / 3);
-		}
-	}
-
-	&--5,
-	&--6,
-	&--7,
-	&--8,
-	&--9 {
-		flex: 1 1 360px;
-		max-width: 360px;
-
-		.agora-stream {
-			@include ratio(120px, 4 / 3);
-		}
-	}
-	*/
-  flex: 1 1 120px;
+.group--remote .agora-stream {
   width: 120px;
-  height: 100vh;
-  background: #333;
-  justify-content: flex-start;
-  flex-direction: column; }
-  .group--remote .agora-stream {
-    width: 120px;
-    height: 90px;
-    background: black; }
+  height: 90px;
+  background: black; }
+
+@media (min-width: 768px) {
+  .group--remote {
+    position: absolute;
+    display: flex;
+    background: #333; } }
+  @media (min-width: 768px) and (orientation: landscape) {
+    .group--remote {
+      flex-direction: column;
+      justify-content: flex-start;
+      top: 0;
+      left: 0;
+      width: 120px;
+      height: 100%;
+      flex: 1 1 120px; } }
+  @media (min-width: 768px) and (orientation: portrait) {
+    .group--remote {
+      flex-direction: row;
+      justify-content: flex-start;
+      bottom: -90px;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      flex: 1 1 100%; } }
+
+@media (max-width: 767.98px) {
+  .group--remote {
+    position: absolute;
+    top: 0;
+    left: 0; } }
 
 .group--local {
   position: absolute;
@@ -4130,12 +4103,17 @@ body {
       visibility: hidden;
       pointer-events: none; } }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) and (orientation: landscape) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     width: calc(100% - 120px);
     margin-left: 120px; }
     .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
       left: -120px; } }
+
+@media (min-width: 768px) and (orientation: portrait) {
+  .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
+    height: calc(100% - 90px);
+    margin-bottom: 90px; } }
 
 .ui.self-service .group--remote {
   display: none; }

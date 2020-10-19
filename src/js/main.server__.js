@@ -38,6 +38,8 @@ app.get('/', function(request, response) {
 	// response.render('docs/index');
 });
 
+const appCertificate = '';
+
 app.post('/api/token/rtc', function(request, response) {
 	const payload = request.body || {};
 	const duration = 3600;
@@ -45,7 +47,7 @@ app.post('/api/token/rtc', function(request, response) {
 	const expirationTime = timestamp + duration;
 	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
 	const role = RtcRole.PUBLISHER;
-	const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, environment.appCertificate, environment.channelName, uid, role, expirationTime);
+	const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, appCertificate, environment.channelName, uid, role, expirationTime);
 	response.send(JSON.stringify({
 		token: token,
 	}));
@@ -58,7 +60,7 @@ app.post('/api/token/rtm', function(request, response) {
 	const expirationTime = timestamp + duration;
 	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
 	const role = RtmRole.PUBLISHER;
-	const token = RtmTokenBuilder.buildToken(environment.appKey, environment.appCertificate, uid, role, expirationTime);
+	const token = RtmTokenBuilder.buildToken(environment.appKey, appCertificate, uid, role, expirationTime);
 	response.send(JSON.stringify({
 		token: token,
 	}));

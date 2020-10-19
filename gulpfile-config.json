@@ -87,18 +87,6 @@
           "minify": true
         }
       ]
-    },
-    "dist": {
-      "compile": [
-        {
-          "input": "src/js/main.server.js",
-          "output": {
-            "file": "dist/server/main.js",
-            "format": "cjs"
-          },
-          "minify": false
-        }
-      ]
     }
   },
   "tfs": false,

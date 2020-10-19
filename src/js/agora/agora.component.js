@@ -5,12 +5,10 @@ import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
-import ModalSrcService from '../modal/modal-src.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
-import { UrlService } from '../url/url.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView } from '../view/view';
@@ -77,21 +75,10 @@ export default class AgoraComponent extends Component {
 			if (user && (!linkRole || linkRole === user.type)) {
 				this.initWithUser(user);
 			} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-				UrlService.redirect('access');
+				window.location.href = environment.url.access;
 			} else {
 				this.initWithUser({ type: linkRole });
 			}
-			/*
-			const linkRole = this.getLinkRole();
-			if (!user && !linkRole) {
-				UrlService.redirect('access');
-			}
-			if (!user || (linkRole && linkRole !== user.type)) {
-				this.initWithUser({ type: linkRole });
-			} else {
-				this.initWithUser(user);
-			}
-			*/
 		});
 	}
 
@@ -340,7 +327,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onRemoteControlRequest(message) {
-		ModalService.open$({ src: ModalSrcService.get('controlRequest'), data: null }).pipe(
+		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (!DEBUG) {
@@ -416,7 +403,7 @@ export default class AgoraComponent extends Component {
 		if (this.platform === DevicePlatform.IOS || this.platform === DevicePlatform.Android) {
 			TryInARModalComponent.openInAR(this.view);
 		} else {
-			ModalService.open$({ src: ModalSrcService.get('tryInAr'), data: this.view }).pipe(
+			ModalService.open$({ src: environment.template.modal.tryInAr, data: this.view }).pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(event => {
 				// this.pushChanges();

@@ -1,7 +1,7 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import ModalSrcService from '../../modal/modal-src.service';
+import { environment } from '../../environment';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
@@ -78,7 +78,7 @@ export default class UpdateViewItemComponent extends Component {
 				).subscribe(options => {
 					this.controls.viewId.options = options;
 					this.controls.viewId.value = this.controls.viewId.value || null;
-					console.log(this.controls.viewId.options, this.controls.viewId.value);
+					// console.log(this.controls.viewId.options, this.controls.viewId.value);
 					this.pushChanges();
 				});
 			}
@@ -112,7 +112,7 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	onRemove(event) {
-		ModalService.open$({ src: ModalSrcService.get('remove'), data: { item: this.item } }).pipe(
+		ModalService.open$({ src: environment.template.modal.remove, data: { item: this.item } }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

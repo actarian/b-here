@@ -186,7 +186,7 @@ export default class AgoraService extends Emittable {
 	}
 
 	getRtcToken() {
-		if (environment.apiEnabled) {
+		if (environment.useToken) {
 			return HttpService.post$('/api/token/rtc', { uid: null });
 		} else {
 			return of({ token: null });
@@ -194,7 +194,7 @@ export default class AgoraService extends Emittable {
 	}
 
 	getRtmToken(uid) {
-		if (environment.apiEnabled) {
+		if (environment.useToken) {
 			return HttpService.post$('/api/token/rtm', { uid: uid });
 		} else {
 			return of({ token: null });

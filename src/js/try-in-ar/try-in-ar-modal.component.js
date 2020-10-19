@@ -27,7 +27,7 @@ export default class TryInARModalComponent extends Component {
 	}
 
 	static getUrl(data) {
-		const url = environment.STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/template/modules/b-here/try-in-ar.cshtml?viewId=${data.id}`;
+		const url = environment.getAbsoluteUrl(environment.template.tryInAr, { viewId: data.id });
 		console.log('TryInARModalComponent.getUrl', url);
 		return url;
 	}

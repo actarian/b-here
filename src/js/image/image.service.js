@@ -8,8 +8,7 @@ export default class ImageService {
 
 	static worker() {
 		if (!this.worker_) {
-			const path = environment.STATIC ? './' : '/Modules/B-Here/Client/docs/';
-			this.worker_ = new Worker(`${path}js/workers/image.service.worker.js`);
+			this.worker_ = new Worker(environment.worker);
 		}
 		return this.worker_;
 	}
