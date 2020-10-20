@@ -41,7 +41,7 @@ app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
-app.use('*', staticMiddleware_);
+// app.use('*', staticMiddleware_);
 app.use('*', apiMiddleware_);
 
 app.post('/api/upload', multipartMiddleware, function(request, response) {
