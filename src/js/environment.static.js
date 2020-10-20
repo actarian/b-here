@@ -4,7 +4,7 @@ export const environmentStatic = {
 	channelName: 'BHere',
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
-	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
+	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ernestomeda/docs/',
 	url: {
 		index: '/',
 		access: '/',
