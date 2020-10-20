@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { staticMiddleware } = require('./static/static.js');
 const { apiMiddleware, useApi, uuid } = require('./api/api.js');
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart({ uploadDir: path.join(__dirname, '../docs/temp/') });
 // const serveStatic = require('serve-static');
 // const { upload } = require('./upload/upload.js');
 // const uploader = upload(path.join(__dirname, '../docs/temp/'));
@@ -31,8 +33,8 @@ const Vars = {
 	accessControlAllowOrigin: true,
 };
 
-const staticMiddleware_ = staticMiddleware(Vars);
-// const apiMiddleware_ = apiMiddleware(Vars);
+// const staticMiddleware_ = staticMiddleware(Vars);
+const apiMiddleware_ = apiMiddleware(Vars);
 
 const app = express();
 app.disable('x-powered-by');
@@ -40,7 +42,43 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use('*', staticMiddleware_);
-// app.use('*', apiMiddleware_);
+app.use('*', apiMiddleware_);
+
+app.post('/api/upload', multipartMiddleware, function(request, response) {
+	if (Vars.accessControlAllowOrigin) {
+		response.header('Access-Control-Allow-Origin', '*');
+	}
+	console.log(request.body, request.files);
+	const file = request.files.file;
+	const id = uuid();
+	const fileName = `${id}_${file.name}`;
+	const folder = `/uploads/`;
+	const input = file.path;
+	const output = path.join(__dirname, Vars.root, folder, fileName);
+	const upload = {
+		id,
+		fileName,
+		type: file.type,
+		originalFileName: file.name,
+		url: `${folder}${fileName}`,
+	};
+	const uploads = [upload];
+	fs.copyFile(input, output, (error) => {
+		fs.unlink(input, () => { });
+		if (error) {
+			throw error;
+		} else {
+			response.status(200).send(JSON.stringify(uploads));
+		}
+	});
+});
+app.options('/api/upload', function(request, response) {
+	console.log('OPTIONS');
+	if (Vars.accessControlAllowOrigin) {
+		response.header('Access-Control-Allow-Origin', '*');
+	}
+	response.status(200).send();
+});
 
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
