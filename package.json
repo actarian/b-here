@@ -13,8 +13,8 @@
   },
   "main": "server/main.js",
   "scripts": {
-    "start": "node dist/server/main.js",
-    "serve": "node dist/server/main.js"
+    "start": "node server/main.js",
+    "serve": "node server/main.js"
   },
   "dependencies": {
     "@flowjs/flow.js": "2.14.1",
