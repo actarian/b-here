@@ -32,7 +32,7 @@ const Vars = {
 };
 
 const staticMiddleware_ = staticMiddleware(Vars);
-const apiMiddleware_ = apiMiddleware(Vars);
+// const apiMiddleware_ = apiMiddleware(Vars);
 
 const app = express();
 app.disable('x-powered-by');
@@ -40,7 +40,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use('*', staticMiddleware_);
-app.use('*', apiMiddleware_);
+// app.use('*', apiMiddleware_);
 
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
@@ -61,3 +61,14 @@ app.get('/editor', function(request, response) {
 app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);
 });
+
+const useHttpServer = false;
+if (useHttpServer) {
+	const privateKey = fs.readFileSync('certs/server.key', 'utf8');
+	const certificate = fs.readFileSync('certs/server.crt', 'utf8');
+	const credentials = { key: privateKey, cert: certificate };
+	const serverHttps = https.createServer(credentials, app);
+	serverHttps.listen(Vars.portHttps, () => {
+		console.log(`NodeJs Running server at ${Vars.hostHttps}`);
+	});
+}

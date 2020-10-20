@@ -155,7 +155,6 @@ app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);
 });
 
-
 const heroku = (process.env._ && process.env._.indexOf('heroku'));
 if (!heroku) {
 	const privateKey = fs.readFileSync('certs/server.key', 'utf8');
