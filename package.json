@@ -28,16 +28,16 @@
     "rxcomp": "1.0.0-beta.18",
     "rxcomp-form": "1.0.0-beta.18",
     "rxjs": "6.6.2",
-    "three": "0.117.1"
-  },
-  "devDependencies": {
+    "three": "0.117.1",
     "body-parser": "1.19.0",
     "connect-multiparty": "2.2.0",
     "events": "3.2.0",
     "express": "4.17.1",
     "express-session": "^1.17.1",
-    "gulpfile-config": "1.0.0-alpha.14",
     "https": "1.0.0",
     "mv": "2.1.1"
+  },
+  "devDependencies": {
+    "gulpfile-config": "1.0.0-alpha.14"
   }
 }

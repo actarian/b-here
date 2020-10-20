@@ -1,17 +1,17 @@
 const https = require('https');
 const fs = require('fs');
-const serveStatic = require('serve-static');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart({ uploadDir: path.join(__dirname, '../docs/temp/') });
-const { upload } = require('./upload/upload.js');
-const uploader = upload(path.join(__dirname, '../docs/temp/'));
 const { staticMiddleware } = require('./static/static.js');
-// const { spaMiddleware } = require('./spa/spa.js');
 const { apiMiddleware, useApi, uuid } = require('./api/api.js');
+// const serveStatic = require('serve-static');
+// const { upload } = require('./upload/upload.js');
+// const uploader = upload(path.join(__dirname, '../docs/temp/'));
+// const { spaMiddleware } = require('./spa/spa.js');
 // const router = express.Router();
 const BASE_HREF = '/b-here/';
 const ASSETS = `assets/`;
@@ -55,24 +55,10 @@ app.post('/api/upload', multipartMiddleware, function(request, response) {
 		response.header('Access-Control-Allow-Origin', '*');
 	}
 	console.log(request.body, request.files);
-	/*
-	file: {
-		fieldName: 'file',
-		originalFilename: 'ambiente1_x3_y3.jpg',
-		path: 'C:\\WORK\\GIT\\TFS\\Websolute\\b-here\\docs\\temp\\CVvHZ4YYkiQdWmiAtTjhb6kF.jpg',
-		headers: {
-		  'content-disposition': 'form-data; name="file"; filename="ambiente1_x3_y3.jpg"',
-		  'content-type': 'image/jpeg'
-		},
-		size: 3888620,
-		name: 'ambiente1_x3_y3.jpg',
-		type: 'image/jpeg'
-	  }
-	*/
 	const file = request.files.file;
 	const id = uuid();
 	const fileName = `${id}_${file.name}`;
-	const folder = `/uploads/`; // `uploads/`;
+	const folder = `/uploads/`;
 	const input = file.path;
 	const output = path.join(__dirname, Vars.root, folder, fileName);
 	const upload = {
@@ -81,7 +67,6 @@ app.post('/api/upload', multipartMiddleware, function(request, response) {
 		type: file.type,
 		originalFileName: file.name,
 		url: `${folder}${fileName}`,
-		// url: `${request.protocol === 'https' ? Vars.hostHttps : Vars.host}${Vars.baseHref}${folder}${fileName}`,
 	};
 	const uploads = [upload];
 	fs.copyFile(input, output, (error) => {
@@ -101,7 +86,8 @@ app.options('/api/upload', function(request, response) {
 	response.status(200).send();
 });
 
-// Handle uploads through Flow.js
+/*
+flow.js
 app.post('/api/upload_', multipartMiddleware, function(request, response) {
 	uploader.post(request, function(status, filename, original_filename, identifier) {
 		console.log('POST', status, original_filename, identifier);
@@ -130,7 +116,6 @@ app.options('/api/upload_', function(request, response) {
 	}
 	response.status(200).send();
 });
-// Handle status checks on chunks through Flow.js
 app.get('/api/upload_', function(request, response) {
 	uploader.get(request, function(status, filename, original_filename, identifier) {
 		console.log('GET', status);
@@ -148,12 +133,10 @@ app.get('/api/upload_', function(request, response) {
 app.get('/api/download/:identifier', function(request, response) {
 	uploader.write(request.params.identifier, response);
 });
-// Handle uploads through Flow.js
-// app.get('*', spaMiddleware_);
+*/
+
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
-	// response.sendFile(path.join(__dirname, '../docs/index.html'));
-	// response.render('docs/index');
 });
 app.get('/self-service-tour', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
@@ -167,18 +150,6 @@ app.get('/b-here', function(request, response) {
 app.get('/editor', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
-/*
-app.listen(Vars.port, () => {
-	console.log(`NodeJs Running server at ${Vars.host}`);
-});
-*/
-
-/*
-const serverHttp = http.createServer(app);
-serverHttp.listen(Vars.port, () => {
-	console.log(`NodeJs Running server at ${Vars.host}`);
-});
-*/
 
 app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);
