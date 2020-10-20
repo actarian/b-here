@@ -15,7 +15,7 @@
           "name": "image"
         },
         "folder": "/textures/waiting-room/",
-        "file": "waiting-room-02.jpg"
+        "file": "waiting-room.jpg"
       },
       "orientation": {
         "latitude": 0,
@@ -37,8 +37,8 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "/textures/waiting-room/",
-        "file": "mod2.jpg"
+        "folder": "/textures/welcome-room/",
+        "file": "welcome-room.jpg"
       },
       "orientation": {
         "latitude": 0,
@@ -134,6 +134,17 @@
       "checkRequest": "",
       "checkField": "",
       "id": 366442796379400
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 372451081715000
     }
   ]
 }
