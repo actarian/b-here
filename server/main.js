@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { staticMiddleware } = require('./static/static.js');
-// const { apiMiddleware, useApi, uuid } = require('./api/api.js');
+const { apiMiddleware, useApi, uuid } = require('./api/api.js');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart({ uploadDir: path.join(__dirname, '../docs/temp/') });
 // const serveStatic = require('serve-static');
@@ -44,7 +44,6 @@ app.use(bodyParser.raw());
 app.use('*', staticMiddleware_);
 // app.use('*', apiMiddleware_);
 
-/*
 app.post('/api/upload', multipartMiddleware, function(request, response) {
 	if (Vars.accessControlAllowOrigin) {
 		response.header('Access-Control-Allow-Origin', '*');
@@ -80,7 +79,6 @@ app.options('/api/upload', function(request, response) {
 	}
 	response.status(200).send();
 });
-*/
 
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
