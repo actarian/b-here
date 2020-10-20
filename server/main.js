@@ -34,7 +34,7 @@ const Vars = {
 };
 
 const staticMiddleware_ = staticMiddleware(Vars);
-// const apiMiddleware_ = apiMiddleware(Vars);
+const apiMiddleware_ = apiMiddleware(Vars);
 
 const app = express();
 app.disable('x-powered-by');
@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 app.use('*', staticMiddleware_);
-// app.use('*', apiMiddleware_);
+app.use('*', apiMiddleware_);
 
 app.post('/api/upload', multipartMiddleware, function(request, response) {
 	if (Vars.accessControlAllowOrigin) {
