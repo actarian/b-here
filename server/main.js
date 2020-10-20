@@ -3,6 +3,8 @@ const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { staticMiddleware } = require('./static/static.js');
+const { apiMiddleware, useApi, uuid } = require('./api/api.js');
 // const serveStatic = require('serve-static');
 // const { upload } = require('./upload/upload.js');
 // const uploader = upload(path.join(__dirname, '../docs/temp/'));
@@ -29,12 +31,16 @@ const Vars = {
 	accessControlAllowOrigin: true,
 };
 
-// const spaMiddleware_ = spaMiddleware(Vars);
+const staticMiddleware_ = staticMiddleware(Vars);
+const apiMiddleware_ = apiMiddleware(Vars);
+
 const app = express();
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
+app.use('*', staticMiddleware_);
+app.use('*', apiMiddleware_);
 
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
