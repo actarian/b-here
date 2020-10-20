@@ -312,12 +312,13 @@ ROUTES.forEach(route => {
 		const matchers = [`^`];
 		const regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
 		const matches = route.path.matchAll(regExp);
+		let relative;
 		for (let match of matches) {
 			const g1 = match[1];
 			const g2 = match[2];
 			const g3 = match[3];
 			if (g1) {
-				this.relative = !(g1 === '//' || g1 === '/');
+				relative = !(g1 === '//' || g1 === '/');
 			} else if (g2) {
 				matchers.push(`\/(${g2})`);
 				segments.push({ name: g2, param: null, value: null });
