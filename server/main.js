@@ -1,6 +1,7 @@
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { staticMiddleware } = require('./static/static.js');
@@ -37,6 +38,11 @@ const staticMiddleware_ = staticMiddleware(Vars);
 const apiMiddleware_ = apiMiddleware(Vars);
 
 const app = express();
+app.use(session({
+	secret: 'b-here-secret-keyword',
+	saveUninitialized: true,
+	resave: true
+}));
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
