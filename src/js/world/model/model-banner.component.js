@@ -1,6 +1,6 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { PANORAMA_RADIUS } from '../panorama/panorama';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -44,7 +44,8 @@ export default class ModelBannerComponent extends ModelComponent {
 				mesh.add(banner);
 			});
 			const from = { value: 0 };
-			gsap.to(from, 0.5, {
+			gsap.to(from, {
+				duration: 0.5,
 				value: 1,
 				delay: 0.0,
 				ease: Power2.easeInOut,
@@ -84,7 +85,7 @@ export default class ModelBannerComponent extends ModelComponent {
 				const { node } = getContext(this);
 				setTimeout(() => {
 					html2canvas(node, {
-						backgroundColor: '#0099ffff',
+						backgroundColor: '#000000ff', // '#0099ffff',
 						scale: 2,
 					}).then(canvas => {
 						// !!!
@@ -106,7 +107,6 @@ export default class ModelBannerComponent extends ModelComponent {
 			}
 		});
 	}
-
 }
 
 ModelBannerComponent.ORIGIN = new THREE.Vector3();

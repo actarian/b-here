@@ -31,7 +31,7 @@ function watchTask(done, filters) {
 			if (matchPaths(entry, x.input)) {
 				const ext = path.extname(entry);
 				if (!filters || filters.indexOf(ext) !== -1) {
-					log('Watch.Compile', path_, '>', entry);
+					log('Watch Compile', path_, '>', entry);
 					// console.log('compile', ext, x);
 					compile(x, ext);
 				}
@@ -43,7 +43,7 @@ function watchTask(done, filters) {
 			if (item) {
 				const ext = path.extname(entry);
 				if (!filters || filters.indexOf(ext) !== -1) {
-					log('Watch.Bundle', path_, '>', entry);
+					log('Watch Bundle', path_, '>', entry);
 					// console.log('bundle', ext, x);
 					bundle(x, ext);
 				}

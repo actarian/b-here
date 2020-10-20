@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { environment, STATIC } from '../environment';
+import { environment } from '../environment';
 import ModalOutletComponent from '../modal/modal-outlet.component';
 import ModalService from '../modal/modal.service';
 
@@ -12,9 +12,7 @@ export default class TryInARModalComponent extends Component {
 			const data = this.data = parentInstance.modal.data;
 			// console.log('data', data);
 			if (data && data.ar) {
-				// const url = `${environment.host}${data.ar.usdz}`;
-				const url = STATIC ? `${environment.host}try-in-ar.html?viewId=${data.id}` : `/viewdoc.cshtml?co_id=${environment.views.tryInAryModal}&viewId=${data.id}`;
-				console.log('TryInARModalComponent.onInit.url', url);
+				const url = TryInARModalComponent.getUrl(data);
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
 					value: url,
@@ -26,6 +24,17 @@ export default class TryInARModalComponent extends Component {
 
 	close() {
 		ModalService.reject();
+	}
+
+	static getUrl(data) {
+		const url = environment.getAbsoluteUrl(environment.template.tryInAr, { viewId: data.id });
+		console.log('TryInARModalComponent.getUrl', url);
+		return url;
+	}
+
+	static openInAR(data) {
+		const url = this.getUrl(data);
+		window.open(url, '_blank');
 	}
 
 }

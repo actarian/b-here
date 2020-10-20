@@ -51,9 +51,9 @@ export default class DragService {
 				point.y = event.clientY
 			) : point = {
 				x: event.clientX,
-				y: event.clientY
+				y: event.clientY,
 			};
-		} else if (event instanceof TouchEvent) {
+		} else if (window.TouchEvent && event instanceof TouchEvent) {
 			if (event.touches.length > 0) {
 				point ? (
 					point.x = event.touches[0].pageX,
@@ -141,7 +141,7 @@ export default class DragService {
 		);
 	}
 
-	static events$(target) {
+	static observe$(target) {
 		target = target || document;
 		const events$ = DragService.events$ = new ReplaySubject(1);
 		const dismiss$ = DragService.dismiss$ = new Subject();

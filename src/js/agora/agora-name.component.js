@@ -1,16 +1,16 @@
 import { Component } from 'rxcomp';
-// import UserService from './user/user.service';
+// import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import LocationService from '../location/location.service';
-import AgoraService from './agora.service';
+import StateService from '../state/state.service';
 
 export default class AgoraNameComponent extends Component {
-
 	onInit() {
+		const name = LocationService.get('name') || null;
 		this.state = {};
 		const form = this.form = new FormGroup({
-			name: new FormControl(null, [Validators.PatternValidator(/^\w{2,}\s\w{2,}/), Validators.RequiredValidator()]),
+			name: new FormControl(name, [Validators.PatternValidator(/^\w{2,}\s\w{2,}/), Validators.RequiredValidator()]),
 		});
 		const controls = this.controls = form.controls;
 		form.changes$.pipe(
@@ -19,16 +19,13 @@ export default class AgoraNameComponent extends Component {
 			// console.log('AgoraNameComponent.changes$', form.value);
 			this.pushChanges();
 		});
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				// console.log('AgoraNameComponent.state', state);
-				this.state = state;
-				this.pushChanges();
-			});
-		}
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			// console.log('AgoraNameComponent.state', state);
+			this.state = state;
+			this.pushChanges();
+		});
 	}
 
 	isValid() {
@@ -50,13 +47,6 @@ export default class AgoraNameComponent extends Component {
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
 	}
-
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
 }
 
 AgoraNameComponent.meta = {

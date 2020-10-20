@@ -33,23 +33,28 @@ export default class AgoraDevicePreviewComponent extends Component {
 	}
 
 	onInit() {
-		this.onLoadedMetadata = this.onLoadedMetadata.bind(this);
+		this.isIOS = AgoraDevicePreviewComponent.isIOS();
 		const { node } = getContext(this);
 		const preview = this.preview = node.querySelector('video');
+		this.onLoadedMetadata = this.onLoadedMetadata.bind(this);
 		preview.addEventListener('loadedmetadata', this.onLoadedMetadata);
 		const audio = node.querySelector('.audio');
-		const bars = this.bars = new Array(32).fill(0).map(x => {
-			const bar = document.createElement('div');
-			bar.classList.add('bar');
-			audio.appendChild(bar);
-			return bar;
-		});
+		if (!this.isIOS) {
+			const bars = this.bars = new Array(32).fill(0).map(x => {
+				const bar = document.createElement('div');
+				bar.classList.add('bar');
+				audio.appendChild(bar);
+				return bar;
+			});
+		}
 	}
 
 	onDestroy() {
 		const preview = this.preview;
 		preview.removeEventListener('loadedmetadata', this.onLoadedMetadata);
-		AudioStreamService.dispose();
+		if (!this.isIOS) {
+			AudioStreamService.dispose();
+		}
 	}
 
 	initStream() {
@@ -57,31 +62,38 @@ export default class AgoraDevicePreviewComponent extends Component {
 		if (!this.preview) {
 			return;
 		}
+		// console.log(this.video_, this.audio_);
 		if (this.video_ || this.audio_) {
 			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 				navigator.mediaDevices.getUserMedia({
 					video: this.video_ ? { deviceId: this.video_ } : false,
 					audio: this.audio_ ? { deviceId: this.audio_ } : false,
 				}).then((stream) => {
-					if ('srcObject' in preview) {
-						preview.srcObject = stream;
+					if (!this.isIOS) {
+						if ('srcObject' in preview) {
+							preview.srcObject = stream;
+						} else {
+							preview.src = window.URL.createObjectURL(stream);
+						}
+						this.analyzeData(stream);
+						this.loadingStream_ = stream;
 					} else {
-						preview.src = window.URL.createObjectURL(stream);
+						this.stream.next(stream);
 					}
-					this.analyzeData(stream);
-					this.loadingStream_ = stream;
 				}).catch((error) => {
 					console.log('AgoraDevicePreviewComponent.initStream.error', error.name, error.message);
 					this.stream.next(null);
 				});
 			}
 		} else {
-			if ('srcObject' in preview) {
-				preview.srcObject = null;
-			} else {
-				preview.src = null;
+			if (!this.isIOS) {
+				if ('srcObject' in preview) {
+					preview.srcObject = null;
+				} else {
+					preview.src = null;
+				}
+				this.analyzeData(null);
 			}
-			this.analyzeData(null);
 			this.stream.next(null);
 		}
 	}
@@ -95,6 +107,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 		if (this.frequencySubscription) {
 			this.frequencySubscription.unsubscribe();
 		}
+		// console.log('AgoraDevicePreviewComponent.analyzeData', stream);
 		if (stream) {
 			this.frequencySubscription = AudioStreamService.frequency$(stream, 64).pipe(
 				takeUntil(this.unsubscribe$)
@@ -113,11 +126,11 @@ export default class AgoraDevicePreviewComponent extends Component {
 		}
 	}
 
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
+	static isIOS() {
+		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+	}
 
 }
 

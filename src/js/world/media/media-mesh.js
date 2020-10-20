@@ -1,8 +1,9 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as THREE from 'three';
-import AgoraService, { RoleType } from '../../agora/agora.service';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
+import StreamService from '../../stream/stream.service';
+import { RoleType } from '../../user/user';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
 
@@ -17,6 +18,33 @@ void main() {
 `;
 
 const FRAGMENT_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+uniform bool video;
+uniform float opacity;
+uniform float overlay;
+uniform float tween;
+uniform sampler2D textureA;
+uniform sampler2D textureB;
+uniform vec2 resolutionA;
+uniform vec2 resolutionB;
+uniform vec3 overlayColor;
+
+void main() {
+	vec4 color;
+	vec4 colorA = texture2D(textureA, vUv);
+	if (video) {
+		vec4 colorB = texture2D(textureB, vUv);
+		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
+	} else {
+		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
+	}
+	gl_FragColor = color;
+}
+`;
+
+const FRAGMENT_SHADER_BAK = `
 #extension GL_EXT_frag_depth : enable
 
 varying vec2 vUv;
@@ -75,12 +103,16 @@ void main() {
 			-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,
 			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
 		);
+		// float dx = (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5;
+		// float dy = (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5;
+		// t = vec2(-0.5 + dx, -0.5 - dy);
 		vec2 uv2 = clamp(
 			getUV2(vUv, t, s, 0.0),
 			vec2(0.0,0.0),
 			vec2(1.0,1.0)
 		);
 		vec4 colorB = texture2D(textureB, uv2);
+		colorB = texture2D(textureB, vUv);
 		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
 	} else {
 		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
@@ -168,64 +200,76 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	static getStreamId$(item) {
+		if (!item.asset) {
+			return of(null);
+		}
 		const file = item.asset.file;
 		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
 			return of(file);
 		}
-		const agora = AgoraService.getSingleton();
-		if (agora) {
-			return agora.streams$.pipe(
-				map((streams) => {
-					let stream;
-					if (file === 'publisherStream') {
-						stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
-					} else if (file === 'nextAttendeeStream') {
-						let i = 0;
-						streams.forEach(x => {
-							if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-								if (i === item.asset.index) {
-									stream = x;
-								}
-								i++;
+		return StreamService.streams$.pipe(
+			map((streams) => {
+				let stream;
+				if (file === 'publisherStream') {
+					stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+				} else if (file === 'nextAttendeeStream') {
+					let i = 0;
+					streams.forEach(x => {
+						if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+							if (i === item.asset.index) {
+								stream = x;
 							}
-						});
-					}
-					if (stream) {
-						return stream.getId();
-					} else {
-						return null;
-					}
-				}),
-			);
-		} else {
-			return of(null);
-		}
+							i++;
+						}
+					});
+				}
+				if (stream) {
+					return stream.getId();
+				} else {
+					return null;
+				}
+			}),
+		);
 	}
 
 	constructor(item, items, geometry, material) {
 		material = material || MediaMesh.getMaterial();
+		if (!item.asset) {
+			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+		}
 		super(geometry, material);
 		this.item = item;
 		this.items = items;
 		this.renderOrder = environment.renderOrder.plane;
-		const uniforms = this.uniforms = {
-			overlay: 0,
-			tween: 1,
-			opacity: 0,
-		};
+		if (item.asset) {
+			const uniforms = this.uniforms = {
+				overlay: 0,
+				tween: 1,
+				opacity: 0,
+			};
+		}
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
-		if (!mediaLoader.isVideo) {
+		/*
+		if (item.asset && !mediaLoader.isVideo) {
 			this.freeze();
 		}
+		*/
 	}
 
 	load(callback) {
+		if (!this.item.asset) {
+			this.onAppear();
+			if (typeof callback === 'function') {
+				callback(this);
+			}
+			return;
+		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		if (mediaLoader.isPlayableVideo) {
+		if (false && mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({
 				asset: {
-					folder: 'ui/', file: 'play.png'
+					folder: 'textures/ui/', file: 'play.png'
 				}
 			}, (textureB) => {
 				// console.log('MediaMesh.textureB', textureB);
@@ -236,6 +280,8 @@ export default class MediaMesh extends InteractiveMesh {
 				textureB.wrapS = THREE.RepeatWrapping;
 				textureB.wrapT = THREE.RepeatWrapping;
 				material.uniforms.textureB.value = textureB;
+				// material.uniforms.resolutionB.value.x = textureB.image.width;
+				// material.uniforms.resolutionB.value.y = textureB.image.height;
 				material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
 				// console.log(material.uniforms.resolutionB.value, textureB);
 				material.needsUpdate = true;
@@ -243,9 +289,30 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		mediaLoader.load((textureA) => {
 			// console.log('MediaMesh.textureA', textureA);
-			material.uniforms.textureA.value = textureA;
-			material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-			material.needsUpdate = true;
+			if (textureA) {
+				material.uniforms.textureA.value = textureA;
+				// material.uniforms.resolutionA.value.x = textureA.image.width;
+				// material.uniforms.resolutionA.value.y = textureA.image.height;
+				material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
+				material.needsUpdate = true;
+				if (mediaLoader.isPlayableVideo) {
+					this.createTextureB(textureA, (textureB) => {
+						// console.log('MediaMesh.textureB', textureB);
+						textureB.minFilter = THREE.LinearFilter;
+						textureB.magFilter = THREE.LinearFilter;
+						textureB.mapping = THREE.UVMapping;
+						// textureB.format = THREE.RGBFormat;
+						textureB.wrapS = THREE.RepeatWrapping;
+						textureB.wrapT = THREE.RepeatWrapping;
+						material.uniforms.textureB.value = textureB;
+						// material.uniforms.resolutionB.value.x = textureB.image.width;
+						// material.uniforms.resolutionB.value.y = textureB.image.height;
+						material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
+						// console.log(material.uniforms.resolutionB.value, textureB);
+						material.needsUpdate = true;
+					});
+				}
+			}
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
 				material.uniforms.video.value = true;
@@ -260,6 +327,41 @@ export default class MediaMesh extends InteractiveMesh {
 				callback(this);
 			}
 		});
+	}
+
+	createTextureB(textureA, callback) {
+		const aw = textureA.image.width || textureA.image.videoWidth;
+		const ah = textureA.image.height || textureA.image.videoHeight;
+		const ar = aw / ah;
+		const scale = 0.32;
+		const canvas = document.createElement('canvas');
+		// document.querySelector('body').appendChild(canvas);
+		canvas.width = aw;
+		canvas.height = ah;
+		const context = canvas.getContext('2d');
+		context.imageSmoothingEnabled = true;
+		context.imageSmoothingQuality = 'high';
+		const image = new Image();
+		image.onload = function() {
+			const bw = image.width;
+			const bh = image.height;
+			const br = bw / bh;
+			let w;
+			let h;
+			if (ar > br) {
+				w = ah * scale;
+				h = w / br;
+			} else {
+				h = aw * scale;
+				w = h * br;
+			}
+			context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
+			const textureB = new THREE.CanvasTexture(canvas);
+			if (typeof callback === 'function') {
+				callback(textureB);
+			}
+		}
+		image.src = environment.getPath('textures/ui/play.png');
 	}
 
 	events$() {
@@ -290,7 +392,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				opacity: 1,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
@@ -305,7 +408,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				opacity: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
@@ -320,7 +424,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				overlay: 1,
 				tween: 0,
 				opacity: 1,
@@ -340,7 +445,8 @@ export default class MediaMesh extends InteractiveMesh {
 		const uniforms = this.uniforms;
 		const material = this.material;
 		if (material.uniforms) {
-			gsap.to(uniforms, 0.4, {
+			gsap.to(uniforms, {
+				duration: 0.4,
 				overlay: 0,
 				tween: this.playing ? 0 : 1,
 				opacity: 1,

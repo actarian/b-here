@@ -1,4 +1,5 @@
-import AgoraService from "../../agora/agora.service";
+// import * as THREE from 'three';
+import StreamService from "../../stream/stream.service";
 
 export const W = 12;
 export const H = 27;
@@ -15,7 +16,7 @@ export class PhoneStreamElement {
 
 	setRemote(remote, i, total) {
 		this.remote = remote;
-		let s, c, r, w, h, sx, sy, sz = 0.01 * D * 0.5 * 1.05;
+		let s, c, r, w, h, sx, sy, sz = 0.01 * D; // !!! double distance
 		if (total < 4) {
 			s = 1;
 			c = 0;
@@ -116,21 +117,9 @@ export default class PhoneElement {
 		const phone = this.phone = this.create();
 		mesh.add(phone);
 		const streams = this.streams = [];
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			/*
-			pipe(
-				takeUntil(this.unsubscribe$)
-			)
-			*/
-			agora.remotes$.subscribe(remotes => {
-				this.remotes = remotes;
-			});
-		} else {
-			this.remotes = [
-				1, 2, 3, 4
-			];
-		}
+		StreamService.remotes$.subscribe(remotes => {
+			this.remotes = remotes;
+		});
 	}
 
 	create() {

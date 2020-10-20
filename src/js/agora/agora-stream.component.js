@@ -1,6 +1,8 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
-import AgoraService, { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, MessageType } from './agora.service';
+import MessageService from '../message/message.service';
+import StateService from '../state/state.service';
+import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, MessageType } from './agora.types';
 
 export default class AgoraStreamComponent extends Component {
 
@@ -34,6 +36,7 @@ export default class AgoraStreamComponent extends Component {
 
 	set stream(stream) {
 		if (this.stream_ !== stream) {
+			// console.log('AgoraStreamComponent set stream', stream);
 			const { node } = getContext(this);
 			const player = this.player = node.querySelector('.agora-stream__player');
 			while (player.childElementCount > 0) {
@@ -41,7 +44,7 @@ export default class AgoraStreamComponent extends Component {
 			}
 			// player.textContent = '';
 			if (this.stream_ && this.stream_.isPlaying() && this.stream_.player.div.parentNode === player) {
-				// console.log('stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
+				// console.log('AgoraStreamComponent stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
 				this.stream_.stop();
 			}
 			this.stream_ = stream;
@@ -51,6 +54,7 @@ export default class AgoraStreamComponent extends Component {
 			}
 			const streamId = stream ? stream.getId() : null;
 			this.streamId = streamId;
+			// console.log('AgoraStreamComponent streamId', streamId);
 			if (streamId) {
 				const name = `stream-${streamId}`;
 				player.setAttribute('id', name);
@@ -99,6 +103,57 @@ export default class AgoraStreamComponent extends Component {
 		return videoNode;
 	}
 
+	onInit() {
+		this.videoMuted = false;
+		this.audioMuted = false;
+		this.shouldUseResumeGesture = false;
+		this.state = {};
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			this.state = state;
+			this.pushChanges();
+			// console.log('AgoraStreamComponent.StateService.state$', this.streamId, state);
+		});
+		MessageService.out$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			// console.log('AgoraStreamComponent.MessageService.out$', this.streamId, message);
+			switch (message.type) {
+				case MessageType.AgoraEvent:
+					const event = message.event;
+					// console.log('AgoraStreamComponent.AgoraEvent', message.event);
+					if (this.streamId && event.streamId === this.streamId) {
+						if (event instanceof AgoraMuteVideoEvent) {
+							this.videoMuted = true;
+						}
+						if (event instanceof AgoraUnmuteVideoEvent) {
+							this.videoMuted = false;
+						}
+						if (event instanceof AgoraMuteAudioEvent) {
+							this.audioMuted = true;
+						}
+						if (event instanceof AgoraUnmuteAudioEvent) {
+							this.audioMuted = false;
+						}
+					}
+					break;
+				case MessageType.VRStarted:
+					// console.log('AgoraStreamComponent.VRStarted', this.streamId, message.clientId, message.container);
+					if (this.streamId === message.clientId) {
+						this.vrContainer = message.container;
+					}
+					break;
+				case MessageType.VREnded:
+					// console.log('AgoraStreamComponent.VREnded', this.streamId, message.clientId);
+					if (this.streamId === message.clientId) {
+						this.vrContainer = null;
+					}
+					break;
+			}
+		});
+	}
+
 	setMediaStream(mediaStream) {
 		const videoNode = this.videoNode;
 		if ('srcObject' in videoNode) {
@@ -109,6 +164,7 @@ export default class AgoraStreamComponent extends Component {
 	}
 
 	onLoadedMetadata(event) {
+		// console.log('AgoraStreamComponent.onLoadedMetadata', event);
 		this.videoNode.play().then(success => {
 			// console.log('AgoraStreamComponent.play.success', success);
 		}, error => {
@@ -116,71 +172,9 @@ export default class AgoraStreamComponent extends Component {
 		});
 	}
 
-	onInit() {
-		this.videoMuted = false;
-		this.audioMuted = false;
-		this.shouldUseResumeGesture = false;
-		this.state = {};
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.events$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(event => {
-				// console.log('AgoraStreamEvent', event, this.streamId);
-				if (this.streamId && event.streamId === this.streamId) {
-					if (event instanceof AgoraMuteVideoEvent) {
-						this.videoMuted = true;
-					}
-					if (event instanceof AgoraUnmuteVideoEvent) {
-						this.videoMuted = false;
-					}
-					if (event instanceof AgoraMuteAudioEvent) {
-						this.audioMuted = true;
-					}
-					if (event instanceof AgoraUnmuteAudioEvent) {
-						this.audioMuted = false;
-					}
-				}
-			});
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				this.state = state;
-				this.pushChanges();
-				// console.log('AgoraStreamComponent', this.state.spying, this.streamId);
-			});
-			agora.message$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(message => {
-				// console.log('AgoraStreamComponent.message', message.type);
-				switch (message.type) {
-					case MessageType.VRStarted:
-						// console.log('AgoraStreamComponent.VRStarted', this.streamId, message.clientId, message.container);
-						if (this.streamId === message.clientId) {
-							this.vrContainer = message.container;
-						}
-						break;
-					case MessageType.VREnded:
-						// console.log('AgoraStreamComponent.VREnded', this.streamId, message.clientId);
-						if (this.streamId === message.clientId) {
-							this.vrContainer = null;
-						}
-						break;
-				}
-			});
-		}
-	}
-
 	onToggleSpy($event) {
 		this.toggleSpy.next($event);
 	}
-
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
 }
 
 AgoraStreamComponent.meta = {

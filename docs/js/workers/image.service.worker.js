@@ -5,14 +5,61 @@
  */
 
 (function(f){typeof define==='function'&&define.amd?define(f):f();}((function(){'use strict';var controllers = {};
-self.addEventListener("message", function (event) {
+
+function resize(src, blob, size) {
+  if (!self.createImageBitmap || !self.OffscreenCanvas) {
+    return response(src, blob);
+  }
+
+  self.createImageBitmap(blob).then(function (img) {
+    var MAX_WIDTH = 320;
+    var MAX_HEIGHT = 240;
+    var width = img.width;
+    var height = img.height;
+
+    if (width > height) {
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+    } else {
+      if (height > MAX_HEIGHT) {
+        width *= MAX_HEIGHT / height;
+        height = MAX_HEIGHT;
+      }
+    }
+
+    var canvas = new OffscreenCanvas(width, height);
+    var ctx = canvas.getContext('2d');
+    canvas.width = width;
+    canvas.height = height;
+    ctx.drawImage(img, 0, 0, width, height);
+    canvas.convertToBlob({
+      type: 'image/jpeg',
+      quality: 0.9
+    }).then(function (resizedBlob) {
+      response(src, resizedBlob);
+    });
+  });
+}
+
+function response(src, blob) {
+  self.postMessage({
+    src: src,
+    blob: blob
+  });
+}
+
+self.addEventListener('message', function (event) {
   var id = event.data.id;
   var src = event.data.src;
+  var size = event.data.size;
 
   if (id && !src) {
     var controller = controllers[id];
 
     if (controller) {
+      // console.log('Aborting', id);
       controller.abort();
     }
 
@@ -28,17 +75,23 @@ self.addEventListener("message", function (event) {
       options = {
         signal: _controller.signal
       };
-      controllers[id] = _controller;
+      controllers[id] = _controller; // console.log('AbortController', id);
     }
 
-    var response = fetch(src, options).then(function (response) {
+    var _response = fetch(src, options).then(function (response) {
       return response.blob();
+    }, function (error) {
+      console.log(error);
     }).then(function (blob) {
       delete controllers[id];
-      self.postMessage({
-        src: src,
-        blob: blob
-      });
+
+      if (typeof size === 'object') {
+        resize(src, blob);
+      } else {
+        _response(src, blob);
+      }
+    }, function (error) {
+      console.log(error);
     });
   } else {
     var request = new XMLHttpRequest();
@@ -47,10 +100,11 @@ self.addEventListener("message", function (event) {
 
     request.onload = function () {
       if (request.status < 300) {
-        self.postMessage({
-          src: src,
-          blob: request.response
-        });
+        if (typeof size === 'object') {
+          resize(src, blob);
+        } else {
+          response(src, blob);
+        }
       }
     };
 

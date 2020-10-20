@@ -1,12 +1,22 @@
-import { ReplaySubject } from 'rxjs';
-import { filter, startWith, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, ReplaySubject } from 'rxjs';
+import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+// import * as THREE from 'three';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
+import KeyboardService from '../../keyboard/keyboard.service';
 
 export const OrbitMode = {
 	Panorama: 'panorama',
 	PanoramaGrid: 'panorama-grid',
 	Model: 'model',
 };
+
+export class OrbitEvent { }
+export class OrbitDragEvent extends OrbitEvent { }
+export class OrbitResizeEvent extends OrbitEvent { }
+export class OrbitMoveEvent extends OrbitEvent { }
+const orbitMoveEvent = new OrbitMoveEvent();
+const orbitDragEvent = new OrbitDragEvent();
+const orbitResizeEvent = new OrbitResizeEvent();
 
 export const USE_DOLLY = false;
 export const DOLLY_MIN = 15;
@@ -100,70 +110,30 @@ export default class OrbitService {
 		this.theta = theta;
 	}
 
-	setDragListener(container) {
-		let longitude, latitude;
-		const dragListener = new DragListener(this.container, (event) => {
-			longitude = this.longitude;
-			latitude = this.latitude;
-		}, (event) => {
-			const flip = this.mode_ === OrbitMode.Model ? -1 : 1;
-			const direction = event.distance.x ? (event.distance.x / Math.abs(event.distance.x) * -1) : 1;
-			this.direction = direction;
-			const lon = longitude - event.distance.x * 0.1 * flip;
-			const lat = latitude + event.distance.y * 0.1;
-			this.setInertia(lon, lat);
-			this.setLongitudeLatitude(lon, lat);
-			// console.log('longitude', this.longitude, 'latitude', this.latitude, 'direction', this.direction);
-		}, (event) => {
-			// this.speed = Math.abs(event.strength.x) * 100;
-			// console.log('speed', this.speed);
-		});
-		dragListener.move = () => { };
-		this.dragListener = dragListener;
-		return dragListener;
-	}
-
-	setInertia(longitude, latitude) {
-		const inertia = this.inertia;
-		inertia.x = (longitude - this.longitude) * 1;
-		inertia.y = (latitude - this.latitude) * 1;
-		this.inertia = inertia;
-		// console.log(this.inertia);
-	}
-
-	updateInertia() {
-		const inertia = this.inertia;
-		inertia.multiplyScalar(0.95);
-		this.inertia = inertia;
-		/*
-		let speed = this.speed;
-		speed = Math.max(1, speed * 0.95);
-		this.speed = speed;
-		*/
-	}
-
-	update_() {
-		if (this.dragListener && !this.dragListener.dragging) {
-			this.setLongitudeLatitude(this.longitude + this.inertia.x, this.latitude + this.inertia.y);
-			this.updateInertia();
-		}
-	}
-
 	observe$(node) {
-		const camera = this.camera;
+		// const camera = this.camera;
 		let latitude, longitude;
-		return DragService.events$(node).pipe(
-			tap((event) => {
+		return combineLatest([KeyboardService.keys$(), DragService.observe$(node)]).pipe(
+			map((datas) => {
+				const keys = datas[0];
+				const event = datas[1];
 				// const group = this.objects.children[this.index];
 				if (event instanceof DragDownEvent) {
 					latitude = this.latitude;
 					longitude = this.longitude;
 				} else if (event instanceof DragMoveEvent) {
-					const flip = this.mode_ === OrbitMode.Model ? -1 : 1;
-					this.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+					if (keys.Shift) {
+						this.events$.next(orbitDragEvent);
+					} else if (keys.Control) {
+						this.events$.next(orbitResizeEvent);
+					} else {
+						const flip = this.mode_ === OrbitMode.Model ? -1 : 1;
+						this.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
+					}
 				} else if (event instanceof DragUpEvent) {
 
 				}
+				return event;
 			}),
 			filter(event => event instanceof DragMoveEvent),
 			startWith({ latitude: this.latitude, longitude: this.longitude }),
@@ -212,7 +182,7 @@ export default class OrbitService {
 		}
 		camera.lookAt(camera.target);
 		camera.updateProjectionMatrix();
-		this.events$.next(this);
+		this.events$.next(orbitMoveEvent);
 	}
 
 	inverse() {
@@ -259,7 +229,8 @@ export default class OrbitService {
 		differenceLatitude = Math.abs(differenceLatitude) > 90 ? (differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude))) : differenceLatitude;
 		// console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
 		const from = { tween: 0 };
-		gsap.to(from, 0.7, {
+		gsap.to(from, {
+			duration: 0.7,
 			tween: 1,
 			delay: 0,
 			ease: Power2.easeInOut,
@@ -281,6 +252,77 @@ export default class OrbitService {
 		this.setLongitudeLatitude(headingLongitude, headingLatitude);
 		this.position.set(0, 0, 0);
 		this.update();
+	}
+
+	lookAt(object3d) {
+		// !!! fix
+		if (object3d) {
+			/*
+			const camera = this.camera;
+			camera.target.copy(object3d.position);
+			camera.lookAt(camera.target);
+			camera.updateProjectionMatrix();
+			*/
+			const position = object3d.position;
+			let radius;
+			switch (this.mode_) {
+				case OrbitMode.Model:
+					radius = 3;
+					break;
+				default:
+					radius = this.radius;
+			}
+			const heading = new THREE.Vector2(position.x, position.z).normalize().multiplyScalar(radius);
+			const theta = Math.atan2(heading.y, heading.x);
+			let longitude = THREE.MathUtils.radToDeg(theta);
+			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+			const latitude = 0;
+			this.setLongitudeLatitude(longitude, latitude);
+			this.update();
+			// this.events$.next(orbitMoveEvent);
+		}
+		/*
+		let radius, position = this.updatePosition, target = this.updateTarget;
+		const zoom = this.getZoomValue();
+		const dolly = this.getDollyValue();
+		// console.log('dolly', dolly);
+		const phi = THREE.MathUtils.degToRad(90 - this.latitude);
+		const theta = THREE.MathUtils.degToRad(this.longitude);
+		const camera = this.camera;
+		switch (this.mode_) {
+			case OrbitMode.Model:
+				radius = USE_DOLLY ? 3 + 3 * dolly : 3;
+				position.copy(this.position);
+				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+				target.y = this.position.y + radius * Math.cos(phi);
+				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				camera.target.copy(position);
+				camera.position.copy(target);
+				break;
+			default:
+				radius = this.radius;
+				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
+				target.y = this.position.y + radius * Math.cos(phi);
+				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				if (USE_DOLLY) {
+					position.copy(target).position.multiplyScalar(-1 * dolly);
+				} else {
+					position.copy(this.position);
+				}
+				camera.position.copy(position);
+				camera.target.copy(target);
+		}
+		// console.log(camera.position.x, camera.position.y, camera.position.z);
+		// console.log(camera.target.x, camera.target.y, camera.target.z);
+		// console.log('phi', phi, 'theta', theta);
+		// this.inverse();
+		if (!USE_DOLLY) {
+			camera.zoom = zoom;
+		}
+		camera.lookAt(camera.target);
+		camera.updateProjectionMatrix();
+		this.events$.next(orbitMoveEvent);
+		*/
 	}
 
 }

@@ -1,3 +1,5 @@
+// import * as THREE from 'three';
+
 export default class FreezableMesh extends THREE.Mesh {
 
 	get freezed() {

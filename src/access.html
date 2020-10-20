@@ -1,0 +1,109 @@
+<!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
+<!-- @@block = main-->
+<div class="page" access-component>
+	<div class="background">
+		<img src="/b-here/textures/waiting-room/waiting-room-02.jpg" />
+	</div>
+	<div class="ui ui--info" *if="state.status == 'access'">
+		<button type="button" class="btn--absolute" (click)="onLogin($event)">
+			<span>Accedi</span>
+		</button>
+		<div class="group--info">
+			<div class="group--info__content stagger--childs">
+				<div class="title">Accesso al tour virtuale</div>
+				<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
+					<span>Accedi al tour</span>
+				</button>
+				<div class="info">oppure</div>
+				<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
+					<span>Richiedi un tour guidato</span>
+				</button>
+				<div class="info">possiedi già un meeting id?</div>
+				<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
+					<span>Accedi al tour guidato</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="ui ui--info" *if="state.status == 'self-service-tour' || state.status == 'guided-tour'">
+		<div class="group--info">
+			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+				<div class="group--info__content stagger--childs">
+					<div class="title" *if="state.status == 'self-service-tour'">
+						Compila i campi per accedere al tour.
+					</div>
+					<div class="title" *if="state.status == 'guided-tour'">
+						Compila i campi e richiedi il tour guidato.
+					</div>
+					<input name="checkField" [formControl]="controls.checkField" value="" type="text" style="display:none !important;" />
+					<div control-text [control]="controls.firstName" label="Nome"></div>
+					<div control-text [control]="controls.lastName" label="Cognome"></div>
+					<div control-text [control]="controls.email" label="Email"></div>
+					<div control-custom-select [control]="controls.role" label="Ruolo"></div>
+					<div control-checkbox [control]="controls.privacy" label="Ho letto l&amp;#39;&amp;lt;a href=&amp;quot;/it/it/informativa_sulla_privacy/&amp;quot; target=&amp;quot;_blank&amp;quot;&gt;informativa&amp;lt;/a&gt; e do il consenso al trattamento del dato"></div>
+					<div class="group--error" *if="error">
+						<span class="status-code" [innerHTML]="error.statusCode"></span>
+						<span class="status-message" [innerHTML]="error.statusMessage"></span>
+						<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
+					</div>
+					<div class="info" *if="isValid()">partecipa al meeting</div>
+					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+						<span *if="!form.submitted">Invia</span>
+						<span *if="form.submitted">Inviato!</span>
+					</button>
+					<button type="button" class="btn--mode" (click)="onBack($event)">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+						<span>Indietro</span>
+					</button>
+					<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="ui ui--info" *if="state.status == 'guided-tour-success'">
+		<div class="group--info">
+			<div class="group--info__content stagger--childs">
+				<div class="title">
+					Richiesta inviata!
+				</div>
+				<div class="info">La tua richiesta è stata inviata. Verrai contattato da un nostro incaricato per tutti i dettagli.</div>
+				<button type="button" class="btn--mode" (click)="onBack($event)">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+					<span>Indietro</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="ui ui--info" *if="state.status == 'login'">
+		<div class="group--info">
+			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+				<div class="group--info__content stagger--childs">
+					<div class="title">
+						Login.
+					</div>
+					<input name="checkField" [formControl]="controls.checkField" value="" type="text" style="display:none !important;" />
+					<div control-text [control]="controls.username" label="Username"></div>
+					<div control-password [control]="controls.password" label="Password"></div>
+					<div class="group--error" *if="error">
+						<span class="status-code" [innerHTML]="error.statusCode"></span>
+						<span class="status-message" [innerHTML]="error.statusMessage"></span>
+						<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
+					</div>
+					<div class="info" *if="isValid()">accedi</div>
+					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+						<span>Accedi</span>
+					</button>
+					<button type="button" class="btn--mode" (click)="onBack($event)">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+						<span>Indietro</span>
+					</button>
+					<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="group--logo">
+		<svg viewBox="0 0 327 98"><use xlink:href="#b-here"></use></svg>
+	</div>
+</div>
+<!-- @@close-->

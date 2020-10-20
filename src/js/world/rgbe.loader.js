@@ -1,17 +1,17 @@
-import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+// import * as THREE from 'three';
+// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../environment';
 
 export class RgbeLoader {
 
 	static load(item, renderer, callback) {
-		return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+		return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 	}
 
 	static loadRgbeBackground(path, file, renderer, callback) {
 		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
-		const loader = new RGBELoader();
+		const loader = new THREE.RGBELoader();
 		loader
 			.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)

@@ -1,6 +1,6 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import DragService from '../../drag/drag.service';
 import { environment } from '../../environment';
 import InteractiveSprite from '../interactive/interactive.sprite';
@@ -15,9 +15,10 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	onView() {
-		if (this.panel) {
+		if (this.viewed) {
 			return;
 		}
+		this.viewed = true;
 		const { node } = getContext(this);
 		this.getCanvasTexture(node).then(texture => {
 			if (this.mesh) {
@@ -25,8 +26,8 @@ export default class ModelPanelComponent extends ModelComponent {
 				const aspect = texture.width / texture.height;
 				const width = ModelPanelComponent.PANEL_RADIUS * scale;
 				const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
-				const dy = ModelPanelComponent.PANEL_RADIUS * scale * 0.25;
-				const position = this.item.nav.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+				const dy = width * 0.25;
+				const position = this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
 				const material = new THREE.SpriteMaterial({
 					depthTest: false,
 					transparent: true,
@@ -36,7 +37,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				const panel = this.panel = new InteractiveSprite(material);
 				panel.renderOrder = environment.renderOrder.panel;
 				panel.scale.set(0.02 * width, 0.02 * height, 1);
-				panel.position.set(position.x, position.y, position.z);
+				panel.position.set(position.x, position.y + (height + dy * 2), position.z);
 				panel.on('down', (event) => {
 					const xy = { x: parseInt(event.intersection.uv.x * node.offsetWidth), y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight) };
 					// console.log('ModelPanelComponent.down.xy', xy);
@@ -67,23 +68,25 @@ export default class ModelPanelComponent extends ModelComponent {
 				});
 				this.mesh.add(panel);
 				const from = { value: 0 };
-				gsap.to(from, 0.5, {
+				gsap.to(from, {
+					duration: 0.5,
 					value: 1,
 					delay: 0.0,
 					ease: Power2.easeInOut,
 					onUpdate: () => {
-						panel.position.set(position.x, position.y + (height + dy) * from.value, position.z);
+						panel.position.set(position.x, position.y + (height + dy * 2) - dy * from.value, position.z);
 						panel.lookAt(ModelPanelComponent.ORIGIN);
 						panel.material.opacity = from.value;
 						panel.material.needsUpdate = true;
 					}
 				});
 			}
+		}, error => {
+			console.log('ModelPanelComponent.getCanvasTexture.error', error);
 		});
 	}
 
 	onCreate(mount, dismount) {
-		// this.renderOrder = environment.renderOrder.panel;
 		const mesh = new THREE.Group();
 		if (typeof mount === 'function') {
 			mount(mesh);
@@ -91,64 +94,48 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 
 	onDestroy() {
-		console.log('ModelPanelComponent.onDestroy');
+		// console.log('ModelPanelComponent.onDestroy');
 		super.onDestroy();
-		/*
-		const group = this.group;
-		this.host.objects.remove(group);
-		delete group.userData.render;
-		group.traverse(child => {
-			if (child instanceof InteractiveMesh) {
-				Interactive.dispose(child);
-			}
-			if (child.isMesh) {
-				if (child.material.map && child.material.map.disposable !== false) {
-					child.material.map.dispose();
-				}
-				child.material.dispose();
-				child.geometry.dispose();
-			}
-		});
-		this.group = null;
-		*/
 	}
 
 	imagesLoaded() {
 		const { node } = getContext(this);
-		const images = Array.prototype.slice.call(node.querySelectorAll('img'));
-		const promises = images.map(x => new Promise(function(resolve, reject) {
-			const cors = x.src && x.src.indexOf(location.origin) === -1;
-			if (x.complete) {
-				return setTimeout(() => {
-					resolve(cors);
-				}, 10);
+		if (node) {
+			const images = Array.prototype.slice.call(node.querySelectorAll('img'));
+			const promises = images.map(x => new Promise(function(resolve, reject) {
+				const cors = x.src && x.src.indexOf(location.origin) === -1;
+				if (x.complete) {
+					return setTimeout(() => {
+						resolve(cors);
+					}, 10);
+				}
+				const removeListeners = () => {
+					x.removeEventListener('load', onLoad);
+					x.removeEventListener('error', onError);
+				};
+				const onLoad = () => {
+					// console.log('loaded!');
+					removeListeners();
+					setTimeout(() => {
+						resolve(cors);
+					}, 10);
+				};
+				const onError = () => {
+					// console.log('error!');
+					removeListeners();
+					resolve(false);
+				};
+				const addListeners = () => {
+					x.addEventListener('load', onLoad);
+					x.addEventListener('error', onError);
+				};
+				addListeners();
+			}));
+			if (promises.length) {
+				return Promise.all(promises);
+			} else {
+				return Promise.resolve();
 			}
-			const removeListeners = () => {
-				x.removeEventListener('load', onLoad);
-				x.removeEventListener('error', onError);
-			};
-			const onLoad = () => {
-				// console.log('loaded!');
-				removeListeners();
-				setTimeout(() => {
-					resolve(cors);
-				}, 10);
-			};
-			const onError = () => {
-				// console.log('error!');
-				removeListeners();
-				resolve(false);
-			};
-			const addListeners = () => {
-				x.addEventListener('load', onLoad);
-				x.addEventListener('error', onError);
-			};
-			addListeners();
-		}));
-		if (promises.length) {
-			return Promise.all(promises);
-		} else {
-			return Promise.resolve();
 		}
 	}
 
@@ -159,30 +146,34 @@ export default class ModelPanelComponent extends ModelComponent {
 					resolve(this.item.panelTexture);
 				} else {
 					this.imagesLoaded().then((results) => {
-						const useCORS = results && (results.find(x => x === true) != null); // !!! keep loose equality
-						console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
-						html2canvas(node, {
-							backgroundColor: '#ffffff00',
-							scale: 2,
-							useCORS,
-							// logging: true,
-						}).then(canvas => {
-							// !!!
-							// document.body.appendChild(canvas);
-							// const alpha = this.getAlphaFromCanvas(canvas);
-							// document.body.appendChild(alpha);
-							const map = new THREE.CanvasTexture(canvas);
-							// const alphaMap = new THREE.CanvasTexture(alpha);
-							// console.log(canvas.width, canvas.height);
-							this.item.panelTexture = {
-								map: map,
-								width: canvas.width,
-								height: canvas.height,
-							};
-							resolve(this.item.panelTexture);
-						}, error => {
-							reject(error);
-						});
+						const context = getContext(this);
+						if (context && context.node) {
+							node = context.node;
+							const useCORS = results && (results.find(x => x === true) != null); // !!! keep loose equality
+							// console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
+							html2canvas(node, {
+								backgroundColor: '#ffffff00',
+								scale: 2,
+								useCORS,
+								// logging: true,
+							}).then(canvas => {
+								// !!!
+								// document.body.appendChild(canvas);
+								// const alpha = this.getAlphaFromCanvas(canvas);
+								// document.body.appendChild(alpha);
+								const map = new THREE.CanvasTexture(canvas);
+								// const alphaMap = new THREE.CanvasTexture(alpha);
+								// console.log(canvas.width, canvas.height);
+								this.item.panelTexture = {
+									map: map,
+									width: canvas.width,
+									height: canvas.height,
+								};
+								resolve(this.item.panelTexture);
+							}, error => {
+								reject(error);
+							});
+						}
 					});
 				}
 			}, 1); // keep it for childnode images to be compiled

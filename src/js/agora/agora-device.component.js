@@ -1,65 +1,78 @@
 import { Component } from 'rxcomp';
-import { FormGroup } from 'rxcomp-form';
+import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
+import StateService from '../state/state.service';
 import AgoraService from './agora.service';
 
 export default class AgoraDeviceComponent extends Component {
 
 	onInit() {
+		this.isIOS = AgoraDeviceComponent.isIOS();
+		this.isHttps = window.location.protocol === 'https:';
 		this.state = {};
 		this.devices = { videos: [], audios: [] };
 		this.stream = null;
 		this.form = null;
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.state$.pipe(
+		if (this.isHttps) {
+			const agora = this.agora = AgoraService.getSingleton();
+			StateService.state$.pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(state => {
 				// console.log('AgoraDeviceComponent.state', state);
 				this.state = state;
 				this.pushChanges();
 			});
-			agora.devices$().subscribe(devices => {
-				// console.log(devices);
-				this.devices = devices;
-				this.initForm(devices);
-				this.pushChanges();
-			});
+			if (agora) {
+				agora.devices$().subscribe(devices => {
+					console.log(devices);
+					this.devices = devices;
+					this.initForm(devices);
+					this.pushChanges();
+				});
+			}
 		}
+	}
+
+	openHttps(event) {
+		window.location.href = window.location.href.replace('http://', 'https://').replace(':5000', ':6443');
 	}
 
 	initForm(devices) {
 		const form = this.form = new FormGroup({
-			audio: null,
-			video: null,
+			video: new FormControl(null, devices.videos.length ? Validators.RequiredValidator() : undefined),
+			audio: new FormControl(null, devices.audios.length ? Validators.RequiredValidator() : undefined),
 		});
 		const controls = this.controls = form.controls;
-		controls.video.options = devices.videos.map(x => {
+		const videoOptions = devices.videos.map(x => {
 			return {
 				id: x.deviceId,
 				name: x.label,
 			};
 		});
-		controls.audio.options = devices.audios.map(x => {
+		if (videoOptions.length > 0) {
+			videoOptions.unshift({
+				id: null, name: 'Seleziona una sorgente video'
+			});
+		}
+		controls.video.options = videoOptions;
+		const audioOptions = devices.audios.map(x => {
 			return {
 				id: x.deviceId,
 				name: x.label,
 			};
 		});
+		if (audioOptions.length > 0) {
+			audioOptions.unshift({
+				id: null, name: 'Seleziona una sorgente audio'
+			});
+		}
+		controls.audio.options = audioOptions;
 		form.changes$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((changes) => {
 			// console.log('AgoraDeviceComponent.changes$', form.value);
 			this.pushChanges();
 		});
-	}
-
-	availableVideos() {
-		return this.state.devices ? this.state.devices.videos : [];
-	}
-
-	availableAudios() {
-		return this.state.devices ? this.state.devices.audios : [];
 	}
 
 	onStreamDidChange(event) {
@@ -73,7 +86,7 @@ export default class AgoraDeviceComponent extends Component {
 	}
 
 	isValid() {
-		const isValid = this.form.valid && this.stream;
+		const isValid = this.form.valid && (this.stream || this.isIOS);
 		return isValid;
 	}
 
@@ -85,12 +98,11 @@ export default class AgoraDeviceComponent extends Component {
 		this.enter.next(devices);
 	}
 
-	// onView() { const context = getContext(this); }
-
-	// onChanges() {}
-
-	// onDestroy() {}
-
+	static isIOS() {
+		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+	}
 }
 
 AgoraDeviceComponent.meta = {

@@ -1,4 +1,5 @@
 import { BehaviorSubject, Subject } from "rxjs";
+// import * as THREE from 'three';
 
 export const XRStatus = {
 	Waiting: 'waiting',
@@ -70,7 +71,7 @@ export default class VRService {
 		this.status$.next(XRStatus.Started);
 	}
 
-	onSessionEnded( /*event*/ ) {
+	onSessionEnded( /*event*/) {
 		this.currentSession.removeEventListener('end', this.onSessionEnded);
 		this.currentSession = null;
 		this.session$.next(null);

@@ -43,4 +43,9 @@ export default class Emittable {
 		}
 	}
 
+	has(type) {
+		const callbacks = this.events[type];
+		return callbacks && callbacks.length;
+	}
+
 }

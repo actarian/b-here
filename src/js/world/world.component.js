@@ -1,28 +1,32 @@
 import { Component, getContext } from 'rxcomp';
-import { auditTime, takeUntil, tap } from 'rxjs/operators';
-import * as THREE from 'three';
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
-// import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import AgoraService, { MessageType, RoleType } from '../agora/agora.service';
-import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
+import { auditTime, takeUntil } from 'rxjs/operators';
+import { MessageType } from '../agora/agora.types';
 import { DEBUG } from '../environment';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import KeyboardService from '../keyboard/keyboard.service';
+import MessageService from '../message/message.service';
 import { Rect } from '../rect/rect';
-import { PanoramaGridView } from '../view/view.service';
+import StateService from '../state/state.service';
+import { PanoramaGridView } from '../view/view';
 import AvatarElement from './avatar/avatar-element';
 import Camera from './camera/camera';
 import Interactive from './interactive/interactive';
-import OrbitService from './orbit/orbit';
+import OrbitService, { OrbitDragEvent } from './orbit/orbit';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
 import VRService from './vr.service';
+// import * as THREE from 'three';
+import { XRControllerModelFactory } from './webxr/xr-controller-model-factory';
 
 const ORIGIN = new THREE.Vector3();
 const USE_SHADOW = false;
 const USE_PHONE = true;
 
+const loadingBanner = { title: 'loading' };
+const waitingBanner = { title: 'waiting host' };
+
 export default class WorldComponent extends Component {
+
 	get error() {
 		return this.error_;
 	}
@@ -44,29 +48,34 @@ export default class WorldComponent extends Component {
 	get debugging() {
 		return DEBUG;
 	}
+
 	onInit() {
 		// console.log('WorldComponent.onInit');
 		this.index = 0;
 		this.error_ = null;
-		this.banner = null;
+		this.loading = null;
+		this.waiting = null;
 		this.avatars = {};
 		this.createScene();
 		this.setView();
 		this.addListeners();
 		this.animate(); // !!! no
+		KeyboardService.keys$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(keys => {
+			this.keys = keys;
+			// console.log(keys);
+		});
 	}
-	/*
-	onView() {
-		if (DEBUG) {
-			const scene = this.scene;
-			scene.traverse((object) => {
-				// console.log(object.name !== '' ? object.name : object.type);
-			});
+
+	onChanges() {
+		if (this.view) {
+			const selected = this.view.items.find(item => item.selected);
+			if (selected && selected.mesh) {
+				this.orbit.lookAt(selected.mesh);
+			}
 		}
 	}
-	*/
-
-	// onChanges() {}
 
 	onDestroy() {
 		this.removeListeners();
@@ -76,7 +85,7 @@ export default class WorldComponent extends Component {
 
 	createScene() {
 		const { node } = getContext(this);
-		this.size = { width: 0, height: 0, aspect: 0 };
+		this.size = { left: 0, top: 0, width: 0, height: 0, aspect: 0 };
 		this.mouse = new THREE.Vector2();
 		this.controllerMatrix_ = new THREE.Matrix4();
 		this.controllerWorldPosition_ = new THREE.Vector3();
@@ -137,7 +146,6 @@ export default class WorldComponent extends Component {
 
 		const pointer = this.pointer = new PointerElement();
 
-
 		const mainLight = new THREE.PointLight(0xffffff);
 		mainLight.position.set(-50, 0, -50);
 		scene.add(mainLight);
@@ -184,7 +192,7 @@ export default class WorldComponent extends Component {
 
 	setViewOrientation(view) {
 		if (this.orbit) {
-			this.orbit.mode = view.type;
+			this.orbit.mode = view.type.name;
 			if (!this.renderer.xr.isPresenting) {
 				if (this.infoResultMessage) {
 					this.orbit.setOrientation(this.infoResultMessage.orientation);
@@ -208,15 +216,17 @@ export default class WorldComponent extends Component {
 						view.index_ = message.gridIndex;
 					}
 				}
-				// this.showNavPoints = false;
-				// this.pushChanges();
+				view.ready = false;
+				this.loading = loadingBanner;
+				this.waiting = null;
+				this.pushChanges();
 				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
-					if (this.torus) {
-						this.torus.material.envMap = envMap;
-						this.torus.material.needsUpdate = true;
-					}
+					view.ready = true;
+					this.loading = null;
+					this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+					this.pushChanges();
 					// this.render();
 				}, (view) => {
 					this.setViewOrientation(view);
@@ -228,9 +238,6 @@ export default class WorldComponent extends Component {
 			}
 			this.infoResultMessage = null;
 		}
-		this.banner = (view && view.type === 'waiting-room') ? {
-			title: 'waiting host'
-		} : null;
 	}
 
 	addControllers() {
@@ -330,48 +337,6 @@ export default class WorldComponent extends Component {
 		this.controller2.userData.isSelecting = false;
 	}
 
-	/*
-	handleController(controller) {
-		if (controller.userData.isSelecting) {
-			// console.log(controller);
-			var object = room.children[ count ++ ];
-			object.position.copy( controller.position );
-			object.userData.velocity.x = ( Math.random() - 0.5 ) * 3;
-			object.userData.velocity.y = ( Math.random() - 0.5 ) * 3;
-			object.userData.velocity.z = ( Math.random() - 9 );
-			object.userData.velocity.applyQuaternion( controller.quaternion );
-			if ( count === room.children.length ) count = 0;
-		}
-	}
-	*/
-
-	drag$() {
-		let rotation;
-		return DragService.events$(this.node).pipe(
-			tap((event) => {
-				// const group = this.objects.children[this.index];
-				if (event instanceof DragDownEvent) {
-					// rotation = group.rotation.clone();
-				} else if (event instanceof DragMoveEvent) {
-					group.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01, 0);
-					this.panorama.mesh.rotation.set(rotation.x + event.distance.y * 0.01, rotation.y + event.distance.x * 0.01 + Math.PI, 0);
-					this.render();
-					if (this.agora && this.agora.state.control) {
-						this.agora.sendMessage({
-							type: MessageType.CameraRotate,
-							clientId: this.agora.state.uid,
-							coords: [group.rotation.x, group.rotation.y, group.rotation.z]
-						});
-					}
-				} else if (event instanceof DragUpEvent) {
-					if (DEBUG) {
-						console.log(JSON.stringify('DragUpEvent', { orientation: this.orbit.getOrientation(), zoom: this.orbit.zoom }));
-					}
-				}
-			})
-		);
-	}
-
 	onTween() {
 		// this.render();
 	}
@@ -381,18 +346,7 @@ export default class WorldComponent extends Component {
 		this.slideChange.next(index);
 	}
 
-	/*
-	updateRaycaster__(controller, raycaster) {
-		if (controller) {
-			const position = controller.getWorldPosition(this.controllerWorldPosition_);
-			const rotation = controller.getWorldDirection(this.controllerWorldDirection_).multiplyScalar(-1);
-			raycaster.set(position, rotation);
-			return raycaster;
-		}
-	}
-	*/
-
-	updateRaycaster(controller, raycaster) {
+	updateRaycasterXR(controller, raycaster) {
 		if (controller) {
 			this.controllerMatrix_.identity().extractRotation(controller.matrixWorld);
 			raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
@@ -405,7 +359,7 @@ export default class WorldComponent extends Component {
 	raycasterHitTest() {
 		try {
 			if (this.renderer.xr.isPresenting) {
-				const raycaster = this.updateRaycaster(this.controller, this.raycaster);
+				const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 				if (raycaster) {
 					const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
 					this.pointer.update();
@@ -415,7 +369,7 @@ export default class WorldComponent extends Component {
 					}
 					*/
 				}
-			} else {
+			} else if (!this.dragItem && !this.resizeItem) {
 				const raycaster = this.raycaster;
 				if (raycaster) {
 					const hit = Interactive.hittest(raycaster);
@@ -478,9 +432,8 @@ export default class WorldComponent extends Component {
 			}
 			*/
 			renderer.render(this.scene, this.camera);
-			if (this.agora && !this.agora.state.hosted) {
-				const orbit = this.orbit;
-				orbit.render();
+			if (this.state && !this.state.hosted) {
+				this.orbit.render();
 			}
 		} catch (error) {
 			this.error = error;
@@ -500,6 +453,8 @@ export default class WorldComponent extends Component {
 				camera = this.camera;
 			const size = this.size;
 			const rect = container.getBoundingClientRect();
+			size.left = Math.floor(rect.left);
+			size.top = Math.floor(rect.top);
 			size.width = Math.ceil(rect.width);
 			size.height = Math.ceil(rect.height);
 			size.aspect = size.width / size.height;
@@ -525,39 +480,33 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	updateRaycasterMouse(event) {
+		const w2 = this.size.width / 2;
+		const h2 = this.size.height / 2;
+		this.mouse.x = (event.clientX - this.size.left - w2) / w2;
+		this.mouse.y = -(event.clientY - this.size.top - h2) / h2;
+		const raycaster = this.raycaster;
+		raycaster.setFromCamera(this.mouse, this.camera);
+		return raycaster;
+	}
+
 	onMouseDown(event) {
 		if (event.button !== 0) {
 			return;
 		}
-		/*
-		if (TEST_ENABLED) {
-			this.controllers.setText('down');
-			return;
-		}
-		*/
 		try {
-			/*
-			this.mousedown = true;
-			const raycaster = this.raycaster;
-			raycaster.setFromCamera(this.mouse, this.camera);
-			if (event.shiftKey) {
-				const intersections = raycaster.intersectObjects(this.pivot.room.children);
-				if (intersections) {
-					const intersection = intersections.find(x => x !== undefined);
-					this.createPoint(intersection);
-				}
-			}
-			*/
-			const w2 = this.size.width / 2;
-			const h2 = this.size.height / 2;
-			this.mouse.x = (event.clientX - w2) / w2;
-			this.mouse.y = -(event.clientY - h2) / h2;
-			const raycaster = this.raycaster;
-			raycaster.setFromCamera(this.mouse, this.camera);
+			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
-			if (DEBUG && this.panorama.mesh.intersection) {
-				const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
-				console.log(JSON.stringify({ position: position.toArray() }));
+			if (this.editor || DEBUG) {
+				if (this.keys.Shift || this.keys.Control) {
+				} else {
+					this.select.next({ item: null });
+					if (this.panorama.mesh.intersection) {
+						const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
+						console.log(JSON.stringify({ position: position.toArray() }));
+						this.viewHit.next(position);
+					}
+				}
 			}
 		} catch (error) {
 			this.error = error;
@@ -567,18 +516,31 @@ export default class WorldComponent extends Component {
 
 	onMouseMove(event) {
 		try {
-			const w2 = this.size.width / 2;
-			const h2 = this.size.height / 2;
-			this.mouse.x = (event.clientX - w2) / w2;
-			this.mouse.y = -(event.clientY - h2) / h2;
-			/*
-			if (TEST_ENABLED) {
-				return this.controllers.updateTest(this.mouse);
+			const raycaster = this.updateRaycasterMouse(event);
+			if (this.dragItem) {
+				if (typeof this.dragItem.onDragMove === 'function') {
+					const intersections = raycaster.intersectObjects([this.panorama.mesh]);
+					if (intersections.length) {
+						const intersection = intersections[0];
+						// this.panorama.mesh.intersection = intersection;
+						const position = new THREE.Vector3().copy(intersection.point).normalize();
+						this.dragItem.onDragMove(position);
+					}
+				}
+			} else if (this.resizeItem) {
+				if (typeof this.resizeItem.onResizeMove === 'function') {
+					/*
+					// calc arc x & y as scale;
+					const intersections = raycaster.intersectObjects([this.panorama.mesh]);
+					if (intersections.length) {
+						const intersection = intersections[0];
+						// this.panorama.mesh.intersection = intersection;
+						const position = new THREE.Vector3().copy(intersection.point).normalize();
+						this.resizeItem.onResizeMove(position);
+					}
+					*/
+				}
 			}
-			*/
-			const raycaster = this.raycaster;
-			raycaster.setFromCamera(this.mouse, this.camera);
-			// Interactive.hittest(raycaster, this.mousedown);
 		} catch (error) {
 			this.error = error;
 			// throw (error);
@@ -586,20 +548,31 @@ export default class WorldComponent extends Component {
 	}
 
 	onMouseUp(event) {
+		if (this.dragItem) {
+			if (typeof this.dragItem.onDragEnd === 'function') {
+				this.dragItem.onDragEnd();
+				this.dragEnd.next(this.dragItem);
+			}
+		}
+		this.dragItem = null;
+		if (this.resizeItem) {
+			if (typeof this.resizeItem.onResizeEnd === 'function') {
+				this.resizeItem.onResizeEnd();
+				this.resizeEnd.next(this.resizeItem);
+			}
+		}
+		this.resizeItem = null;
 		/*
-		if (TEST_ENABLED) {
-			this.controllers.setText('up');
-			return;
+		if (NavPointDragging) {
+			stopDragging
 		}
 		*/
-		// this.mousedown = false;
 	}
 
 	onMouseWheel(event) {
 		// !!! fov zoom
 		try {
-			const agora = this.agora;
-			if ((!agora || !agora.state.locked) && !this.renderer.xr.isPresenting) {
+			if ((!this.state || !this.state.locked) && !this.renderer.xr.isPresenting) {
 				const orbit = this.orbit;
 				gsap.to(orbit, {
 					duration: 0.5,
@@ -623,26 +596,18 @@ export default class WorldComponent extends Component {
 	}
 
 	onOrientationDidChange() {
-		const agora = this.agora;
-		if (agora && (agora.state.control || agora.state.spyed)) {
-			agora.sendMessage({
-				type: MessageType.CameraOrientation,
-				clientId: agora.state.uid,
-				orientation: this.orbit.getOrientation(),
-				zoom: this.orbit.zoom,
-			});
-		}
+		MessageService.send({
+			type: MessageType.CameraOrientation,
+			orientation: this.orbit.getOrientation(),
+			zoom: this.orbit.zoom,
+		});
 	}
 
 	onVRStarted() {
 		this.scene.add(this.pointer.mesh);
-		const agora = this.agora;
-		if (agora) {
-			agora.sendMessage({
-				type: MessageType.VRStarted,
-				clientId: agora.state.uid,
-			});
-		}
+		MessageService.send({
+			type: MessageType.VRStarted,
+		});
 		/*
 		if (this.view_ instanceof ModelView) {
 			// console.log(this.view_);
@@ -652,13 +617,9 @@ export default class WorldComponent extends Component {
 
 	onVREnded() {
 		this.scene.remove(this.pointer.mesh);
-		const agora = this.agora;
-		if (agora) {
-			agora.sendMessage({
-				type: MessageType.VREnded,
-				clientId: agora.state.uid,
-			});
-		}
+		MessageService.send({
+			type: MessageType.VREnded,
+		});
 	}
 
 	onVRStateDidChange(state) {
@@ -667,18 +628,15 @@ export default class WorldComponent extends Component {
 			// console.log('WorldComponent.onVRStateDidChange', state.camera.array);
 		}
 		*/
-		const agora = this.agora;
-		if (agora) {
-			agora.sendMessage({
-				type: MessageType.VRState,
-				clientId: agora.state.uid,
-				camera: state.camera.array,
-			});
-		}
+		MessageService.send({
+			type: MessageType.VRState,
+			camera: state.camera.array,
+		});
 	}
 
 	onMenuNav(event) {
 		// console.log('WorldComponent.onMenuNav', event.id, event);
+		this.menu = undefined;
 		this.navTo.next(event.id);
 	}
 
@@ -692,23 +650,43 @@ export default class WorldComponent extends Component {
 	onNavOver(event) {
 		// console.log('WorldComponent.onNavOver', event);
 		if (this.menu) {
-			this.menu.removeMenu();
+			return;
+			// this.menu.removeMenu();
 		}
 		this.view.items.forEach(item => item.showPanel = false);
-		event.showPanel = true;
+		event.item.showPanel = true;
 		this.pushChanges();
 	}
 
 	onNavOut(event) {
 		// console.log('WorldComponent.onNavOut', event);
-		// event.showPanel = false;
+		// event.item.showPanel = false;
 		this.pushChanges();
 	}
 
 	onNavDown(event) {
-		// console.log('WorldComponent.onNavDown', event);
-		event.showPanel = false;
-		this.navTo.next(event.viewId);
+		event.item.showPanel = false;
+		// console.log('WorldComponent.onNavDown', this.keys);
+		if (this.editor && this.keys.Shift) {
+			this.dragItem = event;
+			this.select.next(event);
+		} else if (this.editor && this.keys.Control) {
+			this.resizeItem = event;
+			this.select.next(event);
+		} else {
+			this.navTo.next(event.item.viewId);
+		}
+	}
+
+	onPlaneDown(event) {
+		// console.log('WorldComponent.onPlaneDown', this.keys);
+		if (this.editor && this.keys.Shift) {
+			this.dragItem = event;
+			this.select.next(event);
+		} else if (this.editor && this.keys.Control) {
+			this.resizeItem = event;
+			this.select.next(event);
+		}
 	}
 
 	onPanelDown(event) {
@@ -721,18 +699,18 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridMove(event) {
-		// console.log('WorldComponent.onGridMove', event);
+		// console.log('WorldComponent.onGridMove', event, this.view);
+		this.view.items = [];
+		this.pushChanges();
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
-			const item = this.view.getTile(event.indices.x, event.indices.y);
-			if (item) {
-				this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
+			const tile = this.view.getTile(event.indices.x, event.indices.y);
+			if (tile) {
+				this.panorama.crossfade(tile, this.renderer, (envMap, texture, rgbe) => {
 					// this.scene.background = envMap;
 					this.scene.environment = envMap;
-					if (this.torus) {
-						this.torus.material.envMap = envMap;
-						this.torus.material.needsUpdate = true;
-					}
 					this.orbit.walkComplete(headingLongitude, headingLatitude);
+					this.view.updateCurrentItems();
+					this.pushChanges();
 					// this.render();
 					// this.pushChanges();
 				});
@@ -742,15 +720,11 @@ export default class WorldComponent extends Component {
 
 	onGridNav(event) {
 		// console.log('WorldComponent.onGridNav', event);
-		const agora = this.agora;
-		if (agora && (agora.state.control || agora.state.spyed)) {
-			agora.sendMessage({
-				type: MessageType.NavToGrid,
-				clientId: this.agora.state.uid,
-				viewId: this.view.id,
-				gridIndex: event,
-			});
-		}
+		MessageService.send({
+			type: MessageType.NavToGrid,
+			viewId: this.view.id,
+			gridIndex: event,
+		});
 		this.pushChanges();
 	}
 
@@ -763,10 +737,10 @@ export default class WorldComponent extends Component {
 		this.onMouseWheel = this.onMouseWheel.bind(this);
 		// this.controls.addEventListener('change', this.render); // use if there is no animation loop
 		window.addEventListener('resize', this.resize, false);
-		document.addEventListener('wheel', this.onMouseWheel, false);
-		document.addEventListener('mousemove', this.onMouseMove, false);
+		this.container.addEventListener('wheel', this.onMouseWheel, false);
 		this.container.addEventListener('mousedown', this.onMouseDown, false);
 		this.container.addEventListener('mouseup', this.onMouseUp, false);
+		document.addEventListener('mousemove', this.onMouseMove, false);
 		const vrService = this.vrService = VRService.getService();
 		vrService.session$.pipe(
 			takeUntil(this.unsubscribe$),
@@ -784,122 +758,102 @@ export default class WorldComponent extends Component {
 		).subscribe((state) => {
 			this.onVRStateDidChange(state);
 		});
-
-		this.orbit.observe$().pipe(
+		this.orbit.observe$(this.container).pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
-			// this.render();
-			this.onOrientationDidChange();
-		});
+			if (event instanceof OrbitDragEvent) {
 
-		const agora = this.agora = AgoraService.getSingleton();
-		if (agora) {
-			agora.events$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(event => {
-				/*
-				if (event instanceof AgoraRemoteEvent) {
-					setTimeout(() => {
-						this.panorama.setVideo(event.element.querySelector('video'));
-					}, 500);
-				}
-				*/
-			});
-			agora.message$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(message => {
-				switch (message.type) {
-					case MessageType.RequestInfo:
-						if (message.clientId === agora.state.uid) {
-							message.type = MessageType.RequestInfoResult;
-							message.viewId = this.view.id;
-							message.orientation = this.orbit.getOrientation();
-							message.zoom = this.orbit.zoom;
-							if (this.view instanceof PanoramaGridView) {
-								message.gridIndex = this.view.index;
-							}
-							agora.sendMessage(message);
+			} else {
+				// this.render();
+				this.onOrientationDidChange();
+			}
+		});
+		MessageService.out$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			switch (message.type) {
+				case MessageType.AgoraEvent:
+					/*
+					if (message.event instanceof AgoraRemoteEvent) {
+						setTimeout(() => {
+							this.panorama.setVideo(event.element.querySelector('video'));
+						}, 500);
+					}
+					*/
+					break;
+				case MessageType.RequestInfo:
+					message.type = MessageType.RequestInfoResult;
+					message.viewId = this.view.id;
+					message.orientation = this.orbit.getOrientation();
+					message.zoom = this.orbit.zoom;
+					if (this.view instanceof PanoramaGridView) {
+						message.gridIndex = this.view.index;
+					}
+					MessageService.sendBack(message);
+					break;
+				case MessageType.RequestControlAccepted:
+					message = {
+						type: MessageType.NavToView,
+						viewId: this.view.id,
+					};
+					if (this.view instanceof PanoramaGridView) {
+						message.gridIndex = this.view.index;
+					}
+					MessageService.send(message);
+					break;
+				case MessageType.RequestInfoResult:
+					if (message.viewId === this.view.id) {
+						this.orbit.setOrientation(message.orientation);
+						if (!this.renderer.xr.isPresenting) {
+							this.orbit.zoom = message.zoom;
+							this.camera.updateProjectionMatrix();
 						}
-						break;
-					case MessageType.RequestControlAccepted:
-						message = {
-							type: MessageType.NavToView,
-							clientId: agora.state.uid,
-							viewId: this.view.id,
-						};
-						if (this.view instanceof PanoramaGridView) {
-							message.gridIndex = this.view.index;
+						if (this.view instanceof PanoramaGridView && message.gridIndex) {
+							this.view.index = message.gridIndex;
 						}
-						agora.sendMessage(message);
-						break;
-					case MessageType.RequestInfoResult:
-						if (agora.state.role === RoleType.Publisher) {
-							if (message.viewId === this.view.id) {
-								this.orbit.setOrientation(message.orientation);
-								if (!this.renderer.xr.isPresenting) {
-									this.orbit.zoom = message.zoom;
-									this.camera.updateProjectionMatrix();
-								}
-								if (this.view instanceof PanoramaGridView && message.gridIndex) {
-									this.view.index = message.gridIndex;
-								}
-							} else {
-								this.infoResultMessage = message;
-							}
-						}
-						break;
-					case MessageType.CameraOrientation:
-						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							this.orbit.setOrientation(message.orientation);
-							if (!this.renderer.xr.isPresenting) {
-								this.orbit.zoom = message.zoom;
-								// this.camera.updateProjectionMatrix();
-							}
-							// this.render();
-						}
-						break;
-					case MessageType.CameraRotate:
-						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							if (!this.renderer.xr.isPresenting) {
-								const camera = this.camera;
-								camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
-								camera.lookAt(ORIGIN);
-								// this.render();
-							}
-						}
-						break;
-					case MessageType.NavToGrid:
-						if (agora.state.locked || (agora.state.spying && message.clientId === agora.state.spying)) {
-							if (this.view.id === message.viewId) {
-								this.view.index = message.gridIndex;
-							}
-						}
-						break;
-					case MessageType.VRStarted:
-						if (agora.state.uid !== message.clientId) {
-							this.addOffCanvasScene(message);
-						}
-						break;
-					case MessageType.VREnded:
-						if (agora.state.uid !== message.clientId) {
-							this.removeOffCanvasScene(message);
-						}
-						break;
-					case MessageType.VRState:
-						if (agora.state.uid !== message.clientId) {
-							this.updateOffCanvasScene(message);
-						}
-						break;
-				}
-			});
-			agora.state$.pipe(
-				takeUntil(this.unsubscribe$)
-			).subscribe(state => {
-				this.state = state;
-				// console.log(state);
-				// this.pushChanges();
-			});
-		}
+					} else {
+						this.infoResultMessage = message;
+					}
+					break;
+				case MessageType.CameraOrientation:
+					this.orbit.setOrientation(message.orientation);
+					if (!this.renderer.xr.isPresenting) {
+						this.orbit.zoom = message.zoom;
+						// this.camera.updateProjectionMatrix();
+					}
+					// this.render();
+					break;
+				case MessageType.CameraRotate:
+					if (!this.renderer.xr.isPresenting) {
+						const camera = this.camera;
+						camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
+						camera.lookAt(ORIGIN);
+						// this.render();
+					}
+					break;
+				case MessageType.NavToGrid:
+					if (this.view.id === message.viewId) {
+						this.view.index = message.gridIndex;
+					}
+					break;
+				case MessageType.VRStarted:
+					this.addOffCanvasScene(message);
+					break;
+				case MessageType.VREnded:
+					this.removeOffCanvasScene(message);
+					break;
+				case MessageType.VRState:
+					this.updateOffCanvasScene(message);
+					break;
+			}
+		});
+		StateService.state$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(state => {
+			this.state = state;
+			// console.log(state);
+			// this.pushChanges();
+		});
 	}
 
 	removeListeners() {
@@ -910,11 +864,10 @@ export default class WorldComponent extends Component {
 		this.container.removeEventListener('mousedown', this.onMouseDown, false);
 		this.container.removeEventListener('mouseup', this.onMouseUp, false);
 	}
-
 }
 
 WorldComponent.meta = {
 	selector: '[world]',
-	inputs: ['view', 'views'],
-	outputs: ['slideChange', 'navTo'],
+	inputs: ['view', 'views', 'editor'],
+	outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
 };

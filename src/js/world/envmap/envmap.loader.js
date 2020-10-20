@@ -1,8 +1,10 @@
+/* global THREE, RGBELoader */
+
 import { first } from 'rxjs/operators';
-import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import AgoraService from '../../agora/agora.service';
+// import * as THREE from 'three';
+// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
+import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
 
 export class EnvMapLoader {
@@ -22,7 +24,7 @@ export class EnvMapLoader {
 		if (video) {
 			const video = this.video_ = document.createElement('video');
 			video.loop = true;
-			video.muted = true;
+			// video.muted = true;
 			video.playsInline = true;
 			video.crossOrigin = 'anonymous';
 			// document.querySelector('body').appendChild(video);
@@ -52,13 +54,13 @@ export class EnvMapLoader {
 		if (item.asset.file === 'publisherStream') {
 			return this.loadPublisherStreamBackground(renderer, callback);
 		} else if (item.asset.file.indexOf('.hdr') !== -1) {
-			return this.loadRgbeBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 		} else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-			return this.loadVideoBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadVideoBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 		} else if (item.asset.file.indexOf('.m3u8') !== -1) {
 			return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
 		} else {
-			return this.loadBackground(environment.getTexturePath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
 		}
 	}
 
@@ -80,12 +82,8 @@ export class EnvMapLoader {
 	}
 
 	static loadPublisherStreamBackground(renderer, callback) {
-		const agora = AgoraService.getSingleton();
-		if (!agora) {
-			return;
-		}
 		const onPublisherStreamId = (publisherStreamId) => {
-			// const target = agora.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
+			// const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
 			const target = `#stream-${publisherStreamId}`;
 			const video = document.querySelector(`${target} video`);
 			if (!video) {
@@ -120,7 +118,7 @@ export class EnvMapLoader {
 				};
 			}
 		};
-		agora.getPublisherStreamId$().pipe(
+		StreamService.getPublisherStreamId$().pipe(
 			first(),
 		).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 	}
@@ -212,7 +210,7 @@ export class EnvMapLoader {
 	static loadRgbeBackground(path, file, renderer, callback) {
 		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
-		const loader = new RGBELoader();
+		const loader = new THREE.RGBELoader();
 		loader
 			.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)

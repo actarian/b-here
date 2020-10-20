@@ -1,0 +1,139 @@
+{
+  "views": [
+    {
+      "id": 1601561103968,
+      "type": {
+        "id": 1,
+        "name": "waiting-room"
+      },
+      "name": "Waiting Room",
+      "likes": 40,
+      "liked": false,
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/textures/waiting-room/",
+        "file": "waiting-room-02.jpg"
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75
+    },
+    {
+      "id": 1601561173968,
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Welcome Room",
+      "likes": 134,
+      "liked": false,
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/textures/waiting-room/",
+        "file": "mod2.jpg"
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Waiting Room",
+          "abstract": "nav to waiting room",
+          "viewId": 1601561173968,
+          "position": [
+            0.8727309729837255,
+            0.21783401223787396,
+            -0.4369084479696284
+          ],
+          "id": 1600271574407,
+          "link": {
+            "title": null,
+            "href": null,
+            "target": "_blank"
+          }
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Waiting Room",
+          "abstract": "nav to waiting room",
+          "viewId": 1601561173968,
+          "position": [
+            0.7504471741049891,
+            -0.20406595230134555,
+            -0.6286383109461124
+          ],
+          "id": 1600759466891
+        }
+      ]
+    }
+  ],
+  "assets": [],
+  "users": [
+    {
+      "id": "1601892639985",
+      "username": "publisher",
+      "password": "publisher",
+      "type": "publisher",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "id": "1601892639986",
+      "username": "attendee",
+      "password": "attendee",
+      "type": "attendee",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 366193900457100
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 366375757877200
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkRequest": "",
+      "checkField": "",
+      "id": 366442796379400
+    }
+  ]
+}

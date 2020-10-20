@@ -1,5 +1,5 @@
 import { ReplaySubject } from 'rxjs';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 
 export class MediaLoaderEvent {
@@ -20,7 +20,7 @@ export default class MediaLoader {
 	}
 
 	static getPath(item) {
-		return environment.getTexturePath(item.asset.folder + item.asset.file);
+		return environment.getPath(item.asset.folder + item.asset.file);
 	}
 
 	static loadTexture(item, callback) {
@@ -29,15 +29,15 @@ export default class MediaLoader {
 	}
 
 	static isVideo(item) {
-		return item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
+		return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
 	}
 
 	static isPublisherStream(item) {
-		return item.asset.file === 'publisherStream';
+		return item.asset && item.asset.file === 'publisherStream';
 	}
 
 	static isNextAttendeeStream(item) {
-		return item.asset.file === 'nextAttendeeStream';
+		return item.asset && item.asset.file === 'nextAttendeeStream';
 	}
 
 	get isVideo() {
@@ -82,6 +82,8 @@ export default class MediaLoader {
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
+				// texture.image.width = video.videoWidth;
+				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
 				if (typeof callback === 'function') {
 					callback(texture, this);
@@ -111,6 +113,8 @@ export default class MediaLoader {
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
+				// texture.image.width = video.videoWidth;
+				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
 				if (!item.asset || !item.asset.autoplay) {
 					video.pause();
@@ -123,7 +127,7 @@ export default class MediaLoader {
 			video.src = MediaLoader.getPath(item);
 			video.load(); // must call after setting/changing source
 			this.play(true);
-		} else {
+		} else if (item.asset) {
 			MediaLoader.loadTexture(item, texture => {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
@@ -135,6 +139,8 @@ export default class MediaLoader {
 					callback(texture, this);
 				}
 			});
+		} else {
+			callback(null, this);
 		}
 		return this;
 	}

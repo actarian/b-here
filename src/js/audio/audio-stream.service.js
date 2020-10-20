@@ -12,19 +12,23 @@ export default class AudioStreamService {
 		return this.context_;
 	}
 
+	/*
 	static get processorNode() {
 		if (!this.processorNode_) {
 			this.processorNode_ = this.context.createScriptProcessor(BUFF_SIZE, 1, 1);
 		}
 		return this.processorNode_;
 	}
+	*/
 
+	/*
 	static get gain() {
 		if (!this.gain_) {
 			this.gain_ = this.context.createGain();
 		}
 		return this.gain_;
 	}
+	*/
 
 	static get analyser() {
 		if (!this.analyser_) {
@@ -36,16 +40,35 @@ export default class AudioStreamService {
 	static addSource(streamOrElement) {
 		const key = streamOrElement instanceof MediaStream ? streamOrElement.id : streamOrElement;
 		if (!this.sources_[key]) {
-			this.sources_[key] = streamOrElement instanceof MediaStream ? this.context.createMediaStreamSource(streamOrElement) : this.context.createMediaElementSource(streamOrElement);
+			if (streamOrElement instanceof MediaStream) {
+				this.sources_[key] = this.context.createMediaStreamSource(streamOrElement.clone());
+			} else {
+				this.sources_[key] = this.context.createMediaElementSource(streamOrElement);
+			}
+			// this.sources_[key] = streamOrElement instanceof MediaStream ? this.context.createMediaStreamSource(streamOrElement) : this.context.createMediaElementSource(streamOrElement);
 		}
 		return this.sources_[key];
 	}
 
 	static removeSource(streamOrElement) {
-		let source;
 		const key = streamOrElement instanceof MediaStream ? streamOrElement.id : streamOrElement;
+		return this.removeSourceKey(key);
+	}
+
+	static removeSourceKey(key) {
+		// console.log('AudioStreamService.removeSourceKey', key);
+		let source;
 		if (this.sources_[key]) {
 			source = this.sources_[key];
+			/*
+			if (source.mediaStream) {
+				source.mediaStream.stop();
+			}
+			source.stop();
+			*/
+			if (this.analyser) {
+				source.disconnect(this.analyser);
+			}
 			source.disconnect();
 			delete this.sources_[key];
 		}
@@ -97,6 +120,7 @@ export default class AudioStreamService {
 		}
 	}
 
+	// unused
 	static volume$(streamOrElement) {
 		const state = { volume: 0, clipped: false };
 		const context = this.context;
@@ -123,6 +147,7 @@ export default class AudioStreamService {
 		}
 	}
 
+	// unused
 	static audioMeterCreate(clipLevel = 0.98, averaging = 0.95, clipLag = 750) {
 		const context = this.context;
 		if (context) {
@@ -209,13 +234,14 @@ export default class AudioStreamService {
 	}
 
 	static dispose() {
+		const analyser = this.analyser;
 		Object.keys(this.sources_).forEach(key => {
-			this.sources_[key].disconnect();
+			this.removeSourceKey(key);
 		});
-		this.analyser.disconnect();
+		analyser.disconnect();
 		this.sources_ = {};
-		this.context_.close().then(() => console.log('AudioStreamService.dispose'));
-		this.context_ = null;
+		// this.context_.close().then(() => console.log('AudioStreamService.dispose'));
+		// this.context_ = null;
 	}
 
 }

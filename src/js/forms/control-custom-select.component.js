@@ -139,15 +139,17 @@ ControlCustomSelectComponent.meta = {
 	template: /* html */ `
 		<div class="group--form--select" [class]="{ required: control.validators.length, multiple: isMultiple }" [dropdown]="dropdownId" (dropped)="onDropped($event)">
 			<label [innerHTML]="label"></label>
-			<span class="control--select" [innerHTML]="getLabel()"></span>
-			<svg class="icon icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+			<span class="control--custom-select" [innerHTML]="getLabel()"></span>
+			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 			<span class="required__badge">required</span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 		<div class="dropdown" [dropdown-item]="dropdownId">
 			<div class="category" [innerHTML]="label"></div>
 			<ul class="nav--dropdown" [class]="{ multiple: isMultiple }">
-			<li *for="let item of control.options" (click)="setOption(item)"><span [class]="{ active: hasOption(item) }" [innerHTML]="item.name"></span></li>
+				<li (click)="setOption(item)" [class]="{ empty: item.id == null }" *for="let item of control.options">
+					<span [class]="{ active: hasOption(item) }" [innerHTML]="item.name"></span>
+				</li>
 			</ul>
 		</div>
 	`

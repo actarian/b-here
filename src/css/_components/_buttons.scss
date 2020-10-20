@@ -64,14 +64,15 @@
 
 %btn-rect {
 	@extend %btn;
-	height: 50px;
-	line-height: 50px;
+	min-height: 50px;
+	line-height: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	border-radius: 25px;
 	padding: 0 25px;
-	font-weight: 900;
+	font-weight: 600;
+	font-size: 16px;
 
 	svg {
 		width: 24px;

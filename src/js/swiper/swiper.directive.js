@@ -93,7 +93,8 @@ export default class SwiperDirective extends Component {
 				const callback = on.init;
 				if (!on.init || !on.init.swiperDirectiveInit) {
 					on.init = function() {
-						gsap.to(node, 0.4, {
+						gsap.to(node, {
+							duration: 0.4,
 							opacity: 1,
 							ease: Power2.easeOut,
 						});

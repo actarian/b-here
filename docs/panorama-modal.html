@@ -1,0 +1,6 @@
+<div class="panorama-modal" panorama-modal><div class="modal__header"><button type="button" class="btn--close" (click)="close()"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg></button></div><div class="container"><div class="form"><div class="title">Create Panorama.</div><form [formgroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off"><div class="form-controls"><div control-text [control]="controls.name" label="Name"></div><div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, video/mp4"></div><!-- <div control-upload [control]="controls.upload" label="Upload"></div> --></div><div class="group--cta"><button type="submit" class="btn--accept"><span *if="!form.submitted">Create</span> <span *if="form.submitted">Created!</span></button></div><!--
+				<div class="group--form group--form--fixed">
+					<code [innerHTML]="form.value | json"></code>
+					<button type="button" class="btn--test" (click)="test()"><span>test</span></button>
+				</div>
+				--></form></div></div></div>

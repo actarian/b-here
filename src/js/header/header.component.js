@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 import { of } from 'rxjs';
 import { catchError, takeUntil } from 'rxjs/operators';
 import CssService from '../css/css.service';
-import UserService from '../user/user.service';
+import { UserService } from '../user/user.service';
 
 export default class HeaderComponent extends Component {
 
@@ -17,7 +17,7 @@ export default class HeaderComponent extends Component {
 			this.pushChanges();
 		});
 		UserService.me$().pipe(
-			catchError(() => of (null)),
+			catchError(() => of(null)),
 			takeUntil(this.unsubscribe$)
 		).subscribe(user => {
 			// console.log('user', user);
