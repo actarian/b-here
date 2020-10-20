@@ -54,7 +54,8 @@ export const ViewItemType = {
 };
 
 export class View {
-	static allowedProps = ['id', 'type', 'name', 'likes', 'liked', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes'];
+	// 'liked'
+	static allowedProps = ['id', 'type', 'name', 'likes', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);

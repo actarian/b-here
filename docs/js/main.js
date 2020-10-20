@@ -3705,6 +3705,7 @@ var ViewItemType = {
   }
 };
 var View = /*#__PURE__*/function () {
+  // 'liked'
   function View(options) {
     if (options) {
       Object.assign(this, options);
@@ -3774,7 +3775,7 @@ var View = /*#__PURE__*/function () {
   return View;
 }();
 
-_defineProperty(View, "allowedProps", ['id', 'type', 'name', 'likes', 'liked', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes']);
+_defineProperty(View, "allowedProps", ['id', 'type', 'name', 'likes', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes']);
 
 var PanoramaView = /*#__PURE__*/function (_View) {
   _inheritsLoose(PanoramaView, _View);
@@ -4085,7 +4086,8 @@ function mapAsset(asset) {
   function ViewService() {}
 
   ViewService.data$ = function data$() {
-    return HttpService.get$('./api/data.json').pipe(operators.map(function (data) {
+    var dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
+    return HttpService.get$(dataUrl).pipe(operators.map(function (data) {
       data.views = data.views.map(function (view) {
         return mapView(view);
       });
@@ -4099,6 +4101,22 @@ function mapAsset(asset) {
         return x.id === viewId;
       });
     }));
+  };
+
+  ViewService.viewLike$ = function viewLike$(view) {
+    if (!view.liked) {
+      view.liked = true; // this.view.likes++;
+
+      if (environment.STATIC) {
+        view.likes = view.likes || 0;
+        view.likes++;
+        return rxjs.of(view);
+      } else {
+        return HttpService.get$("/api/view/" + view.id + "/like");
+      }
+    } else {
+      return rxjs.of(null);
+    }
   };
 
   return ViewService;
@@ -4717,11 +4735,15 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.addToWishlist = function addToWishlist() {
-    if (!this.view.liked) {
-      this.view.liked = true;
-      this.view.likes++;
-      this.pushChanges();
-    }
+    var _this8 = this;
+
+    ViewService.viewLike$(this.view).pipe(operators.first()).subscribe(function (view) {
+      if (view) {
+        Object.assign(_this8.view, view);
+
+        _this8.pushChanges();
+      }
+    });
   };
 
   _proto.tryInAr = function tryInAr() {
@@ -4747,7 +4769,7 @@ var VRService = /*#__PURE__*/function () {
       return this.hosted_;
     },
     set: function set(hosted) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (this.hosted_ !== hosted) {
         this.hosted_ = hosted;
@@ -4755,7 +4777,7 @@ var VRService = /*#__PURE__*/function () {
         if (this.data && this.controls) {
           if (hosted) {
             var view = this.data.views.find(function (x) {
-              return x.id === _this8.controls.view.value;
+              return x.id === _this9.controls.view.value;
             });
             this.view = view;
           } else {

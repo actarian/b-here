@@ -392,11 +392,14 @@ export default class AgoraComponent extends Component {
 	}
 
 	addToWishlist() {
-		if (!this.view.liked) {
-			this.view.liked = true;
-			this.view.likes++;
-			this.pushChanges();
-		}
+		ViewService.viewLike$(this.view).pipe(
+			first(),
+		).subscribe((view) => {
+			if (view) {
+				Object.assign(this.view, view);
+				this.pushChanges();
+			}
+		});
 	}
 
 	tryInAr() {
