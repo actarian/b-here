@@ -122,7 +122,7 @@ function _assertThisInitialized(self) {
   channelName: 'BHere',
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
   url: {
     index: '/',
     access: '/',
@@ -157,7 +157,7 @@ function _assertThisInitialized(self) {
   channelName: 'BHere',
   assets: './',
   worker: './js/workers/image.service.worker.js',
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
   url: {
     index: '/',
     access: '/',
