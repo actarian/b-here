@@ -37,12 +37,13 @@
           "id": 1,
           "name": "image"
         },
-        "folder": "/textures/welcome-room/",
-        "file": "welcome-room.jpg"
+        "folder": "/uploads/",
+        "file": "538286997075599_AdobeStock_342391354.jpeg",
+        "id": 538287032958400
       },
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -11.400000000000002,
+        "longitude": 359.6475979920839
       },
       "zoom": 75,
       "items": [
@@ -51,35 +52,89 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Waiting Room",
-          "abstract": "nav to waiting room",
-          "viewId": 1601561173968,
+          "title": "Obliqua Composizione 1",
+          "abstract": "Scopri",
+          "viewId": 521591868892999,
           "position": [
-            0.8727309729837255,
-            0.21783401223787396,
-            -0.4369084479696284
+            0.9778589084294884,
+            -0.09405058314563552,
+            -0.1869396774766001
           ],
-          "id": 1600271574407,
-          "link": {
-            "title": null,
-            "href": null,
-            "target": "_blank"
-          }
+          "asset": null,
+          "link": null,
+          "id": 538374756937300
         },
         {
           "type": {
             "id": 1,
             "name": "nav"
           },
-          "title": "Waiting Room",
-          "abstract": "nav to waiting room",
-          "viewId": 1601561173968,
+          "title": "Foto 360",
+          "abstract": "Vedi",
+          "viewId": 539664012158000,
           "position": [
-            0.7504471741049891,
-            -0.20406595230134555,
-            -0.6286383109461124
+            0.9819654777052859,
+            0.05819384768240377,
+            -0.1798812849824764
           ],
-          "id": 1600759466891
+          "asset": null,
+          "link": null,
+          "id": 538398402044200,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Obliqua Composizione 2",
+          "abstract": "Scopri",
+          "viewId": 541728155575700,
+          "position": [
+            0.994029659781571,
+            -0.036084614011983505,
+            0.10297055941452586
+          ],
+          "asset": null,
+          "link": null,
+          "id": 538415349924500,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Obliqua Composizione 3",
+          "abstract": "Scopri",
+          "viewId": 542891821577299,
+          "position": [
+            0.921335118673162,
+            -0.09043162381239107,
+            0.3781054357109469
+          ],
+          "asset": null,
+          "link": null,
+          "id": 538432634742800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Video 360",
+          "abstract": "Guarda",
+          "viewId": 542975856893999,
+          "position": [
+            0.971047943598045,
+            0.02400014969362981,
+            0.23767600646403364
+          ],
+          "asset": null,
+          "link": null,
+          "id": 538450664914600,
+          "keepOrientation": null
         }
       ]
     },
@@ -88,7 +143,7 @@
         "id": 3,
         "name": "panorama-grid"
       },
-      "name": "Composizione1",
+      "name": "Composizione 1",
       "asset": {
         "type": {
           "id": 1,
@@ -100,6 +155,7 @@
       },
       "tiles": [
         {
+          "id": 521591869038799,
           "asset": {
             "type": {
               "id": 1,
@@ -109,14 +165,10 @@
             "file": "521583599788600_Composizione1_x0_y0.jpg",
             "id": 521583716803499
           },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 0
-          },
-          "id": 521591869038799
+          "navs": []
         },
         {
+          "id": 521591869048599,
           "asset": {
             "type": {
               "id": 1,
@@ -126,14 +178,10 @@
             "file": "521583967801700_Composizione1_x1_y0.jpg",
             "id": 521583991196399
           },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 1
-          },
-          "id": 521591869048599
+          "navs": []
         },
         {
+          "id": 521591869051700,
           "asset": {
             "type": {
               "id": 1,
@@ -143,14 +191,10 @@
             "file": "521584099465500_Composizione1_x2_y0.jpg",
             "id": 521584152183100
           },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 2
-          },
-          "id": 521591869051700
+          "navs": []
         },
         {
+          "id": 521591869054199,
           "asset": {
             "type": {
               "id": 1,
@@ -160,14 +204,10 @@
             "file": "521584020039500_Composizione1_x0_y2.jpg",
             "id": 521584091922800
           },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 0
-          },
-          "id": 521591869054199
+          "navs": []
         },
         {
+          "id": 521591869056700,
           "asset": {
             "type": {
               "id": 1,
@@ -177,14 +217,10 @@
             "file": "521584150565099_Composizione1_x1_y2.jpg",
             "id": 521584171007500
           },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 1
-          },
-          "id": 521591869056700
+          "navs": []
         },
         {
+          "id": 521591869059000,
           "asset": {
             "type": {
               "id": 1,
@@ -194,12 +230,7 @@
             "file": "521584061526800_Composizione1_x2_y2.jpg",
             "id": 521584101720500
           },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 2
-          },
-          "id": 521591869059000
+          "navs": []
         }
       ],
       "invertAxes": true,
@@ -209,7 +240,308 @@
         "longitude": 0
       },
       "zoom": 75,
-      "id": 521591868892999
+      "id": 521591868892999,
+      "items": []
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Foto 360",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "539659577624400_test.jpg",
+        "id": 539659958413200
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 539664012158000,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": "Vai",
+          "viewId": 1601561173968,
+          "position": [
+            0.8857038418758352,
+            0.02716504225365061,
+            0.463455245914579
+          ],
+          "asset": null,
+          "link": null,
+          "id": 539699150606500
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
+      "name": "Composizione 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "540327577183099_Composizione2_x0_y0.jpg",
+        "id": 540327609087200
+      },
+      "tiles": [
+        {
+          "id": 541728155653600,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540327577183099_Composizione2_x0_y0.jpg",
+            "id": 540327609087200
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155666100,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328278402199_Composizione2_x2_y0.jpg",
+            "id": 540328398535999
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155668400,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328248756199_Composizione2_x4_y0.jpg",
+            "id": 540328378756599
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155669900,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328348463899_Composizione2_x0_y2.jpg",
+            "id": 540328413806300
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155671400,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328229603800_Composizione2_x2_y2.jpg",
+            "id": 540328373276200
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155672900,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328529248700_Composizione2_x4_y2.jpg",
+            "id": 540328614650500
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155674499,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328045196100_Composizione2_x0_y4.jpg",
+            "id": 540328310859299
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155676999,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328147705800_Composizione2_x2_y4.jpg",
+            "id": 540328342712700
+          },
+          "navs": []
+        },
+        {
+          "id": 541728155682400,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "540328543271699_Composizione2_x4_y4.jpg",
+            "id": 540328593053099
+          },
+          "navs": []
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 541728155575700,
+      "items": []
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
+      "name": "Composizione 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "542888760183600_Composizione3_x0_y0.jpg",
+        "id": 542888907788499
+      },
+      "tiles": [
+        {
+          "id": 542891821593100,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "542888760183600_Composizione3_x0_y0.jpg",
+            "id": 542888907788499
+          },
+          "navs": []
+        },
+        {
+          "id": 542891821596100,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "542889377271599_Composizione3_x0_y2.jpg",
+            "id": 542889427743300
+          },
+          "navs": []
+        },
+        {
+          "id": 542891821597900,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "542889476473700_Composizione3_x-2_y4.jpg",
+            "id": 542889525609700
+          },
+          "navs": []
+        },
+        {
+          "id": 542891821599300,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "542889425294299_Composizione3_x0_y4.jpg",
+            "id": 542889494244199
+          },
+          "navs": []
+        },
+        {
+          "id": 542891821600700,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "542889359020800_Composizione3_x2_y4.jpg",
+            "id": 542889419654400
+          },
+          "navs": []
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 542891821577299,
+      "items": []
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Video 360",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "542971952552999_ernestomeda.mp4",
+        "id": 542972959139999
+      },
+      "orientation": {
+        "latitude": 4.200000000000001,
+        "longitude": 176
+      },
+      "zoom": 75,
+      "id": 542975856893999,
+      "items": []
     }
   ],
   "assets": [
@@ -266,6 +598,159 @@
       "folder": "/uploads/",
       "file": "521584150565099_Composizione1_x1_y2.jpg",
       "id": 521584171007500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "538286997075599_AdobeStock_342391354.jpeg",
+      "id": 538287032958400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "539659577624400_test.jpg",
+      "id": 539659958413200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540327577183099_Composizione2_x0_y0.jpg",
+      "id": 540327609087200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328045196100_Composizione2_x0_y4.jpg",
+      "id": 540328310859299
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328147705800_Composizione2_x2_y4.jpg",
+      "id": 540328342712700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328229603800_Composizione2_x2_y2.jpg",
+      "id": 540328373276200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328248756199_Composizione2_x4_y0.jpg",
+      "id": 540328378756599
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328278402199_Composizione2_x2_y0.jpg",
+      "id": 540328398535999
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328348463899_Composizione2_x0_y2.jpg",
+      "id": 540328413806300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328543271699_Composizione2_x4_y4.jpg",
+      "id": 540328593053099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "540328529248700_Composizione2_x4_y2.jpg",
+      "id": 540328614650500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "542888760183600_Composizione3_x0_y0.jpg",
+      "id": 542888907788499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "542889359020800_Composizione3_x2_y4.jpg",
+      "id": 542889419654400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "542889377271599_Composizione3_x0_y2.jpg",
+      "id": 542889427743300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "542889425294299_Composizione3_x0_y4.jpg",
+      "id": 542889494244199
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "542889476473700_Composizione3_x-2_y4.jpg",
+      "id": 542889525609700
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "542971952552999_ernestomeda.mp4",
+      "id": 542972959139999
     }
   ],
   "users": [
