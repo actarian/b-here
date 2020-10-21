@@ -82,9 +82,192 @@
           "id": 1600759466891
         }
       ]
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
+      "name": "Composizione1",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "521583599788600_Composizione1_x0_y0.jpg",
+        "id": 521583716803499
+      },
+      "tiles": [
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "521583599788600_Composizione1_x0_y0.jpg",
+            "id": 521583716803499
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 0
+          },
+          "id": 521591869038799
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "521583967801700_Composizione1_x1_y0.jpg",
+            "id": 521583991196399
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 1
+          },
+          "id": 521591869048599
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "521584099465500_Composizione1_x2_y0.jpg",
+            "id": 521584152183100
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 2
+          },
+          "id": 521591869051700
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "521584020039500_Composizione1_x0_y2.jpg",
+            "id": 521584091922800
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 0
+          },
+          "id": 521591869054199
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "521584150565099_Composizione1_x1_y2.jpg",
+            "id": 521584171007500
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 1
+          },
+          "id": 521591869056700
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "521584061526800_Composizione1_x2_y2.jpg",
+            "id": 521584101720500
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 2
+          },
+          "id": 521591869059000
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 521591868892999
     }
   ],
-  "assets": [],
+  "assets": [
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "521583599788600_Composizione1_x0_y0.jpg",
+      "id": 521583716803499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "521583967801700_Composizione1_x1_y0.jpg",
+      "id": 521583991196399
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "521584020039500_Composizione1_x0_y2.jpg",
+      "id": 521584091922800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "521584061526800_Composizione1_x2_y2.jpg",
+      "id": 521584101720500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "521584099465500_Composizione1_x2_y0.jpg",
+      "id": 521584152183100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "521584150565099_Composizione1_x1_y2.jpg",
+      "id": 521584171007500
+    }
+  ],
   "users": [
     {
       "id": "1601892639985",
