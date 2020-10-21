@@ -2,4 +2,5 @@
 *.psd
 /docs/textures
 /docs/models
-/docs/fonts
+/docs/uploads
+# /docs/fonts

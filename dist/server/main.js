@@ -10,223 +10,11 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var https = _interopDefault(require('https'));
 var fs = _interopDefault(require('fs'));
-require('serve-static');
 var express = _interopDefault(require('express'));
 var expressSession = _interopDefault(require('express-session'));
 var bodyParser = _interopDefault(require('body-parser'));
 var path = _interopDefault(require('path'));
 var connectMultiparty = _interopDefault(require('connect-multiparty'));
-var mv = _interopDefault(require('mv'));
-
-function upload(temporaryFolder) {
-  var instance = {};
-  instance.temporaryFolder = temporaryFolder;
-  instance.maxFileSize = null;
-  instance.fileParameterName = 'file';
-
-  try {
-    fs.mkdirSync(instance.temporaryFolder);
-  } catch (e) {}
-
-  function cleanIdentifier(identifier) {
-    return identifier.replace(/[^0-9A-Za-z_-]/g, '');
-  }
-
-  function getChunkFilename(chunkNumber, identifier) {
-    // Clean up the identifier
-    identifier = cleanIdentifier(identifier); // What would the file name be?
-
-    return path.resolve(instance.temporaryFolder, './chunk-' + identifier + '.' + chunkNumber);
-  }
-
-  function validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, fileSize) {
-    // Clean up the identifier
-    identifier = cleanIdentifier(identifier); // Check if the request is sane
-
-    if (chunkNumber == 0 || chunkSize == 0 || totalSize == 0 || identifier.length == 0 || filename.length == 0) {
-      return 'non_flow_request';
-    }
-
-    var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
-
-    if (chunkNumber > numberOfChunks) {
-      return 'invalid_flow_request1';
-    } // Is the file too big?
-
-
-    if (instance.maxFileSize && totalSize > instance.maxFileSize) {
-      return 'invalid_flow_request2';
-    }
-
-    if (typeof fileSize != 'undefined') {
-      if (chunkNumber < numberOfChunks && fileSize != chunkSize) {
-        // The chunk in the POST request isn't the correct size
-        return 'invalid_flow_request3';
-      }
-
-      if (numberOfChunks > 1 && chunkNumber == numberOfChunks && fileSize != totalSize % chunkSize + parseInt(chunkSize)) {
-        // The chunks in the POST is the last one, and the fil is not the correct size
-        return 'invalid_flow_request4';
-      }
-
-      if (numberOfChunks == 1 && fileSize != totalSize) {
-        // The file is only a single chunk, and the data size does not fit
-        return 'invalid_flow_request5';
-      }
-    }
-
-    return 'valid';
-  } //'found', filename, original_filename, identifier
-  //'not_found', null, null, null
-
-
-  instance.get = function (req, callback) {
-    var chunkNumber = req.param('flowChunkNumber', 0);
-    var chunkSize = req.param('flowChunkSize', 0);
-    var totalSize = req.param('flowTotalSize', 0);
-    var identifier = req.param('flowIdentifier', "");
-    var filename = req.param('flowFilename', "");
-
-    if (validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename) == 'valid') {
-      var chunkFilename = getChunkFilename(chunkNumber, identifier); // console.log('test chunkFilename', chunkFilename);
-
-      fs.access(chunkFilename, fs.constants.F_OK, function (error) {
-        if (error) {
-          callback('not_found', null, null, null);
-        } else {
-          callback('found', chunkFilename, filename, identifier);
-        }
-      });
-    } else {
-      callback('not_found', null, null, null);
-    }
-  }; //'partly_done', filename, original_filename, identifier
-  //'done', filename, original_filename, identifier
-  //'invalid_flow_request', null, null, null
-  //'non_flow_request', null, null, null
-
-
-  instance.post = function (req, callback) {
-    var fields = req.body;
-    var files = req.files;
-    var chunkNumber = fields['flowChunkNumber'];
-    var chunkSize = fields['flowChunkSize'];
-    var totalSize = fields['flowTotalSize'];
-    var identifier = cleanIdentifier(fields['flowIdentifier']);
-    var filename = fields['flowFilename'];
-
-    if (!files[instance.fileParameterName] || !files[instance.fileParameterName].size) {
-      callback('invalid_flow_request', null, null, null);
-      return;
-    }
-
-    var original_filename = files[instance.fileParameterName]['originalFilename'];
-    var validation = validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, files[instance.fileParameterName].size);
-
-    if (validation == 'valid') {
-      var chunkFilename = getChunkFilename(chunkNumber, identifier); // Save the chunk (TODO: OVERWRITE)
-
-      mv(files[instance.fileParameterName].path, chunkFilename, function () {
-        // Do we have all the chunks?
-        var currentTestChunk = 1;
-        var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
-
-        var testChunkExists = function testChunkExists() {
-          var chunkFilename = getChunkFilename(currentTestChunk, identifier); // console.log('test chunkFilename', chunkFilename);
-
-          fs.access(chunkFilename, fs.constants.F_OK, function (error) {
-            if (error) {
-              callback('partly_done', filename, original_filename, identifier);
-            } else {
-              currentTestChunk++;
-
-              if (currentTestChunk > numberOfChunks) {
-                callback('done', filename, original_filename, identifier);
-              } else {
-                // Recursion
-                testChunkExists();
-              }
-            }
-          });
-        };
-
-        testChunkExists();
-      });
-    } else {
-      callback(validation, filename, original_filename, identifier);
-    }
-  }; // Pipe chunks directly in to an existsing WritableStream
-  //   r.write(identifier, response);
-  //   r.write(identifier, response, {end:false});
-  //
-  //   const stream = fs.createWriteStream(filename);
-  //   r.write(identifier, stream);
-  //   stream.on('data', function(data){...});
-  //   stream.on('finish', function(){...});
-
-
-  instance.write = function (identifier, stream, options) {
-    options = options || {};
-    options.end = typeof options['end'] == 'undefined' ? true : options['end']; // Iterate over each chunk
-
-    var pipeChunk = function pipeChunk(number) {
-      var chunkFilename = getChunkFilename(number, identifier);
-      fs.access(chunkFilename, fs.constants.F_OK, function (error) {
-        if (error) {
-          // When all the chunks have been piped, end the stream
-          if (options.end) {
-            stream.end();
-            instance.clean(identifier, options);
-          } // if (options.onDone) options.onDone();
-
-        } else {
-          // If the chunk with the current number exists,
-          // then create a ReadStream from the file
-          // and pipe it to the specified stream.
-          var source = fs.createReadStream(chunkFilename);
-          source.pipe(stream, {
-            end: false
-          });
-          source.on('end', function () {
-            // When the chunk is fully streamed,
-            // jump to the next one
-            pipeChunk(number + 1);
-          });
-        }
-      });
-    };
-
-    pipeChunk(1);
-  };
-
-  instance.clean = function (identifier, options) {
-    options = options || {}; // Iterate over each chunk
-
-    var pipeChunkRm = function pipeChunkRm(number) {
-      var chunkFilename = getChunkFilename(number, identifier); //console.log('removing pipeChunkRm ', number, 'chunkFilename', chunkFilename);
-
-      fs.access(chunkFilename, fs.constants.F_OK, function (error) {
-        if (error) {
-          if (options.onDone) options.onDone();
-        } else {
-          console.log('exist removing ', chunkFilename);
-          fs.unlink(chunkFilename, function (err) {
-            if (err && options.onError) options.onError(err);
-          });
-          pipeChunkRm(number + 1);
-        }
-      });
-    };
-
-    pipeChunkRm(1);
-  };
-
-  return instance;
-}
-
-var upload_1 = {
-  upload: upload
-};
 
 // const serveStatic = require('serve-static');
 
@@ -455,48 +243,6 @@ var _static = {
   mimeApplication: MIME_APPLICATION,
   staticMiddleware: staticMiddleware
 };
-
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-}
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-
-  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-
-  return arr2;
-}
-
-function _createForOfIteratorHelperLoose(o, allowArrayLike) {
-  var it;
-
-  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-      if (it) o = it;
-      var i = 0;
-      return function () {
-        if (i >= o.length) return {
-          done: true
-        };
-        return {
-          done: false,
-          value: o[i++]
-        };
-      };
-    }
-
-    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  it = o[Symbol.iterator]();
-  return it.next.bind(it);
-}
 
 var RoleType = {
   Publisher: 'publisher',
@@ -920,10 +666,9 @@ ROUTES.forEach(function (route) {
   } else {
     var matchers = ["^"];
     var regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
-    var matches = route.path.matchAll(regExp);
+    var match;
 
-    for (var _iterator = _createForOfIteratorHelperLoose(matches), _step; !(_step = _iterator()).done;) {
-      var match = _step.value;
+    while ((match = regExp.exec(route.path)) !== null) {
       var g1 = match[1];
       var g2 = match[2];
       var g3 = match[3];
@@ -947,6 +692,27 @@ ROUTES.forEach(function (route) {
         });
       }
     }
+    /*
+    const matches = route.path.matchAll(regExp);
+    for (let match of matches) {
+    	const g1 = match[1];
+    	const g2 = match[2];
+    	const g3 = match[3];
+    	if (g1) {
+    		relative = !(g1 === '//' || g1 === '/');
+    	} else if (g2) {
+    		matchers.push(`\/(${g2})`);
+    		segments.push({ name: g2, param: null, value: null });
+    	} else if (g3) {
+    		matchers.push('\/([^\/]+)');
+    		const params = {};
+    		params[g3] = null;
+    		route.params = params;
+    		segments.push({ name: '', param: g3, value: null });
+    	}
+    }
+    */
+
 
     matchers.push('$');
     var regexp = matchers.join('');
@@ -1005,15 +771,16 @@ var api = {
   uuid: uuid
 };
 
+var staticMiddleware$1 = _static.staticMiddleware;
+var apiMiddleware$1 = api.apiMiddleware,
+    uuid$1 = api.uuid;
 var multipartMiddleware = connectMultiparty({
   uploadDir: path.join(__dirname, '../docs/temp/')
-});
-var upload$1 = upload_1.upload;
-var uploader = upload$1(path.join(__dirname, '../docs/temp/'));
-var staticMiddleware$1 = _static.staticMiddleware; // const { spaMiddleware } = require('./spa/spa.js');
-
-var apiMiddleware$1 = api.apiMiddleware,
-    uuid$1 = api.uuid; // const router = express.Router();
+}); // const serveStatic = require('serve-static');
+// const { upload } = require('./upload/upload.js');
+// const uploader = upload(path.join(__dirname, '../docs/temp/'));
+// const { spaMiddleware } = require('./spa/spa.js');
+// const router = express.Router();
 
 var BASE_HREF = '/b-here/';
 var ASSETS = "assets/";
@@ -1035,8 +802,7 @@ var Vars = {
   accessControlAllowOrigin: true
 };
 var staticMiddleware_ = staticMiddleware$1(Vars);
-var apiMiddleware_ = apiMiddleware$1(Vars); // const spaMiddleware_ = spaMiddleware(Vars);
-
+var apiMiddleware_ = apiMiddleware$1(Vars);
 var app = express();
 app.use(expressSession({
   secret: 'b-here-secret-keyword',
@@ -1057,26 +823,10 @@ app.post('/api/upload', multipartMiddleware, function (request, response) {
   }
 
   console.log(request.body, request.files);
-  /*
-  file: {
-  	fieldName: 'file',
-  	originalFilename: 'ambiente1_x3_y3.jpg',
-  	path: 'C:\\WORK\\GIT\\TFS\\Websolute\\b-here\\docs\\temp\\CVvHZ4YYkiQdWmiAtTjhb6kF.jpg',
-  	headers: {
-  	  'content-disposition': 'form-data; name="file"; filename="ambiente1_x3_y3.jpg"',
-  	  'content-type': 'image/jpeg'
-  	},
-  	size: 3888620,
-  	name: 'ambiente1_x3_y3.jpg',
-  	type: 'image/jpeg'
-    }
-  */
-
   var file = request.files.file;
   var id = uuid$1();
   var fileName = id + "_" + file.name;
-  var folder = "/uploads/"; // `uploads/`;
-
+  var folder = "/uploads/";
   var input = file.path;
   var output = path.join(__dirname, Vars.root, folder, fileName);
   var upload = {
@@ -1084,8 +834,7 @@ app.post('/api/upload', multipartMiddleware, function (request, response) {
     fileName: fileName,
     type: file.type,
     originalFileName: file.name,
-    url: "" + folder + fileName // url: `${request.protocol === 'https' ? Vars.hostHttps : Vars.host}${Vars.baseHref}${folder}${fileName}`,
-
+    url: "" + folder + fileName
   };
   var uploads = [upload];
   fs.copyFile(input, output, function (error) {
@@ -1106,68 +855,9 @@ app.options('/api/upload', function (request, response) {
   }
 
   response.status(200).send();
-}); // Handle uploads through Flow.js
-
-app.post('/api/upload_', multipartMiddleware, function (request, response) {
-  uploader.post(request, function (status, filename, original_filename, identifier) {
-    console.log('POST', status, original_filename, identifier);
-
-    if (Vars.accessControlAllowOrigin) {
-      response.header('Access-Control-Allow-Origin', '*');
-    }
-
-    if (status === 'done') {
-      filename = identifier + '_' + filename;
-      var stream = fs.createWriteStream(path.join(__dirname, '../docs/uploads/', filename));
-      stream.on('finish', function () {
-        response.status(200).send(JSON.stringify({
-          filename: filename,
-          url: "/uploads/" + filename
-        }));
-      });
-      uploader.write(identifier, stream, {
-        end: true
-      });
-    } else {
-      response.status(/^(partly_done|done)$/.test(status) ? 200 : 500).send();
-    }
-  });
 });
-app.options('/api/upload_', function (request, response) {
-  console.log('OPTIONS');
-
-  if (Vars.accessControlAllowOrigin) {
-    response.header('Access-Control-Allow-Origin', '*');
-  }
-
-  response.status(200).send();
-}); // Handle status checks on chunks through Flow.js
-
-app.get('/api/upload_', function (request, response) {
-  uploader.get(request, function (status, filename, original_filename, identifier) {
-    console.log('GET', status);
-
-    if (Vars.accessControlAllowOrigin) {
-      response.header('Access-Control-Allow-Origin', '*');
-    }
-
-    if (status == 'found') {
-      status = 200;
-    } else {
-      status = 204;
-    }
-
-    response.status(status).send();
-  });
-});
-app.get('/api/download/:identifier', function (request, response) {
-  uploader.write(request.params.identifier, response);
-}); // Handle uploads through Flow.js
-// app.get('*', spaMiddleware_);
-
 app.get('/', function (request, response) {
-  response.sendFile(path.join(__dirname, '../docs/access.html')); // response.sendFile(path.join(__dirname, '../docs/index.html'));
-  // response.render('docs/index');
+  response.sendFile(path.join(__dirname, '../docs/access.html'));
 });
 app.get('/self-service-tour', function (request, response) {
   response.sendFile(path.join(__dirname, '../docs/b-here.html'));
@@ -1181,19 +871,6 @@ app.get('/b-here', function (request, response) {
 app.get('/editor', function (request, response) {
   response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
-/*
-app.listen(Vars.port, () => {
-	console.log(`NodeJs Running server at ${Vars.host}`);
-});
-*/
-
-/*
-const serverHttp = http.createServer(app);
-serverHttp.listen(Vars.port, () => {
-	console.log(`NodeJs Running server at ${Vars.host}`);
-});
-*/
-
 app.listen(Vars.port, function () {
   console.log("NodeJs Running server at " + Vars.host);
 });
