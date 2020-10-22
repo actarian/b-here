@@ -81,14 +81,14 @@
         {
           "id": 150,
           "type": "nav",
-          "title": "Ernestomeda",
+          "title": "Factory",
           "abstract": "Abstract",
           "position": [
             0.8127104096620694,
             -0.3035373322761011,
             -0.4973599078550856
           ],
-          "viewId": 17
+          "viewId": 601
         }
       ],
       "orientation": {
@@ -247,147 +247,6 @@
       "orientation": {
         "latitude": -10,
         "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 17,
-      "type": "panorama",
-      "name": "Ernestomeda",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "waiting-room/",
-        "file": "spaceroom.jpeg"
-      },
-      "items": [
-        {
-          "id": 1710,
-          "type": "nav",
-          "title": "Foto 360",
-          "abstract": "Abstract",
-          "position": [
-            0.9999601397579059,
-            0.006779055870503579,
-            0
-          ],
-          "viewId": 18
-        },
-        {
-          "id": 1711,
-          "type": "nav",
-          "title": "Video 360",
-          "abstract": "Abstract",
-          "position": [
-            0.9729681586481167,
-            0.021672796265337455,
-            0.22992009951053566
-          ],
-          "viewId": 19
-        },
-        {
-          "id": 1720,
-          "type": "nav",
-          "title": "Obliqua Composizione 1",
-          "abstract": "Abstract",
-          "position": [
-            0.8939132074560319,
-            -0.16237757850308276,
-            -0.30
-          ],
-          "viewId": 201
-        },
-        {
-          "id": 1721,
-          "type": "nav",
-          "title": "Obliqua Composizione 2",
-          "abstract": "Abstract",
-          "position": [
-            0.8939132074560319,
-            -0.16237757850308276,
-            0
-          ],
-          "viewId": 202
-        },
-        {
-          "id": 1722,
-          "type": "nav",
-          "title": "Obliqua Composizione 3",
-          "abstract": "Abstract",
-          "position": [
-            0.8939132074560319,
-            -0.16237757850308276,
-            0.30
-          ],
-          "viewId": 203
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 18,
-      "type": "panorama",
-      "name": "Foto 360",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "image",
-        "folder": "ernestomeda/",
-        "file": "test.jpg"
-      },
-      "items": [
-        {
-          "id": 1710,
-          "type": "nav",
-          "title": "Prev",
-          "abstract": "Abstract",
-          "position": [
-            0.937404337862641,
-            0.1452281558092368,
-            -0.31651522888567557
-          ],
-          "viewId": 17
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75
-    },
-    {
-      "id": 19,
-      "type": "panorama",
-      "name": "Video 360",
-      "likes": 40,
-      "liked": false,
-      "asset": {
-        "type": "video",
-        "folder": "video/",
-        "file": "ernestomeda.mp4"
-      },
-      "items": [
-        {
-          "id": 1710,
-          "type": "nav",
-          "title": "Prev",
-          "abstract": "Abstract",
-          "position": [
-            -0.6982720102039862,
-            0.13500579777875724,
-            -0.7029862262746016
-          ],
-          "viewId": 17
-        }
-      ],
-      "orientation": {
-        "latitude": 0,
-        "longitude": 180
       },
       "zoom": 75
     },
@@ -2565,18 +2424,6 @@
         "Composizione1_x2_y2.jpg"
       ],
       "items": [
-        {
-          "id": 20210,
-          "type": "nav",
-          "title": "Prev",
-          "abstract": "Abstract",
-          "position": [
-            0.9226244803336953,
-            0.17960131649980698,
-            -0.34133185523843923
-          ],
-          "viewId": 17
-        }
       ],
       "orientation": {
         "latitude": 0,
@@ -2618,18 +2465,6 @@
         "Composizione2_x4_y4.jpg"
       ],
       "items": [
-        {
-          "id": 20211,
-          "type": "nav",
-          "title": "Prev",
-          "abstract": "Abstract",
-          "position": [
-            0.8746907006978099,
-            0.11436068879823358,
-            -0.4709966146060584
-          ],
-          "viewId": 17
-        }
       ],
       "orientation": {
         "latitude": 0,
@@ -2667,18 +2502,6 @@
         "Composizione3_x2_y4.jpg"
       ],
       "items": [
-        {
-          "id": 20211,
-          "type": "nav",
-          "title": "Prev",
-          "abstract": "Abstract",
-          "position": [
-            0.8501329720935449,
-            0.2659364502345637,
-            0.45447963012222625
-          ],
-          "viewId": 17
-        }
       ],
       "orientation": {
         "latitude": 0,
