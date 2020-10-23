@@ -1,5 +1,5 @@
 import { Component, getContext } from 'rxcomp';
-import { auditTime, takeUntil } from 'rxjs/operators';
+import { auditTime, filter, shareReplay, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../agora/agora.types';
 import { DEBUG } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
@@ -10,7 +10,7 @@ import { PanoramaGridView } from '../view/view';
 import AvatarElement from './avatar/avatar-element';
 import Camera from './camera/camera';
 import Interactive from './interactive/interactive';
-import OrbitService, { OrbitDragEvent } from './orbit/orbit';
+import OrbitService, { OrbitMoveEvent } from './orbit/orbit';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
@@ -47,6 +47,12 @@ export default class WorldComponent extends Component {
 	}
 	get debugging() {
 		return DEBUG;
+	}
+	get locked() {
+		return this.state.locked || this.state.spying;
+	}
+	get lockedOrXR() {
+		return this.locked || this.renderer.xr.isPresenting;
 	}
 
 	onInit() {
@@ -491,10 +497,10 @@ export default class WorldComponent extends Component {
 	}
 
 	onMouseDown(event) {
-		if (event.button !== 0) {
-			return;
-		}
 		try {
+			if (event.button !== 0) {
+				return;
+			}
 			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
 			if (this.editor || DEBUG) {
@@ -517,6 +523,9 @@ export default class WorldComponent extends Component {
 	onMouseMove(event) {
 		try {
 			const raycaster = this.updateRaycasterMouse(event);
+			if (this.lockedOrXR) {
+				return;
+			}
 			if (this.dragItem) {
 				if (typeof this.dragItem.onDragMove === 'function') {
 					const intersections = raycaster.intersectObjects([this.panorama.mesh]);
@@ -548,47 +557,47 @@ export default class WorldComponent extends Component {
 	}
 
 	onMouseUp(event) {
-		if (this.dragItem) {
-			if (typeof this.dragItem.onDragEnd === 'function') {
-				this.dragItem.onDragEnd();
-				this.dragEnd.next(this.dragItem);
+		try {
+			if (this.lockedOrXR) {
+				return;
 			}
-		}
-		this.dragItem = null;
-		if (this.resizeItem) {
-			if (typeof this.resizeItem.onResizeEnd === 'function') {
-				this.resizeItem.onResizeEnd();
-				this.resizeEnd.next(this.resizeItem);
+			if (this.dragItem) {
+				if (typeof this.dragItem.onDragEnd === 'function') {
+					this.dragItem.onDragEnd();
+					this.dragEnd.next(this.dragItem);
+				}
 			}
+			this.dragItem = null;
+			if (this.resizeItem) {
+				if (typeof this.resizeItem.onResizeEnd === 'function') {
+					this.resizeItem.onResizeEnd();
+					this.resizeEnd.next(this.resizeItem);
+				}
+			}
+			this.resizeItem = null;
+			/*
+			if (NavPointDragging) {
+				stopDragging
+			}
+			*/
+		} catch (error) {
+			this.error = error;
+			// throw (error);
 		}
-		this.resizeItem = null;
-		/*
-		if (NavPointDragging) {
-			stopDragging
-		}
-		*/
 	}
 
 	onMouseWheel(event) {
-		// !!! fov zoom
 		try {
-			if ((!this.state || !this.state.locked) && !this.renderer.xr.isPresenting) {
-				const orbit = this.orbit;
-				gsap.to(orbit, {
-					duration: 0.5,
-					zoom: orbit.zoom + event.deltaY * 0.1,
-					ease: Power4.easeOut,
-					overwrite: true,
-				});
-				// orbit.zoom += event.deltaY * 0.03;
-				/*
-				const camera = this.camera;
-				const fov = camera.fov + event.deltaY * 0.01;
-				camera.fov = THREE.Math.clamp(fov, 15, 75);
-				camera.updateProjectionMatrix();
-				this.onOrientationDidChange();
-				*/
+			if (this.lockedOrXR) {
+				return;
 			}
+			const orbit = this.orbit;
+			gsap.to(orbit, {
+				duration: 0.5,
+				zoom: orbit.zoom + event.deltaY * 0.1,
+				ease: Power4.easeOut,
+				overwrite: true,
+			});
 		} catch (error) {
 			this.error = error;
 			// throw (error);
@@ -608,11 +617,6 @@ export default class WorldComponent extends Component {
 		MessageService.send({
 			type: MessageType.VRStarted,
 		});
-		/*
-		if (this.view_ instanceof ModelView) {
-			// console.log(this.view_);
-		}
-		*/
 	}
 
 	onVREnded() {
@@ -623,11 +627,6 @@ export default class WorldComponent extends Component {
 	}
 
 	onVRStateDidChange(state) {
-		/*
-		if (DEBUG) {
-			// console.log('WorldComponent.onVRStateDidChange', state.camera.array);
-		}
-		*/
 		MessageService.send({
 			type: MessageType.VRState,
 			camera: state.camera.array,
@@ -642,6 +641,9 @@ export default class WorldComponent extends Component {
 
 	onMenuToggle(event) {
 		// console.log('WorldComponent.onMenuToggle', event.id, event);
+		if (this.locked) {
+			return;
+		}
 		this.menu = event;
 		this.view.items.forEach(item => item.showPanel = false);
 		this.pushChanges();
@@ -667,6 +669,9 @@ export default class WorldComponent extends Component {
 	onNavDown(event) {
 		event.item.showPanel = false;
 		// console.log('WorldComponent.onNavDown', this.keys);
+		if (this.locked) {
+			return;
+		}
 		if (this.editor && this.keys.Shift) {
 			this.dragItem = event;
 			this.select.next(event);
@@ -680,6 +685,9 @@ export default class WorldComponent extends Component {
 
 	onPlaneDown(event) {
 		// console.log('WorldComponent.onPlaneDown', this.keys);
+		if (this.lockedOrXR) {
+			return;
+		}
 		if (this.editor && this.keys.Shift) {
 			this.dragItem = event;
 			this.select.next(event);
@@ -690,16 +698,19 @@ export default class WorldComponent extends Component {
 	}
 
 	onPanelDown(event) {
+		// console.log('WorldComponent.onPanelDown', href, target);
 		const href = event.getAttribute('href');
 		const target = event.getAttribute('target') || '_self';
 		if (href) {
 			window.open(href, '_blank');
 		}
-		// console.log('WorldComponent.onPanelDown', href, target);
 	}
 
 	onGridMove(event) {
 		// console.log('WorldComponent.onGridMove', event, this.view);
+		if (this.locked) {
+			return;
+		}
 		this.view.items = [];
 		this.pushChanges();
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
@@ -720,6 +731,9 @@ export default class WorldComponent extends Component {
 
 	onGridNav(event) {
 		// console.log('WorldComponent.onGridNav', event);
+		if (this.locked) {
+			return;
+		}
 		MessageService.send({
 			type: MessageType.NavToGrid,
 			viewId: this.view.id,
@@ -758,15 +772,23 @@ export default class WorldComponent extends Component {
 		).subscribe((state) => {
 			this.onVRStateDidChange(state);
 		});
-		this.orbit.observe$(this.container).pipe(
+		const orbit$ = this.orbit.observe$(this.container).pipe(
+			shareReplay(1)
+		);
+		/*
+		const drag$ = orbit$.pipe(
+			filter(event => event instanceof OrbitDragEvent),
+		);
+		*/
+		const orientation$ = orbit$.pipe(
+			filter(event => event instanceof OrbitMoveEvent),
+			auditTime(Math.floor(1000 / 15)),
+		);
+		orientation$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
-			if (event instanceof OrbitDragEvent) {
-
-			} else {
-				// this.render();
-				this.onOrientationDidChange();
-			}
+			// this.render();
+			this.onOrientationDidChange();
 		});
 		MessageService.out$.pipe(
 			takeUntil(this.unsubscribe$)

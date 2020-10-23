@@ -1,7 +1,7 @@
 {
   "views": [
     {
-      "id": "waiting-room",
+      "id": 170427763401500,
       "type": {
         "id": 1,
         "name": "waiting-room"
@@ -17,7 +17,6 @@
         "folder": "/textures/waiting-room/",
         "file": "waiting-room.jpg"
       },
-      "items": [],
       "orientation": {
         "latitude": 0,
         "longitude": 0
@@ -25,7 +24,7 @@
       "zoom": 75
     },
     {
-      "id": 1,
+      "id": 170427763402500,
       "type": {
         "id": 2,
         "name": "panorama"
@@ -41,12 +40,12 @@
         "folder": "/textures/welcome-room/",
         "file": "welcome-room.jpg"
       },
-      "items": [],
       "orientation": {
-        "latitude": -10,
-        "longitude": 360
+        "latitude": 0,
+        "longitude": 0
       },
-      "zoom": 75
+      "zoom": 75,
+      "items": []
     }
   ]
 }

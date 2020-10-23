@@ -157,6 +157,7 @@
 					</button>
 				</div>
 			</div>
+			<div class="members">users <span class="members__count" [innerHTML]="state.membersCount"></span></div>
 		</div>
 		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
 			<button type="button" class="btn--control" [class]="{ active: state.control }" (click)="onToggleControl($event)" *if="state.role == 'publisher'">
@@ -196,8 +197,7 @@
 				<span class="badge" [innerHTML]="view?.likes"></span>
 			</button>
 		</div>
-		<div class="ui__lock" (mousedown)="onPrevent($event)" (touchstart)="onPrevent($event)" *if="state.locked"></div>
-		<div class="ui__lock control" *if="state.control"></div>
+		<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
 	</div>
 	<a href="/" class="group--logo" *if="state.status != 'connected'">
 		<svg viewBox="0 0 327 98"><use xlink:href="#b-here"></use></svg>

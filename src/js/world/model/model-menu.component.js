@@ -1,6 +1,7 @@
 import { takeUntil } from 'rxjs/operators';
 // import * as THREE from 'three';
 import { environment } from '../../environment';
+import StateService from '../../state/state.service';
 import { ViewType } from '../../view/view';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -346,6 +347,9 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	onToggle() {
+		if (StateService.state.locked || StateService.state.spying) {
+			return;
+		}
 		if (this.buttons) {
 			this.removeMenu();
 			this.toggle.next();

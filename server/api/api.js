@@ -311,13 +311,14 @@ ROUTES.forEach(route => {
 	} else {
 		const matchers = [`^`];
 		const regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
-		const matches = route.path.matchAll(regExp);
-		for (let match of matches) {
+		let relative;
+		let match;
+		while ((match = regExp.exec(route.path)) !== null) {
 			const g1 = match[1];
 			const g2 = match[2];
 			const g3 = match[3];
 			if (g1) {
-				this.relative = !(g1 === '//' || g1 === '/');
+				relative = !(g1 === '//' || g1 === '/');
 			} else if (g2) {
 				matchers.push(`\/(${g2})`);
 				segments.push({ name: g2, param: null, value: null });
@@ -329,6 +330,26 @@ ROUTES.forEach(route => {
 				segments.push({ name: '', param: g3, value: null });
 			}
 		}
+		/*
+		const matches = route.path.matchAll(regExp);
+		for (let match of matches) {
+			const g1 = match[1];
+			const g2 = match[2];
+			const g3 = match[3];
+			if (g1) {
+				relative = !(g1 === '//' || g1 === '/');
+			} else if (g2) {
+				matchers.push(`\/(${g2})`);
+				segments.push({ name: g2, param: null, value: null });
+			} else if (g3) {
+				matchers.push('\/([^\/]+)');
+				const params = {};
+				params[g3] = null;
+				route.params = params;
+				segments.push({ name: '', param: g3, value: null });
+			}
+		}
+		*/
 		matchers.push('$');
 		const regexp = matchers.join('');
 		console.log(regexp)

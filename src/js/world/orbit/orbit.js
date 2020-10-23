@@ -3,6 +3,7 @@ import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 // import * as THREE from 'three';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
+import StateService from '../../state/state.service';
 
 export const OrbitMode = {
 	Panorama: 'panorama',
@@ -114,6 +115,7 @@ export default class OrbitService {
 		// const camera = this.camera;
 		let latitude, longitude;
 		return combineLatest([KeyboardService.keys$(), DragService.observe$(node)]).pipe(
+			filter(event => (!StateService.state.locked && !StateService.state.spying)),
 			map((datas) => {
 				const keys = datas[0];
 				const event = datas[1];

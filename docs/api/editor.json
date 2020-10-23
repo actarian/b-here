@@ -1,7 +1,7 @@
 {
   "views": [
     {
-      "id": 1601561103968,
+      "id": 170427763401500,
       "type": {
         "id": 1,
         "name": "waiting-room"
@@ -24,7 +24,7 @@
       "zoom": 75
     },
     {
-      "id": 1601561173968,
+      "id": 170427763402500,
       "type": {
         "id": 2,
         "name": "panorama"
@@ -45,43 +45,7 @@
         "longitude": 0
       },
       "zoom": 75,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Waiting Room",
-          "abstract": "nav to waiting room",
-          "viewId": 1601561173968,
-          "position": [
-            0.8727309729837255,
-            0.21783401223787396,
-            -0.4369084479696284
-          ],
-          "id": 1600271574407,
-          "link": {
-            "title": null,
-            "href": null,
-            "target": "_blank"
-          }
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Waiting Room",
-          "abstract": "nav to waiting room",
-          "viewId": 1601561173968,
-          "position": [
-            0.7504471741049891,
-            -0.20406595230134555,
-            -0.6286383109461124
-          ],
-          "id": 1600759466891
-        }
-      ]
+      "items": []
     }
   ],
   "assets": [],
@@ -111,40 +75,7 @@
       "privacy": true,
       "checkRequest": "",
       "checkField": "",
-      "id": 366193900457100
-    },
-    {
-      "type": "self-service",
-      "firstName": "Jhon",
-      "lastName": "Appleseed",
-      "email": "jhonappleseed@gmail.com",
-      "role": 1,
-      "privacy": true,
-      "checkRequest": "",
-      "checkField": "",
-      "id": 366375757877200
-    },
-    {
-      "type": "self-service",
-      "firstName": "Jhon",
-      "lastName": "Appleseed",
-      "email": "jhonappleseed@gmail.com",
-      "role": 1,
-      "privacy": true,
-      "checkRequest": "",
-      "checkField": "",
-      "id": 366442796379400
-    },
-    {
-      "type": "self-service",
-      "firstName": "Jhon",
-      "lastName": "Appleseed",
-      "email": "jhonappleseed@gmail.com",
-      "role": 1,
-      "privacy": true,
-      "checkRequest": "",
-      "checkField": "",
-      "id": 372451081715000
+      "id": 1992558288800
     }
   ]
 }

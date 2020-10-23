@@ -24,7 +24,7 @@ export default class AgoraDeviceComponent extends Component {
 			});
 			if (agora) {
 				agora.devices$().subscribe(devices => {
-					console.log(devices);
+					// console.log(devices);
 					this.devices = devices;
 					this.initForm(devices);
 					this.pushChanges();

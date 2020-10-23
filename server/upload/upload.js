@@ -3,12 +3,12 @@ const fs = require('fs'),
 	mv = require('mv');
 
 function upload(temporaryFolder) {
-	const this_ = this;
-	this_.temporaryFolder = temporaryFolder;
-	this_.maxFileSize = null;
-	this_.fileParameterName = 'file';
+	const instance = {};
+	instance.temporaryFolder = temporaryFolder;
+	instance.maxFileSize = null;
+	instance.fileParameterName = 'file';
 	try {
-		fs.mkdirSync(this_.temporaryFolder);
+		fs.mkdirSync(instance.temporaryFolder);
 	} catch (e) { }
 	function cleanIdentifier(identifier) {
 		return identifier.replace(/[^0-9A-Za-z_-]/g, '');
@@ -17,7 +17,7 @@ function upload(temporaryFolder) {
 		// Clean up the identifier
 		identifier = cleanIdentifier(identifier);
 		// What would the file name be?
-		return path.resolve(this_.temporaryFolder, './chunk-' + identifier + '.' + chunkNumber);
+		return path.resolve(instance.temporaryFolder, './chunk-' + identifier + '.' + chunkNumber);
 	}
 	function validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, fileSize) {
 		// Clean up the identifier
@@ -31,7 +31,7 @@ function upload(temporaryFolder) {
 			return 'invalid_flow_request1';
 		}
 		// Is the file too big?
-		if (this_.maxFileSize && totalSize > this_.maxFileSize) {
+		if (instance.maxFileSize && totalSize > instance.maxFileSize) {
 			return 'invalid_flow_request2';
 		}
 		if (typeof (fileSize) != 'undefined') {
@@ -52,7 +52,7 @@ function upload(temporaryFolder) {
 	}
 	//'found', filename, original_filename, identifier
 	//'not_found', null, null, null
-	this_.get = function(req, callback) {
+	instance.get = function(req, callback) {
 		const chunkNumber = req.param('flowChunkNumber', 0);
 		const chunkSize = req.param('flowChunkSize', 0);
 		const totalSize = req.param('flowTotalSize', 0);
@@ -76,7 +76,7 @@ function upload(temporaryFolder) {
 	//'done', filename, original_filename, identifier
 	//'invalid_flow_request', null, null, null
 	//'non_flow_request', null, null, null
-	this_.post = function(req, callback) {
+	instance.post = function(req, callback) {
 		const fields = req.body;
 		const files = req.files;
 		const chunkNumber = fields['flowChunkNumber'];
@@ -84,16 +84,16 @@ function upload(temporaryFolder) {
 		const totalSize = fields['flowTotalSize'];
 		const identifier = cleanIdentifier(fields['flowIdentifier']);
 		const filename = fields['flowFilename'];
-		if (!files[this_.fileParameterName] || !files[this_.fileParameterName].size) {
+		if (!files[instance.fileParameterName] || !files[instance.fileParameterName].size) {
 			callback('invalid_flow_request', null, null, null);
 			return;
 		}
-		const original_filename = files[this_.fileParameterName]['originalFilename'];
-		const validation = validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, files[this_.fileParameterName].size);
+		const original_filename = files[instance.fileParameterName]['originalFilename'];
+		const validation = validateRequest(chunkNumber, chunkSize, totalSize, identifier, filename, files[instance.fileParameterName].size);
 		if (validation == 'valid') {
 			const chunkFilename = getChunkFilename(chunkNumber, identifier);
 			// Save the chunk (TODO: OVERWRITE)
-			mv(files[this_.fileParameterName].path, chunkFilename, function() {
+			mv(files[instance.fileParameterName].path, chunkFilename, function() {
 				// Do we have all the chunks?
 				let currentTestChunk = 1;
 				const numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);
@@ -128,7 +128,7 @@ function upload(temporaryFolder) {
 	//   r.write(identifier, stream);
 	//   stream.on('data', function(data){...});
 	//   stream.on('finish', function(){...});
-	this_.write = function(identifier, stream, options) {
+	instance.write = function(identifier, stream, options) {
 		options = options || {};
 		options.end = (typeof options['end'] == 'undefined' ? true : options['end']);
 		// Iterate over each chunk
@@ -139,7 +139,7 @@ function upload(temporaryFolder) {
 					// When all the chunks have been piped, end the stream
 					if (options.end) {
 						stream.end();
-						this_.clean(identifier, options);
+						instance.clean(identifier, options);
 					}
 					// if (options.onDone) options.onDone();
 				} else {
@@ -160,7 +160,7 @@ function upload(temporaryFolder) {
 		};
 		pipeChunk(1);
 	};
-	this_.clean = function(identifier, options) {
+	instance.clean = function(identifier, options) {
 		options = options || {};
 		// Iterate over each chunk
 		const pipeChunkRm = function(number) {
@@ -180,7 +180,7 @@ function upload(temporaryFolder) {
 		};
 		pipeChunkRm(1);
 	};
-	return this_;
+	return instance;
 }
 
 module.exports = {
