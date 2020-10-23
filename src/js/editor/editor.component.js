@@ -194,10 +194,12 @@ export default class EditorComponent extends Component {
 		});
 	}
 
+	/*
 	onPrevent(event) {
 		event.preventDefault();
 		event.stopImmediatePropagation();
 	}
+	*/
 
 	replaceUrl() {
 		if ('history' in window) {

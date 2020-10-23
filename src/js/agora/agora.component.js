@@ -165,7 +165,7 @@ export default class AgoraComponent extends Component {
 		MessageService.out$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
-			// console.log('AgoraComponent.message', message);
+			console.log('AgoraComponent.message', message);
 			switch (message.type) {
 				case MessageType.RequestPeerInfo:
 					message.type = MessageType.RequestPeerInfoResult;
@@ -187,6 +187,7 @@ export default class AgoraComponent extends Component {
 					StateService.patchState({ spyed: true });
 					break;
 				case MessageType.RequestInfoResult:
+					console.log('AgoraComponent.RequestInfoResult', this.controls.view.value, message.viewId);
 					if (this.controls.view.value !== message.viewId) {
 						this.controls.view.value = message.viewId;
 						// console.log('AgoraComponent.RequestInfoResult', message.viewId);
@@ -307,7 +308,9 @@ export default class AgoraComponent extends Component {
 
 	disconnect() {
 		if (this.agora) {
-			this.agora.leaveChannel();
+			this.agora.leaveChannel().then(() => {
+				window.location.href = window.location.href;
+			}, console.log);
 		} else {
 			this.patchState({ connecting: false, connected: false });
 		}
@@ -392,11 +395,14 @@ export default class AgoraComponent extends Component {
 	}
 
 	addToWishlist() {
-		if (!this.view.liked) {
-			this.view.liked = true;
-			this.view.likes++;
-			this.pushChanges();
-		}
+		ViewService.viewLike$(this.view).pipe(
+			first(),
+		).subscribe((view) => {
+			if (view) {
+				Object.assign(this.view, view);
+				this.pushChanges();
+			}
+		});
 	}
 
 	tryInAr() {
@@ -411,11 +417,12 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
+	/*
 	onPrevent(event) {
 		event.preventDefault();
 		event.stopImmediatePropagation();
 	}
-
+	*/
 }
 
 AgoraComponent.meta = {

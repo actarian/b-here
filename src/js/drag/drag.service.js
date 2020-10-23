@@ -53,7 +53,7 @@ export default class DragService {
 				x: event.clientX,
 				y: event.clientY,
 			};
-		} else if (event instanceof TouchEvent) {
+		} else if (window.TouchEvent && event instanceof TouchEvent) {
 			if (event.touches.length > 0) {
 				point ? (
 					point.x = event.touches[0].pageX,
