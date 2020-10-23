@@ -165,7 +165,97 @@
             "file": "521583599788600_Composizione1_x0_y0.jpg",
             "id": 521583716803499
           },
-          "navs": []
+          "navs": [
+            {
+              "type": {
+                "id": 2,
+                "name": "plane"
+              },
+              "position": [
+                18.65983457360932,
+                0.8743579979770594,
+                7.144653369961893
+              ],
+              "rotation": [
+                3.019818823310763,
+                -1.2026379641960712,
+                3.027906068649543,
+                "XYZ"
+              ],
+              "scale": [
+                10,
+                5,
+                1
+              ],
+              "asset": {
+                "type": {
+                  "id": 2,
+                  "name": "video"
+                },
+                "folder": "/uploads/",
+                "file": "89702190830600_Tagliere Quick.mp4",
+                "id": 89702298492100
+              },
+              "id": 89708405268900
+            },
+            {
+              "type": {
+                "id": 2,
+                "name": "plane"
+              },
+              "position": [
+                17.961599897817365,
+                0.3377135083900088,
+                -8.790158058702817
+              ],
+              "rotation": [
+                0.038400617091972504,
+                -1.115384557377534,
+                0.034490104904660764,
+                "XYZ"
+              ],
+              "scale": [
+                8,
+                4,
+                1
+              ],
+              "asset": {
+                "type": {
+                  "id": 2,
+                  "name": "video"
+                },
+                "folder": "/uploads/",
+                "file": "89820609604300_Tavolo Evolution.mp4",
+                "id": 89820746894500
+              },
+              "id": 89827401571500
+            },
+            {
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
+              "title": "Infografica di dettaglio",
+              "abstract": "scopri l'apertura del mobile pensile",
+              "viewId": 521591868892999,
+              "position": [
+                0.9929324566314484,
+                0.07039906227267254,
+                -0.09554636884238675
+              ],
+              "asset": {
+                "type": {
+                  "id": 1,
+                  "name": "image"
+                },
+                "folder": "/uploads/",
+                "file": "90094307805500_Pensile Flex.jpg",
+                "id": 90094413942300
+              },
+              "link": null,
+              "id": 90109272505900
+            }
+          ]
         },
         {
           "id": 521591869048599,
@@ -751,6 +841,51 @@
       "folder": "/uploads/",
       "file": "542971952552999_ernestomeda.mp4",
       "id": 542972959139999
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "89370209399500_green-screen.mp4",
+      "id": 89370731222900
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "89702190830600_Tagliere Quick.mp4",
+      "id": 89702298492100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "89820609604300_Tavolo Evolution.mp4",
+      "id": 89820746894500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "89958721771100_Pensile Flex.jpg",
+      "id": 89958819373800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "90094307805500_Pensile Flex.jpg",
+      "id": 90094413942300
     }
   ],
   "users": [
