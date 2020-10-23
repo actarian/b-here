@@ -1712,7 +1712,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         _this2.createClient(function () {
           _this2.getRtcToken().subscribe(function (token) {
             // console.log('token', token);
-            _this2.joinChannel(token.token);
+            _this2.join(token.token);
           });
         });
       }, 250);
@@ -1821,8 +1821,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     client.on('error', this.onError);
     client.on('peer-online', this.onPeerConnect); // Occurs when the peer user leaves the channel; for example, the peer user calls Client.leave.
 
-    client.on('peer-leave', this.onPeerLeaved);
-    client.on('connection-state-change', this.onConnectionStateChange);
+    client.on('peer-leave', this.onPeerLeaved); // client.on('connection-state-change', this.onConnectionStateChange);
+
     client.on('stream-removed', this.onStreamRemoved);
     client.on('onTokenPrivilegeWillExpire', this.onTokenPrivilegeWillExpire);
     client.on('onTokenPrivilegeDidExpire', this.onTokenPrivilegeDidExpire); // console.log('agora rtm sdk version: ' + AgoraRTM.VERSION + ' compatible');
@@ -1859,16 +1859,17 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     return channelNameLink;
   };
 
-  _proto.joinChannel = function joinChannel(token) {
+  _proto.join = function join(token) {
     var _this4 = this;
 
+    this.channel = null;
     var client = this.client;
     var clientId = null;
     token = null; // !!!
 
     var channelNameLink = this.getChannelNameLink();
     client.join(token, channelNameLink, clientId, function (uid) {
-      // console.log('AgoraService.joinChannel', uid);
+      // console.log('AgoraService.join', uid);
       StateService.patchState({
         status: AgoraStatus.Connected,
         channelNameLink: channelNameLink,
@@ -1881,7 +1882,6 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           // console.log('token', token);
           _this4.joinMessageChannel(token.token, uid).then(function (success) {
             // console.log('joinMessageChannel.success', success);
-            // this.emit('messageChannel', this.messageChannel);
             if (StateService.state.role !== RoleType.Viewer) {
               _this4.autoDetectDevice();
 
@@ -1894,26 +1894,30 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         });
       }
     }, function (error) {
-      console.log('AgoraService.joinChannel.error', error);
+      console.log('AgoraService.join.error', error);
     }); // https://console.agora.io/invite?sign=YXBwSWQlM0RhYjQyODlhNDZjZDM0ZGE2YTYxZmQ4ZDY2Nzc0YjY1ZiUyNm5hbWUlM0RaYW1wZXR0aSUyNnRpbWVzdGFtcCUzRDE1ODY5NjM0NDU=// join link expire in 30 minutes
   };
 
   _proto.joinMessageChannel = function joinMessageChannel(token, uid) {
     var _this5 = this;
 
+    var channel;
     return new Promise(function (resolve, reject) {
       var messageClient = _this5.messageClient;
 
       messageClient.login({
         uid: uid.toString()
       }).then(function () {
-        _this5.messageChannel = messageClient.createChannel(StateService.state.channelNameLink);
+        channel = messageClient.createChannel(StateService.state.channelNameLink);
+        return channel.join();
+      }).then(function () {
+        channel.on('ChannelMessage', _this5.onMessage);
+        _this5.channel = channel;
 
-        _this5.messageChannel.on('ChannelMessage', _this5.onMessage);
+        _this5.emit('channel', channel); // console.log('AgoraService.joinMessageChannel.success');
 
-        _this5.messageChannel.join().then(function () {
-          resolve(uid);
-        }).catch(reject);
+
+        resolve(uid);
       }).catch(reject);
     });
   };
@@ -2199,11 +2203,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       _this9.leaveMessageChannel().then(function () {
         var client = _this9.client;
         client.leave(function () {
-          // console.log('Leave channel successfully');
-          StateService.patchState({
-            status: AgoraStatus.Disconnected,
-            connected: false
-          });
+          _this9.client = null; // console.log('Leave channel successfully');
+
           resolve();
         }, function (error) {
           console.log('AgoraService.leaveChannel.error', error);
@@ -2220,10 +2221,12 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       {
         _this10.unobserveMemberCount();
 
-        var messageChannel = _this10.messageChannel;
+        var channel = _this10.channel;
         var messageClient = _this10.messageClient;
-        messageChannel.leave().then(function () {
+        channel.leave().then(function () {
+          _this10.channel = null;
           messageClient.logout().then(function () {
+            _this10.messageClient = null;
             resolve();
           }, reject);
         }, reject);
@@ -2538,10 +2541,18 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           }
         };
 
-        var messageChannel = _this18.messageChannel;
+        var channel = _this18.channel;
 
-        if (messageChannel) {
-          send(message, messageChannel);
+        if (channel) {
+          send(message, channel);
+        } else {
+          try {
+            _this18.once("channel", function (channel) {
+              send(message, channel);
+            });
+          } catch (error) {
+            reject(error);
+          }
         }
       }
     });
@@ -2607,7 +2618,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.onMessage = function onMessage(data, uid) {
-    // console.log('AgoraService.onMessage', data, uid, StateService.state.uid);
+    // console.log('AgoraService.onMessage', data.text, uid, StateService.state.uid);
     // discard message delivered by current state uid;
     if (uid !== StateService.state.uid) {
       // console.log('AgoraService.onMessage', data.text);
@@ -2657,6 +2668,11 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   _proto.onStreamAdded = function onStreamAdded(event) {
     var client = this.client;
     var stream = event.stream;
+
+    if (!stream) {
+      return;
+    }
+
     var streamId = stream.getId();
 
     if (streamId !== StateService.state.uid) {
@@ -2728,8 +2744,6 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.remoteAdd = function remoteAdd(stream) {
-    var _this19 = this;
-
     // console.log('AgoraService.remoteAdd', stream);
     var remotes = StreamService.remotes;
     remotes.push(stream);
@@ -2738,20 +2752,18 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       stream: stream
     }));
     var remoteId = stream.getId();
-    setTimeout(function () {
-      _this19.sendRemoteRequestPeerInfo(remoteId).then(function (message) {
-        var remotes = StreamService.remotes;
-        var remote = remotes.find(function (x) {
-          return x.getId() === remoteId;
-        });
-
-        if (remote) {
-          remote.clientInfo = message.clientInfo;
-        }
-
-        StreamService.remotes = remotes;
+    this.sendRemoteRequestPeerInfo(remoteId).then(function (message) {
+      var remotes = StreamService.remotes;
+      var remote = remotes.find(function (x) {
+        return x.getId() === remoteId;
       });
-    }, 100);
+
+      if (remote) {
+        remote.clientInfo = message.clientInfo;
+      }
+
+      StreamService.remotes = remotes;
+    });
   };
 
   _proto.remoteRemove = function remoteRemove(streamId) {
@@ -4673,6 +4685,7 @@ var VRService = /*#__PURE__*/function () {
   _proto.disconnect = function disconnect() {
     if (this.agora) {
       this.agora.leaveChannel().then(function () {
+        // StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
         window.location.href = window.location.href;
       }, console.log);
     } else {

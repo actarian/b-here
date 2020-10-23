@@ -153,7 +153,7 @@ export default class AgoraService extends Emittable {
 				this.createClient(() => {
 					this.getRtcToken().subscribe(token => {
 						// console.log('token', token);
-						this.joinChannel(token.token);
+						this.join(token.token);
 					});
 				});
 			}, 250);
@@ -245,7 +245,7 @@ export default class AgoraService extends Emittable {
 		client.on('peer-online', this.onPeerConnect);
 		// Occurs when the peer user leaves the channel; for example, the peer user calls Client.leave.
 		client.on('peer-leave', this.onPeerLeaved);
-		client.on('connection-state-change', this.onConnectionStateChange);
+		// client.on('connection-state-change', this.onConnectionStateChange);
 		client.on('stream-removed', this.onStreamRemoved);
 		client.on('onTokenPrivilegeWillExpire', this.onTokenPrivilegeWillExpire);
 		client.on('onTokenPrivilegeDidExpire', this.onTokenPrivilegeDidExpire);
@@ -276,20 +276,20 @@ export default class AgoraService extends Emittable {
 		return channelNameLink;
 	}
 
-	joinChannel(token) {
+	join(token) {
+		this.channel = null;
 		const client = this.client;
 		const clientId = null;
 		token = null; // !!!
 		const channelNameLink = this.getChannelNameLink();
 		client.join(token, channelNameLink, clientId, (uid) => {
-			// console.log('AgoraService.joinChannel', uid);
+			// console.log('AgoraService.join', uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });
 			if (USE_RTM) {
 				this.getRtmToken(uid).subscribe(token => {
 					// console.log('token', token);
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
-						// this.emit('messageChannel', this.messageChannel);
 						if (StateService.state.role !== RoleType.Viewer) {
 							this.autoDetectDevice();
 							this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
@@ -306,21 +306,25 @@ export default class AgoraService extends Emittable {
 				}
 			}
 		}, (error) => {
-			console.log('AgoraService.joinChannel.error', error);
+			console.log('AgoraService.join.error', error);
 		});
 		// https://console.agora.io/invite?sign=YXBwSWQlM0RhYjQyODlhNDZjZDM0ZGE2YTYxZmQ4ZDY2Nzc0YjY1ZiUyNm5hbWUlM0RaYW1wZXR0aSUyNnRpbWVzdGFtcCUzRDE1ODY5NjM0NDU=// join link expire in 30 minutes
 	}
 
 	joinMessageChannel(token, uid) {
+		let channel;
 		return new Promise((resolve, reject) => {
 			const messageClient = this.messageClient;
 			token = null; // !!!
 			messageClient.login({ uid: uid.toString() }).then(() => {
-				this.messageChannel = messageClient.createChannel(StateService.state.channelNameLink);
-				this.messageChannel.on('ChannelMessage', this.onMessage);
-				this.messageChannel.join().then(() => {
-					resolve(uid);
-				}).catch(reject);
+				channel = messageClient.createChannel(StateService.state.channelNameLink);
+				return channel.join();
+			}).then(() => {
+				channel.on('ChannelMessage', this.onMessage);
+				this.channel = channel;
+				this.emit('channel', channel);
+				// console.log('AgoraService.joinMessageChannel.success');
+				resolve(uid);
 			}).catch(reject);
 		});
 	}
@@ -591,8 +595,8 @@ export default class AgoraService extends Emittable {
 			this.leaveMessageChannel().then(() => {
 				const client = this.client;
 				client.leave(() => {
+					this.client = null;
 					// console.log('Leave channel successfully');
-					StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
 					resolve();
 				}, (error) => {
 					console.log('AgoraService.leaveChannel.error', error);
@@ -606,10 +610,12 @@ export default class AgoraService extends Emittable {
 		return new Promise((resolve, reject) => {
 			if (USE_RTM) {
 				this.unobserveMemberCount();
-				const messageChannel = this.messageChannel;
+				const channel = this.channel;
 				const messageClient = this.messageClient;
-				messageChannel.leave().then(() => {
+				channel.leave().then(() => {
+					this.channel = null;
 					messageClient.logout().then(() => {
+						this.messageClient = null;
 						resolve();
 					}, reject);
 				}, reject)
@@ -860,19 +866,17 @@ export default class AgoraService extends Emittable {
 						// reject(error);
 					}
 				}
-				const messageChannel = this.messageChannel;
-				if (messageChannel) {
-					send(message, messageChannel);
+				const channel = this.channel;
+				if (channel) {
+					send(message, channel);
 				} else {
-					/*
 					try {
-						this.once(`messageChannel`, (messageChannel) => {
-							send(message, messageChannel);
+						this.once(`channel`, (channel) => {
+							send(message, channel);
 						});
 					} catch (error) {
 						reject(error);
 					}
-					*/
 				}
 			} else {
 				// console.log('StateService.state.connected', StateService.state.connected)
@@ -932,7 +936,7 @@ export default class AgoraService extends Emittable {
 	}
 
 	onMessage(data, uid) {
-		// console.log('AgoraService.onMessage', data, uid, StateService.state.uid);
+		// console.log('AgoraService.onMessage', data.text, uid, StateService.state.uid);
 		// discard message delivered by current state uid;
 		if (uid !== StateService.state.uid) {
 			// console.log('AgoraService.onMessage', data.text);
@@ -978,6 +982,9 @@ export default class AgoraService extends Emittable {
 	onStreamAdded(event) {
 		const client = this.client;
 		const stream = event.stream;
+		if (!stream) {
+			return;
+		}
 		const streamId = stream.getId();
 		if (streamId !== StateService.state.uid) {
 			// console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid);
@@ -1043,16 +1050,14 @@ export default class AgoraService extends Emittable {
 		StreamService.remotes = remotes;
 		this.broadcastEvent(new AgoraRemoteEvent({ stream }));
 		const remoteId = stream.getId();
-		setTimeout(() => {
-			this.sendRemoteRequestPeerInfo(remoteId).then((message) => {
-				const remotes = StreamService.remotes;
-				const remote = remotes.find(x => x.getId() === remoteId);
-				if (remote) {
-					remote.clientInfo = message.clientInfo;
-				}
-				StreamService.remotes = remotes;
-			});
-		}, 100);
+		this.sendRemoteRequestPeerInfo(remoteId).then((message) => {
+			const remotes = StreamService.remotes;
+			const remote = remotes.find(x => x.getId() === remoteId);
+			if (remote) {
+				remote.clientInfo = message.clientInfo;
+			}
+			StreamService.remotes = remotes;
+		});
 	}
 
 	remoteRemove(streamId) {

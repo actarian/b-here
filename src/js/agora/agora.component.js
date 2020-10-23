@@ -309,6 +309,7 @@ export default class AgoraComponent extends Component {
 	disconnect() {
 		if (this.agora) {
 			this.agora.leaveChannel().then(() => {
+				// StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
 				window.location.href = window.location.href;
 			}, console.log);
 		} else {
