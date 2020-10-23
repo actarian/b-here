@@ -1,6 +1,6 @@
 
 export const environmentStatic = {
-	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
 	assets: './',
 	worker: './js/workers/image.service.worker.js',

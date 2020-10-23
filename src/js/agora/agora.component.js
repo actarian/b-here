@@ -165,7 +165,7 @@ export default class AgoraComponent extends Component {
 		MessageService.out$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
-			console.log('AgoraComponent.message', message);
+			// console.log('AgoraComponent.message', message);
 			switch (message.type) {
 				case MessageType.RequestPeerInfo:
 					message.type = MessageType.RequestPeerInfoResult;

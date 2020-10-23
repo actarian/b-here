@@ -118,7 +118,7 @@ function _assertThisInitialized(self) {
 
   return self;
 }var environmentServed = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  appKey: '1a066259928f4b40a243647b58aca42e',
   channelName: 'BHere',
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
@@ -153,7 +153,7 @@ function _assertThisInitialized(self) {
     }
   }
 };var environmentStatic = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  appKey: '1a066259928f4b40a243647b58aca42e',
   channelName: 'BHere',
   assets: './',
   worker: './js/workers/image.service.worker.js',
@@ -4494,8 +4494,7 @@ var VRService = /*#__PURE__*/function () {
       _this5.pushChanges();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-      console.log('AgoraComponent.message', message);
-
+      // console.log('AgoraComponent.message', message);
       switch (message.type) {
         case MessageType.RequestPeerInfo:
           message.type = MessageType.RequestPeerInfoResult;
