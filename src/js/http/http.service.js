@@ -90,7 +90,7 @@ export default class HttpService {
 		if (!error.statusMessage) {
 			error.statusMessage = response ? response.statusText : object;
 		}
-		console.log('HttpService.getError', error, object);
+		// console.log('HttpService.getError', error, object);
 		return error;
 	}
 

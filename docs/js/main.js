@@ -120,6 +120,9 @@ function _assertThisInitialized(self) {
 }var environmentServed = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
+  flags: {
+    ar: true
+  },
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
@@ -155,6 +158,9 @@ function _assertThisInitialized(self) {
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
+  flags: {
+    ar: true
+  },
   assets: './',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
@@ -369,9 +375,9 @@ console.log('environment', environment);var HttpService = /*#__PURE__*/function 
 
     if (!error.statusMessage) {
       error.statusMessage = response ? response.statusText : object;
-    }
+    } // console.log('HttpService.getError', error, object);
 
-    console.log('HttpService.getError', error, object);
+
     return error;
   };
 
@@ -400,8 +406,8 @@ var User = function User(options) {
     return HttpService.get$('/api/user/me').pipe(operators.map(function (user) {
       return _this.mapUser(user);
     }), operators.catchError(function (error) {
-      // console.log(error);
-      if (error.status === 404) {
+      // console.log('UserService.me$.error', error);
+      if (error.status === 404 || error.statusCode === 404) {
         return rxjs.of(null);
       } else {
         throw error;
@@ -3450,7 +3456,7 @@ AgoraStreamComponent.meta = {
   outputs: ['toggleSpy'],
   inputs: ['stream']
 };var DevicePlatform = {
-  Unknown: 'Unknown',
+  Unknown: 'unknown',
   IOS: 'ios',
   Android: 'android',
   WindowsPhone: 'windowsPhone'
@@ -3675,7 +3681,7 @@ TryInARModalComponent.meta = {
   selector: '[try-in-ar-modal]'
 };var EXT_IMAGE = ['jpeg', 'jpg', 'png'];
 var EXT_VIDEO = ['mp4', 'webm'];
-var EXT_MODEL = ['gltf', 'glb'];
+var EXT_MODEL = ['gltf', 'glb', 'usdz'];
 var AssetType = {
   Image: {
     id: 1,
@@ -7283,7 +7289,7 @@ UpdateViewTileComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    this.active = false;
+    this.flags = environment.flags;
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
     form.changes$.subscribe(function (changes) {
@@ -7335,7 +7341,15 @@ UpdateViewTileComponent.meta = {
           keys = ['id', 'type', 'name'];
       }
 
+      if (view.type.name !== ViewType.WaitingRoom.name && environment.flags.ar) {
+        keys.push('usdz?');
+        keys.push('gltf?');
+      }
+
       keys.forEach(function (key) {
+        var optional = key.indexOf('?') !== -1;
+        key = key.replace('?', '');
+
         switch (key) {
           case 'latitude':
           case 'longitude':
@@ -7346,8 +7360,13 @@ UpdateViewTileComponent.meta = {
             form.add(new rxcompForm.FormControl(orientation[key], rxcompForm.RequiredValidator()), key);
             break;
 
+          case 'usdz':
+          case 'gltf':
+            form.add(new rxcompForm.FormControl(view.ar ? view.ar[key] || null : null, optional ? undefined : rxcompForm.RequiredValidator()), key);
+            break;
+
           default:
-            form.add(new rxcompForm.FormControl(view[key], rxcompForm.RequiredValidator()), key);
+            form.add(new rxcompForm.FormControl(view[key] || null, optional ? undefined : rxcompForm.RequiredValidator()), key);
         }
       });
       this.controls = form.controls;
@@ -7362,13 +7381,24 @@ UpdateViewTileComponent.meta = {
     if (this.form.valid) {
       var payload = Object.assign({}, this.view, this.form.value);
 
-      if (payload.latitude !== undefined) {
+      if (payload.latitude != null) {
+        // !!! keep loose inequality
         payload.orientation = {
           latitude: payload.latitude,
           longitude: payload.longitude
         };
         delete payload.latitude;
         delete payload.longitude;
+      }
+
+      if (payload.usdz != null || payload.gltf != null) {
+        // !!! keep loose inequality
+        payload.ar = {
+          usdz: payload.usdz || null,
+          gltf: payload.gltf || null
+        };
+        delete payload.usdz;
+        delete payload.gltf;
       }
 
       this.update.next({
@@ -7399,8 +7429,7 @@ UpdateViewTileComponent.meta = {
   _proto.onSelect = function onSelect(event) {
     this.select.next({
       view: this.view.selected ? null : this.view
-    }); // this.active = !this.active;
-    // this.pushChanges();
+    });
   };
 
   _proto.getTitle = function getTitle(view) {
@@ -7415,7 +7444,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -7593,7 +7622,9 @@ ControlComponent.meta = {
     var _this2 = this;
 
     if (rxcomp.isPlatformBrowser && input) {
-      return rxjs.fromEvent(input, 'change').pipe(operators.switchMap(function (event) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
+        return input.files && input.files.length;
+      }), operators.switchMap(function (event) {
         console.log('ControlAssetComponent.change$', input.files);
         var fileArray = Array.from(input.files);
         _this2.previews = fileArray.map(function () {
@@ -8436,6 +8467,68 @@ ControlLinkComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\">required</span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlModelComponent = /*#__PURE__*/function (_ControlAssetComponen) {
+  _inheritsLoose(ControlModelComponent, _ControlAssetComponen);
+
+  function ControlModelComponent() {
+    return _ControlAssetComponen.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlModelComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+    this.accept = this.accept || '.glb';
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = this.input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    /*
+    this.click$(input).pipe(
+    	takeUntil(this.unsubscribe$)
+    ).subscribe();
+    */
+
+    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+      console.log('ControlModelComponent.change$', assets);
+      _this.control.value = assets[0];
+    });
+  };
+
+  _proto.onRemove = function onRemove(event) {
+    this.control.value = null;
+    this.input.value = null;
+  }
+  /*
+  click$(input) {
+  	if (isPlatformBrowser && input) {
+  		return fromEvent(input, 'click').pipe(
+  			tap(() => input.value = null),
+  		);
+  	} else {
+  		return EMPTY;
+  	}
+  }
+  */
+  ;
+
+  _proto.read$ = function read$(file, i) {
+    return rxjs.of(file);
+  };
+
+  return ControlModelComponent;
+}(ControlAssetComponent);
+ControlModelComponent.meta = {
+  selector: '[control-model]',
+  inputs: ['control', 'label', 'disabled', 'accept'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\">required</span>\n\t\t\t</div>\n\t\t\t<div class=\"group--model\">\n\t\t\t\t<div class=\"file-name\" *if=\"!control.value\">Seleziona un file</div>\n\t\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t\t<div class=\"btn--upload\"><input type=\"file\"><span>browse</span></div>\n\t\t\t\t<div class=\"btn--remove\" *if=\"control.value\" (click)=\"onRemove($event)\"><span>remove</span></div>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlNumberComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlNumberComponent, _ControlComponent);
 
@@ -9758,30 +9851,54 @@ SvgIconStructure.meta = {
     var _this = this;
 
     this.platform = DeviceService.platform;
-    this.view = null;
+    this.missingAr = false;
+    this.missingUsdz = false;
+    this.missingGltf = false;
     var viewId = this.viewId = this.getViewId(); // console.log('TryInARComponent.viewId', viewId);
 
     if (viewId) {
       ViewService.view$(viewId).pipe(operators.first()).subscribe(function (view) {
-        // console.log('TryInARComponent.view', view);
-        var modelViewerNode = _this.getModelViewerNode(view);
+        if (!view.ar) {
+          _this.missingAr = true;
 
-        var _getContext = rxcomp.getContext(_this),
-            node = _getContext.node;
+          _this.pushChanges();
 
-        node.appendChild(modelViewerNode);
-        /*
-        if (this.platform === DevicePlatform.Android) {
-        	const modelViewerNode = this.getModelViewerNode(view);
-        	const { node } = getContext(this);
-        	node.appendChild(modelViewerNode);
-        } else if (this.platform === DevicePlatform.IOS) {
-        	const usdzSrc = environment.getPath(view.ar.usdz);
-        	window.location.href = usdzSrc;
+          return;
+        } // console.log('TryInARComponent.view', view);
+
+
+        if (_this.platform === DevicePlatform.IOS) {
+          var usdzSrc = _this.getUsdzSrc(view);
+
+          if (usdzSrc) {
+            window.location.href = usdzSrc;
+          } else {
+            _this.missingUsdz = true;
+
+            _this.pushChanges();
+          }
+        } else if (_this.getGltfSrc(view) !== null) {
+          var modelViewerNode = _this.getModelViewerNode(view);
+
+          var _getContext = rxcomp.getContext(_this),
+              node = _getContext.node;
+
+          node.appendChild(modelViewerNode);
+        } else {
+          _this.missingGltf = true;
+
+          _this.pushChanges();
         }
-        */
       });
     }
+  };
+
+  _proto.getUsdzSrc = function getUsdzSrc(view) {
+    return view.ar && view.ar.usdz ? environment.getPath(view.ar.usdz.folder + view.ar.usdz.file) : null;
+  };
+
+  _proto.getGltfSrc = function getGltfSrc(view) {
+    return view.ar && view.ar.gltf ? environment.getPath(view.ar.gltf.folder + view.ar.gltf.file) : null;
   };
 
   _proto.getViewId = function getViewId() {
@@ -9796,12 +9913,11 @@ SvgIconStructure.meta = {
 
   _proto.getModelViewerNode = function getModelViewerNode(view) {
     var panorama = environment.getPath(view.asset.folder + view.asset.file);
-    var gltfSrc = environment.getPath(view.ar.gltf);
-    var usdzSrc = environment.getPath(view.ar.usdz);
+    var usdzSrc = this.getUsdzSrc(view);
+    var gltfSrc = this.getGltfSrc(view);
     var template =
     /* html */
-    "\n\t\t\t<model-viewer alt=\"" + view.name + "\" skybox-image=\"" + panorama + "\" ios-src=\"" + usdzSrc + "\" src=\"" + gltfSrc + "\" ar ar-modes=\"webxr scene-viewer quick-look\" ar-scale=\"auto\" camera-controls></model-viewer>\n\t\t"; // const template = `<model-viewer alt="${view.name}" src="${gltfSrc}" ios-src="${usdzSrc}" magic-leap ar ar_preferred></model-viewer>`;
-
+    "\n\t\t\t<model-viewer alt=\"" + view.name + "\" skybox-image=\"" + panorama + "\" ios-src=\"" + usdzSrc + "\" src=\"" + gltfSrc + "\" ar ar-modes=\"webxr scene-viewer quick-look\" ar-scale=\"auto\" camera-controls></model-viewer>\n\t\t";
     var div = document.createElement("div");
     div.innerHTML = template;
     var node = div.firstElementChild;
@@ -16452,6 +16568,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

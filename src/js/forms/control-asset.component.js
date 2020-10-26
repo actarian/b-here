@@ -1,6 +1,6 @@
 import { getContext, isPlatformBrowser } from 'rxcomp';
 import { combineLatest, EMPTY, fromEvent, merge } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import EditorService from '../editor/editor.service';
 import { Asset } from '../view/view';
 import ControlComponent from './control.component';
@@ -39,6 +39,7 @@ export default class ControlAssetComponent extends ControlComponent {
 	change$(input) {
 		if (isPlatformBrowser && input) {
 			return fromEvent(input, 'change').pipe(
+				filter((event) => input.files && input.files.length),
 				switchMap((event) => {
 					console.log('ControlAssetComponent.change$', input.files);
 					const fileArray = Array.from(input.files);
