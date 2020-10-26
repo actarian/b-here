@@ -665,7 +665,6 @@ input-value {
 }
 
 [control-asset] {
-
 	.group--picture {
 		@include aspect-clip(3, 1);
 		border-radius: 6px;
@@ -705,6 +704,66 @@ input-value {
 			appearance: none;
 			opacity: 0;
 			cursor: pointer;
+		}
+	}
+}
+
+[control-model] {
+
+	.group--model {
+		width: 100%;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+
+		.file-name {
+			flex: 1 1 auto;
+			margin-right: 5px;
+			color: #111;
+		}
+	}
+
+	.btn--upload,
+	.btn--remove {
+		position: relative;
+		font-size: 10px;
+		padding: 5px 7px;
+		height: auto;
+		line-height: 1;
+		min-height: 0;
+	}
+
+	.btn--upload {
+		position: relative;
+		height: auto;
+		min-height: 0;
+		padding: 5px 7px;
+		font-size: 10px;
+		line-height: 1;
+
+		&, &:active, &:focus, &:hover, &:visited {
+			background: #09f;
+			color: #fff;
+		}
+
+		input {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			cursor: pointer;
+			z-index: 1;
+		}
+	}
+
+	.btn--remove {
+		margin-left: 5px;
+
+		&, &:active, &:focus, &:hover, &:visited {
+			background: #ff4332;
+			color: #fff;
 		}
 	}
 }

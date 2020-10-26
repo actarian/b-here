@@ -10,7 +10,7 @@ export const EXT_VIDEO = [
 	'mp4', 'webm',
 ];
 export const EXT_MODEL = [
-	'gltf', 'glb',
+	'gltf', 'glb', 'usdz'
 ];
 
 export const AssetType = {

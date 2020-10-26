@@ -2,6 +2,9 @@
 export const environmentStatic = {
 	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
+	flags: {
+		ar: true,
+	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
