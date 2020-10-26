@@ -32,6 +32,10 @@
       "name": "Welcome Room",
       "likes": 134,
       "liked": false,
+      "ar": {
+        "gltf": "/models/composizione1/Composizione1.gltf",
+        "usdz": "/models/composizione1/composizione1.usdz"
+      },
       "asset": {
         "type": {
           "id": 1,
