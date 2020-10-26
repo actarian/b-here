@@ -3,7 +3,7 @@ export const environmentStatic = {
 	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
 	flags: {
-		ar: true,
+		ar: false,
 	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',

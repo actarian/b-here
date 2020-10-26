@@ -3,7 +3,7 @@ export const environmentServed = {
 	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
 	flags: {
-		ar: true,
+		ar: false,
 	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
