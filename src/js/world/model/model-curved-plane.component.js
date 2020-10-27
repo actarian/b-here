@@ -36,7 +36,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 				console.log('ModelCurvedPanel', streamId, item.asset)
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, items, geometry, (item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null));
+					mesh = new MediaMesh(item, items, geometry);
 					mesh.name = 'curved-plane';
 					if (item.position) {
 						mesh.position.fromArray(item.position);
@@ -74,6 +74,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
+		// console.log('ModelCurvedPlaneComponent.onUpdate', item);
 		if (item.position) {
 			mesh.position.fromArray(item.position);
 		}
@@ -90,6 +91,15 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 			this.mesh.geometry = geometry;
 		}
 		this.updateHelper();
+	}
+
+	// called by UpdateViewItemComponent
+	onUpdateAsset(item, mesh) {
+		// console.log('ModelCurvedPlaneComponent.onUpdateAsset', item);
+		this.mesh.updateByItem(item);
+		this.mesh.load(() => {
+			console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+		});
 	}
 
 	// called by WorldComponent

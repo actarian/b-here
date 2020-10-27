@@ -77,7 +77,7 @@ export default class UpdateViewComponent extends Component {
 						form.add(new FormControl((view.ar ? (view.ar[key] || null) : null), optional ? undefined : RequiredValidator()), key);
 						break;
 					default:
-						form.add(new FormControl(view[key] || null, optional ? undefined : RequiredValidator()), key);
+						form.add(new FormControl((view[key] != null ? view[key] : null), optional ? undefined : RequiredValidator()), key);
 				}
 			});
 			this.controls = form.controls;
@@ -173,7 +173,7 @@ UpdateViewComponent.meta = {
 					<span *if="!form.submitted">Update</span>
 					<span *if="form.submitted">Update!</span>
 				</button>
-				<button type="button" class="btn--remove" *if="view.type != 'waiting-room'" (click)="onRemove($event)">
+				<button type="button" class="btn--remove" *if="view.type.name != 'waiting-room'" (click)="onRemove($event)">
 					<span>Remove</span>
 				</button>
 			</div>

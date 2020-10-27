@@ -95,6 +95,9 @@ export default class ModelComponent extends Component {
 			item.onUpdate = () => {
 				this.onUpdate(item, mesh);
 			};
+			item.onUpdateAsset = () => {
+				this.onUpdateAsset(item, mesh);
+			};
 		}
 		this.group.add(mesh);
 		// this.host.render(); !!!
@@ -118,6 +121,7 @@ export default class ModelComponent extends Component {
 		if (item) {
 			delete item.mesh;
 			delete item.onUpdate;
+			delete item.onUpdateAsset;
 		}
 	}
 
@@ -154,6 +158,9 @@ export default class ModelComponent extends Component {
 
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) { }
+
+	// called by UpdateViewItemComponent
+	onUpdateAsset(item, mesh) { }
 
 }
 
