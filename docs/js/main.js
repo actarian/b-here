@@ -7077,7 +7077,7 @@ RemoveModalComponent.meta = {
 
       if (assetDidChange) {
         EditorService.assetUpdate$(item.asset).pipe(operators.switchMap(function () {
-          return EditorService.itemUpdate$(_this2.view, item);
+          return EditorService.inferItemUpdate$(_this2.view, item);
         }), operators.first()).subscribe();
 
         if (typeof item.onUpdateAsset === 'function') {

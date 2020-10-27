@@ -42,7 +42,7 @@ export default class UpdateViewItemComponent extends Component {
 			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0,1.0,0.0] : null;
 			if (assetDidChange) {
 				EditorService.assetUpdate$(item.asset).pipe(
-					switchMap(() => EditorService.itemUpdate$(this.view, item)),
+					switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
 					first()
 				).subscribe();
 				if (typeof item.onUpdateAsset === 'function') {
