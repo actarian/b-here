@@ -4,7 +4,7 @@
 	<div class="background">
 		<img src="/b-here/img/background.jpg" />
 	</div>
-	<div class="ui ui--info" *if="state.status == 'access'">
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'access'">
 		<button type="button" class="btn--absolute" (click)="onLogin($event)">
 			<span>Accedi</span>
 		</button>
@@ -60,7 +60,7 @@
 			</form>
 		</div>
 	</div>
-	<div class="ui ui--info" *if="state.status == 'guided-tour-success'">
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'guided-tour-success'">
 		<div class="group--info">
 			<div class="group--info__content stagger--childs">
 				<div class="title">
@@ -74,7 +74,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="ui ui--info" *if="state.status == 'login'">
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'login'">
 		<div class="group--info">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
 				<div class="group--info__content stagger--childs">

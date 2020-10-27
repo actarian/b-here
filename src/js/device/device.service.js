@@ -1,6 +1,6 @@
 
 export const DevicePlatform = {
-	Unknown: 'Unknown',
+	Unknown: 'unknown',
 	IOS: 'ios',
 	Android: 'android',
 	WindowsPhone: 'windowsPhone',

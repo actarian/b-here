@@ -2,9 +2,7 @@
 
 <!-- @@block = main-->
 <div class="try-in-ar" try-in-ar>
-	<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-	<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
-	<div *if="platform == 'android'">
+	<div *if="platform != 'ios'">
 		<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 		<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 	</div>
@@ -15,17 +13,24 @@
 			</div>
 		</div>
 	</div>
-	<div class="ui" *if="viewId && platform === 'windowsPhone'">
+	<div class="ui" *if="missingAr">
 		<div class="group--info">
 			<div class="group--info__content">
-				<div class="info">Windows Phone not supported.</div>
+				<div class="info">Missing AR in view.</div>
 			</div>
 		</div>
 	</div>
-	<div class="ui" *if="viewId && platform === 'unknown'">
+	<div class="ui" *if="missingUsdz">
 		<div class="group--info">
 			<div class="group--info__content">
-				<div class="info">Unsupported device.</div>
+				<div class="info">Missing .usdz in ar.</div>
+			</div>
+		</div>
+	</div>
+	<div class="ui" *if="missingGltf">
+		<div class="group--info">
+			<div class="group--info__content">
+				<div class="info">Missing .gltf in ar.</div>
 			</div>
 		</div>
 	</div>

@@ -11,7 +11,7 @@ import { EditorLocale } from '../editor.locale';
 export default class UpdateViewComponent extends Component {
 
 	onInit() {
-		this.active = false;
+		this.flags = environment.flags;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		form.changes$.subscribe((changes) => {
@@ -59,15 +59,25 @@ export default class UpdateViewComponent extends Component {
 				default:
 					keys = ['id', 'type', 'name'];
 			}
+			if (view.type.name !== ViewType.WaitingRoom.name && environment.flags.ar) {
+				keys.push('usdz?');
+				keys.push('gltf?');
+			}
 			keys.forEach(key => {
+				const optional = key.indexOf('?') !== -1;
+				key = key.replace('?', '');
 				switch (key) {
 					case 'latitude':
 					case 'longitude':
 						const orientation = view.orientation || { latitude: 0, longitude: 0 };
 						form.add(new FormControl(orientation[key], RequiredValidator()), key);
 						break;
+					case 'usdz':
+					case 'gltf':
+						form.add(new FormControl((view.ar ? (view.ar[key] || null) : null), optional ? undefined : RequiredValidator()), key);
+						break;
 					default:
-						form.add(new FormControl(view[key], RequiredValidator()), key);
+						form.add(new FormControl((view[key] != null ? view[key] : null), optional ? undefined : RequiredValidator()), key);
 				}
 			});
 			this.controls = form.controls;
@@ -81,13 +91,21 @@ export default class UpdateViewComponent extends Component {
 	onSubmit() {
 		if (this.form.valid) {
 			const payload = Object.assign({}, this.view, this.form.value);
-			if (payload.latitude !== undefined) {
+			if (payload.latitude != null) { // !!! keep loose inequality
 				payload.orientation = {
 					latitude: payload.latitude,
 					longitude: payload.longitude,
 				};
 				delete payload.latitude;
 				delete payload.longitude;
+			}
+			if (payload.usdz != null || payload.gltf != null) { // !!! keep loose inequality
+				payload.ar = {
+					usdz: payload.usdz || null,
+					gltf: payload.gltf || null,
+				};
+				delete payload.usdz;
+				delete payload.gltf;
 			}
 			this.update.next({ view: new View(payload) });
 		} else {
@@ -107,8 +125,6 @@ export default class UpdateViewComponent extends Component {
 
 	onSelect(event) {
 		this.select.next({ view: this.view.selected ? null : this.view });
-		// this.active = !this.active;
-		// this.pushChanges();
 	}
 
 	getTitle(view) {
@@ -148,12 +164,16 @@ UpdateViewComponent.meta = {
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
 			</div>
+			<div class="form-controls" *if="view.type.name != 'waiting-room' && flags.ar">
+				<div control-model [control]="controls.usdz" label="AR IOS (.usdz)" accept=".usdz"></div>
+				<div control-model [control]="controls.gltf" label="AR Android (.glb)" accept=".glb"></div>
+			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">
 					<span *if="!form.submitted">Update</span>
 					<span *if="form.submitted">Update!</span>
 				</button>
-				<button type="button" class="btn--remove" *if="view.type != 'waiting-room'" (click)="onRemove($event)">
+				<button type="button" class="btn--remove" *if="view.type.name != 'waiting-room'" (click)="onRemove($event)">
 					<span>Remove</span>
 				</button>
 			</div>

@@ -13,8 +13,8 @@ export class UserService {
 		return HttpService.get$('/api/user/me').pipe(
 			map((user) => this.mapUser(user)),
 			catchError(error => {
-				// console.log(error);
-				if (error.status === 404) {
+				// console.log('UserService.me$.error', error);
+				if (error.status === 404 || error.statusCode === 404) {
 					return of(null);
 				} else {
 					throw (error);

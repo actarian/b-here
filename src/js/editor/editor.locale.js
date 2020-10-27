@@ -10,9 +10,9 @@ export const EditorLocale = {
 	'panorama-grid': 'Panorama Grid',
 	'room-3d': 'Room 3D',
 	'model': 'Model',
-	'nav': 'Nav with tooltip',
+	'nav': 'Nav Tooltip',
 	'gltf': 'Gltf Model',
 	'plane': 'Plane',
-	'curved-plane': 'CurvedPlane',
+	'curved-plane': 'Curved Plane',
 	'texture': 'Texture',
 };

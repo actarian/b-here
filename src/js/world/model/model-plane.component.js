@@ -35,7 +35,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 				}
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, items, geometry, (item.asset && item.asset.chromaKeyColor ? MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor) : null));
+					mesh = new MediaMesh(item, items, geometry);
 					if (item.position) {
 						mesh.position.fromArray(item.position);
 					}
@@ -71,7 +71,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
-		// console.log('ModelPlaneComponent.onUpdate', item);
+		console.log('ModelPlaneComponent.onUpdate', item);
 		if (item.position) {
 			mesh.position.fromArray(item.position);
 		}
@@ -82,6 +82,15 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 			mesh.scale.fromArray(item.scale);
 		}
 		this.updateHelper();
+	}
+
+	// called by UpdateViewItemComponent
+	onUpdateAsset(item, mesh) {
+		console.log('ModelPlaneComponent.onUpdateAsset', item);
+		this.mesh.updateByItem(item);
+		this.mesh.load(() => {
+			console.log('ModelPlaneComponent.mesh.load.complete');
+		});
 	}
 
 	// called by WorldComponent

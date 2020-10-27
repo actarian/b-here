@@ -1004,6 +1004,51 @@ input-value {
     opacity: 0;
     cursor: pointer; }
 
+[control-model] .group--model {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center; }
+  [control-model] .group--model .file-name {
+    flex: 1 1 auto;
+    margin-right: 5px;
+    color: #111; }
+
+[control-model] .btn--upload,
+[control-model] .btn--remove {
+  position: relative;
+  font-size: 10px;
+  padding: 5px 7px;
+  height: auto;
+  line-height: 1;
+  min-height: 0; }
+
+[control-model] .btn--upload {
+  position: relative;
+  height: auto;
+  min-height: 0;
+  padding: 5px 7px;
+  font-size: 10px;
+  line-height: 1; }
+  [control-model] .btn--upload, [control-model] .btn--upload:active, [control-model] .btn--upload:focus, [control-model] .btn--upload:hover, [control-model] .btn--upload:visited {
+    background: #09f;
+    color: #fff; }
+  [control-model] .btn--upload input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1; }
+
+[control-model] .btn--remove {
+  margin-left: 5px; }
+  [control-model] .btn--remove, [control-model] .btn--remove:active, [control-model] .btn--remove:focus, [control-model] .btn--remove:hover, [control-model] .btn--remove:visited {
+    background: #ff4332;
+    color: #fff; }
+
 test-component .group--form--results {
   display: flex;
   flex-direction: column;
@@ -3840,9 +3885,10 @@ body {
 
 @media (max-width: 1023.98px) {
   .ui--info {
-    justify-content: flex-start;
     padding: 80px 0;
-    overflow-y: auto; } }
+    overflow-y: auto; }
+    .ui--info:not(.ui--info-centered) {
+      justify-content: flex-start; } }
 
 .ui__body {
   position: absolute;
@@ -3857,7 +3903,8 @@ body {
   width: 100%;
   height: 100%;
   border: #ff4332 solid 5px;
-  z-index: 2; }
+  z-index: 2;
+  pointer-events: none; }
   .ui__lock.control {
     pointer-events: none; }
 
@@ -4055,6 +4102,27 @@ body {
   height: 90px;
   background: black; }
 
+.group--remote .members {
+  position: absolute;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1;
+  color: white; }
+  .group--remote .members:before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+    margin-left: -10px;
+    background: greenyellow; }
+  .group--remote .members__count {
+    margin-left: 4px; }
+
 @media (min-width: 768px) {
   .group--remote {
     position: absolute;
@@ -4068,7 +4136,10 @@ body {
       left: 0;
       width: 120px;
       height: 100%;
-      flex: 1 1 120px; } }
+      flex: 1 1 120px; }
+      .group--remote .members {
+        width: 100%;
+        bottom: 0; } }
   @media (min-width: 768px) and (orientation: portrait) {
     .group--remote {
       flex-direction: row;
@@ -4077,13 +4148,18 @@ body {
       left: 0;
       width: 100%;
       height: 90px;
-      flex: 1 1 100%; } }
+      flex: 1 1 100%; }
+      .group--remote .members {
+        right: 0;
+        height: 100%; } }
 
 @media (max-width: 767.98px) {
   .group--remote {
     position: absolute;
     top: 0;
-    left: 0; } }
+    left: 0; }
+    .group--remote .members {
+      display: none; } }
 
 .group--local {
   position: absolute;
@@ -4461,8 +4537,8 @@ body {
 
 .try-in-ar,
 model-viewer {
-  width: 100vw;
-  height: 100vh; }
+  width: 100%;
+  height: 100%; }
 
 .btn--close {
   width: 40px;

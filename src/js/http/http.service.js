@@ -17,14 +17,28 @@ export default class HttpService {
 		}).then((response) => {
 			response_ = response;
 			// console.log(response);
-			const contentType = response.headers.get("content-type");
-			const responseType = (contentType && contentType.indexOf("application/json") !== -1) ? response.json() : response.text();
-			if (response.ok) {
-				return responseType;
-			} else {
-				return responseType.then(data => {
-					return Promise.reject(data);
-				});
+			try {
+				const contentType = response.headers.get('content-type');
+				let typedResponse;
+				if (contentType && contentType.indexOf('application/json') !== -1) {
+					typedResponse = response.json();
+				} else {
+					typedResponse = response.text();
+				}
+				if (response.ok) {
+					return typedResponse;
+				} else {
+					return typedResponse.then(data => {
+						return Promise.reject(data);
+					});
+				}
+			} catch(error) {
+				if (response.ok) {
+					console.warn('HttpService.http$', 'Cannot parse response');
+					return Promise.resolve();
+				} else {
+					return Promise.reject(error);
+				}
 			}
 		})).pipe(
 			catchError(error => {
@@ -76,7 +90,7 @@ export default class HttpService {
 		if (!error.statusMessage) {
 			error.statusMessage = response ? response.statusText : object;
 		}
-		console.log('HttpService.getError', error, object);
+		// console.log('HttpService.getError', error, object);
 		return error;
 	}
 

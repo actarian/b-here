@@ -187,6 +187,7 @@ export default class AgoraComponent extends Component {
 					StateService.patchState({ spyed: true });
 					break;
 				case MessageType.RequestInfoResult:
+					console.log('AgoraComponent.RequestInfoResult', this.controls.view.value, message.viewId);
 					if (this.controls.view.value !== message.viewId) {
 						this.controls.view.value = message.viewId;
 						// console.log('AgoraComponent.RequestInfoResult', message.viewId);
@@ -307,7 +308,10 @@ export default class AgoraComponent extends Component {
 
 	disconnect() {
 		if (this.agora) {
-			this.agora.leaveChannel();
+			this.agora.leaveChannel().then(() => {
+				// StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
+				window.location.href = window.location.href;
+			}, console.log);
 		} else {
 			this.patchState({ connecting: false, connected: false });
 		}
@@ -414,11 +418,12 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
+	/*
 	onPrevent(event) {
 		event.preventDefault();
 		event.stopImmediatePropagation();
 	}
-
+	*/
 }
 
 AgoraComponent.meta = {
