@@ -232,22 +232,37 @@ export default class MediaMesh extends InteractiveMesh {
 		);
 	}
 
-	constructor(item, items, geometry, material) {
-		material = material || MediaMesh.getMaterial();
-		if (!item.asset) {
+	static getMaterialByItem(item) {
+		let material;
+		if (item.asset && item.asset.chromaKeyColor) {
+			material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
+		} else if (item.asset) {
+			material = MediaMesh.getMaterial();
+		} else {
 			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
 		}
-		super(geometry, material);
-		this.item = item;
-		this.items = items;
-		this.renderOrder = environment.renderOrder.plane;
+		return material;
+	}
+
+	static getUniformsByItem(item) {
+		let uniforms = null;
 		if (item.asset) {
-			const uniforms = this.uniforms = {
+			uniforms = {
 				overlay: 0,
 				tween: 1,
 				opacity: 0,
 			};
 		}
+		return uniforms;
+	}
+
+	constructor(item, items, geometry) {
+		const material = MediaMesh.getMaterialByItem(item);
+		super(geometry, material);
+		this.item = item;
+		this.items = items;
+		this.renderOrder = environment.renderOrder.plane;
+		this.uniforms = MediaMesh.getUniformsByItem(item);
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
 		/*
 		if (item.asset && !mediaLoader.isVideo) {
@@ -479,14 +494,39 @@ export default class MediaMesh extends InteractiveMesh {
 		this.onOut();
 	}
 
-	dispose() {
-		const mediaLoader = this.mediaLoader;
-		if (mediaLoader.isPlayableVideo) {
-			this.off('over', this.onOver);
-			this.off('out', this.onOut);
-			this.off('down', this.onToggle);
+	updateByItem(item) {
+		this.disposeMaterial();
+		this.disposeMediaLoader();
+		this.material = MediaMesh.getMaterialByItem(item);
+		this.uniforms = MediaMesh.getUniformsByItem(item);
+		this.mediaLoader = new MediaLoader(item);
+	}
+
+	disposeMaterial() {
+		if (this.material) {
+			if (this.material.map && this.material.map.disposable !== false) {
+				this.material.map.dispose();
+			}
+			this.material.dispose();
+			this.material = null;
 		}
-		mediaLoader.dispose();
+	}
+
+	disposeMediaLoader() {
+		const mediaLoader = this.mediaLoader;
+		if (mediaLoader) {
+			if (mediaLoader.isPlayableVideo) {
+				this.off('over', this.onOver);
+				this.off('out', this.onOut);
+				this.off('down', this.onToggle);
+			}
+			mediaLoader.dispose();
+			this.mediaLoader = null;
+		}
+	}
+
+	dispose() {
+		this.disposeMediaLoader();
 	}
 
 }

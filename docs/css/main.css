@@ -3885,9 +3885,10 @@ body {
 
 @media (max-width: 1023.98px) {
   .ui--info {
-    justify-content: flex-start;
     padding: 80px 0;
-    overflow-y: auto; } }
+    overflow-y: auto; }
+    .ui--info:not(.ui--info-centered) {
+      justify-content: flex-start; } }
 
 .ui__body {
   position: absolute;

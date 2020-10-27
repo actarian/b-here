@@ -5,6 +5,7 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 export default class InputValueComponent extends Component {
 	onInit() {
 		this.label = this.label || 'label';
+		this.value = this.value || 0;
 		this.precision = this.precision || 3;
 		this.increment = this.increment || 1 / Math.pow(10, this.precision);
 		this.disabled = this.disabled || false;

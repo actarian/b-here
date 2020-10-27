@@ -1,6 +1,6 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environment';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType } from '../../view/view';
@@ -13,16 +13,46 @@ export default class UpdateViewItemComponent extends Component {
 		this.active = false;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
+		const item = this.item;
+		item.hasChromaKeyColor = (item.asset && item.asset.chromaKeyColor) ? true : false;
+		this.onUpdate();
 		form.changes$.subscribe((changes) => {
 			// console.log('UpdateViewItemComponent.form.changes$', changes);
-			const item = this.item;
-			Object.assign(item, changes);
-			if (typeof item.onUpdate === 'function') {
-				item.onUpdate();
-			}
+			this.onUpdateItem(changes);
 			this.pushChanges();
 		});
-		this.onUpdate();
+	}
+
+	getAssetDidChange(changes) {
+		const item = this.item;
+		const itemAssetId = item.asset ? item.asset.id : null;
+		const changesAssetId = changes.asset ? changes.asset.id : null;
+		if (itemAssetId !== changesAssetId || item.hasChromaKeyColor !== changes.hasChromaKeyColor) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	onUpdateItem(changes) {
+		const item = this.item;
+		const assetDidChange = this.getAssetDidChange(changes);
+		Object.assign(item, changes);
+		if (item.asset) {
+			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0,1.0,0.0] : null;
+			if (assetDidChange) {
+				EditorService.assetUpdate$(item.asset).pipe(
+					switchMap(() => EditorService.itemUpdate$(this.view, item)),
+					first()
+				).subscribe();
+				if (typeof item.onUpdateAsset === 'function') {
+					item.onUpdateAsset();
+				}
+			}
+		}
+		if (typeof item.onUpdate === 'function') {
+			item.onUpdate();
+		}
 	}
 
 	onUpdate() {
@@ -39,10 +69,10 @@ export default class UpdateViewItemComponent extends Component {
 					keys = ['id', 'type', 'title', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?', 'hasChromaKeyColor?'];
 					break;
 				case ViewItemType.CurvedPlane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'asset?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'asset?', 'hasChromaKeyColor?'];
 					break;
 				case ViewItemType.Texture.name:
 					keys = ['id', 'type', 'asset?']; // asset, key no id!!
@@ -54,8 +84,10 @@ export default class UpdateViewItemComponent extends Component {
 					keys = ['id', 'type'];
 			}
 			keys.forEach(key => {
+				const optional = key.indexOf('?') !== -1;
+				key = key.replace('?', '');
 				switch (key) {
-					case 'link?':
+					case 'link':
 						const title = item.link ? item.link.title : null;
 						const href = item.link ? item.link.href : null;
 						const target = '_blank';
@@ -66,9 +98,8 @@ export default class UpdateViewItemComponent extends Component {
 						}), 'link');
 						break;
 					default:
-						const optional = key.indexOf('?') !== -1;
-						key = key.replace('?', '');
-						form.add(new FormControl(item[key] || null, optional ? undefined : RequiredValidator()), key);
+						const value = (item[key] != null ? item[key] : null);
+						form.add(new FormControl(value, optional ? undefined : RequiredValidator()), key);
 				}
 			});
 			this.controls = form.controls;
@@ -91,8 +122,11 @@ export default class UpdateViewItemComponent extends Component {
 						const target = '_blank';
 						this.controls[key].value = { title, href, target };
 						break;
+					case 'hasChromaKeyColor':
+						this.controls[key].value = (item.asset && item.asset.chromaKeyColor) ? true : false;
+						break;
 					default:
-						this.controls[key].value = item[key] || null;
+						this.controls[key].value = (item[key] != null ? item[key] : null);
 				}
 			});
 		}
@@ -167,6 +201,7 @@ UpdateViewItemComponent.meta = {
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
 				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
+				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'curved-plane'">
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
@@ -176,6 +211,7 @@ UpdateViewItemComponent.meta = {
 				<div control-number label="Height" [control]="controls.height" [precision]="2"></div>
 				<div control-number label="Arc" [control]="controls.arc" [precision]="0"></div>
 				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
+				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
 			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update">

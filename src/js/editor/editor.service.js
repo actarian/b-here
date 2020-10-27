@@ -134,6 +134,11 @@ export default class EditorService {
 			map(asset => mapAsset(asset)),
 		);
 	}
+	static assetUpdate$(asset) {
+		return HttpService.put$(`/api/asset/${asset.id}`, asset).pipe(
+			map(asset => mapAsset(asset)),
+		);
+	}
 	static assetDelete$(asset) {
 		return HttpService.delete$(`/api/asset/${asset.id}`);
 	}
