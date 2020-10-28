@@ -67,6 +67,10 @@ export class UserService {
 		}
 	}
 
+	static log$(payload) {
+		return HttpService.post$('/api/user/log', payload);
+	}
+
 	/*
 	static retrieve$(payload) {
 		return HttpService.post$('/api/user/retrievepassword', payload).pipe(

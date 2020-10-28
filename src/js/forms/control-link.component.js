@@ -40,7 +40,7 @@ ControlLinkComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length, disabled: disabled }">
 			<label [innerHTML]="label"></label>
 			<input type="text" class="control--text" [formControl]="control" [placeholder]="label" [disabled]="disabled" />
-			<span class="required__badge">required</span>
+			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`
