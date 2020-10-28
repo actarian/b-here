@@ -50,9 +50,9 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Obliqua Collezione",
+          "title": "Cucina Obliqua ",
           "abstract": "Scopri",
-          "viewId": 521591868892999,
+          "viewId": 527056241479599,
           "position": [
             -0.704806574139695,
             -0.016157480637169673,
@@ -60,14 +60,15 @@
           ],
           "asset": null,
           "link": null,
-          "id": 517566091402000
+          "id": 517566091402000,
+          "keepOrientation": null
         },
         {
           "type": {
             "id": 1,
             "name": "nav"
           },
-          "title": "One Collezione",
+          "title": "Cucina One",
           "abstract": "Scopri",
           "viewId": 513899190847000,
           "position": [
@@ -98,7 +99,7 @@
           ],
           "scale": [
             11,
-            7,
+            6.2,
             1
           ],
           "asset": {
@@ -154,7 +155,7 @@
         "id": 3,
         "name": "panorama-grid"
       },
-      "name": "Composizione 1",
+      "name": "Cucina Obliqua 1",
       "asset": {
         "type": {
           "id": 1,
@@ -200,7 +201,6 @@
                 "id": 90094413942300,
                 "chromaKeyColor": null
               },
-              "link": null,
               "id": 90109272505900,
               "keepOrientation": null
             },
@@ -313,7 +313,67 @@
       },
       "zoom": 75,
       "id": 521591868892999,
-      "items": []
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Infografica di dettaglio",
+          "abstract": "scopri l'apertura del mobile pensile",
+          "viewId": 521591868892999,
+          "position": [
+            0.9815571187734017,
+            -0.17260367230532395,
+            0.08218025852949598
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "90094307805500_Pensile Flex.jpg",
+            "id": 90094413942300,
+            "chromaKeyColor": null
+          },
+          "id": 90109272505900,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            16.55658919057687,
+            -1.4496040641559111,
+            -11.125556275155674
+          ],
+          "rotation": [
+            -0.129565064760564,
+            -0.9752273699594461,
+            -0.10744661705099083,
+            "XYZ"
+          ],
+          "scale": [
+            8,
+            5,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "91521667475900_Tagliere Quick.mp4",
+            "id": 91521842089400,
+            "chromaKeyColor": null
+          },
+          "id": 91525643892400
+        }
+      ]
     },
     {
       "type": {
@@ -361,7 +421,7 @@
         "id": 3,
         "name": "panorama-grid"
       },
-      "name": "Composizione 2",
+      "name": "Cucina Obliqua 2",
       "asset": {
         "type": {
           "id": 1,
@@ -536,14 +596,52 @@
       },
       "zoom": 75,
       "id": 541728155575700,
-      "items": []
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            19.826597748755955,
+            -2.609948841966987,
+            0.30690185946088033
+          ],
+          "rotation": [
+            -1.6878480258810382,
+            -1.439018710450592,
+            -1.688862306580853,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            10,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "518070409120099_greenscreen.mp4",
+            "id": 518070445169399,
+            "chromaKeyColor": [
+              0,
+              1,
+              0
+            ]
+          },
+          "id": 518072866002800
+        }
+      ]
     },
     {
       "type": {
         "id": 3,
         "name": "panorama-grid"
       },
-      "name": "Composizione 3",
+      "name": "Cucina Obliqua 3",
       "asset": {
         "type": {
           "id": 1,
@@ -658,7 +756,7 @@
         "id": 3,
         "name": "panorama-grid"
       },
-      "name": "One",
+      "name": "Cucina One",
       "asset": {
         "type": {
           "id": 1,
@@ -670,6 +768,7 @@
       },
       "tiles": [
         {
+          "id": 513899190971499,
           "asset": {
             "type": {
               "id": 1,
@@ -679,14 +778,10 @@
             "file": "513885505681099_NEWONESET2_x0_y0.jpg",
             "id": 513885626618100
           },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 0
-          },
-          "id": 513899190971499
+          "navs": []
         },
         {
+          "id": 513899190995499,
           "asset": {
             "type": {
               "id": 1,
@@ -696,14 +791,10 @@
             "file": "513886663642700_NEWONESET2_x3_y0.jpg",
             "id": 513886825885100
           },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 3
-          },
-          "id": 513899190995499
+          "navs": []
         },
         {
+          "id": 513899190996799,
           "asset": {
             "type": {
               "id": 1,
@@ -713,14 +804,10 @@
             "file": "513885996575000_NEWONESET2_x0_y1.jpg",
             "id": 513886731927600
           },
-          "navs": [],
-          "indices": {
-            "x": 1,
-            "y": 0
-          },
-          "id": 513899190996799
+          "navs": []
         },
         {
+          "id": 513899190997500,
           "asset": {
             "type": {
               "id": 1,
@@ -730,14 +817,10 @@
             "file": "513886680484399_NEWONESET2_x3_y1.jpg",
             "id": 513886830516200
           },
-          "navs": [],
-          "indices": {
-            "x": 1,
-            "y": 3
-          },
-          "id": 513899190997500
+          "navs": []
         },
         {
+          "id": 513899190998200,
           "asset": {
             "type": {
               "id": 1,
@@ -747,14 +830,10 @@
             "file": "513886065392299_NEWONESET2_x0_y2.jpg",
             "id": 513886760385400
           },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 0
-          },
-          "id": 513899190998200
+          "navs": []
         },
         {
+          "id": 513899190998900,
           "asset": {
             "type": {
               "id": 1,
@@ -764,14 +843,10 @@
             "file": "513886597714300_NEWONESET2_x3_y2.jpg",
             "id": 513886815078299
           },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 3
-          },
-          "id": 513899190998900
+          "navs": []
         },
         {
+          "id": 513899190999600,
           "asset": {
             "type": {
               "id": 1,
@@ -781,14 +856,10 @@
             "file": "513886147506199_NEWONESET2_x0_y3.jpg",
             "id": 513886783819799
           },
-          "navs": [],
-          "indices": {
-            "x": 3,
-            "y": 0
-          },
-          "id": 513899190999600
+          "navs": []
         },
         {
+          "id": 513899191000200,
           "asset": {
             "type": {
               "id": 1,
@@ -798,14 +869,10 @@
             "file": "513886947230300_NEWONESET2_x3_y3.jpg",
             "id": 513887002243099
           },
-          "navs": [],
-          "indices": {
-            "x": 3,
-            "y": 3
-          },
-          "id": 513899191000200
+          "navs": []
         },
         {
+          "id": 513899191000900,
           "asset": {
             "type": {
               "id": 1,
@@ -815,14 +882,10 @@
             "file": "513886165488300_NEWONESET2_x0_y4.jpg",
             "id": 513886788961300
           },
-          "navs": [],
-          "indices": {
-            "x": 4,
-            "y": 0
-          },
-          "id": 513899191000900
+          "navs": []
         },
         {
+          "id": 513899191001600,
           "asset": {
             "type": {
               "id": 1,
@@ -832,14 +895,10 @@
             "file": "513886968968200_NEWONESET2_x3_y4.jpg",
             "id": 513887010372500
           },
-          "navs": [],
-          "indices": {
-            "x": 4,
-            "y": 3
-          },
-          "id": 513899191001600
+          "navs": []
         },
         {
+          "id": 513899191002299,
           "asset": {
             "type": {
               "id": 1,
@@ -849,14 +908,10 @@
             "file": "513886013166499_NEWONESET2_x0_y5.jpg",
             "id": 513886748755299
           },
-          "navs": [],
-          "indices": {
-            "x": 5,
-            "y": 0
-          },
-          "id": 513899191002299
+          "navs": []
         },
         {
+          "id": 513899191019299,
           "asset": {
             "type": {
               "id": 1,
@@ -866,14 +921,10 @@
             "file": "513886927705500_NEWONESET2_x3_y5.jpg",
             "id": 513886983820099
           },
-          "navs": [],
-          "indices": {
-            "x": 5,
-            "y": 3
-          },
-          "id": 513899191019299
+          "navs": []
         },
         {
+          "id": 513899191020200,
           "asset": {
             "type": {
               "id": 1,
@@ -883,14 +934,10 @@
             "file": "513885933808799_NEWONESET2_x0_y6.jpg",
             "id": 513886715442899
           },
-          "navs": [],
-          "indices": {
-            "x": 6,
-            "y": 0
-          },
-          "id": 513899191020200
+          "navs": []
         },
         {
+          "id": 513899191020900,
           "asset": {
             "type": {
               "id": 1,
@@ -900,14 +947,10 @@
             "file": "513887048720499_NEWONESET2_x3_y6.jpg",
             "id": 513887081133500
           },
-          "navs": [],
-          "indices": {
-            "x": 6,
-            "y": 3
-          },
-          "id": 513899191020900
+          "navs": []
         },
         {
+          "id": 513899191021600,
           "asset": {
             "type": {
               "id": 1,
@@ -917,14 +960,10 @@
             "file": "513886378490100_NEWONESET2_x0_y7.jpg",
             "id": 513886792197300
           },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 0
-          },
-          "id": 513899191021600
+          "navs": []
         },
         {
+          "id": 513899191022300,
           "asset": {
             "type": {
               "id": 1,
@@ -934,14 +973,10 @@
             "file": "513886478102199_NEWONESET2_x1_y7.jpg",
             "id": 513886800256999
           },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 1
-          },
-          "id": 513899191022300
+          "navs": []
         },
         {
+          "id": 513899191023000,
           "asset": {
             "type": {
               "id": 1,
@@ -951,14 +986,10 @@
             "file": "513886429065100_NEWONESET2_x2_y7.jpg",
             "id": 513886797636900
           },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 2
-          },
-          "id": 513899191023000
+          "navs": []
         },
         {
+          "id": 513899191023700,
           "asset": {
             "type": {
               "id": 1,
@@ -968,12 +999,7 @@
             "file": "513887065195300_NEWONESET2_x3_y7.jpg",
             "id": 513887089458200
           },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 3
-          },
-          "id": 513899191023700
+          "navs": []
         }
       ],
       "invertAxes": true,
@@ -983,7 +1009,838 @@
         "longitude": 0
       },
       "zoom": 75,
-      "id": 513899190847000
+      "id": 513899190847000,
+      "items": []
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cucina Obliqua 1 - 1",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "527013007543299_Composizione1_x0_y0.jpg",
+        "id": 527013098726099
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 527056241479599,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527186521663800,
+          "position": [
+            0.86407347326232,
+            -0.5033487027790711,
+            0.004137174762701188
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527107185061099,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527241892282199,
+          "position": [
+            0.6648732409739103,
+            -0.4076481262034004,
+            0.6259125966456539
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527354088016100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527279204269700,
+          "position": [
+            0.4679660401498852,
+            -0.28314867747494177,
+            0.8371586538468246
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527371847405200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527205585755200,
+          "position": [
+            -0.17466237666306547,
+            -0.5699201217440181,
+            0.8029222309848528
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527397340278200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527257692022500,
+          "position": [
+            -0.10257624303094744,
+            -0.3184219548557375,
+            0.9423829227185235
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527414144325500
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cucina Obliqua 1 - 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "527181654909399_Composizione1_x0_y2.jpg",
+        "id": 527181688474600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 527186521663800,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527241892282199,
+          "position": [
+            0.1507084322796891,
+            -0.5747681320398274,
+            0.8043186948164551
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527546799455100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527279204269700,
+          "position": [
+            0.13744485289108457,
+            -0.34764412806819134,
+            0.927497963681568
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527562087906000
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            3.76012270261998,
+            2.3211432385949866,
+            19.50573688244478
+          ],
+          "rotation": [
+            3.0231516425624028,
+            -0.18913168525639057,
+            3.1192240352497067,
+            "XYZ"
+          ],
+          "scale": [
+            8,
+            4.5,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "527582880421399_Tavolo Evolution.mp4",
+            "id": 527583046865799,
+            "chromaKeyColor": null
+          },
+          "id": 527586021821799
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527205585755200,
+          "position": [
+            -0.4683206557935478,
+            -0.5069761170435557,
+            0.7236373263621357
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527599483917700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527257692022500,
+          "position": [
+            -0.363108115039868,
+            -0.3251877007202769,
+            0.8731583224664664
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527613238134700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527056241479599,
+          "position": [
+            -0.6791574650886962,
+            -0.7192335046901331,
+            -0.1464523927610764
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527649772156000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Infografica",
+          "abstract": "Scopri l'apertura del mobile pensile",
+          "viewId": 527186521663800,
+          "position": [
+            0.8875925503544292,
+            -0.2857128079518692,
+            0.3613137914992708
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "528660727593899_Pensile Flex.jpg",
+            "id": 528660824486400
+          },
+          "link": null,
+          "id": 528668393229799
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cucina Obliqua 1 - 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "527201081587399_Composizione1_x1_y0.jpg",
+        "id": 527201121294899
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 527205585755200,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527241892282199,
+          "position": [
+            0.8228673263975591,
+            -0.5107990431004197,
+            0.24894517612323497
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528183998311599
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527186521663800,
+          "position": [
+            0.7479705983385572,
+            -0.4477400027883774,
+            -0.4899682376686519
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528207046105599
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527279204269700,
+          "position": [
+            0.6055440322920205,
+            -0.38026082721062354,
+            0.6990837777009367
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528223694514300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527257692022500,
+          "position": [
+            -0.13047131926067565,
+            -0.4904629427105847,
+            0.8616399112611094
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528239492290600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527056241479599,
+          "position": [
+            0.1535874291684342,
+            -0.656785275392023,
+            -0.7382709554287338
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528256010191199
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cucina Obliqua 1 - 4",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "527240247813100_Composizione1_x1_y2.jpg",
+        "id": 527240313939200
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 527241892282199,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527279204269700,
+          "position": [
+            0.15330800998002733,
+            -0.5022116084836614,
+            0.8510465054156661
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527783912533900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527257692022500,
+          "position": [
+            -0.48313875118222194,
+            -0.4438125162799587,
+            0.7547233913821237
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527798827370299
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527205585755200,
+          "position": [
+            -0.7268669890295859,
+            -0.6848056787222524,
+            -0.052015023299226866
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527814843885600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527056241479599,
+          "position": [
+            -0.4754011417402569,
+            -0.5629175969347481,
+            -0.6761046764320365
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527828275450999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527186521663800,
+          "position": [
+            0.32288518862921034,
+            -0.5825781295451117,
+            -0.7458873091423385
+          ],
+          "asset": null,
+          "link": null,
+          "id": 527843374937800
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            3.264911425008943,
+            2.119874038436638,
+            19.617504618274168
+          ],
+          "rotation": [
+            3.0339500083703945,
+            -0.14652617255628952,
+            3.123954112610492,
+            "XYZ"
+          ],
+          "scale": [
+            10,
+            5,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "527852660392600_Tavolo Evolution.mp4",
+            "id": 527852793653300,
+            "chromaKeyColor": null
+          },
+          "id": 527855537454300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Infografica",
+          "abstract": "Scopri l'apertura del mobile pensile",
+          "viewId": 527241892282199,
+          "position": [
+            0.8583208102423997,
+            -0.27096440112590625,
+            -0.43573349656333465
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "528626774373300_Pensile Flex.jpg",
+            "id": 528626865456500
+          },
+          "link": null,
+          "id": 528638846557999
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cucina Obliqua 1 - 5",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "527255900113699_Composizione1_x2_y0.jpg",
+        "id": 527255963935700
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 527257692022500,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527279204269700,
+          "position": [
+            0.7936834587044851,
+            -0.5276665243244374,
+            0.3027120851341319
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528279861356699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527241892282199,
+          "position": [
+            0.7842472849259539,
+            -0.5113254128615818,
+            -0.3514292507009092
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528305426304399
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527186521663800,
+          "position": [
+            0.5519018286419469,
+            -0.3950313278010305,
+            -0.7344076671695564
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528319925389700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527056241479599,
+          "position": [
+            0.035061411862212705,
+            -0.46622482038483204,
+            -0.883971218001672
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528340617161000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527205585755200,
+          "position": [
+            0.0328629014705445,
+            -0.8147138757712284,
+            -0.5789311965447712
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528356653168799
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cucina Obliqua 1 - 6",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "527278258912900_Composizione1_x2_y2.jpg",
+        "id": 527278316071099
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 527279204269700,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527241892282199,
+          "position": [
+            0.2517398769336721,
+            -0.6719085829794821,
+            -0.6965385060999314
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528379583596800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527186521663800,
+          "position": [
+            0.23263511305866763,
+            -0.4412411416697336,
+            -0.8667105393787312
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528391118344099
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527056241479599,
+          "position": [
+            -0.36985664273155366,
+            -0.4192747142131457,
+            -0.8291048051053793
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528404973849099
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527205585755200,
+          "position": [
+            -0.4854549297139837,
+            -0.6164790159694391,
+            -0.6199089724191315
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528417161702199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Move",
+          "abstract": null,
+          "viewId": 527257692022500,
+          "position": [
+            -0.6723843692642061,
+            -0.7360721656824251,
+            0.0780834609681215
+          ],
+          "asset": null,
+          "link": null,
+          "id": 528434503326999
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            19.29892903248784,
+            3.8428509886363065,
+            3.575448849883738
+          ],
+          "rotation": [
+            2.3201638066353927,
+            -1.305239265477198,
+            2.3379779487070613,
+            "XYZ"
+          ],
+          "scale": [
+            10,
+            6,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "528442655601599_Tavolo Evolution.mp4",
+            "id": 528442931933600,
+            "chromaKeyColor": null
+          },
+          "id": 528444305795699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Infografica",
+          "abstract": "Scopri l'apertura del mobile pensile",
+          "viewId": 527279204269700,
+          "position": [
+            0.5001593863533222,
+            -0.18148739150374682,
+            -0.8467011957992228
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "528610155600099_Pensile Flex.jpg",
+            "id": 528610244480300
+          },
+          "link": null,
+          "id": 528611218832499
+        }
+      ]
     }
   ],
   "assets": [
@@ -1465,6 +2322,114 @@
         1,
         0
       ]
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "527013007543299_Composizione1_x0_y0.jpg",
+      "id": 527013098726099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "527181654909399_Composizione1_x0_y2.jpg",
+      "id": 527181688474600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "527201081587399_Composizione1_x1_y0.jpg",
+      "id": 527201121294899
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "527240247813100_Composizione1_x1_y2.jpg",
+      "id": 527240313939200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "527255900113699_Composizione1_x2_y0.jpg",
+      "id": 527255963935700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "527278258912900_Composizione1_x2_y2.jpg",
+      "id": 527278316071099
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "527582880421399_Tavolo Evolution.mp4",
+      "id": 527583046865799
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "527852660392600_Tavolo Evolution.mp4",
+      "id": 527852793653300
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "528442655601599_Tavolo Evolution.mp4",
+      "id": 528442931933600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "528610155600099_Pensile Flex.jpg",
+      "id": 528610244480300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "528626774373300_Pensile Flex.jpg",
+      "id": 528626865456500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "528660727593899_Pensile Flex.jpg",
+      "id": 528660824486400
     }
   ],
   "users": [
