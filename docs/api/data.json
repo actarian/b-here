@@ -24,49 +24,94 @@
       "zoom": 75
     },
     {
-      "id": 1601561173968,
       "type": {
         "id": 2,
         "name": "panorama"
       },
       "name": "Welcome Room",
-      "likes": 134,
-      "liked": false,
-      "ar": {
-        "gltf": "/models/composizione1/Composizione1.gltf",
-        "usdz": "/models/composizione1/composizione1.usdz"
-      },
       "asset": {
         "type": {
           "id": 1,
           "name": "image"
         },
         "folder": "/uploads/",
-        "file": "538286997075599_AdobeStock_342391354.jpeg",
-        "id": 538287032958400
+        "file": "513716056190200_WAITING-ROOM-5-porte.jpg",
+        "id": 513716125383399
       },
       "orientation": {
-        "latitude": -11.400000000000002,
-        "longitude": 359.6475979920839
+        "latitude": -7.800000000000001,
+        "longitude": 178.99048090109008
       },
       "zoom": 75,
+      "id": 513717446056299,
       "items": [
         {
           "type": {
             "id": 1,
             "name": "nav"
           },
-          "title": "Obliqua Composizione 1",
+          "title": "Obliqua Collezione",
           "abstract": "Scopri",
           "viewId": 521591868892999,
           "position": [
-            0.9778589084294884,
-            -0.09405058314563552,
-            -0.1869396774766001
+            -0.704806574139695,
+            -0.016157480637169673,
+            -0.7092155024172315
           ],
           "asset": null,
           "link": null,
-          "id": 538374756937300
+          "id": 517566091402000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "One Collezione",
+          "abstract": "Scopri",
+          "viewId": 513899190847000,
+          "position": [
+            0.13368640269936724,
+            -0.007243366224192021,
+            -0.990997214617198
+          ],
+          "asset": null,
+          "link": null,
+          "id": 517605842527200,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            19.857118383769304,
+            2.385821608341841,
+            -0.05200717393220298
+          ],
+          "rotation": [
+            1.5490013448682391,
+            -1.4511919508780453,
+            1.5488445695780877,
+            "XYZ"
+          ],
+          "scale": [
+            11,
+            7,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "517667850859100_Tavolo Evolution.mp4",
+            "id": 517668068058100,
+            "chromaKeyColor": null
+          },
+          "id": 517670851583600
         },
         {
           "type": {
@@ -74,53 +119,16 @@
             "name": "nav"
           },
           "title": "Foto 360",
-          "abstract": "Vedi",
+          "abstract": "Test",
           "viewId": 539664012158000,
           "position": [
-            0.9819654777052859,
-            0.05819384768240377,
-            -0.1798812849824764
+            0.7458927554721432,
+            -0.049554152288802715,
+            0.6642201316770758
           ],
           "asset": null,
           "link": null,
-          "id": 538398402044200,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Obliqua Composizione 2",
-          "abstract": "Scopri",
-          "viewId": 541728155575700,
-          "position": [
-            0.994029659781571,
-            -0.036084614011983505,
-            0.10297055941452586
-          ],
-          "asset": null,
-          "link": null,
-          "id": 538415349924500,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Obliqua Composizione 3",
-          "abstract": "Scopri",
-          "viewId": 542891821577299,
-          "position": [
-            0.921335118673162,
-            -0.09043162381239107,
-            0.3781054357109469
-          ],
-          "asset": null,
-          "link": null,
-          "id": 538432634742800,
-          "keepOrientation": null
+          "id": 517899716353099
         },
         {
           "type": {
@@ -131,14 +139,13 @@
           "abstract": "Guarda",
           "viewId": 542975856893999,
           "position": [
-            0.971047943598045,
-            0.02400014969362981,
-            0.23767600646403364
+            -0.7110133317988787,
+            -0.03507300691200368,
+            0.7023033007116002
           ],
           "asset": null,
           "link": null,
-          "id": 538450664914600,
-          "keepOrientation": null
+          "id": 517926978507700
         }
       ]
     },
@@ -179,9 +186,9 @@
               "abstract": "scopri l'apertura del mobile pensile",
               "viewId": 521591868892999,
               "position": [
-                0.9929324566314484,
-                0.07039906227267254,
-                -0.09554636884238675
+                0.9815571187734017,
+                -0.17260367230532395,
+                0.08218025852949598
               ],
               "asset": {
                 "type": {
@@ -190,10 +197,12 @@
                 },
                 "folder": "/uploads/",
                 "file": "90094307805500_Pensile Flex.jpg",
-                "id": 90094413942300
+                "id": 90094413942300,
+                "chromaKeyColor": null
               },
               "link": null,
-              "id": 90109272505900
+              "id": 90109272505900,
+              "keepOrientation": null
             },
             {
               "type": {
@@ -212,7 +221,7 @@
                 "XYZ"
               ],
               "scale": [
-                10,
+                8,
                 5,
                 1
               ],
@@ -223,7 +232,8 @@
                 },
                 "folder": "/uploads/",
                 "file": "91521667475900_Tagliere Quick.mp4",
-                "id": 91521842089400
+                "id": 91521842089400,
+                "chromaKeyColor": null
               },
               "id": 91525643892400
             }
@@ -373,7 +383,45 @@
             "file": "540327577183099_Composizione2_x0_y0.jpg",
             "id": 540327609087200
           },
-          "navs": []
+          "navs": [
+            {
+              "type": {
+                "id": 2,
+                "name": "plane"
+              },
+              "position": [
+                19.826597748755955,
+                -2.609948841966987,
+                0.30690185946088033
+              ],
+              "rotation": [
+                -1.6878480258810382,
+                -1.439018710450592,
+                -1.688862306580853,
+                "XYZ"
+              ],
+              "scale": [
+                20,
+                10,
+                1
+              ],
+              "asset": {
+                "type": {
+                  "id": 2,
+                  "name": "video"
+                },
+                "folder": "/uploads/",
+                "file": "518070409120099_greenscreen.mp4",
+                "id": 518070445169399,
+                "chromaKeyColor": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "id": 518072866002800
+            }
+          ]
         },
         {
           "id": 541728155666100,
@@ -604,6 +652,338 @@
       "zoom": 75,
       "id": 542975856893999,
       "items": []
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
+      "name": "One",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "513885505681099_NEWONESET2_x0_y0.jpg",
+        "id": 513885626618100
+      },
+      "tiles": [
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513885505681099_NEWONESET2_x0_y0.jpg",
+            "id": 513885626618100
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 0
+          },
+          "id": 513899190971499
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886663642700_NEWONESET2_x3_y0.jpg",
+            "id": 513886825885100
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 3
+          },
+          "id": 513899190995499
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513885996575000_NEWONESET2_x0_y1.jpg",
+            "id": 513886731927600
+          },
+          "navs": [],
+          "indices": {
+            "x": 1,
+            "y": 0
+          },
+          "id": 513899190996799
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886680484399_NEWONESET2_x3_y1.jpg",
+            "id": 513886830516200
+          },
+          "navs": [],
+          "indices": {
+            "x": 1,
+            "y": 3
+          },
+          "id": 513899190997500
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886065392299_NEWONESET2_x0_y2.jpg",
+            "id": 513886760385400
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 0
+          },
+          "id": 513899190998200
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886597714300_NEWONESET2_x3_y2.jpg",
+            "id": 513886815078299
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 3
+          },
+          "id": 513899190998900
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886147506199_NEWONESET2_x0_y3.jpg",
+            "id": 513886783819799
+          },
+          "navs": [],
+          "indices": {
+            "x": 3,
+            "y": 0
+          },
+          "id": 513899190999600
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886947230300_NEWONESET2_x3_y3.jpg",
+            "id": 513887002243099
+          },
+          "navs": [],
+          "indices": {
+            "x": 3,
+            "y": 3
+          },
+          "id": 513899191000200
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886165488300_NEWONESET2_x0_y4.jpg",
+            "id": 513886788961300
+          },
+          "navs": [],
+          "indices": {
+            "x": 4,
+            "y": 0
+          },
+          "id": 513899191000900
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886968968200_NEWONESET2_x3_y4.jpg",
+            "id": 513887010372500
+          },
+          "navs": [],
+          "indices": {
+            "x": 4,
+            "y": 3
+          },
+          "id": 513899191001600
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886013166499_NEWONESET2_x0_y5.jpg",
+            "id": 513886748755299
+          },
+          "navs": [],
+          "indices": {
+            "x": 5,
+            "y": 0
+          },
+          "id": 513899191002299
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886927705500_NEWONESET2_x3_y5.jpg",
+            "id": 513886983820099
+          },
+          "navs": [],
+          "indices": {
+            "x": 5,
+            "y": 3
+          },
+          "id": 513899191019299
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513885933808799_NEWONESET2_x0_y6.jpg",
+            "id": 513886715442899
+          },
+          "navs": [],
+          "indices": {
+            "x": 6,
+            "y": 0
+          },
+          "id": 513899191020200
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513887048720499_NEWONESET2_x3_y6.jpg",
+            "id": 513887081133500
+          },
+          "navs": [],
+          "indices": {
+            "x": 6,
+            "y": 3
+          },
+          "id": 513899191020900
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886378490100_NEWONESET2_x0_y7.jpg",
+            "id": 513886792197300
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 0
+          },
+          "id": 513899191021600
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886478102199_NEWONESET2_x1_y7.jpg",
+            "id": 513886800256999
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 1
+          },
+          "id": 513899191022300
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513886429065100_NEWONESET2_x2_y7.jpg",
+            "id": 513886797636900
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 2
+          },
+          "id": 513899191023000
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "513887065195300_NEWONESET2_x3_y7.jpg",
+            "id": 513887089458200
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 3
+          },
+          "id": 513899191023700
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 513899190847000
     }
   ],
   "assets": [
@@ -857,7 +1237,8 @@
       },
       "folder": "/uploads/",
       "file": "90094307805500_Pensile Flex.jpg",
-      "id": 90094413942300
+      "id": 90094413942300,
+      "chromaKeyColor": null
     },
     {
       "type": {
@@ -867,6 +1248,223 @@
       "folder": "/uploads/",
       "file": "91521667475900_Tagliere Quick.mp4",
       "id": 91521842089400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513626187127699_WAITING-ROOM-5-porte.jpg",
+      "id": 513626268528000
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513716056190200_WAITING-ROOM-5-porte.jpg",
+      "id": 513716125383399
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513885505681099_NEWONESET2_x0_y0.jpg",
+      "id": 513885626618100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513885933808799_NEWONESET2_x0_y6.jpg",
+      "id": 513886715442899
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513885996575000_NEWONESET2_x0_y1.jpg",
+      "id": 513886731927600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886013166499_NEWONESET2_x0_y5.jpg",
+      "id": 513886748755299
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886065392299_NEWONESET2_x0_y2.jpg",
+      "id": 513886760385400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886147506199_NEWONESET2_x0_y3.jpg",
+      "id": 513886783819799
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886165488300_NEWONESET2_x0_y4.jpg",
+      "id": 513886788961300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886378490100_NEWONESET2_x0_y7.jpg",
+      "id": 513886792197300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886429065100_NEWONESET2_x2_y7.jpg",
+      "id": 513886797636900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886478102199_NEWONESET2_x1_y7.jpg",
+      "id": 513886800256999
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886597714300_NEWONESET2_x3_y2.jpg",
+      "id": 513886815078299
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886663642700_NEWONESET2_x3_y0.jpg",
+      "id": 513886825885100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886680484399_NEWONESET2_x3_y1.jpg",
+      "id": 513886830516200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886927705500_NEWONESET2_x3_y5.jpg",
+      "id": 513886983820099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886947230300_NEWONESET2_x3_y3.jpg",
+      "id": 513887002243099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513886968968200_NEWONESET2_x3_y4.jpg",
+      "id": 513887010372500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513887048720499_NEWONESET2_x3_y6.jpg",
+      "id": 513887081133500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "513887065195300_NEWONESET2_x3_y7.jpg",
+      "id": 513887089458200
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "514302885177099_greenscreen.mp4",
+      "id": 514302912333400,
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "517667850859100_Tavolo Evolution.mp4",
+      "id": 517668068058100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "518070409120099_greenscreen.mp4",
+      "id": 518070445169399,
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ]
     }
   ],
   "users": [
