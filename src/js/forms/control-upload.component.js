@@ -108,7 +108,7 @@ ControlUploadComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length }">
 			<div class="control--head">
 				<label [innerHTML]="label"></label>
-				<span class="required__badge">required</span>
+				<span class="required__badge" [innerHTML]="'required' | label"></span>
 			</div>
 			<div class="listing--assets">
 				<div class="listing__item" *for="let item of transfers">

@@ -17,7 +17,7 @@ ControlRadioComponent.meta = {
 				<input type="radio" class="control--radio" [formControl]="control" [value]="true"/>
 				<span [innerHTML]="label"></span>
 			</label>
-			<span class="required__badge">required</span>
+			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`

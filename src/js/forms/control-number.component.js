@@ -20,7 +20,7 @@ ControlNumberComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length }">
 			<div class="control--head">
 				<label [innerHTML]="label"></label>
-				<span class="required__badge">required</span>
+				<span class="required__badge" [innerHTML]="'required' | label"></span>
 			</div>
 			<div class="control--content control--number">
 				<input-value label="" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value" (update)="updateValue($event)"></input-value>

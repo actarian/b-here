@@ -1,24 +1,11 @@
+import LabelPipe from '../label/label.pipe';
 import ControlComponent from './control.component';
 
-export const LABELS = {
-	'select': 'Select',
-	'select_file': 'Select a file...',
-	'error_required': 'Field is required',
-	'error_email': 'Invalid email',
-	'error_match': 'Fields do not match',
-};
-
 export default class ErrorsComponent extends ControlComponent {
-
-	onInit() {
-		this.labels = LABELS;
-	}
-
 	getLabel(key, value) {
-		const label = this.labels[`error_${key}`];
+		const label = LabelPipe.transform(`error_${key}`);
 		return label;
 	}
-
 }
 
 ErrorsComponent.meta = {

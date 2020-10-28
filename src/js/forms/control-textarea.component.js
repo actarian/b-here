@@ -16,7 +16,7 @@ ControlTextareaComponent.meta = {
 		<div class="group--form--textarea" [class]="{ required: control.validators.length, disabled: disabled }">
 			<label [innerHTML]="label"></label>
 			<textarea class="control--text" [formControl]="control" [innerHTML]="label" rows="4" [disabled]="disabled"></textarea>
-			<span class="required__badge">required</span>
+			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`

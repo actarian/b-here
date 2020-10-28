@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
+import GtmService from '../gtm/gtm.service';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
@@ -304,6 +305,26 @@ export default class AgoraComponent extends Component {
 		this.agora.connect$(preferences).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();
+		// console.log('AgoraComponent.connect', this.state.role);
+		if (this.state.role !== RoleType.SelfService) {
+			const sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
+			const log = {
+				meetingId: this.state.link,
+				sharedMeetingId: sharedMeetingId,
+				fullName: this.state.name,
+				userType: this.state.role
+			};
+			// console.log('AgoraComponent.connect', log);
+			UserService.log$(log).pipe(
+				first(),
+			).subscribe();
+			GtmService.push({
+				action: 'b-here-meeting',
+				meetingId: this.state.link,
+				sharedMeetingId: sharedMeetingId,
+				userType: this.state.role
+			});
+		}
 	}
 
 	disconnect() {

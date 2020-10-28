@@ -22,7 +22,7 @@ ControlVectorComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length }">
 			<div class="control--head">
 				<label [innerHTML]="label"></label>
-				<span class="required__badge">required</span>
+				<span class="required__badge" [innerHTML]="'required' | label"></span>
 			</div>
 			<div class="control--content control--vector">
 				<input-value label="x" [precision]="precision" [increment]="increment" [disabled]="disabled" [value]="control.value[0]" (update)="updateValue(0, $event)"></input-value>
