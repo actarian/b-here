@@ -108,8 +108,8 @@
               "name": "video"
             },
             "folder": "/uploads/",
-            "file": "517667850859100_Tavolo Evolution.mp4",
-            "id": 517668068058100,
+            "file": "608943851161300_videotagli.mp4",
+            "id": 608944323699000,
             "chromaKeyColor": null
           },
           "id": 517670851583600
@@ -197,8 +197,8 @@
                   "name": "image"
                 },
                 "folder": "/uploads/",
-                "file": "90094307805500_Pensile Flex.jpg",
-                "id": 90094413942300,
+                "file": "608858468753900_Tavolo-Cyclos.jpg",
+                "id": 608858496914900,
                 "chromaKeyColor": null
               },
               "id": 90109272505900,
@@ -231,8 +231,8 @@
                   "name": "video"
                 },
                 "folder": "/uploads/",
-                "file": "91521667475900_Tagliere Quick.mp4",
-                "id": 91521842089400,
+                "file": "608843567228699_videotagli.mp4",
+                "id": 608844380539399,
                 "chromaKeyColor": null
               },
               "id": 91525643892400
@@ -443,7 +443,45 @@
             "file": "540327577183099_Composizione2_x0_y0.jpg",
             "id": 540327609087200
           },
-          "navs": []
+          "navs": [
+            {
+              "type": {
+                "id": 2,
+                "name": "plane"
+              },
+              "position": [
+                19.643579434774736,
+                -3.758709769819944,
+                -0.043449464383363494
+              ],
+              "rotation": [
+                -1.5592371663723523,
+                -1.3817237864066056,
+                -1.5590274517691192,
+                "XYZ"
+              ],
+              "scale": [
+                17,
+                9,
+                1
+              ],
+              "asset": {
+                "type": {
+                  "id": 2,
+                  "name": "video"
+                },
+                "folder": "/uploads/",
+                "file": "608878657370699_greenscreen.mp4",
+                "id": 608878701338000,
+                "chromaKeyColor": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "id": 608886182741300
+            }
+          ]
         },
         {
           "id": 541728155666100,
@@ -963,7 +1001,7 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Move",
+          "title": null,
           "abstract": null,
           "viewId": 527186521663800,
           "position": [
@@ -981,7 +1019,7 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Move",
+          "title": null,
           "abstract": null,
           "viewId": 527241892282199,
           "position": [
@@ -991,14 +1029,15 @@
           ],
           "asset": null,
           "link": null,
-          "id": 527354088016100
+          "id": 527354088016100,
+          "keepOrientation": null
         },
         {
           "type": {
             "id": 1,
             "name": "nav"
           },
-          "title": "Move",
+          "title": null,
           "abstract": null,
           "viewId": 527279204269700,
           "position": [
@@ -1008,14 +1047,15 @@
           ],
           "asset": null,
           "link": null,
-          "id": 527371847405200
+          "id": 527371847405200,
+          "keepOrientation": null
         },
         {
           "type": {
             "id": 1,
             "name": "nav"
           },
-          "title": "Move",
+          "title": null,
           "abstract": null,
           "viewId": 527205585755200,
           "position": [
@@ -1025,14 +1065,15 @@
           ],
           "asset": null,
           "link": null,
-          "id": 527397340278200
+          "id": 527397340278200,
+          "keepOrientation": null
         },
         {
           "type": {
             "id": 1,
             "name": "nav"
           },
-          "title": "Move",
+          "title": null,
           "abstract": null,
           "viewId": 527257692022500,
           "position": [
@@ -1042,7 +1083,8 @@
           ],
           "asset": null,
           "link": null,
-          "id": 527414144325500
+          "id": 527414144325500,
+          "keepOrientation": null
         }
       ]
     },
@@ -1063,7 +1105,7 @@
       },
       "orientation": {
         "latitude": 0,
-        "longitude": 0
+        "longitude": 79.08892640909924
       },
       "zoom": 75,
       "id": 527186521663800,
@@ -1082,8 +1124,8 @@
             0.8043186948164551
           ],
           "asset": null,
-          "link": null,
-          "id": 527546799455100
+          "id": 527546799455100,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -1099,8 +1141,8 @@
             0.927497963681568
           ],
           "asset": null,
-          "link": null,
-          "id": 527562087906000
+          "id": 527562087906000,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -1129,8 +1171,8 @@
               "name": "video"
             },
             "folder": "/uploads/",
-            "file": "527582880421399_Tavolo Evolution.mp4",
-            "id": 527583046865799,
+            "file": "609026284197300_videotagli.mp4",
+            "id": 609026730991700,
             "chromaKeyColor": null
           },
           "id": 527586021821799
@@ -1149,8 +1191,8 @@
             0.7236373263621357
           ],
           "asset": null,
-          "link": null,
-          "id": 527599483917700
+          "id": 527599483917700,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -1166,7 +1208,6 @@
             0.8731583224664664
           ],
           "asset": null,
-          "link": null,
           "id": 527613238134700,
           "keepOrientation": null
         },
@@ -1184,8 +1225,8 @@
             -0.1464523927610764
           ],
           "asset": null,
-          "link": null,
-          "id": 527649772156000
+          "id": 527649772156000,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -1206,13 +1247,15 @@
               "name": "image"
             },
             "folder": "/uploads/",
-            "file": "528660727593899_Pensile Flex.jpg",
-            "id": 528660824486400
+            "file": "609043482868299_Tavolo-Cyclos.jpg",
+            "id": 609043506520200,
+            "chromaKeyColor": null
           },
-          "link": null,
-          "id": 528668393229799
+          "id": 528668393229799,
+          "keepOrientation": null
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "type": {
@@ -1457,8 +1500,8 @@
               "name": "video"
             },
             "folder": "/uploads/",
-            "file": "527852660392600_Tavolo Evolution.mp4",
-            "id": 527852793653300,
+            "file": "609057100027700_videotagli.mp4",
+            "id": 609057546651599,
             "chromaKeyColor": null
           },
           "id": 527855537454300
@@ -1482,11 +1525,13 @@
               "name": "image"
             },
             "folder": "/uploads/",
-            "file": "528626774373300_Pensile Flex.jpg",
-            "id": 528626865456500
+            "file": "609063807393100_Tavolo-Cyclos.jpg",
+            "id": 609063822897600,
+            "chromaKeyColor": null
           },
           "link": null,
-          "id": 528638846557999
+          "id": 528638846557999,
+          "keepOrientation": null
         }
       ]
     },
@@ -1733,8 +1778,8 @@
               "name": "video"
             },
             "folder": "/uploads/",
-            "file": "528442655601599_Tavolo Evolution.mp4",
-            "id": 528442931933600,
+            "file": "609085678321900_videotagli.mp4",
+            "id": 609086127613400,
             "chromaKeyColor": null
           },
           "id": 528444305795699
@@ -1758,11 +1803,13 @@
               "name": "image"
             },
             "folder": "/uploads/",
-            "file": "528610155600099_Pensile Flex.jpg",
-            "id": 528610244480300
+            "file": "609096702311000_Tavolo-Cyclos.jpg",
+            "id": 609096715366000,
+            "chromaKeyColor": null
           },
           "link": null,
-          "id": 528611218832499
+          "id": 528611218832499,
+          "keepOrientation": null
         }
       ]
     }
@@ -2298,7 +2345,8 @@
       },
       "folder": "/uploads/",
       "file": "528610155600099_Pensile Flex.jpg",
-      "id": 528610244480300
+      "id": 528610244480300,
+      "chromaKeyColor": null
     },
     {
       "type": {
@@ -2307,7 +2355,8 @@
       },
       "folder": "/uploads/",
       "file": "528626774373300_Pensile Flex.jpg",
-      "id": 528626865456500
+      "id": 528626865456500,
+      "chromaKeyColor": null
     },
     {
       "type": {
@@ -2316,7 +2365,112 @@
       },
       "folder": "/uploads/",
       "file": "528660727593899_Pensile Flex.jpg",
-      "id": 528660824486400
+      "id": 528660824486400,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "608843567228699_videotagli.mp4",
+      "id": 608844380539399,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "608858468753900_Tavolo-Cyclos.jpg",
+      "id": 608858496914900,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "608878657370699_greenscreen.mp4",
+      "id": 608878701338000,
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "608943851161300_videotagli.mp4",
+      "id": 608944323699000,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "609026284197300_videotagli.mp4",
+      "id": 609026730991700,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "609043482868299_Tavolo-Cyclos.jpg",
+      "id": 609043506520200,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "609057100027700_videotagli.mp4",
+      "id": 609057546651599,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "609063807393100_Tavolo-Cyclos.jpg",
+      "id": 609063822897600,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "609085678321900_videotagli.mp4",
+      "id": 609086127613400,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "609096702311000_Tavolo-Cyclos.jpg",
+      "id": 609096715366000,
+      "chromaKeyColor": null
     }
   ],
   "users": [
