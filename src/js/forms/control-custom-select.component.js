@@ -2,13 +2,13 @@ import { getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 import DropdownDirective from '../dropdown/dropdown.directive';
 import KeyboardService from '../keyboard/keyboard.service';
+import LabelPipe from '../label/label.pipe';
 import ControlComponent from './control.component';
 
 export default class ControlCustomSelectComponent extends ControlComponent {
 
 	onInit() {
 		this.label = 'label';
-		this.labels = window.labels || {};
 		this.dropped = false;
 		this.dropdownId = DropdownDirective.nextId();
 		KeyboardService.typing$().pipe(
@@ -96,14 +96,14 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 					return item ? item.name : '';
 				}).join(', ');
 			} else {
-				return this.labels.select;
+				return LabelPipe.transform('select');
 			}
 		} else {
 			const item = items.find(x => x.id === value || x.name === value);
 			if (item) {
 				return item.name;
 			} else {
-				return this.labels.select;
+				return LabelPipe.transform('select');
 			}
 		}
 	}
@@ -141,7 +141,7 @@ ControlCustomSelectComponent.meta = {
 			<label [innerHTML]="label"></label>
 			<span class="control--custom-select" [innerHTML]="getLabel()"></span>
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
-			<span class="required__badge">required</span>
+			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 		<div class="dropdown" [dropdown-item]="dropdownId">

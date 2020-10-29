@@ -22,7 +22,7 @@ export default class ModelPanelComponent extends ModelComponent {
 		const { node } = getContext(this);
 		this.getCanvasTexture(node).then(texture => {
 			if (this.mesh) {
-				const scale = 0.2;
+				const scale = 0.2 * (this.item.asset ? 1.5 : 1.0);
 				const aspect = texture.width / texture.height;
 				const width = ModelPanelComponent.PANEL_RADIUS * scale;
 				const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;

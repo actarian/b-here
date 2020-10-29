@@ -4577,6 +4577,8 @@ model-viewer {
 	width: 320px;
 	height: 320px;
 	*/ }
+  .panel.panel--lg {
+    width: 900px; }
   .panel__title {
     font-weight: 900;
     font-size: 60px;

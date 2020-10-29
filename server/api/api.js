@@ -302,6 +302,19 @@ const ROUTES = [{
 		saveStore();
 		sendOk(response, user);
 	}
+}, {
+	path: '/api/user/log', method: 'POST', callback: function(request, response, params) {
+		// do nothing
+		/*
+		{
+			meetingId: string,
+			sharedMeetingId: string,
+			fullName: string,
+			userType: string
+		}
+		*/
+		sendOk(response);
+	}
 }];
 ROUTES.forEach(route => {
 	const segments = [];

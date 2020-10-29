@@ -16,7 +16,7 @@ ControlPasswordComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length }">
 			<label [innerHTML]="label"></label>
 			<input type="password" class="control--text" [formControl]="control" [placeholder]="label" />
-			<span class="required__badge">required</span>
+			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`

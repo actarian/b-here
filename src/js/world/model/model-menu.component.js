@@ -58,7 +58,7 @@ export class MenuButton extends InteractiveMesh {
 				resolutionA: { value: new THREE.Vector2() },
 				resolutionB: { value: new THREE.Vector2() },
 				tween: { value: 0 },
-				opacity: { value: 0.8 },
+				opacity: { value: 0 },
 			},
 		});
 		/*
@@ -178,7 +178,6 @@ export class MenuButton extends InteractiveMesh {
 		this.material.dispose();
 		this.geometry.dispose();
 	}
-
 }
 
 MenuButton.W = 256;
@@ -230,20 +229,9 @@ export class BackButton extends MenuButton {
 		texture.needsUpdate = true;
 		return texture;
 	}
-
 }
 
 export default class ModelMenuComponent extends ModelComponent {
-
-	get items() {
-		return this.items_;
-	}
-	set items(items) {
-		if (this.items_ !== items) {
-			this.items_ = items;
-			this.buildMenu();
-		}
-	}
 
 	onInit() {
 		super.onInit();
@@ -260,6 +248,10 @@ export default class ModelMenuComponent extends ModelComponent {
 				this.removeMenu();
 			}
 		});
+	}
+
+	onChanges() {
+		this.buildMenu();
 	}
 
 	onDestroy() {
@@ -310,12 +302,12 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	buildMenu() {
-		if (this.menu || !this.items) {
+		if (!this.items) {
 			return;
 		}
-		const menu = this.menu = {};
+		const menu = {};
 		this.items.forEach(item => {
-			if (item.type.name !== ViewType.WaitingRoom.name) {
+			if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
 				let group = menu[item.type.name];
 				if (!group) {
 					group = menu[item.type.name] = [];
@@ -342,7 +334,7 @@ export default class ModelMenuComponent extends ModelComponent {
 					name = 'Modelli 3D';
 					break;
 			}
-			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName) };
+			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
 		});
 	}
 
@@ -427,7 +419,7 @@ export default class ModelMenuComponent extends ModelComponent {
 				},
 				onUpdate: () => {
 					buttons.forEach(button => {
-						button.material.uniforms.opacity.value = button.opacity;
+						button.material.uniforms.opacity.value = (button.opacity * (button.item.hidden ? 0.5 : 1));
 						// button.material.needsUpdate = true;
 					});
 				},
@@ -517,5 +509,5 @@ ModelMenuComponent.meta = {
 	hosts: { host: WorldComponent },
 	// outputs: ['over', 'out', 'down', 'nav'],
 	outputs: ['nav', 'toggle'],
-	inputs: ['items'],
+	inputs: ['items', 'editor'],
 };

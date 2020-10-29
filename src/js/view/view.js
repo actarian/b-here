@@ -55,7 +55,7 @@ export const ViewItemType = {
 
 export class View {
 	// 'liked'
-	static allowedProps = ['id', 'type', 'name', 'likes', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes'];
+	static allowedProps = ['id', 'type', 'name', 'hidden', 'likes', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -210,6 +210,9 @@ export class ViewItem {
 			delete payload.link;
 		}
 		return payload;
+	}
+	get hasPanel() {
+		return this.type.name === ViewItemType.Nav.name && (this.title || this.abstract || this.asset || this.link);
 	}
 }
 

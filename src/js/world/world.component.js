@@ -656,7 +656,7 @@ export default class WorldComponent extends Component {
 			// this.menu.removeMenu();
 		}
 		this.view.items.forEach(item => item.showPanel = false);
-		event.item.showPanel = true;
+		event.item.showPanel = event.item.hasPanel;
 		this.pushChanges();
 	}
 

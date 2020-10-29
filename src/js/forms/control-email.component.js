@@ -15,7 +15,7 @@ ControlEmailComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length }">
 			<label [innerHTML]="label"></label>
 			<input type="text" class="control--text" [formControl]="control" [placeholder]="label" required email />
-			<span class="required__badge">required</span>
+			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`

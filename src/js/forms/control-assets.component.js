@@ -93,7 +93,7 @@ ControlAssetsComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length }">
 			<div class="control--head">
 				<label [innerHTML]="label"></label>
-				<span class="required__badge">required</span>
+				<span class="required__badge" [innerHTML]="'required' | label"></span>
 			</div>
 			<div class="listing--assets">
 				<div class="listing__item" *for="let item of assets">
@@ -111,14 +111,14 @@ ControlAssetsComponent.meta = {
 			</div>
 			<div class="group--cta">
 				<div class="btn--browse">
-					<span>Browse</span>
+					<span [innerHTML]="'browse' | label"></span>
 					<input type="file" accept="image/jpeg" multiple />
 				</div>
-				<div class="btn--upload" (click)="onUpload()" *if="uploadCount > 0">Upload</div>
-				<div class="btn--cancel" (click)="onCancel()" *if="uploadCount > 0">Cancel</div>
+				<div class="btn--upload" (click)="onUpload()" *if="uploadCount > 0" [innerHTML]="'upload' | label"></div>
+				<div class="btn--cancel" (click)="onCancel()" *if="uploadCount > 0" [innerHTML]="'cancel' | label"></div>
 			</div>
 			<div class="upload-drop">
-    			<span>Drag And Drop your images here</span>
+    			<span [innerHTML]="'drag_and_drop_images' | label"></span>
 			</div>
 		</div>
 		<errors-component [control]="control"></errors-component>

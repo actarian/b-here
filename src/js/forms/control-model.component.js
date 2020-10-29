@@ -55,13 +55,13 @@ ControlModelComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length, disabled: disabled }">
 			<div class="control--head">
 				<label [innerHTML]="label"></label>
-				<span class="required__badge">required</span>
+				<span class="required__badge" [innerHTML]="'required' | label"></span>
 			</div>
 			<div class="group--model">
-				<div class="file-name" *if="!control.value">Seleziona un file</div>
+				<div class="file-name" *if="!control.value" [innerHTML]="'select_file' | label"></div>
 				<div class="file-name" *if="control.value" [innerHTML]="control.value.file"></div>
-				<div class="btn--upload"><input type="file"><span>browse</span></div>
-				<div class="btn--remove" *if="control.value" (click)="onRemove($event)"><span>remove</span></div>
+				<div class="btn--upload"><input type="file"><span [innerHTML]="'browse' | label"></span></div>
+				<div class="btn--remove" *if="control.value" (click)="onRemove($event)"><span [innerHTML]="'remove' | label"></span></div>
 			</div>
 		</div>
 		<errors-component [control]="control"></errors-component>

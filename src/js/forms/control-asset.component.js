@@ -141,12 +141,12 @@ ControlAssetComponent.meta = {
 		<div class="group--form" [class]="{ required: control.validators.length, disabled: disabled }">
 			<div class="control--head">
 				<label [innerHTML]="label"></label>
-				<span class="required__badge">required</span>
+				<span class="required__badge" [innerHTML]="'required' | label"></span>
 			</div>
 			<div class="group--picture">
 				<div class="group--picture__info">
 					<!-- <svg class="icon--image"><use xlink:href="#image"></use></svg> -->
-					<span>browse...</span>
+					<span [innerHTML]="'browse' | label"></span>
 				</div>
 				<img [lazy]="control.value | asset" [size]="{ width: 320, height: 240 }" *if="control.value && control.value.type.name === 'image'" />
 				<video [src]="control.value | asset" *if="control.value && control.value.type.name === 'video'"></video>

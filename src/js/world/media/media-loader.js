@@ -147,34 +147,40 @@ export default class MediaLoader {
 
 	play(silent) {
 		// console.log('MediaLoader.play');
-		this.video.play().then(() => {
-			// console.log('MediaLoader.play.success', this.item.asset.file);
-		}, error => {
-			console.log('MediaLoader.play.error', this.item.asset.file, error);
-		});
-		if (!silent) {
-			MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
+		if (this.video) {
+			this.video.play().then(() => {
+				// console.log('MediaLoader.play.success', this.item.asset.file);
+			}, error => {
+				console.log('MediaLoader.play.error', this.item.asset.file, error);
+			});
+			if (!silent) {
+				MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
+			}
 		}
 	}
 
 	pause(silent) {
 		// console.log('MediaLoader.pause');
-		this.video.muted = true;
-		this.video.pause();
-		if (!silent) {
-			MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
+		if (this.video) {
+			this.video.muted = true;
+			this.video.pause();
+			if (!silent) {
+				MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
+			}
 		}
 	}
 
 	toggle() {
 		// console.log('MediaLoader.toggle', this.video);
-		if (this.video.paused) {
-			this.video.muted = false;
-			this.play();
-			return true;
-		} else {
-			this.pause();
-			return false;
+		if (this.video) {
+			if (this.video.paused) {
+				this.video.muted = false;
+				this.play();
+				return true;
+			} else {
+				this.pause();
+				return false;
+			}
 		}
 	}
 

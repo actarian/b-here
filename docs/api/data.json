@@ -443,45 +443,7 @@
             "file": "540327577183099_Composizione2_x0_y0.jpg",
             "id": 540327609087200
           },
-          "navs": [
-            {
-              "type": {
-                "id": 2,
-                "name": "plane"
-              },
-              "position": [
-                19.826597748755955,
-                -2.609948841966987,
-                0.30690185946088033
-              ],
-              "rotation": [
-                -1.6878480258810382,
-                -1.439018710450592,
-                -1.688862306580853,
-                "XYZ"
-              ],
-              "scale": [
-                20,
-                10,
-                1
-              ],
-              "asset": {
-                "type": {
-                  "id": 2,
-                  "name": "video"
-                },
-                "folder": "/uploads/",
-                "file": "518070409120099_greenscreen.mp4",
-                "id": 518070445169399,
-                "chromaKeyColor": [
-                  0,
-                  1,
-                  0
-                ]
-              },
-              "id": 518072866002800
-            }
-          ]
+          "navs": []
         },
         {
           "id": 541728155666100,
@@ -596,45 +558,7 @@
       },
       "zoom": 75,
       "id": 541728155575700,
-      "items": [
-        {
-          "type": {
-            "id": 2,
-            "name": "plane"
-          },
-          "position": [
-            19.826597748755955,
-            -2.609948841966987,
-            0.30690185946088033
-          ],
-          "rotation": [
-            -1.6878480258810382,
-            -1.439018710450592,
-            -1.688862306580853,
-            "XYZ"
-          ],
-          "scale": [
-            20,
-            10,
-            1
-          ],
-          "asset": {
-            "type": {
-              "id": 2,
-              "name": "video"
-            },
-            "folder": "/uploads/",
-            "file": "518070409120099_greenscreen.mp4",
-            "id": 518070445169399,
-            "chromaKeyColor": [
-              0,
-              1,
-              0
-            ]
-          },
-          "id": 518072866002800
-        }
-      ]
+      "items": []
     },
     {
       "type": {
@@ -2057,15 +1981,6 @@
         "name": "video"
       },
       "folder": "/uploads/",
-      "file": "89370209399500_green-screen.mp4",
-      "id": 89370731222900
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "video"
-      },
-      "folder": "/uploads/",
       "file": "89702190830600_Tagliere Quick.mp4",
       "id": 89702298492100
     },
@@ -2292,36 +2207,8 @@
         "name": "video"
       },
       "folder": "/uploads/",
-      "file": "514302885177099_greenscreen.mp4",
-      "id": 514302912333400,
-      "chromaKeyColor": [
-        0,
-        1,
-        0
-      ]
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "video"
-      },
-      "folder": "/uploads/",
       "file": "517667850859100_Tavolo Evolution.mp4",
       "id": 517668068058100
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "video"
-      },
-      "folder": "/uploads/",
-      "file": "518070409120099_greenscreen.mp4",
-      "id": 518070445169399,
-      "chromaKeyColor": [
-        0,
-        1,
-        0
-      ]
     },
     {
       "type": {
