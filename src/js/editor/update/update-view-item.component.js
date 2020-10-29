@@ -66,7 +66,7 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
-					keys = ['id', 'type', 'title', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
+					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?', 'hasChromaKeyColor?'];

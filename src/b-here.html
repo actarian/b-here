@@ -1,5 +1,41 @@
 <!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
 <!-- @@block = main-->
+<script>
+	// window.antiforgery = '';
+    window.labels = {
+		"browse": "Apri",
+		"error_email": "Email non valida",
+		"error_match": "I campi non corrispondono",
+		"error_required": "Il campo è obbligatorio",
+		"remove": "Elimina",
+		"required": "richiesto",
+		"select": "seleziona",
+		"select_file": "## lbl_selezionaFile ##",
+		"bhere_editor": "editor",
+		"bhere_insert_meeting_id": "Inserisci un Meeting ID",
+		"bhere_meeting_id": "Meeting ID",
+		"bhere_streamer_meeting_id": "Streamer Meeting ID",
+		"bhere_viewer_meeting_id": "Viewer Meeting ID",
+		"bhere_invalid_meeting_id": "meeting id non valido",
+		"bhere_take_part_meeting": "partecipa al meeting",
+		"bhere_generate_meeting_id": "Genera un Meeting ID",
+		"bhere_take_part": "Partecipa",
+		"bhere_fill_fullname": "Inserisci il nome completo",
+		"bhere_fill_name_and_surname": "inserisci un nome e un cognome",
+		"bhere_proceed_as": "prosegui come",
+		"bhere_proceed": "Prosegui",
+		"bhere_name_and_surname": "Nome Cognome",
+		"bhere_invalid_protocol": "Protocollo errato.",
+		"bhere_reload_in_https": "riapri la pagina in https<br>per accedere al microfono e alla webcam.",
+		"bhere_reload": "Riapri",
+		"bhere_video": "Video",
+		"bhere_audio": "Audio",
+		"bhere_select_video_audio": "seleziona una sorgente audio e video",
+		"bhere_video_audio_connected": "audio e video connessi",
+		"bhere_enter": "Entra",
+		"bhere_connecting": "In connessione..."
+	};
+</script>
 <div class="page" agora-component>
 	<!-- Status Link -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
@@ -121,7 +157,7 @@
 							<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
 								<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 							</div>
-							<div class="panel" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
+							<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
 								<div class="panel__title" [innerHTML]="item.title"></div>
 								<div class="panel__abstract" [innerHTML]="item.abstract"></div>
 								<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">

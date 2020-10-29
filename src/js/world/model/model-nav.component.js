@@ -11,8 +11,18 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
 	}
 
+	/*
 	static getTexture() {
 		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/wall-nav.png')));
+	}
+	*/
+
+	static getTextureCircle() {
+		return ModelNavComponent.textureCircle || (ModelNavComponent.textureCircle = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-circle.png')));
+	}
+
+	static getTextureSquare() {
+		return ModelNavComponent.textureSquare || (ModelNavComponent.textureSquare = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-square.png')));
 	}
 
 	onInit() {
@@ -42,7 +52,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		const nav = new THREE.Group();
 		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 		nav.position.set(position.x, position.y, position.z);
-		const map = ModelNavComponent.getTexture();
+		const map = this.item.hasPanel ? ModelNavComponent.getTextureCircle() : ModelNavComponent.getTextureSquare();
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.SpriteMaterial({
