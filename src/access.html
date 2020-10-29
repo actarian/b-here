@@ -1,5 +1,47 @@
 <!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
 <!-- @@block = main-->
+<script>
+	// window.antiforgery = '';
+	window.labels = {
+		"browse": "Apri",
+		"error_email": "Email non valida",
+		"error_match": "I campi non corrispondono",
+		"error_required": "Il campo è obbligatorio",
+		"remove": "Elimina",
+		"required": "richiesto",
+		"select": "seleziona",
+		"select_file": "Seleziona un file",
+		"access_or": "oppure",
+		"access_title": "Accesso al tour virtuale",
+		"access_tour": "Accedi al Tour",
+		"access_cta": "Accedi",
+		"access_guided_tour": "Richiedi un tour guidato",
+		"access_fill_fields": "Compila i campi per accedere al tour",
+		"access_guided_tour_request": "Compila i campi e richiedi il tour guidato",
+		"access_has_meeting_id": "possiedi già un meeting id?",
+		"access_guided_tour_cta": "Accedi al tour guidato",
+		"access_first_name": "Nome",
+		"access_last_name": "Cognome",
+		"access_email": "Email",
+		"access_role": "Ruolo",
+		"access_privacy_disclaimer": "Ho letto l&amp;#39;&amp;lt;a href=&amp;quot;/it/it/pagineinterne/informativa_sulla_privacy&amp;quot; target=&amp;quot;_blank&amp;quot;&gt;informativa&amp;lt;/a&gt; e do il consenso al trattamento del dato",
+		"access_take_part": "partecipa al meeting",
+		"access_send": "Invia",
+		"access_sent": "Inviato!",
+		"access_back": "Indietro",
+		"access_request_sent": "Richiesta inviata!",
+		"access_info_request": "La tua richiesta è stata inviata. Verrai contattato da un nostro incaricato per tutti i dettagli."
+	};
+	window.data = {
+		roles: [
+			{ id: 1, name: "Show room" },
+			{ id: 2, name: "Architetto" },
+			{ id: 3, name: "Interior designer" },
+			{ id: 4, name: "Privato" },
+			{ id: 5, name: "Altro" }
+		]
+	};
+</script>
 <div class="page" access-component>
 	<div class="background">
 		<img src="/b-here/img/background.jpg" />

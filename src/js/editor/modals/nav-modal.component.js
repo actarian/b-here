@@ -60,7 +60,7 @@ export default class NavModalComponent extends Component {
 		this.error = null;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Nav,
-			title: new FormControl(null, RequiredValidator()),
+			title: null,
 			abstract: null,
 			viewId: new FormControl(null, RequiredValidator()),
 			// keepOrientation: false,
