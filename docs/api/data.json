@@ -1,5 +1,6 @@
 {
-  "views": [{
+  "views": [
+    {
       "id": 170427763400000,
       "type": {
         "id": 1,
@@ -40,7 +41,8 @@
         "folder": "/textures/welcome-room/",
         "file": "mod2.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 110,
           "type": {
             "id": 1,
@@ -139,7 +141,8 @@
         "folder": "/textures/video/",
         "file": "Orogel1.mp4"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2001,
           "type": {
             "id": 1,
@@ -208,7 +211,8 @@
         "folder": "/textures/video/",
         "file": "Orogel2.mp4"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2004,
           "type": {
             "id": 1,
@@ -277,7 +281,8 @@
         "folder": "/textures/rendering/",
         "file": "factory.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2007,
           "type": {
             "id": 1,
@@ -331,7 +336,8 @@
         "folder": "/textures/gedi/",
         "file": "reception.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1,
           "type": {
             "id": 1,
@@ -430,21 +436,23 @@
         "folder": "/textures/gedi/",
         "file": "office.jpeg"
       },
-      "items": [{
-        "id": 5,
-        "type": {
-          "id": 1,
-          "name": "nav"
-        },
-        "title": "Reception",
-        "abstract": "Abstract",
-        "position": [
-          0.9918489471377363,
-          -0.12680811552667867,
-          0.012464665993772472
-        ],
-        "viewId": 500
-      }],
+      "items": [
+        {
+          "id": 5,
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Reception",
+          "abstract": "Abstract",
+          "position": [
+            0.9918489471377363,
+            -0.12680811552667867,
+            0.012464665993772472
+          ],
+          "viewId": 500
+        }
+      ],
       "orientation": {
         "latitude": -8,
         "longitude": 0
@@ -468,7 +476,8 @@
         "folder": "/textures/gedi/",
         "file": "cinema.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 6,
           "type": {
             "id": 1,
@@ -497,9 +506,21 @@
             "folder": "/textures/video/",
             "file": "gedi.mp4"
           },
-          "position": [20, 2.35, -1],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [25, 10.5, 1]
+          "position": [
+            20,
+            2.35,
+            -1
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            25,
+            10.5,
+            1
+          ]
         },
         {
           "id": 8,
@@ -540,7 +561,8 @@
         "folder": "/textures/gedi/",
         "file": "cinema.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 10,
           "type": {
             "id": 1,
@@ -569,9 +591,21 @@
             "folder": "/textures/video/",
             "file": "gedi.mp4"
           },
-          "position": [20, 2.35, -1],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [25, 10.5, 1]
+          "position": [
+            20,
+            2.35,
+            -1
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            25,
+            10.5,
+            1
+          ]
         },
         {
           "id": 12,
@@ -580,7 +614,10 @@
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -589,9 +626,21 @@
               0.0
             ]
           },
-          "position": [14, -2, 0],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [6, 4.5, 1]
+          "position": [
+            14,
+            -2,
+            0
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            6,
+            4.5,
+            1
+          ]
         }
       ],
       "orientation": {
@@ -617,7 +666,8 @@
         "folder": "/textures/gedi/",
         "file": "test.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 21,
           "type": {
             "id": 1,
@@ -671,14 +721,18 @@
         "folder": "/textures/gedi/",
         "file": "test.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 30,
           "type": {
             "id": 2,
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -687,9 +741,21 @@
               0.0
             ]
           },
-          "position": [11, 0.55, 3.55],
-          "rotation": [0, -2.37079632679, 0],
-          "scale": [3.3, 2.5, 1]
+          "position": [
+            11,
+            0.55,
+            3.55
+          ],
+          "rotation": [
+            0,
+            -2.37079632679,
+            0
+          ],
+          "scale": [
+            3.3,
+            2.5,
+            1
+          ]
         },
         {
           "id": 31,
@@ -730,7 +796,8 @@
         "folder": "/textures/muse/",
         "file": "piano-1_3.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 20,
           "type": {
             "id": 1,
@@ -814,7 +881,8 @@
         "folder": "/textures/muse/",
         "file": "piano-1_4.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 10,
           "type": {
             "id": 1,
@@ -929,7 +997,8 @@
         "folder": "/textures/muse/",
         "file": "piano-1_4.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 10,
           "type": {
             "id": 1,
@@ -1007,7 +1076,10 @@
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -1016,9 +1088,21 @@
               0.0
             ]
           },
-          "position": [15, -0.5, 0.65],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [4.8, 3.8, 1]
+          "position": [
+            15,
+            -0.5,
+            0.65
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            4.8,
+            3.8,
+            1
+          ]
         }
       ],
       "orientation": {
@@ -1044,24 +1128,38 @@
         "folder": "/textures/muse/",
         "file": "piano0_3.jpg"
       },
-      "items": [{
-        "id": 20,
-        "type": {
-          "id": 2,
-          "name": "plane"
-        },
-        "asset": {
+      "items": [
+        {
+          "id": 20,
           "type": {
             "id": 2,
-            "name": "video"
+            "name": "plane"
           },
-          "folder": "/textures/video/",
-          "file": "Bizzarre forme di vita.mp4"
-        },
-        "position": [-0.45, -1.45, 10],
-        "rotation": [0, 3.14, 0],
-        "scale": [5, 3, 1]
-      }],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/textures/video/",
+            "file": "Bizzarre forme di vita.mp4"
+          },
+          "position": [
+            -0.45,
+            -1.45,
+            10
+          ],
+          "rotation": [
+            0,
+            3.14,
+            0
+          ],
+          "scale": [
+            5,
+            3,
+            1
+          ]
+        }
+      ],
       "orientation": {
         "latitude": -8,
         "longitude": 90
@@ -1085,7 +1183,8 @@
         "folder": "/textures/rendering/",
         "file": "render_1.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1110,
           "type": {
             "id": 1,
@@ -1169,7 +1268,8 @@
         "folder": "/textures/rendering/",
         "file": "render_2.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1210,
           "type": {
             "id": 1,
@@ -1253,7 +1353,8 @@
         "folder": "/textures/rendering/",
         "file": "render_3.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1310,
           "type": {
             "id": 1,
@@ -1337,7 +1438,8 @@
         "folder": "/textures/rendering/",
         "file": "wood1.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1510,
           "type": {
             "id": 1,
@@ -1406,7 +1508,8 @@
         "folder": "/textures/rendering/",
         "file": "brochure.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1610,
           "type": {
             "id": 1,
@@ -1460,7 +1563,8 @@
         "folder": "/textures/video/",
         "file": "360_1.mp4"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2010,
           "type": {
             "id": 1,
@@ -1514,7 +1618,8 @@
         "folder": "/textures/video/",
         "file": "Render_2.mp4"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2110,
           "type": {
             "id": 1,
@@ -1568,21 +1673,23 @@
         "folder": "/textures/video/",
         "file": "moto.mp4"
       },
-      "items": [{
-        "id": 2210,
-        "type": {
-          "id": 1,
-          "name": "nav"
-        },
-        "title": "Room 3D",
-        "abstract": "Abstract",
-        "position": [
-          0.9510368676062331,
-          0.022236340182408915,
-          0.3082765343470318
-        ],
-        "viewId": 101
-      }],
+      "items": [
+        {
+          "id": 2210,
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Room 3D",
+          "abstract": "Abstract",
+          "position": [
+            0.9510368676062331,
+            0.022236340182408915,
+            0.3082765343470318
+          ],
+          "viewId": 101
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 360
@@ -1606,7 +1713,8 @@
         "folder": "/textures/rendering/",
         "file": "Living-0.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 3110,
           "type": {
             "id": 1,
@@ -1690,7 +1798,8 @@
         "folder": "/textures/rendering/",
         "file": "Living-1.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 3210,
           "type": {
             "id": 1,
@@ -1774,7 +1883,8 @@
         "folder": "/textures/rendering/",
         "file": "Living-2.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 3310,
           "type": {
             "id": 1,
@@ -1858,7 +1968,8 @@
         "folder": "/textures/cinema/",
         "file": "cinema.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2310,
           "type": {
             "id": 2,
@@ -1872,9 +1983,21 @@
             "folder": "/textures/video/",
             "file": "websolute.mp4"
           },
-          "position": [20, 1.7, 0],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [22, 12, 1]
+          "position": [
+            20,
+            1.7,
+            0
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            22,
+            12,
+            1
+          ]
         },
         {
           "id": 2340,
@@ -1915,7 +2038,8 @@
         "folder": "/textures/cinema/",
         "file": "cinema.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2410,
           "type": {
             "id": 2,
@@ -1929,9 +2053,21 @@
             "folder": "/textures/video/",
             "file": "websolute.mp4"
           },
-          "position": [20, 1.7, 0],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [22, 12, 1]
+          "position": [
+            20,
+            1.7,
+            0
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            22,
+            12,
+            1
+          ]
         },
         {
           "id": 2420,
@@ -1940,7 +2076,10 @@
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -1949,9 +2088,21 @@
               0.0
             ]
           },
-          "position": [14, -2, 0],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [6, 4, 1]
+          "position": [
+            14,
+            -2,
+            0
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            6,
+            4,
+            1
+          ]
         },
         {
           "id": 2430,
@@ -2007,14 +2158,18 @@
         "folder": "/textures/welcome-room/",
         "file": "whiteroom.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2610,
           "type": {
             "id": 2,
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -2023,9 +2178,21 @@
               0.0
             ]
           },
-          "position": [20, 0.2, 0],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [10, 7.5, 1]
+          "position": [
+            20,
+            0.2,
+            0
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            10,
+            7.5,
+            1
+          ]
         },
         {
           "id": 2620,
@@ -2034,7 +2201,10 @@
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 5, "name": "next-attendee-stream" },
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
             "folder": "",
             "file": "nextAttendeeStream",
             "chromaKeyColor": [
@@ -2043,9 +2213,21 @@
               0.0
             ]
           },
-          "position": [8, -1.5, -6.2],
-          "rotation": [0, 0.00, 0],
-          "scale": [4, 3, 1]
+          "position": [
+            8,
+            -1.5,
+            -6.2
+          ],
+          "rotation": [
+            0,
+            0.00,
+            0
+          ],
+          "scale": [
+            4,
+            3,
+            1
+          ]
         },
         {
           "id": 2630,
@@ -2054,7 +2236,10 @@
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 5, "name": "next-attendee-stream" },
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
             "folder": "",
             "file": "nextAttendeeStream",
             "chromaKeyColor": [
@@ -2063,9 +2248,21 @@
               0.0
             ]
           },
-          "position": [8, -1.5, 5.7],
-          "rotation": [0, 0.0, 0],
-          "scale": [4, 3, 1]
+          "position": [
+            8,
+            -1.5,
+            5.7
+          ],
+          "rotation": [
+            0,
+            0.0,
+            0
+          ],
+          "scale": [
+            4,
+            3,
+            1
+          ]
         },
         {
           "id": 2640,
@@ -2121,14 +2318,18 @@
         "folder": "/textures/rendering/",
         "file": "ue_set.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 2910,
           "type": {
             "id": 2,
             "name": "plane"
           },
           "asset": {
-            "type": { "id": 4, "name": "publisher-stream" },
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
             "folder": "",
             "file": "publisherStream",
             "chromaKeyColor": [
@@ -2137,9 +2338,21 @@
               0.0
             ]
           },
-          "position": [11, 0.26, 1.35],
-          "rotation": [0, -1.57079632679, 0],
-          "scale": [4, 3, 1]
+          "position": [
+            11,
+            0.26,
+            1.35
+          ],
+          "rotation": [
+            0,
+            -1.57079632679,
+            0
+          ],
+          "scale": [
+            4,
+            3,
+            1
+          ]
         },
         {
           "id": 2920,
@@ -2195,7 +2408,8 @@
         "folder": "/textures/rendering/",
         "file": "Kitchen-1.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 4110,
           "type": {
             "id": 1,
@@ -2279,7 +2493,8 @@
         "folder": "/textures/rendering/",
         "file": "Kitchen-2.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 4210,
           "type": {
             "id": 1,
@@ -2363,7 +2578,8 @@
         "folder": "/textures/rendering/",
         "file": "Kitchen-3.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 4310,
           "type": {
             "id": 1,
@@ -2447,7 +2663,8 @@
         "folder": "/textures/rendering/",
         "file": "Kitchen-4.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 4410,
           "type": {
             "id": 1,
@@ -2531,7 +2748,8 @@
         "folder": "/textures/rendering/",
         "file": "Bathroom-1.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 5110,
           "type": {
             "id": 1,
@@ -2615,7 +2833,8 @@
         "folder": "/textures/rendering/",
         "file": "Bathroom-2.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 5210,
           "type": {
             "id": 1,
@@ -2699,21 +2918,23 @@
         "folder": "/textures/video/",
         "file": "garden-01.mp4"
       },
-      "items": [{
-        "id": 6110,
-        "type": {
-          "id": 1,
-          "name": "nav"
-        },
-        "title": "Time Square",
-        "abstract": "Abstract",
-        "position": [
-          0.04713776229380867,
-          -0.16372888464057858,
-          0.9853785484270928
-        ],
-        "viewId": 41
-      }],
+      "items": [
+        {
+          "id": 6110,
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Time Square",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "viewId": 41
+        }
+      ],
       "orientation": {
         "latitude": -8,
         "longitude": 90
@@ -2730,8 +2951,22 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/washing-machine/", "file": "gltf.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/washing-machine/", "file": "washing-machine.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/washing-machine/",
+          "file": "gltf.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/washing-machine/",
+          "file": "washing-machine.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -2741,21 +2976,23 @@
         "folder": "",
         "file": "https://cdn3.wowza.com/1/Sk40c0kwVmx6anBM/SzhjU0Rp/hls/live/playlist.m3u8"
       },
-      "items": [{
-        "id": 6210,
-        "type": {
-          "id": 1,
-          "name": "nav"
-        },
-        "title": "Kitchen 01",
-        "abstract": "Abstract",
-        "position": [
-          0.04713776229380867,
-          -0.16372888464057858,
-          0.9853785484270928
-        ],
-        "viewId": 41
-      }],
+      "items": [
+        {
+          "id": 6210,
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "viewId": 41
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
@@ -2772,29 +3009,48 @@
       "likes": 235,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/washing-machine/", "file": "gltf.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/washing-machine/", "file": "washing-machine.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/washing-machine/",
+          "file": "gltf.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/washing-machine/",
+          "file": "washing-machine.usdz"
+        }
       },
       "asset": {
-        "type": { "id": 4, "name": "publisher-stream" },
+        "type": {
+          "id": 4,
+          "name": "publisher-stream"
+        },
         "folder": "",
         "file": "publisherStream"
       },
-      "items": [{
-        "id": 6310,
-        "type": {
-          "id": 1,
-          "name": "nav"
-        },
-        "title": "Kitchen 01",
-        "abstract": "Abstract",
-        "position": [
-          0.04713776229380867,
-          -0.16372888464057858,
-          0.9853785484270928
-        ],
-        "viewId": 41
-      }],
+      "items": [
+        {
+          "id": 6310,
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Kitchen 01",
+          "abstract": "Abstract",
+          "position": [
+            0.04713776229380867,
+            -0.16372888464057858,
+            0.9853785484270928
+          ],
+          "viewId": 41
+        }
+      ],
       "orientation": {
         "latitude": 0,
         "longitude": 0
@@ -2803,7 +3059,10 @@
     },
     {
       "id": 201,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Composizione 1",
       "likes": 225,
       "liked": false,
@@ -2817,7 +3076,8 @@
       },
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [{
+      "tiles": [
+        {
           "asset": {
             "type": {
               "id": 1,
@@ -2844,7 +3104,10 @@
     },
     {
       "id": 202,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Composizione 2",
       "likes": 225,
       "liked": false,
@@ -2858,7 +3121,8 @@
       },
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [{
+      "tiles": [
+        {
           "asset": {
             "type": {
               "id": 1,
@@ -2888,7 +3152,10 @@
     },
     {
       "id": 203,
-      "type": { "id": 3, "name": "panorama-grid" },
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
       "name": "Composizione 3",
       "likes": 225,
       "liked": false,
@@ -2902,7 +3169,8 @@
       },
       "invertAxes": true,
       "flipAxes": false,
-      "tiles": [{
+      "tiles": [
+        {
           "asset": {
             "type": {
               "id": 1,
@@ -2928,7 +3196,10 @@
     },
     {
       "id": 101,
-      "type": { "id": 4, "name": "room-3d" },
+      "type": {
+        "id": 4,
+        "name": "room-3d"
+      },
       "name": "Room 3D Benelli",
       "likes": 321,
       "liked": false,
@@ -2942,7 +3213,8 @@
         "folder": "/textures/welcome-room/",
         "file": "spaceroom.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": "plane-01",
           "type": {
             "id": 5,
@@ -3101,7 +3373,10 @@
     },
     {
       "id": 102,
-      "type": { "id": 4, "name": "room-3d" },
+      "type": {
+        "id": 4,
+        "name": "room-3d"
+      },
       "name": "Room 3D Gedi",
       "likes": 321,
       "liked": false,
@@ -3115,7 +3390,8 @@
         "folder": "/textures/welcome-room/",
         "file": "spaceroom2.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": "plane-01",
           "type": {
             "id": 5,
@@ -3267,8 +3543,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/triceratopo/", "file": "scene.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/triceratopo/", "file": "triceratopo.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/triceratopo/",
+          "file": "scene.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/triceratopo/",
+          "file": "triceratopo.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3278,7 +3568,8 @@
         "folder": "/textures/muse/",
         "file": "piano-1_3.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1,
           "type": {
             "id": 4,
@@ -3323,8 +3614,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/triceratopo/", "file": "scene.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/triceratopo/", "file": "triceratopsSkeleton.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/triceratopo/",
+          "file": "scene.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/triceratopo/",
+          "file": "triceratopsSkeleton.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3334,7 +3639,8 @@
         "folder": "/textures/muse/",
         "file": "piano-1_3.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1,
           "type": {
             "id": 4,
@@ -3379,8 +3685,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/spinosauro/", "file": "scene.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/spinosauro/", "file": "Spinosaurus.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/spinosauro/",
+          "file": "scene.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/spinosauro/",
+          "file": "Spinosaurus.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3390,7 +3710,8 @@
         "folder": "/textures/muse/",
         "file": "piano-1_3.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 1,
           "type": {
             "id": 4,
@@ -3435,8 +3756,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/watch/", "file": "casio.glb" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/watch/", "file": "casio.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/watch/",
+          "file": "casio.glb"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/watch/",
+          "file": "casio.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3446,19 +3781,21 @@
         "folder": "/textures/welcome-room/",
         "file": "dark.jpeg"
       },
-      "items": [{
-        "id": 30010,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/watch/",
-          "file": "casio.glb"
+      "items": [
+        {
+          "id": 30010,
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "/models/watch/",
+            "file": "casio.glb"
+          }
         }
-      }],
+      ],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -3475,8 +3812,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/watch/", "file": "watch-ao.glb" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/watch/", "file": "watch-ao.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/watch/",
+          "file": "watch-ao.glb"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/watch/",
+          "file": "watch-ao.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3486,19 +3837,21 @@
         "folder": "/textures/welcome-room/",
         "file": "dark.jpeg"
       },
-      "items": [{
-        "id": 30110,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/watch/",
-          "file": "watch-ao.glb"
+      "items": [
+        {
+          "id": 30110,
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "/models/watch/",
+            "file": "watch-ao.glb"
+          }
         }
-      }],
+      ],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -3515,8 +3868,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/watch/", "file": "watch-ao.glb" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/watch/", "file": "watch-ao.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/watch/",
+          "file": "watch-ao.glb"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/watch/",
+          "file": "watch-ao.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3526,19 +3893,21 @@
         "folder": "/textures/welcome-room/",
         "file": "dark.jpeg"
       },
-      "items": [{
-        "id": 30210,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/watch/",
-          "file": "watchfree.glb"
+      "items": [
+        {
+          "id": 30210,
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "/models/watch/",
+            "file": "watchfree.glb"
+          }
         }
-      }],
+      ],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -3555,8 +3924,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/moto/", "file": "ducatiGLTF.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/moto/", "file": "moto.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/moto/",
+          "file": "ducatiGLTF.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/moto/",
+          "file": "moto.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3566,7 +3949,8 @@
         "folder": "/textures/welcome-room/",
         "file": "road1.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 30310,
           "type": {
             "id": 4,
@@ -3611,8 +3995,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/moto/", "file": "suzukiGLTF.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/moto/", "file": "moto.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/moto/",
+          "file": "suzukiGLTF.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/moto/",
+          "file": "moto.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3622,7 +4020,8 @@
         "folder": "/textures/welcome-room/",
         "file": "road2.jpeg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 30410,
           "type": {
             "id": 4,
@@ -3667,8 +4066,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/barattolo-pesto/", "file": "barattolo-pesto.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/barattolo-pesto/", "file": "barattolo-pesto.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/barattolo-pesto/",
+          "file": "barattolo-pesto.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/barattolo-pesto/",
+          "file": "barattolo-pesto.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3678,7 +4091,8 @@
         "folder": "/textures/welcome-room/",
         "file": "waiting-room-02.jpg"
       },
-      "items": [{
+      "items": [
+        {
           "id": 30510,
           "type": {
             "id": 4,
@@ -3723,8 +4137,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/washing-machine/", "file": "gltf.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/washing-machine/", "file": "washing-machine.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/washing-machine/",
+          "file": "gltf.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/washing-machine/",
+          "file": "washing-machine.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3734,19 +4162,21 @@
         "folder": "/textures/welcome-room/",
         "file": "waiting-room-02.jpg"
       },
-      "items": [{
-        "id": 30610,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/washing-machine/",
-          "file": "glb.glb"
+      "items": [
+        {
+          "id": 30610,
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "/models/washing-machine/",
+            "file": "glb.glb"
+          }
         }
-      }],
+      ],
       "orientation": {
         "latitude": 20.400000000000002,
         "longitude": 57.60000000000001
@@ -3763,8 +4193,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/damaged-helmet/gltf/", "file": "damaged-helmet.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/damaged-helmet/", "file": "damaged-helmet.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/damaged-helmet/gltf/",
+          "file": "damaged-helmet.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/damaged-helmet/",
+          "file": "damaged-helmet.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3774,19 +4218,21 @@
         "folder": "/textures/welcome-room/",
         "file": "waiting-room-02.jpg"
       },
-      "items": [{
-        "id": 30710,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/damaged-helmet/",
-          "file": "damaged-helmet.glb"
+      "items": [
+        {
+          "id": 30710,
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "/models/damaged-helmet/",
+            "file": "damaged-helmet.glb"
+          }
         }
-      }],
+      ],
       "orientation": {
         "latitude": 14.300000000000002,
         "longitude": 124.30000000000001
@@ -3803,8 +4249,22 @@
       "likes": 172,
       "liked": false,
       "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/logo/", "file": "logowsGLTF.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/logo/", "file": "logows.usdz" }
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/logo/",
+          "file": "logowsGLTF.gltf"
+        },
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/models/logo/",
+          "file": "logows.usdz"
+        }
       },
       "asset": {
         "type": {
@@ -3814,102 +4274,24 @@
         "folder": "/textures/welcome-room/",
         "file": "amazing.jpg"
       },
-      "items": [{
-        "id": 30810,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/logo/",
-          "file": "logows2.glb"
+      "items": [
+        {
+          "id": 30810,
+          "type": {
+            "id": 4,
+            "name": "gltf"
+          },
+          "title": "Model",
+          "abstract": "Abstract",
+          "asset": {
+            "folder": "/models/logo/",
+            "file": "logows2.glb"
+          }
         }
-      }],
+      ],
       "orientation": {
         "latitude": 18,
         "longitude": 150
-      },
-      "zoom": 55
-    },
-    {
-      "id": 312,
-      "type": {
-        "id": 1,
-        "name": "model"
-      },
-      "name": "Coffee Machine",
-      "likes": 133,
-      "liked": false,
-      "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/coffee/", "file": "nespresso.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/coffee/", "file": "nespresso.usdz" }
-      },
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/textures/welcome-room/",
-        "file": "waiting-room-02.jpg"
-      },
-      "items": [{
-        "id": 30810,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/coffee/",
-          "file": "nespresso.glb"
-        }
-      }],
-      "orientation": {
-        "latitude": 18,
-        "longitude": 100
-      },
-      "zoom": 50
-    },
-    {
-      "id": 313,
-      "type": {
-        "id": 1,
-        "name": "model"
-      },
-      "name": "Coffee Vendor",
-      "likes": 133,
-      "liked": false,
-      "ar": {
-        "gltf": { "type": { "id": 3, "name": "model" }, "folder": "/models/coffee/", "file": "scene.gltf" },
-        "usdz": { "type": { "id": 3, "name": "model" }, "folder": "/models/coffee/", "file": "Coffee_Machine.usdz" }
-      },
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/textures/welcome-room/",
-        "file": "waiting-room-02.jpg"
-      },
-      "items": [{
-        "id": 30810,
-        "type": {
-          "id": 4,
-          "name": "gltf"
-        },
-        "title": "Model",
-        "abstract": "Abstract",
-        "asset": {
-          "folder": "/models/coffee/",
-          "file": "scene.gltf"
-        }
-      }],
-      "orientation": {
-        "latitude": 18,
-        "longitude": 110
       },
       "zoom": 55
     },
@@ -3930,21 +4312,23 @@
         "folder": "/textures/video/",
         "file": "time-square-01.mp4"
       },
-      "items": [{
-        "id": 100,
-        "type": {
-          "id": 1,
-          "name": "nav"
-        },
-        "title": "Welcome Room",
-        "abstract": "Abstract",
-        "position": [
-          0.8775996579581264,
-          -0.3908767257744284,
-          0.27755040190862934
-        ],
-        "viewId": 1
-      }],
+      "items": [
+        {
+          "id": 100,
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": "Abstract",
+          "position": [
+            0.8775996579581264,
+            -0.3908767257744284,
+            0.27755040190862934
+          ],
+          "viewId": 1
+        }
+      ],
       "orientation": {
         "latitude": -8,
         "longitude": 90
