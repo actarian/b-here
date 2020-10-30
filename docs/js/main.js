@@ -14376,6 +14376,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       }
     };
 
+    image.crossOrigin = 'Anonymous';
     image.src = environment.getPath('textures/ui/play.png');
   };
 
