@@ -376,6 +376,7 @@ export default class MediaMesh extends InteractiveMesh {
 				callback(textureB);
 			}
 		}
+		image.crossOrigin = 'Anonymous';
 		image.src = environment.getPath('textures/ui/play.png');
 	}
 

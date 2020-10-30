@@ -54,7 +54,7 @@ export default class ModelRoomComponent extends ModelComponent {
 				mesh = model;
 			}
 			const items = this.item.items;
-			mesh.scale.set(0.1, 0.1, 0.1);
+			mesh.scale.set(0.05, 0.05, 0.05);
 			// mesh.scale.set(10, 10, 10);
 			mesh.traverse((child) => {
 				if (child.isMesh) {
@@ -88,6 +88,8 @@ export default class ModelRoomComponent extends ModelComponent {
 					}
 					const parent = previous.parent;
 					const mesh = item.plane = new MediaMesh(item, items, previous.geometry);
+					mesh.depthTest = false;
+					mesh.renderOrder = 0;
 					mesh.name = previous.name;
 					mesh.position.copy(previous.position);
 					mesh.rotation.copy(previous.rotation);
