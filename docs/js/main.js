@@ -125,7 +125,7 @@ function _assertThisInitialized(self) {
   },
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
   url: {
     index: '/',
     access: '/',
@@ -163,7 +163,7 @@ function _assertThisInitialized(self) {
   },
   assets: './',
   worker: './js/workers/image.service.worker.js',
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
   url: {
     index: '/',
     access: '/',
@@ -16583,7 +16583,7 @@ ModelPlaneComponent.meta = {
       }
 
       var items = _this2.item.items;
-      mesh.scale.set(0.1, 0.1, 0.1); // mesh.scale.set(10, 10, 10);
+      mesh.scale.set(0.05, 0.05, 0.05); // mesh.scale.set(10, 10, 10);
 
       mesh.traverse(function (child) {
         if (child.isMesh) {
@@ -16624,6 +16624,8 @@ ModelPlaneComponent.meta = {
 
           var _mesh = item.plane = new MediaMesh(item, items, previous.geometry);
 
+          _mesh.depthTest = false;
+          _mesh.renderOrder = 0;
           _mesh.name = previous.name;
 
           _mesh.position.copy(previous.position);
