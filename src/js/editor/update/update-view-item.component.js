@@ -151,7 +151,7 @@ export default class UpdateViewItemComponent extends Component {
 	onAssetTypeDidChange(assetType) {
 		const item = this.item;
 		const currentType = assetGroupTypeFromItem(item).id;
-		console.log('UpdateViewItemComponent.onAssetTypeDidChange', assetType, currentType);
+		// console.log('UpdateViewItemComponent.onAssetTypeDidChange', assetType, currentType);
 		if (assetType !== currentType) {
 			item.assetType = assetType;
 			let asset$ = of(null); // AssetService.assetDelete$(item.asset);
@@ -166,7 +166,7 @@ export default class UpdateViewItemComponent extends Component {
 			asset$.pipe(
 				first()
 			).subscribe(asset => {
-				console.log('UpdateViewItemComponent.asset$', asset);
+				// console.log('UpdateViewItemComponent.asset$', asset);
 				this.controls.asset.value = asset;
 			});
 			/*
@@ -185,7 +185,7 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	onChanges(changes) {
-		console.log('UpdateViewItemComponent.onChanges', changes);
+		// console.log('UpdateViewItemComponent.onChanges', changes);
 		this.doUpdateForm();
 	}
 

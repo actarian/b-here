@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { Subject } from 'rxjs';
 import { delay, first, map, takeUntil } from 'rxjs/operators';
 import { AgoraStatus } from '../agora/agora.types';
-import { environment } from '../environment';
+import { environment, HEROKU } from '../environment';
 import LocationService from '../location/location.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
@@ -16,6 +16,10 @@ import VRService from '../world/vr.service';
 import EditorService from './editor.service';
 
 export default class EditorComponent extends Component {
+
+	get heroku() {
+		return HEROKU;
+	}
 
 	get hosted() {
 		return this.hosted_;
