@@ -3201,6 +3201,13 @@ AgoraDeviceComponent.meta = {
     return s.substr(s.length - size);
   };
 
+  _createClass(AgoraLinkComponent, [{
+    key: "heroku",
+    get: function get() {
+      return HEROKU;
+    }
+  }]);
+
   return AgoraLinkComponent;
 }(rxcomp.Component);
 AgoraLinkComponent.meta = {
@@ -7091,8 +7098,7 @@ RemoveModalComponent.meta = {
     var _this4 = this;
 
     var item = this.item;
-    var currentType = assetGroupTypeFromItem(item).id;
-    console.log('UpdateViewItemComponent.onAssetTypeDidChange', assetType, currentType);
+    var currentType = assetGroupTypeFromItem(item).id; // console.log('UpdateViewItemComponent.onAssetTypeDidChange', assetType, currentType);
 
     if (assetType !== currentType) {
       item.assetType = assetType;
@@ -7106,7 +7112,7 @@ RemoveModalComponent.meta = {
       }
 
       asset$.pipe(operators.first()).subscribe(function (asset) {
-        console.log('UpdateViewItemComponent.asset$', asset);
+        // console.log('UpdateViewItemComponent.asset$', asset);
         _this4.controls.asset.value = asset;
       });
       /*
@@ -7125,7 +7131,7 @@ RemoveModalComponent.meta = {
   };
 
   _proto.onChanges = function onChanges(changes) {
-    console.log('UpdateViewItemComponent.onChanges', changes);
+    // console.log('UpdateViewItemComponent.onChanges', changes);
     this.doUpdateForm();
   };
 

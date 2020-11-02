@@ -2,12 +2,16 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
-import { environment } from '../environment';
+import { environment, HEROKU } from '../environment';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 
 export default class AgoraLinkComponent extends Component {
+
+	get heroku() {
+		return HEROKU;
+	}
 
 	onInit() {
 		this.editorLink = environment.url.editor;
