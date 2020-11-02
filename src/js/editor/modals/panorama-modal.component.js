@@ -51,7 +51,7 @@ export default class PanoramaModalComponent extends Component {
 			/*
 			const asset = Asset.fromUrl(this.form.value.upload);
 			console.log('PanoramaModalComponent.onSubmit.asset', asset);
-			EditorService.assetCreate$(asset).pipe(
+			AssetService.assetCreate$(asset).pipe(
 				first(),
 				switchMap(response => {
 					const view = {

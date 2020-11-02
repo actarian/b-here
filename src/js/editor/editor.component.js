@@ -7,6 +7,7 @@ import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
+import StreamService from '../stream/stream.service';
 import ToastService from '../toast/toast.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
@@ -97,6 +98,45 @@ export default class EditorComponent extends Component {
 			this.pushChanges();
 		});
 		this.loadData();
+		this.getUserMedia();
+	}
+
+	getUserMedia() {
+		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+			const body = document.querySelector('body');
+			const media = document.createElement('div');
+			const video = document.createElement('video');
+			media.setAttribute('id', 'stream-editor');
+			media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+			media.appendChild(video);
+			body.appendChild(media);
+			navigator.mediaDevices.getUserMedia({
+				video: { width: 800, height: 450 },
+			}).then((stream) => {
+				// console.log(stream);
+				if ('srcObject' in video) {
+					video.srcObject = stream;
+				} else {
+					video.src = window.URL.createObjectURL(stream);
+				}
+				video.play();
+				const fakePublisherStream = {
+					getId: () => 'editor',
+					clientInfo: {
+						role: RoleType.Publisher,
+					}
+				};
+				const fakeAttendeeStream = {
+					getId: () => 'editor',
+					clientInfo: {
+						role: RoleType.Attendee,
+					}
+				};
+				StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+			}).catch((error) => {
+				console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+			});
+		}
 	}
 
 	loadData() {
@@ -244,7 +284,7 @@ export default class EditorComponent extends Component {
 		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
 		).subscribe(response => {
-			console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
+			// console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
 			this.pushChanges();
 		}, error => console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error));
 	}
@@ -255,7 +295,7 @@ export default class EditorComponent extends Component {
 		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
 		).subscribe(response => {
-			console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
+			// console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
 			this.pushChanges();
 		}, error => console.log('EditorComponent.onResizeEnd.inferItemUpdate$.error', error));
 		*/
@@ -355,12 +395,12 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideUpdate(event) {
-		console.log('onAsideUpdate', event);
+		// console.log('onAsideUpdate', event);
 		if (event.item && event.view) {
 			EditorService.inferItemUpdate$(event.view, event.item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
+				// console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
 				EditorService.inferItemUpdateResult$(event.view, event.item);
 				this.pushChanges();
 			}, error => console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.error', error));
@@ -372,7 +412,7 @@ export default class EditorComponent extends Component {
 			EditorService.viewUpdate$(event.view).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
+				// console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
 				const assetDidChange = this.view.asset.id !== event.view.asset.id;
 				Object.assign(this.view, event.view);
 				if (assetDidChange) {
@@ -390,7 +430,7 @@ export default class EditorComponent extends Component {
 			EditorService.inferItemDelete$(event.view, event.item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
+				// console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
 				EditorService.inferItemDeleteResult$(event.view, event.item);
 				this.pushChanges();
 			}, error => console.log('EditorComponent.onAsideDelete.inferItemDelete$.error', error));
@@ -398,7 +438,7 @@ export default class EditorComponent extends Component {
 			EditorService.viewDelete$(event.view).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
+				// console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
 				const index = this.data.views.indexOf(event.view);
 				if (index !== -1) {
 					this.data.views.splice(index, 1);

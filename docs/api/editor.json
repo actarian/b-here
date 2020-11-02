@@ -3078,6 +3078,7 @@
       "flipAxes": false,
       "tiles": [
         {
+          "id": 10001,
           "asset": {
             "type": {
               "id": 1,
@@ -3088,12 +3089,78 @@
           },
           "navs": []
         },
-        "Composizione1_x0_y0.jpg",
-        "Composizione1_x0_y2.jpg",
-        "Composizione1_x1_y0.jpg",
-        "Composizione1_x1_y2.jpg",
-        "Composizione1_x2_y0.jpg",
-        "Composizione1_x2_y2.jpg"
+        {
+          "id": 10002,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione1_x0_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 10003,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione1_x0_y2.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 10004,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione1_x1_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 10005,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione1_x1_y2.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 10006,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione1_x2_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 10007,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione1_x2_y2.jpg"
+          },
+          "navs": []
+        }
       ],
       "items": [],
       "orientation": {
@@ -3123,6 +3190,7 @@
       "flipAxes": false,
       "tiles": [
         {
+          "id": 20001,
           "asset": {
             "type": {
               "id": 1,
@@ -3133,15 +3201,114 @@
           },
           "navs": []
         },
-        "Composizione2_x0_y0.jpg",
-        "Composizione2_x0_y2.jpg",
-        "Composizione2_x0_y4.jpg",
-        "Composizione2_x2_y0.jpg",
-        "Composizione2_x2_y2.jpg",
-        "Composizione2_x2_y4.jpg",
-        "Composizione2_x4_y0.jpg",
-        "Composizione2_x4_y2.jpg",
-        "Composizione2_x4_y4.jpg"
+        {
+          "id": 20002,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x0_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20003,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x0_y2.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20004,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x0_y4.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20005,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x2_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20006,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x2_y2.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20007,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x2_y4.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20008,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x4_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20009,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x4_y2.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 20010,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione2_x4_y4.jpg"
+          },
+          "navs": []
+        }
       ],
       "items": [],
       "orientation": {
@@ -3171,6 +3338,7 @@
       "flipAxes": false,
       "tiles": [
         {
+          "id": 30001,
           "asset": {
             "type": {
               "id": 1,
@@ -3181,11 +3349,66 @@
           },
           "navs": []
         },
-        "Composizione3_x0_y0.jpg",
-        "Composizione3_x0_y2.jpg",
-        "Composizione3_x0_y4.jpg",
-        "Composizione3_x-2_y4.jpg",
-        "Composizione3_x2_y4.jpg"
+        {
+          "id": 30002,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione3_x0_y0.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 30003,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione3_x0_y2.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 30004,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione3_x0_y4.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 30005,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione3_x-2_y4.jpg"
+          },
+          "navs": []
+        },
+        {
+          "id": 30006,
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/textures/ernestomeda/",
+            "file": "Composizione3_x2_y4.jpg"
+          },
+          "navs": []
+        }
       ],
       "items": [],
       "orientation": {

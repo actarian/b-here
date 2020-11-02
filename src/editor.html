@@ -10,17 +10,18 @@
 				</div>
 				<div class="headline__name" [innerHTML]="view.name"></div>
 			</div>
-			<div class="btn--add" [class]="{ active: aside }" (click)="onToggleAside($event)">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#add"></use></svg>
+			<div class="btn--edit" [class]="{ active: aside }" (click)="onToggleAside($event)">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 			</div>
 		</div>
 		<div class="ui__body">
 			<div class="world" world [view]="view" [views]="views" [editor]="true" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
 				<div class="world__view" *if="view">
-					<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
-					<div class="world__item" *for="let item of view.items; let index = index;">
-						<div model-nav [item]="item" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
+					<div *if="view.ready">
+						<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
+						<div class="world__item" *for="let item of view.items; let index = index;">
+						<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
 						<div model-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type.name == 'plane'"></div>
 						<div model-curved-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type.name == 'curved-plane'"></div>
 						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
@@ -32,12 +33,13 @@
 							<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
 							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
 						</div>
-					</div>
-					<div class="banner loading" model-banner [item]="loading" *if="loading">
-						<div class="banner__title" [innerHTML]="item.title"></div>
-					</div>
-					<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
-						<div class="banner__title" [innerHTML]="item.title"></div>
+						</div>
+						<div class="banner loading" model-banner [item]="loading" *if="loading">
+							<div class="banner__title" [innerHTML]="item.title"></div>
+						</div>
+						<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
+							<div class="banner__title" [innerHTML]="item.title"></div>
+						</div>
 					</div>
 				</div>
 				<div model-menu [items]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">

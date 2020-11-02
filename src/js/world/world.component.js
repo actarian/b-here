@@ -214,34 +214,34 @@ export default class WorldComponent extends Component {
 	}
 
 	setView() {
+		if (!this.panorama) {
+			return;
+		}
 		const view = this.view_;
 		if (view) {
-			if (this.panorama) {
-				if (this.infoResultMessage) {
-					if (view instanceof PanoramaGridView && message.gridIndex) {
-						view.index_ = message.gridIndex;
-					}
+			if (this.infoResultMessage) {
+				if (view instanceof PanoramaGridView && message.gridIndex) {
+					view.index_ = message.gridIndex;
 				}
-				view.ready = false;
-				this.loading = loadingBanner;
-				this.waiting = null;
-				this.pushChanges();
-				this.panorama.swap(view, this.renderer, (envMap, texture, rgbe) => {
-					// this.scene.background = envMap;
-					this.scene.environment = envMap;
-					view.ready = true;
-					this.loading = null;
-					this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
-					this.pushChanges();
-					// this.render();
-				}, (view) => {
-					this.setViewOrientation(view);
-					// this.showNavPoints = true;
-					// this.pushChanges();
-				});
-			} else {
-				this.setViewOrientation(view);
 			}
+			view.ready = false;
+			this.loading = loadingBanner;
+			this.waiting = null;
+			this.pushChanges();
+			this.panorama.change(view, this.renderer, (envMap, texture, rgbe) => {
+				// this.scene.background = envMap;
+				this.scene.environment = envMap;
+				view.ready = true;
+				this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+				this.pushChanges();
+				// this.render();
+			}, (view) => {
+				this.setViewOrientation(view);
+				this.loading = null;
+				this.pushChanges();
+				// this.showNavPoints = true;
+				// this.pushChanges();
+			});
 			this.infoResultMessage = null;
 		}
 	}

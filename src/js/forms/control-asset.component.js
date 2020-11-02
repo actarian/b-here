@@ -1,8 +1,8 @@
 import { getContext, isPlatformBrowser } from 'rxcomp';
 import { combineLatest, EMPTY, fromEvent, merge } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import EditorService from '../editor/editor.service';
-import { Asset } from '../view/view';
+import { Asset } from '../asset/asset';
+import { AssetService } from '../asset/asset.service';
 import ControlComponent from './control.component';
 
 export default class ControlAssetComponent extends ControlComponent {
@@ -45,7 +45,7 @@ export default class ControlAssetComponent extends ControlComponent {
 					const fileArray = Array.from(input.files);
 					this.previews = fileArray.map(() => null);
 					const uploads$ = fileArray.map((file, i) => this.read$(file, i).pipe(
-						switchMap(() => EditorService.upload$([file])),
+						switchMap(() => AssetService.upload$([file])),
 						tap(uploads => console.log('upload', uploads)),
 						switchMap((uploads) => {
 							const upload = uploads[0];
@@ -57,7 +57,7 @@ export default class ControlAssetComponent extends ControlComponent {
 							url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
 							*/
 							const asset = Asset.fromUrl(upload.url);
-							return EditorService.assetCreate$(asset);
+							return AssetService.assetCreate$(asset);
 						}),
 					));
 					return combineLatest(uploads$);
