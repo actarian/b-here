@@ -20,7 +20,6 @@
           },
           "globals": {
             "agora-rtm-sdk": "AgoraRTM",
-            "flow": "flow",
             "gsap": "gsap",
             "html2canvas": "html2canvas",
             "rxcomp-form": "rxcomp.form",
@@ -65,8 +64,7 @@
             "node_modules/three/examples/js/loaders/GLTFLoader.js",
             "node_modules/three/examples/js/loaders/FBXLoader.js",
             "node_modules/qrious/dist/qrious.js",
-            "node_modules/html2canvas/dist/html2canvas.js",
-            "node_modules/@flowjs/flow.js/dist/flow.js"
+            "node_modules/html2canvas/dist/html2canvas.js"
           ],
           "output": "docs/js/vendors.js",
           "minify": true

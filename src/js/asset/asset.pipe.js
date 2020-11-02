@@ -1,6 +1,6 @@
 import { Pipe } from 'rxcomp';
 import { environment } from '../environment';
-import { AssetType } from '../view/view';
+import { AssetType } from './asset';
 
 export const MIME_IMAGE = [
 	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp',
@@ -12,7 +12,7 @@ export const MIME_VIDEO = [
 	'mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2',
 ];
 export const MIME_MODEL = [
-	'gltf', 'glb', 'obj', 'usdz',
+	'fbx', 'gltf', 'glb', 'obj', 'usdz',
 ];
 export const MIME_STREAM = [
 	'publisherStream', 'nextAttendeeStream',

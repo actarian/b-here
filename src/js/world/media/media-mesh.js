@@ -281,6 +281,7 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
+		/*
 		if (false && mediaLoader.isPlayableVideo) {
 			const textureB = MediaLoader.loadTexture({
 				asset: {
@@ -302,6 +303,7 @@ export default class MediaMesh extends InteractiveMesh {
 				material.needsUpdate = true;
 			});
 		}
+		*/
 		mediaLoader.load((textureA) => {
 			// console.log('MediaMesh.textureA', textureA);
 			if (textureA) {
@@ -376,6 +378,7 @@ export default class MediaMesh extends InteractiveMesh {
 				callback(textureB);
 			}
 		}
+		image.crossOrigin = 'anonymous';
 		image.src = environment.getPath('textures/ui/play.png');
 	}
 

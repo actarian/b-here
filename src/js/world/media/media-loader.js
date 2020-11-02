@@ -76,7 +76,7 @@ export default class MediaLoader {
 				return;
 			}
 			const onCanPlay = () => {
-				video.oncanplay = null;
+				video.removeEventListener('canplay', onCanPlay);
 				texture = this.texture = new THREE.VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
@@ -93,7 +93,7 @@ export default class MediaLoader {
 			if (video.readyState >= video.HAVE_FUTURE_DATA) {
 				onCanPlay();
 			} else {
-				video.oncanplay = onCanPlay;
+				video.addEventListener('canplay', onCanPlay);
 			}
 		} else if (this.isVideo) {
 			// create the video element

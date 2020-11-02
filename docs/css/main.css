@@ -200,7 +200,7 @@ strong {
 
 .btn--control, .btn--cam,
 .btn--mic,
-.btn--call, .btn--menu, .btn--add, .btn--generate,
+.btn--call, .btn--menu, .btn--generate,
 .btn--next,
 .btn--connect,
 .btn--absolute, .btn--ar,
@@ -211,7 +211,7 @@ strong {
 .btn--resume,
 .btn--remove,
 .btn--update,
-.btn--mode, .btn, a,
+.btn--mode, .btn, .btn--edit, a,
 button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   display: inline-block;
   padding: 0;
@@ -219,14 +219,13 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   outline: none;
   background: none;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
   font: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
   .btn--control, .btn--cam,
   .btn--mic,
-  .btn--call, .btn--menu, .btn--add, .btn--generate,
+  .btn--call, .btn--menu, .btn--generate,
   .btn--next,
   .btn--connect,
   .btn--absolute, .btn--ar,
@@ -237,10 +236,10 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--resume,
   .btn--remove,
   .btn--update,
-  .btn--mode, .btn, a,
+  .btn--mode, .btn, .btn--edit, a,
   button, .agora-stream .btn--spy, .btn--heart, .btn--close, .btn--control:active, .btn--cam:active,
   .btn--mic:active,
-  .btn--call:active, .btn--menu:active, .btn--add:active, .btn--generate:active,
+  .btn--call:active, .btn--menu:active, .btn--generate:active,
   .btn--next:active,
   .btn--connect:active,
   .btn--absolute:active, .btn--ar:active,
@@ -251,10 +250,10 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--resume:active,
   .btn--remove:active,
   .btn--update:active,
-  .btn--mode:active, .btn:active, a:active,
+  .btn--mode:active, .btn:active, .btn--edit:active, a:active,
   button:active, .agora-stream .btn--spy:active, .btn--heart:active, .btn--close:active, .btn--control:focus, .btn--cam:focus,
   .btn--mic:focus,
-  .btn--call:focus, .btn--menu:focus, .btn--add:focus, .btn--generate:focus,
+  .btn--call:focus, .btn--menu:focus, .btn--generate:focus,
   .btn--next:focus,
   .btn--connect:focus,
   .btn--absolute:focus, .btn--ar:focus,
@@ -265,10 +264,10 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--resume:focus,
   .btn--remove:focus,
   .btn--update:focus,
-  .btn--mode:focus, .btn:focus, a:focus,
+  .btn--mode:focus, .btn:focus, .btn--edit:focus, a:focus,
   button:focus, .agora-stream .btn--spy:focus, .btn--heart:focus, .btn--close:focus, .btn--control:hover, .btn--cam:hover,
   .btn--mic:hover,
-  .btn--call:hover, .btn--menu:hover, .btn--add:hover, .btn--generate:hover,
+  .btn--call:hover, .btn--menu:hover, .btn--generate:hover,
   .btn--next:hover,
   .btn--connect:hover,
   .btn--absolute:hover, .btn--ar:hover,
@@ -279,10 +278,10 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--resume:hover,
   .btn--remove:hover,
   .btn--update:hover,
-  .btn--mode:hover, .btn:hover, a:hover,
+  .btn--mode:hover, .btn:hover, .btn--edit:hover, a:hover,
   button:hover, .agora-stream .btn--spy:hover, .btn--heart:hover, .btn--close:hover, .btn--control:visited, .btn--cam:visited,
   .btn--mic:visited,
-  .btn--call:visited, .btn--menu:visited, .btn--add:visited, .btn--generate:visited,
+  .btn--call:visited, .btn--menu:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
   .btn--absolute:visited, .btn--ar:visited,
@@ -293,7 +292,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--resume:visited,
   .btn--remove:visited,
   .btn--update:visited,
-  .btn--mode:visited, .btn:visited, a:visited,
+  .btn--mode:visited, .btn:visited, .btn--edit:visited, a:visited,
   button:visited, .agora-stream .btn--spy:visited, .btn--heart:visited, .btn--close:visited {
     color: inherit;
     text-decoration: none;
@@ -301,7 +300,7 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 
 .btn--control[disabled], .btn--cam[disabled],
 .btn--mic[disabled],
-.btn--call[disabled], .btn--menu[disabled], .btn--add[disabled], .btn--generate[disabled],
+.btn--call[disabled], .btn--menu[disabled], .btn--generate[disabled],
 .btn--next[disabled],
 .btn--connect[disabled],
 .btn--absolute[disabled], .btn--ar[disabled],
@@ -312,13 +311,13 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
 .btn--resume[disabled],
 .btn--remove[disabled],
 .btn--update[disabled],
-.btn--mode[disabled], .btn[disabled] {
+.btn--mode[disabled], .btn[disabled], .btn--edit[disabled] {
   opacity: 0.5;
   pointer-events: none; }
 
 .btn--control, .btn--cam,
 .btn--mic,
-.btn--call, .btn--menu, .btn--add {
+.btn--call, .btn--menu {
   width: 50px;
   height: 50px;
   display: flex;
@@ -326,23 +325,23 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   align-items: center;
   border-radius: 25px;
   transition: all ease-in-out 350ms; }
-  .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg, .btn--add svg {
+  .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg {
     width: 24px;
     height: 24px; }
   .btn--control, .btn--cam,
   .btn--mic,
-  .btn--call, .btn--menu, .btn--add, .btn--control:active, .btn--cam:active,
+  .btn--call, .btn--menu, .btn--control:active, .btn--cam:active,
   .btn--mic:active,
-  .btn--call:active, .btn--menu:active, .btn--add:active, .btn--control:focus, .btn--cam:focus,
+  .btn--call:active, .btn--menu:active, .btn--control:focus, .btn--cam:focus,
   .btn--mic:focus,
-  .btn--call:focus, .btn--menu:focus, .btn--add:focus, .btn--control:hover, .btn--cam:hover,
+  .btn--call:focus, .btn--menu:focus, .btn--control:hover, .btn--cam:hover,
   .btn--mic:hover,
-  .btn--call:hover, .btn--menu:hover, .btn--add:hover, .btn--control:visited, .btn--cam:visited,
+  .btn--call:hover, .btn--menu:hover, .btn--control:visited, .btn--cam:visited,
   .btn--mic:visited,
-  .btn--call:visited, .btn--menu:visited, .btn--add:visited {
+  .btn--call:visited, .btn--menu:visited {
     background: #ffffff;
     color: #101010; }
-    .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg, .btn--add svg, .btn--control:active svg, .btn--cam:active svg, .btn--mic:active svg, .btn--call:active svg, .btn--menu:active svg, .btn--add:active svg, .btn--control:focus svg, .btn--cam:focus svg, .btn--mic:focus svg, .btn--call:focus svg, .btn--menu:focus svg, .btn--add:focus svg, .btn--control:hover svg, .btn--cam:hover svg, .btn--mic:hover svg, .btn--call:hover svg, .btn--menu:hover svg, .btn--add:hover svg, .btn--control:visited svg, .btn--cam:visited svg, .btn--mic:visited svg, .btn--call:visited svg, .btn--menu:visited svg, .btn--add:visited svg {
+    .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg, .btn--control:active svg, .btn--cam:active svg, .btn--mic:active svg, .btn--call:active svg, .btn--menu:active svg, .btn--control:focus svg, .btn--cam:focus svg, .btn--mic:focus svg, .btn--call:focus svg, .btn--menu:focus svg, .btn--control:hover svg, .btn--cam:hover svg, .btn--mic:hover svg, .btn--call:hover svg, .btn--menu:hover svg, .btn--control:visited svg, .btn--cam:visited svg, .btn--mic:visited svg, .btn--call:visited svg, .btn--menu:visited svg {
       fill: #101010; }
 
 .btn--generate,
@@ -480,7 +479,6 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   border: none;
   outline: none;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
   color: #101010;
   font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
@@ -658,7 +656,6 @@ fieldset,
     cursor: pointer; }
   .group--form--checkbox input {
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
     padding: 0;
     margin: 0 10px 0 0;
@@ -999,7 +996,6 @@ input-value {
     width: 100%;
     height: 100%;
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
     opacity: 0;
     cursor: pointer; }
@@ -3864,7 +3860,7 @@ body {
   z-index: 100;
   top: 28px;
   left: 30px;
-  width: 80px; }
+  width: 66px; }
   .group--logo, .group--logo:hover, .group--logo:active, .group--logo:visited {
     color: #0099ff; }
   .group--logo svg {
@@ -4921,23 +4917,26 @@ model-viewer {
       margin-left: 0px;
       margin-right: 0px; } }
 
-.btn--add {
+.btn--edit {
+  width: 50px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all ease-in-out 350ms;
   pointer-events: all; }
-  .btn--add svg {
-    width: 28px;
-    height: 28px; }
-  .btn--add, .btn--add:active, .btn--add:focus, .btn--add:hover, .btn--add:visited {
+  .btn--edit svg {
+    width: 24px;
+    height: 24px; }
+  .btn--edit, .btn--edit:active, .btn--edit:focus, .btn--edit:hover, .btn--edit:visited {
     background: #ffffff;
     color: #101010; }
-    .btn--add svg, .btn--add:active svg, .btn--add:focus svg, .btn--add:hover svg, .btn--add:visited svg {
+    .btn--edit svg, .btn--edit:active svg, .btn--edit:focus svg, .btn--edit:hover svg, .btn--edit:visited svg {
       fill: currentColor; }
-  .btn--add:hover {
-    background: rgba(16, 16, 16, 0.8);
-    color: #ffffff; }
-  .btn--add.active, .btn--add.active:active, .btn--add.active:focus, .btn--add.active:hover, .btn--add.active:visited {
-    border-color: rgba(0, 0, 0, 0);
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffffff; }
+  .btn--edit:hover {
+    opacity: 0.7; }
+  .btn--edit.active svg {
+    transform: scale(-1, 1); }
 
 .btn--mode, .btn--mode:active, .btn--mode:focus, .btn--mode:hover, .btn--mode:visited {
   background: #101010; }

@@ -17,12 +17,26 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 	*/
 
-	static getTextureCircle() {
-		return ModelNavComponent.textureCircle || (ModelNavComponent.textureCircle = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-circle.png')));
+	static getTexturePoint() {
+		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
 	}
 
-	static getTextureSquare() {
-		return ModelNavComponent.textureSquare || (ModelNavComponent.textureSquare = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-square.png')));
+	static getTextureMove() {
+		return ModelNavComponent.textureMove || (ModelNavComponent.textureMove = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-move.png')));
+	}
+
+	static getTextureInfo() {
+		return ModelNavComponent.textureInfo || (ModelNavComponent.textureInfo = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info.png')));
+	}
+
+	static getTexture(item, view) {
+		let texture;
+		if (item.hasPanel) {
+			texture = view.id === item.viewId ? this.getTextureInfo() : this.getTexturePoint();
+		} else {
+			texture = this.getTextureMove();
+		}
+		return texture;
 	}
 
 	onInit() {
@@ -52,7 +66,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		const nav = new THREE.Group();
 		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 		nav.position.set(position.x, position.y, position.z);
-		const map = this.item.hasPanel ? ModelNavComponent.getTextureCircle() : ModelNavComponent.getTextureSquare();
+		const map = ModelNavComponent.getTexture(this.item, this.view);
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.SpriteMaterial({
@@ -175,5 +189,5 @@ ModelNavComponent.meta = {
 	selector: '[model-nav]',
 	hosts: { host: WorldComponent },
 	outputs: ['over', 'out', 'down'],
-	inputs: ['item'],
+	inputs: ['item', 'view'],
 };

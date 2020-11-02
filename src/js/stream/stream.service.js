@@ -1,8 +1,16 @@
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { filter, map, shareReplay } from 'rxjs/operators';
 import { RoleType } from '../user/user';
 
 export default class StreamService {
+
+	static editor$ = new BehaviorSubject(null);
+	static set editor(editor) {
+		this.editor$.next(editor);
+	}
+	static get editor() {
+		return this.editor$.getValue();
+	}
 
 	static local$ = new BehaviorSubject(null);
 	static set local(local) {
@@ -28,14 +36,18 @@ export default class StreamService {
 		return this.peers$.getValue();
 	}
 
-	static streams$ = combineLatest(StreamService.local$, StreamService.remotes$).pipe(
+	static streams$ = combineLatest([StreamService.local$, StreamService.remotes$, StreamService.editor$]).pipe(
 		map(data => {
 			const local = data[0];
 			const remotes = data[1];
+			const editor = data[2];
 			let streams = remotes;
 			if (local) {
 				streams = streams.slice();
 				streams.push(local);
+			}
+			if (editor) {
+				streams.push(...editor);
 			}
 			return streams;
 		}),
