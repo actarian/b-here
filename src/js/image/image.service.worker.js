@@ -2,7 +2,7 @@ const controllers = {};
 
 function resize(src, blob, size) {
 	if (!self.createImageBitmap || !self.OffscreenCanvas) {
-		return response(src, blob);
+		return sendMessage(src, blob);
 	}
 	self.createImageBitmap(blob).then(function(img) {
 		const MAX_WIDTH = 320;
@@ -26,12 +26,12 @@ function resize(src, blob, size) {
 		canvas.height = height;
 		ctx.drawImage(img, 0, 0, width, height);
 		canvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 }).then(function(resizedBlob) {
-			response(src, resizedBlob);
+			sendMessage(src, resizedBlob);
 		});
 	});
 }
 
-function response(src, blob) {
+function sendMessage(src, blob) {
 	self.postMessage({
 		src: src,
 		blob: blob
@@ -50,13 +50,13 @@ self.addEventListener('message', function(event) {
 		}
 		return;
 	}
-	let options;
+	const options = {
+		mode: 'cors', // no-cors, *cors, same-origin
+	};
 	if (typeof fetch === 'function') {
 		if (self.AbortController) {
 			const controller = new AbortController();
-			options = {
-				signal: controller.signal,
-			};
+			options.signal =  controller.signal;
 			controllers[id] = controller;
 			// console.log('AbortController', id);
 		}
@@ -71,7 +71,7 @@ self.addEventListener('message', function(event) {
 				if (typeof size === 'object') {
 					resize(src, blob, size);
 				} else {
-					response(src, blob);
+					sendMessage(src, blob);
 				}
 			}, function(error) {
 				console.log(error);
@@ -85,7 +85,7 @@ self.addEventListener('message', function(event) {
 				if (typeof size === 'object') {
 					resize(src, blob, size);
 				} else {
-					response(src, blob);
+					sendMessage(src, blob);
 				}
 			} else {
 				// new Error('Image didn\'t load successfully; error code:' + request.statusText);

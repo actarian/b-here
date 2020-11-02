@@ -46,15 +46,9 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 		}
 	}
 
-	/*
-	setOption(item) {
-		this.control.value = item.id;
-		// DropdownDirective.dropdown$.next(null);
-	}
-	*/
-
 	setOption(item) {
 		// console.log('setOption', item, this.isMultiple);
+		let value;
 		if (this.isMultiple) {
 			const value = this.control.value || [];
 			const index = value.indexOf(item.id);
@@ -65,11 +59,13 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 			} else {
 				value.push(item.id);
 			}
-			this.control.value = value.length ? value.slice() : null;
+			value = value.length ? value.slice() : null;
 		} else {
-			this.control.value = item.id;
+			value = item.id;
 			// DropdownDirective.dropdown$.next(null);
 		}
+		this.control.value = value;
+		this.change.next(value);
 	}
 
 	hasOption(item) {
@@ -135,6 +131,7 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 
 ControlCustomSelectComponent.meta = {
 	selector: '[control-custom-select]',
+	outputs: ['change'],
 	inputs: ['control', 'label', 'multiple'],
 	template: /* html */ `
 		<div class="group--form--select" [class]="{ required: control.validators.length, multiple: isMultiple }" [dropdown]="dropdownId" (dropped)="onDropped($event)">

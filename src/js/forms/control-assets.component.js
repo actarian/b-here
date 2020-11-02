@@ -1,6 +1,6 @@
 import { getContext } from 'rxcomp';
 import { first, takeUntil } from 'rxjs/operators';
-import AssetService, { AssetUploadAssetEvent } from './asset/asset.service';
+import { UploadAssetEvent, UploadService } from '../upload/upload.service';
 import ControlComponent from './control.component';
 
 export default class ControlAssetsComponent extends ControlComponent {
@@ -27,7 +27,7 @@ export default class ControlAssetsComponent extends ControlComponent {
 		const input = node.querySelector('input');
 		input.setAttribute('accept', this.accept);
 		const dropArea = node.querySelector('.upload-drop');
-		const service = this.service = new AssetService();
+		const service = this.service = new UploadService();
 		service.drop$(input, dropArea).pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(items => {
@@ -46,7 +46,7 @@ export default class ControlAssetsComponent extends ControlComponent {
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			// console.log('ControlAssetComponent.events$', event);
-			if (event instanceof AssetUploadAssetEvent) {
+			if (event instanceof UploadAssetEvent) {
 				this.assets.push(event.asset);
 				this.control.value = this.assets;
 			}
@@ -106,7 +106,7 @@ ControlAssetsComponent.meta = {
 					</div>
 				</div>
 				<div class="listing__item" *for="let item of items">
-					<div asset-item [item]="item" (pause)="onItemPause($event)" (resume)="onItemResume($event)" (cancel)="onItemCancel($event)" (remove)="onItemRemove($event)"></div>
+					<div upload-item [item]="item" (pause)="onItemPause($event)" (resume)="onItemResume($event)" (cancel)="onItemCancel($event)" (remove)="onItemRemove($event)"></div>
 				</div>
 			</div>
 			<div class="group--cta">

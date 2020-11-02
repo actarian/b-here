@@ -1,9 +1,11 @@
 /* global THREE, RGBELoader */
 
-import { first } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { first, switchMap } from 'rxjs/operators';
 // import * as THREE from 'three';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
+import ImageService from '../../image/image.service';
 import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
 
@@ -64,12 +66,31 @@ export class EnvMapLoader {
 		}
 	}
 
-	static loadBackground(path, file, renderer, callback) {
+	static loadBackground(folder, file, renderer, callback) {
 		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
+		const image = new Image();
+		ImageService.load$(folder + file).pipe(
+			switchMap(blob => {
+				const load = fromEvent(image, 'load');
+				image.crossOrigin = 'anonymous';
+				image.src = blob;
+				return load;
+			}),
+			first(),
+		).subscribe(event => {
+			const texture = new THREE.Texture(image);
+			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+			// texture.dispose();
+			pmremGenerator.dispose();
+			if (typeof callback === 'function') {
+				callback(envMap, texture, false);
+			}
+		});
+		/*
 		const loader = new THREE.TextureLoader();
 		loader
-			.setPath(path)
+			.setPath(folder)
 			.load(file, (texture) => {
 				const envMap = pmremGenerator.fromEquirectangular(texture).texture;
 				// texture.dispose();
@@ -79,6 +100,7 @@ export class EnvMapLoader {
 				}
 			});
 		return loader;
+		*/
 	}
 
 	static loadPublisherStreamBackground(renderer, callback) {
@@ -123,7 +145,7 @@ export class EnvMapLoader {
 		).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 	}
 
-	static loadVideoBackground(path, file, renderer, callback) {
+	static loadVideoBackground(folder, file, renderer, callback) {
 		const debugService = DebugService.getService();
 		this.video = true;
 		const video = this.video;
@@ -154,7 +176,7 @@ export class EnvMapLoader {
 			// console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
-		video.src = path + file;
+		video.src = folder + file;
 		video.load();
 		video.play().then(() => {
 			// console.log('EnvMapLoader.loadVideoBackground.play');
@@ -207,14 +229,14 @@ export class EnvMapLoader {
 		}
 	}
 
-	static loadRgbeBackground(path, file, renderer, callback) {
+	static loadRgbeBackground(folder, file, renderer, callback) {
 		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const loader = new THREE.RGBELoader();
 		loader
 			.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)
-			.setPath(path)
+			.setPath(folder)
 			.load(file, (texture) => {
 				const envMap = pmremGenerator.fromEquirectangular(texture).texture;
 				// texture.dispose();

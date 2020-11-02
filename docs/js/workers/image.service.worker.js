@@ -8,7 +8,7 @@
 
 function resize(src, blob, size) {
   if (!self.createImageBitmap || !self.OffscreenCanvas) {
-    return response(src, blob);
+    return sendMessage(src, blob);
   }
 
   self.createImageBitmap(blob).then(function (img) {
@@ -38,12 +38,12 @@ function resize(src, blob, size) {
       type: 'image/jpeg',
       quality: 0.9
     }).then(function (resizedBlob) {
-      response(src, resizedBlob);
+      sendMessage(src, resizedBlob);
     });
   });
 }
 
-function response(src, blob) {
+function sendMessage(src, blob) {
   self.postMessage({
     src: src,
     blob: blob
@@ -66,19 +66,20 @@ self.addEventListener('message', function (event) {
     return;
   }
 
-  var options;
+  var options = {
+    mode: 'cors' // no-cors, *cors, same-origin
+
+  };
 
   if (typeof fetch === 'function') {
     if (self.AbortController) {
       var _controller = new AbortController();
 
-      options = {
-        signal: _controller.signal
-      };
+      options.signal = _controller.signal;
       controllers[id] = _controller; // console.log('AbortController', id);
     }
 
-    var _response = fetch(src, options).then(function (response) {
+    var response = fetch(src, options).then(function (response) {
       return response.blob();
     }, function (error) {
       console.log(error);
@@ -88,7 +89,7 @@ self.addEventListener('message', function (event) {
       if (typeof size === 'object') {
         resize(src, blob);
       } else {
-        _response(src, blob);
+        sendMessage(src, blob);
       }
     }, function (error) {
       console.log(error);
@@ -103,7 +104,7 @@ self.addEventListener('message', function (event) {
         if (typeof size === 'object') {
           resize(src, blob);
         } else {
-          response(src, blob);
+          sendMessage(src, blob);
         }
       }
     };

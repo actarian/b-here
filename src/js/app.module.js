@@ -14,7 +14,6 @@ import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
 import { EditorModule } from './editor/editor.module';
-import AssetItemComponent from './forms/asset/asset-item.component';
 import ControlAssetComponent from './forms/control-asset.component';
 import ControlAssetsComponent from './forms/control-assets.component';
 import ControlCheckboxComponent from './forms/control-checkbox.component';
@@ -25,7 +24,6 @@ import ControlNumberComponent from './forms/control-number.component';
 import ControlPasswordComponent from './forms/control-password.component';
 import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
-import ControlUploadComponent from './forms/control-upload.component';
 import ControlVectorComponent from './forms/control-vector.component';
 import DisabledDirective from './forms/disabled.directive';
 import ErrorsComponent from './forms/errors.component';
@@ -42,6 +40,7 @@ import SliderDirective from './slider/slider.directive';
 import SvgIconStructure from './svg/svg-icon.structure';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
+import UploadItemComponent from './upload/upload-item.component';
 import HlsDirective from './video/hls.directive';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
@@ -75,7 +74,6 @@ AppModule.meta = {
 		AgoraNameComponent,
 		AgoraStreamComponent,
 		AssetPipe,
-		AssetItemComponent,
 		ControlAssetComponent,
 		ControlModelComponent,
 		ControlAssetsComponent,
@@ -87,7 +85,6 @@ AppModule.meta = {
 		ControlRequestModalComponent,
 		ControlSelectComponent,
 		ControlTextComponent,
-		ControlUploadComponent,
 		ControlVectorComponent,
 		DisabledDirective,
 		DropDirective,
@@ -120,6 +117,7 @@ AppModule.meta = {
 		TestComponent,
 		TryInARComponent,
 		TryInARModalComponent,
+		UploadItemComponent,
 		ValueDirective,
 		WorldComponent
 	],
