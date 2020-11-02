@@ -34,12 +34,12 @@
 							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
 						</div>
 						</div>
-						<div class="banner loading" model-banner [item]="loading" *if="loading">
-							<div class="banner__title" [innerHTML]="item.title"></div>
-						</div>
-						<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
-							<div class="banner__title" [innerHTML]="item.title"></div>
-						</div>
+					</div>
+					<div class="banner loading" model-banner [item]="loading" *if="loading">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
+					<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
+						<div class="banner__title" [innerHTML]="item.title"></div>
 					</div>
 				</div>
 				<div model-menu [items]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
