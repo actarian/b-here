@@ -1,8 +1,4 @@
 import { Module } from 'rxcomp';
-import UploadButtonDirective from '../forms/upload/upload-button.directive';
-import UploadDropDirective from '../forms/upload/upload-drop.directive';
-import UploadItemComponent from '../forms/upload/upload-item.component';
-import UploadSrcDirective from '../forms/upload/upload-src.directive';
 import ToastOutletComponent from '../toast/toast-outlet.component';
 import AsideComponent from './aside/aside.component';
 import EditorComponent from './editor.component';
@@ -29,10 +25,6 @@ const factories = [
 	UpdateViewItemComponent,
 	UpdateViewTileComponent,
 	UpdateViewComponent,
-	UploadButtonDirective,
-	UploadDropDirective,
-	UploadItemComponent,
-	UploadSrcDirective,
 ];
 
 const pipes = [];

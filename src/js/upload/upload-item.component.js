@@ -1,12 +1,12 @@
 import { Component } from 'rxcomp';
 import { fromEvent, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { AssetType } from '../../view/view';
+import { AssetType } from '../asset/asset';
 
-export default class AssetItemComponent extends Component {
+export default class UploadItemComponent extends Component {
 
 	onInit() {
-		// console.log('AssetItemComponent.onInit', this.item);
+		// console.log('UploadItemComponent.onInit', this.item);
 		if (this.item.preview === null) {
 			this.read$(this.item.file).pipe(
 				takeUntil(this.unsubscribe$),
@@ -84,8 +84,8 @@ export default class AssetItemComponent extends Component {
 	}
 }
 
-AssetItemComponent.meta = {
-	selector: '[asset-item]',
+UploadItemComponent.meta = {
+	selector: '[upload-item]',
 	outputs: ['pause', 'resume', 'cancel', 'remove'],
 	inputs: ['item'],
 	template: /* html */`

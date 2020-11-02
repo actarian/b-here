@@ -75,7 +75,7 @@ export default class AsideComponent extends Component {
 				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
 				break;
 			case ViewType.Model.name:
-				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
+				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
 		}
 		// console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);

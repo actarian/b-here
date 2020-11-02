@@ -176,11 +176,11 @@ Dom.scrollIntersection_ = {};
 Dom.scrollEvent$ = scrollEvent$();
 Dom.locomotiveScrollEvent$ = locomotiveScrollEvent$();
 Dom.scroll$ = Dom.locomotiveScrollEvent$;
-Dom.scrollAndRect$ = combineLatest(Dom.scroll$, Dom.windowRect$).pipe(shareReplay());
+Dom.scrollAndRect$ = combineLatest([Dom.scroll$, Dom.windowRect$]).pipe(shareReplay());
 
 Dom.rafIntersection_ = {};
 Dom.raf$ = range(0, Number.POSITIVE_INFINITY, animationFrame);
-Dom.rafAndRect$ = combineLatest(Dom.raf$, Dom.windowRect$).pipe(shareReplay());
+Dom.rafAndRect$ = combineLatest([Dom.raf$, Dom.windowRect$]).pipe(shareReplay());
 
 export default class DomService extends Dom {
 

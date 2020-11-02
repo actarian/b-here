@@ -18,7 +18,7 @@ export default class UpdateViewComponent extends Component {
 			// console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
 			this.pushChanges();
 		});
-		this.onUpdate();
+		this.doUpdateForm();
 		MessageService.in$.pipe(
 			auditTime(500),
 			takeUntil(this.unsubscribe$)
@@ -40,7 +40,7 @@ export default class UpdateViewComponent extends Component {
 		});
 	}
 
-	onUpdate() {
+	doUpdateForm() {
 		const view = this.view;
 		if (!this.type || this.type.name !== view.type.name) {
 			this.type = view.type;
@@ -85,7 +85,7 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	onChanges(changes) {
-		this.onUpdate();
+		this.doUpdateForm();
 	}
 
 	onSubmit() {

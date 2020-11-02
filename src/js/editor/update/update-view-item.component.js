@@ -1,6 +1,9 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
+import { of } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId } from '../../asset/asset';
+import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType } from '../../view/view';
@@ -14,11 +17,13 @@ export default class UpdateViewItemComponent extends Component {
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		const item = this.item;
+		this.originalItem = Object.assign({}, item);
 		item.hasChromaKeyColor = (item.asset && item.asset.chromaKeyColor) ? true : false;
-		this.onUpdate();
+		item.assetType = assetGroupTypeFromItem(item).id;
+		this.doUpdateForm();
 		form.changes$.subscribe((changes) => {
 			// console.log('UpdateViewItemComponent.form.changes$', changes);
-			this.onUpdateItem(changes);
+			this.doUpdateItem(changes);
 			this.pushChanges();
 		});
 	}
@@ -27,6 +32,7 @@ export default class UpdateViewItemComponent extends Component {
 		const item = this.item;
 		const itemAssetId = item.asset ? item.asset.id : null;
 		const changesAssetId = changes.asset ? changes.asset.id : null;
+		// console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
 		if (itemAssetId !== changesAssetId || item.hasChromaKeyColor !== changes.hasChromaKeyColor) {
 			return true;
 		} else {
@@ -34,20 +40,21 @@ export default class UpdateViewItemComponent extends Component {
 		}
 	}
 
-	onUpdateItem(changes) {
+	doUpdateItem(changes) {
 		const item = this.item;
 		const assetDidChange = this.getAssetDidChange(changes);
 		Object.assign(item, changes);
 		if (item.asset) {
-			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0,1.0,0.0] : null;
-			if (assetDidChange) {
-				EditorService.assetUpdate$(item.asset).pipe(
-					switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
-					first()
-				).subscribe();
-				if (typeof item.onUpdateAsset === 'function') {
-					item.onUpdateAsset();
-				}
+			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0, 1.0, 0.0] : null;
+		}
+		if (assetDidChange) {
+			const asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : of(null);
+			asset$.pipe(
+				switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
+				first()
+			).subscribe();
+			if (typeof item.onUpdateAsset === 'function') {
+				item.onUpdateAsset();
 			}
 		}
 		if (typeof item.onUpdate === 'function') {
@@ -55,7 +62,7 @@ export default class UpdateViewItemComponent extends Component {
 		}
 	}
 
-	onUpdate() {
+	doUpdateForm() {
 		const item = this.item;
 		const form = this.form;
 		if (!this.type || this.type.name !== item.type.name) {
@@ -69,13 +76,13 @@ export default class UpdateViewItemComponent extends Component {
 					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?', 'hasChromaKeyColor?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'assetType?', 'asset?', 'hasChromaKeyColor?'];
 					break;
 				case ViewItemType.CurvedPlane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'asset?', 'hasChromaKeyColor?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'assetType?', 'asset?', 'hasChromaKeyColor?'];
 					break;
 				case ViewItemType.Texture.name:
-					keys = ['id', 'type', 'asset?']; // asset, key no id!!
+					keys = ['id', 'type', 'assetType?', 'asset?', 'hasChromaKeyColor?']; // asset, key no id!!
 					break;
 				case ViewItemType.Model.name:
 					keys = ['id', 'type', 'asset?']; // title, abstract, asset,
@@ -86,33 +93,39 @@ export default class UpdateViewItemComponent extends Component {
 			keys.forEach(key => {
 				const optional = key.indexOf('?') !== -1;
 				key = key.replace('?', '');
+				const value = (item[key] != null ? item[key] : null);
+				let control;
 				switch (key) {
+					case 'viewId':
+						control = new FormControl(value, optional ? undefined : RequiredValidator());
+						EditorService.viewIdOptions$().pipe(
+							first(),
+						).subscribe(options => {
+							control.options = options;
+							control.value = control.value || null;
+							this.pushChanges();
+						});
+						break;
+					case 'assetType':
+						control = new FormControl(value, optional ? undefined : RequiredValidator());
+						control.options = Object.keys(AssetGroupType).map(x => AssetGroupType[x]);
+						break;
 					case 'link':
 						const title = item.link ? item.link.title : null;
 						const href = item.link ? item.link.href : null;
 						const target = '_blank';
-						form.add(new FormGroup({
+						control = new FormGroup({
 							title: new FormControl(title),
 							href: new FormControl(href),
 							target
-						}), 'link');
+						});
 						break;
 					default:
-						const value = (item[key] != null ? item[key] : null);
-						form.add(new FormControl(value, optional ? undefined : RequiredValidator()), key);
+						control = new FormControl(value, optional ? undefined : RequiredValidator());
 				}
+				form.add(control, key);
 			});
 			this.controls = form.controls;
-			if (keys.indexOf('viewId') !== -1) {
-				EditorService.viewIdOptions$().pipe(
-					first(),
-				).subscribe(options => {
-					this.controls.viewId.options = options;
-					this.controls.viewId.value = this.controls.viewId.value || null;
-					// console.log(this.controls.viewId.options, this.controls.viewId.value);
-					this.pushChanges();
-				});
-			}
 		} else {
 			Object.keys(this.controls).forEach(key => {
 				switch (key) {
@@ -125,6 +138,9 @@ export default class UpdateViewItemComponent extends Component {
 					case 'hasChromaKeyColor':
 						this.controls[key].value = (item.asset && item.asset.chromaKeyColor) ? true : false;
 						break;
+					case 'assetType':
+						this.controls[key].value = assetGroupTypeFromItem(item).id;
+						break;
 					default:
 						this.controls[key].value = (item[key] != null ? item[key] : null);
 				}
@@ -132,13 +148,51 @@ export default class UpdateViewItemComponent extends Component {
 		}
 	}
 
+	onAssetTypeDidChange(assetType) {
+		const item = this.item;
+		const currentType = assetGroupTypeFromItem(item).id;
+		// console.log('UpdateViewItemComponent.onAssetTypeDidChange', assetType, currentType);
+		if (assetType !== currentType) {
+			item.assetType = assetType;
+			let asset$ = of(null); // AssetService.assetDelete$(item.asset);
+			if (assetType !== AssetGroupType.ImageOrVideo.id) {
+				asset$ = asset$.pipe(
+					switchMap(() => {
+						const asset = assetPayloadFromGroupTypeId(assetType);
+						return AssetService.assetCreate$(asset);
+					}),
+				)
+			}
+			asset$.pipe(
+				first()
+			).subscribe(asset => {
+				// console.log('UpdateViewItemComponent.asset$', asset);
+				this.controls.asset.value = asset;
+			});
+			/*
+			asset$.pipe(
+				tap(asset => {
+					item.asset = asset;
+					if (typeof item.onUpdateAsset === 'function') {
+						item.onUpdateAsset();
+					}
+				}),
+				switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
+				first()
+			).subscribe();
+			*/
+		}
+	}
+
 	onChanges(changes) {
-		this.onUpdate();
+		// console.log('UpdateViewItemComponent.onChanges', changes);
+		this.doUpdateForm();
 	}
 
 	onSubmit() {
 		if (this.form.valid) {
-			const payload = Object.assign({}, this.form.value);
+			const changes = this.form.value;
+			const payload = Object.assign({}, changes);
 			this.update.next({ view: this.view, item: new ViewItem(payload) });
 		} else {
 			this.form.touched = true;
@@ -200,7 +254,8 @@ UpdateViewItemComponent.meta = {
 				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
 				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
-				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
+				<div control-custom-select label="Asset" [control]="controls.assetType" (change)="onAssetTypeDidChange($event)"></div>
+				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'curved-plane'">
@@ -210,7 +265,13 @@ UpdateViewItemComponent.meta = {
 				<div control-number label="Radius" [control]="controls.radius" [precision]="2"></div>
 				<div control-number label="Height" [control]="controls.height" [precision]="2"></div>
 				<div control-number label="Arc" [control]="controls.arc" [precision]="0"></div>
-				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4"></div>
+				<div control-custom-select label="Asset" [control]="controls.assetType" (change)="onAssetTypeDidChange($event)"></div>
+				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
+			</div>
+			<div class="form-controls" *if="item.type.name == 'texture'">
+				<div control-custom-select label="Asset" [control]="controls.assetType" (change)="onAssetTypeDidChange($event)"></div>
+				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
 			</div>
 			<div class="group--cta">

@@ -117,6 +117,10 @@ function _assertThisInitialized(self) {
   }
 
   return self;
+}
+
+function _readOnlyError(name) {
+  throw new Error("\"" + name + "\" is read-only");
 }var environmentServed = {
   appKey: '1a066259928f4b40a243647b58aca42e',
   channelName: 'BHere',
@@ -125,7 +129,7 @@ function _assertThisInitialized(self) {
   },
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
   url: {
     index: '/',
     access: '/',
@@ -163,7 +167,7 @@ function _assertThisInitialized(self) {
   },
   assets: './',
   worker: './js/workers/image.service.worker.js',
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/master/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
   url: {
     index: '/',
     access: '/',
@@ -1288,7 +1292,7 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamSer
     } else {
       return this.streams$.pipe(operators.map(function () {
         return _this.publisherStreamId;
-      }), filter(function (x) {
+      }), operators.filter(function (x) {
         return x;
       }));
     }
@@ -1307,6 +1311,14 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamSer
   };
 
   _createClass(StreamService, null, [{
+    key: "editor",
+    set: function set(editor) {
+      this.editor$.next(editor);
+    },
+    get: function get() {
+      return this.editor$.getValue();
+    }
+  }, {
     key: "local",
     set: function set(local) {
       this.local$.next(local);
@@ -1355,20 +1367,29 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamSer
   return StreamService;
 }();
 
+_defineProperty(StreamService, "editor$", new rxjs.BehaviorSubject(null));
+
 _defineProperty(StreamService, "local$", new rxjs.BehaviorSubject(null));
 
 _defineProperty(StreamService, "remotes$", new rxjs.BehaviorSubject([]));
 
 _defineProperty(StreamService, "peers$", new rxjs.BehaviorSubject([]));
 
-_defineProperty(StreamService, "streams$", rxjs.combineLatest(StreamService.local$, StreamService.remotes$).pipe(operators.map(function (data) {
+_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.remotes$, StreamService.editor$]).pipe(operators.map(function (data) {
   var local = data[0];
   var remotes = data[1];
+  var editor = data[2];
   var streams = remotes;
 
   if (local) {
     streams = streams.slice();
     streams.push(local);
+  }
+
+  if (editor) {
+    var _streams;
+
+    (_streams = streams).push.apply(_streams, editor);
   }
 
   return streams;
@@ -3180,6 +3201,13 @@ AgoraDeviceComponent.meta = {
     return s.substr(s.length - size);
   };
 
+  _createClass(AgoraLinkComponent, [{
+    key: "heroku",
+    get: function get() {
+      return HEROKU;
+    }
+  }]);
+
   return AgoraLinkComponent;
 }(rxcomp.Component);
 AgoraLinkComponent.meta = {
@@ -3697,48 +3725,7 @@ ModalOutletComponent.meta = {
 }(rxcomp.Component);
 TryInARModalComponent.meta = {
   selector: '[try-in-ar-modal]'
-};var EXT_IMAGE = ['jpeg', 'jpg', 'png'];
-var EXT_VIDEO = ['mp4', 'webm'];
-var EXT_MODEL = ['gltf', 'glb', 'usdz'];
-var AssetType = {
-  Image: {
-    id: 1,
-    name: 'image'
-  },
-  // jpg, png, ...
-  Video: {
-    id: 2,
-    name: 'video'
-  },
-  // mp4, webm, ...
-  Model: {
-    id: 3,
-    name: 'model'
-  },
-  // gltf, glb, …
-  PublisherStream: {
-    id: 4,
-    name: 'publisher-stream'
-  },
-  // valore fisso di file a ‘publisherStream’ e folder string.empty
-  NextAttendeeStream: {
-    id: 5,
-    name: 'next-attendee-stream'
-  } // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
-
-};
-function assetTypeFromPath(path) {
-  var extension = path.split('.').pop().toLowerCase();
-
-  if (EXT_IMAGE.indexOf(extension) !== -1) {
-    return AssetType.Image;
-  } else if (EXT_VIDEO.indexOf(extension) !== -1) {
-    return AssetType.Video;
-  } else if (EXT_MODEL.indexOf(extension) !== -1) {
-    return AssetType.Model;
-  }
-}
-var ViewType = {
+};var ViewType = {
   WaitingRoom: {
     id: 1,
     name: 'waiting-room'
@@ -4025,7 +4012,7 @@ var ViewItem = /*#__PURE__*/function () {
   }, {
     key: "hasPanel",
     get: function get() {
-      return this.type.name === ViewItemType.Nav.name && (this.title || this.abstract || this.asset || this.link);
+      return this.type.name === ViewItemType.Nav.name && (this.title && this.title !== '' || this.abstract && this.abstract !== '' || this.asset || this.link);
     }
   }]);
 
@@ -4084,45 +4071,6 @@ var ViewTile = /*#__PURE__*/function () {
 
 _defineProperty(ViewTile, "allowedProps", ['id', 'asset', 'navs']);
 
-var Asset = /*#__PURE__*/function () {
-  function Asset(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-  Asset.fromUrl = function fromUrl(url) {
-    var segments = url.split('/');
-    var file = segments.pop();
-    var folder = segments.join('/') + '/';
-    var type = assetTypeFromPath(file);
-    return new Asset({
-      type: type,
-      folder: folder,
-      file: file
-    });
-  };
-
-  _createClass(Asset, [{
-    key: "payload",
-    get: function get() {
-      var _this5 = this;
-
-      var payload = {};
-      Object.keys(this).forEach(function (key) {
-        if (Asset.allowedProps.indexOf(key) !== -1) {
-          payload[key] = _this5[key];
-        }
-      });
-      return payload;
-    }
-  }]);
-
-  return Asset;
-}();
-
-_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor']);
-
 function mapView(view) {
   switch (view.type.name) {
     case ViewType.Panorama.name:
@@ -4157,14 +4105,6 @@ function mapViewItem(item) {
 }
 function mapViewTile(tile) {
   return new ViewTile(tile);
-}
-function mapAsset(asset) {
-  switch (asset.type) {
-    default:
-      asset = new Asset(asset);
-  }
-
-  return asset;
 }var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
@@ -4920,9 +4860,136 @@ AgoraComponent.meta = {
 }(rxcomp.Component);
 AppComponent.meta = {
   selector: '[app-component]'
-};var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
+};var EXT_IMAGE = ['jpeg', 'jpg', 'png'];
+var EXT_VIDEO = ['mp4', 'webm'];
+var EXT_MODEL = ['fbx', 'gltf', 'glb', 'usdz'];
+var AssetType = {
+  Image: {
+    id: 1,
+    name: 'image'
+  },
+  // jpg, png, ...
+  Video: {
+    id: 2,
+    name: 'video'
+  },
+  // mp4, webm, ...
+  Model: {
+    id: 3,
+    name: 'model'
+  },
+  // fbx, gltf, glb, usdz ...
+  PublisherStream: {
+    id: 4,
+    name: 'publisher-stream'
+  },
+  // valore fisso di file a ‘publisherStream’ e folder string.empty
+  NextAttendeeStream: {
+    id: 5,
+    name: 'next-attendee-stream'
+  } // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+
+};
+var AssetGroupType = {
+  ImageOrVideo: {
+    id: 1,
+    name: 'Image or Video',
+    ids: [1, 2]
+  },
+  // Model: { id: 2, name: 'Model 3D', ids: [3] },
+  Publisher: {
+    id: 3,
+    name: 'Publisher',
+    ids: [4]
+  },
+  Attendee: {
+    id: 4,
+    name: 'Attendee',
+    ids: [5]
+  }
+};
+function assetGroupTypeFromItem(item) {
+  var key;
+
+  if (item && item.asset) {
+    key = Object.keys(AssetGroupType).find(function (key) {
+      // console.log(key, AssetGroupType[key].ids, item.asset.type.id);
+      return AssetGroupType[key].ids.indexOf(item.asset.type.id) !== -1;
+    });
+  }
+
+  return AssetGroupType[key || 'ImageOrVideo'];
+}
+function assetPayloadFromGroupTypeId(groupTypeId) {
+  var type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.NextAttendeeStream;
+  var file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
+  var asset = {
+    type: type,
+    folder: '',
+    file: file
+  };
+  return new Asset(asset);
+}
+function assetTypeFromPath(path) {
+  var extension = path.split('.').pop().toLowerCase();
+
+  if (EXT_IMAGE.indexOf(extension) !== -1) {
+    return AssetType.Image;
+  } else if (EXT_VIDEO.indexOf(extension) !== -1) {
+    return AssetType.Video;
+  } else if (EXT_MODEL.indexOf(extension) !== -1) {
+    return AssetType.Model;
+  }
+}
+var Asset = /*#__PURE__*/function () {
+  function Asset(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  Asset.fromUrl = function fromUrl(url) {
+    var segments = url.split('/');
+    var file = segments.pop();
+    var folder = segments.join('/') + '/';
+    var type = assetTypeFromPath(file);
+    return new Asset({
+      type: type,
+      folder: folder,
+      file: file
+    });
+  };
+
+  _createClass(Asset, [{
+    key: "payload",
+    get: function get() {
+      var _this = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (Asset.allowedProps.indexOf(key) !== -1) {
+          payload[key] = _this[key];
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return Asset;
+}();
+
+_defineProperty(Asset, "allowedProps", ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor']);
+
+function mapAsset(asset) {
+  switch (asset.type) {
+    default:
+      asset = new Asset(asset);
+  }
+
+  return asset;
+}var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
-var MIME_MODEL = ['gltf', 'glb', 'obj', 'usdz'];
+var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
 var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
 function isImage(path) {
   return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
@@ -5239,279 +5306,6 @@ DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDir
 DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
-};var UploadButtonDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(UploadButtonDirective, _Directive);
-
-  function UploadButtonDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = UploadButtonDirective.prototype;
-
-  _proto.init_ = function init_() {
-    /*
-    if (!this.uploader) {
-    	return;
-    }
-    const { node } = getContext(this);
-    // console.log('UploadButtonDirective', this.uploader, node);
-    this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
-    */
-  };
-
-  _proto.onInit = function onInit() {
-    if (this.uploader) {
-      var _getContext = rxcomp.getContext(this),
-          node = _getContext.node;
-
-      this.uploader.flow.assignBrowse(node, this.directoryOnly_, this.uploader.flow.opts.singleFile, this.attributes_);
-    }
-  };
-
-  _createClass(UploadButtonDirective, [{
-    key: "directoryOnly",
-    set: function set(directoriesOnly) {
-      if (directoryOnly_ !== directoriesOnly) {
-        this.directoryOnly_ = directoriesOnly;
-        this.init_();
-      }
-    }
-  }, {
-    key: "attributes",
-    set: function set(attributes) {
-      if (this.attributes_ !== attributes) {
-        this.attributes_ = attributes;
-        this.init_();
-      }
-    }
-  }, {
-    key: "uploadButton",
-    set: function set(uploader) {
-      if (this.uploader !== uploader) {
-        this.uploader = uploader; // console.log('UploadButtonDirective.uploader', this.uploader);
-
-        this.init_();
-      }
-    }
-  }]);
-
-  return UploadButtonDirective;
-}(rxcomp.Directive);
-UploadButtonDirective.meta = {
-  selector: '[[uploadButton]]',
-  inputs: ['uploadButton', 'directoryOnly', 'attributes']
-};var UploadDropDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(UploadDropDirective, _Directive);
-
-  function UploadDropDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = UploadDropDirective.prototype;
-
-  _proto.enable = function enable() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node; // console.log('UploadDropDirective.enable', this.uploader);
-
-
-    this.uploader.flow.assignDrop(node);
-  };
-
-  _proto.disable = function disable() {
-    var _getContext2 = rxcomp.getContext(this),
-        node = _getContext2.node;
-
-    this.uploader.flow.unAssignDrop(node);
-  };
-
-  _proto.onInit = function onInit() {
-    if (rxcomp.isPlatformBrowser) {
-      var body = document.querySelector('body');
-      rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        event.preventDefault();
-        return;
-      }), operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('UploadDropDirective.onInit');
-    }
-  };
-
-  _createClass(UploadDropDirective, [{
-    key: "uploadDrop",
-    set: function set(uploader) {
-      if (this.uploader !== uploader) {
-        if (this.uploader) {
-          this.disable();
-        }
-
-        this.uploader = uploader;
-
-        if (uploader) {
-          // console.log('UploadDropDirective.flow', this.uploader);
-          this.enable();
-        }
-      }
-    }
-  }]);
-
-  return UploadDropDirective;
-}(rxcomp.Directive);
-UploadDropDirective.meta = {
-  selector: '[[uploadDrop]]',
-  inputs: ['uploadDrop']
-};var UploadItemComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(UploadItemComponent, _Component);
-
-  function UploadItemComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = UploadItemComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    console.log('UploadItemComponent.onInit', this.item, this.uploader);
-  };
-
-  _proto.onPause = function onPause() {
-    this.pause.next(this.item);
-  };
-
-  _proto.onResume = function onResume() {
-    this.resume.next(this.item);
-  };
-
-  _proto.onCancel = function onCancel() {
-    this.cancel.next(this.item);
-  };
-
-  _proto.onRemove = function onRemove() {
-    this.remove.next(this.item);
-  };
-
-  _createClass(UploadItemComponent, [{
-    key: "UploadItem",
-    set: function set(uploader) {
-      this.uploader = uploader;
-    }
-  }]);
-
-  return UploadItemComponent;
-}(rxcomp.Component);
-UploadItemComponent.meta = {
-  selector: '[uploadItem]',
-  outputs: ['pause', 'resume', 'cancel', 'remove'],
-  inputs: ['uploadItem', 'item'],
-  template:
-  /* html */
-  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [uploadSrc]=\"item\" />\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.progress > 0\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t<div class=\"group--cta\" *if=\"item.complete\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\">remove</div>\n\t\t</div>\n\t</div>\n\t"
-};var UploadSrcDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(UploadSrcDirective, _Directive);
-
-  function UploadSrcDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = UploadSrcDirective.prototype;
-
-  _proto.resize2Steps = function resize2Steps(blob, callback) {
-    var canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 480;
-    var ctx = canvas.getContext('2d');
-    var img = new Image();
-
-    img.onload = function () {
-      // set size proportional to image
-      canvas.height = canvas.width * (img.height / img.width); // step 1 - resize to 50%
-
-      var oc = document.createElement('canvas');
-      var octx = oc.getContext('2d');
-      oc.width = img.width * 0.5;
-      oc.height = img.height * 0.5;
-      octx.drawImage(img, 0, 0, oc.width, oc.height); // step 2
-
-      octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5); // step 3, resize to final size
-
-      ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5, 0, 0, canvas.width, canvas.height); //
-
-      callback(canvas.toDataURL('image/jpeg', 0.9));
-    };
-
-    img.src = blob;
-  };
-
-  _proto.resize = function resize(blob, callback) {
-    if (typeof callback === 'function') {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 640;
-        var MAX_HEIGHT = 480;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        callback(dataUrl);
-      };
-
-      img.src = blob;
-    }
-  };
-
-  _proto.read = function read(file) {
-    var _this = this;
-
-    if (this.subscription_) {
-      this.subscription_.unsubscribe();
-    }
-
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    this.subscription_ = rxjs.fromEvent(reader, 'load').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      var _getContext = rxcomp.getContext(_this),
-          node = _getContext.node;
-
-      var blob = event.target.result; // node.setAttribute('src', blob);
-
-      _this.resize(blob, function (resized) {
-        node.setAttribute('src', resized);
-      });
-    });
-  };
-
-  _createClass(UploadSrcDirective, [{
-    key: "uploadSrc",
-    set: function set(uploadSrc) {
-      if (uploadSrc !== this.uploadSrc_) {
-        this.uploadSrc_ = uploadSrc;
-
-        if (uploadSrc) {
-          this.read(uploadSrc.flowFile.file);
-        }
-      }
-    }
-  }]);
-
-  return UploadSrcDirective;
-}(rxcomp.Directive);
-UploadSrcDirective.meta = {
-  selector: '[[uploadSrc]]',
-  inputs: ['uploadSrc']
 };var ToastEvent = function ToastEvent(toast) {
   this.toast = toast;
 };
@@ -5691,7 +5485,7 @@ var AsideComponent = /*#__PURE__*/function (_Component) {
         break;
 
       case ViewType.Model.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
+        supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
         break;
     } // console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
 
@@ -5875,48 +5669,6 @@ AsideComponent.meta = {
     return HttpService.delete$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id);
   };
 
-  EditorService.assetCreate$ = function assetCreate$(asset) {
-    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  EditorService.assetUpdate$ = function assetUpdate$(asset) {
-    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  EditorService.assetDelete$ = function assetDelete$(asset) {
-    return HttpService.delete$("/api/asset/" + asset.id);
-  };
-
-  EditorService.upload$ = function upload$(files) {
-    var formData = new FormData();
-    files.forEach(function (file) {
-      return formData.append('file', file, file.name);
-    });
-    var xhr = new XMLHttpRequest();
-    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
-      switch (event.type) {
-        case 'readystatechange':
-          if (xhr.readyState === 4) {
-            return JSON.parse(xhr.responseText);
-          } else {
-            return null;
-          }
-
-        default:
-          return null;
-      }
-    }), operators.filter(function (event) {
-      return event !== null;
-    }));
-    xhr.open('POST', "/api/upload/", true);
-    xhr.send(formData);
-    return events$;
-  };
-
   return EditorService;
 }();var EditorComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(EditorComponent, _Component);
@@ -5996,6 +5748,53 @@ AsideComponent.meta = {
       _this3.pushChanges();
     });
     this.loadData();
+    this.getUserMedia();
+  };
+
+  _proto.getUserMedia = function getUserMedia() {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      var body = document.querySelector('body');
+      var media = document.createElement('div');
+      var video = document.createElement('video');
+      media.setAttribute('id', 'stream-editor');
+      media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+      media.appendChild(video);
+      body.appendChild(media);
+      navigator.mediaDevices.getUserMedia({
+        video: {
+          width: 800,
+          height: 450
+        }
+      }).then(function (stream) {
+        // console.log(stream);
+        if ('srcObject' in video) {
+          video.srcObject = stream;
+        } else {
+          video.src = window.URL.createObjectURL(stream);
+        }
+
+        video.play();
+        var fakePublisherStream = {
+          getId: function getId() {
+            return 'editor';
+          },
+          clientInfo: {
+            role: RoleType.Publisher
+          }
+        };
+        var fakeAttendeeStream = {
+          getId: function getId() {
+            return 'editor';
+          },
+          clientInfo: {
+            role: RoleType.Attendee
+          }
+        };
+        StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+      }).catch(function (error) {
+        console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+      });
+    }
   };
 
   _proto.loadData = function loadData() {
@@ -6169,8 +5968,7 @@ AsideComponent.meta = {
     var _this7 = this;
 
     EditorService.inferItemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
-      console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
-
+      // console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
       _this7.pushChanges();
     }, function (error) {
       return console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error);
@@ -6183,7 +5981,7 @@ AsideComponent.meta = {
     EditorService.inferItemUpdate$(this.view, event.item).pipe(
     	first(),
     ).subscribe(response => {
-    	console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
+    	// console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
     	this.pushChanges();
     }, error => console.log('EditorComponent.onResizeEnd.inferItemUpdate$.error', error));
     */
@@ -6329,11 +6127,10 @@ AsideComponent.meta = {
   _proto.onAsideUpdate = function onAsideUpdate(event) {
     var _this10 = this;
 
-    console.log('onAsideUpdate', event);
-
+    // console.log('onAsideUpdate', event);
     if (event.item && event.view) {
       EditorService.inferItemUpdate$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
-        console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
+        // console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
         EditorService.inferItemUpdateResult$(event.view, event.item);
 
         _this10.pushChanges();
@@ -6342,7 +6139,7 @@ AsideComponent.meta = {
       });
     } else if (event.tile && event.view) ; else if (event.view) {
       EditorService.viewUpdate$(event.view).pipe(operators.first()).subscribe(function (response) {
-        console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
+        // console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
         var assetDidChange = _this10.view.asset.id !== event.view.asset.id;
         Object.assign(_this10.view, event.view);
 
@@ -6364,7 +6161,7 @@ AsideComponent.meta = {
 
     if (event.item && event.view) {
       EditorService.inferItemDelete$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
-        console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
+        // console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
         EditorService.inferItemDeleteResult$(event.view, event.item);
 
         _this11.pushChanges();
@@ -6373,8 +6170,7 @@ AsideComponent.meta = {
       });
     } else if (event.view) {
       EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
-        console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-
+        // console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
         var index = _this11.data.views.indexOf(event.view);
 
         if (index !== -1) {
@@ -6795,7 +6591,7 @@ PanoramaGridModalComponent.meta = {
       /*
       const asset = Asset.fromUrl(this.form.value.upload);
       console.log('PanoramaModalComponent.onSubmit.asset', asset);
-      EditorService.assetCreate$(asset).pipe(
+      AssetService.assetCreate$(asset).pipe(
       	first(),
       	switchMap(response => {
       		const view = {
@@ -7068,7 +6864,59 @@ PlaneModalComponent.meta = {
 }(rxcomp.Component);
 RemoveModalComponent.meta = {
   selector: '[remove-modal]'
-};var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
+};var AssetService = /*#__PURE__*/function () {
+  function AssetService() {}
+
+  AssetService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetUpdate$ = function assetUpdate$(asset) {
+    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetDelete$ = function assetDelete$(asset) {
+    if (asset && asset.id) {
+      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
+        return null;
+      }));
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  AssetService.upload$ = function upload$(files) {
+    var formData = new FormData();
+    files.forEach(function (file) {
+      return formData.append('file', file, file.name);
+    });
+    var xhr = new XMLHttpRequest();
+    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
+      switch (event.type) {
+        case 'readystatechange':
+          if (xhr.readyState === 4) {
+            return JSON.parse(xhr.responseText);
+          } else {
+            return null;
+          }
+
+        default:
+          return null;
+      }
+    }), operators.filter(function (event) {
+      return event !== null;
+    }));
+    xhr.open('POST', "/api/upload/", true);
+    xhr.send(formData);
+    return events$;
+  };
+
+  return AssetService;
+}();var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewItemComponent, _Component);
 
   function UpdateViewItemComponent() {
@@ -7084,11 +6932,13 @@ RemoveModalComponent.meta = {
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
     var item = this.item;
+    this.originalItem = Object.assign({}, item);
     item.hasChromaKeyColor = item.asset && item.asset.chromaKeyColor ? true : false;
-    this.onUpdate();
+    item.assetType = assetGroupTypeFromItem(item).id;
+    this.doUpdateForm();
     form.changes$.subscribe(function (changes) {
       // console.log('UpdateViewItemComponent.form.changes$', changes);
-      _this.onUpdateItem(changes);
+      _this.doUpdateItem(changes);
 
       _this.pushChanges();
     });
@@ -7097,7 +6947,7 @@ RemoveModalComponent.meta = {
   _proto.getAssetDidChange = function getAssetDidChange(changes) {
     var item = this.item;
     var itemAssetId = item.asset ? item.asset.id : null;
-    var changesAssetId = changes.asset ? changes.asset.id : null;
+    var changesAssetId = changes.asset ? changes.asset.id : null; // console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
 
     if (itemAssetId !== changesAssetId || item.hasChromaKeyColor !== changes.hasChromaKeyColor) {
       return true;
@@ -7106,7 +6956,7 @@ RemoveModalComponent.meta = {
     }
   };
 
-  _proto.onUpdateItem = function onUpdateItem(changes) {
+  _proto.doUpdateItem = function doUpdateItem(changes) {
     var _this2 = this;
 
     var item = this.item;
@@ -7115,15 +6965,16 @@ RemoveModalComponent.meta = {
 
     if (item.asset) {
       item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0, 1.0, 0.0] : null;
+    }
 
-      if (assetDidChange) {
-        EditorService.assetUpdate$(item.asset).pipe(operators.switchMap(function () {
-          return EditorService.inferItemUpdate$(_this2.view, item);
-        }), operators.first()).subscribe();
+    if (assetDidChange) {
+      var asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : rxjs.of(null);
+      asset$.pipe(operators.switchMap(function () {
+        return EditorService.inferItemUpdate$(_this2.view, item);
+      }), operators.first()).subscribe();
 
-        if (typeof item.onUpdateAsset === 'function') {
-          item.onUpdateAsset();
-        }
+      if (typeof item.onUpdateAsset === 'function') {
+        item.onUpdateAsset();
       }
     }
 
@@ -7132,7 +6983,7 @@ RemoveModalComponent.meta = {
     }
   };
 
-  _proto.onUpdate = function onUpdate() {
+  _proto.doUpdateForm = function doUpdateForm() {
     var _this3 = this;
 
     var item = this.item;
@@ -7151,15 +7002,15 @@ RemoveModalComponent.meta = {
           break;
 
         case ViewItemType.Plane.name:
-          keys = ['id', 'type', 'position', 'rotation', 'scale', 'asset?', 'hasChromaKeyColor?'];
+          keys = ['id', 'type', 'position', 'rotation', 'scale', 'assetType?', 'asset?', 'hasChromaKeyColor?'];
           break;
 
         case ViewItemType.CurvedPlane.name:
-          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'asset?', 'hasChromaKeyColor?'];
+          keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'assetType?', 'asset?', 'hasChromaKeyColor?'];
           break;
 
         case ViewItemType.Texture.name:
-          keys = ['id', 'type', 'asset?']; // asset, key no id!!
+          keys = ['id', 'type', 'assetType?', 'asset?', 'hasChromaKeyColor?']; // asset, key no id!!
 
           break;
 
@@ -7175,34 +7026,45 @@ RemoveModalComponent.meta = {
       keys.forEach(function (key) {
         var optional = key.indexOf('?') !== -1;
         key = key.replace('?', '');
+        var value = item[key] != null ? item[key] : null;
+        var control;
 
         switch (key) {
+          case 'viewId':
+            control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
+            EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+              control.options = options;
+              control.value = control.value || null;
+
+              _this3.pushChanges();
+            });
+            break;
+
+          case 'assetType':
+            control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
+            control.options = Object.keys(AssetGroupType).map(function (x) {
+              return AssetGroupType[x];
+            });
+            break;
+
           case 'link':
             var title = item.link ? item.link.title : null;
             var href = item.link ? item.link.href : null;
             var target = '_blank';
-            form.add(new rxcompForm.FormGroup({
+            control = new rxcompForm.FormGroup({
               title: new rxcompForm.FormControl(title),
               href: new rxcompForm.FormControl(href),
               target: target
-            }), 'link');
+            });
             break;
 
           default:
-            var value = item[key] != null ? item[key] : null;
-            form.add(new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator()), key);
+            control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
         }
+
+        form.add(control, key);
       });
       this.controls = form.controls;
-
-      if (keys.indexOf('viewId') !== -1) {
-        EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
-          _this3.controls.viewId.options = options;
-          _this3.controls.viewId.value = _this3.controls.viewId.value || null; // console.log(this.controls.viewId.options, this.controls.viewId.value);
-
-          _this3.pushChanges();
-        });
-      }
     } else {
       Object.keys(this.controls).forEach(function (key) {
         switch (key) {
@@ -7221,6 +7083,10 @@ RemoveModalComponent.meta = {
             _this3.controls[key].value = item.asset && item.asset.chromaKeyColor ? true : false;
             break;
 
+          case 'assetType':
+            _this3.controls[key].value = assetGroupTypeFromItem(item).id;
+            break;
+
           default:
             _this3.controls[key].value = item[key] != null ? item[key] : null;
         }
@@ -7228,13 +7094,51 @@ RemoveModalComponent.meta = {
     }
   };
 
+  _proto.onAssetTypeDidChange = function onAssetTypeDidChange(assetType) {
+    var _this4 = this;
+
+    var item = this.item;
+    var currentType = assetGroupTypeFromItem(item).id; // console.log('UpdateViewItemComponent.onAssetTypeDidChange', assetType, currentType);
+
+    if (assetType !== currentType) {
+      item.assetType = assetType;
+      var asset$ = rxjs.of(null); // AssetService.assetDelete$(item.asset);
+
+      if (assetType !== AssetGroupType.ImageOrVideo.id) {
+        asset$ = asset$.pipe(operators.switchMap(function () {
+          var asset = assetPayloadFromGroupTypeId(assetType);
+          return AssetService.assetCreate$(asset);
+        }));
+      }
+
+      asset$.pipe(operators.first()).subscribe(function (asset) {
+        // console.log('UpdateViewItemComponent.asset$', asset);
+        _this4.controls.asset.value = asset;
+      });
+      /*
+      asset$.pipe(
+      	tap(asset => {
+      		item.asset = asset;
+      		if (typeof item.onUpdateAsset === 'function') {
+      			item.onUpdateAsset();
+      		}
+      	}),
+      	switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
+      	first()
+      ).subscribe();
+      */
+    }
+  };
+
   _proto.onChanges = function onChanges(changes) {
-    this.onUpdate();
+    // console.log('UpdateViewItemComponent.onChanges', changes);
+    this.doUpdateForm();
   };
 
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
-      var payload = Object.assign({}, this.form.value);
+      var changes = this.form.value;
+      var payload = Object.assign({}, changes);
       this.update.next({
         view: this.view,
         item: new ViewItem(payload)
@@ -7245,7 +7149,7 @@ RemoveModalComponent.meta = {
   };
 
   _proto.onRemove = function onRemove(event) {
-    var _this4 = this;
+    var _this5 = this;
 
     ModalService.open$({
       src: environment.template.modal.remove,
@@ -7254,9 +7158,9 @@ RemoveModalComponent.meta = {
       }
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
-        _this4.delete.next({
-          view: _this4.view,
-          item: _this4.item
+        _this5.delete.next({
+          view: _this5.view,
+          item: _this5.item
         });
       }
     });
@@ -7285,7 +7189,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -7384,7 +7288,7 @@ UpdateViewTileComponent.meta = {
       // console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
       _this.pushChanges();
     });
-    this.onUpdate();
+    this.doUpdateForm();
     MessageService.in$.pipe(operators.auditTime(500), operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.CameraOrientation:
@@ -7405,7 +7309,7 @@ UpdateViewTileComponent.meta = {
     });
   };
 
-  _proto.onUpdate = function onUpdate() {
+  _proto.doUpdateForm = function doUpdateForm() {
     var view = this.view;
 
     if (!this.type || this.type.name !== view.type.name) {
@@ -7462,7 +7366,7 @@ UpdateViewTileComponent.meta = {
   };
 
   _proto.onChanges = function onChanges(changes) {
-    this.onUpdate();
+    this.doUpdateForm();
   };
 
   _proto.onSubmit = function onSubmit() {
@@ -7533,7 +7437,7 @@ UpdateViewComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
-};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent, UploadButtonDirective, UploadDropDirective, UploadItemComponent, UploadSrcDirective];
+};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
   _inheritsLoose(EditorModule, _Module);
@@ -7548,109 +7452,6 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
-};var AssetItemComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AssetItemComponent, _Component);
-
-  function AssetItemComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AssetItemComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    // console.log('AssetItemComponent.onInit', this.item);
-    if (this.item.preview === null) {
-      this.read$(this.item.file).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (preview) {
-        _this.item.preview = preview;
-
-        _this.pushChanges();
-      });
-    }
-  };
-
-  _proto.read$ = function read$(file) {
-    var _this2 = this;
-
-    var reader = new FileReader();
-    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
-      var blob = event.target.result;
-
-      if (_this2.item.type.name === AssetType.Image.name) {
-        return _this2.resize$(blob);
-      } else {
-        return rxjs.of(blob);
-      }
-    }));
-    reader.readAsDataURL(file);
-    return reader$;
-  };
-
-  _proto.resize$ = function resize$(blob) {
-    return new Promise(function (resolve, reject) {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 320;
-        var MAX_HEIGHT = 240;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        resolve(dataUrl);
-      };
-
-      img.onerror = function (error) {
-        reject(error);
-      };
-
-      img.src = blob;
-    });
-  };
-
-  _proto.onPause = function onPause() {
-    this.pause.next(this.item);
-  };
-
-  _proto.onResume = function onResume() {
-    this.resume.next(this.item);
-  };
-
-  _proto.onCancel = function onCancel() {
-    this.cancel.next(this.item);
-  };
-
-  _proto.onRemove = function onRemove() {
-    this.remove.next(this.item);
-  };
-
-  return AssetItemComponent;
-}(rxcomp.Component);
-AssetItemComponent.meta = {
-  selector: '[asset-item]',
-  outputs: ['pause', 'resume', 'cancel', 'remove'],
-  inputs: ['item'],
-  template:
-  /* html */
-  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [lazy]=\"item.preview\" [size]=\"{ width: 320, height: 240 }\" *if=\"item.preview && item.type.name === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
 };var ControlComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlComponent, _Component);
 
@@ -7720,7 +7521,7 @@ ControlComponent.meta = {
         });
         var uploads$ = fileArray.map(function (file, i) {
           return _this2.read$(file, i).pipe(operators.switchMap(function () {
-            return EditorService.upload$([file]);
+            return AssetService.upload$([file]);
           }), operators.tap(function (uploads) {
             return console.log('upload', uploads);
           }), operators.switchMap(function (uploads) {
@@ -7734,7 +7535,7 @@ ControlComponent.meta = {
             */
 
             var asset = Asset.fromUrl(upload.url);
-            return EditorService.assetCreate$(asset);
+            return AssetService.assetCreate$(asset);
           }));
         });
         return rxjs.combineLatest(uploads$);
@@ -7837,7 +7638,7 @@ ControlAssetComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
-};var AssetUploadItem = function AssetUploadItem(file) {
+};var UploadItem = function UploadItem(file) {
   this.file = file;
   this.name = file.name;
   this.type = assetTypeFromPath(file.name);
@@ -7850,47 +7651,46 @@ ControlAssetComponent.meta = {
   this.error = null;
   this.preview = null;
 };
-var AssetEvent = function AssetEvent(options) {
+var UploadEvent = function UploadEvent(options) {
   if (options) {
     Object.assign(this, options);
   }
 };
-var AssetUploadStartEvent = /*#__PURE__*/function (_AssetEvent) {
-  _inheritsLoose(AssetUploadStartEvent, _AssetEvent);
+var UploadStartEvent = /*#__PURE__*/function (_UploadEvent) {
+  _inheritsLoose(UploadStartEvent, _UploadEvent);
 
-  function AssetUploadStartEvent() {
-    return _AssetEvent.apply(this, arguments) || this;
+  function UploadStartEvent() {
+    return _UploadEvent.apply(this, arguments) || this;
   }
 
-  return AssetUploadStartEvent;
-}(AssetEvent);
-var AssetUploadCompleteEvent = /*#__PURE__*/function (_AssetEvent2) {
-  _inheritsLoose(AssetUploadCompleteEvent, _AssetEvent2);
+  return UploadStartEvent;
+}(UploadEvent);
+var UploadCompleteEvent = /*#__PURE__*/function (_UploadEvent2) {
+  _inheritsLoose(UploadCompleteEvent, _UploadEvent2);
 
-  function AssetUploadCompleteEvent() {
-    return _AssetEvent2.apply(this, arguments) || this;
+  function UploadCompleteEvent() {
+    return _UploadEvent2.apply(this, arguments) || this;
   }
 
-  return AssetUploadCompleteEvent;
-}(AssetEvent);
-var AssetUploadAssetEvent = /*#__PURE__*/function (_AssetEvent3) {
-  _inheritsLoose(AssetUploadAssetEvent, _AssetEvent3);
+  return UploadCompleteEvent;
+}(UploadEvent);
+var UploadAssetEvent = /*#__PURE__*/function (_UploadEvent3) {
+  _inheritsLoose(UploadAssetEvent, _UploadEvent3);
 
-  function AssetUploadAssetEvent() {
-    return _AssetEvent3.apply(this, arguments) || this;
+  function UploadAssetEvent() {
+    return _UploadEvent3.apply(this, arguments) || this;
   }
 
-  return AssetUploadAssetEvent;
-}(AssetEvent);
-
-var AssetService = /*#__PURE__*/function () {
-  function AssetService() {
+  return UploadAssetEvent;
+}(UploadEvent);
+var UploadService = /*#__PURE__*/function () {
+  function UploadService() {
     this.concurrent$ = new rxjs.BehaviorSubject(0);
     this.items$ = new rxjs.BehaviorSubject([]);
     this.events$ = new rxjs.ReplaySubject(1);
   }
 
-  var _proto = AssetService.prototype;
+  var _proto = UploadService.prototype;
 
   _proto.upload$ = function upload$() {
     var _this = this;
@@ -7907,8 +7707,9 @@ var AssetService = /*#__PURE__*/function () {
   _proto.uploadItem$ = function uploadItem$(item) {
     var _this2 = this;
 
+    // max 4 concurrent upload
     item.uploading = true;
-    this.events$.next(new AssetUploadStartEvent({
+    this.events$.next(new UploadStartEvent({
       item: item
     }));
     var files = [item.file];
@@ -7919,22 +7720,22 @@ var AssetService = /*#__PURE__*/function () {
     }), operators.tap(function () {
       return _this2.concurrent$.next(_this2.concurrent$.getValue() + 1);
     }), operators.first(), operators.switchMap(function (files) {
-      return EditorService.upload$(files);
+      return AssetService.upload$(files);
     }), operators.switchMap(function (uploads) {
       var upload = uploads[0];
       item.uploading = false;
       item.complete = true;
       var asset = Asset.fromUrl(upload.url);
 
-      _this2.events$.next(new AssetUploadCompleteEvent({
+      _this2.events$.next(new UploadCompleteEvent({
         item: item,
         asset: asset
       }));
 
-      return EditorService.assetCreate$(asset).pipe(operators.tap(function (asset) {
+      return AssetService.assetCreate$(asset).pipe(operators.tap(function (asset) {
         _this2.remove(item);
 
-        _this2.events$.next(new AssetUploadAssetEvent({
+        _this2.events$.next(new UploadAssetEvent({
           item: item,
           asset: asset
         }));
@@ -7943,18 +7744,19 @@ var AssetService = /*#__PURE__*/function () {
       }));
     }));
     /*
-    return EditorService.upload$([item.file]).pipe(
+    // concurrent upload
+    return AssetService.upload$([item.file]).pipe(
     	// tap(upload => console.log('upload', upload)),
     	switchMap((uploads) => {
     		const upload = uploads[0];
     		item.uploading = false;
     		item.complete = true;
     		const asset = Asset.fromUrl(upload.url);
-    		this.events$.next(new AssetUploadCompleteEvent({ item, asset }));
-    		return EditorService.assetCreate$(asset).pipe(
+    		this.events$.next(new UploadCompleteEvent({ item, asset }));
+    		return AssetService.assetCreate$(asset).pipe(
     			tap(asset => {
     				this.remove(item);
-    				this.events$.next(new AssetUploadAssetEvent({ item, asset }));
+    				this.events$.next(new UploadAssetEvent({ item, asset }));
     			}),
     		);
     	}),
@@ -7967,7 +7769,7 @@ var AssetService = /*#__PURE__*/function () {
       // console.log('addItems', files);
       var items = this.items$.getValue();
       var newItems = Array.from(files).map(function (file) {
-        return new AssetUploadItem(file);
+        return new UploadItem(file);
       });
       items.push.apply(items, newItems);
       this.items$.next(items);
@@ -7997,7 +7799,7 @@ var AssetService = /*#__PURE__*/function () {
       dropArea = dropArea || input;
       var body = document.querySelector('body');
       return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        // console.log('AssetService.drop$', event);
+        // console.log('UploadService.drop$', event);
         event.preventDefault();
 
         if (event.target === dropArea) {
@@ -8074,7 +7876,7 @@ var AssetService = /*#__PURE__*/function () {
   };
 
   _proto.uploadFile$ = function uploadFile$(file) {
-    return EditorService.upload$([file]).pipe( // tap(upload => console.log('upload', upload)),
+    return AssetService.upload$([file]).pipe( // tap(upload => console.log('upload', upload)),
     operators.switchMap(function (uploads) {
       var upload = uploads[0];
       /*
@@ -8086,7 +7888,7 @@ var AssetService = /*#__PURE__*/function () {
       */
 
       var asset = Asset.fromUrl(upload.url);
-      return EditorService.assetCreate$(asset);
+      return AssetService.assetCreate$(asset);
     }));
   };
 
@@ -8144,7 +7946,7 @@ var AssetService = /*#__PURE__*/function () {
     }
   };
 
-  return AssetService;
+  return UploadService;
 }();var ControlAssetsComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlAssetsComponent, _ControlComponent);
 
@@ -8171,7 +7973,7 @@ var AssetService = /*#__PURE__*/function () {
     var input = node.querySelector('input');
     input.setAttribute('accept', this.accept);
     var dropArea = node.querySelector('.upload-drop');
-    var service = this.service = new AssetService();
+    var service = this.service = new UploadService();
     service.drop$(input, dropArea).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (items) {
       // console.log('ControlAssetComponent.drop$', items);
       _this.items = items;
@@ -8186,7 +7988,7 @@ var AssetService = /*#__PURE__*/function () {
     });
     service.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       // console.log('ControlAssetComponent.events$', event);
-      if (event instanceof AssetUploadAssetEvent) {
+      if (event instanceof UploadAssetEvent) {
         _this.assets.push(event.asset);
 
         _this.control.value = _this.assets;
@@ -8243,7 +8045,7 @@ ControlAssetsComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [lazy]=\"item | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"item.type.name === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type.name === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div asset-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\" [innerHTML]=\"'upload' | label\"></div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\" [innerHTML]=\"'cancel' | label\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span [innerHTML]=\"'drag_and_drop_images' | label\"></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of assets\">\n\t\t\t\t\t<div class=\"upload-item\">\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<img [lazy]=\"item | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"item.type.name === 'image'\" />\n\t\t\t\t\t\t\t<video [src]=\"item | asset\" *if=\"item.type.name === 'video'\"></video>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"name\" [innerHTML]=\"item.file\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of items\">\n\t\t\t\t\t<div upload-item [item]=\"item\" (pause)=\"onItemPause($event)\" (resume)=\"onItemResume($event)\" (cancel)=\"onItemCancel($event)\" (remove)=\"onItemRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<div class=\"btn--browse\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t\t<input type=\"file\" accept=\"image/jpeg\" multiple />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--upload\" (click)=\"onUpload()\" *if=\"uploadCount > 0\" [innerHTML]=\"'upload' | label\"></div>\n\t\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\" *if=\"uploadCount > 0\" [innerHTML]=\"'cancel' | label\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\">\n    \t\t\t<span [innerHTML]=\"'drag_and_drop_images' | label\"></span>\n\t\t\t</div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlCheckboxComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCheckboxComponent, _ControlComponent);
 
@@ -8421,32 +8223,32 @@ LabelPipe.meta = {
       var item = navDropdown.children[index];
       dropdown.scrollTo(0, item.offsetTop);
     }
-  }
-  /*
-  setOption(item) {
-  	this.control.value = item.id;
-  	// DropdownDirective.dropdown$.next(null);
-  }
-  */
-  ;
+  };
 
   _proto.setOption = function setOption(item) {
     // console.log('setOption', item, this.isMultiple);
+    var value;
+
     if (this.isMultiple) {
-      var value = this.control.value || [];
-      var index = value.indexOf(item.id);
+      var _value = this.control.value || [];
+
+      var index = _value.indexOf(item.id);
 
       if (index !== -1) {
         // if (value.length > 1) {
-        value.splice(index, 1); // }
+        _value.splice(index, 1); // }
+
       } else {
-        value.push(item.id);
+        _value.push(item.id);
       }
 
-      this.control.value = value.length ? value.slice() : null;
+      _value = (_readOnlyError("value"), _value.length ? _value.slice() : null);
     } else {
-      this.control.value = item.id; // DropdownDirective.dropdown$.next(null);
+      value = item.id; // DropdownDirective.dropdown$.next(null);
     }
+
+    this.control.value = value;
+    this.change.next(value);
   };
 
   _proto.hasOption = function hasOption(item) {
@@ -8521,6 +8323,7 @@ LabelPipe.meta = {
 }(ControlComponent);
 ControlCustomSelectComponent.meta = {
   selector: '[control-custom-select]',
+  outputs: ['change'],
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
@@ -8740,276 +8543,7 @@ ControlTextComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
-};var FlowService = /*#__PURE__*/function () {
-  function FlowService(options) {
-    var _this = this;
-
-    this.flow = new Flow(options);
-    this.flow$ = new rxjs.ReplaySubject(1);
-    this.pauseOrResumeEvent$ = new rxjs.Subject();
-    /*
-    this.events$ = this.flow$.pipe(
-    	switchMap(flow => merge(this.flowEvents(flow), this.customFlowEvents()))
-    );
-    */
-
-    this.events$ = rxjs.merge(this.flowEvents(this.flow), this.customFlowEvents()).pipe(operators.shareReplay(1));
-    this.transfers$ = this.events$.pipe(operators.map(function () {
-      return _this.flow.files;
-    }), operators.map(function (files) {
-      if (files === void 0) {
-        files = [];
-      }
-
-      return {
-        transfers: files.map(function (flowFile) {
-          return flowFile2Transfer(flowFile);
-        }),
-        flow: _this.flow,
-        totalProgress: _this.flow.progress()
-      };
-    }), operators.shareReplay(1));
-    this.hasItems$ = this.transfers$.pipe(operators.map(function (state) {
-      return state.transfers.some(function (file) {
-        return !file.success;
-      });
-    }, operators.startWith(false)));
-  }
-
-  var _proto = FlowService.prototype;
-
-  _proto.fromEvent_ = function fromEvent_(target, name) {
-    return rxjs.fromEvent(target, name).pipe(operators.map(function (event) {
-      return {
-        type: name,
-        event: event
-      };
-    }));
-  };
-
-  _proto.flowEvents = function flowEvents(flow) {
-    var events = [this.fromEvent_(flow, 'fileSuccess'), this.fromEvent_(flow, 'fileProgress'), this.fromEvent_(flow, 'fileAdded'), this.fromEvent_(flow, 'filesAdded'), this.fromEvent_(flow, 'filesSubmitted'), this.fromEvent_(flow, 'fileRemoved'), this.fromEvent_(flow, 'fileRetry'), this.fromEvent_(flow, 'fileError'), this.fromEvent_(flow, 'uploadStart'), this.fromEvent_(flow, 'complete'), this.fromEvent_(flow, 'progress')];
-    return rxjs.merge.apply(void 0, events);
-  };
-
-  _proto.customFlowEvents = function customFlowEvents() {
-    var pauseOrResumeEvent$ = this.pauseOrResumeEvent$.pipe(operators.map(function () {
-      return {
-        type: 'pauseOrResume'
-      };
-    }));
-    var newFlowInstanceEvent$ = this.flow$.pipe(operators.map(function () {
-      return {
-        type: 'newFlowJsInstance'
-      };
-    }));
-    return rxjs.merge(pauseOrResumeEvent$, newFlowInstanceEvent$);
-  };
-
-  _proto.upload = function upload() {
-    this.flow.upload();
-  };
-
-  _proto.cancel = function cancel() {
-    this.flow.cancel();
-  };
-
-  _proto.cancelFile = function cancelFile(file) {
-    file.flowFile.cancel();
-  };
-
-  _proto.pauseFile = function pauseFile(file) {
-    file.flowFile.pause();
-    this.pauseOrResumeEvent$.next();
-  };
-
-  _proto.resumeFile = function resumeFile(file) {
-    file.flowFile.resume();
-    this.pauseOrResumeEvent$.next();
-  };
-
-  _proto.removeFile = function removeFile(file) {
-    this.flow.removeFile(file);
-  };
-
-  return FlowService;
-}();
-function flowFile2Transfer(flowFile) {
-  return {
-    id: flowFile.uniqueIdentifier,
-    name: flowFile.name,
-    progress: flowFile.progress(),
-    averageSpeed: flowFile.averageSpeed,
-    currentSpeed: flowFile.currentSpeed,
-    size: flowFile.size,
-    paused: flowFile.paused,
-    error: flowFile.error,
-    complete: flowFile.isComplete(),
-    success: flowFile.isComplete() && !flowFile.error,
-    timeRemaining: flowFile.timeRemaining(),
-    flowFile: flowFile
-  };
-}/*
-export interface Transfer {
-	id: string;
-	name: string;
-	flowFile: flowjs.FlowFile;
-	progress: number;
-	error: boolean;
-	paused: boolean;
-	success: boolean;
-	complete: boolean;
-	currentSpeed: number;
-	averageSpeed: number;
-	size: number;
-	timeRemaining: number;
-}
-*/
-
-var ControlUploadComponent = /*#__PURE__*/function (_ControlComponent) {
-  _inheritsLoose(ControlUploadComponent, _ControlComponent);
-
-  function ControlUploadComponent() {
-    return _ControlComponent.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlUploadComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.label = 'label';
-    this.required = false;
-    this.uploadAttributes = {
-      accept: 'image/*',
-      multiple: this.multiple
-    };
-    this.uploader = new FlowService({
-      target: '/api/upload_',
-      singleFile: !this.multiple
-    });
-    this.uploader.events$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      // console.log('ControlUploadComponent', event.type);
-      switch (event.type) {
-        case 'filesAdded':
-        case 'fileAdded':
-        case 'fileRemoved':
-        case 'fileError':
-        case 'complete':
-          _this.pushChanges();
-
-          break;
-      }
-    });
-    this.totalProgress = 0;
-    this.transfers = [];
-    this.uploader.transfers$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (data) {
-      _this.totalProgress = data.totalProgress;
-      _this.transfers = data.transfers;
-      console.log('ControlUploadComponent.transfers$', data);
-
-      if (data.totalProgress === 1) {
-        var completed = data.transfers.filter(function (x) {
-          return x.complete;
-        }).map(function (x) {
-          // !!! retrieve correct url
-          return "" + window.location.origin + environment.href + "uploads/" + x.id + "_" + x.name;
-        });
-
-        if (_this.multiple) {
-          _this.control.value = completed;
-        } else {
-          _this.control.value = completed[0];
-        }
-      }
-
-      _this.pushChanges();
-    });
-    this.hasItems = false;
-    this.uploader.hasItems$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (hasItems) {
-      _this.hasItems = hasItems;
-
-      _this.pushChanges();
-    }); // console.log('ControlUploadComponent.onInit');
-  };
-
-  _proto.onPause = function onPause(item) {
-    console.log('ControlUploadComponent.onPause', item);
-    this.uploader.pauseFile(item);
-  };
-
-  _proto.onResume = function onResume(item) {
-    console.log('ControlUploadComponent.onResume', item);
-    this.uploader.resumeFile(item);
-  };
-
-  _proto.onCancel = function onCancel(item) {
-    console.log('ControlUploadComponent.onCancel', item);
-    this.uploader.cancelFile(item);
-  };
-
-  _proto.onRemove = function onRemove(item) {
-    console.log('ControlUploadComponent.onRemove', item);
-    this.uploader.removeFile(item);
-  };
-
-  return ControlUploadComponent;
-}(ControlComponent);
-ControlUploadComponent.meta = {
-  selector: '[control-upload]',
-  inputs: ['control', 'label', 'multiple'],
-  template:
-  /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"listing--assets\">\n\t\t\t\t<div class=\"listing__item\" *for=\"let item of transfers\">\n\t\t\t\t\t<div [uploadItem]=\"uploader\" [item]=\"item\" (pause)=\"onPause($event)\" (resume)=\"onResume($event)\" (cancel)=\"onCancel($event)\" (remove)=\"onRemove($event)\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<p *if=\"uploader.flow.support\">\u2705 FlowJS is supported by your browser</p>\n\t\t\t<p *if=\"!uploader.flow.support\">\uD83D\uDED1 FlowJS is NOT supported by your browser</p>\n\t\t\t-->\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<span class=\"btn--browse\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\">Browse</span>\n\t\t\t\t<span class=\"btn--upload\" (click)=\"uploader.upload()\" *if=\"hasItems\">Upload</span>\n\t\t\t\t<span class=\"btn--cancel\" (click)=\"uploader.cancel()\" *if=\"hasItems\">Cancel</span>\n\t\t\t\t<!-- <span class=\"btn--cancel\" (click)=\"uploader.cancel()\" [class]=\"{ disabled: !transfers.length }\">Cancel</span> -->\n\t\t\t</div>\n\t\t\t<div class=\"upload-drop\" [uploadDrop]=\"uploader\">\n    \t\t\t<span>Drag And Drop your images here</span>\n\t\t\t</div>\n\t\t\t<!-- <input type=\"file\" class=\"btn btn--upload\" [uploadButton]=\"uploader\" [attributes]=\"uploadAttributes\" /> -->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
-};
-/*
-<p *ngIf="flow.flowJs?.support; else notSupported">
-  ✅ FlowJS is supported by your browser
-</p>
-<ng-template #notSupported>
-  <p>
-	🛑 FlowJS is NOT supported by your browser
-  </p>
-</ng-template>
-
-<ng-container #flow="flow" [flowConfig]="{target: 'http://localhost:3000/upload'}"></ng-container>
-<input type="file"
-	   flowButton
-	   [flow]="flow.flowJs"
-	   [flowAttributes]="{accept: 'image/*'}">
-
-<div class="drop-area"
-	 flowDrop
-	 [flow]="flow.flowJs">
-	 Drop a file here
-</div>
-
-<div class="transfers">
-  <div class="transfer"
-	   [ngClass]="{'transfer--error': transfer.error, 'transfer--success': transfer.success}"
-	   *ngFor="let transfer of (flow.transfers$ | async).transfers; trackBy: trackTransfer">
-	<div class="name">name: {{transfer.name}}</div>
-	<div>progress: {{transfer.progress | percent}}</div>
-	<div>size: {{transfer.size | number: '1.0'}} bytes</div>
-	<div>current speed: {{transfer.currentSpeed | number: '1.0'}} bytes/s</div>
-	<div>average speed: {{transfer.averageSpeed | number: '1.0'}} bytes/s</div>
-	<div>time ramining: {{transfer.timeRemaining}}s</div>
-	<div>paused: {{transfer.paused}}</div>
-	<div>success: {{transfer.success}}</div>
-	<div>complete: {{transfer.complete}}</div>
-	<div>error: {{transfer.error}}</div>
-
-	<img [flowSrc]="transfer">
-
-	<button (click)="flow.pauseFile(transfer)">pause</button>
-	<button (click)="flow.resumeFile(transfer)">resume</button>
-	<button (click)="flow.cancelFile(transfer)">cancel</button>
-  </div>
-</div>
-<button type="button" (click)="flow.upload()" [disabled]="!(flow.somethingToUpload$ | async)">Start upload</button>
-<button type="button" (click)="flow.cancel()" [disabled]="!(flow.transfers$ | async).transfers.length">Cancel all</button>
-Total progress: {{(flow.transfers$ | async).totalProgress | percent}}
-*/var ControlVectorComponent = /*#__PURE__*/function (_ControlComponent) {
+};var ControlVectorComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlVectorComponent, _ControlComponent);
 
   function ControlVectorComponent() {
@@ -10034,6 +9568,109 @@ SvgIconStructure.meta = {
 }(rxcomp.Component);
 TryInARComponent.meta = {
   selector: '[try-in-ar]'
+};var UploadItemComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(UploadItemComponent, _Component);
+
+  function UploadItemComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = UploadItemComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    // console.log('UploadItemComponent.onInit', this.item);
+    if (this.item.preview === null) {
+      this.read$(this.item.file).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (preview) {
+        _this.item.preview = preview;
+
+        _this.pushChanges();
+      });
+    }
+  };
+
+  _proto.read$ = function read$(file) {
+    var _this2 = this;
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
+      var blob = event.target.result;
+
+      if (_this2.item.type.name === AssetType.Image.name) {
+        return _this2.resize$(blob);
+      } else {
+        return rxjs.of(blob);
+      }
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  _proto.resize$ = function resize$(blob) {
+    return new Promise(function (resolve, reject) {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(dataUrl);
+      };
+
+      img.onerror = function (error) {
+        reject(error);
+      };
+
+      img.src = blob;
+    });
+  };
+
+  _proto.onPause = function onPause() {
+    this.pause.next(this.item);
+  };
+
+  _proto.onResume = function onResume() {
+    this.resume.next(this.item);
+  };
+
+  _proto.onCancel = function onCancel() {
+    this.cancel.next(this.item);
+  };
+
+  _proto.onRemove = function onRemove() {
+    this.remove.next(this.item);
+  };
+
+  return UploadItemComponent;
+}(rxcomp.Component);
+UploadItemComponent.meta = {
+  selector: '[upload-item]',
+  outputs: ['pause', 'resume', 'cancel', 'remove'],
+  inputs: ['item'],
+  template:
+  /* html */
+  "\n\t<div class=\"upload-item\" [class]=\"{ 'error': item.error, 'success': item.success }\">\n\t\t<div class=\"picture\">\n\t\t\t<img [lazy]=\"item.preview\" [size]=\"{ width: 320, height: 240 }\" *if=\"item.preview && item.type.name === 'image'\" />\n\t\t\t<video [src]=\"item.preview\" *if=\"item.preview && item.type.name === 'video'\"></video>\n\t\t\t<svg class=\"spinner\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" [class]=\"{ uploading: item.uploading }\" *if=\"item.uploading\"><use xlink:href=\"#spinner\"></use></svg>\n\t\t</div>\n\t\t<div class=\"name\">{{item.name}}</div>\n\t\t<!--\n\t\t<div class=\"group--info\">\n\t\t\t<div>progress: {{item.progress}}</div>\n\t\t\t<div>size: {{item.size}} bytes</div>\n\t\t\t<div>current speed: {{item.currentSpeed}} bytes/s</div>\n\t\t\t<div>average speed: {{item.averageSpeed}} bytes/s</div>\n\t\t\t<div>time ramining: {{item.timeRemaining}}s</div>\n\t\t\t<div>paused: {{item.paused}}</div>\n\t\t\t<div>success: {{item.success}}</div>\n\t\t\t<div>complete: {{item.complete}}</div>\n\t\t\t<div>error: {{item.error}}</div>\n\t\t</div>\n\t\t-->\n\t\t<!--\n\t\t<div class=\"group--cta\" *if=\"!item.complete && item.uploading\">\n\t\t\t<div class=\"btn--pause\" (click)=\"onPause()\">pause</div>\n\t\t\t<div class=\"btn--resume\" (click)=\"onResume()\">resume</div>\n\t\t\t<div class=\"btn--cancel\" (click)=\"onCancel()\">cancel</div>\n\t\t</div>\n\t\t-->\n\t\t<div class=\"group--cta\">\n\t\t\t<div class=\"btn--remove\" (click)=\"onRemove()\" *if=\"!item.complete\">remove</div>\n\t\t</div>\n\t</div>\n\t"
 };var HlsDirective = /*#__PURE__*/function (_Directive) {
   _inheritsLoose(HlsDirective, _Directive);
 
@@ -10135,11 +9772,17 @@ HlsDirective.meta = {
     }
   };
 
-  EnvMapLoader.loadBackground = function loadBackground(path, file, renderer, callback) {
+  EnvMapLoader.loadBackground = function loadBackground(folder, file, renderer, callback) {
     var pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
-    var loader = new THREE.TextureLoader();
-    loader.setPath(path).load(file, function (texture) {
+    var image = new Image();
+    ImageService.load$(folder + file).pipe(operators.switchMap(function (blob) {
+      var load = rxjs.fromEvent(image, 'load');
+      image.crossOrigin = 'anonymous';
+      image.src = blob;
+      return load;
+    }), operators.first()).subscribe(function (event) {
+      var texture = new THREE.Texture(image);
       var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
 
       pmremGenerator.dispose();
@@ -10148,7 +9791,20 @@ HlsDirective.meta = {
         callback(envMap, texture, false);
       }
     });
+    /*
+    const loader = new THREE.TextureLoader();
+    loader
+    	.setPath(folder)
+    	.load(file, (texture) => {
+    		const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+    		// texture.dispose();
+    		pmremGenerator.dispose();
+    		if (typeof callback === 'function') {
+    			callback(envMap, texture, false);
+    		}
+    	});
     return loader;
+    */
   };
 
   EnvMapLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
@@ -10200,7 +9856,7 @@ HlsDirective.meta = {
     });
   };
 
-  EnvMapLoader.loadVideoBackground = function loadVideoBackground(path, file, renderer, callback) {
+  EnvMapLoader.loadVideoBackground = function loadVideoBackground(folder, file, renderer, callback) {
     var _this2 = this;
 
     var debugService = DebugService.getService();
@@ -10236,7 +9892,7 @@ HlsDirective.meta = {
       onPlaying();
     };
 
-    video.src = path + file;
+    video.src = folder + file;
     video.load();
     video.play().then(function () {
       // console.log('EnvMapLoader.loadVideoBackground.play');
@@ -10292,12 +9948,12 @@ HlsDirective.meta = {
     }
   };
 
-  EnvMapLoader.loadRgbeBackground = function loadRgbeBackground(path, file, renderer, callback) {
+  EnvMapLoader.loadRgbeBackground = function loadRgbeBackground(folder, file, renderer, callback) {
     var pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
     var loader = new THREE.RGBELoader();
     loader.setDataType(THREE.UnsignedByteType) // .setDataType(THREE.FloatType)
-    .setPath(path).load(file, function (texture) {
+    .setPath(folder).load(file, function (texture) {
       var envMap = pmremGenerator.fromEquirectangular(texture).texture; // texture.dispose();
 
       pmremGenerator.dispose();
@@ -10650,7 +10306,8 @@ var Panorama = /*#__PURE__*/function () {
     var mesh = this.mesh = new InteractiveMesh(geometry, material); // mesh.renderOrder = environment.renderOrder.panorama;
 
     mesh.name = '[panorama]';
-  };
+  } // !!! old
+  ;
 
   _proto.swap = function swap(view, renderer, callback, onexit) {
     var _this = this;
@@ -10712,6 +10369,39 @@ var Panorama = /*#__PURE__*/function () {
     }
   };
 
+  _proto.change = function change(view, renderer, callback, onexit) {
+    var _this2 = this;
+
+    var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
+    var material = this.mesh.material;
+    setTimeout(function () {
+      _this2.load(item, renderer, function (envMap, texture, rgbe) {
+        setTimeout(function () {
+          if (typeof onexit === 'function') {
+            onexit(view);
+          }
+
+          gsap.to(_this2, {
+            duration: 0.5,
+            tween: 1,
+            ease: Power2.easeInOut,
+            onUpdate: function onUpdate() {
+              material.uniforms.tween.value = _this2.tween;
+              material.needsUpdate = true;
+            },
+            onComplete: function onComplete() {
+              setTimeout(function () {
+                if (typeof callback === 'function') {
+                  callback(envMap, texture, rgbe);
+                }
+              }, 100); // !!! delay
+            }
+          });
+        }, 100); // !!! delay
+      });
+    }, 300); // !!! delay
+  };
+
   _proto.crossfade = function crossfade(item, renderer, callback) {
     var material = this.mesh.material;
     this.load(item, renderer, function (envMap, texture, rgbe) {
@@ -10765,7 +10455,7 @@ var Panorama = /*#__PURE__*/function () {
   };
 
   _proto.setVideo = function setVideo(video) {
-    var _this2 = this;
+    var _this3 = this;
 
     // console.log('Panorama.setVideo', video);
     if (video) {
@@ -10777,7 +10467,7 @@ var Panorama = /*#__PURE__*/function () {
         texture.mapping = THREE.UVMapping;
         texture.format = THREE.RGBFormat;
         texture.needsUpdate = true;
-        var material = _this2.mesh.material;
+        var material = _this3.mesh.material;
         material.map = texture;
         material.uniforms.texture.value = texture;
         material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
@@ -12599,38 +12289,40 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.setView = function setView() {
     var _this2 = this;
 
+    if (!this.panorama) {
+      return;
+    }
+
     var view = this.view_;
 
     if (view) {
-      if (this.panorama) {
-        if (this.infoResultMessage) {
-          if (view instanceof PanoramaGridView && message.gridIndex) {
-            view.index_ = message.gridIndex;
-          }
+      if (this.infoResultMessage) {
+        if (view instanceof PanoramaGridView && message.gridIndex) {
+          view.index_ = message.gridIndex;
         }
-
-        view.ready = false;
-        this.loading = loadingBanner;
-        this.waiting = null;
-        this.pushChanges();
-        this.panorama.swap(view, this.renderer, function (envMap, texture, rgbe) {
-          // this.scene.background = envMap;
-          _this2.scene.environment = envMap;
-          view.ready = true;
-          _this2.loading = null;
-          _this2.waiting = view && view.type.name === 'waiting-room' ? waitingBanner : null;
-
-          _this2.pushChanges(); // this.render();
-
-        }, function (view) {
-          _this2.setViewOrientation(view); // this.showNavPoints = true;
-          // this.pushChanges();
-
-        });
-      } else {
-        this.setViewOrientation(view);
       }
 
+      view.ready = false;
+      this.loading = loadingBanner;
+      this.waiting = null;
+      this.pushChanges();
+      this.panorama.change(view, this.renderer, function (envMap, texture, rgbe) {
+        // this.scene.background = envMap;
+        _this2.scene.environment = envMap;
+        view.ready = true;
+        _this2.waiting = view && view.type.name === 'waiting-room' ? waitingBanner : null;
+
+        _this2.pushChanges(); // this.render();
+
+      }, function (view) {
+        _this2.setViewOrientation(view);
+
+        _this2.loading = null;
+
+        _this2.pushChanges(); // this.showNavPoints = true;
+        // this.pushChanges();
+
+      });
       this.infoResultMessage = null;
     }
   };
@@ -13949,7 +13641,7 @@ var MediaLoader = /*#__PURE__*/function () {
       }
 
       var onCanPlay = function onCanPlay() {
-        video.oncanplay = null;
+        video.removeEventListener('canplay', onCanPlay);
         texture = _this.texture = new THREE.VideoTexture(video);
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
@@ -13969,7 +13661,7 @@ var MediaLoader = /*#__PURE__*/function () {
       if (video.readyState >= video.HAVE_FUTURE_DATA) {
         onCanPlay();
       } else {
-        video.oncanplay = onCanPlay;
+        video.addEventListener('canplay', onCanPlay);
       }
     } else if (this.isVideo) {
       // create the video element
@@ -14289,6 +13981,29 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
     var material = this.material;
     var mediaLoader = this.mediaLoader;
+    /*
+    if (false && mediaLoader.isPlayableVideo) {
+    	const textureB = MediaLoader.loadTexture({
+    		asset: {
+    			folder: 'textures/ui/', file: 'play.png'
+    		}
+    	}, (textureB) => {
+    		// console.log('MediaMesh.textureB', textureB);
+    		textureB.minFilter = THREE.LinearFilter;
+    		textureB.magFilter = THREE.LinearFilter;
+    		textureB.mapping = THREE.UVMapping;
+    		// textureB.format = THREE.RGBFormat;
+    		textureB.wrapS = THREE.RepeatWrapping;
+    		textureB.wrapT = THREE.RepeatWrapping;
+    		material.uniforms.textureB.value = textureB;
+    		// material.uniforms.resolutionB.value.x = textureB.image.width;
+    		// material.uniforms.resolutionB.value.y = textureB.image.height;
+    		material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
+    		// console.log(material.uniforms.resolutionB.value, textureB);
+    		material.needsUpdate = true;
+    	});
+    }
+    */
 
     mediaLoader.load(function (textureA) {
       // console.log('MediaMesh.textureA', textureA);
@@ -14376,6 +14091,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       }
     };
 
+    image.crossOrigin = 'anonymous';
     image.src = environment.getPath('textures/ui/play.png');
   };
 
@@ -15944,12 +15660,28 @@ ModelMenuComponent.meta = {
   */
   ;
 
-  ModelNavComponent.getTextureCircle = function getTextureCircle() {
-    return ModelNavComponent.textureCircle || (ModelNavComponent.textureCircle = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-circle.png')));
+  ModelNavComponent.getTexturePoint = function getTexturePoint() {
+    return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
   };
 
-  ModelNavComponent.getTextureSquare = function getTextureSquare() {
-    return ModelNavComponent.textureSquare || (ModelNavComponent.textureSquare = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-square.png')));
+  ModelNavComponent.getTextureMove = function getTextureMove() {
+    return ModelNavComponent.textureMove || (ModelNavComponent.textureMove = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-move.png')));
+  };
+
+  ModelNavComponent.getTextureInfo = function getTextureInfo() {
+    return ModelNavComponent.textureInfo || (ModelNavComponent.textureInfo = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info.png')));
+  };
+
+  ModelNavComponent.getTexture = function getTexture(item, view) {
+    var texture;
+
+    if (item.hasPanel) {
+      texture = view.id === item.viewId ? this.getTextureInfo() : this.getTexturePoint();
+    } else {
+      texture = this.getTextureMove();
+    }
+
+    return texture;
   };
 
   var _proto = ModelNavComponent.prototype;
@@ -15988,7 +15720,7 @@ ModelMenuComponent.meta = {
     var position = (_THREE$Vector = new THREE.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
     nav.position.set(position.x, position.y, position.z);
-    var map = this.item.hasPanel ? ModelNavComponent.getTextureCircle() : ModelNavComponent.getTextureSquare();
+    var map = ModelNavComponent.getTexture(this.item, this.view);
     map.disposable = false;
     map.encoding = THREE.sRGBEncoding;
     var material = new THREE.SpriteMaterial({
@@ -16125,7 +15857,7 @@ ModelNavComponent.meta = {
     host: WorldComponent
   },
   outputs: ['over', 'out', 'down'],
-  inputs: ['item']
+  inputs: ['item', 'view']
 };var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelPanelComponent, _ModelComponent);
 
@@ -16466,8 +16198,7 @@ ModelPictureComponent.meta = {
   ;
 
   _proto.onUpdate = function onUpdate(item, mesh) {
-    console.log('ModelPlaneComponent.onUpdate', item);
-
+    // console.log('ModelPlaneComponent.onUpdate', item);
     if (item.position) {
       mesh.position.fromArray(item.position);
     }
@@ -16485,7 +16216,7 @@ ModelPictureComponent.meta = {
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
-    console.log('ModelPlaneComponent.onUpdateAsset', item);
+    // console.log('ModelPlaneComponent.onUpdateAsset', item);
     this.mesh.updateByItem(item);
     this.mesh.load(function () {
       console.log('ModelPlaneComponent.mesh.load.complete');
@@ -16583,7 +16314,7 @@ ModelPlaneComponent.meta = {
       }
 
       var items = _this2.item.items;
-      mesh.scale.set(0.1, 0.1, 0.1); // mesh.scale.set(10, 10, 10);
+      mesh.scale.set(0.05, 0.05, 0.05); // mesh.scale.set(10, 10, 10);
 
       mesh.traverse(function (child) {
         if (child.isMesh) {
@@ -16624,6 +16355,8 @@ ModelPlaneComponent.meta = {
 
           var _mesh = item.plane = new MediaMesh(item, items, previous.geometry);
 
+          _mesh.depthTest = false;
+          _mesh.renderOrder = 0;
           _mesh.name = previous.name;
 
           _mesh.position.copy(previous.position);
@@ -16750,6 +16483,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, AssetItemComponent, ControlAssetComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlUploadComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

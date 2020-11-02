@@ -3,40 +3,6 @@
 import { Subject } from "rxjs";
 // import * as THREE from 'three';
 
-export const EXT_IMAGE = [
-	'jpeg', 'jpg', 'png',
-];
-export const EXT_VIDEO = [
-	'mp4', 'webm',
-];
-export const EXT_MODEL = [
-	'gltf', 'glb', 'usdz'
-];
-
-export const AssetType = {
-	Image: { id: 1, name: 'image' }, // jpg, png, ...
-	Video: { id: 2, name: 'video' }, // mp4, webm, ...
-	Model: { id: 3, name: 'model' }, // gltf, glb, …
-	PublisherStream: { id: 4, name: 'publisher-stream' }, // valore fisso di file a ‘publisherStream’ e folder string.empty
-	NextAttendeeStream: { id: 5, name: 'next-attendee-stream' }, // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
-};
-
-export function assetTypeFromPath(path) {
-	const extension = path.split('.').pop().toLowerCase();
-	if (EXT_IMAGE.indexOf(extension) !== -1) {
-		return AssetType.Image;
-	} else if (EXT_VIDEO.indexOf(extension) !== -1) {
-		return AssetType.Video;
-	} else if (EXT_MODEL.indexOf(extension) !== -1) {
-		return AssetType.Model;
-	}
-}
-
-export function isAssetType(path, type) {
-	const assetType = assetTypeFromPath(path);
-	return assetType === type;
-}
-
 export const ViewType = {
 	WaitingRoom: { id: 1, name: 'waiting-room' },
 	Panorama: { id: 2, name: 'panorama' },
@@ -212,7 +178,12 @@ export class ViewItem {
 		return payload;
 	}
 	get hasPanel() {
-		return this.type.name === ViewItemType.Nav.name && (this.title || this.abstract || this.asset || this.link);
+		return this.type.name === ViewItemType.Nav.name && (
+			(this.title && this.title !== '') ||
+			(this.abstract && this.abstract !== '') ||
+			this.asset ||
+			this.link
+		);
 	}
 }
 
@@ -246,35 +217,6 @@ export class ViewTile {
 	}
 }
 
-export class Asset {
-	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor'];
-	constructor(options) {
-		if (options) {
-			Object.assign(this, options);
-		}
-	}
-	get payload() {
-		const payload = {};
-		Object.keys(this).forEach(key => {
-			if (Asset.allowedProps.indexOf(key) !== -1) {
-				payload[key] = this[key];
-			}
-		});
-		return payload;
-	}
-	static fromUrl(url) {
-		const segments = url.split('/');
-		const file = segments.pop();
-		const folder = segments.join('/') + '/';
-		const type = assetTypeFromPath(file);
-		return new Asset({
-			type: type,
-			folder: folder,
-			file: file,
-		});
-	}
-}
-
 export function mapView(view) {
 	switch (view.type.name) {
 		case ViewType.Panorama.name:
@@ -305,12 +247,4 @@ export function mapViewItem(item) {
 
 export function mapViewTile(tile) {
 	return new ViewTile(tile);
-}
-
-export function mapAsset(asset) {
-	switch (asset.type) {
-		default:
-			asset = new Asset(asset);
-	}
-	return asset;
 }

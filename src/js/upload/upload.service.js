@@ -1,10 +1,10 @@
 import { isPlatformBrowser } from 'rxcomp';
 import { BehaviorSubject, combineLatest, EMPTY, fromEvent, merge, of, ReplaySubject } from "rxjs";
 import { delayWhen, filter, first, map, switchMap, tap } from "rxjs/operators";
-import EditorService from '../../editor/editor.service';
-import { Asset, assetTypeFromPath } from '../../view/view';
+import { Asset, assetTypeFromPath } from '../asset/asset';
+import { AssetService } from '../asset/asset.service';
 
-export class AssetUploadItem {
+export class UploadItem {
 
 	constructor(file) {
 		this.file = file;
@@ -22,7 +22,7 @@ export class AssetUploadItem {
 
 }
 
-export class AssetEvent {
+export class UploadEvent {
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -30,13 +30,13 @@ export class AssetEvent {
 	}
 }
 
-export class AssetUploadStartEvent extends AssetEvent { }
+export class UploadStartEvent extends UploadEvent { }
 
-export class AssetUploadCompleteEvent extends AssetEvent { }
+export class UploadCompleteEvent extends UploadEvent { }
 
-export class AssetUploadAssetEvent extends AssetEvent { }
+export class UploadAssetEvent extends UploadEvent { }
 
-export default class AssetService {
+export class UploadService {
 
 	constructor() {
 		this.concurrent$ = new BehaviorSubject(0);
@@ -51,8 +51,9 @@ export default class AssetService {
 	}
 
 	uploadItem$(item) {
+		// max 4 concurrent upload
 		item.uploading = true;
-		this.events$.next(new AssetUploadStartEvent({ item }));
+		this.events$.next(new UploadStartEvent({ item }));
 		const files = [item.file];
 		return of(files).pipe(
 			delayWhen(() => this.concurrent$.pipe(
@@ -60,35 +61,36 @@ export default class AssetService {
 			)),
 			tap(() => this.concurrent$.next(this.concurrent$.getValue() + 1)),
 			first(),
-			switchMap(files => EditorService.upload$(files)),
+			switchMap(files => AssetService.upload$(files)),
 			switchMap((uploads) => {
 				const upload = uploads[0];
 				item.uploading = false;
 				item.complete = true;
 				const asset = Asset.fromUrl(upload.url);
-				this.events$.next(new AssetUploadCompleteEvent({ item, asset }));
-				return EditorService.assetCreate$(asset).pipe(
+				this.events$.next(new UploadCompleteEvent({ item, asset }));
+				return AssetService.assetCreate$(asset).pipe(
 					tap(asset => {
 						this.remove(item);
-						this.events$.next(new AssetUploadAssetEvent({ item, asset }));
+						this.events$.next(new UploadAssetEvent({ item, asset }));
 						this.concurrent$.next(this.concurrent$.getValue() - 1);
 					}),
 				);
 			}),
 		);
 		/*
-		return EditorService.upload$([item.file]).pipe(
+		// concurrent upload
+		return AssetService.upload$([item.file]).pipe(
 			// tap(upload => console.log('upload', upload)),
 			switchMap((uploads) => {
 				const upload = uploads[0];
 				item.uploading = false;
 				item.complete = true;
 				const asset = Asset.fromUrl(upload.url);
-				this.events$.next(new AssetUploadCompleteEvent({ item, asset }));
-				return EditorService.assetCreate$(asset).pipe(
+				this.events$.next(new UploadCompleteEvent({ item, asset }));
+				return AssetService.assetCreate$(asset).pipe(
 					tap(asset => {
 						this.remove(item);
-						this.events$.next(new AssetUploadAssetEvent({ item, asset }));
+						this.events$.next(new UploadAssetEvent({ item, asset }));
 					}),
 				);
 			}),
@@ -100,7 +102,7 @@ export default class AssetService {
 		if (files && files.length) {
 			// console.log('addItems', files);
 			const items = this.items$.getValue();
-			const newItems = Array.from(files).map(file => new AssetUploadItem(file));
+			const newItems = Array.from(files).map(file => new UploadItem(file));
 			items.push(...newItems);
 			this.items$.next(items);
 		}
@@ -126,7 +128,7 @@ export default class AssetService {
 			const body = document.querySelector('body');
 			return merge(fromEvent(body, 'drop'), fromEvent(body, 'dragover')).pipe(
 				map((event) => {
-					// console.log('AssetService.drop$', event);
+					// console.log('UploadService.drop$', event);
 					event.preventDefault();
 					if (event.target === dropArea) {
 						this.addItems(event.dataTransfer.files);
@@ -193,7 +195,7 @@ export default class AssetService {
 	}
 
 	uploadFile$(file) {
-		return EditorService.upload$([file]).pipe(
+		return AssetService.upload$([file]).pipe(
 			// tap(upload => console.log('upload', upload)),
 			switchMap((uploads) => {
 				const upload = uploads[0];
@@ -205,7 +207,7 @@ export default class AssetService {
 				url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
 				*/
 				const asset = Asset.fromUrl(upload.url);
-				return EditorService.assetCreate$(asset);
+				return AssetService.assetCreate$(asset);
 			}),
 		);
 	}

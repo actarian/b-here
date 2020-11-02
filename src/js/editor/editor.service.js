@@ -1,7 +1,6 @@
-import { fromEvent, merge } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import HttpService from "../http/http.service";
-import { mapAsset, mapView, mapViewItem, ViewType } from '../view/view';
+import { mapView, mapViewItem, ViewType } from '../view/view';
 
 export default class EditorService {
 
@@ -128,49 +127,4 @@ export default class EditorService {
 	static tileItemDelete$(view, tile, item) {
 		return HttpService.delete$(`/api/view/${view.id}/tile/${tile.id}/item/${item.id}`);
 	}
-
-	static assetCreate$(asset) {
-		return HttpService.post$(`/api/asset`, asset).pipe(
-			map(asset => mapAsset(asset)),
-		);
-	}
-	static assetUpdate$(asset) {
-		return HttpService.put$(`/api/asset/${asset.id}`, asset).pipe(
-			map(asset => mapAsset(asset)),
-		);
-	}
-	static assetDelete$(asset) {
-		return HttpService.delete$(`/api/asset/${asset.id}`);
-	}
-
-	static upload$(files) {
-		const formData = new FormData();
-		files.forEach(file => formData.append('file', file, file.name));
-		const xhr = new XMLHttpRequest();
-		const events$ = merge(
-			fromEvent(xhr.upload, 'loadstart'),
-			fromEvent(xhr.upload, 'progress'),
-			fromEvent(xhr.upload, 'load'),
-			fromEvent(xhr, 'readystatechange'),
-		).pipe(
-			map(event => {
-				switch (event.type) {
-					case 'readystatechange':
-						if (xhr.readyState === 4) {
-							return JSON.parse(xhr.responseText);
-						} else {
-							return null;
-						}
-						break;
-					default:
-						return null;
-				}
-			}),
-			filter(event => event !== null)
-		);
-		xhr.open('POST', `/api/upload/`, true);
-		xhr.send(formData);
-		return events$;
-	}
-
 }
