@@ -1,16 +1,20 @@
-import { map } from "rxjs/operators";
-import HttpService from "../http/http.service";
+import { map, shareReplay } from 'rxjs/operators';
+import HttpService from '../http/http.service';
 import { mapView, mapViewItem, ViewType } from '../view/view';
 
 export default class EditorService {
 
 	static data$() {
-		return HttpService.get$(`/api/view`).pipe(
-			map(data => {
-				data.views = data.views.map(view => mapView(view));
-				return data;
-			}),
-		);
+		if (!this.data$_) {
+			this.data$_ = HttpService.get$(`/api/view`).pipe(
+				map(data => {
+					data.views = data.views.map(view => mapView(view));
+					return data;
+				}),
+				shareReplay(1),
+			);
+		}
+		return this.data$_;
 	}
 
 	static viewIdOptions$() {

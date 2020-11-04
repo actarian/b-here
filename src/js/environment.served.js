@@ -4,6 +4,7 @@ export const environmentServed = {
 	channelName: 'BHere',
 	flags: {
 		ar: true,
+		menu: true,
 	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',

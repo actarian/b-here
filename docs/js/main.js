@@ -125,7 +125,8 @@ function _readOnlyError(name) {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
-    ar: true
+    ar: true,
+    menu: true
   },
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
@@ -163,7 +164,8 @@ function _readOnlyError(name) {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
-    ar: true
+    ar: true,
+    menu: true
   },
   assets: './',
   worker: './js/workers/image.service.worker.js',
@@ -3100,6 +3102,7 @@ AgoraDeviceComponent.meta = {
     this.state = {};
     var form = this.form = new rxcompForm.FormGroup({
       link: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), rxcompForm.Validators.RequiredValidator()]),
+      linkAttendee: null,
       linkStreamer: null,
       linkViewer: null // link: new FormControl(null),
 
@@ -3122,6 +3125,7 @@ AgoraDeviceComponent.meta = {
     var timestamp = new Date().valueOf().toString();
     this.form.patch({
       link: this.getRoleMeetingId(timestamp, RoleType.Publisher),
+      linkAttendee: this.getRoleMeetingId(timestamp, RoleType.Attendee),
       linkStreamer: this.getRoleMeetingId(timestamp, RoleType.Streamer),
       linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer)
     });
@@ -3131,6 +3135,39 @@ AgoraDeviceComponent.meta = {
     var components = meetingId.split('-');
     components[1] = this.padded(this.getRoleIndex(role), 4);
     return components.join('-');
+  };
+
+  _proto.onInputDidChange = function onInputDidChange($event) {
+    var _this2 = this;
+
+    // console.log('onInputDidChange', this.form.get('link').value, this.form.get('link').valid);
+    if (this.state.role !== 'publisher') {
+      return;
+    }
+
+    setTimeout(function () {
+      if (_this2.form.get('link').valid) {
+        var value = _this2.form.get('link').value;
+
+        _this2.form.patch({
+          link: _this2.setRoleMeetingId(value, RoleType.Publisher),
+          linkAttendee: _this2.setRoleMeetingId(value, RoleType.Attendee),
+          linkStreamer: _this2.setRoleMeetingId(value, RoleType.Streamer),
+          linkViewer: _this2.setRoleMeetingId(value, RoleType.Viewer)
+        });
+      } else {
+        _this2.form.get('linkAttendee').reset();
+
+        _this2.form.get('linkStreamer').reset();
+
+        _this2.form.get('linkViewer').reset();
+      }
+    }, 1);
+  };
+
+  _proto.setRoleMeetingId = function setRoleMeetingId(meetingId, role) {
+    var meetingIdSegments = meetingId.split('-');
+    return meetingIdSegments[0] + "-" + this.padded(this.getRoleIndex(role), 4) + "-" + meetingIdSegments[2];
   };
 
   _proto.getRoleMeetingId = function getRoleMeetingId(timestamp, role) {
@@ -4109,13 +4146,17 @@ function mapViewTile(tile) {
   function ViewService() {}
 
   ViewService.data$ = function data$() {
-    var dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
-    return HttpService.get$(dataUrl).pipe(operators.map(function (data) {
-      data.views = data.views.map(function (view) {
-        return mapView(view);
-      });
-      return data;
-    }));
+    if (!this.data$_) {
+      var dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
+      this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(function (data) {
+        data.views = data.views.map(function (view) {
+          return mapView(view);
+        });
+        return data;
+      }), operators.shareReplay(1));
+    }
+
+    return this.data$_;
   };
 
   ViewService.view$ = function view$(viewId) {
@@ -5515,12 +5556,16 @@ AsideComponent.meta = {
   function EditorService() {}
 
   EditorService.data$ = function data$() {
-    return HttpService.get$("/api/view").pipe(operators.map(function (data) {
-      data.views = data.views.map(function (view) {
-        return mapView(view);
-      });
-      return data;
-    }));
+    if (!this.data$_) {
+      this.data$_ = HttpService.get$("/api/view").pipe(operators.map(function (data) {
+        data.views = data.views.map(function (view) {
+          return mapView(view);
+        });
+        return data;
+      }), operators.shareReplay(1));
+    }
+
+    return this.data$_;
   };
 
   EditorService.viewIdOptions$ = function viewIdOptions$() {
@@ -5686,7 +5731,9 @@ AsideComponent.meta = {
         node = _getContext.node;
 
     node.classList.remove('hidden');
+    this.flags = environment.flags;
     this.aside = false;
+    this.settings = false;
     this.state = {};
     this.data = null;
     this.views = null;
@@ -5943,6 +5990,11 @@ AsideComponent.meta = {
     this.aside = !this.aside;
     this.pushChanges();
     window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.onToggleSettings = function onToggleSettings() {
+    this.settings = !this.settings;
+    this.pushChanges();
   } // editor
   ;
 
@@ -6214,6 +6266,695 @@ AsideComponent.meta = {
 }(rxcomp.Component);
 EditorComponent.meta = {
   selector: '[editor-component]'
+};var MENU_UID = 0;
+
+var MenuService = /*#__PURE__*/function () {
+  function MenuService() {}
+
+  MenuService.menu$ = function menu$() {
+    var _this = this;
+
+    return this.getMenu$().pipe(operators.switchMap(function (menu) {
+      _this.menu$_.next(menu);
+
+      return _this.menu$_;
+    }));
+  };
+
+  MenuService.getMenu$ = function getMenu$() {
+    return HttpService.get$("/api/menu").pipe(operators.map(function (data) {
+      return data.menu;
+    }));
+  };
+
+  MenuService.updateMenu$ = function updateMenu$(menu) {
+    return HttpService.put$("/api/menu", menu);
+  };
+
+  MenuService.createMenuItem$ = function createMenuItem$(parentId) {
+    if (parentId === void 0) {
+      parentId = null;
+    }
+
+    var payload = {
+      parentId: parentId,
+      viewId: null,
+      name: 'Folder ' + ++MENU_UID
+    };
+    return HttpService.post$("/api/menu", payload);
+  };
+
+  MenuService.updateMenuItem$ = function updateMenuItem$(item) {
+    return HttpService.put$("/api/menu/" + item.id, item);
+  };
+
+  MenuService.deleteMenuItem$ = function deleteMenuItem$(item) {
+    return HttpService.delete$("/api/menu/" + item.id);
+  };
+
+  MenuService.getModelMenu$ = function getModelMenu$(views, editor) {
+    var _this2 = this;
+
+    if (editor === void 0) {
+      editor = false;
+    }
+
+    return this.menu$().pipe(operators.map(function (menu) {
+      if (menu && menu.length) {
+        return _this2.mapMenuItems(menu);
+      } else {
+        var keys = {};
+        views.forEach(function (item) {
+          if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || editor)) {
+            var group = keys[item.type.name];
+
+            if (!group) {
+              group = keys[item.type.name] = [];
+            }
+
+            group.push(item);
+          }
+        });
+
+        var _menu = Object.keys(keys).map(function (typeName) {
+          var name = 'Button';
+
+          switch (typeName) {
+            case ViewType.WaitingRoom.name:
+              name = 'Waiting Room';
+              break;
+
+            case ViewType.Panorama.name:
+              name = 'Experience';
+              break;
+
+            case ViewType.PanoramaGrid.name:
+              name = 'Virtual Tour';
+              break;
+
+            case ViewType.Room3d.name:
+              name = 'Stanze 3D';
+              break;
+
+            case ViewType.Model.name:
+              name = 'Modelli 3D';
+              break;
+          }
+
+          return {
+            name: name,
+            type: {
+              name: 'menu-group'
+            },
+            items: views.filter(function (x) {
+              return x.type.name === typeName && (!x.hidden || editor);
+            })
+          };
+        });
+
+        return _menu;
+      }
+    }));
+  };
+
+  MenuService.mapMenuItem = function mapMenuItem(item, items) {
+    if (item.viewId) {
+      return {
+        id: item.viewId,
+        name: item.name,
+        type: {
+          name: 'panorama'
+        }
+      };
+    } else {
+      return {
+        name: item.name,
+        type: {
+          name: 'menu-group'
+        },
+        items: this.mapMenuItems(items, item.id)
+      };
+    }
+  };
+
+  MenuService.mapMenuItems = function mapMenuItems(items, parentId) {
+    var _this3 = this;
+
+    if (parentId === void 0) {
+      parentId = null;
+    }
+
+    return items.filter(function (item) {
+      return (item.parentId || null) === parentId;
+    }).map(function (item) {
+      return _this3.mapMenuItem(item, items);
+    });
+  };
+
+  return MenuService;
+}();
+
+_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var AssetService = /*#__PURE__*/function () {
+  function AssetService() {}
+
+  AssetService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetUpdate$ = function assetUpdate$(asset) {
+    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetDelete$ = function assetDelete$(asset) {
+    if (asset && asset.id) {
+      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
+        return null;
+      }));
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  AssetService.upload$ = function upload$(files) {
+    var formData = new FormData();
+    files.forEach(function (file) {
+      return formData.append('file', file, file.name);
+    });
+    var xhr = new XMLHttpRequest();
+    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
+      switch (event.type) {
+        case 'readystatechange':
+          if (xhr.readyState === 4) {
+            return JSON.parse(xhr.responseText);
+          } else {
+            return null;
+          }
+
+        default:
+          return null;
+      }
+    }), operators.filter(function (event) {
+      return event !== null;
+    }));
+    xhr.open('POST', "/api/upload/", true);
+    xhr.send(formData);
+    return events$;
+  };
+
+  return AssetService;
+}();var ControlComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlComponent, _Component);
+
+  function ControlComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlComponent.prototype;
+
+  _proto.onChanges = function onChanges() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // console.log(this, node, this.control);
+
+
+    var control = this.control;
+    var flags = control.flags;
+    Object.keys(flags).forEach(function (key) {
+      flags[key] ? node.classList.add(key) : node.classList.remove(key);
+    });
+  };
+
+  return ControlComponent;
+}(rxcomp.Component);
+ControlComponent.meta = {
+  selector: '[control]',
+  inputs: ['control']
+};var ControlAssetComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlAssetComponent, _ControlComponent);
+
+  function ControlAssetComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlAssetComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+    this.accept = this.accept || 'image/png, image/jpeg';
+    this.previews = [];
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    this.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+      console.log('ControlAssetComponent.change$', assets);
+      _this.control.value = assets[0];
+    });
+  };
+
+  _proto.change$ = function change$(input) {
+    var _this2 = this;
+
+    if (rxcomp.isPlatformBrowser && input) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
+        return input.files && input.files.length;
+      }), operators.switchMap(function (event) {
+        console.log('ControlAssetComponent.change$', input.files);
+        var fileArray = Array.from(input.files);
+        _this2.previews = fileArray.map(function () {
+          return null;
+        });
+        var uploads$ = fileArray.map(function (file, i) {
+          return _this2.read$(file, i).pipe(operators.switchMap(function () {
+            return AssetService.upload$([file]);
+          }), operators.tap(function (uploads) {
+            return console.log('upload', uploads);
+          }), operators.switchMap(function (uploads) {
+            var upload = uploads[0];
+            /*
+            id: 1601303293569
+            type: "image/jpeg"
+            file: "1601303293569_ambiente1_x0_y2.jpg"
+            originalFileName: "ambiente1_x0_y2.jpg"
+            url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
+            */
+
+            var asset = Asset.fromUrl(upload.url);
+            return AssetService.assetCreate$(asset);
+          }));
+        });
+        return rxjs.combineLatest(uploads$);
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.read$ = function read$(file, i) {
+    var _this3 = this;
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.tap(function (event) {
+      var blob = event.target.result;
+
+      _this3.resize_(blob, function (resized) {
+        _this3.previews[i] = resized;
+
+        _this3.pushChanges();
+      });
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  _proto.drop$ = function drop$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      var body = document.querySelector('body');
+      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        console.log('ControlAssetComponent.drop$', event);
+        event.preventDefault();
+
+        if (event.target === input) {
+          input.files = event.dataTransfer.files;
+        }
+
+        return;
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.resize_ = function resize_(blob, callback) {
+    if (typeof callback === 'function') {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        callback(dataUrl);
+      };
+
+      img.src = blob;
+    }
+  };
+
+  _createClass(ControlAssetComponent, [{
+    key: "image",
+    get: function get() {
+      var image = null;
+
+      if (this.control.value) {
+        image = "" + this.control.value.folder + this.control.value.file;
+      } else if (this.previews && this.previews.length) {
+        image = this.previews[0];
+      }
+
+      return image;
+    }
+  }]);
+
+  return ControlAssetComponent;
+}(ControlComponent);
+ControlAssetComponent.meta = {
+  selector: '[control-asset]',
+  inputs: ['control', 'label', 'disabled', 'accept'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlMenuComponent = /*#__PURE__*/function (_ControlAssetComponen) {
+  _inheritsLoose(ControlMenuComponent, _ControlAssetComponen);
+
+  function ControlMenuComponent() {
+    return _ControlAssetComponen.apply(this, arguments) || this;
+  }
+
+  ControlMenuComponent.itemToFormGroup = function itemToFormGroup(item) {
+    return new rxcompForm.FormGroup({
+      id: item.id,
+      parentId: item.parentId,
+      viewId: item.viewId,
+      name: item.name,
+      items: new rxcompForm.FormArray()
+    });
+  }
+  /*
+  static newFormGroup(parentId = null) {
+  	return new FormGroup({
+  		id: null,
+  		parentId: parentId,
+  		viewId: null,
+  		name: 'Folder ' + (++MENU_UID),
+  		items: new FormArray(),
+  	});
+  }
+  */
+  ;
+
+  var _proto = ControlMenuComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.dropdownId = DropdownDirective.nextId();
+    this.controls = this.control.controls;
+    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+      _this.controls.viewId.options = options;
+    });
+  };
+
+  _proto.onAddItem = function onAddItem() {
+    var _this2 = this;
+
+    MenuService.createMenuItem$(this.controls.id.value).pipe(operators.first()).subscribe(function (item) {
+      _this2.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
+    }); // this.controls.items.push(ControlMenuComponent.newFormGroup(this.controls.id.value));
+  };
+
+  _proto.onRemoveItem = function onRemoveItem() {
+    this.remove.next(this.control);
+  };
+
+  _proto.onRemoveControl = function onRemoveControl(control) {
+    var _this3 = this;
+
+    MenuService.deleteMenuItem$(control.value).pipe(operators.first()).subscribe(function () {
+      _this3.controls.items.remove(control);
+    }); // this.controls.items.remove(control);
+  };
+
+  _proto.onLinkItem = function onLinkItem() {
+    this.link.next(this.control);
+  };
+
+  _proto.onLinkControl = function onLinkControl(control) {
+    this.link.next(control);
+  };
+
+  _proto.onItemUp = function onItemUp() {
+    this.up.next(this.control);
+  };
+
+  _proto.onItemDown = function onItemDown() {
+    this.down.next(this.control);
+  };
+
+  _proto.onUpControl = function onUpControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index > 0) {
+      index--;
+    } else {
+      index = length - 1;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.onDownControl = function onDownControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index < length - 1) {
+      index++;
+    } else {
+      index = 0;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.setView = function setView(view) {
+    var _this4 = this;
+
+    console.log('ControlMenuComponent.setView', view.id);
+    var payload = Object.assign({}, this.control.value);
+    payload.viewId = view.id;
+
+    if (view.id) {
+      payload.name = view.name;
+    }
+
+    MenuService.updateMenuItem$(payload).pipe(operators.first()).subscribe(function () {
+      _this4.controls.viewId.value = view.id;
+
+      if (view.id) {
+        _this4.controls.name.value = view.name; // clear sub items
+
+        _this4.controls.items.controls = [];
+
+        _this4.controls.items.switchSubjects_();
+      } // this.change.next(value);
+
+    });
+  };
+
+  _proto.onTextDidChange = function onTextDidChange(event) {
+    console.log('ControlMenuComponent.onTextDidChange', this.controls.name.value);
+    MenuService.updateMenuItem$(this.control.value).pipe(operators.first()).subscribe();
+  };
+
+  _proto.hasOption = function hasOption(item) {
+    return this.controls.viewId.value === item.id;
+  };
+
+  _proto.onDropped = function onDropped(id) {// console.log('ControlMenuComponent.onDropped', id);
+  };
+
+  return ControlMenuComponent;
+}(ControlAssetComponent);
+ControlMenuComponent.meta = {
+  selector: '[control-menu]',
+  outputs: ['remove', 'link', 'up', 'down'],
+  inputs: ['control'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\">\n\t\t\t<button type=\"button\" class=\"control-menu__link\" [class]=\"{ active: control.controls.viewId.value }\" (click)=\"onLinkItem($event)\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#link\"></use></svg>\n\t\t\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t\t\t<div class=\"category\">View</div>\n\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t<li (click)=\"setView(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.controls.viewId.options\">\n\t\t\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</button>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control.controls.name\" placeholder=\"Name\" (change)=\"onTextDidChange($event)\" />\n\t\t\t<!--\n\t\t\t<button type=\"button\" class=\"control-menu__add\" (click)=\"onAddItem($event)\">\n\t\t\t\t<span [innerHTML]=\"control.controls.viewId.value\"></span>\n\t\t\t</button>\n\t\t\t-->\n\t\t\t<!--\n\t\t\t<select class=\"control--select\" [formControl]=\"control.controls.viewId\">\n\t\t\t\t<option [value]=\"item.id\" *for=\"let item of control.controls.viewId.options\" [innerHTML]=\"item.name\"></option>\n\t\t\t</select>\n\t\t\t-->\n\t\t\t<button type=\"button\" class=\"control-menu__up\" (click)=\"onItemUp($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#up\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__down\" (click)=\"onItemDown($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#down\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__add\" (click)=\"onAddItem($event)\" *if=\"!control.controls.viewId.value\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#add\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__remove\" (click)=\"onRemoveItem($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#remove\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"group--items\">\n\t\t\t<div control-menu *for=\"let sub of control.controls.items.controls\" [control]=\"sub\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t</div>\n\t"
+};var MenuBuilderComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(MenuBuilderComponent, _Component);
+
+  function MenuBuilderComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = MenuBuilderComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.changes = 0;
+    this.form = null;
+    MenuService.getMenu$().pipe(operators.first()).subscribe(function (menu) {
+      return _this.initForm(menu);
+    });
+  };
+
+  _proto.initForm = function initForm(menu) {
+    var _this2 = this;
+
+    if (menu === void 0) {
+      menu = [];
+    }
+
+    var items = this.menuToControls(menu); // console.log('MenuBuilderComponent', items);
+
+    var form = this.form = new rxcompForm.FormGroup({
+      items: items
+    });
+    var controls = this.controls = form.controls;
+    form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      // console.log('MenuBuilderComponent', changes);
+      _this2.changes++;
+
+      _this2.pushChanges();
+    });
+  };
+
+  _proto.onLinkControl = function onLinkControl(control) {};
+
+  _proto.onUpControl = function onUpControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index > 0) {
+      index--;
+    } else {
+      index = length - 1;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.onDownControl = function onDownControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index < length - 1) {
+      index++;
+    } else {
+      index = 0;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.onAddItem = function onAddItem() {
+    var _this3 = this;
+
+    MenuService.createMenuItem$().pipe(operators.first()).subscribe(function (item) {
+      _this3.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
+    }); // this.controls.items.push(ControlMenuComponent.newFormGroup());
+  };
+
+  _proto.onRemoveControl = function onRemoveControl(control) {
+    var _this4 = this;
+
+    MenuService.deleteMenuItem$(control.value).pipe(operators.first()).subscribe(function () {
+      _this4.controls.items.remove(control);
+    }); // this.controls.items.remove(control);
+  };
+
+  _proto.isValid = function isValid() {
+    var isValid = this.form.valid;
+    return isValid;
+  };
+
+  _proto.onSubmit = function onSubmit(event) {
+    if (this.form.valid) {
+      var changes = this.form.value;
+      var menu = this.controlsToMenu(changes);
+      MenuService.updateMenu$(menu);
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.menuToControls = function menuToControls(menu, parentId) {
+    var _this5 = this;
+
+    if (parentId === void 0) {
+      parentId = null;
+    }
+
+    var items = new rxcompForm.FormArray(menu.filter(function (x) {
+      return (x.parentId || null) === parentId;
+    }).map(function (x) {
+      var subitems = _this5.menuToControls(menu, x.id);
+
+      return new rxcompForm.FormGroup({
+        id: x.id,
+        parentId: x.parentId,
+        viewId: x.viewId,
+        name: x.name,
+        items: subitems
+      });
+    }));
+    return items;
+  };
+
+  _proto.controlsToMenu = function controlsToMenu(changes) {
+    var menu = [];
+
+    var pushItem = function pushItem(items) {
+      if (items) {
+        items.forEach(function (item, i) {
+          var menuItem = Object.assign({}, item);
+          menuItem.order = i * 10;
+          delete menuItem.items;
+          menu.push(menuItem);
+          pushItem(item.items);
+        });
+      }
+    };
+
+    pushItem(changes.items);
+    return menu;
+  };
+
+  return MenuBuilderComponent;
+}(rxcomp.Component);
+MenuBuilderComponent.meta = {
+  selector: '[menu-builder]',
+  inputs: ['views']
 };var CurvedPlaneModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(CurvedPlaneModalComponent, _Component);
 
@@ -6864,59 +7605,7 @@ PlaneModalComponent.meta = {
 }(rxcomp.Component);
 RemoveModalComponent.meta = {
   selector: '[remove-modal]'
-};var AssetService = /*#__PURE__*/function () {
-  function AssetService() {}
-
-  AssetService.assetCreate$ = function assetCreate$(asset) {
-    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  AssetService.assetUpdate$ = function assetUpdate$(asset) {
-    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  AssetService.assetDelete$ = function assetDelete$(asset) {
-    if (asset && asset.id) {
-      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
-        return null;
-      }));
-    } else {
-      return rxjs.of(null);
-    }
-  };
-
-  AssetService.upload$ = function upload$(files) {
-    var formData = new FormData();
-    files.forEach(function (file) {
-      return formData.append('file', file, file.name);
-    });
-    var xhr = new XMLHttpRequest();
-    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
-      switch (event.type) {
-        case 'readystatechange':
-          if (xhr.readyState === 4) {
-            return JSON.parse(xhr.responseText);
-          } else {
-            return null;
-          }
-
-        default:
-          return null;
-      }
-    }), operators.filter(function (event) {
-      return event !== null;
-    }));
-    xhr.open('POST', "/api/upload/", true);
-    xhr.send(formData);
-    return events$;
-  };
-
-  return AssetService;
-}();var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
+};var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewItemComponent, _Component);
 
   function UpdateViewItemComponent() {
@@ -7437,7 +8126,7 @@ UpdateViewComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
-};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
+};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, MenuBuilderComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
   _inheritsLoose(EditorModule, _Module);
@@ -7452,192 +8141,6 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
-};var ControlComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ControlComponent, _Component);
-
-  function ControlComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlComponent.prototype;
-
-  _proto.onChanges = function onChanges() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node; // console.log(this, node, this.control);
-
-
-    var control = this.control;
-    var flags = control.flags;
-    Object.keys(flags).forEach(function (key) {
-      flags[key] ? node.classList.add(key) : node.classList.remove(key);
-    });
-  };
-
-  return ControlComponent;
-}(rxcomp.Component);
-ControlComponent.meta = {
-  selector: '[control]',
-  inputs: ['control']
-};var ControlAssetComponent = /*#__PURE__*/function (_ControlComponent) {
-  _inheritsLoose(ControlAssetComponent, _ControlComponent);
-
-  function ControlAssetComponent() {
-    return _ControlComponent.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlAssetComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.label = this.label || 'label';
-    this.disabled = this.disabled || false;
-    this.accept = this.accept || 'image/png, image/jpeg';
-    this.previews = [];
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    var input = node.querySelector('input');
-    input.setAttribute('accept', this.accept);
-    this.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
-    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
-      console.log('ControlAssetComponent.change$', assets);
-      _this.control.value = assets[0];
-    });
-  };
-
-  _proto.change$ = function change$(input) {
-    var _this2 = this;
-
-    if (rxcomp.isPlatformBrowser && input) {
-      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
-        return input.files && input.files.length;
-      }), operators.switchMap(function (event) {
-        console.log('ControlAssetComponent.change$', input.files);
-        var fileArray = Array.from(input.files);
-        _this2.previews = fileArray.map(function () {
-          return null;
-        });
-        var uploads$ = fileArray.map(function (file, i) {
-          return _this2.read$(file, i).pipe(operators.switchMap(function () {
-            return AssetService.upload$([file]);
-          }), operators.tap(function (uploads) {
-            return console.log('upload', uploads);
-          }), operators.switchMap(function (uploads) {
-            var upload = uploads[0];
-            /*
-            id: 1601303293569
-            type: "image/jpeg"
-            file: "1601303293569_ambiente1_x0_y2.jpg"
-            originalFileName: "ambiente1_x0_y2.jpg"
-            url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
-            */
-
-            var asset = Asset.fromUrl(upload.url);
-            return AssetService.assetCreate$(asset);
-          }));
-        });
-        return rxjs.combineLatest(uploads$);
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  _proto.read$ = function read$(file, i) {
-    var _this3 = this;
-
-    var reader = new FileReader();
-    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.tap(function (event) {
-      var blob = event.target.result;
-
-      _this3.resize_(blob, function (resized) {
-        _this3.previews[i] = resized;
-
-        _this3.pushChanges();
-      });
-    }));
-    reader.readAsDataURL(file);
-    return reader$;
-  };
-
-  _proto.drop$ = function drop$(input) {
-    if (rxcomp.isPlatformBrowser && input) {
-      var body = document.querySelector('body');
-      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        console.log('ControlAssetComponent.drop$', event);
-        event.preventDefault();
-
-        if (event.target === input) {
-          input.files = event.dataTransfer.files;
-        }
-
-        return;
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  _proto.resize_ = function resize_(blob, callback) {
-    if (typeof callback === 'function') {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 320;
-        var MAX_HEIGHT = 240;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        callback(dataUrl);
-      };
-
-      img.src = blob;
-    }
-  };
-
-  _createClass(ControlAssetComponent, [{
-    key: "image",
-    get: function get() {
-      var image = null;
-
-      if (this.control.value) {
-        image = "" + this.control.value.folder + this.control.value.file;
-      } else if (this.previews && this.previews.length) {
-        image = this.previews[0];
-      }
-
-      return image;
-    }
-  }]);
-
-  return ControlAssetComponent;
-}(ControlComponent);
-ControlAssetComponent.meta = {
-  selector: '[control-asset]',
-  inputs: ['control', 'label', 'disabled', 'accept'],
-  template:
-  /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var UploadItem = function UploadItem(file) {
   this.file = file;
   this.name = file.name;
@@ -15420,53 +15923,42 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       return;
     }
 
-    var menu = {};
-    this.items.forEach(function (item) {
-      if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || _this5.editor)) {
-        var group = menu[item.type.name];
-
-        if (!group) {
-          group = menu[item.type.name] = [];
-        }
-
-        group.push(item);
-      }
+    MenuService.getModelMenu$(this.items, this.editor).pipe(operators.first()).subscribe(function (menu) {
+      return _this5.groups = menu;
     });
-    this.groups = Object.keys(menu).map(function (typeName) {
-      var name = 'Button';
-
-      switch (typeName) {
-        case ViewType.WaitingRoom.name:
-          name = 'Waiting Room';
-          break;
-
-        case ViewType.Panorama.name:
-          name = 'Experience';
-          break;
-
-        case ViewType.PanoramaGrid.name:
-          name = 'Virtual Tour';
-          break;
-
-        case ViewType.Room3d.name:
-          name = 'Stanze 3D';
-          break;
-
-        case ViewType.Model.name:
-          name = 'Modelli 3D';
-          break;
-      }
-
-      return {
-        name: name,
-        type: {
-          name: 'menu-group'
-        },
-        items: _this5.items.filter(function (x) {
-          return x.type.name === typeName && (!x.hidden || _this5.editor);
-        })
-      };
+    /*
+    const menu = {};
+    this.items.forEach(item => {
+    	if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
+    		let group = menu[item.type.name];
+    		if (!group) {
+    			group = menu[item.type.name] = [];
+    		}
+    		group.push(item);
+    	}
     });
+    this.groups = Object.keys(menu).map(typeName => {
+    	let name = 'Button';
+    	switch (typeName) {
+    		case ViewType.WaitingRoom.name:
+    			name = 'Waiting Room';
+    			break;
+    		case ViewType.Panorama.name:
+    			name = 'Experience';
+    			break;
+    		case ViewType.PanoramaGrid.name:
+    			name = 'Virtual Tour';
+    			break;
+    		case ViewType.Room3d.name:
+    			name = 'Stanze 3D';
+    			break;
+    		case ViewType.Model.name:
+    			name = 'Modelli 3D';
+    			break;
+    	}
+    	return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
+    });
+    */
   };
 
   _proto3.onToggle = function onToggle() {
@@ -15489,7 +15981,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       this.removeMenu();
 
       if (button.item.backItem) {
-        this.addMenu();
+        this.addMenu(button.item.backItem.backItem);
       } else {
         if (this.host.renderer.xr.isPresenting) {
           this.addToggler();
@@ -15540,6 +16032,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       };
       items.push(back);
       var buttons = this.buttons = items.map(function (x, i, a) {
+        x.backItem = item;
         return x.type.name === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
       });
       buttons.forEach(function (button) {
@@ -16483,6 +16976,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

@@ -4,6 +4,7 @@ export const environmentStatic = {
 	channelName: 'BHere',
 	flags: {
 		ar: true,
+		menu: true,
 	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',

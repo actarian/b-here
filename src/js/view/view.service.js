@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { environment } from '../environment';
 import HttpService from '../http/http.service';
 import { mapView } from '../view/view';
@@ -7,13 +7,17 @@ import { mapView } from '../view/view';
 export default class ViewService {
 
 	static data$() {
-		const dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
-		return HttpService.get$(dataUrl).pipe(
-			map(data => {
-				data.views = data.views.map(view => mapView(view));
-				return data;
-			}),
-		);
+		if (!this.data$_) {
+			const dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
+			this.data$_ = HttpService.get$(dataUrl).pipe(
+				map(data => {
+					data.views = data.views.map(view => mapView(view));
+					return data;
+				}),
+				shareReplay(1),
+			);
+		}
+		return this.data$_;
 	}
 
 	static view$(viewId) {

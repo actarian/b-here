@@ -1,8 +1,8 @@
-import { takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
+import MenuService from '../../editor/menu/menu.service';
 // import * as THREE from 'three';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
-import { ViewType } from '../../view/view';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import OrbitService, { OrbitMode } from '../orbit/orbit';
@@ -305,6 +305,10 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (!this.items) {
 			return;
 		}
+		MenuService.getModelMenu$(this.items, this.editor).pipe(
+			first(),
+		).subscribe(menu => this.groups = menu);
+		/*
 		const menu = {};
 		this.items.forEach(item => {
 			if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
@@ -336,6 +340,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			}
 			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
 		});
+		*/
 	}
 
 	onToggle() {
@@ -356,7 +361,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (button.item && button.item.type.name === 'back') {
 			this.removeMenu();
 			if (button.item.backItem) {
-				this.addMenu();
+				this.addMenu(button.item.backItem.backItem);
 			} else {
 				if (this.host.renderer.xr.isPresenting) {
 					this.addToggler();
@@ -395,6 +400,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			};
 			items.push(back);
 			const buttons = this.buttons = items.map((x, i, a) => {
+				x.backItem = item;
 				return (x.type.name === 'back') ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
 			});
 			buttons.forEach(button => {
