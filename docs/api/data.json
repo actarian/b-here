@@ -129,7 +129,8 @@
           ],
           "asset": null,
           "link": null,
-          "id": 517899716353099
+          "id": 517899716353099,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -146,7 +147,8 @@
           ],
           "asset": null,
           "link": null,
-          "id": 517926978507700
+          "id": 517926978507700,
+          "keepOrientation": null
         }
       ]
     },
@@ -404,7 +406,7 @@
           },
           "title": "Welcome Room",
           "abstract": "Vai",
-          "viewId": 1601561173968,
+          "viewId": 513717446056299,
           "position": [
             0.8857038418758352,
             0.02716504225365061,
@@ -412,7 +414,8 @@
           ],
           "asset": null,
           "link": null,
-          "id": 539699150606500
+          "id": 539699150606500,
+          "keepOrientation": null
         }
       ]
     },
@@ -1812,6 +1815,71 @@
           "keepOrientation": null
         }
       ]
+    }
+  ],
+  "menu": [
+    {
+      "id": 370508895329900,
+      "parentId": null,
+      "viewId": 513717446056299,
+      "name": "Welcome Room",
+      "order": 0
+    },
+    {
+      "id": 370517362927600,
+      "parentId": null,
+      "viewId": null,
+      "name": "Cucine",
+      "order": 10
+    },
+    {
+      "id": 370524910563399,
+      "parentId": 370517362927600,
+      "viewId": 527056241479599,
+      "name": "Cucina Obliqua 1",
+      "order": 0
+    },
+    {
+      "id": 370525374595800,
+      "parentId": 370517362927600,
+      "viewId": 541728155575700,
+      "name": "Cucina Obliqua 2",
+      "order": 10
+    },
+    {
+      "id": 370525894493300,
+      "parentId": 370517362927600,
+      "viewId": 542891821577299,
+      "name": "Cucina Obliqua 3",
+      "order": 20
+    },
+    {
+      "id": 370526755910500,
+      "parentId": 370517362927600,
+      "viewId": 513899190847000,
+      "name": "Cucina One",
+      "order": 30
+    },
+    {
+      "id": 370553887253300,
+      "parentId": null,
+      "viewId": null,
+      "name": "Media",
+      "order": 20
+    },
+    {
+      "id": 370570712453099,
+      "parentId": 370553887253300,
+      "viewId": 542975856893999,
+      "name": "Video 360",
+      "order": 0
+    },
+    {
+      "id": 370571882873600,
+      "parentId": 370553887253300,
+      "viewId": 539664012158000,
+      "name": "Foto 360",
+      "order": 10
     }
   ],
   "assets": [
