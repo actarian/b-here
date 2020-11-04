@@ -143,6 +143,12 @@ body {
 			color: #a5b3bd;
 			opacity: 1;
 			pointer-events: none;
+
+			svg {
+				width: 9px;
+				height: 9px;
+				fill: currentColor;
+			}
 		}
 
 		.icon--caret-down {
@@ -167,6 +173,10 @@ body {
 		padding: 18px 8px 7px;
 		cursor: pointer;
 		@include autofill(14px, 500, 1, 0, $font-primary, $foreground, transparent);
+
+		&[readonly] {
+			color: #86929f;
+		}
 	}
 
 	.group--form--addon {

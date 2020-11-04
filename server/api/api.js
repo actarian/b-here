@@ -41,7 +41,7 @@ app.post('/api/token/rtm', function(request, response) {
 */
 
 let db = {
-	views: [], assets: [], users: [
+	views: [], menu: [], assets: [], users: [
 		{
 			id: '1601892639985',
 			username: 'publisher',
@@ -161,7 +161,7 @@ function doGet(request, response, params, items) {
 // /api/upload
 const ROUTES = [{
 	path: '/api/view', method: 'GET', callback: function(request, response, params) {
-		sendOk(response, db);
+		sendOk(response, { views: db.views });
 	}
 }, {
 	path: '/api/view/:viewId', method: 'GET', callback: function(request, response, params) {
@@ -255,6 +255,29 @@ const ROUTES = [{
 }, {
 	path: '/api/asset/:assetId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.assetId }, db.assets);
+	}
+}, {
+	path: '/api/menu', method: 'GET', callback: function(request, response, params) {
+		sendOk(response, { menu: db.menu });
+	}
+}, {
+	path: '/api/menu', method: 'PUT', callback: function(request, response, params) {
+		const menu = request.body;
+		db.menu = menu;
+		saveStore();
+		sendOk(response, menu);
+	}
+}, {
+	path: '/api/menu', method: 'POST', callback: function(request, response, params) {
+		doCreate(request, response, params, db.menu);
+	}
+}, {
+	path: '/api/menu/:menuId', method: 'DELETE', callback: function(request, response, params) {
+		doDelete(request, response, { id: params.menuId }, db.menu);
+	}
+}, {
+	path: '/api/menu/:menuId', method: 'PUT', callback: function(request, response, params) {
+		doUpdate(request, response, params, db.menu);
 	}
 }, {
 	path: '/api/user/me', method: 'GET', callback: function(request, response, params) {

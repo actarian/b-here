@@ -3,6 +3,9 @@
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
+			<div class="btn--menu" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="flags.menu">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+			</div>
 			<div class="headline" *if="view">
 				<div class="headline__id" [innerHTML]="view.id"></div>
 				<div class="headline__icon">
@@ -34,12 +37,12 @@
 							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
 						</div>
 						</div>
-						<div class="banner loading" model-banner [item]="loading" *if="loading">
-							<div class="banner__title" [innerHTML]="item.title"></div>
-						</div>
-						<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
-							<div class="banner__title" [innerHTML]="item.title"></div>
-						</div>
+					</div>
+					<div class="banner loading" model-banner [item]="loading" *if="loading">
+						<div class="banner__title" [innerHTML]="item.title"></div>
+					</div>
+					<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
+						<div class="banner__title" [innerHTML]="item.title"></div>
 					</div>
 				</div>
 				<div model-menu [items]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
@@ -59,12 +62,54 @@
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
 			</button>
 		</div>
+		<div class="ui__settings" menu-builder [views]="views" *if="settings">
+			<div class="group--menu" *if="form">
+				<div class="group--left">
+					<div class="headline">
+						<div class="title">Menu</div>
+					</div>
+					<div class="nav--tree">
+						<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+							<div *for="let control of controls.items.controls">
+								<div control-menu [control]="control" (remove)="onRemoveControl($event)" (link)="onLinkControl($event)" (up)="onUpControl($event)" (down)="onDownControl($event)"></div>
+							</div>
+						</form>
+					</div>
+					<div class="group--cta">
+						<button type="button" class="btn--mode" (click)="onAddItem($event)">add</button>
+						<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1">save</button>
+					</div>
+				</div>
+				<!--
+				<div class="group--right">
+					<div class="headline">
+						<div class="title">Views</div>
+					</div>
+					<div class="nav--views">
+						<div class="nav__item" *for="let item of views">
+							<div class="icon">
+								<svg-icon [name]="item.type.name"></svg-icon>
+							</div>
+							<div class="title" [innerHTML]="item.name"></div>
+						</div>
+					</div>
+				</div>
+				-->
+			</div>
+		</div>
 	</div>
 	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view && aside">
 		<div class="headline">
+			<ul class="nav--tab">
+				<li [class]="{ active: mode === 1 }" (click)="setMode(1)">Properties</li>
+				<li [class]="{ active: mode === 2 }" (click)="setMode(2)">Views</li>
+				<li [class]="{ active: mode === 3 }" (click)="setMode(3)">View Items</li>
+			</ul>
+			<!--
 			<div class="btn--mode" [class]="{ active: mode === 1 }" (click)="setMode(1)">Properties</div>
 			<div class="btn--mode" [class]="{ active: mode === 2 }" (click)="setMode(2)">Views</div>
 			<div class="btn--mode" [class]="{ active: mode === 3 }" (click)="setMode(3)">View Items</div>
+			-->
 		</div>
 		<div class="scrollable">
 			<ul class="nav--editor" *if="mode === 1">

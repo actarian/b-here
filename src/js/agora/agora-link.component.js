@@ -18,6 +18,7 @@ export default class AgoraLinkComponent extends Component {
 		this.state = {};
 		const form = this.form = new FormGroup({
 			link: new FormControl(null, [Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), Validators.RequiredValidator()]),
+			linkAttendee: null,
 			linkStreamer: null,
 			linkViewer: null,
 			// link: new FormControl(null),
@@ -43,6 +44,7 @@ export default class AgoraLinkComponent extends Component {
 		const timestamp = new Date().valueOf().toString();
 		this.form.patch({
 			link: this.getRoleMeetingId(timestamp, RoleType.Publisher),
+			linkAttendee: this.getRoleMeetingId(timestamp, RoleType.Attendee),
 			linkStreamer: this.getRoleMeetingId(timestamp, RoleType.Streamer),
 			linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer),
 		});
@@ -52,6 +54,33 @@ export default class AgoraLinkComponent extends Component {
 		const components = meetingId.split('-');
 		components[1] = this.padded(this.getRoleIndex(role), 4);
 		return components.join('-');
+	}
+
+	onInputDidChange($event) {
+		// console.log('onInputDidChange', this.form.get('link').value, this.form.get('link').valid);
+		if (this.state.role !== 'publisher') {
+			return;
+		}
+		setTimeout(() => {
+			if (this.form.get('link').valid) {
+				const value = this.form.get('link').value;
+				this.form.patch({
+					link: this.setRoleMeetingId(value, RoleType.Publisher),
+					linkAttendee: this.setRoleMeetingId(value, RoleType.Attendee),
+					linkStreamer: this.setRoleMeetingId(value, RoleType.Streamer),
+					linkViewer: this.setRoleMeetingId(value, RoleType.Viewer),
+				});
+			} else {
+				this.form.get('linkAttendee').reset();
+				this.form.get('linkStreamer').reset();
+				this.form.get('linkViewer').reset();
+			}
+		}, 1);
+	}
+
+	setRoleMeetingId(meetingId, role) {
+		const meetingIdSegments = meetingId.split('-');
+		return `${meetingIdSegments[0]}-${this.padded(this.getRoleIndex(role), 4)}-${meetingIdSegments[2]}`;
 	}
 
 	getRoleMeetingId(timestamp, role) {
