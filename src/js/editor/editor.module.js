@@ -2,6 +2,7 @@ import { Module } from 'rxcomp';
 import ToastOutletComponent from '../toast/toast-outlet.component';
 import AsideComponent from './aside/aside.component';
 import EditorComponent from './editor.component';
+import MenuBuilderComponent from './menu/menu-builder.component';
 import CurvedPlaneModalComponent from './modals/curved-plane-modal.component';
 import NavModalComponent from './modals/nav-modal.component';
 import PanoramaGridModalComponent from './modals/panorama-grid-modal.component';
@@ -16,6 +17,7 @@ const factories = [
 	AsideComponent,
 	CurvedPlaneModalComponent,
 	EditorComponent,
+	MenuBuilderComponent,
 	NavModalComponent,
 	PanoramaModalComponent,
 	PanoramaGridModalComponent,

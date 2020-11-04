@@ -116,4 +116,15 @@ export default class FilterService {
 		});
 	}
 
+	reset() {
+		let filter;
+		Object.keys(this.filters).forEach(x => {
+			filter = this.filters[x];
+			filter.values = [];
+		});
+		if (filter) {
+			filter.change$.next();
+		}
+	}
+
 }

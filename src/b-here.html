@@ -55,9 +55,19 @@
 						</div>
 					</div>
 					<div *if="state.role === 'publisher'">
-						<div class="group--form" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
-							<label>Inserisci un Meeting ID</label>
-							<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" />
+						<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
+							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> Inserisci un Meeting ID</label>
+							<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" (change)="onInputDidChange($event)" />
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.link.value)" *if="controls.link.valid">
+								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+							</div>
+						</div>
+						<div class="group--form group--form--addon addon" *if="controls.linkAttendee.valid && controls.linkAttendee.value !== null">
+							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> Attendee Meeting ID</label>
+							<input type="text" class="control--text" [formControl]="controls.linkAttendee" placeholder="Attendee Meeting ID" readonly />
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkAttendee.value)" *if="controls.linkAttendee.valid">
+								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+							</div>
 						</div>
 						<div class="group--form group--form--addon addon" *if="controls.linkStreamer.valid && controls.linkStreamer.value !== null">
 							<label>Streamer Meeting ID</label>
