@@ -32,8 +32,10 @@ export default class UpdateViewItemComponent extends Component {
 		const item = this.item;
 		const itemAssetId = item.asset ? item.asset.id : null;
 		const changesAssetId = changes.asset ? changes.asset.id : null;
+		const itemHasChromaKeyColor = item.hasChromaKeyColor === true;
+		const changesHasChromaKeyColor = changes.hasChromaKeyColor === true;
 		// console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
-		if (itemAssetId !== changesAssetId || item.hasChromaKeyColor !== changes.hasChromaKeyColor) {
+		if (itemAssetId !== changesAssetId || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
 			return true;
 		} else {
 			return false;
@@ -43,6 +45,7 @@ export default class UpdateViewItemComponent extends Component {
 	doUpdateItem(changes) {
 		const item = this.item;
 		const assetDidChange = this.getAssetDidChange(changes);
+		console.log('doUpdateItem.assetDidChange', assetDidChange);
 		Object.assign(item, changes);
 		if (item.asset) {
 			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0, 1.0, 0.0] : null;
@@ -53,6 +56,8 @@ export default class UpdateViewItemComponent extends Component {
 				switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
 				first()
 			).subscribe();
+			// !!! create indices for nextAttendeeStream
+			this.view.updateIndices(this.view.items);
 			if (typeof item.onUpdateAsset === 'function') {
 				item.onUpdateAsset();
 			}

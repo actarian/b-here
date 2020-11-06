@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import Interactive from '../interactive/interactive';
 

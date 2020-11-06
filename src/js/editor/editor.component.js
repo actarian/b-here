@@ -271,7 +271,7 @@ export default class EditorComponent extends Component {
 	// editor
 
 	onViewHit(event) {
-		console.log('onViewHit');
+		// console.log('onViewHit');
 		this.viewHit.next(event);
 	}
 

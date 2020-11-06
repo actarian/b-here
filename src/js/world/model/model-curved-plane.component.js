@@ -1,5 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
@@ -33,7 +32,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 					subscription.unsubscribe();
 					subscription = null;
 				}
-				console.log('ModelCurvedPanel', streamId, item.asset)
+				// console.log('ModelCurvedPanel', streamId, item.asset)
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
 					mesh = new MediaMesh(item, items, geometry);
@@ -85,7 +84,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 			mesh.scale.fromArray(item.scale);
 		}
 		// !!! deactivated
-		if (false && (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
+		if (true && (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
 			this.mesh.geometry.dispose();
 			const geometry = this.getCurvedPanelGeometry(item);
 			this.mesh.geometry = geometry;
@@ -97,8 +96,13 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 	onUpdateAsset(item, mesh) {
 		// console.log('ModelCurvedPlaneComponent.onUpdateAsset', item);
 		this.mesh.updateByItem(item);
-		this.mesh.load(() => {
-			console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+		MediaMesh.getStreamId$(item).pipe(
+			first(),
+		).subscribe((streamId) => {
+			item.streamId = streamId;
+			this.mesh.load(() => {
+				console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+			});
 		});
 	}
 

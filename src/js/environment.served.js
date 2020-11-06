@@ -5,6 +5,9 @@ export const environmentServed = {
 	flags: {
 		ar: false,
 		menu: true,
+		attendee: true,
+		streamer: true,
+		viewer: true,
 	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',

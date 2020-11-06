@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-// import * as THREE from 'three';
+import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
@@ -203,16 +203,18 @@ export default class MediaMesh extends InteractiveMesh {
 		if (!item.asset) {
 			return of(null);
 		}
+		const assetType = item.asset.type;
 		const file = item.asset.file;
-		if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
+		if (assetType.name !== AssetType.PublisherStream.name && assetType.name !== AssetType.NextAttendeeStream.name) {
 			return of(file);
 		}
 		return StreamService.streams$.pipe(
 			map((streams) => {
+				console.log('MediaMesh.getStreamId$', streams, item.asset);
 				let stream;
-				if (file === 'publisherStream') {
+				if (assetType.name === AssetType.PublisherStream.name) {
 					stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
-				} else if (file === 'nextAttendeeStream') {
+				} else if (assetType.name === AssetType.NextAttendeeStream.name) {
 					let i = 0;
 					streams.forEach(x => {
 						if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {

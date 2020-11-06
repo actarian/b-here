@@ -43,7 +43,7 @@ export default class PlaneModalComponent extends Component {
 			type: ViewItemType.Plane,
 			position: new FormControl(this.position.multiplyScalar(20).toArray(), RequiredValidator()),
 			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
-			scale: new FormControl([3.2, 1.8, 1], RequiredValidator()),
+			scale: new FormControl([12, 6.75, 1], RequiredValidator()),
 			asset: null,
 		});
 		this.controls = form.controls;

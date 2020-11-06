@@ -4,13 +4,18 @@
 	// window.antiforgery = '';
     window.labels = {
 		"browse": "Apri",
+		"cancel": "annulla",
+		"drag_and_drop_images": "Drag And Drop your images here",
 		"error_email": "Email non valida",
 		"error_match": "I campi non corrispondono",
 		"error_required": "Il campo è obbligatorio",
+		"loading": "loading",
 		"remove": "Elimina",
 		"required": "richiesto",
 		"select": "seleziona",
 		"select_file": "## lbl_selezionaFile ##",
+		"upload": "upload",
+		"waiting_host": "waiting host",
 		"bhere_editor": "editor",
 		"bhere_insert_meeting_id": "Inserisci un Meeting ID",
 		"bhere_meeting_id": "Meeting ID",
@@ -62,21 +67,21 @@
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
-						<div class="group--form group--form--addon addon" *if="controls.linkAttendee.valid && controls.linkAttendee.value !== null">
+						<div class="group--form group--form--addon addon" *if="flags.attendee && controls.linkAttendee.valid && controls.linkAttendee.value !== null">
 							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> Attendee Meeting ID</label>
 							<input type="text" class="control--text" [formControl]="controls.linkAttendee" placeholder="Attendee Meeting ID" readonly />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkAttendee.value)" *if="controls.linkAttendee.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
-						<div class="group--form group--form--addon addon" *if="controls.linkStreamer.valid && controls.linkStreamer.value !== null">
+						<div class="group--form group--form--addon addon" *if="flags.streamer && controls.linkStreamer.valid && controls.linkStreamer.value !== null">
 							<label>Streamer Meeting ID</label>
 							<input type="text" class="control--text" [formControl]="controls.linkStreamer" placeholder="Viewer Meeting ID" readonly />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkStreamer.value)" *if="controls.linkStreamer.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
-						<div class="group--form group--form--addon addon" *if="controls.linkViewer.valid && controls.linkViewer.value !== null">
+						<div class="group--form group--form--addon addon" *if="flags.viewer && controls.linkViewer.valid && controls.linkViewer.value !== null">
 							<label>Viewer Meeting ID</label>
 							<input type="text" class="control--text" [formControl]="controls.linkViewer" placeholder="Viewer Meeting ID" readonly />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkViewer.value)" *if="controls.linkViewer.valid">

@@ -2,7 +2,7 @@
 
 import { fromEvent } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
-// import * as THREE from 'three';
+import { AssetType } from '../../asset/asset';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
 import ImageService from '../../image/image.service';
@@ -53,7 +53,7 @@ export class EnvMapLoader {
 		if (!item.asset) {
 			return;
 		}
-		if (item.asset.file === 'publisherStream') {
+		if (item.asset.type.name === AssetType.PublisherStream.name) {
 			return this.loadPublisherStreamBackground(renderer, callback);
 		} else if (item.asset.file.indexOf('.hdr') !== -1) {
 			return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
