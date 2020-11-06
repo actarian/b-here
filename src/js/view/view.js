@@ -1,7 +1,6 @@
 /* global THREE */
 
 import { Subject } from "rxjs";
-// import * as THREE from 'three';
 
 export const ViewType = {
 	WaitingRoom: { id: 1, name: 'waiting-room' },
@@ -25,15 +24,7 @@ export class View {
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
-			if (options.items) {
-				let nextAttendeeStreamIndex = 0;
-				options.items.forEach((item, index) => {
-					item.index = index;
-					if (item.asset && item.asset.file === 'nextAttendeeStream') {
-						item.asset.index = nextAttendeeStreamIndex++;
-					}
-				});
-			}
+			this.updateIndices(options.items);
 		}
 		this.items = (this.items || []).map(item => mapViewItem(item));
 		if (this.tiles) {
@@ -64,6 +55,17 @@ export class View {
 		return this.type ? this.type.split('-').map(x => x.substring(0, 1).toUpperCase()).join('') : '??';
 	}
 
+	updateIndices(items) {
+		if (items) {
+			let nextAttendeeStreamIndex = 0;
+			items.forEach((item, index) => {
+				item.index = index;
+				if (item.asset && item.asset.file === 'nextAttendeeStream') {
+					item.asset.index = nextAttendeeStreamIndex++;
+				}
+			});
+		}
+	}
 }
 
 export class PanoramaView extends View {

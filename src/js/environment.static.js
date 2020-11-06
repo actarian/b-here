@@ -5,6 +5,9 @@ export const environmentStatic = {
 	flags: {
 		ar: true,
 		menu: true,
+		attendee: true,
+		streamer: true,
+		viewer: true,
 	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',

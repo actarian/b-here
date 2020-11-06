@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../environment';
 

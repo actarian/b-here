@@ -1,6 +1,6 @@
+import { of } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import MenuService from '../../editor/menu/menu.service';
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
 import Interactive from '../interactive/interactive';
@@ -251,7 +251,49 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	onChanges() {
-		this.buildMenu();
+		// this.buildMenu();
+	}
+
+	buildMenu() {
+		if (!this.items) {
+			return;
+		}
+		MenuService.getModelMenu$(this.items, this.editor).pipe(
+			first(),
+		).subscribe(menu => this.groups = menu);
+		/*
+		const menu = {};
+		this.items.forEach(item => {
+			if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
+				let group = menu[item.type.name];
+				if (!group) {
+					group = menu[item.type.name] = [];
+				}
+				group.push(item);
+			}
+		});
+		this.groups = Object.keys(menu).map(typeName => {
+			let name = 'Button';
+			switch (typeName) {
+				case ViewType.WaitingRoom.name:
+					name = 'Waiting Room';
+					break;
+				case ViewType.Panorama.name:
+					name = 'Experience';
+					break;
+				case ViewType.PanoramaGrid.name:
+					name = 'Virtual Tour';
+					break;
+				case ViewType.Room3d.name:
+					name = 'Stanze 3D';
+					break;
+				case ViewType.Model.name:
+					name = 'Modelli 3D';
+					break;
+			}
+			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
+		});
+		*/
 	}
 
 	onDestroy() {
@@ -301,48 +343,6 @@ export default class ModelMenuComponent extends ModelComponent {
 		// }
 	}
 
-	buildMenu() {
-		if (!this.items) {
-			return;
-		}
-		MenuService.getModelMenu$(this.items, this.editor).pipe(
-			first(),
-		).subscribe(menu => this.groups = menu);
-		/*
-		const menu = {};
-		this.items.forEach(item => {
-			if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
-				let group = menu[item.type.name];
-				if (!group) {
-					group = menu[item.type.name] = [];
-				}
-				group.push(item);
-			}
-		});
-		this.groups = Object.keys(menu).map(typeName => {
-			let name = 'Button';
-			switch (typeName) {
-				case ViewType.WaitingRoom.name:
-					name = 'Waiting Room';
-					break;
-				case ViewType.Panorama.name:
-					name = 'Experience';
-					break;
-				case ViewType.PanoramaGrid.name:
-					name = 'Virtual Tour';
-					break;
-				case ViewType.Room3d.name:
-					name = 'Stanze 3D';
-					break;
-				case ViewType.Model.name:
-					name = 'Modelli 3D';
-					break;
-			}
-			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
-		});
-		*/
-	}
-
 	onToggle() {
 		if (StateService.state.locked || StateService.state.spying) {
 			return;
@@ -373,64 +373,68 @@ export default class ModelMenuComponent extends ModelComponent {
 		}
 	}
 
+	items$(item = null) {
+		if (item) {
+			return of(item.items);
+		} else {
+			return MenuService.getModelMenu$(this.items, this.editor).pipe(
+				first(),
+			);
+		}
+	}
+
 	addMenu(item = null) {
 		this.removeMenu();
-		let items;
-		if (item) {
-			if (item.type.name === 'menu-group') {
-				items = item.items;
-			} else {
-				this.removeMenu();
-				if (this.host.renderer.xr.isPresenting) {
-					this.addToggler();
-				}
-				this.nav.next(item);
-				return;
+		// nav to view
+		if (item && item.type.name !== 'menu-group') {
+			if (this.host.renderer.xr.isPresenting) {
+				this.addToggler();
 			}
-		} else {
-			items = this.groups;
-			// this.down.next(this.item);
+			this.nav.next(item);
+			return;
 		}
-		if (items) {
-			items = items.slice();
-			const back = {
-				type: { name: 'back' },
-				name: item ? 'Back' : 'Close',
-				backItem: item,
-			};
-			items.push(back);
-			const buttons = this.buttons = items.map((x, i, a) => {
-				x.backItem = item;
-				return (x.type.name === 'back') ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
-			});
-			buttons.forEach(button => {
-				button.depthTest = false;
-				button.on('over', button.onOver);
-				button.on('out', button.onOut);
-				button.on('down', this.onDown);
-				this.menuGroup.add(button);
-				/*
-				var box = new THREE.BoxHelper(button, 0xffff00);
-				this.host.scene.add(box);
-				*/
-			});
-			gsap.to(buttons, {
-				duration: 0.3,
-				opacity: 0.8,
-				ease: Power2.easeOut,
-				stagger: {
-					grid: MenuButton.getGrid(buttons.length),
-					from: 0, // index
-					amount: 0.02 * buttons.length
-				},
-				onUpdate: () => {
-					buttons.forEach(button => {
-						button.material.uniforms.opacity.value = (button.opacity * (button.item.hidden ? 0.5 : 1));
-						// button.material.needsUpdate = true;
-					});
-				},
-			});
-		}
+		this.items$(item).subscribe(items => {
+			if (items) {
+				items = items.slice();
+				const back = {
+					type: { name: 'back' },
+					name: item ? 'Back' : 'Close',
+					backItem: item,
+				};
+				items.push(back);
+				const buttons = this.buttons = items.map((x, i, a) => {
+					x.backItem = item;
+					return (x.type.name === 'back') ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
+				});
+				buttons.forEach(button => {
+					button.depthTest = false;
+					button.on('over', button.onOver);
+					button.on('out', button.onOut);
+					button.on('down', this.onDown);
+					this.menuGroup.add(button);
+					/*
+					var box = new THREE.BoxHelper(button, 0xffff00);
+					this.host.scene.add(box);
+					*/
+				});
+				gsap.to(buttons, {
+					duration: 0.3,
+					opacity: 0.8,
+					ease: Power2.easeOut,
+					stagger: {
+						grid: MenuButton.getGrid(buttons.length),
+						from: 0, // index
+						amount: 0.02 * buttons.length
+					},
+					onUpdate: () => {
+						buttons.forEach(button => {
+							button.material.uniforms.opacity.value = (button.opacity * (button.item.hidden ? 0.5 : 1));
+							// button.material.needsUpdate = true;
+						});
+					},
+				});
+			}
+		});
 	}
 
 	removeMenu() {

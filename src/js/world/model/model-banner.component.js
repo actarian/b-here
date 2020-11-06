@@ -1,6 +1,5 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
-// import * as THREE from 'three';
 import { PANORAMA_RADIUS } from '../panorama/panorama';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';

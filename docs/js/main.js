@@ -126,7 +126,10 @@ function _readOnlyError(name) {
   channelName: 'BHere',
   flags: {
     ar: true,
-    menu: true
+    menu: true,
+    attendee: true,
+    streamer: true,
+    viewer: true
   },
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
@@ -165,7 +168,10 @@ function _readOnlyError(name) {
   channelName: 'BHere',
   flags: {
     ar: true,
-    menu: true
+    menu: true,
+    attendee: true,
+    streamer: true,
+    viewer: true
   },
   assets: './',
   worker: './js/workers/image.service.worker.js',
@@ -265,7 +271,7 @@ var Environment = /*#__PURE__*/function () {
 var defaultOptions = {
   port: 5000,
   useToken: false,
-  fontFamily: 'GT Walsheim',
+  fontFamily: 'GT Walsheim, sans-serif',
   renderOrder: {
     panorama: 0,
     model: 10,
@@ -281,7 +287,14 @@ var defaultOptions = {
 };
 var defaultAppOptions = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  channelName: 'BHere'
+  channelName: 'BHere',
+  flags: {
+    ar: true,
+    menu: true,
+    attendee: true,
+    streamer: true,
+    viewer: true
+  }
 };
 var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
@@ -3098,6 +3111,7 @@ AgoraDeviceComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    this.flags = environment.flags;
     this.editorLink = environment.url.editor;
     this.state = {};
     var form = this.form = new rxcompForm.FormGroup({
@@ -3811,17 +3825,7 @@ var View = /*#__PURE__*/function () {
   function View(options) {
     if (options) {
       Object.assign(this, options);
-
-      if (options.items) {
-        var nextAttendeeStreamIndex = 0;
-        options.items.forEach(function (item, index) {
-          item.index = index;
-
-          if (item.asset && item.asset.file === 'nextAttendeeStream') {
-            item.asset.index = nextAttendeeStreamIndex++;
-          }
-        });
-      }
+      this.updateIndices(options.items);
     }
 
     this.items = (this.items || []).map(function (item) {
@@ -3836,6 +3840,21 @@ var View = /*#__PURE__*/function () {
 
     this.originalItems = this.items.slice();
   }
+
+  var _proto = View.prototype;
+
+  _proto.updateIndices = function updateIndices(items) {
+    if (items) {
+      var nextAttendeeStreamIndex = 0;
+      items.forEach(function (item, index) {
+        item.index = index;
+
+        if (item.asset && item.asset.file === 'nextAttendeeStream') {
+          item.asset.index = nextAttendeeStreamIndex++;
+        }
+      });
+    }
+  };
 
   _createClass(View, [{
     key: "payload",
@@ -3981,13 +4000,13 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     return _this2;
   }
 
-  var _proto = PanoramaGridView.prototype;
+  var _proto2 = PanoramaGridView.prototype;
 
-  _proto.updateCurrentItems = function updateCurrentItems() {
+  _proto2.updateCurrentItems = function updateCurrentItems() {
     this.items = this.originalItems.concat(this.tiles[this.index_].navs);
   };
 
-  _proto.getTileIndex = function getTileIndex(x, y) {
+  _proto2.getTileIndex = function getTileIndex(x, y) {
     return this.tiles.reduce(function (p, c, i) {
       if (c.indices.x === x && c.indices.y === y) {
         return i;
@@ -3997,11 +4016,11 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
     }, -1);
   };
 
-  _proto.hasTile = function hasTile(x, y) {
+  _proto2.hasTile = function hasTile(x, y) {
     return this.getTileIndex(x, y) !== -1;
   };
 
-  _proto.getTile = function getTile(x, y) {
+  _proto2.getTile = function getTile(x, y) {
     var index = this.getTileIndex(x, y);
 
     if (index !== -1) {
@@ -5999,7 +6018,7 @@ AsideComponent.meta = {
   ;
 
   _proto.onViewHit = function onViewHit(event) {
-    console.log('onViewHit');
+    // console.log('onViewHit');
     this.viewHit.next(event);
   };
 
@@ -7477,7 +7496,7 @@ PanoramaModalComponent.meta = {
       position: new rxcompForm.FormControl(this.position.multiplyScalar(20).toArray(), rxcompForm.RequiredValidator()),
       rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
       // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([3.2, 1.8, 1], rxcompForm.RequiredValidator()),
+      scale: new rxcompForm.FormControl([12, 6.75, 1], rxcompForm.RequiredValidator()),
       asset: null
     });
     this.controls = form.controls;
@@ -7636,9 +7655,11 @@ RemoveModalComponent.meta = {
   _proto.getAssetDidChange = function getAssetDidChange(changes) {
     var item = this.item;
     var itemAssetId = item.asset ? item.asset.id : null;
-    var changesAssetId = changes.asset ? changes.asset.id : null; // console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
+    var changesAssetId = changes.asset ? changes.asset.id : null;
+    var itemHasChromaKeyColor = item.hasChromaKeyColor === true;
+    var changesHasChromaKeyColor = changes.hasChromaKeyColor === true; // console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
 
-    if (itemAssetId !== changesAssetId || item.hasChromaKeyColor !== changes.hasChromaKeyColor) {
+    if (itemAssetId !== changesAssetId || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
       return true;
     } else {
       return false;
@@ -7650,6 +7671,7 @@ RemoveModalComponent.meta = {
 
     var item = this.item;
     var assetDidChange = this.getAssetDidChange(changes);
+    console.log('doUpdateItem.assetDidChange', assetDidChange);
     Object.assign(item, changes);
 
     if (item.asset) {
@@ -7660,7 +7682,9 @@ RemoveModalComponent.meta = {
       var asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : rxjs.of(null);
       asset$.pipe(operators.switchMap(function () {
         return EditorService.inferItemUpdate$(_this2.view, item);
-      }), operators.first()).subscribe();
+      }), operators.first()).subscribe(); // !!! create indices for nextAttendeeStream
+
+      this.view.updateIndices(this.view.items);
 
       if (typeof item.onUpdateAsset === 'function') {
         item.onUpdateAsset();
@@ -8011,11 +8035,11 @@ UpdateViewTileComponent.meta = {
 
       switch (view.type.name) {
         case ViewType.Panorama.name:
-          keys = ['id', 'type', 'name', 'hidden', 'latitude', 'longitude', 'zoom', 'asset'];
+          keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
           break;
 
         case ViewType.PanoramaGrid.name:
-          keys = ['id', 'type', 'name', 'hidden', 'latitude', 'longitude', 'zoom'];
+          keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom'];
           break;
 
         default:
@@ -8652,11 +8676,13 @@ _defineProperty(KeyboardService, "keys", {});var LABELS = Object.assign({
   error_email: 'Invalid email',
   error_match: 'Fields do not match',
   error_required: 'Field is required',
+  loading: 'loading',
   remove: 'remove',
   required: 'required',
   select: 'Select',
   select_file: 'Select a file...',
-  upload: 'upload'
+  upload: 'upload',
+  waiting_host: 'waiting host'
 }, window.labels || {});
 
 var LabelPipe = /*#__PURE__*/function (_Pipe) {
@@ -10262,7 +10288,7 @@ HlsDirective.meta = {
       return;
     }
 
-    if (item.asset.file === 'publisherStream') {
+    if (item.asset.type.name === AssetType.PublisherStream.name) {
       return this.loadPublisherStreamBackground(renderer, callback);
     } else if (item.asset.file.indexOf('.hdr') !== -1) {
       return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
@@ -10515,8 +10541,7 @@ HlsDirective.meta = {
   }]);
 
   return EnvMapLoader;
-}();// import * as THREE from 'three';
-var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
+}();var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
   _inheritsLoose(FreezableMesh, _THREE$Mesh);
 
   _createClass(FreezableMesh, [{
@@ -10538,7 +10563,7 @@ var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
   function FreezableMesh(geometry, material) {
     var _this;
 
-    geometry = geometry || new THREE.BoxGeometry(5, 5, 5);
+    geometry = geometry || new THREE.BoxBufferGeometry(5, 5, 5);
     material = material || new THREE.MeshBasicMaterial({
       color: 0xff00ff // opacity: 1,
       // transparent: true,
@@ -10566,7 +10591,7 @@ var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
   function EmittableMesh(geometry, material) {
     var _this;
 
-    geometry = geometry || new THREE.BoxGeometry(5, 5, 5);
+    geometry = geometry || new THREE.BoxBufferGeometry(5, 5, 5);
     material = material || new THREE.MeshBasicMaterial({
       color: 0xff00ff // opacity: 1,
       // transparent: true,
@@ -10761,8 +10786,7 @@ VideoTexture.prototype = Object.assign(Object.create(three.Texture.prototype), {
       this.needsUpdate = true;
     }
   }
-});// import * as THREE from 'three';
-var PANORAMA_RADIUS = 101;
+});var PANORAMA_RADIUS = 101;
 var VERTEX_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\t// gl_PointSize = 8.0;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
 var FRAGMENT_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform vec2 resolution;\nuniform float tween;\nuniform bool rgbe;\nuniform sampler2D texture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\tcolor *= 1.8;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(texture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / resolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(texture, vUv);\n\t// color = Blur(vUv, color);\n\tif (rgbe) {\n\t\tcolor = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
 
@@ -11260,8 +11284,7 @@ var AvatarElement = /*#__PURE__*/function () {
   };
 
   return AvatarElement;
-}();// import * as THREE from 'three';
-var Camera = /*#__PURE__*/function (_THREE$PerspectiveCam) {
+}();var Camera = /*#__PURE__*/function (_THREE$PerspectiveCam) {
   _inheritsLoose(Camera, _THREE$PerspectiveCam);
 
   function Camera(fov, aspect, near, far, dolly) {
@@ -11840,8 +11863,7 @@ var PhoneElement = /*#__PURE__*/function () {
   };
 
   return PhoneElement;
-}();// import * as THREE from 'three';
-var ORIGIN = new THREE.Vector3();
+}();var ORIGIN = new THREE.Vector3();
 
 var PointerElement = /*#__PURE__*/function () {
   function PointerElement() {
@@ -12415,7 +12437,7 @@ var MotionController = /*#__PURE__*/function () {
   }]);
 
   return MotionController;
-}();// import * as THREE from 'three';
+}();// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 var DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles';
 var DEFAULT_PROFILE = 'generic-trigger';
 
@@ -12494,7 +12516,7 @@ function findNodes(motionController, scene) {
 
       if (component.touchPointNode) {
         // Attach a touch dot to the touchpad.
-        var sphereGeometry = new THREE.SphereGeometry(0.001);
+        var sphereGeometry = new THREE.SphereBufferGeometry(0.001);
         var material = new THREE.MeshBasicMaterial({
           color: 0x0000FF
         });
@@ -12618,10 +12640,10 @@ var XRControllerModelFactory = function () {
   return XRControllerModelFactory;
 }();var ORIGIN$1 = new THREE.Vector3();
 var loadingBanner = {
-  title: 'loading'
+  title: LabelPipe.transform('loading')
 };
 var waitingBanner = {
-  title: 'waiting host'
+  title: LabelPipe.transform('waiting_host')
 };
 
 var WorldComponent = /*#__PURE__*/function (_Component) {
@@ -13559,8 +13581,7 @@ WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views', 'editor'],
   outputs: ['slideChange', 'navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
-};// import * as THREE from 'three';
-var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
+};var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
   _inheritsLoose(FreezableSprite, _THREE$Sprite);
 
   _createClass(FreezableSprite, [{
@@ -13720,7 +13741,7 @@ var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
 
   return InteractiveSprite;
 }(EmittableSprite);var deg = THREE.Math.degToRad;
-var GEOMETRY = new THREE.BoxGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
+var GEOMETRY = new THREE.BoxBufferGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
 var ModelComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModelComponent, _Component);
@@ -14087,11 +14108,11 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.asset && item.asset.file === 'publisherStream';
+    return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
   };
 
   MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.file === 'nextAttendeeStream';
+    return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
   };
 
   _createClass(MediaLoader, [{
@@ -14132,7 +14153,7 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this = this;
 
     var item = this.item;
-    var texture;
+    var texture; // console.log('MediaLoader.load', item, this.isPublisherStream);
 
     if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
       var streamId = item.streamId;
@@ -14384,20 +14405,22 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       return rxjs.of(null);
     }
 
+    var assetType = item.asset.type;
     var file = item.asset.file;
 
-    if (file !== 'publisherStream' && file !== 'nextAttendeeStream') {
+    if (assetType.name !== AssetType.PublisherStream.name && assetType.name !== AssetType.NextAttendeeStream.name) {
       return rxjs.of(file);
     }
 
     return StreamService.streams$.pipe(operators.map(function (streams) {
+      console.log('MediaMesh.getStreamId$', streams, item.asset);
       var stream;
 
-      if (file === 'publisherStream') {
+      if (assetType.name === AssetType.PublisherStream.name) {
         stream = streams.find(function (x) {
           return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
         });
-      } else if (file === 'nextAttendeeStream') {
+      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
         var i = 0;
         streams.forEach(function (x) {
           if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
@@ -14859,9 +14882,8 @@ ModelEditableComponent.meta = {
         if (subscription) {
           subscription.unsubscribe();
           subscription = null;
-        }
+        } // console.log('ModelCurvedPanel', streamId, item.asset)
 
-        console.log('ModelCurvedPanel', streamId, item.asset);
 
         if (streamId || !item.asset) {
           item.streamId = streamId;
@@ -14921,15 +14943,28 @@ ModelEditableComponent.meta = {
       mesh.scale.fromArray(item.scale);
     } // !!! deactivated
 
+
+    if ( (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
+      this.mesh.geometry.dispose();
+      var geometry = this.getCurvedPanelGeometry(item);
+      this.mesh.geometry = geometry;
+    }
+
     this.updateHelper();
   } // called by UpdateViewItemComponent
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
+    var _this2 = this;
+
     // console.log('ModelCurvedPlaneComponent.onUpdateAsset', item);
     this.mesh.updateByItem(item);
-    this.mesh.load(function () {
-      console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+    MediaMesh.getStreamId$(item).pipe(first()).subscribe(function (streamId) {
+      item.streamId = streamId;
+
+      _this2.mesh.load(function () {
+        console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+      });
     });
   } // called by WorldComponent
   ;
@@ -15859,8 +15894,52 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     });
   };
 
-  _proto3.onChanges = function onChanges() {
-    this.buildMenu();
+  _proto3.onChanges = function onChanges() {// this.buildMenu();
+  };
+
+  _proto3.buildMenu = function buildMenu() {
+    var _this5 = this;
+
+    if (!this.items) {
+      return;
+    }
+
+    MenuService.getModelMenu$(this.items, this.editor).pipe(operators.first()).subscribe(function (menu) {
+      return _this5.groups = menu;
+    });
+    /*
+    const menu = {};
+    this.items.forEach(item => {
+    	if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
+    		let group = menu[item.type.name];
+    		if (!group) {
+    			group = menu[item.type.name] = [];
+    		}
+    		group.push(item);
+    	}
+    });
+    this.groups = Object.keys(menu).map(typeName => {
+    	let name = 'Button';
+    	switch (typeName) {
+    		case ViewType.WaitingRoom.name:
+    			name = 'Waiting Room';
+    			break;
+    		case ViewType.Panorama.name:
+    			name = 'Experience';
+    			break;
+    		case ViewType.PanoramaGrid.name:
+    			name = 'Virtual Tour';
+    			break;
+    		case ViewType.Room3d.name:
+    			name = 'Stanze 3D';
+    			break;
+    		case ViewType.Model.name:
+    			name = 'Modelli 3D';
+    			break;
+    	}
+    	return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
+    });
+    */
   };
 
   _proto3.onDestroy = function onDestroy() {
@@ -15916,51 +15995,6 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     group.lookAt(ModelMenuComponent.ORIGIN); // }
   };
 
-  _proto3.buildMenu = function buildMenu() {
-    var _this5 = this;
-
-    if (!this.items) {
-      return;
-    }
-
-    MenuService.getModelMenu$(this.items, this.editor).pipe(operators.first()).subscribe(function (menu) {
-      return _this5.groups = menu;
-    });
-    /*
-    const menu = {};
-    this.items.forEach(item => {
-    	if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
-    		let group = menu[item.type.name];
-    		if (!group) {
-    			group = menu[item.type.name] = [];
-    		}
-    		group.push(item);
-    	}
-    });
-    this.groups = Object.keys(menu).map(typeName => {
-    	let name = 'Button';
-    	switch (typeName) {
-    		case ViewType.WaitingRoom.name:
-    			name = 'Waiting Room';
-    			break;
-    		case ViewType.Panorama.name:
-    			name = 'Experience';
-    			break;
-    		case ViewType.PanoramaGrid.name:
-    			name = 'Virtual Tour';
-    			break;
-    		case ViewType.Room3d.name:
-    			name = 'Stanze 3D';
-    			break;
-    		case ViewType.Model.name:
-    			name = 'Modelli 3D';
-    			break;
-    	}
-    	return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
-    });
-    */
-  };
-
   _proto3.onToggle = function onToggle() {
     if (StateService.state.locked || StateService.state.spying) {
       return;
@@ -15994,6 +16028,18 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     }
   };
 
+  _proto3.items$ = function items$(item) {
+    if (item === void 0) {
+      item = null;
+    }
+
+    if (item) {
+      return rxjs.of(item.items);
+    } else {
+      return MenuService.getModelMenu$(this.items, this.editor).pipe(operators.first());
+    }
+  };
+
   _proto3.addMenu = function addMenu(item) {
     var _this6 = this;
 
@@ -16001,70 +16047,63 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       item = null;
     }
 
-    this.removeMenu();
-    var items;
+    this.removeMenu(); // nav to view
 
-    if (item) {
-      if (item.type.name === 'menu-group') {
-        items = item.items;
-      } else {
-        this.removeMenu();
-
-        if (this.host.renderer.xr.isPresenting) {
-          this.addToggler();
-        }
-
-        this.nav.next(item);
-        return;
+    if (item && item.type.name !== 'menu-group') {
+      if (this.host.renderer.xr.isPresenting) {
+        this.addToggler();
       }
-    } else {
-      items = this.groups; // this.down.next(this.item);
+
+      this.nav.next(item);
+      return;
     }
 
-    if (items) {
-      items = items.slice();
-      var back = {
-        type: {
-          name: 'back'
-        },
-        name: item ? 'Back' : 'Close',
-        backItem: item
-      };
-      items.push(back);
-      var buttons = this.buttons = items.map(function (x, i, a) {
-        x.backItem = item;
-        return x.type.name === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
-      });
-      buttons.forEach(function (button) {
-        button.depthTest = false;
-        button.on('over', button.onOver);
-        button.on('out', button.onOut);
-        button.on('down', _this6.onDown);
+    this.items$(item).subscribe(function (items) {
+      if (items) {
+        items = items.slice();
+        var back = {
+          type: {
+            name: 'back'
+          },
+          name: item ? 'Back' : 'Close',
+          backItem: item
+        };
+        items.push(back);
+        var buttons = _this6.buttons = items.map(function (x, i, a) {
+          x.backItem = item;
+          return x.type.name === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
+        });
+        buttons.forEach(function (button) {
+          button.depthTest = false;
+          button.on('over', button.onOver);
+          button.on('out', button.onOut);
+          button.on('down', _this6.onDown);
 
-        _this6.menuGroup.add(button);
-        /*
-        var box = new THREE.BoxHelper(button, 0xffff00);
-        this.host.scene.add(box);
-        */
+          _this6.menuGroup.add(button);
+          /*
+          var box = new THREE.BoxHelper(button, 0xffff00);
+          this.host.scene.add(box);
+          */
 
-      });
-      gsap.to(buttons, {
-        duration: 0.3,
-        opacity: 0.8,
-        ease: Power2.easeOut,
-        stagger: {
-          grid: MenuButton.getGrid(buttons.length),
-          from: 0,
-          // index
-          amount: 0.02 * buttons.length
-        },
-        onUpdate: function onUpdate() {
-          buttons.forEach(function (button) {
-            button.material.uniforms.opacity.value = button.opacity * (button.item.hidden ? 0.5 : 1); // button.material.needsUpdate = true;
-          });
-        }
-      });
-    }
+        });
+        gsap.to(buttons, {
+          duration: 0.3,
+          opacity: 0.8,
+          ease: Power2.easeOut,
+          stagger: {
+            grid: MenuButton.getGrid(buttons.length),
+            from: 0,
+            // index
+            amount: 0.02 * buttons.length
+          },
+          onUpdate: function onUpdate() {
+            buttons.forEach(function (button) {
+              button.material.uniforms.opacity.value = button.opacity * (button.item.hidden ? 0.5 : 1); // button.material.needsUpdate = true;
+            });
+          }
+        });
+      }
+    });
   };
 
   _proto3.removeMenu = function removeMenu() {
@@ -16136,7 +16175,15 @@ ModelMenuComponent.meta = {
   // outputs: ['over', 'out', 'down', 'nav'],
   outputs: ['nav', 'toggle'],
   inputs: ['items', 'editor']
-};var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
+};var NavModeType = {
+  None: 'none',
+  Move: 'move',
+  Info: 'info',
+  Point: 'point',
+  Title: 'title'
+};
+
+var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   _inheritsLoose(ModelNavComponent, _ModelEditableCompone);
 
   function ModelNavComponent() {
@@ -16154,7 +16201,7 @@ ModelMenuComponent.meta = {
   ;
 
   ModelNavComponent.getTexturePoint = function getTexturePoint() {
-    return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
+    return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-exit.png')));
   };
 
   ModelNavComponent.getTextureMove = function getTextureMove() {
@@ -16165,16 +16212,85 @@ ModelMenuComponent.meta = {
     return ModelNavComponent.textureInfo || (ModelNavComponent.textureInfo = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info.png')));
   };
 
-  ModelNavComponent.getTexture = function getTexture(item, view) {
+  ModelNavComponent.getTexture = function getTexture(mode) {
     var texture;
 
-    if (item.hasPanel) {
-      texture = view.id === item.viewId ? this.getTextureInfo() : this.getTexturePoint();
-    } else {
-      texture = this.getTextureMove();
+    switch (mode) {
+      case NavModeType.Move:
+        texture = this.getTextureMove();
+        break;
+
+      case NavModeType.Info:
+        texture = this.getTextureInfo();
+        break;
+
+      case NavModeType.Point:
+      case NavModeType.Title:
+        texture = this.getTexturePoint();
+        break;
     }
 
     return texture;
+  };
+
+  ModelNavComponent.getTitleTexture = function getTitleTexture(item, mode) {
+    var texture;
+
+    if (mode === NavModeType.Title) {
+      var text = item.title;
+      var canvas = document.createElement('canvas'); // document.querySelector('body').appendChild(canvas);
+
+      canvas.width = 512;
+      canvas.height = 32;
+      var ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.font = "28px " + environment.fontFamily;
+      var metrics = ctx.measureText(text);
+      var w = metrics.width + 8;
+      w = Math.pow(2, Math.ceil(Math.log(w) / Math.log(2)));
+      var x = w / 2;
+      var y = 16;
+      canvas.width = w;
+      ctx.font = "28px " + environment.fontFamily;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.lineWidth = 6;
+      ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
+
+      ctx.miterLimit = 2;
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = 'white';
+      ctx.fillText(text, x, y);
+      texture = new THREE.CanvasTexture(canvas);
+    }
+
+    return texture;
+  };
+
+  ModelNavComponent.getNavMode = function getNavMode(item, view) {
+    var mode = NavModeType.None;
+
+    if (item.viewId !== view.id) {
+      mode = NavModeType.Move;
+
+      if (this.isValidText(item.title)) {
+        mode = NavModeType.Title;
+      }
+
+      if (this.isValidText(item.abstract) || item.asset && item.asset.id || item.link && item.link.href) {
+        mode = NavModeType.Point;
+      }
+    } else if (this.isValidText(item.title) || this.isValidText(item.abstract) || item.asset && item.asset.id || item.link && item.link.href) {
+      mode = NavModeType.Info;
+    }
+
+    return mode;
+  };
+
+  ModelNavComponent.isValidText = function isValidText(text) {
+    return text && text.length > 0;
   };
 
   var _proto = ModelNavComponent.prototype;
@@ -16208,12 +16324,18 @@ ModelMenuComponent.meta = {
         _this = this;
 
     // this.renderOrder = environment.renderOrder.nav;
+    var mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+
+    if (mode === NavModeType.None) {
+      return;
+    }
+
     var nav = new THREE.Group();
 
     var position = (_THREE$Vector = new THREE.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
     nav.position.set(position.x, position.y, position.z);
-    var map = ModelNavComponent.getTexture(this.item, this.view);
+    var map = ModelNavComponent.getTexture(mode);
     map.disposable = false;
     map.encoding = THREE.sRGBEncoding;
     var material = new THREE.SpriteMaterial({
@@ -16227,7 +16349,28 @@ ModelMenuComponent.meta = {
     });
     var sprite = new THREE.Sprite(material);
     sprite.scale.set(0.03, 0.03, 0.03);
-    nav.add(sprite); // const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
+    nav.add(sprite);
+    var titleMaterial;
+    var titleTexture = ModelNavComponent.getTitleTexture(this.item, mode);
+
+    if (titleTexture) {
+      titleMaterial = new THREE.SpriteMaterial({
+        depthTest: false,
+        depthWrite: false,
+        transparent: true,
+        map: titleTexture,
+        sizeAttenuation: false,
+        opacity: 0 // color: 0xff0000,
+
+      }); // console.log(titleTexture);
+
+      var image = titleTexture.image;
+      var title = new THREE.Sprite(titleMaterial);
+      title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
+      title.position.set(0, -3.5, 0);
+      nav.add(title);
+    } // const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
+
 
     var geometry = new THREE.SphereBufferGeometry(3, 12, 12);
     var sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
@@ -16244,7 +16387,7 @@ ModelMenuComponent.meta = {
     nav.add(sphere);
     sphere.on('over', function () {
       // console.log('ModelNavComponent.over');
-      if (!_this.editing) {
+      if (mode !== NavModeType.Move && mode !== NavModeType.Title && !_this.editing) {
         _this.over.next(_this);
       }
 
@@ -16307,6 +16450,11 @@ ModelMenuComponent.meta = {
         // console.log(index, from.opacity);
         material.opacity = from.opacity;
         material.needsUpdate = true;
+
+        if (titleMaterial) {
+          titleMaterial.opacity = from.opacity;
+          titleMaterial.needsUpdate = true;
+        }
       }
     });
 
@@ -16709,10 +16857,16 @@ ModelPictureComponent.meta = {
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
+    var _this2 = this;
+
     // console.log('ModelPlaneComponent.onUpdateAsset', item);
     this.mesh.updateByItem(item);
-    this.mesh.load(function () {
-      console.log('ModelPlaneComponent.mesh.load.complete');
+    MediaMesh.getStreamId$(item).pipe(operators.first()).subscribe(function (streamId) {
+      item.streamId = streamId;
+
+      _this2.mesh.load(function () {
+        console.log('ModelPlaneComponent.mesh.load.complete');
+      });
     });
   } // called by WorldComponent
   ;

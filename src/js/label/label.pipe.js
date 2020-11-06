@@ -7,11 +7,13 @@ export const LABELS = Object.assign({
 	error_email: 'Invalid email',
 	error_match: 'Fields do not match',
 	error_required: 'Field is required',
+	loading: 'loading',
 	remove: 'remove',
 	required: 'required',
 	select: 'Select',
 	select_file: 'Select a file...',
 	upload: 'upload',
+	waiting_host: 'waiting host',
 }, (window.labels || {}));
 
 export default class LabelPipe extends Pipe {

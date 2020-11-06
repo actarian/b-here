@@ -1,5 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import VRService from '../vr.service';

@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 
 export default class FreezableSprite extends THREE.Sprite {
 
