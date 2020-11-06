@@ -1,5 +1,4 @@
 
-// import * as THREE from 'three';
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import { Constants as MotionControllerConstants, fetchProfile, MotionController } from './motion-controllers.module.js';
@@ -114,7 +113,7 @@ function findNodes(motionController, scene) {
 			if (component.touchPointNode) {
 
 				// Attach a touch dot to the touchpad.
-				const sphereGeometry = new THREE.SphereGeometry(0.001);
+				const sphereGeometry = new THREE.SphereBufferGeometry(0.001);
 				const material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
 				const sphere = new THREE.Mesh(sphereGeometry, material);
 				component.touchPointNode.add(sphere);

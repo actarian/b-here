@@ -14,6 +14,7 @@ export default class AgoraLinkComponent extends Component {
 	}
 
 	onInit() {
+		this.flags = environment.flags;
 		this.editorLink = environment.url.editor;
 		this.state = {};
 		const form = this.form = new FormGroup({

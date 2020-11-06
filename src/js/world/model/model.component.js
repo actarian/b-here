@@ -1,5 +1,4 @@
 import { Component, getContext } from 'rxcomp';
-// import * as THREE from 'three';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import InteractiveSprite from '../interactive/interactive.sprite';
@@ -8,7 +7,7 @@ import WorldComponent from '../world.component';
 
 const deg = THREE.Math.degToRad;
 
-const GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
+const GEOMETRY = new THREE.BoxBufferGeometry(1, 1, 1);
 // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
 export default class ModelComponent extends Component {

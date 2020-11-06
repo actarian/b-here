@@ -145,7 +145,8 @@
 		</div>
 	</div>
 	<div class="group--logo">
-		<svg viewBox="0 0 327 98"><use xlink:href="#b-here"></use></svg>
+		<img [src]="logo" *if="logo" />
+		<svg viewBox="0 0 270 98" *if="!logo"><use xlink:href="#b-here"></use></svg>
 	</div>
 </div>
 <!-- @@close-->

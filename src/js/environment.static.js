@@ -5,7 +5,11 @@ export const environmentStatic = {
 	flags: {
 		ar: true,
 		menu: true,
+		attendee: true,
+		streamer: true,
+		viewer: true,
 	},
+	logo: null,
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ernestomeda/docs/',

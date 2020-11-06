@@ -1,5 +1,5 @@
 import { ReplaySubject } from 'rxjs';
-// import * as THREE from 'three';
+import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 
 export class MediaLoaderEvent {
@@ -33,11 +33,11 @@ export default class MediaLoader {
 	}
 
 	static isPublisherStream(item) {
-		return item.asset && item.asset.file === 'publisherStream';
+		return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
 	}
 
 	static isNextAttendeeStream(item) {
-		return item.asset && item.asset.file === 'nextAttendeeStream';
+		return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
 	}
 
 	get isVideo() {
@@ -68,6 +68,7 @@ export default class MediaLoader {
 	load(callback) {
 		const item = this.item;
 		let texture;
+		// console.log('MediaLoader.load', item, this.isPublisherStream);
 		if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
 			const streamId = item.streamId;
 			const target = `#stream-${streamId}`;

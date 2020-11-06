@@ -1,10 +1,9 @@
-// import * as THREE from 'three';
 import FreezableMesh from "./freezable.mesh";
 
 export default class EmittableMesh extends FreezableMesh {
 
 	constructor(geometry, material) {
-		geometry = geometry || new THREE.BoxGeometry(5, 5, 5);
+		geometry = geometry || new THREE.BoxBufferGeometry(5, 5, 5);
 		material = material || new THREE.MeshBasicMaterial({
 			color: 0xff00ff,
 			// opacity: 1,

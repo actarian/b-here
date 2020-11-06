@@ -3,6 +3,7 @@ import { auditTime, filter, shareReplay, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../agora/agora.types';
 import { DEBUG } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
+import LabelPipe from '../label/label.pipe';
 import MessageService from '../message/message.service';
 import { Rect } from '../rect/rect';
 import StateService from '../state/state.service';
@@ -15,15 +16,14 @@ import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
 import VRService from './vr.service';
-// import * as THREE from 'three';
 import { XRControllerModelFactory } from './webxr/xr-controller-model-factory';
 
 const ORIGIN = new THREE.Vector3();
 const USE_SHADOW = false;
 const USE_PHONE = true;
 
-const loadingBanner = { title: 'loading' };
-const waitingBanner = { title: 'waiting host' };
+const loadingBanner = { title: LabelPipe.transform('loading') };
+const waitingBanner = { title: LabelPipe.transform('waiting_host') };
 
 export default class WorldComponent extends Component {
 

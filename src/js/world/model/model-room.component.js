@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 // import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';

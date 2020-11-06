@@ -1,6 +1,5 @@
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-// import * as THREE from 'three';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
 import StateService from '../../state/state.service';

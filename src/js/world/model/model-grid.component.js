@@ -1,5 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';

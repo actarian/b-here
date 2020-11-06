@@ -51,10 +51,10 @@ export default class UpdateViewComponent extends Component {
 			let keys;
 			switch (view.type.name) {
 				case ViewType.Panorama.name:
-					keys = ['id', 'type', 'name', 'hidden', 'latitude', 'longitude', 'zoom', 'asset'];
+					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
 					break;
 				case ViewType.PanoramaGrid.name:
-					keys = ['id', 'type', 'name', 'hidden', 'latitude', 'longitude', 'zoom'];
+					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom'];
 					break;
 				default:
 					keys = ['id', 'type', 'name'];

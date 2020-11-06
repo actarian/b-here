@@ -60,7 +60,7 @@ export class Environment {
 const defaultOptions = {
 	port: 5000,
 	useToken: false,
-	fontFamily: 'GT Walsheim',
+	fontFamily: 'GT Walsheim, sans-serif',
 	renderOrder: {
 		panorama: 0,
 		model: 10,
@@ -78,6 +78,13 @@ const defaultOptions = {
 const defaultAppOptions = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
+	flags: {
+		ar: true,
+		menu: true,
+		attendee: true,
+		streamer: true,
+		viewer: true,
+	},
 };
 
 const environmentOptions = window.STATIC ? environmentStatic : environmentServed;

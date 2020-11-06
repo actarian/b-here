@@ -5,7 +5,11 @@ export const environmentServed = {
 	flags: {
 		ar: true,
 		menu: true,
+		attendee: true,
+		streamer: true,
+		viewer: true,
 	},
+	logo: null,
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ernestomeda/docs/',
