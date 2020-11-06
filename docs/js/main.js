@@ -131,6 +131,7 @@ function _readOnlyError(name) {
     streamer: true,
     viewer: true
   },
+  logo: null,
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
@@ -173,6 +174,7 @@ function _readOnlyError(name) {
     streamer: true,
     viewer: true
   },
+  logo: null,
   assets: './',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
@@ -532,6 +534,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   var _proto = AccessComponent.prototype;
 
   _proto.onInit = function onInit() {
+    this.logo = environment.logo;
     this.state = {
       status: 'access'
     };
@@ -4395,6 +4398,7 @@ var VRService = /*#__PURE__*/function () {
         node = _getContext.node;
 
     node.classList.remove('hidden');
+    this.logo = environment.logo;
     this.platform = DeviceService.platform;
     this.state = {};
     this.data = null;

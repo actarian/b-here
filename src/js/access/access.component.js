@@ -8,6 +8,7 @@ import { UserService } from '../user/user.service';
 export default class AccessComponent extends Component {
 
 	onInit() {
+		this.logo = environment.logo;
 		this.state = {
 			status: 'access',
 		};

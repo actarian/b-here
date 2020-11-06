@@ -251,7 +251,8 @@
 		<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
 	</div>
 	<a href="/" class="group--logo" *if="state.status != 'connected'">
-		<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+		<img [src]="logo" *if="logo" />
+		<svg viewBox="0 0 270 98" *if="!logo"><use xlink:href="#b-here"></use></svg>
 	</a>
 </div>
 <!-- @@close-->
