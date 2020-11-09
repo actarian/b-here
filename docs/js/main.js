@@ -127,11 +127,11 @@ function _readOnlyError(name) {
   flags: {
     ar: false,
     menu: true,
-    attendee: true,
+    attendee: false,
     streamer: true,
-    viewer: true
+    viewer: false
   },
-  logo: null,
+  logo: '/Modules/B-Here/Client/docs/img/logo-ipf-access.png',
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
@@ -170,11 +170,11 @@ function _readOnlyError(name) {
   flags: {
     ar: false,
     menu: true,
-    attendee: true,
+    attendee: false,
     streamer: true,
-    viewer: true
+    viewer: false
   },
-  logo: null,
+  logo: './img/logo-ipf-access.png',
   assets: './',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
