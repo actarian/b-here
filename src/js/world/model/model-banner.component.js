@@ -15,9 +15,10 @@ export default class ModelBannerComponent extends ModelComponent {
 	}
 
 	onView() {
-		if (this.banners) {
+		if (this.viewed) {
 			return;
 		}
+		this.viewed = true;
 		this.getCanvasTexture().then(result => {
 			const texture = result.map;
 			const repeat = 3;

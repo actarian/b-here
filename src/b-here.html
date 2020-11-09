@@ -13,12 +13,13 @@
 		"remove": "Elimina",
 		"required": "richiesto",
 		"select": "seleziona",
-		"select_file": "## lbl_selezionaFile ##",
+		"select_file": "Seleziona un file...",
 		"upload": "upload",
 		"waiting_host": "waiting host",
 		"bhere_editor": "editor",
 		"bhere_insert_meeting_id": "Inserisci un Meeting ID",
 		"bhere_meeting_id": "Meeting ID",
+		"bhere_attendee_meeting_id": "Attendee Meeting ID",
 		"bhere_streamer_meeting_id": "Streamer Meeting ID",
 		"bhere_viewer_meeting_id": "Viewer Meeting ID",
 		"bhere_invalid_meeting_id": "meeting id non valido",
@@ -36,67 +37,72 @@
 		"bhere_video": "Video",
 		"bhere_audio": "Audio",
 		"bhere_select_video_audio": "seleziona una sorgente audio e video",
+		"bhere_select_video": "Seleziona una sorgente video",
+		"bhere_select_audio": "Seleziona una sorgente audio",
 		"bhere_video_audio_connected": "audio e video connessi",
 		"bhere_enter": "Entra",
 		"bhere_connecting": "In connessione..."
 	};
 </script>
 <div class="page" agora-component>
+	<div class="background" *if="state.status != 'connected'">
+		<img src="/b-here/img/background.jpg" />
+	</div>
 	<!-- Status Link -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<a [href]="editorLink" class="btn--absolute" *if="state.role == 'publisher' && !heroku">
-			<span>editor</span>
+			<span [innerHTML]="'bhere_editor' | label"></span>
 		</a>
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
 				<div class="group--info__content stagger--childs">
-					<div *if="state.role !== 'publisher'">
+					<div class="stagger--childs" *if="state.role !== 'publisher'">
 						<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
-							<label>Inserisci un Meeting ID</label>
-							<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" />
+							<label [innerHTML]="'bhere_insert_meeting_id' | label"></label>
+							<input type="text" class="control--text" [formControl]="controls.link" [placeholder]="'bhere_meeting_id' | label" />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.link.value)" *if="controls.link.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
 					</div>
-					<div *if="state.role === 'publisher'">
+					<div class="stagger--childs" *if="state.role === 'publisher'">
 						<div class="group--form group--form--addon" [class]="{ required: controls.link.validators.length, 'addon': controls.link.valid }">
-							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> Inserisci un Meeting ID</label>
-							<input type="text" class="control--text" [formControl]="controls.link" placeholder="Meeting ID" (change)="onInputDidChange($event)" />
+							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_insert_meeting_id' | label"></span></label>
+							<input type="text" class="control--text" [formControl]="controls.link" [placeholder]="'bhere_meeting_id' | label" (change)="onInputDidChange($event)" />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.link.value)" *if="controls.link.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
 						<div class="group--form group--form--addon addon" *if="flags.attendee && controls.linkAttendee.valid && controls.linkAttendee.value !== null">
-							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> Attendee Meeting ID</label>
-							<input type="text" class="control--text" [formControl]="controls.linkAttendee" placeholder="Attendee Meeting ID" readonly />
+							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_attendee_meeting_id' | label"></span></label>
+							<input type="text" class="control--text" [formControl]="controls.linkAttendee" [placeholder]="'bhere_attendee_meeting_id' | label" readonly />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkAttendee.value)" *if="controls.linkAttendee.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
 						<div class="group--form group--form--addon addon" *if="flags.streamer && controls.linkStreamer.valid && controls.linkStreamer.value !== null">
-							<label>Streamer Meeting ID</label>
-							<input type="text" class="control--text" [formControl]="controls.linkStreamer" placeholder="Viewer Meeting ID" readonly />
+							<label [innerHTML]="'bhere_streamer_meeting_id' | label"></label>
+							<input type="text" class="control--text" [formControl]="controls.linkStreamer" [placeholder]="'bhere_streamer_meeting_id' | label" readonly />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkStreamer.value)" *if="controls.linkStreamer.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
 						<div class="group--form group--form--addon addon" *if="flags.viewer && controls.linkViewer.valid && controls.linkViewer.value !== null">
-							<label>Viewer Meeting ID</label>
-							<input type="text" class="control--text" [formControl]="controls.linkViewer" placeholder="Viewer Meeting ID" readonly />
+							<label [innerHTML]="'bhere_viewer_meeting_id' | label"></label>
+							<input type="text" class="control--text" [formControl]="controls.linkViewer" [placeholder]="'bhere_viewer_meeting_id' | label" readonly />
 							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkViewer.value)" *if="controls.linkViewer.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
 					</div>
-					<div class="info" *if="controls.link.errors.required">inserisci un meeting id</div>
-					<div class="info" *if="controls.link.errors.pattern">meeting id non valido</div>
-					<div class="info" *if="isValid()">partecipa al meeting</div>
+					<div class="info" *if="controls.link.errors.required" [innerHTML]="'bhere_insert_meeting_id' | label"></div>
+					<div class="info" *if="controls.link.errors.pattern" [innerHTML]="'bhere_invalid_meeting_id' | label"></div>
+					<div class="info" *if="isValid()" [innerHTML]="'bhere_take_part_meeting' | label"></div>
 					<button type="button" class="btn--generate" *if="state.role == 'publisher'" (click)="onGenerateMeetingId($event)">
-						<span>Genera un Meeting ID</span>
+						<span [innerHTML]="'bhere_generate_meeting_id' | label"></span>
 					</button>
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
-						<span>Partecipa</span>
+						<span [innerHTML]="'bhere_take_part' | label"></span>
 					</button>
 				</div>
 			</form>
@@ -109,13 +115,13 @@
 				<div class="group--info__content stagger--childs">
 					<!-- NAME -->
 					<div class="group--form group--form--addon" [class]="{ required: controls.name.validators.length }">
-						<label>Inserisci il nome completo</label>
-						<input type="text" class="control--text" [formControl]="controls.name" placeholder="Nome Cognome" />
+						<label [innerHTML]="'bhere_fill_fullname' | label"></label>
+						<input type="text" class="control--text" [formControl]="controls.name" [placeholder]="'bhere_name_and_surname' | label" />
 					</div>
-					<div class="info" *if="!controls.name.valid">inserisci un nome e un cognome</div>
+					<div class="info" *if="!controls.name.valid" [innerHTML]="'bhere_fill_name_and_surname' | label"></div>
 					<div class="info" *if="isValid()">prosegui come <span [innerHTML]="controls.name.value"></span></div>
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
-						<span>Prosegui</span>
+						<span [innerHTML]="'bhere_proceed' | label"></span>
 					</button>
 				</div>
 			</form>
@@ -125,12 +131,10 @@
 	<div class="ui ui--info" *if="state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')" [agora-device] (enter)="onEnter($event)">
 		<div class="group--info" *if="!isHttps">
 			<div class="group--info__content stagger--childs">
-				<div class="title">
-					Protocollo errato.
-				</div>
-				<div class="info">riapri la pagina in https<br>per accedere al microfono e alla webcam.</div>
+				<div class="title" [innerHTML]="'bhere_invalid_protocol' | label"></div>
+				<div class="info" [innerHTML]="'bhere_reload_in_https' | label"></div>
 				<button type="button" class="btn--connect" (click)="openHttps($event)">
-					<span>Riapri</span>
+					<span [innerHTML]="'bhere_reload' | label"></span>
 				</button>
 			</div>
 		</div>
@@ -146,12 +150,12 @@
 					<div control-custom-select [control]="controls.video" label="Video" *if="devices.videos.length"></div>
 					<!-- AUDIO -->
 					<div control-custom-select [control]="controls.audio" label="Audio" *if="devices.audios.length"></div>
-					<div class="info" *if="!isValid()">seleziona una sorgente audio e video</div>
-					<div class="info" *if="isValid()">audio e video connessi</div>
+					<div class="info" *if="!isValid()" [innerHTML]="'bhere_select_video_audio' | label"></div>
+					<div class="info" *if="isValid()" [innerHTML]="'bhere_video_audio_connected' | label"></div>
 					<button type="submit" class="btn--connect" [class]="{ disabled: !isValid() }">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
-						<span *if="!state.connecting">Entra</span>
-						<span *if="state.connecting">In connessione...</span>
+						<span *if="!state.connecting" [innerHTML]="'bhere_enter' | label"></span>
+						<span *if="state.connecting" [innerHTML]="'bhere_connecting' | label"></span>
 					</button>
 				</div>
 			</form>

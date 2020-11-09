@@ -37,7 +37,7 @@ $invalid: $foreground-primary;
 	display: flex;
 	flex-wrap: wrap;
 	padding: 3px 1px;
-	border-bottom: 2px solid $foreground;
+	border-bottom: 2px solid #c6e3f7;
 	margin-bottom: 15px;
 
 	label {
@@ -199,11 +199,14 @@ fieldset,
 .group--form--textarea {
 	@extend %group--form;
 	padding: 15px 10px;
-	border: 2px solid $foreground;
+	padding: 3px 1px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(0,153,255,.15);
 
 	.control--text {
 		resize: vertical;
-		font-size: 24px;
+		font-size: 14px;
+		@include scrollbar();
 	}
 
 	label {
@@ -229,7 +232,7 @@ fieldset,
 	.icon--caret-down {
 		width: 12px;
 		height: 12px;
-		margin: 4px 0 0 0;
+		margin: 3px 0 0 0;
 		fill: #ccc;
 		pointer-events: none;
 	}
@@ -291,7 +294,7 @@ fieldset,
 	input {
 		appearance: none;
 		padding: 0;
-		margin: 0 10px 0 0;
+		margin: 0 8px 0 0;
 		border: 2px solid $pristine;
 		outline: 0;
 
@@ -547,7 +550,7 @@ errors-component {
 		display: block;
 		position: absolute;
 		font-size: 0.6em;
-		right: 4px;
+		right: 8px;
 		top: 5px;
 	}
 }

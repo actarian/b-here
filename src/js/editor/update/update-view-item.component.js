@@ -247,7 +247,7 @@ UpdateViewItemComponent.meta = {
 			</div>
 			<div class="form-controls" *if="item.type.name == 'nav'">
 				<div control-text label="Title" [control]="controls.title"></div>
-				<div control-text label="Abstract" [control]="controls.abstract"></div>
+				<div control-textarea label="Abstract" [control]="controls.abstract"></div>
 				<div control-custom-select label="NavToView" [control]="controls.viewId"></div>
 				<!-- <div control-checkbox label="Keep Orientation" [control]="controls.keepOrientation"></div> -->
 				<div control-vector label="Position" [control]="controls.position" [precision]="3"></div>

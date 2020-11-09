@@ -6,27 +6,6 @@ import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
 import EditorService from '../editor.service';
 
-/*
-{
-	"id": 110,
-	"type": "nav",
-	"title": "Barilla Experience",
-	"abstract": "Abstract",
-	"asset": {
-		"type": "image",
-		"folder": "barilla/",
-		"file": "logo-barilla.jpg"
-	},
-	"link": {
-		"title": "Scopri di più...",
-		"href": "https://www.barilla.com/it-it/",
-		"target": "_blank"
-	},
-	"position": [0.9491595148619703,-0.3147945860255039,0],
-	"viewId": 23
-}
-*/
-
 export default class NavModalComponent extends Component {
 
 	get data() {

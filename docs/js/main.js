@@ -302,7 +302,39 @@ var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
 var environment = new Environment(options);
 environment.STATIC = window.STATIC;
-console.log('environment', environment);var HttpService = /*#__PURE__*/function () {
+console.log('environment', environment);var LABELS = Object.assign({
+  browse: 'browse',
+  cancel: 'cancel',
+  drag_and_drop_images: 'Drag And Drop your images here',
+  error_email: 'Invalid email',
+  error_match: 'Fields do not match',
+  error_required: 'Field is required',
+  loading: 'loading',
+  remove: 'remove',
+  required: 'required',
+  select: 'Select',
+  select_file: 'Select a file...',
+  upload: 'upload',
+  waiting_host: 'waiting host'
+}, window.labels || {});
+
+var LabelPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(LabelPipe, _Pipe);
+
+  function LabelPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  LabelPipe.transform = function transform(key) {
+    var labels = LABELS;
+    return labels[key] || "#" + key + "#";
+  };
+
+  return LabelPipe;
+}(rxcomp.Pipe);
+LabelPipe.meta = {
+  name: 'label'
+};var HttpService = /*#__PURE__*/function () {
   function HttpService() {}
 
   HttpService.http$ = function http$(method, url, data, format) {
@@ -611,7 +643,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
     var options = data.roles.slice();
     options.unshift({
       id: null,
-      name: 'Seleziona'
+      name: LabelPipe.transform('select')
     });
     controls.role.options = options;
     this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
@@ -2962,7 +2994,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     if (videoOptions.length > 0) {
       videoOptions.unshift({
         id: null,
-        name: 'Seleziona una sorgente video'
+        name: LabelPipe.transform('bhere_select_video')
       });
     }
 
@@ -2977,7 +3009,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     if (audioOptions.length > 0) {
       audioOptions.unshift({
         id: null,
-        name: 'Seleziona una sorgente audio'
+        name: LabelPipe.transform('bhere_select_audio')
       });
     }
 
@@ -5601,7 +5633,7 @@ AsideComponent.meta = {
       });
       options.unshift({
         id: null,
-        name: 'Select'
+        name: LabelPipe.transform('select')
       });
       return options;
     }));
@@ -6130,8 +6162,7 @@ AsideComponent.meta = {
   _proto.onAsideSelect = function onAsideSelect(event) {
     var _this9 = this;
 
-    console.log('onAsideSelect', event);
-
+    // console.log('onAsideSelect', event);
     if (event.value) {
       switch (event.value) {
         case ViewItemType.Nav.name:
@@ -7076,28 +7107,7 @@ MenuBuilderComponent.meta = {
 CurvedPlaneModalComponent.ORIGIN = new THREE.Vector3();
 CurvedPlaneModalComponent.meta = {
   selector: '[curved-plane-modal]'
-};/*
-{
-	"id": 110,
-	"type": "nav",
-	"title": "Barilla Experience",
-	"abstract": "Abstract",
-	"asset": {
-		"type": "image",
-		"folder": "barilla/",
-		"file": "logo-barilla.jpg"
-	},
-	"link": {
-		"title": "Scopri di più...",
-		"href": "https://www.barilla.com/it-it/",
-		"target": "_blank"
-	},
-	"position": [0.9491595148619703,-0.3147945860255039,0],
-	"viewId": 23
-}
-*/
-
-var NavModalComponent = /*#__PURE__*/function (_Component) {
+};var NavModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(NavModalComponent, _Component);
 
   function NavModalComponent() {
@@ -7906,7 +7916,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-text label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-textarea label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\">\n\t\t\t\t\t<span *if=\"!form.submitted\">Update</span>\n\t\t\t\t\t<span *if=\"form.submitted\">Update!</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -8490,8 +8500,7 @@ var UploadService = /*#__PURE__*/function () {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    this.label = 'label';
-    this.required = false;
+    this.label = this.label || 'label';
     this.accept = this.accept || 'image/png, image/jpeg';
     this.multiple = this.multiple !== false;
     this.items = [];
@@ -8587,7 +8596,7 @@ ControlAssetsComponent.meta = {
   var _proto = ControlCheckboxComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.label = 'label';
+    this.label = this.label || 'label';
   };
 
   return ControlCheckboxComponent;
@@ -8673,39 +8682,7 @@ ControlCheckboxComponent.meta = {
   return KeyboardService;
 }();
 
-_defineProperty(KeyboardService, "keys", {});var LABELS = Object.assign({
-  browse: 'browse',
-  cancel: 'cancel',
-  drag_and_drop_images: 'Drag And Drop your images here',
-  error_email: 'Invalid email',
-  error_match: 'Fields do not match',
-  error_required: 'Field is required',
-  loading: 'loading',
-  remove: 'remove',
-  required: 'required',
-  select: 'Select',
-  select_file: 'Select a file...',
-  upload: 'upload',
-  waiting_host: 'waiting host'
-}, window.labels || {});
-
-var LabelPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(LabelPipe, _Pipe);
-
-  function LabelPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  LabelPipe.transform = function transform(key) {
-    var labels = LABELS;
-    return labels[key] || "#" + key + "#";
-  };
-
-  return LabelPipe;
-}(rxcomp.Pipe);
-LabelPipe.meta = {
-  name: 'label'
-};var ControlCustomSelectComponent = /*#__PURE__*/function (_ControlComponent) {
+_defineProperty(KeyboardService, "keys", {});var ControlCustomSelectComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlCustomSelectComponent, _ControlComponent);
 
   function ControlCustomSelectComponent() {
@@ -8717,7 +8694,7 @@ LabelPipe.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    this.label = 'label';
+    this.label = this.label || 'label';
     this.dropped = false;
     this.dropdownId = DropdownDirective.nextId();
     KeyboardService.typing$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (word) {
@@ -8793,9 +8770,6 @@ LabelPipe.meta = {
     }
   };
 
-  _proto.onDropped = function onDropped(id) {// console.log('ControlCustomSelectComponent.onDropped', id);
-  };
-
   _proto.getLabel = function getLabel() {
     var value = this.control.value;
     var items = this.control.options || [];
@@ -8827,23 +8801,13 @@ LabelPipe.meta = {
   };
 
   _proto.onDropped = function onDropped($event) {
-    // console.log($event);
-    this.dropped = $event === this.dropdownId;
-  }
-  /*
-  onClick(event) {
-  	const { node } = getContext(this);
-  	node.querySelector('.dropdown').classList.add('dropped');
-  }
-  */
+    // console.log('ControlCustomSelectComponent.onDropped', id);
+    if (this.dropped && $event === null) {
+      this.control.touched = true;
+    }
 
-  /*
-  onClickOutside(event) {
-  	const { node } = getContext(this);
-  	node.querySelector('.dropdown').classList.remove('dropped');
-  }
-  */
-  ;
+    this.dropped = $event === this.dropdownId;
+  };
 
   _createClass(ControlCustomSelectComponent, [{
     key: "isMultiple",
@@ -8861,10 +8825,6 @@ ControlCustomSelectComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"getLabel()\"></span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t\t<li (click)=\"setOption(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.options\">\n\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t"
-  /*  (click)="onClick($event)" (clickOutside)="onClickOutside($event)" */
-
-  /*  <!-- <div class="dropdown" [class]="{ dropped: dropped }"> --> */
-
 };var ControlLinkComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlLinkComponent, _ControlComponent);
 
@@ -8996,7 +8956,6 @@ ControlModelComponent.meta = {
     this.precision = this.precision || 3;
     this.increment = this.increment || 1 / Math.pow(10, this.precision);
     this.disabled = this.disabled || false;
-    this.required = false;
   };
 
   _proto.updateValue = function updateValue(value) {
@@ -9021,8 +8980,7 @@ ControlNumberComponent.meta = {
   var _proto = ControlPasswordComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.label = 'label';
-    this.required = false;
+    this.label = this.label || 'label';
   };
 
   return ControlPasswordComponent;
@@ -9043,7 +9001,7 @@ ControlPasswordComponent.meta = {
   var _proto = ControlSelectComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.label = 'label';
+    this.label = this.label || 'label';
   };
 
   return ControlSelectComponent;
@@ -9076,6 +9034,28 @@ ControlTextComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlTextareaComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlTextareaComponent, _ControlComponent);
+
+  function ControlTextareaComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlTextareaComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+  };
+
+  return ControlTextareaComponent;
+}(ControlComponent);
+ControlTextareaComponent.meta = {
+  selector: '[control-textarea]',
+  inputs: ['control', 'label', 'disabled'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form--textarea\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<textarea class=\"control--text\" [formControl]=\"control\" [innerHTML]=\"label\" rows=\"6\" [disabled]=\"disabled\"></textarea>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlVectorComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlVectorComponent, _ControlComponent);
 
@@ -9090,7 +9070,6 @@ ControlTextComponent.meta = {
     this.precision = this.precision || 3;
     this.increment = this.increment || 1 / Math.pow(10, this.precision);
     this.disabled = this.disabled || false;
-    this.required = false;
   };
 
   _proto.updateValue = function updateValue(index, value) {
@@ -11646,11 +11625,13 @@ var OrbitService = /*#__PURE__*/function () {
           radius = this.radius;
       }
 
-      var heading = new THREE.Vector2(position.x, position.z).normalize().multiplyScalar(radius);
+      var heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
       var theta = Math.atan2(heading.y, heading.x);
+      var phi = Math.acos(heading.z / radius);
       var longitude = THREE.MathUtils.radToDeg(theta);
       longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
-      var latitude = 0;
+      var latitude = 90 - THREE.MathUtils.radToDeg(phi);
+      latitude = Math.max(-80, Math.min(80, latitude));
       this.setLongitudeLatitude(longitude, latitude);
       this.update(); // this.events$.next(orbitMoveEvent);
     }
@@ -13278,8 +13259,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.pushChanges();
   };
 
-  _proto.onNavOver = function onNavOver(event) {
-    // console.log('WorldComponent.onNavOver', event);
+  _proto.onNavOver = function onNavOver(nav) {
+    // console.log('WorldComponent.onNavOver', nav);
     if (this.menu) {
       return; // this.menu.removeMenu();
     }
@@ -13287,31 +13268,31 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.view.items.forEach(function (item) {
       return item.showPanel = false;
     });
-    event.item.showPanel = event.item.hasPanel;
+    nav.item.showPanel = nav.shouldShowPanel();
     this.pushChanges();
   };
 
-  _proto.onNavOut = function onNavOut(event) {
-    // console.log('WorldComponent.onNavOut', event);
-    // event.item.showPanel = false;
+  _proto.onNavOut = function onNavOut(nav) {
+    // console.log('WorldComponent.onNavOut', nav);
+    // nav.item.showPanel = false;
     this.pushChanges();
   };
 
-  _proto.onNavDown = function onNavDown(event) {
-    event.item.showPanel = false; // console.log('WorldComponent.onNavDown', this.keys);
+  _proto.onNavDown = function onNavDown(nav) {
+    nav.item.showPanel = false; // console.log('WorldComponent.onNavDown', this.keys);
 
     if (this.locked) {
       return;
     }
 
     if (this.editor && this.keys.Shift) {
-      this.dragItem = event;
-      this.select.next(event);
+      this.dragItem = nav;
+      this.select.next(nav);
     } else if (this.editor && this.keys.Control) {
-      this.resizeItem = event;
-      this.select.next(event);
+      this.resizeItem = nav;
+      this.select.next(nav);
     } else {
-      this.navTo.next(event.item.viewId);
+      this.navTo.next(nav.item.viewId);
     }
   };
 
@@ -13958,10 +13939,11 @@ var ModelBannerComponent = /*#__PURE__*/function (_ModelComponent) {
   _proto.onView = function onView() {
     var _this = this;
 
-    if (this.banners) {
+    if (this.viewed) {
       return;
     }
 
+    this.viewed = true;
     this.getCanvasTexture().then(function (result) {
       var texture = result.map;
       var repeat = 3;
@@ -16391,9 +16373,13 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     nav.add(sphere);
     sphere.on('over', function () {
       // console.log('ModelNavComponent.over');
-      if (mode !== NavModeType.Move && mode !== NavModeType.Title && !_this.editing) {
-        _this.over.next(_this);
+
+      /*
+      if ((mode !== NavModeType.Move && mode !== NavModeType.Title) && !this.editing) {
+      	this.over.next(this);
       }
+      */
+      _this.over.next(_this);
 
       var from = {
         scale: sprite.scale.x
@@ -16465,6 +16451,10 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     if (typeof mount === 'function') {
       mount(nav, this.item);
     }
+  };
+
+  _proto.shouldShowPanel = function shouldShowPanel() {
+    return !this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title;
   } // called by UpdateViewItemComponent
   ;
 
@@ -17134,6 +17124,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGltfComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelRoomComponent, ModelTextComponent, SliderDirective, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

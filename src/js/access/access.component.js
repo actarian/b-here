@@ -3,6 +3,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
 import { environment } from '../environment';
+import LabelPipe from '../label/label.pipe';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
@@ -76,7 +77,7 @@ export default class AccessComponent extends Component {
 
 		const controls = this.controls = form.controls;
 		const options = data.roles.slice();
-		options.unshift({ id: null, name: 'Seleziona' });
+		options.unshift({ id: null, name: LabelPipe.transform('select') });
 		controls.role.options = options;
 
 		this.formSubscription = form.changes$.pipe(

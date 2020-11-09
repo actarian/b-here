@@ -3,8 +3,7 @@ import ControlComponent from './control.component';
 export default class ControlPasswordComponent extends ControlComponent {
 
 	onInit() {
-		this.label = 'label';
-		this.required = false;
+		this.label = this.label || 'label';
 	}
 
 }

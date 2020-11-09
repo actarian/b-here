@@ -649,37 +649,37 @@ export default class WorldComponent extends Component {
 		this.pushChanges();
 	}
 
-	onNavOver(event) {
-		// console.log('WorldComponent.onNavOver', event);
+	onNavOver(nav) {
+		// console.log('WorldComponent.onNavOver', nav);
 		if (this.menu) {
 			return;
 			// this.menu.removeMenu();
 		}
 		this.view.items.forEach(item => item.showPanel = false);
-		event.item.showPanel = event.item.hasPanel;
+		nav.item.showPanel = nav.shouldShowPanel();
 		this.pushChanges();
 	}
 
-	onNavOut(event) {
-		// console.log('WorldComponent.onNavOut', event);
-		// event.item.showPanel = false;
+	onNavOut(nav) {
+		// console.log('WorldComponent.onNavOut', nav);
+		// nav.item.showPanel = false;
 		this.pushChanges();
 	}
 
-	onNavDown(event) {
-		event.item.showPanel = false;
+	onNavDown(nav) {
+		nav.item.showPanel = false;
 		// console.log('WorldComponent.onNavDown', this.keys);
 		if (this.locked) {
 			return;
 		}
 		if (this.editor && this.keys.Shift) {
-			this.dragItem = event;
-			this.select.next(event);
+			this.dragItem = nav;
+			this.select.next(nav);
 		} else if (this.editor && this.keys.Control) {
-			this.resizeItem = event;
-			this.select.next(event);
+			this.resizeItem = nav;
+			this.select.next(nav);
 		} else {
-			this.navTo.next(event.item.viewId);
+			this.navTo.next(nav.item.viewId);
 		}
 	}
 

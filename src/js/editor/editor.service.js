@@ -1,5 +1,6 @@
 import { map, shareReplay } from 'rxjs/operators';
 import HttpService from '../http/http.service';
+import LabelPipe from '../label/label.pipe';
 import { mapView, mapViewItem, ViewType } from '../view/view';
 
 export default class EditorService {
@@ -21,7 +22,7 @@ export default class EditorService {
 		return this.data$().pipe(
 			map(data => {
 				const options = data.views.map(view => ({ id: view.id, name: view.name }));
-				options.unshift({ id: null, name: 'Select' });
+				options.unshift({ id: null, name: LabelPipe.transform('select') });
 				return options;
 			})
 		);

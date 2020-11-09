@@ -352,7 +352,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideSelect(event) {
-		console.log('onAsideSelect', event);
+		// console.log('onAsideSelect', event);
 		if (event.value) {
 			switch (event.value) {
 				case ViewItemType.Nav.name:

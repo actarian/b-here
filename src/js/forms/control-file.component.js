@@ -3,10 +3,9 @@ import ControlComponent from './control.component';
 export default class ControlFileComponent extends ControlComponent {
 
 	onInit() {
-		this.label = 'label';
+		this.label = this.label || 'label';
 		this.labels = window.labels || {};
 		this.file = null;
-		this.required = false;
 		this.onReaderComplete = this.onReaderComplete.bind(this);
 	}
 
