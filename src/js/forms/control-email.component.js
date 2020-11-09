@@ -3,7 +3,7 @@ import ControlComponent from './control.component';
 export default class ControlEmailComponent extends ControlComponent {
 
 	onInit() {
-		this.label = 'label';
+		this.label = this.label || 'label';
 	}
 
 }

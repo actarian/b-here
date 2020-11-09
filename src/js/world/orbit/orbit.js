@@ -273,11 +273,15 @@ export default class OrbitService {
 				default:
 					radius = this.radius;
 			}
-			const heading = new THREE.Vector2(position.x, position.z).normalize().multiplyScalar(radius);
+			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
 			const theta = Math.atan2(heading.y, heading.x);
+			const phi = Math.acos(heading.z / radius);
+
 			let longitude = THREE.MathUtils.radToDeg(theta);
 			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
-			const latitude = 0;
+			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
+			latitude = Math.max(-80, Math.min(80, latitude));
+
 			this.setLongitudeLatitude(longitude, latitude);
 			this.update();
 			// this.events$.next(orbitMoveEvent);

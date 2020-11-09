@@ -210,7 +210,7 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		return StreamService.streams$.pipe(
 			map((streams) => {
-				console.log('MediaMesh.getStreamId$', streams, item.asset);
+				// console.log('MediaMesh.getStreamId$', streams, item.asset);
 				let stream;
 				if (assetType.name === AssetType.PublisherStream.name) {
 					stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);

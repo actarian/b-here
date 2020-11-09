@@ -6,7 +6,6 @@ export default class ControlVectorComponent extends ControlComponent {
 		this.precision = this.precision || 3;
 		this.increment = this.increment || 1 / Math.pow(10, this.precision);
 		this.disabled = this.disabled || false;
-		this.required = false;
 	}
 	updateValue(index, value) {
 		const values = this.control.value;

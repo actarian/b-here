@@ -9,6 +9,7 @@ export const environmentServed = {
 		streamer: true,
 		viewer: true,
 	},
+	logo: null,
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',

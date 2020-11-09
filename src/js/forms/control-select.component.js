@@ -1,9 +1,11 @@
 import ControlComponent from './control.component';
 
 export default class ControlSelectComponent extends ControlComponent {
+
 	onInit() {
-		this.label = 'label';
+		this.label = this.label || 'label';
 	}
+
 }
 
 ControlSelectComponent.meta = {
