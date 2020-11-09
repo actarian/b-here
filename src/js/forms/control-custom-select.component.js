@@ -8,7 +8,7 @@ import ControlComponent from './control.component';
 export default class ControlCustomSelectComponent extends ControlComponent {
 
 	onInit() {
-		this.label = 'label';
+		this.label = this.label || 'label';
 		this.dropped = false;
 		this.dropdownId = DropdownDirective.nextId();
 		KeyboardService.typing$().pipe(
@@ -77,10 +77,6 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 		}
 	}
 
-	onDropped(id) {
-		// console.log('ControlCustomSelectComponent.onDropped', id);
-	}
-
 	getLabel() {
 		let value = this.control.value;
 		const items = this.control.options || [];
@@ -105,28 +101,16 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 	}
 
 	onDropped($event) {
-		// console.log($event);
+		// console.log('ControlCustomSelectComponent.onDropped', id);
+		if (this.dropped && $event === null) {
+			this.control.touched = true;
+		}
 		this.dropped = $event === this.dropdownId;
 	}
-
-	/*
-	onClick(event) {
-		const { node } = getContext(this);
-		node.querySelector('.dropdown').classList.add('dropped');
-	}
-	*/
-
-	/*
-	onClickOutside(event) {
-		const { node } = getContext(this);
-		node.querySelector('.dropdown').classList.remove('dropped');
-	}
-	*/
 
 	get isMultiple() {
 		return this.multiple && this.multiple !== false && this.multiple !== 'false';
 	}
-
 }
 
 ControlCustomSelectComponent.meta = {
@@ -150,6 +134,4 @@ ControlCustomSelectComponent.meta = {
 			</ul>
 		</div>
 	`
-	/*  (click)="onClick($event)" (clickOutside)="onClickOutside($event)" */
-	/*  <!-- <div class="dropdown" [class]="{ dropped: dropped }"> --> */
 };

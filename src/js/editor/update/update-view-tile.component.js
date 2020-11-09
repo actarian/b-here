@@ -7,6 +7,7 @@ import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 export default class UpdateViewTileComponent extends Component {
 
 	onInit() {
+		this.busy = false;
 		this.active = false;
 		const form = this.form = new FormGroup({
 			id: new FormControl(this.tile.id, RequiredValidator()),
@@ -27,9 +28,20 @@ export default class UpdateViewTileComponent extends Component {
 	}
 
 	onSubmit() {
-		if (this.form.valid) {
+		if (!this.busy && this.form.valid) {
+			this.busy = true;
+			this.pushChanges();
 			const payload = Object.assign({}, this.form.value);
-			this.update.next({ view: this.view, tile: payload });
+			const view = this.view;
+			const tile = payload;
+			/*
+			EditorService.tileUpdate$...
+			*/
+			this.update.next({ view, tile });
+			setTimeout(() => {
+				this.busy = false;
+				this.pushChanges();
+			}, 300);
 		} else {
 			this.form.touched = true;
 		}
@@ -68,9 +80,8 @@ UpdateViewTileComponent.meta = {
 				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
 			</div>
 			<div class="group--cta">
-				<button type="submit" class="btn--update">
-					<span *if="!form.submitted">Update</span>
-					<span *if="form.submitted">Update!</span>
+				<button type="submit" class="btn--update" [class]="{ busy: busy }">
+					<span>Update</span>
 				</button>
 				<!--
 				<button type="button" class="btn--remove" (click)="onRemove($event)">

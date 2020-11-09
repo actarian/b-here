@@ -18,12 +18,6 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
 	}
 
-	/*
-	static getTexture() {
-		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/wall-nav.png')));
-	}
-	*/
-
 	static getTexturePoint() {
 		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-exit.png')));
 	}
@@ -196,9 +190,12 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		nav.add(sphere);
 		sphere.on('over', () => {
 			// console.log('ModelNavComponent.over');
+			/*
 			if ((mode !== NavModeType.Move && mode !== NavModeType.Title) && !this.editing) {
 				this.over.next(this);
 			}
+			*/
+			this.over.next(this);
 			const from = { scale: sprite.scale.x };
 			gsap.to(from, {
 				duration: 0.35,
@@ -260,6 +257,10 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		if (typeof mount === 'function') {
 			mount(nav, this.item);
 		}
+	}
+
+	shouldShowPanel() {
+		return (!this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title);
 	}
 
 	// called by UpdateViewItemComponent

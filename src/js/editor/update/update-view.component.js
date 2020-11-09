@@ -1,16 +1,18 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
-import { auditTime, takeUntil } from 'rxjs/operators';
+import { auditTime, first, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
 import { environment } from '../../environment';
 import MessageService from '../../message/message.service';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { View, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
+import EditorService from '../editor.service';
 
 export default class UpdateViewComponent extends Component {
 
 	onInit() {
+		this.busy = false;
 		this.flags = environment.flags;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
@@ -89,7 +91,9 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	onSubmit() {
-		if (this.form.valid) {
+		if (!this.busy && this.form.valid) {
+			this.busy = true;
+			this.pushChanges();
 			const payload = Object.assign({}, this.view, this.form.value);
 			if (payload.latitude != null) { // !!! keep loose inequality
 				payload.orientation = {
@@ -107,7 +111,18 @@ export default class UpdateViewComponent extends Component {
 				delete payload.usdz;
 				delete payload.gltf;
 			}
-			this.update.next({ view: new View(payload) });
+			const view = new View(payload);
+			EditorService.viewUpdate$(view).pipe(
+				first(),
+			).subscribe(response => {
+				// console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
+				this.update.next({ view });
+				setTimeout(() => {
+					this.busy = false;
+					this.pushChanges();
+				}, 300);
+			}, error => console.log('UpdateViewComponent.onSubmit.viewUpdate$.error', error));
+			// this.update.next({ view: new View(payload) });
 		} else {
 			this.form.touched = true;
 		}
@@ -171,9 +186,8 @@ UpdateViewComponent.meta = {
 				<div control-model [control]="controls.gltf" label="AR Android (.glb)" accept=".glb"></div>
 			</div>
 			<div class="group--cta">
-				<button type="submit" class="btn--update">
-					<span *if="!form.submitted">Update</span>
-					<span *if="form.submitted">Update!</span>
+				<button type="submit" class="btn--update" [class]="{ busy: busy }">
+					<span>Update</span>
 				</button>
 				<button type="button" class="btn--remove" *if="view.type.name != 'waiting-room'" (click)="onRemove($event)">
 					<span>Remove</span>

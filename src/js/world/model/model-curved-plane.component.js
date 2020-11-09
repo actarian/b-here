@@ -1,4 +1,4 @@
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
@@ -97,11 +97,12 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		// console.log('ModelCurvedPlaneComponent.onUpdateAsset', item);
 		this.mesh.updateByItem(item);
 		MediaMesh.getStreamId$(item).pipe(
-			first(),
+			filter(streamId => streamId !== null),
+			take(1),
 		).subscribe((streamId) => {
 			item.streamId = streamId;
 			this.mesh.load(() => {
-				console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+				// console.log('ModelCurvedPlaneComponent.mesh.load.complete');
 			});
 		});
 	}

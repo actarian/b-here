@@ -7,7 +7,7 @@ import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
-import StreamService from '../stream/stream.service';
+import StreamService, { StreamServiceMode } from '../stream/stream.service';
 import ToastService from '../toast/toast.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
@@ -100,7 +100,8 @@ export default class EditorComponent extends Component {
 			this.pushChanges();
 		});
 		this.loadData();
-		this.getUserMedia();
+		StreamService.mode = StreamServiceMode.Editor;
+		// this.getUserMedia();
 	}
 
 	getUserMedia() {
@@ -352,7 +353,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideSelect(event) {
-		console.log('onAsideSelect', event);
+		// console.log('onAsideSelect', event);
 		if (event.value) {
 			switch (event.value) {
 				case ViewItemType.Nav.name:
@@ -404,30 +405,19 @@ export default class EditorComponent extends Component {
 	onAsideUpdate(event) {
 		// console.log('onAsideUpdate', event);
 		if (event.item && event.view) {
-			EditorService.inferItemUpdate$(event.view, event.item).pipe(
-				first(),
-			).subscribe(response => {
-				// console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.success', response);
-				EditorService.inferItemUpdateResult$(event.view, event.item);
-				this.pushChanges();
-			}, error => console.log('EditorComponent.onAsideUpdate.inferItemUpdate$.error', error));
+			this.pushChanges();
 		} else if (event.tile && event.view) {
 			/*
 			EditorService.tileUpdate$...
 			*/
 		} else if (event.view) {
-			EditorService.viewUpdate$(event.view).pipe(
-				first(),
-			).subscribe(response => {
-				// console.log('EditorComponent.onAsideUpdate.viewUpdate$.success', response);
-				const assetDidChange = this.view.asset.id !== event.view.asset.id;
-				Object.assign(this.view, event.view);
-				if (assetDidChange) {
-					this.controls.view.value = event.view.id;
-				} else {
-					this.pushChanges();
-				}
-			}, error => console.log('EditorComponent.onAsideUpdate.viewUpdate$.error', error));
+			const assetDidChange = this.view.asset.id !== event.view.asset.id;
+			Object.assign(this.view, event.view);
+			if (assetDidChange) {
+				this.controls.view.value = event.view.id;
+			} else {
+				this.pushChanges();
+			}
 		}
 	}
 

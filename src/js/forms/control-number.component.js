@@ -6,7 +6,6 @@ export default class ControlNumberComponent extends ControlComponent {
 		this.precision = this.precision || 3;
 		this.increment = this.increment || 1 / Math.pow(10, this.precision);
 		this.disabled = this.disabled || false;
-		this.required = false;
 	}
 	updateValue(value) {
 		this.control.value = value;

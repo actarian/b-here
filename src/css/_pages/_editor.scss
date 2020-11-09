@@ -112,6 +112,7 @@
 	right: 0;
 	background: white;
 	color: $foreground-primary;
+	border-left: 1px solid #d8dde1;
 	// border-left: 4px solid currentColor;
 	z-index: 4;
 	transform: translateX(100%);
@@ -138,6 +139,7 @@
 .scrollable {
 	overflow-x: hidden;
 	overflow-y: auto;
+	@include scrollbar();
 }
 
 .nav--tab {
@@ -159,12 +161,15 @@
 		font-weight: 600;
 		background: #d8dde1;
 		color: $foreground;
-		border-left: 1px solid #c5c9cc;
 		cursor: pointer;
+
+		&:not(:last-child) {
+			border-right: 1px solid #c5c9cc;
+		}
 
 		&.active {
 			background: #ffffff;
-			border-color: #d8dde1;
+			// border-color: #d8dde1;
 		}
 	}
 
@@ -180,7 +185,7 @@
 		width: 100%;
 		margin-bottom: 0;
 		padding: 10px 10px;
-		border-top: 1px solid #d8dde1;
+		// border-top: 1px solid #d8dde1;
 		border-bottom: 1px solid #d8dde1;
 
 		&>.btn {

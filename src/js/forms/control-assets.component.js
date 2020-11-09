@@ -16,8 +16,7 @@ export default class ControlAssetsComponent extends ControlComponent {
 	}
 
 	onInit() {
-		this.label = 'label';
-		this.required = false;
+		this.label = this.label || 'label';
 		this.accept = this.accept || 'image/png, image/jpeg';
 		this.multiple = (this.multiple !== false);
 		this.items = [];
