@@ -13,6 +13,7 @@ import EditorService from '../editor.service';
 export default class UpdateViewItemComponent extends Component {
 
 	onInit() {
+		this.busy = false;
 		this.active = false;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
@@ -45,7 +46,7 @@ export default class UpdateViewItemComponent extends Component {
 	doUpdateItem(changes) {
 		const item = this.item;
 		const assetDidChange = this.getAssetDidChange(changes);
-		console.log('doUpdateItem.assetDidChange', assetDidChange);
+		// console.log('doUpdateItem.assetDidChange', assetDidChange);
 		Object.assign(item, changes);
 		if (item.asset) {
 			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0, 1.0, 0.0] : null;
@@ -195,10 +196,25 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	onSubmit() {
-		if (this.form.valid) {
+		if (!this.busy && this.form.valid) {
+			this.busy = true;
+			this.pushChanges();
 			const changes = this.form.value;
 			const payload = Object.assign({}, changes);
-			this.update.next({ view: this.view, item: new ViewItem(payload) });
+			const view = this.view;
+			const item = new ViewItem(payload);
+			EditorService.inferItemUpdate$(view, item).pipe(
+				first(),
+			).subscribe(response => {
+				// console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
+				EditorService.inferItemUpdateResult$(view, item);
+				this.update.next({ view, item });
+				setTimeout(() => {
+					this.busy = false;
+					this.pushChanges();
+				}, 300);
+			}, error => console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.error', error));
+			// this.update.next({ view: this.view, item: new ViewItem(payload) });
 		} else {
 			this.form.touched = true;
 		}
@@ -280,9 +296,8 @@ UpdateViewItemComponent.meta = {
 				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
 			</div>
 			<div class="group--cta">
-				<button type="submit" class="btn--update">
-					<span *if="!form.submitted">Update</span>
-					<span *if="form.submitted">Update!</span>
+				<button type="submit" class="btn--update" [class]="{ busy: busy }">
+					<span>Update</span>
 				</button>
 				<button type="button" class="btn--remove" (click)="onRemove($event)">
 					<span>Remove</span>

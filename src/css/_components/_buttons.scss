@@ -107,3 +107,7 @@ button {
 .btn {
 	@extend %btn;
 }
+
+.busy {
+	@include bouncing-loader();
+}

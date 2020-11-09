@@ -40,6 +40,12 @@
   src: url("../fonts/gt-walsheim/GT-Walsheim-Black.eot");
   src: url("../fonts/gt-walsheim/GT-Walsheim-Black.eot?#iefix") format("embedded-opentype"), url("../fonts/gt-walsheim/GT-Walsheim-Black.woff") format("woff"), url("../fonts/gt-walsheim/GT-Walsheim-Black.ttf") format("truetype"); }
 
+@keyframes bouncing-ball {
+  from {
+    transform: translateY(0) scaleY(0.8); }
+  to {
+    transform: translateY(-10px); } }
+
 * {
   box-sizing: border-box; }
 
@@ -432,6 +438,67 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     color: white; }
     .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg, .btn--generate:active svg, .btn--next:active svg, .btn--connect:active svg, .btn--absolute:active svg, .btn--ar:active svg, .btn--vr:active svg, .btn--cancel:active svg, .btn--accept:active svg, .btn--browse:active svg, .btn--upload:active svg, .btn--pause:active svg, .btn--resume:active svg, .btn--remove:active svg, .btn--update:active svg, .btn--mode:active svg, .btn--generate:focus svg, .btn--next:focus svg, .btn--connect:focus svg, .btn--absolute:focus svg, .btn--ar:focus svg, .btn--vr:focus svg, .btn--cancel:focus svg, .btn--accept:focus svg, .btn--browse:focus svg, .btn--upload:focus svg, .btn--pause:focus svg, .btn--resume:focus svg, .btn--remove:focus svg, .btn--update:focus svg, .btn--mode:focus svg, .btn--generate:hover svg, .btn--next:hover svg, .btn--connect:hover svg, .btn--absolute:hover svg, .btn--ar:hover svg, .btn--vr:hover svg, .btn--cancel:hover svg, .btn--accept:hover svg, .btn--browse:hover svg, .btn--upload:hover svg, .btn--pause:hover svg, .btn--resume:hover svg, .btn--remove:hover svg, .btn--update:hover svg, .btn--mode:hover svg, .btn--generate:visited svg, .btn--next:visited svg, .btn--connect:visited svg, .btn--absolute:visited svg, .btn--ar:visited svg, .btn--vr:visited svg, .btn--cancel:visited svg, .btn--accept:visited svg, .btn--browse:visited svg, .btn--upload:visited svg, .btn--pause:visited svg, .btn--resume:visited svg, .btn--remove:visited svg, .btn--update:visited svg, .btn--mode:visited svg {
       fill: white; }
+
+.busy {
+  position: relative;
+  -webkit-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  pointer-events: none;
+  transition: none; }
+  .busy, .busy:hover, .busy:focus, .busy:active, .busy.active {
+    color: rgba(0, 0, 0, 0) !important; }
+  .busy svg {
+    visibility: hidden; }
+  .busy:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    margin-top: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: white;
+    z-index: 2;
+    animation: bouncing-ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
+    animation-delay: .15s; }
+  .busy > span::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    margin-top: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: white;
+    z-index: 2;
+    animation: bouncing-ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
+    margin-left: -11.2px; }
+  .busy > span::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    margin-top: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: white;
+    z-index: 2;
+    animation: bouncing-ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
+    margin-left: 7.2px;
+    animation-delay: .3s; }
 
 .group--form label, .group--form--textarea label, .group--form--select label, .group--form--checkbox label, .group--form--file label, errors-component .inner, .required .required__badge {
   display: block;
@@ -1080,6 +1147,12 @@ test-component code {
 
 test-component .btn--mode {
   margin: 5px 0 0 0; }
+
+@keyframes bouncing-ball {
+  from {
+    transform: translateY(0) scaleY(0.8); }
+  to {
+    transform: translateY(-10px); } }
 
 .container {
   width: 100%;
@@ -3402,6 +3475,12 @@ test-component .btn--mode {
 
 [class^="icon"] {
   fill: #101010; }
+
+@keyframes bouncing-ball {
+  from {
+    transform: translateY(0) scaleY(0.8); }
+  to {
+    transform: translateY(-10px); } }
 
 .nav--editor > li > a,
 .nav--editor > li > span, .nav--dropdown > li > a,

@@ -1,4 +1,4 @@
-import { first, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
@@ -88,11 +88,12 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 		// console.log('ModelPlaneComponent.onUpdateAsset', item);
 		this.mesh.updateByItem(item);
 		MediaMesh.getStreamId$(item).pipe(
-			first(),
+			filter(streamId => streamId !== null),
+			take(1),
 		).subscribe((streamId) => {
 			item.streamId = streamId;
 			this.mesh.load(() => {
-				console.log('ModelPlaneComponent.mesh.load.complete');
+				// console.log('ModelPlaneComponent.mesh.load.complete');
 			});
 		});
 	}

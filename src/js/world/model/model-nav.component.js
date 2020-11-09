@@ -18,12 +18,6 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
 	}
 
-	/*
-	static getTexture() {
-		return ModelNavComponent.texture || (ModelNavComponent.texture = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/wall-nav.png')));
-	}
-	*/
-
 	static getTexturePoint() {
 		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-exit.png')));
 	}
