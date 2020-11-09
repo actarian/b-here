@@ -149,6 +149,23 @@
           "link": null,
           "id": 517926978507700,
           "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Lab",
+          "abstract": "Vai",
+          "viewId": 808140911454799,
+          "position": [
+            0.13289467664616667,
+            -0.05364596433573401,
+            0.9896772784244366
+          ],
+          "asset": null,
+          "link": null,
+          "id": 808199766009700
         }
       ]
     },
@@ -382,19 +399,19 @@
         "id": 2,
         "name": "panorama"
       },
-      "name": "Foto 360",
+      "name": "Indoor-25",
       "asset": {
         "type": {
           "id": 1,
           "name": "image"
         },
         "folder": "/uploads/",
-        "file": "539659577624400_test.jpg",
-        "id": 539659958413200
+        "file": "807759756537700_Indoor-28.jpg",
+        "id": 807759864432800
       },
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -9.5,
+        "longitude": 271.4
       },
       "zoom": 75,
       "id": 539664012158000,
@@ -404,20 +421,20 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Welcome Room",
-          "abstract": "Vai",
-          "viewId": 513717446056299,
+          "title": null,
+          "abstract": null,
+          "viewId": 807852370342499,
           "position": [
-            0.8857038418758352,
-            0.02716504225365061,
-            0.463455245914579
+            -0.988407152169237,
+            -0.09773797582147303,
+            -0.11618343093152128
           ],
           "asset": null,
-          "link": null,
-          "id": 539699150606500,
+          "id": 807806354806500,
           "keepOrientation": null
         }
-      ]
+      ],
+      "hidden": null
     },
     {
       "type": {
@@ -1815,6 +1832,267 @@
           "keepOrientation": null
         }
       ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Indoor-50",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "807847901671100_Indoor-50.jpg",
+        "id": 807848039046100
+      },
+      "orientation": {
+        "latitude": -7.1000000000000005,
+        "longitude": 194.50000000000006
+      },
+      "zoom": 75,
+      "id": 807852370342499,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 539664012158000,
+          "position": [
+            0.9171566981596777,
+            -0.23752464950034402,
+            0.3200087997236581
+          ],
+          "asset": null,
+          "id": 807886923421800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 807937541291700,
+          "position": [
+            -0.9454169754119568,
+            -0.12651318901858327,
+            -0.30030177423261356
+          ],
+          "asset": null,
+          "id": 808251247030100,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Indoor-53",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "807932079584299_Indoor-53.jpg",
+        "id": 807932182473799
+      },
+      "orientation": {
+        "latitude": -6.699999999999999,
+        "longitude": 89.79999999999998
+      },
+      "zoom": 75,
+      "id": 807937541291700,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Outdoor",
+          "abstract": null,
+          "viewId": 808051928587600,
+          "position": [
+            0.08419291226521626,
+            -0.17061752869529292,
+            0.9817337787945429
+          ],
+          "asset": null,
+          "link": null,
+          "id": 807989594000999,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 807852370342499,
+          "position": [
+            0.5970296631573353,
+            -0.36307482672977903,
+            -0.7153546333849944
+          ],
+          "asset": null,
+          "link": null,
+          "id": 808005743726200
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Outdoor-1",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "808023620495399_Outdoor-01.jpg",
+        "id": 808023694495400
+      },
+      "orientation": {
+        "latitude": 1.4000000000000001,
+        "longitude": 23.900000000000002
+      },
+      "zoom": 75,
+      "id": 808025347932900,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 808051928587600,
+          "position": [
+            0.3628965483528967,
+            -0.06724211257480771,
+            0.9294001256133068
+          ],
+          "asset": null,
+          "link": null,
+          "id": 808115233727200
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Outdoor-2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "808050574299200_Outdoor-02.jpg",
+        "id": 808050665625199
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 808051928587600,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome",
+          "abstract": null,
+          "viewId": 513717446056299,
+          "position": [
+            0.9935542058894269,
+            -0.04840728119564875,
+            0.10250256136641503
+          ],
+          "asset": null,
+          "link": null,
+          "id": 808080159870000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 808025347932900,
+          "position": [
+            0.963331526212345,
+            -0.08272198900952198,
+            -0.25524388952471055
+          ],
+          "asset": null,
+          "link": null,
+          "id": 808098894385600
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Lab",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "808126705228300_Testing-lab-Panorama.jpg",
+        "id": 808126727052600
+      },
+      "orientation": {
+        "latitude": -18.6,
+        "longitude": 0.5
+      },
+      "zoom": 75,
+      "id": 808140911454799,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome",
+          "abstract": null,
+          "viewId": 513717446056299,
+          "position": [
+            0.9738309646572801,
+            -0.13395978267840078,
+            0.18359746430554777
+          ],
+          "asset": null,
+          "id": 808173794914200,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null
     }
   ],
   "menu": [
@@ -2539,6 +2817,69 @@
       "file": "609096702311000_Tavolo-Cyclos.jpg",
       "id": 609096715366000,
       "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "807735098752299_Indoor-28.jpg",
+      "id": 807735227416200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "807759756537700_Indoor-28.jpg",
+      "id": 807759864432800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "807847901671100_Indoor-50.jpg",
+      "id": 807848039046100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "807932079584299_Indoor-53.jpg",
+      "id": 807932182473799
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "808023620495399_Outdoor-01.jpg",
+      "id": 808023694495400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "808050574299200_Outdoor-02.jpg",
+      "id": 808050665625199
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "808126705228300_Testing-lab-Panorama.jpg",
+      "id": 808126727052600
     }
   ],
   "users": [
