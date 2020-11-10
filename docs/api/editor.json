@@ -15,13 +15,14 @@
           "name": "image"
         },
         "folder": "/textures/waiting-room/",
-        "file": "waiting-room.jpg"
+        "file": "waiting-room2.jpg"
       },
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
-      "zoom": 75
+      "zoom": 75,
+      "items": []
     },
     {
       "type": {
@@ -1958,106 +1959,6 @@
         "id": 2,
         "name": "panorama"
       },
-      "name": "Outdoor-1",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "808023620495399_Outdoor-01.jpg",
-        "id": 808023694495400
-      },
-      "orientation": {
-        "latitude": 1.4000000000000001,
-        "longitude": 23.900000000000002
-      },
-      "zoom": 75,
-      "id": 808025347932900,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 808051928587600,
-          "position": [
-            0.3628965483528967,
-            -0.06724211257480771,
-            0.9294001256133068
-          ],
-          "asset": null,
-          "link": null,
-          "id": 808115233727200
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
-      "name": "Outdoor-2",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "808050574299200_Outdoor-02.jpg",
-        "id": 808050665625199
-      },
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75,
-      "id": 808051928587600,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Welcome",
-          "abstract": null,
-          "viewId": 513717446056299,
-          "position": [
-            0.9935542058894269,
-            -0.04840728119564875,
-            0.10250256136641503
-          ],
-          "asset": null,
-          "link": null,
-          "id": 808080159870000
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 808025347932900,
-          "position": [
-            0.963331526212345,
-            -0.08272198900952198,
-            -0.25524388952471055
-          ],
-          "asset": null,
-          "link": null,
-          "id": 808098894385600
-        }
-      ]
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
       "name": "Lab",
       "asset": {
         "type": {
@@ -2173,20 +2074,6 @@
       "viewId": 807937541291700,
       "name": "Indoor-53",
       "order": 20
-    },
-    {
-      "id": 875365986370300,
-      "parentId": 875310208218100,
-      "viewId": 808025347932900,
-      "name": "Outdoor-1",
-      "order": 30
-    },
-    {
-      "id": 875366432144300,
-      "parentId": 875310208218100,
-      "viewId": 808051928587600,
-      "name": "Outdoor-2",
-      "order": 40
     },
     {
       "id": 872442576832299,
