@@ -831,6 +831,8 @@ export default class AgoraService extends Emittable {
 				switch (message.type) {
 					case MessageType.CameraOrientation:
 					case MessageType.NavToGrid:
+					case MessageType.ShowPanel:
+					case MessageType.PlayMedia:
 						if (!StateService.state.control && !StateService.state.spyed) {
 							return;
 						}
@@ -910,8 +912,11 @@ export default class AgoraService extends Emittable {
 				if (StateService.state.role === RoleType.Publisher) {
 					this.broadcastMessage(message);
 				}
+				break;
 			case MessageType.CameraOrientation:
 			case MessageType.CameraRotate:
+			case MessageType.ShowPanel:
+			case MessageType.PlayMedia:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:
 			case MessageType.SlideChange:

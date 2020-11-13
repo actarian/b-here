@@ -125,6 +125,8 @@ function _readOnlyError(name) {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
+    selfService: true,
+    guidedTourRequest: true,
     ar: true,
     menu: true,
     attendee: true,
@@ -132,6 +134,10 @@ function _readOnlyError(name) {
     viewer: true
   },
   logo: null,
+  background: {
+    image: '/Modules/B-Here/Client/docs/img/background.jpg',
+    video: '/Modules/B-Here/Client/docs/img/background.mp4'
+  },
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ernestomeda/docs/',
@@ -168,6 +174,8 @@ function _readOnlyError(name) {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
+    selfService: true,
+    guidedTourRequest: true,
     ar: true,
     menu: true,
     attendee: true,
@@ -175,6 +183,10 @@ function _readOnlyError(name) {
     viewer: true
   },
   logo: null,
+  background: {
+    image: '/b-here/img/background.jpg',
+    video: '/b-here/img/background.mp4'
+  },
   assets: './',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ernestomeda/docs/',
@@ -303,18 +315,19 @@ var options = Object.assign(defaultOptions, defaultAppOptions, environmentOption
 var environment = new Environment(options);
 environment.STATIC = window.STATIC;
 console.log('environment', environment);var LABELS = Object.assign({
-  browse: 'browse',
-  cancel: 'cancel',
+  browse: 'Browse',
+  cancel: 'Cancel',
   drag_and_drop_images: 'Drag And Drop your images here',
   error_email: 'Invalid email',
   error_match: 'Fields do not match',
   error_required: 'Field is required',
   loading: 'loading',
-  remove: 'remove',
-  required: 'required',
+  remove: 'Remove',
+  required: 'Required',
   select: 'Select',
   select_file: 'Select a file...',
-  upload: 'upload',
+  update: 'Update',
+  upload: 'Upload',
   waiting_host: 'waiting host'
 }, window.labels || {});
 
@@ -566,7 +579,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   var _proto = AccessComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.logo = environment.logo;
+    this.env = environment;
     this.state = {
       status: 'access'
     };
@@ -1610,6 +1623,8 @@ var MessageType = {
   SlideChange: 'slideChange',
   CameraRotate: 'cameraRotate',
   CameraOrientation: 'cameraOrientation',
+  ShowPanel: 'showPanel',
+  PlayMedia: 'playMedia',
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
   VRStarted: 'vrStarted',
@@ -2643,6 +2658,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         switch (message.type) {
           case MessageType.CameraOrientation:
           case MessageType.NavToGrid:
+          case MessageType.ShowPanel:
+          case MessageType.PlayMedia:
             if (!StateService.state.control && !StateService.state.spyed) {
               return;
             }
@@ -2735,8 +2752,12 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           this.broadcastMessage(message);
         }
 
+        break;
+
       case MessageType.CameraOrientation:
       case MessageType.CameraRotate:
+      case MessageType.ShowPanel:
+      case MessageType.PlayMedia:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
       case MessageType.SlideChange:
@@ -4494,7 +4515,7 @@ var VRService = /*#__PURE__*/function () {
         node = _getContext.node;
 
     node.classList.remove('hidden');
-    this.logo = environment.logo;
+    this.env = environment;
     this.platform = DeviceService.platform;
     this.state = {};
     this.data = null;
@@ -4915,6 +4936,13 @@ var VRService = /*#__PURE__*/function () {
         audioMuted: !this.state.audioMuted
       });
     }
+  };
+
+  _proto.onToggleVolume = function onToggleVolume() {
+    var volumeMuted = !this.state.volumeMuted;
+    StateService.patchState({
+      volumeMuted: volumeMuted
+    });
   };
 
   _proto.onToggleControl = function onToggleControl() {
@@ -6387,6 +6415,9 @@ var MenuService = /*#__PURE__*/function () {
 
   MenuService.getMenu$ = function getMenu$() {
     return HttpService.get$("/api/menu").pipe(operators.map(function (data) {
+      data.menu.sort(function (a, b) {
+        return a.order - b.order;
+      });
       return data.menu;
     }));
   };
@@ -6395,14 +6426,19 @@ var MenuService = /*#__PURE__*/function () {
     return HttpService.put$("/api/menu", menu);
   };
 
-  MenuService.createMenuItem$ = function createMenuItem$(parentId) {
+  MenuService.createMenuItem$ = function createMenuItem$(parentId, order) {
     if (parentId === void 0) {
       parentId = null;
+    }
+
+    if (order === void 0) {
+      order = 0;
     }
 
     var payload = {
       parentId: parentId,
       viewId: null,
+      order: order * 10,
       name: 'Folder ' + ++MENU_UID
     };
     return HttpService.post$("/api/menu", payload);
@@ -6800,7 +6836,7 @@ ControlAssetComponent.meta = {
   _proto.onAddItem = function onAddItem() {
     var _this2 = this;
 
-    MenuService.createMenuItem$(this.controls.id.value).pipe(operators.first()).subscribe(function (item) {
+    MenuService.createMenuItem$(this.controls.id.value, this.controls.items.length).pipe(operators.first()).subscribe(function (item) {
       _this2.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
     }); // this.controls.items.push(ControlMenuComponent.newFormGroup(this.controls.id.value));
   };
@@ -6984,7 +7020,7 @@ ControlMenuComponent.meta = {
   _proto.onAddItem = function onAddItem() {
     var _this3 = this;
 
-    MenuService.createMenuItem$().pipe(operators.first()).subscribe(function (item) {
+    MenuService.createMenuItem$(null, this.controls.items.length).pipe(operators.first()).subscribe(function (item) {
       _this3.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
     }); // this.controls.items.push(ControlMenuComponent.newFormGroup());
   };
@@ -7986,7 +8022,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-textarea label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span>Update</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-textarea label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -8081,7 +8117,7 @@ UpdateViewTileComponent.meta = {
   inputs: ['view', 'tile'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span>Update</span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewComponent, _Component);
 
@@ -8266,7 +8302,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span>Update</span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span>Remove</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, MenuBuilderComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -10580,13 +10616,26 @@ HlsDirective.meta = {
     return loader;
   };
 
-  _createClass(EnvMapLoader, null, [{
+  _createClass(EnvMapLoader, [{
+    key: "muted",
+    get: function get() {
+      return this.muted_;
+    },
+    set: function set(muted) {
+      this.muted_ = muted; // console.log('EnvMapLoader.muted', muted, this.video);
+
+      if (this.video) {
+        this.video.muted = muted === true;
+      }
+    }
+  }], [{
     key: "video",
     get: function get() {
       return this.video_;
     },
     set: function set(video) {
       if (this.video_) {
+        this.video_.muted = true;
         this.video_.pause();
 
         if (this.video_.parentNode) {
@@ -10878,6 +10927,10 @@ var FRAGMENT_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 v
 
 var Panorama = /*#__PURE__*/function () {
   function Panorama() {
+    this.muted_ = false;
+    this.subscription = StateService.state$.subscribe(function (state) {
+      return EnvMapLoader.muted = state.volumeMuted;
+    });
     this.tween = 0;
     this.create();
   }
@@ -11043,8 +11096,7 @@ var Panorama = /*#__PURE__*/function () {
       material.uniforms.texture.value = texture;
       material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
       material.uniforms.tween.value = 0;
-      material.uniforms.rgbe.value = rgbe; // console.log(texture.width, texture.height);
-
+      material.uniforms.rgbe.value = rgbe;
       material.needsUpdate = true;
 
       if (typeof callback === 'function') {
@@ -11055,14 +11107,11 @@ var Panorama = /*#__PURE__*/function () {
 
   _proto.loadVideo = function loadVideo(src) {
     var video = document.createElement('video');
-    /*
-    const temp = document.querySelector('.temp');
-    temp.appendChild(video);
-    */
-
     video.src = src;
+    video.volume = 0.8;
     video.muted = true;
-    video.playsinline = video.playsInline = true;
+    video.playsInline = true;
+    video.crossOrigin = 'anonymous';
     video.play();
     this.setVideo(video);
   };
@@ -11072,7 +11121,6 @@ var Panorama = /*#__PURE__*/function () {
 
     // console.log('Panorama.setVideo', video);
     if (video) {
-
       var onPlaying = function onPlaying() {
         var texture = new VideoTexture(video);
         texture.minFilter = THREE.LinearFilter;
@@ -11083,31 +11131,21 @@ var Panorama = /*#__PURE__*/function () {
         var material = _this3.mesh.material;
         material.map = texture;
         material.uniforms.texture.value = texture;
-        material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height); // console.log(texture.width, texture.height);
-
-        material.needsUpdate = true; // video.currentTime = 1;
-        // video.load();
-      }; // video.addEventListener('playing', onPlaying);
+        material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
+        material.needsUpdate = true;
+      }; // video.addEventListener('canplay', onPlaying);
 
 
       video.crossOrigin = 'anonymous';
 
       video.oncanplay = function () {
-
         onPlaying();
       };
-      /*
-      video.width = 640;
-      video.height = 480;
-      */
-
-      /*
-      video.addEventListener("play", function() {
-      	frameloop();
-      });
-      */
-
     }
+  };
+
+  _proto.dispose = function dispose() {
+    this.subscription.unsubscribe();
   };
 
   return Panorama;
@@ -11402,7 +11440,808 @@ var AvatarElement = /*#__PURE__*/function () {
   }
 
   return Camera;
-}(THREE.PerspectiveCamera);var OrbitMode = {
+}(THREE.PerspectiveCamera);var MediaLoaderEvent = function MediaLoaderEvent(src, id) {
+  this.src = src;
+  this.id = id;
+};
+var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
+  _inheritsLoose(MediaLoaderPlayEvent, _MediaLoaderEvent);
+
+  function MediaLoaderPlayEvent() {
+    return _MediaLoaderEvent.apply(this, arguments) || this;
+  }
+
+  return MediaLoaderPlayEvent;
+}(MediaLoaderEvent);
+var MediaLoaderPauseEvent = /*#__PURE__*/function (_MediaLoaderEvent2) {
+  _inheritsLoose(MediaLoaderPauseEvent, _MediaLoaderEvent2);
+
+  function MediaLoaderPauseEvent() {
+    return _MediaLoaderEvent2.apply(this, arguments) || this;
+  }
+
+  return MediaLoaderPauseEvent;
+}(MediaLoaderEvent);
+
+var MediaLoader = /*#__PURE__*/function () {
+  MediaLoader.getLoader = function getLoader() {
+    return MediaLoader.loader || (MediaLoader.loader = new THREE.TextureLoader());
+  };
+
+  MediaLoader.getPath = function getPath(item) {
+    return environment.getPath(item.asset.folder + item.asset.file);
+  };
+
+  MediaLoader.loadTexture = function loadTexture(item, callback) {
+    var path = MediaLoader.getPath(item);
+    return MediaLoader.getLoader().load(path, callback);
+  };
+
+  MediaLoader.isVideo = function isVideo(item) {
+    return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
+  };
+
+  MediaLoader.isPublisherStream = function isPublisherStream(item) {
+    return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
+  };
+
+  MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
+    return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
+  };
+
+  _createClass(MediaLoader, [{
+    key: "isVideo",
+    get: function get() {
+      return MediaLoader.isVideo(this.item);
+    }
+  }, {
+    key: "isPublisherStream",
+    get: function get() {
+      return MediaLoader.isPublisherStream(this.item);
+    }
+  }, {
+    key: "isNextAttendeeStream",
+    get: function get() {
+      return MediaLoader.isNextAttendeeStream(this.item);
+    }
+  }, {
+    key: "isPlayableVideo",
+    get: function get() {
+      return this.isVideo && !this.item.asset.autoplay;
+    }
+  }, {
+    key: "isAutoplayVideo",
+    get: function get() {
+      return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.asset.autoplay != null;
+    }
+  }, {
+    key: "muted",
+    get: function get() {
+      return this.muted_;
+    },
+    set: function set(muted) {
+      this.muted_ = muted; // console.log('MediaLoader.muted', muted, this.video);
+
+      if (this.video) {
+        this.video.muted = muted === true;
+      }
+    }
+  }]);
+
+  function MediaLoader(item) {
+    var _this = this;
+
+    this.item = item;
+    this.toggle = this.toggle.bind(this);
+    this.muted_ = false;
+    this.subscription = StateService.state$.subscribe(function (state) {
+      return _this.muted = state.volumeMuted;
+    });
+  }
+
+  var _proto = MediaLoader.prototype;
+
+  _proto.load = function load(callback) {
+    var _this2 = this;
+
+    var item = this.item;
+    var texture; // console.log('MediaLoader.load', item, this.isPublisherStream);
+
+    if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
+      var streamId = item.streamId;
+      var target = "#stream-" + streamId;
+      var video = document.querySelector(target + " video");
+
+      if (!video) {
+        return;
+      }
+
+      var onCanPlay = function onCanPlay() {
+        video.removeEventListener('canplay', onCanPlay);
+        texture = _this2.texture = new THREE.VideoTexture(video);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.UVMapping;
+        texture.format = THREE.RGBFormat; // texture.image.width = video.videoWidth;
+        // texture.image.height = video.videoHeight;
+
+        texture.needsUpdate = true;
+
+        if (typeof callback === 'function') {
+          callback(texture, _this2);
+        }
+      };
+
+      video.crossOrigin = 'anonymous';
+
+      if (video.readyState >= video.HAVE_FUTURE_DATA) {
+        onCanPlay();
+      } else {
+        video.addEventListener('canplay', onCanPlay);
+      }
+    } else if (this.isVideo) {
+      // create the video element
+      var _video = this.video = document.createElement('video');
+
+      _video.preload = 'metadata';
+      _video.volume = 0.8;
+      _video.muted = true;
+      _video.playsInline = true;
+      _video.crossOrigin = 'anonymous';
+
+      if (item.asset && item.asset.autoplay) {
+        _video.loop = true;
+      }
+
+      var _onCanPlay = function _onCanPlay() {
+        _video.oncanplay = null;
+        texture = new THREE.VideoTexture(_video);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.UVMapping;
+        texture.format = THREE.RGBFormat; // texture.image.width = video.videoWidth;
+        // texture.image.height = video.videoHeight;
+
+        texture.needsUpdate = true;
+
+        if (!item.asset || !item.asset.autoplay) {
+          _video.pause();
+        }
+
+        if (typeof callback === 'function') {
+          callback(texture, _this2);
+        }
+      };
+
+      _video.oncanplay = _onCanPlay;
+      _video.src = MediaLoader.getPath(item);
+
+      _video.load(); // must call after setting/changing source
+
+
+      this.play(true);
+    } else if (item.asset) {
+      MediaLoader.loadTexture(item, function (texture) {
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.UVMapping; // texture.format = THREE.RGBFormat;
+
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+
+        if (typeof callback === 'function') {
+          callback(texture, _this2);
+        }
+      });
+    } else {
+      callback(null, this);
+    }
+
+    return this;
+  };
+
+  _proto.play = function play(silent) {
+    var _this3 = this;
+
+    // console.log('MediaLoader.play');
+    if (this.video) {
+      this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.file);
+      }, function (error) {
+        console.log('MediaLoader.play.error', _this3.item.asset.file, error);
+      });
+
+      if (!silent) {
+        MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
+      }
+    }
+  };
+
+  _proto.pause = function pause(silent) {
+    // console.log('MediaLoader.pause');
+    if (this.video) {
+      this.video.muted = true;
+      this.video.pause();
+
+      if (!silent) {
+        MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
+      }
+    }
+  };
+
+  _proto.toggle = function toggle() {
+    // console.log('MediaLoader.toggle', this.video);
+    if (this.video) {
+      if (this.video.paused) {
+        this.video.muted = this.muted_;
+        this.play();
+        return true;
+      } else {
+        this.pause();
+        return false;
+      }
+    }
+  };
+
+  _proto.dispose = function dispose() {
+    this.subscription.unsubscribe();
+    this.pause();
+    delete this.video;
+  };
+
+  return MediaLoader;
+}();
+MediaLoader.events$ = new rxjs.ReplaySubject(1);var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
+var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tvec4 colorB = texture2D(textureB, vUv);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
+/*
+const FRAGMENT_SHADER_BAK = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+uniform bool video;
+uniform float opacity;
+uniform float overlay;
+uniform float tween;
+uniform sampler2D textureA;
+uniform sampler2D textureB;
+uniform vec2 resolutionA;
+uniform vec2 resolutionB;
+uniform vec3 overlayColor;
+
+mat3 rotate(float a) {
+	return mat3(
+		cos(a), sin(a), 0.0,
+		-sin(a), cos(a), 0.0,
+		0.0, 0.0, 1.0
+	);
+}
+
+mat3 translate(vec2 t) {
+	return mat3(
+		1.0, 0.0, 0.0,
+		0.0, 1.0, 0.0,
+		t.x, t.y, 1.0
+	);
+}
+
+mat3 scale(vec2 s) {
+	return mat3(
+		s.x, 0.0, 0.0,
+		0.0, s.y, 0.0,
+		0.0, 0.0, 1.0
+	);
+}
+
+vec2 getUV2(vec2 vUv, vec2 t, vec2 s, float a) {
+	mat3 transform = scale(s) * rotate(a);
+	return (vec3(vUv + t, 0.0) * transform).xy;
+}
+
+void main() {
+	vec4 color;
+	vec4 colorA = texture2D(textureA, vUv);
+	if (video) {
+		float rA = resolutionA.x / resolutionA.y;
+		float rB = resolutionB.x / resolutionB.y;
+		float aspect = 1.0 / rA * rB;
+		vec2 s = vec2(3.0 / aspect, 3.0);
+		vec2 t = vec2(
+			-(resolutionA.x - resolutionB.x / s.x) * 0.5 / resolutionA.x,
+			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
+		);
+		t = vec2(
+			-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,
+			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
+		);
+		// float dx = (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5;
+		// float dy = (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5;
+		// t = vec2(-0.5 + dx, -0.5 - dy);
+		vec2 uv2 = clamp(
+			getUV2(vUv, t, s, 0.0),
+			vec2(0.0,0.0),
+			vec2(1.0,1.0)
+		);
+		vec4 colorB = texture2D(textureB, uv2);
+		colorB = texture2D(textureB, vUv);
+		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
+	} else {
+		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
+	}
+	gl_FragColor = color;
+}
+`;
+*/
+
+var FRAGMENT_CHROMA_KEY_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 chromaKeyColor;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);\n\tgl_FragColor = color;\n}\n";
+
+var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
+  _inheritsLoose(MediaMesh, _InteractiveMesh);
+
+  MediaMesh.getMaterial = function getMaterial(useChromaKey) {
+    var material = new THREE.ShaderMaterial({
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+      vertexShader: VERTEX_SHADER$1,
+      fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER$1,
+      uniforms: {
+        video: {
+          value: false
+        },
+        textureA: {
+          type: "t",
+          value: null
+        },
+        textureB: {
+          type: "t",
+          value: null
+        },
+        resolutionA: {
+          value: new THREE.Vector2()
+        },
+        resolutionB: {
+          value: new THREE.Vector2()
+        },
+        overlayColor: {
+          value: new THREE.Color('#ffffff')
+        },
+        overlay: {
+          value: 0
+        },
+        tween: {
+          value: 1
+        },
+        opacity: {
+          value: 0
+        }
+      } // side: THREE.DoubleSide
+
+    });
+    return material;
+  };
+
+  MediaMesh.getChromaKeyMaterial = function getChromaKeyMaterial(chromaKeyColor) {
+    if (chromaKeyColor === void 0) {
+      chromaKeyColor = [0.0, 1.0, 0.0];
+    }
+
+    var material = new THREE.ShaderMaterial({
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+      vertexShader: VERTEX_SHADER$1,
+      fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
+      uniforms: {
+        video: {
+          value: false
+        },
+        textureA: {
+          type: "t",
+          value: null
+        },
+        textureB: {
+          type: "t",
+          value: null
+        },
+        resolutionA: {
+          value: new THREE.Vector2()
+        },
+        resolutionB: {
+          value: new THREE.Vector2()
+        },
+        chromaKeyColor: {
+          value: new THREE.Vector3(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2])
+        },
+        overlayColor: {
+          value: new THREE.Color('#ffffff')
+        },
+        overlay: {
+          value: 0
+        },
+        tween: {
+          value: 1
+        },
+        opacity: {
+          value: 0
+        }
+      },
+      side: THREE.DoubleSide
+    });
+    return material;
+  };
+
+  MediaMesh.getStreamId$ = function getStreamId$(item) {
+    if (!item.asset) {
+      return rxjs.of(null);
+    }
+
+    var assetType = item.asset.type;
+    var file = item.asset.file;
+
+    if (assetType.name !== AssetType.PublisherStream.name && assetType.name !== AssetType.NextAttendeeStream.name) {
+      return rxjs.of(file);
+    }
+
+    return StreamService.streams$.pipe(operators.map(function (streams) {
+      // console.log('MediaMesh.getStreamId$', streams, item.asset);
+      var stream;
+
+      if (assetType.name === AssetType.PublisherStream.name) {
+        stream = streams.find(function (x) {
+          return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
+        });
+      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
+        var i = 0;
+        streams.forEach(function (x) {
+          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+            if (i === item.asset.index) {
+              stream = x;
+            }
+
+            i++;
+          }
+        });
+      }
+
+      if (stream) {
+        return stream.getId();
+      } else {
+        return null;
+      }
+    }));
+  };
+
+  MediaMesh.getMaterialByItem = function getMaterialByItem(item) {
+    var material;
+
+    if (item.asset && item.asset.chromaKeyColor) {
+      material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
+    } else if (item.asset) {
+      material = MediaMesh.getMaterial();
+    } else {
+      material = new THREE.MeshBasicMaterial({
+        color: 0x888888
+      });
+    }
+
+    return material;
+  };
+
+  MediaMesh.getUniformsByItem = function getUniformsByItem(item) {
+    var uniforms = null;
+
+    if (item.asset) {
+      uniforms = {
+        overlay: 0,
+        tween: 1,
+        opacity: 0
+      };
+    }
+
+    return uniforms;
+  };
+
+  function MediaMesh(item, items, geometry) {
+    var _this;
+
+    var material = MediaMesh.getMaterialByItem(item);
+    _this = _InteractiveMesh.call(this, geometry, material) || this;
+    _this.item = item;
+    _this.items = items;
+    _this.renderOrder = environment.renderOrder.plane;
+    _this.uniforms = MediaMesh.getUniformsByItem(item);
+    var mediaLoader = _this.mediaLoader = new MediaLoader(item);
+    /*
+    if (item.asset && !mediaLoader.isVideo) {
+    	this.freeze();
+    }
+    */
+
+    return _this;
+  }
+
+  var _proto = MediaMesh.prototype;
+
+  _proto.load = function load(callback) {
+    var _this2 = this;
+
+    if (!this.item.asset) {
+      this.onAppear();
+
+      if (typeof callback === 'function') {
+        callback(this);
+      }
+
+      return;
+    }
+
+    var material = this.material;
+    var mediaLoader = this.mediaLoader;
+    mediaLoader.load(function (textureA) {
+      // console.log('MediaMesh.textureA', textureA);
+      if (textureA) {
+        material.uniforms.textureA.value = textureA; // material.uniforms.resolutionA.value.x = textureA.image.width;
+        // material.uniforms.resolutionA.value.y = textureA.image.height;
+
+        material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
+        material.needsUpdate = true;
+
+        if (mediaLoader.isPlayableVideo) {
+          _this2.createTextureB(textureA, function (textureB) {
+            // console.log('MediaMesh.textureB', textureB);
+            textureB.minFilter = THREE.LinearFilter;
+            textureB.magFilter = THREE.LinearFilter;
+            textureB.mapping = THREE.UVMapping; // textureB.format = THREE.RGBFormat;
+
+            textureB.wrapS = THREE.RepeatWrapping;
+            textureB.wrapT = THREE.RepeatWrapping;
+            material.uniforms.textureB.value = textureB; // material.uniforms.resolutionB.value.x = textureB.image.width;
+            // material.uniforms.resolutionB.value.y = textureB.image.height;
+
+            material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height); // console.log(material.uniforms.resolutionB.value, textureB);
+
+            material.needsUpdate = true;
+          });
+        }
+      }
+
+      _this2.onAppear();
+
+      if (mediaLoader.isPlayableVideo) {
+        material.uniforms.video.value = true;
+        _this2.onOver = _this2.onOver.bind(_this2);
+        _this2.onOut = _this2.onOut.bind(_this2);
+        _this2.onToggle = _this2.onToggle.bind(_this2);
+
+        _this2.on('over', _this2.onOver);
+
+        _this2.on('out', _this2.onOut);
+
+        _this2.on('down', _this2.onToggle);
+      }
+
+      if (typeof callback === 'function') {
+        callback(_this2);
+      }
+    });
+  };
+
+  _proto.createTextureB = function createTextureB(textureA, callback) {
+    var aw = textureA.image.width || textureA.image.videoWidth;
+    var ah = textureA.image.height || textureA.image.videoHeight;
+    var ar = aw / ah;
+    var scale = 0.32;
+    var canvas = document.createElement('canvas'); // document.querySelector('body').appendChild(canvas);
+
+    canvas.width = aw;
+    canvas.height = ah;
+    var context = canvas.getContext('2d');
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
+    var image = new Image();
+
+    image.onload = function () {
+      var bw = image.width;
+      var bh = image.height;
+      var br = bw / bh;
+      var w;
+      var h;
+
+      if (ar > br) {
+        w = ah * scale;
+        h = w / br;
+      } else {
+        h = aw * scale;
+        w = h * br;
+      }
+
+      context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
+      var textureB = new THREE.CanvasTexture(canvas);
+
+      if (typeof callback === 'function') {
+        callback(textureB);
+      }
+    };
+
+    image.crossOrigin = 'anonymous';
+    image.src = environment.getPath('textures/ui/play.png');
+  };
+
+  _proto.events$ = function events$() {
+    var _this3 = this;
+
+    var item = this.item;
+    var items = this.items;
+
+    if (item.asset && item.asset.linkedPlayId) {
+      this.freeze();
+    }
+
+    return MediaLoader.events$.pipe(operators.map(function (event) {
+      if (item.asset && item.asset.linkedPlayId) {
+        var eventItem = items.find(function (x) {
+          return x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId;
+        });
+
+        if (eventItem) {
+          // console.log('MediaLoader.events$.eventItem', event, eventItem);
+          if (event instanceof MediaLoaderPlayEvent) {
+            _this3.play();
+          } else if (event instanceof MediaLoaderPauseEvent) {
+            _this3.pause();
+          }
+        }
+      }
+
+      return event;
+    }));
+  };
+
+  _proto.onAppear = function onAppear() {
+    var uniforms = this.uniforms;
+    var material = this.material;
+
+    if (material.uniforms) {
+      gsap.to(uniforms, {
+        duration: 0.4,
+        opacity: 1,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          material.uniforms.opacity.value = uniforms.opacity;
+          material.needsUpdate = true;
+        }
+      });
+    }
+  };
+
+  _proto.onDisappear = function onDisappear() {
+    var uniforms = this.uniforms;
+    var material = this.material;
+
+    if (material.uniforms) {
+      gsap.to(uniforms, {
+        duration: 0.4,
+        opacity: 0,
+        ease: Power2.easeInOut,
+        onUpdate: function onUpdate() {
+          material.uniforms.opacity.value = uniforms.opacity;
+          material.needsUpdate = true;
+        }
+      });
+    }
+  };
+
+  _proto.onOver = function onOver() {
+    var uniforms = this.uniforms;
+    var material = this.material;
+
+    if (material.uniforms) {
+      gsap.to(uniforms, {
+        duration: 0.4,
+        overlay: 1,
+        tween: 0,
+        opacity: 1,
+        ease: Power2.easeInOut,
+        overwrite: true,
+        onUpdate: function onUpdate() {
+          material.uniforms.overlay.value = uniforms.overlay;
+          material.uniforms.tween.value = uniforms.tween;
+          material.uniforms.opacity.value = uniforms.opacity;
+          material.needsUpdate = true;
+        }
+      });
+    }
+  };
+
+  _proto.onOut = function onOut() {
+    var uniforms = this.uniforms;
+    var material = this.material;
+
+    if (material.uniforms) {
+      gsap.to(uniforms, {
+        duration: 0.4,
+        overlay: 0,
+        tween: this.playing ? 0 : 1,
+        opacity: 1,
+        ease: Power2.easeInOut,
+        overwrite: true,
+        onUpdate: function onUpdate() {
+          material.uniforms.overlay.value = uniforms.overlay;
+          material.uniforms.tween.value = uniforms.tween;
+          material.uniforms.opacity.value = uniforms.opacity;
+          material.needsUpdate = true;
+        }
+      });
+    }
+  };
+
+  _proto.onToggle = function onToggle() {
+    this.playing = this.mediaLoader.toggle();
+    this.emit('playing', this.playing);
+    this.onOut();
+  };
+
+  _proto.play = function play() {
+    this.mediaLoader.play();
+    this.playing = true;
+    this.emit('playing', true);
+    this.onOut();
+  };
+
+  _proto.pause = function pause() {
+    this.mediaLoader.pause();
+    this.playing = false;
+    this.emit('playing', false);
+    this.onOut();
+  };
+
+  _proto.setPlayingState = function setPlayingState(playing) {
+    if (this.playing !== playing) {
+      this.playing = playing;
+      playing ? this.mediaLoader.play() : this.mediaLoader.pause();
+      this.onOut();
+    }
+  };
+
+  _proto.updateByItem = function updateByItem(item) {
+    this.disposeMaterial();
+    this.disposeMediaLoader();
+    this.material = MediaMesh.getMaterialByItem(item);
+    this.uniforms = MediaMesh.getUniformsByItem(item);
+    this.mediaLoader = new MediaLoader(item);
+  };
+
+  _proto.disposeMaterial = function disposeMaterial() {
+    if (this.material) {
+      if (this.material.map && this.material.map.disposable !== false) {
+        this.material.map.dispose();
+      }
+
+      this.material.dispose();
+      this.material = null;
+    }
+  };
+
+  _proto.disposeMediaLoader = function disposeMediaLoader() {
+    var mediaLoader = this.mediaLoader;
+
+    if (mediaLoader) {
+      if (mediaLoader.isPlayableVideo) {
+        this.off('over', this.onOver);
+        this.off('out', this.onOut);
+        this.off('down', this.onToggle);
+      }
+
+      mediaLoader.dispose();
+      this.mediaLoader = null;
+    }
+  };
+
+  _proto.dispose = function dispose() {
+    this.disposeMediaLoader();
+  };
+
+  return MediaMesh;
+}(InteractiveMesh);var OrbitMode = {
   Panorama: 'panorama',
   PanoramaGrid: 'panorama-grid',
   Model: 'model'
@@ -13373,6 +14212,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     });
     nav.item.showPanel = nav.shouldShowPanel();
     this.pushChanges();
+    MessageService.send({
+      type: MessageType.ShowPanel,
+      itemId: nav.item.showPanel ? nav.item.id : null
+    });
   };
 
   _proto.onNavOut = function onNavOut(nav) {
@@ -13412,6 +14255,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       this.resizeItem = event;
       this.select.next(event);
     }
+  };
+
+  _proto.onPlayMedia = function onPlayMedia(event) {
+    MessageService.send({
+      type: MessageType.PlayMedia,
+      itemId: event.itemId,
+      playing: event.playing
+    });
   };
 
   _proto.onPanelDown = function onPanelDown(event) {
@@ -13582,6 +14433,30 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             var camera = _this6.camera;
             camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
             camera.lookAt(ORIGIN$1); // this.render();
+          }
+
+          break;
+
+        case MessageType.ShowPanel:
+          if (_this6.menu) {
+            _this6.menu.removeMenu();
+          }
+
+          _this6.view.items.forEach(function (item) {
+            return item.showPanel = item.id === message.itemId;
+          });
+
+          _this6.pushChanges();
+
+          break;
+
+        case MessageType.PlayMedia:
+          var item = _this6.view.items.find(function (item) {
+            return item.id === message.itemId;
+          });
+
+          if (item && item.mesh instanceof MediaMesh) {
+            item.mesh.setPlayingState(message.playing);
           }
 
           break;
@@ -14155,726 +15030,7 @@ ModelBannerComponent.meta = {
     host: WorldComponent
   },
   inputs: ['item']
-};var MediaLoaderEvent = function MediaLoaderEvent(src, id) {
-  this.src = src;
-  this.id = id;
-};
-var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
-  _inheritsLoose(MediaLoaderPlayEvent, _MediaLoaderEvent);
-
-  function MediaLoaderPlayEvent() {
-    return _MediaLoaderEvent.apply(this, arguments) || this;
-  }
-
-  return MediaLoaderPlayEvent;
-}(MediaLoaderEvent);
-var MediaLoaderPauseEvent = /*#__PURE__*/function (_MediaLoaderEvent2) {
-  _inheritsLoose(MediaLoaderPauseEvent, _MediaLoaderEvent2);
-
-  function MediaLoaderPauseEvent() {
-    return _MediaLoaderEvent2.apply(this, arguments) || this;
-  }
-
-  return MediaLoaderPauseEvent;
-}(MediaLoaderEvent);
-
-var MediaLoader = /*#__PURE__*/function () {
-  MediaLoader.getLoader = function getLoader() {
-    return MediaLoader.loader || (MediaLoader.loader = new THREE.TextureLoader());
-  };
-
-  MediaLoader.getPath = function getPath(item) {
-    return environment.getPath(item.asset.folder + item.asset.file);
-  };
-
-  MediaLoader.loadTexture = function loadTexture(item, callback) {
-    var path = MediaLoader.getPath(item);
-    return MediaLoader.getLoader().load(path, callback);
-  };
-
-  MediaLoader.isVideo = function isVideo(item) {
-    return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
-  };
-
-  MediaLoader.isPublisherStream = function isPublisherStream(item) {
-    return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
-  };
-
-  MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
-  };
-
-  _createClass(MediaLoader, [{
-    key: "isVideo",
-    get: function get() {
-      return MediaLoader.isVideo(this.item);
-    }
-  }, {
-    key: "isPublisherStream",
-    get: function get() {
-      return MediaLoader.isPublisherStream(this.item);
-    }
-  }, {
-    key: "isNextAttendeeStream",
-    get: function get() {
-      return MediaLoader.isNextAttendeeStream(this.item);
-    }
-  }, {
-    key: "isPlayableVideo",
-    get: function get() {
-      return this.isVideo && !this.item.asset.autoplay;
-    }
-  }, {
-    key: "isAutoplayVideo",
-    get: function get() {
-      return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.asset.autoplay != null;
-    }
-  }]);
-
-  function MediaLoader(item) {
-    this.item = item;
-    this.toggle = this.toggle.bind(this);
-  }
-
-  var _proto = MediaLoader.prototype;
-
-  _proto.load = function load(callback) {
-    var _this = this;
-
-    var item = this.item;
-    var texture; // console.log('MediaLoader.load', item, this.isPublisherStream);
-
-    if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
-      var streamId = item.streamId;
-      var target = "#stream-" + streamId;
-      var video = document.querySelector(target + " video");
-
-      if (!video) {
-        return;
-      }
-
-      var onCanPlay = function onCanPlay() {
-        video.removeEventListener('canplay', onCanPlay);
-        texture = _this.texture = new THREE.VideoTexture(video);
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.mapping = THREE.UVMapping;
-        texture.format = THREE.RGBFormat; // texture.image.width = video.videoWidth;
-        // texture.image.height = video.videoHeight;
-
-        texture.needsUpdate = true;
-
-        if (typeof callback === 'function') {
-          callback(texture, _this);
-        }
-      };
-
-      video.crossOrigin = 'anonymous';
-
-      if (video.readyState >= video.HAVE_FUTURE_DATA) {
-        onCanPlay();
-      } else {
-        video.addEventListener('canplay', onCanPlay);
-      }
-    } else if (this.isVideo) {
-      // create the video element
-      var _video = this.video = document.createElement('video');
-
-      _video.preload = 'metadata';
-      _video.volume = 0.5;
-      _video.muted = true;
-      _video.playsinline = _video.playsInline = true;
-
-      if (item.asset && item.asset.autoplay) {
-        _video.loop = true;
-      }
-
-      _video.crossOrigin = 'anonymous';
-
-      var _onCanPlay = function _onCanPlay() {
-        _video.oncanplay = null;
-        texture = new THREE.VideoTexture(_video);
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.mapping = THREE.UVMapping;
-        texture.format = THREE.RGBFormat; // texture.image.width = video.videoWidth;
-        // texture.image.height = video.videoHeight;
-
-        texture.needsUpdate = true;
-
-        if (!item.asset || !item.asset.autoplay) {
-          _video.pause();
-        }
-
-        if (typeof callback === 'function') {
-          callback(texture, _this);
-        }
-      };
-
-      _video.oncanplay = _onCanPlay;
-      _video.src = MediaLoader.getPath(item);
-
-      _video.load(); // must call after setting/changing source
-
-
-      this.play(true);
-    } else if (item.asset) {
-      MediaLoader.loadTexture(item, function (texture) {
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.mapping = THREE.UVMapping; // texture.format = THREE.RGBFormat;
-
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-
-        if (typeof callback === 'function') {
-          callback(texture, _this);
-        }
-      });
-    } else {
-      callback(null, this);
-    }
-
-    return this;
-  };
-
-  _proto.play = function play(silent) {
-    var _this2 = this;
-
-    // console.log('MediaLoader.play');
-    if (this.video) {
-      this.video.play().then(function () {// console.log('MediaLoader.play.success', this.item.asset.file);
-      }, function (error) {
-        console.log('MediaLoader.play.error', _this2.item.asset.file, error);
-      });
-
-      if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
-      }
-    }
-  };
-
-  _proto.pause = function pause(silent) {
-    // console.log('MediaLoader.pause');
-    if (this.video) {
-      this.video.muted = true;
-      this.video.pause();
-
-      if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
-      }
-    }
-  };
-
-  _proto.toggle = function toggle() {
-    // console.log('MediaLoader.toggle', this.video);
-    if (this.video) {
-      if (this.video.paused) {
-        this.video.muted = false;
-        this.play();
-        return true;
-      } else {
-        this.pause();
-        return false;
-      }
-    }
-  };
-
-  _proto.dispose = function dispose() {
-    if (this.isVideo) {
-      this.pause();
-      delete this.video;
-    }
-  };
-
-  return MediaLoader;
-}();
-MediaLoader.events$ = new rxjs.ReplaySubject(1);var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tvec4 colorB = texture2D(textureB, vUv);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
-var FRAGMENT_CHROMA_KEY_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 chromaKeyColor;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);\n\tgl_FragColor = color;\n}\n";
-
-var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
-  _inheritsLoose(MediaMesh, _InteractiveMesh);
-
-  MediaMesh.getMaterial = function getMaterial(useChromaKey) {
-    var material = new THREE.ShaderMaterial({
-      depthTest: false,
-      depthWrite: false,
-      transparent: true,
-      vertexShader: VERTEX_SHADER$1,
-      fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER$1,
-      uniforms: {
-        video: {
-          value: false
-        },
-        textureA: {
-          type: "t",
-          value: null
-        },
-        textureB: {
-          type: "t",
-          value: null
-        },
-        resolutionA: {
-          value: new THREE.Vector2()
-        },
-        resolutionB: {
-          value: new THREE.Vector2()
-        },
-        overlayColor: {
-          value: new THREE.Color('#ffffff')
-        },
-        overlay: {
-          value: 0
-        },
-        tween: {
-          value: 1
-        },
-        opacity: {
-          value: 0
-        }
-      } // side: THREE.DoubleSide
-
-    });
-    return material;
-  };
-
-  MediaMesh.getChromaKeyMaterial = function getChromaKeyMaterial(chromaKeyColor) {
-    if (chromaKeyColor === void 0) {
-      chromaKeyColor = [0.0, 1.0, 0.0];
-    }
-
-    var material = new THREE.ShaderMaterial({
-      depthTest: false,
-      depthWrite: false,
-      transparent: true,
-      vertexShader: VERTEX_SHADER$1,
-      fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
-      uniforms: {
-        video: {
-          value: false
-        },
-        textureA: {
-          type: "t",
-          value: null
-        },
-        textureB: {
-          type: "t",
-          value: null
-        },
-        resolutionA: {
-          value: new THREE.Vector2()
-        },
-        resolutionB: {
-          value: new THREE.Vector2()
-        },
-        chromaKeyColor: {
-          value: new THREE.Vector3(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2])
-        },
-        overlayColor: {
-          value: new THREE.Color('#ffffff')
-        },
-        overlay: {
-          value: 0
-        },
-        tween: {
-          value: 1
-        },
-        opacity: {
-          value: 0
-        }
-      },
-      side: THREE.DoubleSide
-    });
-    return material;
-  };
-
-  MediaMesh.getStreamId$ = function getStreamId$(item) {
-    if (!item.asset) {
-      return rxjs.of(null);
-    }
-
-    var assetType = item.asset.type;
-    var file = item.asset.file;
-
-    if (assetType.name !== AssetType.PublisherStream.name && assetType.name !== AssetType.NextAttendeeStream.name) {
-      return rxjs.of(file);
-    }
-
-    return StreamService.streams$.pipe(operators.map(function (streams) {
-      // console.log('MediaMesh.getStreamId$', streams, item.asset);
-      var stream;
-
-      if (assetType.name === AssetType.PublisherStream.name) {
-        stream = streams.find(function (x) {
-          return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
-        });
-      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
-        var i = 0;
-        streams.forEach(function (x) {
-          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-            if (i === item.asset.index) {
-              stream = x;
-            }
-
-            i++;
-          }
-        });
-      }
-
-      if (stream) {
-        return stream.getId();
-      } else {
-        return null;
-      }
-    }));
-  };
-
-  MediaMesh.getMaterialByItem = function getMaterialByItem(item) {
-    var material;
-
-    if (item.asset && item.asset.chromaKeyColor) {
-      material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
-    } else if (item.asset) {
-      material = MediaMesh.getMaterial();
-    } else {
-      material = new THREE.MeshBasicMaterial({
-        color: 0x888888
-      });
-    }
-
-    return material;
-  };
-
-  MediaMesh.getUniformsByItem = function getUniformsByItem(item) {
-    var uniforms = null;
-
-    if (item.asset) {
-      uniforms = {
-        overlay: 0,
-        tween: 1,
-        opacity: 0
-      };
-    }
-
-    return uniforms;
-  };
-
-  function MediaMesh(item, items, geometry) {
-    var _this;
-
-    var material = MediaMesh.getMaterialByItem(item);
-    _this = _InteractiveMesh.call(this, geometry, material) || this;
-    _this.item = item;
-    _this.items = items;
-    _this.renderOrder = environment.renderOrder.plane;
-    _this.uniforms = MediaMesh.getUniformsByItem(item);
-    var mediaLoader = _this.mediaLoader = new MediaLoader(item);
-    /*
-    if (item.asset && !mediaLoader.isVideo) {
-    	this.freeze();
-    }
-    */
-
-    return _this;
-  }
-
-  var _proto = MediaMesh.prototype;
-
-  _proto.load = function load(callback) {
-    var _this2 = this;
-
-    if (!this.item.asset) {
-      this.onAppear();
-
-      if (typeof callback === 'function') {
-        callback(this);
-      }
-
-      return;
-    }
-
-    var material = this.material;
-    var mediaLoader = this.mediaLoader;
-    /*
-    if (false && mediaLoader.isPlayableVideo) {
-    	const textureB = MediaLoader.loadTexture({
-    		asset: {
-    			folder: 'textures/ui/', file: 'play.png'
-    		}
-    	}, (textureB) => {
-    		// console.log('MediaMesh.textureB', textureB);
-    		textureB.minFilter = THREE.LinearFilter;
-    		textureB.magFilter = THREE.LinearFilter;
-    		textureB.mapping = THREE.UVMapping;
-    		// textureB.format = THREE.RGBFormat;
-    		textureB.wrapS = THREE.RepeatWrapping;
-    		textureB.wrapT = THREE.RepeatWrapping;
-    		material.uniforms.textureB.value = textureB;
-    		// material.uniforms.resolutionB.value.x = textureB.image.width;
-    		// material.uniforms.resolutionB.value.y = textureB.image.height;
-    		material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
-    		// console.log(material.uniforms.resolutionB.value, textureB);
-    		material.needsUpdate = true;
-    	});
-    }
-    */
-
-    mediaLoader.load(function (textureA) {
-      // console.log('MediaMesh.textureA', textureA);
-      if (textureA) {
-        material.uniforms.textureA.value = textureA; // material.uniforms.resolutionA.value.x = textureA.image.width;
-        // material.uniforms.resolutionA.value.y = textureA.image.height;
-
-        material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-        material.needsUpdate = true;
-
-        if (mediaLoader.isPlayableVideo) {
-          _this2.createTextureB(textureA, function (textureB) {
-            // console.log('MediaMesh.textureB', textureB);
-            textureB.minFilter = THREE.LinearFilter;
-            textureB.magFilter = THREE.LinearFilter;
-            textureB.mapping = THREE.UVMapping; // textureB.format = THREE.RGBFormat;
-
-            textureB.wrapS = THREE.RepeatWrapping;
-            textureB.wrapT = THREE.RepeatWrapping;
-            material.uniforms.textureB.value = textureB; // material.uniforms.resolutionB.value.x = textureB.image.width;
-            // material.uniforms.resolutionB.value.y = textureB.image.height;
-
-            material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height); // console.log(material.uniforms.resolutionB.value, textureB);
-
-            material.needsUpdate = true;
-          });
-        }
-      }
-
-      _this2.onAppear();
-
-      if (mediaLoader.isPlayableVideo) {
-        material.uniforms.video.value = true;
-        _this2.onOver = _this2.onOver.bind(_this2);
-        _this2.onOut = _this2.onOut.bind(_this2);
-        _this2.onToggle = _this2.onToggle.bind(_this2);
-
-        _this2.on('over', _this2.onOver);
-
-        _this2.on('out', _this2.onOut);
-
-        _this2.on('down', _this2.onToggle);
-      }
-
-      if (typeof callback === 'function') {
-        callback(_this2);
-      }
-    });
-  };
-
-  _proto.createTextureB = function createTextureB(textureA, callback) {
-    var aw = textureA.image.width || textureA.image.videoWidth;
-    var ah = textureA.image.height || textureA.image.videoHeight;
-    var ar = aw / ah;
-    var scale = 0.32;
-    var canvas = document.createElement('canvas'); // document.querySelector('body').appendChild(canvas);
-
-    canvas.width = aw;
-    canvas.height = ah;
-    var context = canvas.getContext('2d');
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = 'high';
-    var image = new Image();
-
-    image.onload = function () {
-      var bw = image.width;
-      var bh = image.height;
-      var br = bw / bh;
-      var w;
-      var h;
-
-      if (ar > br) {
-        w = ah * scale;
-        h = w / br;
-      } else {
-        h = aw * scale;
-        w = h * br;
-      }
-
-      context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
-      var textureB = new THREE.CanvasTexture(canvas);
-
-      if (typeof callback === 'function') {
-        callback(textureB);
-      }
-    };
-
-    image.crossOrigin = 'anonymous';
-    image.src = environment.getPath('textures/ui/play.png');
-  };
-
-  _proto.events$ = function events$() {
-    var _this3 = this;
-
-    var item = this.item;
-    var items = this.items;
-
-    if (item.asset && item.asset.linkedPlayId) {
-      this.freeze();
-    }
-
-    return MediaLoader.events$.pipe(operators.map(function (event) {
-      if (item.asset && item.asset.linkedPlayId) {
-        var eventItem = items.find(function (x) {
-          return x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId;
-        });
-
-        if (eventItem) {
-          // console.log('MediaLoader.events$.eventItem', event, eventItem);
-          if (event instanceof MediaLoaderPlayEvent) {
-            _this3.play();
-          } else if (event instanceof MediaLoaderPauseEvent) {
-            _this3.pause();
-          }
-        }
-      }
-
-      return event;
-    }));
-  };
-
-  _proto.onAppear = function onAppear() {
-    var uniforms = this.uniforms;
-    var material = this.material;
-
-    if (material.uniforms) {
-      gsap.to(uniforms, {
-        duration: 0.4,
-        opacity: 1,
-        ease: Power2.easeInOut,
-        onUpdate: function onUpdate() {
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
-    }
-  };
-
-  _proto.onDisappear = function onDisappear() {
-    var uniforms = this.uniforms;
-    var material = this.material;
-
-    if (material.uniforms) {
-      gsap.to(uniforms, {
-        duration: 0.4,
-        opacity: 0,
-        ease: Power2.easeInOut,
-        onUpdate: function onUpdate() {
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
-    }
-  };
-
-  _proto.onOver = function onOver() {
-    var uniforms = this.uniforms;
-    var material = this.material;
-
-    if (material.uniforms) {
-      gsap.to(uniforms, {
-        duration: 0.4,
-        overlay: 1,
-        tween: 0,
-        opacity: 1,
-        ease: Power2.easeInOut,
-        overwrite: true,
-        onUpdate: function onUpdate() {
-          material.uniforms.overlay.value = uniforms.overlay;
-          material.uniforms.tween.value = uniforms.tween;
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
-    }
-  };
-
-  _proto.onOut = function onOut() {
-    var uniforms = this.uniforms;
-    var material = this.material;
-
-    if (material.uniforms) {
-      gsap.to(uniforms, {
-        duration: 0.4,
-        overlay: 0,
-        tween: this.playing ? 0 : 1,
-        opacity: 1,
-        ease: Power2.easeInOut,
-        overwrite: true,
-        onUpdate: function onUpdate() {
-          material.uniforms.overlay.value = uniforms.overlay;
-          material.uniforms.tween.value = uniforms.tween;
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
-        }
-      });
-    }
-  };
-
-  _proto.onToggle = function onToggle() {
-    this.playing = this.mediaLoader.toggle();
-    this.onOut();
-  };
-
-  _proto.play = function play() {
-    this.mediaLoader.play();
-    this.playing = true;
-    this.onOut();
-  };
-
-  _proto.pause = function pause() {
-    this.mediaLoader.pause();
-    this.playing = false;
-    this.onOut();
-  };
-
-  _proto.updateByItem = function updateByItem(item) {
-    this.disposeMaterial();
-    this.disposeMediaLoader();
-    this.material = MediaMesh.getMaterialByItem(item);
-    this.uniforms = MediaMesh.getUniformsByItem(item);
-    this.mediaLoader = new MediaLoader(item);
-  };
-
-  _proto.disposeMaterial = function disposeMaterial() {
-    if (this.material) {
-      if (this.material.map && this.material.map.disposable !== false) {
-        this.material.map.dispose();
-      }
-
-      this.material.dispose();
-      this.material = null;
-    }
-  };
-
-  _proto.disposeMediaLoader = function disposeMediaLoader() {
-    var mediaLoader = this.mediaLoader;
-
-    if (mediaLoader) {
-      if (mediaLoader.isPlayableVideo) {
-        this.off('over', this.onOver);
-        this.off('out', this.onOut);
-        this.off('down', this.onToggle);
-      }
-
-      mediaLoader.dispose();
-      this.mediaLoader = null;
-    }
-  };
-
-  _proto.dispose = function dispose() {
-    this.disposeMediaLoader();
-  };
-
-  return MediaMesh;
-}(InteractiveMesh);var ModelEditableComponent = /*#__PURE__*/function (_ModelComponent) {
+};var ModelEditableComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelEditableComponent, _ModelComponent);
 
   function ModelEditableComponent() {
@@ -14999,9 +15155,17 @@ ModelEditableComponent.meta = {
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
           mesh.on('down', function () {
-            console.log('ModelCurvedPanel.down');
+            console.log('ModelCurvedPanelComponent.down');
 
             _this.down.next(_this);
+          });
+          mesh.on('playing', function (playing) {
+            console.log('ModelCurvedPanelComponent.playing', playing);
+
+            _this.play.next({
+              itemId: _this.item.id,
+              playing: playing
+            });
           });
         } // console.log('streamId', streamId, mesh);
 
@@ -15095,7 +15259,7 @@ ModelCurvedPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down'],
+  outputs: ['down', 'play'],
   inputs: ['item', 'items']
 };var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelDebugComponent, _ModelComponent);
@@ -16285,7 +16449,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   };
 
   ModelNavComponent.getTexturePoint = function getTexturePoint() {
-    return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-exit.png')));
+    return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
   };
 
   ModelNavComponent.getTextureMove = function getTextureMove() {
@@ -16913,7 +17077,17 @@ ModelPictureComponent.meta = {
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
           mesh.on('down', function () {
+            console.log('ModelPanelComponent.down');
+
             _this.down.next(_this);
+          });
+          mesh.on('playing', function (playing) {
+            console.log('ModelPanelComponent.playing', playing);
+
+            _this.play.next({
+              itemId: _this.item.id,
+              playing: playing
+            });
           });
         } // console.log('streamId', streamId, mesh);
 
@@ -16991,7 +17165,7 @@ ModelPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down'],
+  outputs: ['down', 'play'],
   inputs: ['item', 'items']
 };var ModelRoomComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelRoomComponent, _ModelComponent);
@@ -17064,7 +17238,7 @@ ModelPlaneComponent.meta = {
           });
 
           if (item) {
-            item.plane = child;
+            item.mesh = child;
           } else {
             /*
             if (USE_SHADOW) {
@@ -17084,7 +17258,7 @@ ModelPlaneComponent.meta = {
       });
       mesh.position.y = -1.66 * 3;
       items.forEach(function (item) {
-        var previous = item.plane;
+        var previous = item.mesh;
 
         if (previous) {
           if (previous.material) {
@@ -17093,7 +17267,7 @@ ModelPlaneComponent.meta = {
 
           var parent = previous.parent;
 
-          var _mesh = item.plane = new MediaMesh(item, items, previous.geometry);
+          var _mesh = item.mesh = new MediaMesh(item, items, previous.geometry);
 
           _mesh.depthTest = false;
           _mesh.renderOrder = 0;
@@ -17113,6 +17287,21 @@ ModelPlaneComponent.meta = {
             if (previous.material) {
               previous.material.dispose();
             }
+          });
+
+          _mesh.on('down', function () {
+            console.log('ModelRoomComponent.down');
+
+            _this2.down.next(_this2);
+          });
+
+          _mesh.on('playing', function (playing) {
+            console.log('ModelRoomComponent.playing', playing);
+
+            _this2.play.next({
+              itemId: item.id,
+              playing: playing
+            });
           });
         }
       });
@@ -17162,9 +17351,9 @@ ModelPlaneComponent.meta = {
 
       if (items) {
         items.forEach(function (item) {
-          if (item.plane) {
-            item.plane.dispose();
-            delete item.plane;
+          if (item.mesh) {
+            item.mesh.dispose();
+            delete item.mesh;
           }
         });
       }
@@ -17179,6 +17368,7 @@ ModelRoomComponent.meta = {
   hosts: {
     host: WorldComponent
   },
+  outputs: ['down', 'play'],
   inputs: ['item']
 };var ModelTextComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelTextComponent, _ModelComponent);

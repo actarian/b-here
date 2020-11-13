@@ -1,5 +1,24 @@
 <!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
 <!-- @@block = main-->
+<script>
+	// window.antiforgery = '';
+	window.labels = {
+		browse: 'Apri',
+		cancel: 'Annulla',
+		drag_and_drop_images: 'trascina qui le immagini',
+		error_email: 'email non valida',
+		error_match: 'i campi non corrispondono',
+		error_required: 'campo obbligatorio',
+		loading: 'caricamento',
+		remove: 'Rimuovi',
+		required: 'Richiesto',
+		select: 'Seleziona',
+		select_file: 'Scegli un file...',
+		update: 'Salva',
+		upload: 'Carica',
+		waiting_host: 'attendere',
+	};
+</script>
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">

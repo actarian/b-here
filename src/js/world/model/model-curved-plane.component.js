@@ -55,8 +55,12 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 						).subscribe(() => { });
 					});
 					mesh.on('down', () => {
-						console.log('ModelCurvedPanel.down');
+						console.log('ModelCurvedPanelComponent.down');
 						this.down.next(this);
+					});
+					mesh.on('playing', (playing) => {
+						console.log('ModelCurvedPanelComponent.playing', playing);
+						this.play.next({ itemId: this.item.id, playing });
 					});
 				}
 				// console.log('streamId', streamId, mesh);
@@ -143,6 +147,6 @@ ModelCurvedPlaneComponent.textures = {};
 ModelCurvedPlaneComponent.meta = {
 	selector: '[model-curved-plane]',
 	hosts: { host: WorldComponent },
-	outputs: ['down'],
+	outputs: ['down', 'play'],
 	inputs: ['item', 'items'],
 };

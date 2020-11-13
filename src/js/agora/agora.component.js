@@ -41,7 +41,7 @@ export default class AgoraComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
-		this.logo = environment.logo;
+		this.env = environment;
 		this.platform = DeviceService.platform;
 		this.state = {};
 		this.data = null;
@@ -397,6 +397,11 @@ export default class AgoraComponent extends Component {
 		} else {
 			this.patchState({ audioMuted: !this.state.audioMuted });
 		}
+	}
+
+	onToggleVolume() {
+		const volumeMuted = !this.state.volumeMuted;
+		StateService.patchState({ volumeMuted })
 	}
 
 	onToggleControl() {

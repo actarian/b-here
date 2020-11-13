@@ -3,51 +3,59 @@
 <script>
 	// window.antiforgery = '';
     window.labels = {
-		"browse": "Apri",
-		"cancel": "annulla",
-		"drag_and_drop_images": "Drag And Drop your images here",
-		"error_email": "Email non valida",
-		"error_match": "I campi non corrispondono",
-		"error_required": "Il campo è obbligatorio",
-		"loading": "loading",
-		"remove": "Elimina",
-		"required": "richiesto",
-		"select": "seleziona",
-		"select_file": "Seleziona un file...",
-		"upload": "upload",
-		"waiting_host": "waiting host",
-		"bhere_editor": "editor",
-		"bhere_insert_meeting_id": "Inserisci un Meeting ID",
-		"bhere_meeting_id": "Meeting ID",
-		"bhere_attendee_meeting_id": "Attendee Meeting ID",
-		"bhere_streamer_meeting_id": "Streamer Meeting ID",
-		"bhere_viewer_meeting_id": "Viewer Meeting ID",
-		"bhere_invalid_meeting_id": "meeting id non valido",
-		"bhere_take_part_meeting": "partecipa al meeting",
-		"bhere_generate_meeting_id": "Genera un Meeting ID",
-		"bhere_take_part": "Partecipa",
-		"bhere_fill_fullname": "Inserisci il nome completo",
-		"bhere_fill_name_and_surname": "inserisci un nome e un cognome",
-		"bhere_proceed_as": "prosegui come",
-		"bhere_proceed": "Prosegui",
-		"bhere_name_and_surname": "Nome Cognome",
-		"bhere_invalid_protocol": "Protocollo errato.",
-		"bhere_reload_in_https": "riapri la pagina in https<br>per accedere al microfono e alla webcam.",
-		"bhere_reload": "Riapri",
-		"bhere_video": "Video",
-		"bhere_audio": "Audio",
-		"bhere_select_video_audio": "seleziona una sorgente audio e video",
-		"bhere_select_video": "Seleziona una sorgente video",
-		"bhere_select_audio": "Seleziona una sorgente audio",
-		"bhere_video_audio_connected": "audio e video connessi",
-		"bhere_enter": "Entra",
-		"bhere_connecting": "In connessione..."
+		browse: 'Apri',
+		cancel: 'Annulla',
+		drag_and_drop_images: 'trascina qui le immagini',
+		error_email: 'email non valida',
+		error_match: 'i campi non corrispondono',
+		error_required: 'campo obbligatorio',
+		loading: 'caricamento',
+		remove: 'Rimuovi',
+		required: 'Richiesto',
+		select: 'Seleziona',
+		select_file: 'Scegli un file...',
+		update: 'Salva',
+		upload: 'Carica',
+		waiting_host: 'attendere',
+		bhere_editor: 'editor',
+		bhere_insert_meeting_id: 'Inserisci un Meeting ID',
+		bhere_meeting_id: 'Meeting ID',
+		bhere_attendee_meeting_id: 'Attendee Meeting ID',
+		bhere_streamer_meeting_id: 'Streamer Meeting ID',
+		bhere_viewer_meeting_id: 'Viewer Meeting ID',
+		bhere_invalid_meeting_id: 'meeting id non valido',
+		bhere_take_part_meeting: 'partecipa al meeting',
+		bhere_generate_meeting_id: 'Genera un Meeting ID',
+		bhere_take_part: 'Partecipa',
+		bhere_fill_fullname: 'Inserisci il nome completo',
+		bhere_fill_name_and_surname: 'inserisci un nome e un cognome',
+		bhere_proceed_as: 'prosegui come',
+		bhere_proceed: 'Prosegui',
+		bhere_name_and_surname: 'Nome Cognome',
+		bhere_invalid_protocol: 'Protocollo errato.',
+		bhere_reload_in_https: 'riapri la pagina in https<br>per accedere al microfono e alla webcam.',
+		bhere_reload: 'Riapri',
+		bhere_video: 'Video',
+		bhere_audio: 'Audio',
+		bhere_select_video_audio: 'seleziona una sorgente audio e video',
+		bhere_select_video: 'Seleziona una sorgente video',
+		bhere_select_audio: 'Seleziona una sorgente audio',
+		bhere_video_audio_connected: 'audio e video connessi',
+		bhere_enter: 'Entra',
+		bhere_connecting: 'In connessione...',
 	};
 </script>
 <div class="page" agora-component>
-	<div class="background" *if="state.status != 'connected'">
-		<img src="/b-here/img/background.jpg" />
+	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
+		<img [src]="env.background.image" *if="env.background.image" />
+		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
+	<!--
+	<div class="background background--image background--video">
+		<img src="/b-here/img/background.jpg" />
+		<video src="/b-here/img/background.mp4" oncanplay="this.muted = true;" playsinline autoplay muted loop></video>
+	</div>
+	-->
 	<!-- Status Link -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<a [href]="editorLink" class="btn--absolute" *if="state.role == 'publisher' && !heroku">
@@ -168,11 +176,11 @@
 				<div class="world__view" *if="view">
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div *if="view.ready">
-						<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
+						<div model-room [item]="view" (play)="onPlayMedia($event)" *if="view.type.name === 'room-3d'"></div>
 						<div class="world__item" *for="let item of view.items; let index = index;">
 							<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
-							<div model-plane [item]="item" [items]="view.items" *if="item.type.name == 'plane'"></div>
-							<div model-curved-plane [item]="item" [items]="view.items" *if="item.type.name == 'curved-plane'"></div>
+							<div model-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'plane'"></div>
+							<div model-curved-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'curved-plane'"></div>
 							<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
 								<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 							</div>
@@ -227,6 +235,12 @@
 				</div>
 			</div>
 		</div>
+		<div class="group--volume">
+			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="onToggleVolume($event)">
+				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
+			</button>
+		</div>
 		<div class="group--controls" *if="state.live">
 			<button type="button" class="btn--call" (click)="disconnect()">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
@@ -255,8 +269,8 @@
 		<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
 	</div>
 	<a href="/" class="group--logo" *if="state.status != 'connected'">
-		<img [src]="logo" *if="logo" />
-		<svg viewBox="0 0 270 98" *if="!logo"><use xlink:href="#b-here"></use></svg>
+		<img [src]="env.logo" *if="env.logo" />
+		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
 	</a>
 </div>
 <!-- @@close-->

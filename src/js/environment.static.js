@@ -3,6 +3,8 @@ export const environmentStatic = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
 	flags: {
+		selfService: true,
+		guidedTourRequest: true,
 		ar: true,
 		menu: true,
 		attendee: true,
@@ -10,6 +12,10 @@ export const environmentStatic = {
 		viewer: true,
 	},
 	logo: null,
+	background: {
+		image: '/b-here/img/background.jpg',
+		video: '/b-here/img/background.mp4',
+	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ernestomeda/docs/',

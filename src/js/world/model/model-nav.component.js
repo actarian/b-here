@@ -19,7 +19,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	static getTexturePoint() {
-		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-exit.png')));
+		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
 	}
 
 	static getTextureMove() {

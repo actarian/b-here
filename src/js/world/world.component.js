@@ -11,6 +11,7 @@ import { PanoramaGridView } from '../view/view';
 import AvatarElement from './avatar/avatar-element';
 import Camera from './camera/camera';
 import Interactive from './interactive/interactive';
+import MediaMesh from './media/media-mesh';
 import OrbitService, { OrbitMoveEvent } from './orbit/orbit';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
@@ -658,6 +659,10 @@ export default class WorldComponent extends Component {
 		this.view.items.forEach(item => item.showPanel = false);
 		nav.item.showPanel = nav.shouldShowPanel();
 		this.pushChanges();
+		MessageService.send({
+			type: MessageType.ShowPanel,
+			itemId: nav.item.showPanel ? nav.item.id : null,
+		});
 	}
 
 	onNavOut(nav) {
@@ -695,6 +700,14 @@ export default class WorldComponent extends Component {
 			this.resizeItem = event;
 			this.select.next(event);
 		}
+	}
+
+	onPlayMedia(event) {
+		MessageService.send({
+			type: MessageType.PlayMedia,
+			itemId: event.itemId,
+			playing: event.playing,
+		});
 	}
 
 	onPanelDown(event) {
@@ -851,6 +864,19 @@ export default class WorldComponent extends Component {
 						camera.position.set(message.coords[0], message.coords[1], message.coords[2]);
 						camera.lookAt(ORIGIN);
 						// this.render();
+					}
+					break;
+				case MessageType.ShowPanel:
+					if (this.menu) {
+						this.menu.removeMenu();
+					}
+					this.view.items.forEach(item => item.showPanel = (item.id === message.itemId));
+					this.pushChanges();
+					break;
+				case MessageType.PlayMedia:
+					const item = this.view.items.find(item => item.id === message.itemId);
+					if (item && item.mesh instanceof MediaMesh) {
+						item.mesh.setPlayingState(message.playing);
 					}
 					break;
 				case MessageType.NavToGrid:

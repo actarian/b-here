@@ -1,18 +1,19 @@
 import { Pipe } from "rxcomp";
 
 export const LABELS = Object.assign({
-	browse: 'browse',
-	cancel: 'cancel',
+	browse: 'Browse',
+	cancel: 'Cancel',
 	drag_and_drop_images: 'Drag And Drop your images here',
 	error_email: 'Invalid email',
 	error_match: 'Fields do not match',
 	error_required: 'Field is required',
 	loading: 'loading',
-	remove: 'remove',
-	required: 'required',
+	remove: 'Remove',
+	required: 'Required',
 	select: 'Select',
 	select_file: 'Select a file...',
-	upload: 'upload',
+	update: 'Update',
+	upload: 'Upload',
 	waiting_host: 'waiting host',
 }, (window.labels || {}));
 

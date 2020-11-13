@@ -1,6 +1,7 @@
 import { ReplaySubject } from 'rxjs';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
+import StateService from '../../state/state.service';
 
 export class MediaLoaderEvent {
 	constructor(src, id) {
@@ -60,9 +61,23 @@ export default class MediaLoader {
 		return this.isPublisherStream || this.isNextAttendeeStream || (this.isVideo && (this.item.asset.autoplay != null));
 	}
 
+	get muted() {
+		return this.muted_;
+	}
+
+	set muted(muted) {
+		this.muted_ = muted;
+		// console.log('MediaLoader.muted', muted, this.video);
+		if (this.video) {
+			this.video.muted = muted === true;
+		}
+	}
+
 	constructor(item) {
 		this.item = item;
 		this.toggle = this.toggle.bind(this);
+		this.muted_ = false;
+		this.subscription = StateService.state$.subscribe(state => this.muted = state.volumeMuted);
 	}
 
 	load(callback) {
@@ -100,13 +115,13 @@ export default class MediaLoader {
 			// create the video element
 			const video = this.video = document.createElement('video');
 			video.preload = 'metadata';
-			video.volume = 0.5;
+			video.volume = 0.8;
 			video.muted = true;
-			video.playsinline = video.playsInline = true;
+			video.playsInline = true;
+			video.crossOrigin = 'anonymous';
 			if (item.asset && item.asset.autoplay) {
 				video.loop = true;
 			}
-			video.crossOrigin = 'anonymous';
 			const onCanPlay = () => {
 				video.oncanplay = null;
 				texture = new THREE.VideoTexture(video);
@@ -175,7 +190,7 @@ export default class MediaLoader {
 		// console.log('MediaLoader.toggle', this.video);
 		if (this.video) {
 			if (this.video.paused) {
-				this.video.muted = false;
+				this.video.muted = this.muted_;
 				this.play();
 				return true;
 			} else {
@@ -186,10 +201,9 @@ export default class MediaLoader {
 	}
 
 	dispose() {
-		if (this.isVideo) {
-			this.pause();
-			delete this.video;
-		}
+		this.subscription.unsubscribe();
+		this.pause();
+		delete this.video;
 	}
 
 }

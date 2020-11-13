@@ -38,14 +38,45 @@ $invalid: $foreground-primary;
 	flex-wrap: wrap;
 	padding: 3px 1px;
 	border-bottom: 2px solid #c6e3f7;
-	margin-bottom: 15px;
+	margin-bottom: 10px;
+
+	@include media-down(xs) {
+		margin-bottom: 10px;
+	}
 
 	label {
 		@extend %label;
 	}
 
-	@include media-down(xs) {
-		margin-bottom: 10px;
+	/*
+	&.required {
+		border-left: 3px solid #0099ff;
+		padding-left: 4px;
+
+		.required__badge {
+			font-size: 0;
+		}
+	}
+	*/
+
+	&.required {
+		.required__badge {
+			top: 3px;
+			right: 3px;
+			width: 4px;
+			height: 4px;
+			background: #7ccaff;
+			border-radius: 2px;
+			line-height: 0;
+			font-size: 0;
+			transform: rotateZ(45deg);
+		}
+	}
+	.invalid.touched & {
+		.required__badge {
+			color: $foreground-secondary;
+			background: $foreground-secondary;
+		}
 	}
 }
 
@@ -391,12 +422,13 @@ errors-component {
 
 	.inner {
 		@extend %label;
-		margin-top: -15px;
+		margin-top: 0;
 		margin-bottom: 10px;
 		padding: 7px 7px;
 		font-size: 10px;
 		background: $background-secondary;
 		color: $foreground-negative;
+		border-radius: 2px;
 	}
 }
 
@@ -617,7 +649,8 @@ input-value {
 	.control--text {
 		font-size: 11px;
 		border-radius: 3px 0 0 3px;
-		border: 1px solid rgba($foreground-primary, 0.5);
+		// border: 1px solid rgba($foreground-primary, 0.5);
+		border: 1px solid rgba($foreground-primary, 0.15);
 		border-right: none;
 		padding: 4px;
 		font-weight: 500;
@@ -643,7 +676,7 @@ input-value {
 	align-items: center;
 	width: 16px;
 	height: 16px;
-	background: rgba($foreground-primary, 0.5);
+	background: rgba($foreground-primary, 0.2);
 	user-select: none;
 	cursor: pointer;
 
