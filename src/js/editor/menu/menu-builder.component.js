@@ -61,7 +61,7 @@ export default class MenuBuilderComponent extends Component {
 	}
 
 	onAddItem() {
-		MenuService.createMenuItem$().pipe(
+		MenuService.createMenuItem$(null, this.controls.items.length).pipe(
 			first(),
 		).subscribe(item => {
 			this.controls.items.push(ControlMenuComponent.itemToFormGroup(item));

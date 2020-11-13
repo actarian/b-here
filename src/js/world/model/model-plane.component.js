@@ -53,7 +53,12 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 						).subscribe(() => { });
 					});
 					mesh.on('down', () => {
+						console.log('ModelPanelComponent.down');
 						this.down.next(this);
+					});
+					mesh.on('playing', (playing) => {
+						console.log('ModelPanelComponent.playing', playing);
+						this.play.next({ itemId: this.item.id, playing });
 					});
 				}
 				// console.log('streamId', streamId, mesh);
@@ -125,6 +130,6 @@ ModelPlaneComponent.textures = {};
 ModelPlaneComponent.meta = {
 	selector: '[model-plane]',
 	hosts: { host: WorldComponent },
-	outputs: ['down'],
+	outputs: ['down', 'play'],
 	inputs: ['item', 'items'],
 };

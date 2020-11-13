@@ -12,6 +12,7 @@ body {
 body {
 	position: fixed;
 	overflow: hidden;
+	background: #111;
 }
 
 .app,
@@ -25,21 +26,37 @@ body {
 
 	&>.background {
 		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		/*
 		left: -5vw;
 		top: -5vh;
 		width: 110vw;
 		height: 110vh;
+		*/
 
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background: black;
+		background: #111;
 
-		&>img {
+		&>img,
+		&>video {
 			object-fit: cover;
 			width: 100%;
 			height: 100%;
 			// filter: blur(24px);
+		}
+
+		&>video {
+			opacity: 0;
+			transition: opacity ease-in-out 350ms;
+
+			&.ready {
+				opacity: 1;
+			}
 		}
 
 		&:after {
@@ -49,7 +66,33 @@ body {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: rgba(0, 0, 0, 0.8);
+			background: rgba(0, 0, 0, 0.7);
+		}
+
+		@include media-up(sm) {
+
+			&>img {
+				display: none;
+			}
+
+			&>video {
+				display: block;
+			}
+		}
+
+		@include media-down(xs) {
+
+			&>img {
+				display: block;
+			}
+
+			&>video {
+				display: none;
+			}
+
+			&:after {
+				background: rgba(0, 0, 0, 0.5);
+			}
 		}
 	}
 }
@@ -76,6 +119,10 @@ body {
 		max-width: 160px;
 		max-height: 60px;
 	}
+
+	@include media-down(xs) {
+		left: 15px;
+	}
 }
 
 .ui {
@@ -91,8 +138,8 @@ body {
 
 .ui--info {
 	@include media-down(sm) {
-		padding: 80px 0;
-		overflow-y: auto;
+		padding: 80px 0 15px 0;
+		// overflow-y: auto;
 
 		&:not(.ui--info-centered) {
 			justify-content: flex-start;
@@ -129,13 +176,17 @@ body {
 
 .group--info {
 	position: relative;
+	/*
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	*/
 	max-width: 400px;
 	margin: 0 10px;
 	border-radius: 7px;
+	overflow-x: hidden;
+	overflow-y: auto;
 	background: $background;
 	box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2);
 
@@ -266,11 +317,15 @@ body {
 	}
 
 	@include media-down(xs) {
-		min-width: 70%;
-		max-width: calc(100% - 20px);
+		width: 100%;
+		max-width: calc(100% - 30px);
 
 		&__content {
 			padding: 10px;
+		}
+
+		.title {
+			margin-top: 5px;
 		}
 	}
 }
@@ -303,6 +358,66 @@ body {
 
 		.btn--cam,
 		.btn--mic {
+			display: none;
+		}
+	}
+}
+
+.group--volume {
+	position: absolute;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	left: 15px;
+	top: 15px;
+
+	.btn--volume {
+		@extend %btn-circle;
+		width: 40px;
+		height: 40px;
+		border: 2px solid white;
+		opacity: 0.4;
+		transition: opacity ease-in-out 350ms;
+
+		&,
+		&:active,
+		&:hover,
+		&:focus {
+			background: transparent;
+			border-color: white;
+			color: white;
+
+			&>svg {
+				fill: currentColor;
+			}
+		}
+
+		&>svg {
+			width: 18px;
+			height: 18px;
+		}
+
+		&.disabled {
+			display: none;
+			pointer-events: none;
+		}
+
+		&.muted {
+			border-color: transparent;
+		}
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	&>button+button {
+		margin-left: 10px;
+	}
+
+	@include media-down(xs) {
+
+		.btn--volume {
 			display: none;
 		}
 	}

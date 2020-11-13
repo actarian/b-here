@@ -108,6 +108,8 @@ export const MessageType = {
 	SlideChange: 'slideChange',
 	CameraRotate: 'cameraRotate',
 	CameraOrientation: 'cameraOrientation',
+	ShowPanel: 'showPanel',
+	PlayMedia: 'playMedia',
 	NavToView: 'navToView',
 	NavToGrid: 'navToGrid',
 	VRStarted: 'vrStarted',

@@ -21,6 +21,9 @@ export default class MenuService {
 	static getMenu$() {
 		return HttpService.get$(`/api/menu`).pipe(
 			map(data => {
+				data.menu.sort((a, b) => {
+					return a.order - b.order;
+				});
 				return data.menu;
 			}),
 		);
@@ -30,10 +33,11 @@ export default class MenuService {
 		return HttpService.put$(`/api/menu`, menu);
 	}
 
-	static createMenuItem$(parentId = null) {
+	static createMenuItem$(parentId = null, order = 0) {
 		const payload = {
 			parentId: parentId,
 			viewId: null,
+			order: order * 10,
 			name: 'Folder ' + (++MENU_UID),
 		}
 		return HttpService.post$(`/api/menu`, payload);

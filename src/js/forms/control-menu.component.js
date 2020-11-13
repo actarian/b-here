@@ -42,7 +42,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 	}
 
 	onAddItem() {
-		MenuService.createMenuItem$(this.controls.id.value).pipe(
+		MenuService.createMenuItem$(this.controls.id.value, this.controls.items.length).pipe(
 			first(),
 		).subscribe(item => {
 			this.controls.items.push(ControlMenuComponent.itemToFormGroup(item));

@@ -3,6 +3,8 @@ export const environmentServed = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
 	flags: {
+		selfService: true,
+		guidedTourRequest: true,
 		ar: true,
 		menu: true,
 		attendee: true,
@@ -10,6 +12,10 @@ export const environmentServed = {
 		viewer: true,
 	},
 	logo: null,
+	background: {
+		image: '/Modules/B-Here/Client/docs/img/background.jpg',
+		video: '/Modules/B-Here/Client/docs/img/background.mp4',
+	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',

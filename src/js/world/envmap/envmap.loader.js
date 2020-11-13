@@ -17,6 +17,7 @@ export class EnvMapLoader {
 
 	static set video(video) {
 		if (this.video_) {
+			this.video_.muted = true;
 			this.video_.pause();
 			if (this.video_.parentNode) {
 				this.video_.parentNode.removeChild(this.video_);
@@ -30,6 +31,18 @@ export class EnvMapLoader {
 			video.playsInline = true;
 			video.crossOrigin = 'anonymous';
 			// document.querySelector('body').appendChild(video);
+		}
+	}
+
+	get muted() {
+		return this.muted_;
+	}
+
+	set muted(muted) {
+		this.muted_ = muted;
+		// console.log('EnvMapLoader.muted', muted, this.video);
+		if (this.video) {
+			this.video.muted = muted === true;
 		}
 	}
 

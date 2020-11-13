@@ -1,8 +1,7 @@
 // import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
-import InteractiveMesh from '../interactive/interactive.mesh';
-import MediaLoader from '../media/media-loader';
+import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -24,7 +23,6 @@ export default class ModelRoomComponent extends ModelComponent {
 			this.progress = 0;
 			this.pushChanges();
 		});
-		// dismount
 	}
 
 	// onView() { const context = getContext(this); }
@@ -55,14 +53,14 @@ export default class ModelRoomComponent extends ModelComponent {
 				mesh = model;
 			}
 			const items = this.item.items;
-			mesh.scale.set(0.1, 0.1, 0.1);
+			mesh.scale.set(0.05, 0.05, 0.05);
 			// mesh.scale.set(10, 10, 10);
 			mesh.traverse((child) => {
 				if (child.isMesh) {
 					// roughnessMipmapper.generateMipmaps(child.material);
 					const item = items.find(x => x.id === child.name);
 					if (item) {
-						item.plane = child;
+						item.mesh = child;
 					} else {
 						/*
 						if (USE_SHADOW) {
@@ -71,6 +69,7 @@ export default class ModelRoomComponent extends ModelComponent {
 						}
 						*/
 						child.material.dispose();
+						// child.renderOrder = environment.renderOrder.model;
 						const material = new THREE.MeshStandardMaterial({
 							color: 0x111111,
 							roughness: 0.6,
@@ -81,29 +80,34 @@ export default class ModelRoomComponent extends ModelComponent {
 			});
 			mesh.position.y = -1.66 * 3;
 			items.forEach(item => {
-				const child = item.plane;
-				if (child) {
-					child.material.color.setHex(0x000000);
-					item.mediaLoader = new MediaLoader(item).load((texture, mediaLoader) => {
-						const material = new THREE.MeshBasicMaterial({
-							map: texture,
-							side: THREE.DoubleSide,
-						});
-						const mesh = new InteractiveMesh(child.geometry, material);
-						if (!mediaLoader.isVideo) {
-							mesh.freeze();
-						}
-						mesh.name = child.name;
-						mesh.position.copy(child.position);
-						mesh.rotation.copy(child.rotation);
-						mesh.scale.copy(child.scale);
-						const parent = child.parent;
-						parent.remove(child);
-						child.material.dispose();
+				const previous = item.mesh;
+				if (previous) {
+					if (previous.material) {
+						previous.material.color.setHex(0x000000);
+					}
+					const parent = previous.parent;
+					const mesh = item.mesh = new MediaMesh(item, items, previous.geometry);
+					mesh.depthTest = false;
+					mesh.renderOrder = 0;
+					mesh.name = previous.name;
+					mesh.position.copy(previous.position);
+					mesh.rotation.copy(previous.rotation);
+					mesh.scale.copy(previous.scale);
+					mesh.load(() => {
+						// mesh.material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 						parent.add(mesh);
-						if (mediaLoader.isPlayableVideo) {
-							mesh.on('down', mediaLoader.toggle);
+						parent.remove(previous);
+						if (previous.material) {
+							previous.material.dispose();
 						}
+					});
+					mesh.on('down', () => {
+						console.log('ModelRoomComponent.down');
+						this.down.next(this);
+					});
+					mesh.on('playing', (playing) => {
+						console.log('ModelRoomComponent.playing', playing);
+						this.play.next({ itemId: item.id, playing });
 					});
 				}
 			});
@@ -150,9 +154,9 @@ export default class ModelRoomComponent extends ModelComponent {
 			const items = item.items;
 			if (items) {
 				items.forEach(item => {
-					if (item.mediaLoader) {
-						item.mediaLoader.dispose();
-						delete item.mediaLoader;
+					if (item.mesh) {
+						item.mesh.dispose();
+						delete item.mesh;
 					}
 				});
 			}
@@ -166,5 +170,6 @@ ModelRoomComponent.textures = {};
 ModelRoomComponent.meta = {
 	selector: '[model-room]',
 	hosts: { host: WorldComponent },
+	outputs: ['down', 'play'],
 	inputs: ['item'],
 };
