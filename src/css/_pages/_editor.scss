@@ -589,8 +589,8 @@ update-view-tile {
 	.group--form--file,
 	.group--form--select,
 	.group--form--textarea {
+		margin-bottom: 10px;
 		padding: 3px 1px;
-		margin-bottom: 8px;
 		border-bottom: 1px solid rgba($foreground-primary, 0.15);
 	}
 

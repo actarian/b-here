@@ -3,37 +3,37 @@
 <script>
 	// window.antiforgery = '';
 	window.labels = {
-		"browse": "Apri",
-		"error_email": "Email non valida",
-		"error_match": "I campi non corrispondono",
-		"error_required": "Il campo è obbligatorio",
-		"remove": "Elimina",
-		"required": "richiesto",
-		"select": "seleziona",
-		"select_file": "Seleziona un file...",
-		"access_login": "Login.",
-		"access_username": "Username",
-		"access_password": "Password",
-		"access_or": "oppure",
-		"access_title": "Accesso al tour virtuale",
-		"access_tour": "Accedi al tour",
-		"access_cta": "Accedi",
-		"access_guided_tour": "Richiedi un tour guidato",
-		"access_fill_fields": "Compila i campi per accedere al tour.",
-		"access_guided_tour_request": "Compila i campi e richiedi il tour guidato.",
-		"access_has_meeting_id": "possiedi già un meeting id?",
-		"access_guided_tour_cta": "Accedi al tour guidato",
-		"access_first_name": "Nome",
-		"access_last_name": "Cognome",
-		"access_email": "Email",
-		"access_role": "Ruolo",
-		"access_privacy_disclaimer": "Ho letto l'<a href=\"/it/it/pagineinterne/informativa_sulla_privacy\" target=\"_blank\">informativa</a> e do il consenso al trattamento del dato",
-		"access_take_part": "partecipa al meeting",
-		"access_send": "Invia",
-		"access_sent": "Inviato!",
-		"access_back": "Indietro",
-		"access_request_sent": "Richiesta inviata!",
-		"access_info_request": "La tua richiesta è stata inviata. Verrai contattato da un nostro incaricato per tutti i dettagli."
+		browse: 'Apri',
+		error_email: 'Email non valida',
+		error_match: 'I campi non corrispondono',
+		error_required: 'Il campo è obbligatorio',
+		remove: 'Elimina',
+		required: 'richiesto',
+		select: 'seleziona',
+		select_file: 'Seleziona un file...',
+		access_login: 'Login.',
+		access_username: 'Username',
+		access_password: 'Password',
+		access_or: 'oppure',
+		access_title: 'Accesso al tour virtuale',
+		access_tour: 'Accedi al tour',
+		access_cta: 'Accedi',
+		access_guided_tour: 'Richiedi un tour guidato',
+		access_fill_fields: 'Compila i campi per accedere al tour.',
+		access_guided_tour_request: 'Compila i campi e richiedi il tour guidato.',
+		access_has_meeting_id: 'possiedi già un meeting id?',
+		access_guided_tour_cta: 'Accedi al tour guidato',
+		access_first_name: 'Nome',
+		access_last_name: 'Cognome',
+		access_email: 'Email',
+		access_role: 'Ruolo',
+		access_privacy_disclaimer: 'Ho letto l\'<a href="/it/it/pagineinterne/informativa_sulla_privacy" target="_blank">informativa</a> e do il consenso al trattamento del dato',
+		access_take_part: 'partecipa al meeting',
+		access_send: 'Invia',
+		access_sent: 'Inviato!',
+		access_back: 'Indietro',
+		access_request_sent: 'Richiesta inviata!',
+		access_info_request: 'La tua richiesta è stata inviata. Verrai contattato da un nostro incaricato per tutti i dettagli.',
 	};
 	window.data = {
 		roles: [
@@ -46,9 +46,16 @@
 	};
 </script>
 <div class="page" access-component>
-	<div class="background">
-		<img src="/b-here/img/background.jpg" />
+	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
+		<img [src]="env.background.image" *if="env.background.image" />
+		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
+	<!--
+	<div class="background background--image background--video">
+		<img src="/b-here/img/background.jpg" />
+		<video src="/b-here/img/background.mp4" oncanplay="this.muted = true;" playsinline autoplay muted loop></video>
+	</div>
+	-->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'access'">
 		<button type="button" class="btn--absolute" (click)="onLogin($event)">
 			<span [innerHTML]="'access_cta' | label"></span>
@@ -56,14 +63,18 @@
 		<div class="group--info">
 			<div class="group--info__content stagger--childs">
 				<div class="title" [innerHTML]="'access_title' | label"></div>
-				<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
-					<span [innerHTML]="'access_tour' | label"></span>
-				</button>
-				<div class="info" [innerHTML]="'access_or' | label"></div>
-				<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
-					<span [innerHTML]="'access_guided_tour' | label"></span>
-				</button>
-				<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+				<div *if="env.flags.selfService">
+					<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
+						<span [innerHTML]="'access_tour' | label"></span>
+					</button>
+					<div class="info" [innerHTML]="'access_or' | label"></div>
+				</div>
+				<div *if="env.flags.guidedTourRequest">
+					<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
+						<span [innerHTML]="'access_guided_tour' | label"></span>
+					</button>
+					<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+				</div>
 				<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
 					<span [innerHTML]="'access_guided_tour_cta' | label"></span>
 				</button>
@@ -140,8 +151,8 @@
 		</div>
 	</div>
 	<div class="group--logo">
-		<img [src]="logo" *if="logo" />
-		<svg viewBox="0 0 270 98" *if="!logo"><use xlink:href="#b-here"></use></svg>
+		<img [src]="env.logo" *if="env.logo" />
+		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
 	</div>
 </div>
 <!-- @@close-->

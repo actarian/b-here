@@ -3,6 +3,8 @@ export const environmentStatic = {
 	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
 	flags: {
+		selfService: true,
+		guidedTourRequest: true,
 		ar: false,
 		menu: true,
 		attendee: false,
@@ -10,6 +12,10 @@ export const environmentStatic = {
 		viewer: false,
 	},
 	logo: './img/logo-ipf-access.png',
+	background: {
+		image: '/b-here/img/background.jpg',
+		video: '/b-here/img/background.mp4',
+	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',

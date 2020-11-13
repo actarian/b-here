@@ -187,10 +187,10 @@ UpdateViewComponent.meta = {
 			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update" [class]="{ busy: busy }">
-					<span>Update</span>
+					<span [innerHTML]="'update' | label"></span>
 				</button>
 				<button type="button" class="btn--remove" *if="view.type.name != 'waiting-room'" (click)="onRemove($event)">
-					<span>Remove</span>
+					<span [innerHTML]="'remove' | label"></span>
 				</button>
 			</div>
 		</form>

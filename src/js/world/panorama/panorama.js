@@ -1,3 +1,4 @@
+import StateService from '../../state/state.service';
 import { PanoramaGridView } from '../../view/view';
 import { EnvMapLoader } from '../envmap/envmap.loader';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -74,6 +75,8 @@ void main() {
 export default class Panorama {
 
 	constructor() {
+		this.muted_ = false;
+		this.subscription = StateService.state$.subscribe(state => EnvMapLoader.muted = state.volumeMuted);
 		this.tween = 0;
 		this.create();
 	}
@@ -216,7 +219,6 @@ export default class Panorama {
 			material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
 			material.uniforms.tween.value = 0;
 			material.uniforms.rgbe.value = rgbe;
-			// console.log(texture.width, texture.height);
 			material.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(envMap, texture, rgbe);
@@ -226,13 +228,11 @@ export default class Panorama {
 
 	loadVideo(src) {
 		const video = document.createElement('video');
-		/*
-		const temp = document.querySelector('.temp');
-		temp.appendChild(video);
-		*/
 		video.src = src;
+		video.volume = 0.8;
 		video.muted = true;
-		video.playsinline = video.playsInline = true;
+		video.playsInline = true;
+		video.crossOrigin = 'anonymous';
 		video.play();
 		this.setVideo(video);
 	}
@@ -240,7 +240,6 @@ export default class Panorama {
 	setVideo(video) {
 		// console.log('Panorama.setVideo', video);
 		if (video) {
-			let videoReady = false;
 			const onPlaying = () => {
 				const texture = new VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
@@ -252,28 +251,18 @@ export default class Panorama {
 				material.map = texture;
 				material.uniforms.texture.value = texture;
 				material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
-				// console.log(texture.width, texture.height);
 				material.needsUpdate = true;
-				// video.currentTime = 1;
-				// video.load();
 			};
-			// video.addEventListener('playing', onPlaying);
+			// video.addEventListener('canplay', onPlaying);
 			video.crossOrigin = 'anonymous';
 			video.oncanplay = () => {
-				videoReady = true;
-				// console.log('videoReady', videoReady);
 				onPlaying();
 			};
-			/*
-			video.width = 640;
-			video.height = 480;
-			*/
-			/*
-			video.addEventListener("play", function() {
-				frameloop();
-			});
-			*/
 		}
+	}
+
+	dispose() {
+		this.subscription.unsubscribe();
 	}
 
 }

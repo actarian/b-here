@@ -44,6 +44,7 @@ void main() {
 }
 `;
 
+/*
 const FRAGMENT_SHADER_BAK = `
 #extension GL_EXT_frag_depth : enable
 
@@ -120,6 +121,7 @@ void main() {
 	gl_FragColor = color;
 }
 `;
+*/
 
 const FRAGMENT_CHROMA_KEY_SHADER = `
 #extension GL_EXT_frag_depth : enable
@@ -283,29 +285,6 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		/*
-		if (false && mediaLoader.isPlayableVideo) {
-			const textureB = MediaLoader.loadTexture({
-				asset: {
-					folder: 'textures/ui/', file: 'play.png'
-				}
-			}, (textureB) => {
-				// console.log('MediaMesh.textureB', textureB);
-				textureB.minFilter = THREE.LinearFilter;
-				textureB.magFilter = THREE.LinearFilter;
-				textureB.mapping = THREE.UVMapping;
-				// textureB.format = THREE.RGBFormat;
-				textureB.wrapS = THREE.RepeatWrapping;
-				textureB.wrapT = THREE.RepeatWrapping;
-				material.uniforms.textureB.value = textureB;
-				// material.uniforms.resolutionB.value.x = textureB.image.width;
-				// material.uniforms.resolutionB.value.y = textureB.image.height;
-				material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
-				// console.log(material.uniforms.resolutionB.value, textureB);
-				material.needsUpdate = true;
-			});
-		}
-		*/
 		mediaLoader.load((textureA) => {
 			// console.log('MediaMesh.textureA', textureA);
 			if (textureA) {
@@ -484,19 +463,30 @@ export default class MediaMesh extends InteractiveMesh {
 
 	onToggle() {
 		this.playing = this.mediaLoader.toggle();
+		this.emit('playing', this.playing);
 		this.onOut();
 	}
 
 	play() {
 		this.mediaLoader.play();
 		this.playing = true;
+		this.emit('playing', true);
 		this.onOut();
 	}
 
 	pause() {
 		this.mediaLoader.pause();
 		this.playing = false;
+		this.emit('playing', false);
 		this.onOut();
+	}
+
+	setPlayingState(playing) {
+		if (this.playing !== playing) {
+			this.playing = playing;
+			playing ? this.mediaLoader.play() : this.mediaLoader.pause();
+			this.onOut();
+		}
 	}
 
 	updateByItem(item) {
