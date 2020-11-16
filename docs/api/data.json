@@ -1995,6 +1995,183 @@
         }
       ],
       "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "New Indoor 1",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "235446336065399_Indoor-02-6400.jpg",
+        "id": 235446479086900
+      },
+      "orientation": {
+        "latitude": -7.699999999999996,
+        "longitude": 286.2
+      },
+      "zoom": 75,
+      "id": 235398960535700,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 235561730690900,
+          "position": [
+            -0.7785895999302116,
+            -0.5197106077348526,
+            0.3517088555728777
+          ],
+          "asset": null,
+          "link": null,
+          "id": 235709513813600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 235627401436000,
+          "position": [
+            -0.7964632205554152,
+            -0.4203447283933559,
+            -0.43469143954581346
+          ],
+          "asset": null,
+          "link": null,
+          "id": 235716171042699
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "New Indoor 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "235558139532100_Indoor-04-6400.jpg",
+        "id": 235558400573600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 235561730690900,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 235398960535700,
+          "position": [
+            -0.4436086486455793,
+            -0.6803262182037245,
+            -0.5834103218760028
+          ],
+          "asset": null,
+          "link": null,
+          "id": 235590297119200,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 235627401436000,
+          "position": [
+            -0.7298985841644499,
+            -0.5439432719815538,
+            0.41397315577309207
+          ],
+          "asset": null,
+          "link": null,
+          "id": 235599794820299,
+          "keepOrientation": null
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "New Indoor 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "235624423313499_Indoor-06-6400.jpg",
+        "id": 235624720358300
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 235627401436000,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 235561730690900,
+          "position": [
+            0.035362758477407046,
+            -0.4876228929857547,
+            0.8723378872599032
+          ],
+          "asset": null,
+          "link": null,
+          "id": 235651108243100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 235398960535700,
+          "position": [
+            0.7115560760379779,
+            -0.4530199661732937,
+            0.5370855247553997
+          ],
+          "asset": null,
+          "link": null,
+          "id": 235657663414800
+        }
+      ]
     }
   ],
   "menu": [
@@ -2076,11 +2253,39 @@
       "order": 20
     },
     {
+      "id": 235876727437200,
+      "parentId": null,
+      "viewId": null,
+      "name": "Showroom New",
+      "order": 40
+    },
+    {
+      "id": 235885866798999,
+      "parentId": 235876727437200,
+      "viewId": 235398960535700,
+      "name": "New Indoor 1",
+      "order": 0
+    },
+    {
+      "id": 235886365634900,
+      "parentId": 235876727437200,
+      "viewId": 235561730690900,
+      "name": "New Indoor 2",
+      "order": 10
+    },
+    {
+      "id": 235886797859400,
+      "parentId": 235876727437200,
+      "viewId": 235627401436000,
+      "name": "New Indoor 3",
+      "order": 20
+    },
+    {
       "id": 872442576832299,
       "parentId": null,
       "viewId": null,
       "name": "Media",
-      "order": 40
+      "order": 50
     },
     {
       "id": 872452437250200,
@@ -2820,6 +3025,42 @@
       "file": "107525653458399_ERNESTO MEDA SPK ITA +.mp4",
       "id": 107526853891600,
       "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "235392343453199_Indoor-01-6400.jpg",
+      "id": 235393308146800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "235446336065399_Indoor-02-6400.jpg",
+      "id": 235446479086900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "235558139532100_Indoor-04-6400.jpg",
+      "id": 235558400573600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "235624423313499_Indoor-06-6400.jpg",
+      "id": 235624720358300
     }
   ],
   "users": [
