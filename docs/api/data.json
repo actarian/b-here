@@ -2008,8 +2008,8 @@
           "name": "image"
         },
         "folder": "/uploads/",
-        "file": "235446336065399_Indoor-02-6400.jpg",
-        "id": 235446479086900
+        "file": "236366070151300_Indoor-02-6400.jpg",
+        "id": 236366152010900
       },
       "orientation": {
         "latitude": -7.699999999999996,
@@ -2032,8 +2032,8 @@
             0.3517088555728777
           ],
           "asset": null,
-          "link": null,
-          "id": 235709513813600
+          "id": 235709513813600,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -2049,8 +2049,8 @@
             -0.43469143954581346
           ],
           "asset": null,
-          "link": null,
-          "id": 235716171042699
+          "id": 235716171042699,
+          "keepOrientation": null
         }
       ],
       "hidden": null
@@ -2067,8 +2067,8 @@
           "name": "image"
         },
         "folder": "/uploads/",
-        "file": "235558139532100_Indoor-04-6400.jpg",
-        "id": 235558400573600
+        "file": "236388651874799_Indoor-04-6400.jpg",
+        "id": 236388763064999
       },
       "orientation": {
         "latitude": 0,
@@ -2091,7 +2091,6 @@
             -0.5834103218760028
           ],
           "asset": null,
-          "link": null,
           "id": 235590297119200,
           "keepOrientation": null
         },
@@ -2109,11 +2108,11 @@
             0.41397315577309207
           ],
           "asset": null,
-          "link": null,
           "id": 235599794820299,
           "keepOrientation": null
         }
-      ]
+      ],
+      "hidden": null
     },
     {
       "type": {
@@ -2127,8 +2126,8 @@
           "name": "image"
         },
         "folder": "/uploads/",
-        "file": "235624423313499_Indoor-06-6400.jpg",
-        "id": 235624720358300
+        "file": "236410274186200_Indoor-06-6400.jpg",
+        "id": 236410390922600
       },
       "orientation": {
         "latitude": 0,
@@ -2151,8 +2150,8 @@
             0.8723378872599032
           ],
           "asset": null,
-          "link": null,
-          "id": 235651108243100
+          "id": 235651108243100,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -2168,10 +2167,11 @@
             0.5370855247553997
           ],
           "asset": null,
-          "link": null,
-          "id": 235657663414800
+          "id": 235657663414800,
+          "keepOrientation": null
         }
-      ]
+      ],
+      "hidden": null
     }
   ],
   "menu": [
@@ -3032,8 +3032,8 @@
         "name": "image"
       },
       "folder": "/uploads/",
-      "file": "235392343453199_Indoor-01-6400.jpg",
-      "id": 235393308146800
+      "file": "236366070151300_Indoor-02-6400.jpg",
+      "id": 236366152010900
     },
     {
       "type": {
@@ -3041,8 +3041,8 @@
         "name": "image"
       },
       "folder": "/uploads/",
-      "file": "235446336065399_Indoor-02-6400.jpg",
-      "id": 235446479086900
+      "file": "236388651874799_Indoor-04-6400.jpg",
+      "id": 236388763064999
     },
     {
       "type": {
@@ -3050,17 +3050,8 @@
         "name": "image"
       },
       "folder": "/uploads/",
-      "file": "235558139532100_Indoor-04-6400.jpg",
-      "id": 235558400573600
-    },
-    {
-      "type": {
-        "id": 1,
-        "name": "image"
-      },
-      "folder": "/uploads/",
-      "file": "235624423313499_Indoor-06-6400.jpg",
-      "id": 235624720358300
+      "file": "236410274186200_Indoor-06-6400.jpg",
+      "id": 236410390922600
     }
   ],
   "users": [
