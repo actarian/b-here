@@ -52,14 +52,32 @@ export class Environment {
 
 	constructor(options) {
 		if (options) {
+			if (typeof options.url === 'object') {
+				const language = options.language || '';
+				const market = options.market || '';
+				Object.keys(options.url).forEach(key => {
+					options.url[key] = language + market + options.url[key];
+				});
+			}
 			Object.assign(this, options);
 		}
+	}
+
+	static merge(target, source) {
+		Object.keys(source).forEach(key => {
+			const value = source[key];
+			if (typeof value === 'object' && !Array.isArray(value)) {
+				target[key] = this.merge(target[key], value);
+			} else {
+				target[key] = value;
+			}
+		});
+		return target;
 	}
 }
 
 const defaultOptions = {
 	port: 5000,
-	useToken: false,
 	fontFamily: 'GT Walsheim, sans-serif',
 	renderOrder: {
 		panorama: 0,
@@ -76,9 +94,12 @@ const defaultOptions = {
 };
 
 const defaultAppOptions = {
-	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
 	flags: {
+		production: false,
+		useToken: false,
+		selfService: true,
+		guidedTourRequest: true,
 		ar: true,
 		menu: true,
 		attendee: true,
@@ -89,10 +110,12 @@ const defaultAppOptions = {
 
 const environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 
-const options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
+let options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
+
+if (typeof window.bhere === 'object') {
+	options = Environment.merge(options, window.bhere);
+}
 
 export const environment = new Environment(options);
-
-environment.STATIC = window.STATIC;
 
 console.log('environment', environment);

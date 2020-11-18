@@ -3,6 +3,8 @@ export const environmentStatic = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
 	flags: {
+		production: false,
+		useToken: false,
 		selfService: true,
 		guidedTourRequest: true,
 		ar: true,
@@ -19,6 +21,8 @@ export const environmentStatic = {
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+	language: '',
+	market: '',
 	url: {
 		index: '/',
 		access: '/',

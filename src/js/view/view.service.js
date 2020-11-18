@@ -8,7 +8,7 @@ export default class ViewService {
 
 	static data$() {
 		if (!this.data$_) {
-			const dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
+			const dataUrl = environment.flags.production ? '/api/view' : './api/data.json';
 			this.data$_ = HttpService.get$(dataUrl).pipe(
 				map(data => {
 					data.views = data.views.map(view => mapView(view));
@@ -29,13 +29,12 @@ export default class ViewService {
 	static viewLike$(view) {
 		if (!view.liked) {
 			view.liked = true;
-			// this.view.likes++;
-			if (environment.STATIC) {
+			if (environment.flags.production) {
+				return HttpService.get$(`/api/view/${view.id}/like`);
+			} else {
 				view.likes = view.likes || 0;
 				view.likes++;
 				return of(view);
-			} else {
-				return HttpService.get$(`/api/view/${view.id}/like`);
 			}
 		} else {
 			return of(null);

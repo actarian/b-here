@@ -72,13 +72,6 @@ export default class HttpService {
 		return ''; // todo
 	}
 
-	/*
-	static getUrl(url, format = 'json') {
-		// console.log(url);
-		return environment.STATIC && format === 'json' && url.indexOf('/') === 0 ? `.${url}.json` : url;
-	}
-	*/
-
 	static getError(object, response) {
 		let error = typeof object === 'object' ? object : {};
 		if (!error.status) {

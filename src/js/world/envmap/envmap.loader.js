@@ -34,11 +34,11 @@ export class EnvMapLoader {
 		}
 	}
 
-	get muted() {
+	static get muted() {
 		return this.muted_;
 	}
 
-	set muted(muted) {
+	static set muted(muted) {
 		this.muted_ = muted;
 		// console.log('EnvMapLoader.muted', muted, this.video);
 		if (this.video) {

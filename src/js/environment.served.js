@@ -3,6 +3,8 @@ export const environmentServed = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
 	flags: {
+		production: true,
+		useToken: false,
 		selfService: true,
 		guidedTourRequest: true,
 		ar: true,
@@ -19,13 +21,15 @@ export const environmentServed = {
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+	language: '/it',
+	market: '/it',
 	url: {
 		index: '/',
 		access: '/',
-		editor: '/it/it/editor',
-		bHere: '/it/it/b-here',
-		selfServiceTour: '/it/it/self-service-tour',
-		guidedTour: '/it/it/guided-tour',
+		editor: '/editor',
+		bHere: '/b-here',
+		selfServiceTour: '/self-service-tour',
+		guidedTour: '/guided-tour',
 	},
 	template: {
 		tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
