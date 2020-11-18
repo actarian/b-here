@@ -51,7 +51,7 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Tour",
+          "title": null,
           "abstract": null,
           "viewId": 527056241479599,
           "position": [
@@ -69,8 +69,8 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Cucina One",
-          "abstract": "scopri..",
+          "title": null,
+          "abstract": null,
           "viewId": 513899190847000,
           "position": [
             0.13368640269936724,
@@ -122,7 +122,7 @@
           },
           "title": null,
           "abstract": null,
-          "viewId": 539664012158000,
+          "viewId": 405860981014099,
           "position": [
             0.7458927554721432,
             -0.049554152288802715,
@@ -138,7 +138,7 @@
             "id": 1,
             "name": "nav"
           },
-          "title": "Guarda",
+          "title": null,
           "abstract": null,
           "viewId": 542975856893999,
           "position": [
@@ -2172,6 +2172,30 @@
         }
       ],
       "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "New - Indoor - 7000",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "405857251117499_Indoor-07-low.jpg",
+        "id": 405857547473499
+      },
+      "orientation": {
+        "latitude": -9.5,
+        "longitude": 269.8
+      },
+      "zoom": 75,
+      "id": 405860981014099,
+      "items": [],
+      "hidden": null
     }
   ],
   "menu": [
@@ -2260,25 +2284,32 @@
       "order": 40
     },
     {
+      "id": 405885260398699,
+      "parentId": 235876727437200,
+      "viewId": 405860981014099,
+      "name": "New - Indoor - 7000",
+      "order": 0
+    },
+    {
       "id": 235885866798999,
       "parentId": 235876727437200,
       "viewId": 235398960535700,
       "name": "New Indoor 1",
-      "order": 0
+      "order": 10
     },
     {
       "id": 235886365634900,
       "parentId": 235876727437200,
       "viewId": 235561730690900,
       "name": "New Indoor 2",
-      "order": 10
+      "order": 20
     },
     {
       "id": 235886797859400,
       "parentId": 235876727437200,
       "viewId": 235627401436000,
       "name": "New Indoor 3",
-      "order": 20
+      "order": 30
     },
     {
       "id": 872442576832299,
@@ -3052,6 +3083,15 @@
       "folder": "/uploads/",
       "file": "236410274186200_Indoor-06-6400.jpg",
       "id": 236410390922600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "405857251117499_Indoor-07-low.jpg",
+      "id": 405857547473499
     }
   ],
   "users": [
