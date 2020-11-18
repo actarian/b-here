@@ -151,9 +151,10 @@ export default class AgoraService extends Emittable {
 			StateService.patchState({ status: AgoraStatus.Connecting, connecting: true, devices });
 			setTimeout(() => {
 				this.createClient(() => {
-					this.getRtcToken().subscribe(token => {
-						// console.log('token', token);
-						this.join(token.token);
+					const channelNameLink = this.getChannelNameLink();
+					this.rtcToken$(channelNameLink).subscribe(token => {
+						// console.log('AgoraService.rtcToken$', token);
+						this.join(token.token, channelNameLink);
 					});
 				});
 			}, 250);
@@ -186,16 +187,16 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
-	getRtcToken() {
-		if (environment.useToken) {
-			return HttpService.post$('/api/token/rtc', { uid: null });
+	rtcToken$(channelNameLink) {
+		if (environment.flags.useToken) {
+			return HttpService.post$('/api/token/rtc', { channelName: channelNameLink, uid: null });
 		} else {
 			return of({ token: null });
 		}
 	}
 
-	getRtmToken(uid) {
-		if (environment.useToken) {
+	rtmToken$(uid) {
+		if (environment.flags.useToken) {
 			return HttpService.post$('/api/token/rtm', { uid: uid });
 		} else {
 			return of({ token: null });
@@ -276,18 +277,17 @@ export default class AgoraService extends Emittable {
 		return channelNameLink;
 	}
 
-	join(token) {
+	join(token, channelNameLink) {
 		this.channel = null;
 		const client = this.client;
 		const clientId = null;
-		token = null; // !!!
-		const channelNameLink = this.getChannelNameLink();
+		// console.log('AgoraService.join', { token, channelNameLink, clientId });
 		client.join(token, channelNameLink, clientId, (uid) => {
 			// console.log('AgoraService.join', uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });
 			if (USE_RTM) {
-				this.getRtmToken(uid).subscribe(token => {
-					// console.log('token', token);
+				this.rtmToken$(uid).subscribe(token => {
+					// console.log('AgoraService.rtmToken$', token);
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
 						if (StateService.state.role !== RoleType.Viewer) {
@@ -315,8 +315,8 @@ export default class AgoraService extends Emittable {
 		let channel;
 		return new Promise((resolve, reject) => {
 			const messageClient = this.messageClient;
-			token = null; // !!!
-			messageClient.login({ uid: uid.toString() }).then(() => {
+			messageClient.login({ token: token, uid: uid.toString() }).then(() => {
+				// console.log('AgoraService.messageClient.login.success');
 				channel = messageClient.createChannel(StateService.state.channelNameLink);
 				return channel.join();
 			}).then(() => {

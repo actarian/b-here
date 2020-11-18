@@ -3,6 +3,8 @@ export const environmentServed = {
 	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
 	flags: {
+		production: true,
+		useToken: false,
 		selfService: true,
 		guidedTourRequest: true,
 		ar: false,
@@ -19,13 +21,15 @@ export const environmentServed = {
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
+	language: '/it',
+	market: '/it',
 	url: {
 		index: '/',
 		access: '/',
-		editor: '/it/it/editor',
-		bHere: '/it/it/b-here',
-		selfServiceTour: '/it/it/self-service-tour',
-		guidedTour: '/it/it/guided-tour',
+		editor: '/editor',
+		bHere: '/b-here',
+		selfServiceTour: '/self-service-tour',
+		guidedTour: '/guided-tour',
 	},
 	template: {
 		tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { auditTime, first, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
 import { environment } from '../../environment';
+import LabelPipe from '../../label/label.pipe';
 import MessageService from '../../message/message.service';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { View, ViewType } from '../../view/view';
@@ -144,6 +145,7 @@ export default class UpdateViewComponent extends Component {
 
 	getTitle(view) {
 		return EditorLocale[view.type.name];
+		return LabelPipe.transform(`editor_${view.type.name.replace('-','_')}`);
 	}
 }
 

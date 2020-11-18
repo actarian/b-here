@@ -1,5 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
+
+const APP_KEY = process.env.APP_KEY || null;
+const APP_SECURE_KEY = process.env.APP_SECURE_KEY || null;
 
 const RoleType = {
 	Publisher: 'publisher',
@@ -8,37 +12,6 @@ const RoleType = {
 	Viewer: 'viewer',
 	SelfService: 'self-service',
 };
-
-/*
-const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
-const appCertificate = '';
-
-app.post('/api/token/rtc', function(request, response) {
-	const payload = request.body || {};
-	const duration = 3600;
-	const timestamp = Math.floor(Date.now() / 1000);
-	const expirationTime = timestamp + duration;
-	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
-	const role = RtcRole.PUBLISHER;
-	const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, appCertificate, environment.channelName, uid, role, expirationTime);
-	response.send(JSON.stringify({
-		token: token,
-	}));
-});
-
-app.post('/api/token/rtm', function(request, response) {
-	const payload = request.body || {};
-	const duration = 3600;
-	const timestamp = Math.floor(Date.now() / 1000);
-	const expirationTime = timestamp + duration;
-	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
-	const role = RtmRole.PUBLISHER;
-	const token = RtmTokenBuilder.buildToken(environment.appKey, appCertificate, uid, role, expirationTime);
-	response.send(JSON.stringify({
-		token: token,
-	}));
-});
-*/
 
 let db = {
 	views: [], menu: [], assets: [], users: [
@@ -338,6 +311,44 @@ const ROUTES = [{
 		*/
 		sendOk(response);
 	}
+}, {
+	path: '/api/token/rtc', method: 'POST', callback: function(request, response, params) {
+		if (!APP_KEY || !APP_SECURE_KEY) {
+			sendError(response, 400, 'appKey and appSecureKey required');
+		}
+		const body = request.body || {};
+		const channelName = body.channelName ? String(body.channelName) : 0;
+		if (!channelName) {
+			sendError(response, 400, 'channelName required');
+		}
+		// use 0 if uid is not specified
+		const uid = body.uid ? String(body.uid) : 0;
+		const duration = 3600 * 12;
+		const timestamp = Math.floor(Date.now() / 1000);
+		const expirationTime = timestamp + duration;
+		const role = RtcRole.PUBLISHER;
+		const token = RtcTokenBuilder.buildTokenWithUid(APP_KEY, APP_SECURE_KEY, channelName, uid, role, expirationTime);
+		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
+		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
+	}
+}, {
+	path: '/api/token/rtm', method: 'POST', callback: function(request, response, params) {
+		if (!APP_KEY || !APP_SECURE_KEY) {
+			sendError(response, 400, 'appKey and appSecureKey required');
+		}
+		const body = request.body || {};
+		const uid = body.uid ? String(body.uid) : timestamp.toString();
+		if (!uid) {
+			return response.status(400).json({ 'error': 'uid required' }).send();
+		}
+		const duration = 3600 * 12;
+		const timestamp = Math.floor(Date.now() / 1000);
+		const expirationTime = timestamp + duration;
+		const role = RtmRole.Rtm_User;
+		const token = RtmTokenBuilder.buildToken(APP_KEY, APP_SECURE_KEY, uid, role, expirationTime);
+		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
+		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
+	}
 }];
 ROUTES.forEach(route => {
 	const segments = [];
@@ -436,3 +447,34 @@ module.exports = {
 	useApi: useApi,
 	uuid: uuid,
 };
+
+/*
+const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
+const appSecureKey = '';
+
+app.post('/api/token/rtc', function(request, response) {
+	const payload = request.body || {};
+	const duration = 3600;
+	const timestamp = Math.floor(Date.now() / 1000);
+	const expirationTime = timestamp + duration;
+	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
+	const role = RtcRole.PUBLISHER;
+	const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, appSecureKey, environment.channelName, uid, role, expirationTime);
+	response.send(JSON.stringify({
+		token: token,
+	}));
+});
+
+app.post('/api/token/rtm', function(request, response) {
+	const payload = request.body || {};
+	const duration = 3600;
+	const timestamp = Math.floor(Date.now() / 1000);
+	const expirationTime = timestamp + duration;
+	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
+	const role = RtmRole.PUBLISHER;
+	const token = RtmTokenBuilder.buildToken(environment.appKey, appSecureKey, uid, role, expirationTime);
+	response.send(JSON.stringify({
+		token: token,
+	}));
+});
+*/

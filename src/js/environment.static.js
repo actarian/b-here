@@ -3,6 +3,8 @@ export const environmentStatic = {
 	appKey: '1a066259928f4b40a243647b58aca42e',
 	channelName: 'BHere',
 	flags: {
+		production: false,
+		useToken: false,
 		selfService: true,
 		guidedTourRequest: true,
 		ar: false,
@@ -19,6 +21,8 @@ export const environmentStatic = {
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
+	language: '',
+	market: '',
 	url: {
 		index: '/',
 		access: '/',

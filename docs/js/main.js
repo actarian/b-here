@@ -125,6 +125,8 @@ function _readOnlyError(name) {
   appKey: '1a066259928f4b40a243647b58aca42e',
   channelName: 'BHere',
   flags: {
+    production: true,
+    useToken: false,
     selfService: true,
     guidedTourRequest: true,
     ar: false,
@@ -141,13 +143,15 @@ function _readOnlyError(name) {
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
+  language: '/it',
+  market: '/it',
   url: {
     index: '/',
     access: '/',
-    editor: '/it/it/editor',
-    bHere: '/it/it/b-here',
-    selfServiceTour: '/it/it/self-service-tour',
-    guidedTour: '/it/it/guided-tour'
+    editor: '/editor',
+    bHere: '/b-here',
+    selfServiceTour: '/self-service-tour',
+    guidedTour: '/guided-tour'
   },
   template: {
     tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
@@ -174,6 +178,8 @@ function _readOnlyError(name) {
   appKey: '1a066259928f4b40a243647b58aca42e',
   channelName: 'BHere',
   flags: {
+    production: false,
+    useToken: false,
     selfService: true,
     guidedTourRequest: true,
     ar: false,
@@ -190,6 +196,8 @@ function _readOnlyError(name) {
   assets: './',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
+  language: '',
+  market: '',
   url: {
     index: '/',
     access: '/',
@@ -276,15 +284,37 @@ var Environment = /*#__PURE__*/function () {
 
   function Environment(options) {
     if (options) {
+      if (typeof options.url === 'object') {
+        var language = options.language || '';
+        var market = options.market || '';
+        Object.keys(options.url).forEach(function (key) {
+          options.url[key] = language + market + options.url[key];
+        });
+      }
+
       Object.assign(this, options);
     }
   }
+
+  Environment.merge = function merge(target, source) {
+    var _this = this;
+
+    Object.keys(source).forEach(function (key) {
+      var value = source[key];
+
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        target[key] = _this.merge(target[key], value);
+      } else {
+        target[key] = value;
+      }
+    });
+    return target;
+  };
 
   return Environment;
 }();
 var defaultOptions = {
   port: 5000,
-  useToken: false,
   fontFamily: 'GT Walsheim, sans-serif',
   renderOrder: {
     panorama: 0,
@@ -300,9 +330,12 @@ var defaultOptions = {
   }
 };
 var defaultAppOptions = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
+    production: false,
+    useToken: false,
+    selfService: true,
+    guidedTourRequest: true,
     ar: true,
     menu: true,
     attendee: true,
@@ -312,8 +345,12 @@ var defaultAppOptions = {
 };
 var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
+
+if (typeof window.bhere === 'object') {
+  options = Environment.merge(options, window.bhere);
+}
+
 var environment = new Environment(options);
-environment.STATIC = window.STATIC;
 console.log('environment', environment);var LABELS = Object.assign({
   browse: 'Browse',
   cancel: 'Cancel',
@@ -419,14 +456,7 @@ LabelPipe.meta = {
 
   HttpService.query = function query(data) {
     return ''; // todo
-  }
-  /*
-  static getUrl(url, format = 'json') {
-  	// console.log(url);
-  	return environment.STATIC && format === 'json' && url.indexOf('/') === 0 ? `.${url}.json` : url;
-  }
-  */
-  ;
+  };
 
   HttpService.getError = function getError(object, response) {
     var error = typeof object === 'object' ? object : {};
@@ -1870,9 +1900,11 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       });
       setTimeout(function () {
         _this2.createClient(function () {
-          _this2.getRtcToken().subscribe(function (token) {
-            // console.log('token', token);
-            _this2.join(token.token);
+          var channelNameLink = _this2.getChannelNameLink();
+
+          _this2.rtcToken$(channelNameLink).subscribe(function (token) {
+            // console.log('AgoraService.rtcToken$', token);
+            _this2.join(token.token, channelNameLink);
           });
         });
       }, 250);
@@ -1909,9 +1941,10 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     }
   };
 
-  _proto.getRtcToken = function getRtcToken() {
-    if (environment.useToken) {
+  _proto.rtcToken$ = function rtcToken$(channelNameLink) {
+    if (environment.flags.useToken) {
       return HttpService.post$('/api/token/rtc', {
+        channelName: channelNameLink,
         uid: null
       });
     } else {
@@ -1921,8 +1954,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     }
   };
 
-  _proto.getRtmToken = function getRtmToken(uid) {
-    if (environment.useToken) {
+  _proto.rtmToken$ = function rtmToken$(uid) {
+    if (environment.flags.useToken) {
       return HttpService.post$('/api/token/rtm', {
         uid: uid
       });
@@ -2019,15 +2052,13 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     return channelNameLink;
   };
 
-  _proto.join = function join(token) {
+  _proto.join = function join(token, channelNameLink) {
     var _this4 = this;
 
     this.channel = null;
     var client = this.client;
-    var clientId = null;
-    token = null; // !!!
+    var clientId = null; // console.log('AgoraService.join', { token, channelNameLink, clientId });
 
-    var channelNameLink = this.getChannelNameLink();
     client.join(token, channelNameLink, clientId, function (uid) {
       // console.log('AgoraService.join', uid);
       StateService.patchState({
@@ -2038,8 +2069,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       });
 
       {
-        _this4.getRtmToken(uid).subscribe(function (token) {
-          // console.log('token', token);
+        _this4.rtmToken$(uid).subscribe(function (token) {
+          // console.log('AgoraService.rtmToken$', token);
           _this4.joinMessageChannel(token.token, uid).then(function (success) {
             // console.log('joinMessageChannel.success', success);
             if (StateService.state.role !== RoleType.Viewer) {
@@ -2064,10 +2095,11 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     var channel;
     return new Promise(function (resolve, reject) {
       var messageClient = _this5.messageClient;
-
       messageClient.login({
+        token: token,
         uid: uid.toString()
       }).then(function () {
+        // console.log('AgoraService.messageClient.login.success');
         channel = messageClient.createChannel(StateService.state.channelNameLink);
         return channel.join();
       }).then(function () {
@@ -4286,7 +4318,7 @@ function mapViewTile(tile) {
 
   ViewService.data$ = function data$() {
     if (!this.data$_) {
-      var dataUrl = environment.STATIC ? './api/data.json' : '/api/view';
+      var dataUrl = environment.flags.production ? '/api/view' : './api/data.json';
       this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(function (data) {
         data.views = data.views.map(function (view) {
           return mapView(view);
@@ -4308,14 +4340,14 @@ function mapViewTile(tile) {
 
   ViewService.viewLike$ = function viewLike$(view) {
     if (!view.liked) {
-      view.liked = true; // this.view.likes++;
+      view.liked = true;
 
-      if (environment.STATIC) {
+      if (environment.flags.production) {
+        return HttpService.get$("/api/view/" + view.id + "/like");
+      } else {
         view.likes = view.likes || 0;
         view.likes++;
         return rxjs.of(view);
-      } else {
-        return HttpService.get$("/api/view/" + view.id + "/like");
       }
     } else {
       return rxjs.of(null);
@@ -7957,14 +7989,14 @@ RemoveModalComponent.meta = {
       this.pushChanges();
       var changes = this.form.value;
       var payload = Object.assign({}, changes);
-      var view = this.view;
+      var _view = this.view;
       var item = new ViewItem(payload);
-      EditorService.inferItemUpdate$(view, item).pipe(operators.first()).subscribe(function (response) {
+      EditorService.inferItemUpdate$(_view, item).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
-        EditorService.inferItemUpdateResult$(view, item);
+        EditorService.inferItemUpdateResult$(_view, item);
 
         _this5.update.next({
-          view: view,
+          view: _view,
           item: item
         });
 
@@ -8022,7 +8054,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text label=\"Type\" [control]=\"controls.type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text label=\"Title\" [control]=\"controls.title\"></div>\n\t\t\t\t<div control-textarea label=\"Abstract\" [control]=\"controls.abstract\"></div>\n\t\t\t\t<div control-custom-select label=\"NavToView\" [control]=\"controls.viewId\"></div>\n\t\t\t\t<!-- <div control-checkbox label=\"Keep Orientation\" [control]=\"controls.keepOrientation\"></div> -->\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text label=\"Link Title\" [control]=\"controls.link.controls.title\"></div>\n\t\t\t\t<div control-text label=\"Link Url\" [control]=\"controls.link.controls.href\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector label=\"Position\" [control]=\"controls.position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector label=\"Rotation\" [control]=\"controls.rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector label=\"Scale\" [control]=\"controls.scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number label=\"Radius\" [control]=\"controls.radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Height\" [control]=\"controls.height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number label=\"Arc\" [control]=\"controls.arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select label=\"Asset\" [control]=\"controls.assetType\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset label=\"Image or Video\" [control]=\"controls.asset\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox label=\"Use Green Screen\" [control]=\"controls.hasChromaKeyColor\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -8117,7 +8149,7 @@ UpdateViewTileComponent.meta = {
   inputs: ['view', 'tile'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text label=\"Id\" [control]=\"controls.id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset label=\"Image\" [control]=\"controls.asset\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: tile.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon name=\"tile\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\">Tile {{tile.id}}</div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"tile.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<!--\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewComponent, _Component);
 
@@ -10616,19 +10648,7 @@ HlsDirective.meta = {
     return loader;
   };
 
-  _createClass(EnvMapLoader, [{
-    key: "muted",
-    get: function get() {
-      return this.muted_;
-    },
-    set: function set(muted) {
-      this.muted_ = muted; // console.log('EnvMapLoader.muted', muted, this.video);
-
-      if (this.video) {
-        this.video.muted = muted === true;
-      }
-    }
-  }], [{
+  _createClass(EnvMapLoader, null, [{
     key: "video",
     get: function get() {
       return this.video_;
@@ -10652,6 +10672,18 @@ HlsDirective.meta = {
 
         _video.playsInline = true;
         _video.crossOrigin = 'anonymous'; // document.querySelector('body').appendChild(video);
+      }
+    }
+  }, {
+    key: "muted",
+    get: function get() {
+      return this.muted_;
+    },
+    set: function set(muted) {
+      this.muted_ = muted; // console.log('EnvMapLoader.muted', muted, this.video);
+
+      if (this.video) {
+        this.video.muted = muted === true;
       }
     }
   }, {

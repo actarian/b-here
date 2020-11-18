@@ -4046,12 +4046,16 @@ body {
       .page > .background > video {
         display: block; } }
     @media (max-width: 767.98px) {
-      .page > .background > img {
-        display: block; }
-      .page > .background > video {
-        display: none; }
-      .page > .background:after {
-        background: rgba(0, 0, 0, 0.5); } }
+      .page > .background {
+        /*
+			&:after {
+				background: rgba(0, 0, 0, 0.5);
+			}
+			*/ }
+        .page > .background > img {
+          display: block; }
+        .page > .background > video {
+          display: none; } }
 
 .group--logo {
   position: absolute;
