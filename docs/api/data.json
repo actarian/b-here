@@ -398,48 +398,6 @@
     },
     {
       "type": {
-        "id": 2,
-        "name": "panorama"
-      },
-      "name": "Indoor-25",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "807759756537700_Indoor-28.jpg",
-        "id": 807759864432800
-      },
-      "orientation": {
-        "latitude": -9.5,
-        "longitude": 271.4
-      },
-      "zoom": 75,
-      "id": 539664012158000,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 807852370342499,
-          "position": [
-            -0.988407152169237,
-            -0.09773797582147303,
-            -0.11618343093152128
-          ],
-          "asset": null,
-          "id": 807806354806500,
-          "keepOrientation": null
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
         "id": 3,
         "name": "panorama-grid"
       },
@@ -724,16 +682,78 @@
           "name": "video"
         },
         "folder": "/uploads/",
-        "file": "542971952552999_ernestomeda.mp4",
-        "id": 542972959139999
+        "file": "587034861801800_2 Test acqua - 1 sgocciolamento - Montini.mp4",
+        "id": 587035329779400
       },
       "orientation": {
-        "latitude": 4.200000000000001,
-        "longitude": 176
+        "latitude": 4.300000000000002,
+        "longitude": 177.2
       },
       "zoom": 75,
       "id": 542975856893999,
-      "items": []
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 542975856893999,
+          "position": [
+            -0.9870224200253812,
+            -0.07119306694663653,
+            0.143938492370775
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "587453146003300_2-2.jpg",
+            "id": 587453270217999,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 587116995554800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            -19.080615755384756,
+            5.829115319598317,
+            1.396967066965884
+          ],
+          "rotation": [
+            1.8060135199305403,
+            1.2664091089488607,
+            -1.8169048960441705,
+            "XYZ"
+          ],
+          "scale": [
+            18,
+            5,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "587203693696999_2.jpg",
+            "id": 587203823483099,
+            "chromaKeyColor": null
+          },
+          "id": 587205452831800
+        }
+      ],
+      "hidden": null
     },
     {
       "type": {
@@ -1840,125 +1860,6 @@
         "id": 2,
         "name": "panorama"
       },
-      "name": "Indoor-50",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "807847901671100_Indoor-50.jpg",
-        "id": 807848039046100
-      },
-      "orientation": {
-        "latitude": -7.1000000000000005,
-        "longitude": 194.50000000000006
-      },
-      "zoom": 75,
-      "id": 807852370342499,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 539664012158000,
-          "position": [
-            0.9171566981596777,
-            -0.23752464950034402,
-            0.3200087997236581
-          ],
-          "asset": null,
-          "id": 807886923421800,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 807937541291700,
-          "position": [
-            -0.9454169754119568,
-            -0.12651318901858327,
-            -0.30030177423261356
-          ],
-          "asset": null,
-          "id": 808251247030100,
-          "keepOrientation": null
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
-      "name": "Indoor-53",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "807932079584299_Indoor-53.jpg",
-        "id": 807932182473799
-      },
-      "orientation": {
-        "latitude": -6.699999999999999,
-        "longitude": 89.79999999999998
-      },
-      "zoom": 75,
-      "id": 807937541291700,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Outdoor",
-          "abstract": null,
-          "viewId": 808051928587600,
-          "position": [
-            0.08419291226521626,
-            -0.17061752869529292,
-            0.9817337787945429
-          ],
-          "asset": null,
-          "link": null,
-          "id": 807989594000999,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 807852370342499,
-          "position": [
-            0.5970296631573353,
-            -0.36307482672977903,
-            -0.7153546333849944
-          ],
-          "asset": null,
-          "link": null,
-          "id": 808005743726200
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
       "name": "Lab",
       "asset": {
         "type": {
@@ -2001,183 +1902,6 @@
         "id": 2,
         "name": "panorama"
       },
-      "name": "New Indoor 1",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "236366070151300_Indoor-02-6400.jpg",
-        "id": 236366152010900
-      },
-      "orientation": {
-        "latitude": -7.699999999999996,
-        "longitude": 286.2
-      },
-      "zoom": 75,
-      "id": 235398960535700,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 235561730690900,
-          "position": [
-            -0.7785895999302116,
-            -0.5197106077348526,
-            0.3517088555728777
-          ],
-          "asset": null,
-          "id": 235709513813600,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 235627401436000,
-          "position": [
-            -0.7964632205554152,
-            -0.4203447283933559,
-            -0.43469143954581346
-          ],
-          "asset": null,
-          "id": 235716171042699,
-          "keepOrientation": null
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
-      "name": "New Indoor 2",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "236388651874799_Indoor-04-6400.jpg",
-        "id": 236388763064999
-      },
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75,
-      "id": 235561730690900,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 235398960535700,
-          "position": [
-            -0.4436086486455793,
-            -0.6803262182037245,
-            -0.5834103218760028
-          ],
-          "asset": null,
-          "id": 235590297119200,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 235627401436000,
-          "position": [
-            -0.7298985841644499,
-            -0.5439432719815538,
-            0.41397315577309207
-          ],
-          "asset": null,
-          "id": 235599794820299,
-          "keepOrientation": null
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
-      "name": "New Indoor 3",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "236410274186200_Indoor-06-6400.jpg",
-        "id": 236410390922600
-      },
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75,
-      "id": 235627401436000,
-      "items": [
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 235561730690900,
-          "position": [
-            0.035362758477407046,
-            -0.4876228929857547,
-            0.8723378872599032
-          ],
-          "asset": null,
-          "id": 235651108243100,
-          "keepOrientation": null
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": null,
-          "abstract": null,
-          "viewId": 235398960535700,
-          "position": [
-            0.7115560760379779,
-            -0.4530199661732937,
-            0.5370855247553997
-          ],
-          "asset": null,
-          "id": 235657663414800,
-          "keepOrientation": null
-        }
-      ],
-      "hidden": null
-    },
-    {
-      "type": {
-        "id": 2,
-        "name": "panorama"
-      },
       "name": "New - Indoor - 7000",
       "asset": {
         "type": {
@@ -2196,6 +1920,100 @@
       "id": 405860981014099,
       "items": [],
       "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Indoor 01",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "586712375668700_Indoor-01.jpg",
+        "id": 586712772238200
+      },
+      "orientation": {
+        "latitude": -6.5,
+        "longitude": 16.000000000000057
+      },
+      "zoom": 75,
+      "id": 586722198136200,
+      "items": [],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Indoor 02",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "586750249024000_Indoor-02.jpg",
+        "id": 586750275447700
+      },
+      "orientation": {
+        "latitude": -10,
+        "longitude": 16.49999999999999
+      },
+      "zoom": 75,
+      "id": 586755406932900,
+      "items": [],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Indoor 15",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "586775295413599_Indoor-15.jpg",
+        "id": 586775352712400
+      },
+      "orientation": {
+        "latitude": -9.8,
+        "longitude": 359.40000000000003
+      },
+      "zoom": 75,
+      "id": 586782421487400,
+      "items": [],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Indoor 18",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "586817768079000_Indoor-18.jpg",
+        "id": 586817852462100
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 586823225748200
     }
   ],
   "menu": [
@@ -2249,74 +2067,53 @@
       "order": 30
     },
     {
-      "id": 875310208218100,
-      "parentId": null,
-      "viewId": null,
-      "name": "Showroom",
-      "order": 30
-    },
-    {
-      "id": 875355270531400,
-      "parentId": 875310208218100,
-      "viewId": 539664012158000,
-      "name": "Indoor-25",
-      "order": 0
-    },
-    {
-      "id": 875364116549799,
-      "parentId": 875310208218100,
-      "viewId": 807852370342499,
-      "name": "Indoor-50",
-      "order": 10
-    },
-    {
-      "id": 875365467698499,
-      "parentId": 875310208218100,
-      "viewId": 807937541291700,
-      "name": "Indoor-53",
-      "order": 20
-    },
-    {
       "id": 235876727437200,
       "parentId": null,
       "viewId": null,
       "name": "Showroom New",
-      "order": 40
+      "order": 30
+    },
+    {
+      "id": 586844201369000,
+      "parentId": 235876727437200,
+      "viewId": 586722198136200,
+      "name": "Indoor 01",
+      "order": 0
+    },
+    {
+      "id": 586845171736300,
+      "parentId": 235876727437200,
+      "viewId": 586755406932900,
+      "name": "Indoor 02",
+      "order": 10
+    },
+    {
+      "id": 586917407735300,
+      "parentId": 235876727437200,
+      "viewId": 586782421487400,
+      "name": "Indoor 15",
+      "order": 20
+    },
+    {
+      "id": 586845743096199,
+      "parentId": 235876727437200,
+      "viewId": 586823225748200,
+      "name": "Indoor 18",
+      "order": 30
     },
     {
       "id": 405885260398699,
       "parentId": 235876727437200,
       "viewId": 405860981014099,
       "name": "New - Indoor - 7000",
-      "order": 0
-    },
-    {
-      "id": 235885866798999,
-      "parentId": 235876727437200,
-      "viewId": 235398960535700,
-      "name": "New Indoor 1",
-      "order": 10
-    },
-    {
-      "id": 235886365634900,
-      "parentId": 235876727437200,
-      "viewId": 235561730690900,
-      "name": "New Indoor 2",
-      "order": 20
-    },
-    {
-      "id": 235886797859400,
-      "parentId": 235876727437200,
-      "viewId": 235627401436000,
-      "name": "New Indoor 3",
-      "order": 30
+      "order": 40
     },
     {
       "id": 872442576832299,
       "parentId": null,
       "viewId": null,
       "name": "Media",
-      "order": 50
+      "order": 40
     },
     {
       "id": 872452437250200,
@@ -3092,6 +2889,98 @@
       "folder": "/uploads/",
       "file": "405857251117499_Indoor-07-low.jpg",
       "id": 405857547473499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "586712375668700_Indoor-01.jpg",
+      "id": 586712772238200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "586750249024000_Indoor-02.jpg",
+      "id": 586750275447700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "586775295413599_Indoor-15.jpg",
+      "id": 586775352712400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "586817768079000_Indoor-18.jpg",
+      "id": 586817852462100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "587034861801800_2 Test acqua - 1 sgocciolamento - Montini.mp4",
+      "id": 587035329779400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "587081176174200_2.jpg",
+      "id": 587081294870700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "587109638915100_2.jpg",
+      "id": 587109783330900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "587203693696999_2.jpg",
+      "id": 587203823483099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "587273608010300_2-2.jpg",
+      "id": 587273738102900,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "587453146003300_2-2.jpg",
+      "id": 587453270217999,
+      "chromaKeyColor": null
     }
   ],
   "users": [
