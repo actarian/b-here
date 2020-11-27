@@ -4046,12 +4046,16 @@ body {
       .page > .background > video {
         display: block; } }
     @media (max-width: 767.98px) {
-      .page > .background > img {
-        display: block; }
-      .page > .background > video {
-        display: none; }
-      .page > .background:after {
-        background: rgba(0, 0, 0, 0.5); } }
+      .page > .background {
+        /*
+			&:after {
+				background: rgba(0, 0, 0, 0.5);
+			}
+			*/ }
+        .page > .background > img {
+          display: block; }
+        .page > .background > video {
+          display: none; } }
 
 .group--logo {
   position: absolute;
@@ -4109,17 +4113,9 @@ body {
 
 .group--info {
   position: relative;
-  /*
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	*/
   max-width: 400px;
   margin: 0 10px;
   border-radius: 7px;
-  overflow-x: hidden;
-  overflow-y: auto;
   background: #ffffff;
   box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2); }
   .group--info__content {
@@ -4255,7 +4251,9 @@ body {
   @media (max-width: 767.98px) {
     .group--info {
       width: 100%;
-      max-width: calc(100% - 30px); }
+      max-width: calc(100% - 30px);
+      overflow-x: hidden;
+      overflow-y: auto; }
       .group--info__content {
         padding: 10px; }
       .group--info .title {
@@ -4425,7 +4423,7 @@ body {
     height: 90px;
     background: black;
     margin-left: 15px; }
-  @media (max-width: 1023.98px) {
+  @media (max-width: 767.98px) {
     .group--local {
       position: absolute;
       visibility: hidden;
@@ -4840,13 +4838,13 @@ model-viewer {
   position: absolute;
   left: 0;
   top: 5000px;
-  background: #000;
-  border: 1px solid #000;
+  background: rgba(0, 0, 0, 0.35);
   color: white;
-  padding: 30px; }
+  text-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
+  padding: 0.2em 1.5em;
+  font-size: 480px;
+  line-height: 1; }
   .banner__title {
-    font-size: 60px;
-    line-height: 1;
     color: white;
     white-space: nowrap; }
 

@@ -4,12 +4,13 @@
 	// window.antiforgery = '';
     window.labels = {
 		browse: 'Apri',
+		close: 'Chiudi',
 		cancel: 'Annulla',
 		drag_and_drop_images: 'trascina qui le immagini',
 		error_email: 'email non valida',
 		error_match: 'i campi non corrispondono',
 		error_required: 'campo obbligatorio',
-		loading: 'caricamento',
+		loading: 'loading',
 		remove: 'Rimuovi',
 		required: 'Richiesto',
 		select: 'Seleziona',
@@ -43,6 +44,7 @@
 		bhere_video_audio_connected: 'audio e video connessi',
 		bhere_enter: 'Entra',
 		bhere_connecting: 'In connessione...',
+		bhere_ar: 'Inquadra il qrcode con il cellulare o il tablet per vedere il VR.',
 	};
 </script>
 <div class="page" agora-component>
@@ -58,7 +60,7 @@
 	-->
 	<!-- Status Link -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
-		<a [href]="editorLink" class="btn--absolute" *if="state.role == 'publisher' && !heroku">
+		<a [href]="editorLink" class="btn--absolute" *if="flags.editor && !heroku && state.role == 'publisher'">
 			<span [innerHTML]="'bhere_editor' | label"></span>
 		</a>
 		<div class="group--info" *if="form">
@@ -149,7 +151,7 @@
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onEnter($event)" name="form" role="form" novalidate autocomplete="off">
 				<!-- PREVIEW -->
-				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="!this.isIOS">
+				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="this.hasPreview">
 					<video class="video" muted></video>
 					<div class="audio"></div>
 				</div>
@@ -172,7 +174,7 @@
 	<!-- Status Connected -->
 	<div class="ui" [class]="state.role" *if="state.status == 'connected'">
 		<div class="ui__body">
-			<div class="world" world [view]="view" [views]="views" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)">
+			<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)">
 				<div class="world__view" *if="view">
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div *if="view.ready">
@@ -199,7 +201,7 @@
 						<div class="banner__title" [innerHTML]="item.title"></div>
 					</div>
 				</div>
-				<div model-menu [items]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
+				<div model-menu [items]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="state.hosted">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 					</div>
@@ -261,7 +263,7 @@
 			</button>
 		</div>
 		<div class="group--heart">
-			<button type="button" class="btn--heart" [class]="{ active: view?.liked }" (click)="addToWishlist($event)">
+			<button type="button" class="btn--heart" [class]="{ active: view?.liked }" (click)="addLike($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
 				<span class="badge" [innerHTML]="view?.likes"></span>
 			</button>

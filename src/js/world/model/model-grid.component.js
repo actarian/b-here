@@ -4,6 +4,35 @@ import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
+const VERTEX_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+void main() {
+	vUv = uv;
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const FRAGMENT_SHADER = `
+#extension GL_EXT_frag_depth : enable
+
+varying vec2 vUv;
+uniform sampler2D textureA;
+uniform sampler2D textureB;
+uniform float opacity;
+uniform float tween;
+
+void main() {
+	vec4 colorA = texture2D(textureA, vUv);
+	vec4 colorB = texture2D(textureB, vUv);
+	vec4 color = mix(colorA, colorB, tween);
+	color.a = clamp(color.a * opacity, 0.0, 1.0);
+	color.rgb /= color.a;
+	gl_FragColor = color;
+}
+`;
+
 export default class ModelGridComponent extends ModelComponent {
 
 	static getLoader() {
@@ -11,10 +40,51 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	static getTexture() {
-		return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getPath('textures/ui/floor-nav-circle-v2.png')));
+		return ModelGridComponent.texture || (ModelGridComponent.texture = ModelGridComponent.getLoader().load(environment.getPath('textures/ui/floor-nav.png')));
+	}
+
+	static getOverTexture() {
+		return ModelGridComponent.textureOver || (ModelGridComponent.textureOver = ModelGridComponent.getLoader().load(environment.getPath('textures/ui/floor-nav-over.png')));
 	}
 
 	set coords(coords) {
+		if ((!coords && this.coords_ !== coords) || !this.coords_ || coords.x !== this.coords_.x || coords.y !== this.coords_.y) {
+			// changed!
+			const tileMap = this.tileMap;
+			if (this.coords_) {
+				const previousTile = tileMap[`${this.coords_.x}_${this.coords_.y}`];
+				const previousUniforms = previousTile.uniforms;
+				gsap.to(previousUniforms, {
+					tween: 0,
+					duration: 0.4,
+					delay: 0,
+					ease: Power2.easeInOut,
+					onUpdate: () => {
+						previousTile.material.uniforms.tween.value = previousUniforms.tween;
+						previousTile.material.needsUpdate = true;
+					}
+				});
+			}
+			if (coords) {
+				const currentTile = this.currentTile = tileMap[`${coords.x}_${coords.y}`];
+				const currentUniforms = currentTile.uniforms;
+				gsap.to(currentUniforms, {
+					tween: 1,
+					duration: 0.4,
+					delay: 0,
+					ease: Power2.easeInOut,
+					onUpdate: () => {
+						currentTile.material.uniforms.tween.value = currentUniforms.tween;
+						currentTile.material.needsUpdate = true;
+					}
+				});
+				// console.log(currentTile, `${coords.x}_${coords.y}`);
+			}
+			this.coords_ = coords;
+		}
+	}
+
+	set coords__(coords) {
 		if ((!coords && this.coords_ !== coords) || !this.coords_ || coords.x !== this.coords_.x || coords.y !== this.coords_.y) {
 			// changed!
 			const tileMap = this.tileMap;
@@ -89,10 +159,28 @@ export default class ModelGridComponent extends ModelComponent {
 		const map = ModelGridComponent.getTexture();
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
+		const mapOver = ModelGridComponent.getOverTexture();
+		mapOver.disposable = false;
+		mapOver.encoding = THREE.sRGBEncoding;
 		// geometry.scale(-1, 1, 1);
 		const mesh = this.mesh;
 		const tileMap = this.tileMap = {};
 		const tiles = this.tiles = new Array(ModelGridComponent.COLS * ModelGridComponent.ROWS).fill(0).map((x, i) => {
+			const material = new THREE.ShaderMaterial({
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+				vertexShader: VERTEX_SHADER,
+				fragmentShader: FRAGMENT_SHADER,
+				uniforms: {
+					textureA: { type: "t", value: map },
+					textureB: { type: "t", value: mapOver },
+					tween: { value: 0 },
+					opacity: { value: 0 },
+				},
+				// side: THREE.DoubleSide
+			});
+			/*
 			const material = new THREE.MeshBasicMaterial({
 				depthTest: false,
 				depthWrite: false,
@@ -101,6 +189,7 @@ export default class ModelGridComponent extends ModelComponent {
 				opacity: 0,
 				// side: THREE.DoubleSide,
 			});
+			*/
 			const tile = new THREE.Mesh(geometry, material);
 			const dx = Math.floor(ModelGridComponent.COLS / 2);
 			const dy = Math.floor(ModelGridComponent.ROWS / 2);
@@ -111,8 +200,35 @@ export default class ModelGridComponent extends ModelComponent {
 			// console.log(ci, ri);
 			tile.position.set(ci * outerTileSize, -ModelGridComponent.RADIUS * 0.15, ri * outerTileSize);
 			tile.name = this.getName(`tile_${ci}_${ri}`);
+			const uniforms = tile.uniforms = {
+				tween: 0,
+				opacity: 0,
+				ci: ci,
+				ri: ri,
+			};
 			tileMap[`${ci}_${ri}`] = tile;
 			mesh.add(tile);
+			return tile;
+		});
+		this.showTiles();
+	}
+
+	showTiles() {
+		this.tiles.forEach((tile, i) => {
+			const ix = this.indices ? this.indices.x : 0;
+			const iy = this.indices ? this.indices.y : 0;
+			const visible = this.view.hasTile(ix + tile.uniforms.ci, iy + tile.uniforms.ri);
+			const uniforms = tile.uniforms;
+			gsap.to(uniforms, {
+				opacity: visible ? 1 : 0,
+				duration: 0.4,
+				// delay: 0 + i * 0.02,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					tile.material.uniforms.opacity.value = uniforms.opacity;
+					tile.material.needsUpdate = true;
+				},
+			});
 		});
 	}
 
@@ -182,11 +298,13 @@ export default class ModelGridComponent extends ModelComponent {
 	}
 
 	moveToIndex(index) {
+		// console.log('ModelGridComponent.moveToIndex', index);
 		this.coords = null;
 		const tile = this.view.tiles[index];
 		const coords = new THREE.Vector2(tile.indices.x - this.indices.x, tile.indices.y - this.indices.y);
 		this.indices.x = tile.indices.x;
 		this.indices.y = tile.indices.y;
+		this.showTiles();
 		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		this.move.next({
 			indices: this.indices,

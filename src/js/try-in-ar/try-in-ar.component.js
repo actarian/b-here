@@ -15,7 +15,7 @@ export default class TryInARComponent extends Component {
 		const viewId = this.viewId = this.getViewId();
 		// console.log('TryInARComponent.viewId', viewId);
 		if (viewId) {
-			ViewService.view$(viewId).pipe(
+			ViewService.viewById$(viewId).pipe(
 				first()
 			).subscribe(view => {
 				if (!view.ar) {

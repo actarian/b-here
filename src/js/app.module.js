@@ -38,7 +38,6 @@ import LabelPipe from './label/label.pipe';
 import LazyDirective from './lazy/lazy.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
-import SliderDirective from './slider/slider.directive';
 import SvgIconStructure from './svg/svg-icon.structure';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
@@ -116,7 +115,6 @@ AppModule.meta = {
 		ModelPlaneComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
-		SliderDirective,
 		SvgIconStructure,
 		TestComponent,
 		TryInARComponent,

@@ -1,12 +1,11 @@
 import { Component, getContext } from 'rxcomp';
-import { FormControl, FormGroup, Validators } from 'rxcomp-form';
-import { delay, first, map, takeUntil } from 'rxjs/operators';
+import { first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
-import ModalService, { ModalResolveEvent } from '../modal/modal.service';
+import ModalService from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
@@ -20,30 +19,13 @@ import { AgoraStatus, MessageType } from './agora.types';
 
 export default class AgoraComponent extends Component {
 
-	get hosted() {
-		return this.hosted_;
-	}
-
-	set hosted(hosted) {
-		if (this.hosted_ !== hosted) {
-			this.hosted_ = hosted;
-			if (this.data && this.controls) {
-				if (hosted) {
-					const view = this.data.views.find(x => x.id === this.controls.view.value);
-					this.view = view;
-				} else {
-					this.view = this.getWaitingRoom();
-				}
-			}
-		}
-	}
-
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.env = environment;
 		this.platform = DeviceService.platform;
 		this.state = {};
+		this.hosted = null;
 		this.data = null;
 		this.views = null;
 		this.view = null;
@@ -119,16 +101,34 @@ export default class AgoraComponent extends Component {
 			this.pushChanges();
 			// console.log(state);
 		});
-		this.loadData();
+		this.loadView();
 	}
 
-	loadData() {
+	loadView() {
+		this.initAgora();
 		ViewService.data$().pipe(
-			first()
-		).subscribe(data => {
-			this.data = data;
-			this.initAgora();
-			this.initForm();
+			switchMap(data => {
+				this.data = data;
+				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
+				return ViewService.hostedView$(data);
+			}),
+			takeUntil(this.unsubscribe$),
+			/*
+			tap(view => {
+				this.view = null;
+				this.pushChanges();
+			}),
+			delay(1),
+			*/
+			tap(view => {
+				if (this.agora) {
+					this.agora.navToView(view.id);
+				}
+				this.view = view;
+				this.pushChanges();
+			}),
+		).subscribe(view => {
+			console.log('AgoraComponent.hostedView$', view);
 		});
 	}
 
@@ -175,30 +175,38 @@ export default class AgoraComponent extends Component {
 						role: StateService.state.role,
 						name: StateService.state.name,
 						uid: StateService.state.uid,
+						control: StateService.state.control,
 					};
 					MessageService.sendBack(message);
 					break;
 				case MessageType.RequestControl:
+					console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
 					message.type = MessageType.RequestControlAccepted;
 					MessageService.sendBack(message);
 					StateService.patchState({ locked: true });
+					if (this.agora) {
+						this.agora.sendControlRemoteRequestInfo(message.clientId);
+					}
 					// !!! control request permission not required
 					// this.onRemoteControlRequest(message);
 					break;
+				// !!! moved to WorldComponent
+				/*
 				case MessageType.RequestInfo:
-					StateService.patchState({ spyed: true });
-					break;
-				case MessageType.RequestInfoResult:
-					console.log('AgoraComponent.RequestInfoResult', this.controls.view.value, message.viewId);
-					if (this.controls.view.value !== message.viewId) {
-						this.controls.view.value = message.viewId;
-						// console.log('AgoraComponent.RequestInfoResult', message.viewId);
+					if (StateService.state.role !== RoleType.Publisher) {
+						StateService.patchState({ spyed: true });
 					}
 					break;
+				case MessageType.RequestInfoResult:
+					console.log('AgoraComponent.RequestInfoResult', ViewService.viewId, message.viewId);
+					ViewService.viewId = message.viewId;
+					// console.log('AgoraComponent.RequestInfoResult', message.viewId);
+					break;
+				*/
 				case MessageType.NavToView:
 					if (message.viewId) {
-						if (this.controls.view.value !== message.viewId) {
-							this.controls.view.value = message.viewId;
+						if (ViewService.viewId !== message.viewId) {
+							ViewService.viewId = message.viewId;
 							if (message.gridIndex !== undefined) {
 								const view = this.data.views.find(x => x.id === message.viewId);
 								if (view instanceof PanoramaGridView) {
@@ -221,61 +229,6 @@ export default class AgoraComponent extends Component {
 		if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
 			this.connect();
 		}
-	}
-
-	initForm() {
-		const data = this.data;
-		const views = this.views = data.views.filter(x => x.type.name !== 'waiting-room');
-		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views[0].id;
-		const form = this.form = new FormGroup({
-			view: new FormControl(initialViewId, Validators.RequiredValidator()),
-		});
-		const controls = this.controls = form.controls;
-		controls.view.options = views;
-		form.changes$.pipe(
-			takeUntil(this.unsubscribe$),
-			map(changes => {
-				// console.log('AgoraComponent.form.changes$', changes, form.valid);
-				const view = data.views.find(x => x.id === changes.view);
-				this.view = null;
-				this.pushChanges();
-				return view;
-			}),
-			delay(1),
-			map(view => {
-				const waitingRoom = this.getWaitingRoom();
-				if (!this.state.hosted) {
-					view = waitingRoom;
-				} else if (this.agora) {
-					this.agora.navToView(view.id);
-				}
-				this.view = view;
-				this.pushChanges();
-				if (view.id !== waitingRoom.id) {
-					LocationService.set('viewId', view.id);
-				}
-			}),
-		).subscribe(console.log);
-	}
-
-	getWaitingRoom() {
-		return this.data && this.data.views.find(x => x.type.name === 'waiting-room') || {
-			id: 'waiting-room',
-			type: { id: 1, name: 'waiting-room' },
-			name: 'Waiting Room',
-			likes: 40,
-			liked: false,
-			asset: {
-				type: { id: 1, name: 'image' },
-				folder: 'waiting-room/',
-				file: 'waiting-room-02.jpg',
-			},
-			items: [],
-			orientation: {
-				latitude: 0,
-				longitude: 0
-			}
-		};
 	}
 
 	onLink(link) {
@@ -339,19 +292,11 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	onSlideChange(index) {
-		MessageService.send({
-			type: MessageType.SlideChange,
-			index
-		});
-	}
-
 	onNavTo(viewId) {
-		if (this.controls.view.value !== viewId) {
-			this.controls.view.value = viewId;
-		}
+		ViewService.viewId = viewId;
 	}
 
+	/*
 	onRemoteControlRequest(message) {
 		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
 			takeUntil(this.unsubscribe$)
@@ -375,6 +320,7 @@ export default class AgoraComponent extends Component {
 			}
 		});
 	}
+	*/
 
 	// !!! why locally?
 	patchState(state) {
@@ -409,9 +355,10 @@ export default class AgoraComponent extends Component {
 			this.agora.toggleControl();
 		} else if (this.state.control) {
 			this.patchState({ control: false });
-		} else {
+		}/* else {
 			this.onRemoteControlRequest({});
 		}
+		*/
 	}
 
 	onToggleSpy(remoteId) {
@@ -422,12 +369,13 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	addToWishlist() {
+	addLike() {
 		ViewService.viewLike$(this.view).pipe(
 			first(),
 		).subscribe((view) => {
 			if (view) {
-				Object.assign(this.view, view);
+				this.view.liked = true; // view.liked;
+				this.view.likes = view.likes;
 				this.pushChanges();
 			}
 		});

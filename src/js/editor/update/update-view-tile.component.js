@@ -76,8 +76,8 @@ UpdateViewTileComponent.meta = {
 		</div>
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="tile.selected">
 			<div class="form-controls">
-				<div control-text label="Id" [control]="controls.id" [disabled]="true"></div>
-				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
+				<div control-text [control]="controls.id" label="Id" [disabled]="true"></div>
+				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
 			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update" [class]="{ busy: busy }">

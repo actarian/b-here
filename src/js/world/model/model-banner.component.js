@@ -21,6 +21,56 @@ export default class ModelBannerComponent extends ModelComponent {
 		this.viewed = true;
 		this.getCanvasTexture().then(result => {
 			const texture = result.map;
+			const repeat = 24;
+			texture.wrapS = texture.wrapY = THREE.RepeatWrapping;
+			texture.repeat.x = repeat;
+			texture.encoding = THREE.sRGBEncoding;
+			const aspect = (result.width * repeat) / result.height;
+			const arc = Math.PI / 180 * 360;
+			const width = PANEL_RADIUS * arc;
+			const height = width / aspect;
+			const geometry = new THREE.CylinderBufferGeometry(PANEL_RADIUS, PANEL_RADIUS, height, 80, 2, true, 0, arc);
+			geometry.scale(-1, 1, 1);
+			const material = new THREE.MeshBasicMaterial({
+				map: texture,
+				transparent: true,
+				opacity: 0,
+				// side: THREE.DoubleSide,
+			});
+			const mesh = this.mesh;
+			const banners = this.banners = new Array(1).fill(0).map(x => new THREE.Mesh(geometry, material));
+			banners.forEach((banner, i) => {
+				banner.rotation.y = Math.PI / 2 * i;
+				mesh.add(banner);
+			});
+			const from = { value: 0 };
+			gsap.to(from, {
+				duration: 0.5,
+				value: 1,
+				delay: 0.0,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					material.opacity = from.value;
+					material.needsUpdate = true;
+				}
+			});
+			mesh.userData = {
+				render: () => {
+					mesh.rotation.y += Math.PI / 180 * 0.02;
+					// texture.offset.x = (texture.offset.x - 0.01) % 1;
+					material.needsUpdate = true;
+				}
+			};
+		});
+	}
+
+	onViewBak() {
+		if (this.viewed) {
+			return;
+		}
+		this.viewed = true;
+		this.getCanvasTexture().then(result => {
+			const texture = result.map;
 			const repeat = 3;
 			texture.wrapS = texture.wrapY = THREE.RepeatWrapping;
 			texture.repeat.x = repeat;
@@ -65,13 +115,7 @@ export default class ModelBannerComponent extends ModelComponent {
 	}
 
 	onCreate(mount, dismount) {
-		// this.renderOrder = environment.renderOrder.banner;
 		const mesh = new THREE.Group();
-		mesh.userData = {
-			render: () => {
-				mesh.rotation.y += Math.PI / 180 * 0.1;
-			}
-		};
 		if (typeof mount === 'function') {
 			mount(mesh);
 		}
@@ -85,7 +129,7 @@ export default class ModelBannerComponent extends ModelComponent {
 				const { node } = getContext(this);
 				setTimeout(() => {
 					html2canvas(node, {
-						backgroundColor: '#000000ff', // '#0099ffff',
+						backgroundColor: '#00000000', // '#000000ff',
 						scale: 2,
 					}).then(canvas => {
 						// !!!

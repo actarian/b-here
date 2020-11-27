@@ -6,7 +6,7 @@
 	<base href="<!--@@var=baseHref-->">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 	<meta name="Content-Language" content="it" />
 	<meta name="robots" content="noindex,nofollow" />
 	<title>Websolute B-Here</title>
@@ -34,6 +34,19 @@
 <body>
 	<script>
 		window.STATIC = true;
+		window.bhere = {
+			// appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+			/*
+			flags: {
+				production: false,
+				useToken: false,
+				selfService: false,
+				guidedTourRequest: false,
+			},
+			*/
+			// language: '/it',
+			// market: '/it',
+		};
 	</script>
 	<!-- @@include ./shared/svg.html -->
 	<div class="app hidden" app-component>

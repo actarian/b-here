@@ -5,6 +5,7 @@ import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId } from '../../asset/asset';
 import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
+import LabelPipe from '../../label/label.pipe';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
@@ -240,6 +241,7 @@ export default class UpdateViewItemComponent extends Component {
 
 	getTitle(item) {
 		return EditorLocale[item.type.name];
+		return LabelPipe.transform(`editor_${view.type.name.replace('-','_')}`);
 	}
 }
 
@@ -258,42 +260,42 @@ UpdateViewItemComponent.meta = {
 		</div>
 		<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off" *if="item.selected">
 			<div class="form-controls">
-				<div control-text label="Id" [control]="controls.id" [disabled]="true"></div>
-				<!-- <div control-text label="Type" [control]="controls.type" [disabled]="true"></div> -->
+				<div control-text [control]="controls.id" label="Id" [disabled]="true"></div>
+				<!-- <div control-text [control]="controls.type" label="Type" [disabled]="true"></div> -->
 			</div>
 			<div class="form-controls" *if="item.type.name == 'nav'">
-				<div control-text label="Title" [control]="controls.title"></div>
-				<div control-textarea label="Abstract" [control]="controls.abstract"></div>
-				<div control-custom-select label="NavToView" [control]="controls.viewId"></div>
-				<!-- <div control-checkbox label="Keep Orientation" [control]="controls.keepOrientation"></div> -->
-				<div control-vector label="Position" [control]="controls.position" [precision]="3"></div>
-				<div control-asset label="Image" [control]="controls.asset" accept="image/jpeg, image/png"></div>
-				<div control-text label="Link Title" [control]="controls.link.controls.title"></div>
-				<div control-text label="Link Url" [control]="controls.link.controls.href"></div>
+				<div control-text [control]="controls.title" label="Title"></div>
+				<div control-textarea [control]="controls.abstract" label="Abstract"></div>
+				<div control-custom-select [control]="controls.viewId" label="NavToView"></div>
+				<!-- <div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div> -->
+				<div control-vector [control]="controls.position" label="Position" [precision]="3"></div>
+				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
+				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
+				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'plane'">
-				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
-				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
-				<div control-vector label="Scale" [control]="controls.scale" [precision]="2"></div>
-				<div control-custom-select label="Asset" [control]="controls.assetType" (change)="onAssetTypeDidChange($event)"></div>
-				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
-				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
+				<div control-vector [control]="controls.position" label="Position" [precision]="1"></div>
+				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
+				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
+				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
+				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'curved-plane'">
-				<div control-vector label="Position" [control]="controls.position" [precision]="1"></div>
-				<div control-vector label="Rotation" [control]="controls.rotation" [precision]="3" [increment]="Math.PI / 360"></div>
-				<!-- <div control-vector label="Scale" [control]="controls.scale" [precision]="2" [disabled]="true"></div> -->
-				<div control-number label="Radius" [control]="controls.radius" [precision]="2"></div>
-				<div control-number label="Height" [control]="controls.height" [precision]="2"></div>
-				<div control-number label="Arc" [control]="controls.arc" [precision]="0"></div>
-				<div control-custom-select label="Asset" [control]="controls.assetType" (change)="onAssetTypeDidChange($event)"></div>
-				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
-				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
+				<div control-vector [control]="controls.position" label="Position" [precision]="1"></div>
+				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
+				<!-- <div control-vector [control]="controls.scale" label="Scale" [precision]="2" [disabled]="true"></div> -->
+				<div control-number [control]="controls.radius" label="Radius" [precision]="2"></div>
+				<div control-number [control]="controls.height" label="Height" [precision]="2"></div>
+				<div control-number [control]="controls.arc" label="Arc" [precision]="0"></div>
+				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
+				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'texture'">
-				<div control-custom-select label="Asset" [control]="controls.assetType" (change)="onAssetTypeDidChange($event)"></div>
-				<div control-asset label="Image or Video" [control]="controls.asset" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
-				<div control-checkbox label="Use Green Screen" [control]="controls.hasChromaKeyColor" *if="item.asset"></div>
+				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
+				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update" [class]="{ busy: busy }">

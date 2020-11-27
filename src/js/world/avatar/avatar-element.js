@@ -105,6 +105,7 @@ export default class AvatarElement {
 	}
 
 	dispose() {
+		// !!! dispose threejs
 		if (this.subscription) {
 			this.subscription.unsubscribe();
 		}
