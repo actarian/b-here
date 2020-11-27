@@ -178,17 +178,9 @@ body {
 
 .group--info {
 	position: relative;
-	/*
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	*/
 	max-width: 400px;
 	margin: 0 10px;
 	border-radius: 7px;
-	overflow-x: hidden;
-	overflow-y: auto;
 	background: $background;
 	box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2);
 
@@ -321,6 +313,8 @@ body {
 	@include media-down(xs) {
 		width: 100%;
 		max-width: calc(100% - 30px);
+		overflow-x: hidden;
+		overflow-y: auto;
 
 		&__content {
 			padding: 10px;
@@ -566,7 +560,7 @@ body {
 		margin-left: 15px;
 	}
 
-	@include media-down(sm) {
+	@include media-down(xs) {
 		position: absolute;
 		visibility: hidden;
 		pointer-events: none;
@@ -1158,15 +1152,15 @@ model-viewer {
 	position: absolute;
 	left: 0;
 	top: 5000px;
-	background: #000; // #09f;
-	border: 1px solid #000; // #09f;
+	background: rgba(0, 0, 0, 0.35); // #000;
+	// border: 1px solid rgba(0,0,0,0.5); // #000;
 	color: white;
-	padding: 30px;
+	text-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
+	padding: 0.2em 1.5em; // 30px;
+	font-size: 480px;
+	line-height: 1;
 
 	&__title {
-		// font-weight: 900;
-		font-size: 60px;
-		line-height: 1;
 		color: white;
 		white-space: nowrap;
 	}

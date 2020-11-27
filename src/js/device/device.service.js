@@ -4,6 +4,7 @@ export const DevicePlatform = {
 	IOS: 'ios',
 	Android: 'android',
 	WindowsPhone: 'windowsPhone',
+	VRHeadset: 'vrHeadset',
 };
 
 export class DeviceService {
@@ -13,6 +14,16 @@ export class DeviceService {
 			this.platform_ = this.getDevicePlatform();
 		}
 		return this.platform_;
+	}
+
+	static get isIOS() {
+		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) !== -1
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.indexOf('Mac') !== -1 && 'ontouchend' in document);
+	}
+
+	static get isVRHeadset() {
+		return navigator.userAgent.indexOf('VR') !== -1 || navigator.userAgent.indexOf('Quest') !== -1 || navigator.userAgent.indexOf('Oculus') !== -1;
 	}
 
 	static getDevicePlatform() {
@@ -26,16 +37,13 @@ export class DeviceService {
 		}
 		// iOS detection from: http://stackoverflow.com/a/9039885/177710
 		// if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-		if (this.isIOS()) {
+		if (this.isIOS) {
 			return DevicePlatform.IOS;
 		}
+		if (this.isVRHeadset) {
+			return DevicePlatform.VRHeadset;
+		}
 		return DevicePlatform.Unknown;
-	}
-
-	static isIOS() {
-		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)
-			// iPad on iOS 13 detection
-			|| (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
 	}
 
 }

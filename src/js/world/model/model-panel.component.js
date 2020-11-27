@@ -30,6 +30,7 @@ export default class ModelPanelComponent extends ModelComponent {
 				const material = new THREE.SpriteMaterial({
 					depthTest: false,
 					transparent: true,
+					opacity: 0,
 					map: texture.map,
 					sizeAttenuation: false,
 				});

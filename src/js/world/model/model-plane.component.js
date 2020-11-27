@@ -53,11 +53,11 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 						).subscribe(() => { });
 					});
 					mesh.on('down', () => {
-						console.log('ModelPanelComponent.down');
+						// console.log('ModelPanelComponent.down');
 						this.down.next(this);
 					});
 					mesh.on('playing', (playing) => {
-						console.log('ModelPanelComponent.playing', playing);
+						// console.log('ModelPanelComponent.playing', playing);
 						this.play.next({ itemId: this.item.id, playing });
 					});
 				}

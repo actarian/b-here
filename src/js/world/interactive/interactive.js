@@ -10,9 +10,11 @@ Interactive.dispose = interactiveDispose.bind(Interactive);
 
 export function interactiveHittest(raycaster, down = false, event = defaultEvent) {
 	const debugService = DebugService.getService();
+	let dirty = false;
 	if (this.down !== down) {
 		this.down = down;
 		this.lock = false;
+		dirty = true;
 	}
 	const items = this.items.filter(x => !x.freezed);
 	const intersections = raycaster.intersectObjects(items);
@@ -22,7 +24,7 @@ export function interactiveHittest(raycaster, down = false, event = defaultEvent
 		const object = intersection.object;
 		key = object.uuid;
 		if (i === 0) {
-			if (this.lastIntersectedObject !== object) {
+			if (this.lastIntersectedObject !== object || dirty) {
 				this.lastIntersectedObject = object;
 				hit = object;
 				debugService.setMessage(hit.name || hit.id);

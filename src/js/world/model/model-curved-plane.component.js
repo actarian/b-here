@@ -55,11 +55,11 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 						).subscribe(() => { });
 					});
 					mesh.on('down', () => {
-						console.log('ModelCurvedPanelComponent.down');
+						// console.log('ModelCurvedPanelComponent.down');
 						this.down.next(this);
 					});
 					mesh.on('playing', (playing) => {
-						console.log('ModelCurvedPanelComponent.playing', playing);
+						// console.log('ModelCurvedPanelComponent.playing', playing);
 						this.play.next({ itemId: this.item.id, playing });
 					});
 				}

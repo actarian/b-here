@@ -27,7 +27,7 @@ export default class UpdateViewComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
 			switch (message.type) {
-				case MessageType.CameraOrientation:
+				case MessageType.ControlInfo:
 					switch (this.view.type.name) {
 						case ViewType.Panorama.name:
 						case ViewType.PanoramaGrid.name:

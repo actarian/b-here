@@ -79,6 +79,16 @@ export class Environment {
 const defaultOptions = {
 	port: 5000,
 	fontFamily: 'GT Walsheim, sans-serif',
+	colors: {
+		menuBackground: '#000000',
+		menuForeground: '#ffffff',
+		menuOverBackground: '#0099ff',
+		menuOverForeground: '#ffffff',
+		menuBackBackground: '#0099ff',
+		menuBackForeground: '#000000',
+		menuBackOverBackground: '#0099ff',
+		menuBackOverForeground: '#ffffff',
+	},
 	renderOrder: {
 		panorama: 0,
 		model: 10,
@@ -100,11 +110,13 @@ const defaultAppOptions = {
 		useToken: false,
 		selfService: true,
 		guidedTourRequest: true,
+		editor: true,
 		ar: true,
 		menu: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,
+		maxQuality: false,
 	},
 };
 

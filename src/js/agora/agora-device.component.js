@@ -1,14 +1,19 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
+import { DevicePlatform, DeviceService } from '../device/device.service';
 import LabelPipe from '../label/label.pipe';
 import StateService from '../state/state.service';
 import AgoraService from './agora.service';
 
 export default class AgoraDeviceComponent extends Component {
 
+	get hasPreview() {
+		return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset;
+	}
+
 	onInit() {
-		this.isIOS = AgoraDeviceComponent.isIOS();
+		this.platform = DeviceService.platform;
 		this.isHttps = window.location.protocol === 'https:';
 		this.state = {};
 		this.devices = { videos: [], audios: [] };
@@ -87,7 +92,7 @@ export default class AgoraDeviceComponent extends Component {
 	}
 
 	isValid() {
-		const isValid = this.form.valid && (this.stream || this.isIOS);
+		const isValid = this.form.valid && (this.stream || !this.hasPreview);
 		return isValid;
 	}
 
@@ -99,11 +104,6 @@ export default class AgoraDeviceComponent extends Component {
 		this.enter.next(devices);
 	}
 
-	static isIOS() {
-		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)
-			// iPad on iOS 13 detection
-			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document);
-	}
 }
 
 AgoraDeviceComponent.meta = {

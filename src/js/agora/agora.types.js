@@ -107,7 +107,7 @@ export const MessageType = {
 	RequestInfoRejected: 'requestInfoRejected',
 	SlideChange: 'slideChange',
 	CameraRotate: 'cameraRotate',
-	CameraOrientation: 'cameraOrientation',
+	ControlInfo: 'controlInfo',
 	ShowPanel: 'showPanel',
 	PlayMedia: 'playMedia',
 	NavToView: 'navToView',

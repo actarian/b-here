@@ -186,6 +186,7 @@ export default class OrbitService {
 		this.events$.next(orbitMoveEvent);
 	}
 
+	/*
 	inverse() {
 		let position, radius;
 		switch (this.mode_) {
@@ -202,6 +203,7 @@ export default class OrbitService {
 		const theta = Math.atan2(position.z, position.x);
 		// console.log('phi', phi, 'theta', theta);
 	}
+	*/
 
 	render() {
 		this.longitude += 0.025;
@@ -276,12 +278,10 @@ export default class OrbitService {
 			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
 			const theta = Math.atan2(heading.y, heading.x);
 			const phi = Math.acos(heading.z / radius);
-
 			let longitude = THREE.MathUtils.radToDeg(theta);
 			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
 			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
 			latitude = Math.max(-80, Math.min(80, latitude));
-
 			this.setLongitudeLatitude(longitude, latitude);
 			this.update();
 			// this.events$.next(orbitMoveEvent);
@@ -328,6 +328,26 @@ export default class OrbitService {
 		camera.updateProjectionMatrix();
 		this.events$.next(orbitMoveEvent);
 		*/
+	}
+
+	setVRCamera(camera) {
+		if (camera) {
+			// head.quaternion.set(camera[3], camera[4], camera[5], camera[6]);
+			// head.position.set(camera[0], camera[1], camera[2]);
+			const radius = this.radius;
+			const position = new THREE.Vector3(0, 0, -radius);
+			const quaternion = new THREE.Quaternion(camera[3], camera[4], camera[5], camera[6]);
+			position.applyQuaternion(quaternion);
+			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
+			const theta = Math.atan2(heading.y, heading.x);
+			const phi = Math.acos(heading.z / radius);
+			let longitude = THREE.MathUtils.radToDeg(theta);
+			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
+			latitude = Math.max(-80, Math.min(80, latitude));
+			this.setLongitudeLatitude(longitude, latitude);
+			this.update();
+		}
 	}
 
 }
