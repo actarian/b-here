@@ -99,6 +99,16 @@ export default class ViewService {
 		}
 	}
 
+	static setViewLike$(message) {
+		return this.viewById$(message.viewId).pipe(
+			tap(view => {
+				if (view) {
+					view.likes = message.likes;
+				}
+			})
+		);
+	}
+
 	static getWaitingRoom(data) {
 		return data && data.views.find(x => x.type.name === 'waiting-room') || {
 			id: 'waiting-room',

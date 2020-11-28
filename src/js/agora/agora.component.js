@@ -217,6 +217,11 @@ export default class AgoraComponent extends Component {
 						}
 					}
 					break;
+				case MessageType.AddLike:
+					ViewService.setViewLike$(message).pipe(
+						first(),
+					).subscribe(view => this.showLove(view));
+					break;
 			}
 		});
 		MessageService.in$.pipe(
@@ -375,10 +380,31 @@ export default class AgoraComponent extends Component {
 		).subscribe((view) => {
 			if (view) {
 				this.view.liked = true; // view.liked;
-				this.view.likes = view.likes;
-				this.pushChanges();
+				this.showLove(view);
+				// this.view.likes = view.likes;
+				// this.pushChanges();
+				MessageService.send({
+					type: MessageType.AddLike,
+					viewId: this.view.id,
+					likes: this.view.likes,
+				});
 			}
 		});
+	}
+
+	showLove(view) {
+		if (view && this.view.id === view.id) {
+			const skipTimeout = this.view.showLove;
+			this.view.likes = view.likes;
+			this.view.showLove = true;
+			this.pushChanges();
+			if (!skipTimeout) {
+				setTimeout(() => {
+					this.view.showLove = false;
+					this.pushChanges();
+				}, 3100);
+			}
+		}
 	}
 
 	tryInAr() {
