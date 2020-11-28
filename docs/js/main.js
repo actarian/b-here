@@ -1744,8 +1744,8 @@ var MessageType = {
   RequestInfoDismissed: 'requestInfoDismissed',
   RequestInfoRejected: 'requestInfoRejected',
   SlideChange: 'slideChange',
-  CameraRotate: 'cameraRotate',
   ControlInfo: 'controlInfo',
+  AddLike: 'addLike',
   ShowPanel: 'showPanel',
   PlayMedia: 'playMedia',
   NavToView: 'navToView',
@@ -4492,6 +4492,14 @@ function mapViewTile(tile) {
     }
   };
 
+  ViewService.setViewLike$ = function setViewLike$(message) {
+    return this.viewById$(message.viewId).pipe(operators.tap(function (view) {
+      if (view) {
+        view.likes = message.likes;
+      }
+    }));
+  };
+
   ViewService.getWaitingRoom = function getWaitingRoom(data) {
     return data && data.views.find(function (x) {
       return x.type.name === 'waiting-room';
@@ -4948,6 +4956,12 @@ var VRService = /*#__PURE__*/function () {
           }
 
           break;
+
+        case MessageType.AddLike:
+          ViewService.setViewLike$(message).pipe(operators.first()).subscribe(function (view) {
+            return _this5.showLove(view);
+          });
+          break;
       }
     });
     MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
@@ -5126,11 +5140,36 @@ var VRService = /*#__PURE__*/function () {
       if (view) {
         _this6.view.liked = true; // view.liked;
 
-        _this6.view.likes = view.likes;
+        _this6.showLove(view); // this.view.likes = view.likes;
+        // this.pushChanges();
 
-        _this6.pushChanges();
+
+        MessageService.send({
+          type: MessageType.AddLike,
+          viewId: _this6.view.id,
+          likes: _this6.view.likes
+        });
       }
     });
+  };
+
+  _proto.showLove = function showLove(view) {
+    var _this7 = this;
+
+    if (view && this.view.id === view.id) {
+      var skipTimeout = this.view.showLove;
+      this.view.likes = view.likes;
+      this.view.showLove = true;
+      this.pushChanges();
+
+      if (!skipTimeout) {
+        setTimeout(function () {
+          _this7.view.showLove = false;
+
+          _this7.pushChanges();
+        }, 3100);
+      }
+    }
   };
 
   _proto.tryInAr = function tryInAr() {

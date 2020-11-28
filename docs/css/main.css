@@ -4346,6 +4346,34 @@ body {
   @media (max-width: 1023.98px) {
     .group--heart .btn--heart {
       margin: 0; } }
+  .group--heart .love {
+    display: none;
+    position: absolute;
+    left: 13px;
+    top: -50%;
+    width: 12px;
+    height: 12px;
+    fill: #ff4332; }
+    .group--heart .love.active {
+      display: block;
+      animation: love-rise 3s linear infinite, love-swing 1s ease-in-out infinite alternate; }
+
+@keyframes love-swing {
+  0% {
+    margin-left: -20px; }
+  100% {
+    margin-left: 20px; } }
+
+@keyframes love-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0; }
+  50% {
+    transform: translateY(-80px);
+    opacity: 1; }
+  100% {
+    transform: translateY(-160px);
+    opacity: 0; } }
 
 .group--remote .agora-stream {
   width: 120px;
