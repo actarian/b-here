@@ -762,9 +762,6 @@ export default class WorldComponent extends Component {
 
 	onGridMove(event) {
 		// console.log('WorldComponent.onGridMove', event, this.view);
-		if (this.locked) {
-			return;
-		}
 		this.view.items = [];
 		this.loading = loadingBanner;
 		this.pushChanges();
@@ -943,6 +940,7 @@ export default class WorldComponent extends Component {
 					}
 					break;
 				case MessageType.NavToGrid:
+					// console.log('WorldComponent.NavToGrid', this.view.id, message);
 					if (this.view.id === message.viewId) {
 						this.view.index = message.gridIndex;
 					}
