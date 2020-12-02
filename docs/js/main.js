@@ -14244,10 +14244,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var _this5 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
-    if (this.locked) {
-      return;
-    }
-
     this.view.items = [];
     this.loading = loadingBanner;
     this.pushChanges();
@@ -14455,6 +14451,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           break;
 
         case MessageType.NavToGrid:
+          // console.log('WorldComponent.NavToGrid', this.view.id, message);
           if (_this7.view.id === message.viewId) {
             _this7.view.index = message.gridIndex;
           }
