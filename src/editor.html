@@ -89,7 +89,7 @@
 			</div>
 		</div>
 		<div class="ui__body">
-			<div class="world" world [view]="view" [views]="views" [editor]="true" (slideChange)="onSlideChange($event)" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
+			<div class="world" world [view]="view" [views]="views" [editor]="true" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
 				<div class="world__view" *if="view">
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div *if="view.ready">

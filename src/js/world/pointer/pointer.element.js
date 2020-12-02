@@ -5,11 +5,12 @@ const ORIGIN = new THREE.Vector3();
 
 export default class PointerElement {
 
-	constructor() {
+	constructor(color = '#ffffff') {
 		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
 		const texture = loader.load(environment.getPath('textures/ui/nav-point.png'));
 		const material = new THREE.MeshBasicMaterial({
+			color: new THREE.Color(color),
 			depthTest: false,
 			depthWrite: false,
 			map: texture,
@@ -32,4 +33,12 @@ export default class PointerElement {
 		}
 	}
 
+	setPosition(x, y, z) {
+		const mesh = this.mesh;
+		mesh.position.set(x, y, z).multiplyScalar(80);
+		const s = mesh.position.length() / 80;
+		mesh.scale.set(s, s, s);
+		mesh.lookAt(ORIGIN);
+		// console.log('PointerElement.setPosition', x, y, z);
+	}
 }

@@ -1,6 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 import AudioStreamService from '../audio/audio-stream.service';
+import { DevicePlatform, DeviceService } from '../device/device.service';
 
 export default class AgoraDevicePreviewComponent extends Component {
 
@@ -32,14 +33,18 @@ export default class AgoraDevicePreviewComponent extends Component {
 		}
 	}
 
+	get hasPreview() {
+		return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset;
+	}
+
 	onInit() {
-		this.isIOS = AgoraDevicePreviewComponent.isIOS();
+		this.platform = DeviceService.platform;
 		const { node } = getContext(this);
 		const preview = this.preview = node.querySelector('video');
 		this.onLoadedMetadata = this.onLoadedMetadata.bind(this);
 		preview.addEventListener('loadedmetadata', this.onLoadedMetadata);
 		const audio = node.querySelector('.audio');
-		if (!this.isIOS) {
+		if (this.hasPreview) {
 			const bars = this.bars = new Array(32).fill(0).map(x => {
 				const bar = document.createElement('div');
 				bar.classList.add('bar');
@@ -52,7 +57,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 	onDestroy() {
 		const preview = this.preview;
 		preview.removeEventListener('loadedmetadata', this.onLoadedMetadata);
-		if (!this.isIOS) {
+		if (this.hasPreview) {
 			AudioStreamService.dispose();
 		}
 	}
@@ -69,13 +74,15 @@ export default class AgoraDevicePreviewComponent extends Component {
 					video: this.video_ ? { deviceId: this.video_ } : false,
 					audio: this.audio_ ? { deviceId: this.audio_ } : false,
 				}).then((stream) => {
-					if (!this.isIOS) {
+					if (this.hasPreview) {
 						if ('srcObject' in preview) {
 							preview.srcObject = stream;
 						} else {
 							preview.src = window.URL.createObjectURL(stream);
 						}
-						this.analyzeData(stream);
+						if (this.audio_) {
+							this.analyzeData(stream);
+						}
 						this.loadingStream_ = stream;
 					} else {
 						this.stream.next(stream);
@@ -86,7 +93,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 				});
 			}
 		} else {
-			if (!this.isIOS) {
+			if (this.hasPreview) {
 				if ('srcObject' in preview) {
 					preview.srcObject = null;
 				} else {
@@ -124,12 +131,6 @@ export default class AgoraDevicePreviewComponent extends Component {
 				});
 			});
 		}
-	}
-
-	static isIOS() {
-		return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform)
-			// iPad on iOS 13 detection
-			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document);
 	}
 
 }
