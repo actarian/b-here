@@ -36,7 +36,8 @@ export default class ModelEditableComponent extends ModelComponent {
 
 	updateHelper() {
 		if (this.helper) {
-			this.helper.update();
+			this.helper.setFromObject(this.mesh);
+			// this.helper.update();
 		}
 	}
 }

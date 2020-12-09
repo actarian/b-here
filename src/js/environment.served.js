@@ -1,21 +1,21 @@
 
 export const environmentServed = {
-	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	appKey: 'f1deb54cb8934ba184a39bb53c2e1f6f',
 	channelName: 'BHere',
 	flags: {
 		production: true,
-		useToken: false,
-		selfService: true,
+		useToken: true,
+		selfService: false,
 		guidedTourRequest: true,
 		editor: false,
-		ar: true,
+		ar: false,
 		menu: true,
-		attendee: true,
+		attendee: false,
 		streamer: true,
-		viewer: true,
+		viewer: false,
 		maxQuality: false,
 	},
-	logo: null,
+	logo: '/Modules/B-Here/Client/docs/img/logo-ernestomeda-white.png',
 	background: {
 		image: '/Modules/B-Here/Client/docs/img/background.jpg',
 		video: '/Modules/B-Here/Client/docs/img/background.mp4',
@@ -29,6 +29,10 @@ export const environmentServed = {
 		menuBackForeground: '#000000',
 		menuBackOverBackground: '#0099ff',
 		menuBackOverForeground: '#ffffff',
+	},
+	editor: {
+		disabledViewTypes: ['waiting-room', 'room-3d', 'model'],
+		disabledViewItemTypes: ['texture', 'model'],
 	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
@@ -58,7 +62,7 @@ export const environmentServed = {
 				'plane': '/template/modules/b-here/plane-modal.cshtml',
 				'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
 				'texture': '/template/modules/b-here/texture-modal.cshtml',
-				'gltf': '/template/modules/b-here/gltf-modal.cshtml',
+				'model': '/template/modules/b-here/item-model-modal.cshtml',
 			},
 			remove: '/template/modules/b-here/remove-modal.cshtml',
 		}

@@ -1,7 +1,7 @@
 <div class="slider-container" slider [items]="view.items" (tween)="onTween($event)" (change)="onChange($event)" *if="view.items.length">
 	<div class="slider-inner">
 		<div class="slider-slide" *for="let item of items; let index = index;">
-			<div class="world__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
+			<div class="world__item" model-model [item]="item" *if="item.type.name == 'model'">
 				<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
 			</div>
 			<div class="world__item" model-picture [item]="item" *if="item.type.name == 'picture'">

@@ -96,10 +96,11 @@
 						<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
 						<div class="world__item" *for="let item of view.items; let index = index;">
 						<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
-						<div model-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type.name == 'plane'"></div>
-						<div model-curved-plane [item]="item" [items]="view.items" (down)="onPlaneDown($event)" *if="item.type.name == 'curved-plane'"></div>
-						<div class="model-viewer__item" model-gltf [item]="item" *if="item.type.name == 'gltf'">
-							<div class="progress" [innerHTML]="progress + '%'" *if="progress"></div>
+						<div model-plane [item]="item" [items]="view.items" (down)="onObjectDown($event)" *if="item.type.name == 'plane'"></div>
+						<div model-curved-plane [item]="item" [items]="view.items" (down)="onObjectDown($event)" *if="item.type.name == 'curved-plane'"></div>
+						<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onObjectDown($event)" *if="item.type.name == 'model'">
+							<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
+							<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
 						</div>
 						<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
 							<div class="panel__title" [innerHTML]="item.title"></div>
@@ -109,13 +110,16 @@
 						</div>
 						</div>
 					</div>
+					<!--
 					<div class="banner loading" model-banner [item]="loading" *if="loading">
 						<div class="banner__title" [innerHTML]="item.title"></div>
 					</div>
 					<div class="banner waiting" model-banner [item]="waiting" *if="waiting">
 						<div class="banner__title" [innerHTML]="item.title"></div>
 					</div>
+					-->
 				</div>
+				<div class="banner progress" model-progress [view]="view"></div>
 				<div model-menu [items]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>

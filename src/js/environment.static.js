@@ -1,21 +1,21 @@
 
 export const environmentStatic = {
-	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	appKey: '04ce14386a134bdc8a98e9e84a0cf162',
 	channelName: 'BHere',
 	flags: {
 		production: false,
 		useToken: false,
-		selfService: true,
+		selfService: false,
 		guidedTourRequest: true,
 		editor: true,
-		ar: true,
+		ar: false,
 		menu: true,
-		attendee: true,
+		attendee: false,
 		streamer: true,
-		viewer: true,
+		viewer: false,
 		maxQuality: false,
 	},
-	logo: null,
+	logo: './img/logo-ernestomeda-white.png',
 	background: {
 		image: '/b-here/img/background.jpg',
 		video: '/b-here/img/background.mp4',
@@ -29,6 +29,10 @@ export const environmentStatic = {
 		menuBackForeground: '#000000',
 		menuBackOverBackground: '#0099ff',
 		menuBackOverForeground: '#ffffff',
+	},
+	editor: {
+		disabledViewTypes: ['waiting-room', 'room-3d', 'model'],
+		disabledViewItemTypes: ['texture', 'model'],
 	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
@@ -58,7 +62,7 @@ export const environmentStatic = {
 				'plane': '/plane-modal.html',
 				'curved-plane': '/curved-plane-modal.html',
 				'texture': '/texture-modal.html',
-				'gltf': '/gltf-modal.html',
+				'model': '/item-model-modal.html',
 			},
 			remove: '/remove-modal.html',
 		}

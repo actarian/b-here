@@ -146,11 +146,7 @@ export default class ModelGridComponent extends ModelComponent {
 		});
 	}
 
-	onView() {
-
-	}
-
-	addTiles() {
+	addTiles(mesh) {
 		// console.log('addTiles');
 		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		const innerTileSize = outerTileSize * 0.9;
@@ -163,7 +159,6 @@ export default class ModelGridComponent extends ModelComponent {
 		mapOver.disposable = false;
 		mapOver.encoding = THREE.sRGBEncoding;
 		// geometry.scale(-1, 1, 1);
-		const mesh = this.mesh;
 		const tileMap = this.tileMap = {};
 		const tiles = this.tiles = new Array(ModelGridComponent.COLS * ModelGridComponent.ROWS).fill(0).map((x, i) => {
 			const material = new THREE.ShaderMaterial({
@@ -232,7 +227,7 @@ export default class ModelGridComponent extends ModelComponent {
 		});
 	}
 
-	addHitArea() {
+	addHitArea(mesh) {
 		this.onGroundOver = this.onGroundOver.bind(this);
 		this.onGroundMove = this.onGroundMove.bind(this);
 		this.onGroundDown = this.onGroundDown.bind(this);
@@ -249,7 +244,6 @@ export default class ModelGridComponent extends ModelComponent {
 			opacity: 0,
 			// side: THREE.DoubleSide,
 		});
-		const mesh = this.mesh;
 		const ground = this.ground = new InteractiveMesh(geometry, material);
 		ground.name = this.getName('ground');
 		ground.position.set(0, -ModelGridComponent.RADIUS * 0.15, 0);
@@ -315,9 +309,9 @@ export default class ModelGridComponent extends ModelComponent {
 
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.tile;
-		const mesh = this.mesh = new THREE.Group();
-		this.addTiles();
-		this.addHitArea();
+		const mesh = new THREE.Group();
+		this.addTiles(mesh);
+		this.addHitArea(mesh);
 		/*
 		mesh.userData = {
 			render: () => {
