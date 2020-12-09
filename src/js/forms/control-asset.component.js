@@ -31,7 +31,7 @@ export default class ControlAssetComponent extends ControlComponent {
 		this.change$(input).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(assets => {
-			console.log('ControlAssetComponent.change$', assets);
+			// console.log('ControlAssetComponent.change$', assets);
 			this.control.value = assets[0];
 		});
 	}
@@ -41,12 +41,12 @@ export default class ControlAssetComponent extends ControlComponent {
 			return fromEvent(input, 'change').pipe(
 				filter((event) => input.files && input.files.length),
 				switchMap((event) => {
-					console.log('ControlAssetComponent.change$', input.files);
+					// console.log('ControlAssetComponent.change$', input.files);
 					const fileArray = Array.from(input.files);
 					this.previews = fileArray.map(() => null);
 					const uploads$ = fileArray.map((file, i) => this.read$(file, i).pipe(
 						switchMap(() => AssetService.upload$([file])),
-						tap(uploads => console.log('upload', uploads)),
+						// tap(uploads => console.log('upload', uploads)),
 						switchMap((uploads) => {
 							const upload = uploads[0];
 							/*

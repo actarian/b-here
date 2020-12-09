@@ -336,9 +336,9 @@ export default class MediaMesh extends InteractiveMesh {
 		// document.querySelector('body').appendChild(canvas);
 		canvas.width = aw;
 		canvas.height = ah;
-		const context = canvas.getContext('2d');
-		context.imageSmoothingEnabled = true;
-		context.imageSmoothingQuality = 'high';
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = true;
+		ctx.imageSmoothingQuality = 'high';
 		const image = new Image();
 		image.onload = function() {
 			const bw = image.width;
@@ -353,7 +353,7 @@ export default class MediaMesh extends InteractiveMesh {
 				h = aw * scale;
 				w = h * br;
 			}
-			context.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
+			ctx.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
 			const textureB = new THREE.CanvasTexture(canvas);
 			if (typeof callback === 'function') {
 				callback(textureB);

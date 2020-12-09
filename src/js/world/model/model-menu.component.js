@@ -306,7 +306,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
-		menuGroup.lookAt(ModelMenuComponent.ORIGIN);
+		// menuGroup.lookAt(ModelMenuComponent.ORIGIN);
 		if (typeof mount === 'function') {
 			mount(menuGroup);
 		}
@@ -320,27 +320,35 @@ export default class ModelMenuComponent extends ModelComponent {
 			camera = this.host.renderer.xr.getCamera(camera);
 			// camera.updateMatrixWorld(); // make sure the camera matrix is updated
 			// camera.matrixWorldInverse.getInverse(camera.matrixWorld);
-		}
-		camera.getWorldDirection(position);
-		// console.log(position);
-		// if (position.lengthSq() > 0.01) {
-		// normalize so we can get a constant speed
-		// position.normalize();
-		switch (OrbitService.mode) {
-			case OrbitMode.Model:
+			camera.getWorldDirection(position);
+			position.multiplyScalar(3);
+			// move body, not the camera
+			// VR.body.position.add(lookDirection);
+			// console.log(position.x + '|' + position.y + '|' + position.z);
+			group.position.copy(position);
+			group.scale.set(1, 1, 1);
+			group.lookAt(ModelMenuComponent.ORIGIN);
+			// }
+		} else {
+			camera.getWorldDirection(position);
+			// console.log(position);
+			// if (position.lengthSq() > 0.01) {
+			// normalize so we can get a constant speed
+			// position.normalize();
+			if (OrbitService.mode === OrbitMode.Model) {
 				position.multiplyScalar(0.01);
-				break;
-			default:
+			} else {
 				position.multiplyScalar(3);
+			}
+			// move body, not the camera
+			// VR.body.position.add(lookDirection);
+			// console.log(position.x + '|' + position.y + '|' + position.z);
+			group.position.copy(position);
+			const s = 1 / camera.zoom;
+			group.scale.set(s, s, s);
+			group.lookAt(ModelMenuComponent.ORIGIN);
+			// }
 		}
-		// move body, not the camera
-		// VR.body.position.add(lookDirection);
-		// console.log(position.x + '|' + position.y + '|' + position.z);
-		group.position.copy(position);
-		const s = 1 / camera.zoom;
-		group.scale.set(s, s, s);
-		group.lookAt(ModelMenuComponent.ORIGIN);
-		// }
 	}
 
 	onToggle() {
@@ -462,7 +470,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			type: { name: 'menu' },
 			name: 'Menu'
 		}, 0, 1);
-		toggler.position.y = -0.5;
+		// toggler.position.y = -0.5;
 		toggler.opacity = 0.8;
 		toggler.material.uniforms.opacity.value = toggler.opacity;
 		toggler.material.needsUpdate = true;

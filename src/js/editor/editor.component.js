@@ -141,7 +141,7 @@ export default class EditorComponent extends Component {
 				this.pushChanges();
 			}),
 		).subscribe(view => {
-			console.log('EditorComponent.view$', view);
+			// console.log('EditorComponent.view$', view);
 		});
 	}
 
@@ -270,6 +270,7 @@ export default class EditorComponent extends Component {
 					case ViewItemType.Nav.name:
 					case ViewItemType.Plane.name:
 					case ViewItemType.CurvedPlane.name:
+					case ViewItemType.Model.name:
 						const tile = EditorService.getTile(this.view);
 						if (tile) {
 							const navs = tile.navs || [];
@@ -285,6 +286,7 @@ export default class EditorComponent extends Component {
 						break;
 					case ViewType.Panorama.name:
 					case ViewType.PanoramaGrid.name:
+					case ViewType.Model.name:
 						this.data.views.push(event.data);
 						ViewService.viewId = event.data.id;
 						this.pushChanges(); // !!!
@@ -303,6 +305,10 @@ export default class EditorComponent extends Component {
 				case ViewItemType.Nav.name:
 				case ViewItemType.Plane.name:
 				case ViewItemType.CurvedPlane.name:
+				case ViewItemType.Model.name:
+					if (event.value === ViewItemType.Model.name && this.view.type.name === ViewType.Model.name) {
+						return;
+					}
 					this.onViewHitted((position) => {
 						this.onOpenModal(event, { view: this.view, position });
 					});

@@ -14,7 +14,7 @@ export const ViewItemType = {
 	Nav: { id: 1, name: 'nav' },
 	Plane: { id: 2, name: 'plane' },
 	CurvedPlane: { id: 3, name: 'curved-plane' },
-	Gltf: { id: 4, name: 'gltf' },
+	Model: { id: 4, name: 'model' },
 	Texture: { id: 5, name: 'texture' },
 };
 

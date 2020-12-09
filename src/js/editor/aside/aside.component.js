@@ -1,9 +1,7 @@
 import { Component } from 'rxcomp';
+import { environment } from '../../environment';
 import { ViewItemType, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
-
-export const DISABLED_VIEW_TYPES = [ViewType.WaitingRoom.name, ViewType.Room3d.name, ViewType.Model.name];
-export const DISABLED_VIEW_ITEM_TYPES = [ViewItemType.Gltf.name, ViewItemType.Texture.name];
 
 export default class AsideComponent extends Component {
 
@@ -14,7 +12,7 @@ export default class AsideComponent extends Component {
 			return {
 				type: type,
 				name: EditorLocale[type.name],
-				disabled: DISABLED_VIEW_TYPES.indexOf(type.name) !== -1,
+				disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1,
 			};
 		});
 		this.viewItemTypes = Object.keys(ViewItemType).map(key => {
@@ -22,7 +20,7 @@ export default class AsideComponent extends Component {
 			return {
 				type: type,
 				name: EditorLocale[type.name],
-				disabled: DISABLED_VIEW_ITEM_TYPES.indexOf(type.name) !== -1,
+				disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1,
 			};
 		});
 		this.setSupportedViewTypes();
@@ -35,12 +33,24 @@ export default class AsideComponent extends Component {
 	}
 
 	setSupportedViewTypes() {
-		this.supportedViewTypes = this.viewTypes.filter(x => this.supportedViewType(x.type.name));
+		this.supportedViewTypes = this.viewTypes.filter(x => this.supportedViewType(x.type.name)).sort((a, b) => {
+			if (a.disabled === b.disabled) {
+				return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
+			} else {
+				return a.disabled ? 1 : -1;
+			}
+		});
 	}
 
 	setSupportedViewItemTypes() {
 		if (this.view) {
-			this.supportedViewItemTypes = this.viewItemTypes.filter(x => this.supportedViewItemType(this.view.type.name, x.type.name));
+			this.supportedViewItemTypes = this.viewItemTypes.filter(x => this.supportedViewItemType(this.view.type.name, x.type.name)).sort((a, b) => {
+				if (a.disabled === b.disabled) {
+					return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
+				} else {
+					return a.disabled ? 1 : -1;
+				}
+			});
 		} else {
 			this.supportedViewItemTypes = [];
 		}
@@ -66,16 +76,16 @@ export default class AsideComponent extends Component {
 				supported = false;
 				break;
 			case ViewType.Panorama.name:
-				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
 			case ViewType.PanoramaGrid.name:
-				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
 			case ViewType.Room3d.name:
-				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
+				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
 				break;
 			case ViewType.Model.name:
-				supported = [ViewItemType.Nav.name, ViewItemType.Gltf.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
 		}
 		// console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);

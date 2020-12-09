@@ -30,6 +30,10 @@ export const environmentServed = {
 		menuBackOverBackground: '#0099ff',
 		menuBackOverForeground: '#ffffff',
 	},
+	editor: {
+		disabledViewTypes: ['waiting-room', 'room-3d', 'model'],
+		disabledViewItemTypes: ['texture', 'model'],
+	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ipf/docs/',
@@ -58,7 +62,7 @@ export const environmentServed = {
 				'plane': '/template/modules/b-here/plane-modal.cshtml',
 				'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
 				'texture': '/template/modules/b-here/texture-modal.cshtml',
-				'gltf': '/template/modules/b-here/gltf-modal.cshtml',
+				'model': '/template/modules/b-here/item-model-modal.cshtml',
 			},
 			remove: '/template/modules/b-here/remove-modal.cshtml',
 		}

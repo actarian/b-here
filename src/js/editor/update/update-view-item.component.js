@@ -7,7 +7,7 @@ import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
-import { ViewItem, ViewItemType } from '../../view/view';
+import { ViewItem, ViewItemType, ViewType } from '../../view/view';
 import { EditorLocale } from '../editor.locale';
 import EditorService from '../editor.service';
 
@@ -92,7 +92,11 @@ export default class UpdateViewItemComponent extends Component {
 					keys = ['id', 'type', 'assetType?', 'asset?', 'hasChromaKeyColor?']; // asset, key no id!!
 					break;
 				case ViewItemType.Model.name:
-					keys = ['id', 'type', 'asset?']; // title, abstract, asset,
+					if (this.view.type.name === ViewType.Model) {
+						keys = ['id', 'type', 'asset?'];
+					} else {
+						keys = ['id', 'type', 'position', 'rotation', 'asset?'];
+					}
 					break;
 				default:
 					keys = ['id', 'type'];
@@ -291,6 +295,11 @@ UpdateViewItemComponent.meta = {
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
 				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
+			</div>
+			<div class="form-controls" *if="item.type.name == 'model'">
+				<div control-vector [control]="controls.position" label="Position" [precision]="1" *if="view.type.name !== 'model'"></div>
+				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360" *if="view.type.name !== 'model'"></div>
+				<div control-model [control]="controls.asset" label="Model (.glb)" accept=".glb"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'texture'">
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
