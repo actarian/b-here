@@ -30,6 +30,10 @@ export const environmentStatic = {
 		menuBackOverBackground: '#0099ff',
 		menuBackOverForeground: '#ffffff',
 	},
+	editor: {
+		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewItemTypes: ['texture'],
+	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
@@ -58,7 +62,7 @@ export const environmentStatic = {
 				'plane': '/plane-modal.html',
 				'curved-plane': '/curved-plane-modal.html',
 				'texture': '/texture-modal.html',
-				'gltf': '/gltf-modal.html',
+				'model': '/item-model-modal.html',
 			},
 			remove: '/remove-modal.html',
 		}

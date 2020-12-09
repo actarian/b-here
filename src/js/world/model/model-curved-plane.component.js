@@ -25,9 +25,12 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		).subscribe((streamId) => {
 			if (this.streamId !== streamId) {
 				this.streamId = streamId;
+				// !!! called by ModelComponent
+				/*
 				if (mesh) {
 					dismount(mesh, item);
 				}
+				*/
 				if (subscription) {
 					subscription.unsubscribe();
 					subscription = null;

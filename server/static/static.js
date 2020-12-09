@@ -141,6 +141,7 @@ function staticMiddleware(vars) {
 				}
 				console.log('NodeJs.staticMiddleware.serving', file);
 				response.set('Content-Type', MIME_CONTENT_TYPES[extension]);
+				// response.set('Cache-Control', 'max-age=31536000');
 				response.send(data);
 			});
 		} else {

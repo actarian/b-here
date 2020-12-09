@@ -108,7 +108,7 @@ export default class Panorama {
 		mesh.name = '[panorama]';
 	}
 
-	// !!! old
+	/*
 	swap(view, renderer, callback, onexit) {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
@@ -161,16 +161,25 @@ export default class Panorama {
 			});
 		}
 	}
+	*/
 
 	change(view, renderer, callback, onexit) {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
-		setTimeout(() => {
+		// setTimeout(() => {
 			this.load(item, renderer, (envMap, texture, rgbe) => {
-				setTimeout(() => {
+				// setTimeout(() => {
 					if (typeof onexit === 'function') {
 						onexit(view);
 					}
+					material.uniforms.tween.value = 1;
+					material.needsUpdate = true;
+					setTimeout(function () {
+						if (typeof callback === 'function') {
+							callback(envMap, texture, rgbe);
+						}
+					}, 100); // !!! delay
+					/*
 					gsap.to(this, {
 						duration: 0.5,
 						tween: 1,
@@ -187,9 +196,10 @@ export default class Panorama {
 							}, 100); // !!! delay
 						},
 					});
-				}, 100); // !!! delay
+					*/
+				// }, 100); // !!! delay
 			});
-		}, 300); // !!! delay
+		// }, 300); // !!! delay
 	}
 
 	crossfade(item, renderer, callback) {

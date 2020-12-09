@@ -46,13 +46,14 @@ import HlsDirective from './video/hls.directive';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
 import ModelDebugComponent from './world/model/model-debug.component';
-import ModelGltfComponent from './world/model/model-gltf.component';
 import ModelGridComponent from './world/model/model-grid.component';
 import ModelMenuComponent from './world/model/model-menu.component';
+import ModelModelComponent from './world/model/model-model.component';
 import ModelNavComponent from './world/model/model-nav.component';
 import ModelPanelComponent from './world/model/model-panel.component';
 import ModelPictureComponent from './world/model/model-picture.component';
 import ModelPlaneComponent from './world/model/model-plane.component';
+import ModelProgressComponent from './world/model/model-progress.component';
 import ModelRoomComponent from './world/model/model-room.component';
 import ModelTextComponent from './world/model/model-text.component';
 import ModelComponent from './world/model/model.component';
@@ -106,13 +107,14 @@ AppModule.meta = {
 		ModelComponent,
 		ModelCurvedPlaneComponent,
 		ModelDebugComponent,
-		ModelGltfComponent,
+		ModelModelComponent,
 		ModelGridComponent,
 		ModelMenuComponent,
 		ModelNavComponent,
 		ModelPanelComponent,
 		ModelPictureComponent,
 		ModelPlaneComponent,
+		ModelProgressComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
 		SvgIconStructure,

@@ -42,23 +42,7 @@ export default class ModelComponent extends Component {
 		const group = this.group;
 		this.host.objects.remove(group);
 		delete group.userData.render;
-		group.traverse(child => {
-			if (child instanceof InteractiveMesh || child instanceof InteractiveSprite) {
-				Interactive.dispose(child);
-			}
-			if (child.isMesh) {
-				if (child.material.map && child.material.map.disposable !== false) {
-					child.material.map.dispose();
-				}
-				child.material.dispose();
-				child.geometry.dispose();
-			} else if (child.isSprite) {
-				if (child.material.map && child.material.map.disposable !== false) {
-					child.material.map.dispose();
-				}
-				child.material.dispose();
-			}
-		});
+		this.disposeObject(group);
 		this.group = null;
 	}
 
@@ -116,6 +100,7 @@ export default class ModelComponent extends Component {
 		if (typeof mesh.dispose === 'function') {
 			mesh.dispose();
 		}
+		this.disposeObject(mesh);
 		this.mesh = null;
 		if (item) {
 			delete item.mesh;
@@ -124,12 +109,34 @@ export default class ModelComponent extends Component {
 		}
 	}
 
+	disposeObject(object) {
+		object.traverse(child => {
+			if (child instanceof InteractiveMesh || child instanceof InteractiveSprite) {
+				Interactive.dispose(child);
+			}
+			if (child.isMesh) {
+				if (child.material.map && child.material.map.disposable !== false) {
+					child.material.map.dispose();
+				}
+				child.material.dispose();
+				child.geometry.dispose();
+			} else if (child.isSprite) {
+				if (child.material.map && child.material.map.disposable !== false) {
+					child.material.map.dispose();
+				}
+				child.material.dispose();
+			}
+		});
+		// console.log('ModelComponent.disposeObject', object);
+	}
+
 	calculateScaleAndPosition() {
 		const { node } = getContext(this);
 		this.host.repos(this, node.getBoundingClientRect());
 	}
 
 	render(time, tick) {
+		/*
 		this.calculateScaleAndPosition();
 		const group = this.group;
 		const scale = this.scale;
@@ -139,6 +146,7 @@ export default class ModelComponent extends Component {
 		// const tween = this.tween();
 		// group.rotation.x = deg(180) * tween;
 		// group.rotation.y = deg(360) * tween;
+		*/
 	}
 
 	getScroll(offset) {

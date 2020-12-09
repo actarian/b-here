@@ -31,6 +31,7 @@ export default class UpdateViewComponent extends Component {
 					switch (this.view.type.name) {
 						case ViewType.Panorama.name:
 						case ViewType.PanoramaGrid.name:
+						case ViewType.Model.name:
 							this.form.patch({
 								latitude: message.orientation.latitude,
 								longitude: message.orientation.longitude,
@@ -53,11 +54,17 @@ export default class UpdateViewComponent extends Component {
 			});
 			let keys;
 			switch (view.type.name) {
+				case ViewType.WaitingRoom.name:
+					keys = ['id', 'type', 'name', 'latitude', 'longitude', 'zoom', 'asset'];
+					break;
 				case ViewType.Panorama.name:
 					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
 					break;
 				case ViewType.PanoramaGrid.name:
 					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom'];
+					break;
+				case ViewType.Model.name:
+					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
 					break;
 				default:
 					keys = ['id', 'type', 'name'];
@@ -169,6 +176,10 @@ UpdateViewComponent.meta = {
 				<div control-text [control]="controls.name" label="Name"></div>
 			</div>
 			<div class="form-controls" *if="view.type.name == 'waiting-room'">
+				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
+				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
+				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
+				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
 			</div>
 			<div class="form-controls" *if="view.type.name == 'panorama'">
 				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
@@ -179,6 +190,13 @@ UpdateViewComponent.meta = {
 			</div>
 			<div class="form-controls" *if="view.type.name == 'panorama-grid'">
 				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
+				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
+				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
+				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
+			</div>
+			<div class="form-controls" *if="view.type.name == 'model'">
+				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
+				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>

@@ -89,6 +89,10 @@ const defaultOptions = {
 		menuBackOverBackground: '#0099ff',
 		menuBackOverForeground: '#ffffff',
 	},
+	editor: {
+		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewItemTypes: ['texture'],
+	},
 	renderOrder: {
 		panorama: 0,
 		model: 10,

@@ -303,7 +303,7 @@ export default class AgoraService extends Emittable {
 						}
 						this.observeMemberCount();
 					}, error => {
-						// console.log('joinMessageChannel.error', error);
+						console.log('joinMessageChannel.error', error);
 					});
 				});
 			} else {
@@ -314,6 +314,11 @@ export default class AgoraService extends Emittable {
 			}
 		}, (error) => {
 			console.log('AgoraService.join.error', error);
+			if (error === 'DYNAMIC_KEY_EXPIRED') {
+				this.rtcToken$(channelNameLink).subscribe(token => {
+					this.join(token.token, channelNameLink);
+				});
+			}
 		});
 		// https://console.agora.io/invite?sign=YXBwSWQlM0RhYjQyODlhNDZjZDM0ZGE2YTYxZmQ4ZDY2Nzc0YjY1ZiUyNm5hbWUlM0RaYW1wZXR0aSUyNnRpbWVzdGFtcCUzRDE1ODY5NjM0NDU=// join link expire in 30 minutes
 	}

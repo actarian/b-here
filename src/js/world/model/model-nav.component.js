@@ -14,6 +14,12 @@ export const NavModeType = {
 
 export default class ModelNavComponent extends ModelEditableComponent {
 
+	static getNavGeometry() {
+		// const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
+		// const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
+		return ModelNavComponent.navGeometry || (ModelNavComponent.navGeometry = new THREE.SphereBufferGeometry(3, 12, 12));
+	}
+
 	static getLoader() {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
 	}
@@ -173,9 +179,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			title.position.set(0, -3.5, 0);
 			nav.add(title);
 		}
-
-		// const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
-		const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
+		const geometry = ModelNavComponent.getNavGeometry();
 		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
 			depthTest: false,
 			depthWrite: false,

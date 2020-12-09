@@ -31,8 +31,8 @@ export default class ViewService {
 		return this.data$_;
 	}
 
-	static view$(data) {
-		const views = data.views.filter(x => x.type.name !== 'waiting-room');
+	static view$(data, editor) {
+		const views = editor ? data.views : data.views.filter(x => x.type.name !== 'waiting-room');
 		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : (views.length ? views[0].id : null);
 		this.viewId$_.next(initialViewId);
 		return this.viewId$_.pipe(
@@ -62,7 +62,7 @@ export default class ViewService {
 
 	static editorView$(data) {
 		const waitingRoom = this.getWaitingRoom(data);
-		return this.view$(data).pipe(
+		return this.view$(data, true).pipe(
 			tap(view => {
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
