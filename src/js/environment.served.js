@@ -1,10 +1,10 @@
 
 export const environmentServed = {
-	appKey: '1a066259928f4b40a243647b58aca42e',
+	appKey: '3c51e9856c264de2bf6b398d2086ec79',
 	channelName: 'BHere',
 	flags: {
 		production: true,
-		useToken: false,
+		useToken: true,
 		selfService: true,
 		guidedTourRequest: true,
 		editor: false,
