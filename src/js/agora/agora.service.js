@@ -1154,14 +1154,26 @@ export default class AgoraService extends Emittable {
 	}
 
 	onTokenPrivilegeWillExpire(event) {
-		// After requesting a new token
-		// client.renewToken(token);
 		console.log('AgoraService.onTokenPrivilegeWillExpire');
+		const client = this.client;
+		const channelNameLink = this.getChannelNameLink();
+		this.rtcToken$(channelNameLink).subscribe(token => {
+			if (token.token) {
+				client.renewToken(token.token);
+				console.log('AgoraService.onTokenPrivilegeWillExpire.renewed');
+			}
+		});
 	}
 
 	onTokenPrivilegeDidExpire(event) {
-		// After requesting a new token
-		// client.renewToken(token);
 		console.log('AgoraService.onTokenPrivilegeDidExpire');
+		const client = this.client;
+		const channelNameLink = this.getChannelNameLink();
+		this.rtcToken$(channelNameLink).subscribe(token => {
+			if (token.token) {
+				client.renewToken(token.token);
+				console.log('AgoraService.onTokenPrivilegeDidExpire.renewed');
+			}
+		});
 	}
 }

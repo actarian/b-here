@@ -225,7 +225,6 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   outline: none;
   background: none;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
   font: inherit;
   cursor: pointer;
@@ -597,7 +596,6 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   border: none;
   outline: none;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
   color: #101010;
   font-family: "GT Walsheim", "Maven Pro", Arial, sans-serif;
@@ -796,7 +794,6 @@ fieldset,
     cursor: pointer; }
   .group--form--checkbox input {
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
     padding: 0;
     margin: 0 8px 0 0;
@@ -1138,7 +1135,6 @@ input-value {
     width: 100%;
     height: 100%;
     -webkit-appearance: none;
-       -moz-appearance: none;
             appearance: none;
     opacity: 0;
     cursor: pointer; }
