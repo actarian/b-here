@@ -15,7 +15,7 @@
           "name": "image"
         },
         "folder": "/textures/waiting-room/",
-        "file": "waiting-room.jpg"
+        "file": "waiting.jpg"
       },
       "orientation": {
         "latitude": 0,
@@ -24,28 +24,6354 @@
       "zoom": 75
     },
     {
-      "id": 170427763402500,
       "type": {
         "id": 2,
         "name": "panorama"
       },
-      "name": "Welcome Room",
-      "likes": 134,
-      "liked": false,
+      "name": "Start Room",
       "asset": {
         "type": {
           "id": 1,
           "name": "image"
         },
-        "folder": "/textures/welcome-room/",
-        "file": "welcome-room.jpg"
+        "folder": "/uploads/",
+        "file": "1190780441996200_Room3D.jpg",
+        "id": 1190780589814500
+      },
+      "orientation": {
+        "latitude": -0.1,
+        "longitude": 18.3
+      },
+      "zoom": 75,
+      "id": 338065166299600,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            21.165853955699642,
+            0.6999999999999998,
+            12
+          ],
+          "rotation": [
+            -0.911,
+            -1.565,
+            -0.9103803264453937,
+            "XYZ"
+          ],
+          "scale": [
+            15,
+            9,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "60370970657900_websolute.mp4",
+            "id": 60372377512399,
+            "chromaKeyColor": null
+          },
+          "id": 1009904475382800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Lab",
+          "abstract": null,
+          "viewId": 248392194266799,
+          "position": [
+            0.49026541356252146,
+            -0.07419316759580143,
+            0.868409579718275
+          ],
+          "asset": null,
+          "id": 263816172214199,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Expo",
+          "abstract": null,
+          "viewId": 248231505262800,
+          "position": [
+            0.24192139749761807,
+            -0.09125037789456515,
+            0.9659955517324593
+          ],
+          "asset": null,
+          "id": 263824959721100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Tour Video",
+          "abstract": null,
+          "viewId": 248430441511900,
+          "position": [
+            -0.0522380993614816,
+            -0.10185997559884584,
+            0.9934262561187429
+          ],
+          "asset": null,
+          "id": 263833008287300,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Modello 3D",
+          "abstract": null,
+          "viewId": 57092993454500,
+          "position": [
+            -0.8835327119550074,
+            -0.20619880169553156,
+            0.4205377522705387
+          ],
+          "asset": null,
+          "id": 263842470462000,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Studio",
+          "abstract": null,
+          "viewId": 406765685595300,
+          "position": [
+            -0.17770624937504953,
+            -0.21948025592349207,
+            -0.959296047210042
+          ],
+          "asset": null,
+          "id": 263858797145599,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Cinema",
+          "abstract": null,
+          "viewId": 337929883149900,
+          "position": [
+            0.4437045701457729,
+            -0.19394295977007164,
+            -0.8749356449404603
+          ],
+          "asset": null,
+          "id": 263865629315099,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Showroom",
+          "abstract": null,
+          "viewId": 498478142881399,
+          "position": [
+            0.9313232965442989,
+            -0.1325589660026739,
+            -0.3392123786747206
+          ],
+          "asset": null,
+          "id": 313939089806200,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cinema Room",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "1211620114703500_CINEMA_ipf.jpg",
+        "id": 1211620271231300
+      },
+      "orientation": {
+        "latitude": -5.9,
+        "longitude": 358.8
+      },
+      "zoom": 75,
+      "id": 337929883149900,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome ",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            -0.7754166205807476,
+            -0.08534864004267192,
+            -0.6256553957011796
+          ],
+          "asset": null,
+          "id": 1010606583968499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            19.997770920498997,
+            0.1,
+            0.09947846458461773
+          ],
+          "rotation": [
+            -1.2274395104548148,
+            -1.5558660859768167,
+            -1.2274041761001775,
+            "XYZ"
+          ],
+          "scale": [
+            26,
+            14,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "60456449680699_websolute.mp4",
+            "id": 60456725914300,
+            "chromaKeyColor": null
+          },
+          "id": 1012264477564600
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Studio Room",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "595057513066100_office_dark.jpg",
+        "id": 595057634810800
+      },
+      "orientation": {
+        "latitude": -10.854056915830045,
+        "longitude": 359.24203995087095
+      },
+      "zoom": 75,
+      "id": 406765685595300,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            21.4,
+            -4.1,
+            -5.854357697389709
+          ],
+          "rotation": [
+            -0.5813692389556724,
+            -1.2609065850398862,
+            -0.5712800113921457,
+            "XYZ"
+          ],
+          "scale": [
+            7,
+            4.8,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
+            "folder": "",
+            "file": "publisherStream",
+            "id": 595121345079100,
+            "chromaKeyColor": null
+          },
+          "id": 595115093509400
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            8.7,
+            -0.4,
+            17.758087433043727
+          ],
+          "rotation": [
+            -3.1278414980164966,
+            -0.0066053831311385335,
+            -3.1352686504709197,
+            "XYZ"
+          ],
+          "scale": [
+            13,
+            8,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
+            "folder": "",
+            "file": "nextAttendeeStream",
+            "id": 595198805589300,
+            "chromaKeyColor": null,
+            "index": 0
+          },
+          "id": 595187295984100
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            21.4,
+            -4.1,
+            5
+          ],
+          "rotation": [
+            -2.566,
+            -1.2764691094822895,
+            -2.586022669543313,
+            "XYZ"
+          ],
+          "scale": [
+            7,
+            4.8,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
+            "folder": "",
+            "file": "nextAttendeeStream",
+            "id": 595459761248000,
+            "chromaKeyColor": null,
+            "index": 1
+          },
+          "id": 595393831847099
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            7.5,
+            2,
+            -19.000226929224635
+          ],
+          "rotation": [
+            0.02233128273750267,
+            0.004733537400283535,
+            0.002546707480056705,
+            "XYZ"
+          ],
+          "scale": [
+            15.5,
+            8.7,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
+            "folder": "",
+            "file": "nextAttendeeStream",
+            "id": 595663310605300,
+            "chromaKeyColor": null,
+            "index": 2
+          },
+          "id": 595497438718400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Accedi",
+          "abstract": "connettiti con il tuo telefono..",
+          "viewId": 406765685595300,
+          "position": [
+            0.36739081467807216,
+            -0.15539955123244212,
+            -0.9169923493502756
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "95243282411900_qrcode.png",
+            "id": 95243329446900,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 95244501881700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            -0.09537453528469773,
+            -0.014718483939465435,
+            0.995332640000192
+          ],
+          "asset": null,
+          "link": null,
+          "id": 97324753863099,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "1",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "248257303725199_1.mp4",
+        "id": 248258220733100
+      },
+      "orientation": {
+        "latitude": -2.9000000000000004,
+        "longitude": 186.8
+      },
+      "zoom": 75,
+      "id": 248231505262800,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Reception",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            -0.8698802176171341,
+            -0.4460767614204322,
+            -0.2105324913618476
+          ],
+          "asset": null,
+          "link": null,
+          "id": 248348102314200,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "2",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "248370131292399_2.mp4",
+        "id": 248370906066600
       },
       "orientation": {
         "latitude": 0,
         "longitude": 0
       },
       "zoom": 75,
+      "id": 248392194266799,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Reception",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            0.8759799195182572,
+            -0.4821270966263785,
+            0.014582294037848685
+          ],
+          "asset": null,
+          "link": null,
+          "id": 248412789460999,
+          "keepOrientation": null
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "3",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "248428263824100_3.mp4",
+        "id": 248429045703600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 248430441511900,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Reception",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            0.8781680467888486,
+            -0.47784939148630423,
+            -0.02192807915042333
+          ],
+          "asset": null,
+          "link": null,
+          "id": 248454134027400,
+          "keepOrientation": null
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom ",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "498463363445700_MSE.jpg",
+        "id": 498463637940000
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 498478142881399,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            -0.9938584563226086,
+            0.003371207616236515,
+            0.11060743083197339
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501183226376600,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            0.9538766399264712,
+            -0.2852269050701587,
+            -0.0936214100870307
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501197349638899
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 0",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "500886038911999_MS1.jpg",
+        "id": 500886387793400
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 500899039104600,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 170427763402500,
+          "position": [
+            -0.9979308429078453,
+            0.00892971566903106,
+            0.06367332998444193
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501145435729599
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 498478142881399,
+          "position": [
+            -0.950474746913303,
+            -0.31004732391292,
+            0.021642837487935013
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501156224533300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            0.5941196897983251,
+            -0.2968740329103251,
+            0.7475878562266118
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501218538487500,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.3206533378003012,
+            -0.07038025945201848,
+            -0.944578242411391
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501229792060399
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            0.007045084132083425,
+            -0.06317994314616376,
+            -0.9979772850990243
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501242436483500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            0.385181007932011,
+            -0.041739421793348254,
+            -0.9218966383477255
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501253354575799
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.6293607028460695,
+            -0.03066631580129116,
+            -0.7765080056176349
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501264331054399
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            0.8124521508338418,
+            -0.013435694436551284,
+            -0.5828730433983647
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501274223780200,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            0.9515721620658139,
+            -0.011040819656925362,
+            -0.3072271483490604
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501283505977300,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            0.9954504474200119,
+            -0.03561004460000497,
+            0.08837607965328521
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501294660371299,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.9022289354780444,
+            -0.03961512084275596,
+            0.42943403473265657
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501306892351900,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.7283818348645719,
+            -0.02876042500813861,
+            0.6845675573620699
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501318257362399,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            0.5117571280287427,
+            -0.021094211695298914,
+            0.8588711638800822
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501496311419200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            0.19511705790570788,
+            -0.014159759317914097,
+            0.9806777426506015
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501504831513799
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 1",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "500960163035200_MA1.jpg",
+        "id": 500960204993800
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 500962302922799,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.9204777505907741,
+            -0.3869058736315858,
+            0.05499596000369729
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501338253452300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 500962302922799,
+          "position": [
+            0.983635420285941,
+            -0.17893051944590596,
+            -0.02110045425384356
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            0.9070024224978527,
+            -0.41337986191023635,
+            0.08039711033427115
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 500962302922799,
+          "position": [
+            0.8521002743117867,
+            -0.3697184514390367,
+            -0.3704502519681942
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 500962302922799,
+          "position": [
+            0.9236238047608863,
+            -0.23137341036047018,
+            0.3055902685904603
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 500962302922799,
+          "position": [
+            0.8941886076147114,
+            -0.17598731590439287,
+            0.41164936372212596
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 500962302922799,
+          "position": [
+            0.9136265165391539,
+            -0.28322391535883995,
+            -0.29166899397320206
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            0.5122680869409604,
+            -0.11343848814359704,
+            0.8513008378414435
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290876182200000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            0.05692133575083428,
+            -0.08922786236107687,
+            0.9943834019706953
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290884394177500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            -0.2008054541084167,
+            -0.07204661715411924,
+            0.9769782262450685
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290890922969800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.46306779975652856,
+            -0.043693650787121716,
+            0.8852452076738629
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290896308508900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.7142599439131955,
+            -0.05272401406537039,
+            0.6978917615661854
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290903002967200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.9899983244062631,
+            -0.1261500232839055,
+            -0.06316240415200478
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290921275543199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.9676432240062239,
+            -0.037733369843622154,
+            -0.24948503729699956
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290926384207700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.9958898917005257,
+            -0.03438736066766242,
+            -0.08379041135492522
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290932114521999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            -0.9932220861935054,
+            -0.013001321048702944,
+            0.1155026110025626
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290938932516800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            -0.9556796342984657,
+            -0.01715494464594243,
+            0.29390839467654795
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290945357374899
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.8888192507106963,
+            -0.024654186564979547,
+            0.45759426422420946
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290951060042300
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "500972425153000_MA2.jpg",
+        "id": 500972460293700
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 500976052302500,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.941417503215943,
+            -0.33724258040350996,
+            0.0007256730959956756
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501361084250699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 500976052302500,
+          "position": [
+            0.918962787024695,
+            -0.345067915026257,
+            -0.1908809316910334
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            0.8953270431179663,
+            -0.3979983244564649,
+            0.19996704626384376
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 500976052302500,
+          "position": [
+            0.8567161499047912,
+            -0.22104668624336715,
+            -0.4660212452165006
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 500976052302500,
+          "position": [
+            0.9226284139037053,
+            -0.1792597197078953,
+            -0.3415007507279888
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 500976052302500,
+          "position": [
+            0.8648252459456359,
+            -0.27897661253822326,
+            0.4174318430974912
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 500976052302500,
+          "position": [
+            0.9386679732887577,
+            -0.3432686731185028,
+            -0.032696390893159843
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            0.47427694976506435,
+            -0.09178258610883835,
+            -0.8755782842263281
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290962581516500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            0.5489972247581937,
+            -0.12679819556843575,
+            0.8261502676925004
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290970821349900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.2460032164720341,
+            -0.06282887700682094,
+            0.9672305566406983
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290977625294100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.0986532340843545,
+            -0.06671361141162985,
+            0.9928830915355118
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290983683773700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.4203049974007666,
+            -0.041359090941998744,
+            0.9064398130909703
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290989100197900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.6856857064569121,
+            -0.04133370527651951,
+            0.7267232188177278
+          ],
+          "asset": null,
+          "link": null,
+          "id": 290995331557100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            -0.8077463869068102,
+            -0.02793270663663652,
+            0.5888680143622554
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291001338021800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            -0.8976456448233107,
+            -0.0186512878266992,
+            0.4403230925038436
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291007042560400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.9654183834117281,
+            -0.03057402492148715,
+            0.2589064965789495
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291015669111500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.9970582174196985,
+            -0.043152401165054394,
+            0.06334651805382394
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291020990805100
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "500983819656199_MA3.jpg",
+        "id": 500983877515600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 500988086657899,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.8206642643939766,
+            -0.3259522951595196,
+            -0.4693242657554954
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501379956676300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 500988086657899,
+          "position": [
+            0.9581968542886974,
+            -0.24778491037958128,
+            -0.14304344311931202
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            0.8893849422886464,
+            -0.4076839585890766,
+            0.2068531226241484
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 500988086657899,
+          "position": [
+            0.8686904938153199,
+            -0.2680269274331467,
+            -0.41657939474443795
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 500988086657899,
+          "position": [
+            0.9452021480510654,
+            -0.1321931045386567,
+            -0.29852618382996826
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 500988086657899,
+          "position": [
+            0.8166093079572381,
+            -0.3747707542166559,
+            0.43897166188887404
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 500988086657899,
+          "position": [
+            0.8765067869302174,
+            -0.3023981944426551,
+            0.3745546481664438
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            0.5082629338801207,
+            -0.07086449492072316,
+            -0.8582814301866275
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291032297058300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            0.2092858354295289,
+            -0.05225296105702736,
+            -0.9764574067256271
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291038273163700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.506998489431382,
+            -0.035454840506364174,
+            0.8612174440865472
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291046493232200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.14456618610965494,
+            -0.060679614081422494,
+            0.9876328276584564
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291052259358400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.6446676392677103,
+            -0.058736981836435685,
+            0.7622031237444146
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291060145746100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.8316474084872262,
+            -0.05336203103971917,
+            0.5527341871096781
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291065354297200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            -0.9160287975040086,
+            -0.04198665989137249,
+            0.3989089652220492
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291070169904300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            -0.9621013476984864,
+            -0.03204319250389442,
+            0.2708029367841392
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291076007384700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.9951067158918955,
+            -0.03335312373620886,
+            0.09300641442332562
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291082113819099
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.9899787768317517,
+            -0.019647246699967823,
+            -0.13984279430782093
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291087369016400
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 4",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "500997992128599_MA4.jpg",
+        "id": 500998034509099
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501001435031300,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.8978643086222803,
+            -0.28032589035221794,
+            -0.3394953291290925
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501399989063199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501001435031300,
+          "position": [
+            0.9377502313474106,
+            -0.33238115476456415,
+            -0.1007336664936441
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.920790629716218,
+            -0.3891869787417577,
+            0.026040579960390643
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501001435031300,
+          "position": [
+            0.8785665545445984,
+            -0.2884956598064592,
+            -0.3806455877958772
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501001435031300,
+          "position": [
+            0.9196071648978216,
+            -0.28207077066300146,
+            0.2734204502340148
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501001435031300,
+          "position": [
+            0.9165620484038459,
+            -0.36023426637403916,
+            0.17362397517538838
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501001435031300,
+          "position": [
+            0.8143359578412411,
+            -0.3295320084227863,
+            0.4777714968388478
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.30197062675326797,
+            -0.04564340095588042,
+            -0.9522239340236199
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291100837667499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.06801084623427622,
+            -0.03248843414491367,
+            -0.9971554675381914
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291107564677600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            0.4154179050609031,
+            -0.04474878636651606,
+            -0.9085293117305211
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291113315638100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            0.2914802950998182,
+            -0.04009114168600447,
+            0.9557363328485715
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291124045094600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.5171106542727975,
+            -0.040434407895360354,
+            0.854962940656325
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291130829246500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.7043173315613018,
+            -0.04331871712830202,
+            0.7085623368545109
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291137197101800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            -0.7636856187510012,
+            -0.031040477116922694,
+            0.6448416584660562
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291142406568700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            -0.8262283724309631,
+            -0.037110594174342953,
+            0.5621116262719612
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291147574608200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.9209152323985845,
+            -0.02532914962526879,
+            0.3889390298176847
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291154002809200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.9815318437734686,
+            -0.02239329125546285,
+            0.18998363130912924
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291159188995000
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 5",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501009738204800_MA5.jpg",
+        "id": 501009832672100
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501014197746599,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.7886821354057811,
+            -0.27247912594546225,
+            0.5511221418304422
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501423493764399
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501014197746599,
+          "position": [
+            0.969970557924089,
+            -0.23798334911916064,
+            0.05020998209976873
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            0.8381293657899584,
+            -0.42689438929954715,
+            -0.33955904727320824
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501014197746599,
+          "position": [
+            0.9397935904154874,
+            -0.259354231916007,
+            -0.22253851307408654
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501014197746599,
+          "position": [
+            0.8987799559911385,
+            -0.11066682025891782,
+            -0.4242021282388238
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501014197746599,
+          "position": [
+            0.8659134718219645,
+            -0.26718927529406666,
+            0.42285192501047364
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501014197746599,
+          "position": [
+            0.9254312695128482,
+            -0.24008798805869325,
+            0.29314624916202964
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.2598709725242381,
+            -0.043986896052269006,
+            -0.9646409853489502
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291171871333799
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.6210226606293319,
+            -0.06491484169938004,
+            -0.7810998132838146
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291178975165999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.9131772537608748,
+            -0.06027688702972679,
+            -0.40308063722256954
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291185329693600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.9739009462636619,
+            -0.03895928046729527,
+            -0.22360483298044964
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291190981349200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            0.5031040130714258,
+            -0.0961857481647914,
+            0.8588565968084577
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291200979606800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.1769948115289813,
+            -0.04666841283260149,
+            0.9831047227714382
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291208366236300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            0.2877609360119603,
+            -0.04533317112832616,
+            0.9566287405785854
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291219613198400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.0801476576785334,
+            -0.03299044146965847,
+            0.9962369114524323
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291226309865699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.10136304290175985,
+            -0.011878121332525462,
+            0.9947785903241515
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291232623452500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.33030756226397273,
+            -0.0179818811381144,
+            0.9437020537552976
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291238538102699
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 6",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501020786579099_MA6.jpg",
+        "id": 501020866705100
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501023795661399,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.9363665398397555,
+            -0.3050848338653286,
+            -0.173611483531155
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501531859841400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501023795661399,
+          "position": [
+            0.9573774501953018,
+            -0.2602156768184348,
+            -0.12536434658811893
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            0.8700948059486702,
+            -0.4363115268329082,
+            0.22927555520351983
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501023795661399,
+          "position": [
+            0.8683691416923232,
+            -0.25836025964834547,
+            -0.4233025041161199
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501023795661399,
+          "position": [
+            0.9370209492465633,
+            -0.1855667683646703,
+            -0.29589983972919276
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501023795661399,
+          "position": [
+            0.785509797218882,
+            -0.36226054019521514,
+            0.5017386366332791
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501023795661399,
+          "position": [
+            0.8432689549914761,
+            -0.3569236035762138,
+            0.4018743718598558
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            10.99474508148617,
+            -2.813431640145179,
+            -16.468156636350216
+          ],
+          "rotation": [
+            -0.1692071434215133,
+            -0.5820496667048382,
+            -0.09364282425588229,
+            "XYZ"
+          ],
+          "scale": [
+            10,
+            6,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "35409103424400_infovideo2.mp4",
+            "id": 35409710841900,
+            "chromaKeyColor": null
+          },
+          "id": 35411113758800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.1237050105399393,
+            -0.012546030081917863,
+            -0.9922397227971157
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291250670254400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            0.5660737176392648,
+            0.1094623457553809,
+            -0.8170547968525681
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291256327169900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.3869949732658688,
+            -0.05175165736283214,
+            -0.9206284031177562
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291263021460699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.707615902025016,
+            -0.033250526150525844,
+            -0.7058145207574269
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291268189900200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.8514496647106368,
+            -0.024429646275144892,
+            -0.5238670259207154
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291274101382600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            0.47658881660351876,
+            -0.07630788190830845,
+            0.8758083163838564
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291284914525500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.2550282901951471,
+            -0.05115938140316778,
+            0.9655792504474116
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291291344724900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.09917535500744766,
+            -0.04150434168423567,
+            0.994204022613319
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291298011266300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.16852236843101745,
+            -0.02002316646069958,
+            0.9854944363837309
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291302893356499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.4257029271195682,
+            0.0018625831148972596,
+            0.904861065924472
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291308641292299
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.4927501220151832,
+            -0.1818726243854919,
+            0.850952211204105
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291314222549700
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 7",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501030070158700_MA7.jpg",
+        "id": 501030130707900
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501034260867300,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.950946165818243,
+            -0.3073768329289151,
+            -0.03494098301668694
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501547011511600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501034260867300,
+          "position": [
+            0.992748341386365,
+            -0.09253352194656059,
+            0.0767351157605623
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            0.8928093501481854,
+            -0.36325352752462814,
+            0.2663425220066991
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501034260867300,
+          "position": [
+            0.8720618875798407,
+            -0.09954043033525095,
+            -0.47916569885516463
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501034260867300,
+          "position": [
+            0.9370212608285965,
+            -0.17840714874290603,
+            -0.3002699552612848
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501034260867300,
+          "position": [
+            0.8268659063701175,
+            -0.21917844793881272,
+            0.5179320233793787
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501034260867300,
+          "position": [
+            0.9011278367269204,
+            -0.12487781839907386,
+            0.4151796627337959
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.7249552417264727,
+            -0.02313264258898069,
+            -0.6884074217642937
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291328025834700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.5617990279741346,
+            -0.018699521669768026,
+            -0.8270623797856117
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291333840720400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.27904987149174043,
+            -0.016275013293278993,
+            -0.9601386843382298
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291339854298400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            0.05172913548732096,
+            -0.011922936195688525,
+            -0.99858997598324
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291345958355999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            0.2601487508680993,
+            -0.020510153806401605,
+            -0.9653506932781503
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291353214985000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            0.44643093741940393,
+            -0.004029333414198633,
+            -0.8948090201752938
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291361281450200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.7379709900952042,
+            -0.2717553415083667,
+            0.6176955982841185
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291369342524000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.500618285102999,
+            -0.05698268846270966,
+            0.8637906608872858
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291374780365799
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.1690898977237742,
+            -0.055492954425333064,
+            0.9840371631686029
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291379828468500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.19638768286653957,
+            -0.03655323664670056,
+            0.979844752452633
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291385178709200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.5506052224943933,
+            -0.025199579992213703,
+            0.8343853247331927
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291391158106000
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 8",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501039994569100_MA8.jpg",
+        "id": 501040089581900
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501044807833700,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.7530426297035344,
+            -0.27062250835025015,
+            -0.5997418243072636
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501563872954199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501044807833700,
+          "position": [
+            0.9592131777552302,
+            -0.23120906127842492,
+            0.16264209050385045
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.9305144156056093,
+            -0.3604606371351315,
+            -0.06489261457428223
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501044807833700,
+          "position": [
+            0.8524586193140937,
+            -0.17660994064633637,
+            -0.4920601906494842
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501044807833700,
+          "position": [
+            0.9454152791221961,
+            -0.09514402738134718,
+            -0.31166899758551153
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501044807833700,
+          "position": [
+            0.8422384484007587,
+            -0.26623997778688,
+            0.46877571424245523
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501044807833700,
+          "position": [
+            0.8749370261272031,
+            -0.3156991179435425,
+            0.3671774329140544
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.6192274969431445,
+            0.006310380213282712,
+            -0.7851862747979564
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291405353832700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.46976879213414846,
+            0.008878816098955012,
+            -0.882744837742767
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291412928072600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.2370896421649805,
+            -0.0025681139389809567,
+            -0.9714843829773476
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291418605935500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            -0.01320576059105105,
+            -0.021266293467861023,
+            -0.9996866272234267
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291424942260900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            0.1475145179891521,
+            0.0035278980125193816,
+            -0.9890535986072957
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291430470228499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            0.26123596112109904,
+            0.007357209172017196,
+            -0.9652469342558592
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291437421490700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            0.42825779190252394,
+            0.004993032838281764,
+            -0.9036428128955878
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291442759773000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.32555176049372697,
+            -0.043110430580908965,
+            0.9445409160087049
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291450451032500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            -0.3721524180370599,
+            -0.006366286325507919,
+            0.9281497983340787
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291455279779100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.7755178801144319,
+            -0.03972935528885436,
+            0.6300742781221509
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291461030138800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.9521468165223478,
+            -0.26503494670171707,
+            -0.15222653123938862
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291466878214800
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 9",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501053548841899_MA9.jpg",
+        "id": 501053625187900
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501055827067000,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.899724202794653,
+            -0.223248488429277,
+            -0.37504195941196933
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501582088325399
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501055827067000,
+          "position": [
+            0.9471976312874281,
+            -0.2854055319245524,
+            -0.14615173495497424
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.9227534456572992,
+            -0.38518709486289887,
+            -0.012529185075719299
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501055827067000,
+          "position": [
+            0.8465958534021033,
+            -0.289618871253119,
+            -0.44653820711830905
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501055827067000,
+          "position": [
+            0.9370212608285965,
+            -0.17840714874290603,
+            -0.3002699552612848
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501055827067000,
+          "position": [
+            0.8444305261283339,
+            -0.4125825049579545,
+            0.3416324972031275
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501055827067000,
+          "position": [
+            0.9208015121062728,
+            -0.318136873798691,
+            0.22564021102719534
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.863102542005296,
+            -0.03183977606413287,
+            -0.5040240377642538
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291478646166100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.7603064904636588,
+            -0.013667025621943952,
+            -0.6494207056827521
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291485894490100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.5823156303615075,
+            0.0030678752570563452,
+            -0.8129570067218114
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291491926449099
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            -0.41642915335578584,
+            -0.007141569579052023,
+            -0.9091401202341315
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291497725755199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.30078138933690207,
+            0.0093007628571843,
+            -0.9536477607790192
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291504447890799
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.2104719798281975,
+            0.01930935326852193,
+            -0.9774091745955479
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291509941907700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.1153735675639109,
+            0.014939366662278413,
+            -0.9932098243731309
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291515742940700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.3334264031340288,
+            0.01775638199050529,
+            -0.9426089033059848
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291522983185699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.9547891288754591,
+            -0.2826122154551972,
+            -0.09223911890704206
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291530276168600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            -0.6407301554322474,
+            0.00407929749419864,
+            0.7677553173060553
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291537108519300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            0.16368088053097338,
+            0.025621271892041046,
+            0.9861805715867856
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291542632712600
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 10",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501064999018700_MA10.jpg",
+        "id": 501065082164699
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501069068058899,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.8652386496072273,
+            -0.2336787107552106,
+            0.44357224819148056
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501598500643499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501069068058899,
+          "position": [
+            0.93042368007126,
+            -0.3050166228504838,
+            0.2031665212271447
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            0.8854080836232673,
+            -0.3854350375456654,
+            0.25979291231044954
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501069068058899,
+          "position": [
+            0.8913812267806244,
+            -0.23788070946508572,
+            -0.3858137848852174
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501069068058899,
+          "position": [
+            0.9370212608285965,
+            -0.17840714874290603,
+            -0.3002699552612848
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501069068058899,
+          "position": [
+            0.9260819884876422,
+            -0.376545439817952,
+            0.02420087500648508
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501069068058899,
+          "position": [
+            0.8706332216999679,
+            -0.2457789728946886,
+            0.4261343564595165
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.7550435306527029,
+            -0.31598829509053045,
+            0.5745090636232649
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291553665185800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            0.34204643365546966,
+            0.024514997894558025,
+            0.9393632162810104
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291565524435300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.3783163407602013,
+            -0.019075597273830708,
+            -0.9254798041569886
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291572139956300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            -0.5372520058102714,
+            -0.013974992200839911,
+            -0.8433059835230783
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291578500494400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.832012225096786,
+            -0.0355585333913241,
+            -0.5536165170879147
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291585562135000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.9278880394887516,
+            -0.03786802422354283,
+            -0.37093098942407887
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291590841127800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.9610759544555038,
+            -0.0056257472874171495,
+            -0.2762270094232293
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291597937582300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            -0.985672561612053,
+            -0.013834127866801684,
+            -0.168101809006621
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291604158794200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.9986202223516758,
+            -0.026661164393240705,
+            0.04524194760933968
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291610698496100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.9700837339846299,
+            -0.005950598407219113,
+            0.24269762964856886
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291616192026100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.9044930049225293,
+            -0.021463842344133854,
+            0.42594801034637975
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291622701776500
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 11",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501078046339600_MA11.jpg",
+        "id": 501078117264799
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501079787691100,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.7234761858560624,
+            -0.2885959126203501,
+            0.6271320496657712
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501615427678099
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501079787691100,
+          "position": [
+            0.992748341386365,
+            -0.09253352194656059,
+            0.0767351157605623
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            0.890717928888346,
+            -0.43477516307471187,
+            0.1326353223323757
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501079787691100,
+          "position": [
+            0.7845254177041355,
+            -0.41311901397314693,
+            -0.4624419415126688
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501079787691100,
+          "position": [
+            0.9244102220589585,
+            -0.17724484461901102,
+            -0.33771290530403186
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501079787691100,
+          "position": [
+            0.9144791086584866,
+            -0.3976130317072293,
+            -0.07504556511723982
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501079787691100,
+          "position": [
+            0.84924163225127,
+            -0.32524727871892534,
+            0.4159361221836019
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            -0.8193773732809556,
+            -0.4950166283739238,
+            0.28910077445159826
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291636181252400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            0.32371104729843414,
+            -0.018713492534826445,
+            -0.9459709102578684
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291643174379000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            -0.2346638374777378,
+            -0.03247526488678919,
+            -0.9715339626337078
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291651683654700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            0.36255076180434936,
+            -0.05010850550937924,
+            -0.9306159695549514
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291659383865400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            -0.7023356726593012,
+            -0.02474610728573291,
+            -0.7114156542306401
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291666739770200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            -0.9437597270544175,
+            -0.046304288739829405,
+            -0.3273736251356696
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291674704803900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.9928429936241951,
+            -0.013415109793788531,
+            -0.11867107836607417
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291680133000300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.9997266134573674,
+            -0.015218981346235162,
+            0.01775051976271856
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291686505074800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            -0.9809122660161602,
+            -0.006875925767866702,
+            0.19432922586136292
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291693043331199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.9291957155246173,
+            -0.020658949258076403,
+            0.36901020320073297
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291699532005900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.8217557778883867,
+            0.006197393714494305,
+            0.569806137048558
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291706362175099
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.6855156312778287,
+            -0.02026240403811578,
+            0.727775895627463
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291713854407000
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Showroom 12",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "501092349712000_MA13.jpg",
+        "id": 501092433424500
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 501098157690800,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500899039104600,
+          "position": [
+            -0.8751724452226383,
+            -0.45141128310973216,
+            -0.1740719523767498
+          ],
+          "asset": null,
+          "link": null,
+          "id": 501119980945699
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Collezione Donna 2020",
+          "abstract": "Ogni giorno puoi trovare nuovi modelli dai colori brillanti e dalla fantasie più alla moda. \nIdeali per il tempo libero, per impreziosire le uscite più romantiche o anche per venire in aiuto a chi non sa come abbinare i colori.\nGli outfit selezionati sono la soluzione perfetta per chi è alla ricerca di qualche cosa di diverso; ma che allo stesso tempo possano essere una risposta alla fatidica domanda \"non so cosa mettermi!\" che prima o poi tutte ci facciamo.",
+          "viewId": 501098157690800,
+          "position": [
+            0.9272961155145697,
+            -0.11260074680801935,
+            -0.35699157688923994
+          ],
+          "asset": null,
+          "link": {
+            "title": "dai forma al tuo stile..",
+            "href": "https://www.websolute.com/realta_virtuale_e_aumentata",
+            "target": "_blank"
+          },
+          "id": 518394939260499,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501098157690800,
+          "position": [
+            0.7861146688695846,
+            -0.6179551366236619,
+            0.012456986332777175
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+            "id": 34565846015400,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34504304464800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501098157690800,
+          "position": [
+            0.6579204573885384,
+            -0.6669714172231137,
+            -0.34969958586913935
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+            "id": 34798204331700,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34719730487100,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Here at Ever-Pretty",
+          "abstract": "we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more! ",
+          "viewId": 501098157690800,
+          "position": [
+            0.9288647909161002,
+            -0.282954718123903,
+            0.2390540267132352
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+            "id": 34822807268699,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 34833240600699,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": "Here at Ever-Pretty, we think fashion should be easy – and fun! – for everyone to access. That’s why we want this page to be a one-stop-shop for all your pressing questions and moments when you need a little inspiration. Check back often for updates on new trends, special occasion wear, and more!",
+          "viewId": 501098157690800,
+          "position": [
+            0.89278538441205,
+            -0.4422964942887006,
+            -0.08548724185604295
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+            "id": 35052100359300,
+            "chromaKeyColor": null
+          },
+          "link": null,
+          "id": 35056582710800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Our Fashion Infographics",
+          "abstract": "Looking for tips and style guides on everything from prom to Derby Day to beach-ready getups? Whether you want to try out a fresh new look or channel some iconic ones for inspiration, you’ve come to the right place! Navigating the fashion world can be tough, and we’re here to help. We’ve been keeping up with all the latest trends so you don’t have to. Check out our selection of infographics full of fun tips and outfit ideas for any occasion.\nThe best part about this page? We’ve made it super easy to share our infographics so that you can show them to friends or put them on your blog or social media pages. Just check out our easy embed code at the bottom of each page to pass it on.",
+          "viewId": 501098157690800,
+          "position": [
+            0.48968113234588373,
+            -0.6611254695120584,
+            0.5684412917680359
+          ],
+          "asset": null,
+          "link": null,
+          "id": 35124470945700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501079787691100,
+          "position": [
+            0.6644673280053124,
+            0.0716454081167324,
+            0.7438750604162419
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291739019615600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501069068058899,
+          "position": [
+            0.9217861287622112,
+            0.05985378430253228,
+            0.38305072422101255
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291744135945500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501055827067000,
+          "position": [
+            0.9963067399567793,
+            0.012913470507602661,
+            -0.08488888146361691
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291749602394600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501044807833700,
+          "position": [
+            0.8400104643993858,
+            0.026336926260493984,
+            -0.5419306099628234
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291755569798700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501034260867300,
+          "position": [
+            0.4126970062232373,
+            0.012583771784672933,
+            -0.9107814390632083
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291762470381599
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501023795661399,
+          "position": [
+            -0.05072773444200752,
+            0.0027957748167013376,
+            -0.99870860645213
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291774985322900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501014197746599,
+          "position": [
+            -0.2838335723121427,
+            -0.0052070094032421535,
+            -0.958859421542909
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291780911890300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 501001435031300,
+          "position": [
+            -0.5063493034453713,
+            -0.012071271040259976,
+            -0.8622439720379956
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291787206168100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500988086657899,
+          "position": [
+            -0.7027819438817573,
+            -0.009545382999317913,
+            -0.7113412858938912
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291793378289499
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500976052302500,
+          "position": [
+            -0.8969974034144165,
+            -0.007968681477073865,
+            -0.4419639786038127
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291801566148899
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 500962302922799,
+          "position": [
+            -0.9772000876774418,
+            -0.023689833684852273,
+            -0.21099474027374185
+          ],
+          "asset": null,
+          "link": null,
+          "id": 291807345196000
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Welcome Room",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "55692759800800_WAITING-ROOM.jpg",
+        "id": 55692951555600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 55709698289900,
       "items": []
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Watch 3D",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "55819308207500_dressroom.jpeg",
+        "id": 55819356789599
+      },
+      "orientation": {
+        "latitude": 6.2,
+        "longitude": 109.10000000000001
+      },
+      "zoom": 75,
+      "id": 55837641587599,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "55826242115000_watch-ao.glb",
+            "id": 55826263211300,
+            "chromaKeyColor": null
+          },
+          "id": 55837653162099,
+          "position": null,
+          "rotation": null
+        }
+      ],
+      "hidden": null,
+      "ar": {
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "55930516250400_watch-ao.usdz",
+          "id": 55930552718200
+        },
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "55936497362500_watch-ao.glb",
+          "id": 55936522613999
+        }
+      }
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Poltrona 3D",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "57068695413900_white.jpeg",
+        "id": 57068758995500
+      },
+      "orientation": {
+        "latitude": 25.6,
+        "longitude": 17.099999999999998
+      },
+      "zoom": 35.5393,
+      "id": 57092993454500,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "57079817203399_poltrona.glb",
+            "id": 57079844268900,
+            "chromaKeyColor": null
+          },
+          "id": 57093014226499,
+          "position": null,
+          "rotation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Back",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            -0.5772948094953486,
+            -0.5579272923238274,
+            -0.5961944644240931
+          ],
+          "asset": null,
+          "link": null,
+          "id": 60293925416499
+        }
+      ],
+      "hidden": null
+    }
+  ],
+  "menu": [],
+  "assets": [
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "337927391396000_cinema.jpg",
+      "id": 337927407295700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "338060923701800_Room3D.jpg",
+      "id": 338061126996100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "338288798580700_reception.jpg",
+      "id": 338288819976600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "406760058598800_studio_lucioff.jpg",
+      "id": 406760302780100
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 406813850199100,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 406936684125500,
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "1190780441996200_Room3D.jpg",
+      "id": 1190780589814500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "1191521744348700_office.jpg",
+      "id": 1191521957608300
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 1191591518010600,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "1210750471794200_Poltrona Frau's stand at Salone Internazionale del Mobile 2018..mp4",
+      "id": 1210750490297300,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "1210791893780700_Home Stories - Trailer ITA.mp4",
+      "id": 1210791940902900,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "1211620114703500_CINEMA_ipf.jpg",
+      "id": 1211620271231300
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "248218427091600_SIDIM 360 Video Experience - Salon International du Design de Montréal-z-0ghI2MWo4_1.mp4",
+      "id": 248220077983300
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "248257303725199_1.mp4",
+      "id": 248258220733100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "248370131292399_2.mp4",
+      "id": 248370906066600
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "248428263824100_3.mp4",
+      "id": 248429045703600
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "248475855237600_4.mp4",
+      "id": 248476329563499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "498463363445700_MSE.jpg",
+      "id": 498463637940000
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "500886038911999_MS1.jpg",
+      "id": 500886387793400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "500960163035200_MA1.jpg",
+      "id": 500960204993800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "500972425153000_MA2.jpg",
+      "id": 500972460293700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "500983819656199_MA3.jpg",
+      "id": 500983877515600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "500997992128599_MA4.jpg",
+      "id": 500998034509099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501009738204800_MA5.jpg",
+      "id": 501009832672100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501020786579099_MA6.jpg",
+      "id": 501020866705100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501030070158700_MA7.jpg",
+      "id": 501030130707900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501039994569100_MA8.jpg",
+      "id": 501040089581900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501053548841899_MA9.jpg",
+      "id": 501053625187900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501064999018700_MA10.jpg",
+      "id": 501065082164699
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501078046339600_MA11.jpg",
+      "id": 501078117264799
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501086226905800_MA12.jpg",
+      "id": 501086319448700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501092349712000_MA13.jpg",
+      "id": 501092433424500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501791658253100_zalando.jpg",
+      "id": 501791667225100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "501968211716500_zalando.jpg",
+      "id": 501968228236500,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "335383431182600_poltrona.usdz",
+      "id": 335384193788400
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "335393320376799_poltrona.glb",
+      "id": 335393387516699
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "338169579597600_divano.glb",
+      "id": 338171002840400
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "338503937387199_divano.usdz",
+      "id": 338504075479800
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "338511835276100_divano.glb",
+      "id": 338511903869900
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 511373910307800,
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ],
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "512010559424300_lavagna.jpg",
+      "id": 512010596580499
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 512211995771000,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "514298248196500_ANATOMY-A-2.jpg",
+      "id": 514298303745200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "514510765163600_ddb7155a401093a87475ee1244fc22e2.jpg",
+      "id": 514510791948800
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "514654221587099_infovideo.mp4",
+      "id": 514654707333700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "514848614541100_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long.jpg",
+      "id": 514848635449200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "515032324211800_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size.jpg",
+      "id": 515032344926100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "515100445148600_infovideo.mp4",
+      "id": 515100520653300
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "515365193890200_infovideo2.mp4",
+      "id": 515365234089400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "516393511668800_lavagna.jpg",
+      "id": 516393556246500
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 516468203393499,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "518438439125500_ANATOMY-A-2.jpg",
+      "id": 518438448964200,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "518605338665800_ddb7155a401093a87475ee1244fc22e2.jpg",
+      "id": 518605357386000
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "518676744030699_infovideo2.mp4",
+      "id": 518677392651799
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "518781662038299_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long.jpg",
+      "id": 518781671687800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "518857885550599_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size.jpg",
+      "id": 518857901216400
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "518885743124900_infovideo2.mp4",
+      "id": 518885898536000
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "518932199530400_infovideo2.mp4",
+      "id": 518932379829100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "595057513066100_office_dark.jpg",
+      "id": 595057634810800
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 595121345079100,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 595198805589300,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 595459761248000,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 595663310605300,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34118693301900_ANATOMY-A-2.jpg",
+      "id": 34118728848900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34502276694399_ANATOMY-A-2_dark.jpg",
+      "id": 34502310367200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34565818549400_ANATOMY-A-2_dark.jpg",
+      "id": 34565846015400,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34717525810100_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+      "id": 34717561065900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34798179322300_Mandy-2016-Charlotte-Riley-Oscars-Red-Carpet-ALine-Floorlength-VNeck-Full-Sleeve-Taffeta-Lace-Plus-size_dark.jpg",
+      "id": 34798204331700,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34822781385500_Elegant-Pants-Suits-Lace-Mother-Groom-Dress-Floor-Length-Silver-Grey-Vestido-De-Madrinha-Curto-Long_dark.jpg",
+      "id": 34822807268699
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "35052075085600_ddb7155a401093a87475ee1244fc22e2_dark.jpg",
+      "id": 35052100359300
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "35409103424400_infovideo2.mp4",
+      "id": 35409710841900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "95243282411900_qrcode.png",
+      "id": 95243329446900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "55692759800800_WAITING-ROOM.jpg",
+      "id": 55692951555600
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "55744181099500_logows3.glb",
+      "id": 55744216689400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "55819308207500_dressroom.jpeg",
+      "id": 55819356789599
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "55826242115000_watch-ao.glb",
+      "id": 55826263211300
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "55864602861600_watch-ao.glb",
+      "id": 55864632185400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "55872744705200_dressroom.jpeg",
+      "id": 55872798677000
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "55930516250400_watch-ao.usdz",
+      "id": 55930552718200
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "55936497362500_watch-ao.glb",
+      "id": 55936522613999
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "57068695413900_white.jpeg",
+      "id": 57068758995500
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "57079817203399_poltrona.glb",
+      "id": 57079844268900
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "60370970657900_websolute.mp4",
+      "id": 60372377512399,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "60456449680699_websolute.mp4",
+      "id": 60456725914300,
+      "chromaKeyColor": null
+    }
+  ],
+  "users": [
+    {
+      "id": "1601892639985",
+      "username": "publisher",
+      "password": "publisher",
+      "type": "publisher",
+      "firstName": "Ospitante",
+      "lastName": ""
+    },
+    {
+      "id": "1601892639986",
+      "username": "attendee",
+      "password": "attendee",
+      "type": "attendee",
+      "firstName": "Ospite",
+      "lastName": ""
     }
   ]
 }
