@@ -3189,15 +3189,27 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.onTokenPrivilegeWillExpire = function onTokenPrivilegeWillExpire(event) {
-    // After requesting a new token
-    // client.renewToken(token);
     console.log('AgoraService.onTokenPrivilegeWillExpire');
+    var client = this.client;
+    var channelNameLink = this.getChannelNameLink();
+    this.rtcToken$(channelNameLink).subscribe(function (token) {
+      if (token.token) {
+        client.renewToken(token.token);
+        console.log('AgoraService.onTokenPrivilegeWillExpire.renewed');
+      }
+    });
   };
 
   _proto.onTokenPrivilegeDidExpire = function onTokenPrivilegeDidExpire(event) {
-    // After requesting a new token
-    // client.renewToken(token);
     console.log('AgoraService.onTokenPrivilegeDidExpire');
+    var client = this.client;
+    var channelNameLink = this.getChannelNameLink();
+    this.rtcToken$(channelNameLink).subscribe(function (token) {
+      if (token.token) {
+        client.renewToken(token.token);
+        console.log('AgoraService.onTokenPrivilegeDidExpire.renewed');
+      }
+    });
   };
 
   return AgoraService;
@@ -18035,12 +18047,14 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto.createMesh = function createMesh(result) {
-    var mesh = new THREE.Group();
-    var repeat = 24;
-    var aspect = result.width * repeat / result.height;
+    var mesh = new THREE.Group(); // const repeat = 24;
+    // const aspect = (result.width * repeat) / result.height;
+
     var arc = Math.PI / 180 * 360;
     var width = PANEL_RADIUS$1 * arc;
-    var height = width / aspect;
+    var height = width / 360 * 2.4;
+    var w = result.width * height / result.height;
+    var repeat = width / w;
     var geometry = new THREE.CylinderBufferGeometry(PANEL_RADIUS$1, PANEL_RADIUS$1, height, 80, 2, true, 0, arc);
     geometry.scale(-1, 1, 1);
     var texture = result.texture;
@@ -18064,37 +18078,46 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto.updateProgress = function updateProgress() {
-    this.getCanvasTexture().then(function (result) {// console.log('ModelProgressComponent.updateProgress', result);
+    var _this2 = this;
+
+    this.getCanvasTexture().then(function (result) {
+      // console.log('ModelProgressComponent.updateProgress', result);
+      var arc = Math.PI / 180 * 360;
+      var width = PANEL_RADIUS$1 * arc;
+      var height = width / 360 * 2.4;
+      var w = result.width * height / result.height;
+      var repeat = width / w;
+      _this2.texture.repeat.x = repeat;
     });
   };
 
   _proto.getCanvasTexture = function getCanvasTexture() {
-    var _this2 = this;
+    var _this3 = this;
 
     return new Promise(function (resolve, reject) {
       var MIN_W = 512;
       var W = MIN_W;
-      var H = 128;
-      var F = Math.floor(H * 0.8);
-      var L = Math.floor(H * 0.075);
+      var H = 64;
+      var F = Math.floor(H * 0.75);
+      var L = Math.floor(H * 0.05);
       var canvas;
 
-      if (_this2.canvas) {
-        canvas = _this2.canvas;
+      if (_this3.canvas) {
+        canvas = _this3.canvas;
       } else {
-        canvas = _this2.canvas = document.createElement('canvas'); // canvas.classList.add('canvas--debug');
+        canvas = _this3.canvas = document.createElement('canvas'); // canvas.classList.add('canvas--debug');
         // document.querySelector('body').appendChild(canvas);
       }
 
       canvas.width = W;
       canvas.height = H;
-      var text = _this2.title_; // console.log('ModelProgressComponent.getCanvasTexture', text);
+      var text = _this3.title_; // console.log('ModelProgressComponent.getCanvasTexture', text);
 
       var ctx = canvas.getContext('2d'); // const ctx = text.material.map.image.getContext('2d');
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.font = F + "px " + environment.fontFamily;
+      ctx.font = "300 " + F + "px " + environment.fontFamily;
       var metrics = ctx.measureText(text);
       W = metrics.width + 8;
       W = Math.max(MIN_W, Math.pow(2, Math.ceil(Math.log(W) / Math.log(2)))); // const x = W / 2;
@@ -18105,10 +18128,10 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       ctx.fillStyle = '#0000005A'; // 35% // '#000000C0'; // 75%
 
       ctx.fillRect(0, 0, W, H);
-      ctx.font = F + "px " + environment.fontFamily;
+      ctx.font = "300 " + F + "px " + environment.fontFamily;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
       ctx.lineWidth = L;
       ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
 
@@ -18119,11 +18142,11 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
       var texture;
 
-      if (_this2.texture) {
-        texture = _this2.texture;
+      if (_this3.texture) {
+        texture = _this3.texture;
         texture.needsUpdate = true;
       } else {
-        texture = _this2.texture = new THREE.CanvasTexture(canvas);
+        texture = _this3.texture = new THREE.CanvasTexture(canvas);
       } // console.log(F, L, W, H);
 
 
