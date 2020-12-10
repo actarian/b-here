@@ -28,6 +28,150 @@
         "id": 2,
         "name": "panorama"
       },
+      "name": "Welcome Room",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "55692759800800_WAITING-ROOM.jpg",
+        "id": 55692951555600
+      },
+      "orientation": {
+        "latitude": -7.797648440678951,
+        "longitude": 179.55919626331524
+      },
+      "zoom": 75,
+      "id": 55709698289900,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            20.918191562358757,
+            2.606378220341829,
+            -0.05140632505514198
+          ],
+          "rotation": [
+            1.542345776560144,
+            -1.4803174505898073,
+            1.5422289872647978,
+            "XYZ"
+          ],
+          "scale": [
+            12,
+            6.75,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "72215273818700_websolute.mp4",
+            "id": 72216205127100,
+            "chromaKeyColor": null
+          },
+          "id": 72217467098600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Gallery",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "position": [
+            0.13960906732587555,
+            0.012327420304046913,
+            0.9901299626963354
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72357530741700,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "House Tour",
+          "abstract": null,
+          "viewId": 72392536339999,
+          "position": [
+            0.13916829596662705,
+            0.0006250158094981108,
+            -0.9902685467856601
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72632730454199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Showroom",
+          "abstract": null,
+          "viewId": 498478142881399,
+          "position": [
+            -0.704723902798554,
+            -0.01221505142576404,
+            0.7093764961873491
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72692314300200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Video VR",
+          "abstract": null,
+          "viewId": 72757242951600,
+          "position": [
+            0.747378981777979,
+            0.012224041216411784,
+            0.6642855036901307
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72790693297300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Muse Museum",
+          "abstract": null,
+          "viewId": 73199489651400,
+          "position": [
+            -0.6976831645631082,
+            0.046028684270748216,
+            -0.7149262634072907
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74466184779700
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
       "name": "Start Room",
       "asset": {
         "type": {
@@ -196,6 +340,23 @@
           "asset": null,
           "id": 313939089806200,
           "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.8329109753376459,
+            -0.22024545381321578,
+            0.5076920791549758
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74510423643499
         }
       ],
       "hidden": null
@@ -5423,29 +5584,6 @@
     },
     {
       "type": {
-        "id": 2,
-        "name": "panorama"
-      },
-      "name": "Welcome Room",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "55692759800800_WAITING-ROOM.jpg",
-        "id": 55692951555600
-      },
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75,
-      "id": 55709698289900,
-      "items": []
-    },
-    {
-      "type": {
         "id": 5,
         "name": "model"
       },
@@ -5527,7 +5665,7 @@
         "latitude": 25.6,
         "longitude": 17.099999999999998
       },
-      "zoom": 35.5393,
+      "zoom": 62.5,
       "id": 57092993454500,
       "items": [
         {
@@ -5563,14 +5701,1544 @@
             -0.5961944644240931
           ],
           "asset": null,
+          "id": 60293925416499,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null,
+      "ar": {
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "75113408018900_poltrona.usdz",
+          "id": 75113456332100
+        },
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "75117566263699_poltrona.glb",
+          "id": 75117588429500
+        }
+      }
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "House Tour",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72384910820099_Unreal Engine Demo 360 2020.11.05 - 15.26.48.39.jpg",
+        "id": 72384959104200
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72392536339999
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "House Tour 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72410872958600_Unreal Engine Demo 360 2020.11.05 - 15.28.28.86.jpg",
+        "id": 72410948250499
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72412822521800,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72425488038100,
+          "position": [
+            -0.013902032740006749,
+            -0.33547396106131067,
+            -0.9419468960273344
+          ],
+          "asset": null,
           "link": null,
-          "id": 60293925416499
+          "id": 72487620564800,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72392536339999,
+          "position": [
+            -0.9279042647937809,
+            -0.3666890630927895,
+            0.06732611963900074
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72601467706200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            -0.9986637018406582,
+            -0.028083274590356793,
+            0.04338364108965193
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72611877967700
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "House Tour 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72424386520100_Unreal Engine Demo 360 2020.11.05 - 15.31.29.19.jpg",
+        "id": 72424471784800
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72425488038100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "House Tour 4",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72443354267299_Unreal Engine Demo 360 2020.11.05 - 15.35.01.57.jpg",
+        "id": 72443422942900
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72445514559700,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72412822521800,
+          "position": [
+            -0.46698656176960623,
+            -0.32706858623129015,
+            -0.8215532186214518
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72476123927200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72520381999099,
+          "position": [
+            0.47776052333636415,
+            -0.3271285864001561,
+            0.8153108427472303
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72585278246100
         }
       ],
       "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "House Tour 5",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72518361273700_Unreal Engine Demo 360 2020.11.05 - 15.35.55.31.jpg",
+        "id": 72518399192500
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72520381999099,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72445514559700,
+          "position": [
+            -0.9534986704938815,
+            -0.2965275629786252,
+            -0.05396007561482568
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72560293386600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72445514559700,
+          "position": [
+            -0.6794674237734183,
+            -0.3181570898254917,
+            0.6611354522520239
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72567674089000
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "House Tour 6",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72529052045600_Unreal Engine Demo 360 2020.11.05 - 15.36.39.30.jpg",
+        "id": 72529088118500
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72533478659599,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72520381999099,
+          "position": [
+            -0.6654676387142052,
+            -0.4561972223726021,
+            -0.5907934631693744
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72545880175999
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Video VR",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "72751813369800_videovr.mp4",
+        "id": 72752517085599
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72757242951600,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Back",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.8972116370394553,
+            -0.4415376646632819,
+            -0.007467867478448943
+          ],
+          "asset": null,
+          "link": null,
+          "id": 72768802452299
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
+      "name": "Kitchen Grid",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "72865598820699_NEWONESET2_x0_y0.jpg",
+        "id": 72865677752099
+      },
+      "tiles": [
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72865598820699_NEWONESET2_x0_y0.jpg",
+            "id": 72865677752099
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 0
+          },
+          "id": 72879676629100
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866348550300_NEWONESET2_x3_y0.jpg",
+            "id": 72867281850000
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 3
+          },
+          "id": 72879676651800
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866161315199_NEWONESET2_x0_y1.jpg",
+            "id": 72867247426599
+          },
+          "navs": [],
+          "indices": {
+            "x": 1,
+            "y": 0
+          },
+          "id": 72879676653399
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866379410700_NEWONESET2_x3_y1.jpg",
+            "id": 72867298624299
+          },
+          "navs": [],
+          "indices": {
+            "x": 1,
+            "y": 3
+          },
+          "id": 72879676654500
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866200912000_NEWONESET2_x0_y2.jpg",
+            "id": 72867263681500
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 0
+          },
+          "id": 72879676655700
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867622315300_NEWONESET2_x3_y2.jpg",
+            "id": 72867664641900
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 3
+          },
+          "id": 72879676656800
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867456563300_NEWONESET2_x0_y3.jpg",
+            "id": 72867521360300
+          },
+          "navs": [],
+          "indices": {
+            "x": 3,
+            "y": 0
+          },
+          "id": 72879676657800
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867649046500_NEWONESET2_x3_y3.jpg",
+            "id": 72867681398200
+          },
+          "navs": [],
+          "indices": {
+            "x": 3,
+            "y": 3
+          },
+          "id": 72879676658900
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867498030199_NEWONESET2_x0_y4.jpg",
+            "id": 72867533671100
+          },
+          "navs": [],
+          "indices": {
+            "x": 4,
+            "y": 0
+          },
+          "id": 72879676660000
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866716417299_NEWONESET2_x3_y4.jpg",
+            "id": 72867325517600
+          },
+          "navs": [],
+          "indices": {
+            "x": 4,
+            "y": 3
+          },
+          "id": 72879676661099
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866129539100_NEWONESET2_x0_y5.jpg",
+            "id": 72867233270700
+          },
+          "navs": [],
+          "indices": {
+            "x": 5,
+            "y": 0
+          },
+          "id": 72879676662300
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866608473200_NEWONESET2_x3_y5.jpg",
+            "id": 72867307774000
+          },
+          "navs": [],
+          "indices": {
+            "x": 5,
+            "y": 3
+          },
+          "id": 72879676663500
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866849722699_NEWONESET2_x0_y6.jpg",
+            "id": 72867383092399
+          },
+          "navs": [],
+          "indices": {
+            "x": 6,
+            "y": 0
+          },
+          "id": 72879676664699
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866649552800_NEWONESET2_x3_y6.jpg",
+            "id": 72867312938900
+          },
+          "navs": [],
+          "indices": {
+            "x": 6,
+            "y": 3
+          },
+          "id": 72879676665800
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867063502099_NEWONESET2_x0_y7.jpg",
+            "id": 72867392852900
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 0
+          },
+          "id": 72879676666899
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867146434900_NEWONESET2_x1_y7.jpg",
+            "id": 72867397165499
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 1
+          },
+          "id": 72879676668100
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72867214089800_NEWONESET2_x2_y7.jpg",
+            "id": 72867412988800
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 2
+          },
+          "id": 72879676669200
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "72866817381900_NEWONESET2_x3_y7.jpg",
+            "id": 72867334132900
+          },
+          "navs": [],
+          "indices": {
+            "x": 7,
+            "y": 3
+          },
+          "id": 72879676670499
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 72879676541500
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Studio TV",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "73015027507700_Unreal Engine Demo 360 2020.11.25 - 17.19.12.06.jpg",
+        "id": 73015107263700
+      },
+      "orientation": {
+        "latitude": -6.090403040853079,
+        "longitude": 355.2908243302005
+      },
+      "zoom": 75,
+      "id": 73020902678899,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            21.9,
+            0.9711036724621861,
+            2.6775804724158627
+          ],
+          "rotation": [
+            2.752,
+            -1.4691334988682925,
+            2.753720591994936,
+            "XYZ"
+          ],
+          "scale": [
+            6,
+            4,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 4,
+              "name": "publisher-stream"
+            },
+            "folder": "",
+            "file": "publisherStream",
+            "id": 73055797043500,
+            "chromaKeyColor": null
+          },
+          "id": 73038413974300
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            -0.09668276964308552,
+            -0.0038587727794061745,
+            0.9953077674401918
+          ],
+          "asset": null,
+          "link": null,
+          "id": 73118106836300
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Muse",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "73192653143100_piano-1_1.jpg",
+        "id": 73192698778800
+      },
+      "orientation": {
+        "latitude": -2.1,
+        "longitude": 303.1
+      },
+      "zoom": 75,
+      "id": 73199489651400,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.6246372638466797,
+            -0.044856236075546466,
+            0.779625683709348
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74363330470000
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Muse 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "73213180249700_piano-1_2.jpg",
+        "id": 73213486740600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 73219609799500,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73233894018100,
+          "position": [
+            -0.16801000842676952,
+            -0.2819483725544232,
+            -0.9446045480953121
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74316017933700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73199489651400,
+          "position": [
+            0.9595777530899964,
+            -0.20971708453276797,
+            0.1876946462471155
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74327974280100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.9971791284091946,
+            0.07403535348681091,
+            0.0123512063848709
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74344922241500
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Muse 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "73230080593500_piano-1_3.jpg",
+        "id": 73230116538000
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 73233894018100,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73247444514000,
+          "position": [
+            0.9792905227879468,
+            -0.1844173784751471,
+            0.0835482046130499
+          ],
+          "asset": null,
+          "link": null,
+          "id": 73402991713500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73219609799500,
+          "position": [
+            -0.9669487156695046,
+            -0.25253582463567337,
+            0.03515449531249089
+          ],
+          "asset": null,
+          "link": null,
+          "id": 73412053971000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73199489651400,
+          "position": [
+            -0.623575463422712,
+            -0.13762223942982715,
+            0.7695542610053364
+          ],
+          "asset": null,
+          "link": null,
+          "id": 73418105112199
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Skeleton 3D",
+          "abstract": null,
+          "viewId": 74285747577200,
+          "position": [
+            -0.8909566080591756,
+            -0.4528293213696706,
+            0.033792429086590074
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74436247018700
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Muse 4",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "73246825554700_piano-1_4.jpg",
+        "id": 73246889045500
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 73247444514000,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Cerco",
+          "abstract": null,
+          "viewId": 73247444514000,
+          "position": [
+            -0.2725058976192832,
+            -0.3560025761935012,
+            0.8938695103348695
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "73263400812300_cervo.jpg",
+            "id": 73263421000800
+          },
+          "link": null,
+          "id": 73268652196600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Tasso",
+          "abstract": null,
+          "viewId": 73247444514000,
+          "position": [
+            0.3814307325853426,
+            -0.2857811070893131,
+            0.8791130502217651
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "73288147772100_tasso.jpg",
+            "id": 73288180612300
+          },
+          "link": null,
+          "id": 73297205740600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Profilo IG",
+          "abstract": "scopri il nostro profilo IG",
+          "viewId": 73247444514000,
+          "position": [
+            -0.5908548304051755,
+            -0.30576945734218547,
+            0.7465893170569322
+          ],
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "73318245465500_ig.jpg",
+            "id": 73318277097600,
+            "chromaKeyColor": null
+          },
+          "link": {
+            "title": "Vai alla pagina..",
+            "href": "https://www.instagram.com/websolute/?hl=it",
+            "target": "_blank"
+          },
+          "id": 73322824155900,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73233894018100,
+          "position": [
+            -0.0171763095105569,
+            -0.1655291595539946,
+            -0.986055308656135
+          ],
+          "asset": null,
+          "link": null,
+          "id": 73381614202999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.6586819976299745,
+            -0.020074222852461864,
+            0.7521536090288046
+          ],
+          "asset": null,
+          "link": null,
+          "id": 73392328523500
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Muse 3D",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "73439843084300_piano-1_3.jpg",
+        "id": 73439890101999
+      },
+      "orientation": {
+        "latitude": 20.1,
+        "longitude": 1.9000000000000001
+      },
+      "zoom": 75,
+      "id": 74285747577200,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "74274511560600_triceratopsSkeleton.glb",
+            "id": 74274851187700,
+            "chromaKeyColor": null
+          },
+          "id": 74285766067400,
+          "position": null,
+          "rotation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Back",
+          "abstract": null,
+          "viewId": 73233894018100,
+          "position": [
+            -0.7743856698304638,
+            -0.43036632349448223,
+            -0.4638013173364935
+          ],
+          "asset": null,
+          "id": 74413424122200,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null,
+      "ar": {
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "75154379576900_triceratopsSkeleton.usdz",
+          "id": 75154426101600
+        },
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "75157959314000_triceratopsSkeleton.glb",
+          "id": 75157986926600
+        }
+      }
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Watch 3D",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "74790134434100_dressroom.jpeg",
+        "id": 74790166905200
+      },
+      "orientation": {
+        "latitude": 6.899999999999999,
+        "longitude": 111.89999999999999
+      },
+      "zoom": 75,
+      "id": 74808209121800,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "74807610081500_watch-ao.glb",
+            "id": 74807626394100,
+            "chromaKeyColor": null
+          },
+          "id": 74808218139400,
+          "position": null,
+          "rotation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.712541962680571,
+            -0.309928451245824,
+            -0.6294666842078973
+          ],
+          "asset": null,
+          "id": 75046843734900,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Timesquare",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "74820648149599_time-square.mp4",
+        "id": 74820707286299
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 74827866056999,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Back",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.9095712841719734,
+            -0.4078737245880029,
+            0.07949279087097952
+          ],
+          "asset": null,
+          "link": null,
+          "id": 74844217170900
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Cinema",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "75309172753900_cinema.jpg",
+        "id": 75309210477699
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 75312896909800,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            0.8030968925940373,
+            -0.1846596197350335,
+            0.5665123175581569
+          ],
+          "asset": null,
+          "link": null,
+          "id": 75333403238400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Video VR",
+          "abstract": null,
+          "viewId": 72757242951600,
+          "position": [
+            0.8008278774594959,
+            -0.18913711392195529,
+            -0.5682445449108967
+          ],
+          "asset": null,
+          "link": null,
+          "id": 75350043651599
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            19.954378123941442,
+            1.5494701171970253,
+            -0.04152215745222055
+          ],
+          "rotation": [
+            1.5400368007244274,
+            -1.5032395127442877,
+            1.5399665194432108,
+            "XYZ"
+          ],
+          "scale": [
+            21.5,
+            12,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "75359447813500_websolute.mp4",
+            "id": 75359754912099,
+            "chromaKeyColor": null
+          },
+          "id": 75361030477800
+        }
+      ]
     }
   ],
-  "menu": [],
+  "menu": [
+    {
+      "id": 75235852805100,
+      "parentId": null,
+      "viewId": 55709698289900,
+      "name": "Welcome Room",
+      "order": 0
+    },
+    {
+      "id": 74540000298999,
+      "parentId": null,
+      "viewId": null,
+      "name": "Tour",
+      "order": 10
+    },
+    {
+      "id": 74545649459800,
+      "parentId": 74540000298999,
+      "viewId": 498478142881399,
+      "name": "Showroom ",
+      "order": 0
+    },
+    {
+      "id": 74553094412200,
+      "parentId": 74540000298999,
+      "viewId": 73199489651400,
+      "name": "Muse Museum",
+      "order": 10
+    },
+    {
+      "id": 74569467717500,
+      "parentId": 74540000298999,
+      "viewId": 72392536339999,
+      "name": "House Tour",
+      "order": 20
+    },
+    {
+      "id": 74930559518900,
+      "parentId": 74540000298999,
+      "viewId": 72879676541500,
+      "name": "Kitchen Grid",
+      "order": 30
+    },
+    {
+      "id": 74581921776600,
+      "parentId": null,
+      "viewId": null,
+      "name": "Media",
+      "order": 20
+    },
+    {
+      "id": 74586931569000,
+      "parentId": 74581921776600,
+      "viewId": 337929883149900,
+      "name": "Sala TV",
+      "order": 0
+    },
+    {
+      "id": 74594880210700,
+      "parentId": 74581921776600,
+      "viewId": 338065166299600,
+      "name": "Gallery",
+      "order": 10
+    },
+    {
+      "id": 74615068094100,
+      "parentId": 74581921776600,
+      "viewId": 75312896909800,
+      "name": "Cinema",
+      "order": 20
+    },
+    {
+      "id": 74619434248400,
+      "parentId": null,
+      "viewId": null,
+      "name": "Studio",
+      "order": 30
+    },
+    {
+      "id": 74626631682900,
+      "parentId": 74619434248400,
+      "viewId": 406765685595300,
+      "name": "Meeting",
+      "order": 0
+    },
+    {
+      "id": 74627286351900,
+      "parentId": 74619434248400,
+      "viewId": 73020902678899,
+      "name": "Studio TV",
+      "order": 10
+    },
+    {
+      "id": 74649679952700,
+      "parentId": null,
+      "viewId": null,
+      "name": "Video 360",
+      "order": 40
+    },
+    {
+      "id": 74667510577200,
+      "parentId": 74649679952700,
+      "viewId": 248231505262800,
+      "name": "Expo",
+      "order": 0
+    },
+    {
+      "id": 74667800798900,
+      "parentId": 74649679952700,
+      "viewId": 248392194266799,
+      "name": "Lab",
+      "order": 10
+    },
+    {
+      "id": 74667974409200,
+      "parentId": 74649679952700,
+      "viewId": 248430441511900,
+      "name": "Tour",
+      "order": 20
+    },
+    {
+      "id": 74683870743800,
+      "parentId": 74649679952700,
+      "viewId": 72757242951600,
+      "name": "Video VR",
+      "order": 30
+    },
+    {
+      "id": 74684218148300,
+      "parentId": 74649679952700,
+      "viewId": 74827866056999,
+      "name": "Timesquare",
+      "order": 40
+    },
+    {
+      "id": 74709201159299,
+      "parentId": null,
+      "viewId": null,
+      "name": "Modelli 3D",
+      "order": 50
+    },
+    {
+      "id": 74715180214800,
+      "parentId": 74709201159299,
+      "viewId": 74285747577200,
+      "name": "Skeleton",
+      "order": 0
+    },
+    {
+      "id": 74715419424100,
+      "parentId": 74709201159299,
+      "viewId": 57092993454500,
+      "name": "Poltrona",
+      "order": 10
+    },
+    {
+      "id": 74715628924199,
+      "parentId": 74709201159299,
+      "viewId": 74808209121800,
+      "name": "Watch",
+      "order": 20
+    }
+  ],
   "assets": [
     {
       "type": {
@@ -6354,6 +8022,439 @@
       "file": "60456449680699_websolute.mp4",
       "id": 60456725914300,
       "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "72215273818700_websolute.mp4",
+      "id": 72216205127100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72384910820099_Unreal Engine Demo 360 2020.11.05 - 15.26.48.39.jpg",
+      "id": 72384959104200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72410872958600_Unreal Engine Demo 360 2020.11.05 - 15.28.28.86.jpg",
+      "id": 72410948250499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72424386520100_Unreal Engine Demo 360 2020.11.05 - 15.31.29.19.jpg",
+      "id": 72424471784800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72443354267299_Unreal Engine Demo 360 2020.11.05 - 15.35.01.57.jpg",
+      "id": 72443422942900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72518361273700_Unreal Engine Demo 360 2020.11.05 - 15.35.55.31.jpg",
+      "id": 72518399192500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72529052045600_Unreal Engine Demo 360 2020.11.05 - 15.36.39.30.jpg",
+      "id": 72529088118500
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "72751813369800_videovr.mp4",
+      "id": 72752517085599
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72865598820699_NEWONESET2_x0_y0.jpg",
+      "id": 72865677752099
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866129539100_NEWONESET2_x0_y5.jpg",
+      "id": 72867233270700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866161315199_NEWONESET2_x0_y1.jpg",
+      "id": 72867247426599
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866200912000_NEWONESET2_x0_y2.jpg",
+      "id": 72867263681500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866348550300_NEWONESET2_x3_y0.jpg",
+      "id": 72867281850000
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866379410700_NEWONESET2_x3_y1.jpg",
+      "id": 72867298624299
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866608473200_NEWONESET2_x3_y5.jpg",
+      "id": 72867307774000
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866649552800_NEWONESET2_x3_y6.jpg",
+      "id": 72867312938900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866716417299_NEWONESET2_x3_y4.jpg",
+      "id": 72867325517600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866817381900_NEWONESET2_x3_y7.jpg",
+      "id": 72867334132900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72866849722699_NEWONESET2_x0_y6.jpg",
+      "id": 72867383092399
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867063502099_NEWONESET2_x0_y7.jpg",
+      "id": 72867392852900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867146434900_NEWONESET2_x1_y7.jpg",
+      "id": 72867397165499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867214089800_NEWONESET2_x2_y7.jpg",
+      "id": 72867412988800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867456563300_NEWONESET2_x0_y3.jpg",
+      "id": 72867521360300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867498030199_NEWONESET2_x0_y4.jpg",
+      "id": 72867533671100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867622315300_NEWONESET2_x3_y2.jpg",
+      "id": 72867664641900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "72867649046500_NEWONESET2_x3_y3.jpg",
+      "id": 72867681398200
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73015027507700_Unreal Engine Demo 360 2020.11.25 - 17.19.12.06.jpg",
+      "id": 73015107263700
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 73055797043500,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73192653143100_piano-1_1.jpg",
+      "id": 73192698778800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73213180249700_piano-1_2.jpg",
+      "id": 73213486740600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73230080593500_piano-1_3.jpg",
+      "id": 73230116538000
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73246825554700_piano-1_4.jpg",
+      "id": 73246889045500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73263400812300_cervo.jpg",
+      "id": 73263421000800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73288147772100_tasso.jpg",
+      "id": 73288180612300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73318245465500_ig.jpg",
+      "id": 73318277097600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "73439843084300_piano-1_3.jpg",
+      "id": 73439890101999
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "74274511560600_triceratopsSkeleton.glb",
+      "id": 74274851187700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "74790134434100_dressroom.jpeg",
+      "id": 74790166905200
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "74807610081500_watch-ao.glb",
+      "id": 74807626394100
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "74820648149599_time-square.mp4",
+      "id": 74820707286299
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "75026951720600_watch-ao.usdz",
+      "id": 75026984643800
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "75033270282000_watch-ao.glb",
+      "id": 75033288744099
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "75113408018900_poltrona.usdz",
+      "id": 75113456332100
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "75117566263699_poltrona.glb",
+      "id": 75117588429500
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "75154379576900_triceratopsSkeleton.usdz",
+      "id": 75154426101600
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "75157959314000_triceratopsSkeleton.glb",
+      "id": 75157986926600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "75309172753900_cinema.jpg",
+      "id": 75309210477699
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "75359447813500_websolute.mp4",
+      "id": 75359754912099
     }
   ],
   "users": [
