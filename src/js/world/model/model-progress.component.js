@@ -43,7 +43,7 @@ export default class ModelProgressComponent extends ModelComponent {
 				takeUntil(this.unsubscribe$)
 			).subscribe(progress => {
 				if (progress.count) {
-					this.title = progress.title;
+					this.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
 				} else {
 					this.title = this.getTitle();
 				}

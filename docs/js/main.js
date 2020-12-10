@@ -17974,7 +17974,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
       LoaderService.progress$.pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (progress) {
         if (progress.count) {
-          _this.title = progress.title;
+          _this.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
         } else {
           _this.title = _this.getTitle();
         }
