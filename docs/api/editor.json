@@ -6902,7 +6902,25 @@
             "file": "138599023991100_Composizione1_x0_y0.jpg",
             "id": 138599062506800
           },
-          "navs": [],
+          "navs": [
+            {
+              "type": {
+                "id": 1,
+                "name": "nav"
+              },
+              "title": "Welcome Room",
+              "abstract": null,
+              "viewId": 55709698289900,
+              "position": [
+                0.8405560156167998,
+                0.11394167286962176,
+                -0.5296063441784684
+              ],
+              "asset": null,
+              "link": null,
+              "id": 138826853689599
+            }
+          ],
           "indices": {
             "x": 0,
             "y": 0
@@ -7044,7 +7062,7 @@
     {
       "id": 74930559518900,
       "parentId": 74540000298999,
-      "viewId": 72879676541500,
+      "viewId": 138614587173299,
       "name": "Kitchen Grid",
       "order": 30
     },
