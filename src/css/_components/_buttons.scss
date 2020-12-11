@@ -109,7 +109,7 @@
 	&:focus,
 	&:hover,
 	&:visited {
-		background: $foreground-primary;
+		background: $background-primary;
 		color: $foreground-negative;
 
 		svg {
@@ -124,7 +124,7 @@
 		&:focus,
 		&:hover,
 		&:visited {
-			background: $foreground-primary-disabled;
+			background: $background-primary-disabled;
 			pointer-events: none;
 		}
 	}

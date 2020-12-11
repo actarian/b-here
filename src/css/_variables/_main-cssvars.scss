@@ -25,6 +25,7 @@ body {
 	--background-primary: #{$background-primary};
 	--background-secondary: #{$background-secondary};
 	--background-tertiary: #{$background-tertiary};
+	--background-primary-disabled: #{$background-primary-disabled};
 	--foreground: #{$foreground};
 	--foreground-negative: #{$foreground-negative};
 	--foreground-primary: #{$foreground-primary};
@@ -33,6 +34,15 @@ body {
 	--foreground-primary-disabled: #{$foreground-primary-disabled};
 	--border: #{$border};
 	--shadow: #{$shadow};
+	--black-10: #{$black-10};
+	--black-20: #{$black-20};
+	--black-30: #{$black-30};
+	--black-40: #{$black-40};
+	--black-50: #{$black-50};
+	--black-60: #{$black-60};
+	--black-70: #{$black-70};
+	--black-80: #{$black-80};
+	--black-90: #{$black-90};
 }
 
 @import 'cssvars';

@@ -126,6 +126,7 @@ function _readOnlyError(name) {
   channelName: 'BHere',
   flags: {
     production: true,
+    useProxy: false,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
@@ -194,6 +195,7 @@ function _readOnlyError(name) {
   channelName: 'BHere',
   flags: {
     production: false,
+    useProxy: false,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
@@ -377,6 +379,7 @@ var defaultAppOptions = {
   channelName: 'BHere',
   flags: {
     production: false,
+    useProxy: false,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
@@ -2137,6 +2140,10 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     }); // rtc
 
     var clientInit = function clientInit() {
+      if (environment.flags.useProxy) {
+        client.startProxyServer();
+      }
+
       client.init(environment.appKey, function () {
         // console.log('AgoraRTC client initialized');
         next();
@@ -2558,6 +2565,10 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         var client = _this9.client;
         client.leave(function () {
           _this9.client = null; // console.log('Leave channel successfully');
+
+          if (environment.flags.useProxy) {
+            client.stopProxyServer();
+          }
 
           resolve();
         }, function (error) {
@@ -9558,7 +9569,7 @@ ControlTextareaComponent.meta = {
   inputs: ['control', 'label', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form--textarea\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<textarea class=\"control--text\" [formControl]=\"control\" [innerHTML]=\"label\" rows=\"6\" [disabled]=\"disabled\"></textarea>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form--textarea\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<textarea class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [innerHTML]=\"label\" rows=\"6\" [disabled]=\"disabled\"></textarea>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlVectorComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlVectorComponent, _ControlComponent);
 

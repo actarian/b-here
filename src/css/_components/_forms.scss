@@ -37,7 +37,7 @@ $invalid: $foreground-primary;
 	display: flex;
 	flex-wrap: wrap;
 	padding: 3px 1px;
-	border-bottom: 2px solid $foreground-primary-disabled;
+	border-bottom: 2px solid $background-primary-disabled;
 	margin-bottom: 10px;
 
 	@include media-down(xs) {
@@ -54,7 +54,7 @@ $invalid: $foreground-primary;
 			right: 3px;
 			width: 4px;
 			height: 4px;
-			background: $foreground-primary-disabled;
+			background: $background-primary-disabled;
 			border-radius: 2px;
 			line-height: 0;
 			font-size: 0;
@@ -64,7 +64,7 @@ $invalid: $foreground-primary;
 	.invalid.touched & {
 		.required__badge {
 			color: $foreground-secondary;
-			background: $foreground-secondary;
+			background: $background-secondary;
 		}
 	}
 }
@@ -163,8 +163,7 @@ $invalid: $foreground-primary;
 		justify-content: center;
 		width: 100%;
 		margin: 0;
-		padding: 20px 0;
-		border-bottom: 1px solid rgba(#16255b, 0.2);
+		padding: 10px 0 20px 0;
 
 		&>*+* {
 			margin-left: 10px;
@@ -221,7 +220,7 @@ fieldset,
 	padding: 15px 10px;
 	padding: 3px 1px;
     margin-bottom: 8px;
-    border-bottom: 1px solid rgba(0,153,255,.15);
+    border-bottom: 2px solid $background-primary-disabled;
 
 	.control--text {
 		resize: vertical;
@@ -241,7 +240,8 @@ fieldset,
 	position: relative;
 	background: $background;
 	border: none;
-	border-bottom: 2px solid $foreground;
+	// border-bottom: 2px solid $foreground;
+	border-bottom: 2px solid $background-primary-disabled;
 	border-radius: 0;
 	cursor: pointer;
 
@@ -366,6 +366,7 @@ fieldset,
 	}
 }
 
+/*
 .control--file {
 	color: transparent;
 	background: rgba(0, 1, 0, 0.2);
@@ -377,8 +378,7 @@ fieldset,
 	height: 100%;
 	cursor: pointer;
 }
-
-/* errors */
+*/
 
 errors-component {
 	display: block;
@@ -394,8 +394,6 @@ errors-component {
 		border-radius: 2px;
 	}
 }
-
-/* results */
 
 .group--form--results {
 	justify-content: center;
@@ -603,7 +601,7 @@ input-value {
 	.control--text {
 		font-size: 11px;
 		border-radius: 3px 0 0 3px;
-		border: 1px solid rgba($foreground-primary, 0.15);
+		border: 1px solid $background-primary-disabled; // rgba($foreground-primary, 0.15);
 		border-right: none;
 		padding: 4px;
 		font-weight: 400;
@@ -629,12 +627,14 @@ input-value {
 	align-items: center;
 	width: 16px;
 	height: 16px;
-	background: rgba($foreground-primary, 0.2);
+	background: $background-primary-disabled; // rgba($foreground-primary, 0.2);
+	color: $foreground;
 	user-select: none;
 	cursor: pointer;
 
 	.disabled & {
-		background: rgba(#000, 0.15);
+		opacity: 0.5;
+		// background: rgba(#000, 0.15);
 		pointer-events: none;
 	}
 }
@@ -644,16 +644,23 @@ input-value {
 	label,
 	.control--text,
 	.required__badge {
-		color: $foreground-primary-disabled;
+		// color: $foreground-primary-disabled;
+		opacity: 0.5;
 		pointer-events: none;
 	}
 
+	/*
 	.control--text {
 		border-color: rgba(#000, 0.15);
 	}
+	*/
 }
 
 [control-asset] {
+	.group--form {
+		border: none;
+	}
+
 	.group--picture {
 		@include aspect-clip(3, 1);
 		border-radius: 6px;
@@ -674,7 +681,8 @@ input-value {
 			align-items: center;
 			font-size: 10px;
 			font-weight: 600;
-			border: 2px solid rgba(0, 0, 0, .15);
+			border: 2px solid $background-primary-disabled;
+			color: $foreground-tertiary;
 			border-radius: 6px;
 
 			svg {
@@ -693,6 +701,7 @@ input-value {
 			appearance: none;
 			opacity: 0;
 			cursor: pointer;
+			color: $foreground-primary-disabled;
 		}
 	}
 }
@@ -708,7 +717,7 @@ input-value {
 		.file-name {
 			flex: 1 1 auto;
 			margin-right: 5px;
-			color: #111;
+			color: $foreground;
 		}
 	}
 
@@ -731,8 +740,8 @@ input-value {
 		line-height: 1;
 
 		&, &:active, &:focus, &:hover, &:visited {
-			background: #09f;
-			color: #fff;
+			background: $background-primary;
+			color: $foreground-negative;
 		}
 
 		input {
@@ -751,8 +760,8 @@ input-value {
 		margin-left: 5px;
 
 		&, &:active, &:focus, &:hover, &:visited {
-			background: #ff4332;
-			color: #fff;
+			background: $background-secondary;
+			color: $foreground-negative;
 		}
 	}
 }
