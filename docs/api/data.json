@@ -390,7 +390,7 @@
           },
           "title": "Welcome ",
           "abstract": null,
-          "viewId": 338065166299600,
+          "viewId": 55709698289900,
           "position": [
             -0.7754166205807476,
             -0.08534864004267192,
@@ -627,7 +627,7 @@
           },
           "title": "Welcome",
           "abstract": null,
-          "viewId": 338065166299600,
+          "viewId": 55709698289900,
           "position": [
             -0.09537453528469773,
             -0.014718483939465435,
@@ -797,7 +797,7 @@
           },
           "title": "Welcome Room",
           "abstract": null,
-          "viewId": 338065166299600,
+          "viewId": 55709698289900,
           "position": [
             -0.9938584563226086,
             0.003371207616236515,
@@ -856,7 +856,7 @@
           },
           "title": "Welcome Room",
           "abstract": null,
-          "viewId": 170427763402500,
+          "viewId": 55709698289900,
           "position": [
             -0.9979308429078453,
             0.00892971566903106,
@@ -864,7 +864,8 @@
           ],
           "asset": null,
           "link": null,
-          "id": 501145435729599
+          "id": 501145435729599,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -5747,7 +5748,43 @@
         "longitude": 0
       },
       "zoom": 75,
-      "id": 72392536339999
+      "id": 72392536339999,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72412822521800,
+          "position": [
+            0.9434854517144335,
+            -0.320992347002223,
+            -0.08245674968864464
+          ],
+          "asset": null,
+          "link": null,
+          "id": 137955632109500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "position": [
+            -0.9986902682976839,
+            -0.03835318833470327,
+            0.033864154382808584
+          ],
+          "asset": null,
+          "link": null,
+          "id": 138040422618299
+        }
+      ]
     },
     {
       "type": {
@@ -5822,6 +5859,23 @@
           "asset": null,
           "link": null,
           "id": 72611877967700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72445514559700,
+          "position": [
+            0.2984622192046036,
+            -0.32235387349090994,
+            0.898336397989567
+          ],
+          "asset": null,
+          "link": null,
+          "id": 137979209319700
         }
       ]
     },
@@ -5961,6 +6015,23 @@
           "asset": null,
           "link": null,
           "id": 72567674089000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72533478659599,
+          "position": [
+            0.3947790122153034,
+            -0.4257445563140372,
+            0.8141812478086639
+          ],
+          "asset": null,
+          "link": null,
+          "id": 138007807304099
         }
       ]
     },
@@ -6048,338 +6119,6 @@
     },
     {
       "type": {
-        "id": 3,
-        "name": "panorama-grid"
-      },
-      "name": "Kitchen Grid",
-      "asset": {
-        "type": {
-          "id": 1,
-          "name": "image"
-        },
-        "folder": "/uploads/",
-        "file": "72865598820699_NEWONESET2_x0_y0.jpg",
-        "id": 72865677752099
-      },
-      "tiles": [
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72865598820699_NEWONESET2_x0_y0.jpg",
-            "id": 72865677752099
-          },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 0
-          },
-          "id": 72879676629100
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866348550300_NEWONESET2_x3_y0.jpg",
-            "id": 72867281850000
-          },
-          "navs": [],
-          "indices": {
-            "x": 0,
-            "y": 3
-          },
-          "id": 72879676651800
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866161315199_NEWONESET2_x0_y1.jpg",
-            "id": 72867247426599
-          },
-          "navs": [],
-          "indices": {
-            "x": 1,
-            "y": 0
-          },
-          "id": 72879676653399
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866379410700_NEWONESET2_x3_y1.jpg",
-            "id": 72867298624299
-          },
-          "navs": [],
-          "indices": {
-            "x": 1,
-            "y": 3
-          },
-          "id": 72879676654500
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866200912000_NEWONESET2_x0_y2.jpg",
-            "id": 72867263681500
-          },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 0
-          },
-          "id": 72879676655700
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867622315300_NEWONESET2_x3_y2.jpg",
-            "id": 72867664641900
-          },
-          "navs": [],
-          "indices": {
-            "x": 2,
-            "y": 3
-          },
-          "id": 72879676656800
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867456563300_NEWONESET2_x0_y3.jpg",
-            "id": 72867521360300
-          },
-          "navs": [],
-          "indices": {
-            "x": 3,
-            "y": 0
-          },
-          "id": 72879676657800
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867649046500_NEWONESET2_x3_y3.jpg",
-            "id": 72867681398200
-          },
-          "navs": [],
-          "indices": {
-            "x": 3,
-            "y": 3
-          },
-          "id": 72879676658900
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867498030199_NEWONESET2_x0_y4.jpg",
-            "id": 72867533671100
-          },
-          "navs": [],
-          "indices": {
-            "x": 4,
-            "y": 0
-          },
-          "id": 72879676660000
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866716417299_NEWONESET2_x3_y4.jpg",
-            "id": 72867325517600
-          },
-          "navs": [],
-          "indices": {
-            "x": 4,
-            "y": 3
-          },
-          "id": 72879676661099
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866129539100_NEWONESET2_x0_y5.jpg",
-            "id": 72867233270700
-          },
-          "navs": [],
-          "indices": {
-            "x": 5,
-            "y": 0
-          },
-          "id": 72879676662300
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866608473200_NEWONESET2_x3_y5.jpg",
-            "id": 72867307774000
-          },
-          "navs": [],
-          "indices": {
-            "x": 5,
-            "y": 3
-          },
-          "id": 72879676663500
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866849722699_NEWONESET2_x0_y6.jpg",
-            "id": 72867383092399
-          },
-          "navs": [],
-          "indices": {
-            "x": 6,
-            "y": 0
-          },
-          "id": 72879676664699
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866649552800_NEWONESET2_x3_y6.jpg",
-            "id": 72867312938900
-          },
-          "navs": [],
-          "indices": {
-            "x": 6,
-            "y": 3
-          },
-          "id": 72879676665800
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867063502099_NEWONESET2_x0_y7.jpg",
-            "id": 72867392852900
-          },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 0
-          },
-          "id": 72879676666899
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867146434900_NEWONESET2_x1_y7.jpg",
-            "id": 72867397165499
-          },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 1
-          },
-          "id": 72879676668100
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72867214089800_NEWONESET2_x2_y7.jpg",
-            "id": 72867412988800
-          },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 2
-          },
-          "id": 72879676669200
-        },
-        {
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "72866817381900_NEWONESET2_x3_y7.jpg",
-            "id": 72867334132900
-          },
-          "navs": [],
-          "indices": {
-            "x": 7,
-            "y": 3
-          },
-          "id": 72879676670499
-        }
-      ],
-      "invertAxes": true,
-      "flipAxes": false,
-      "orientation": {
-        "latitude": 0,
-        "longitude": 0
-      },
-      "zoom": 75,
-      "id": 72879676541500
-    },
-    {
-      "type": {
         "id": 2,
         "name": "panorama"
       },
@@ -6429,7 +6168,11 @@
             "folder": "",
             "file": "publisherStream",
             "id": 73055797043500,
-            "chromaKeyColor": null
+            "chromaKeyColor": [
+              0,
+              1,
+              0
+            ]
           },
           "id": 73038413974300
         },
@@ -6491,6 +6234,40 @@
           "asset": null,
           "link": null,
           "id": 74363330470000
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73219609799500,
+          "position": [
+            0.5555744772601287,
+            -0.16720004884514053,
+            -0.8144821323290753
+          ],
+          "asset": null,
+          "link": null,
+          "id": 137893468208599
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 73233894018100,
+          "position": [
+            0.9755880011999465,
+            -0.1392636034234778,
+            -0.16980489002440868
+          ],
+          "asset": null,
+          "link": null,
+          "id": 137903421212099
         }
       ],
       "hidden": null
@@ -6511,8 +6288,8 @@
         "id": 73213486740600
       },
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -4.199999999999999,
+        "longitude": 270.5
       },
       "zoom": 75,
       "id": 73219609799500,
@@ -6531,8 +6308,8 @@
             -0.9446045480953121
           ],
           "asset": null,
-          "link": null,
-          "id": 74316017933700
+          "id": 74316017933700,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -6548,8 +6325,8 @@
             0.1876946462471155
           ],
           "asset": null,
-          "link": null,
-          "id": 74327974280100
+          "id": 74327974280100,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -6565,10 +6342,11 @@
             0.0123512063848709
           ],
           "asset": null,
-          "link": null,
-          "id": 74344922241500
+          "id": 74344922241500,
+          "keepOrientation": null
         }
-      ]
+      ],
+      "hidden": null
     },
     {
       "type": {
@@ -6678,8 +6456,8 @@
         "id": 73246889045500
       },
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -2.5,
+        "longitude": 89.30000000000001
       },
       "zoom": 75,
       "id": 73247444514000,
@@ -6704,10 +6482,11 @@
             },
             "folder": "/uploads/",
             "file": "73263400812300_cervo.jpg",
-            "id": 73263421000800
+            "id": 73263421000800,
+            "chromaKeyColor": null
           },
-          "link": null,
-          "id": 73268652196600
+          "id": 73268652196600,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -6729,10 +6508,11 @@
             },
             "folder": "/uploads/",
             "file": "73288147772100_tasso.jpg",
-            "id": 73288180612300
+            "id": 73288180612300,
+            "chromaKeyColor": null
           },
-          "link": null,
-          "id": 73297205740600
+          "id": 73297205740600,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -6779,8 +6559,8 @@
             -0.986055308656135
           ],
           "asset": null,
-          "link": null,
-          "id": 73381614202999
+          "id": 73381614202999,
+          "keepOrientation": null
         },
         {
           "type": {
@@ -6796,10 +6576,11 @@
             0.7521536090288046
           ],
           "asset": null,
-          "link": null,
-          "id": 73392328523500
+          "id": 73392328523500,
+          "keepOrientation": null
         }
-      ]
+      ],
+      "hidden": null
     },
     {
       "type": {
@@ -6941,7 +6722,27 @@
           "keepOrientation": null
         }
       ],
-      "hidden": null
+      "hidden": null,
+      "ar": {
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "138330462614700_watch-ao.usdz",
+          "id": 138330523444099
+        },
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "138334645845800_watch-ao.glb",
+          "id": 138334670526600
+        }
+      }
     },
     {
       "type": {
@@ -7074,6 +6875,134 @@
           "id": 75361030477800
         }
       ]
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "panorama-grid"
+      },
+      "name": "Kitchen Grid",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "138599023991100_Composizione1_x0_y0.jpg",
+        "id": 138599062506800
+      },
+      "tiles": [
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "138599023991100_Composizione1_x0_y0.jpg",
+            "id": 138599062506800
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 0
+          },
+          "id": 138614587246699
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "138599276964400_Composizione1_x2_y0.jpg",
+            "id": 138599595717400
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 2
+          },
+          "id": 138614587251900
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "138599496095399_Composizione1_x4_y0.jpg",
+            "id": 138599607569599
+          },
+          "navs": [],
+          "indices": {
+            "x": 0,
+            "y": 4
+          },
+          "id": 138614587253100
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "138599257306099_Composizione1_x0_y2.jpg",
+            "id": 138599586913499
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 0
+          },
+          "id": 138614587253899
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "138599561068799_Composizione1_x2_y2.jpg",
+            "id": 138599629295700
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 2
+          },
+          "id": 138614587254799
+        },
+        {
+          "asset": {
+            "type": {
+              "id": 1,
+              "name": "image"
+            },
+            "folder": "/uploads/",
+            "file": "138599743292500_Composizione1_x4_y2.jpg",
+            "id": 138599797492599
+          },
+          "navs": [],
+          "indices": {
+            "x": 2,
+            "y": 4
+          },
+          "id": 138614587256400
+        }
+      ],
+      "invertAxes": true,
+      "flipAxes": false,
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 138614587173299
     }
   ],
   "menu": [
@@ -8274,7 +8203,11 @@
       "folder": "",
       "file": "publisherStream",
       "id": 73055797043500,
-      "chromaKeyColor": null
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ]
     },
     {
       "type": {
@@ -8455,6 +8388,132 @@
       "folder": "/uploads/",
       "file": "75359447813500_websolute.mp4",
       "id": 75359754912099
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "138330462614700_watch-ao.usdz",
+      "id": 138330523444099
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "138334645845800_watch-ao.glb",
+      "id": 138334670526600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138493232334300_Composizione1_x0_y0.jpg",
+      "id": 138493284503899
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138493763196699_Composizione1_x1_y0.jpg",
+      "id": 138494049437899
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138493779085099_Composizione1_x0_y2.jpg",
+      "id": 138494062737300
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138493996006999_Composizione1_x2_y0.jpg",
+      "id": 138494081263800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138494029014500_Composizione1_x1_y2.jpg",
+      "id": 138494098790299
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138494246533800_Composizione1_x2_y2.jpg",
+      "id": 138494305476599
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138599023991100_Composizione1_x0_y0.jpg",
+      "id": 138599062506800
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138599257306099_Composizione1_x0_y2.jpg",
+      "id": 138599586913499
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138599276964400_Composizione1_x2_y0.jpg",
+      "id": 138599595717400
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138599496095399_Composizione1_x4_y0.jpg",
+      "id": 138599607569599
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138599561068799_Composizione1_x2_y2.jpg",
+      "id": 138599629295700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "138599743292500_Composizione1_x4_y2.jpg",
+      "id": 138599797492599
     }
   ],
   "users": [
