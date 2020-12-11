@@ -36,7 +36,7 @@ export const environmentStatic = {
 	},
 	assets: './',
 	worker: './js/workers/image.service.worker.js',
-	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
 	language: '',
 	market: '',
 	url: {

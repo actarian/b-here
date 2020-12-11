@@ -1,5 +1,5 @@
-import { BehaviorSubject, combineLatest, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, interval, of } from 'rxjs';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { RoleType } from '../user/user';
 
 export const StreamServiceMode = {
@@ -41,6 +41,50 @@ export default class StreamService {
 	}
 	static get peers() {
 		return this.peers$.getValue();
+	}
+
+	static orderedRemotes$() {
+		return combineLatest([StreamService.remotes$, interval(1000)]).pipe(
+			map(datas => {
+				const remotes = [];
+				datas[0].forEach(remote => {
+					// const audioLevel = remote.getAudioLevel();
+					// console.log('audioLevel', audioLevel, remote);
+					if (remote.clientInfo) {
+						remote.clientInfo.audioLevel = remote.getAudioLevel();
+						remote.clientInfo.peekAudioLevel = Math.max(remote.clientInfo.audioLevel, 0.2);
+					}
+					remotes.push(remote);
+				});
+				remotes.sort((a, b) => {
+					if (a.clientInfo && b.clientInfo) {
+						if (a.clientInfo.role === RoleType.Publisher) {
+							return -1;
+						} else if (b.clientInfo.role === RoleType.Publisher) {
+							return 1;
+						} else {
+							// sort on audioLevel or lastOrder
+							return b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel ||
+							(a.clientInfo.order || 0) - (b.clientInfo.order || 0);
+						}
+					} else {
+						return 0;
+					}
+				});
+				remotes.forEach((remote, i) => {
+					if (remote.clientInfo) {
+						remote.clientInfo.order = i;
+					}
+				});
+				// !!! hard limit max 8 visible stream
+				remotes.length = Math.min(remotes.length, 8);
+				return remotes;
+			}),
+			distinctUntilChanged((a, b) => {
+				return a.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|') ===
+				b.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|');
+			}),
+		);
 	}
 
 	static streams$ = combineLatest([StreamService.local$, StreamService.remotes$, StreamService.editorStreams$()]).pipe(

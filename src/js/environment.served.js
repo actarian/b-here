@@ -36,7 +36,7 @@ export const environmentServed = {
 	},
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
-	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
 	language: '/it',
 	market: '/it',
 	url: {

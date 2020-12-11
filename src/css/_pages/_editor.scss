@@ -89,7 +89,7 @@
 		width: 40px;
 		height: 40px;
 		margin: 0 10px 0 10px;
-		font-weight: 900;
+		font-weight: 800;
 		font-size: 13px;
 		line-height: 1;
 		letter-spacing: 1px;
@@ -202,7 +202,7 @@
 			}
 
 			&:not(.disabled) {
-				box-shadow: 0 7px 19px -5px rgba(86, 125, 151, .65);
+				box-shadow: 0 7px 19px -5px $shadow;
 				margin-bottom: 20px;
 
 				&:hover {
@@ -220,7 +220,7 @@
 		&>.btn>.title {
 			margin-bottom: 15px;
 			font-size: 14px;
-			font-weight: 900;
+			font-weight: 800;
 		}
 
 		&>.title {
@@ -231,7 +231,7 @@
 			margin-bottom: 20px;
 			font-size: 13px;
 			text-align: center;
-			color: rgba($foreground, 0.5);
+			color: $foreground-tertiary;
 		}
 
 		.nav--editor {
@@ -327,7 +327,7 @@
 .file-name {
 	max-width: 100%;
 	font-size: 11px;
-	font-weight: 500;
+	font-weight: 400;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -404,9 +404,6 @@
 	}
 
 	&:hover {
-		// border-color: rgba(0, 0, 0, 0.0);
-		// background: rgba($background-negative, 0.8);
-		// color: $foreground-negative;
 		opacity: 0.7;
 	}
 
@@ -435,7 +432,7 @@
 	&:focus,
 	&:hover,
 	&:visited {
-		background: $foreground;
+		background: $background-negative;
 	}
 
 	&.active {
@@ -495,7 +492,7 @@
 	margin-bottom: 15px;
 	overflow: hidden;
 	border-radius: 8px;
-	box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 10px 10px -5px $shadow;
 
 	.picture {
 		@include aspect-clip(3, 1);
@@ -537,8 +534,7 @@ update-view-tile {
 	margin-bottom: 10px;
 	padding: 10px;
 	border-radius: 12px;
-	// box-shadow: 0 10px 20px -5px rgba($foreground-primary, 0.45);
-	box-shadow: 0 7px 19px -5px rgba(86, 125, 151, 0.65);
+	box-shadow: 0 7px 19px -5px $shadow;
 
 	.group--headline {
 		display: flex;
@@ -591,7 +587,7 @@ update-view-tile {
 	.group--form--textarea {
 		margin-bottom: 10px;
 		padding: 3px 1px;
-		border-bottom: 1px solid rgba($foreground-primary, 0.15);
+		border-bottom: 1px solid $foreground-primary-disabled;
 	}
 
 	.group--cta {
