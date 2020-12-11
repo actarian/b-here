@@ -1485,6 +1485,50 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamSer
 var StreamService = /*#__PURE__*/function () {
   function StreamService() {}
 
+  StreamService.orderedRemotes$ = function orderedRemotes$() {
+    return rxjs.combineLatest([StreamService.remotes$, rxjs.interval(1000)]).pipe(operators.map(function (datas) {
+      var remotes = [];
+      datas[0].forEach(function (remote) {
+        // const audioLevel = remote.getAudioLevel();
+        // console.log('audioLevel', audioLevel, remote);
+        if (remote.clientInfo) {
+          remote.clientInfo.audioLevel = remote.getAudioLevel();
+          remote.clientInfo.peekAudioLevel = Math.max(remote.clientInfo.audioLevel, 0.2);
+        }
+
+        remotes.push(remote);
+      });
+      remotes.sort(function (a, b) {
+        if (a.clientInfo && b.clientInfo) {
+          if (a.clientInfo.role === RoleType.Publisher) {
+            return -1;
+          } else if (b.clientInfo.role === RoleType.Publisher) {
+            return 1;
+          } else {
+            // sort on audioLevel or lastOrder
+            return b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel || (a.clientInfo.order || 0) - (b.clientInfo.order || 0);
+          }
+        } else {
+          return 0;
+        }
+      });
+      remotes.forEach(function (remote, i) {
+        if (remote.clientInfo) {
+          remote.clientInfo.order = i;
+        }
+      }); // !!! hard limit max 8 visible stream
+
+      remotes.length = Math.min(remotes.length, 8);
+      return remotes;
+    }), operators.distinctUntilChanged(function (a, b) {
+      return a.map(function (remote) {
+        return remote.clientInfo ? remote.clientInfo.uid : '';
+      }).join('|') === b.map(function (remote) {
+        return remote.clientInfo ? remote.clientInfo.uid : '';
+      }).join('|');
+    }));
+  };
+
   StreamService.editorStreams$ = function editorStreams$() {
     var _this = this;
 
@@ -4918,7 +4962,7 @@ var VRService = /*#__PURE__*/function () {
 
       _this5.pushChanges();
     });
-    StreamService.remotes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
+    StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
       // console.log('AgoraComponent.remotes', remotes);
       _this5.remotes = remotes;
 

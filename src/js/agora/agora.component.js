@@ -157,7 +157,7 @@ export default class AgoraComponent extends Component {
 			this.local = local;
 			this.pushChanges();
 		});
-		StreamService.remotes$.pipe(
+		StreamService.orderedRemotes$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(remotes => {
 			// console.log('AgoraComponent.remotes', remotes);

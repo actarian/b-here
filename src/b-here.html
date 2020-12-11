@@ -47,8 +47,26 @@
 		bhere_ar: 'Inquadra il qrcode con il cellulare o il tablet per vedere il VR.',
 	};
 </script>
+<style>
+	.page {
+		--font-primary: GT Walsheim,Maven Pro,Arial,sans-serif;
+		--background: #ffffff;
+		--background-negative: #101010;
+		--background-primary: #09f;
+		--background-secondary: #ff4332;
+		--background-tertiary: #eeeeee;
+		--foreground: #101010;
+		--foreground-negative: #ffffff;
+		--foreground-primary: #0099ff;
+		--foreground-secondary: #ff4332;
+		--foreground-tertiary: #6d7b84;
+		--foreground-primary-disabled: #c4d3dd;
+		--border: #101010;
+		--shadow: rgba(86, 125, 151, .65);
+	}
+</style>
 <div class="page" agora-component>
-	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
+	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }" *if="state.status != 'connected'">
 		<img [src]="env.background.image" *if="env.background.image" />
 		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
@@ -217,7 +235,7 @@
 		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
 			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
-				<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
+				<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }">
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>

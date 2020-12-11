@@ -22,7 +22,7 @@ body {
 }
 
 .page {
-	background: #ffffff;
+	background: $background;
 
 	&>.background {
 		position: absolute;
@@ -30,17 +30,10 @@ body {
 		top: 0;
 		width: 100vw;
 		height: 100vh;
-		/*
-		left: -5vw;
-		top: -5vh;
-		width: 110vw;
-		height: 110vh;
-		*/
-
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background: #111;
+		background: $background-negative;
 
 		&>img,
 		&>video {
@@ -66,7 +59,8 @@ body {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: rgba(0, 0, 0, 0.7);
+			background: $background-negative;
+			opacity: 0.8;
 		}
 
 		@include media-up(sm) {
@@ -89,12 +83,6 @@ body {
 			&>video {
 				display: none;
 			}
-
-			/*
-			&:after {
-				background: rgba(0, 0, 0, 0.5);
-			}
-			*/
 		}
 	}
 }
@@ -141,7 +129,6 @@ body {
 .ui--info {
 	@include media-down(sm) {
 		padding: 80px 0 15px 0;
-		// overflow-y: auto;
 
 		&:not(.ui--info-centered) {
 			justify-content: flex-start;
@@ -153,12 +140,7 @@ body {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background: #111;
-	// background: #bdbdbd;
-	/* Old browsers */
-	// background: linear-gradient(to bottom, #bdbdbd 1%, #ffffff 50%, #bdbdbd 100%);
-	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	// filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bdbdbd', endColorstr='#bdbdbd',GradientType=0 ); /* IE6-9 */
+	background: $background-negative;
 }
 
 .ui__lock {
@@ -182,7 +164,7 @@ body {
 	margin: 0 10px;
 	border-radius: 7px;
 	background: $background;
-	box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2);
+	box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.35);
 
 	&__content {
 		padding: 20px;
@@ -191,7 +173,7 @@ body {
 	.title {
 		margin-bottom: 25px;
 		font-size: 22px;
-		font-weight: 900;
+		font-weight: 800;
 		line-height: 1.15;
 		text-align: center;
 	}
@@ -200,7 +182,7 @@ body {
 		margin: 15px 0;
 		font-size: 15px;
 		line-height: 1.2;
-		color: #6d7b84;
+		color: $foreground-tertiary;
 		text-align: center;
 		text-transform: lowercase;
 	}
@@ -212,7 +194,7 @@ body {
 	.group--form,
 	.group--form--select {
 		padding: 0;
-		border: 2px solid #c6e3f7;
+		border: 2px solid $foreground-primary-disabled;
 		border-radius: 5px;
 		cursor: pointer;
 
@@ -222,7 +204,7 @@ body {
 			margin: 0;
 			top: 0px;
 			font-size: 11px;
-			color: #a5b3bd;
+			color: $foreground-tertiary;
 			opacity: 1;
 			pointer-events: none;
 
@@ -240,7 +222,7 @@ body {
 			right: 8px;
 			top: 50%;
 			margin: 3px 0 0 0;
-			fill: #101010;
+			fill: $foreground-tertiary;
 			pointer-events: none;
 		}
 	}
@@ -251,10 +233,10 @@ body {
 		max-width: 100%;
 		font-size: 14px;
 		text-transform: none;
-		font-weight: 500;
+		font-weight: 400;
 		padding: 18px 8px 7px;
 		cursor: pointer;
-		@include autofill(14px, 500, 1, 0, $font-primary, $foreground, transparent);
+		@include autofill(14px, 400, 1, 0, $font-primary, $foreground, transparent);
 
 		&[readonly] {
 			color: #86929f;
@@ -264,7 +246,7 @@ body {
 	[control-custom-select] {
 		&.invalid {
 			.control--custom-select {
-				color: rgba($foreground, 0.4);
+				color: $foreground-tertiary;
 			}
 		}
 	}
@@ -284,8 +266,8 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #c6e3f7;
-		color: #313131;
+		background: $foreground-primary-disabled;
+		color: $foreground-negative;
 
 		svg {
 			fill: currentColor;
@@ -478,7 +460,6 @@ body {
 		}
 	}
 }
-
 
 @keyframes love-swing {
     0% {
@@ -729,7 +710,7 @@ body {
 		}
 
 		.title {
-			font-weight: 900;
+			font-weight: 800;
 			font-size: 80px;
 			line-height: 1;
 			color: white;
@@ -769,23 +750,6 @@ body {
 .btn--connect,
 .btn--absolute {
 	@extend %btn-rect;
-
-	svg {
-		fill: white;
-		margin-right: 10px;
-	}
-
-	&.disabled {
-
-		&,
-		&:active,
-		&:focus,
-		&:hover,
-		&:visited {
-			background: #c6e3f7;
-			pointer-events: none;
-		}
-	}
 }
 
 .btn--absolute {
@@ -887,6 +851,9 @@ body {
 	}
 
 	&__info {
+		&.talking {
+			border-color: #00ff00;
+		}
 		&.spyed {
 			border-color: $foreground-secondary;
 
@@ -923,7 +890,7 @@ body {
 	&:hover,
 	&:visited {
 		border: 2px solid rgba($foreground, 0.2);
-		background: rgb(0, 153, 255);
+		background: $foreground-primary;
 		color: $foreground-negative;
 
 		svg {
@@ -998,7 +965,7 @@ body {
 		height: 20px;
 		background: white;
 		border-radius: 10px;
-		font-weight: 900;
+		font-weight: 800;
 		font-size: 10px;
 		display: flex;
 		justify-content: center;
@@ -1034,7 +1001,6 @@ body {
 	@extend %btn-rect;
 
 	&.disabled {
-		pointer-events: none;
 		display: none;
 	}
 }
@@ -1052,7 +1018,7 @@ body {
 }
 
 .title {
-	font-weight: 900;
+	font-weight: 800;
 	font-size: 80px;
 	line-height: 1;
 }
@@ -1071,7 +1037,7 @@ body {
 
 	.form {
 		.title {
-			font-weight: 900;
+			font-weight: 800;
 			line-height: 1;
 			font-size: 28px;
 		}
@@ -1121,7 +1087,7 @@ model-viewer {
 
 .progress {
 	color: white;
-	font-weight: 900;
+	font-weight: 800;
 	font-size: 70px;
 	text-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
 }
@@ -1182,7 +1148,7 @@ model-viewer {
 
 	&__link {
 		font-size: 28px;
-		color: #ff4332;
+		color: $foreground-secondary;
 		font-weight: 300;
 		text-decoration: underline;
 		margin-bottom: 10px;
@@ -1235,7 +1201,6 @@ model-viewer {
 	}
 
 	&:hover {
-		// border-color: rgba(0, 0, 0, 0.0);
 		background: rgba($background-negative, 0.8);
 		color: $foreground-negative;
 	}

@@ -29,7 +29,7 @@ $invalid: $foreground-primary;
 
 %placeholder {
 	text-transform: none;
-	color: rgba($pristine, 0.4);
+	color: $foreground-tertiary;
 }
 
 %group--form {
@@ -37,7 +37,7 @@ $invalid: $foreground-primary;
 	display: flex;
 	flex-wrap: wrap;
 	padding: 3px 1px;
-	border-bottom: 2px solid #c6e3f7;
+	border-bottom: 2px solid $foreground-primary-disabled;
 	margin-bottom: 10px;
 
 	@include media-down(xs) {
@@ -48,24 +48,13 @@ $invalid: $foreground-primary;
 		@extend %label;
 	}
 
-	/*
-	&.required {
-		border-left: 3px solid #0099ff;
-		padding-left: 4px;
-
-		.required__badge {
-			font-size: 0;
-		}
-	}
-	*/
-
 	&.required {
 		.required__badge {
 			top: 3px;
 			right: 3px;
 			width: 4px;
 			height: 4px;
-			background: #7ccaff;
+			background: $foreground-primary-disabled;
 			border-radius: 2px;
 			line-height: 0;
 			font-size: 0;
@@ -268,12 +257,6 @@ fieldset,
 		pointer-events: none;
 	}
 
-	/*
-	&.required .required__badge {
-		display: none;
-	}
-	*/
-
 	@include media-down(xs) {
 		margin: 0 0 10px 0;
 	}
@@ -346,26 +329,6 @@ fieldset,
 		font-weight: $font-semibold;
 		text-decoration: underline;
 	}
-
-	/*
-	label {
-		display: flex;
-		align-items: center;
-		cursor: pointer;
-
-		input {
-			appearance: none;
-			padding: 0;
-			margin: 0 10px 0 0;
-			border: 2px solid $pristine;
-			outline: 0;
-
-			&:checked {
-				background: $pristine;
-			}
-		}
-	}
-	*/
 }
 
 /* radio */
@@ -637,23 +600,13 @@ input-value {
 		flex: 1 1 auto;
 	}
 
-	/*
-	.control--text {
-		font-size: 16px;
-		font-weight: normal;
-		border: 1px solid rgba($foreground-primary, 0.2);
-		padding: 4px;
-	}
-	*/
-
 	.control--text {
 		font-size: 11px;
 		border-radius: 3px 0 0 3px;
-		// border: 1px solid rgba($foreground-primary, 0.5);
 		border: 1px solid rgba($foreground-primary, 0.15);
 		border-right: none;
 		padding: 4px;
-		font-weight: 500;
+		font-weight: 400;
 	}
 
 	.control--trigger {
@@ -691,7 +644,7 @@ input-value {
 	label,
 	.control--text,
 	.required__badge {
-		color: #bbb;
+		color: $foreground-primary-disabled;
 		pointer-events: none;
 	}
 
