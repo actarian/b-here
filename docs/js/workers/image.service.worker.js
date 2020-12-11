@@ -4,11 +4,15 @@
  * License: MIT
  */
 
-(function(f){typeof define==='function'&&define.amd?define(f):f();}((function(){'use strict';var controllers = {};
+(function(f){typeof define==='function'&&define.amd?define(f):f();}((function(){'use strict';var ImageServiceWorkerEvent = {
+  Progress: 'progress',
+  Complete: 'complete'
+};
+var controllers = {};
 
 function resize(src, blob, size) {
   if (!self.createImageBitmap || !self.OffscreenCanvas) {
-    return sendMessage(src, blob);
+    return sendMessage(ImageServiceWorkerEvent.Complete, src, blob);
   }
 
   self.createImageBitmap(blob).then(function (img) {
@@ -38,15 +42,16 @@ function resize(src, blob, size) {
       type: 'image/jpeg',
       quality: 0.9
     }).then(function (resizedBlob) {
-      sendMessage(src, resizedBlob);
+      sendMessage(ImageServiceWorkerEvent.Complete, src, resizedBlob);
     });
   });
 }
 
-function sendMessage(src, blob) {
+function sendMessage(type, src, data) {
   self.postMessage({
+    type: type,
     src: src,
-    blob: blob
+    data: data
   });
 }
 
@@ -79,7 +84,13 @@ self.addEventListener('message', function (event) {
       controllers[id] = _controller; // console.log('AbortController', id);
     }
 
-    var response = fetch(src, options).then(function (response) {
+    var response = fetch(src, options).then(fetchProgress({
+      // implement onProgress method
+      onProgress: function onProgress(event) {
+        // console.log('ImageServiceWorker', event.loaded, event.total);
+        sendMessage(ImageServiceWorkerEvent.Progress, src, event);
+      }
+    })).then(function (response) {
       return response.blob();
     }, function (error) {
       console.log(error);
@@ -89,24 +100,30 @@ self.addEventListener('message', function (event) {
       if (typeof size === 'object') {
         resize(src, blob);
       } else {
-        sendMessage(src, blob);
+        sendMessage(ImageServiceWorkerEvent.Complete, src, blob);
       }
     }, function (error) {
       console.log(error);
     });
   } else {
     var request = new XMLHttpRequest();
-    request.open('GET', src);
+    request.open('GET', src, true);
     request.responseType = 'blob';
+    request.withCredentials = true;
 
     request.onload = function () {
       if (request.status < 300) {
         if (typeof size === 'object') {
-          resize(src, blob);
+          resize(src, this.response);
         } else {
-          sendMessage(src, blob);
+          sendMessage(ImageServiceWorkerEvent.Complete, src, this.response);
         }
       }
+    };
+
+    request.onprogress = function (event) {
+      // console.log('ImageServiceWorker', event.loaded, event.total);
+      sendMessage(ImageServiceWorkerEvent.Progress, src, event);
     };
 
     request.onerror = function () {// new Error('There was a network error.');
@@ -129,4 +146,135 @@ self.addEventListener('message', function(event) {
 		});
 	});
 });
+*/
+
+function isFetchProgressSupported() {
+  return typeof Response !== 'undefined' && typeof ReadableStream !== 'undefined';
+}
+
+function fetchProgress(_ref) {
+  var _ref$defaultSize = _ref.defaultSize,
+      defaultSize = _ref$defaultSize === void 0 ? 0 : _ref$defaultSize,
+      _ref$emitDelay = _ref.emitDelay,
+      emitDelay = _ref$emitDelay === void 0 ? 10 : _ref$emitDelay,
+      _ref$onProgress = _ref.onProgress,
+      onProgress = _ref$onProgress === void 0 ? function () {
+    return null;
+  } : _ref$onProgress,
+      _ref$onComplete = _ref.onComplete,
+      onComplete = _ref$onComplete === void 0 ? function () {
+    return null;
+  } : _ref$onComplete,
+      _ref$onError = _ref.onError,
+      onError = _ref$onError === void 0 ? function () {
+    return null;
+  } : _ref$onError;
+  return function FetchProgress(response) {
+    if (!isFetchProgressSupported()) {
+      return response;
+    }
+
+    var body = response.body,
+        headers = response.headers,
+        status = response.status;
+    var contentLength = headers.get('content-length') || defaultSize;
+    var progress = new Progress(contentLength, emitDelay);
+    var reader = body.getReader();
+    var stream = new ReadableStream({
+      start: function start(controller) {
+        function push() {
+          reader.read().then(function (_ref2) {
+            var done = _ref2.done,
+                value = _ref2.value;
+
+            if (done) {
+              onComplete({});
+              controller.close();
+              return;
+            }
+
+            if (value) {
+              progress.next(value, onProgress);
+            }
+
+            controller.enqueue(value);
+            push();
+          }).catch(function (err) {
+            onError(err);
+          });
+        }
+
+        push();
+      }
+    });
+    return new Response(stream, {
+      headers: headers,
+      status: status
+    });
+  };
+}
+
+var Progress = /*#__PURE__*/function () {
+  function Progress(length, emitDelay) {
+    if (emitDelay === void 0) {
+      emitDelay = 1000;
+    }
+
+    this.eventStart = 0;
+    this.loaded = 0;
+    this.length = parseInt(length, 10) || 0;
+    this.emitDelay = emitDelay;
+  }
+
+  var _proto = Progress.prototype;
+
+  _proto.next = function next(chunk, onProgress) {
+    var chunkLength = chunk.length;
+    this.loaded += chunkLength;
+    this.eventStart = this.eventStart || Date.now();
+
+    if (this.length >= this.loaded || Date.now() - this.eventStart > this.emitDelay) {
+      this.eventStart = Date.now();
+      var progress = {
+        total: this.length,
+        loaded: this.loaded
+      };
+      onProgress(progress);
+    }
+  };
+
+  return Progress;
+}();
+/*
+function fetchProgress__(response, onProgress) {
+	const reader = response.body.getReader();
+	// Step 2: get total length
+	const contentLength = +response.headers.get('Content-Length');
+	// Step 3: read the data
+	let receivedLength = 0; // received that many bytes at the moment
+	let chunks = []; // array of received binary chunks (comprises the body)
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) {
+			break;
+		}
+		chunks.push(value);
+		receivedLength += value.length;
+		if (typeof onProgress === 'function') {
+			onProgress(receivedLength, contentLength);
+		}
+		console.log(`ImageServiceWorker.onProgress ${receivedLength} of ${contentLength}`)
+	}
+	// Step 4: concatenate chunks into single Uint8Array
+	let chunksAll = new Uint8Array(receivedLength); // (4.1)
+	let position = 0;
+	for (let chunk of chunks) {
+		chunksAll.set(chunk, position); // (4.2)
+		position += chunk.length;
+	}
+	// Step 5: decode into a string
+	let result = new TextDecoder("utf-8").decode(chunksAll);
+	// We're done!
+	let commits = JSON.parse(result);
+}
 */})));
