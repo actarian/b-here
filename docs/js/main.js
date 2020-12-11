@@ -9883,6 +9883,10 @@ IdDirective.meta = {
   selector: '[id]',
   inputs: ['id']
 };var UID = 0;
+var ImageServiceEvent = {
+  Progress: 'progress',
+  Complete: 'complete'
+};
 
 var ImageService = /*#__PURE__*/function () {
   function ImageService() {}
@@ -9907,19 +9911,29 @@ var ImageService = /*#__PURE__*/function () {
       id: id,
       size: size
     });
-    return rxjs.fromEvent(worker, 'message').pipe(operators.filter(function (event) {
-      return event.data.src === src;
-    }), operators.map(function (event) {
-      var url = URL.createObjectURL(event.data.blob);
-      return url;
-    }), operators.first(), operators.finalize(function (url) {
+    return rxjs.fromEvent(worker, 'message').pipe(operators.map(function (event) {
+      return event.data;
+    }), operators.filter(function (event) {
+      return event.src === src;
+    }), operators.auditTime(100), operators.map(function (event) {
+      // console.log('ImageService', event);
+      if (event.type === ImageServiceEvent.Complete) {
+        var url = URL.createObjectURL(event.data);
+        event.data = url;
+      }
+      return event;
+    }), operators.takeWhile(function (event) {
+      return event.type !== ImageServiceEvent.Complete;
+    }, true), operators.finalize(function () {
+      // console.log('ImageService.finalize', lastEvent);
       worker.postMessage({
         id: id
       });
-
-      if (url) {
-        URL.revokeObjectURL(url);
+      /*
+      if (lastEvent && lastEvent.type === ImageServiceEvent.Complete && lastEvent.data) {
+      	URL.revokeObjectURL(lastEvent.data);
       }
+      */
     }));
   };
 
@@ -10564,6 +10578,7 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
 
       LoaderService.setProgress(progressRef, 1);
     }, function (request) {
+      console.log(request.loaded, request.total);
       LoaderService.setProgress(progressRef, request.loaded, request.total);
     });
     return loader;
@@ -10574,12 +10589,21 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
     pmremGenerator.compileEquirectangularShader();
     var progressRef = LoaderService.getRef();
     var image = new Image();
-    ImageService.load$(folder + file).pipe(operators.switchMap(function (blob) {
+    ImageService.load$(folder + file).pipe(operators.tap(function (event) {
+      if (event.type === ImageServiceEvent.Progress) {
+        LoaderService.setProgress(progressRef, event.data.loaded, event.data.total);
+      }
+    }), operators.filter(function (event) {
+      return event.type === ImageServiceEvent.Complete;
+    }), operators.switchMap(function (event) {
       var load = rxjs.fromEvent(image, 'load');
       image.crossOrigin = 'anonymous';
-      image.src = blob;
+      image.src = event.data;
       return load;
-    }), operators.first()).subscribe(function (event) {
+    }), operators.takeWhile(function (event) {
+      return event.type !== ImageServiceEvent.Complete;
+    }, true)).subscribe(function (event) {
+      URL.revokeObjectURL(event.data);
       var texture = new THREE.Texture(image);
       var envMap = pmremGenerator.fromEquirectangular(texture).texture;
       pmremGenerator.dispose();
