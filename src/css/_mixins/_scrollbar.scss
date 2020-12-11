@@ -15,12 +15,12 @@
 	}
 
 	&::-webkit-scrollbar-thumb {
-		background-color: rgba(#000000, 0.45);
+		background-color: $black-40;
 		box-shadow: none;
 		border-radius: 2px;
 
 		&:hover {
-			background-color: rgba(#000000, 0.45);
+			background-color: $black-40;
 		}
 	}
 

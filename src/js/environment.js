@@ -111,6 +111,7 @@ const defaultAppOptions = {
 	channelName: 'BHere',
 	flags: {
 		production: false,
+		useProxy: false,
 		useToken: false,
 		selfService: true,
 		guidedTourRequest: true,

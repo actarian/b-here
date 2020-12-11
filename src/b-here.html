@@ -52,9 +52,10 @@
 		--font-primary: GT Walsheim,Maven Pro,Arial,sans-serif;
 		--background: #ffffff;
 		--background-negative: #101010;
-		--background-primary: #09f;
+		--background-primary: #0099ff;
 		--background-secondary: #ff4332;
-		--background-tertiary: #eeeeee;
+		--background-tertiary: #d8dfe4;
+		--background-primary-disabled: #c4d3dd;
 		--foreground: #101010;
 		--foreground-negative: #ffffff;
 		--foreground-primary: #0099ff;
@@ -235,7 +236,7 @@
 		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
 			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
-				<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }">
+				<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>

@@ -96,7 +96,7 @@
 
 			&:hover,
 			&.active {
-				background: $foreground-primary-disabled;
+				background: $background-primary-disabled;
 			}
 		}
 
@@ -106,7 +106,7 @@
 	}
 
 	&>li+li {
-		border-top: 1px solid $foreground-primary-disabled;
+		border-top: 1px solid $background-primary-disabled;
 	}
 
 	&.multiple {

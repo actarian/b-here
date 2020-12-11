@@ -219,6 +219,9 @@ export default class AgoraService extends Emittable {
 		AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 		const client = this.client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc
 		const clientInit = () => {
+			if (environment.flags.useProxy) {
+				client.startProxyServer();
+			}
 			client.init(environment.appKey, () => {
 				// console.log('AgoraRTC client initialized');
 				next();
@@ -609,6 +612,9 @@ export default class AgoraService extends Emittable {
 				client.leave(() => {
 					this.client = null;
 					// console.log('Leave channel successfully');
+					if (environment.flags.useProxy) {
+						client.stopProxyServer();
+					}
 					resolve();
 				}, (error) => {
 					console.log('AgoraService.leaveChannel.error', error);
