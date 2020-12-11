@@ -17,6 +17,8 @@ body {
 	--bullet-size: #{$bullet-size};
 }
 
+@import 'main';
+
 body {
 	--background: #{$background};
 	--background-negative: #{$background-negative};
@@ -28,7 +30,9 @@ body {
 	--foreground-primary: #{$foreground-primary};
 	--foreground-secondary: #{$foreground-secondary};
 	--foreground-tertiary: #{$foreground-tertiary};
+	--foreground-primary-disabled: #{$foreground-primary-disabled};
 	--border: #{$border};
+	--shadow: #{$shadow};
 }
 
 @import 'cssvars';
