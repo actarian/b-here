@@ -17,9 +17,9 @@ export default class ImageService {
 		return this.worker_;
 	}
 
-	static load$(src, size) {
+	static events$(src, size) {
 		if (!('Worker' in window) || this.isBlob(src) || this.isCors(src)) {
-			return of(src);
+			return of({ type: ImageServiceEvent.Complete, data:src });
 		}
 		const id = ++UID;
 		const worker = this.worker();
@@ -31,7 +31,7 @@ export default class ImageService {
 			auditTime(100),
 			map(event => {
 				// console.log('ImageService', event);
-				if (event.type === ImageServiceEvent.Complete) {
+				if (event.type === ImageServiceEvent.Complete && event.data instanceof Blob) {
 					const url = URL.createObjectURL(event.data);
 					event.data = url;
 				}
@@ -51,7 +51,16 @@ export default class ImageService {
 		);
 	}
 
+	static load$(src, size) {
+		return this.events$(src, size).pipe(
+			filter(event => event.type === ImageServiceEvent.Complete),
+			map(event => event.data),
+		);
+	}
+
 	static isCors(src) {
+		// !!! handle cors environment flag
+		return false;
 		return src.indexOf('://') !== -1 && src.indexOf(window.location.host) === -1;
 	}
 

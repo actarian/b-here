@@ -9899,9 +9899,12 @@ var ImageService = /*#__PURE__*/function () {
     return this.worker_;
   };
 
-  ImageService.load$ = function load$(src, size) {
+  ImageService.events$ = function events$(src, size) {
     if (!('Worker' in window) || this.isBlob(src) || this.isCors(src)) {
-      return rxjs.of(src);
+      return rxjs.of({
+        type: ImageServiceEvent.Complete,
+        data: src
+      });
     }
 
     var id = ++UID;
@@ -9917,7 +9920,7 @@ var ImageService = /*#__PURE__*/function () {
       return event.src === src;
     }), operators.auditTime(100), operators.map(function (event) {
       // console.log('ImageService', event);
-      if (event.type === ImageServiceEvent.Complete) {
+      if (event.type === ImageServiceEvent.Complete && event.data instanceof Blob) {
         var url = URL.createObjectURL(event.data);
         event.data = url;
       }
@@ -9937,8 +9940,17 @@ var ImageService = /*#__PURE__*/function () {
     }));
   };
 
+  ImageService.load$ = function load$(src, size) {
+    return this.events$(src, size).pipe(operators.filter(function (event) {
+      return event.type === ImageServiceEvent.Complete;
+    }), operators.map(function (event) {
+      return event.data;
+    }));
+  };
+
   ImageService.isCors = function isCors(src) {
-    return src.indexOf('://') !== -1 && src.indexOf(window.location.host) === -1;
+    // !!! handle cors environment flag
+    return false;
   };
 
   ImageService.isBlob = function isBlob(src) {
@@ -10080,9 +10092,11 @@ var ImageService = /*#__PURE__*/function () {
     var _getContext2 = rxcomp.getContext(this),
         node = _getContext2.node;
 
-    return IntersectionService.intersection$(node).pipe(operators.first(), operators.switchMap(function () {
+    return IntersectionService.intersection$(node).pipe( // first(),
+    operators.switchMap(function () {
       return ImageService.load$(input, _this2.size);
-    }), operators.takeUntil(this.unsubscribe$));
+    }), operators.first() // takeUntil(this.unsubscribe$),
+    );
   };
 
   return LazyDirective;
@@ -10589,7 +10603,7 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
     pmremGenerator.compileEquirectangularShader();
     var progressRef = LoaderService.getRef();
     var image = new Image();
-    ImageService.load$(folder + file).pipe(operators.tap(function (event) {
+    ImageService.events$(folder + file).pipe(operators.tap(function (event) {
       if (event.type === ImageServiceEvent.Progress) {
         LoaderService.setProgress(progressRef, event.data.loaded, event.data.total);
       }
