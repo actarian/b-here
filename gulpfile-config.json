@@ -8,7 +8,7 @@
           "minify": true
         },
         {
-          "input": "src/css/main.scss",
+          "input": "src/css/main-cssvars.scss",
           "output": "docs/css/main.css",
           "minify": true
         },

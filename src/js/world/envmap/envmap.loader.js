@@ -1,11 +1,11 @@
 /* global THREE, RGBELoader */
 
 import { fromEvent } from 'rxjs';
-import { first, switchMap } from 'rxjs/operators';
+import { filter, first, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { AssetType } from '../../asset/asset';
 // import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
-import ImageService from '../../image/image.service';
+import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
 import DebugService from '../debug.service';
@@ -94,6 +94,7 @@ export class EnvMapLoader {
 			}
 			LoaderService.setProgress(progressRef, 1);
 		}, (request) => {
+			console.log(request.loaded, request.total);
 			LoaderService.setProgress(progressRef, request.loaded, request.total);
 		});
 		return loader;
@@ -104,15 +105,22 @@ export class EnvMapLoader {
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		const image = new Image();
-		ImageService.load$(folder + file).pipe(
-			switchMap(blob => {
+		ImageService.events$(folder + file).pipe(
+			tap(event => {
+				if (event.type === ImageServiceEvent.Progress) {
+					LoaderService.setProgress(progressRef, event.data.loaded, event.data.total);
+				}
+			}),
+			filter(event => event.type === ImageServiceEvent.Complete),
+			switchMap(event => {
 				const load = fromEvent(image, 'load');
 				image.crossOrigin = 'anonymous';
-				image.src = blob;
+				image.src = event.data;
 				return load;
 			}),
-			first(),
+			takeWhile(event => event.type !== ImageServiceEvent.Complete, true),
 		).subscribe(event => {
+			URL.revokeObjectURL(event.data);
 			const texture = new THREE.Texture(image);
 			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
 			pmremGenerator.dispose();

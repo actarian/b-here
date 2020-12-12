@@ -14,8 +14,8 @@
 	@include scrollbar();
 	z-index: 10;
 
-	background: white;
-	box-shadow: 0 20px 20px -5px rgba(black, 0.2);
+	background: $background;
+	box-shadow: 0 20px 20px -5px $shadow;
 
 	&.dropped {
 		display: block;
@@ -33,7 +33,7 @@
 
 		font-weight: $font-semibold;
 		line-height: 1;
-		color: #a5b3bd;
+		color: $foreground-tertiary;
 		z-index: 2;
 	}
 
@@ -73,7 +73,6 @@
 			font-family: $font-secondary;
 			line-height: 1;
 			font-size: 15px;
-			padding: 15px;
 			white-space: nowrap;
 			width: 100%;
 			overflow: hidden;
@@ -88,10 +87,6 @@
 			animation-fill-mode: forwards;
 
 			.icon:first-child {
-				margin-left: -30px;
-				margin-right: 10px;
-				width: 40px;
-				height: 40px;
 				transition: ease-in-out 350ms;
 				transition-property: fill;
 			}
@@ -101,7 +96,7 @@
 
 			&:hover,
 			&.active {
-				background: #e5f4ff;
+				background: $background-primary-disabled;
 			}
 		}
 
@@ -111,7 +106,7 @@
 	}
 
 	&>li+li {
-		border-top: 1px solid rgb(198, 227, 247);
+		border-top: 1px solid $background-primary-disabled;
 	}
 
 	&.multiple {
@@ -129,13 +124,12 @@
 					flex: 0 0 8px;
 					width: 8px;
 					height: 8px;
-					margin: 0 8px 0 -20px;
 					border: 2px solid $foreground;
 				}
 
 				&.active {
 					&:before {
-						background: $foreground;
+						background: $background-negative;
 					}
 				}
 			}
@@ -148,6 +142,53 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: stretch;
+
+		&>li {
+
+			&>a,
+			&>span {
+				padding: 8px 15px;
+
+				.icon:first-child {
+					margin-left: -10px;
+					margin-right: 5px;
+					width: 30px;
+					height: 30px;
+				}
+			}
+		}
+
+		/*
+		&>li {
+
+			&>a,
+			&>span {
+				padding: 15px;
+
+				.icon:first-child {
+					margin-left: -30px;
+					margin-right: 10px;
+					width: 40px;
+					height: 40px;
+				}
+			}
+		}
+		*/
+
+		&.multiple {
+			&>li {
+
+				&>a,
+				&>span {
+					font-size: 19px;
+					padding: 8px 15px;
+
+					&:before {
+						margin: 0 8px 0 -20px;
+					}
+				}
+			}
+		}
 	}
 
 	@include media-down(md) {

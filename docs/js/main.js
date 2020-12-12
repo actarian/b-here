@@ -122,11 +122,12 @@ function _assertThisInitialized(self) {
 function _readOnlyError(name) {
   throw new Error("\"" + name + "\" is read-only");
 }var environmentServed = {
-  appKey: '1a066259928f4b40a243647b58aca42e',
+  appKey: '3c51e9856c264de2bf6b398d2086ec79',
   channelName: 'BHere',
   flags: {
     production: true,
-    useToken: false,
+    useProxy: false,
+    useToken: true,
     selfService: true,
     guidedTourRequest: true,
     editor: false,
@@ -194,6 +195,7 @@ function _readOnlyError(name) {
   channelName: 'BHere',
   flags: {
     production: false,
+    useProxy: false,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
@@ -377,6 +379,7 @@ var defaultAppOptions = {
   channelName: 'BHere',
   flags: {
     production: false,
+    useProxy: false,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
@@ -1485,6 +1488,50 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamSer
 var StreamService = /*#__PURE__*/function () {
   function StreamService() {}
 
+  StreamService.orderedRemotes$ = function orderedRemotes$() {
+    return rxjs.combineLatest([StreamService.remotes$, rxjs.interval(1000)]).pipe(operators.map(function (datas) {
+      var remotes = [];
+      datas[0].forEach(function (remote) {
+        // const audioLevel = remote.getAudioLevel();
+        // console.log('audioLevel', audioLevel, remote);
+        if (remote.clientInfo) {
+          remote.clientInfo.audioLevel = remote.getAudioLevel();
+          remote.clientInfo.peekAudioLevel = Math.max(remote.clientInfo.audioLevel, 0.2);
+        }
+
+        remotes.push(remote);
+      });
+      remotes.sort(function (a, b) {
+        if (a.clientInfo && b.clientInfo) {
+          if (a.clientInfo.role === RoleType.Publisher) {
+            return -1;
+          } else if (b.clientInfo.role === RoleType.Publisher) {
+            return 1;
+          } else {
+            // sort on audioLevel or lastOrder
+            return b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel || (a.clientInfo.order || 0) - (b.clientInfo.order || 0);
+          }
+        } else {
+          return 0;
+        }
+      });
+      remotes.forEach(function (remote, i) {
+        if (remote.clientInfo) {
+          remote.clientInfo.order = i;
+        }
+      }); // !!! hard limit max 8 visible stream
+
+      remotes.length = Math.min(remotes.length, 8);
+      return remotes;
+    }), operators.distinctUntilChanged(function (a, b) {
+      return a.map(function (remote) {
+        return remote.clientInfo ? remote.clientInfo.uid : '';
+      }).join('|') === b.map(function (remote) {
+        return remote.clientInfo ? remote.clientInfo.uid : '';
+      }).join('|');
+    }));
+  };
+
   StreamService.editorStreams$ = function editorStreams$() {
     var _this = this;
 
@@ -2093,6 +2140,10 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     }); // rtc
 
     var clientInit = function clientInit() {
+      if (environment.flags.useProxy) {
+        client.startProxyServer();
+      }
+
       client.init(environment.appKey, function () {
         // console.log('AgoraRTC client initialized');
         next();
@@ -2514,6 +2565,10 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         var client = _this9.client;
         client.leave(function () {
           _this9.client = null; // console.log('Leave channel successfully');
+
+          if (environment.flags.useProxy) {
+            client.stopProxyServer();
+          }
 
           resolve();
         }, function (error) {
@@ -3189,15 +3244,27 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.onTokenPrivilegeWillExpire = function onTokenPrivilegeWillExpire(event) {
-    // After requesting a new token
-    // client.renewToken(token);
     console.log('AgoraService.onTokenPrivilegeWillExpire');
+    var client = this.client;
+    var channelNameLink = this.getChannelNameLink();
+    this.rtcToken$(channelNameLink).subscribe(function (token) {
+      if (token.token) {
+        client.renewToken(token.token);
+        console.log('AgoraService.onTokenPrivilegeWillExpire.renewed');
+      }
+    });
   };
 
   _proto.onTokenPrivilegeDidExpire = function onTokenPrivilegeDidExpire(event) {
-    // After requesting a new token
-    // client.renewToken(token);
     console.log('AgoraService.onTokenPrivilegeDidExpire');
+    var client = this.client;
+    var channelNameLink = this.getChannelNameLink();
+    this.rtcToken$(channelNameLink).subscribe(function (token) {
+      if (token.token) {
+        client.renewToken(token.token);
+        console.log('AgoraService.onTokenPrivilegeDidExpire.renewed');
+      }
+    });
   };
 
   return AgoraService;
@@ -4906,7 +4973,7 @@ var VRService = /*#__PURE__*/function () {
 
       _this5.pushChanges();
     });
-    StreamService.remotes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
+    StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
       // console.log('AgoraComponent.remotes', remotes);
       _this5.remotes = remotes;
 
@@ -9502,7 +9569,7 @@ ControlTextareaComponent.meta = {
   inputs: ['control', 'label', 'disabled'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form--textarea\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<textarea class=\"control--text\" [formControl]=\"control\" [innerHTML]=\"label\" rows=\"6\" [disabled]=\"disabled\"></textarea>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form--textarea\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<textarea class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [innerHTML]=\"label\" rows=\"6\" [disabled]=\"disabled\"></textarea>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlVectorComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlVectorComponent, _ControlComponent);
 
@@ -9816,6 +9883,10 @@ IdDirective.meta = {
   selector: '[id]',
   inputs: ['id']
 };var UID = 0;
+var ImageServiceEvent = {
+  Progress: 'progress',
+  Complete: 'complete'
+};
 
 var ImageService = /*#__PURE__*/function () {
   function ImageService() {}
@@ -9828,9 +9899,12 @@ var ImageService = /*#__PURE__*/function () {
     return this.worker_;
   };
 
-  ImageService.load$ = function load$(src, size) {
+  ImageService.events$ = function events$(src, size) {
     if (!('Worker' in window) || this.isBlob(src) || this.isCors(src)) {
-      return rxjs.of(src);
+      return rxjs.of({
+        type: ImageServiceEvent.Complete,
+        data: src
+      });
     }
 
     var id = ++UID;
@@ -9840,24 +9914,43 @@ var ImageService = /*#__PURE__*/function () {
       id: id,
       size: size
     });
-    return rxjs.fromEvent(worker, 'message').pipe(operators.filter(function (event) {
-      return event.data.src === src;
-    }), operators.map(function (event) {
-      var url = URL.createObjectURL(event.data.blob);
-      return url;
-    }), operators.first(), operators.finalize(function (url) {
+    return rxjs.fromEvent(worker, 'message').pipe(operators.map(function (event) {
+      return event.data;
+    }), operators.filter(function (event) {
+      return event.src === src;
+    }), operators.auditTime(100), operators.map(function (event) {
+      // console.log('ImageService', event);
+      if (event.type === ImageServiceEvent.Complete && event.data instanceof Blob) {
+        var url = URL.createObjectURL(event.data);
+        event.data = url;
+      }
+      return event;
+    }), operators.takeWhile(function (event) {
+      return event.type !== ImageServiceEvent.Complete;
+    }, true), operators.finalize(function () {
+      // console.log('ImageService.finalize', lastEvent);
       worker.postMessage({
         id: id
       });
-
-      if (url) {
-        URL.revokeObjectURL(url);
+      /*
+      if (lastEvent && lastEvent.type === ImageServiceEvent.Complete && lastEvent.data) {
+      	URL.revokeObjectURL(lastEvent.data);
       }
+      */
+    }));
+  };
+
+  ImageService.load$ = function load$(src, size) {
+    return this.events$(src, size).pipe(operators.filter(function (event) {
+      return event.type === ImageServiceEvent.Complete;
+    }), operators.map(function (event) {
+      return event.data;
     }));
   };
 
   ImageService.isCors = function isCors(src) {
-    return src.indexOf('://') !== -1 && src.indexOf(window.location.host) === -1;
+    // !!! handle cors environment flag
+    return false;
   };
 
   ImageService.isBlob = function isBlob(src) {
@@ -9999,9 +10092,11 @@ var ImageService = /*#__PURE__*/function () {
     var _getContext2 = rxcomp.getContext(this),
         node = _getContext2.node;
 
-    return IntersectionService.intersection$(node).pipe(operators.first(), operators.switchMap(function () {
+    return IntersectionService.intersection$(node).pipe( // first(),
+    operators.switchMap(function () {
       return ImageService.load$(input, _this2.size);
-    }), operators.takeUntil(this.unsubscribe$));
+    }), operators.first() // takeUntil(this.unsubscribe$),
+    );
   };
 
   return LazyDirective;
@@ -10497,6 +10592,7 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
 
       LoaderService.setProgress(progressRef, 1);
     }, function (request) {
+      console.log(request.loaded, request.total);
       LoaderService.setProgress(progressRef, request.loaded, request.total);
     });
     return loader;
@@ -10507,12 +10603,21 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
     pmremGenerator.compileEquirectangularShader();
     var progressRef = LoaderService.getRef();
     var image = new Image();
-    ImageService.load$(folder + file).pipe(operators.switchMap(function (blob) {
+    ImageService.events$(folder + file).pipe(operators.tap(function (event) {
+      if (event.type === ImageServiceEvent.Progress) {
+        LoaderService.setProgress(progressRef, event.data.loaded, event.data.total);
+      }
+    }), operators.filter(function (event) {
+      return event.type === ImageServiceEvent.Complete;
+    }), operators.switchMap(function (event) {
       var load = rxjs.fromEvent(image, 'load');
       image.crossOrigin = 'anonymous';
-      image.src = blob;
+      image.src = event.data;
       return load;
-    }), operators.first()).subscribe(function (event) {
+    }), operators.takeWhile(function (event) {
+      return event.type !== ImageServiceEvent.Complete;
+    }, true)).subscribe(function (event) {
+      URL.revokeObjectURL(event.data);
       var texture = new THREE.Texture(image);
       var envMap = pmremGenerator.fromEquirectangular(texture).texture;
       pmremGenerator.dispose();
@@ -17974,7 +18079,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
       LoaderService.progress$.pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (progress) {
         if (progress.count) {
-          _this.title = progress.title;
+          _this.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
         } else {
           _this.title = _this.getTitle();
         }
@@ -18035,12 +18140,14 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto.createMesh = function createMesh(result) {
-    var mesh = new THREE.Group();
-    var repeat = 24;
-    var aspect = result.width * repeat / result.height;
+    var mesh = new THREE.Group(); // const repeat = 24;
+    // const aspect = (result.width * repeat) / result.height;
+
     var arc = Math.PI / 180 * 360;
     var width = PANEL_RADIUS$1 * arc;
-    var height = width / aspect;
+    var height = width / 360 * 2.4;
+    var w = result.width * height / result.height;
+    var repeat = width / w;
     var geometry = new THREE.CylinderBufferGeometry(PANEL_RADIUS$1, PANEL_RADIUS$1, height, 80, 2, true, 0, arc);
     geometry.scale(-1, 1, 1);
     var texture = result.texture;
@@ -18064,37 +18171,46 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto.updateProgress = function updateProgress() {
-    this.getCanvasTexture().then(function (result) {// console.log('ModelProgressComponent.updateProgress', result);
+    var _this2 = this;
+
+    this.getCanvasTexture().then(function (result) {
+      // console.log('ModelProgressComponent.updateProgress', result);
+      var arc = Math.PI / 180 * 360;
+      var width = PANEL_RADIUS$1 * arc;
+      var height = width / 360 * 2.4;
+      var w = result.width * height / result.height;
+      var repeat = width / w;
+      _this2.texture.repeat.x = repeat;
     });
   };
 
   _proto.getCanvasTexture = function getCanvasTexture() {
-    var _this2 = this;
+    var _this3 = this;
 
     return new Promise(function (resolve, reject) {
       var MIN_W = 512;
       var W = MIN_W;
-      var H = 128;
-      var F = Math.floor(H * 0.8);
-      var L = Math.floor(H * 0.075);
+      var H = 64;
+      var F = Math.floor(H * 0.75);
+      var L = Math.floor(H * 0.05);
       var canvas;
 
-      if (_this2.canvas) {
-        canvas = _this2.canvas;
+      if (_this3.canvas) {
+        canvas = _this3.canvas;
       } else {
-        canvas = _this2.canvas = document.createElement('canvas'); // canvas.classList.add('canvas--debug');
+        canvas = _this3.canvas = document.createElement('canvas'); // canvas.classList.add('canvas--debug');
         // document.querySelector('body').appendChild(canvas);
       }
 
       canvas.width = W;
       canvas.height = H;
-      var text = _this2.title_; // console.log('ModelProgressComponent.getCanvasTexture', text);
+      var text = _this3.title_; // console.log('ModelProgressComponent.getCanvasTexture', text);
 
       var ctx = canvas.getContext('2d'); // const ctx = text.material.map.image.getContext('2d');
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.font = F + "px " + environment.fontFamily;
+      ctx.font = "300 " + F + "px " + environment.fontFamily;
       var metrics = ctx.measureText(text);
       W = metrics.width + 8;
       W = Math.max(MIN_W, Math.pow(2, Math.ceil(Math.log(W) / Math.log(2)))); // const x = W / 2;
@@ -18105,10 +18221,10 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       ctx.fillStyle = '#0000005A'; // 35% // '#000000C0'; // 75%
 
       ctx.fillRect(0, 0, W, H);
-      ctx.font = F + "px " + environment.fontFamily;
+      ctx.font = "300 " + F + "px " + environment.fontFamily;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
       ctx.lineWidth = L;
       ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
 
@@ -18119,11 +18235,11 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
       var texture;
 
-      if (_this2.texture) {
-        texture = _this2.texture;
+      if (_this3.texture) {
+        texture = _this3.texture;
         texture.needsUpdate = true;
       } else {
-        texture = _this2.texture = new THREE.CanvasTexture(canvas);
+        texture = _this3.texture = new THREE.CanvasTexture(canvas);
       } // console.log(F, L, W, H);
 
 

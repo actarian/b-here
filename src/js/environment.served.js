@@ -4,6 +4,7 @@ export const environmentServed = {
 	channelName: 'BHere',
 	flags: {
 		production: true,
+		useProxy: false,
 		useToken: true,
 		selfService: true,
 		guidedTourRequest: true,
