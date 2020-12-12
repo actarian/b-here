@@ -10,7 +10,7 @@
 		error_required: 'Il campo è obbligatorio',
 		remove: 'Elimina',
 		required: 'richiesto',
-		select: 'seleziona',
+		select: 'Seleziona',
 		select_file: 'Seleziona un file...',
 		access_login: 'Login.',
 		access_username: 'Username',
@@ -46,6 +46,25 @@
 		]
 	};
 </script>
+<style>
+	.page {
+		--font-primary: GT Walsheim,Maven Pro,Arial,sans-serif;
+		--background: #ffffff;
+		--background-negative: #101010;
+		--background-primary: #0099ff;
+		--background-secondary: #ff4332;
+		--background-tertiary: #d8dfe4;
+		--background-primary-disabled: #c4d3dd;
+		--foreground: #101010;
+		--foreground-negative: #ffffff;
+		--foreground-primary: #0099ff;
+		--foreground-secondary: #ff4332;
+		--foreground-tertiary: #6d7b84;
+		--foreground-primary-disabled: #c4d3dd;
+		--border: #101010;
+		--shadow: rgba(86, 125, 151, .65);
+	}
+</style>
 <div class="page" access-component>
 	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
 		<img [src]="env.background.image" *if="env.background.image" />
@@ -151,7 +170,7 @@
 			</form>
 		</div>
 	</div>
-	<div class="group--logo">
+	<div class="btn group--logo" (click)="onBack($event)">
 		<img [src]="env.logo" *if="env.logo" />
 		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
 	</div>

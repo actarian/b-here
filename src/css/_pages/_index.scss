@@ -12,7 +12,7 @@ body {
 body {
 	position: fixed;
 	overflow: hidden;
-	background: #111;
+	background: $background-negative;
 }
 
 .app,
@@ -22,7 +22,7 @@ body {
 }
 
 .page {
-	background: #ffffff;
+	background: $background;
 
 	&>.background {
 		position: absolute;
@@ -30,17 +30,10 @@ body {
 		top: 0;
 		width: 100vw;
 		height: 100vh;
-		/*
-		left: -5vw;
-		top: -5vh;
-		width: 110vw;
-		height: 110vh;
-		*/
-
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background: #111;
+		background: $background-negative;
 
 		&>img,
 		&>video {
@@ -66,7 +59,8 @@ body {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			background: rgba(0, 0, 0, 0.7);
+			background: $background-negative;
+			opacity: 0.8;
 		}
 
 		@include media-up(sm) {
@@ -89,12 +83,6 @@ body {
 			&>video {
 				display: none;
 			}
-
-			/*
-			&:after {
-				background: rgba(0, 0, 0, 0.5);
-			}
-			*/
 		}
 	}
 }
@@ -141,7 +129,6 @@ body {
 .ui--info {
 	@include media-down(sm) {
 		padding: 80px 0 15px 0;
-		// overflow-y: auto;
 
 		&:not(.ui--info-centered) {
 			justify-content: flex-start;
@@ -153,12 +140,7 @@ body {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background: #111;
-	// background: #bdbdbd;
-	/* Old browsers */
-	// background: linear-gradient(to bottom, #bdbdbd 1%, #ffffff 50%, #bdbdbd 100%);
-	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	// filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bdbdbd', endColorstr='#bdbdbd',GradientType=0 ); /* IE6-9 */
+	background: $background-negative;
 }
 
 .ui__lock {
@@ -182,7 +164,7 @@ body {
 	margin: 0 10px;
 	border-radius: 7px;
 	background: $background;
-	box-shadow: 0 10px 20px -5px rgba(0, 153, 255, 0.2);
+	box-shadow: 0 10px 20px -5px $black-30;
 
 	&__content {
 		padding: 20px;
@@ -191,7 +173,7 @@ body {
 	.title {
 		margin-bottom: 25px;
 		font-size: 22px;
-		font-weight: 900;
+		font-weight: 800;
 		line-height: 1.15;
 		text-align: center;
 	}
@@ -200,7 +182,7 @@ body {
 		margin: 15px 0;
 		font-size: 15px;
 		line-height: 1.2;
-		color: #6d7b84;
+		color: $foreground-tertiary;
 		text-align: center;
 		text-transform: lowercase;
 	}
@@ -212,7 +194,7 @@ body {
 	.group--form,
 	.group--form--select {
 		padding: 0;
-		border: 2px solid #c6e3f7;
+		border: 2px solid $background-primary-disabled;
 		border-radius: 5px;
 		cursor: pointer;
 
@@ -222,7 +204,7 @@ body {
 			margin: 0;
 			top: 0px;
 			font-size: 11px;
-			color: #a5b3bd;
+			color: $foreground-tertiary;
 			opacity: 1;
 			pointer-events: none;
 
@@ -240,7 +222,7 @@ body {
 			right: 8px;
 			top: 50%;
 			margin: 3px 0 0 0;
-			fill: #101010;
+			fill: $foreground-tertiary;
 			pointer-events: none;
 		}
 	}
@@ -251,10 +233,10 @@ body {
 		max-width: 100%;
 		font-size: 14px;
 		text-transform: none;
-		font-weight: 500;
+		font-weight: 400;
 		padding: 18px 8px 7px;
 		cursor: pointer;
-		@include autofill(14px, 500, 1, 0, $font-primary, $foreground, transparent);
+		@include autofill(14px, 400, 1, 0, $font-primary, $foreground, transparent);
 
 		&[readonly] {
 			color: #86929f;
@@ -264,7 +246,7 @@ body {
 	[control-custom-select] {
 		&.invalid {
 			.control--custom-select {
-				color: rgba($foreground, 0.4);
+				color: $foreground-tertiary;
 			}
 		}
 	}
@@ -284,8 +266,8 @@ body {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #c6e3f7;
-		color: #313131;
+		background: $background-primary-disabled;
+		color: $foreground-negative;
 
 		svg {
 			fill: currentColor;
@@ -470,7 +452,7 @@ body {
 		top: -50%;
 		width: 12px;
 		height: 12px;
-		fill: #ff4332;
+		fill: $foreground-secondary;
 
 		&.active {
 			display: block;
@@ -478,7 +460,6 @@ body {
 		}
 	}
 }
-
 
 @keyframes love-swing {
     0% {
@@ -521,7 +502,7 @@ body {
 		align-items: center;
 		font-size: 12px;
 		line-height: 1;
-		color: white;
+		color: $foreground-negative;
 
 		&:before {
 			content: '';
@@ -534,7 +515,7 @@ body {
 			background: greenyellow;
 		}
 
-		// border: 1px solid white;
+		// border: 1px solid $foreground-negative;
 
 		&__count {
 			margin-left: 4px;
@@ -662,7 +643,7 @@ body {
 	&>.video {
 		border-radius: 6px 6px 0 0;
 		border: none;
-		background: #c4d3dd;
+		background: $background-primary-disabled;
 	}
 
 	&>.audio {
@@ -729,23 +710,23 @@ body {
 		}
 
 		.title {
-			font-weight: 900;
+			font-weight: 800;
 			font-size: 80px;
 			line-height: 1;
-			color: white;
-			text-shadow: 0 5px rgba(0, 0, 0, 0.5);
+			color: $foreground-negative;
+			text-shadow: 0 5px $black-50;
 		}
 
 		.abstract {
 			font-size: 40px;
 			line-height: 1;
-			color: white;
-			text-shadow: 0 5px rgba(0, 0, 0, 0.5);
+			color: $foreground-negative;
+			text-shadow: 0 5px $black-50;
 		}
 
 		.description {
-			color: white;
-			text-shadow: 0 5px rgba(0, 0, 0, 0.5);
+			color: $foreground-negative;
+			text-shadow: 0 5px $black-50;
 		}
 
 	}
@@ -757,8 +738,8 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
-	background: rgba(0, 0, 0, 0.3);
-	color: white;
+	background: $black-30;
+	color: $foreground-negative;
 	padding: 13px 30px;
 	line-height: 1.1;
 	border-radius: 30px;
@@ -769,23 +750,6 @@ body {
 .btn--connect,
 .btn--absolute {
 	@extend %btn-rect;
-
-	svg {
-		fill: white;
-		margin-right: 10px;
-	}
-
-	&.disabled {
-
-		&,
-		&:active,
-		&:focus,
-		&:hover,
-		&:visited {
-			background: #c6e3f7;
-			pointer-events: none;
-		}
-	}
 }
 
 .btn--absolute {
@@ -845,7 +809,7 @@ body {
 		width: 18px;
 		height: 18px;
 		margin: 5px;
-		fill: white;
+		fill: $foreground-negative;
 	}
 
 	.btn--spy {
@@ -864,14 +828,14 @@ body {
 	.spy {
 		width: 24px;
 		height: 24px;
-		fill: white;
+		fill: $foreground-negative;
 		stroke: black;
 		stroke-width: 1px;
 	}
 
 	.id,
 	.spying {
-		color: white;
+		color: $foreground-negative;
 	}
 
 	.id {
@@ -879,7 +843,7 @@ body {
 		bottom: 0;
 		left: 0;
 		background: #333;
-		color: white;
+		color: $foreground-negative;
 		padding: 4px;
 		line-height: 1;
 		font-size: 10px;
@@ -887,8 +851,14 @@ body {
 	}
 
 	&__info {
+		/*
+		// [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }"
+		&.talking {
+			border-color: #00ff00;
+		}
+		*/
 		&.spyed {
-			border-color: $foreground-secondary;
+			border-color: $background-secondary;
 
 			.spy {
 				fill: $foreground-secondary;
@@ -922,8 +892,8 @@ body {
 	&:focus,
 	&:hover,
 	&:visited {
-		border: 2px solid rgba($foreground, 0.2);
-		background: rgb(0, 153, 255);
+		border: 2px solid $black-20;
+		background: $background-primary;
 		color: $foreground-negative;
 
 		svg {
@@ -932,7 +902,7 @@ body {
 	}
 
 	&:hover {
-		border: 2px solid rgba($foreground, 1.0);
+		border: 2px solid $foreground;
 	}
 
 	&.active {
@@ -942,12 +912,12 @@ body {
 		&:focus,
 		&:hover,
 		&:visited {
-			border: 2px solid rgba($foreground-secondary, 1.0);
-			background: $foreground-secondary;
+			border: 2px solid $background-secondary;
+			background: $background-secondary;
 			color: $foreground-negative;
 
 			svg {
-				fill: $foreground-negative;
+				fill: currentColor;
 			}
 		}
 	}
@@ -970,11 +940,11 @@ body {
 	&:focus,
 	&:hover,
 	&:visited {
-		background: $foreground-secondary;
+		background: $background-secondary;
 		color: $foreground-negative;
 
 		svg {
-			fill: $foreground-negative;
+			fill: currentColor;
 		}
 	}
 }
@@ -987,7 +957,7 @@ body {
 	padding: 0;
 
 	svg {
-		fill: #ff4332;
+		fill: $foreground-secondary;
 		width: 40px;
 		height: 40px;
 	}
@@ -996,9 +966,9 @@ body {
 		position: absolute;
 		width: 20px;
 		height: 20px;
-		background: white;
+		background: $background;
 		border-radius: 10px;
-		font-weight: 900;
+		font-weight: 800;
 		font-size: 10px;
 		display: flex;
 		justify-content: center;
@@ -1034,7 +1004,6 @@ body {
 	@extend %btn-rect;
 
 	&.disabled {
-		pointer-events: none;
 		display: none;
 	}
 }
@@ -1052,7 +1021,7 @@ body {
 }
 
 .title {
-	font-weight: 900;
+	font-weight: 800;
 	font-size: 80px;
 	line-height: 1;
 }
@@ -1071,7 +1040,7 @@ body {
 
 	.form {
 		.title {
-			font-weight: 900;
+			font-weight: 800;
 			line-height: 1;
 			font-size: 28px;
 		}
@@ -1120,10 +1089,10 @@ model-viewer {
 }
 
 .progress {
-	color: white;
-	font-weight: 900;
+	color: $foreground-negative;
+	font-weight: 800;
 	font-size: 70px;
-	text-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+	text-shadow: 0 10px 10px $black-50;
 }
 
 .model-viewer__item {
@@ -1143,8 +1112,8 @@ model-viewer {
 	width: 600px;
 	left: 0;
 	top: 5000px;
-	background: rgba(0, 0, 0, 0.7);
-	color: white;
+	background: $black-70;
+	color: $foreground-negative;
 	padding: 40px 30px 30px 30px;
 	border-radius: 12px;
 
@@ -1157,14 +1126,14 @@ model-viewer {
 		font-size: 60px;
 		line-height: 1.2;
 		margin-bottom: 10px;
-		color: white;
+		color: $foreground-negative;
 	}
 
 	&__abstract {
 		font-size: 36px;
 		line-height: 1.3;
 		margin-bottom: 20px;
-		color: white;
+		color: $foreground-negative;
 
 		p {
 			margin-top: 0;
@@ -1182,7 +1151,7 @@ model-viewer {
 
 	&__link {
 		font-size: 28px;
-		color: #ff4332;
+		color: $foreground-secondary;
 		font-weight: 300;
 		text-decoration: underline;
 		margin-bottom: 10px;
@@ -1194,16 +1163,16 @@ model-viewer {
 	position: absolute;
 	left: 0;
 	top: 5000px;
-	background: rgba(0, 0, 0, 0.35); // #000;
-	// border: 1px solid rgba(0,0,0,0.5); // #000;
-	color: white;
-	text-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
+	background: $black-30; // #000;
+	// border: 1px solid $black-50; // #000;
+	color: $foreground-negative;
+	text-shadow: 0 0 0.5em $black-30;
 	padding: 0.2em 1.5em; // 30px;
 	font-size: 480px;
 	line-height: 1;
 
 	&__title {
-		color: white;
+		color: $foreground-negative;
 		white-space: nowrap;
 	}
 }
@@ -1225,8 +1194,7 @@ model-viewer {
 	&:focus,
 	&:hover,
 	&:visited {
-		// border: 2px solid rgba(0, 0, 0, 0.2);
-		background: $background; // rgba(0, 0, 0, 0.0);
+		background: $background;
 		color: $foreground;
 
 		svg {
@@ -1235,9 +1203,9 @@ model-viewer {
 	}
 
 	&:hover {
-		// border-color: rgba(0, 0, 0, 0.0);
-		background: rgba($background-negative, 0.8);
+		background: $background-negative;
 		color: $foreground-negative;
+		opacity: 0.8;
 	}
 
 	&.active {
@@ -1247,8 +1215,8 @@ model-viewer {
 		&:focus,
 		&:hover,
 		&:visited {
-			border-color: rgba(0, 0, 0, 0.0);
-			background: rgba(0, 0, 0, 0.8);
+			border-color: transparent;
+			background: $black-80;
 			color: $foreground-negative;
 		}
 	}

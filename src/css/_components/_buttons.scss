@@ -84,6 +84,7 @@
 	padding: 0 25px;
 	font-weight: 600;
 	font-size: 16px;
+	transition: all ease-in-out 350ms;
 
 	@include media-down(sm) {
 		min-height: 40px;
@@ -108,11 +109,23 @@
 	&:focus,
 	&:hover,
 	&:visited {
-		background: rgb(0, 153, 255);
-		color: white;
+		background: $background-primary;
+		color: $foreground-negative;
 
 		svg {
-			fill: white;
+			fill: currentColor;
+		}
+	}
+
+	&.disabled {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			background: $background-primary-disabled;
+			pointer-events: none;
 		}
 	}
 }

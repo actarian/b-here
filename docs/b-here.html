@@ -64,7 +64,23 @@
 		bhere_enter: 'Entra',
 		bhere_connecting: 'In connessione...',
 		bhere_ar: 'Inquadra il qrcode con il cellulare o il tablet per vedere il VR.',
-	};</script><div class="page" agora-component><div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }"><img [src]="env.background.image" *if="env.background.image"><video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video></div><!--
+	};</script><style>.page {
+		--font-primary: GT Walsheim,Maven Pro,Arial,sans-serif;
+		--background: #ffffff;
+		--background-negative: #101010;
+		--background-primary: #0099ff;
+		--background-secondary: #ff4332;
+		--background-tertiary: #d8dfe4;
+		--background-primary-disabled: #c4d3dd;
+		--foreground: #101010;
+		--foreground-negative: #ffffff;
+		--foreground-primary: #0099ff;
+		--foreground-secondary: #ff4332;
+		--foreground-tertiary: #6d7b84;
+		--foreground-primary-disabled: #c4d3dd;
+		--border: #101010;
+		--shadow: rgba(86, 125, 151, .65);
+	}</style><div class="page" agora-component><div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }" *if="state.status != 'connected'"><img [src]="env.background.image" *if="env.background.image"><video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video></div><!--
 	<div class="background background--image background--video">
 		<img src="/b-here/img/background.jpg" />
 		<video src="/b-here/img/background.mp4" oncanplay="this.muted = true;" playsinline autoplay muted loop></video>

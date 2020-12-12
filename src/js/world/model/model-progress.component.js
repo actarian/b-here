@@ -43,7 +43,7 @@ export default class ModelProgressComponent extends ModelComponent {
 				takeUntil(this.unsubscribe$)
 			).subscribe(progress => {
 				if (progress.count) {
-					this.title = progress.title;
+					this.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
 				} else {
 					this.title = this.getTitle();
 				}
@@ -105,11 +105,13 @@ export default class ModelProgressComponent extends ModelComponent {
 
 	createMesh(result) {
 		const mesh = new THREE.Group();
-		const repeat = 24;
-		const aspect = (result.width * repeat) / result.height;
+		// const repeat = 24;
+		// const aspect = (result.width * repeat) / result.height;
 		const arc = Math.PI / 180 * 360;
 		const width = PANEL_RADIUS * arc;
-		const height = width / aspect;
+		const height = width / 360 * 2.4;
+		const w = result.width * height / result.height;
+		const repeat = width / w;
 		const geometry = new THREE.CylinderBufferGeometry(PANEL_RADIUS, PANEL_RADIUS, height, 80, 2, true, 0, arc);
 		geometry.scale(-1, 1, 1);
 		const texture = result.texture;
@@ -136,6 +138,12 @@ export default class ModelProgressComponent extends ModelComponent {
 	updateProgress() {
 		this.getCanvasTexture().then(result => {
 			// console.log('ModelProgressComponent.updateProgress', result);
+			const arc = Math.PI / 180 * 360;
+			const width = PANEL_RADIUS * arc;
+			const height = width / 360 * 2.4;
+			const w = result.width * height / result.height;
+			const repeat = width / w;
+			this.texture.repeat.x = repeat;
 		});
 	}
 
@@ -143,9 +151,9 @@ export default class ModelProgressComponent extends ModelComponent {
 		return new Promise((resolve, reject) => {
 			const MIN_W = 512;
 			let W = MIN_W;
-			let H = 128;
-			const F = Math.floor(H * 0.8);
-			const L = Math.floor(H * 0.075);
+			let H = 64;
+			const F = Math.floor(H * 0.75);
+			const L = Math.floor(H * 0.05);
 			let canvas;
 			if (this.canvas) {
 				canvas = this.canvas;
@@ -162,7 +170,7 @@ export default class ModelProgressComponent extends ModelComponent {
 			// const ctx = text.material.map.image.getContext('2d');
 			ctx.imageSmoothingEnabled = true;
 			ctx.imageSmoothingQuality = 'high';
-			ctx.font = `${F}px ${environment.fontFamily}`;
+			ctx.font = `300 ${F}px ${environment.fontFamily}`;
 			const metrics = ctx.measureText(text);
 			W = metrics.width + 8;
 			W = Math.max(MIN_W, Math.pow(2, Math.ceil(Math.log(W) / Math.log(2))));
@@ -172,10 +180,10 @@ export default class ModelProgressComponent extends ModelComponent {
 			ctx.clearRect(0, 0, W, H);
 			ctx.fillStyle = '#0000005A'; // 35% // '#000000C0'; // 75%
 			ctx.fillRect(0, 0, W, H);
-			ctx.font = `${F}px ${environment.fontFamily}`;
+			ctx.font = `300 ${F}px ${environment.fontFamily}`;
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
-			ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+			ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
 			ctx.lineWidth = L;
 			ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
 			ctx.miterLimit = 2;
