@@ -105,7 +105,7 @@ export class EnvMapLoader {
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		const image = new Image();
-		ImageService.load$(folder + file).pipe(
+		ImageService.events$(folder + file).pipe(
 			tap(event => {
 				if (event.type === ImageServiceEvent.Progress) {
 					LoaderService.setProgress(progressRef, event.data.loaded, event.data.total);
