@@ -1,7 +1,7 @@
 import { Component } from 'rxcomp';
 import { environment } from '../../environment';
+import LabelPipe from '../../label/label.pipe';
 import { ViewItemType, ViewType } from '../../view/view';
-import { EditorLocale } from '../editor.locale';
 
 export default class AsideComponent extends Component {
 
@@ -11,7 +11,7 @@ export default class AsideComponent extends Component {
 			const type = ViewType[key];
 			return {
 				type: type,
-				name: EditorLocale[type.name],
+				name: LabelPipe.getKeys('editor', type.name),
 				disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1,
 			};
 		});
@@ -19,7 +19,7 @@ export default class AsideComponent extends Component {
 			const type = ViewItemType[key];
 			return {
 				type: type,
-				name: EditorLocale[type.name],
+				name: LabelPipe.getKeys('editor', type.name),
 				disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1,
 			};
 		});

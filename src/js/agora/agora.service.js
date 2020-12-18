@@ -477,11 +477,6 @@ export default class AgoraService extends Emittable {
 		if (USE_AUTODETECT) {
 			StateService.state.devices.video = StateService.state.devices.videos[0] || null;
 			StateService.state.devices.audio = StateService.state.devices.audios[0] || null;
-			/*
-			const cameraId = devices.videos.length ? devices.videos[0].deviceId : null;
-			const microphoneId = devices.audios.length ? devices.audios[0].deviceId : null;
-			this.createLocalStream(uid, microphoneId, cameraId);
-			*/
 		}
 	}
 
@@ -499,23 +494,45 @@ export default class AgoraService extends Emittable {
 		]).then(success => {
 			const quality = Object.assign({}, StateService.state.quality);
 			this.createLocalStreamWithOptions(options, quality);
-			/*
-			// console.log('AgoraService.createMediaStream', uid, options);
-			const local = AgoraRTC.createStream(options);
-			StreamService.local = local;
-			// console.log('AgoraService.createMediaStream', uid, local.getId());
-			// console.log('AgoraService.setVideoEncoderConfiguration', quality);
-			local.setVideoEncoderConfiguration(quality);
-			this.initLocalStream(options);
-			*/
 		});
 	}
 
 	createLocalStreamWithOptions(options, quality) {
+		/*
+		const getUserMedia = navigator.mediaDevices.getUserMedia;
+		navigator.mediaDevices.getUserMedia = function(options) {
+			if (options.video) {
+				options.video.width = { ideal: 4096 };
+				options.video.height = { ideal: 2160 };
+				console.log('getUserMedia', options.video.width.ideal, options.video.height.ideal);
+			}
+			console.log('getUserMedia', options);
+			return getUserMedia.call(navigator.mediaDevices, options);
+		}
+		*/
 		const local = AgoraRTC.createStream(options);
+		/*
+		// force video quality
+		quality = {
+			resolution: {
+				width: 1920,
+				height: 1080
+			},
+			frameRate: {
+				min: 30,
+				max: 30
+			},
+			bitrate: {
+				min: 2000,
+				max: 4000
+			}
+		};
+		*/
 		if (quality) {
+			local.setVideoProfile(quality.profile);
 			local.setVideoEncoderConfiguration(quality);
 		}
+		// console.log('local', local.attributes);
 		local.init(() => {
 			StreamService.local = local;
 			setTimeout(() => {
@@ -535,34 +552,8 @@ export default class AgoraService extends Emittable {
 		});
 	}
 
-	createLocalStream(uid, microphoneId, cameraId) {
-		// console.log('createLocalStream', uid, microphoneId, cameraId);
-		if (microphoneId || cameraId) {
-			const options = {
-				streamID: uid,
-				microphoneId: microphoneId,
-				cameraId: cameraId,
-				audio: microphoneId ? true : false,
-				video: cameraId ? true : false,
-				screen: false,
-			};
-			this.createLocalStreamWithOptions(options);
-			/*
-			StreamService.local = AgoraRTC.createStream({
-				streamID: uid,
-				microphoneId: microphoneId,
-				cameraId: cameraId,
-				audio: microphoneId ? true : false,
-				video: cameraId ? true : false,
-				screen: false,
-			});
-			this.initLocalStream();
-			*/
-		}
-	}
-
+	/*
 	createMediaVideoStream(video, callback) {
-		// this.releaseStream('_mediaVideoStream')
 		const videoStream = video.captureStream(60);
 		const stream = AgoraRTC.createStream({
 			audio: true,
@@ -574,6 +565,7 @@ export default class AgoraService extends Emittable {
 			callback(stream.getVideoTrack(), stream.getAudioTrack());
 		});
 	}
+	*/
 
 	publishLocalStream() {
 		const client = this.client;
