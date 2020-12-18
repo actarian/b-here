@@ -130,11 +130,6 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		this.editing = this.item.selected;
 	}
 
-	onDestroy() {
-		Interactive.dispose(this.sphere);
-		super.onDestroy();
-	}
-
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.nav;
 		const mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
@@ -144,41 +139,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		const nav = new THREE.Group();
 		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 		nav.position.set(position.x, position.y, position.z);
-		const map = ModelNavComponent.getTexture(mode);
-		map.disposable = false;
-		map.encoding = THREE.sRGBEncoding;
-		const material = new THREE.SpriteMaterial({
-			depthTest: false,
-			depthWrite: false,
-			transparent: true,
-			map: map,
-			sizeAttenuation: false,
-			opacity: 0,
-			// color: 0xff0000,
-		});
-		const sprite = new THREE.Sprite(material);
-		sprite.scale.set(0.03, 0.03, 0.03);
-		nav.add(sprite);
 
-		let titleMaterial;
-		const titleTexture = ModelNavComponent.getTitleTexture(this.item, mode);
-		if (titleTexture) {
-			titleMaterial = new THREE.SpriteMaterial({
-				depthTest: false,
-				depthWrite: false,
-				transparent: true,
-				map: titleTexture,
-				sizeAttenuation: false,
-				opacity: 0,
-				// color: 0xff0000,
-			});
-			// console.log(titleTexture);
-			const image = titleTexture.image;
-			const title = new THREE.Sprite(titleMaterial);
-			title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
-			title.position.set(0, -3.5, 0);
-			nav.add(title);
-		}
+		this.onCreateSprites(nav);
+
 		const geometry = ModelNavComponent.getNavGeometry();
 		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
 			depthTest: false,
@@ -200,7 +163,8 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			}
 			*/
 			this.over.next(this);
-			const from = { scale: sprite.scale.x };
+			const icon = this.icon;
+			const from = { scale: icon.scale.x };
 			gsap.to(from, {
 				duration: 0.35,
 				scale: 0.04,
@@ -208,7 +172,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				ease: Power2.easeOut,
 				overwrite: true,
 				onUpdate: () => {
-					sprite.scale.set(from.scale, from.scale, from.scale);
+					icon.scale.set(from.scale, from.scale, from.scale);
 				},
 				onComplete: () => {
 					/*
@@ -221,7 +185,8 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		});
 		sphere.on('out', () => {
 			this.out.next(this);
-			const from = { scale: sprite.scale.x };
+			const icon = this.icon;
+			const from = { scale: icon.scale.x };
 			gsap.to(from, {
 				duration: 0.35,
 				scale: 0.03,
@@ -229,7 +194,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				ease: Power2.easeOut,
 				overwrite: true,
 				onUpdate: () => {
-					sprite.scale.set(from.scale, from.scale, from.scale);
+					icon.scale.set(from.scale, from.scale, from.scale);
 				},
 				onComplete: () => {
 					/*
@@ -249,18 +214,78 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			ease: Power2.easeInOut,
 			overwrite: true,
 			onUpdate: () => {
-				// console.log(index, from.opacity);
-				material.opacity = from.opacity;
-				material.needsUpdate = true;
-				if (titleMaterial) {
-					titleMaterial.opacity = from.opacity;
-					titleMaterial.needsUpdate = true;
-				}
+				this.materials.forEach(material => {
+					material.opacity = from.opacity;
+					material.needsUpdate = true;
+				});
 			}
 		});
 		if (typeof mount === 'function') {
 			mount(nav, this.item);
 		}
+	}
+
+	onCreateSprites(mesh, opacity = 0) {
+		this.onRemoveSprite(this.icon);
+		this.onRemoveSprite(this.title);
+		const mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+		if (mode === NavModeType.None) {
+			return;
+		}
+		const map = ModelNavComponent.getTexture(mode);
+		map.disposable = false;
+		map.encoding = THREE.sRGBEncoding;
+		const material = new THREE.SpriteMaterial({
+			depthTest: false,
+			depthWrite: false,
+			transparent: true,
+			map: map,
+			sizeAttenuation: false,
+			opacity: opacity,
+			// color: 0xff0000,
+		});
+		const materials = [material];
+		const icon = this.icon = new THREE.Sprite(material);
+		icon.scale.set(0.03, 0.03, 0.03);
+		mesh.add(icon);
+		let titleMaterial;
+		const titleTexture = ModelNavComponent.getTitleTexture(this.item, mode);
+		if (titleTexture) {
+			titleMaterial = new THREE.SpriteMaterial({
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+				map: titleTexture,
+				sizeAttenuation: false,
+				opacity: opacity,
+				// color: 0xff0000,
+			});
+			// console.log(titleTexture);
+			const image = titleTexture.image;
+			const title = this.title = new THREE.Sprite(titleMaterial);
+			title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
+			title.position.set(0, -3.5, 0);
+			mesh.add(title);
+			materials.push(titleMaterial);
+		}
+		this.materials = materials;
+	}
+
+	onRemoveSprite(sprite) {
+		if (sprite) {
+			if (sprite.parent) {
+				sprite.parent.remove(sprite);
+			}
+			if (sprite.material.map && sprite.material.map.disposable !== false) {
+				sprite.material.map.dispose();
+			}
+			sprite.material.dispose();
+		}
+	}
+
+	onDestroy() {
+		Interactive.dispose(this.sphere);
+		super.onDestroy();
 	}
 
 	shouldShowPanel() {
@@ -269,10 +294,18 @@ export default class ModelNavComponent extends ModelEditableComponent {
 
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
+		this.item = item;
+		this.onCreateSprites(this.mesh, 1);
 		const position = new THREE.Vector3().set(...item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 		mesh.position.set(position.x, position.y, position.z);
-		// console.log('onUpdate', mesh.position);
+		// console.log('onUpdate', item, mesh.position);
 		this.updateHelper();
+		/*
+		this.onCreate(
+			(mesh, item) => this.onMount(mesh, item),
+			(mesh, item) => this.onDismount(mesh, item)
+		);
+		*/
 	}
 
 	// called by WorldComponent

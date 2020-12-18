@@ -8,7 +8,6 @@ import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType, ViewType } from '../../view/view';
-import { EditorLocale } from '../editor.locale';
 import EditorService from '../editor.service';
 
 export default class UpdateViewItemComponent extends Component {
@@ -244,8 +243,7 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	getTitle(item) {
-		return EditorLocale[item.type.name];
-		return LabelPipe.transform(`editor_${view.type.name.replace('-','_')}`);
+		return LabelPipe.getKeys('editor', item.type.name);
 	}
 }
 

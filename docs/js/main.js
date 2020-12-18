@@ -259,7 +259,29 @@ function _readOnlyError(name) {
       remove: '/remove-modal.html'
     }
   }
-};var NODE = typeof module !== 'undefined' && module.exports;
+};var Utils = /*#__PURE__*/function () {
+  function Utils() {}
+
+  Utils.merge = function merge(target, source) {
+    var _this = this;
+
+    if (typeof source === 'object') {
+      Object.keys(source).forEach(function (key) {
+        var value = source[key];
+
+        if (typeof value === 'object' && !Array.isArray(value)) {
+          target[key] = _this.merge(target[key], value);
+        } else {
+          target[key] = value;
+        }
+      });
+    }
+
+    return target;
+  };
+
+  return Utils;
+}();var NODE = typeof module !== 'undefined' && module.exports;
 var PARAMS = NODE ? {
   get: function get() {}
 } : new URLSearchParams(window.location.search);
@@ -328,21 +350,6 @@ var Environment = /*#__PURE__*/function () {
     }
   }
 
-  Environment.merge = function merge(target, source) {
-    var _this = this;
-
-    Object.keys(source).forEach(function (key) {
-      var value = source[key];
-
-      if (typeof value === 'object' && !Array.isArray(value)) {
-        target[key] = _this.merge(target[key], value);
-      } else {
-        target[key] = value;
-      }
-    });
-    return target;
-  };
-
   return Environment;
 }();
 var defaultOptions = {
@@ -394,13 +401,10 @@ var defaultAppOptions = {
 };
 var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
-
-if (typeof window.bhere === 'object') {
-  options = Environment.merge(options, window.bhere);
-}
-
+options = Utils.merge(options, window.bhere);
 var environment = new Environment(options);
-console.log('environment', environment);var LABELS = Object.assign({
+console.log('environment', environment);var _Utils$merge;
+var LABELS = Utils.merge((_Utils$merge = {
   browse: 'Browse',
   cancel: 'Cancel',
   drag_and_drop_images: 'Drag And Drop your images here',
@@ -414,8 +418,18 @@ console.log('environment', environment);var LABELS = Object.assign({
   select_file: 'Select a file...',
   update: 'Update',
   upload: 'Upload',
-  waiting_host: 'waiting host'
-}, window.labels || {});
+  waiting_host: 'waiting host',
+  // editor
+  editor_image: 'Image',
+  editor_video: 'Video',
+  editor_model: 'Model',
+  editor_publisher_stream: 'Publisher Stream',
+  editor_next_attendee_stream: 'Next Attendee Stream',
+  editor_waiting_room: 'Waiting Room',
+  editor_panorama: 'Panorama',
+  editor_panorama_grid: 'Panorama Grid',
+  editor_room_3d: 'Room 3D'
+}, _Utils$merge["editor_model"] = 'Model', _Utils$merge.editor_nav = 'Nav Tooltip', _Utils$merge.editor_gltf = 'Gltf Model', _Utils$merge.editor_plane = 'Plane', _Utils$merge.editor_curved_plane = 'Curved Plane', _Utils$merge.editor_texture = 'Texture', _Utils$merge), window.labels);
 
 var LabelPipe = /*#__PURE__*/function (_Pipe) {
   _inheritsLoose(LabelPipe, _Pipe);
@@ -427,6 +441,16 @@ var LabelPipe = /*#__PURE__*/function (_Pipe) {
   LabelPipe.transform = function transform(key) {
     var labels = LABELS;
     return labels[key] || "#" + key + "#";
+  };
+
+  LabelPipe.getKeys = function getKeys() {
+    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
+      keys[_key] = arguments[_key];
+    }
+
+    return this.transform(keys.map(function (x) {
+      return x.replace('-', '_');
+    }).join('_'));
   };
 
   return LabelPipe;
@@ -480,7 +504,62 @@ LabelPipe.meta = {
     })).pipe(operators.catchError(function (error) {
       return rxjs.throwError(_this.getError(error, response_));
     }));
-  };
+  }
+  /*
+  // !!! todo mapping response.data
+  static http$(method, url, data, format = 'json') {
+  	const methods = ['POST', 'PUT', 'PATCH'];
+  	const body = (data && methods.indexOf(method) !== -1) ? JSON.stringify(data) : undefined;
+  	const queryString = (data && methods.indexOf(method) !== -1) ? Object.keys(data).map(function(key) {
+  	    return key + '=' + encodeURI(data[key]);
+  	}).join('&') : undefined;
+  	if (queryString) {
+  		url = `${url}?${queryString}`;
+  	}
+  	let response_ = null;
+  	return from(fetch(url, {
+  		method: method,
+  		headers: {
+  			'Accept': 'application/json',
+  			'Content-Type': 'application/json',
+  		},
+  		body: body,
+  	}).then((response) => {
+  		response_ = new HttpResponse(response);
+  		try {
+  			const contentType = response.headers.get('content-type');
+  			let typedResponse;
+  			if (contentType && format === 'json' && contentType.indexOf('application/json') !== -1) {
+  				typedResponse = response.json();
+  			} else if (format === 'blob') {
+  				typedResponse = response.blob();
+  			} else {
+  				typedResponse = response.text();
+  			}
+  			return typedResponse.then(data => {
+  				response_.data = data;
+  				if (response.ok) {
+  					return Promise.resolve(response_);
+  				} else {
+  					return Promise.reject(response_);
+  				}
+  			});
+  		} catch(error) {
+  			if (response.ok) {
+  				console.warn('HttpService.http$', 'Cannot parse response');
+  				return Promise.resolve(response_);
+  			} else {
+  				return Promise.reject(this.getError(error, response_));
+  			}
+  		}
+  	})).pipe(
+  		catchError(error => {
+  			return throwError(this.getError(error, response_));
+  		}),
+  	);
+  }
+  */
+  ;
 
   HttpService.get$ = function get$(url, data, format) {
     var query = this.query(data);
@@ -5820,19 +5899,7 @@ ToastOutletComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"toast-outlet__container\" [class]=\"{ active: toast }\">\n\t\t<div class=\"toast-outlet__toast\" [innerHTML]=\"lastMessage\"></div>\n\t</div>\n\t"
-};var _EditorLocale;
-
-var EditorLocale = (_EditorLocale = {
-  'image': 'Image',
-  'video': 'Video',
-  'model': 'Model',
-  'publisher-stream': 'Publisher Stream',
-  'next-attendee-stream': 'Next Attendee Stream',
-  'waiting-room': 'Waiting Room',
-  'panorama': 'Panorama',
-  'panorama-grid': 'Panorama Grid',
-  'room-3d': 'Room 3D'
-}, _EditorLocale["model"] = 'Model', _EditorLocale['nav'] = 'Nav Tooltip', _EditorLocale['gltf'] = 'Gltf Model', _EditorLocale['plane'] = 'Plane', _EditorLocale['curved-plane'] = 'Curved Plane', _EditorLocale['texture'] = 'Texture', _EditorLocale);var AsideComponent = /*#__PURE__*/function (_Component) {
+};var AsideComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AsideComponent, _Component);
 
   function AsideComponent() {
@@ -5847,7 +5914,7 @@ var EditorLocale = (_EditorLocale = {
       var type = ViewType[key];
       return {
         type: type,
-        name: EditorLocale[type.name],
+        name: LabelPipe.getKeys('editor', type.name),
         disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1
       };
     });
@@ -5855,7 +5922,7 @@ var EditorLocale = (_EditorLocale = {
       var type = ViewItemType[key];
       return {
         type: type,
-        name: EditorLocale[type.name],
+        name: LabelPipe.getKeys('editor', type.name),
         disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1
       };
     });
@@ -8323,14 +8390,14 @@ RemoveModalComponent.meta = {
       this.pushChanges();
       var changes = this.form.value;
       var payload = Object.assign({}, changes);
-      var _view = this.view;
+      var view = this.view;
       var item = new ViewItem(payload);
-      EditorService.inferItemUpdate$(_view, item).pipe(operators.first()).subscribe(function (response) {
+      EditorService.inferItemUpdate$(view, item).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
-        EditorService.inferItemUpdateResult$(_view, item);
+        EditorService.inferItemUpdateResult$(view, item);
 
         _this5.update.next({
-          view: _view,
+          view: view,
           item: item
         });
 
@@ -8377,7 +8444,7 @@ RemoveModalComponent.meta = {
   };
 
   _proto.getTitle = function getTitle(item) {
-    return EditorLocale[item.type.name];
+    return LabelPipe.getKeys('editor', item.type.name);
   };
 
   return UpdateViewItemComponent;
@@ -8666,7 +8733,7 @@ UpdateViewTileComponent.meta = {
   };
 
   _proto.getTitle = function getTitle(view) {
-    return EditorLocale[view.type.name];
+    return LabelPipe.getKeys('editor', view.type.name);
   };
 
   return UpdateViewComponent;
@@ -17441,12 +17508,6 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     this.editing = this.item.selected;
   };
 
-  _proto.onDestroy = function onDestroy() {
-    Interactive.dispose(this.sphere);
-
-    _ModelEditableCompone.prototype.onDestroy.call(this);
-  };
-
   _proto.onCreate = function onCreate(mount, dismount) {
     var _THREE$Vector,
         _this = this;
@@ -17463,42 +17524,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     var position = (_THREE$Vector = new THREE.Vector3()).set.apply(_THREE$Vector, this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
     nav.position.set(position.x, position.y, position.z);
-    var map = ModelNavComponent.getTexture(mode);
-    map.disposable = false;
-    map.encoding = THREE.sRGBEncoding;
-    var material = new THREE.SpriteMaterial({
-      depthTest: false,
-      depthWrite: false,
-      transparent: true,
-      map: map,
-      sizeAttenuation: false,
-      opacity: 0 // color: 0xff0000,
-
-    });
-    var sprite = new THREE.Sprite(material);
-    sprite.scale.set(0.03, 0.03, 0.03);
-    nav.add(sprite);
-    var titleMaterial;
-    var titleTexture = ModelNavComponent.getTitleTexture(this.item, mode);
-
-    if (titleTexture) {
-      titleMaterial = new THREE.SpriteMaterial({
-        depthTest: false,
-        depthWrite: false,
-        transparent: true,
-        map: titleTexture,
-        sizeAttenuation: false,
-        opacity: 0 // color: 0xff0000,
-
-      }); // console.log(titleTexture);
-
-      var image = titleTexture.image;
-      var title = new THREE.Sprite(titleMaterial);
-      title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
-      title.position.set(0, -3.5, 0);
-      nav.add(title);
-    }
-
+    this.onCreateSprites(nav);
     var geometry = ModelNavComponent.getNavGeometry();
     var sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
       depthTest: false,
@@ -17522,8 +17548,9 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       */
       _this.over.next(_this);
 
+      var icon = _this.icon;
       var from = {
-        scale: sprite.scale.x
+        scale: icon.scale.x
       };
       gsap.to(from, {
         duration: 0.35,
@@ -17532,7 +17559,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         ease: Power2.easeOut,
         overwrite: true,
         onUpdate: function onUpdate() {
-          sprite.scale.set(from.scale, from.scale, from.scale);
+          icon.scale.set(from.scale, from.scale, from.scale);
         },
         onComplete: function onComplete() {
           /*
@@ -17546,8 +17573,9 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     sphere.on('out', function () {
       _this.out.next(_this);
 
+      var icon = _this.icon;
       var from = {
-        scale: sprite.scale.x
+        scale: icon.scale.x
       };
       gsap.to(from, {
         duration: 0.35,
@@ -17556,7 +17584,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         ease: Power2.easeOut,
         overwrite: true,
         onUpdate: function onUpdate() {
-          sprite.scale.set(from.scale, from.scale, from.scale);
+          icon.scale.set(from.scale, from.scale, from.scale);
         },
         onComplete: function onComplete() {
           /*
@@ -17578,20 +17606,90 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       ease: Power2.easeInOut,
       overwrite: true,
       onUpdate: function onUpdate() {
-        // console.log(index, from.opacity);
-        material.opacity = from.opacity;
-        material.needsUpdate = true;
-
-        if (titleMaterial) {
-          titleMaterial.opacity = from.opacity;
-          titleMaterial.needsUpdate = true;
-        }
+        _this.materials.forEach(function (material) {
+          material.opacity = from.opacity;
+          material.needsUpdate = true;
+        });
       }
     });
 
     if (typeof mount === 'function') {
       mount(nav, this.item);
     }
+  };
+
+  _proto.onCreateSprites = function onCreateSprites(mesh, opacity) {
+    if (opacity === void 0) {
+      opacity = 0;
+    }
+
+    this.onRemoveSprite(this.icon);
+    this.onRemoveSprite(this.title);
+    var mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+
+    if (mode === NavModeType.None) {
+      return;
+    }
+
+    var map = ModelNavComponent.getTexture(mode);
+    map.disposable = false;
+    map.encoding = THREE.sRGBEncoding;
+    var material = new THREE.SpriteMaterial({
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+      map: map,
+      sizeAttenuation: false,
+      opacity: opacity // color: 0xff0000,
+
+    });
+    var materials = [material];
+    var icon = this.icon = new THREE.Sprite(material);
+    icon.scale.set(0.03, 0.03, 0.03);
+    mesh.add(icon);
+    var titleMaterial;
+    var titleTexture = ModelNavComponent.getTitleTexture(this.item, mode);
+
+    if (titleTexture) {
+      titleMaterial = new THREE.SpriteMaterial({
+        depthTest: false,
+        depthWrite: false,
+        transparent: true,
+        map: titleTexture,
+        sizeAttenuation: false,
+        opacity: opacity // color: 0xff0000,
+
+      }); // console.log(titleTexture);
+
+      var image = titleTexture.image;
+      var title = this.title = new THREE.Sprite(titleMaterial);
+      title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
+      title.position.set(0, -3.5, 0);
+      mesh.add(title);
+      materials.push(titleMaterial);
+    }
+
+    this.materials = materials;
+  };
+
+  _proto.onRemoveSprite = function onRemoveSprite(sprite) {
+    if (sprite) {
+      if (sprite.parent) {
+        sprite.parent.remove(sprite);
+      }
+
+      if (sprite.material.map && sprite.material.map.disposable !== false) {
+        sprite.material.map.dispose();
+      }
+
+      sprite.material.dispose();
+    }
+  };
+
+  _proto.onDestroy = function onDestroy() {
+    Interactive.dispose(this.sphere);
+
+    _ModelEditableCompone.prototype.onDestroy.call(this);
   };
 
   _proto.shouldShowPanel = function shouldShowPanel() {
@@ -17602,11 +17700,20 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   _proto.onUpdate = function onUpdate(item, mesh) {
     var _THREE$Vector2;
 
+    this.item = item;
+    this.onCreateSprites(this.mesh, 1);
+
     var position = (_THREE$Vector2 = new THREE.Vector3()).set.apply(_THREE$Vector2, item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
 
-    mesh.position.set(position.x, position.y, position.z); // console.log('onUpdate', mesh.position);
+    mesh.position.set(position.x, position.y, position.z); // console.log('onUpdate', item, mesh.position);
 
     this.updateHelper();
+    /*
+    this.onCreate(
+    	(mesh, item) => this.onMount(mesh, item),
+    	(mesh, item) => this.onDismount(mesh, item)
+    );
+    */
   } // called by WorldComponent
   ;
 

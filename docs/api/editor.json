@@ -45,7 +45,46 @@
         "longitude": 0
       },
       "zoom": 75,
-      "items": []
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Waiting Room",
+          "abstract": null,
+          "viewId": 170427763401500,
+          "position": [
+            0.9657157787299405,
+            -0.25956877868327144,
+            -0.004133260807058677
+          ],
+          "asset": null,
+          "link": null,
+          "id": 352633410758500,
+          "keepOrientation": null
+        }
+      ]
+    }
+  ],
+  "menu": [],
+  "assets": [],
+  "users": [
+    {
+      "id": "1601892639985",
+      "username": "publisher",
+      "password": "publisher",
+      "type": "publisher",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "id": "1601892639986",
+      "username": "attendee",
+      "password": "attendee",
+      "type": "attendee",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
     }
   ]
 }

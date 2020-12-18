@@ -1,5 +1,6 @@
 import { environmentServed } from "./environment.served";
 import { environmentStatic } from "./environment.static";
+import { Utils } from "./utils/utils";
 
 export const NODE = (typeof module !== 'undefined' && module.exports);
 export const PARAMS = NODE ? { get: () => { } } : new URLSearchParams(window.location.search);
@@ -62,18 +63,6 @@ export class Environment {
 			Object.assign(this, options);
 		}
 	}
-
-	static merge(target, source) {
-		Object.keys(source).forEach(key => {
-			const value = source[key];
-			if (typeof value === 'object' && !Array.isArray(value)) {
-				target[key] = this.merge(target[key], value);
-			} else {
-				target[key] = value;
-			}
-		});
-		return target;
-	}
 }
 
 const defaultOptions = {
@@ -128,10 +117,7 @@ const defaultAppOptions = {
 const environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 
 let options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
-
-if (typeof window.bhere === 'object') {
-	options = Environment.merge(options, window.bhere);
-}
+options = Utils.merge(options, window.bhere);
 
 export const environment = new Environment(options);
 
