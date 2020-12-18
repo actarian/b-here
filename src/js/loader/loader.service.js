@@ -49,21 +49,15 @@ export default class LoaderService {
 
 	static setProgress(ref, loaded, total = 1) {
 		const item = this.items[ref];
-		item.next({ loaded, total });
+		if (item) {
+			item.next({ loaded, total });
+		}
 		if (loaded >= total) {
 			setTimeout(() => {
 				delete this.items[ref];
 				this.switchLoaders();
 			}, 300);
 		}
-		/*
-		if (loaded < total) {
-			const item = this.items[ref];
-			item.next({ loaded, total });
-		} else {
-			delete this.items[ref];
-		}
-		*/
 		this.switchLoaders();
 	}
 

@@ -318,36 +318,22 @@ export default class ModelMenuComponent extends ModelComponent {
 		const position = this.position;
 		if (this.host.renderer.xr.isPresenting) {
 			camera = this.host.renderer.xr.getCamera(camera);
-			// camera.updateMatrixWorld(); // make sure the camera matrix is updated
-			// camera.matrixWorldInverse.getInverse(camera.matrixWorld);
 			camera.getWorldDirection(position);
-			position.multiplyScalar(3);
-			// move body, not the camera
-			// VR.body.position.add(lookDirection);
-			// console.log(position.x + '|' + position.y + '|' + position.z);
-			group.position.copy(position);
+			group.position.set(position.x, position.y - 0.3, position.z);
+			group.position.multiplyScalar(3);
 			group.scale.set(1, 1, 1);
 			group.lookAt(ModelMenuComponent.ORIGIN);
-			// }
 		} else {
 			camera.getWorldDirection(position);
-			// console.log(position);
-			// if (position.lengthSq() > 0.01) {
-			// normalize so we can get a constant speed
-			// position.normalize();
 			if (OrbitService.mode === OrbitMode.Model) {
 				position.multiplyScalar(0.01);
 			} else {
 				position.multiplyScalar(3);
 			}
-			// move body, not the camera
-			// VR.body.position.add(lookDirection);
-			// console.log(position.x + '|' + position.y + '|' + position.z);
 			group.position.copy(position);
 			const s = 1 / camera.zoom;
 			group.scale.set(s, s, s);
 			group.lookAt(ModelMenuComponent.ORIGIN);
-			// }
 		}
 	}
 

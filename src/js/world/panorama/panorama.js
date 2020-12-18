@@ -214,8 +214,16 @@ export default class Panorama {
 	}
 
 	load(item, renderer, callback) {
+		if (!item.asset) {
+			return;
+		}
+		this.currentAsset = item.asset.folder + item.asset.file;
 		const material = this.mesh.material;
 		EnvMapLoader.load(item, renderer, (envMap, texture, rgbe, video, pmremGenerator) => {
+			if (item.asset.folder + item.asset.file !== this.currentAsset) {
+				texture.dispose();
+				return;
+			}
 			if (material.uniforms.texture.value) {
 				material.uniforms.texture.value.dispose();
 				material.uniforms.texture.value = null;

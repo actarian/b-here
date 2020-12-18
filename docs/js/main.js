@@ -1326,7 +1326,13 @@ var DeviceService = /*#__PURE__*/function () {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({
           video: this.video_ ? {
-            deviceId: this.video_
+            deviceId: this.video_,
+            width: {
+              ideal: 3840
+            },
+            height: {
+              ideal: 2160
+            }
           } : false,
           audio: this.audio_ ? {
             deviceId: this.audio_
@@ -1782,8 +1788,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
   return streams;
 }), operators.shareReplay(1)));var StreamQualities = [{
-  id: 1,
-  name: '4K 2160p 3840x2160',
+  // id: 1,
+  // name: '4K 2160p 3840x2160',
+  profile: '4K',
   resolution: {
     width: 3840,
     height: 2160
@@ -1797,8 +1804,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     max: 13500
   }
 }, {
-  id: 2,
-  name: 'HD 1440p 2560×1440',
+  // id: 2,
+  // name: 'HD 1440p 2560×1440',
+  profile: '1440p',
   resolution: {
     width: 2560,
     height: 1440
@@ -1812,8 +1820,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     max: 7350
   }
 }, {
-  id: 3,
-  name: 'HD 1080p 1920x1080',
+  // id: 3,
+  // name: 'HD 1080p 1920x1080',
+  profile: '1080p',
   resolution: {
     width: 1920,
     height: 1080
@@ -1827,10 +1836,11 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     max: 4780
   }
 }, {
-  id: 4,
-  name: 'LOW 720p 960x720',
+  // id: 4,
+  // name: 'LOW 720p 1280x720',
+  profile: '720p_3',
   resolution: {
-    width: 960,
+    width: 1280,
     height: 720
   },
   frameRate: {
@@ -1838,12 +1848,13 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     max: 30
   },
   bitrate: {
-    min: 910,
-    max: 1380
+    min: 1130,
+    max: 1710
   }
 }, {
-  id: 5,
-  name: 'LOWEST 240p 320x240',
+  // id: 5,
+  // name: 'LOWEST 240p 320x240',
+  profile: '240p_1',
   resolution: {
     width: 320,
     height: 240
@@ -2519,27 +2530,48 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       var quality = Object.assign({}, StateService.state.quality);
 
       _this6.createLocalStreamWithOptions(options, quality);
-      /*
-      // console.log('AgoraService.createMediaStream', uid, options);
-      const local = AgoraRTC.createStream(options);
-      StreamService.local = local;
-      // console.log('AgoraService.createMediaStream', uid, local.getId());
-      // console.log('AgoraService.setVideoEncoderConfiguration', quality);
-      local.setVideoEncoderConfiguration(quality);
-      this.initLocalStream(options);
-      */
-
     });
   };
 
   _proto.createLocalStreamWithOptions = function createLocalStreamWithOptions(options, quality) {
     var _this7 = this;
 
+    /*
+    const getUserMedia = navigator.mediaDevices.getUserMedia;
+    navigator.mediaDevices.getUserMedia = function(options) {
+    	if (options.video) {
+    		options.video.width = { ideal: 4096 };
+    		options.video.height = { ideal: 2160 };
+    		console.log('getUserMedia', options.video.width.ideal, options.video.height.ideal);
+    	}
+    	console.log('getUserMedia', options);
+    	return getUserMedia.call(navigator.mediaDevices, options);
+    }
+    */
     var local = AgoraRTC.createStream(options);
+    /*
+    // force video quality
+    quality = {
+    	resolution: {
+    		width: 1920,
+    		height: 1080
+    	},
+    	frameRate: {
+    		min: 30,
+    		max: 30
+    	},
+    	bitrate: {
+    		min: 2000,
+    		max: 4000
+    	}
+    };
+    */
 
     if (quality) {
+      local.setVideoProfile(quality.profile);
       local.setVideoEncoderConfiguration(quality);
-    }
+    } // console.log('local', local.attributes);
+
 
     local.init(function () {
       StreamService.local = local;
@@ -2560,47 +2592,22 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     }, function (error) {
       console.log('AgoraService.initLocalStream.init.error', error);
     });
-  };
-
-  _proto.createLocalStream = function createLocalStream(uid, microphoneId, cameraId) {
-    // console.log('createLocalStream', uid, microphoneId, cameraId);
-    if (microphoneId || cameraId) {
-      var options = {
-        streamID: uid,
-        microphoneId: microphoneId,
-        cameraId: cameraId,
-        audio: microphoneId ? true : false,
-        video: cameraId ? true : false,
-        screen: false
-      };
-      this.createLocalStreamWithOptions(options);
-      /*
-      StreamService.local = AgoraRTC.createStream({
-      	streamID: uid,
-      	microphoneId: microphoneId,
-      	cameraId: cameraId,
-      	audio: microphoneId ? true : false,
-      	video: cameraId ? true : false,
-      	screen: false,
-      });
-      this.initLocalStream();
-      */
-    }
-  };
-
-  _proto.createMediaVideoStream = function createMediaVideoStream(video, callback) {
-    // this.releaseStream('_mediaVideoStream')
-    var videoStream = video.captureStream(60);
-    var stream = AgoraRTC.createStream({
-      audio: true,
-      video: true,
-      videoSource: videoStream.getVideoTracks()[0],
-      audioSource: videoStream.getAudioTracks()[0]
-    });
-    stream.init(function () {
-      callback(stream.getVideoTrack(), stream.getAudioTrack());
-    });
-  };
+  }
+  /*
+  createMediaVideoStream(video, callback) {
+  	const videoStream = video.captureStream(60);
+  	const stream = AgoraRTC.createStream({
+  		audio: true,
+  		video: true,
+  		videoSource: videoStream.getVideoTracks()[0],
+  		audioSource: videoStream.getAudioTracks()[0],
+  	});
+  	stream.init(() => {
+  		callback(stream.getVideoTrack(), stream.getAudioTrack());
+  	});
+  }
+  */
+  ;
 
   _proto.publishLocalStream = function publishLocalStream() {
     var client = this.client;
@@ -10522,10 +10529,13 @@ var LoaderService = /*#__PURE__*/function () {
     }
 
     var item = this.items[ref];
-    item.next({
-      loaded: loaded,
-      total: total
-    });
+
+    if (item) {
+      item.next({
+        loaded: loaded,
+        total: total
+      });
+    }
 
     if (loaded >= total) {
       setTimeout(function () {
@@ -10534,15 +10544,6 @@ var LoaderService = /*#__PURE__*/function () {
         _this2.switchLoaders();
       }, 300);
     }
-    /*
-    if (loaded < total) {
-    	const item = this.items[ref];
-    	item.next({ loaded, total });
-    } else {
-    	delete this.items[ref];
-    }
-    */
-
 
     this.switchLoaders();
   };
@@ -11334,8 +11335,20 @@ var Panorama = /*#__PURE__*/function () {
   };
 
   _proto.load = function load(item, renderer, callback) {
+    var _this = this;
+
+    if (!item.asset) {
+      return;
+    }
+
+    this.currentAsset = item.asset.folder + item.asset.file;
     var material = this.mesh.material;
     EnvMapLoader.load(item, renderer, function (envMap, texture, rgbe, video, pmremGenerator) {
+      if (item.asset.folder + item.asset.file !== _this.currentAsset) {
+        texture.dispose();
+        return;
+      }
+
       if (material.uniforms.texture.value) {
         material.uniforms.texture.value.dispose();
         material.uniforms.texture.value = null;
@@ -11370,7 +11383,7 @@ var Panorama = /*#__PURE__*/function () {
   };
 
   _proto.setVideo = function setVideo(video) {
-    var _this = this;
+    var _this2 = this;
 
     // console.log('Panorama.setVideo', video);
     if (video) {
@@ -11381,7 +11394,7 @@ var Panorama = /*#__PURE__*/function () {
         texture.mapping = THREE.UVMapping;
         texture.format = THREE.RGBFormat;
         texture.needsUpdate = true;
-        var material = _this.mesh.material;
+        var material = _this2.mesh.material;
         material.map = texture;
         material.uniforms.texture.value = texture;
         material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
@@ -14285,7 +14298,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
     controllerGroup.add(controllerGrip1);
 
-    scene.add(controllerGroup);
+    this.cameraGroup.add(controllerGroup);
   };
 
   _proto.buildController = function buildController(data) {
@@ -16845,36 +16858,25 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     var position = this.position;
 
     if (this.host.renderer.xr.isPresenting) {
-      camera = this.host.renderer.xr.getCamera(camera); // camera.updateMatrixWorld(); // make sure the camera matrix is updated
-      // camera.matrixWorldInverse.getInverse(camera.matrixWorld);
-
+      camera = this.host.renderer.xr.getCamera(camera);
       camera.getWorldDirection(position);
-      position.multiplyScalar(3); // move body, not the camera
-      // VR.body.position.add(lookDirection);
-      // console.log(position.x + '|' + position.y + '|' + position.z);
-
-      group.position.copy(position);
+      group.position.set(position.x, position.y - 0.3, position.z);
+      group.position.multiplyScalar(3);
       group.scale.set(1, 1, 1);
-      group.lookAt(ModelMenuComponent.ORIGIN); // }
+      group.lookAt(ModelMenuComponent.ORIGIN);
     } else {
-      camera.getWorldDirection(position); // console.log(position);
-      // if (position.lengthSq() > 0.01) {
-      // normalize so we can get a constant speed
-      // position.normalize();
+      camera.getWorldDirection(position);
 
       if (OrbitService.mode === OrbitMode.Model) {
         position.multiplyScalar(0.01);
       } else {
         position.multiplyScalar(3);
-      } // move body, not the camera
-      // VR.body.position.add(lookDirection);
-      // console.log(position.x + '|' + position.y + '|' + position.z);
-
+      }
 
       group.position.copy(position);
       var s = 1 / camera.zoom;
       group.scale.set(s, s, s);
-      group.lookAt(ModelMenuComponent.ORIGIN); // }
+      group.lookAt(ModelMenuComponent.ORIGIN);
     }
   };
 

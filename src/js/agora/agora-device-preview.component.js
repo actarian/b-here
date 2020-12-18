@@ -71,7 +71,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 		if (this.video_ || this.audio_) {
 			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 				navigator.mediaDevices.getUserMedia({
-					video: this.video_ ? { deviceId: this.video_ } : false,
+					video: this.video_ ? { deviceId: this.video_, width: { ideal: 3840 }, height: { ideal: 2160 } } : false,
 					audio: this.audio_ ? { deviceId: this.audio_ } : false,
 				}).then((stream) => {
 					if (this.hasPreview) {

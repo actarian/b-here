@@ -320,7 +320,7 @@ export default class WorldComponent extends Component {
 			controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
 			controllerGroup.add(controllerGrip2);
 		}
-		scene.add(controllerGroup);
+		this.cameraGroup.add(controllerGroup);
 	}
 
 	buildController(data) {
