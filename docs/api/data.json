@@ -497,40 +497,6 @@
             "name": "plane"
           },
           "position": [
-            8.7,
-            -0.4,
-            17.758087433043727
-          ],
-          "rotation": [
-            -3.1278414980164966,
-            -0.0066053831311385335,
-            -3.1352686504709197,
-            "XYZ"
-          ],
-          "scale": [
-            13,
-            8,
-            1
-          ],
-          "asset": {
-            "type": {
-              "id": 5,
-              "name": "next-attendee-stream"
-            },
-            "folder": "",
-            "file": "nextAttendeeStream",
-            "id": 595198805589300,
-            "chromaKeyColor": null,
-            "index": 0
-          },
-          "id": 595187295984100
-        },
-        {
-          "type": {
-            "id": 2,
-            "name": "plane"
-          },
-          "position": [
             21.4,
             -4.1,
             5
@@ -555,9 +521,43 @@
             "file": "nextAttendeeStream",
             "id": 595459761248000,
             "chromaKeyColor": null,
-            "index": 1
+            "index": 0
           },
           "id": 595393831847099
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            8.7,
+            -0.4,
+            17.758087433043727
+          ],
+          "rotation": [
+            -3.1278414980164966,
+            -0.0066053831311385335,
+            -3.1352686504709197,
+            "XYZ"
+          ],
+          "scale": [
+            13,
+            8,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream"
+            },
+            "folder": "",
+            "file": "nextAttendeeStream",
+            "id": 186290185842699,
+            "chromaKeyColor": null,
+            "index": 1
+          },
+          "id": 595187295984100
         },
         {
           "type": {
@@ -612,8 +612,8 @@
               "name": "image"
             },
             "folder": "/uploads/",
-            "file": "95243282411900_qrcode.png",
-            "id": 95243329446900,
+            "file": "186205893551300_qr-code.png",
+            "id": 186205918836200,
             "chromaKeyColor": null
           },
           "link": null,
@@ -5899,7 +5899,26 @@
         "longitude": 0
       },
       "zoom": 75,
-      "id": 72425488038100
+      "id": 72425488038100,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 72412822521800,
+          "position": [
+            -0.9542296421105539,
+            -0.2988781677580517,
+            0.010845780523042138
+          ],
+          "asset": null,
+          "link": null,
+          "id": 185822060687800
+        }
+      ]
     },
     {
       "type": {
@@ -8532,6 +8551,26 @@
       "folder": "/uploads/",
       "file": "138599743292500_Composizione1_x4_y2.jpg",
       "id": 138599797492599
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "186205893551300_qr-code.png",
+      "id": 186205918836200,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 186290185842699,
+      "chromaKeyColor": null
     }
   ],
   "users": [
