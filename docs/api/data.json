@@ -5917,6 +5917,41 @@
           "asset": null,
           "link": null,
           "id": 185822060687800
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Dettaglio Prodotto",
+          "abstract": null,
+          "viewId": 186934284638700,
+          "position": [
+            0.19613383748456814,
+            -0.02384021758270354,
+            0.9802872853501602
+          ],
+          "asset": null,
+          "link": null,
+          "id": 186889882337200,
+          "keepOrientation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Dettagli Prodotto",
+          "abstract": null,
+          "viewId": 186994532939900,
+          "position": [
+            0.9735398577193018,
+            0.13883379057972978,
+            -0.18150846819128127
+          ],
+          "asset": null,
+          "link": null,
+          "id": 187091335324100
         }
       ]
     },
@@ -6211,6 +6246,76 @@
           "asset": null,
           "link": null,
           "id": 73118106836300
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            10,
+            0.5,
+            -1.1268027192091132
+          ],
+          "rotation": [
+            0.415420118447061,
+            -1.480772259432416,
+            0.41444780022773076,
+            "XYZ"
+          ],
+          "scale": [
+            3.8,
+            2,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "187231221901500_green-screen_girl.mp4",
+            "id": 187231582850699,
+            "chromaKeyColor": [
+              0,
+              1,
+              0
+            ]
+          },
+          "id": 187234390187800
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            24.907694931875767,
+            2.2000000000000006,
+            -7.999999999999988
+          ],
+          "rotation": [
+            -0.01884807276011514,
+            -0.5888255565424758,
+            -0.01046878940590367,
+            "XYZ"
+          ],
+          "scale": [
+            11.98,
+            7,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "187313454768000_websolute.mp4",
+            "id": 187313737140500,
+            "chromaKeyColor": null
+          },
+          "id": 187314775158399
         }
       ],
       "hidden": null
@@ -7040,6 +7145,145 @@
       },
       "zoom": 75,
       "id": 138614587173299
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Tour-house - dettaglio",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "186914978227500_360_city7_2.jpg",
+        "id": 186915040190600
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 186934284638700,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Back",
+          "abstract": null,
+          "viewId": 72425488038100,
+          "position": [
+            0.8844673428051775,
+            -0.46649377457772473,
+            -0.010053745141761508
+          ],
+          "asset": null,
+          "link": null,
+          "id": 186948472367299
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Modello 3D",
+          "abstract": null,
+          "viewId": 186994532939900,
+          "position": [
+            0.2867451980544964,
+            -0.4540181835577592,
+            -0.8435903510541123
+          ],
+          "asset": null,
+          "link": null,
+          "id": 187016591967700
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Tour-house 3D",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "186972156196800_360_sfondo4.jpg",
+        "id": 186972200992300
+      },
+      "orientation": {
+        "latitude": 10.399999999999999,
+        "longitude": 129.4
+      },
+      "zoom": 75,
+      "id": 186994532939900,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "186984557903800_City7.glb",
+            "id": 186984593276899,
+            "chromaKeyColor": null
+          },
+          "id": 186994551942400,
+          "position": null,
+          "rotation": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Back",
+          "abstract": null,
+          "viewId": 72425488038100,
+          "position": [
+            0.7006437982091579,
+            -0.4564651868357078,
+            -0.5483956612137691
+          ],
+          "asset": null,
+          "id": 187044456727800,
+          "keepOrientation": null
+        }
+      ],
+      "hidden": null,
+      "ar": {
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "187054312153699_City7.usdz",
+          "id": 187054343687400
+        },
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "187057477424500_City7.glb",
+          "id": 187057501097200
+        }
+      }
     }
   ],
   "menu": [
@@ -8571,6 +8815,83 @@
       "file": "nextAttendeeStream",
       "id": 186290185842699,
       "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "186906196313400_360_city7.jpg",
+      "id": 186906335487899
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "186914978227500_360_city7_2.jpg",
+      "id": 186915040190600
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "186972156196800_360_sfondo4.jpg",
+      "id": 186972200992300
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "186984557903800_City7.glb",
+      "id": 186984593276899
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "187054312153699_City7.usdz",
+      "id": 187054343687400
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "187057477424500_City7.glb",
+      "id": 187057501097200
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "187231221901500_green-screen_girl.mp4",
+      "id": 187231582850699,
+      "chromaKeyColor": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "187313454768000_websolute.mp4",
+      "id": 187313737140500
     }
   ],
   "users": [
