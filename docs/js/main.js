@@ -1,6 +1,6 @@
 /**
  * @license b-here v1.0.0
- * (c) 2020 Luca Zampetti <lzampetti@gmail.com>
+ * (c) 2021 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
@@ -1273,7 +1273,214 @@ var DeviceService = /*#__PURE__*/function () {
   }]);
 
   return DeviceService;
-}();var AgoraDevicePreviewComponent = /*#__PURE__*/function (_Component) {
+}();var StateService = /*#__PURE__*/function () {
+  function StateService() {}
+
+  StateService.patchState = function patchState(state) {
+    state = Object.assign({}, this.state, state);
+    this.state = state;
+  };
+
+  _createClass(StateService, null, [{
+    key: "state",
+    set: function set(state) {
+      this.state$.next(state);
+    },
+    get: function get() {
+      return this.state$.getValue();
+    }
+  }]);
+
+  return StateService;
+}();
+
+_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var StreamQualities = [{
+  // id: 1,
+  // name: '4K 2160p 3840x2160',
+  profile: '4K',
+  resolution: {
+    width: 3840,
+    height: 2160
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 8910,
+    max: 13500
+  }
+}, {
+  // id: 2,
+  // name: 'HD 1440p 2560×1440',
+  profile: '1440p',
+  resolution: {
+    width: 2560,
+    height: 1440
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 4850,
+    max: 7350
+  }
+}, {
+  // id: 3,
+  // name: 'HD 1080p 1920x1080',
+  profile: '1080p',
+  resolution: {
+    width: 1920,
+    height: 1080
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 2080,
+    max: 4780
+  }
+}, {
+  // id: 4,
+  // name: 'LOW 720p 1280x720',
+  profile: '720p_3',
+  resolution: {
+    width: 1280,
+    height: 720
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 1130,
+    max: 1710
+  }
+}, {
+  // id: 5,
+  // name: 'LOWEST 240p 320x240',
+  profile: '240p_1',
+  resolution: {
+    width: 320,
+    height: 240
+  },
+  frameRate: {
+    min: 15,
+    max: 15
+  },
+  bitrate: {
+    min: 140,
+    max: 200
+  }
+}];
+function getStreamQuality(state) {
+  var lowestQuality = StreamQualities[StreamQualities.length - 1];
+  var highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
+  return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
+}
+var AgoraStatus = {
+  Link: 'link',
+  Name: 'name',
+  Device: 'device',
+  ShouldConnect: 'should-connect',
+  Connecting: 'connecting',
+  Connected: 'connected',
+  Disconnected: 'disconnected'
+};
+var MessageType = {
+  AgoraEvent: 'agoraEvent',
+  Ping: 'ping',
+  RequestControl: 'requestControl',
+  RequestControlAccepted: 'requestControlAccepted',
+  RequestControlRejected: 'requestControlRejected',
+  RequestControlDismiss: 'requestControlDismiss',
+  RequestControlDismissed: 'requestControlDismissed',
+  RequestPeerInfo: 'requestPeerInfo',
+  RequestPeerInfoResult: 'requestPeerInfoResult',
+  RequestInfo: 'requestInfo',
+  RequestInfoResult: 'requestInfoResult',
+  RequestInfoDismiss: 'requestInfoDismiss',
+  RequestInfoDismissed: 'requestInfoDismissed',
+  RequestInfoRejected: 'requestInfoRejected',
+  SlideChange: 'slideChange',
+  ControlInfo: 'controlInfo',
+  AddLike: 'addLike',
+  ShowPanel: 'showPanel',
+  PlayMedia: 'playMedia',
+  NavToView: 'navToView',
+  NavToGrid: 'navToGrid',
+  VRStarted: 'vrStarted',
+  VREnded: 'vrEnded',
+  VRState: 'vrState'
+};
+var AgoraEvent = function AgoraEvent(options) {
+  Object.assign(this, options);
+};
+var AgoraPeerEvent = /*#__PURE__*/function (_AgoraEvent) {
+  _inheritsLoose(AgoraPeerEvent, _AgoraEvent);
+
+  function AgoraPeerEvent() {
+    return _AgoraEvent.apply(this, arguments) || this;
+  }
+
+  return AgoraPeerEvent;
+}(AgoraEvent);
+var AgoraRemoteEvent = /*#__PURE__*/function (_AgoraEvent2) {
+  _inheritsLoose(AgoraRemoteEvent, _AgoraEvent2);
+
+  function AgoraRemoteEvent() {
+    return _AgoraEvent2.apply(this, arguments) || this;
+  }
+
+  return AgoraRemoteEvent;
+}(AgoraEvent);
+var AgoraMuteVideoEvent = /*#__PURE__*/function (_AgoraEvent3) {
+  _inheritsLoose(AgoraMuteVideoEvent, _AgoraEvent3);
+
+  function AgoraMuteVideoEvent() {
+    return _AgoraEvent3.apply(this, arguments) || this;
+  }
+
+  return AgoraMuteVideoEvent;
+}(AgoraEvent);
+var AgoraUnmuteVideoEvent = /*#__PURE__*/function (_AgoraEvent4) {
+  _inheritsLoose(AgoraUnmuteVideoEvent, _AgoraEvent4);
+
+  function AgoraUnmuteVideoEvent() {
+    return _AgoraEvent4.apply(this, arguments) || this;
+  }
+
+  return AgoraUnmuteVideoEvent;
+}(AgoraEvent);
+var AgoraMuteAudioEvent = /*#__PURE__*/function (_AgoraEvent5) {
+  _inheritsLoose(AgoraMuteAudioEvent, _AgoraEvent5);
+
+  function AgoraMuteAudioEvent() {
+    return _AgoraEvent5.apply(this, arguments) || this;
+  }
+
+  return AgoraMuteAudioEvent;
+}(AgoraEvent);
+var AgoraUnmuteAudioEvent = /*#__PURE__*/function (_AgoraEvent6) {
+  _inheritsLoose(AgoraUnmuteAudioEvent, _AgoraEvent6);
+
+  function AgoraUnmuteAudioEvent() {
+    return _AgoraEvent6.apply(this, arguments) || this;
+  }
+
+  return AgoraUnmuteAudioEvent;
+}(AgoraEvent);
+var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
+  _inheritsLoose(AgoraVolumeLevelsEvent, _AgoraEvent7);
+
+  function AgoraVolumeLevelsEvent() {
+    return _AgoraEvent7.apply(this, arguments) || this;
+  }
+
+  return AgoraVolumeLevelsEvent;
+}(AgoraEvent);var AgoraDevicePreviewComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraDevicePreviewComponent, _Component);
 
   function AgoraDevicePreviewComponent() {
@@ -1324,20 +1531,28 @@ var DeviceService = /*#__PURE__*/function () {
 
     if (this.video_ || this.audio_) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({
+        var state = StateService.state;
+        var quality = getStreamQuality(state);
+        var options = {
           video: this.video_ ? {
             deviceId: this.video_,
             width: {
-              ideal: 3840
+              ideal: quality.resolution.width
             },
             height: {
-              ideal: 2160
+              ideal: quality.resolution.height
+            },
+            frameRate: {
+              ideal: quality.frameRate.min,
+              max: quality.frameRate.max
             }
           } : false,
           audio: this.audio_ ? {
             deviceId: this.audio_
           } : false
-        }).then(function (stream) {
+        };
+        console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
+        navigator.mediaDevices.getUserMedia(options).then(function (stream) {
           if (_this.hasPreview) {
             if ('srcObject' in preview) {
               preview.srcObject = stream;
@@ -1446,28 +1661,7 @@ AgoraDevicePreviewComponent.meta = {
   selector: '[agora-device-preview]',
   outputs: ['stream', 'change'],
   inputs: ['video', 'audio']
-};var StateService = /*#__PURE__*/function () {
-  function StateService() {}
-
-  StateService.patchState = function patchState(state) {
-    state = Object.assign({}, this.state, state);
-    this.state = state;
-  };
-
-  _createClass(StateService, null, [{
-    key: "state",
-    set: function set(state) {
-      this.state$.next(state);
-    },
-    get: function get() {
-      return this.state$.getValue();
-    }
-  }]);
-
-  return StateService;
-}();
-
-_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emittable = /*#__PURE__*/function () {
+};var Emittable = /*#__PURE__*/function () {
   function Emittable() {
     this.events = {};
   }
@@ -1787,188 +1981,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   }
 
   return streams;
-}), operators.shareReplay(1)));var StreamQualities = [{
-  // id: 1,
-  // name: '4K 2160p 3840x2160',
-  profile: '4K',
-  resolution: {
-    width: 3840,
-    height: 2160
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 8910,
-    max: 13500
-  }
-}, {
-  // id: 2,
-  // name: 'HD 1440p 2560×1440',
-  profile: '1440p',
-  resolution: {
-    width: 2560,
-    height: 1440
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 4850,
-    max: 7350
-  }
-}, {
-  // id: 3,
-  // name: 'HD 1080p 1920x1080',
-  profile: '1080p',
-  resolution: {
-    width: 1920,
-    height: 1080
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 2080,
-    max: 4780
-  }
-}, {
-  // id: 4,
-  // name: 'LOW 720p 1280x720',
-  profile: '720p_3',
-  resolution: {
-    width: 1280,
-    height: 720
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 1130,
-    max: 1710
-  }
-}, {
-  // id: 5,
-  // name: 'LOWEST 240p 320x240',
-  profile: '240p_1',
-  resolution: {
-    width: 320,
-    height: 240
-  },
-  frameRate: {
-    min: 15,
-    max: 15
-  },
-  bitrate: {
-    min: 140,
-    max: 200
-  }
-}];
-var AgoraStatus = {
-  Link: 'link',
-  Name: 'name',
-  Device: 'device',
-  ShouldConnect: 'should-connect',
-  Connecting: 'connecting',
-  Connected: 'connected',
-  Disconnected: 'disconnected'
-};
-var MessageType = {
-  AgoraEvent: 'agoraEvent',
-  Ping: 'ping',
-  RequestControl: 'requestControl',
-  RequestControlAccepted: 'requestControlAccepted',
-  RequestControlRejected: 'requestControlRejected',
-  RequestControlDismiss: 'requestControlDismiss',
-  RequestControlDismissed: 'requestControlDismissed',
-  RequestPeerInfo: 'requestPeerInfo',
-  RequestPeerInfoResult: 'requestPeerInfoResult',
-  RequestInfo: 'requestInfo',
-  RequestInfoResult: 'requestInfoResult',
-  RequestInfoDismiss: 'requestInfoDismiss',
-  RequestInfoDismissed: 'requestInfoDismissed',
-  RequestInfoRejected: 'requestInfoRejected',
-  SlideChange: 'slideChange',
-  ControlInfo: 'controlInfo',
-  AddLike: 'addLike',
-  ShowPanel: 'showPanel',
-  PlayMedia: 'playMedia',
-  NavToView: 'navToView',
-  NavToGrid: 'navToGrid',
-  VRStarted: 'vrStarted',
-  VREnded: 'vrEnded',
-  VRState: 'vrState'
-};
-var AgoraEvent = function AgoraEvent(options) {
-  Object.assign(this, options);
-};
-var AgoraPeerEvent = /*#__PURE__*/function (_AgoraEvent) {
-  _inheritsLoose(AgoraPeerEvent, _AgoraEvent);
-
-  function AgoraPeerEvent() {
-    return _AgoraEvent.apply(this, arguments) || this;
-  }
-
-  return AgoraPeerEvent;
-}(AgoraEvent);
-var AgoraRemoteEvent = /*#__PURE__*/function (_AgoraEvent2) {
-  _inheritsLoose(AgoraRemoteEvent, _AgoraEvent2);
-
-  function AgoraRemoteEvent() {
-    return _AgoraEvent2.apply(this, arguments) || this;
-  }
-
-  return AgoraRemoteEvent;
-}(AgoraEvent);
-var AgoraMuteVideoEvent = /*#__PURE__*/function (_AgoraEvent3) {
-  _inheritsLoose(AgoraMuteVideoEvent, _AgoraEvent3);
-
-  function AgoraMuteVideoEvent() {
-    return _AgoraEvent3.apply(this, arguments) || this;
-  }
-
-  return AgoraMuteVideoEvent;
-}(AgoraEvent);
-var AgoraUnmuteVideoEvent = /*#__PURE__*/function (_AgoraEvent4) {
-  _inheritsLoose(AgoraUnmuteVideoEvent, _AgoraEvent4);
-
-  function AgoraUnmuteVideoEvent() {
-    return _AgoraEvent4.apply(this, arguments) || this;
-  }
-
-  return AgoraUnmuteVideoEvent;
-}(AgoraEvent);
-var AgoraMuteAudioEvent = /*#__PURE__*/function (_AgoraEvent5) {
-  _inheritsLoose(AgoraMuteAudioEvent, _AgoraEvent5);
-
-  function AgoraMuteAudioEvent() {
-    return _AgoraEvent5.apply(this, arguments) || this;
-  }
-
-  return AgoraMuteAudioEvent;
-}(AgoraEvent);
-var AgoraUnmuteAudioEvent = /*#__PURE__*/function (_AgoraEvent6) {
-  _inheritsLoose(AgoraUnmuteAudioEvent, _AgoraEvent6);
-
-  function AgoraUnmuteAudioEvent() {
-    return _AgoraEvent6.apply(this, arguments) || this;
-  }
-
-  return AgoraUnmuteAudioEvent;
-}(AgoraEvent);
-var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
-  _inheritsLoose(AgoraVolumeLevelsEvent, _AgoraEvent7);
-
-  function AgoraVolumeLevelsEvent() {
-    return _AgoraEvent7.apply(this, arguments) || this;
-  }
-
-  return AgoraVolumeLevelsEvent;
-}(AgoraEvent);var AgoraService = /*#__PURE__*/function (_Emittable) {
+}), operators.shareReplay(1)));var AgoraService = /*#__PURE__*/function (_Emittable) {
   _inheritsLoose(AgoraService, _Emittable);
 
   AgoraService.getSingleton = function getSingleton(defaultDevices) {
@@ -2013,18 +2026,10 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         videos: [],
         audios: []
       },
-      quality: _this.getStreamQuality(state),
+      quality: getStreamQuality(state),
       membersCount: 0
     });
     return _this;
-  }
-
-  var _proto = AgoraService.prototype;
-
-  _proto.getStreamQuality = function getStreamQuality(state) {
-    var lowestQuality = StreamQualities[StreamQualities.length - 1];
-    var highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-    return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
   }
   /*
   getInitialStatus(role, link, name) {
@@ -2040,7 +2045,9 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   	return AgoraStatus.ShouldConnect;
   }
   */
-  ;
+
+
+  var _proto = AgoraService.prototype;
 
   _proto.addStreamDevice = function addStreamDevice(src) {
     this.removeStreamDevice();

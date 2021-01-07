@@ -1,3 +1,5 @@
+import { environment } from '../environment';
+import { RoleType } from '../user/user';
 
 export const USE_AUTODETECT = false;
 export const USE_VOLUME_INDICATOR = false;
@@ -84,6 +86,12 @@ export const StreamQualities = [{
 		max: 200
 	}
 }];
+
+export function getStreamQuality(state) {
+	const lowestQuality = StreamQualities[StreamQualities.length - 1];
+	const highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
+	return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
+}
 
 export const AgoraStatus = {
 	Link: 'link',
