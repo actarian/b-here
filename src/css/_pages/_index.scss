@@ -639,9 +639,13 @@ body {
 .agora-device-preview {
 	@include aspect-clip(4, 3);
 	width: auto;
+	border-radius: 6px 6px 0 0;
 
 	&>.video {
-		border-radius: 6px 6px 0 0;
+		top: -1px;
+		left: -1px;
+		width: calc(100% + 2px);
+		height: calc(100% + 2px);
 		border: none;
 		background: $background-primary-disabled;
 	}

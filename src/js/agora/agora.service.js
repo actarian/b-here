@@ -10,7 +10,7 @@ import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import { RoleType } from '../user/user';
-import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, MessageType, StreamQualities, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
+import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, getStreamQuality, MessageType, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
 
 export default class AgoraService extends Emittable {
 
@@ -48,15 +48,9 @@ export default class AgoraService extends Emittable {
 		const state = StateService.state;
 		StateService.patchState({
 			devices: (state.role !== RoleType.Attendee && defaultDevices) ? defaultDevices : { videos: [], audios: [] },
-			quality: this.getStreamQuality(state),
+			quality: getStreamQuality(state),
 			membersCount: 0,
 		});
-	}
-
-	getStreamQuality(state) {
-		const lowestQuality = StreamQualities[StreamQualities.length - 1];
-		const highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-		return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
 	}
 
 	/*
