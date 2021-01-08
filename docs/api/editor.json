@@ -7284,6 +7284,70 @@
           "id": 187057501097200
         }
       }
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Porsche",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "1372920250627200_1282413274821400_AdobeStock_334933730.jpeg",
+        "id": 1372920319331700
+      },
+      "orientation": {
+        "latitude": 29.800000000000004,
+        "longitude": 162.4
+      },
+      "zoom": 15,
+      "id": 1372936424527899,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "1372930383570500_porsche.glb",
+            "id": 1372930444656600,
+            "chromaKeyColor": null
+          },
+          "id": 1372936442152800,
+          "position": null,
+          "rotation": null
+        }
+      ],
+      "hidden": null,
+      "ar": {
+        "usdz": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "1372994739225000_porsche.usdz",
+          "id": 1372994767650700
+        },
+        "gltf": {
+          "type": {
+            "id": 3,
+            "name": "model"
+          },
+          "folder": "/uploads/",
+          "file": "1372997980495600_porsche.glb",
+          "id": 1372998012501000
+        }
+      }
     }
   ],
   "menu": [
@@ -7447,6 +7511,13 @@
       "viewId": 74808209121800,
       "name": "Watch",
       "order": 20
+    },
+    {
+      "id": 1372953673514900,
+      "parentId": 74709201159299,
+      "viewId": 1372936424527899,
+      "name": "Porsche",
+      "order": 30
     }
   ],
   "assets": [
@@ -8892,6 +8963,42 @@
       "folder": "/uploads/",
       "file": "187313454768000_websolute.mp4",
       "id": 187313737140500
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "1372920250627200_1282413274821400_AdobeStock_334933730.jpeg",
+      "id": 1372920319331700
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "1372930383570500_porsche.glb",
+      "id": 1372930444656600
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "1372994739225000_porsche.usdz",
+      "id": 1372994767650700
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "1372997980495600_porsche.glb",
+      "id": 1372998012501000
     }
   ],
   "users": [
