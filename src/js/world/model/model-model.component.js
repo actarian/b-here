@@ -1,10 +1,8 @@
-import { takeUntil } from 'rxjs/operators';
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
 import { ViewType } from '../../view/view';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
 
@@ -19,40 +17,21 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	onInit() {
 		super.onInit();
 		this.progress = null;
+		/*
 		if (this.view.type.name === ViewType.Model.name) {
 			const vrService = this.vrService = VRService.getService();
 			vrService.session$.pipe(
 				takeUntil(this.unsubscribe$),
 			).subscribe((session) => {
-				const group = this.group;
-				if (session) {
-					group.position.z = -2;
-				} else {
-					group.position.z = 0;
-				}
+				this.onUpdateVRSession(session);
 			});
 		}
+		*/
 		// console.log('ModelModelComponent.onInit');
 	}
 
 	onChanges() {
 		this.editing = this.item.selected;
-	}
-
-	createStand() {
-		const geometry = new THREE.BoxBufferGeometry(3, 3, 3);
-		const material = new THREE.MeshBasicMaterial();
-		/*
-		const material = new THREE.ShaderMaterial({
-			vertexShader: VERTEX_SHADER,
-			fragmentShader: FRAGMENT_SHADER,
-			uniforms: {
-				texture: { type: "t", value: null },
-				resolution: { value: new THREE.Vector2() }
-			},
-		});
-		*/
-		const stand = this.stand = new THREE.Mesh(geometry, material);
 	}
 
 	onCreate(mount, dismount) {
@@ -111,6 +90,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 		const view = this.view;
 		const item = this.item;
 		if (view.type.name === ViewType.Model.name) {
+			// this.onUpdateVRSession(this.vrService.currentSession);
 			dummy = new THREE.Group();
 			dummy.add(mesh);
 			box.setFromObject(dummy);
@@ -190,6 +170,32 @@ export default class ModelModelComponent extends ModelEditableComponent {
 		this.progress = null;
 		this.pushChanges();
 		*/
+	}
+
+	/*
+	onUpdateVRSession(session) {
+		const group = this.group;
+		if (session) {
+			group.position.z = -2;
+		} else {
+			group.position.z = 0;
+		}
+	}
+	*/
+
+	render(time, tick) {
+		const view = this.view;
+		const item = this.item;
+		if (view.type.name === ViewType.Model.name) {
+			const group = this.group;
+			if (this.host.renderer.xr.isPresenting) {
+				group.position.z = -2;
+				group.rotation.y -= (Math.PI / 180 / 60 * 3);
+			} else {
+				group.position.z = 0;
+				group.rotation.y = 0;
+			}
+		}
 	}
 
 	// called by UpdateViewItemComponent

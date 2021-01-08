@@ -17086,54 +17086,32 @@ ModelMenuComponent.meta = {
   }
   */
   _proto.onInit = function onInit() {
-    var _this = this;
-
     _ModelEditableCompone.prototype.onInit.call(this);
 
     this.progress = null;
-
+    /*
     if (this.view.type.name === ViewType.Model.name) {
-      var vrService = this.vrService = VRService.getService();
-      vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-        var group = _this.group;
-
-        if (session) {
-          group.position.z = -2;
-        } else {
-          group.position.z = 0;
-        }
-      });
-    } // console.log('ModelModelComponent.onInit');
-
+    	const vrService = this.vrService = VRService.getService();
+    	vrService.session$.pipe(
+    		takeUntil(this.unsubscribe$),
+    	).subscribe((session) => {
+    		this.onUpdateVRSession(session);
+    	});
+    }
+    */
+    // console.log('ModelModelComponent.onInit');
   };
 
   _proto.onChanges = function onChanges() {
     this.editing = this.item.selected;
   };
 
-  _proto.createStand = function createStand() {
-    var geometry = new THREE.BoxBufferGeometry(3, 3, 3);
-    var material = new THREE.MeshBasicMaterial();
-    /*
-    const material = new THREE.ShaderMaterial({
-    	vertexShader: VERTEX_SHADER,
-    	fragmentShader: FRAGMENT_SHADER,
-    	uniforms: {
-    		texture: { type: "t", value: null },
-    		resolution: { value: new THREE.Vector2() }
-    	},
-    });
-    */
-
-    var stand = this.stand = new THREE.Mesh(geometry, material);
-  };
-
   _proto.onCreate = function onCreate(mount, dismount) {
-    var _this2 = this;
+    var _this = this;
 
     // this.renderOrder = environment.renderOrder.model;
     this.loadGltfModel(environment.getPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
-      _this2.onGltfModelLoaded(mesh, mount, dismount);
+      _this.onGltfModelLoaded(mesh, mount, dismount);
     });
   };
 
@@ -17175,7 +17153,7 @@ ModelMenuComponent.meta = {
   };
 
   _proto.onGltfModelLoaded = function onGltfModelLoaded(mesh, mount, dismount) {
-    var _this3 = this;
+    var _this2 = this;
 
     // scale
     var box = new THREE.Box3().setFromObject(mesh);
@@ -17189,6 +17167,7 @@ ModelMenuComponent.meta = {
     var item = this.item;
 
     if (view.type.name === ViewType.Model.name) {
+      // this.onUpdateVRSession(this.vrService.currentSession);
       dummy = new THREE.Group();
       dummy.add(mesh);
       box.setFromObject(dummy);
@@ -17213,7 +17192,7 @@ ModelMenuComponent.meta = {
         ease: Power2.easeInOut,
         onUpdate: onUpdate,
         onComplete: function onComplete() {
-          _this3.updateHelper();
+          _this2.updateHelper();
         }
       });
     } else {
@@ -17273,6 +17252,34 @@ ModelMenuComponent.meta = {
     this.pushChanges();
     */
 
+  }
+  /*
+  onUpdateVRSession(session) {
+  	const group = this.group;
+  	if (session) {
+  		group.position.z = -2;
+  	} else {
+  		group.position.z = 0;
+  	}
+  }
+  */
+  ;
+
+  _proto.render = function render(time, tick) {
+    var view = this.view;
+    var item = this.item;
+
+    if (view.type.name === ViewType.Model.name) {
+      var group = this.group;
+
+      if (this.host.renderer.xr.isPresenting) {
+        group.position.z = -2;
+        group.rotation.y -= Math.PI / 180 / 60 * 3;
+      } else {
+        group.position.z = 0;
+        group.rotation.y = 0;
+      }
+    }
   } // called by UpdateViewItemComponent
   ;
 
@@ -17299,14 +17306,14 @@ ModelMenuComponent.meta = {
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
-    var _this4 = this;
+    var _this3 = this;
 
     // console.log('ModelModelComponent.onUpdateAsset', item);
     this.loadGltfModel(environment.getPath(item.asset.folder), item.asset.file, function (mesh) {
-      _this4.onGltfModelLoaded(mesh, function (mesh, item) {
-        return _this4.onMount(mesh, item);
+      _this3.onGltfModelLoaded(mesh, function (mesh, item) {
+        return _this3.onMount(mesh, item);
       }, function (mesh, item) {
-        return _this4.onDismount(mesh, item);
+        return _this3.onDismount(mesh, item);
       });
     });
     /*
@@ -17345,7 +17352,7 @@ ModelMenuComponent.meta = {
   };
 
   _proto.makeInteractive = function makeInteractive(mesh) {
-    var _this5 = this;
+    var _this4 = this;
 
     var newChild = null;
     mesh.traverse(function (child) {
@@ -17361,7 +17368,7 @@ ModelMenuComponent.meta = {
         newChild.scale.copy(child.scale);
         newChild.on('down', function () {
           // console.log('ModelModelComponent.down');
-          _this5.down.next(_this5);
+          _this4.down.next(_this4);
         });
         parent.remove(child);
         parent.add(newChild);
