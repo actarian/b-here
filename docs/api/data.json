@@ -417,18 +417,18 @@
             "XYZ"
           ],
           "scale": [
-            26,
+            25,
             14,
             1
           ],
           "asset": {
             "type": {
-              "id": 2,
-              "name": "video"
+              "id": 4,
+              "name": "publisher-stream"
             },
-            "folder": "/uploads/",
-            "file": "60456449680699_websolute.mp4",
-            "id": 60456725914300,
+            "folder": "",
+            "file": "publisherStream",
+            "id": 1373945696693800,
             "chromaKeyColor": null
           },
           "id": 1012264477564600
@@ -8999,6 +8999,16 @@
       "folder": "/uploads/",
       "file": "1372997980495600_porsche.glb",
       "id": 1372998012501000
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 1373945696693800,
+      "chromaKeyColor": null
     }
   ],
   "users": [
