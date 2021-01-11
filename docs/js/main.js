@@ -6561,11 +6561,6 @@ AsideComponent.meta = {
         case ViewItemType.Nav.name:
         case ViewItemType.Plane.name:
         case ViewItemType.CurvedPlane.name:
-        case ViewItemType.Model.name:
-          if (event.value === ViewItemType.Model.name && this.view.type.name === ViewType.Model.name) {
-            return;
-          }
-
           this.onViewHitted(function (position) {
             _this8.onOpenModal(event, {
               view: _this8.view,
@@ -6575,6 +6570,29 @@ AsideComponent.meta = {
           ToastService.open$({
             message: 'Click a point on the view'
           });
+          break;
+
+        case ViewItemType.Model.name:
+          if (event.type === 'viewItem') {
+            if (this.view.type.name === ViewType.Model.name) {
+              return;
+            }
+
+            this.onViewHitted(function (position) {
+              _this8.onOpenModal(event, {
+                view: _this8.view,
+                position: position
+              });
+            });
+            ToastService.open$({
+              message: 'Click a point on the view'
+            });
+          } else {
+            this.onOpenModal(event, {
+              view: this.view
+            });
+          }
+
           break;
 
         default:
@@ -7485,14 +7503,17 @@ CurvedPlaneModalComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    var object = new THREE.Object3D();
+    /*
+    const object = new THREE.Object3D();
     object.position.copy(this.position);
     object.lookAt(ItemModelModalComponent.ORIGIN);
+    */
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Model,
       position: new rxcompForm.FormControl(this.position.multiplyScalar(4).toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl([0, 0, 0], rxcompForm.RequiredValidator()),
       // [0, -Math.PI / 2, 0],
+      // rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
       scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
       asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
     });
@@ -17139,8 +17160,9 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
 
     if (this.host.renderer.xr.isPresenting) {
       camera = this.host.renderer.xr.getCamera(camera);
-      camera.getWorldDirection(position);
-      group.position.set(position.x, position.y - 0.4, position.z);
+      camera.getWorldDirection(position); // group.position.set(position.x, position.y - 0.4, position.z);
+
+      group.position.copy(position);
       group.position.multiplyScalar(3);
       group.scale.set(1, 1, 1);
       group.lookAt(ModelMenuComponent.ORIGIN);

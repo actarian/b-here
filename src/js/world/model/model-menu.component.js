@@ -330,7 +330,8 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (this.host.renderer.xr.isPresenting) {
 			camera = this.host.renderer.xr.getCamera(camera);
 			camera.getWorldDirection(position);
-			group.position.set(position.x, position.y - 0.4, position.z);
+			// group.position.set(position.x, position.y - 0.4, position.z);
+			group.position.copy(position);
 			group.position.multiplyScalar(3);
 			group.scale.set(1, 1, 1);
 			group.lookAt(ModelMenuComponent.ORIGIN);
