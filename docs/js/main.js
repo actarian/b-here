@@ -15541,7 +15541,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
     };
 
-    this.host.objects.add(group);
+    this.getContainer().add(group);
     this.onCreate(function (mesh, item) {
       return _this.onMount(mesh, item);
     }, function (mesh, item) {
@@ -15551,10 +15551,14 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onDestroy = function onDestroy() {
     var group = this.group;
-    this.host.objects.remove(group);
+    this.getContainer().remove(group);
     delete group.userData.render;
     this.disposeObject(group);
     this.group = null;
+  };
+
+  _proto.getContainer = function getContainer() {
+    return this.host.objects;
   };
 
   _proto.getName = function getName(name) {
@@ -17144,6 +17148,10 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     _ModelComponent.prototype.onDestroy.call(this);
   };
 
+  _proto3.getContainer = function getContainer() {
+    return this.host.cameraGroup;
+  };
+
   _proto3.onCreate = function onCreate(mount, dismount) {
     // this.renderOrder = environment.renderOrder.menu;
     var menuGroup = this.menuGroup = new THREE.Group(); // menuGroup.lookAt(ModelMenuComponent.ORIGIN);
@@ -17160,12 +17168,14 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
 
     if (this.host.renderer.xr.isPresenting) {
       camera = this.host.renderer.xr.getCamera(camera);
-      camera.getWorldDirection(position); // group.position.set(position.x, position.y - 0.4, position.z);
-
+      camera.getWorldDirection(position);
+      position.y += 0.5;
+      position.multiplyScalar(3);
+      this.host.cameraGroup.worldToLocal(position);
+      position.y += this.host.cameraGroup.position.y;
       group.position.copy(position);
-      group.position.multiplyScalar(3);
       group.scale.set(1, 1, 1);
-      group.lookAt(ModelMenuComponent.ORIGIN);
+      group.lookAt(camera.position); // group.lookAt(ModelMenuComponent.ORIGIN);
     } else {
       camera.getWorldDirection(position);
 

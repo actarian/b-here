@@ -314,6 +314,10 @@ export default class ModelMenuComponent extends ModelComponent {
 		super.onDestroy();
 	}
 
+	getContainer() {
+		return this.host.cameraGroup;
+	}
+
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
@@ -330,11 +334,14 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (this.host.renderer.xr.isPresenting) {
 			camera = this.host.renderer.xr.getCamera(camera);
 			camera.getWorldDirection(position);
-			// group.position.set(position.x, position.y - 0.4, position.z);
+			position.y += 0.5;
+			position.multiplyScalar(3);
+			this.host.cameraGroup.worldToLocal(position);
+			position.y += this.host.cameraGroup.position.y;
 			group.position.copy(position);
-			group.position.multiplyScalar(3);
 			group.scale.set(1, 1, 1);
-			group.lookAt(ModelMenuComponent.ORIGIN);
+			group.lookAt(camera.position);
+			// group.lookAt(ModelMenuComponent.ORIGIN);
 		} else {
 			camera.getWorldDirection(position);
 			if (OrbitService.mode === OrbitMode.Model) {
