@@ -1,4 +1,4 @@
-import DebugService from '../debug.service';
+// import DebugService from '../debug.service';
 
 const defaultEvent = {};
 
@@ -9,7 +9,7 @@ Interactive.hittest = interactiveHittest.bind(Interactive);
 Interactive.dispose = interactiveDispose.bind(Interactive);
 
 export function interactiveHittest(raycaster, down = false, event = defaultEvent) {
-	const debugService = DebugService.getService();
+	// const debugService = DebugService.getService();
 	let dirty = false;
 	if (this.down !== down) {
 		this.down = down;
@@ -27,7 +27,7 @@ export function interactiveHittest(raycaster, down = false, event = defaultEvent
 			if (this.lastIntersectedObject !== object || dirty) {
 				this.lastIntersectedObject = object;
 				hit = object;
-				debugService.setMessage(hit.name || hit.id);
+				// debugService.setMessage(hit.name || hit.id);
 				// haptic feedback
 			} else if (
 				object.intersection && (

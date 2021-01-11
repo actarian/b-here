@@ -8,7 +8,7 @@ import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
-import DebugService from '../debug.service';
+// import DebugService from '../debug.service';
 
 export class EnvMapLoader {
 
@@ -200,7 +200,7 @@ export class EnvMapLoader {
 
 	static loadVideoBackground(folder, file, renderer, callback) {
 		const progressRef = LoaderService.getRef();
-		const debugService = DebugService.getService();
+		// const debugService = DebugService.getService();
 		this.video = true;
 		const video = this.video;
 		const onPlaying = () => {
@@ -235,10 +235,10 @@ export class EnvMapLoader {
 		video.load();
 		video.play().then(() => {
 			// console.log('EnvMapLoader.loadVideoBackground.play');
-			debugService.setMessage(`play ${video.src}`);
+			// debugService.setMessage(`play ${video.src}`);
 		}, error => {
 			console.log('EnvMapLoader.loadVideoBackground.play.error', error);
-			debugService.setMessage(`play.error ${video.src}`);
+			// debugService.setMessage(`play.error ${video.src}`);
 		});
 	}
 

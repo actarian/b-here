@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import { environment } from '../environment';
+import { environment, STATIC } from '../environment';
 import LabelPipe from '../label/label.pipe';
 import { UserService } from '../user/user.service';
 
@@ -28,6 +28,10 @@ export default class AccessComponent extends Component {
 		this.initRequestForm();
 		this.state.status = 'self-service-tour';
 		this.pushChanges();
+		if (STATIC && window.navigator.userAgent.indexOf('OculusBrowser') !== -1) {
+			this.test();
+			this.onSubmit();
+		}
 	}
 
 	onGuidedTourRequest() {

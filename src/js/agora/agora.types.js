@@ -128,6 +128,7 @@ export const MessageType = {
 	VRStarted: 'vrStarted',
 	VREnded: 'vrEnded',
 	VRState: 'vrState',
+	MenuToggle: 'menuToggle',
 };
 export class AgoraEvent {
 	constructor(options) {
