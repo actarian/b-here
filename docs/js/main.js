@@ -756,6 +756,11 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
     this.initRequestForm();
     this.state.status = 'self-service-tour';
     this.pushChanges();
+
+    if (STATIC && window.navigator.userAgent.indexOf('OculusBrowser') !== -1) {
+      this.test();
+      this.onSubmit();
+    }
   };
 
   _proto.onGuidedTourRequest = function onGuidedTourRequest() {
@@ -1413,7 +1418,8 @@ var MessageType = {
   NavToGrid: 'navToGrid',
   VRStarted: 'vrStarted',
   VREnded: 'vrEnded',
-  VRState: 'vrState'
+  VRState: 'vrState',
+  MenuToggle: 'menuToggle'
 };
 var AgoraEvent = function AgoraEvent(options) {
   Object.assign(this, options);
@@ -6555,11 +6561,6 @@ AsideComponent.meta = {
         case ViewItemType.Nav.name:
         case ViewItemType.Plane.name:
         case ViewItemType.CurvedPlane.name:
-        case ViewItemType.Model.name:
-          if (event.value === ViewItemType.Model.name && this.view.type.name === ViewType.Model.name) {
-            return;
-          }
-
           this.onViewHitted(function (position) {
             _this8.onOpenModal(event, {
               view: _this8.view,
@@ -6569,6 +6570,29 @@ AsideComponent.meta = {
           ToastService.open$({
             message: 'Click a point on the view'
           });
+          break;
+
+        case ViewItemType.Model.name:
+          if (event.type === 'viewItem') {
+            if (this.view.type.name === ViewType.Model.name) {
+              return;
+            }
+
+            this.onViewHitted(function (position) {
+              _this8.onOpenModal(event, {
+                view: _this8.view,
+                position: position
+              });
+            });
+            ToastService.open$({
+              message: 'Click a point on the view'
+            });
+          } else {
+            this.onOpenModal(event, {
+              view: this.view
+            });
+          }
+
           break;
 
         default:
@@ -7479,14 +7503,17 @@ CurvedPlaneModalComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    var object = new THREE.Object3D();
+    /*
+    const object = new THREE.Object3D();
     object.position.copy(this.position);
     object.lookAt(ItemModelModalComponent.ORIGIN);
+    */
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Model,
       position: new rxcompForm.FormControl(this.position.multiplyScalar(4).toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl([0, 0, 0], rxcompForm.RequiredValidator()),
       // [0, -Math.PI / 2, 0],
+      // rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
       scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
       asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
     });
@@ -10595,40 +10622,7 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
   progress.title = Math.round(progress.value * 100) + "%";
   LoaderService.progress = progress;
   return progress;
-})));var DebugService = /*#__PURE__*/function () {
-  DebugService.getService = function getService() {
-    if (!this.service_) {
-      this.service_ = new DebugService();
-    }
-
-    return this.service_;
-  };
-
-  _createClass(DebugService, [{
-    key: "message",
-    get: function get() {
-      return this.message$.getValue();
-    }
-  }]);
-
-  function DebugService() {
-    if (DebugService.service_) {
-      throw 'DebugService is a singleton class!';
-    }
-
-    this.message$ = new rxjs.BehaviorSubject(null);
-  }
-
-  var _proto = DebugService.prototype;
-
-  _proto.setMessage = function setMessage(message) {
-    if (this.message !== message) {
-      this.message$.next(message);
-    }
-  };
-
-  return DebugService;
-}();var EnvMapLoader = /*#__PURE__*/function () {
+})));var EnvMapLoader = /*#__PURE__*/function () {
   function EnvMapLoader() {}
 
   EnvMapLoader.load = function load(item, renderer, callback) {
@@ -10778,8 +10772,8 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
   EnvMapLoader.loadVideoBackground = function loadVideoBackground(folder, file, renderer, callback) {
     var _this = this;
 
-    var progressRef = LoaderService.getRef();
-    var debugService = DebugService.getService();
+    var progressRef = LoaderService.getRef(); // const debugService = DebugService.getService();
+
     this.video = true;
     var video = this.video;
 
@@ -10816,12 +10810,10 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
 
     video.src = folder + file;
     video.load();
-    video.play().then(function () {
-      // console.log('EnvMapLoader.loadVideoBackground.play');
-      debugService.setMessage("play " + video.src);
+    video.play().then(function () {// console.log('EnvMapLoader.loadVideoBackground.play');
+      // debugService.setMessage(`play ${video.src}`);
     }, function (error) {
-      console.log('EnvMapLoader.loadVideoBackground.play.error', error);
-      debugService.setMessage("play.error " + video.src);
+      console.log('EnvMapLoader.loadVideoBackground.play.error', error); // debugService.setMessage(`play.error ${video.src}`);
     });
   };
 
@@ -11039,7 +11031,9 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
   };
 
   return EmittableMesh;
-}(FreezableMesh);var Interactive = function Interactive() {};
+}(FreezableMesh);// import DebugService from '../debug.service';
+
+var Interactive = function Interactive() {};
 Interactive.items = [];
 Interactive.hittest = interactiveHittest.bind(Interactive);
 Interactive.dispose = interactiveDispose.bind(Interactive);
@@ -11050,7 +11044,7 @@ function interactiveHittest(raycaster, down, event) {
     down = false;
   }
 
-  var debugService = DebugService.getService();
+  // const debugService = DebugService.getService();
   var dirty = false;
 
   if (this.down !== down) {
@@ -11072,8 +11066,8 @@ function interactiveHittest(raycaster, down, event) {
     if (i === 0) {
       if (_this.lastIntersectedObject !== object || dirty) {
         _this.lastIntersectedObject = object;
-        hit = object;
-        debugService.setMessage(hit.name || hit.id); // haptic feedback
+        hit = object; // debugService.setMessage(hit.name || hit.id);
+        // haptic feedback
       } else if (object.intersection && (Math.abs(object.intersection.point.x - intersection.point.x) > 0.01 || Math.abs(object.intersection.point.y - intersection.point.y) > 0.01)) {
         object.intersection = intersection;
         object.emit('move', object);
@@ -13294,7 +13288,183 @@ var PointerElement = /*#__PURE__*/function () {
   };
 
   return PointerElement;
-}();/**
+}();var Emittable$1 = /*#__PURE__*/function () {
+  function Emittable() {
+    this.events = {};
+  }
+
+  var _proto = Emittable.prototype;
+
+  _proto.on = function on(type, callback) {
+    var _this = this;
+
+    var event = this.events[type] = this.events[type] || [];
+    event.push(callback);
+    return function () {
+      _this.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    };
+  };
+
+  _proto.off = function off(type, callback) {
+    var event = this.events[type];
+
+    if (event) {
+      this.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    }
+  };
+
+  _proto.emit = function emit(type, data) {
+    var event = this.events[type];
+
+    if (event) {
+      event.forEach(function (callback) {
+        // callback.call(this, data);
+        callback(data);
+      });
+    }
+
+    var broadcast = this.events.broadcast;
+
+    if (broadcast) {
+      broadcast.forEach(function (callback) {
+        callback(type, data);
+      });
+    }
+  };
+
+  return Emittable;
+}();var Gamepad = /*#__PURE__*/function (_Emittable) {
+  _inheritsLoose(Gamepad, _Emittable);
+
+  function Gamepad(gamepad) {
+    var _this;
+
+    _this = _Emittable.call(this) || this;
+    _this.gamepad = gamepad;
+    _this.buttons = {};
+    _this.axes = {};
+    return _this;
+  }
+
+  var _proto = Gamepad.prototype;
+
+  _proto.update = function update() {
+    this.updateButtons();
+    this.updateAxes();
+  };
+
+  _proto.updateButtons = function updateButtons() {
+    var _this2 = this;
+
+    this.gamepad.buttons.forEach(function (x, i) {
+      var pressed = x.pressed;
+      var button = _this2.buttons[i] || (_this2.buttons[i] = new GamepadButton(i, _this2));
+
+      if (button.pressed !== pressed) {
+        button.pressed = pressed;
+
+        if (pressed) {
+          _this2.emit('press', button);
+        } else if (status !== undefined) {
+          _this2.emit('release', button);
+        }
+      }
+    });
+  };
+
+  _proto.updateAxes = function updateAxes() {
+    var axes = this.gamepad.axes;
+
+    for (var i = 0; i < axes.length; i += 2) {
+      var index = Math.floor(i / 2);
+      var axis = this.axes[index] || (this.axes[index] = new GamepadAxis(index, this));
+      var x = axes[i];
+      var y = axes[i + 1];
+
+      if (axis.x !== x || axis.y !== y) {
+        axis.x = x;
+        axis.y = y;
+
+        if (Math.abs(x) > Math.abs(y)) {
+          var left = x < -0.85;
+          var right = x > 0.85;
+
+          if (axis.left !== left) {
+            axis.left = left;
+            this.emit(left ? 'left' : 'none', axis); // console.log(`${axis.gamepad.hand} ${axis.gamepad.index} left ${left}`);
+          }
+
+          if (axis.right !== right) {
+            axis.right = right;
+            this.emit(right ? 'right' : 'none', axis); // console.log(`${axis.gamepad.hand} ${axis.gamepad.index} right ${right}`);
+          }
+        } else {
+          var up = y < -0.85;
+          var down = y > 0.85;
+
+          if (axis.up !== up) {
+            axis.up = up;
+            this.emit(up ? 'up' : 'none', axis); // console.log(`${axis.gamepad.hand} ${axis.gamepad.index} up ${up}`);
+          }
+
+          if (axis.down !== down) {
+            axis.down = down;
+            this.emit(down ? 'down' : 'none', axis); // console.log(`${axis.gamepad.hand} ${axis.gamepad.index} down ${down}`);
+          }
+        }
+
+        this.emit('axis', axis);
+      }
+    }
+  };
+
+  _proto.feedback = function feedback(strength, duration) {
+    if (strength === void 0) {
+      strength = 0.1;
+    }
+
+    if (duration === void 0) {
+      duration = 50;
+    }
+
+    // !!! care for battery
+    var actuators = this.gamepad.hapticActuators;
+
+    if (actuators && actuators.length) {
+      return actuators[0].pulse(strength, duration);
+    } else {
+      return Promise.reject();
+    }
+  };
+
+  return Gamepad;
+}(Emittable$1);
+
+var GamepadButton = function GamepadButton(index, gamepad) {
+  this.index = index;
+  this.gamepad = gamepad;
+  this.pressed = false;
+};
+
+var GamepadAxis = /*#__PURE__*/function (_THREE$Vector) {
+  _inheritsLoose(GamepadAxis, _THREE$Vector);
+
+  function GamepadAxis(index, gamepad) {
+    var _this3;
+
+    _this3 = _THREE$Vector.call(this) || this;
+    _this3.index = index;
+    _this3.gamepad = gamepad;
+    _this3.left = _this3.right = _this3.up = _this3.down = false;
+    return _this3;
+  }
+
+  return GamepadAxis;
+}(THREE.Vector2);/**
  * @webxr-input-profiles/motion-controllers 1.0.0 https://github.com/immersive-web/webxr-input-profiles
  */
 var Constants = {
@@ -14258,61 +14428,154 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addControllers = function addControllers() {
-    var _this3 = this;
-
-    var renderer = this.renderer;
-    var scene = this.scene;
     var controllerGroup = this.controllerGroup = new THREE.Group();
-    var controller1 = this.controller1 = renderer.xr.getController(0);
-    controller1.name = '[controller1]';
-    this.onSelect1Start = this.onSelect1Start.bind(this);
-    this.onSelect1End = this.onSelect1End.bind(this);
-    controller1.addEventListener('selectstart', this.onSelect1Start);
-    controller1.addEventListener('selectend', this.onSelect1End);
-    controller1.addEventListener('connected', function (event) {
-      controller1.add(_this3.buildController(event.data));
-    });
-    controller1.addEventListener('disconnected', function () {
-      while (controller1.children.length) {
-        controller1.remove(controller1.children[0]);
-      }
-    });
-    controllerGroup.add(controller1);
-    var controller2 = this.controller2 = renderer.xr.getController(1);
-    controller2.name = '[controller2]';
-    this.onSelect2Start = this.onSelect2Start.bind(this);
-    this.onSelect2End = this.onSelect2End.bind(this);
-    controller2.addEventListener('selectstart', this.onSelect2Start);
-    controller2.addEventListener('selectend', this.onSelect2End);
-    controller2.addEventListener('connected', function (event) {
-      controller2.add(_this3.buildController(event.data));
-
-      {
-        var phone = _this3.phone = new PhoneElement();
-        controller2.add(phone.mesh);
-      }
-    });
-    controller2.addEventListener('disconnected', function () {
-      while (controller2.children.length) {
-        controller2.remove(controller2.children[0]);
-      }
-    });
-    controllerGroup.add(controller2);
-    this.controllers = [this.controller1, this.controller2]; // The XRControllerModelFactory will automatically fetch controller models
-    // that match what the user is holding as closely as possible. The models
-    // should be attached to the object returned from getControllerGrip in
-    // order to match the orientation of the held device.
-
-    var controllerModelFactory = new XRControllerModelFactory();
-    var controllerGrip1 = this.controllerGrip1 = renderer.xr.getControllerGrip(0);
-    controllerGrip1.name = '[controller-grip1]';
-    controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-    controllerGroup.add(controllerGrip1);
-
+    this.controllers = [];
+    this.controllerModelFactory = new XRControllerModelFactory();
+    this.addController(0);
+    this.addController(1);
     this.cameraGroup.add(controllerGroup);
   };
 
+  _proto.addController = function addController(index) {
+    var _this3 = this;
+
+    var renderer = this.renderer;
+    var controllerGroup = this.controllerGroup;
+    var controller = renderer.xr.getController(index);
+    var controllerModelFactory = this.controllerModelFactory;
+    controller.name = "[controller" + (index + 1) + "]";
+    controllerGroup.add(controller);
+
+    var setController = function setController(controller) {
+      console.log('setController', _this3);
+      _this3.controller = controller;
+    };
+
+    var onSelectStart = function onSelectStart(event) {
+      controller.userData.isSelecting = true;
+      setController(controller);
+    };
+
+    var onSelectEnd = function onSelectEnd(event) {
+      controller.userData.isSelecting = false;
+    }; // const debugService = DebugService.getService();
+    // debugService.setMessage('DebugService 1001');
+
+
+    var onPress = function onPress(event) {
+      // console.log('Gamepad.onPress', event, controller);
+      // debugService.setMessage('Gamepad.onPress ' + event.index);
+
+      /*
+      case 0:
+      	// select
+      	break;
+      case 1:
+      	// squeeze
+      	break;
+      case 4:
+      	// x / a
+      	break;
+      case 5:
+      	// y / b
+      	break;
+      */
+      switch (event.index) {
+        case 0:
+          // select
+          break;
+
+        case 1:
+          // squeeze
+          break;
+
+        case 4:
+          // x / a
+          MessageService.send({
+            type: MessageType.MenuToggle
+          });
+          break;
+      }
+    };
+
+    var onLeft = function onLeft(event) {
+      console.log('Gamepad.onLeft', event, controller); // debugService.setMessage('Gamepad.onLeft');
+
+      _this3.cameraGroup.rotation.y += Math.PI / 180 * 45;
+    };
+
+    var onRight = function onRight(event) {
+      console.log('Gamepad.onRight', event, controller); // debugService.setMessage('Gamepad.onRight');
+
+      _this3.cameraGroup.rotation.y -= Math.PI / 180 * 45;
+    };
+
+    var onUp = function onUp(event) {
+      console.log('Gamepad.onUp', event, controller); // debugService.setMessage('Gamepad.onUp');
+
+      _this3.cameraGroup.position.y += 1;
+    };
+
+    var onDown = function onDown(event) {
+      console.log('Gamepad.onDown', event, controller); // debugService.setMessage('Gamepad.onDown');
+
+      _this3.cameraGroup.position.y -= 1;
+    };
+
+    var onConnected = function onConnected(event) {
+      controller.add(_this3.buildController(event.data));
+
+      if ( event.data.handedness === 'left') {
+        var phone = _this3.phone = new PhoneElement();
+        controller.add(phone.mesh);
+      }
+
+      if ( event.data.handedness === 'right') {
+        var controllerGrip = renderer.xr.getControllerGrip(index);
+        controllerGrip.name = "[controller-grip" + (index + 1) + "]";
+        controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
+        controllerGroup.add(controllerGrip);
+      }
+
+      var gamepad = new Gamepad(event.data.gamepad);
+      gamepad.on('press', onPress);
+      gamepad.on('left', onLeft);
+      gamepad.on('right', onRight);
+      gamepad.on('up', onUp);
+      gamepad.on('down', onDown);
+      controller.userData.gamepad = gamepad;
+    };
+
+    var onDisconnected = function onDisconnected(event) {
+      while (controller.children.length) {
+        controller.remove(controller.children[0]);
+      }
+
+      var controllerGrip = renderer.xr.getControllerGrip(index);
+
+      while (controllerGrip.children.length) {
+        controllerGrip.remove(controllerGrip.children[0]);
+      }
+
+      controllerGroup.remove(controllerGrip);
+      var gamepad = controller.userData.gamepad;
+      gamepad.off('press', onPress);
+      gamepad.off('left', onLeft);
+      gamepad.off('right', onRight);
+      gamepad.off('up', onUp);
+      gamepad.off('down', onDown);
+    };
+
+    controller.addEventListener('selectstart', onSelectStart);
+    controller.addEventListener('selectend', onSelectEnd);
+    controller.addEventListener('connected', onConnected);
+    controller.addEventListener('disconnected', onDisconnected);
+    var controllers = this.controllers;
+    controllers.push(controller);
+  };
+
   _proto.buildController = function buildController(data) {
+    console.log('buildController', data);
     var geometry, material;
 
     switch (data.targetRayMode) {
@@ -14334,24 +14597,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         });
         return new THREE.Mesh(geometry, material);
     }
-  };
-
-  _proto.onSelect1Start = function onSelect1Start() {
-    this.controller1.userData.isSelecting = true;
-    this.controller = this.controller1;
-  };
-
-  _proto.onSelect1End = function onSelect1End() {
-    this.controller1.userData.isSelecting = false;
-  };
-
-  _proto.onSelect2Start = function onSelect2Start() {
-    this.controller2.userData.isSelecting = true;
-    this.controller = this.controller2;
-  };
-
-  _proto.onSelect2End = function onSelect2End() {
-    this.controller2.userData.isSelecting = false;
   };
 
   _proto.onTween = function onTween() {// this.render();
@@ -14438,6 +14683,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
       if (renderer.xr.isPresenting) {
         gsap.ticker.tick();
+        this.controllers.forEach(function (controller) {
+          controller.userData.gamepad.update();
+        });
       }
       /*
       const objects = this.objects;
@@ -14656,7 +14904,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onVRStarted = function onVRStarted() {
     // this.objects.rotation.y = - Math.PI / 2;
-    this.objects.position.y = 1.5;
+    this.objects.position.y = 1.3;
     this.scene.add(this.indicator.mesh);
     MessageService.send({
       type: MessageType.VRStarted
@@ -14666,6 +14914,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.onVREnded = function onVREnded() {
     // this.objects.rotation.y = 0;
     this.objects.position.y = 0;
+    this.cameraGroup.rotation.y = 0;
+    this.cameraGroup.position.y = 0;
     this.scene.remove(this.indicator.mesh);
     MessageService.send({
       type: MessageType.VREnded
@@ -15295,7 +15545,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
     };
 
-    this.host.objects.add(group);
+    this.getContainer().add(group);
     this.onCreate(function (mesh, item) {
       return _this.onMount(mesh, item);
     }, function (mesh, item) {
@@ -15305,10 +15555,14 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
   _proto.onDestroy = function onDestroy() {
     var group = this.group;
-    this.host.objects.remove(group);
+    this.getContainer().remove(group);
     delete group.userData.render;
     this.disposeObject(group);
     this.group = null;
+  };
+
+  _proto.getContainer = function getContainer() {
+    return this.host.objects;
   };
 
   _proto.getName = function getName(name) {
@@ -15972,7 +16226,40 @@ ModelCurvedPlaneComponent.meta = {
   },
   outputs: ['down', 'play'],
   inputs: ['item', 'items']
-};var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
+};var DebugService = /*#__PURE__*/function () {
+  DebugService.getService = function getService() {
+    if (!this.service_) {
+      this.service_ = new DebugService();
+    }
+
+    return this.service_;
+  };
+
+  _createClass(DebugService, [{
+    key: "message",
+    get: function get() {
+      return this.message$.getValue();
+    }
+  }]);
+
+  function DebugService() {
+    if (DebugService.service_) {
+      throw 'DebugService is a singleton class!';
+    }
+
+    this.message$ = new rxjs.BehaviorSubject(null);
+  }
+
+  var _proto = DebugService.prototype;
+
+  _proto.setMessage = function setMessage(message) {
+    if (this.message !== message) {
+      this.message$.next(message);
+    }
+  };
+
+  return DebugService;
+}();var ModelDebugComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelDebugComponent, _ModelComponent);
 
   function ModelDebugComponent() {
@@ -16039,7 +16326,7 @@ ModelCurvedPlaneComponent.meta = {
     });
     var text = new THREE.Mesh(geometry, material);
     text.renderer = environment.renderOrder.debug;
-    text.position.y = 2;
+    text.position.y = 0;
     return text;
   };
 
@@ -16673,10 +16960,7 @@ ModelGridComponent.meta = {
   _proto.onOver = function onOver() {
     var _this2 = this;
 
-    /*
-    const debugService = DebugService.getService();
-    debugService.setMessage('over ' + this.name);
-    */
+    // DebugService.getService().setMessage('over ' + this.name);
     gsap.to(this, {
       duration: 0.4,
       tween: 1,
@@ -16786,12 +17070,26 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     this.onDown = this.onDown.bind(this);
     this.onToggle = this.onToggle.bind(this); // console.log('ModelMenuComponent.onInit');
 
-    var vrService = this.vrService = VRService.getService();
-    vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-      if (session) {
-        _this4.addToggler();
-      } else {
-        _this4.removeMenu();
+    /*
+    const vrService = this.vrService = VRService.getService();
+    vrService.session$.pipe(
+    	takeUntil(this.unsubscribe$),
+    ).subscribe((session) => {
+    	if (session) {
+    		this.addToggler();
+    	} else {
+    		this.removeMenu();
+    	}
+    });
+    */
+
+    MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      // DebugService.getService().setMessage('ModelMenuComponent.MessageService ' + message.type);
+      switch (message.type) {
+        case MessageType.MenuToggle:
+          _this4.onToggle();
+
+          break;
       }
     });
   };
@@ -16854,6 +17152,10 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     _ModelComponent.prototype.onDestroy.call(this);
   };
 
+  _proto3.getContainer = function getContainer() {
+    return this.host.cameraGroup;
+  };
+
   _proto3.onCreate = function onCreate(mount, dismount) {
     // this.renderOrder = environment.renderOrder.menu;
     var menuGroup = this.menuGroup = new THREE.Group(); // menuGroup.lookAt(ModelMenuComponent.ORIGIN);
@@ -16871,10 +17173,13 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     if (this.host.renderer.xr.isPresenting) {
       camera = this.host.renderer.xr.getCamera(camera);
       camera.getWorldDirection(position);
-      group.position.set(position.x, position.y - 0.4, position.z);
-      group.position.multiplyScalar(3);
+      position.y += 0.5;
+      position.multiplyScalar(3);
+      this.host.cameraGroup.worldToLocal(position);
+      position.y += this.host.cameraGroup.position.y;
+      group.position.copy(position);
       group.scale.set(1, 1, 1);
-      group.lookAt(ModelMenuComponent.ORIGIN);
+      group.lookAt(camera.position); // group.lookAt(ModelMenuComponent.ORIGIN);
     } else {
       camera.getWorldDirection(position);
 
@@ -16913,10 +17218,11 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       if (button.item.backItem) {
         this.addMenu(button.item.backItem.backItem);
       } else {
+        /*
         if (this.host.renderer.xr.isPresenting) {
-          this.addToggler();
+        	this.addToggler();
         }
-
+        */
         this.toggle.next();
       }
     } else {
@@ -16946,10 +17252,11 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     this.removeMenu(); // nav to view
 
     if (item && item.type.name !== 'menu-group') {
+      /*
       if (this.host.renderer.xr.isPresenting) {
-        this.addToggler();
+      	this.addToggler();
       }
-
+      */
       this.nav.next(item);
       return;
     }
@@ -17274,7 +17581,7 @@ ModelMenuComponent.meta = {
 
       if (this.host.renderer.xr.isPresenting) {
         group.position.z = -2;
-        group.rotation.y -= Math.PI / 180 / 60 * 3;
+        group.rotation.y -= Math.PI / 180 / 60 * 5;
       } else {
         group.position.z = 0;
         group.rotation.y = 0;

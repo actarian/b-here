@@ -190,7 +190,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 			const group = this.group;
 			if (this.host.renderer.xr.isPresenting) {
 				group.position.z = -2;
-				group.rotation.y -= (Math.PI / 180 / 60 * 3);
+				group.rotation.y -= (Math.PI / 180 / 60 * 5);
 			} else {
 				group.position.z = 0;
 				group.rotation.y = 0;

@@ -31,7 +31,7 @@ export default class ModelComponent extends Component {
 			this.render(this, time, tick);
 			// }
 		};
-		this.host.objects.add(group);
+		this.getContainer().add(group);
 		this.onCreate(
 			(mesh, item) => this.onMount(mesh, item),
 			(mesh, item) => this.onDismount(mesh, item)
@@ -40,10 +40,14 @@ export default class ModelComponent extends Component {
 
 	onDestroy() {
 		const group = this.group;
-		this.host.objects.remove(group);
+		this.getContainer().remove(group);
 		delete group.userData.render;
 		this.disposeObject(group);
 		this.group = null;
+	}
+
+	getContainer() {
+		return this.host.objects;
 	}
 
 	getName(name) {

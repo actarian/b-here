@@ -36,13 +36,16 @@ export default class ItemModelModalComponent extends Component {
 	}
 
 	onInit() {
+		/*
 		const object = new THREE.Object3D();
 		object.position.copy(this.position);
 		object.lookAt(ItemModelModalComponent.ORIGIN);
+		*/
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Model,
 			position: new FormControl(this.position.multiplyScalar(4).toArray(), RequiredValidator()),
-			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
+			rotation: new FormControl([0, 0, 0], RequiredValidator()), // [0, -Math.PI / 2, 0],
+			// rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
 			scale: new FormControl([1, 1, 1], RequiredValidator()),
 			asset: new FormControl(null, RequiredValidator()),
 		});

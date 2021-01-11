@@ -305,14 +305,23 @@ export default class EditorComponent extends Component {
 				case ViewItemType.Nav.name:
 				case ViewItemType.Plane.name:
 				case ViewItemType.CurvedPlane.name:
-				case ViewItemType.Model.name:
-					if (event.value === ViewItemType.Model.name && this.view.type.name === ViewType.Model.name) {
-						return;
-					}
 					this.onViewHitted((position) => {
 						this.onOpenModal(event, { view: this.view, position });
 					});
 					ToastService.open$({ message: 'Click a point on the view' });
+					break;
+				case ViewItemType.Model.name:
+					if (event.type === 'viewItem') {
+						if (this.view.type.name === ViewType.Model.name) {
+							return;
+						}
+						this.onViewHitted((position) => {
+							this.onOpenModal(event, { view: this.view, position });
+						});
+						ToastService.open$({ message: 'Click a point on the view' });
+					} else {
+						this.onOpenModal(event, { view: this.view });
+					}
 					break;
 				default:
 					this.onOpenModal(event, { view: this.view });

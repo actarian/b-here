@@ -1,12 +1,14 @@
 import { of } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
+import MessageService from '../../message/message.service';
 import StateService from '../../state/state.service';
+// import DebugService from '../debug.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import OrbitService, { OrbitMode } from '../orbit/orbit';
-import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -142,10 +144,7 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	onOver() {
-		/*
-		const debugService = DebugService.getService();
-		debugService.setMessage('over ' + this.name);
-		*/
+		// DebugService.getService().setMessage('over ' + this.name);
 		gsap.to(this, {
 			duration: 0.4,
 			tween: 1,
@@ -238,6 +237,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		this.onDown = this.onDown.bind(this);
 		this.onToggle = this.onToggle.bind(this);
 		// console.log('ModelMenuComponent.onInit');
+		/*
 		const vrService = this.vrService = VRService.getService();
 		vrService.session$.pipe(
 			takeUntil(this.unsubscribe$),
@@ -246,6 +246,17 @@ export default class ModelMenuComponent extends ModelComponent {
 				this.addToggler();
 			} else {
 				this.removeMenu();
+			}
+		});
+		*/
+		MessageService.in$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			// DebugService.getService().setMessage('ModelMenuComponent.MessageService ' + message.type);
+			switch (message.type) {
+				case MessageType.MenuToggle:
+					this.onToggle();
+					break;
 			}
 		});
 	}
@@ -303,6 +314,10 @@ export default class ModelMenuComponent extends ModelComponent {
 		super.onDestroy();
 	}
 
+	getContainer() {
+		return this.host.cameraGroup;
+	}
+
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
@@ -319,10 +334,14 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (this.host.renderer.xr.isPresenting) {
 			camera = this.host.renderer.xr.getCamera(camera);
 			camera.getWorldDirection(position);
-			group.position.set(position.x, position.y - 0.4, position.z);
-			group.position.multiplyScalar(3);
+			position.y += 0.5;
+			position.multiplyScalar(3);
+			this.host.cameraGroup.worldToLocal(position);
+			position.y += this.host.cameraGroup.position.y;
+			group.position.copy(position);
 			group.scale.set(1, 1, 1);
-			group.lookAt(ModelMenuComponent.ORIGIN);
+			group.lookAt(camera.position);
+			// group.lookAt(ModelMenuComponent.ORIGIN);
 		} else {
 			camera.getWorldDirection(position);
 			if (OrbitService.mode === OrbitMode.Model) {
@@ -357,9 +376,11 @@ export default class ModelMenuComponent extends ModelComponent {
 			if (button.item.backItem) {
 				this.addMenu(button.item.backItem.backItem);
 			} else {
+				/*
 				if (this.host.renderer.xr.isPresenting) {
 					this.addToggler();
 				}
+				*/
 				this.toggle.next();
 			}
 		} else {
@@ -381,9 +402,11 @@ export default class ModelMenuComponent extends ModelComponent {
 		this.removeMenu();
 		// nav to view
 		if (item && item.type.name !== 'menu-group') {
+			/*
 			if (this.host.renderer.xr.isPresenting) {
 				this.addToggler();
 			}
+			*/
 			this.nav.next(item);
 			return;
 		}
