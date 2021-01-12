@@ -17,6 +17,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	onInit() {
 		super.onInit();
 		this.progress = null;
+		this.isPresenting = false;
 		/*
 		if (this.view.type.name === ViewType.Model.name) {
 			const vrService = this.vrService = VRService.getService();
@@ -98,8 +99,8 @@ export default class ModelModelComponent extends ModelEditableComponent {
 			dummy.position.set(
 				mesh.position.x - center.x,
 				mesh.position.y - center.y,
-				// mesh.position.z - center.z + (this.host.renderer.xr.isPresenting ? -2 : 0),
-				mesh.position.z - center.z,
+				mesh.position.z - center.z + (this.host.renderer.xr.isPresenting ? -2 : 0),
+				// mesh.position.z - center.z,
 			);
 			const endY = dummy.position.y;
 			const from = { tween: 1 };
@@ -108,6 +109,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 				dummy.rotation.y = 0 + Math.PI * from.tween;
 			};
 			onUpdate();
+			this.makeInteractive(mesh);
 			gsap.to(from, {
 				duration: 1.5,
 				tween: 0,
@@ -119,7 +121,6 @@ export default class ModelModelComponent extends ModelEditableComponent {
 				}
 			});
 		} else {
-			// dummy = new InteractiveGroup();
 			box.setFromObject(mesh);
 			const center = box.getCenter(new THREE.Vector3());
 			mesh.position.set(
@@ -174,11 +175,9 @@ export default class ModelModelComponent extends ModelEditableComponent {
 
 	/*
 	onUpdateVRSession(session) {
-		const group = this.group;
-		if (session) {
-			group.position.z = -2;
-		} else {
-			group.position.z = 0;
+		const mesh = this.mesh;
+		if (session && mesh) {
+			mesh.position.z = -2;
 		}
 	}
 	*/
@@ -186,14 +185,32 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	render(time, tick) {
 		const view = this.view;
 		const item = this.item;
-		if (view.type.name === ViewType.Model.name) {
-			const group = this.group;
-			if (this.host.renderer.xr.isPresenting) {
-				group.position.z = -2;
-				group.rotation.y -= (Math.PI / 180 / 60 * 5);
+		const mesh = this.mesh;
+		const isPresenting = this.host.renderer.xr.isPresenting;
+		const group = this.group;
+		if (mesh) {
+			if (view.type.name === ViewType.Model.name) {
+				if (this.isPresenting !== isPresenting) {
+					this.isPresenting = isPresenting;
+					if (isPresenting) {
+						mesh.position.x = 0;
+						mesh.position.y = 0;
+						mesh.position.z = -2;
+						mesh.rotation.y = 0;
+					} else {
+						mesh.position.x = 0;
+						mesh.position.y = 0;
+						mesh.position.z = 0;
+						mesh.rotation.y = 0;
+					}
+				}
+				if (isPresenting) {
+					mesh.rotation.y -= (Math.PI / 180 / 60 * 5);
+				}
 			} else {
-				group.position.z = 0;
-				group.rotation.y = 0;
+				if (isPresenting) {
+					mesh.rotation.y -= (Math.PI / 180 / 60 * 5);
+				}
 			}
 		}
 	}

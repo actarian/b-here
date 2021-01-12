@@ -202,7 +202,7 @@
 							<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
 							<div model-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'plane'"></div>
 							<div model-curved-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'curved-plane'"></div>
-							<div class="model-viewer__item" model-model [item]="item" [view]="view" *if="item.type.name == 'model'">
+							<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" *if="item.type.name == 'model'">
 								<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
 								<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
 							</div>

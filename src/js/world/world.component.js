@@ -52,6 +52,7 @@ export default class WorldComponent extends Component {
 		}
 	}
 	get debugging() {
+		// return STATIC || DEBUG;
 		return DEBUG;
 	}
 	get locked() {
@@ -283,6 +284,7 @@ export default class WorldComponent extends Component {
 	}
 
 	addController(index) {
+		const showPhone = USE_PHONE && StateService.state.live;
 		const renderer = this.renderer;
 		const controllerGroup = this.controllerGroup;
 		const controller = renderer.xr.getController(index);
@@ -290,7 +292,7 @@ export default class WorldComponent extends Component {
 		controller.name = `[controller${index + 1}]`;
 		controllerGroup.add(controller);
 		const setController = (controller) => {
-			console.log('setController', this);
+			// console.log('setController', this);
 			this.controller = controller;
 		}
 		const onSelectStart = (event) => {
@@ -305,20 +307,10 @@ export default class WorldComponent extends Component {
 		const onPress = (event) => {
 			// console.log('Gamepad.onPress', event, controller);
 			// debugService.setMessage('Gamepad.onPress ' + event.index);
-			/*
-			case 0:
-				// select
-				break;
-			case 1:
-				// squeeze
-				break;
-			case 4:
-				// x / a
-				break;
-			case 5:
-				// y / b
-				break;
-			*/
+			// 0: select
+			// 1: squeeze
+			// 4: x / a
+			// 5: y / b
 			switch(event.index) {
 				case 0:
 					// select
@@ -334,33 +326,58 @@ export default class WorldComponent extends Component {
 					break;
 			}
 		};
+		const onRelease = (event) => {
+			this.onModelUp();
+		};
 		const onLeft = (event) => {
-			console.log('Gamepad.onLeft', event, controller);
+			// console.log('Gamepad.onLeft', event, controller);
 			// debugService.setMessage('Gamepad.onLeft');
 			this.cameraGroup.rotation.y += Math.PI / 180 * 45;
 		};
 		const onRight = (event) => {
-			console.log('Gamepad.onRight', event, controller);
+			// console.log('Gamepad.onRight', event, controller);
 			// debugService.setMessage('Gamepad.onRight');
 			this.cameraGroup.rotation.y -= Math.PI / 180 * 45;
 		};
+		/*
+		const onAxis = (event) => {
+			// console.log('Gamepad.onAxis', event, controller);
+			// debugService.setMessage('Gamepad.onAxis');
+			this.cameraGroup.rotation.y += (Math.PI / 180 * event.x);
+		};
+		*/
+		const onAxis = (event) => {
+			// console.log('Gamepad.onAxis', event, controller);
+			// debugService.setMessage('Gamepad.onAxis');
+			this.onModelDistance(event.y);
+		};
+		/*
 		const onUp = (event) => {
-			console.log('Gamepad.onUp', event, controller);
+			// console.log('Gamepad.onUp', event, controller);
 			// debugService.setMessage('Gamepad.onUp');
 			this.cameraGroup.position.y += 1;
 		};
 		const onDown = (event) => {
-			console.log('Gamepad.onDown', event, controller);
+			// console.log('Gamepad.onDown', event, controller);
 			// debugService.setMessage('Gamepad.onDown');
 			this.cameraGroup.position.y -= 1;
 		};
+		*/
+		/*
+		const onUp = (event) => {
+			this.onModelDistance(1);
+		};
+		const onDown = (event) => {
+			this.onModelDistance(-1);
+		};
+		*/
 		const onConnected = (event) => {
 			controller.add(this.buildController(event.data));
-			if (USE_PHONE && event.data.handedness === 'left') {
+			if (showPhone && event.data.handedness === 'left') {
 				const phone = this.phone = new PhoneElement();
 				controller.add(phone.mesh);
 			}
-			if (!USE_PHONE || event.data.handedness === 'right') {
+			if (!showPhone || event.data.handedness === 'right') {
 				const controllerGrip = renderer.xr.getControllerGrip(index);
 				controllerGrip.name = `[controller-grip${index + 1}]`;
 				controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
@@ -368,10 +385,12 @@ export default class WorldComponent extends Component {
 			}
 			const gamepad = new Gamepad(event.data.gamepad);
 			gamepad.on('press', onPress);
+			gamepad.on('release', onRelease);
 			gamepad.on('left', onLeft);
 			gamepad.on('right', onRight);
-			gamepad.on('up', onUp);
-			gamepad.on('down', onDown);
+			gamepad.on('axis', onAxis);
+			// gamepad.on('up', onUp);
+			// gamepad.on('down', onDown);
 			controller.userData.gamepad = gamepad;
 		}
 		const onDisconnected = (event) => {
@@ -385,10 +404,12 @@ export default class WorldComponent extends Component {
 			controllerGroup.remove(controllerGrip);
 			const gamepad = controller.userData.gamepad;
 			gamepad.off('press', onPress);
+			gamepad.off('release', onRelease);
 			gamepad.off('left', onLeft);
 			gamepad.off('right', onRight);
-			gamepad.off('up', onUp);
-			gamepad.off('down', onDown);
+			gamepad.off('axis', onAxis);
+			// gamepad.off('up', onUp);
+			// gamepad.off('down', onDown);
 		}
 		controller.addEventListener('selectstart', onSelectStart);
 		controller.addEventListener('selectend', onSelectEnd);
@@ -418,6 +439,50 @@ export default class WorldComponent extends Component {
 					transparent: true
 				});
 				return new THREE.Mesh(geometry, material);
+		}
+	}
+
+	onModelDown(event) {
+		const controller = this.controller;
+		if (controller && this.renderer.xr.isPresenting) {
+			const target = this.tempTarget = event.mesh;
+			// console.log('WorldComponent.onModelDown', target);
+			// DebugService.getService().setMessage('onModelDown ', target.name);
+			const parent = this.tempParent = target.parent;
+			const position = new THREE.Vector3();
+			target.localToWorld(position);
+			controller.worldToLocal(position);
+			controller.add(target);
+			target.position.copy(position);
+		}
+	}
+
+	onModelDistance(direction) {
+		const controller = this.controller;
+		const target = this.tempTarget;
+		if (controller && target && this.renderer.xr.isPresenting) {
+			let position = new THREE.Vector3();
+			position = position.copy(target.position);
+			const distance = Math.max(1, Math.min(8, position.distanceTo(ORIGIN) + 0.02 * direction));
+			position.normalize();
+			position = position.multiplyScalar(distance);
+			// DebugService.getService().setMessage('onModelDistance ' + distance);
+			target.position.copy(position);
+		}
+	}
+
+	onModelUp() {
+		const target = this.tempTarget;
+		const parent = this.tempParent;
+		if (target && parent) {
+			// console.log('WorldComponent.onModelUp', target, parent);
+			const position = new THREE.Vector3();
+			target.localToWorld(position);
+			parent.worldToLocal(position);
+			parent.add(target);
+			target.position.copy(position);
+			this.tempTarget = null;
+			this.tempParent = null;
 		}
 	}
 
