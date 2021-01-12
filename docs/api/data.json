@@ -7348,6 +7348,46 @@
           "id": 1372998012501000
         }
       }
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Helmet",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "34978428144599_dressroom.jpg",
+        "id": 34978448725700
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 34985363038400,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "34983889443299_damaged-helmet.glb",
+            "id": 34983916202900
+          },
+          "id": 34985380786000
+        }
+      ]
     }
   ],
   "menu": [
@@ -7492,32 +7532,39 @@
       "order": 50
     },
     {
+      "id": 35025349020800,
+      "parentId": 74709201159299,
+      "viewId": 34985363038400,
+      "name": "Helmet",
+      "order": 0
+    },
+    {
       "id": 74715180214800,
       "parentId": 74709201159299,
       "viewId": 74285747577200,
       "name": "Skeleton",
-      "order": 0
+      "order": 10
     },
     {
       "id": 74715419424100,
       "parentId": 74709201159299,
       "viewId": 57092993454500,
       "name": "Poltrona",
-      "order": 10
+      "order": 20
     },
     {
       "id": 74715628924199,
       "parentId": 74709201159299,
       "viewId": 74808209121800,
       "name": "Watch",
-      "order": 20
+      "order": 30
     },
     {
       "id": 1372953673514900,
       "parentId": 74709201159299,
       "viewId": 1372936424527899,
       "name": "Porsche",
-      "order": 30
+      "order": 40
     }
   ],
   "assets": [
@@ -9009,6 +9056,24 @@
       "file": "publisherStream",
       "id": 1373945696693800,
       "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "34978428144599_dressroom.jpg",
+      "id": 34978448725700
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "34983889443299_damaged-helmet.glb",
+      "id": 34983916202900
     }
   ],
   "users": [
