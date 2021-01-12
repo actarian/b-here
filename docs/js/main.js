@@ -14435,6 +14435,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.addController = function addController(index) {
     var _this3 = this;
 
+    var showPhone =  StateService.state.live;
     var renderer = this.renderer;
     var controllerGroup = this.controllerGroup;
     var controller = renderer.xr.getController(index);
@@ -14443,7 +14444,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     controllerGroup.add(controller);
 
     var setController = function setController(controller) {
-      console.log('setController', _this3);
+      // console.log('setController', this);
       _this3.controller = controller;
     };
 
@@ -14461,21 +14462,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var onPress = function onPress(event) {
       // console.log('Gamepad.onPress', event, controller);
       // debugService.setMessage('Gamepad.onPress ' + event.index);
-
-      /*
-      case 0:
-      	// select
-      	break;
-      case 1:
-      	// squeeze
-      	break;
-      case 4:
-      	// x / a
-      	break;
-      case 5:
-      	// y / b
-      	break;
-      */
+      // 0: select
+      // 1: squeeze
+      // 4: x / a
+      // 5: y / b
       switch (event.index) {
         case 0:
           // select
@@ -14494,39 +14484,67 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       }
     };
 
-    var onLeft = function onLeft(event) {
-      console.log('Gamepad.onLeft', event, controller); // debugService.setMessage('Gamepad.onLeft');
+    var onRelease = function onRelease(event) {
+      _this3.onModelUp();
+    };
 
+    var onLeft = function onLeft(event) {
+      // console.log('Gamepad.onLeft', event, controller);
+      // debugService.setMessage('Gamepad.onLeft');
       _this3.cameraGroup.rotation.y += Math.PI / 180 * 45;
     };
 
     var onRight = function onRight(event) {
-      console.log('Gamepad.onRight', event, controller); // debugService.setMessage('Gamepad.onRight');
-
+      // console.log('Gamepad.onRight', event, controller);
+      // debugService.setMessage('Gamepad.onRight');
       _this3.cameraGroup.rotation.y -= Math.PI / 180 * 45;
     };
-
-    var onUp = function onUp(event) {
-      console.log('Gamepad.onUp', event, controller); // debugService.setMessage('Gamepad.onUp');
-
-      _this3.cameraGroup.position.y += 1;
+    /*
+    const onAxis = (event) => {
+    	// console.log('Gamepad.onAxis', event, controller);
+    	// debugService.setMessage('Gamepad.onAxis');
+    	this.cameraGroup.rotation.y += (Math.PI / 180 * event.x);
     };
+    */
 
-    var onDown = function onDown(event) {
-      console.log('Gamepad.onDown', event, controller); // debugService.setMessage('Gamepad.onDown');
 
-      _this3.cameraGroup.position.y -= 1;
+    var onAxis = function onAxis(event) {
+      // console.log('Gamepad.onAxis', event, controller);
+      // debugService.setMessage('Gamepad.onAxis');
+      _this3.onModelDistance(event.y);
     };
+    /*
+    const onUp = (event) => {
+    	// console.log('Gamepad.onUp', event, controller);
+    	// debugService.setMessage('Gamepad.onUp');
+    	this.cameraGroup.position.y += 1;
+    };
+    const onDown = (event) => {
+    	// console.log('Gamepad.onDown', event, controller);
+    	// debugService.setMessage('Gamepad.onDown');
+    	this.cameraGroup.position.y -= 1;
+    };
+    */
+
+    /*
+    const onUp = (event) => {
+    	this.onModelDistance(1);
+    };
+    const onDown = (event) => {
+    	this.onModelDistance(-1);
+    };
+    */
+
 
     var onConnected = function onConnected(event) {
       controller.add(_this3.buildController(event.data));
 
-      if ( event.data.handedness === 'left') {
+      if (showPhone && event.data.handedness === 'left') {
         var phone = _this3.phone = new PhoneElement();
         controller.add(phone.mesh);
       }
 
-      if ( event.data.handedness === 'right') {
+      if (!showPhone || event.data.handedness === 'right') {
         var controllerGrip = renderer.xr.getControllerGrip(index);
         controllerGrip.name = "[controller-grip" + (index + 1) + "]";
         controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
@@ -14535,10 +14553,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
       var gamepad = new Gamepad(event.data.gamepad);
       gamepad.on('press', onPress);
+      gamepad.on('release', onRelease);
       gamepad.on('left', onLeft);
       gamepad.on('right', onRight);
-      gamepad.on('up', onUp);
-      gamepad.on('down', onDown);
+      gamepad.on('axis', onAxis); // gamepad.on('up', onUp);
+      // gamepad.on('down', onDown);
+
       controller.userData.gamepad = gamepad;
     };
 
@@ -14556,10 +14576,11 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       controllerGroup.remove(controllerGrip);
       var gamepad = controller.userData.gamepad;
       gamepad.off('press', onPress);
+      gamepad.off('release', onRelease);
       gamepad.off('left', onLeft);
       gamepad.off('right', onRight);
-      gamepad.off('up', onUp);
-      gamepad.off('down', onDown);
+      gamepad.off('axis', onAxis); // gamepad.off('up', onUp);
+      // gamepad.off('down', onDown);
     };
 
     controller.addEventListener('selectstart', onSelectStart);
@@ -14592,6 +14613,53 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           transparent: true
         });
         return new THREE.Mesh(geometry, material);
+    }
+  };
+
+  _proto.onModelDown = function onModelDown(event) {
+    var controller = this.controller;
+
+    if (controller && this.renderer.xr.isPresenting) {
+      var target = this.tempTarget = event.mesh; // console.log('WorldComponent.onModelDown', target);
+      // DebugService.getService().setMessage('onModelDown ', target.name);
+
+      var parent = this.tempParent = target.parent;
+      var position = new THREE.Vector3();
+      target.localToWorld(position);
+      controller.worldToLocal(position);
+      controller.add(target);
+      target.position.copy(position);
+    }
+  };
+
+  _proto.onModelDistance = function onModelDistance(direction) {
+    var controller = this.controller;
+    var target = this.tempTarget;
+
+    if (controller && target && this.renderer.xr.isPresenting) {
+      var position = new THREE.Vector3();
+      position = position.copy(target.position);
+      var distance = Math.max(1, Math.min(8, position.distanceTo(ORIGIN$1) + 0.02 * direction));
+      position.normalize();
+      position = position.multiplyScalar(distance); // DebugService.getService().setMessage('onModelDistance ' + distance);
+
+      target.position.copy(position);
+    }
+  };
+
+  _proto.onModelUp = function onModelUp() {
+    var target = this.tempTarget;
+    var parent = this.tempParent;
+
+    if (target && parent) {
+      // console.log('WorldComponent.onModelUp', target, parent);
+      var position = new THREE.Vector3();
+      target.localToWorld(position);
+      parent.worldToLocal(position);
+      parent.add(target);
+      target.position.copy(position);
+      this.tempTarget = null;
+      this.tempParent = null;
     }
   };
 
@@ -15320,6 +15388,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   }, {
     key: "debugging",
     get: function get() {
+      // return STATIC || DEBUG;
       return DEBUG;
     }
   }, {
@@ -17392,6 +17461,7 @@ ModelMenuComponent.meta = {
     _ModelEditableCompone.prototype.onInit.call(this);
 
     this.progress = null;
+    this.isPresenting = false;
     /*
     if (this.view.type.name === ViewType.Model.name) {
     	const vrService = this.vrService = VRService.getService();
@@ -17475,8 +17545,8 @@ ModelMenuComponent.meta = {
       dummy.add(mesh);
       box.setFromObject(dummy);
       var center = box.getCenter(new THREE.Vector3());
-      dummy.position.set(mesh.position.x - center.x, mesh.position.y - center.y, // mesh.position.z - center.z + (this.host.renderer.xr.isPresenting ? -2 : 0),
-      mesh.position.z - center.z);
+      dummy.position.set(mesh.position.x - center.x, mesh.position.y - center.y, mesh.position.z - center.z + (this.host.renderer.xr.isPresenting ? -2 : 0) // mesh.position.z - center.z,
+      );
       var endY = dummy.position.y;
       var from = {
         tween: 1
@@ -17488,6 +17558,7 @@ ModelMenuComponent.meta = {
       };
 
       onUpdate();
+      this.makeInteractive(mesh);
       gsap.to(from, {
         duration: 1.5,
         tween: 0,
@@ -17499,7 +17570,6 @@ ModelMenuComponent.meta = {
         }
       });
     } else {
-      // dummy = new InteractiveGroup();
       box.setFromObject(mesh);
 
       var _center = box.getCenter(new THREE.Vector3());
@@ -17558,11 +17628,9 @@ ModelMenuComponent.meta = {
   }
   /*
   onUpdateVRSession(session) {
-  	const group = this.group;
-  	if (session) {
-  		group.position.z = -2;
-  	} else {
-  		group.position.z = 0;
+  	const mesh = this.mesh;
+  	if (session && mesh) {
+  		mesh.position.z = -2;
   	}
   }
   */
@@ -17571,16 +17639,35 @@ ModelMenuComponent.meta = {
   _proto.render = function render(time, tick) {
     var view = this.view;
     var item = this.item;
+    var mesh = this.mesh;
+    var isPresenting = this.host.renderer.xr.isPresenting;
+    var group = this.group;
 
-    if (view.type.name === ViewType.Model.name) {
-      var group = this.group;
+    if (mesh) {
+      if (view.type.name === ViewType.Model.name) {
+        if (this.isPresenting !== isPresenting) {
+          this.isPresenting = isPresenting;
 
-      if (this.host.renderer.xr.isPresenting) {
-        group.position.z = -2;
-        group.rotation.y -= Math.PI / 180 / 60 * 5;
+          if (isPresenting) {
+            mesh.position.x = 0;
+            mesh.position.y = 0;
+            mesh.position.z = -2;
+            mesh.rotation.y = 0;
+          } else {
+            mesh.position.x = 0;
+            mesh.position.y = 0;
+            mesh.position.z = 0;
+            mesh.rotation.y = 0;
+          }
+        }
+
+        if (isPresenting) {
+          mesh.rotation.y -= Math.PI / 180 / 60 * 5;
+        }
       } else {
-        group.position.z = 0;
-        group.rotation.y = 0;
+        if (isPresenting) {
+          mesh.rotation.y -= Math.PI / 180 / 60 * 5;
+        }
       }
     }
   } // called by UpdateViewItemComponent
