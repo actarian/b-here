@@ -5,7 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const { staticMiddleware } = require('./static/static.js');
-const { apiMiddleware, useApi, uuid } = require('./api/api.js');
+const { apiMiddleware, useApi, uuid, setSessionUser, RoleType } = require('./api/api.js');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart({ uploadDir: path.join(__dirname, '../docs/temp/') });
 // const serveStatic = require('serve-static');
@@ -90,6 +90,8 @@ app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
 });
 app.get('/self-service-tour', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.SelfService);
 	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
 });
 app.get('/guided-tour', function(request, response) {
