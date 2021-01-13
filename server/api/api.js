@@ -442,10 +442,26 @@ function apiMiddleware(vars) {
 	};
 };
 
+function setSessionUser(request, userType) {
+	userType = userType || RoleType.SelfService;
+	const id = uuid();
+	const user = {
+		id,
+		type: userType,
+		username: userType,
+		password: '****',
+		firstName: 'Jhon',
+		lastName: 'Appleseed',
+	};
+	request.session.user = user;
+}
+
 module.exports = {
 	apiMiddleware: apiMiddleware,
 	useApi: useApi,
 	uuid: uuid,
+	RoleType: RoleType,
+	setSessionUser: setSessionUser,
 };
 
 /*
