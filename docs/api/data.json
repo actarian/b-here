@@ -7388,6 +7388,64 @@
           "id": 34985380786000
         }
       ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Porsche 360",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "1797253103184000_360_2.jpg",
+        "id": 1797253215163099
+      },
+      "orientation": {
+        "latitude": 9.600000000000001,
+        "longitude": 53.800000000000004
+      },
+      "zoom": 75,
+      "id": 1796857839171700,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            4.196077917908141,
+            -0.6388391039512695,
+            19.544431808218587
+          ],
+          "rotation": [
+            -3.1089177852447585,
+            -0.21137438739043707,
+            -3.134735005686354,
+            "XYZ"
+          ],
+          "scale": [
+            20.48,
+            15.36,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "1797395851043800_frame.mp4",
+            "id": 1797395883947200,
+            "chromaKeyColor": null
+          },
+          "id": 1797397463072500
+        }
+      ],
+      "hidden": null
     }
   ],
   "menu": [
@@ -7565,6 +7623,13 @@
       "viewId": 1372936424527899,
       "name": "Porsche",
       "order": 40
+    },
+    {
+      "id": 1797484276534400,
+      "parentId": null,
+      "viewId": 1796857839171700,
+      "name": "Porsche 360",
+      "order": 60
     }
   ],
   "assets": [
@@ -9074,6 +9139,33 @@
       "folder": "/uploads/",
       "file": "34983889443299_damaged-helmet.glb",
       "id": 34983916202900
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "1796849593220699_360_2.jpg",
+      "id": 1796849617211999
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "1797253103184000_360_2.jpg",
+      "id": 1797253215163099
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "1797395851043800_frame.mp4",
+      "id": 1797395883947200
     }
   ],
   "users": [
