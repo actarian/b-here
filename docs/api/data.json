@@ -548,12 +548,12 @@
           ],
           "asset": {
             "type": {
-              "id": 5,
-              "name": "next-attendee-stream"
+              "id": 4,
+              "name": "publisher-stream"
             },
             "folder": "",
-            "file": "nextAttendeeStream",
-            "id": 186290185842699,
+            "file": "publisherStream",
+            "id": 359661442470999,
             "chromaKeyColor": null,
             "index": 1
           },
@@ -9175,6 +9175,16 @@
       "folder": "/uploads/",
       "file": "1799484128300899_360_3.jpg",
       "id": 1799484275496499
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 359661442470999,
+      "chromaKeyColor": null
     }
   ],
   "users": [
