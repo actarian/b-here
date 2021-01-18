@@ -57,9 +57,13 @@ export class View {
 
 	updateIndices(items) {
 		if (items) {
+			let nextPublisherStreamIndex = 0;
 			let nextAttendeeStreamIndex = 0;
 			items.forEach((item, index) => {
 				item.index = index;
+				if (item.asset && item.asset.file === 'publisherStream') {
+					item.asset.index = nextPublisherStreamIndex++;
+				}
 				if (item.asset && item.asset.file === 'nextAttendeeStream') {
 					item.asset.index = nextAttendeeStreamIndex++;
 				}

@@ -65,6 +65,8 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 						// console.log('ModelCurvedPanelComponent.playing', playing);
 						this.play.next({ itemId: this.item.id, playing });
 					});
+				} else if (this.mesh) {
+					dismount(this.mesh, item);
 				}
 				// console.log('streamId', streamId, mesh);
 			}

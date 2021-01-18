@@ -233,10 +233,12 @@ export default class AgoraService extends Emittable {
 		} else {
 			clientInit();
 		}
+		client.on('error', this.onError);
 		client.on('stream-published', this.onStreamPublished);
 		client.on('stream-unpublished', this.onStreamUnpublished);
 		//subscribe remote stream
 		client.on('stream-added', this.onStreamAdded);
+		client.on('stream-removed', this.onStreamRemoved);
 		client.on('stream-subscribed', this.onStreamSubscribed);
 		client.on('mute-video', this.onMuteVideo);
 		client.on('unmute-video', this.onUnmuteVideo);
@@ -246,12 +248,10 @@ export default class AgoraService extends Emittable {
 			client.enableAudioVolumeIndicator(); // Triggers the "volume-indicator" callback event every two seconds.
 			client.on("volume-indicator", this.onVolumeIndicator);
 		}
-		client.on('error', this.onError);
 		client.on('peer-online', this.onPeerConnect);
 		// Occurs when the peer user leaves the channel; for example, the peer user calls Client.leave.
 		client.on('peer-leave', this.onPeerLeaved);
 		// client.on('connection-state-change', this.onConnectionStateChange);
-		client.on('stream-removed', this.onStreamRemoved);
 		client.on('onTokenPrivilegeWillExpire', this.onTokenPrivilegeWillExpire);
 		client.on('onTokenPrivilegeDidExpire', this.onTokenPrivilegeDidExpire);
 		// console.log('agora rtm sdk version: ' + AgoraRTM.VERSION + ' compatible');
@@ -572,6 +572,7 @@ export default class AgoraService extends Emittable {
 			role: StateService.state.role,
 			name: StateService.state.name,
 			uid: StateService.state.uid,
+			screenUid: StateService.state.screenUid,
 		};
 		StreamService.local = local;
 	}
@@ -590,11 +591,20 @@ export default class AgoraService extends Emittable {
 	leaveChannel() {
 		StateService.patchState({ connecting: false });
 		this.unpublishLocalStream();
+		this.unpublishScreenStream();
 		StreamService.remotes = [];
 		StreamService.peers = [];
 		return new Promise((resolve, reject) => {
 			this.leaveMessageChannel().then(() => {
-				const client = this.client;
+				return Promise.all([this.leaveClient(), this.leaveScreenClient()]);
+			}, reject);
+		});
+	}
+
+	leaveClient() {
+		return new Promise((resolve, reject) => {
+			const client = this.client;
+			if (client) {
 				client.leave(() => {
 					this.client = null;
 					// console.log('Leave channel successfully');
@@ -603,10 +613,12 @@ export default class AgoraService extends Emittable {
 					}
 					resolve();
 				}, (error) => {
-					console.log('AgoraService.leaveChannel.error', error);
+					console.log('AgoraService.leaveClient.error', error);
 					reject(error);
 				});
-			}, reject);
+			} else {
+				resolve();
+			}
 		});
 	}
 
@@ -969,7 +981,7 @@ export default class AgoraService extends Emittable {
 				this.emit(`message-${message.messageId}`, message);
 			}
 			// discard message delivered to specific remoteId when differs from current state uid;
-			if (message.remoteId && message.remoteId !== StateService.state.uid) {
+			if (message.remoteId && message.remoteId !== StateService.state.uid && message.remoteId !== StateService.state.screenUid) {
 				return;
 			}
 			// !!! check position !!!
@@ -998,6 +1010,7 @@ export default class AgoraService extends Emittable {
 			role: StateService.state.role,
 			name: StateService.state.name,
 			uid: StateService.state.uid,
+			screenUid: StateService.state.screenUid,
 		};
 		StreamService.local = local;
 	}
@@ -1014,8 +1027,8 @@ export default class AgoraService extends Emittable {
 			return;
 		}
 		const streamId = stream.getId();
-		if (streamId !== StateService.state.uid) {
-			// console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid);
+		if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
+			// console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
 			client.subscribe(stream, (error) => {
 				console.log('AgoraService.onStreamAdded.subscribe.error', error);
 			});
@@ -1025,7 +1038,7 @@ export default class AgoraService extends Emittable {
 	onStreamRemoved(event) {
 		const stream = event.stream;
 		const streamId = stream.getId();
-		if (streamId !== StateService.state.uid) {
+		if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
 			// !!! this happen on oculus removed timeout
 			// console.log('AgoraService.onStreamRemoved', streamId);
 			this.remoteRemove(streamId);
@@ -1048,6 +1061,7 @@ export default class AgoraService extends Emittable {
 			// console.log('AgoraService.onPeerLeaved', event.uid);
 			const remote = this.remoteRemove(clientId);
 			if (remote.clientInfo) {
+				// !!! remove screenRemote?
 				if (remote.clientInfo.role === RoleType.Publisher) {
 					StateService.patchState({ hosted: false, locked: false, control: false, spyed: false });
 				} else if (StateService.state.spying === clientId) {
@@ -1081,34 +1095,19 @@ export default class AgoraService extends Emittable {
 
 	remoteAdd(stream) {
 		// console.log('AgoraService.remoteAdd', stream);
-		const remotes = StreamService.remotes;
-		remotes.push(stream);
-		StreamService.remotes = remotes;
+		StreamService.remoteAdd(stream);
 		this.broadcastEvent(new AgoraRemoteEvent({ stream }));
 		const remoteId = stream.getId();
 		this.sendRemoteRequestPeerInfo(remoteId).then((message) => {
-			const remotes = StreamService.remotes;
-			const remote = remotes.find(x => x.getId() === remoteId);
-			if (remote) {
-				remote.clientInfo = message.clientInfo;
-			}
-			StreamService.remotes = remotes;
+			StreamService.remoteSetClientInfo(remoteId, message.clientInfo);
 		});
 	}
 
 	remoteRemove(streamId) {
 		// console.log('AgoraService.remoteRemove', streamId);
-		const remotes = StreamService.remotes;
-		const remote = remotes.find(x => x.getId() === streamId);
-		if (remote) {
-			if (remote.isPlaying()) {
-				remote.stop();
-			}
-			remotes.splice(remotes.indexOf(remote), 1);
-			StreamService.remotes = remotes;
-			if (remote.clientInfo && remote.clientInfo.role === RoleType.Publisher) {
-				StateService.patchState({ hosted: false });
-			}
+		const remote = StreamService.remoteRemove(streamId);
+		if (remote && remote.clientInfo && remote.clientInfo.role === RoleType.Publisher && remote.clientInfo.screenUid !== streamId) {
+			StateService.patchState({ hosted: false });
 		}
 		return remote;
 	}
@@ -1167,5 +1166,180 @@ export default class AgoraService extends Emittable {
 				console.log('AgoraService.onTokenPrivilegeDidExpire.renewed');
 			}
 		});
+	}
+
+	// screen
+
+	toggleScreen() {
+		const screen = StreamService.screen;
+		if (screen) {
+			this.unpublishScreenStream();
+		} else {
+			if (this.screenClient) {
+				this.createScreenStream(StateService.state.screenUid);
+			} else {
+				this.createScreenClient(() => {
+					const channelNameLink = this.getChannelNameLink();
+					this.rtcToken$(channelNameLink).subscribe(token => {
+						// console.log('AgoraService.rtcToken$', token);
+						this.screenJoin(token.token, channelNameLink);
+					});
+				});
+			}
+		}
+		// console.log(screen);
+	}
+
+	createScreenClient(next) {
+		if (this.screenClient) {
+			next();
+		}
+		const screenClient = this.screenClient = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
+		const clientInit = () => {
+			if (environment.flags.useProxy) {
+				screenClient.startProxyServer();
+			}
+			screenClient.init(environment.appKey, () => {
+				// console.log('AgoraRTC screenClient initialized');
+				next();
+			}, (error) => {
+				// console.log('AgoraRTC client init failed', error);
+				this.screenClient = null;
+			});
+		}
+		clientInit();
+		screenClient.on('error', this.onScreenError);
+		screenClient.on('stream-published', this.onScreenStreamPublished);
+		screenClient.on('stream-unpublished', this.onScreenStreamUnpublished);
+		// only for remotes
+		// screenClient.on('stream-added', this.onScreenStreamAdded);
+		// screenClient.on('stream-removed', this.onScreenStreamRemoved);
+		// screenClient.on('stream-subscribed', this.onScreenStreamSubscribed);
+		// screenClient.on('peer-online', this.onScreenPeerConnect);
+		// screenClient.on('peer-leave', this.onScreenPeerLeaved);
+		// screenClient.on('onTokenPrivilegeWillExpire', this.onScreenTokenPrivilegeWillExpire);
+		// screenClient.on('onTokenPrivilegeDidExpire', this.onScreenTokenPrivilegeDidExpire);
+	}
+
+	screenJoin(token, channelNameLink) {
+		const screenClient = this.screenClient;
+		const screenClientId = null;
+		// console.log('AgoraService.join', { token, channelNameLink, screenClientId });
+		screenClient.join(token, channelNameLink, screenClientId, (uid) => {
+			// console.log('AgoraService.join', uid);
+			StateService.patchState({ screenUid: uid });
+			this.createScreenStream(uid);
+		}, (error) => {
+			console.log('AgoraService.screenJoin.error', error);
+			if (error === 'DYNAMIC_KEY_EXPIRED') {
+				this.rtcToken$(channelNameLink).subscribe(token => {
+					this.screenJoin(token.token, channelNameLink);
+				});
+			}
+		});
+	}
+
+	createScreenStream(screenUid) {
+		const options = {
+			streamID: screenUid,
+			audio: false,
+			video: false,
+			screen: true
+		}
+		/*
+		// Set relevant properties according to the browser.
+		// Note that you need to implement isFirefox and isCompatibleChrome.
+		if (isFirefox()) {
+			options.mediaSource = 'window';
+		} else if (!isCompatibleChrome()) {
+			options.extensionId = 'minllpmhdgpndnkomcoccfekfegnlikg';
+		}
+		*/
+		const quality = Object.assign({}, StateService.state.quality);
+		const stream = AgoraRTC.createStream(options);
+		if (quality) {
+			stream.setScreenProfile('720p_1');
+			// stream.setVideoProfile(quality.profile);
+			// stream.setVideoEncoderConfiguration(quality);
+		}
+		// Initialize the stream.
+		stream.init(() => {
+			StreamService.screen = stream;
+			setTimeout(() => {
+				this.publishScreenStream();
+			}, 1);
+		}, function(error) {
+			console.log('AgoraService.createScreenStream.screen.init.error', error);
+		});
+	}
+
+	publishScreenStream() {
+		const screenClient = this.screenClient;
+		const screen = StreamService.screen;
+		// publish screen stream
+		screenClient.publish(screen, (error) => {
+			console.log('AgoraService.publishScreenStream.error', screen.getId(), error);
+		});
+		screen.clientInfo = {
+			role: StateService.state.role,
+			name: StateService.state.name,
+			uid: StateService.state.uid,
+			screenUid: StateService.state.screenUid,
+		};
+		StreamService.screen = screen;
+	}
+
+	unpublishScreenStream() {
+		const screenClient = this.screenClient;
+		const screen = StreamService.screen;
+		// console.log('AgoraService.unpublishScreenStream', screen, screenClient);
+		if (screenClient && screen) {
+			screenClient.unpublish(screen, (error) => {
+				console.log('AgoraService.unpublishScreenStream.error', screen.getId(), error);
+			});
+		}
+		StreamService.screen = null;
+	}
+
+	leaveScreenClient() {
+		return new Promise((resolve, reject) => {
+			const screenClient = this.screenClient;
+			if (screenClient) {
+				screenClient.leave(() => {
+					this.screenClient = null;
+					// console.log('Leave channel successfully');
+					if (environment.flags.useProxy) {
+						screenClient.stopProxyServer();
+					}
+					resolve();
+				}, (error) => {
+					console.log('AgoraService.leaveScreenClient.error', error);
+					reject(error);
+				});
+			} else {
+				resolve();
+			}
+		});
+	}
+
+	onScreenError(error) {
+		console.log('AgoraService.onScreenError', error);
+	}
+
+	onScreenStreamPublished(event) {
+		// console.log('AgoraService.onScreenStreamPublished');
+		const screen = StreamService.screen;
+		screen.clientInfo = {
+			role: StateService.state.role,
+			name: StateService.state.name,
+			uid: StateService.state.uid,
+			screenUid: StateService.state.screenUid,
+		};
+		StreamService.screen = screen;
+	}
+
+	onScreenStreamUnpublished(event) {
+		// console.log('AgoraService.onScreenStreamUnpublished');
+		StreamService.screen = null;
 	}
 }

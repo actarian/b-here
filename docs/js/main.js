@@ -1556,8 +1556,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           audio: this.audio_ ? {
             deviceId: this.audio_
           } : false
-        };
-        console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
+        }; // console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
+
         navigator.mediaDevices.getUserMedia(options).then(function (stream) {
           if (_this.hasPreview) {
             if ('srcObject' in preview) {
@@ -1765,7 +1765,8 @@ _defineProperty(MessageService, "in$", new rxjs.ReplaySubject(1));
 
 _defineProperty(MessageService, "send", MessageService.in);
 
-_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StreamServiceMode = {
+_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var MAX_VISIBLE_STREAMS = 8;
+var StreamServiceMode = {
   Client: 'client',
   Editor: 'editor'
 };
@@ -1775,18 +1776,24 @@ var StreamService = /*#__PURE__*/function () {
 
   StreamService.orderedRemotes$ = function orderedRemotes$() {
     return rxjs.combineLatest([StreamService.remotes$, rxjs.interval(1000)]).pipe(operators.map(function (datas) {
-      var remotes = [];
-      datas[0].forEach(function (remote) {
+      var orderedRemotes = [];
+      var remotes = datas[0];
+      remotes.forEach(function (remote) {
         // const audioLevel = remote.getAudioLevel();
         // console.log('audioLevel', audioLevel, remote);
         if (remote.clientInfo) {
           remote.clientInfo.audioLevel = remote.getAudioLevel();
           remote.clientInfo.peekAudioLevel = Math.max(remote.clientInfo.audioLevel, 0.2);
+          /*
+          if (remote.clientInfo.screenUid !== remote.getId()) {
+          	orderedRemotes.push(remote);
+          }
+          */
         }
 
-        remotes.push(remote);
+        orderedRemotes.push(remote);
       });
-      remotes.sort(function (a, b) {
+      orderedRemotes.sort(function (a, b) {
         if (a.clientInfo && b.clientInfo) {
           if (a.clientInfo.role === RoleType.Publisher) {
             return -1;
@@ -1800,14 +1807,14 @@ var StreamService = /*#__PURE__*/function () {
           return 0;
         }
       });
-      remotes.forEach(function (remote, i) {
+      orderedRemotes.forEach(function (remote, i) {
         if (remote.clientInfo) {
           remote.clientInfo.order = i;
         }
-      }); // !!! hard limit max 8 visible stream
+      }); // !!! hard limit max visible stream
 
-      remotes.length = Math.min(remotes.length, 8);
-      return remotes;
+      orderedRemotes.length = Math.min(orderedRemotes.length, MAX_VISIBLE_STREAMS);
+      return orderedRemotes;
     }), operators.distinctUntilChanged(function (a, b) {
       return a.map(function (remote) {
         return remote.clientInfo ? remote.clientInfo.uid : '';
@@ -1902,6 +1909,43 @@ var StreamService = /*#__PURE__*/function () {
     }
   };
 
+  StreamService.remoteAdd = function remoteAdd(stream) {
+    var remotes = this.remotes.slice();
+    remotes.push(stream);
+    this.remotes = remotes;
+  };
+
+  StreamService.remoteRemove = function remoteRemove(streamId) {
+    var remotes = this.remotes.slice();
+    var remote = remotes.find(function (x) {
+      return x.getId() === streamId;
+    }); // console.log('StreamService.remoteRemove', streamId, remote);
+
+    if (remote) {
+      if (remote.isPlaying()) {
+        remote.stop();
+      }
+
+      remotes.splice(remotes.indexOf(remote), 1);
+      this.remotes = remotes;
+    }
+
+    return remote;
+  };
+
+  StreamService.remoteSetClientInfo = function remoteSetClientInfo(remoteId, clientInfo) {
+    var remotes = this.remotes;
+    var remote = remotes.find(function (x) {
+      return x.getId() === remoteId;
+    });
+
+    if (remote) {
+      remote.clientInfo = clientInfo;
+    }
+
+    this.remotes = remotes;
+  };
+
   _createClass(StreamService, null, [{
     key: "editor",
     set: function set(editor) {
@@ -1917,6 +1961,14 @@ var StreamService = /*#__PURE__*/function () {
     },
     get: function get() {
       return this.local$.getValue();
+    }
+  }, {
+    key: "screen",
+    set: function set(screen) {
+      this.screen$.next(screen);
+    },
+    get: function get() {
+      return this.screen$.getValue();
     }
   }, {
     key: "remotes",
@@ -1965,14 +2017,17 @@ _defineProperty(StreamService, "editor$", new rxjs.BehaviorSubject(null));
 
 _defineProperty(StreamService, "local$", new rxjs.BehaviorSubject(null));
 
+_defineProperty(StreamService, "screen$", new rxjs.BehaviorSubject(null));
+
 _defineProperty(StreamService, "remotes$", new rxjs.BehaviorSubject([]));
 
 _defineProperty(StreamService, "peers$", new rxjs.BehaviorSubject([]));
 
-_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.remotes$, StreamService.editorStreams$()]).pipe(operators.map(function (data) {
+_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.editorStreams$()]).pipe(operators.map(function (data) {
   var local = data[0];
-  var remotes = data[1];
-  var editor = data[2];
+  var screen = data[1];
+  var remotes = data[2];
+  var editor = data[3];
   var streams = remotes;
 
   if (local) {
@@ -1980,11 +2035,17 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     streams.push(local);
   }
 
+  if (screen) {
+    streams = streams.slice();
+    streams.push(screen);
+  }
+
   if (editor) {
     var _streams;
 
     (_streams = streams).push.apply(_streams, editor);
-  }
+  } // console.log('StreamService.streams$', streams, local, screen, remotes);
+
 
   return streams;
 }), operators.shareReplay(1)));var AgoraService = /*#__PURE__*/function (_Emittable) {
@@ -2266,22 +2327,22 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       clientInit();
     }
 
+    client.on('error', this.onError);
     client.on('stream-published', this.onStreamPublished);
     client.on('stream-unpublished', this.onStreamUnpublished); //subscribe remote stream
 
     client.on('stream-added', this.onStreamAdded);
+    client.on('stream-removed', this.onStreamRemoved);
     client.on('stream-subscribed', this.onStreamSubscribed);
     client.on('mute-video', this.onMuteVideo);
     client.on('unmute-video', this.onUnmuteVideo);
     client.on('mute-audio', this.onMuteAudio);
     client.on('unmute-audio', this.onUnmuteAudio);
 
-    client.on('error', this.onError);
     client.on('peer-online', this.onPeerConnect); // Occurs when the peer user leaves the channel; for example, the peer user calls Client.leave.
 
     client.on('peer-leave', this.onPeerLeaved); // client.on('connection-state-change', this.onConnectionStateChange);
 
-    client.on('stream-removed', this.onStreamRemoved);
     client.on('onTokenPrivilegeWillExpire', this.onTokenPrivilegeWillExpire);
     client.on('onTokenPrivilegeDidExpire', this.onTokenPrivilegeDidExpire); // console.log('agora rtm sdk version: ' + AgoraRTM.VERSION + ' compatible');
 
@@ -2632,7 +2693,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     local.clientInfo = {
       role: StateService.state.role,
       name: StateService.state.name,
-      uid: StateService.state.uid
+      uid: StateService.state.uid,
+      screenUid: StateService.state.screenUid
     };
     StreamService.local = local;
   };
@@ -2657,13 +2719,25 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       connecting: false
     });
     this.unpublishLocalStream();
+    this.unpublishScreenStream();
     StreamService.remotes = [];
     StreamService.peers = [];
     return new Promise(function (resolve, reject) {
       _this9.leaveMessageChannel().then(function () {
-        var client = _this9.client;
+        return Promise.all([_this9.leaveClient(), _this9.leaveScreenClient()]);
+      }, reject);
+    });
+  };
+
+  _proto.leaveClient = function leaveClient() {
+    var _this10 = this;
+
+    return new Promise(function (resolve, reject) {
+      var client = _this10.client;
+
+      if (client) {
         client.leave(function () {
-          _this9.client = null; // console.log('Leave channel successfully');
+          _this10.client = null; // console.log('Leave channel successfully');
 
           if (environment.flags.useProxy) {
             client.stopProxyServer();
@@ -2671,26 +2745,28 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
           resolve();
         }, function (error) {
-          console.log('AgoraService.leaveChannel.error', error);
+          console.log('AgoraService.leaveClient.error', error);
           reject(error);
         });
-      }, reject);
+      } else {
+        resolve();
+      }
     });
   };
 
   _proto.leaveMessageChannel = function leaveMessageChannel() {
-    var _this10 = this;
+    var _this11 = this;
 
     return new Promise(function (resolve, reject) {
       {
-        _this10.unobserveMemberCount();
+        _this11.unobserveMemberCount();
 
-        var channel = _this10.channel;
-        var messageClient = _this10.messageClient;
+        var channel = _this11.channel;
+        var messageClient = _this11.messageClient;
         channel.leave().then(function () {
-          _this10.channel = null;
+          _this11.channel = null;
           messageClient.logout().then(function () {
-            _this10.messageClient = null;
+            _this11.messageClient = null;
             resolve();
           }, reject);
         }, reject);
@@ -2747,7 +2823,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.toggleControl = function toggleControl() {
-    var _this11 = this;
+    var _this12 = this;
 
     if (StateService.state.control) {
       this.sendRemoteControlDismiss().then(function (control) {
@@ -2763,7 +2839,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           spying: false
         });
 
-        _this11.sendRemoteControlRequest().then(function (control) {
+        _this12.sendRemoteControlRequest().then(function (control) {
           // console.log('AgoraService.sendRemoteControlRequest', control);
           StateService.patchState({
             control: control
@@ -2781,7 +2857,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.toggleSpy = function toggleSpy(remoteId) {
-    var _this12 = this;
+    var _this13 = this;
 
     if (StateService.state.control) {
       this.sendRemoteControlDismiss().then(function (control) {
@@ -2789,7 +2865,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           control: false
         });
 
-        _this12.sendSpyRemoteRequestInfo(remoteId).then(function (info) {
+        _this13.sendSpyRemoteRequestInfo(remoteId).then(function (info) {
           StateService.patchState({
             spying: remoteId
           });
@@ -2800,7 +2876,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
         // console.log('AgoraService.sendRemoteInfoDismiss', spying);
         // StateService.patchState({ spying: !spying });
         if (StateService.state.spying !== remoteId) {
-          _this12.sendSpyRemoteRequestInfo(remoteId).then(function (info) {
+          _this13.sendSpyRemoteRequestInfo(remoteId).then(function (info) {
             StateService.patchState({
               spying: remoteId
             });
@@ -2825,12 +2901,12 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendRemoteControlDismiss = function sendRemoteControlDismiss() {
-    var _this13 = this;
+    var _this14 = this;
 
     return new Promise(function (resolve, reject) {
-      _this13.sendMessage({
+      _this14.sendMessage({
         type: MessageType.RequestControlDismiss,
-        messageId: _this13.newMessageId()
+        messageId: _this14.newMessageId()
       }).then(function (message) {
         // console.log('AgoraService.sendRemoteControlDismiss return', message);
         if (message.type === MessageType.RequestControlDismissed) {
@@ -2843,12 +2919,12 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendRemoteControlRequest = function sendRemoteControlRequest() {
-    var _this14 = this;
+    var _this15 = this;
 
     return new Promise(function (resolve, reject) {
-      _this14.sendMessage({
+      _this15.sendMessage({
         type: MessageType.RequestControl,
-        messageId: _this14.newMessageId()
+        messageId: _this15.newMessageId()
       }).then(function (message) {
         // console.log('AgoraService.sendRemoteControlRequest.response', message);
         if (message.type === MessageType.RequestControlAccepted) {
@@ -2862,13 +2938,13 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendRemoteRequestPeerInfo = function sendRemoteRequestPeerInfo(remoteId) {
-    var _this15 = this;
+    var _this16 = this;
 
     // console.log('AgoraService.sendRemoteRequestPeerInfo', remoteId);
     return new Promise(function (resolve, reject) {
-      _this15.sendMessage({
+      _this16.sendMessage({
         type: MessageType.RequestPeerInfo,
-        messageId: _this15.newMessageId(),
+        messageId: _this16.newMessageId(),
         remoteId: remoteId
       }).then(function (message) {
         // console.log('AgoraService.sendRemoteRequestPeerInfo.response', message);
@@ -2881,7 +2957,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
             if (message.clientInfo.control === true) {
               state.locked = true;
 
-              _this15.sendControlRemoteRequestInfo(message.clientInfo.uid);
+              _this16.sendControlRemoteRequestInfo(message.clientInfo.uid);
             }
 
             StateService.patchState(state);
@@ -2894,13 +2970,13 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendControlRemoteRequestInfo = function sendControlRemoteRequestInfo(remoteId) {
-    var _this16 = this;
+    var _this17 = this;
 
     // console.log('AgoraService.sendControlRemoteRequestInfo', remoteId);
     return new Promise(function (resolve, reject) {
-      _this16.sendMessage({
+      _this17.sendMessage({
         type: MessageType.RequestInfo,
-        messageId: _this16.newMessageId(),
+        messageId: _this17.newMessageId(),
         remoteId: remoteId
       }).then(function (message) {
         if (message.type === MessageType.RequestInfoResult) {
@@ -2911,12 +2987,12 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendSpyRemoteRequestInfo = function sendSpyRemoteRequestInfo(remoteId) {
-    var _this17 = this;
+    var _this18 = this;
 
     return new Promise(function (resolve, reject) {
-      _this17.sendMessage({
+      _this18.sendMessage({
         type: MessageType.RequestInfo,
-        messageId: _this17.newMessageId(),
+        messageId: _this18.newMessageId(),
         remoteId: remoteId
       }).then(function (message) {
         // console.log('AgoraService.sendSpyRemoteRequestInfo.response', message);
@@ -2931,12 +3007,12 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendRemoteInfoDismiss = function sendRemoteInfoDismiss(remoteId) {
-    var _this18 = this;
+    var _this19 = this;
 
     return new Promise(function (resolve, reject) {
-      _this18.sendMessage({
+      _this19.sendMessage({
         type: MessageType.RequestInfoDismiss,
-        messageId: _this18.newMessageId(),
+        messageId: _this19.newMessageId(),
         remoteId: remoteId
       }).then(function (message) {
         // console.log('AgoraService.sendRemoteInfoDismiss.response', message);
@@ -2978,7 +3054,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   };
 
   _proto.sendMessage = function sendMessage(message) {
-    var _this19 = this;
+    var _this20 = this;
 
     return new Promise(function (resolve, reject) {
       if (StateService.state.connected) {
@@ -3003,7 +3079,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
             var text = JSON.stringify(message);
 
             if (message.messageId) {
-              _this19.once("message-" + message.messageId, function (message) {
+              _this20.once("message-" + message.messageId, function (message) {
                 resolve(message);
               });
             } // console.log('AgoraService.sendMessage.sending', message.type);
@@ -3024,13 +3100,13 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           }
         };
 
-        var channel = _this19.channel;
+        var channel = _this20.channel;
 
         if (channel) {
           send(message, channel);
         } else {
           try {
-            _this19.once("channel", function (channel) {
+            _this20.once("channel", function (channel) {
               send(message, channel);
             });
           } catch (error) {
@@ -3117,7 +3193,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       } // discard message delivered to specific remoteId when differs from current state uid;
 
 
-      if (message.remoteId && message.remoteId !== StateService.state.uid) {
+      if (message.remoteId && message.remoteId !== StateService.state.uid && message.remoteId !== StateService.state.screenUid) {
         return;
       } // !!! check position !!!
 
@@ -3148,7 +3224,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     local.clientInfo = {
       role: StateService.state.role,
       name: StateService.state.name,
-      uid: StateService.state.uid
+      uid: StateService.state.uid,
+      screenUid: StateService.state.screenUid
     };
     StreamService.local = local;
   };
@@ -3168,8 +3245,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
     var streamId = stream.getId();
 
-    if (streamId !== StateService.state.uid) {
-      // console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid);
+    if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
+      // console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
       client.subscribe(stream, function (error) {
         console.log('AgoraService.onStreamAdded.subscribe.error', error);
       });
@@ -3180,7 +3257,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     var stream = event.stream;
     var streamId = stream.getId();
 
-    if (streamId !== StateService.state.uid) {
+    if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
       // !!! this happen on oculus removed timeout
       // console.log('AgoraService.onStreamRemoved', streamId);
       this.remoteRemove(streamId);
@@ -3205,6 +3282,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       var remote = this.remoteRemove(clientId);
 
       if (remote.clientInfo) {
+        // !!! remove screenRemote?
         if (remote.clientInfo.role === RoleType.Publisher) {
           StateService.patchState({
             hosted: false,
@@ -3251,47 +3329,24 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
   _proto.remoteAdd = function remoteAdd(stream) {
     // console.log('AgoraService.remoteAdd', stream);
-    var remotes = StreamService.remotes;
-    remotes.push(stream);
-    StreamService.remotes = remotes;
+    StreamService.remoteAdd(stream);
     this.broadcastEvent(new AgoraRemoteEvent({
       stream: stream
     }));
     var remoteId = stream.getId();
     this.sendRemoteRequestPeerInfo(remoteId).then(function (message) {
-      var remotes = StreamService.remotes;
-      var remote = remotes.find(function (x) {
-        return x.getId() === remoteId;
-      });
-
-      if (remote) {
-        remote.clientInfo = message.clientInfo;
-      }
-
-      StreamService.remotes = remotes;
+      StreamService.remoteSetClientInfo(remoteId, message.clientInfo);
     });
   };
 
   _proto.remoteRemove = function remoteRemove(streamId) {
     // console.log('AgoraService.remoteRemove', streamId);
-    var remotes = StreamService.remotes;
-    var remote = remotes.find(function (x) {
-      return x.getId() === streamId;
-    });
+    var remote = StreamService.remoteRemove(streamId);
 
-    if (remote) {
-      if (remote.isPlaying()) {
-        remote.stop();
-      }
-
-      remotes.splice(remotes.indexOf(remote), 1);
-      StreamService.remotes = remotes;
-
-      if (remote.clientInfo && remote.clientInfo.role === RoleType.Publisher) {
-        StateService.patchState({
-          hosted: false
-        });
-      }
+    if (remote && remote.clientInfo && remote.clientInfo.role === RoleType.Publisher && remote.clientInfo.screenUid !== streamId) {
+      StateService.patchState({
+        hosted: false
+      });
     }
 
     return remote;
@@ -3364,6 +3419,207 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
         console.log('AgoraService.onTokenPrivilegeDidExpire.renewed');
       }
     });
+  } // screen
+  ;
+
+  _proto.toggleScreen = function toggleScreen() {
+    var _this21 = this;
+
+    var screen = StreamService.screen;
+
+    if (screen) {
+      this.unpublishScreenStream();
+    } else {
+      if (this.screenClient) {
+        this.createScreenStream(StateService.state.screenUid);
+      } else {
+        this.createScreenClient(function () {
+          var channelNameLink = _this21.getChannelNameLink();
+
+          _this21.rtcToken$(channelNameLink).subscribe(function (token) {
+            // console.log('AgoraService.rtcToken$', token);
+            _this21.screenJoin(token.token, channelNameLink);
+          });
+        });
+      }
+    } // console.log(screen);
+
+  };
+
+  _proto.createScreenClient = function createScreenClient(next) {
+    var _this22 = this;
+
+    if (this.screenClient) {
+      next();
+    }
+
+    var screenClient = this.screenClient = AgoraRTC.createClient({
+      mode: 'live',
+      codec: 'h264'
+    }); // rtc, vp8
+
+    var clientInit = function clientInit() {
+      if (environment.flags.useProxy) {
+        screenClient.startProxyServer();
+      }
+
+      screenClient.init(environment.appKey, function () {
+        // console.log('AgoraRTC screenClient initialized');
+        next();
+      }, function (error) {
+        // console.log('AgoraRTC client init failed', error);
+        _this22.screenClient = null;
+      });
+    };
+
+    clientInit();
+    screenClient.on('error', this.onScreenError);
+    screenClient.on('stream-published', this.onScreenStreamPublished);
+    screenClient.on('stream-unpublished', this.onScreenStreamUnpublished); // only for remotes
+    // screenClient.on('stream-added', this.onScreenStreamAdded);
+    // screenClient.on('stream-removed', this.onScreenStreamRemoved);
+    // screenClient.on('stream-subscribed', this.onScreenStreamSubscribed);
+    // screenClient.on('peer-online', this.onScreenPeerConnect);
+    // screenClient.on('peer-leave', this.onScreenPeerLeaved);
+    // screenClient.on('onTokenPrivilegeWillExpire', this.onScreenTokenPrivilegeWillExpire);
+    // screenClient.on('onTokenPrivilegeDidExpire', this.onScreenTokenPrivilegeDidExpire);
+  };
+
+  _proto.screenJoin = function screenJoin(token, channelNameLink) {
+    var _this23 = this;
+
+    var screenClient = this.screenClient;
+    var screenClientId = null; // console.log('AgoraService.join', { token, channelNameLink, screenClientId });
+
+    screenClient.join(token, channelNameLink, screenClientId, function (uid) {
+      // console.log('AgoraService.join', uid);
+      StateService.patchState({
+        screenUid: uid
+      });
+
+      _this23.createScreenStream(uid);
+    }, function (error) {
+      console.log('AgoraService.screenJoin.error', error);
+
+      if (error === 'DYNAMIC_KEY_EXPIRED') {
+        _this23.rtcToken$(channelNameLink).subscribe(function (token) {
+          _this23.screenJoin(token.token, channelNameLink);
+        });
+      }
+    });
+  };
+
+  _proto.createScreenStream = function createScreenStream(screenUid) {
+    var _this24 = this;
+
+    var options = {
+      streamID: screenUid,
+      audio: false,
+      video: false,
+      screen: true
+    };
+    /*
+    // Set relevant properties according to the browser.
+    // Note that you need to implement isFirefox and isCompatibleChrome.
+    if (isFirefox()) {
+    	options.mediaSource = 'window';
+    } else if (!isCompatibleChrome()) {
+    	options.extensionId = 'minllpmhdgpndnkomcoccfekfegnlikg';
+    }
+    */
+
+    var quality = Object.assign({}, StateService.state.quality);
+    var stream = AgoraRTC.createStream(options);
+
+    if (quality) {
+      stream.setScreenProfile('720p_1'); // stream.setVideoProfile(quality.profile);
+      // stream.setVideoEncoderConfiguration(quality);
+    } // Initialize the stream.
+
+
+    stream.init(function () {
+      StreamService.screen = stream;
+      setTimeout(function () {
+        _this24.publishScreenStream();
+      }, 1);
+    }, function (error) {
+      console.log('AgoraService.createScreenStream.screen.init.error', error);
+    });
+  };
+
+  _proto.publishScreenStream = function publishScreenStream() {
+    var screenClient = this.screenClient;
+    var screen = StreamService.screen; // publish screen stream
+
+    screenClient.publish(screen, function (error) {
+      console.log('AgoraService.publishScreenStream.error', screen.getId(), error);
+    });
+    screen.clientInfo = {
+      role: StateService.state.role,
+      name: StateService.state.name,
+      uid: StateService.state.uid,
+      screenUid: StateService.state.screenUid
+    };
+    StreamService.screen = screen;
+  };
+
+  _proto.unpublishScreenStream = function unpublishScreenStream() {
+    var screenClient = this.screenClient;
+    var screen = StreamService.screen; // console.log('AgoraService.unpublishScreenStream', screen, screenClient);
+
+    if (screenClient && screen) {
+      screenClient.unpublish(screen, function (error) {
+        console.log('AgoraService.unpublishScreenStream.error', screen.getId(), error);
+      });
+    }
+
+    StreamService.screen = null;
+  };
+
+  _proto.leaveScreenClient = function leaveScreenClient() {
+    var _this25 = this;
+
+    return new Promise(function (resolve, reject) {
+      var screenClient = _this25.screenClient;
+
+      if (screenClient) {
+        screenClient.leave(function () {
+          _this25.screenClient = null; // console.log('Leave channel successfully');
+
+          if (environment.flags.useProxy) {
+            screenClient.stopProxyServer();
+          }
+
+          resolve();
+        }, function (error) {
+          console.log('AgoraService.leaveScreenClient.error', error);
+          reject(error);
+        });
+      } else {
+        resolve();
+      }
+    });
+  };
+
+  _proto.onScreenError = function onScreenError(error) {
+    console.log('AgoraService.onScreenError', error);
+  };
+
+  _proto.onScreenStreamPublished = function onScreenStreamPublished(event) {
+    // console.log('AgoraService.onScreenStreamPublished');
+    var screen = StreamService.screen;
+    screen.clientInfo = {
+      role: StateService.state.role,
+      name: StateService.state.name,
+      uid: StateService.state.uid,
+      screenUid: StateService.state.screenUid
+    };
+    StreamService.screen = screen;
+  };
+
+  _proto.onScreenStreamUnpublished = function onScreenStreamUnpublished(event) {
+    // console.log('AgoraService.onScreenStreamUnpublished');
+    StreamService.screen = null;
   };
 
   return AgoraService;
@@ -4275,9 +4531,14 @@ var View = /*#__PURE__*/function () {
 
   _proto.updateIndices = function updateIndices(items) {
     if (items) {
+      var nextPublisherStreamIndex = 0;
       var nextAttendeeStreamIndex = 0;
       items.forEach(function (item, index) {
         item.index = index;
+
+        if (item.asset && item.asset.file === 'publisherStream') {
+          item.asset.index = nextPublisherStreamIndex++;
+        }
 
         if (item.asset && item.asset.file === 'nextAttendeeStream') {
           item.asset.index = nextAttendeeStreamIndex++;
@@ -4927,6 +5188,7 @@ var VRService = /*#__PURE__*/function () {
     this.view = null;
     this.form = null;
     this.local = null;
+    this.screen = null;
     this.remotes = [];
     var vrService = this.vrService = VRService.getService();
     vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
@@ -5072,6 +5334,12 @@ var VRService = /*#__PURE__*/function () {
 
       _this5.pushChanges();
     });
+    StreamService.screen$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (screen) {
+      // console.log('AgoraComponent.screen', screen);
+      _this5.screen = screen;
+
+      _this5.pushChanges();
+    });
     StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
       // console.log('AgoraComponent.remotes', remotes);
       _this5.remotes = remotes;
@@ -5087,6 +5355,7 @@ var VRService = /*#__PURE__*/function () {
             role: StateService.state.role,
             name: StateService.state.name,
             uid: StateService.state.uid,
+            screenUid: StateService.state.screenUid,
             control: StateService.state.control
           };
           MessageService.sendBack(message);
@@ -5285,7 +5554,17 @@ var VRService = /*#__PURE__*/function () {
     }
   };
 
-  _proto.onToggleVolume = function onToggleVolume() {
+  _proto.toggleScreen = function toggleScreen() {
+    if (this.agora) {
+      this.agora.toggleScreen();
+    } else {
+      this.patchState({
+        screen: !this.state.screen
+      });
+    }
+  };
+
+  _proto.toggleVolume = function toggleVolume() {
     var volumeMuted = !this.state.volumeMuted;
     StateService.patchState({
       volumeMuted: volumeMuted
@@ -9990,6 +10269,109 @@ HtmlPipe.meta = {
 IdDirective.meta = {
   selector: '[id]',
   inputs: ['id']
+};var LayoutComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(LayoutComponent, _Component);
+
+  function LayoutComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = LayoutComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.state = {
+      status: 'connected',
+      role: 'publisher',
+      membersCount: 1,
+      live: true
+    };
+    this.view = {
+      likes: 41
+    };
+    this.local = {};
+    this.screen = {};
+    this.remotes = new Array(8).fill(0).map(function (x, i) {
+      return {
+        id: i + 1
+      };
+    });
+  };
+
+  _proto.patchState = function patchState(state) {
+    this.state = Object.assign({}, this.state, state);
+    this.pushChanges();
+  };
+
+  _proto.toggleCamera = function toggleCamera() {
+    this.patchState({
+      cameraMuted: !this.state.cameraMuted
+    });
+  };
+
+  _proto.toggleAudio = function toggleAudio() {
+    this.patchState({
+      audioMuted: !this.state.audioMuted
+    });
+  };
+
+  _proto.toggleScreen = function toggleScreen() {
+    this.patchState({
+      screen: !this.state.screen
+    });
+  };
+
+  _proto.toggleVolume = function toggleVolume() {
+    this.patchState({
+      volumeMuted: !this.state.volumeMuted
+    });
+  };
+
+  _proto.onToggleControl = function onToggleControl() {
+    this.patchState({
+      control: !this.state.control,
+      spying: false
+    });
+  };
+
+  _proto.onToggleSpy = function onToggleSpy(remoteId) {
+    var spying = this.state.spying === remoteId ? null : remoteId;
+    this.patchState({
+      spying: spying,
+      control: false
+    });
+  };
+
+  _proto.addLike = function addLike() {
+    this.view.liked = true; // view.liked;
+
+    this.showLove(this.view);
+  };
+
+  _proto.showLove = function showLove(view) {
+    var _this = this;
+
+    if (view && this.view.id === view.id) {
+      var skipTimeout = this.view.showLove;
+      this.view.likes = view.likes;
+      this.view.showLove = true;
+      this.pushChanges();
+
+      if (!skipTimeout) {
+        setTimeout(function () {
+          _this.view.showLove = false;
+
+          _this.pushChanges();
+        }, 3100);
+      }
+    }
+  };
+
+  _proto.disconnect = function disconnect() {};
+
+  return LayoutComponent;
+}(rxcomp.Component);
+LayoutComponent.meta = {
+  selector: '[layout-component]'
 };var UID = 0;
 var ImageServiceEvent = {
   Progress: 'progress',
@@ -12154,18 +12536,26 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var stream;
 
       if (assetType.name === AssetType.PublisherStream.name) {
-        stream = streams.find(function (x) {
-          return x.clientInfo && x.clientInfo.role === RoleType.Publisher;
-        });
-      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
+        // stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
         var i = 0;
         streams.forEach(function (x) {
-          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+          if (x.clientInfo && x.clientInfo.role === RoleType.Publisher) {
             if (i === item.asset.index) {
               stream = x;
             }
 
             i++;
+          }
+        });
+      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
+        var _i = 0;
+        streams.forEach(function (x) {
+          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
+            if (_i === item.asset.index) {
+              stream = x;
+            }
+
+            _i++;
           }
         });
       }
@@ -16201,6 +16591,8 @@ ModelEditableComponent.meta = {
               playing: playing
             });
           });
+        } else if (_this.mesh) {
+          dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
 
       }
@@ -18490,6 +18882,8 @@ ModelPictureComponent.meta = {
               playing: playing
             });
           });
+        } else if (_this.mesh) {
+          dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
 
       }
@@ -19045,6 +19439,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

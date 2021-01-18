@@ -31,6 +31,7 @@ export default class AgoraComponent extends Component {
 		this.view = null;
 		this.form = null;
 		this.local = null;
+		this.screen = null;
 		this.remotes = [];
 		const vrService = this.vrService = VRService.getService();
 		vrService.status$.pipe(
@@ -157,6 +158,13 @@ export default class AgoraComponent extends Component {
 			this.local = local;
 			this.pushChanges();
 		});
+		StreamService.screen$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(screen => {
+			// console.log('AgoraComponent.screen', screen);
+			this.screen = screen;
+			this.pushChanges();
+		});
 		StreamService.orderedRemotes$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(remotes => {
@@ -175,6 +183,7 @@ export default class AgoraComponent extends Component {
 						role: StateService.state.role,
 						name: StateService.state.name,
 						uid: StateService.state.uid,
+						screenUid: StateService.state.screenUid,
 						control: StateService.state.control,
 					};
 					MessageService.sendBack(message);
@@ -350,7 +359,15 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	onToggleVolume() {
+	toggleScreen() {
+		if (this.agora) {
+			this.agora.toggleScreen();
+		} else {
+			this.patchState({ screen: !this.state.screen });
+		}
+	}
+
+	toggleVolume() {
 		const volumeMuted = !this.state.volumeMuted;
 		StateService.patchState({ volumeMuted })
 	}
