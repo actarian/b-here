@@ -356,38 +356,6 @@ export default class ModelMenuComponent extends ModelComponent {
 		}
 	}
 
-	onToggle() {
-		if (StateService.state.locked || StateService.state.spying) {
-			return;
-		}
-		if (this.buttons) {
-			this.removeMenu();
-			this.toggle.next();
-		} else {
-			this.addMenu();
-			this.toggle.next(this);
-		}
-	}
-
-	onDown(button) {
-		// this.down.next(this.item);
-		if (button.item && button.item.type.name === 'back') {
-			this.removeMenu();
-			if (button.item.backItem) {
-				this.addMenu(button.item.backItem.backItem);
-			} else {
-				/*
-				if (this.host.renderer.xr.isPresenting) {
-					this.addToggler();
-				}
-				*/
-				this.toggle.next();
-			}
-		} else {
-			this.addMenu(button.item);
-		}
-	}
-
 	items$(item = null) {
 		if (item) {
 			return of(item.items);
@@ -399,6 +367,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	addMenu(item = null) {
+		MenuService.active = true;
 		this.removeMenu();
 		// nav to view
 		if (item && item.type.name !== 'menu-group') {
@@ -455,6 +424,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	removeMenu() {
+		MenuService.active = false;
 		this.removeButtons();
 		this.removeToggler();
 	}
@@ -499,6 +469,38 @@ export default class ModelMenuComponent extends ModelComponent {
 			toggler.dispose();
 		}
 		this.toggler = null;
+	}
+
+	onDown(button) {
+		// this.down.next(this.item);
+		if (button.item && button.item.type.name === 'back') {
+			this.removeMenu();
+			if (button.item.backItem) {
+				this.addMenu(button.item.backItem.backItem);
+			} else {
+				/*
+				if (this.host.renderer.xr.isPresenting) {
+					this.addToggler();
+				}
+				*/
+				this.toggle.next();
+			}
+		} else {
+			this.addMenu(button.item);
+		}
+	}
+
+	onToggle() {
+		if (StateService.state.locked || StateService.state.spying) {
+			return;
+		}
+		if (MenuService.active) {
+			this.removeMenu();
+			this.toggle.next();
+		} else {
+			this.addMenu();
+			this.toggle.next(this);
+		}
 	}
 }
 

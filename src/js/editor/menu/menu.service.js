@@ -7,6 +7,14 @@ let MENU_UID = 0;
 
 export default class MenuService {
 
+	static active$ = new BehaviorSubject(false);
+	static set active(active) {
+		this.active$.next(active);
+	}
+	static get active() {
+		return this.active$.getValue();
+	}
+
 	static menu$_ = new BehaviorSubject([]);
 
 	static menu$() {
