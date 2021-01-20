@@ -4,6 +4,7 @@ import LabelPipe from '../../label/label.pipe';
 import LoaderService from '../../loader/loader.service';
 import { ViewType } from '../../view/view';
 import { PANORAMA_RADIUS } from '../panorama/panorama';
+import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -17,7 +18,22 @@ export default class ModelProgressComponent extends ModelComponent {
 	set title(title) {
 		if (this.title_ !== title) {
 			this.title_ = title;
-			if (title !== '') {
+			if (title !== '' && this.visible_) {
+				this.updateProgress();
+				this.show();
+			} else {
+				this.hide();
+			}
+		}
+	}
+
+	get visible() {
+		return this.visible_;
+	}
+	set visible(visible) {
+		if (this.visible_ !== visible) {
+			this.visible_ = visible;
+			if (visible && this.title_ !== '') {
 				this.updateProgress();
 				this.show();
 			} else {
@@ -28,8 +44,13 @@ export default class ModelProgressComponent extends ModelComponent {
 
 	onInit() {
 		this.title_ = '';
+		this.visible_ = this.host.renderer.xr.isPresenting;
 		super.onInit();
-		this.progress = LoaderService.progress;
+		const vrService = this.vrService = VRService.getService();
+		vrService.session$.pipe(
+			takeUntil(this.unsubscribe$),
+		).subscribe((session) => this.visible = session != null); // loose
+		// this.progress = LoaderService.progress;
 	}
 
 	onCreate(mount, dismount) {
@@ -81,7 +102,7 @@ export default class ModelProgressComponent extends ModelComponent {
 	}
 
 	hide() {
-		const material = this.material;
+		this.mesh.remove(this.banner);
 		this.material.opacity = 0;
 		this.material.needsUpdate = true;
 		/*

@@ -7129,8 +7129,20 @@ var MenuService = /*#__PURE__*/function () {
     });
   };
 
+  _createClass(MenuService, null, [{
+    key: "active",
+    set: function set(active) {
+      this.active$.next(active);
+    },
+    get: function get() {
+      return this.active$.getValue();
+    }
+  }]);
+
   return MenuService;
 }();
+
+_defineProperty(MenuService, "active$", new rxjs.BehaviorSubject(false));
 
 _defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var AssetService = /*#__PURE__*/function () {
   function AssetService() {}
@@ -17540,6 +17552,9 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     });
     */
 
+    LoaderService.progress$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (progress) {
+      return _this4.loading = progress.count > 0;
+    });
     MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       // DebugService.getService().setMessage('ModelMenuComponent.MessageService ' + message.type);
       switch (message.type) {
@@ -17653,40 +17668,6 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     }
   };
 
-  _proto3.onToggle = function onToggle() {
-    if (StateService.state.locked || StateService.state.spying) {
-      return;
-    }
-
-    if (this.buttons) {
-      this.removeMenu();
-      this.toggle.next();
-    } else {
-      this.addMenu();
-      this.toggle.next(this);
-    }
-  };
-
-  _proto3.onDown = function onDown(button) {
-    // this.down.next(this.item);
-    if (button.item && button.item.type.name === 'back') {
-      this.removeMenu();
-
-      if (button.item.backItem) {
-        this.addMenu(button.item.backItem.backItem);
-      } else {
-        /*
-        if (this.host.renderer.xr.isPresenting) {
-        	this.addToggler();
-        }
-        */
-        this.toggle.next();
-      }
-    } else {
-      this.addMenu(button.item);
-    }
-  };
-
   _proto3.items$ = function items$(item) {
     if (item === void 0) {
       item = null;
@@ -17706,6 +17687,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       item = null;
     }
 
+    MenuService.active = true;
     this.removeMenu(); // nav to view
 
     if (item && item.type.name !== 'menu-group') {
@@ -17767,6 +17749,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto3.removeMenu = function removeMenu() {
+    MenuService.active = false;
     this.removeButtons();
     this.removeToggler();
   };
@@ -17822,6 +17805,58 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     this.toggler = null;
   };
 
+  _proto3.onDown = function onDown(button) {
+    // this.down.next(this.item);
+    if (button.item && button.item.type.name === 'back') {
+      this.removeMenu();
+
+      if (button.item.backItem) {
+        this.addMenu(button.item.backItem.backItem);
+      } else {
+        /*
+        if (this.host.renderer.xr.isPresenting) {
+        	this.addToggler();
+        }
+        */
+        this.toggle.next();
+      }
+    } else {
+      this.addMenu(button.item);
+    }
+  };
+
+  _proto3.onToggle = function onToggle() {
+    if (StateService.state.locked || StateService.state.spying) {
+      return;
+    }
+
+    if (MenuService.active) {
+      this.removeMenu();
+      this.toggle.next();
+    } else {
+      this.addMenu();
+      this.toggle.next(this);
+    }
+  };
+
+  _createClass(ModelMenuComponent, [{
+    key: "loading",
+    get: function get() {
+      return this.loading_;
+    },
+    set: function set(loading) {
+      if (this.loading_ !== loading) {
+        this.loading_ = loading;
+
+        var _getContext = rxcomp.getContext(this),
+            node = _getContext.node;
+
+        var btn = node.querySelector('.btn--menu');
+        btn.classList.toggle('loading', loading);
+      }
+    }
+  }]);
+
   return ModelMenuComponent;
 }(ModelComponent);
 ModelMenuComponent.ORIGIN = new THREE.Vector3();
@@ -17844,12 +17879,9 @@ ModelMenuComponent.meta = {
 
   var _proto = ModelModelComponent.prototype;
 
-  /*
-  static getInteractiveGeometry() {
-  	return ModelModelComponent.interactiveGeometry || (ModelModelComponent.interactiveGeometry = new THREE.SphereBufferGeometry(1, 8, 8));
-  }
-  */
   _proto.onInit = function onInit() {
+    var _this = this;
+
     _ModelEditableCompone.prototype.onInit.call(this);
 
     this.progress = null;
@@ -17864,7 +17896,10 @@ ModelMenuComponent.meta = {
     	});
     }
     */
-    // console.log('ModelModelComponent.onInit');
+
+    MenuService.active$.pipe(takeUntil(this.unsubscribe$)).subscribe(function (active) {
+      return _this.freezed = active;
+    }); // console.log('ModelModelComponent.onInit');
   };
 
   _proto.onChanges = function onChanges() {
@@ -17872,11 +17907,11 @@ ModelMenuComponent.meta = {
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
-    var _this = this;
+    var _this2 = this;
 
     // this.renderOrder = environment.renderOrder.model;
     this.loadGltfModel(environment.getPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
-      _this.onGltfModelLoaded(mesh, mount, dismount);
+      _this2.onGltfModelLoaded(mesh, mount, dismount);
     });
   };
 
@@ -17918,7 +17953,7 @@ ModelMenuComponent.meta = {
   };
 
   _proto.onGltfModelLoaded = function onGltfModelLoaded(mesh, mount, dismount) {
-    var _this2 = this;
+    var _this3 = this;
 
     // scale
     var box = new THREE.Box3().setFromObject(mesh);
@@ -17958,7 +17993,7 @@ ModelMenuComponent.meta = {
         ease: Power2.easeInOut,
         onUpdate: onUpdate,
         onComplete: function onComplete() {
-          _this2.updateHelper();
+          _this3.updateHelper();
         }
       });
     } else {
@@ -18011,6 +18046,7 @@ ModelMenuComponent.meta = {
 
     if (typeof mount === 'function') {
       mount(dummy, this.item);
+      this.freezed = MenuService.active;
     }
     /*
     this.progress = null;
@@ -18088,14 +18124,14 @@ ModelMenuComponent.meta = {
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
-    var _this3 = this;
+    var _this4 = this;
 
     // console.log('ModelModelComponent.onUpdateAsset', item);
     this.loadGltfModel(environment.getPath(item.asset.folder), item.asset.file, function (mesh) {
-      _this3.onGltfModelLoaded(mesh, function (mesh, item) {
-        return _this3.onMount(mesh, item);
+      _this4.onGltfModelLoaded(mesh, function (mesh, item) {
+        return _this4.onMount(mesh, item);
       }, function (mesh, item) {
-        return _this3.onDismount(mesh, item);
+        return _this4.onDismount(mesh, item);
       });
     });
     /*
@@ -18134,7 +18170,7 @@ ModelMenuComponent.meta = {
   };
 
   _proto.makeInteractive = function makeInteractive(mesh) {
-    var _this4 = this;
+    var _this5 = this;
 
     var newChild = null;
     mesh.traverse(function (child) {
@@ -18150,7 +18186,7 @@ ModelMenuComponent.meta = {
         newChild.scale.copy(child.scale);
         newChild.on('down', function () {
           // console.log('ModelModelComponent.down');
-          _this4.down.next(_this4);
+          _this5.down.next(_this5);
         });
         parent.remove(child);
         parent.add(newChild);
@@ -18161,6 +18197,33 @@ ModelMenuComponent.meta = {
       this.makeInteractive(mesh);
     }
   };
+
+  _createClass(ModelModelComponent, [{
+    key: "freezed",
+
+    /*
+    static getInteractiveGeometry() {
+    	return ModelModelComponent.interactiveGeometry || (ModelModelComponent.interactiveGeometry = new THREE.SphereBufferGeometry(1, 8, 8));
+    }
+    */
+    get: function get() {
+      return this.freezed_;
+    },
+    set: function set(freezed) {
+      if (this.freezed_ !== freezed) {
+        this.freezed_ = freezed;
+        var mesh = this.mesh;
+
+        if (mesh) {
+          mesh.traverse(function (child) {
+            if (child instanceof InteractiveMesh) {
+              child.freezed = freezed;
+            }
+          });
+        }
+      }
+    }
+  }]);
 
   return ModelModelComponent;
 }(ModelEditableComponent);
@@ -18970,29 +19033,36 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   var _proto = ModelProgressComponent.prototype;
 
   _proto.onInit = function onInit() {
+    var _this = this;
+
     this.title_ = '';
+    this.visible_ = this.host.renderer.xr.isPresenting;
 
     _ModelComponent.prototype.onInit.call(this);
 
-    this.progress = LoaderService.progress;
+    var vrService = this.vrService = VRService.getService();
+    vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
+      return _this.visible = session != null;
+    }); // loose
+    // this.progress = LoaderService.progress;
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
-    var _this = this;
+    var _this2 = this;
 
     // console.log('ModelProgressComponent.onCreate');
     this.getCanvasTexture().then(function (result) {
-      var mesh = _this.createMesh(result);
+      var mesh = _this2.createMesh(result);
 
       if (typeof mount === 'function') {
         mount(mesh);
       }
 
-      LoaderService.progress$.pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (progress) {
+      LoaderService.progress$.pipe(operators.takeUntil(_this2.unsubscribe$)).subscribe(function (progress) {
         if (progress.count) {
-          _this.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
+          _this2.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
         } else {
-          _this.title = _this.getTitle();
+          _this2.title = _this2.getTitle();
         }
       });
     });
@@ -19028,7 +19098,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto.hide = function hide() {
-    var material = this.material;
+    this.mesh.remove(this.banner);
     this.material.opacity = 0;
     this.material.needsUpdate = true;
     /*
@@ -19082,7 +19152,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto.updateProgress = function updateProgress() {
-    var _this2 = this;
+    var _this3 = this;
 
     this.getCanvasTexture().then(function (result) {
       // console.log('ModelProgressComponent.updateProgress', result);
@@ -19091,12 +19161,12 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       var height = width / 360 * 2.4;
       var w = result.width * height / result.height;
       var repeat = width / w;
-      _this2.texture.repeat.x = repeat;
+      _this3.texture.repeat.x = repeat;
     });
   };
 
   _proto.getCanvasTexture = function getCanvasTexture() {
-    var _this3 = this;
+    var _this4 = this;
 
     return new Promise(function (resolve, reject) {
       var MIN_W = 512;
@@ -19106,16 +19176,16 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       var L = Math.floor(H * 0.05);
       var canvas;
 
-      if (_this3.canvas) {
-        canvas = _this3.canvas;
+      if (_this4.canvas) {
+        canvas = _this4.canvas;
       } else {
-        canvas = _this3.canvas = document.createElement('canvas'); // canvas.classList.add('canvas--debug');
+        canvas = _this4.canvas = document.createElement('canvas'); // canvas.classList.add('canvas--debug');
         // document.querySelector('body').appendChild(canvas);
       }
 
       canvas.width = W;
       canvas.height = H;
-      var text = _this3.title_; // console.log('ModelProgressComponent.getCanvasTexture', text);
+      var text = _this4.title_; // console.log('ModelProgressComponent.getCanvasTexture', text);
 
       var ctx = canvas.getContext('2d'); // const ctx = text.material.map.image.getContext('2d');
 
@@ -19146,11 +19216,11 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
       var texture;
 
-      if (_this3.texture) {
-        texture = _this3.texture;
+      if (_this4.texture) {
+        texture = _this4.texture;
         texture.needsUpdate = true;
       } else {
-        texture = _this3.texture = new THREE.CanvasTexture(canvas);
+        texture = _this4.texture = new THREE.CanvasTexture(canvas);
       } // console.log(F, L, W, H);
 
 
@@ -19171,7 +19241,24 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       if (this.title_ !== title) {
         this.title_ = title;
 
-        if (title !== '') {
+        if (title !== '' && this.visible_) {
+          this.updateProgress();
+          this.show();
+        } else {
+          this.hide();
+        }
+      }
+    }
+  }, {
+    key: "visible",
+    get: function get() {
+      return this.visible_;
+    },
+    set: function set(visible) {
+      if (this.visible_ !== visible) {
+        this.visible_ = visible;
+
+        if (visible && this.title_ !== '') {
           this.updateProgress();
           this.show();
         } else {

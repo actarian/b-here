@@ -1,8 +1,10 @@
+import { getContext } from 'rxcomp';
 import { of } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
+import LoaderService from '../../loader/loader.service';
 import MessageService from '../../message/message.service';
 import StateService from '../../state/state.service';
 // import DebugService from '../debug.service';
@@ -232,6 +234,18 @@ export class BackButton extends MenuButton {
 
 export default class ModelMenuComponent extends ModelComponent {
 
+	get loading() {
+		return this.loading_;
+	}
+	set loading(loading) {
+		if (this.loading_ !== loading) {
+			this.loading_ = loading;
+			const { node } = getContext(this);
+			const btn = node.querySelector('.btn--menu');
+			btn.classList.toggle('loading', loading);
+		}
+	}
+
 	onInit() {
 		super.onInit();
 		this.onDown = this.onDown.bind(this);
@@ -249,6 +263,9 @@ export default class ModelMenuComponent extends ModelComponent {
 			}
 		});
 		*/
+		LoaderService.progress$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(progress => this.loading = progress.count > 0);
 		MessageService.in$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
