@@ -384,7 +384,6 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	addMenu(item = null) {
-		MenuService.active = true;
 		this.removeMenu();
 		// nav to view
 		if (item && item.type.name !== 'menu-group') {
@@ -396,6 +395,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			this.nav.next(item);
 			return;
 		}
+		MenuService.active = true;
 		this.items$(item).subscribe(items => {
 			if (items) {
 				items = items.slice();
