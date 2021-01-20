@@ -4281,7 +4281,8 @@ body {
   top: 50%; }
   .btn--menu svg {
     width: 28px;
-    height: 28px; }
+    height: 28px;
+    transition: opacity ease-in-out 250ms; }
   .btn--menu, .btn--menu:active, .btn--menu:focus, .btn--menu:hover, .btn--menu:visited {
     background: var(--background);
     color: var(--foreground); }
@@ -4295,6 +4296,30 @@ body {
     border-color: transparent;
     background: var(--black-80);
     color: var(--foreground-negative); }
+  .btn--menu.loading {
+    pointer-events: none;
+    animation: spinner 2s infinite ease; }
+    .btn--menu.loading svg {
+      opacity: 0; }
+    .btn--menu.loading:before, .btn--menu.loading:after {
+      content: '';
+      position: absolute;
+      border-radius: 3.5px;
+      width: 7px;
+      height: 7px;
+      background: #111;
+      line-height: 0;
+      font-size: 0; }
+    .btn--menu.loading:before {
+      transform: rotate(10deg) translateX(12px); }
+    .btn--menu.loading:after {
+      transform: rotate(10deg) translateX(-12px); }
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
 
 .btn--absolute {
   position: absolute;

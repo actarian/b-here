@@ -1,8 +1,10 @@
+import { getContext } from 'rxcomp';
 import { of } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
+import LoaderService from '../../loader/loader.service';
 import MessageService from '../../message/message.service';
 import StateService from '../../state/state.service';
 // import DebugService from '../debug.service';
@@ -232,6 +234,18 @@ export class BackButton extends MenuButton {
 
 export default class ModelMenuComponent extends ModelComponent {
 
+	get loading() {
+		return this.loading_;
+	}
+	set loading(loading) {
+		if (this.loading_ !== loading) {
+			this.loading_ = loading;
+			const { node } = getContext(this);
+			const btn = node.querySelector('.btn--menu');
+			btn.classList.toggle('loading', loading);
+		}
+	}
+
 	onInit() {
 		super.onInit();
 		this.onDown = this.onDown.bind(this);
@@ -249,6 +263,9 @@ export default class ModelMenuComponent extends ModelComponent {
 			}
 		});
 		*/
+		LoaderService.progress$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(progress => this.loading = progress.count > 0);
 		MessageService.in$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
@@ -356,38 +373,6 @@ export default class ModelMenuComponent extends ModelComponent {
 		}
 	}
 
-	onToggle() {
-		if (StateService.state.locked || StateService.state.spying) {
-			return;
-		}
-		if (this.buttons) {
-			this.removeMenu();
-			this.toggle.next();
-		} else {
-			this.addMenu();
-			this.toggle.next(this);
-		}
-	}
-
-	onDown(button) {
-		// this.down.next(this.item);
-		if (button.item && button.item.type.name === 'back') {
-			this.removeMenu();
-			if (button.item.backItem) {
-				this.addMenu(button.item.backItem.backItem);
-			} else {
-				/*
-				if (this.host.renderer.xr.isPresenting) {
-					this.addToggler();
-				}
-				*/
-				this.toggle.next();
-			}
-		} else {
-			this.addMenu(button.item);
-		}
-	}
-
 	items$(item = null) {
 		if (item) {
 			return of(item.items);
@@ -399,6 +384,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	addMenu(item = null) {
+		MenuService.active = true;
 		this.removeMenu();
 		// nav to view
 		if (item && item.type.name !== 'menu-group') {
@@ -455,6 +441,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	removeMenu() {
+		MenuService.active = false;
 		this.removeButtons();
 		this.removeToggler();
 	}
@@ -499,6 +486,38 @@ export default class ModelMenuComponent extends ModelComponent {
 			toggler.dispose();
 		}
 		this.toggler = null;
+	}
+
+	onDown(button) {
+		// this.down.next(this.item);
+		if (button.item && button.item.type.name === 'back') {
+			this.removeMenu();
+			if (button.item.backItem) {
+				this.addMenu(button.item.backItem.backItem);
+			} else {
+				/*
+				if (this.host.renderer.xr.isPresenting) {
+					this.addToggler();
+				}
+				*/
+				this.toggle.next();
+			}
+		} else {
+			this.addMenu(button.item);
+		}
+	}
+
+	onToggle() {
+		if (StateService.state.locked || StateService.state.spying) {
+			return;
+		}
+		if (MenuService.active) {
+			this.removeMenu();
+			this.toggle.next();
+		} else {
+			this.addMenu();
+			this.toggle.next(this);
+		}
 	}
 }
 
