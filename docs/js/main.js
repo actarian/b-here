@@ -17691,7 +17691,6 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       item = null;
     }
 
-    MenuService.active = true;
     this.removeMenu(); // nav to view
 
     if (item && item.type.name !== 'menu-group') {
@@ -17704,6 +17703,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       return;
     }
 
+    MenuService.active = true;
     this.items$(item).subscribe(function (items) {
       if (items) {
         items = items.slice();
@@ -17901,7 +17901,7 @@ ModelMenuComponent.meta = {
     }
     */
 
-    MenuService.active$.pipe(takeUntil(this.unsubscribe$)).subscribe(function (active) {
+    MenuService.active$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (active) {
       return _this.freezed = active;
     }); // console.log('ModelModelComponent.onInit');
   };

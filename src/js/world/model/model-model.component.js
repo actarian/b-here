@@ -1,4 +1,5 @@
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { takeUntil } from 'rxjs/operators';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
