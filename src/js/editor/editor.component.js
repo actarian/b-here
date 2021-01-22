@@ -266,30 +266,40 @@ export default class EditorComponent extends Component {
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				console.log('EditorComponent.onOpenModal.resolve', event);
-				switch (modal.value) {
-					case ViewItemType.Nav.name:
-					case ViewItemType.Plane.name:
-					case ViewItemType.CurvedPlane.name:
-					case ViewItemType.Model.name:
-						const tile = EditorService.getTile(this.view);
-						if (tile) {
-							const navs = tile.navs || [];
-							navs.push(event.data);
-							Object.assign(tile, { navs });
-							this.view.updateCurrentItems();
-						} else {
-							const items = this.view.items || [];
-							items.push(event.data);
-							Object.assign(this.view, { items });
+				switch(modal.type) {
+					case 'view':
+						switch (modal.value) {
+							case ViewType.Panorama.name:
+							case ViewType.PanoramaGrid.name:
+							case ViewType.Model.name:
+								this.data.views.push(event.data);
+								ViewService.viewId = event.data.id;
+								this.pushChanges(); // !!!
+								break;
+							default:
 						}
-						this.pushChanges();
 						break;
-					case ViewType.Panorama.name:
-					case ViewType.PanoramaGrid.name:
-					case ViewType.Model.name:
-						this.data.views.push(event.data);
-						ViewService.viewId = event.data.id;
-						this.pushChanges(); // !!!
+					case 'viewItem':
+						switch (modal.value) {
+							case ViewItemType.Nav.name:
+							case ViewItemType.Plane.name:
+							case ViewItemType.CurvedPlane.name:
+							case ViewItemType.Model.name:
+								const tile = EditorService.getTile(this.view);
+								if (tile) {
+									const navs = tile.navs || [];
+									navs.push(event.data);
+									Object.assign(tile, { navs });
+									this.view.updateCurrentItems();
+								} else {
+									const items = this.view.items || [];
+									items.push(event.data);
+									Object.assign(this.view, { items });
+								}
+								this.pushChanges();
+								break;
+							default:
+						}
 						break;
 					default:
 				}

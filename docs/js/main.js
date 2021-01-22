@@ -6786,42 +6786,52 @@ AsideComponent.meta = {
       if (event instanceof ModalResolveEvent) {
         console.log('EditorComponent.onOpenModal.resolve', event);
 
-        switch (modal.value) {
-          case ViewItemType.Nav.name:
-          case ViewItemType.Plane.name:
-          case ViewItemType.CurvedPlane.name:
-          case ViewItemType.Model.name:
-            var tile = EditorService.getTile(_this7.view);
+        switch (modal.type) {
+          case 'view':
+            switch (modal.value) {
+              case ViewType.Panorama.name:
+              case ViewType.PanoramaGrid.name:
+              case ViewType.Model.name:
+                _this7.data.views.push(event.data);
 
-            if (tile) {
-              var navs = tile.navs || [];
-              navs.push(event.data);
-              Object.assign(tile, {
-                navs: navs
-              });
+                ViewService.viewId = event.data.id;
 
-              _this7.view.updateCurrentItems();
-            } else {
-              var items = _this7.view.items || [];
-              items.push(event.data);
-              Object.assign(_this7.view, {
-                items: items
-              });
+                _this7.pushChanges(); // !!!
+
+
+                break;
             }
-
-            _this7.pushChanges();
 
             break;
 
-          case ViewType.Panorama.name:
-          case ViewType.PanoramaGrid.name:
-          case ViewType.Model.name:
-            _this7.data.views.push(event.data);
+          case 'viewItem':
+            switch (modal.value) {
+              case ViewItemType.Nav.name:
+              case ViewItemType.Plane.name:
+              case ViewItemType.CurvedPlane.name:
+              case ViewItemType.Model.name:
+                var tile = EditorService.getTile(_this7.view);
 
-            ViewService.viewId = event.data.id;
+                if (tile) {
+                  var navs = tile.navs || [];
+                  navs.push(event.data);
+                  Object.assign(tile, {
+                    navs: navs
+                  });
 
-            _this7.pushChanges(); // !!!
+                  _this7.view.updateCurrentItems();
+                } else {
+                  var items = _this7.view.items || [];
+                  items.push(event.data);
+                  Object.assign(_this7.view, {
+                    items: items
+                  });
+                }
 
+                _this7.pushChanges();
+
+                break;
+            }
 
             break;
         }
