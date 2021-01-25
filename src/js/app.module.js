@@ -27,6 +27,7 @@ import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
 import ControlTextareaComponent from './forms/control-textarea.component';
 import ControlVectorComponent from './forms/control-vector.component';
+import ControlsComponent from './forms/controls.component';
 import DisabledDirective from './forms/disabled.directive';
 import ErrorsComponent from './forms/errors.component';
 import InputValueComponent from './forms/input-value.component';
@@ -91,6 +92,7 @@ AppModule.meta = {
 		ControlTextComponent,
 		ControlTextareaComponent,
 		ControlVectorComponent,
+		ControlsComponent,
 		DisabledDirective,
 		DropDirective,
 		DropdownDirective,

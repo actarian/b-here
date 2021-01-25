@@ -3,7 +3,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
 import { environment, STATIC } from '../environment';
-import LabelPipe from '../label/label.pipe';
+import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
@@ -59,16 +59,6 @@ export default class AccessComponent extends Component {
 			this.formSubscription.unsubscribe();
 		}
 
-		const form = this.form = new FormGroup({
-			firstName: new FormControl(null, Validators.RequiredValidator()),
-			lastName: new FormControl(null, Validators.RequiredValidator()),
-			email: new FormControl(null, [Validators.RequiredValidator(), Validators.EmailValidator()]),
-			role: new FormControl(null, Validators.RequiredValidator()),
-			privacy: new FormControl(null, Validators.RequiredTrueValidator()),
-			checkRequest: window.antiforgery || '',
-			checkField: '',
-		});
-
 		const data = this.data = window.data || {
 			roles: [
 				{ id: 1, name: 'Show room' },
@@ -79,10 +69,38 @@ export default class AccessComponent extends Component {
 			],
 		};
 
+		const fields = this.fields = window.fields || [
+			{ type: 'text', name: 'firstName', label: 'access_first_name', required: true, test: 'Jhon' },
+			{ type: 'text', name: 'lastName', label: 'access_last_name', required: true, test: 'Appleseed' },
+			{ type: 'email', name: 'email', label: 'access_email', required: true, test: 'jhonappleseed@gmail.com' },
+			{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: window.data.roles, test: window.data.roles[0].id },
+			{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
+		];
+
+		fields.push(
+			{ type: 'hidden', name: 'checkField', test: '' },
+			{ type: 'none', name: 'checkRequest', value: window.antiforgery || '', test: window.antiforgery || '' }
+		);
+
+		const form = this.form = fieldsToFormGroup(fields);
+		/*
+		const form = this.form = new FormGroup({
+			firstName: new FormControl(null, Validators.RequiredValidator()),
+			lastName: new FormControl(null, Validators.RequiredValidator()),
+			email: new FormControl(null, [Validators.RequiredValidator(), Validators.EmailValidator()]),
+			role: new FormControl(null, Validators.RequiredValidator()),
+			privacy: new FormControl(null, Validators.RequiredTrueValidator()),
+			checkRequest: window.antiforgery || '',
+			checkField: '',
+		});
+		*/
+
 		const controls = this.controls = form.controls;
+		/*
 		const options = data.roles.slice();
 		options.unshift({ id: null, name: LabelPipe.transform('select') });
 		controls.role.options = options;
+		*/
 
 		this.formSubscription = form.changes$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -125,6 +143,8 @@ export default class AccessComponent extends Component {
 				checkField: ''
 			});
 		} else {
+			patchFields(this.fields, this.form);
+			/*
 			this.form.patch({
 				firstName: 'Jhon',
 				lastName: 'Appleseed',
@@ -134,6 +154,7 @@ export default class AccessComponent extends Component {
 				checkRequest: window.antiforgery || '',
 				checkField: ''
 			});
+			*/
 		}
 	}
 

@@ -457,7 +457,98 @@ var LabelPipe = /*#__PURE__*/function (_Pipe) {
 }(rxcomp.Pipe);
 LabelPipe.meta = {
   name: 'label'
-};var HttpService = /*#__PURE__*/function () {
+};var ControlsComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlsComponent, _Component);
+
+  function ControlsComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlsComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    console.log(this.group, this.fields);
+  };
+
+  _proto.getControl = function getControl(name) {
+    return this.group.get(name);
+  };
+
+  _createClass(ControlsComponent, [{
+    key: "group",
+    get: function get() {
+      if (this.formGroup) {
+        return this.formGroup;
+      } else {
+        if (!this.host) {
+          throw 'missing form collection';
+        }
+
+        return this.host.control;
+      }
+    }
+  }]);
+
+  return ControlsComponent;
+}(rxcomp.Component);
+ControlsComponent.meta = {
+  selector: '[controls]',
+  inputs: ['formGroup', 'fields'],
+  hosts: {
+    host: rxcompForm.FormAbstractCollectionDirective
+  },
+  template:
+  /* html */
+  "\n\t\t<div *for=\"let field of fields\">\n\t\t\t<div *if=\"['text', 'email', 'url'].indexOf(field.type) !== -1\" control-text [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'select'\" control-select [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'custom-select'\" control-custom-select [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'textarea'\" control-textarea [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'checkbox'\" control-checkbox [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<input *if=\"field.type == 'hidden'\" [name]=\"field.name\" [formControl]=\"getControl(field.name)\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t</div>\n\t"
+};
+function fieldsToFormControls(fields) {
+  var controls = fields.reduce(function (p, c, i) {
+    var validators = [];
+
+    if (c.required) {
+      validators.push(c.type === 'checkbox' ? rxcompForm.Validators.RequiredTrueValidator() : rxcompForm.Validators.RequiredValidator());
+    }
+
+    if (c.type === 'email') {
+      validators.push(rxcompForm.Validators.EmailValidator());
+    }
+
+    if (c.type === 'url') {
+      validators.push(rxcompForm.Validators.PatternValidator('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'));
+    }
+
+    if (c.pattern != null) {
+      validators.push(rxcompForm.Validators.PatternValidator(c.pattern));
+    }
+
+    p[c.name] = new rxcompForm.FormControl(c.value || null, validators);
+
+    if (c.type === 'select' || c.type === 'custom-select') {
+      var options = (c.options || []).slice();
+      options.unshift({
+        id: null,
+        name: LabelPipe.transform('select')
+      });
+      p[c.name].options = options;
+    }
+
+    return p;
+  }, {});
+  return controls;
+}
+function fieldsToFormGroup(fields) {
+  return new rxcompForm.FormGroup(fieldsToFormControls(fields));
+}
+function patchFields(fields, form) {
+  var testValues = fields.reduce(function (p, c, i) {
+    if (c.test) {
+      p[c.name] = c.test;
+    }
+
+    return p;
+  }, {});
+  form.patch(testValues);
+}var HttpService = /*#__PURE__*/function () {
   function HttpService() {}
 
   HttpService.http$ = function http$(method, url, data, format) {
@@ -788,15 +879,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
       this.formSubscription.unsubscribe();
     }
 
-    var form = this.form = new rxcompForm.FormGroup({
-      firstName: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      lastName: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      email: new rxcompForm.FormControl(null, [rxcompForm.Validators.RequiredValidator(), rxcompForm.Validators.EmailValidator()]),
-      role: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      privacy: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredTrueValidator()),
-      checkRequest: window.antiforgery || '',
-      checkField: ''
-    });
     var data = this.data = window.data || {
       roles: [{
         id: 1,
@@ -815,13 +897,68 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
         name: 'Altro'
       }]
     };
-    var controls = this.controls = form.controls;
-    var options = data.roles.slice();
-    options.unshift({
-      id: null,
-      name: LabelPipe.transform('select')
+    var fields = this.fields = window.fields || [{
+      type: 'text',
+      name: 'firstName',
+      label: 'access_first_name',
+      required: true,
+      test: 'Jhon'
+    }, {
+      type: 'text',
+      name: 'lastName',
+      label: 'access_last_name',
+      required: true,
+      test: 'Appleseed'
+    }, {
+      type: 'email',
+      name: 'email',
+      label: 'access_email',
+      required: true,
+      test: 'jhonappleseed@gmail.com'
+    }, {
+      type: 'custom-select',
+      name: 'role',
+      label: 'access_role',
+      required: true,
+      options: window.data.roles,
+      test: window.data.roles[0].id
+    }, {
+      type: 'checkbox',
+      name: 'privacy',
+      label: 'access_privacy_disclaimer',
+      required: true,
+      test: true
+    }];
+    fields.push({
+      type: 'hidden',
+      name: 'checkField',
+      test: ''
+    }, {
+      type: 'none',
+      name: 'checkRequest',
+      value: window.antiforgery || '',
+      test: window.antiforgery || ''
     });
+    var form = this.form = fieldsToFormGroup(fields);
+    /*
+    const form = this.form = new FormGroup({
+    	firstName: new FormControl(null, Validators.RequiredValidator()),
+    	lastName: new FormControl(null, Validators.RequiredValidator()),
+    	email: new FormControl(null, [Validators.RequiredValidator(), Validators.EmailValidator()]),
+    	role: new FormControl(null, Validators.RequiredValidator()),
+    	privacy: new FormControl(null, Validators.RequiredTrueValidator()),
+    	checkRequest: window.antiforgery || '',
+    	checkField: '',
+    });
+    */
+
+    var controls = this.controls = form.controls;
+    /*
+    const options = data.roles.slice();
+    options.unshift({ id: null, name: LabelPipe.transform('select') });
     controls.role.options = options;
+    */
+
     this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
       _this.pushChanges();
     });
@@ -857,17 +994,18 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
         checkField: ''
       });
     } else {
+      patchFields(this.fields, this.form);
+      /*
       this.form.patch({
-        firstName: 'Jhon',
-        lastName: 'Appleseed',
-        email: 'jhonappleseed@gmail.com',
-        role: this.controls.role.options.find(function (x) {
-          return x.id !== null;
-        }).id,
-        privacy: true,
-        checkRequest: window.antiforgery || '',
-        checkField: ''
+      	firstName: 'Jhon',
+      	lastName: 'Appleseed',
+      	email: 'jhonappleseed@gmail.com',
+      	role: this.controls.role.options.find(x => x.id !== null).id,
+      	privacy: true,
+      	checkRequest: window.antiforgery || '',
+      	checkField: ''
       });
+      */
     }
   };
 
@@ -19662,6 +19800,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, ControlsComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));
