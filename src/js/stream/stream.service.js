@@ -13,12 +13,20 @@ export default class StreamService {
 
 	static mode = StreamServiceMode.Client;
 
-	static editor$ = new BehaviorSubject(null);
-	static set editor(editor) {
-		this.editor$.next(editor);
+	static editorStreams$ = new BehaviorSubject(null);
+	static set editorStreams(editorStreams) {
+		this.editorStreams$.next(editorStreams);
 	}
-	static get editor() {
-		return this.editor$.getValue();
+	static get editorStreams() {
+		return this.editorStreams$.getValue();
+	}
+
+	static editorScreens$ = new BehaviorSubject(null);
+	static set editorScreens(editorScreens) {
+		this.editorScreens$.next(editorScreens);
+	}
+	static get editorScreens() {
+		return this.editorScreens$.getValue();
 	}
 
 	static local$ = new BehaviorSubject(null);
@@ -103,23 +111,27 @@ export default class StreamService {
 		);
 	}
 
-	static streams$ = combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.editorStreams$()]).pipe(
+	static streams$ = combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.getEditorStreams$(), StreamService.getEditorScreens$()]).pipe(
 		map(data => {
 			const local = data[0];
 			const screen = data[1];
 			const remotes = data[2];
-			const editor = data[3];
+			const editorStreams = data[3];
+			const editorScreens = data[4];
 			let streams = remotes;
-			if (local) {
+			if (local) { // my stream
 				streams = streams.slice();
 				streams.push(local);
 			}
-			if (screen) {
+			if (screen) { // my screen
 				streams = streams.slice();
 				streams.push(screen);
 			}
-			if (editor) {
-				streams.push(...editor);
+			if (editorStreams) { // editor streams
+				streams.push(...editorStreams);
+			}
+			if (editorScreens) { // editor screens
+				streams.push(...editorScreens);
 			}
 			// console.log('StreamService.streams$', streams, local, screen, remotes);
 			return streams;
@@ -127,7 +139,7 @@ export default class StreamService {
 		shareReplay(1),
 	);
 
-	static editorStreams$() {
+	static getEditorStreams$() {
 		return of(null).pipe(
 			switchMap(() => {
 				if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && this.mode === StreamServiceMode.Editor) {
@@ -152,23 +164,73 @@ export default class StreamService {
 								getId: () => 'editor',
 								clientInfo: {
 									role: RoleType.Publisher,
+									uid: 'editor',
 								}
 							};
 							const fakeAttendeeStream = {
 								getId: () => 'editor',
 								clientInfo: {
 									role: RoleType.Attendee,
+									uid: 'editor',
 								}
 							};
-							this.editor$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]);
-							// StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+							this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]);
+							// StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 						}
 						video.play();
 					}).catch((error) => {
 						console.log('EditorComponent.getUserMedia.error', error.name, error.message);
 					});
 				}
-				return this.editor$;
+				return this.editorStreams$;
+			}),
+			shareReplay(1),
+		);
+	}
+
+	static getEditorScreens$() {
+		return of(null).pipe(
+			switchMap(() => {
+				if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && this.mode === StreamServiceMode.Editor) {
+					const body = document.querySelector('body');
+					const media = document.createElement('div');
+					const video = document.createElement('video');
+					media.setAttribute('id', 'stream-editor-screen');
+					media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+					media.appendChild(video);
+					body.appendChild(media);
+					navigator.mediaDevices.getDisplayMedia({
+						screen: { width: 800, height: 450 },
+					}).then((stream) => {
+						// console.log(stream);
+						if ('srcObject' in video) {
+							video.srcObject = stream;
+						} else {
+							video.src = window.URL.createObjectURL(stream);
+						}
+						video.oncanplay = () => {
+							const fakePublisherScreen = {
+								getId: () => 'editor-screen',
+								clientInfo: {
+									role: RoleType.Publisher,
+									uid: 'editor-screen_',
+								}
+							};
+							const fakeAttendeeScreen = {
+								getId: () => 'editor-screen',
+								clientInfo: {
+									role: RoleType.Attendee,
+									uid: 'editor-screen_',
+								}
+							};
+							this.editorScreens$.next([fakePublisherScreen, fakeAttendeeScreen]);
+						}
+						video.play();
+					}).catch((error) => {
+						console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+					});
+				}
+				return this.editorScreens$;
 			}),
 			shareReplay(1),
 		);

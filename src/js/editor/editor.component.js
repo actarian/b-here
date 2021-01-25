@@ -85,6 +85,7 @@ export default class EditorComponent extends Component {
 		// this.getUserMedia();
 	}
 
+	/*
 	getUserMedia() {
 		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 			const body = document.querySelector('body');
@@ -116,12 +117,13 @@ export default class EditorComponent extends Component {
 						role: RoleType.Attendee,
 					}
 				};
-				StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+				StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 			}).catch((error) => {
 				console.log('EditorComponent.getUserMedia.error', error.name, error.message);
 			});
 		}
 	}
+	*/
 
 	loadView() {
 		EditorService.data$().pipe(

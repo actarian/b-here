@@ -1824,7 +1824,7 @@ var StreamService = /*#__PURE__*/function () {
     }));
   };
 
-  StreamService.editorStreams$ = function editorStreams$() {
+  StreamService.getEditorStreams$ = function getEditorStreams$() {
     var _this = this;
 
     return rxjs.of(null).pipe(operators.switchMap(function () {
@@ -1855,7 +1855,8 @@ var StreamService = /*#__PURE__*/function () {
                 return 'editor';
               },
               clientInfo: {
-                role: RoleType.Publisher
+                role: RoleType.Publisher,
+                uid: 'editor'
               }
             };
             var fakeAttendeeStream = {
@@ -1863,11 +1864,12 @@ var StreamService = /*#__PURE__*/function () {
                 return 'editor';
               },
               clientInfo: {
-                role: RoleType.Attendee
+                role: RoleType.Attendee,
+                uid: 'editor'
               }
             };
 
-            _this.editor$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]); // StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+            _this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]); // StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 
           };
 
@@ -1877,12 +1879,70 @@ var StreamService = /*#__PURE__*/function () {
         });
       }
 
-      return _this.editor$;
+      return _this.editorStreams$;
+    }), operators.shareReplay(1));
+  };
+
+  StreamService.getEditorScreens$ = function getEditorScreens$() {
+    var _this2 = this;
+
+    return rxjs.of(null).pipe(operators.switchMap(function () {
+      if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && _this2.mode === StreamServiceMode.Editor) {
+        var body = document.querySelector('body');
+        var media = document.createElement('div');
+        var video = document.createElement('video');
+        media.setAttribute('id', 'stream-editor-screen');
+        media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+        media.appendChild(video);
+        body.appendChild(media);
+        navigator.mediaDevices.getDisplayMedia({
+          screen: {
+            width: 800,
+            height: 450
+          }
+        }).then(function (stream) {
+          // console.log(stream);
+          if ('srcObject' in video) {
+            video.srcObject = stream;
+          } else {
+            video.src = window.URL.createObjectURL(stream);
+          }
+
+          video.oncanplay = function () {
+            var fakePublisherScreen = {
+              getId: function getId() {
+                return 'editor-screen';
+              },
+              clientInfo: {
+                role: RoleType.Publisher,
+                uid: 'editor-screen_'
+              }
+            };
+            var fakeAttendeeScreen = {
+              getId: function getId() {
+                return 'editor-screen';
+              },
+              clientInfo: {
+                role: RoleType.Attendee,
+                uid: 'editor-screen_'
+              }
+            };
+
+            _this2.editorScreens$.next([fakePublisherScreen, fakeAttendeeScreen]);
+          };
+
+          video.play();
+        }).catch(function (error) {
+          console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+        });
+      }
+
+      return _this2.editorScreens$;
     }), operators.shareReplay(1));
   };
 
   StreamService.getPublisherStreamId$ = function getPublisherStreamId$() {
-    var _this2 = this;
+    var _this3 = this;
 
     var publisherStreamId = this.publisherStreamId;
 
@@ -1890,7 +1950,7 @@ var StreamService = /*#__PURE__*/function () {
       return rxjs.of(publisherStreamId);
     } else {
       return this.streams$.pipe(operators.map(function () {
-        return _this2.publisherStreamId;
+        return _this3.publisherStreamId;
       }), operators.filter(function (x) {
         return x;
       }));
@@ -1947,12 +2007,20 @@ var StreamService = /*#__PURE__*/function () {
   };
 
   _createClass(StreamService, null, [{
-    key: "editor",
-    set: function set(editor) {
-      this.editor$.next(editor);
+    key: "editorStreams",
+    set: function set(editorStreams) {
+      this.editorStreams$.next(editorStreams);
     },
     get: function get() {
-      return this.editor$.getValue();
+      return this.editorStreams$.getValue();
+    }
+  }, {
+    key: "editorScreens",
+    set: function set(editorScreens) {
+      this.editorScreens$.next(editorScreens);
+    },
+    get: function get() {
+      return this.editorScreens$.getValue();
     }
   }, {
     key: "local",
@@ -2013,7 +2081,9 @@ var StreamService = /*#__PURE__*/function () {
 
 _defineProperty(StreamService, "mode", StreamServiceMode.Client);
 
-_defineProperty(StreamService, "editor$", new rxjs.BehaviorSubject(null));
+_defineProperty(StreamService, "editorStreams$", new rxjs.BehaviorSubject(null));
+
+_defineProperty(StreamService, "editorScreens$", new rxjs.BehaviorSubject(null));
 
 _defineProperty(StreamService, "local$", new rxjs.BehaviorSubject(null));
 
@@ -2023,27 +2093,38 @@ _defineProperty(StreamService, "remotes$", new rxjs.BehaviorSubject([]));
 
 _defineProperty(StreamService, "peers$", new rxjs.BehaviorSubject([]));
 
-_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.editorStreams$()]).pipe(operators.map(function (data) {
+_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.getEditorStreams$(), StreamService.getEditorScreens$()]).pipe(operators.map(function (data) {
   var local = data[0];
   var screen = data[1];
   var remotes = data[2];
-  var editor = data[3];
+  var editorStreams = data[3];
+  var editorScreens = data[4];
   var streams = remotes;
 
   if (local) {
+    // my stream
     streams = streams.slice();
     streams.push(local);
   }
 
   if (screen) {
+    // my screen
     streams = streams.slice();
     streams.push(screen);
   }
 
-  if (editor) {
+  if (editorStreams) {
     var _streams;
 
-    (_streams = streams).push.apply(_streams, editor);
+    // editor streams
+    (_streams = streams).push.apply(_streams, editorStreams);
+  }
+
+  if (editorScreens) {
+    var _streams2;
+
+    // editor screens
+    (_streams2 = streams).push.apply(_streams2, editorScreens);
   } // console.log('StreamService.streams$', streams, local, screen, remotes);
 
 
@@ -4531,18 +4612,41 @@ var View = /*#__PURE__*/function () {
 
   _proto.updateIndices = function updateIndices(items) {
     if (items) {
-      var nextPublisherStreamIndex = 0;
-      var nextAttendeeStreamIndex = 0;
+      var publisherStreamIndex = 0;
+      var attendeeStreamIndex = 0;
+      var publisherScreenIndex = 0;
+      var attendeeScreenIndex = 0;
       items.forEach(function (item, index) {
         item.index = index;
 
-        if (item.asset && item.asset.file === 'publisherStream') {
-          item.asset.index = nextPublisherStreamIndex++;
-        }
+        if (item.asset) {
+          switch (item.asset.file) {
+            case 'publisherStream':
+              item.asset.index = publisherStreamIndex++;
+              break;
 
-        if (item.asset && item.asset.file === 'nextAttendeeStream') {
-          item.asset.index = nextAttendeeStreamIndex++;
+            case 'nextAttendeeStream':
+              item.asset.index = attendeeStreamIndex++;
+              break;
+
+            case 'publisherScreen':
+              item.asset.index = publisherScreenIndex++;
+              break;
+
+            case 'attendeeScreen':
+              item.asset.index = attendeeScreenIndex++;
+              break;
+          }
         }
+        /*
+        if (item.asset && item.asset.file === 'publisherStream') {
+        	item.asset.index = publisherStreamIndex++;
+        }
+        if (item.asset && item.asset.file === 'nextAttendeeStream') {
+        	item.asset.index = attendeeStreamIndex++;
+        }
+        */
+
       });
     }
   };
@@ -5700,13 +5804,27 @@ var AssetType = {
   // fbx, gltf, glb, usdz ...
   PublisherStream: {
     id: 4,
-    name: 'publisher-stream'
+    name: 'publisher-stream',
+    file: 'publisherStream'
   },
   // valore fisso di file a ‘publisherStream’ e folder string.empty
-  NextAttendeeStream: {
+  AttendeeStream: {
     id: 5,
-    name: 'next-attendee-stream'
-  } // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+    name: 'next-attendee-stream',
+    file: 'nextAttendeeStream'
+  },
+  // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+  PublisherScreen: {
+    id: 6,
+    name: 'publisher-screen',
+    file: 'publisherScreen'
+  },
+  // valore fisso di file a ‘publisherScreen’ e folder string.empty
+  AttendeeScreen: {
+    id: 7,
+    name: 'attendee-screen',
+    file: 'attendeeScreen'
+  } // valore fisso di file a ‘attendeeScreen’ e folder string.empty
 
 };
 var AssetGroupType = {
@@ -5725,8 +5843,36 @@ var AssetGroupType = {
     id: 4,
     name: 'Attendee',
     ids: [5]
+  },
+  PublisherScreen: {
+    id: 5,
+    name: 'PublisherScreen',
+    ids: [6]
+  },
+  AttendeeScreen: {
+    id: 6,
+    name: 'AttendeeScreen',
+    ids: [7]
   }
 };
+var STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name];
+function assetIsStream(asset) {
+  return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
+}
+function assetTypeById(id) {
+  var type = Object.keys(AssetType).reduce(function (p, key) {
+    var type = AssetType[key];
+    return type.id === id ? type : p;
+  }, null);
+  return type; // return Object.keys(AssetType).map(x => AssetType[x]).find(x => x.id === id);
+}
+function assetGroupTypeById(id) {
+  var type = Object.keys(AssetGroupType).reduce(function (p, key) {
+    var type = AssetGroupType[key];
+    return type.id === id ? type : p;
+  }, null);
+  return type; // return Object.keys(AssetGroupType).map(x => AssetGroupType[x]).find(x => x.id === id);
+}
 function assetGroupTypeFromItem(item) {
   var key;
 
@@ -5740,13 +5886,17 @@ function assetGroupTypeFromItem(item) {
   return AssetGroupType[key || 'ImageOrVideo'];
 }
 function assetPayloadFromGroupTypeId(groupTypeId) {
-  var type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.NextAttendeeStream;
-  var file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
+  var groupType = assetGroupTypeById(groupTypeId);
+  var type = assetTypeById(groupType.ids[0]);
+  var file = type.file; // const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.AttendeeStream;
+  // const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
+
   var asset = {
     type: type,
     folder: '',
     file: file
   };
+  console.log('assetPayloadFromGroupTypeId', asset);
   return new Asset(asset);
 }
 function assetTypeFromPath(path) {
@@ -5809,7 +5959,7 @@ function mapAsset(asset) {
 }var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
-var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
+var MIME_STREAM = ['publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen'];
 function isImage(path) {
   return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
 }
@@ -5855,7 +6005,9 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
           break;
 
         case AssetType.PublisherStream.name:
-        case AssetType.NextAttendeeStream.name:
+        case AssetType.AttendeeStream.name:
+        case AssetType.PublisherScreen.name:
+        case AssetType.AttendeeScreen.name:
           asset = environment.getPath(asset.file);
           break;
 
@@ -6571,53 +6723,47 @@ AsideComponent.meta = {
     });
     this.loadView();
     StreamService.mode = StreamServiceMode.Editor; // this.getUserMedia();
-  };
-
-  _proto.getUserMedia = function getUserMedia() {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      var body = document.querySelector('body');
-      var media = document.createElement('div');
-      var video = document.createElement('video');
-      media.setAttribute('id', 'stream-editor');
-      media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
-      media.appendChild(video);
-      body.appendChild(media);
-      navigator.mediaDevices.getUserMedia({
-        video: {
-          width: 800,
-          height: 450
-        }
-      }).then(function (stream) {
-        // console.log(stream);
-        if ('srcObject' in video) {
-          video.srcObject = stream;
-        } else {
-          video.src = window.URL.createObjectURL(stream);
-        }
-
-        video.play();
-        var fakePublisherStream = {
-          getId: function getId() {
-            return 'editor';
-          },
-          clientInfo: {
-            role: RoleType.Publisher
-          }
-        };
-        var fakeAttendeeStream = {
-          getId: function getId() {
-            return 'editor';
-          },
-          clientInfo: {
-            role: RoleType.Attendee
-          }
-        };
-        StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
-      }).catch(function (error) {
-        console.log('EditorComponent.getUserMedia.error', error.name, error.message);
-      });
-    }
-  };
+  }
+  /*
+  getUserMedia() {
+  	if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  		const body = document.querySelector('body');
+  		const media = document.createElement('div');
+  		const video = document.createElement('video');
+  		media.setAttribute('id', 'stream-editor');
+  		media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+  		media.appendChild(video);
+  		body.appendChild(media);
+  		navigator.mediaDevices.getUserMedia({
+  			video: { width: 800, height: 450 },
+  		}).then((stream) => {
+  			// console.log(stream);
+  			if ('srcObject' in video) {
+  				video.srcObject = stream;
+  			} else {
+  				video.src = window.URL.createObjectURL(stream);
+  			}
+  			video.play();
+  			const fakePublisherStream = {
+  				getId: () => 'editor',
+  				clientInfo: {
+  					role: RoleType.Publisher,
+  				}
+  			};
+  			const fakeAttendeeStream = {
+  				getId: () => 'editor',
+  				clientInfo: {
+  					role: RoleType.Attendee,
+  				}
+  			};
+  			StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+  		}).catch((error) => {
+  			console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+  		});
+  	}
+  }
+  */
+  ;
 
   _proto.loadView = function loadView() {
     var _this4 = this;
@@ -8633,7 +8779,8 @@ RemoveModalComponent.meta = {
             control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
             control.options = Object.keys(AssetGroupType).map(function (x) {
               return AssetGroupType[x];
-            });
+            }); // console.log(control.options);
+
             break;
 
           case 'link':
@@ -12153,12 +12300,24 @@ var MediaLoader = /*#__PURE__*/function () {
     return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
   };
 
+  MediaLoader.isStream = function isStream(item) {
+    return assetIsStream(item.asset);
+  };
+
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
     return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
   };
 
-  MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
+  MediaLoader.isAttendeeStream = function isAttendeeStream(item) {
+    return item.asset && item.asset.type.name === AssetType.AttendeeStream.name;
+  };
+
+  MediaLoader.isPublisherScreen = function isPublisherScreen(item) {
+    return item.asset && item.asset.type.name === AssetType.PublisherScreen.name;
+  };
+
+  MediaLoader.isAttendeeScreen = function isAttendeeScreen(item) {
+    return item.asset && item.asset.type.name === AssetType.AttendeeScreen.name;
   };
 
   _createClass(MediaLoader, [{
@@ -12167,14 +12326,29 @@ var MediaLoader = /*#__PURE__*/function () {
       return MediaLoader.isVideo(this.item);
     }
   }, {
+    key: "isStream",
+    get: function get() {
+      return MediaLoader.isStream(this.item);
+    }
+  }, {
     key: "isPublisherStream",
     get: function get() {
       return MediaLoader.isPublisherStream(this.item);
     }
   }, {
-    key: "isNextAttendeeStream",
+    key: "isAttendeeStream",
     get: function get() {
-      return MediaLoader.isNextAttendeeStream(this.item);
+      return MediaLoader.isAttendeeStream(this.item);
+    }
+  }, {
+    key: "isPublisherScreen",
+    get: function get() {
+      return MediaLoader.isPublisherScreen(this.item);
+    }
+  }, {
+    key: "isAttendeeScreen",
+    get: function get() {
+      return MediaLoader.isAttendeeScreen(this.item);
     }
   }, {
     key: "isPlayableVideo",
@@ -12184,7 +12358,7 @@ var MediaLoader = /*#__PURE__*/function () {
   }, {
     key: "isAutoplayVideo",
     get: function get() {
-      return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.asset.autoplay != null;
+      return this.isStream || this.isVideo && this.item.asset.autoplay != null;
     }
   }, {
     key: "muted",
@@ -12217,9 +12391,9 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this2 = this;
 
     var item = this.item;
-    var texture; // console.log('MediaLoader.load', item, this.isPublisherStream);
+    var texture; // console.log('MediaLoader.load', item, this.isStream);
 
-    if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
+    if (this.isStream && item.streamId) {
       var streamId = item.streamId;
       var target = "#stream-" + streamId;
       var video = document.querySelector(target + " video");
@@ -12364,85 +12538,6 @@ var MediaLoader = /*#__PURE__*/function () {
 }();
 MediaLoader.events$ = new rxjs.ReplaySubject(1);var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
 var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tvec4 colorB = texture2D(textureB, vUv);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
-/*
-const FRAGMENT_SHADER_BAK = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-uniform bool video;
-uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-uniform vec3 overlayColor;
-
-mat3 rotate(float a) {
-	return mat3(
-		cos(a), sin(a), 0.0,
-		-sin(a), cos(a), 0.0,
-		0.0, 0.0, 1.0
-	);
-}
-
-mat3 translate(vec2 t) {
-	return mat3(
-		1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0,
-		t.x, t.y, 1.0
-	);
-}
-
-mat3 scale(vec2 s) {
-	return mat3(
-		s.x, 0.0, 0.0,
-		0.0, s.y, 0.0,
-		0.0, 0.0, 1.0
-	);
-}
-
-vec2 getUV2(vec2 vUv, vec2 t, vec2 s, float a) {
-	mat3 transform = scale(s) * rotate(a);
-	return (vec3(vUv + t, 0.0) * transform).xy;
-}
-
-void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
-	if (video) {
-		float rA = resolutionA.x / resolutionA.y;
-		float rB = resolutionB.x / resolutionB.y;
-		float aspect = 1.0 / rA * rB;
-		vec2 s = vec2(3.0 / aspect, 3.0);
-		vec2 t = vec2(
-			-(resolutionA.x - resolutionB.x / s.x) * 0.5 / resolutionA.x,
-			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
-		);
-		t = vec2(
-			-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,
-			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
-		);
-		// float dx = (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5;
-		// float dy = (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5;
-		// t = vec2(-0.5 + dx, -0.5 - dy);
-		vec2 uv2 = clamp(
-			getUV2(vUv, t, s, 0.0),
-			vec2(0.0,0.0),
-			vec2(1.0,1.0)
-		);
-		vec4 colorB = texture2D(textureB, uv2);
-		colorB = texture2D(textureB, vUv);
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
-	} else {
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
-	}
-	gl_FragColor = color;
-}
-`;
-*/
-
 var FRAGMENT_CHROMA_KEY_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 chromaKeyColor;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);\n\tgl_FragColor = color;\n}\n";
 
 var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
@@ -12541,7 +12636,55 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return material;
   };
 
+  MediaMesh.isPublisherStream = function isPublisherStream(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher;
+  };
+
+  MediaMesh.isAttendeeStream = function isAttendeeStream(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee;
+  };
+
+  MediaMesh.isPublisherScreen = function isPublisherScreen(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid !== stream.getId();
+  };
+
+  MediaMesh.isAttendeeScreen = function isAttendeeScreen(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.uid !== stream.getId();
+  };
+
+  MediaMesh.getTypeMatcher = function getTypeMatcher(assetType) {
+    var matcher;
+
+    switch (assetType.name) {
+      case AssetType.PublisherStream.name:
+        matcher = this.isPublisherStream;
+        break;
+
+      case AssetType.AttendeeStream.name:
+        matcher = this.isAttendeeStream;
+        break;
+
+      case AssetType.PublisherScreen.name:
+        matcher = this.isPublisherScreen;
+        break;
+
+      case AssetType.AttendeeScreen.name:
+        matcher = this.isAttendeeScreen;
+        break;
+
+      default:
+        matcher = function matcher(stream) {
+          return false;
+        };
+
+    }
+
+    return matcher;
+  };
+
   MediaMesh.getStreamId$ = function getStreamId$(item) {
+    var _this2 = this;
+
     if (!item.asset) {
       return rxjs.of(null);
     }
@@ -12549,45 +12692,32 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     var assetType = item.asset.type;
     var file = item.asset.file;
 
-    if (assetType.name !== AssetType.PublisherStream.name && assetType.name !== AssetType.NextAttendeeStream.name) {
-      return rxjs.of(file);
-    }
-
-    return StreamService.streams$.pipe(operators.map(function (streams) {
-      // console.log('MediaMesh.getStreamId$', streams, item.asset);
-      var stream;
-
-      if (assetType.name === AssetType.PublisherStream.name) {
-        // stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+    if (assetIsStream(item.asset)) {
+      return StreamService.streams$.pipe(operators.map(function (streams) {
+        var stream;
         var i = 0;
+
+        var matchType = _this2.getTypeMatcher(assetType);
+
         streams.forEach(function (x) {
-          if (x.clientInfo && x.clientInfo.role === RoleType.Publisher) {
+          if (matchType(x)) {
             if (i === item.asset.index) {
               stream = x;
             }
 
             i++;
           }
-        });
-      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
-        var _i = 0;
-        streams.forEach(function (x) {
-          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-            if (_i === item.asset.index) {
-              stream = x;
-            }
+        }); // console.log('MediaMesh.getStreamId$', assetType.name, stream, streams);
 
-            _i++;
-          }
-        });
-      }
-
-      if (stream) {
-        return stream.getId();
-      } else {
-        return null;
-      }
-    }));
+        if (stream) {
+          return stream.getId();
+        } else {
+          return null;
+        }
+      }));
+    } else {
+      return rxjs.of(file);
+    }
   };
 
   MediaMesh.getMaterialByItem = function getMaterialByItem(item) {
@@ -12642,7 +12772,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   var _proto = MediaMesh.prototype;
 
   _proto.load = function load(callback) {
-    var _this2 = this;
+    var _this3 = this;
 
     if (!this.item.asset) {
       this.onAppear();
@@ -12666,7 +12796,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         material.needsUpdate = true;
 
         if (mediaLoader.isPlayableVideo) {
-          _this2.createTextureB(textureA, function (textureB) {
+          _this3.createTextureB(textureA, function (textureB) {
             // console.log('MediaMesh.textureB', textureB);
             textureB.minFilter = THREE.LinearFilter;
             textureB.magFilter = THREE.LinearFilter;
@@ -12684,23 +12814,23 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         }
       }
 
-      _this2.onAppear();
+      _this3.onAppear();
 
       if (mediaLoader.isPlayableVideo) {
         material.uniforms.video.value = true;
-        _this2.onOver = _this2.onOver.bind(_this2);
-        _this2.onOut = _this2.onOut.bind(_this2);
-        _this2.onToggle = _this2.onToggle.bind(_this2);
+        _this3.onOver = _this3.onOver.bind(_this3);
+        _this3.onOut = _this3.onOut.bind(_this3);
+        _this3.onToggle = _this3.onToggle.bind(_this3);
 
-        _this2.on('over', _this2.onOver);
+        _this3.on('over', _this3.onOver);
 
-        _this2.on('out', _this2.onOut);
+        _this3.on('out', _this3.onOut);
 
-        _this2.on('down', _this2.onToggle);
+        _this3.on('down', _this3.onToggle);
       }
 
       if (typeof callback === 'function') {
-        callback(_this2);
+        callback(_this3);
       }
     });
   };
@@ -12747,7 +12877,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   _proto.events$ = function events$() {
-    var _this3 = this;
+    var _this4 = this;
 
     var item = this.item;
     var items = this.items;
@@ -12765,9 +12895,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         if (eventItem) {
           // console.log('MediaLoader.events$.eventItem', event, eventItem);
           if (event instanceof MediaLoaderPlayEvent) {
-            _this3.play();
+            _this4.play();
           } else if (event instanceof MediaLoaderPauseEvent) {
-            _this3.pause();
+            _this4.pause();
           }
         }
       }

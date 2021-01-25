@@ -119,6 +119,7 @@ export default class UpdateViewItemComponent extends Component {
 					case 'assetType':
 						control = new FormControl(value, optional ? undefined : RequiredValidator());
 						control.options = Object.keys(AssetGroupType).map(x => AssetGroupType[x]);
+						// console.log(control.options);
 						break;
 					case 'link':
 						const title = item.link ? item.link.title : null;
