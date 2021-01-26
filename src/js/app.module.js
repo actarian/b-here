@@ -19,6 +19,7 @@ import ControlAssetsComponent from './forms/control-assets.component';
 import ControlCheckboxComponent from './forms/control-checkbox.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
 import ControlLinkComponent from './forms/control-link.component';
+import ControlLocalizedAssetComponent from './forms/control-localized-asset.component';
 import ControlMenuComponent from './forms/control-menu.component';
 import ControlModelComponent from './forms/control-model.component';
 import ControlNumberComponent from './forms/control-number.component';
@@ -82,6 +83,7 @@ AppModule.meta = {
 		ControlMenuComponent,
 		ControlModelComponent,
 		ControlAssetsComponent,
+		ControlLocalizedAssetComponent,
 		ControlCheckboxComponent,
 		ControlCustomSelectComponent,
 		ControlLinkComponent,

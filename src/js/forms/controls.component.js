@@ -15,10 +15,6 @@ export default class ControlsComponent extends Component {
 		}
 	}
 
-	onInit() {
-		console.log(this.group, this.fields);
-	}
-
 	getControl(name) {
 		return this.group.get(name);
 	}

@@ -67,5 +67,7 @@ export const environmentStatic = {
 			},
 			remove: '/remove-modal.html',
 		}
-	}
+	},
+	languages: ['en'],
+	defaultLanguage: 'en',
 };

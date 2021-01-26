@@ -189,7 +189,9 @@ function _readOnlyError(name) {
       },
       remove: '/template/modules/b-here/remove-modal.cshtml'
     }
-  }
+  },
+  languages: ['it', 'en'],
+  defaultLanguage: 'it'
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
@@ -258,7 +260,9 @@ function _readOnlyError(name) {
       },
       remove: '/remove-modal.html'
     }
-  }
+  },
+  languages: ['it', 'en'],
+  defaultLanguage: 'it'
 };var Utils = /*#__PURE__*/function () {
   function Utils() {}
 
@@ -465,10 +469,6 @@ LabelPipe.meta = {
   }
 
   var _proto = ControlsComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    console.log(this.group, this.fields);
-  };
 
   _proto.getControl = function getControl(name) {
     return this.group.get(name);
@@ -6617,7 +6617,116 @@ AsideComponent.meta = {
   selector: '[aside]',
   outputs: ['select', 'update', 'delete'],
   inputs: ['view']
-};var EditorService = /*#__PURE__*/function () {
+};var AssetService = /*#__PURE__*/function () {
+  function AssetService() {}
+
+  AssetService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetUpdate$ = function assetUpdate$(asset) {
+    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetDelete$ = function assetDelete$(asset) {
+    if (asset && asset.id) {
+      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
+        return null;
+      }));
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  AssetService.localizedAssetCreate$ = function localizedAssetCreate$(lg, asset) {
+    return HttpService.post$("/api/" + lg + "/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.localizedAssetUpdate$ = function localizedAssetUpdate$(lg, asset) {
+    return HttpService.put$("/api/" + lg + "/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.upload$ = function upload$(files) {
+    var formData = new FormData();
+    files.forEach(function (file) {
+      return formData.append('file', file, file.name);
+    });
+    var xhr = new XMLHttpRequest();
+    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
+      switch (event.type) {
+        case 'readystatechange':
+          if (xhr.readyState === 4) {
+            return JSON.parse(xhr.responseText);
+          } else {
+            return null;
+          }
+
+        default:
+          return null;
+      }
+    }), operators.filter(function (event) {
+      return event !== null;
+    }));
+    xhr.open('POST', "/api/upload/", true);
+    xhr.send(formData);
+    return events$;
+  };
+
+  AssetService.createOrUpdateAsset$ = function createOrUpdateAsset$(uploads, control) {
+    var upload = uploads[0];
+    var asset = Asset.fromUrl(upload.url);
+
+    if (control.value && control.value.id) {
+      // !!! must check for id
+      asset.id = control.value.id;
+      return this.assetUpdate$(asset);
+    } else {
+      return this.assetCreate$(asset);
+    }
+  };
+
+  AssetService.createOrUpdateLocalizedAsset$ = function createOrUpdateLocalizedAsset$(uploads, control, lg) {
+    var upload = uploads[0];
+    var asset = Asset.fromUrl(upload.url);
+
+    if (control.value && control.value.id) {
+      // !!! must check for id
+      asset.id = control.value.id;
+      return this.localizedAssetUpdate$(lg, asset);
+    } else {
+      return this.localizedAssetCreate$(lg, asset);
+    }
+  };
+
+  AssetService.assetDidChange = function assetDidChange(previous, current) {
+    var previousId = null;
+    var previousFile = null;
+    var currentId = null;
+    var currentFile = null;
+
+    if (previous) {
+      previousId = previous.id;
+      previousFile = previous.file;
+    }
+
+    if (current) {
+      currentId = current.id;
+      currentFile = current.file;
+    }
+
+    return previousId !== currentId || previousFile !== currentFile;
+  };
+
+  return AssetService;
+}();var EditorService = /*#__PURE__*/function () {
   function EditorService() {}
 
   EditorService.data$ = function data$() {
@@ -7047,16 +7156,22 @@ AsideComponent.meta = {
   _proto.onWorldSelect = function onWorldSelect(event) {
     // console.log('EditorComponent.onWorldSelect', this.view);
     if (this.view) {
+      var selectedItem;
       this.view.items.forEach(function (item) {
         return item.showPanel = false;
       });
       this.view.items.forEach(function (item) {
-        return item.selected = item === event.item;
+        item.selected = item === event.item;
+        selectedItem = item.selected ? item : selectedItem;
       });
-      this.view.selected = this.view.items.find(function (item) {
-        return item.selected;
-      }) === undefined;
+      this.view.selected = !selectedItem;
       this.pushChanges();
+
+      if (selectedItem) {
+        this.aside = true;
+        this.pushChanges();
+        window.dispatchEvent(new Event('resize'));
+      }
     }
   };
 
@@ -7224,12 +7339,18 @@ AsideComponent.meta = {
     if (event.item && event.view) {
       this.pushChanges();
     } else if (event.tile && event.view) ; else if (event.view) {
-      var assetDidChange = this.view.asset.id !== event.view.asset.id;
-      Object.assign(this.view, event.view);
-
-      if (assetDidChange) {
+      if (ViewService.viewId !== event.view.id) {
         ViewService.viewId = event.view.id;
       } else {
+        var assetDidChange = AssetService.assetDidChange(this.view.asset, event.view.asset);
+        Object.assign(this.view, event.view);
+
+        if (assetDidChange) {
+          if (typeof this.view.onUpdateAsset === 'function') {
+            this.view.onUpdateAsset();
+          }
+        }
+
         this.pushChanges();
       }
     }
@@ -7438,58 +7559,127 @@ var MenuService = /*#__PURE__*/function () {
 
 _defineProperty(MenuService, "active$", new rxjs.BehaviorSubject(false));
 
-_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var AssetService = /*#__PURE__*/function () {
-  function AssetService() {}
+_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var DropService = /*#__PURE__*/function () {
+  function DropService() {}
 
-  AssetService.assetCreate$ = function assetCreate$(asset) {
-    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
+  DropService.drop$ = function drop$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      var body = document.querySelector('body');
+      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        console.log('DropService.drop$', event);
+        event.preventDefault();
 
-  AssetService.assetUpdate$ = function assetUpdate$(asset) {
-    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
+        if (event.target === input) {
+          input.files = event.dataTransfer.files;
+        }
 
-  AssetService.assetDelete$ = function assetDelete$(asset) {
-    if (asset && asset.id) {
-      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
-        return null;
+        return;
       }));
     } else {
-      return rxjs.of(null);
+      return rxjs.EMPTY;
     }
   };
 
-  AssetService.upload$ = function upload$(files) {
-    var formData = new FormData();
-    files.forEach(function (file) {
-      return formData.append('file', file, file.name);
-    });
-    var xhr = new XMLHttpRequest();
-    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
-      switch (event.type) {
-        case 'readystatechange':
-          if (xhr.readyState === 4) {
-            return JSON.parse(xhr.responseText);
-          } else {
-            return null;
-          }
-
-        default:
-          return null;
-      }
-    }), operators.filter(function (event) {
-      return event !== null;
-    }));
-    xhr.open('POST', "/api/upload/", true);
-    xhr.send(formData);
-    return events$;
+  DropService.change$ = function change$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
+        return input.files && input.files.length;
+      }), operators.map(function (event) {
+        return Array.from(input.files);
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
   };
 
-  return AssetService;
+  DropService.asset$ = function asset$(input, previews) {
+    var _this = this;
+
+    if (previews === void 0) {
+      previews = [];
+    }
+
+    return this.change$(input).pipe(operators.switchMap(function (files) {
+      previews.length = files.length;
+      previews.fill(null); // output.previews = files.map(() => null);
+
+      var uploads$ = files.map(function (file, i) {
+        return _this.read$(file, i, previews).pipe(operators.map(function () {
+          return file;
+        }), operators.switchMap(function (file) {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          var upload = uploads[0];
+          var asset = Asset.fromUrl(upload.url);
+          return AssetService.assetCreate$(asset);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }));
+  };
+
+  DropService.read$ = function read$(file, i, previews) {
+    var _this2 = this;
+
+    if (previews === void 0) {
+      previews = [];
+    }
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
+      var blob = event.target.result;
+      return _this2.resize$(blob);
+    }), operators.tap(function (resized) {
+      previews[i] = resized;
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  DropService.resize$ = function resize$(blob) {
+    return rxjs.from(this.resize_(blob));
+  };
+
+  DropService.resize_ = function resize_(blob) {
+    return new Promise(function (resolve, reject) {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(dataUrl);
+      };
+
+      img.onerror = function () {
+        reject(blob);
+      };
+
+      img.src = blob;
+    });
+  };
+
+  return DropService;
 }();var ControlComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlComponent, _Component);
 
@@ -7538,118 +7728,29 @@ ControlComponent.meta = {
 
     var input = node.querySelector('input');
     input.setAttribute('accept', this.accept);
-    this.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
-    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+    DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      // this.previews.length = files.length;
+      // this.previews.fill(null);
+      _this.previews = files.map(function () {
+        return null;
+      });
+      var uploads$ = files.map(function (file, i) {
+        return DropService.read$(file, i).pipe(operators.tap(function (resized) {
+          _this.previews[i] = resized;
+
+          _this.pushChanges();
+        }), operators.switchMap(function () {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          return AssetService.createOrUpdateAsset$(uploads, _this.control);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
       // console.log('ControlAssetComponent.change$', assets);
       _this.control.value = assets[0];
     });
-  };
-
-  _proto.change$ = function change$(input) {
-    var _this2 = this;
-
-    if (rxcomp.isPlatformBrowser && input) {
-      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
-        return input.files && input.files.length;
-      }), operators.switchMap(function (event) {
-        // console.log('ControlAssetComponent.change$', input.files);
-        var fileArray = Array.from(input.files);
-        _this2.previews = fileArray.map(function () {
-          return null;
-        });
-        var uploads$ = fileArray.map(function (file, i) {
-          return _this2.read$(file, i).pipe(operators.switchMap(function () {
-            return AssetService.upload$([file]);
-          }), // tap(uploads => console.log('upload', uploads)),
-          operators.switchMap(function (uploads) {
-            var upload = uploads[0];
-            /*
-            id: 1601303293569
-            type: "image/jpeg"
-            file: "1601303293569_ambiente1_x0_y2.jpg"
-            originalFileName: "ambiente1_x0_y2.jpg"
-            url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
-            */
-
-            var asset = Asset.fromUrl(upload.url);
-            return AssetService.assetCreate$(asset);
-          }));
-        });
-        return rxjs.combineLatest(uploads$);
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  _proto.read$ = function read$(file, i) {
-    var _this3 = this;
-
-    var reader = new FileReader();
-    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.tap(function (event) {
-      var blob = event.target.result;
-
-      _this3.resize_(blob, function (resized) {
-        _this3.previews[i] = resized;
-
-        _this3.pushChanges();
-      });
-    }));
-    reader.readAsDataURL(file);
-    return reader$;
-  };
-
-  _proto.drop$ = function drop$(input) {
-    if (rxcomp.isPlatformBrowser && input) {
-      var body = document.querySelector('body');
-      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        console.log('ControlAssetComponent.drop$', event);
-        event.preventDefault();
-
-        if (event.target === input) {
-          input.files = event.dataTransfer.files;
-        }
-
-        return;
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  _proto.resize_ = function resize_(blob, callback) {
-    if (typeof callback === 'function') {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 320;
-        var MAX_HEIGHT = 240;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        callback(dataUrl);
-      };
-
-      img.src = blob;
-    }
   };
 
   _createClass(ControlAssetComponent, [{
@@ -8809,13 +8910,12 @@ RemoveModalComponent.meta = {
   };
 
   _proto.getAssetDidChange = function getAssetDidChange(changes) {
-    var item = this.item;
-    var itemAssetId = item.asset ? item.asset.id : null;
-    var changesAssetId = changes.asset ? changes.asset.id : null;
-    var itemHasChromaKeyColor = item.hasChromaKeyColor === true;
-    var changesHasChromaKeyColor = changes.hasChromaKeyColor === true; // console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
+    var item = this.item; // console.log('UpdateViewItemComponent.getAssetDidChange', item, changes);
 
-    if (itemAssetId !== changesAssetId || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
+    var itemHasChromaKeyColor = item.hasChromaKeyColor === true;
+    var changesHasChromaKeyColor = changes.hasChromaKeyColor === true;
+
+    if (AssetService.assetDidChange(item.asset, changes.asset) || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
       return true;
     } else {
       return false;
@@ -9082,7 +9182,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -9194,30 +9294,64 @@ UpdateViewTileComponent.meta = {
     this.flags = environment.flags;
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
+    this.doUpdateForm();
     form.changes$.subscribe(function (changes) {
-      // console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
+      // console.log('UpdateViewComponent.form.changes$', changes);
+      _this.doUpdateView(changes);
+
       _this.pushChanges();
     });
-    this.doUpdateForm();
-    MessageService.in$.pipe(operators.auditTime(500), operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-      switch (message.type) {
-        case MessageType.ControlInfo:
-          switch (_this.view.type.name) {
-            case ViewType.Panorama.name:
-            case ViewType.PanoramaGrid.name:
-            case ViewType.Model.name:
-              _this.form.patch({
-                latitude: message.orientation.latitude,
-                longitude: message.orientation.longitude,
-                zoom: message.zoom
-              });
-
-              break;
-          }
+    this.orbit$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      switch (_this.view.type.name) {
+        case ViewType.Panorama.name:
+        case ViewType.PanoramaGrid.name:
+        case ViewType.Model.name:
+          _this.form.patch({
+            latitude: message.orientation.latitude,
+            longitude: message.orientation.longitude,
+            zoom: message.zoom
+          });
 
           break;
       }
     });
+  };
+
+  _proto.orbit$ = function orbit$() {
+    var latitude,
+        longitude,
+        zoom = null;
+    return MessageService.in$.pipe(operators.filter(function (message) {
+      return message.type === MessageType.ControlInfo;
+    }), operators.auditTime(65), operators.distinctUntilChanged(function (previous, current) {
+      var didChange = latitude !== current.orientation.latitude || longitude !== current.orientation.longitude || zoom !== current.zoom;
+      latitude = current.orientation.latitude;
+      longitude = current.orientation.longitude;
+      zoom = current.zoom;
+      return !didChange;
+    }));
+  };
+
+  _proto.getAssetDidChange = function getAssetDidChange(changes) {
+    var view = this.view;
+    var assetDidChange = AssetService.assetDidChange(view.asset, changes.asset);
+    var usdzDidChange = AssetService.assetDidChange(view.ar ? view.ar.usdz : null, changes.usdz);
+    var gltfDidChange = AssetService.assetDidChange(view.ar ? view.ar.gltf : null, changes.gltf);
+
+    if (assetDidChange || usdzDidChange || gltfDidChange) {
+      // console.log('UpdateViewComponent.getAssetDidChange', assetDidChange, usdzDidChange, gltfDidChange);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  _proto.doUpdateView = function doUpdateView(changes) {
+    var assetDidChange = this.getAssetDidChange(changes); // console.log('doUpdateItem.assetDidChange', assetDidChange);
+
+    if (assetDidChange) {
+      this.onSubmit();
+    }
   };
 
   _proto.doUpdateForm = function doUpdateForm() {
@@ -9306,16 +9440,14 @@ UpdateViewTileComponent.meta = {
         delete payload.longitude;
       }
 
-      if (payload.usdz != null || payload.gltf != null) {
-        // !!! keep loose inequality
-        payload.ar = {
-          usdz: payload.usdz || null,
-          gltf: payload.gltf || null
-        };
-        delete payload.usdz;
-        delete payload.gltf;
-      }
-
+      var usdz = payload.usdz || null;
+      var gltf = payload.gltf || null;
+      delete payload.usdz;
+      delete payload.gltf;
+      payload.ar = usdz || gltf ? {
+        usdz: usdz,
+        gltf: gltf
+      } : null;
       var view = new View(payload);
       EditorService.viewUpdate$(view).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
@@ -9371,7 +9503,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -10088,6 +10220,98 @@ ControlLinkComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlLocalizedAssetComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlLocalizedAssetComponent, _ControlComponent);
+
+  function ControlLocalizedAssetComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlLocalizedAssetComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+    this.accept = this.accept || 'image/png, image/jpeg';
+    this.previews = [];
+    this.languages = environment.languages;
+    this.currentLanguage = environment.defaultLanguage;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      // this.previews.length = files.length;
+      // this.previews.fill(null);
+      _this.previews = files.map(function () {
+        return null;
+      });
+      var uploads$ = files.map(function (file, i) {
+        return DropService.read$(file, i).pipe(operators.tap(function (resized) {
+          _this.previews[i] = resized;
+
+          _this.pushChanges();
+        }), operators.switchMap(function () {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          return (_this.languages.length > 1 ? AssetService.createOrUpdateLocalizedAsset$ : AssetService.createOrUpdateAsset$)(uploads, _this.control, _this.currentLanguage);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+      // console.log('ControlLocalizedAssetComponent.change$', assets);
+      _this.control.value = assets[0];
+    });
+  };
+
+  _proto.setLanguage = function setLanguage(language) {
+    this.currentLanguage = language;
+    this.pushChanges();
+  };
+
+  _createClass(ControlLocalizedAssetComponent, [{
+    key: "localizedValue",
+    get: function get() {
+      var asset = this.control.value;
+
+      if (asset && asset.locale) {
+        var localizedAsset = asset.locale[this.currentLanguage];
+
+        if (localizedAsset) {
+          asset = localizedAsset;
+        }
+      }
+
+      return asset;
+    }
+  }, {
+    key: "image",
+    get: function get() {
+      var image = null;
+
+      if (this.localizedValue) {
+        image = "" + this.localizedValue.folder + this.localizedValue.file;
+      } else if (this.previews && this.previews.length) {
+        image = this.previews[0];
+      }
+
+      return image;
+    }
+  }]);
+
+  return ControlLocalizedAssetComponent;
+}(ControlComponent);
+ControlLocalizedAssetComponent.meta = {
+  selector: '[control-localized-asset]',
+  inputs: ['control', 'label', 'disabled', 'accept'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"localizedValue | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"localizedValue && localizedValue.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"localizedValue | asset\" *if=\"localizedValue && localizedValue.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"localizedValue\" [innerHTML]=\"localizedValue.file\"></div>\n\t\t\t<ul class=\"nav--languages\" *if=\"languages.length > 1\">\n\t\t\t\t<li class=\"nav__item\" [class]=\"{ active: lang == currentLanguage }\" (click)=\"setLanguage(lang)\" [innerHTML]=\"lang\" *for=\"let lang of languages\"></li>\n\t\t\t</ul>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlModelComponent = /*#__PURE__*/function (_ControlAssetComponen) {
   _inheritsLoose(ControlModelComponent, _ControlAssetComponen);
 
@@ -10115,15 +10339,28 @@ ControlLinkComponent.meta = {
     ).subscribe();
     */
 
-    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      var uploads$ = files.map(function (file, i) {
+        return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
+          return AssetService.createOrUpdateAsset$(uploads, _this.control);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
       console.log('ControlModelComponent.change$', assets);
       _this.control.value = assets[0];
     });
   };
 
   _proto.onRemove = function onRemove(event) {
-    this.control.value = null;
-    this.input.value = null;
+    var _this2 = this;
+
+    AssetService.assetDelete$(this.control.value).pipe(operators.first()).subscribe(function () {
+      _this2.control.value = null;
+      _this2.input.value = null;
+      _this2.control.touched = true; // !!!
+    }); // !!! delete upload
+    // !!! delete asset
   }
   /*
   click$(input) {
@@ -15055,6 +15292,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var view = this.view_;
 
     if (view) {
+      this.views.forEach(function (view) {
+        return delete view.onUpdateAsset;
+      });
       var message = this.requestInfoResult;
 
       if (message) {
@@ -15070,7 +15310,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       this.panorama.change(view, this.renderer, function (envMap, texture, rgbe) {
         // this.scene.background = envMap;
         _this2.scene.environment = envMap;
-        view.ready = true; // this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+        view.ready = true;
+
+        view.onUpdateAsset = function () {
+          _this2.onViewAssetDidChange();
+        }; // this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+
 
         _this2.pushChanges(); // this.render();
 
@@ -15078,6 +15323,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         _this2.setViewOrientation(view); // this.loading = null;
         // this.pushChanges();
 
+      });
+    }
+  };
+
+  _proto.onViewAssetDidChange = function onViewAssetDidChange() {
+    var _this3 = this;
+
+    if (this.panorama) {
+      this.panorama.crossfade(this.view, this.renderer, function (envMap, texture, rgbe) {
+        _this3.scene.environment = envMap;
       });
     }
   };
@@ -15113,7 +15368,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addController = function addController(index) {
-    var _this3 = this;
+    var _this4 = this;
 
     var showPhone =  StateService.state.live;
     var renderer = this.renderer;
@@ -15125,7 +15380,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
     var setController = function setController(controller) {
       // console.log('setController', this);
-      _this3.controller = controller;
+      _this4.controller = controller;
     };
 
     var onSelectStart = function onSelectStart(event) {
@@ -15165,19 +15420,19 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     };
 
     var onRelease = function onRelease(event) {
-      _this3.onModelUp();
+      _this4.onModelUp();
     };
 
     var onLeft = function onLeft(event) {
       // console.log('Gamepad.onLeft', event, controller);
       // debugService.setMessage('Gamepad.onLeft');
-      _this3.cameraGroup.rotation.y += Math.PI / 180 * 45;
+      _this4.cameraGroup.rotation.y += Math.PI / 180 * 45;
     };
 
     var onRight = function onRight(event) {
       // console.log('Gamepad.onRight', event, controller);
       // debugService.setMessage('Gamepad.onRight');
-      _this3.cameraGroup.rotation.y -= Math.PI / 180 * 45;
+      _this4.cameraGroup.rotation.y -= Math.PI / 180 * 45;
     };
     /*
     const onAxis = (event) => {
@@ -15191,7 +15446,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var onAxis = function onAxis(event) {
       // console.log('Gamepad.onAxis', event, controller);
       // debugService.setMessage('Gamepad.onAxis');
-      _this3.onModelDistance(event.y);
+      _this4.onModelDistance(event.y);
     };
     /*
     const onUp = (event) => {
@@ -15217,10 +15472,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
 
     var onConnected = function onConnected(event) {
-      controller.add(_this3.buildController(event.data));
+      controller.add(_this4.buildController(event.data));
 
       if (showPhone && event.data.handedness === 'left') {
-        var phone = _this3.phone = new PhoneElement();
+        var phone = _this4.phone = new PhoneElement();
         controller.add(phone.mesh);
       }
 
@@ -15297,6 +15552,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onModelDown = function onModelDown(event) {
+    // vr controller model grab
     var controller = this.controller;
 
     if (controller && this.renderer.xr.isPresenting) {
@@ -15313,6 +15569,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onModelDistance = function onModelDistance(direction) {
+    // vr controller model distance
     var controller = this.controller;
     var target = this.tempTarget;
 
@@ -15328,6 +15585,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onModelUp = function onModelUp() {
+    // vr controller model release
     var target = this.tempTarget;
     var parent = this.tempParent;
 
@@ -15406,7 +15664,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.render = function render(delta) {
-    var _this4 = this;
+    var _this5 = this;
 
     try {
       var renderer = this.renderer,
@@ -15422,7 +15680,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       });
       this.vrService.updateState(this);
       Object.keys(this.avatars).forEach(function (key) {
-        _this4.avatars[key].render();
+        _this5.avatars[key].render();
       });
 
       if (renderer.xr.isPresenting) {
@@ -15767,26 +16025,26 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onGridMove = function onGridMove(event) {
-    var _this5 = this;
+    var _this6 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
     this.view.items = []; // this.loading = loadingBanner;
 
     this.pushChanges();
     this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
-      var tile = _this5.view.getTile(event.indices.x, event.indices.y);
+      var tile = _this6.view.getTile(event.indices.x, event.indices.y);
 
       if (tile) {
-        _this5.panorama.crossfade(tile, _this5.renderer, function (envMap, texture, rgbe) {
+        _this6.panorama.crossfade(tile, _this6.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
-          _this5.scene.environment = envMap;
+          _this6.scene.environment = envMap;
 
-          _this5.orbit.walkComplete(headingLongitude, headingLatitude);
+          _this6.orbit.walkComplete(headingLongitude, headingLatitude);
 
-          _this5.view.updateCurrentItems(); // this.loading = null;
+          _this6.view.updateCurrentItems(); // this.loading = null;
 
 
-          _this5.pushChanges(); // this.render();
+          _this6.pushChanges(); // this.render();
           // this.pushChanges();
 
         });
@@ -15809,16 +16067,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.control$ = function control$() {
-    var _this6 = this;
+    var _this7 = this;
 
     return this.controlEvent$.pipe(operators.filter(function () {
-      return StateService.state.control || StateService.state.spyed || _this6.editor;
+      return StateService.state.control || StateService.state.spyed || _this7.editor;
     }), operators.auditTime(40), operators.tap(function (control) {
-      control.orientation.latitude = _this6.orbit.latitude;
-      control.orientation.longitude = _this6.orbit.longitude;
-      control.zoom = _this6.orbit.zoom;
+      control.orientation.latitude = _this7.orbit.latitude;
+      control.orientation.longitude = _this7.orbit.longitude;
+      control.zoom = _this7.orbit.zoom;
 
-      var intersections = _this6.raycaster.intersectObjects([_this6.panorama.mesh]);
+      var intersections = _this7.raycaster.intersectObjects([_this7.panorama.mesh]);
 
       var point = intersections.length ? intersections[0].point.normalize() : null;
 
@@ -15833,7 +16091,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addListeners = function addListeners() {
-    var _this7 = this;
+    var _this8 = this;
 
     this.control = {
       type: MessageType.ControlInfo,
@@ -15848,16 +16106,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.control$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     var vrService = this.vrService = VRService.getService();
     vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-      _this7.renderer.xr.setSession(session);
+      _this8.renderer.xr.setSession(session);
 
       if (session) {
-        _this7.onVRStarted();
+        _this8.onVRStarted();
       } else {
-        _this7.onVREnded();
+        _this8.onVREnded();
       }
     });
     vrService.state$.pipe(operators.takeUntil(this.unsubscribe$), operators.auditTime(Math.floor(1000 / 15))).subscribe(function (state) {
-      _this7.onVRStateDidChange(state);
+      _this8.onVRStateDidChange(state);
     });
     var orbit$ = this.orbit.observe$(this.container).pipe(operators.shareReplay(1));
     /*
@@ -15871,18 +16129,18 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }), operators.auditTime(Math.floor(1000 / 15)));
     orientation$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       // this.render();
-      _this7.onOrientationDidChange();
+      _this8.onOrientationDidChange();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.RequestInfo:
           message.type = MessageType.RequestInfoResult;
-          message.viewId = _this7.view.id;
-          message.orientation = _this7.orbit.getOrientation();
-          message.zoom = _this7.orbit.zoom;
+          message.viewId = _this8.view.id;
+          message.orientation = _this8.orbit.getOrientation();
+          message.zoom = _this8.orbit.zoom;
 
-          if (_this7.view instanceof PanoramaGridView) {
-            message.gridIndex = _this7.view.index;
+          if (_this8.view instanceof PanoramaGridView) {
+            message.gridIndex = _this8.view.index;
           } // console.log('WorldComponent', 'MessageType.RequestInfo', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
 
 
@@ -15900,22 +16158,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           // console.log('WorldComponent', 'MessageType.RequestInfoResult', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
           if (ViewService.viewId !== message.viewId) {
             ViewService.viewId = message.viewId;
-            _this7.requestInfoResult = message;
+            _this8.requestInfoResult = message;
           } else {
-            _this7.orbit.setOrientation(message.orientation);
+            _this8.orbit.setOrientation(message.orientation);
 
-            if (!_this7.renderer.xr.isPresenting) {
-              _this7.orbit.zoom = message.zoom;
+            if (!_this8.renderer.xr.isPresenting) {
+              _this8.orbit.zoom = message.zoom;
 
-              _this7.camera.updateProjectionMatrix();
+              _this8.camera.updateProjectionMatrix();
             }
 
-            if (_this7.view instanceof PanoramaGridView && message.gridIndex) {
-              _this7.view.index = message.gridIndex;
+            if (_this8.view instanceof PanoramaGridView && message.gridIndex) {
+              _this8.view.index = message.gridIndex;
             }
 
-            if (!_this7.view || !_this7.view.ready) {
-              _this7.requestInfoResult = message;
+            if (!_this8.view || !_this8.view.ready) {
+              _this8.requestInfoResult = message;
             }
           }
           /*
@@ -15952,20 +16210,20 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         */
 
         case MessageType.ShowPanel:
-          if (_this7.menu) {
-            _this7.menu.removeMenu();
+          if (_this8.menu) {
+            _this8.menu.removeMenu();
           }
 
-          _this7.view.items.forEach(function (item) {
+          _this8.view.items.forEach(function (item) {
             return item.showPanel = item.id === message.itemId;
           });
 
-          _this7.pushChanges();
+          _this8.pushChanges();
 
           break;
 
         case MessageType.PlayMedia:
-          var item = _this7.view.items.find(function (item) {
+          var item = _this8.view.items.find(function (item) {
             return item.id === message.itemId;
           });
 
@@ -15977,47 +16235,47 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.NavToGrid:
           // console.log('WorldComponent.NavToGrid', this.view.id, message);
-          if (_this7.view.id === message.viewId) {
-            _this7.view.index = message.gridIndex;
+          if (_this8.view.id === message.viewId) {
+            _this8.view.index = message.gridIndex;
           }
 
           break;
 
         case MessageType.VRStarted:
-          _this7.addOffCanvasScene(message);
+          _this8.addOffCanvasScene(message);
 
           break;
 
         case MessageType.VREnded:
-          _this7.removeOffCanvasScene(message);
+          _this8.removeOffCanvasScene(message);
 
           break;
 
         case MessageType.VRState:
-          _this7.updateOffCanvasScene(message);
+          _this8.updateOffCanvasScene(message);
 
           if (StateService.state.spying === message.clientId) {
-            _this7.orbit.setVRCamera(message.camera);
+            _this8.orbit.setVRCamera(message.camera);
           }
 
           break;
 
         case MessageType.ControlInfo:
-          if (!_this7.renderer.xr.isPresenting) {
-            _this7.orbit.setOrientation(message.orientation);
+          if (!_this8.renderer.xr.isPresenting) {
+            _this8.orbit.setOrientation(message.orientation);
 
-            _this7.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
+            _this8.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
             // this.render();
           }
 
-          _this7.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
+          _this8.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
 
           break;
       }
     });
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this7.state = state;
-      _this7.showPointer = StateService.state.locked || StateService.state.spying; // console.log(state);
+      _this8.state = state;
+      _this8.showPointer = StateService.state.locked || StateService.state.spying; // console.log(state);
       // this.pushChanges();
     });
     this.resize = this.resize.bind(this);
@@ -19800,6 +20058,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, ControlsComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlLocalizedAssetComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, ControlsComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

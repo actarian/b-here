@@ -67,5 +67,7 @@ export const environmentServed = {
 			},
 			remove: '/template/modules/b-here/remove-modal.cshtml',
 		}
-	}
+	},
+	languages: ['en'],
+	defaultLanguage: 'en',
 };
