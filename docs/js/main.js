@@ -131,6 +131,7 @@ function _readOnlyError(name) {
     selfService: true,
     guidedTourRequest: true,
     editor: false,
+    editorAssetScreen: false,
     ar: true,
     menu: true,
     attendee: true,
@@ -197,11 +198,12 @@ function _readOnlyError(name) {
   channelName: 'BHere',
   flags: {
     production: false,
-    useProxy: false,
+    useProxy: true,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
     editor: true,
+    editorAssetScreen: true,
     ar: true,
     menu: true,
     attendee: true,
@@ -2526,7 +2528,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
     var clientInit = function clientInit() {
       if (environment.flags.useProxy) {
-        client.startProxyServer();
+        client.startProxyServer(3);
+        console.log('AgoraService.client.startProxyServer');
       }
 
       client.init(environment.appKey, function () {
@@ -2962,6 +2965,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
           if (environment.flags.useProxy) {
             client.stopProxyServer();
+            console.log('AgoraService.client.stopProxyServer');
           }
 
           resolve();
@@ -3681,7 +3685,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
     var clientInit = function clientInit() {
       if (environment.flags.useProxy) {
-        screenClient.startProxyServer();
+        screenClient.startProxyServer(3);
+        console.log('AgoraService.screenClient.startProxyServer');
       }
 
       screenClient.init(environment.appKey, function () {
@@ -3809,6 +3814,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
           if (environment.flags.useProxy) {
             screenClient.stopProxyServer();
+            console.log('AgoraService.screenClient.stopProxyServer');
           }
 
           resolve();
@@ -6162,18 +6168,24 @@ var AssetGroupType = {
     id: 4,
     name: 'Attendee',
     ids: [5]
-  },
-  PublisherScreen: {
+  } // PublisherScreen: { id: 5, name: 'PublisherScreen', ids: [6] },
+  // AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
+
+};
+
+if (environment.flags.editorAssetScreen) {
+  AssetGroupType.PublisherScreen = {
     id: 5,
     name: 'PublisherScreen',
     ids: [6]
-  },
-  AttendeeScreen: {
+  };
+  AssetGroupType.AttendeeScreen = {
     id: 6,
     name: 'AttendeeScreen',
     ids: [7]
-  }
-};
+  };
+}
+
 var STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name];
 function assetIsStream(asset) {
   return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;

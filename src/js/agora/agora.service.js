@@ -214,7 +214,8 @@ export default class AgoraService extends Emittable {
 		const client = this.client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc
 		const clientInit = () => {
 			if (environment.flags.useProxy) {
-				client.startProxyServer();
+				client.startProxyServer(3);
+				console.log('AgoraService.client.startProxyServer');
 			}
 			client.init(environment.appKey, () => {
 				// console.log('AgoraRTC client initialized');
@@ -610,6 +611,7 @@ export default class AgoraService extends Emittable {
 					// console.log('Leave channel successfully');
 					if (environment.flags.useProxy) {
 						client.stopProxyServer();
+						console.log('AgoraService.client.stopProxyServer');
 					}
 					resolve();
 				}, (error) => {
@@ -1197,7 +1199,8 @@ export default class AgoraService extends Emittable {
 		const screenClient = this.screenClient = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
 		const clientInit = () => {
 			if (environment.flags.useProxy) {
-				screenClient.startProxyServer();
+				screenClient.startProxyServer(3);
+				console.log('AgoraService.screenClient.startProxyServer');
 			}
 			screenClient.init(environment.appKey, () => {
 				// console.log('AgoraRTC screenClient initialized');
@@ -1310,6 +1313,7 @@ export default class AgoraService extends Emittable {
 					// console.log('Leave channel successfully');
 					if (environment.flags.useProxy) {
 						screenClient.stopProxyServer();
+						console.log('AgoraService.screenClient.stopProxyServer');
 					}
 					resolve();
 				}, (error) => {

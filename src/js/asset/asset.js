@@ -1,3 +1,4 @@
+import { environment } from "../environment";
 
 export const EXT_IMAGE = [
 	'jpeg', 'jpg', 'png',
@@ -24,9 +25,14 @@ export const AssetGroupType = {
 	// Model: { id: 2, name: 'Model 3D', ids: [3] },
 	Publisher: { id: 3, name: 'Publisher', ids: [4] },
 	Attendee: { id: 4, name: 'Attendee', ids: [5] },
-	PublisherScreen: { id: 5, name: 'PublisherScreen', ids: [6] },
-	AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
+	// PublisherScreen: { id: 5, name: 'PublisherScreen', ids: [6] },
+	// AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
 };
+
+if (environment.flags.editorAssetScreen) {
+	AssetGroupType.PublisherScreen = { id: 5, name: 'PublisherScreen', ids: [6] };
+	AssetGroupType.AttendeeScreen = { id: 6, name: 'AttendeeScreen', ids: [7] };
+}
 
 export const STREAM_TYPES = [
 	AssetType.PublisherStream.name,
