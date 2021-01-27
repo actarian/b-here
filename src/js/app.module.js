@@ -4,6 +4,7 @@ import AccessComponent from './access/access.component';
 import AgoraDevicePreviewComponent from './agora/agora-device-preview.component';
 import AgoraDeviceComponent from './agora/agora-device.component';
 import AgoraLinkComponent from './agora/agora-link.component';
+import AgoraLoginComponent from './agora/agora-login.component';
 import AgoraNameComponent from './agora/agora-name.component';
 import AgoraStreamComponent from './agora/agora-stream.component';
 import AgoraComponent from './agora/agora.component';
@@ -76,6 +77,7 @@ AppModule.meta = {
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,
 		AgoraLinkComponent,
+		AgoraLoginComponent,
 		AgoraNameComponent,
 		AgoraStreamComponent,
 		AssetPipe,

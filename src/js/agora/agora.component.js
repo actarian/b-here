@@ -54,25 +54,59 @@ export default class AgoraComponent extends Component {
 
 	resolveUser() {
 		UserService.me$().pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(user => {
-			const linkRole = this.getLinkRole();
-			if (user && (!linkRole || linkRole === user.type)) {
-				this.initWithUser(user);
-			} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-				window.location.href = environment.url.access;
-			} else {
-				this.initWithUser({ type: linkRole });
-			}
+			this.initWithUser(user);
+			// this.userGuard(user);
 		});
 	}
 
+	userGuard(user) {
+		const linkRole = this.getLinkRole();
+		if (user && (!linkRole || user.type === linkRole)) {
+			this.initWithUser(user);
+		} else {
+			this.initWithUser({ type: linkRole });
+		}
+	}
+
+	userGuardRedirect(user) {
+		const linkRole = this.getLinkRole();
+		if (user && (!linkRole || linkRole === user.type)) {
+			this.initWithUser(user);
+		} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
+			window.location.href = environment.url.access;
+		} else {
+			this.initWithUser({ type: linkRole });
+		}
+	}
+
+	setNextStatus() {
+		let status = AgoraStatus.Idle;
+		const state = StateService.state;
+		if (!state.link) {
+			status = AgoraStatus.Link;
+		} else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
+			status = AgoraStatus.Login;
+		} else if (!state.name) {
+			status = AgoraStatus.Name;
+		} else if (state.role !== RoleType.Viewer) {
+			status = AgoraStatus.Device;
+		} else {
+			status = AgoraStatus.ShouldConnect;
+		}
+		StateService.patchState({ status });
+		return status;
+	}
+
 	initWithUser(user) {
-		console.log('AgoraComponent.initWithUser', user);
-		const userName = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
-		const role = LocationService.get('role') || user.type;
-		const name = LocationService.get('name') || userName;
 		const link = LocationService.get('link') || null;
+		const role = this.getLinkRole() || (user ? user.type : null);
+		user = user || { type: role };
+		if (role !== user.type) {
+			user = { type: role };
+		}
+		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
 		const hosted = role === RoleType.Publisher ? true : false;
 		const live = (DEBUG || role === RoleType.SelfService) ? false : true;
 		const state = {
@@ -139,17 +173,9 @@ export default class AgoraComponent extends Component {
 			StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
 		} else {
 			agora = this.agora = AgoraService.getSingleton();
-			let status;
-			if (!this.state.link) {
-				status = AgoraStatus.Link;
-			} else if (!this.state.name) {
-				status = AgoraStatus.Name;
-			} else if (this.state.role !== RoleType.Viewer) {
-				status = AgoraStatus.Device;
-			} else {
-				status = AgoraStatus.ShouldConnect;
-			}
-			StateService.patchState({ status });
+			const role = this.getLinkRole();
+			const status = this.setNextStatus();
+			// console.log('initAgora', status, role);
 		}
 		StreamService.local$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -189,7 +215,7 @@ export default class AgoraComponent extends Component {
 					MessageService.sendBack(message);
 					break;
 				case MessageType.RequestControl:
-					console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
+					// console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
 					message.type = MessageType.RequestControlAccepted;
 					MessageService.sendBack(message);
 					StateService.patchState({ locked: true });
@@ -246,6 +272,21 @@ export default class AgoraComponent extends Component {
 	}
 
 	onLink(link) {
+		const role = this.getLinkRole();
+		const user = StateService.state.user;
+		if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
+			StateService.patchState({ link, role, status: AgoraStatus.Login });
+		} else if (StateService.state.name) {
+			if (role === RoleType.Viewer) {
+				StateService.patchState({ link, role });
+				this.connect();
+			} else {
+				StateService.patchState({ link, role, status: AgoraStatus.Device });
+			}
+		} else {
+			StateService.patchState({ link, role, status: AgoraStatus.Name });
+		}
+		/*
 		if (StateService.state.name) {
 			if (StateService.state.role === RoleType.Viewer) {
 				this.connect();
@@ -255,10 +296,21 @@ export default class AgoraComponent extends Component {
 		} else {
 			StateService.patchState({ link, status: AgoraStatus.Name });
 		}
+		*/
+	}
+
+	onLogin(user) {
+		const name = StateService.state.name || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
+		if (name) {
+			StateService.patchState({ user, name, status: AgoraStatus.Device });
+		} else {
+			StateService.patchState({ user, status: AgoraStatus.Name });
+		}
 	}
 
 	onName(name) {
 		if (StateService.state.role === RoleType.Viewer) {
+			StateService.patchState({ name });
 			this.connect();
 		} else {
 			StateService.patchState({ name, status: AgoraStatus.Device });

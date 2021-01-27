@@ -10,6 +10,7 @@
 		error_email: 'email non valida',
 		error_match: 'i campi non corrispondono',
 		error_required: 'campo obbligatorio',
+		error_credentials: 'credenziali non valide',
 		loading: 'loading',
 		remove: 'Rimuovi',
 		required: 'Richiesto',
@@ -28,6 +29,10 @@
 		bhere_take_part_meeting: 'partecipa al meeting',
 		bhere_generate_meeting_id: 'Genera un Meeting ID',
 		bhere_take_part: 'Partecipa',
+		bhere_login: 'Login.',
+		bhere_username: 'Username',
+		bhere_password: 'Password',
+		bhere_cta: 'Accedi',
 		bhere_fill_fullname: 'Inserisci il nome completo',
 		bhere_fill_name_and_surname: 'inserisci un nome e un cognome',
 		bhere_proceed_as: 'prosegui come',
@@ -133,6 +138,29 @@
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 						<span [innerHTML]="'bhere_take_part' | label"></span>
 					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- Status Login -->
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'login'" [agora-login] (login)="onLogin($event)">
+		<div class="group--info">
+			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+				<div class="group--info__content stagger--childs">
+					<div class="title" [innerHTML]="'bhere_login' | label"></div>
+					<input name="checkField" [formControl]="controls.checkField" value="" type="text" style="display:none !important;" />
+					<div control-text [control]="controls.username" [label]="'bhere_username' | label"></div>
+					<div control-password [control]="controls.password" [label]="'bhere_password' | label"></div>
+					<div class="group--error" *if="error">
+						<span class="status-code" [innerHTML]="error.statusCode"></span>
+						<span class="status-message" [innerHTML]="error.statusMessage"></span>
+						<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
+					</div>
+					<div class="info" *if="isValid()" [innerHTML]="'bhere_cta' | label"></div>
+					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+						<span [innerHTML]="'bhere_cta' | label"></span>
+					</button>
+					<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
 				</div>
 			</form>
 		</div>

@@ -190,8 +190,8 @@ function _readOnlyError(name) {
       remove: '/template/modules/b-here/remove-modal.cshtml'
     }
   },
-  languages: ['it', 'en'],
-  defaultLanguage: 'it'
+  languages: ['en'],
+  defaultLanguage: 'en'
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
@@ -261,8 +261,8 @@ function _readOnlyError(name) {
       remove: '/remove-modal.html'
     }
   },
-  languages: ['it', 'en'],
-  defaultLanguage: 'it'
+  languages: ['en'],
+  defaultLanguage: 'en'
 };var Utils = /*#__PURE__*/function () {
   function Utils() {}
 
@@ -1524,7 +1524,9 @@ function getStreamQuality(state) {
   return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
 }
 var AgoraStatus = {
+  Idle: 'idle',
   Link: 'link',
+  Login: 'login',
   Name: 'name',
   Device: 'device',
   ShouldConnect: 'should-connect',
@@ -4215,6 +4217,104 @@ AgoraDeviceComponent.meta = {
 AgoraLinkComponent.meta = {
   selector: '[agora-link]',
   outputs: ['link']
+};var AgoraLoginComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraLoginComponent, _Component);
+
+  function AgoraLoginComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AgoraLoginComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var form = this.form = new rxcompForm.FormGroup({
+      username: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      password: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+    var controls = this.controls = form.controls;
+    form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      _this.pushChanges();
+    });
+    this.error = null;
+  };
+
+  _proto.test = function test() {
+    this.form.patch({
+      username: 'publisher',
+      password: 'publisher',
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+  };
+
+  _proto.reset = function reset() {
+    this.form.reset();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      var payload = this.form.value;
+      this.form.submitted = true;
+      this.error = null;
+      this.pushChanges();
+      UserService.login$(payload).pipe(operators.first()).subscribe(function (user) {
+        if (StateService.state.role === user.type) {
+          // this.login.next(user);
+          _this2.onNext(user);
+
+          _this2.form.reset();
+        } else {
+          _this2.error = {
+            friendlyMessage: LabelPipe.transform('error_credentials')
+          };
+
+          _this2.pushChanges();
+        }
+      }, function (error) {
+        console.log('AccessComponent.error', error);
+        _this2.error = error;
+
+        _this2.pushChanges();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.isValid = function isValid() {
+    var isValid = this.form.valid;
+    return isValid;
+  };
+
+  _proto.onNext = function onNext(user) {
+    this.replaceUrl(user);
+    this.login.next(user);
+  };
+
+  _proto.replaceUrl = function replaceUrl(user) {
+    if ('history' in window) {
+      var role = LocationService.get('role') || null;
+      var link = LocationService.get('link') || null;
+      var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
+      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + (name ? "&name=" + name : '') + (role ? "&role=" + role : ''); // console.log('AgoraLoginComponent.url', url);
+
+      window.history.replaceState({
+        'pageTitle': window.pageTitle
+      }, '', url);
+    }
+  };
+
+  return AgoraLoginComponent;
+}(rxcomp.Component);
+AgoraLoginComponent.meta = {
+  selector: '[agora-login]',
+  outputs: ['login']
 };var AgoraNameComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraNameComponent, _Component);
 
@@ -5456,29 +5556,76 @@ var VRService = /*#__PURE__*/function () {
   _proto.resolveUser = function resolveUser() {
     var _this2 = this;
 
-    UserService.me$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (user) {
-      var linkRole = _this2.getLinkRole();
+    UserService.me$().pipe(operators.first()).subscribe(function (user) {
+      _this2.initWithUser(user); // this.userGuard(user);
 
-      if (user && (!linkRole || linkRole === user.type)) {
-        _this2.initWithUser(user);
-      } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-        window.location.href = environment.url.access;
-      } else {
-        _this2.initWithUser({
-          type: linkRole
-        });
-      }
     });
+  };
+
+  _proto.userGuard = function userGuard(user) {
+    var linkRole = this.getLinkRole();
+
+    if (user && (!linkRole || user.type === linkRole)) {
+      this.initWithUser(user);
+    } else {
+      this.initWithUser({
+        type: linkRole
+      });
+    }
+  };
+
+  _proto.userGuardRedirect = function userGuardRedirect(user) {
+    var linkRole = this.getLinkRole();
+
+    if (user && (!linkRole || linkRole === user.type)) {
+      this.initWithUser(user);
+    } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
+      window.location.href = environment.url.access;
+    } else {
+      this.initWithUser({
+        type: linkRole
+      });
+    }
+  };
+
+  _proto.setNextStatus = function setNextStatus() {
+    var status = AgoraStatus.Idle;
+    var state = StateService.state;
+
+    if (!state.link) {
+      status = AgoraStatus.Link;
+    } else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
+      status = AgoraStatus.Login;
+    } else if (!state.name) {
+      status = AgoraStatus.Name;
+    } else if (state.role !== RoleType.Viewer) {
+      status = AgoraStatus.Device;
+    } else {
+      status = AgoraStatus.ShouldConnect;
+    }
+
+    StateService.patchState({
+      status: status
+    });
+    return status;
   };
 
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
-    console.log('AgoraComponent.initWithUser', user);
-    var userName = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
-    var role = LocationService.get('role') || user.type;
-    var name = LocationService.get('name') || userName;
     var link = LocationService.get('link') || null;
+    var role = this.getLinkRole() || (user ? user.type : null);
+    user = user || {
+      type: role
+    };
+
+    if (role !== user.type) {
+      user = {
+        type: role
+      };
+    }
+
+    var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
     var hosted = role === RoleType.Publisher ? true : false;
     var live = DEBUG || role === RoleType.SelfService ? false : true;
     var state = {
@@ -5553,21 +5700,8 @@ var VRService = /*#__PURE__*/function () {
       });
     } else {
       agora = this.agora = AgoraService.getSingleton();
-      var status;
-
-      if (!this.state.link) {
-        status = AgoraStatus.Link;
-      } else if (!this.state.name) {
-        status = AgoraStatus.Name;
-      } else if (this.state.role !== RoleType.Viewer) {
-        status = AgoraStatus.Device;
-      } else {
-        status = AgoraStatus.ShouldConnect;
-      }
-
-      StateService.patchState({
-        status: status
-      });
+      var role = this.getLinkRole();
+      var status = this.setNextStatus(); // console.log('initAgora', status, role);
     }
 
     StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
@@ -5604,7 +5738,7 @@ var VRService = /*#__PURE__*/function () {
           break;
 
         case MessageType.RequestControl:
-          console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
+          // console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
           message.type = MessageType.RequestControlAccepted;
           MessageService.sendBack(message);
           StateService.patchState({
@@ -5672,18 +5806,62 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onLink = function onLink(link) {
-    if (StateService.state.name) {
-      if (StateService.state.role === RoleType.Viewer) {
+    var role = this.getLinkRole();
+    var user = StateService.state.user;
+
+    if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
+      StateService.patchState({
+        link: link,
+        role: role,
+        status: AgoraStatus.Login
+      });
+    } else if (StateService.state.name) {
+      if (role === RoleType.Viewer) {
+        StateService.patchState({
+          link: link,
+          role: role
+        });
         this.connect();
       } else {
         StateService.patchState({
           link: link,
+          role: role,
           status: AgoraStatus.Device
         });
       }
     } else {
       StateService.patchState({
         link: link,
+        role: role,
+        status: AgoraStatus.Name
+      });
+    }
+    /*
+    if (StateService.state.name) {
+    	if (StateService.state.role === RoleType.Viewer) {
+    		this.connect();
+    	} else {
+    		StateService.patchState({ link, status: AgoraStatus.Device });
+    	}
+    } else {
+    	StateService.patchState({ link, status: AgoraStatus.Name });
+    }
+    */
+
+  };
+
+  _proto.onLogin = function onLogin(user) {
+    var name = StateService.state.name || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
+
+    if (name) {
+      StateService.patchState({
+        user: user,
+        name: name,
+        status: AgoraStatus.Device
+      });
+    } else {
+      StateService.patchState({
+        user: user,
         status: AgoraStatus.Name
       });
     }
@@ -5691,6 +5869,9 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.onName = function onName(name) {
     if (StateService.state.role === RoleType.Viewer) {
+      StateService.patchState({
+        name: name
+      });
       this.connect();
     } else {
       StateService.patchState({
@@ -9182,7 +9363,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -20058,6 +20239,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlLocalizedAssetComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, ControlsComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlLocalizedAssetComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, ControlsComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

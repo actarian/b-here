@@ -94,7 +94,9 @@ export function getStreamQuality(state) {
 }
 
 export const AgoraStatus = {
+	Idle: 'idle',
 	Link: 'link',
+	Login: 'login',
 	Name: 'name',
 	Device: 'device',
 	ShouldConnect: 'should-connect',
