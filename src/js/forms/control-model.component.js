@@ -1,6 +1,8 @@
 import { getContext } from 'rxcomp';
-import { of } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { combineLatest, of } from 'rxjs';
+import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { AssetService } from '../asset/asset.service';
+import { DropService } from '../drop/drop.service';
 import ControlAssetComponent from './control-asset.component';
 
 export default class ControlModelComponent extends ControlAssetComponent {
@@ -17,8 +19,14 @@ export default class ControlModelComponent extends ControlAssetComponent {
 			takeUntil(this.unsubscribe$)
 		).subscribe();
 		*/
-		this.change$(input).pipe(
-			takeUntil(this.unsubscribe$)
+		DropService.change$(input).pipe(
+			switchMap((files) => {
+				const uploads$ = files.map((file, i) => AssetService.upload$([file]).pipe(
+					switchMap((uploads) => AssetService.createOrUpdateAsset$(uploads, this.control)),
+				));
+				return combineLatest(uploads$);
+			}),
+			takeUntil(this.unsubscribe$),
 		).subscribe(assets => {
 			console.log('ControlModelComponent.change$', assets);
 			this.control.value = assets[0];
@@ -26,8 +34,15 @@ export default class ControlModelComponent extends ControlAssetComponent {
 	}
 
 	onRemove(event) {
-		this.control.value = null;
-		this.input.value = null;
+		AssetService.assetDelete$(this.control.value).pipe(
+			first(),
+		).subscribe(() => {
+			this.control.value = null;
+			this.input.value = null;
+			this.control.touched = true; // !!!
+		});
+		// !!! delete upload
+		// !!! delete asset
 	}
 
 	/*
@@ -45,7 +60,6 @@ export default class ControlModelComponent extends ControlAssetComponent {
 	read$(file, i) {
 		return of(file);
 	}
-
 }
 
 ControlModelComponent.meta = {

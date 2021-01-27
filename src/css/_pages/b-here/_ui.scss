@@ -1,0 +1,88 @@
+
+.ui {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	@include unselectable();
+
+	&.publisher,
+	&.attendee,
+	&.streamer,
+	&.viewer {
+		@include media-up(sm) {
+			@media (orientation: landscape) {
+				width: calc(100% - 120px);
+				margin-left: 120px;
+
+				.group--remote {
+					left: -120px;
+				}
+			}
+
+			@media (orientation: portrait) {
+				height: calc(100% - 90px);
+				margin-bottom: 90px;
+			}
+		}
+	}
+
+	&.self-service {
+		.group--remote {
+			display: none;
+		}
+	}
+
+	&.publisher {
+		.group--local {
+			.agora-stream {
+				margin-left: 20px;
+			}
+		}
+	}
+
+	&.viewer {
+		.group--local {
+			.agora-stream {
+				display: none;
+			}
+		}
+	}
+}
+
+.ui--info {
+	@include media-down(sm) {
+		padding: 80px 0 15px 0;
+
+		&:not(.ui--info-centered) {
+			justify-content: flex-start;
+		}
+	}
+}
+
+.ui__body {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: $background-negative;
+}
+
+.ui__lock {
+	position: absolute;
+	width: 100%;
+	height: calc(100% - 2px);
+    top: 0;
+    left: 0;
+	border: 2px solid $foreground-secondary;
+	z-index: 2;
+
+	&.control {
+		pointer-events: none;
+	}
+
+	// !!!
+	pointer-events: none;
+}

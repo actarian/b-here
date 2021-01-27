@@ -63,6 +63,8 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 						// console.log('ModelPanelComponent.playing', playing);
 						this.play.next({ itemId: this.item.id, playing });
 					});
+				} else if (this.mesh) {
+					dismount(this.mesh, item);
 				}
 				// console.log('streamId', streamId, mesh);
 			}

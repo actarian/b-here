@@ -1,0 +1,79 @@
+
+.world {
+	width: 100%;
+	height: 100%;
+
+	&>canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		outline: none;
+		cursor: pointer;
+	}
+}
+
+.world__view {
+
+	.slider-container,
+	.slider-inner,
+	.slider-slide {
+		height: 100%;
+	}
+
+	.slider-inner {
+		display: flex;
+	}
+
+	.slider-slide {
+		flex: 0 0 100vw;
+		width: 100vw;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&>div {
+			width: 80%;
+			height: 80%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.title {
+			font-weight: 800;
+			font-size: 80px;
+			line-height: 1;
+			color: $foreground-negative;
+			text-shadow: 0 5px $black-50;
+		}
+
+		.abstract {
+			font-size: 40px;
+			line-height: 1;
+			color: $foreground-negative;
+			text-shadow: 0 5px $black-50;
+		}
+
+		.description {
+			color: $foreground-negative;
+			text-shadow: 0 5px $black-50;
+		}
+
+	}
+
+}
+
+.world__info {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	background: $black-30;
+	color: $foreground-negative;
+	padding: 13px 30px;
+	line-height: 1.1;
+	border-radius: 30px;
+}

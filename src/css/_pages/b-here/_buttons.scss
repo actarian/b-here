@@ -1,0 +1,389 @@
+.btn--cam,
+.btn--mic,
+.btn--screen,
+.btn--call {
+	// @extend %btn-circle;
+	@extend %btn;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 20px;
+	transition: all ease-in-out 350ms;
+
+	svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	@include media-down(sm) {
+		width: 40px;
+		height: 40px;
+		border-radius: 20px;
+
+		svg {
+			width: 18px;
+			height: 18px;
+		}
+	}
+
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		background: transparent;
+		color: $foreground-negative;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+}
+
+.btn--call {
+
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		background: $background-secondary;
+		color: $foreground-negative;
+	}
+}
+
+.btn--cam,
+.btn--mic,
+.btn--screen {
+	&.disabled {
+		display: none;
+		pointer-events: none;
+	}
+
+	&.muted {
+		opacity: 0.2;
+	}
+
+	&.active {
+		color: $foreground-secondary;
+	}
+}
+
+.btn--ar,
+.btn--vr {
+	@extend %btn-rect;
+
+	&.disabled {
+		display: none;
+	}
+}
+
+.btn--volume {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out 350ms;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-negative;
+	}
+
+	&.disabled {
+		display: none;
+		pointer-events: none;
+	}
+
+	&.muted {
+		border-color: transparent;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.btn--control {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out 350ms;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	/*
+	@extend %btn-circle;
+	margin-left: 10px;
+	border: 2px solid transparent;
+
+	svg {
+		width: 28px;
+		height: 28px;
+		fill: currentColor;
+	}
+	*/
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-negative;
+	}
+
+	/*
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		border-color: $black-20;
+		background: $background-primary;
+		color: $foreground-negative;
+	}
+	*/
+
+	&:hover {
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-secondary;
+		opacity: 1;
+	}
+
+	&.active {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			background: transparent;
+			border-color: $foreground-secondary;
+			color: $foreground-secondary;
+		}
+	}
+}
+
+.btn--heart {
+	@extend %btn-reset;
+	position: relative;
+	line-height: 0;
+	margin: 0 10px 0 0;
+	padding: 0;
+
+	svg {
+		fill: $foreground-secondary;
+		width: 40px;
+		height: 40px;
+	}
+
+	.badge {
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		background: $background;
+		border-radius: 10px;
+		font-weight: 800;
+		font-size: 10px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		line-height: 1;
+		right: -10px;
+		bottom: 0;
+		margin-top: -10px;
+	}
+
+	&.active {
+		.badge {
+			animation: flip-2-hor-top-1 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+		}
+	}
+
+}
+
+%spinner {
+	/*
+	.loader {
+		color: #ffffff;
+		font-size: 11px;
+		text-indent: -99999em;
+		margin: 55px auto;
+		position: relative;
+		width: 10em;
+		height: 10em;
+	}
+	*/
+	box-shadow: inset 0 0 0 1em;
+	transform: translateZ(0);
+
+	&:before,
+	&:after {
+		content: '';
+		position: absolute;
+		border-radius: 50%;
+	}
+
+	&:before {
+		width: 5.2em;
+		height: 10.2em;
+		background: #0dc5c1;
+		border-radius: 10.2em 0 0 10.2em;
+		top: -0.1em;
+		left: -0.1em;
+		transform-origin: 5.1em 5.1em;
+		animation: spinner 2s infinite ease 1.5s;
+	}
+
+	&:after {
+		width: 5.2em;
+		height: 10.2em;
+		background: #0dc5c1;
+		border-radius: 0 10.2em 10.2em 0;
+		top: -0.1em;
+		left: 4.9em;
+		transform-origin: 0.1em 5.1em;
+		animation: spinner 2s infinite ease;
+	}
+}
+
+.btn--menu {
+	@extend %btn-circle;
+	position: absolute;
+	pointer-events: all;
+	right: 20px;
+	top: 50%;
+
+	svg {
+		width: 28px;
+		height: 28px;
+		transition: opacity ease-in-out 250ms;
+	}
+
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		background: $background;
+		color: $foreground;
+
+		svg {
+			fill: currentColor;
+		}
+	}
+
+	&:hover {
+		background: $background-negative;
+		color: $foreground-negative;
+		opacity: 0.8;
+	}
+
+	&.active {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			border-color: transparent;
+			background: $black-80;
+			color: $foreground-negative;
+		}
+	}
+
+	&.loading {
+		pointer-events: none;
+		animation: spinner 2s infinite ease;
+
+		svg {
+			opacity: 0;
+		}
+
+		&:before,
+		&:after {
+			content: '';
+			position: absolute;
+			border-radius: 3.5px;
+			width: 7px;
+			height: 7px;
+			background: #111;
+			line-height: 0;
+			font-size: 0;
+		}
+
+		&:before {
+			transform: rotate(10deg) translateX(12px);
+		}
+
+		&:after {
+			transform: rotate(10deg) translateX(-12px);
+		}
+	}
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.btn--generate,
+.btn--next,
+.btn--connect,
+.btn--absolute {
+	@extend %btn-rect;
+}
+
+.btn--absolute {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	z-index: 10000;
+}
+
+.btn--cancel,
+.btn--accept {
+	@extend %btn-rect;
+}
+
+.btn--close {
+	@extend %btn-reset;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+}

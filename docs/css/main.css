@@ -203,21 +203,22 @@ strong {
 .h6 {
   font-size: 1.5rem; }
 
-.group--volume .btn--volume, .btn--control, .btn--cam,
-.btn--mic,
-.btn--call, .btn--menu, .btn--generate,
+.btn--volume, .btn--control, .btn--menu, .btn--ar,
+.btn--vr, .btn--generate,
 .btn--next,
 .btn--connect,
-.btn--absolute, .btn--ar,
-.btn--vr, .btn--cancel,
+.btn--absolute, .btn--cancel,
 .btn--accept, .btn--browse,
 .btn--upload,
 .btn--pause,
 .btn--resume,
 .btn--remove,
 .btn--update,
-.btn--mode, .btn, .btn--edit, a,
-button, .agora-stream .btn--spy, .btn--heart, .btn--close {
+.btn--mode, .btn, .btn--cam,
+.btn--mic,
+.btn--screen,
+.btn--call, .btn--edit, a,
+button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   display: inline-block;
   padding: 0;
   border: none;
@@ -228,101 +229,105 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   font: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
-  .group--volume .btn--volume, .btn--control, .btn--cam,
-  .btn--mic,
-  .btn--call, .btn--menu, .btn--generate,
+  .btn--volume, .btn--control, .btn--menu, .btn--ar,
+  .btn--vr, .btn--generate,
   .btn--next,
   .btn--connect,
-  .btn--absolute, .btn--ar,
-  .btn--vr, .btn--cancel,
+  .btn--absolute, .btn--cancel,
   .btn--accept, .btn--browse,
   .btn--upload,
   .btn--pause,
   .btn--resume,
   .btn--remove,
   .btn--update,
-  .btn--mode, .btn, .btn--edit, a,
-  button, .agora-stream .btn--spy, .btn--heart, .btn--close, .group--volume .btn--volume:active, .btn--control:active, .btn--cam:active,
-  .btn--mic:active,
-  .btn--call:active, .btn--menu:active, .btn--generate:active,
+  .btn--mode, .btn, .btn--cam,
+  .btn--mic,
+  .btn--screen,
+  .btn--call, .btn--edit, a,
+  button, .btn--heart, .btn--close, .agora-stream .btn--spy, .btn--volume:active, .btn--control:active, .btn--menu:active, .btn--ar:active,
+  .btn--vr:active, .btn--generate:active,
   .btn--next:active,
   .btn--connect:active,
-  .btn--absolute:active, .btn--ar:active,
-  .btn--vr:active, .btn--cancel:active,
+  .btn--absolute:active, .btn--cancel:active,
   .btn--accept:active, .btn--browse:active,
   .btn--upload:active,
   .btn--pause:active,
   .btn--resume:active,
   .btn--remove:active,
   .btn--update:active,
-  .btn--mode:active, .btn:active, .btn--edit:active, a:active,
-  button:active, .agora-stream .btn--spy:active, .btn--heart:active, .btn--close:active, .group--volume .btn--volume:focus, .btn--control:focus, .btn--cam:focus,
-  .btn--mic:focus,
-  .btn--call:focus, .btn--menu:focus, .btn--generate:focus,
+  .btn--mode:active, .btn:active, .btn--cam:active,
+  .btn--mic:active,
+  .btn--screen:active,
+  .btn--call:active, .btn--edit:active, a:active,
+  button:active, .btn--heart:active, .btn--close:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--control:focus, .btn--menu:focus, .btn--ar:focus,
+  .btn--vr:focus, .btn--generate:focus,
   .btn--next:focus,
   .btn--connect:focus,
-  .btn--absolute:focus, .btn--ar:focus,
-  .btn--vr:focus, .btn--cancel:focus,
+  .btn--absolute:focus, .btn--cancel:focus,
   .btn--accept:focus, .btn--browse:focus,
   .btn--upload:focus,
   .btn--pause:focus,
   .btn--resume:focus,
   .btn--remove:focus,
   .btn--update:focus,
-  .btn--mode:focus, .btn:focus, .btn--edit:focus, a:focus,
-  button:focus, .agora-stream .btn--spy:focus, .btn--heart:focus, .btn--close:focus, .group--volume .btn--volume:hover, .btn--control:hover, .btn--cam:hover,
-  .btn--mic:hover,
-  .btn--call:hover, .btn--menu:hover, .btn--generate:hover,
+  .btn--mode:focus, .btn:focus, .btn--cam:focus,
+  .btn--mic:focus,
+  .btn--screen:focus,
+  .btn--call:focus, .btn--edit:focus, a:focus,
+  button:focus, .btn--heart:focus, .btn--close:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--control:hover, .btn--menu:hover, .btn--ar:hover,
+  .btn--vr:hover, .btn--generate:hover,
   .btn--next:hover,
   .btn--connect:hover,
-  .btn--absolute:hover, .btn--ar:hover,
-  .btn--vr:hover, .btn--cancel:hover,
+  .btn--absolute:hover, .btn--cancel:hover,
   .btn--accept:hover, .btn--browse:hover,
   .btn--upload:hover,
   .btn--pause:hover,
   .btn--resume:hover,
   .btn--remove:hover,
   .btn--update:hover,
-  .btn--mode:hover, .btn:hover, .btn--edit:hover, a:hover,
-  button:hover, .agora-stream .btn--spy:hover, .btn--heart:hover, .btn--close:hover, .group--volume .btn--volume:visited, .btn--control:visited, .btn--cam:visited,
-  .btn--mic:visited,
-  .btn--call:visited, .btn--menu:visited, .btn--generate:visited,
+  .btn--mode:hover, .btn:hover, .btn--cam:hover,
+  .btn--mic:hover,
+  .btn--screen:hover,
+  .btn--call:hover, .btn--edit:hover, a:hover,
+  button:hover, .btn--heart:hover, .btn--close:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--control:visited, .btn--menu:visited, .btn--ar:visited,
+  .btn--vr:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
-  .btn--absolute:visited, .btn--ar:visited,
-  .btn--vr:visited, .btn--cancel:visited,
+  .btn--absolute:visited, .btn--cancel:visited,
   .btn--accept:visited, .btn--browse:visited,
   .btn--upload:visited,
   .btn--pause:visited,
   .btn--resume:visited,
   .btn--remove:visited,
   .btn--update:visited,
-  .btn--mode:visited, .btn:visited, .btn--edit:visited, a:visited,
-  button:visited, .agora-stream .btn--spy:visited, .btn--heart:visited, .btn--close:visited {
+  .btn--mode:visited, .btn:visited, .btn--cam:visited,
+  .btn--mic:visited,
+  .btn--screen:visited,
+  .btn--call:visited, .btn--edit:visited, a:visited,
+  button:visited, .btn--heart:visited, .btn--close:visited, .agora-stream .btn--spy:visited {
     color: inherit;
     text-decoration: none;
     outline: none; }
 
-.group--volume .btn--volume[disabled], .btn--control[disabled], .btn--cam[disabled],
-.btn--mic[disabled],
-.btn--call[disabled], .btn--menu[disabled], .btn--generate[disabled],
+.btn--volume[disabled], .btn--control[disabled], .btn--menu[disabled], .btn--ar[disabled],
+.btn--vr[disabled], .btn--generate[disabled],
 .btn--next[disabled],
 .btn--connect[disabled],
-.btn--absolute[disabled], .btn--ar[disabled],
-.btn--vr[disabled], .btn--cancel[disabled],
+.btn--absolute[disabled], .btn--cancel[disabled],
 .btn--accept[disabled], .btn--browse[disabled],
 .btn--upload[disabled],
 .btn--pause[disabled],
 .btn--resume[disabled],
 .btn--remove[disabled],
 .btn--update[disabled],
-.btn--mode[disabled], .btn[disabled], .btn--edit[disabled] {
+.btn--mode[disabled], .btn[disabled], .btn--cam[disabled],
+.btn--mic[disabled],
+.btn--screen[disabled],
+.btn--call[disabled], .btn--edit[disabled] {
   opacity: 0.5;
   pointer-events: none; }
 
-.group--volume .btn--volume, .btn--control, .btn--cam,
-.btn--mic,
-.btn--call, .btn--menu {
+.btn--volume, .btn--control, .btn--menu {
   width: 50px;
   height: 50px;
   display: flex;
@@ -330,40 +335,27 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   align-items: center;
   border-radius: 25px;
   transition: all ease-in-out 350ms; }
-  .group--volume .btn--volume svg, .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg {
+  .btn--volume svg, .btn--control svg, .btn--menu svg {
     width: 24px;
-    height: 24px; }
+    height: 24px;
+    fill: currentColor; }
   @media (max-width: 1023.98px) {
-    .group--volume .btn--volume, .btn--control, .btn--cam,
-    .btn--mic,
-    .btn--call, .btn--menu {
+    .btn--volume, .btn--control, .btn--menu {
       width: 40px;
       height: 40px;
       border-radius: 20px; }
-      .group--volume .btn--volume svg, .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg {
+      .btn--volume svg, .btn--control svg, .btn--menu svg {
         width: 20px;
         height: 20px; } }
-  .group--volume .btn--volume, .btn--control, .btn--cam,
-  .btn--mic,
-  .btn--call, .btn--menu, .group--volume .btn--volume:active, .btn--control:active, .btn--cam:active,
-  .btn--mic:active,
-  .btn--call:active, .btn--menu:active, .group--volume .btn--volume:focus, .btn--control:focus, .btn--cam:focus,
-  .btn--mic:focus,
-  .btn--call:focus, .btn--menu:focus, .group--volume .btn--volume:hover, .btn--control:hover, .btn--cam:hover,
-  .btn--mic:hover,
-  .btn--call:hover, .btn--menu:hover, .group--volume .btn--volume:visited, .btn--control:visited, .btn--cam:visited,
-  .btn--mic:visited,
-  .btn--call:visited, .btn--menu:visited {
+  .btn--volume, .btn--control, .btn--menu, .btn--volume:active, .btn--control:active, .btn--menu:active, .btn--volume:focus, .btn--control:focus, .btn--menu:focus, .btn--volume:hover, .btn--control:hover, .btn--menu:hover, .btn--volume:visited, .btn--control:visited, .btn--menu:visited {
     background: var(--background);
     color: var(--foreground); }
-    .group--volume .btn--volume svg, .btn--control svg, .btn--cam svg, .btn--mic svg, .btn--call svg, .btn--menu svg, .group--volume .btn--volume:active svg, .btn--control:active svg, .btn--cam:active svg, .btn--mic:active svg, .btn--call:active svg, .btn--menu:active svg, .group--volume .btn--volume:focus svg, .btn--control:focus svg, .btn--cam:focus svg, .btn--mic:focus svg, .btn--call:focus svg, .btn--menu:focus svg, .group--volume .btn--volume:hover svg, .btn--control:hover svg, .btn--cam:hover svg, .btn--mic:hover svg, .btn--call:hover svg, .btn--menu:hover svg, .group--volume .btn--volume:visited svg, .btn--control:visited svg, .btn--cam:visited svg, .btn--mic:visited svg, .btn--call:visited svg, .btn--menu:visited svg {
-      fill: var(--foreground); }
 
-.btn--generate,
+.btn--ar,
+.btn--vr, .btn--generate,
 .btn--next,
 .btn--connect,
-.btn--absolute, .btn--ar,
-.btn--vr, .btn--cancel,
+.btn--absolute, .btn--cancel,
 .btn--accept, .btn--browse,
 .btn--upload,
 .btn--pause,
@@ -382,11 +374,11 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   font-size: 16px;
   transition: all ease-in-out 350ms; }
   @media (max-width: 1023.98px) {
-    .btn--generate,
+    .btn--ar,
+    .btn--vr, .btn--generate,
     .btn--next,
     .btn--connect,
-    .btn--absolute, .btn--ar,
-    .btn--vr, .btn--cancel,
+    .btn--absolute, .btn--cancel,
     .btn--accept, .btn--browse,
     .btn--upload,
     .btn--pause,
@@ -398,62 +390,62 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
       border-radius: 20px;
       padding: 0 20px;
       font-size: 15px; } }
-  .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg {
+  .btn--ar svg, .btn--vr svg, .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg {
     width: 24px;
     height: 24px;
     margin-left: -10px;
     margin-right: 10px; }
-  .btn--generate span, .btn--next span, .btn--connect span, .btn--absolute span, .btn--ar span, .btn--vr span, .btn--cancel span, .btn--accept span, .btn--browse span, .btn--upload span, .btn--pause span, .btn--resume span, .btn--remove span, .btn--update span, .btn--mode span {
+  .btn--ar span, .btn--vr span, .btn--generate span, .btn--next span, .btn--connect span, .btn--absolute span, .btn--cancel span, .btn--accept span, .btn--browse span, .btn--upload span, .btn--pause span, .btn--resume span, .btn--remove span, .btn--update span, .btn--mode span {
     display: block; }
-  .btn--generate,
+  .btn--ar,
+  .btn--vr, .btn--generate,
   .btn--next,
   .btn--connect,
-  .btn--absolute, .btn--ar,
-  .btn--vr, .btn--cancel,
+  .btn--absolute, .btn--cancel,
   .btn--accept, .btn--browse,
   .btn--upload,
   .btn--pause,
   .btn--resume,
   .btn--remove,
   .btn--update,
-  .btn--mode, .btn--generate:active,
+  .btn--mode, .btn--ar:active,
+  .btn--vr:active, .btn--generate:active,
   .btn--next:active,
   .btn--connect:active,
-  .btn--absolute:active, .btn--ar:active,
-  .btn--vr:active, .btn--cancel:active,
+  .btn--absolute:active, .btn--cancel:active,
   .btn--accept:active, .btn--browse:active,
   .btn--upload:active,
   .btn--pause:active,
   .btn--resume:active,
   .btn--remove:active,
   .btn--update:active,
-  .btn--mode:active, .btn--generate:focus,
+  .btn--mode:active, .btn--ar:focus,
+  .btn--vr:focus, .btn--generate:focus,
   .btn--next:focus,
   .btn--connect:focus,
-  .btn--absolute:focus, .btn--ar:focus,
-  .btn--vr:focus, .btn--cancel:focus,
+  .btn--absolute:focus, .btn--cancel:focus,
   .btn--accept:focus, .btn--browse:focus,
   .btn--upload:focus,
   .btn--pause:focus,
   .btn--resume:focus,
   .btn--remove:focus,
   .btn--update:focus,
-  .btn--mode:focus, .btn--generate:hover,
+  .btn--mode:focus, .btn--ar:hover,
+  .btn--vr:hover, .btn--generate:hover,
   .btn--next:hover,
   .btn--connect:hover,
-  .btn--absolute:hover, .btn--ar:hover,
-  .btn--vr:hover, .btn--cancel:hover,
+  .btn--absolute:hover, .btn--cancel:hover,
   .btn--accept:hover, .btn--browse:hover,
   .btn--upload:hover,
   .btn--pause:hover,
   .btn--resume:hover,
   .btn--remove:hover,
   .btn--update:hover,
-  .btn--mode:hover, .btn--generate:visited,
+  .btn--mode:hover, .btn--ar:visited,
+  .btn--vr:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
-  .btn--absolute:visited, .btn--ar:visited,
-  .btn--vr:visited, .btn--cancel:visited,
+  .btn--absolute:visited, .btn--cancel:visited,
   .btn--accept:visited, .btn--browse:visited,
   .btn--upload:visited,
   .btn--pause:visited,
@@ -463,57 +455,57 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
   .btn--mode:visited {
     background: var(--background-primary);
     color: var(--foreground-negative); }
-    .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--ar svg, .btn--vr svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg, .btn--generate:active svg, .btn--next:active svg, .btn--connect:active svg, .btn--absolute:active svg, .btn--ar:active svg, .btn--vr:active svg, .btn--cancel:active svg, .btn--accept:active svg, .btn--browse:active svg, .btn--upload:active svg, .btn--pause:active svg, .btn--resume:active svg, .btn--remove:active svg, .btn--update:active svg, .btn--mode:active svg, .btn--generate:focus svg, .btn--next:focus svg, .btn--connect:focus svg, .btn--absolute:focus svg, .btn--ar:focus svg, .btn--vr:focus svg, .btn--cancel:focus svg, .btn--accept:focus svg, .btn--browse:focus svg, .btn--upload:focus svg, .btn--pause:focus svg, .btn--resume:focus svg, .btn--remove:focus svg, .btn--update:focus svg, .btn--mode:focus svg, .btn--generate:hover svg, .btn--next:hover svg, .btn--connect:hover svg, .btn--absolute:hover svg, .btn--ar:hover svg, .btn--vr:hover svg, .btn--cancel:hover svg, .btn--accept:hover svg, .btn--browse:hover svg, .btn--upload:hover svg, .btn--pause:hover svg, .btn--resume:hover svg, .btn--remove:hover svg, .btn--update:hover svg, .btn--mode:hover svg, .btn--generate:visited svg, .btn--next:visited svg, .btn--connect:visited svg, .btn--absolute:visited svg, .btn--ar:visited svg, .btn--vr:visited svg, .btn--cancel:visited svg, .btn--accept:visited svg, .btn--browse:visited svg, .btn--upload:visited svg, .btn--pause:visited svg, .btn--resume:visited svg, .btn--remove:visited svg, .btn--update:visited svg, .btn--mode:visited svg {
+    .btn--ar svg, .btn--vr svg, .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg, .btn--ar:active svg, .btn--vr:active svg, .btn--generate:active svg, .btn--next:active svg, .btn--connect:active svg, .btn--absolute:active svg, .btn--cancel:active svg, .btn--accept:active svg, .btn--browse:active svg, .btn--upload:active svg, .btn--pause:active svg, .btn--resume:active svg, .btn--remove:active svg, .btn--update:active svg, .btn--mode:active svg, .btn--ar:focus svg, .btn--vr:focus svg, .btn--generate:focus svg, .btn--next:focus svg, .btn--connect:focus svg, .btn--absolute:focus svg, .btn--cancel:focus svg, .btn--accept:focus svg, .btn--browse:focus svg, .btn--upload:focus svg, .btn--pause:focus svg, .btn--resume:focus svg, .btn--remove:focus svg, .btn--update:focus svg, .btn--mode:focus svg, .btn--ar:hover svg, .btn--vr:hover svg, .btn--generate:hover svg, .btn--next:hover svg, .btn--connect:hover svg, .btn--absolute:hover svg, .btn--cancel:hover svg, .btn--accept:hover svg, .btn--browse:hover svg, .btn--upload:hover svg, .btn--pause:hover svg, .btn--resume:hover svg, .btn--remove:hover svg, .btn--update:hover svg, .btn--mode:hover svg, .btn--ar:visited svg, .btn--vr:visited svg, .btn--generate:visited svg, .btn--next:visited svg, .btn--connect:visited svg, .btn--absolute:visited svg, .btn--cancel:visited svg, .btn--accept:visited svg, .btn--browse:visited svg, .btn--upload:visited svg, .btn--pause:visited svg, .btn--resume:visited svg, .btn--remove:visited svg, .btn--update:visited svg, .btn--mode:visited svg {
       fill: currentColor; }
-  .disabled.btn--generate,
+  .disabled.btn--ar,
+  .disabled.btn--vr, .disabled.btn--generate,
   .disabled.btn--next,
   .disabled.btn--connect,
-  .disabled.btn--absolute, .disabled.btn--ar,
-  .disabled.btn--vr, .disabled.btn--cancel,
+  .disabled.btn--absolute, .disabled.btn--cancel,
   .disabled.btn--accept, .disabled.btn--browse,
   .disabled.btn--upload,
   .disabled.btn--pause,
   .disabled.btn--resume,
   .disabled.btn--remove,
   .disabled.btn--update,
-  .disabled.btn--mode, .disabled.btn--generate:active,
+  .disabled.btn--mode, .disabled.btn--ar:active,
+  .disabled.btn--vr:active, .disabled.btn--generate:active,
   .disabled.btn--next:active,
   .disabled.btn--connect:active,
-  .disabled.btn--absolute:active, .disabled.btn--ar:active,
-  .disabled.btn--vr:active, .disabled.btn--cancel:active,
+  .disabled.btn--absolute:active, .disabled.btn--cancel:active,
   .disabled.btn--accept:active, .disabled.btn--browse:active,
   .disabled.btn--upload:active,
   .disabled.btn--pause:active,
   .disabled.btn--resume:active,
   .disabled.btn--remove:active,
   .disabled.btn--update:active,
-  .disabled.btn--mode:active, .disabled.btn--generate:focus,
+  .disabled.btn--mode:active, .disabled.btn--ar:focus,
+  .disabled.btn--vr:focus, .disabled.btn--generate:focus,
   .disabled.btn--next:focus,
   .disabled.btn--connect:focus,
-  .disabled.btn--absolute:focus, .disabled.btn--ar:focus,
-  .disabled.btn--vr:focus, .disabled.btn--cancel:focus,
+  .disabled.btn--absolute:focus, .disabled.btn--cancel:focus,
   .disabled.btn--accept:focus, .disabled.btn--browse:focus,
   .disabled.btn--upload:focus,
   .disabled.btn--pause:focus,
   .disabled.btn--resume:focus,
   .disabled.btn--remove:focus,
   .disabled.btn--update:focus,
-  .disabled.btn--mode:focus, .disabled.btn--generate:hover,
+  .disabled.btn--mode:focus, .disabled.btn--ar:hover,
+  .disabled.btn--vr:hover, .disabled.btn--generate:hover,
   .disabled.btn--next:hover,
   .disabled.btn--connect:hover,
-  .disabled.btn--absolute:hover, .disabled.btn--ar:hover,
-  .disabled.btn--vr:hover, .disabled.btn--cancel:hover,
+  .disabled.btn--absolute:hover, .disabled.btn--cancel:hover,
   .disabled.btn--accept:hover, .disabled.btn--browse:hover,
   .disabled.btn--upload:hover,
   .disabled.btn--pause:hover,
   .disabled.btn--resume:hover,
   .disabled.btn--remove:hover,
   .disabled.btn--update:hover,
-  .disabled.btn--mode:hover, .disabled.btn--generate:visited,
+  .disabled.btn--mode:hover, .disabled.btn--ar:visited,
+  .disabled.btn--vr:visited, .disabled.btn--generate:visited,
   .disabled.btn--next:visited,
   .disabled.btn--connect:visited,
-  .disabled.btn--absolute:visited, .disabled.btn--ar:visited,
-  .disabled.btn--vr:visited, .disabled.btn--cancel:visited,
+  .disabled.btn--absolute:visited, .disabled.btn--cancel:visited,
   .disabled.btn--accept:visited, .disabled.btn--browse:visited,
   .disabled.btn--upload:visited,
   .disabled.btn--pause:visited,
@@ -584,6 +576,52 @@ button, .agora-stream .btn--spy, .btn--heart, .btn--close {
     animation: bouncing-ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
     margin-left: 7.2px;
     animation-delay: .3s; }
+
+@keyframes bouncing-ball {
+  from {
+    transform: translateY(0) scaleY(0.8); }
+  to {
+    transform: translateY(-10px); } }
+
+.nav--editor > li > a,
+.nav--editor > li > span, .nav--dropdown > li > a,
+.nav--dropdown > li > span, .nav--editor > li {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1;
+  transition: ease-in-out 350ms;
+  transition-property: background-color, color, border, opacity; }
+  .nav--editor > li > a svg, .nav--editor > li > span svg, .nav--dropdown > li > a svg, .nav--dropdown > li > span svg, .nav--editor > li svg {
+    transition: ease-in-out 350ms;
+    transition-property: fill, opacity; }
+  .nav--editor > li > a:focus,
+  .nav--editor > li > span:focus, .nav--dropdown > li > a:focus,
+  .nav--dropdown > li > span:focus, .nav--editor > li:focus {
+    outline: 0; }
+
+.nav--editor, [control-localized-asset] .nav--languages, .nav--dropdown, .nav--tab {
+  list-style: none;
+  padding: 0;
+  margin: 0; }
+
+.nav--editor > li {
+  position: relative;
+  display: block;
+  flex: 1 1 auto; }
+
+@media (min-width: 1024px) {
+  .nav--editor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; } }
+
+@media (max-width: 1023.98px) {
+  .nav--editor {
+    display: block; } }
 
 .group--form label, .group--form--textarea label, .group--form--select label, .group--form--checkbox label, .group--form--file label, errors-component .inner, .required .required__badge {
   display: block;
@@ -1109,10 +1147,12 @@ input-value {
     opacity: 0.5;
     pointer-events: none; }
 
-[control-asset] .group--form {
+[control-asset] .group--form,
+[control-localized-asset] .group--form {
   border: none; }
 
-[control-asset] .group--picture {
+[control-asset] .group--picture,
+[control-localized-asset] .group--picture {
   position: relative;
   width: 100%;
   padding-top: 33.33333%;
@@ -1123,16 +1163,24 @@ input-value {
   [control-asset] .group--picture > video,
   [control-asset] .group--picture > canvas,
   [control-asset] .group--picture > .video,
-  [control-asset] .group--picture > iframe {
+  [control-asset] .group--picture > iframe,
+  [control-localized-asset] .group--picture > img,
+  [control-localized-asset] .group--picture > svg,
+  [control-localized-asset] .group--picture > video,
+  [control-localized-asset] .group--picture > canvas,
+  [control-localized-asset] .group--picture > .video,
+  [control-localized-asset] .group--picture > iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover; }
-  [control-asset] .group--picture > img {
+  [control-asset] .group--picture > img,
+  [control-localized-asset] .group--picture > img {
     opacity: 1; }
-  [control-asset] .group--picture__info {
+  [control-asset] .group--picture__info,
+  [control-localized-asset] .group--picture__info {
     position: absolute;
     top: 0;
     left: 0;
@@ -1147,11 +1195,13 @@ input-value {
     border: 2px solid var(--background-primary-disabled);
     color: var(--foreground-tertiary);
     border-radius: 6px; }
-    [control-asset] .group--picture__info svg {
+    [control-asset] .group--picture__info svg,
+    [control-localized-asset] .group--picture__info svg {
       width: 24px;
       height: 24px;
       fill: currentColor; }
-  [control-asset] .group--picture input[type="file"] {
+  [control-asset] .group--picture input[type="file"],
+  [control-localized-asset] .group--picture input[type="file"] {
     position: absolute;
     top: 0;
     left: 0;
@@ -1162,6 +1212,34 @@ input-value {
     opacity: 0;
     cursor: pointer;
     color: var(--foreground-primary-disabled); }
+
+[control-localized-asset] .nav--languages {
+  flex: 1 1 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin: 2px 0;
+  font-size: 11px;
+  font-weight: 400; }
+  [control-localized-asset] .nav--languages > .nav__item {
+    background: var(--background-primary-disabled);
+    color: var(--foreground);
+    border-radius: 3px;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600; }
+    [control-localized-asset] .nav--languages > .nav__item.active {
+      background: var(--background-primary);
+      color: var(--foreground-negative); }
+  [control-localized-asset] .nav--languages > .nav__item + .nav__item {
+    margin-left: 2px; }
 
 [control-model] .group--model {
   width: 100%;
@@ -3551,52 +3629,6 @@ test-component .btn--mode {
 [class^="icon"] {
   fill: var(--foreground); }
 
-@keyframes bouncing-ball {
-  from {
-    transform: translateY(0) scaleY(0.8); }
-  to {
-    transform: translateY(-10px); } }
-
-.nav--editor > li > a,
-.nav--editor > li > span, .nav--dropdown > li > a,
-.nav--dropdown > li > span, .nav--editor > li {
-  position: relative;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  cursor: pointer;
-  z-index: 1;
-  transition: ease-in-out 350ms;
-  transition-property: background-color, color, border, opacity; }
-  .nav--editor > li > a svg, .nav--editor > li > span svg, .nav--dropdown > li > a svg, .nav--dropdown > li > span svg, .nav--editor > li svg {
-    transition: ease-in-out 350ms;
-    transition-property: fill, opacity; }
-  .nav--editor > li > a:focus,
-  .nav--editor > li > span:focus, .nav--dropdown > li > a:focus,
-  .nav--dropdown > li > span:focus, .nav--editor > li:focus {
-    outline: 0; }
-
-.nav--editor, .nav--dropdown, .nav--tab {
-  list-style: none;
-  padding: 0;
-  margin: 0; }
-
-.nav--editor > li {
-  position: relative;
-  display: block;
-  flex: 1 1 auto; }
-
-@media (min-width: 1024px) {
-  .nav--editor {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; } }
-
-@media (max-width: 1023.98px) {
-  .nav--editor {
-    display: block; } }
-
 .modal-outlet__container {
   position: fixed;
   display: flex;
@@ -4096,6 +4128,289 @@ body {
       .page > .background > video {
         display: none; } }
 
+.btn--cam,
+.btn--mic,
+.btn--screen,
+.btn--call {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  transition: all ease-in-out 350ms; }
+  .btn--cam svg,
+  .btn--mic svg,
+  .btn--screen svg,
+  .btn--call svg {
+    width: 18px;
+    height: 18px; }
+  @media (max-width: 1023.98px) {
+    .btn--cam,
+    .btn--mic,
+    .btn--screen,
+    .btn--call {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px; }
+      .btn--cam svg,
+      .btn--mic svg,
+      .btn--screen svg,
+      .btn--call svg {
+        width: 18px;
+        height: 18px; } }
+  .btn--cam, .btn--cam:active, .btn--cam:focus, .btn--cam:hover, .btn--cam:visited,
+  .btn--mic,
+  .btn--mic:active,
+  .btn--mic:focus,
+  .btn--mic:hover,
+  .btn--mic:visited,
+  .btn--screen,
+  .btn--screen:active,
+  .btn--screen:focus,
+  .btn--screen:hover,
+  .btn--screen:visited,
+  .btn--call,
+  .btn--call:active,
+  .btn--call:focus,
+  .btn--call:hover,
+  .btn--call:visited {
+    background: transparent;
+    color: var(--foreground-negative); }
+    .btn--cam svg, .btn--cam:active svg, .btn--cam:focus svg, .btn--cam:hover svg, .btn--cam:visited svg,
+    .btn--mic svg,
+    .btn--mic:active svg,
+    .btn--mic:focus svg,
+    .btn--mic:hover svg,
+    .btn--mic:visited svg,
+    .btn--screen svg,
+    .btn--screen:active svg,
+    .btn--screen:focus svg,
+    .btn--screen:hover svg,
+    .btn--screen:visited svg,
+    .btn--call svg,
+    .btn--call:active svg,
+    .btn--call:focus svg,
+    .btn--call:hover svg,
+    .btn--call:visited svg {
+      fill: currentColor; }
+
+.btn--call, .btn--call:active, .btn--call:focus, .btn--call:hover, .btn--call:visited {
+  background: var(--background-secondary);
+  color: var(--foreground-negative); }
+
+.btn--cam.disabled,
+.btn--mic.disabled,
+.btn--screen.disabled {
+  display: none;
+  pointer-events: none; }
+
+.btn--cam.muted,
+.btn--mic.muted,
+.btn--screen.muted {
+  opacity: 0.2; }
+
+.btn--cam.active,
+.btn--mic.active,
+.btn--screen.active {
+  color: var(--foreground-secondary); }
+
+.btn--ar.disabled,
+.btn--vr.disabled {
+  display: none; }
+
+.btn--volume {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  opacity: 0.4;
+  transition: opacity ease-in-out 350ms; }
+  .btn--volume > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor; }
+  .btn--volume, .btn--volume:active, .btn--volume:hover, .btn--volume:focus, .btn--volume:visited {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--foreground-negative); }
+  .btn--volume.disabled {
+    display: none;
+    pointer-events: none; }
+  .btn--volume.muted {
+    border-color: transparent; }
+  .btn--volume:hover {
+    opacity: 1; }
+
+.btn--control {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  opacity: 0.4;
+  transition: opacity ease-in-out 350ms;
+  /*
+	@extend %btn-circle;
+	margin-left: 10px;
+	border: 2px solid transparent;
+
+	svg {
+		width: 28px;
+		height: 28px;
+		fill: currentColor;
+	}
+	*/
+  /*
+	&,
+	&:active,
+	&:focus,
+	&:hover,
+	&:visited {
+		border-color: $black-20;
+		background: $background-primary;
+		color: $foreground-negative;
+	}
+	*/ }
+  .btn--control > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor; }
+  .btn--control, .btn--control:active, .btn--control:hover, .btn--control:focus, .btn--control:visited {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--foreground-negative); }
+  .btn--control:hover {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--foreground-secondary);
+    opacity: 1; }
+  .btn--control.active, .btn--control.active:active, .btn--control.active:focus, .btn--control.active:hover, .btn--control.active:visited {
+    background: transparent;
+    border-color: var(--foreground-secondary);
+    color: var(--foreground-secondary); }
+
+.btn--heart {
+  position: relative;
+  line-height: 0;
+  margin: 0 10px 0 0;
+  padding: 0; }
+  .btn--heart svg {
+    fill: var(--foreground-secondary);
+    width: 40px;
+    height: 40px; }
+  .btn--heart .badge {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--background);
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    right: -10px;
+    bottom: 0;
+    margin-top: -10px; }
+  .btn--heart.active .badge {
+    animation: flip-2-hor-top-1 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) both; }
+
+.btn--menu {
+  position: absolute;
+  pointer-events: all;
+  right: 20px;
+  top: 50%; }
+  .btn--menu svg {
+    width: 28px;
+    height: 28px;
+    transition: opacity ease-in-out 250ms; }
+  .btn--menu, .btn--menu:active, .btn--menu:focus, .btn--menu:hover, .btn--menu:visited {
+    background: var(--background);
+    color: var(--foreground); }
+    .btn--menu svg, .btn--menu:active svg, .btn--menu:focus svg, .btn--menu:hover svg, .btn--menu:visited svg {
+      fill: currentColor; }
+  .btn--menu:hover {
+    background: var(--background-negative);
+    color: var(--foreground-negative);
+    opacity: 0.8; }
+  .btn--menu.active, .btn--menu.active:active, .btn--menu.active:focus, .btn--menu.active:hover, .btn--menu.active:visited {
+    border-color: transparent;
+    background: var(--black-80);
+    color: var(--foreground-negative); }
+  .btn--menu.loading {
+    pointer-events: none;
+    animation: spinner 2s infinite ease; }
+    .btn--menu.loading svg {
+      opacity: 0; }
+    .btn--menu.loading:before, .btn--menu.loading:after {
+      content: '';
+      position: absolute;
+      border-radius: 3.5px;
+      width: 7px;
+      height: 7px;
+      background: #111;
+      line-height: 0;
+      font-size: 0; }
+    .btn--menu.loading:before {
+      transform: rotate(10deg) translateX(12px); }
+    .btn--menu.loading:after {
+      transform: rotate(10deg) translateX(-12px); }
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+.btn--absolute {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10000; }
+
+.btn--close {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .btn--close svg {
+    width: 20px;
+    height: 20px; }
+
+.group--controls {
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  left: 15px;
+  bottom: 25px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  overflow: hidden; }
+  .group--controls > button + button {
+    margin-left: 10px; }
+  @media (max-width: 767.98px) {
+    .group--controls .btn--cam,
+    .group--controls .btn--mic,
+    .group--controls .btn--screen {
+      display: none; } }
+
+.group--controls_ {
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  left: 15px;
+  bottom: 25px; }
+  .group--controls_ > button + button {
+    margin-left: 10px; }
+  @media (max-width: 767.98px) {
+    .group--controls_ .btn--cam,
+    .group--controls_ .btn--mic,
+    .group--controls_ .btn--screen {
+      display: none; } }
+
 .group--logo {
   position: absolute;
   z-index: 100;
@@ -4112,41 +4427,6 @@ body {
   @media (max-width: 767.98px) {
     .group--logo {
       left: 15px; } }
-
-.ui {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-      -ms-user-select: none;
-          user-select: none; }
-
-@media (max-width: 1023.98px) {
-  .ui--info {
-    padding: 80px 0 15px 0; }
-    .ui--info:not(.ui--info-centered) {
-      justify-content: flex-start; } }
-
-.ui__body {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: var(--background-negative); }
-
-.ui__lock {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: var(--foreground-secondary) solid 5px;
-  z-index: 2;
-  pointer-events: none; }
-  .ui__lock.control {
-    pointer-events: none; }
 
 .group--info {
   position: relative;
@@ -4305,20 +4585,6 @@ body {
   .group--select .group--form--select {
     margin: 0; }
 
-.group--controls {
-  position: absolute;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  left: 15px;
-  bottom: 25px; }
-  .group--controls > button + button {
-    margin-left: 10px; }
-  @media (max-width: 767.98px) {
-    .group--controls .btn--cam,
-    .group--controls .btn--mic {
-      display: none; } }
-
 .group--volume {
   position: absolute;
   display: flex;
@@ -4326,28 +4592,6 @@ body {
   align-items: center;
   left: 15px;
   top: 15px; }
-  .group--volume .btn--volume {
-    width: 40px;
-    height: 40px;
-    border: 2px solid white;
-    opacity: 0.4;
-    transition: opacity ease-in-out 350ms; }
-    .group--volume .btn--volume, .group--volume .btn--volume:active, .group--volume .btn--volume:hover, .group--volume .btn--volume:focus {
-      background: transparent;
-      border-color: white;
-      color: white; }
-      .group--volume .btn--volume > svg, .group--volume .btn--volume:active > svg, .group--volume .btn--volume:hover > svg, .group--volume .btn--volume:focus > svg {
-        fill: currentColor; }
-    .group--volume .btn--volume > svg {
-      width: 18px;
-      height: 18px; }
-    .group--volume .btn--volume.disabled {
-      display: none;
-      pointer-events: none; }
-    .group--volume .btn--volume.muted {
-      border-color: transparent; }
-    .group--volume .btn--volume:hover {
-      opacity: 1; }
   .group--volume > button + button {
     margin-left: 10px; }
   @media (max-width: 767.98px) {
@@ -4395,23 +4639,6 @@ body {
       display: block;
       animation: love-rise 3s linear infinite, love-swing 1s ease-in-out infinite alternate; }
 
-@keyframes love-swing {
-  0% {
-    margin-left: -20px; }
-  100% {
-    margin-left: 20px; } }
-
-@keyframes love-rise {
-  0% {
-    transform: translateY(0);
-    opacity: 0; }
-  50% {
-    transform: translateY(-80px);
-    opacity: 1; }
-  100% {
-    transform: translateY(-160px);
-    opacity: 0; } }
-
 .group--remote .agora-stream {
   width: 120px;
   height: 90px;
@@ -4419,30 +4646,44 @@ body {
 
 .group--remote .members {
   position: absolute;
+  width: 120px;
+  height: 90px;
   padding: 8px 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 12px;
   line-height: 1;
-  color: var(--foreground-negative); }
-  .group--remote .members:before {
-    content: '';
-    display: block;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    margin-right: 4px;
-    margin-left: -10px;
-    background: greenyellow; }
+  color: var(--foreground-negative);
+  /*
+		&:before {
+			content: '';
+			display: block;
+			width: 8px;
+			height: 8px;
+			border-radius: 4px;
+			margin-right: 4px;
+			margin-left: -10px;
+			background: greenyellow;
+		}
+		*/ }
+  .group--remote .members svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor; }
   .group--remote .members__count {
-    margin-left: 4px; }
+    margin-left: 7px;
+    padding: 3px 5px;
+    min-width: 20px;
+    text-align: center;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1); }
 
 @media (min-width: 768px) {
   .group--remote {
     position: absolute;
     display: flex;
-    background: #333; } }
+    background: var(--background-negative); } }
   @media (min-width: 768px) and (orientation: landscape) {
     .group--remote {
       flex-direction: column;
@@ -4461,7 +4702,7 @@ body {
       justify-content: flex-start;
       bottom: -90px;
       left: 0;
-      width: 100%;
+      min-width: 100%;
       height: 90px;
       flex: 1 1 100%; }
       .group--remote .members {
@@ -4488,11 +4729,35 @@ body {
     height: 90px;
     background: black;
     margin-left: 15px; }
+  .group--local .agora-stream--screen {
+    position: absolute;
+    top: 90px;
+    right: 0;
+    /*
+		@include ratio(50px, 4 / 3);
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		border: 1px solid $foreground-secondary;
+		*/ }
   @media (max-width: 767.98px) {
     .group--local {
       position: absolute;
       visibility: hidden;
       pointer-events: none; } }
+
+.ui {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
 
 @media (min-width: 768px) and (orientation: landscape) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
@@ -4505,53 +4770,36 @@ body {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     height: calc(100% - 90px);
     margin-bottom: 90px; } }
+  .ui.self-service .group--remote {
+    display: none; }
+  .ui.publisher .group--local .agora-stream {
+    margin-left: 20px; }
+  .ui.viewer .group--local .agora-stream {
+    display: none; }
 
-.ui.self-service .group--remote {
-  display: none; }
+@media (max-width: 1023.98px) {
+  .ui--info {
+    padding: 80px 0 15px 0; }
+    .ui--info:not(.ui--info-centered) {
+      justify-content: flex-start; } }
 
-.ui.publisher .group--local .agora-stream {
-  margin-left: 20px; }
-
-.ui.viewer .group--local .agora-stream {
-  display: none; }
-
-.agora-device-preview {
-  position: relative;
+.ui__body {
+  position: absolute;
   width: 100%;
-  padding-top: 75%;
-  overflow: hidden;
-  width: auto; }
-  .agora-device-preview > img,
-  .agora-device-preview > svg,
-  .agora-device-preview > video,
-  .agora-device-preview > canvas,
-  .agora-device-preview > .video,
-  .agora-device-preview > iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; }
-  .agora-device-preview > .video {
-    border-radius: 6px 6px 0 0;
-    border: none;
-    background: var(--background-primary-disabled); }
-  .agora-device-preview > .audio {
-    position: absolute;
-    bottom: 10px;
-    left: 22px;
-    right: 16px;
-    height: 30px; }
-    .agora-device-preview > .audio > .bar {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: white;
-      opacity: 0;
-      transform: scale(1, 0); }
+  height: 100%;
+  background: var(--background-negative); }
+
+.ui__lock {
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 2px);
+  top: 0;
+  left: 0;
+  border: 2px solid var(--foreground-secondary);
+  z-index: 2;
+  pointer-events: none; }
+  .ui__lock.control {
+    pointer-events: none; }
 
 .world {
   width: 100%;
@@ -4612,183 +4860,6 @@ body {
   line-height: 1.1;
   border-radius: 30px; }
 
-.btn--absolute {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 10000; }
-
-.agora-stream {
-  position: relative; }
-  .agora-stream__player {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    background-color: black; }
-    .agora-stream__player > video {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover; }
-    .agora-stream__player > .player__vr {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      object-fit: cover; }
-      .agora-stream__player > .player__vr canvas {
-        width: 100% !important;
-        height: 100% !important; }
-  .agora-stream__info {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid transparent; }
-  .agora-stream .mic-muted,
-  .agora-stream .cam-muted {
-    display: none;
-    width: 18px;
-    height: 18px;
-    margin: 5px;
-    fill: var(--foreground-negative); }
-  .agora-stream .btn--spy {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    top: 0;
-    right: 0;
-    cursor: pointer; }
-  .agora-stream .spy {
-    width: 24px;
-    height: 24px;
-    fill: var(--foreground-negative);
-    stroke: black;
-    stroke-width: 1px; }
-  .agora-stream .id,
-  .agora-stream .spying {
-    color: var(--foreground-negative); }
-  .agora-stream .id {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background: #333;
-    color: var(--foreground-negative);
-    padding: 4px;
-    line-height: 1;
-    font-size: 10px; }
-  .agora-stream__info {
-    /*
-		// [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }"
-		&.talking {
-			border-color: #00ff00;
-		}
-		*/ }
-    .agora-stream__info.spyed {
-      border-color: var(--background-secondary); }
-      .agora-stream__info.spyed .spy {
-        fill: var(--foreground-secondary); }
-  .agora-stream.video--muted .cam-muted {
-    display: block; }
-  .agora-stream.audio--muted .mic-muted {
-    display: block; }
-
-.btn--control svg {
-  width: 28px;
-  height: 28px; }
-
-.btn--control, .btn--control:active, .btn--control:focus, .btn--control:hover, .btn--control:visited {
-  border: 2px solid var(--black-20);
-  background: var(--background-primary);
-  color: var(--foreground-negative); }
-  .btn--control svg, .btn--control:active svg, .btn--control:focus svg, .btn--control:hover svg, .btn--control:visited svg {
-    fill: var(--foreground-negative); }
-
-.btn--control:hover {
-  border: 2px solid var(--foreground); }
-
-.btn--control.active, .btn--control.active:active, .btn--control.active:focus, .btn--control.active:hover, .btn--control.active:visited {
-  border: 2px solid var(--background-secondary);
-  background: var(--background-secondary);
-  color: var(--foreground-negative); }
-  .btn--control.active svg, .btn--control.active:active svg, .btn--control.active:focus svg, .btn--control.active:hover svg, .btn--control.active:visited svg {
-    fill: currentColor; }
-
-.btn--control {
-  margin-left: 10px; }
-
-.btn--call, .btn--call:active, .btn--call:focus, .btn--call:hover, .btn--call:visited {
-  background: var(--background-secondary);
-  color: var(--foreground-negative); }
-  .btn--call svg, .btn--call:active svg, .btn--call:focus svg, .btn--call:hover svg, .btn--call:visited svg {
-    fill: currentColor; }
-
-.btn--heart {
-  position: relative;
-  line-height: 0;
-  margin: 0 10px 0 0;
-  padding: 0; }
-  .btn--heart svg {
-    fill: var(--foreground-secondary);
-    width: 40px;
-    height: 40px; }
-  .btn--heart .badge {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: var(--background);
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    line-height: 1;
-    right: -10px;
-    bottom: 0;
-    margin-top: -10px; }
-  .btn--heart.active .badge {
-    animation: flip-2-hor-top-1 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) both; }
-
-.btn--cam.disabled,
-.btn--mic.disabled {
-  display: none;
-  pointer-events: none; }
-
-.btn--cam.muted,
-.btn--mic.muted {
-  opacity: 0.2; }
-
-.btn--ar.disabled,
-.btn--vr.disabled {
-  display: none; }
-
-@keyframes flip-2-hor-top-1 {
-  0% {
-    transform: translateY(0) rotateX(0);
-    transform-origin: 50% 0%; }
-  100% {
-    transform: translateY(0) rotateX(-360deg);
-    transform-origin: 50% 100%; } }
-
-.title {
-  font-weight: 800;
-  font-size: 80px;
-  line-height: 1; }
-
-.abstract {
-  font-size: 40px;
-  line-height: 1; }
-
 .control-request-modal,
 .try-in-ar-modal {
   margin: 0;
@@ -4817,22 +4888,6 @@ model-viewer {
   width: 100%;
   height: 100%; }
 
-.btn--close {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center; }
-  .btn--close svg {
-    width: 20px;
-    height: 20px; }
-
-.progress {
-  color: var(--foreground-negative);
-  font-weight: 800;
-  font-size: 70px;
-  text-shadow: 0 10px 10px var(--black-50); }
-
 .model-viewer__item .progress {
   position: absolute;
   top: 50%;
@@ -4847,7 +4902,7 @@ model-viewer {
   width: 600px;
   left: 0;
   top: 5000px;
-  background: var(--black-70);
+  background: rgba(0, 0, 0, 0.75);
   color: var(--foreground-negative);
   padding: 40px 30px 30px 30px;
   border-radius: 12px; }
@@ -4893,27 +4948,49 @@ model-viewer {
     color: var(--foreground-negative);
     white-space: nowrap; }
 
-.btn--menu {
+.progress {
+  color: var(--foreground-negative);
+  font-weight: 800;
+  font-size: 70px;
+  text-shadow: 0 10px 10px var(--black-50); }
+
+.canvas--debug {
   position: absolute;
-  pointer-events: all;
-  right: 20px;
-  top: 50%; }
-  .btn--menu svg {
-    width: 28px;
-    height: 28px; }
-  .btn--menu, .btn--menu:active, .btn--menu:focus, .btn--menu:hover, .btn--menu:visited {
-    background: var(--background);
-    color: var(--foreground); }
-    .btn--menu svg, .btn--menu:active svg, .btn--menu:focus svg, .btn--menu:hover svg, .btn--menu:visited svg {
-      fill: currentColor; }
-  .btn--menu:hover {
-    background: var(--background-negative);
-    color: var(--foreground-negative);
-    opacity: 0.8; }
-  .btn--menu.active, .btn--menu.active:active, .btn--menu.active:focus, .btn--menu.active:hover, .btn--menu.active:visited {
-    border-color: transparent;
-    background: var(--black-80);
-    color: var(--foreground-negative); }
+  top: 0;
+  left: 0; }
+
+@keyframes flip-2-hor-top-1 {
+  0% {
+    transform: translateY(0) rotateX(0);
+    transform-origin: 50% 0%; }
+  100% {
+    transform: translateY(0) rotateX(-360deg);
+    transform-origin: 50% 100%; } }
+
+@keyframes love-swing {
+  0% {
+    margin-left: -20px; }
+  100% {
+    margin-left: 20px; } }
+
+@keyframes love-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0; }
+  50% {
+    transform: translateY(-80px);
+    opacity: 1; }
+  100% {
+    transform: translateY(-160px);
+    opacity: 0; } }
+
+@keyframes slide-top {
+  0% {
+    transform: translateY(10px);
+    opacity: 0; }
+  100% {
+    transform: translateY(0);
+    opacity: 1; } }
 
 .stagger--childs > * {
   animation: slide-top 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards; }
@@ -4958,18 +5035,140 @@ model-viewer {
   .stagger--childs > *:nth-child(20) {
     animation-delay: 1.1s; }
 
-@keyframes slide-top {
-  0% {
-    transform: translateY(10px);
-    opacity: 0; }
-  100% {
-    transform: translateY(0);
-    opacity: 1; } }
+.agora-device-preview {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;
+  overflow: hidden;
+  width: auto;
+  border-radius: 6px 6px 0 0; }
+  .agora-device-preview > img,
+  .agora-device-preview > svg,
+  .agora-device-preview > video,
+  .agora-device-preview > canvas,
+  .agora-device-preview > .video,
+  .agora-device-preview > iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; }
+  .agora-device-preview > .video {
+    top: -1px;
+    left: -1px;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    border: none;
+    background: var(--background-primary-disabled); }
+  .agora-device-preview > .audio {
+    position: absolute;
+    bottom: 10px;
+    left: 22px;
+    right: 16px;
+    height: 30px; }
+    .agora-device-preview > .audio > .bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      transform: scale(1, 0); }
 
-.canvas--debug {
-  position: absolute;
-  top: 0;
-  left: 0; }
+.agora-stream {
+  position: relative; }
+  .agora-stream__player {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: black; }
+    .agora-stream__player > video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; }
+    .agora-stream__player > .player__vr {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      object-fit: cover; }
+      .agora-stream__player > .player__vr canvas {
+        width: 100% !important;
+        height: 100% !important; }
+  .agora-stream__info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent; }
+  .agora-stream .mic-muted,
+  .agora-stream .cam-muted {
+    display: none;
+    width: 18px;
+    height: 18px;
+    margin: 5px;
+    fill: var(--foreground-negative); }
+  .agora-stream .btn--spy {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 23px;
+    top: 0;
+    right: 0;
+    cursor: pointer; }
+  .agora-stream .spy {
+    width: 18px;
+    height: 18px;
+    fill: var(--foreground-negative);
+    stroke: black;
+    stroke-width: 1px; }
+  .agora-stream .id,
+  .agora-stream .spying {
+    color: var(--foreground-negative); }
+  .agora-stream .id {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #333;
+    color: var(--foreground-negative);
+    padding: 4px;
+    line-height: 1;
+    font-size: 10px; }
+  .agora-stream__info {
+    /*
+		// [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }"
+		&.talking {
+			border-color: #00ff00;
+		}
+		*/ }
+    .agora-stream__info.spyed {
+      border-color: var(--background-secondary); }
+      .agora-stream__info.spyed .spy {
+        fill: var(--foreground-secondary); }
+  .agora-stream.video--muted .cam-muted {
+    display: block; }
+  .agora-stream.audio--muted .mic-muted {
+    display: block; }
+
+.title {
+  font-weight: 800;
+  font-size: 80px;
+  line-height: 1; }
+
+.abstract {
+  font-size: 40px;
+  line-height: 1; }
 
 [editor-component] .ui.open {
   width: calc(100% - 300px); }

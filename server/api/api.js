@@ -93,6 +93,7 @@ function doCreate(request, response, params, items) {
 	if (item.navs) {
 		item.navs.forEach(x => x.id = uuid());
 	}
+	doSetLocale(item, params);
 	items.push(item);
 	saveStore();
 	sendOk(response, item);
@@ -103,6 +104,7 @@ function doUpdate(request, response, params, items) {
 	const item = items.find(x => x.id === body.id);
 	if (item) {
 		Object.assign(item, body);
+		doSetLocale(item, params);
 		saveStore();
 		sendOk(response, item);
 	} else {
@@ -127,6 +129,18 @@ function doGet(request, response, params, items) {
 	let item = items.find(x => x.id === params.id);
 	if (!item) {
 		sendError(response, 404, 'Not Found');
+	}
+	return item;
+}
+
+function doSetLocale(item, params) {
+	const language = params.languageCode;
+	if (language) {
+		const localized = Object.assign({}, item);
+		delete localized.locale;
+		const locale = item.locale = (item.locale || {});
+		locale[language] = localized;
+		console.log('doSetLocale.languageCode', language);
 	}
 	return item;
 }
@@ -228,6 +242,14 @@ const ROUTES = [{
 }, {
 	path: '/api/asset/:assetId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.assetId }, db.assets);
+	}
+}, {
+	path: '/api/:languageCode/asset', method: 'POST', callback: function(request, response, params) {
+		doCreate(request, response, params, db.assets);
+	}
+}, {
+	path: '/api/:languageCode/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
+		doUpdate(request, response, params, db.assets);
 	}
 }, {
 	path: '/api/menu', method: 'GET', callback: function(request, response, params) {
@@ -442,10 +464,26 @@ function apiMiddleware(vars) {
 	};
 };
 
+function setSessionUser(request, userType) {
+	userType = userType || RoleType.SelfService;
+	const id = uuid();
+	const user = {
+		id,
+		type: userType,
+		username: userType,
+		password: '****',
+		firstName: 'Jhon',
+		lastName: 'Appleseed',
+	};
+	request.session.user = user;
+}
+
 module.exports = {
 	apiMiddleware: apiMiddleware,
 	useApi: useApi,
 	uuid: uuid,
+	RoleType: RoleType,
+	setSessionUser: setSessionUser,
 };
 
 /*

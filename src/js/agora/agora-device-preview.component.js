@@ -2,6 +2,8 @@ import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 import AudioStreamService from '../audio/audio-stream.service';
 import { DevicePlatform, DeviceService } from '../device/device.service';
+import StateService from '../state/state.service';
+import { getStreamQuality } from './agora.types';
 
 export default class AgoraDevicePreviewComponent extends Component {
 
@@ -70,10 +72,19 @@ export default class AgoraDevicePreviewComponent extends Component {
 		// console.log(this.video_, this.audio_);
 		if (this.video_ || this.audio_) {
 			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-				navigator.mediaDevices.getUserMedia({
-					video: this.video_ ? { deviceId: this.video_ } : false,
+				const state = StateService.state;
+				const quality = getStreamQuality(state);
+				const options = {
+					video: this.video_ ? {
+						deviceId: this.video_,
+						width: { ideal: quality.resolution.width },
+						height: { ideal: quality.resolution.height },
+						frameRate: { ideal: quality.frameRate.min, max: quality.frameRate.max },
+					} : false,
 					audio: this.audio_ ? { deviceId: this.audio_ } : false,
-				}).then((stream) => {
+				};
+				// console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
+				navigator.mediaDevices.getUserMedia(options).then((stream) => {
 					if (this.hasPreview) {
 						if ('srcObject' in preview) {
 							preview.srcObject = stream;

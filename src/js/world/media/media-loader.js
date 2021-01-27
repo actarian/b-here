@@ -1,5 +1,5 @@
 import { ReplaySubject } from 'rxjs';
-import { AssetType } from '../../asset/asset';
+import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
 
@@ -33,24 +33,48 @@ export default class MediaLoader {
 		return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
 	}
 
+	static isStream(item) {
+		return assetIsStream(item.asset);
+	}
+
 	static isPublisherStream(item) {
 		return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
 	}
 
-	static isNextAttendeeStream(item) {
-		return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
+	static isAttendeeStream(item) {
+		return item.asset && item.asset.type.name === AssetType.AttendeeStream.name;
+	}
+
+	static isPublisherScreen(item) {
+		return item.asset && item.asset.type.name === AssetType.PublisherScreen.name;
+	}
+
+	static isAttendeeScreen(item) {
+		return item.asset && item.asset.type.name === AssetType.AttendeeScreen.name;
 	}
 
 	get isVideo() {
 		return MediaLoader.isVideo(this.item);
 	}
 
+	get isStream() {
+		return MediaLoader.isStream(this.item);
+	}
+
 	get isPublisherStream() {
 		return MediaLoader.isPublisherStream(this.item);
 	}
 
-	get isNextAttendeeStream() {
-		return MediaLoader.isNextAttendeeStream(this.item);
+	get isAttendeeStream() {
+		return MediaLoader.isAttendeeStream(this.item);
+	}
+
+	get isPublisherScreen() {
+		return MediaLoader.isPublisherScreen(this.item);
+	}
+
+	get isAttendeeScreen() {
+		return MediaLoader.isAttendeeScreen(this.item);
 	}
 
 	get isPlayableVideo() {
@@ -58,7 +82,7 @@ export default class MediaLoader {
 	}
 
 	get isAutoplayVideo() {
-		return this.isPublisherStream || this.isNextAttendeeStream || (this.isVideo && (this.item.asset.autoplay != null));
+		return this.isStream || (this.isVideo && (this.item.asset.autoplay != null));
 	}
 
 	get muted() {
@@ -83,8 +107,8 @@ export default class MediaLoader {
 	load(callback) {
 		const item = this.item;
 		let texture;
-		// console.log('MediaLoader.load', item, this.isPublisherStream);
-		if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
+		// console.log('MediaLoader.load', item, this.isStream);
+		if (this.isStream && item.streamId) {
 			const streamId = item.streamId;
 			const target = `#stream-${streamId}`;
 			const video = document.querySelector(`${target} video`);

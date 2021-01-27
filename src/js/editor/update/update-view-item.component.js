@@ -8,7 +8,6 @@ import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType, ViewType } from '../../view/view';
-import { EditorLocale } from '../editor.locale';
 import EditorService from '../editor.service';
 
 export default class UpdateViewItemComponent extends Component {
@@ -32,12 +31,11 @@ export default class UpdateViewItemComponent extends Component {
 
 	getAssetDidChange(changes) {
 		const item = this.item;
-		const itemAssetId = item.asset ? item.asset.id : null;
-		const changesAssetId = changes.asset ? changes.asset.id : null;
+		// console.log('UpdateViewItemComponent.getAssetDidChange', item, changes);
 		const itemHasChromaKeyColor = item.hasChromaKeyColor === true;
 		const changesHasChromaKeyColor = changes.hasChromaKeyColor === true;
-		// console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
-		if (itemAssetId !== changesAssetId || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
+		if (AssetService.assetDidChange(item.asset, changes.asset) ||
+			itemHasChromaKeyColor !== changesHasChromaKeyColor) {
 			return true;
 		} else {
 			return false;
@@ -120,6 +118,7 @@ export default class UpdateViewItemComponent extends Component {
 					case 'assetType':
 						control = new FormControl(value, optional ? undefined : RequiredValidator());
 						control.options = Object.keys(AssetGroupType).map(x => AssetGroupType[x]);
+						// console.log(control.options);
 						break;
 					case 'link':
 						const title = item.link ? item.link.title : null;
@@ -244,8 +243,7 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	getTitle(item) {
-		return EditorLocale[item.type.name];
-		return LabelPipe.transform(`editor_${view.type.name.replace('-','_')}`);
+		return LabelPipe.getKeys('editor', item.type.name);
 	}
 }
 
@@ -273,7 +271,7 @@ UpdateViewItemComponent.meta = {
 				<div control-custom-select [control]="controls.viewId" label="NavToView"></div>
 				<!-- <div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div> -->
 				<div control-vector [control]="controls.position" label="Position" [precision]="3"></div>
-				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
+				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
 				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
 				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
 			</div>
@@ -282,7 +280,7 @@ UpdateViewItemComponent.meta = {
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
-				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-localized-asset [control]="controls.asset" label="Localized Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'curved-plane'">
@@ -293,7 +291,7 @@ UpdateViewItemComponent.meta = {
 				<div control-number [control]="controls.height" label="Height" [precision]="2"></div>
 				<div control-number [control]="controls.arc" label="Arc" [precision]="0"></div>
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
-				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-localized-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'model'">
@@ -303,7 +301,7 @@ UpdateViewItemComponent.meta = {
 			</div>
 			<div class="form-controls" *if="item.type.name == 'texture'">
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
-				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
+				<div control-localized-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="group--cta">

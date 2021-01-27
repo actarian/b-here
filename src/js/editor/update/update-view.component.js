@@ -1,13 +1,13 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
-import { auditTime, first, takeUntil } from 'rxjs/operators';
+import { auditTime, distinctUntilChanged, filter, first, takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
+import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
 import MessageService from '../../message/message.service';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { View, ViewType } from '../../view/view';
-import { EditorLocale } from '../editor.locale';
 import EditorService from '../editor.service';
 
 export default class UpdateViewComponent extends Component {
@@ -17,31 +17,65 @@ export default class UpdateViewComponent extends Component {
 		this.flags = environment.flags;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
+		this.doUpdateForm();
 		form.changes$.subscribe((changes) => {
-			// console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
+			// console.log('UpdateViewComponent.form.changes$', changes);
+			this.doUpdateView(changes);
 			this.pushChanges();
 		});
-		this.doUpdateForm();
-		MessageService.in$.pipe(
-			auditTime(500),
+		this.orbit$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
-			switch (message.type) {
-				case MessageType.ControlInfo:
-					switch (this.view.type.name) {
-						case ViewType.Panorama.name:
-						case ViewType.PanoramaGrid.name:
-						case ViewType.Model.name:
-							this.form.patch({
-								latitude: message.orientation.latitude,
-								longitude: message.orientation.longitude,
-								zoom: message.zoom,
-							})
-							break;
-					}
+			switch (this.view.type.name) {
+				case ViewType.Panorama.name:
+				case ViewType.PanoramaGrid.name:
+				case ViewType.Model.name:
+					this.form.patch({
+						latitude: message.orientation.latitude,
+						longitude: message.orientation.longitude,
+						zoom: message.zoom,
+					});
 					break;
 			}
 		});
+	}
+
+	orbit$() {
+		let latitude, longitude, zoom = null;
+		return MessageService.in$.pipe(
+			filter(message => message.type === MessageType.ControlInfo),
+			auditTime(65),
+			distinctUntilChanged((previous, current) => {
+				const didChange = (latitude !== current.orientation.latitude ||
+					longitude !== current.orientation.longitude ||
+					zoom !== current.zoom);
+				latitude = current.orientation.latitude;
+				longitude = current.orientation.longitude;
+				zoom = current.zoom;
+				return !didChange;
+			}),
+		);
+	}
+
+	getAssetDidChange(changes) {
+		const view = this.view;
+		const assetDidChange = AssetService.assetDidChange(view.asset, changes.asset);
+		const usdzDidChange = AssetService.assetDidChange(view.ar ? view.ar.usdz : null, changes.usdz);
+		const gltfDidChange = AssetService.assetDidChange(view.ar ? view.ar.gltf : null, changes.gltf);
+		if (assetDidChange || usdzDidChange || gltfDidChange) {
+			// console.log('UpdateViewComponent.getAssetDidChange', assetDidChange, usdzDidChange, gltfDidChange);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	doUpdateView(changes) {
+		const assetDidChange = this.getAssetDidChange(changes);
+		// console.log('doUpdateItem.assetDidChange', assetDidChange);
+		if (assetDidChange) {
+			this.onSubmit();
+		}
 	}
 
 	doUpdateForm() {
@@ -111,14 +145,11 @@ export default class UpdateViewComponent extends Component {
 				delete payload.latitude;
 				delete payload.longitude;
 			}
-			if (payload.usdz != null || payload.gltf != null) { // !!! keep loose inequality
-				payload.ar = {
-					usdz: payload.usdz || null,
-					gltf: payload.gltf || null,
-				};
-				delete payload.usdz;
-				delete payload.gltf;
-			}
+			const usdz = payload.usdz || null;
+			const gltf = payload.gltf || null;
+			delete payload.usdz;
+			delete payload.gltf;
+			payload.ar = (usdz || gltf) ? { usdz, gltf } : null;
 			const view = new View(payload);
 			EditorService.viewUpdate$(view).pipe(
 				first(),
@@ -151,8 +182,7 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	getTitle(view) {
-		return EditorLocale[view.type.name];
-		return LabelPipe.transform(`editor_${view.type.name.replace('-','_')}`);
+		return LabelPipe.getKeys('editor', view.type.name);
 	}
 }
 
@@ -183,7 +213,7 @@ UpdateViewComponent.meta = {
 			</div>
 			<div class="form-controls" *if="view.type.name == 'panorama'">
 				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
-				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg, video/mp4"></div>
+				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>

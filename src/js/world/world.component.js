@@ -13,6 +13,7 @@ import { PanoramaGridView } from '../view/view';
 import ViewService from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
 import Camera from './camera/camera';
+// import DebugService from './debug.service';
 import Interactive from './interactive/interactive';
 import MediaMesh from './media/media-mesh';
 import OrbitService, { OrbitMoveEvent } from './orbit/orbit';
@@ -20,6 +21,7 @@ import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
 import VRService from './vr.service';
+import { Gamepad } from './webxr/gamepad';
 import { XRControllerModelFactory } from './webxr/xr-controller-model-factory';
 
 const ORIGIN = new THREE.Vector3();
@@ -50,6 +52,7 @@ export default class WorldComponent extends Component {
 		}
 	}
 	get debugging() {
+		// return STATIC || DEBUG;
 		return DEBUG;
 	}
 	get locked() {
@@ -222,6 +225,7 @@ export default class WorldComponent extends Component {
 		}
 		const view = this.view_;
 		if (view) {
+			this.views.forEach(view => delete view.onUpdateAsset);
 			const message = this.requestInfoResult;
 			if (message) {
 				if (view instanceof PanoramaGridView && message.gridIndex !== undefined) {
@@ -236,6 +240,9 @@ export default class WorldComponent extends Component {
 				// this.scene.background = envMap;
 				this.scene.environment = envMap;
 				view.ready = true;
+				view.onUpdateAsset = () => {
+					this.onViewAssetDidChange();
+				};
 				// this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
 				this.pushChanges();
 				// this.render();
@@ -243,6 +250,14 @@ export default class WorldComponent extends Component {
 				this.setViewOrientation(view);
 				// this.loading = null;
 				// this.pushChanges();
+			});
+		}
+	}
+
+	onViewAssetDidChange() {
+		if (this.panorama) {
+			this.panorama.crossfade(this.view, this.renderer, (envMap, texture, rgbe) => {
+				this.scene.environment = envMap;
 			});
 		}
 	}
@@ -267,63 +282,152 @@ export default class WorldComponent extends Component {
 	}
 
 	addControllers() {
-		const renderer = this.renderer;
-		const scene = this.scene;
 		const controllerGroup = this.controllerGroup = new THREE.Group();
-		const controller1 = this.controller1 = renderer.xr.getController(0);
-		controller1.name = '[controller1]';
-		this.onSelect1Start = this.onSelect1Start.bind(this);
-		this.onSelect1End = this.onSelect1End.bind(this);
-		controller1.addEventListener('selectstart', this.onSelect1Start);
-		controller1.addEventListener('selectend', this.onSelect1End);
-		controller1.addEventListener('connected', (event) => {
-			controller1.add(this.buildController(event.data));
-		});
-		controller1.addEventListener('disconnected', () => {
-			while (controller1.children.length) {
-				controller1.remove(controller1.children[0]);
-			}
-		});
-		controllerGroup.add(controller1);
-		const controller2 = this.controller2 = renderer.xr.getController(1);
-		controller2.name = '[controller2]';
-		this.onSelect2Start = this.onSelect2Start.bind(this);
-		this.onSelect2End = this.onSelect2End.bind(this);
-		controller2.addEventListener('selectstart', this.onSelect2Start);
-		controller2.addEventListener('selectend', this.onSelect2End);
-		controller2.addEventListener('connected', (event) => {
-			controller2.add(this.buildController(event.data));
-			if (USE_PHONE) {
-				const phone = this.phone = new PhoneElement();
-				controller2.add(phone.mesh);
-			}
-		});
-		controller2.addEventListener('disconnected', () => {
-			while (controller2.children.length) {
-				controller2.remove(controller2.children[0]);
-			}
-		});
-		controllerGroup.add(controller2);
-		this.controllers = [this.controller1, this.controller2];
-		// The XRControllerModelFactory will automatically fetch controller models
-		// that match what the user is holding as closely as possible. The models
-		// should be attached to the object returned from getControllerGrip in
-		// order to match the orientation of the held device.
-		const controllerModelFactory = new XRControllerModelFactory();
-		const controllerGrip1 = this.controllerGrip1 = renderer.xr.getControllerGrip(0);
-		controllerGrip1.name = '[controller-grip1]';
-		controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-		controllerGroup.add(controllerGrip1);
-		if (!USE_PHONE) {
-			const controllerGrip2 = this.controllerGrip2 = renderer.xr.getControllerGrip(1);
-			controllerGrip2.name = '[controller-grip2]';
-			controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-			controllerGroup.add(controllerGrip2);
+		this.controllers = [];
+		this.controllerModelFactory = new XRControllerModelFactory();
+		this.addController(0);
+		this.addController(1);
+		this.cameraGroup.add(controllerGroup);
+	}
+
+	addController(index) {
+		const showPhone = USE_PHONE && StateService.state.live;
+		const renderer = this.renderer;
+		const controllerGroup = this.controllerGroup;
+		const controller = renderer.xr.getController(index);
+		const controllerModelFactory = this.controllerModelFactory;
+		controller.name = `[controller${index + 1}]`;
+		controllerGroup.add(controller);
+		const setController = (controller) => {
+			// console.log('setController', this);
+			this.controller = controller;
 		}
-		scene.add(controllerGroup);
+		const onSelectStart = (event) => {
+			controller.userData.isSelecting = true;
+			setController(controller);
+		};
+		const onSelectEnd = (event) => {
+			controller.userData.isSelecting = false;
+		};
+		// const debugService = DebugService.getService();
+		// debugService.setMessage('DebugService 1001');
+		const onPress = (event) => {
+			// console.log('Gamepad.onPress', event, controller);
+			// debugService.setMessage('Gamepad.onPress ' + event.index);
+			// 0: select
+			// 1: squeeze
+			// 4: x / a
+			// 5: y / b
+			switch(event.index) {
+				case 0:
+					// select
+					break;
+				case 1:
+					// squeeze
+					break;
+				case 4:
+					// x / a
+					MessageService.send({
+						type: MessageType.MenuToggle,
+					});
+					break;
+			}
+		};
+		const onRelease = (event) => {
+			this.onModelUp();
+		};
+		const onLeft = (event) => {
+			// console.log('Gamepad.onLeft', event, controller);
+			// debugService.setMessage('Gamepad.onLeft');
+			this.cameraGroup.rotation.y += Math.PI / 180 * 45;
+		};
+		const onRight = (event) => {
+			// console.log('Gamepad.onRight', event, controller);
+			// debugService.setMessage('Gamepad.onRight');
+			this.cameraGroup.rotation.y -= Math.PI / 180 * 45;
+		};
+		/*
+		const onAxis = (event) => {
+			// console.log('Gamepad.onAxis', event, controller);
+			// debugService.setMessage('Gamepad.onAxis');
+			this.cameraGroup.rotation.y += (Math.PI / 180 * event.x);
+		};
+		*/
+		const onAxis = (event) => {
+			// console.log('Gamepad.onAxis', event, controller);
+			// debugService.setMessage('Gamepad.onAxis');
+			this.onModelDistance(event.y);
+		};
+		/*
+		const onUp = (event) => {
+			// console.log('Gamepad.onUp', event, controller);
+			// debugService.setMessage('Gamepad.onUp');
+			this.cameraGroup.position.y += 1;
+		};
+		const onDown = (event) => {
+			// console.log('Gamepad.onDown', event, controller);
+			// debugService.setMessage('Gamepad.onDown');
+			this.cameraGroup.position.y -= 1;
+		};
+		*/
+		/*
+		const onUp = (event) => {
+			this.onModelDistance(1);
+		};
+		const onDown = (event) => {
+			this.onModelDistance(-1);
+		};
+		*/
+		const onConnected = (event) => {
+			controller.add(this.buildController(event.data));
+			if (showPhone && event.data.handedness === 'left') {
+				const phone = this.phone = new PhoneElement();
+				controller.add(phone.mesh);
+			}
+			if (!showPhone || event.data.handedness === 'right') {
+				const controllerGrip = renderer.xr.getControllerGrip(index);
+				controllerGrip.name = `[controller-grip${index + 1}]`;
+				controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
+				controllerGroup.add(controllerGrip);
+			}
+			const gamepad = new Gamepad(event.data.gamepad);
+			gamepad.on('press', onPress);
+			gamepad.on('release', onRelease);
+			gamepad.on('left', onLeft);
+			gamepad.on('right', onRight);
+			gamepad.on('axis', onAxis);
+			// gamepad.on('up', onUp);
+			// gamepad.on('down', onDown);
+			controller.userData.gamepad = gamepad;
+		}
+		const onDisconnected = (event) => {
+			while (controller.children.length) {
+				controller.remove(controller.children[0]);
+			}
+			const controllerGrip = renderer.xr.getControllerGrip(index);
+			while (controllerGrip.children.length) {
+				controllerGrip.remove(controllerGrip.children[0]);
+			}
+			controllerGroup.remove(controllerGrip);
+			const gamepad = controller.userData.gamepad;
+			gamepad.off('press', onPress);
+			gamepad.off('release', onRelease);
+			gamepad.off('left', onLeft);
+			gamepad.off('right', onRight);
+			gamepad.off('axis', onAxis);
+			// gamepad.off('up', onUp);
+			// gamepad.off('down', onDown);
+		}
+		controller.addEventListener('selectstart', onSelectStart);
+		controller.addEventListener('selectend', onSelectEnd);
+		controller.addEventListener('connected', onConnected);
+		controller.addEventListener('disconnected', onDisconnected);
+		const controllers = this.controllers;
+		controllers.push(controller);
 	}
 
 	buildController(data) {
+		console.log('buildController', data);
 		let geometry, material;
 		switch (data.targetRayMode) {
 			case 'tracked-pointer':
@@ -345,22 +449,51 @@ export default class WorldComponent extends Component {
 		}
 	}
 
-	onSelect1Start() {
-		this.controller1.userData.isSelecting = true;
-		this.controller = this.controller1;
+	onModelDown(event) {
+		// vr controller model grab
+		const controller = this.controller;
+		if (controller && this.renderer.xr.isPresenting) {
+			const target = this.tempTarget = event.mesh;
+			// console.log('WorldComponent.onModelDown', target);
+			// DebugService.getService().setMessage('onModelDown ', target.name);
+			const parent = this.tempParent = target.parent;
+			const position = new THREE.Vector3();
+			target.localToWorld(position);
+			controller.worldToLocal(position);
+			controller.add(target);
+			target.position.copy(position);
+		}
 	}
 
-	onSelect1End() {
-		this.controller1.userData.isSelecting = false;
+	onModelDistance(direction) {
+		// vr controller model distance
+		const controller = this.controller;
+		const target = this.tempTarget;
+		if (controller && target && this.renderer.xr.isPresenting) {
+			let position = new THREE.Vector3();
+			position = position.copy(target.position);
+			const distance = Math.max(1, Math.min(8, position.distanceTo(ORIGIN) + 0.02 * direction));
+			position.normalize();
+			position = position.multiplyScalar(distance);
+			// DebugService.getService().setMessage('onModelDistance ' + distance);
+			target.position.copy(position);
+		}
 	}
 
-	onSelect2Start() {
-		this.controller2.userData.isSelecting = true;
-		this.controller = this.controller2;
-	}
-
-	onSelect2End() {
-		this.controller2.userData.isSelecting = false;
+	onModelUp() {
+		// vr controller model release
+		const target = this.tempTarget;
+		const parent = this.tempParent;
+		if (target && parent) {
+			// console.log('WorldComponent.onModelUp', target, parent);
+			const position = new THREE.Vector3();
+			target.localToWorld(position);
+			parent.worldToLocal(position);
+			parent.add(target);
+			target.position.copy(position);
+			this.tempTarget = null;
+			this.tempParent = null;
+		}
 	}
 
 	onTween() {
@@ -443,6 +576,9 @@ export default class WorldComponent extends Component {
 			});
 			if (renderer.xr.isPresenting) {
 				gsap.ticker.tick();
+				this.controllers.forEach(controller => {
+					controller.userData.gamepad.update();
+				});
 			}
 			/*
 			const objects = this.objects;
@@ -656,7 +792,7 @@ export default class WorldComponent extends Component {
 
 	onVRStarted() {
 		// this.objects.rotation.y = - Math.PI / 2;
-		this.objects.position.y = 1.5;
+		this.objects.position.y = 1.3;
 		this.scene.add(this.indicator.mesh);
 		MessageService.send({
 			type: MessageType.VRStarted,
@@ -666,6 +802,8 @@ export default class WorldComponent extends Component {
 	onVREnded() {
 		// this.objects.rotation.y = 0;
 		this.objects.position.y = 0;
+		this.cameraGroup.rotation.y = 0;
+		this.cameraGroup.position.y = 0;
 		this.scene.remove(this.indicator.mesh);
 		MessageService.send({
 			type: MessageType.VREnded,

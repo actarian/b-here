@@ -57,12 +57,36 @@ export class View {
 
 	updateIndices(items) {
 		if (items) {
-			let nextAttendeeStreamIndex = 0;
+			let publisherStreamIndex = 0;
+			let attendeeStreamIndex = 0;
+			let publisherScreenIndex = 0;
+			let attendeeScreenIndex = 0;
 			items.forEach((item, index) => {
 				item.index = index;
-				if (item.asset && item.asset.file === 'nextAttendeeStream') {
-					item.asset.index = nextAttendeeStreamIndex++;
+				if (item.asset) {
+					switch(item.asset.file) {
+						case 'publisherStream':
+							item.asset.index = publisherStreamIndex++;
+						break;
+						case 'nextAttendeeStream':
+							item.asset.index = attendeeStreamIndex++;
+						break;
+						case 'publisherScreen':
+							item.asset.index = publisherScreenIndex++;
+						break;
+						case 'attendeeScreen':
+							item.asset.index = attendeeScreenIndex++;
+						break;
+					}
 				}
+				/*
+				if (item.asset && item.asset.file === 'publisherStream') {
+					item.asset.index = publisherStreamIndex++;
+				}
+				if (item.asset && item.asset.file === 'nextAttendeeStream') {
+					item.asset.index = attendeeStreamIndex++;
+				}
+				*/
 			});
 		}
 	}

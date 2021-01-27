@@ -10,6 +10,7 @@
 		error_email: 'email non valida',
 		error_match: 'i campi non corrispondono',
 		error_required: 'campo obbligatorio',
+		error_credentials: 'credenziali non valide',
 		loading: 'loading',
 		remove: 'Rimuovi',
 		required: 'Richiesto',
@@ -28,6 +29,10 @@
 		bhere_take_part_meeting: 'partecipa al meeting',
 		bhere_generate_meeting_id: 'Genera un Meeting ID',
 		bhere_take_part: 'Partecipa',
+		bhere_login: 'Login.',
+		bhere_username: 'Username',
+		bhere_password: 'Password',
+		bhere_cta: 'Accedi',
 		bhere_fill_fullname: 'Inserisci il nome completo',
 		bhere_fill_name_and_surname: 'inserisci un nome e un cognome',
 		bhere_proceed_as: 'prosegui come',
@@ -137,6 +142,29 @@
 			</form>
 		</div>
 	</div>
+	<!-- Status Login -->
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'login'" [agora-login] (login)="onLogin($event)">
+		<div class="group--info">
+			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+				<div class="group--info__content stagger--childs">
+					<div class="title" [innerHTML]="'bhere_login' | label"></div>
+					<input name="checkField" [formControl]="controls.checkField" value="" type="text" style="display:none !important;" />
+					<div control-text [control]="controls.username" [label]="'bhere_username' | label"></div>
+					<div control-password [control]="controls.password" [label]="'bhere_password' | label"></div>
+					<div class="group--error" *if="error">
+						<span class="status-code" [innerHTML]="error.statusCode"></span>
+						<span class="status-message" [innerHTML]="error.statusMessage"></span>
+						<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
+					</div>
+					<div class="info" *if="isValid()" [innerHTML]="'bhere_cta' | label"></div>
+					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+						<span [innerHTML]="'bhere_cta' | label"></span>
+					</button>
+					<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
+				</div>
+			</form>
+		</div>
+	</div>
 	<!-- Status Name -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')" [agora-name] (name)="onName($event)">
 		<div class="group--info" *if="form">
@@ -202,7 +230,7 @@
 							<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
 							<div model-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'plane'"></div>
 							<div model-curved-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'curved-plane'"></div>
-							<div class="model-viewer__item" model-model [item]="item" [view]="view" *if="item.type.name == 'model'">
+							<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" *if="item.type.name == 'model'">
 								<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
 								<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
 							</div>
@@ -245,7 +273,10 @@
 					</button>
 				</div>
 			</div>
-			<div class="members">users <span class="members__count" [innerHTML]="state.membersCount"></span></div>
+			<div class="members">
+				<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+				<span class="members__count" [innerHTML]="state.membersCount"></span>
+			</div>
 		</div>
 		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
 			<button type="button" class="btn--control" [class]="{ active: state.control }" (click)="onToggleControl($event)" *if="state.role == 'publisher'">
@@ -259,9 +290,12 @@
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 				</div>
 			</div>
+			<div class="agora-stream agora-stream--screen" agora-stream [stream]="screen" *if="screen">
+				<div class="agora-stream__player"></div>
+			</div>
 		</div>
 		<div class="group--volume">
-			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="onToggleVolume($event)">
+			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 			</button>
@@ -275,6 +309,9 @@
 			</button>
 			<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
+			</button>
+			<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee'">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
 			</button>
 		</div>
 		<div class="group--ar-vr">

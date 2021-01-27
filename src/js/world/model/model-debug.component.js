@@ -81,7 +81,7 @@ export default class ModelDebugComponent extends ModelComponent {
 		});
 		const text = new THREE.Mesh(geometry, material);
 		text.renderer = environment.renderOrder.debug;
-		text.position.y = 2;
+		text.position.y = 0;
 		return text;
 	}
 

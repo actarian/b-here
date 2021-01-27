@@ -1,12 +1,16 @@
+import { getContext } from 'rxcomp';
 import { of } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
+import LoaderService from '../../loader/loader.service';
+import MessageService from '../../message/message.service';
 import StateService from '../../state/state.service';
+// import DebugService from '../debug.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import OrbitService, { OrbitMode } from '../orbit/orbit';
-import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -142,10 +146,7 @@ export class MenuButton extends InteractiveMesh {
 	}
 
 	onOver() {
-		/*
-		const debugService = DebugService.getService();
-		debugService.setMessage('over ' + this.name);
-		*/
+		// DebugService.getService().setMessage('over ' + this.name);
 		gsap.to(this, {
 			duration: 0.4,
 			tween: 1,
@@ -233,11 +234,24 @@ export class BackButton extends MenuButton {
 
 export default class ModelMenuComponent extends ModelComponent {
 
+	get loading() {
+		return this.loading_;
+	}
+	set loading(loading) {
+		if (this.loading_ !== loading) {
+			this.loading_ = loading;
+			const { node } = getContext(this);
+			const btn = node.querySelector('.btn--menu');
+			btn.classList.toggle('loading', loading);
+		}
+	}
+
 	onInit() {
 		super.onInit();
 		this.onDown = this.onDown.bind(this);
 		this.onToggle = this.onToggle.bind(this);
 		// console.log('ModelMenuComponent.onInit');
+		/*
 		const vrService = this.vrService = VRService.getService();
 		vrService.session$.pipe(
 			takeUntil(this.unsubscribe$),
@@ -246,6 +260,20 @@ export default class ModelMenuComponent extends ModelComponent {
 				this.addToggler();
 			} else {
 				this.removeMenu();
+			}
+		});
+		*/
+		LoaderService.progress$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(progress => this.loading = progress.count > 0);
+		MessageService.in$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(message => {
+			// DebugService.getService().setMessage('ModelMenuComponent.MessageService ' + message.type);
+			switch (message.type) {
+				case MessageType.MenuToggle:
+					this.onToggle();
+					break;
 			}
 		});
 	}
@@ -303,6 +331,10 @@ export default class ModelMenuComponent extends ModelComponent {
 		super.onDestroy();
 	}
 
+	getContainer() {
+		return this.host.cameraGroup;
+	}
+
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
@@ -318,66 +350,26 @@ export default class ModelMenuComponent extends ModelComponent {
 		const position = this.position;
 		if (this.host.renderer.xr.isPresenting) {
 			camera = this.host.renderer.xr.getCamera(camera);
-			// camera.updateMatrixWorld(); // make sure the camera matrix is updated
-			// camera.matrixWorldInverse.getInverse(camera.matrixWorld);
 			camera.getWorldDirection(position);
+			position.y += 0.5;
 			position.multiplyScalar(3);
-			// move body, not the camera
-			// VR.body.position.add(lookDirection);
-			// console.log(position.x + '|' + position.y + '|' + position.z);
+			this.host.cameraGroup.worldToLocal(position);
+			position.y += this.host.cameraGroup.position.y;
 			group.position.copy(position);
 			group.scale.set(1, 1, 1);
-			group.lookAt(ModelMenuComponent.ORIGIN);
-			// }
+			group.lookAt(camera.position);
+			// group.lookAt(ModelMenuComponent.ORIGIN);
 		} else {
 			camera.getWorldDirection(position);
-			// console.log(position);
-			// if (position.lengthSq() > 0.01) {
-			// normalize so we can get a constant speed
-			// position.normalize();
 			if (OrbitService.mode === OrbitMode.Model) {
 				position.multiplyScalar(0.01);
 			} else {
 				position.multiplyScalar(3);
 			}
-			// move body, not the camera
-			// VR.body.position.add(lookDirection);
-			// console.log(position.x + '|' + position.y + '|' + position.z);
 			group.position.copy(position);
 			const s = 1 / camera.zoom;
 			group.scale.set(s, s, s);
 			group.lookAt(ModelMenuComponent.ORIGIN);
-			// }
-		}
-	}
-
-	onToggle() {
-		if (StateService.state.locked || StateService.state.spying) {
-			return;
-		}
-		if (this.buttons) {
-			this.removeMenu();
-			this.toggle.next();
-		} else {
-			this.addMenu();
-			this.toggle.next(this);
-		}
-	}
-
-	onDown(button) {
-		// this.down.next(this.item);
-		if (button.item && button.item.type.name === 'back') {
-			this.removeMenu();
-			if (button.item.backItem) {
-				this.addMenu(button.item.backItem.backItem);
-			} else {
-				if (this.host.renderer.xr.isPresenting) {
-					this.addToggler();
-				}
-				this.toggle.next();
-			}
-		} else {
-			this.addMenu(button.item);
 		}
 	}
 
@@ -395,12 +387,15 @@ export default class ModelMenuComponent extends ModelComponent {
 		this.removeMenu();
 		// nav to view
 		if (item && item.type.name !== 'menu-group') {
+			/*
 			if (this.host.renderer.xr.isPresenting) {
 				this.addToggler();
 			}
+			*/
 			this.nav.next(item);
 			return;
 		}
+		MenuService.active = true;
 		this.items$(item).subscribe(items => {
 			if (items) {
 				items = items.slice();
@@ -446,6 +441,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	removeMenu() {
+		MenuService.active = false;
 		this.removeButtons();
 		this.removeToggler();
 	}
@@ -490,6 +486,38 @@ export default class ModelMenuComponent extends ModelComponent {
 			toggler.dispose();
 		}
 		this.toggler = null;
+	}
+
+	onDown(button) {
+		// this.down.next(this.item);
+		if (button.item && button.item.type.name === 'back') {
+			this.removeMenu();
+			if (button.item.backItem) {
+				this.addMenu(button.item.backItem.backItem);
+			} else {
+				/*
+				if (this.host.renderer.xr.isPresenting) {
+					this.addToggler();
+				}
+				*/
+				this.toggle.next();
+			}
+		} else {
+			this.addMenu(button.item);
+		}
+	}
+
+	onToggle() {
+		if (StateService.state.locked || StateService.state.spying) {
+			return;
+		}
+		if (MenuService.active) {
+			this.removeMenu();
+			this.toggle.next();
+		} else {
+			this.addMenu();
+			this.toggle.next(this);
+		}
 	}
 }
 

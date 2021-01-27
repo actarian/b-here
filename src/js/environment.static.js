@@ -4,11 +4,12 @@ export const environmentStatic = {
 	channelName: 'BHere',
 	flags: {
 		production: false,
-		useProxy: false,
+		useProxy: true,
 		useToken: false,
 		selfService: false,
 		guidedTourRequest: true,
 		editor: true,
+		editorAssetScreen: true,
 		ar: false,
 		menu: true,
 		attendee: false,
@@ -67,5 +68,7 @@ export const environmentStatic = {
 			},
 			remove: '/remove-modal.html',
 		}
-	}
+	},
+	languages: ['en'],
+	defaultLanguage: 'en',
 };

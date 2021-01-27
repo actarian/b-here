@@ -1,8 +1,8 @@
-import { getContext, isPlatformBrowser } from 'rxcomp';
-import { combineLatest, EMPTY, fromEvent, merge } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { Asset } from '../asset/asset';
+import { getContext } from 'rxcomp';
+import { combineLatest } from 'rxjs';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AssetService } from '../asset/asset.service';
+import { DropService } from '../drop/drop.service';
 import ControlComponent from './control.component';
 
 export default class ControlAssetComponent extends ControlComponent {
@@ -25,113 +25,30 @@ export default class ControlAssetComponent extends ControlComponent {
 		const { node } = getContext(this);
 		const input = node.querySelector('input');
 		input.setAttribute('accept', this.accept);
-		this.drop$(input).pipe(
+		DropService.drop$(input).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();
-		this.change$(input).pipe(
+		DropService.change$(input).pipe(
+			switchMap((files) => {
+				// this.previews.length = files.length;
+				// this.previews.fill(null);
+				this.previews = files.map(() => null);
+				const uploads$ = files.map((file, i) => DropService.read$(file, i).pipe(
+					tap((resized) => {
+						this.previews[i] = resized;
+						this.pushChanges();
+					}),
+					switchMap(() => AssetService.upload$([file])),
+					switchMap((uploads) => AssetService.createOrUpdateAsset$(uploads, this.control)),
+				));
+				return combineLatest(uploads$);
+			}),
 			takeUntil(this.unsubscribe$)
 		).subscribe(assets => {
 			// console.log('ControlAssetComponent.change$', assets);
 			this.control.value = assets[0];
 		});
 	}
-
-	change$(input) {
-		if (isPlatformBrowser && input) {
-			return fromEvent(input, 'change').pipe(
-				filter((event) => input.files && input.files.length),
-				switchMap((event) => {
-					// console.log('ControlAssetComponent.change$', input.files);
-					const fileArray = Array.from(input.files);
-					this.previews = fileArray.map(() => null);
-					const uploads$ = fileArray.map((file, i) => this.read$(file, i).pipe(
-						switchMap(() => AssetService.upload$([file])),
-						// tap(uploads => console.log('upload', uploads)),
-						switchMap((uploads) => {
-							const upload = uploads[0];
-							/*
-							id: 1601303293569
-							type: "image/jpeg"
-							file: "1601303293569_ambiente1_x0_y2.jpg"
-							originalFileName: "ambiente1_x0_y2.jpg"
-							url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
-							*/
-							const asset = Asset.fromUrl(upload.url);
-							return AssetService.assetCreate$(asset);
-						}),
-					));
-					return combineLatest(uploads$);
-				})
-			);
-		} else {
-			return EMPTY;
-		}
-	}
-
-	read$(file, i) {
-		const reader = new FileReader();
-		const reader$ = fromEvent(reader, 'load').pipe(
-			tap(event => {
-				const blob = event.target.result;
-				this.resize_(blob, (resized) => {
-					this.previews[i] = resized;
-					this.pushChanges();
-				});
-			}),
-		);
-		reader.readAsDataURL(file);
-		return reader$;
-	}
-
-	drop$(input) {
-		if (isPlatformBrowser && input) {
-			const body = document.querySelector('body');
-			return merge(fromEvent(body, 'drop'), fromEvent(body, 'dragover')).pipe(
-				map((event) => {
-					console.log('ControlAssetComponent.drop$', event);
-					event.preventDefault();
-					if (event.target === input) {
-						input.files = event.dataTransfer.files;
-					}
-					return;
-				})
-			);
-		} else {
-			return EMPTY;
-		}
-	}
-
-	resize_(blob, callback) {
-		if (typeof callback === 'function') {
-			const img = document.createElement('img');
-			img.onload = function() {
-				const MAX_WIDTH = 320;
-				const MAX_HEIGHT = 240;
-				const canvas = document.createElement('canvas');
-				const ctx = canvas.getContext('2d');
-				let width = img.width;
-				let height = img.height;
-				if (width > height) {
-					if (width > MAX_WIDTH) {
-						height *= MAX_WIDTH / width;
-						width = MAX_WIDTH;
-					}
-				} else {
-					if (height > MAX_HEIGHT) {
-						width *= MAX_HEIGHT / height;
-						height = MAX_HEIGHT;
-					}
-				}
-				canvas.width = width;
-				canvas.height = height;
-				ctx.drawImage(img, 0, 0, width, height);
-				const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-				callback(dataUrl);
-			};
-			img.src = blob;
-		}
-	}
-
 }
 
 ControlAssetComponent.meta = {

@@ -4,6 +4,7 @@ import AccessComponent from './access/access.component';
 import AgoraDevicePreviewComponent from './agora/agora-device-preview.component';
 import AgoraDeviceComponent from './agora/agora-device.component';
 import AgoraLinkComponent from './agora/agora-link.component';
+import AgoraLoginComponent from './agora/agora-login.component';
 import AgoraNameComponent from './agora/agora-name.component';
 import AgoraStreamComponent from './agora/agora-stream.component';
 import AgoraComponent from './agora/agora.component';
@@ -19,6 +20,7 @@ import ControlAssetsComponent from './forms/control-assets.component';
 import ControlCheckboxComponent from './forms/control-checkbox.component';
 import ControlCustomSelectComponent from './forms/control-custom-select.component';
 import ControlLinkComponent from './forms/control-link.component';
+import ControlLocalizedAssetComponent from './forms/control-localized-asset.component';
 import ControlMenuComponent from './forms/control-menu.component';
 import ControlModelComponent from './forms/control-model.component';
 import ControlNumberComponent from './forms/control-number.component';
@@ -27,6 +29,7 @@ import ControlSelectComponent from './forms/control-select.component';
 import ControlTextComponent from './forms/control-text.component';
 import ControlTextareaComponent from './forms/control-textarea.component';
 import ControlVectorComponent from './forms/control-vector.component';
+import ControlsComponent from './forms/controls.component';
 import DisabledDirective from './forms/disabled.directive';
 import ErrorsComponent from './forms/errors.component';
 import InputValueComponent from './forms/input-value.component';
@@ -35,6 +38,7 @@ import ValueDirective from './forms/value.directive';
 import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
 import LabelPipe from './label/label.pipe';
+import LayoutComponent from './layout/layout.component';
 import LazyDirective from './lazy/lazy.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
@@ -73,6 +77,7 @@ AppModule.meta = {
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,
 		AgoraLinkComponent,
+		AgoraLoginComponent,
 		AgoraNameComponent,
 		AgoraStreamComponent,
 		AssetPipe,
@@ -80,6 +85,7 @@ AppModule.meta = {
 		ControlMenuComponent,
 		ControlModelComponent,
 		ControlAssetsComponent,
+		ControlLocalizedAssetComponent,
 		ControlCheckboxComponent,
 		ControlCustomSelectComponent,
 		ControlLinkComponent,
@@ -90,6 +96,7 @@ AppModule.meta = {
 		ControlTextComponent,
 		ControlTextareaComponent,
 		ControlVectorComponent,
+		ControlsComponent,
 		DisabledDirective,
 		DropDirective,
 		DropdownDirective,
@@ -101,6 +108,7 @@ AppModule.meta = {
 		InputValueComponent,
 		LabelPipe,
 		LazyDirective,
+		LayoutComponent,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,
