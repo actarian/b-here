@@ -9,6 +9,7 @@ export const environmentServed = {
 		selfService: true,
 		guidedTourRequest: true,
 		editor: false,
+		editorAssetScreen: false,
 		ar: true,
 		menu: true,
 		attendee: true,
@@ -67,5 +68,7 @@ export const environmentServed = {
 			},
 			remove: '/template/modules/b-here/remove-modal.cshtml',
 		}
-	}
+	},
+	languages: ['en'],
+	defaultLanguage: 'en',
 };

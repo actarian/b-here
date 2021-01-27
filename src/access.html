@@ -8,6 +8,7 @@
 		error_email: 'Email non valida',
 		error_match: 'I campi non corrispondono',
 		error_required: 'Il campo è obbligatorio',
+		error_pattern: 'Campo non valido',
 		remove: 'Elimina',
 		required: 'richiesto',
 		select: 'Seleziona',
@@ -27,6 +28,8 @@
 		access_first_name: 'Nome',
 		access_last_name: 'Cognome',
 		access_email: 'Email',
+		access_phone_number: 'Telefono',
+		access_website: 'Sito Web',
 		access_role: 'Ruolo',
 		access_privacy_disclaimer: 'Ho letto l\'<a href="/it/it/pagineinterne/informativa_sulla_privacy" target="_blank">informativa</a> e do il consenso al trattamento del dato',
 		access_take_part: 'partecipa al meeting',
@@ -45,6 +48,17 @@
 			{ id: 5, name: "Altro" }
 		]
 	};
+	window.fields = [
+		{ type: 'text', name: 'firstName', label: 'access_first_name', required: true, test: 'Jhon' },
+		{ type: 'text', name: 'lastName', label: 'access_last_name', required: true, test: 'Appleseed' },
+		{ type: 'email', name: 'email', label: 'access_email', required: true, test: 'jhonappleseed@gmail.com' },
+		/*
+		{ type: 'text', name: 'phoneNumber', label: 'access_phone_number', required: true, test: '0721-411112' },
+		{ type: 'url', name: 'website', label: 'access_website', required: false, test: 'www.websolute.it' },
+		*/
+		{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: window.data.roles, test: window.data.roles[0].id },
+		{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
+	];
 </script>
 <style>
 	.page {
@@ -107,12 +121,16 @@
 				<div class="group--info__content stagger--childs">
 					<div class="title" *if="state.status == 'self-service-tour'" [innerHTML]="'access_fill_fields' | label"></div>
 					<div class="title" *if="state.status == 'guided-tour'" [innerHTML]="'access_guided_tour_request' | label"></div>
+					<!-- controls -->
+					<div controls [formGroup]="form" [fields]="fields"></div>
+					<!--
 					<input name="checkField" [formControl]="controls.checkField" value="" type="text" style="display:none !important;" />
 					<div control-text [control]="controls.firstName" [label]="'access_first_name' | label"></div>
 					<div control-text [control]="controls.lastName" [label]="'access_last_name' | label"></div>
 					<div control-text [control]="controls.email" [label]="'access_email' | label"></div>
 					<div control-custom-select [control]="controls.role" [label]="'access_role' | label"></div>
 					<div control-checkbox [control]="controls.privacy" [label]="'access_privacy_disclaimer' | label"></div>
+					-->
 					<div class="group--error" *if="error">
 						<span class="status-code" [innerHTML]="error.statusCode"></span>
 						<span class="status-message" [innerHTML]="error.statusMessage"></span>

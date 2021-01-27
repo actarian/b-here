@@ -2,6 +2,7 @@ import { Component, getContext } from 'rxcomp';
 import { Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AgoraStatus } from '../agora/agora.types';
+import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
@@ -85,6 +86,7 @@ export default class EditorComponent extends Component {
 		// this.getUserMedia();
 	}
 
+	/*
 	getUserMedia() {
 		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 			const body = document.querySelector('body');
@@ -116,12 +118,13 @@ export default class EditorComponent extends Component {
 						role: RoleType.Attendee,
 					}
 				};
-				StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+				StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 			}).catch((error) => {
 				console.log('EditorComponent.getUserMedia.error', error.name, error.message);
 			});
 		}
 	}
+	*/
 
 	loadView() {
 		EditorService.data$().pipe(
@@ -253,10 +256,19 @@ export default class EditorComponent extends Component {
 	onWorldSelect(event) {
 		// console.log('EditorComponent.onWorldSelect', this.view);
 		if (this.view) {
+			let selectedItem;
 			this.view.items.forEach(item => item.showPanel = false);
-			this.view.items.forEach(item => item.selected = item === event.item);
-			this.view.selected = this.view.items.find(item => item.selected) === undefined;
+			this.view.items.forEach(item => {
+				item.selected = item === event.item;
+				selectedItem = item.selected ? item : selectedItem;
+			});
+			this.view.selected = !selectedItem;
 			this.pushChanges();
+			if (selectedItem) {
+				this.aside = true;
+				this.pushChanges();
+				window.dispatchEvent(new Event('resize'));
+			}
 		}
 	}
 
@@ -380,11 +392,16 @@ export default class EditorComponent extends Component {
 			EditorService.tileUpdate$...
 			*/
 		} else if (event.view) {
-			const assetDidChange = this.view.asset.id !== event.view.asset.id;
-			Object.assign(this.view, event.view);
-			if (assetDidChange) {
+			if (ViewService.viewId !== event.view.id) {
 				ViewService.viewId = event.view.id;
 			} else {
+				const assetDidChange = AssetService.assetDidChange(this.view.asset, event.view.asset);
+				Object.assign(this.view, event.view);
+				if (assetDidChange) {
+					if (typeof this.view.onUpdateAsset === 'function') {
+						this.view.onUpdateAsset();
+					}
+				}
 				this.pushChanges();
 			}
 		}

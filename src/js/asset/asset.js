@@ -1,3 +1,4 @@
+import { environment } from "../environment";
 
 export const EXT_IMAGE = [
 	'jpeg', 'jpg', 'png',
@@ -13,8 +14,10 @@ export const AssetType = {
 	Image: { id: 1, name: 'image' }, // jpg, png, ...
 	Video: { id: 2, name: 'video' }, // mp4, webm, ...
 	Model: { id: 3, name: 'model' }, // fbx, gltf, glb, usdz ...
-	PublisherStream: { id: 4, name: 'publisher-stream' }, // valore fisso di file a ‘publisherStream’ e folder string.empty
-	NextAttendeeStream: { id: 5, name: 'next-attendee-stream' }, // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+	PublisherStream: { id: 4, name: 'publisher-stream', file: 'publisherStream' }, // valore fisso di file a ‘publisherStream’ e folder string.empty
+	AttendeeStream: { id: 5, name: 'next-attendee-stream', file: 'nextAttendeeStream' }, // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+	PublisherScreen: { id: 6, name: 'publisher-screen', file: 'publisherScreen' }, // valore fisso di file a ‘publisherScreen’ e folder string.empty
+	AttendeeScreen: { id: 7, name: 'attendee-screen', file: 'attendeeScreen' }, // valore fisso di file a ‘attendeeScreen’ e folder string.empty
 };
 
 export const AssetGroupType = {
@@ -22,7 +25,43 @@ export const AssetGroupType = {
 	// Model: { id: 2, name: 'Model 3D', ids: [3] },
 	Publisher: { id: 3, name: 'Publisher', ids: [4] },
 	Attendee: { id: 4, name: 'Attendee', ids: [5] },
+	// PublisherScreen: { id: 5, name: 'PublisherScreen', ids: [6] },
+	// AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
 };
+
+if (environment.flags.editorAssetScreen) {
+	AssetGroupType.PublisherScreen = { id: 5, name: 'PublisherScreen', ids: [6] };
+	AssetGroupType.AttendeeScreen = { id: 6, name: 'AttendeeScreen', ids: [7] };
+}
+
+export const STREAM_TYPES = [
+	AssetType.PublisherStream.name,
+	AssetType.AttendeeStream.name,
+	AssetType.PublisherScreen.name,
+	AssetType.AttendeeScreen.name,
+];
+
+export function assetIsStream(asset) {
+	return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
+}
+
+export function assetTypeById(id) {
+	const type = Object.keys(AssetType).reduce((p, key) => {
+		const type = AssetType[key];
+		return type.id === id ? type : p;
+	}, null);
+	return type;
+	// return Object.keys(AssetType).map(x => AssetType[x]).find(x => x.id === id);
+}
+
+export function assetGroupTypeById(id) {
+	const type = Object.keys(AssetGroupType).reduce((p, key) => {
+		const type = AssetGroupType[key];
+		return type.id === id ? type : p;
+	}, null);
+	return type;
+	// return Object.keys(AssetGroupType).map(x => AssetGroupType[x]).find(x => x.id === id);
+}
 
 export function assetGroupTypeFromItem(item) {
 	let key;
@@ -36,13 +75,17 @@ export function assetGroupTypeFromItem(item) {
 }
 
 export function assetPayloadFromGroupTypeId(groupTypeId) {
-	const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.NextAttendeeStream;
-	const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
+	const groupType = assetGroupTypeById(groupTypeId);
+	const type = assetTypeById(groupType.ids[0]);
+	const file = type.file;
+	// const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.AttendeeStream;
+	// const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
 	const asset = {
 		type: type,
 		folder: '',
 		file: file,
 	}
+	console.log('assetPayloadFromGroupTypeId', asset);
 	return new Asset(asset);
 }
 

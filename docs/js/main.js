@@ -131,6 +131,7 @@ function _readOnlyError(name) {
     selfService: true,
     guidedTourRequest: true,
     editor: false,
+    editorAssetScreen: false,
     ar: true,
     menu: true,
     attendee: true,
@@ -189,17 +190,20 @@ function _readOnlyError(name) {
       },
       remove: '/template/modules/b-here/remove-modal.cshtml'
     }
-  }
+  },
+  languages: ['en'],
+  defaultLanguage: 'en'
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
     production: false,
-    useProxy: false,
+    useProxy: true,
     useToken: false,
     selfService: true,
     guidedTourRequest: true,
     editor: true,
+    editorAssetScreen: true,
     ar: true,
     menu: true,
     attendee: true,
@@ -258,7 +262,9 @@ function _readOnlyError(name) {
       },
       remove: '/remove-modal.html'
     }
-  }
+  },
+  languages: ['en'],
+  defaultLanguage: 'en'
 };var Utils = /*#__PURE__*/function () {
   function Utils() {}
 
@@ -457,7 +463,94 @@ var LabelPipe = /*#__PURE__*/function (_Pipe) {
 }(rxcomp.Pipe);
 LabelPipe.meta = {
   name: 'label'
-};var HttpService = /*#__PURE__*/function () {
+};var ControlsComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlsComponent, _Component);
+
+  function ControlsComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlsComponent.prototype;
+
+  _proto.getControl = function getControl(name) {
+    return this.group.get(name);
+  };
+
+  _createClass(ControlsComponent, [{
+    key: "group",
+    get: function get() {
+      if (this.formGroup) {
+        return this.formGroup;
+      } else {
+        if (!this.host) {
+          throw 'missing form collection';
+        }
+
+        return this.host.control;
+      }
+    }
+  }]);
+
+  return ControlsComponent;
+}(rxcomp.Component);
+ControlsComponent.meta = {
+  selector: '[controls]',
+  inputs: ['formGroup', 'fields'],
+  hosts: {
+    host: rxcompForm.FormAbstractCollectionDirective
+  },
+  template:
+  /* html */
+  "\n\t\t<div *for=\"let field of fields\">\n\t\t\t<div *if=\"['text', 'email', 'url'].indexOf(field.type) !== -1\" control-text [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'select'\" control-select [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'custom-select'\" control-custom-select [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'textarea'\" control-textarea [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<div *if=\"field.type == 'checkbox'\" control-checkbox [control]=\"getControl(field.name)\" [label]=\"field.label | label\"></div>\n\t\t\t<input *if=\"field.type == 'hidden'\" [name]=\"field.name\" [formControl]=\"getControl(field.name)\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t</div>\n\t"
+};
+function fieldsToFormControls(fields) {
+  var controls = fields.reduce(function (p, c, i) {
+    var validators = [];
+
+    if (c.required) {
+      validators.push(c.type === 'checkbox' ? rxcompForm.Validators.RequiredTrueValidator() : rxcompForm.Validators.RequiredValidator());
+    }
+
+    if (c.type === 'email') {
+      validators.push(rxcompForm.Validators.EmailValidator());
+    }
+
+    if (c.type === 'url') {
+      validators.push(rxcompForm.Validators.PatternValidator('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'));
+    }
+
+    if (c.pattern != null) {
+      validators.push(rxcompForm.Validators.PatternValidator(c.pattern));
+    }
+
+    p[c.name] = new rxcompForm.FormControl(c.value || null, validators);
+
+    if (c.type === 'select' || c.type === 'custom-select') {
+      var options = (c.options || []).slice();
+      options.unshift({
+        id: null,
+        name: LabelPipe.transform('select')
+      });
+      p[c.name].options = options;
+    }
+
+    return p;
+  }, {});
+  return controls;
+}
+function fieldsToFormGroup(fields) {
+  return new rxcompForm.FormGroup(fieldsToFormControls(fields));
+}
+function patchFields(fields, form) {
+  var testValues = fields.reduce(function (p, c, i) {
+    if (c.test) {
+      p[c.name] = c.test;
+    }
+
+    return p;
+  }, {});
+  form.patch(testValues);
+}var HttpService = /*#__PURE__*/function () {
   function HttpService() {}
 
   HttpService.http$ = function http$(method, url, data, format) {
@@ -788,15 +881,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
       this.formSubscription.unsubscribe();
     }
 
-    var form = this.form = new rxcompForm.FormGroup({
-      firstName: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      lastName: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      email: new rxcompForm.FormControl(null, [rxcompForm.Validators.RequiredValidator(), rxcompForm.Validators.EmailValidator()]),
-      role: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
-      privacy: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredTrueValidator()),
-      checkRequest: window.antiforgery || '',
-      checkField: ''
-    });
     var data = this.data = window.data || {
       roles: [{
         id: 1,
@@ -815,13 +899,68 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
         name: 'Altro'
       }]
     };
-    var controls = this.controls = form.controls;
-    var options = data.roles.slice();
-    options.unshift({
-      id: null,
-      name: LabelPipe.transform('select')
+    var fields = this.fields = window.fields || [{
+      type: 'text',
+      name: 'firstName',
+      label: 'access_first_name',
+      required: true,
+      test: 'Jhon'
+    }, {
+      type: 'text',
+      name: 'lastName',
+      label: 'access_last_name',
+      required: true,
+      test: 'Appleseed'
+    }, {
+      type: 'email',
+      name: 'email',
+      label: 'access_email',
+      required: true,
+      test: 'jhonappleseed@gmail.com'
+    }, {
+      type: 'custom-select',
+      name: 'role',
+      label: 'access_role',
+      required: true,
+      options: window.data.roles,
+      test: window.data.roles[0].id
+    }, {
+      type: 'checkbox',
+      name: 'privacy',
+      label: 'access_privacy_disclaimer',
+      required: true,
+      test: true
+    }];
+    fields.push({
+      type: 'hidden',
+      name: 'checkField',
+      test: ''
+    }, {
+      type: 'none',
+      name: 'checkRequest',
+      value: window.antiforgery || '',
+      test: window.antiforgery || ''
     });
+    var form = this.form = fieldsToFormGroup(fields);
+    /*
+    const form = this.form = new FormGroup({
+    	firstName: new FormControl(null, Validators.RequiredValidator()),
+    	lastName: new FormControl(null, Validators.RequiredValidator()),
+    	email: new FormControl(null, [Validators.RequiredValidator(), Validators.EmailValidator()]),
+    	role: new FormControl(null, Validators.RequiredValidator()),
+    	privacy: new FormControl(null, Validators.RequiredTrueValidator()),
+    	checkRequest: window.antiforgery || '',
+    	checkField: '',
+    });
+    */
+
+    var controls = this.controls = form.controls;
+    /*
+    const options = data.roles.slice();
+    options.unshift({ id: null, name: LabelPipe.transform('select') });
     controls.role.options = options;
+    */
+
     this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
       _this.pushChanges();
     });
@@ -857,17 +996,18 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
         checkField: ''
       });
     } else {
+      patchFields(this.fields, this.form);
+      /*
       this.form.patch({
-        firstName: 'Jhon',
-        lastName: 'Appleseed',
-        email: 'jhonappleseed@gmail.com',
-        role: this.controls.role.options.find(function (x) {
-          return x.id !== null;
-        }).id,
-        privacy: true,
-        checkRequest: window.antiforgery || '',
-        checkField: ''
+      	firstName: 'Jhon',
+      	lastName: 'Appleseed',
+      	email: 'jhonappleseed@gmail.com',
+      	role: this.controls.role.options.find(x => x.id !== null).id,
+      	privacy: true,
+      	checkRequest: window.antiforgery || '',
+      	checkField: ''
       });
+      */
     }
   };
 
@@ -1386,7 +1526,9 @@ function getStreamQuality(state) {
   return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
 }
 var AgoraStatus = {
+  Idle: 'idle',
   Link: 'link',
+  Login: 'login',
   Name: 'name',
   Device: 'device',
   ShouldConnect: 'should-connect',
@@ -1824,7 +1966,7 @@ var StreamService = /*#__PURE__*/function () {
     }));
   };
 
-  StreamService.editorStreams$ = function editorStreams$() {
+  StreamService.getEditorStreams$ = function getEditorStreams$() {
     var _this = this;
 
     return rxjs.of(null).pipe(operators.switchMap(function () {
@@ -1855,7 +1997,8 @@ var StreamService = /*#__PURE__*/function () {
                 return 'editor';
               },
               clientInfo: {
-                role: RoleType.Publisher
+                role: RoleType.Publisher,
+                uid: 'editor'
               }
             };
             var fakeAttendeeStream = {
@@ -1863,11 +2006,12 @@ var StreamService = /*#__PURE__*/function () {
                 return 'editor';
               },
               clientInfo: {
-                role: RoleType.Attendee
+                role: RoleType.Attendee,
+                uid: 'editor'
               }
             };
 
-            _this.editor$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]); // StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+            _this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]); // StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 
           };
 
@@ -1877,12 +2021,70 @@ var StreamService = /*#__PURE__*/function () {
         });
       }
 
-      return _this.editor$;
+      return _this.editorStreams$;
+    }), operators.shareReplay(1));
+  };
+
+  StreamService.getEditorScreens$ = function getEditorScreens$() {
+    var _this2 = this;
+
+    return rxjs.of(null).pipe(operators.switchMap(function () {
+      if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && _this2.mode === StreamServiceMode.Editor) {
+        var body = document.querySelector('body');
+        var media = document.createElement('div');
+        var video = document.createElement('video');
+        media.setAttribute('id', 'stream-editor-screen');
+        media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+        media.appendChild(video);
+        body.appendChild(media);
+        navigator.mediaDevices.getDisplayMedia({
+          screen: {
+            width: 800,
+            height: 450
+          }
+        }).then(function (stream) {
+          // console.log(stream);
+          if ('srcObject' in video) {
+            video.srcObject = stream;
+          } else {
+            video.src = window.URL.createObjectURL(stream);
+          }
+
+          video.oncanplay = function () {
+            var fakePublisherScreen = {
+              getId: function getId() {
+                return 'editor-screen';
+              },
+              clientInfo: {
+                role: RoleType.Publisher,
+                uid: 'editor-screen_'
+              }
+            };
+            var fakeAttendeeScreen = {
+              getId: function getId() {
+                return 'editor-screen';
+              },
+              clientInfo: {
+                role: RoleType.Attendee,
+                uid: 'editor-screen_'
+              }
+            };
+
+            _this2.editorScreens$.next([fakePublisherScreen, fakeAttendeeScreen]);
+          };
+
+          video.play();
+        }).catch(function (error) {
+          console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+        });
+      }
+
+      return _this2.editorScreens$;
     }), operators.shareReplay(1));
   };
 
   StreamService.getPublisherStreamId$ = function getPublisherStreamId$() {
-    var _this2 = this;
+    var _this3 = this;
 
     var publisherStreamId = this.publisherStreamId;
 
@@ -1890,7 +2092,7 @@ var StreamService = /*#__PURE__*/function () {
       return rxjs.of(publisherStreamId);
     } else {
       return this.streams$.pipe(operators.map(function () {
-        return _this2.publisherStreamId;
+        return _this3.publisherStreamId;
       }), operators.filter(function (x) {
         return x;
       }));
@@ -1947,12 +2149,20 @@ var StreamService = /*#__PURE__*/function () {
   };
 
   _createClass(StreamService, null, [{
-    key: "editor",
-    set: function set(editor) {
-      this.editor$.next(editor);
+    key: "editorStreams",
+    set: function set(editorStreams) {
+      this.editorStreams$.next(editorStreams);
     },
     get: function get() {
-      return this.editor$.getValue();
+      return this.editorStreams$.getValue();
+    }
+  }, {
+    key: "editorScreens",
+    set: function set(editorScreens) {
+      this.editorScreens$.next(editorScreens);
+    },
+    get: function get() {
+      return this.editorScreens$.getValue();
     }
   }, {
     key: "local",
@@ -2013,7 +2223,9 @@ var StreamService = /*#__PURE__*/function () {
 
 _defineProperty(StreamService, "mode", StreamServiceMode.Client);
 
-_defineProperty(StreamService, "editor$", new rxjs.BehaviorSubject(null));
+_defineProperty(StreamService, "editorStreams$", new rxjs.BehaviorSubject(null));
+
+_defineProperty(StreamService, "editorScreens$", new rxjs.BehaviorSubject(null));
 
 _defineProperty(StreamService, "local$", new rxjs.BehaviorSubject(null));
 
@@ -2023,27 +2235,38 @@ _defineProperty(StreamService, "remotes$", new rxjs.BehaviorSubject([]));
 
 _defineProperty(StreamService, "peers$", new rxjs.BehaviorSubject([]));
 
-_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.editorStreams$()]).pipe(operators.map(function (data) {
+_defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.local$, StreamService.screen$, StreamService.remotes$, StreamService.getEditorStreams$(), StreamService.getEditorScreens$()]).pipe(operators.map(function (data) {
   var local = data[0];
   var screen = data[1];
   var remotes = data[2];
-  var editor = data[3];
+  var editorStreams = data[3];
+  var editorScreens = data[4];
   var streams = remotes;
 
   if (local) {
+    // my stream
     streams = streams.slice();
     streams.push(local);
   }
 
   if (screen) {
+    // my screen
     streams = streams.slice();
     streams.push(screen);
   }
 
-  if (editor) {
+  if (editorStreams) {
     var _streams;
 
-    (_streams = streams).push.apply(_streams, editor);
+    // editor streams
+    (_streams = streams).push.apply(_streams, editorStreams);
+  }
+
+  if (editorScreens) {
+    var _streams2;
+
+    // editor screens
+    (_streams2 = streams).push.apply(_streams2, editorScreens);
   } // console.log('StreamService.streams$', streams, local, screen, remotes);
 
 
@@ -2305,7 +2528,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
     var clientInit = function clientInit() {
       if (environment.flags.useProxy) {
-        client.startProxyServer();
+        client.startProxyServer(3);
+        console.log('AgoraService.client.startProxyServer');
       }
 
       client.init(environment.appKey, function () {
@@ -2741,6 +2965,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
           if (environment.flags.useProxy) {
             client.stopProxyServer();
+            console.log('AgoraService.client.stopProxyServer');
           }
 
           resolve();
@@ -3460,7 +3685,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
     var clientInit = function clientInit() {
       if (environment.flags.useProxy) {
-        screenClient.startProxyServer();
+        screenClient.startProxyServer(3);
+        console.log('AgoraService.screenClient.startProxyServer');
       }
 
       screenClient.init(environment.appKey, function () {
@@ -3588,6 +3814,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
           if (environment.flags.useProxy) {
             screenClient.stopProxyServer();
+            console.log('AgoraService.screenClient.stopProxyServer');
           }
 
           resolve();
@@ -3996,6 +4223,104 @@ AgoraDeviceComponent.meta = {
 AgoraLinkComponent.meta = {
   selector: '[agora-link]',
   outputs: ['link']
+};var AgoraLoginComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraLoginComponent, _Component);
+
+  function AgoraLoginComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AgoraLoginComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var form = this.form = new rxcompForm.FormGroup({
+      username: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      password: new rxcompForm.FormControl(null, rxcompForm.Validators.RequiredValidator()),
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+    var controls = this.controls = form.controls;
+    form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      _this.pushChanges();
+    });
+    this.error = null;
+  };
+
+  _proto.test = function test() {
+    this.form.patch({
+      username: 'publisher',
+      password: 'publisher',
+      checkRequest: window.antiforgery || '',
+      checkField: ''
+    });
+  };
+
+  _proto.reset = function reset() {
+    this.form.reset();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      var payload = this.form.value;
+      this.form.submitted = true;
+      this.error = null;
+      this.pushChanges();
+      UserService.login$(payload).pipe(operators.first()).subscribe(function (user) {
+        if (StateService.state.role === user.type) {
+          // this.login.next(user);
+          _this2.onNext(user);
+
+          _this2.form.reset();
+        } else {
+          _this2.error = {
+            friendlyMessage: LabelPipe.transform('error_credentials')
+          };
+
+          _this2.pushChanges();
+        }
+      }, function (error) {
+        console.log('AccessComponent.error', error);
+        _this2.error = error;
+
+        _this2.pushChanges();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.isValid = function isValid() {
+    var isValid = this.form.valid;
+    return isValid;
+  };
+
+  _proto.onNext = function onNext(user) {
+    this.replaceUrl(user);
+    this.login.next(user);
+  };
+
+  _proto.replaceUrl = function replaceUrl(user) {
+    if ('history' in window) {
+      var role = LocationService.get('role') || null;
+      var link = LocationService.get('link') || null;
+      var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
+      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + (name ? "&name=" + name : '') + (role ? "&role=" + role : ''); // console.log('AgoraLoginComponent.url', url);
+
+      window.history.replaceState({
+        'pageTitle': window.pageTitle
+      }, '', url);
+    }
+  };
+
+  return AgoraLoginComponent;
+}(rxcomp.Component);
+AgoraLoginComponent.meta = {
+  selector: '[agora-login]',
+  outputs: ['login']
 };var AgoraNameComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraNameComponent, _Component);
 
@@ -4531,18 +4856,41 @@ var View = /*#__PURE__*/function () {
 
   _proto.updateIndices = function updateIndices(items) {
     if (items) {
-      var nextPublisherStreamIndex = 0;
-      var nextAttendeeStreamIndex = 0;
+      var publisherStreamIndex = 0;
+      var attendeeStreamIndex = 0;
+      var publisherScreenIndex = 0;
+      var attendeeScreenIndex = 0;
       items.forEach(function (item, index) {
         item.index = index;
 
-        if (item.asset && item.asset.file === 'publisherStream') {
-          item.asset.index = nextPublisherStreamIndex++;
-        }
+        if (item.asset) {
+          switch (item.asset.file) {
+            case 'publisherStream':
+              item.asset.index = publisherStreamIndex++;
+              break;
 
-        if (item.asset && item.asset.file === 'nextAttendeeStream') {
-          item.asset.index = nextAttendeeStreamIndex++;
+            case 'nextAttendeeStream':
+              item.asset.index = attendeeStreamIndex++;
+              break;
+
+            case 'publisherScreen':
+              item.asset.index = publisherScreenIndex++;
+              break;
+
+            case 'attendeeScreen':
+              item.asset.index = attendeeScreenIndex++;
+              break;
+          }
         }
+        /*
+        if (item.asset && item.asset.file === 'publisherStream') {
+        	item.asset.index = publisherStreamIndex++;
+        }
+        if (item.asset && item.asset.file === 'nextAttendeeStream') {
+        	item.asset.index = attendeeStreamIndex++;
+        }
+        */
+
       });
     }
   };
@@ -5214,29 +5562,76 @@ var VRService = /*#__PURE__*/function () {
   _proto.resolveUser = function resolveUser() {
     var _this2 = this;
 
-    UserService.me$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (user) {
-      var linkRole = _this2.getLinkRole();
+    UserService.me$().pipe(operators.first()).subscribe(function (user) {
+      _this2.initWithUser(user); // this.userGuard(user);
 
-      if (user && (!linkRole || linkRole === user.type)) {
-        _this2.initWithUser(user);
-      } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-        window.location.href = environment.url.access;
-      } else {
-        _this2.initWithUser({
-          type: linkRole
-        });
-      }
     });
+  };
+
+  _proto.userGuard = function userGuard(user) {
+    var linkRole = this.getLinkRole();
+
+    if (user && (!linkRole || user.type === linkRole)) {
+      this.initWithUser(user);
+    } else {
+      this.initWithUser({
+        type: linkRole
+      });
+    }
+  };
+
+  _proto.userGuardRedirect = function userGuardRedirect(user) {
+    var linkRole = this.getLinkRole();
+
+    if (user && (!linkRole || linkRole === user.type)) {
+      this.initWithUser(user);
+    } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
+      window.location.href = environment.url.access;
+    } else {
+      this.initWithUser({
+        type: linkRole
+      });
+    }
+  };
+
+  _proto.setNextStatus = function setNextStatus() {
+    var status = AgoraStatus.Idle;
+    var state = StateService.state;
+
+    if (!state.link) {
+      status = AgoraStatus.Link;
+    } else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
+      status = AgoraStatus.Login;
+    } else if (!state.name) {
+      status = AgoraStatus.Name;
+    } else if (state.role !== RoleType.Viewer) {
+      status = AgoraStatus.Device;
+    } else {
+      status = AgoraStatus.ShouldConnect;
+    }
+
+    StateService.patchState({
+      status: status
+    });
+    return status;
   };
 
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
-    console.log('AgoraComponent.initWithUser', user);
-    var userName = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
-    var role = LocationService.get('role') || user.type;
-    var name = LocationService.get('name') || userName;
     var link = LocationService.get('link') || null;
+    var role = this.getLinkRole() || (user ? user.type : null);
+    user = user || {
+      type: role
+    };
+
+    if (role !== user.type) {
+      user = {
+        type: role
+      };
+    }
+
+    var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
     var hosted = role === RoleType.Publisher ? true : false;
     var live = DEBUG || role === RoleType.SelfService ? false : true;
     var state = {
@@ -5311,21 +5706,8 @@ var VRService = /*#__PURE__*/function () {
       });
     } else {
       agora = this.agora = AgoraService.getSingleton();
-      var status;
-
-      if (!this.state.link) {
-        status = AgoraStatus.Link;
-      } else if (!this.state.name) {
-        status = AgoraStatus.Name;
-      } else if (this.state.role !== RoleType.Viewer) {
-        status = AgoraStatus.Device;
-      } else {
-        status = AgoraStatus.ShouldConnect;
-      }
-
-      StateService.patchState({
-        status: status
-      });
+      var role = this.getLinkRole();
+      var status = this.setNextStatus(); // console.log('initAgora', status, role);
     }
 
     StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
@@ -5362,7 +5744,7 @@ var VRService = /*#__PURE__*/function () {
           break;
 
         case MessageType.RequestControl:
-          console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
+          // console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
           message.type = MessageType.RequestControlAccepted;
           MessageService.sendBack(message);
           StateService.patchState({
@@ -5430,18 +5812,62 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onLink = function onLink(link) {
-    if (StateService.state.name) {
-      if (StateService.state.role === RoleType.Viewer) {
+    var role = this.getLinkRole();
+    var user = StateService.state.user;
+
+    if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
+      StateService.patchState({
+        link: link,
+        role: role,
+        status: AgoraStatus.Login
+      });
+    } else if (StateService.state.name) {
+      if (role === RoleType.Viewer) {
+        StateService.patchState({
+          link: link,
+          role: role
+        });
         this.connect();
       } else {
         StateService.patchState({
           link: link,
+          role: role,
           status: AgoraStatus.Device
         });
       }
     } else {
       StateService.patchState({
         link: link,
+        role: role,
+        status: AgoraStatus.Name
+      });
+    }
+    /*
+    if (StateService.state.name) {
+    	if (StateService.state.role === RoleType.Viewer) {
+    		this.connect();
+    	} else {
+    		StateService.patchState({ link, status: AgoraStatus.Device });
+    	}
+    } else {
+    	StateService.patchState({ link, status: AgoraStatus.Name });
+    }
+    */
+
+  };
+
+  _proto.onLogin = function onLogin(user) {
+    var name = StateService.state.name || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
+
+    if (name) {
+      StateService.patchState({
+        user: user,
+        name: name,
+        status: AgoraStatus.Device
+      });
+    } else {
+      StateService.patchState({
+        user: user,
         status: AgoraStatus.Name
       });
     }
@@ -5449,6 +5875,9 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.onName = function onName(name) {
     if (StateService.state.role === RoleType.Viewer) {
+      StateService.patchState({
+        name: name
+      });
       this.connect();
     } else {
       StateService.patchState({
@@ -5700,13 +6129,27 @@ var AssetType = {
   // fbx, gltf, glb, usdz ...
   PublisherStream: {
     id: 4,
-    name: 'publisher-stream'
+    name: 'publisher-stream',
+    file: 'publisherStream'
   },
   // valore fisso di file a ‘publisherStream’ e folder string.empty
-  NextAttendeeStream: {
+  AttendeeStream: {
     id: 5,
-    name: 'next-attendee-stream'
-  } // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+    name: 'next-attendee-stream',
+    file: 'nextAttendeeStream'
+  },
+  // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
+  PublisherScreen: {
+    id: 6,
+    name: 'publisher-screen',
+    file: 'publisherScreen'
+  },
+  // valore fisso di file a ‘publisherScreen’ e folder string.empty
+  AttendeeScreen: {
+    id: 7,
+    name: 'attendee-screen',
+    file: 'attendeeScreen'
+  } // valore fisso di file a ‘attendeeScreen’ e folder string.empty
 
 };
 var AssetGroupType = {
@@ -5725,8 +6168,42 @@ var AssetGroupType = {
     id: 4,
     name: 'Attendee',
     ids: [5]
-  }
+  } // PublisherScreen: { id: 5, name: 'PublisherScreen', ids: [6] },
+  // AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
+
 };
+
+if (environment.flags.editorAssetScreen) {
+  AssetGroupType.PublisherScreen = {
+    id: 5,
+    name: 'PublisherScreen',
+    ids: [6]
+  };
+  AssetGroupType.AttendeeScreen = {
+    id: 6,
+    name: 'AttendeeScreen',
+    ids: [7]
+  };
+}
+
+var STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name];
+function assetIsStream(asset) {
+  return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
+}
+function assetTypeById(id) {
+  var type = Object.keys(AssetType).reduce(function (p, key) {
+    var type = AssetType[key];
+    return type.id === id ? type : p;
+  }, null);
+  return type; // return Object.keys(AssetType).map(x => AssetType[x]).find(x => x.id === id);
+}
+function assetGroupTypeById(id) {
+  var type = Object.keys(AssetGroupType).reduce(function (p, key) {
+    var type = AssetGroupType[key];
+    return type.id === id ? type : p;
+  }, null);
+  return type; // return Object.keys(AssetGroupType).map(x => AssetGroupType[x]).find(x => x.id === id);
+}
 function assetGroupTypeFromItem(item) {
   var key;
 
@@ -5740,13 +6217,17 @@ function assetGroupTypeFromItem(item) {
   return AssetGroupType[key || 'ImageOrVideo'];
 }
 function assetPayloadFromGroupTypeId(groupTypeId) {
-  var type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.NextAttendeeStream;
-  var file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
+  var groupType = assetGroupTypeById(groupTypeId);
+  var type = assetTypeById(groupType.ids[0]);
+  var file = type.file; // const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.AttendeeStream;
+  // const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
+
   var asset = {
     type: type,
     folder: '',
     file: file
   };
+  console.log('assetPayloadFromGroupTypeId', asset);
   return new Asset(asset);
 }
 function assetTypeFromPath(path) {
@@ -5809,7 +6290,7 @@ function mapAsset(asset) {
 }var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
-var MIME_STREAM = ['publisherStream', 'nextAttendeeStream'];
+var MIME_STREAM = ['publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen'];
 function isImage(path) {
   return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
 }
@@ -5855,7 +6336,9 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
           break;
 
         case AssetType.PublisherStream.name:
-        case AssetType.NextAttendeeStream.name:
+        case AssetType.AttendeeStream.name:
+        case AssetType.PublisherScreen.name:
+        case AssetType.AttendeeScreen.name:
           asset = environment.getPath(asset.file);
           break;
 
@@ -6327,7 +6810,116 @@ AsideComponent.meta = {
   selector: '[aside]',
   outputs: ['select', 'update', 'delete'],
   inputs: ['view']
-};var EditorService = /*#__PURE__*/function () {
+};var AssetService = /*#__PURE__*/function () {
+  function AssetService() {}
+
+  AssetService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetUpdate$ = function assetUpdate$(asset) {
+    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetDelete$ = function assetDelete$(asset) {
+    if (asset && asset.id) {
+      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
+        return null;
+      }));
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  AssetService.localizedAssetCreate$ = function localizedAssetCreate$(lg, asset) {
+    return HttpService.post$("/api/" + lg + "/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.localizedAssetUpdate$ = function localizedAssetUpdate$(lg, asset) {
+    return HttpService.put$("/api/" + lg + "/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.upload$ = function upload$(files) {
+    var formData = new FormData();
+    files.forEach(function (file) {
+      return formData.append('file', file, file.name);
+    });
+    var xhr = new XMLHttpRequest();
+    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
+      switch (event.type) {
+        case 'readystatechange':
+          if (xhr.readyState === 4) {
+            return JSON.parse(xhr.responseText);
+          } else {
+            return null;
+          }
+
+        default:
+          return null;
+      }
+    }), operators.filter(function (event) {
+      return event !== null;
+    }));
+    xhr.open('POST', "/api/upload/", true);
+    xhr.send(formData);
+    return events$;
+  };
+
+  AssetService.createOrUpdateAsset$ = function createOrUpdateAsset$(uploads, control) {
+    var upload = uploads[0];
+    var asset = Asset.fromUrl(upload.url);
+
+    if (control.value && control.value.id) {
+      // !!! must check for id
+      asset.id = control.value.id;
+      return this.assetUpdate$(asset);
+    } else {
+      return this.assetCreate$(asset);
+    }
+  };
+
+  AssetService.createOrUpdateLocalizedAsset$ = function createOrUpdateLocalizedAsset$(uploads, control, lg) {
+    var upload = uploads[0];
+    var asset = Asset.fromUrl(upload.url);
+
+    if (control.value && control.value.id) {
+      // !!! must check for id
+      asset.id = control.value.id;
+      return this.localizedAssetUpdate$(lg, asset);
+    } else {
+      return this.localizedAssetCreate$(lg, asset);
+    }
+  };
+
+  AssetService.assetDidChange = function assetDidChange(previous, current) {
+    var previousId = null;
+    var previousFile = null;
+    var currentId = null;
+    var currentFile = null;
+
+    if (previous) {
+      previousId = previous.id;
+      previousFile = previous.file;
+    }
+
+    if (current) {
+      currentId = current.id;
+      currentFile = current.file;
+    }
+
+    return previousId !== currentId || previousFile !== currentFile;
+  };
+
+  return AssetService;
+}();var EditorService = /*#__PURE__*/function () {
   function EditorService() {}
 
   EditorService.data$ = function data$() {
@@ -6571,53 +7163,47 @@ AsideComponent.meta = {
     });
     this.loadView();
     StreamService.mode = StreamServiceMode.Editor; // this.getUserMedia();
-  };
-
-  _proto.getUserMedia = function getUserMedia() {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      var body = document.querySelector('body');
-      var media = document.createElement('div');
-      var video = document.createElement('video');
-      media.setAttribute('id', 'stream-editor');
-      media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
-      media.appendChild(video);
-      body.appendChild(media);
-      navigator.mediaDevices.getUserMedia({
-        video: {
-          width: 800,
-          height: 450
-        }
-      }).then(function (stream) {
-        // console.log(stream);
-        if ('srcObject' in video) {
-          video.srcObject = stream;
-        } else {
-          video.src = window.URL.createObjectURL(stream);
-        }
-
-        video.play();
-        var fakePublisherStream = {
-          getId: function getId() {
-            return 'editor';
-          },
-          clientInfo: {
-            role: RoleType.Publisher
-          }
-        };
-        var fakeAttendeeStream = {
-          getId: function getId() {
-            return 'editor';
-          },
-          clientInfo: {
-            role: RoleType.Attendee
-          }
-        };
-        StreamService.editor = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
-      }).catch(function (error) {
-        console.log('EditorComponent.getUserMedia.error', error.name, error.message);
-      });
-    }
-  };
+  }
+  /*
+  getUserMedia() {
+  	if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  		const body = document.querySelector('body');
+  		const media = document.createElement('div');
+  		const video = document.createElement('video');
+  		media.setAttribute('id', 'stream-editor');
+  		media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
+  		media.appendChild(video);
+  		body.appendChild(media);
+  		navigator.mediaDevices.getUserMedia({
+  			video: { width: 800, height: 450 },
+  		}).then((stream) => {
+  			// console.log(stream);
+  			if ('srcObject' in video) {
+  				video.srcObject = stream;
+  			} else {
+  				video.src = window.URL.createObjectURL(stream);
+  			}
+  			video.play();
+  			const fakePublisherStream = {
+  				getId: () => 'editor',
+  				clientInfo: {
+  					role: RoleType.Publisher,
+  				}
+  			};
+  			const fakeAttendeeStream = {
+  				getId: () => 'editor',
+  				clientInfo: {
+  					role: RoleType.Attendee,
+  				}
+  			};
+  			StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+  		}).catch((error) => {
+  			console.log('EditorComponent.getUserMedia.error', error.name, error.message);
+  		});
+  	}
+  }
+  */
+  ;
 
   _proto.loadView = function loadView() {
     var _this4 = this;
@@ -6763,16 +7349,22 @@ AsideComponent.meta = {
   _proto.onWorldSelect = function onWorldSelect(event) {
     // console.log('EditorComponent.onWorldSelect', this.view);
     if (this.view) {
+      var selectedItem;
       this.view.items.forEach(function (item) {
         return item.showPanel = false;
       });
       this.view.items.forEach(function (item) {
-        return item.selected = item === event.item;
+        item.selected = item === event.item;
+        selectedItem = item.selected ? item : selectedItem;
       });
-      this.view.selected = this.view.items.find(function (item) {
-        return item.selected;
-      }) === undefined;
+      this.view.selected = !selectedItem;
       this.pushChanges();
+
+      if (selectedItem) {
+        this.aside = true;
+        this.pushChanges();
+        window.dispatchEvent(new Event('resize'));
+      }
     }
   };
 
@@ -6940,12 +7532,18 @@ AsideComponent.meta = {
     if (event.item && event.view) {
       this.pushChanges();
     } else if (event.tile && event.view) ; else if (event.view) {
-      var assetDidChange = this.view.asset.id !== event.view.asset.id;
-      Object.assign(this.view, event.view);
-
-      if (assetDidChange) {
+      if (ViewService.viewId !== event.view.id) {
         ViewService.viewId = event.view.id;
       } else {
+        var assetDidChange = AssetService.assetDidChange(this.view.asset, event.view.asset);
+        Object.assign(this.view, event.view);
+
+        if (assetDidChange) {
+          if (typeof this.view.onUpdateAsset === 'function') {
+            this.view.onUpdateAsset();
+          }
+        }
+
         this.pushChanges();
       }
     }
@@ -7154,58 +7752,127 @@ var MenuService = /*#__PURE__*/function () {
 
 _defineProperty(MenuService, "active$", new rxjs.BehaviorSubject(false));
 
-_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var AssetService = /*#__PURE__*/function () {
-  function AssetService() {}
+_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var DropService = /*#__PURE__*/function () {
+  function DropService() {}
 
-  AssetService.assetCreate$ = function assetCreate$(asset) {
-    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
+  DropService.drop$ = function drop$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      var body = document.querySelector('body');
+      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        console.log('DropService.drop$', event);
+        event.preventDefault();
 
-  AssetService.assetUpdate$ = function assetUpdate$(asset) {
-    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
+        if (event.target === input) {
+          input.files = event.dataTransfer.files;
+        }
 
-  AssetService.assetDelete$ = function assetDelete$(asset) {
-    if (asset && asset.id) {
-      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
-        return null;
+        return;
       }));
     } else {
-      return rxjs.of(null);
+      return rxjs.EMPTY;
     }
   };
 
-  AssetService.upload$ = function upload$(files) {
-    var formData = new FormData();
-    files.forEach(function (file) {
-      return formData.append('file', file, file.name);
-    });
-    var xhr = new XMLHttpRequest();
-    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
-      switch (event.type) {
-        case 'readystatechange':
-          if (xhr.readyState === 4) {
-            return JSON.parse(xhr.responseText);
-          } else {
-            return null;
-          }
-
-        default:
-          return null;
-      }
-    }), operators.filter(function (event) {
-      return event !== null;
-    }));
-    xhr.open('POST', "/api/upload/", true);
-    xhr.send(formData);
-    return events$;
+  DropService.change$ = function change$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
+        return input.files && input.files.length;
+      }), operators.map(function (event) {
+        return Array.from(input.files);
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
   };
 
-  return AssetService;
+  DropService.asset$ = function asset$(input, previews) {
+    var _this = this;
+
+    if (previews === void 0) {
+      previews = [];
+    }
+
+    return this.change$(input).pipe(operators.switchMap(function (files) {
+      previews.length = files.length;
+      previews.fill(null); // output.previews = files.map(() => null);
+
+      var uploads$ = files.map(function (file, i) {
+        return _this.read$(file, i, previews).pipe(operators.map(function () {
+          return file;
+        }), operators.switchMap(function (file) {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          var upload = uploads[0];
+          var asset = Asset.fromUrl(upload.url);
+          return AssetService.assetCreate$(asset);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }));
+  };
+
+  DropService.read$ = function read$(file, i, previews) {
+    var _this2 = this;
+
+    if (previews === void 0) {
+      previews = [];
+    }
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
+      var blob = event.target.result;
+      return _this2.resize$(blob);
+    }), operators.tap(function (resized) {
+      previews[i] = resized;
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  DropService.resize$ = function resize$(blob) {
+    return rxjs.from(this.resize_(blob));
+  };
+
+  DropService.resize_ = function resize_(blob) {
+    return new Promise(function (resolve, reject) {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(dataUrl);
+      };
+
+      img.onerror = function () {
+        reject(blob);
+      };
+
+      img.src = blob;
+    });
+  };
+
+  return DropService;
 }();var ControlComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlComponent, _Component);
 
@@ -7254,118 +7921,29 @@ ControlComponent.meta = {
 
     var input = node.querySelector('input');
     input.setAttribute('accept', this.accept);
-    this.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
-    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+    DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      // this.previews.length = files.length;
+      // this.previews.fill(null);
+      _this.previews = files.map(function () {
+        return null;
+      });
+      var uploads$ = files.map(function (file, i) {
+        return DropService.read$(file, i).pipe(operators.tap(function (resized) {
+          _this.previews[i] = resized;
+
+          _this.pushChanges();
+        }), operators.switchMap(function () {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          return AssetService.createOrUpdateAsset$(uploads, _this.control);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
       // console.log('ControlAssetComponent.change$', assets);
       _this.control.value = assets[0];
     });
-  };
-
-  _proto.change$ = function change$(input) {
-    var _this2 = this;
-
-    if (rxcomp.isPlatformBrowser && input) {
-      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
-        return input.files && input.files.length;
-      }), operators.switchMap(function (event) {
-        // console.log('ControlAssetComponent.change$', input.files);
-        var fileArray = Array.from(input.files);
-        _this2.previews = fileArray.map(function () {
-          return null;
-        });
-        var uploads$ = fileArray.map(function (file, i) {
-          return _this2.read$(file, i).pipe(operators.switchMap(function () {
-            return AssetService.upload$([file]);
-          }), // tap(uploads => console.log('upload', uploads)),
-          operators.switchMap(function (uploads) {
-            var upload = uploads[0];
-            /*
-            id: 1601303293569
-            type: "image/jpeg"
-            file: "1601303293569_ambiente1_x0_y2.jpg"
-            originalFileName: "ambiente1_x0_y2.jpg"
-            url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
-            */
-
-            var asset = Asset.fromUrl(upload.url);
-            return AssetService.assetCreate$(asset);
-          }));
-        });
-        return rxjs.combineLatest(uploads$);
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  _proto.read$ = function read$(file, i) {
-    var _this3 = this;
-
-    var reader = new FileReader();
-    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.tap(function (event) {
-      var blob = event.target.result;
-
-      _this3.resize_(blob, function (resized) {
-        _this3.previews[i] = resized;
-
-        _this3.pushChanges();
-      });
-    }));
-    reader.readAsDataURL(file);
-    return reader$;
-  };
-
-  _proto.drop$ = function drop$(input) {
-    if (rxcomp.isPlatformBrowser && input) {
-      var body = document.querySelector('body');
-      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        console.log('ControlAssetComponent.drop$', event);
-        event.preventDefault();
-
-        if (event.target === input) {
-          input.files = event.dataTransfer.files;
-        }
-
-        return;
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  _proto.resize_ = function resize_(blob, callback) {
-    if (typeof callback === 'function') {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 320;
-        var MAX_HEIGHT = 240;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        callback(dataUrl);
-      };
-
-      img.src = blob;
-    }
   };
 
   _createClass(ControlAssetComponent, [{
@@ -8525,13 +9103,12 @@ RemoveModalComponent.meta = {
   };
 
   _proto.getAssetDidChange = function getAssetDidChange(changes) {
-    var item = this.item;
-    var itemAssetId = item.asset ? item.asset.id : null;
-    var changesAssetId = changes.asset ? changes.asset.id : null;
-    var itemHasChromaKeyColor = item.hasChromaKeyColor === true;
-    var changesHasChromaKeyColor = changes.hasChromaKeyColor === true; // console.log('UpdateViewItemComponent.getAssetDidChange', itemAssetId, changesAssetId, item, changes);
+    var item = this.item; // console.log('UpdateViewItemComponent.getAssetDidChange', item, changes);
 
-    if (itemAssetId !== changesAssetId || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
+    var itemHasChromaKeyColor = item.hasChromaKeyColor === true;
+    var changesHasChromaKeyColor = changes.hasChromaKeyColor === true;
+
+    if (AssetService.assetDidChange(item.asset, changes.asset) || itemHasChromaKeyColor !== changesHasChromaKeyColor) {
       return true;
     } else {
       return false;
@@ -8633,7 +9210,8 @@ RemoveModalComponent.meta = {
             control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
             control.options = Object.keys(AssetGroupType).map(function (x) {
               return AssetGroupType[x];
-            });
+            }); // console.log(control.options);
+
             break;
 
           case 'link':
@@ -8797,7 +9375,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<!-- <div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div> -->\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -8909,30 +9487,64 @@ UpdateViewTileComponent.meta = {
     this.flags = environment.flags;
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
+    this.doUpdateForm();
     form.changes$.subscribe(function (changes) {
-      // console.log('UpdateViewComponent.form.changes$', changes, form.valid, form);
+      // console.log('UpdateViewComponent.form.changes$', changes);
+      _this.doUpdateView(changes);
+
       _this.pushChanges();
     });
-    this.doUpdateForm();
-    MessageService.in$.pipe(operators.auditTime(500), operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-      switch (message.type) {
-        case MessageType.ControlInfo:
-          switch (_this.view.type.name) {
-            case ViewType.Panorama.name:
-            case ViewType.PanoramaGrid.name:
-            case ViewType.Model.name:
-              _this.form.patch({
-                latitude: message.orientation.latitude,
-                longitude: message.orientation.longitude,
-                zoom: message.zoom
-              });
-
-              break;
-          }
+    this.orbit$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      switch (_this.view.type.name) {
+        case ViewType.Panorama.name:
+        case ViewType.PanoramaGrid.name:
+        case ViewType.Model.name:
+          _this.form.patch({
+            latitude: message.orientation.latitude,
+            longitude: message.orientation.longitude,
+            zoom: message.zoom
+          });
 
           break;
       }
     });
+  };
+
+  _proto.orbit$ = function orbit$() {
+    var latitude,
+        longitude,
+        zoom = null;
+    return MessageService.in$.pipe(operators.filter(function (message) {
+      return message.type === MessageType.ControlInfo;
+    }), operators.auditTime(65), operators.distinctUntilChanged(function (previous, current) {
+      var didChange = latitude !== current.orientation.latitude || longitude !== current.orientation.longitude || zoom !== current.zoom;
+      latitude = current.orientation.latitude;
+      longitude = current.orientation.longitude;
+      zoom = current.zoom;
+      return !didChange;
+    }));
+  };
+
+  _proto.getAssetDidChange = function getAssetDidChange(changes) {
+    var view = this.view;
+    var assetDidChange = AssetService.assetDidChange(view.asset, changes.asset);
+    var usdzDidChange = AssetService.assetDidChange(view.ar ? view.ar.usdz : null, changes.usdz);
+    var gltfDidChange = AssetService.assetDidChange(view.ar ? view.ar.gltf : null, changes.gltf);
+
+    if (assetDidChange || usdzDidChange || gltfDidChange) {
+      // console.log('UpdateViewComponent.getAssetDidChange', assetDidChange, usdzDidChange, gltfDidChange);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  _proto.doUpdateView = function doUpdateView(changes) {
+    var assetDidChange = this.getAssetDidChange(changes); // console.log('doUpdateItem.assetDidChange', assetDidChange);
+
+    if (assetDidChange) {
+      this.onSubmit();
+    }
   };
 
   _proto.doUpdateForm = function doUpdateForm() {
@@ -9021,16 +9633,14 @@ UpdateViewTileComponent.meta = {
         delete payload.longitude;
       }
 
-      if (payload.usdz != null || payload.gltf != null) {
-        // !!! keep loose inequality
-        payload.ar = {
-          usdz: payload.usdz || null,
-          gltf: payload.gltf || null
-        };
-        delete payload.usdz;
-        delete payload.gltf;
-      }
-
+      var usdz = payload.usdz || null;
+      var gltf = payload.gltf || null;
+      delete payload.usdz;
+      delete payload.gltf;
+      payload.ar = usdz || gltf ? {
+        usdz: usdz,
+        gltf: gltf
+      } : null;
       var view = new View(payload);
       EditorService.viewUpdate$(view).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
@@ -9086,7 +9696,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -9803,6 +10413,98 @@ ControlLinkComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlLocalizedAssetComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlLocalizedAssetComponent, _ControlComponent);
+
+  function ControlLocalizedAssetComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlLocalizedAssetComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+    this.accept = this.accept || 'image/png, image/jpeg';
+    this.previews = [];
+    this.languages = environment.languages;
+    this.currentLanguage = environment.defaultLanguage;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      // this.previews.length = files.length;
+      // this.previews.fill(null);
+      _this.previews = files.map(function () {
+        return null;
+      });
+      var uploads$ = files.map(function (file, i) {
+        return DropService.read$(file, i).pipe(operators.tap(function (resized) {
+          _this.previews[i] = resized;
+
+          _this.pushChanges();
+        }), operators.switchMap(function () {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          return (_this.languages.length > 1 ? AssetService.createOrUpdateLocalizedAsset$ : AssetService.createOrUpdateAsset$)(uploads, _this.control, _this.currentLanguage);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+      // console.log('ControlLocalizedAssetComponent.change$', assets);
+      _this.control.value = assets[0];
+    });
+  };
+
+  _proto.setLanguage = function setLanguage(language) {
+    this.currentLanguage = language;
+    this.pushChanges();
+  };
+
+  _createClass(ControlLocalizedAssetComponent, [{
+    key: "localizedValue",
+    get: function get() {
+      var asset = this.control.value;
+
+      if (asset && asset.locale) {
+        var localizedAsset = asset.locale[this.currentLanguage];
+
+        if (localizedAsset) {
+          asset = localizedAsset;
+        }
+      }
+
+      return asset;
+    }
+  }, {
+    key: "image",
+    get: function get() {
+      var image = null;
+
+      if (this.localizedValue) {
+        image = "" + this.localizedValue.folder + this.localizedValue.file;
+      } else if (this.previews && this.previews.length) {
+        image = this.previews[0];
+      }
+
+      return image;
+    }
+  }]);
+
+  return ControlLocalizedAssetComponent;
+}(ControlComponent);
+ControlLocalizedAssetComponent.meta = {
+  selector: '[control-localized-asset]',
+  inputs: ['control', 'label', 'disabled', 'accept'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"localizedValue | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"localizedValue && localizedValue.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"localizedValue | asset\" *if=\"localizedValue && localizedValue.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"localizedValue\" [innerHTML]=\"localizedValue.file\"></div>\n\t\t\t<ul class=\"nav--languages\" *if=\"languages.length > 1\">\n\t\t\t\t<li class=\"nav__item\" [class]=\"{ active: lang == currentLanguage }\" (click)=\"setLanguage(lang)\" [innerHTML]=\"lang\" *for=\"let lang of languages\"></li>\n\t\t\t</ul>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlModelComponent = /*#__PURE__*/function (_ControlAssetComponen) {
   _inheritsLoose(ControlModelComponent, _ControlAssetComponen);
 
@@ -9830,15 +10532,28 @@ ControlLinkComponent.meta = {
     ).subscribe();
     */
 
-    this.change$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      var uploads$ = files.map(function (file, i) {
+        return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
+          return AssetService.createOrUpdateAsset$(uploads, _this.control);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
       console.log('ControlModelComponent.change$', assets);
       _this.control.value = assets[0];
     });
   };
 
   _proto.onRemove = function onRemove(event) {
-    this.control.value = null;
-    this.input.value = null;
+    var _this2 = this;
+
+    AssetService.assetDelete$(this.control.value).pipe(operators.first()).subscribe(function () {
+      _this2.control.value = null;
+      _this2.input.value = null;
+      _this2.control.touched = true; // !!!
+    }); // !!! delete upload
+    // !!! delete asset
   }
   /*
   click$(input) {
@@ -12153,12 +12868,24 @@ var MediaLoader = /*#__PURE__*/function () {
     return item.asset && item.asset.file && (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1);
   };
 
+  MediaLoader.isStream = function isStream(item) {
+    return assetIsStream(item.asset);
+  };
+
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
     return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
   };
 
-  MediaLoader.isNextAttendeeStream = function isNextAttendeeStream(item) {
-    return item.asset && item.asset.type.name === AssetType.NextAttendeeStream.name;
+  MediaLoader.isAttendeeStream = function isAttendeeStream(item) {
+    return item.asset && item.asset.type.name === AssetType.AttendeeStream.name;
+  };
+
+  MediaLoader.isPublisherScreen = function isPublisherScreen(item) {
+    return item.asset && item.asset.type.name === AssetType.PublisherScreen.name;
+  };
+
+  MediaLoader.isAttendeeScreen = function isAttendeeScreen(item) {
+    return item.asset && item.asset.type.name === AssetType.AttendeeScreen.name;
   };
 
   _createClass(MediaLoader, [{
@@ -12167,14 +12894,29 @@ var MediaLoader = /*#__PURE__*/function () {
       return MediaLoader.isVideo(this.item);
     }
   }, {
+    key: "isStream",
+    get: function get() {
+      return MediaLoader.isStream(this.item);
+    }
+  }, {
     key: "isPublisherStream",
     get: function get() {
       return MediaLoader.isPublisherStream(this.item);
     }
   }, {
-    key: "isNextAttendeeStream",
+    key: "isAttendeeStream",
     get: function get() {
-      return MediaLoader.isNextAttendeeStream(this.item);
+      return MediaLoader.isAttendeeStream(this.item);
+    }
+  }, {
+    key: "isPublisherScreen",
+    get: function get() {
+      return MediaLoader.isPublisherScreen(this.item);
+    }
+  }, {
+    key: "isAttendeeScreen",
+    get: function get() {
+      return MediaLoader.isAttendeeScreen(this.item);
     }
   }, {
     key: "isPlayableVideo",
@@ -12184,7 +12926,7 @@ var MediaLoader = /*#__PURE__*/function () {
   }, {
     key: "isAutoplayVideo",
     get: function get() {
-      return this.isPublisherStream || this.isNextAttendeeStream || this.isVideo && this.item.asset.autoplay != null;
+      return this.isStream || this.isVideo && this.item.asset.autoplay != null;
     }
   }, {
     key: "muted",
@@ -12217,9 +12959,9 @@ var MediaLoader = /*#__PURE__*/function () {
     var _this2 = this;
 
     var item = this.item;
-    var texture; // console.log('MediaLoader.load', item, this.isPublisherStream);
+    var texture; // console.log('MediaLoader.load', item, this.isStream);
 
-    if ((this.isPublisherStream || this.isNextAttendeeStream) && item.streamId) {
+    if (this.isStream && item.streamId) {
       var streamId = item.streamId;
       var target = "#stream-" + streamId;
       var video = document.querySelector(target + " video");
@@ -12364,85 +13106,6 @@ var MediaLoader = /*#__PURE__*/function () {
 }();
 MediaLoader.events$ = new rxjs.ReplaySubject(1);var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
 var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tvec4 colorB = texture2D(textureB, vUv);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
-/*
-const FRAGMENT_SHADER_BAK = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-uniform bool video;
-uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-uniform vec3 overlayColor;
-
-mat3 rotate(float a) {
-	return mat3(
-		cos(a), sin(a), 0.0,
-		-sin(a), cos(a), 0.0,
-		0.0, 0.0, 1.0
-	);
-}
-
-mat3 translate(vec2 t) {
-	return mat3(
-		1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0,
-		t.x, t.y, 1.0
-	);
-}
-
-mat3 scale(vec2 s) {
-	return mat3(
-		s.x, 0.0, 0.0,
-		0.0, s.y, 0.0,
-		0.0, 0.0, 1.0
-	);
-}
-
-vec2 getUV2(vec2 vUv, vec2 t, vec2 s, float a) {
-	mat3 transform = scale(s) * rotate(a);
-	return (vec3(vUv + t, 0.0) * transform).xy;
-}
-
-void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
-	if (video) {
-		float rA = resolutionA.x / resolutionA.y;
-		float rB = resolutionB.x / resolutionB.y;
-		float aspect = 1.0 / rA * rB;
-		vec2 s = vec2(3.0 / aspect, 3.0);
-		vec2 t = vec2(
-			-(resolutionA.x - resolutionB.x / s.x) * 0.5 / resolutionA.x,
-			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
-		);
-		t = vec2(
-			-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,
-			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
-		);
-		// float dx = (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5;
-		// float dy = (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5;
-		// t = vec2(-0.5 + dx, -0.5 - dy);
-		vec2 uv2 = clamp(
-			getUV2(vUv, t, s, 0.0),
-			vec2(0.0,0.0),
-			vec2(1.0,1.0)
-		);
-		vec4 colorB = texture2D(textureB, uv2);
-		colorB = texture2D(textureB, vUv);
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
-	} else {
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
-	}
-	gl_FragColor = color;
-}
-`;
-*/
-
 var FRAGMENT_CHROMA_KEY_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 chromaKeyColor;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);\n\tgl_FragColor = color;\n}\n";
 
 var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
@@ -12541,7 +13204,55 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return material;
   };
 
+  MediaMesh.isPublisherStream = function isPublisherStream(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher;
+  };
+
+  MediaMesh.isAttendeeStream = function isAttendeeStream(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee;
+  };
+
+  MediaMesh.isPublisherScreen = function isPublisherScreen(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid !== stream.getId();
+  };
+
+  MediaMesh.isAttendeeScreen = function isAttendeeScreen(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.uid !== stream.getId();
+  };
+
+  MediaMesh.getTypeMatcher = function getTypeMatcher(assetType) {
+    var matcher;
+
+    switch (assetType.name) {
+      case AssetType.PublisherStream.name:
+        matcher = this.isPublisherStream;
+        break;
+
+      case AssetType.AttendeeStream.name:
+        matcher = this.isAttendeeStream;
+        break;
+
+      case AssetType.PublisherScreen.name:
+        matcher = this.isPublisherScreen;
+        break;
+
+      case AssetType.AttendeeScreen.name:
+        matcher = this.isAttendeeScreen;
+        break;
+
+      default:
+        matcher = function matcher(stream) {
+          return false;
+        };
+
+    }
+
+    return matcher;
+  };
+
   MediaMesh.getStreamId$ = function getStreamId$(item) {
+    var _this2 = this;
+
     if (!item.asset) {
       return rxjs.of(null);
     }
@@ -12549,45 +13260,32 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     var assetType = item.asset.type;
     var file = item.asset.file;
 
-    if (assetType.name !== AssetType.PublisherStream.name && assetType.name !== AssetType.NextAttendeeStream.name) {
-      return rxjs.of(file);
-    }
-
-    return StreamService.streams$.pipe(operators.map(function (streams) {
-      // console.log('MediaMesh.getStreamId$', streams, item.asset);
-      var stream;
-
-      if (assetType.name === AssetType.PublisherStream.name) {
-        // stream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+    if (assetIsStream(item.asset)) {
+      return StreamService.streams$.pipe(operators.map(function (streams) {
+        var stream;
         var i = 0;
+
+        var matchType = _this2.getTypeMatcher(assetType);
+
         streams.forEach(function (x) {
-          if (x.clientInfo && x.clientInfo.role === RoleType.Publisher) {
+          if (matchType(x)) {
             if (i === item.asset.index) {
               stream = x;
             }
 
             i++;
           }
-        });
-      } else if (assetType.name === AssetType.NextAttendeeStream.name) {
-        var _i = 0;
-        streams.forEach(function (x) {
-          if (x.clientInfo && x.clientInfo.role === RoleType.Attendee) {
-            if (_i === item.asset.index) {
-              stream = x;
-            }
+        }); // console.log('MediaMesh.getStreamId$', assetType.name, stream, streams);
 
-            _i++;
-          }
-        });
-      }
-
-      if (stream) {
-        return stream.getId();
-      } else {
-        return null;
-      }
-    }));
+        if (stream) {
+          return stream.getId();
+        } else {
+          return null;
+        }
+      }));
+    } else {
+      return rxjs.of(file);
+    }
   };
 
   MediaMesh.getMaterialByItem = function getMaterialByItem(item) {
@@ -12642,7 +13340,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   var _proto = MediaMesh.prototype;
 
   _proto.load = function load(callback) {
-    var _this2 = this;
+    var _this3 = this;
 
     if (!this.item.asset) {
       this.onAppear();
@@ -12666,7 +13364,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         material.needsUpdate = true;
 
         if (mediaLoader.isPlayableVideo) {
-          _this2.createTextureB(textureA, function (textureB) {
+          _this3.createTextureB(textureA, function (textureB) {
             // console.log('MediaMesh.textureB', textureB);
             textureB.minFilter = THREE.LinearFilter;
             textureB.magFilter = THREE.LinearFilter;
@@ -12684,23 +13382,23 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         }
       }
 
-      _this2.onAppear();
+      _this3.onAppear();
 
       if (mediaLoader.isPlayableVideo) {
         material.uniforms.video.value = true;
-        _this2.onOver = _this2.onOver.bind(_this2);
-        _this2.onOut = _this2.onOut.bind(_this2);
-        _this2.onToggle = _this2.onToggle.bind(_this2);
+        _this3.onOver = _this3.onOver.bind(_this3);
+        _this3.onOut = _this3.onOut.bind(_this3);
+        _this3.onToggle = _this3.onToggle.bind(_this3);
 
-        _this2.on('over', _this2.onOver);
+        _this3.on('over', _this3.onOver);
 
-        _this2.on('out', _this2.onOut);
+        _this3.on('out', _this3.onOut);
 
-        _this2.on('down', _this2.onToggle);
+        _this3.on('down', _this3.onToggle);
       }
 
       if (typeof callback === 'function') {
-        callback(_this2);
+        callback(_this3);
       }
     });
   };
@@ -12747,7 +13445,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   _proto.events$ = function events$() {
-    var _this3 = this;
+    var _this4 = this;
 
     var item = this.item;
     var items = this.items;
@@ -12765,9 +13463,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         if (eventItem) {
           // console.log('MediaLoader.events$.eventItem', event, eventItem);
           if (event instanceof MediaLoaderPlayEvent) {
-            _this3.play();
+            _this4.play();
           } else if (event instanceof MediaLoaderPauseEvent) {
-            _this3.pause();
+            _this4.pause();
           }
         }
       }
@@ -14791,6 +15489,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var view = this.view_;
 
     if (view) {
+      this.views.forEach(function (view) {
+        return delete view.onUpdateAsset;
+      });
       var message = this.requestInfoResult;
 
       if (message) {
@@ -14806,7 +15507,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       this.panorama.change(view, this.renderer, function (envMap, texture, rgbe) {
         // this.scene.background = envMap;
         _this2.scene.environment = envMap;
-        view.ready = true; // this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+        view.ready = true;
+
+        view.onUpdateAsset = function () {
+          _this2.onViewAssetDidChange();
+        }; // this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+
 
         _this2.pushChanges(); // this.render();
 
@@ -14814,6 +15520,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         _this2.setViewOrientation(view); // this.loading = null;
         // this.pushChanges();
 
+      });
+    }
+  };
+
+  _proto.onViewAssetDidChange = function onViewAssetDidChange() {
+    var _this3 = this;
+
+    if (this.panorama) {
+      this.panorama.crossfade(this.view, this.renderer, function (envMap, texture, rgbe) {
+        _this3.scene.environment = envMap;
       });
     }
   };
@@ -14849,7 +15565,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addController = function addController(index) {
-    var _this3 = this;
+    var _this4 = this;
 
     var showPhone =  StateService.state.live;
     var renderer = this.renderer;
@@ -14861,7 +15577,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
     var setController = function setController(controller) {
       // console.log('setController', this);
-      _this3.controller = controller;
+      _this4.controller = controller;
     };
 
     var onSelectStart = function onSelectStart(event) {
@@ -14901,19 +15617,19 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     };
 
     var onRelease = function onRelease(event) {
-      _this3.onModelUp();
+      _this4.onModelUp();
     };
 
     var onLeft = function onLeft(event) {
       // console.log('Gamepad.onLeft', event, controller);
       // debugService.setMessage('Gamepad.onLeft');
-      _this3.cameraGroup.rotation.y += Math.PI / 180 * 45;
+      _this4.cameraGroup.rotation.y += Math.PI / 180 * 45;
     };
 
     var onRight = function onRight(event) {
       // console.log('Gamepad.onRight', event, controller);
       // debugService.setMessage('Gamepad.onRight');
-      _this3.cameraGroup.rotation.y -= Math.PI / 180 * 45;
+      _this4.cameraGroup.rotation.y -= Math.PI / 180 * 45;
     };
     /*
     const onAxis = (event) => {
@@ -14927,7 +15643,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var onAxis = function onAxis(event) {
       // console.log('Gamepad.onAxis', event, controller);
       // debugService.setMessage('Gamepad.onAxis');
-      _this3.onModelDistance(event.y);
+      _this4.onModelDistance(event.y);
     };
     /*
     const onUp = (event) => {
@@ -14953,10 +15669,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
 
     var onConnected = function onConnected(event) {
-      controller.add(_this3.buildController(event.data));
+      controller.add(_this4.buildController(event.data));
 
       if (showPhone && event.data.handedness === 'left') {
-        var phone = _this3.phone = new PhoneElement();
+        var phone = _this4.phone = new PhoneElement();
         controller.add(phone.mesh);
       }
 
@@ -15033,6 +15749,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onModelDown = function onModelDown(event) {
+    // vr controller model grab
     var controller = this.controller;
 
     if (controller && this.renderer.xr.isPresenting) {
@@ -15049,6 +15766,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onModelDistance = function onModelDistance(direction) {
+    // vr controller model distance
     var controller = this.controller;
     var target = this.tempTarget;
 
@@ -15064,6 +15782,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onModelUp = function onModelUp() {
+    // vr controller model release
     var target = this.tempTarget;
     var parent = this.tempParent;
 
@@ -15142,7 +15861,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.render = function render(delta) {
-    var _this4 = this;
+    var _this5 = this;
 
     try {
       var renderer = this.renderer,
@@ -15158,7 +15877,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       });
       this.vrService.updateState(this);
       Object.keys(this.avatars).forEach(function (key) {
-        _this4.avatars[key].render();
+        _this5.avatars[key].render();
       });
 
       if (renderer.xr.isPresenting) {
@@ -15503,26 +16222,26 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onGridMove = function onGridMove(event) {
-    var _this5 = this;
+    var _this6 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
     this.view.items = []; // this.loading = loadingBanner;
 
     this.pushChanges();
     this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
-      var tile = _this5.view.getTile(event.indices.x, event.indices.y);
+      var tile = _this6.view.getTile(event.indices.x, event.indices.y);
 
       if (tile) {
-        _this5.panorama.crossfade(tile, _this5.renderer, function (envMap, texture, rgbe) {
+        _this6.panorama.crossfade(tile, _this6.renderer, function (envMap, texture, rgbe) {
           // this.scene.background = envMap;
-          _this5.scene.environment = envMap;
+          _this6.scene.environment = envMap;
 
-          _this5.orbit.walkComplete(headingLongitude, headingLatitude);
+          _this6.orbit.walkComplete(headingLongitude, headingLatitude);
 
-          _this5.view.updateCurrentItems(); // this.loading = null;
+          _this6.view.updateCurrentItems(); // this.loading = null;
 
 
-          _this5.pushChanges(); // this.render();
+          _this6.pushChanges(); // this.render();
           // this.pushChanges();
 
         });
@@ -15545,16 +16264,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.control$ = function control$() {
-    var _this6 = this;
+    var _this7 = this;
 
     return this.controlEvent$.pipe(operators.filter(function () {
-      return StateService.state.control || StateService.state.spyed || _this6.editor;
+      return StateService.state.control || StateService.state.spyed || _this7.editor;
     }), operators.auditTime(40), operators.tap(function (control) {
-      control.orientation.latitude = _this6.orbit.latitude;
-      control.orientation.longitude = _this6.orbit.longitude;
-      control.zoom = _this6.orbit.zoom;
+      control.orientation.latitude = _this7.orbit.latitude;
+      control.orientation.longitude = _this7.orbit.longitude;
+      control.zoom = _this7.orbit.zoom;
 
-      var intersections = _this6.raycaster.intersectObjects([_this6.panorama.mesh]);
+      var intersections = _this7.raycaster.intersectObjects([_this7.panorama.mesh]);
 
       var point = intersections.length ? intersections[0].point.normalize() : null;
 
@@ -15569,7 +16288,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addListeners = function addListeners() {
-    var _this7 = this;
+    var _this8 = this;
 
     this.control = {
       type: MessageType.ControlInfo,
@@ -15584,16 +16303,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.control$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     var vrService = this.vrService = VRService.getService();
     vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-      _this7.renderer.xr.setSession(session);
+      _this8.renderer.xr.setSession(session);
 
       if (session) {
-        _this7.onVRStarted();
+        _this8.onVRStarted();
       } else {
-        _this7.onVREnded();
+        _this8.onVREnded();
       }
     });
     vrService.state$.pipe(operators.takeUntil(this.unsubscribe$), operators.auditTime(Math.floor(1000 / 15))).subscribe(function (state) {
-      _this7.onVRStateDidChange(state);
+      _this8.onVRStateDidChange(state);
     });
     var orbit$ = this.orbit.observe$(this.container).pipe(operators.shareReplay(1));
     /*
@@ -15607,18 +16326,18 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }), operators.auditTime(Math.floor(1000 / 15)));
     orientation$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       // this.render();
-      _this7.onOrientationDidChange();
+      _this8.onOrientationDidChange();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.RequestInfo:
           message.type = MessageType.RequestInfoResult;
-          message.viewId = _this7.view.id;
-          message.orientation = _this7.orbit.getOrientation();
-          message.zoom = _this7.orbit.zoom;
+          message.viewId = _this8.view.id;
+          message.orientation = _this8.orbit.getOrientation();
+          message.zoom = _this8.orbit.zoom;
 
-          if (_this7.view instanceof PanoramaGridView) {
-            message.gridIndex = _this7.view.index;
+          if (_this8.view instanceof PanoramaGridView) {
+            message.gridIndex = _this8.view.index;
           } // console.log('WorldComponent', 'MessageType.RequestInfo', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
 
 
@@ -15636,22 +16355,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           // console.log('WorldComponent', 'MessageType.RequestInfoResult', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
           if (ViewService.viewId !== message.viewId) {
             ViewService.viewId = message.viewId;
-            _this7.requestInfoResult = message;
+            _this8.requestInfoResult = message;
           } else {
-            _this7.orbit.setOrientation(message.orientation);
+            _this8.orbit.setOrientation(message.orientation);
 
-            if (!_this7.renderer.xr.isPresenting) {
-              _this7.orbit.zoom = message.zoom;
+            if (!_this8.renderer.xr.isPresenting) {
+              _this8.orbit.zoom = message.zoom;
 
-              _this7.camera.updateProjectionMatrix();
+              _this8.camera.updateProjectionMatrix();
             }
 
-            if (_this7.view instanceof PanoramaGridView && message.gridIndex) {
-              _this7.view.index = message.gridIndex;
+            if (_this8.view instanceof PanoramaGridView && message.gridIndex) {
+              _this8.view.index = message.gridIndex;
             }
 
-            if (!_this7.view || !_this7.view.ready) {
-              _this7.requestInfoResult = message;
+            if (!_this8.view || !_this8.view.ready) {
+              _this8.requestInfoResult = message;
             }
           }
           /*
@@ -15688,20 +16407,20 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         */
 
         case MessageType.ShowPanel:
-          if (_this7.menu) {
-            _this7.menu.removeMenu();
+          if (_this8.menu) {
+            _this8.menu.removeMenu();
           }
 
-          _this7.view.items.forEach(function (item) {
+          _this8.view.items.forEach(function (item) {
             return item.showPanel = item.id === message.itemId;
           });
 
-          _this7.pushChanges();
+          _this8.pushChanges();
 
           break;
 
         case MessageType.PlayMedia:
-          var item = _this7.view.items.find(function (item) {
+          var item = _this8.view.items.find(function (item) {
             return item.id === message.itemId;
           });
 
@@ -15713,47 +16432,47 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.NavToGrid:
           // console.log('WorldComponent.NavToGrid', this.view.id, message);
-          if (_this7.view.id === message.viewId) {
-            _this7.view.index = message.gridIndex;
+          if (_this8.view.id === message.viewId) {
+            _this8.view.index = message.gridIndex;
           }
 
           break;
 
         case MessageType.VRStarted:
-          _this7.addOffCanvasScene(message);
+          _this8.addOffCanvasScene(message);
 
           break;
 
         case MessageType.VREnded:
-          _this7.removeOffCanvasScene(message);
+          _this8.removeOffCanvasScene(message);
 
           break;
 
         case MessageType.VRState:
-          _this7.updateOffCanvasScene(message);
+          _this8.updateOffCanvasScene(message);
 
           if (StateService.state.spying === message.clientId) {
-            _this7.orbit.setVRCamera(message.camera);
+            _this8.orbit.setVRCamera(message.camera);
           }
 
           break;
 
         case MessageType.ControlInfo:
-          if (!_this7.renderer.xr.isPresenting) {
-            _this7.orbit.setOrientation(message.orientation);
+          if (!_this8.renderer.xr.isPresenting) {
+            _this8.orbit.setOrientation(message.orientation);
 
-            _this7.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
+            _this8.orbit.zoom = message.zoom; // this.camera.updateProjectionMatrix();
             // this.render();
           }
 
-          _this7.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
+          _this8.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
 
           break;
       }
     });
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this7.state = state;
-      _this7.showPointer = StateService.state.locked || StateService.state.spying; // console.log(state);
+      _this8.state = state;
+      _this8.showPointer = StateService.state.locked || StateService.state.spying; // console.log(state);
       // this.pushChanges();
     });
     this.resize = this.resize.bind(this);
@@ -19536,6 +20255,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlMenuComponent, ControlModelComponent, ControlAssetsComponent, ControlLocalizedAssetComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlSelectComponent, ControlTextComponent, ControlTextareaComponent, ControlVectorComponent, ControlsComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, HtmlPipe, HlsDirective, IdDirective, InputValueComponent, LabelPipe, LazyDirective, LayoutComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelModelComponent, ModelGridComponent, ModelMenuComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

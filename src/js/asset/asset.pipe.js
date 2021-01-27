@@ -15,7 +15,7 @@ export const MIME_MODEL = [
 	'fbx', 'gltf', 'glb', 'obj', 'usdz',
 ];
 export const MIME_STREAM = [
-	'publisherStream', 'nextAttendeeStream',
+	'publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen',
 ];
 export function isImage(path) {
 	return new RegExp(`/\.(${MIME_IMAGE.join('|')})$/i`).test(path);
@@ -47,7 +47,9 @@ export default class AssetPipe extends Pipe {
 					asset = environment.getPath(asset);
 					break;
 				case AssetType.PublisherStream.name:
-				case AssetType.NextAttendeeStream.name:
+				case AssetType.AttendeeStream.name:
+				case AssetType.PublisherScreen.name:
+				case AssetType.AttendeeScreen.name:
 					asset = environment.getPath(asset.file);
 					break;
 				default:

@@ -23,7 +23,7 @@ export class UserService {
 			switchMap(user => {
 				this.setUser(user);
 				return this.user$;
-			})
+			}),
 		);
 	}
 

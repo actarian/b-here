@@ -230,6 +230,7 @@ export default class WorldComponent extends Component {
 		}
 		const view = this.view_;
 		if (view) {
+			this.views.forEach(view => delete view.onUpdateAsset);
 			const message = this.requestInfoResult;
 			if (message) {
 				if (view instanceof PanoramaGridView && message.gridIndex !== undefined) {
@@ -244,6 +245,9 @@ export default class WorldComponent extends Component {
 				// this.scene.background = envMap;
 				this.scene.environment = envMap;
 				view.ready = true;
+				view.onUpdateAsset = () => {
+					this.onViewAssetDidChange();
+				};
 				// this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
 				this.pushChanges();
 				// this.render();
@@ -251,6 +255,14 @@ export default class WorldComponent extends Component {
 				this.setViewOrientation(view);
 				// this.loading = null;
 				// this.pushChanges();
+			});
+		}
+	}
+
+	onViewAssetDidChange() {
+		if (this.panorama) {
+			this.panorama.crossfade(this.view, this.renderer, (envMap, texture, rgbe) => {
+				this.scene.environment = envMap;
 			});
 		}
 	}
@@ -443,6 +455,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onModelDown(event) {
+		// vr controller model grab
 		const controller = this.controller;
 		if (controller && this.renderer.xr.isPresenting) {
 			const target = this.tempTarget = event.mesh;
@@ -458,6 +471,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onModelDistance(direction) {
+		// vr controller model distance
 		const controller = this.controller;
 		const target = this.tempTarget;
 		if (controller && target && this.renderer.xr.isPresenting) {
@@ -472,6 +486,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onModelUp() {
+		// vr controller model release
 		const target = this.tempTarget;
 		const parent = this.tempParent;
 		if (target && parent) {
