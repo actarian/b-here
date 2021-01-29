@@ -226,7 +226,9 @@ export default class WorldComponent extends Component {
 		}
 		const view = this.view_;
 		if (view) {
-			this.views.forEach(view => delete view.onUpdateAsset);
+			if (this.views) {
+				this.views.forEach(view => delete view.onUpdateAsset);
+			}
 			const message = this.requestInfoResult;
 			if (message) {
 				if (view instanceof PanoramaGridView && message.gridIndex !== undefined) {
