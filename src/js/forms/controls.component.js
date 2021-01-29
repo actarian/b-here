@@ -51,7 +51,7 @@ export function fieldsToFormControls(fields) {
 		if (c.pattern != null) {
 			validators.push(Validators.PatternValidator(c.pattern));
 		}
-		p[c.name] = new FormControl(c.value || null, validators);
+		p[c.name] = new FormControl((c.value != null ? c.value : null), validators);
 		if (c.type === 'select' || c.type === 'custom-select') {
 			const options = (c.options || []).slice();
 			options.unshift({ id: null, name: LabelPipe.transform('select') });

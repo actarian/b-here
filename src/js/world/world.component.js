@@ -4,7 +4,6 @@ import { auditTime, filter, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { MessageType } from '../agora/agora.types';
 import { DEBUG } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
-import LabelPipe from '../label/label.pipe';
 import MessageService from '../message/message.service';
 import { Rect } from '../rect/rect';
 import StateService from '../state/state.service';
@@ -27,9 +26,6 @@ import { XRControllerModelFactory } from './webxr/xr-controller-model-factory';
 const ORIGIN = new THREE.Vector3();
 const USE_SHADOW = false;
 const USE_PHONE = true;
-
-const loadingBanner = { title: LabelPipe.transform('loading') };
-const waitingBanner = { title: LabelPipe.transform('waiting_host') };
 
 export default class WorldComponent extends Component {
 
@@ -238,7 +234,7 @@ export default class WorldComponent extends Component {
 				}
 			}
 			view.ready = false;
-			// this.loading = loadingBanner;
+			// this.loading = LOADING_BANNER;
 			// this.waiting = null;
 			this.pushChanges();
 			this.panorama.change(view, this.renderer, (envMap, texture, rgbe) => {
@@ -248,7 +244,7 @@ export default class WorldComponent extends Component {
 				view.onUpdateAsset = () => {
 					this.onViewAssetDidChange();
 				};
-				// this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+				// this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
 				this.pushChanges();
 				// this.render();
 			}, (view) => {
@@ -910,7 +906,7 @@ export default class WorldComponent extends Component {
 	onGridMove(event) {
 		// console.log('WorldComponent.onGridMove', event, this.view);
 		this.view.items = [];
-		// this.loading = loadingBanner;
+		// this.loading = LOADING_BANNER;
 		this.pushChanges();
 		this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
 			const tile = this.view.getTile(event.indices.x, event.indices.y);

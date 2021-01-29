@@ -8,6 +8,9 @@ import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
+export const LOADING_BANNER = { title: LabelPipe.transform('loading') };
+export const WAITING_BANNER = { title: LabelPipe.transform('waiting_host') };
+
 const PANEL_RADIUS = PANORAMA_RADIUS - 0.01;
 
 export default class ModelProgressComponent extends ModelComponent {
@@ -18,7 +21,7 @@ export default class ModelProgressComponent extends ModelComponent {
 	set title(title) {
 		if (this.title_ !== title) {
 			this.title_ = title;
-			if (title !== '' && this.visible_) {
+			if (title === WAITING_BANNER.title || (title !== '' && this.visible_)) {
 				this.updateProgress();
 				this.show();
 			} else {
@@ -64,7 +67,7 @@ export default class ModelProgressComponent extends ModelComponent {
 				takeUntil(this.unsubscribe$)
 			).subscribe(progress => {
 				if (progress.count) {
-					this.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
+					this.title = progress.value === 0 ? LOADING_BANNER.title : progress.title;
 				} else {
 					this.title = this.getTitle();
 				}
@@ -74,7 +77,7 @@ export default class ModelProgressComponent extends ModelComponent {
 
 	getTitle() {
 		if (this.view && this.view.type.name === ViewType.WaitingRoom.name) {
-			return LabelPipe.transform('waiting_host');
+			return WAITING_BANNER.title;
 		} else {
 			return '';
 		}
