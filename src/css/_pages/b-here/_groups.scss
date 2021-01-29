@@ -155,7 +155,7 @@
 		@include autofill(14px, 400, 1, 0, $font-primary, $foreground, transparent);
 
 		&[readonly] {
-			color: #86929f;
+			color: $foreground-primary-disabled;
 		}
 	}
 

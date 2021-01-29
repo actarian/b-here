@@ -78,7 +78,7 @@ export default class AccessComponent extends Component {
 		];
 
 		fields.push(
-			{ type: 'hidden', name: 'checkField', test: '' },
+			{ type: 'hidden', name: 'checkField', value: '', test: '' },
 			{ type: 'none', name: 'checkRequest', value: window.antiforgery || '', test: window.antiforgery || '' }
 		);
 
