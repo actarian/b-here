@@ -74,9 +74,9 @@ export class AssetService {
 		const asset = Asset.fromUrl(upload.url);
 		if (control.value && control.value.id) { // !!! must check for id
 			asset.id = control.value.id;
-			return this.assetUpdate$(asset);
+			return AssetService.assetUpdate$(asset);
 		} else {
-			return this.assetCreate$(asset);
+			return AssetService.assetCreate$(asset);
 		}
 	}
 
@@ -85,9 +85,9 @@ export class AssetService {
 		const asset = Asset.fromUrl(upload.url);
 		if (control.value && control.value.id) { // !!! must check for id
 			asset.id = control.value.id;
-			return this.localizedAssetUpdate$(lg, asset);
+			return AssetService.localizedAssetUpdate$(lg, asset);
 		} else {
-			return this.localizedAssetCreate$(lg, asset);
+			return AssetService.localizedAssetCreate$(lg, asset);
 		}
 	}
 
