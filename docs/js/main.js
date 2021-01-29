@@ -523,7 +523,7 @@ function fieldsToFormControls(fields) {
       validators.push(rxcompForm.Validators.PatternValidator(c.pattern));
     }
 
-    p[c.name] = new rxcompForm.FormControl(c.value || null, validators);
+    p[c.name] = new rxcompForm.FormControl(c.value != null ? c.value : null, validators);
 
     if (c.type === 'select' || c.type === 'custom-select') {
       var options = (c.options || []).slice();
@@ -934,6 +934,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
     fields.push({
       type: 'hidden',
       name: 'checkField',
+      value: '',
       test: ''
     }, {
       type: 'none',
@@ -15317,12 +15318,6 @@ var XRControllerModelFactory = function () {
   };
   return XRControllerModelFactory;
 }();var ORIGIN$1 = new THREE.Vector3();
-var loadingBanner = {
-  title: LabelPipe.transform('loading')
-};
-var waitingBanner = {
-  title: LabelPipe.transform('waiting_host')
-};
 
 var WorldComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(WorldComponent, _Component);
@@ -15496,7 +15491,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         }
       }
 
-      view.ready = false; // this.loading = loadingBanner;
+      view.ready = false; // this.loading = LOADING_BANNER;
       // this.waiting = null;
 
       this.pushChanges();
@@ -15507,7 +15502,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         view.onUpdateAsset = function () {
           _this2.onViewAssetDidChange();
-        }; // this.waiting = (view && view.type.name === 'waiting-room') ? waitingBanner : null;
+        }; // this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
 
 
         _this2.pushChanges(); // this.render();
@@ -16221,7 +16216,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var _this6 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
-    this.view.items = []; // this.loading = loadingBanner;
+    this.view.items = []; // this.loading = LOADING_BANNER;
 
     this.pushChanges();
     this.orbit.walk(event.position, function (headingLongitude, headingLatitude) {
@@ -19750,7 +19745,13 @@ ModelPlaneComponent.meta = {
   },
   outputs: ['down', 'play'],
   inputs: ['item', 'items']
-};var PANEL_RADIUS$1 = PANORAMA_RADIUS - 0.01;
+};var LOADING_BANNER = {
+  title: LabelPipe.transform('loading')
+};
+var WAITING_BANNER = {
+  title: LabelPipe.transform('waiting_host')
+};
+var PANEL_RADIUS$1 = PANORAMA_RADIUS - 0.01;
 
 var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelProgressComponent, _ModelComponent);
@@ -19789,7 +19790,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
       LoaderService.progress$.pipe(operators.takeUntil(_this2.unsubscribe$)).subscribe(function (progress) {
         if (progress.count) {
-          _this2.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
+          _this2.title = progress.value === 0 ? LOADING_BANNER.title : progress.title;
         } else {
           _this2.title = _this2.getTitle();
         }
@@ -19799,7 +19800,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
   _proto.getTitle = function getTitle() {
     if (this.view && this.view.type.name === ViewType.WaitingRoom.name) {
-      return LabelPipe.transform('waiting_host');
+      return WAITING_BANNER.title;
     } else {
       return '';
     }
@@ -19970,7 +19971,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       if (this.title_ !== title) {
         this.title_ = title;
 
-        if (title !== '' && this.visible_) {
+        if (title === WAITING_BANNER.title || title !== '' && this.visible_) {
           this.updateProgress();
           this.show();
         } else {

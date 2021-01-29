@@ -4535,7 +4535,7 @@ body {
     .group--info .control--text[readonly],
     .group--info .control--select[readonly],
     .group--info .control--custom-select[readonly] {
-      color: #86929f; }
+      color: var(--foreground-primary-disabled); }
   .group--info [control-custom-select].invalid .control--custom-select {
     color: var(--foreground-tertiary); }
   .group--info .group--form--addon {
