@@ -6881,9 +6881,9 @@ AsideComponent.meta = {
     if (control.value && control.value.id) {
       // !!! must check for id
       asset.id = control.value.id;
-      return this.assetUpdate$(asset);
+      return AssetService.assetUpdate$(asset);
     } else {
-      return this.assetCreate$(asset);
+      return AssetService.assetCreate$(asset);
     }
   };
 
@@ -6894,9 +6894,9 @@ AsideComponent.meta = {
     if (control.value && control.value.id) {
       // !!! must check for id
       asset.id = control.value.id;
-      return this.localizedAssetUpdate$(lg, asset);
+      return AssetService.localizedAssetUpdate$(lg, asset);
     } else {
-      return this.localizedAssetCreate$(lg, asset);
+      return AssetService.localizedAssetCreate$(lg, asset);
     }
   };
 
@@ -15480,9 +15480,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var view = this.view_;
 
     if (view) {
-      this.views.forEach(function (view) {
-        return delete view.onUpdateAsset;
-      });
+      if (this.views) {
+        this.views.forEach(function (view) {
+          return delete view.onUpdateAsset;
+        });
+      }
+
       var message = this.requestInfoResult;
 
       if (message) {
