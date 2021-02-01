@@ -7915,7 +7915,6 @@ ControlComponent.meta = {
     this.label = this.label || 'label';
     this.disabled = this.disabled || false;
     this.accept = this.accept || 'image/png, image/jpeg';
-    this.previews = [];
 
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;
@@ -7924,19 +7923,8 @@ ControlComponent.meta = {
     input.setAttribute('accept', this.accept);
     DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     DropService.change$(input).pipe(operators.switchMap(function (files) {
-      // this.previews.length = files.length;
-      // this.previews.fill(null);
-      _this.previews = files.map(function () {
-        return null;
-      });
       var uploads$ = files.map(function (file, i) {
-        return DropService.read$(file, i).pipe(operators.tap(function (resized) {
-          _this.previews[i] = resized;
-
-          _this.pushChanges();
-        }), operators.switchMap(function () {
-          return AssetService.upload$([file]);
-        }), operators.switchMap(function (uploads) {
+        return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
           return AssetService.createOrUpdateAsset$(uploads, _this.control);
         }));
       });
@@ -7947,21 +7935,6 @@ ControlComponent.meta = {
     });
   };
 
-  _createClass(ControlAssetComponent, [{
-    key: "image",
-    get: function get() {
-      var image = null;
-
-      if (this.control.value) {
-        image = "" + this.control.value.folder + this.control.value.file;
-      } else if (this.previews && this.previews.length) {
-        image = this.previews[0];
-      }
-
-      return image;
-    }
-  }]);
-
   return ControlAssetComponent;
 }(ControlComponent);
 ControlAssetComponent.meta = {
@@ -7969,7 +7942,7 @@ ControlAssetComponent.meta = {
   inputs: ['control', 'label', 'disabled', 'accept'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<!-- <svg class=\"icon--image\"><use xlink:href=\"#image\"></use></svg> -->\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t\t<!--\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control\" [placeholder]=\"label\" [disabled]=\"disabled\" />\n\t\t\t-->\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
 };var ControlMenuComponent = /*#__PURE__*/function (_ControlAssetComponen) {
   _inheritsLoose(ControlMenuComponent, _ControlAssetComponen);
 
@@ -10429,7 +10402,6 @@ ControlLinkComponent.meta = {
     this.label = this.label || 'label';
     this.disabled = this.disabled || false;
     this.accept = this.accept || 'image/png, image/jpeg';
-    this.previews = [];
     this.languages = environment.languages;
     this.currentLanguage = environment.defaultLanguage;
 
@@ -10440,19 +10412,8 @@ ControlLinkComponent.meta = {
     input.setAttribute('accept', this.accept);
     DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     DropService.change$(input).pipe(operators.switchMap(function (files) {
-      // this.previews.length = files.length;
-      // this.previews.fill(null);
-      _this.previews = files.map(function () {
-        return null;
-      });
       var uploads$ = files.map(function (file, i) {
-        return DropService.read$(file, i).pipe(operators.tap(function (resized) {
-          _this.previews[i] = resized;
-
-          _this.pushChanges();
-        }), operators.switchMap(function () {
-          return AssetService.upload$([file]);
-        }), operators.switchMap(function (uploads) {
+        return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
           return (_this.languages.length > 1 ? AssetService.createOrUpdateLocalizedAsset$ : AssetService.createOrUpdateAsset$)(uploads, _this.control, _this.currentLanguage);
         }));
       });
@@ -10482,19 +10443,6 @@ ControlLinkComponent.meta = {
       }
 
       return asset;
-    }
-  }, {
-    key: "image",
-    get: function get() {
-      var image = null;
-
-      if (this.localizedValue) {
-        image = "" + this.localizedValue.folder + this.localizedValue.file;
-      } else if (this.previews && this.previews.length) {
-        image = this.previews[0];
-      }
-
-      return image;
     }
   }]);
 
