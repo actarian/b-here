@@ -1,6 +1,6 @@
 import { getContext } from 'rxcomp';
 import { combineLatest } from 'rxjs';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { AssetService } from '../asset/asset.service';
 import { DropService } from '../drop/drop.service';
 import { environment } from '../environment';
@@ -19,21 +19,10 @@ export default class ControlLocalizedAssetComponent extends ControlComponent {
 		return asset;
 	}
 
-	get image() {
-		let image = null;
-		if (this.localizedValue) {
-			image = `${this.localizedValue.folder}${this.localizedValue.file}`;
-		} else if (this.previews && this.previews.length) {
-			image = this.previews[0];
-		}
-		return image;
-	}
-
 	onInit() {
 		this.label = this.label || 'label';
 		this.disabled = this.disabled || false;
 		this.accept = this.accept || 'image/png, image/jpeg';
-		this.previews = [];
 		this.languages = environment.languages;
 		this.currentLanguage = environment.defaultLanguage;
 		const { node } = getContext(this);
@@ -44,15 +33,7 @@ export default class ControlLocalizedAssetComponent extends ControlComponent {
 		).subscribe();
 		DropService.change$(input).pipe(
 			switchMap((files) => {
-				// this.previews.length = files.length;
-				// this.previews.fill(null);
-				this.previews = files.map(() => null);
-				const uploads$ = files.map((file, i) => DropService.read$(file, i).pipe(
-					tap((resized) => {
-						this.previews[i] = resized;
-						this.pushChanges();
-					}),
-					switchMap(() => AssetService.upload$([file])),
+				const uploads$ = files.map((file, i) => AssetService.upload$([file]).pipe(
 					switchMap((uploads) => (this.languages.length > 1 ? AssetService.createOrUpdateLocalizedAsset$ : AssetService.createOrUpdateAsset$)(uploads, this.control, this.currentLanguage)),
 				));
 				return combineLatest(uploads$);
