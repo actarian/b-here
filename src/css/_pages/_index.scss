@@ -10,6 +10,7 @@
 	@include aspect-clip(4, 3);
 	width: auto;
 	border-radius: 6px 6px 0 0;
+	display: none;
 
 	&>.video {
 		top: -1px;
@@ -37,6 +38,10 @@
 			opacity: 0;
 			transform: scale(1, 0);
 		}
+	}
+
+	&.ready {
+		display: flex;
 	}
 }
 

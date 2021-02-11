@@ -50,6 +50,11 @@
 		bhere_enter: 'Entra',
 		bhere_connecting: 'In connessione...',
 		bhere_ar: 'Inquadra il qrcode con il cellulare o il tablet per vedere il VR.',
+		bhere_checklist_busy: 'Verifica sistema', // 'Checking system',
+		bhere_checklist_success: 'Verifica completata', // 'Checking system',
+		bhere_checklist_error: 'Verifica fallita', // 'Checking system',
+		bhere_browser_error: 'clicca qui per aggiornare il browser', // 'click here to upgrade your browser',
+		bhere_https_error: 'clicca qui per ricaricare la pagina in https', // 'click here to reload in https',
 	};
 </script>
 <style>
@@ -76,12 +81,36 @@
 		<img [src]="env.background.image" *if="env.background.image" />
 		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
-	<!--
-	<div class="background background--image background--video">
-		<img src="/b-here/img/background.jpg" />
-		<video src="/b-here/img/background.mp4" oncanplay="this.muted = true;" playsinline autoplay muted loop></video>
+	<!-- Status Checklist -->
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'checklist'" [agora-checklist] (checked)="onChecked($event)">
+		<a [href]="editorLink" class="btn--absolute" *if="flags.editor && !heroku && state.role == 'publisher'">
+			<span [innerHTML]="'bhere_editor' | label"></span>
+		</a>
+		<div class="group--info">
+			<div class="group--info__content stagger--childs">
+				<div class="title" *if="busy" [innerHTML]="'bhere_checklist_busy' | label"></div>
+				<div class="title" *if="checklist.success" [innerHTML]="'bhere_checklist_success' | label"></div>
+				<div class="title" *if="checklist.error" [innerHTML]="'bhere_checklist_error' | label"></div>
+				<ul class="group--checklist stagger--childs">
+					<li class="checklist__item check"><span>Browser</span> <span agora-check [value]="checklist.browser"></span></li>
+					<li class="checklist__item error" *if="errors.browser"><a class="btn--link" href="https://browsehappy.com/" target="_blank" rel="noopener" [innerHTML]="errors.browser"></a></li>
+					<li class="checklist__item check"><span>Https</span> <span agora-check [value]="checklist.https"></span></li>
+					<li class="checklist__item error" *if="errors.https"><a class="btn--link" (click)="openHttps()" [innerHTML]="errors.https"></a></li>
+					<li class="checklist__item check" *if="shouldCheckDevices"><span>Audio</span> <span agora-check [value]="checklist.audio"></span></li>
+					<li class="checklist__item error" *if="errors.audio"><span [innerHTML]="errors.audio"></span></li>
+					<li class="checklist__item check" *if="shouldCheckDevices"><span>Video</span> <span agora-check [value]="checklist.video"></span></li>
+					<li class="checklist__item error" *if="errors.video"><span [innerHTML]="errors.video"></span></li>
+					<li class="checklist__item check"><span>Realtime Communication</span> <span agora-check [value]="checklist.rtc"></span></li>
+					<li class="checklist__item error" *if="errors.rtc"><span [innerHTML]="errors.rtc"></span></li>
+					<li class="checklist__item check"><span>Realtime Messaging</span> <span agora-check [value]="checklist.rtm"></span></li>
+					<li class="checklist__item error" *if="errors.rtm"><span [innerHTML]="errors.rtm"></span></li>
+				</ul>
+				<button type="submit" class="btn--next" [class]="{ disabled: !checklist.success }" (click)="onNext()">
+					<span [innerHTML]="'bhere_proceed' | label"></span>
+				</button>
+			</div>
+		</div>
 	</div>
-	-->
 	<!-- Status Link -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<a [href]="editorLink" class="btn--absolute" *if="flags.editor && !heroku && state.role == 'publisher'">
@@ -238,7 +267,7 @@
 								<div class="panel__title" [innerHTML]="item.title"></div>
 								<div class="panel__abstract" [innerHTML]="item.abstract"></div>
 								<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-								<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
+								<a class="panel__link" [href]="item.link.href" target="_blank" rel="noopener" *if="item.link" [innerHTML]="item.link.title"></a>
 							</div>
 						</div>
 					</div>

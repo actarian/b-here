@@ -269,7 +269,7 @@ UpdateViewItemComponent.meta = {
 				<div control-text [control]="controls.title" label="Title"></div>
 				<div control-textarea [control]="controls.abstract" label="Abstract"></div>
 				<div control-custom-select [control]="controls.viewId" label="NavToView"></div>
-				<!-- <div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div> -->
+				<div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div>
 				<div control-vector [control]="controls.position" label="Position" [precision]="3"></div>
 				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
 				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>

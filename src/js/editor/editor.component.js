@@ -81,7 +81,11 @@ export default class EditorComponent extends Component {
 			this.hosted = state.hosted;
 			this.pushChanges();
 		});
-		this.loadView();
+		this.viewObserver$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(view => {
+			// console.log('EditorComponent.viewObserver$', view);
+		});
 		StreamService.mode = StreamServiceMode.Editor;
 		// this.getUserMedia();
 	}
@@ -126,14 +130,13 @@ export default class EditorComponent extends Component {
 	}
 	*/
 
-	loadView() {
-		EditorService.data$().pipe(
+	viewObserver$() {
+		return EditorService.data$().pipe(
 			switchMap(data => {
 				this.data = data;
 				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 				return ViewService.editorView$(data);
 			}),
-			takeUntil(this.unsubscribe$),
 			tap(view => {
 				this.view = null;
 				this.pushChanges();
@@ -143,15 +146,15 @@ export default class EditorComponent extends Component {
 				this.view = view;
 				this.pushChanges();
 			}),
-		).subscribe(view => {
-			// console.log('EditorComponent.view$', view);
-		});
+		);
 	}
 
-	onNavTo(viewId) {
+	onNavTo(navItem) {
+		// console.log('EditorComponent.onNavTo', navItem);
+		const viewId = navItem.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
-			ViewService.viewId = viewId;
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
 		}
 	}
 

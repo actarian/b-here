@@ -602,7 +602,7 @@ button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   .nav--dropdown > li > span:focus, .nav--editor > li:focus {
     outline: 0; }
 
-.nav--editor, [control-localized-asset] .nav--languages, .nav--dropdown, .nav--tab {
+.nav--editor, [control-localized-asset] .nav--languages, .nav--dropdown, .group--checklist, .nav--tab {
   list-style: none;
   padding: 0;
   margin: 0; }
@@ -4746,6 +4746,90 @@ body {
       visibility: hidden;
       pointer-events: none; } }
 
+.group--checklist {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 40px 0;
+  padding: 0 20px; }
+  .group--checklist > .checklist__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; }
+    .group--checklist > .checklist__item.check {
+      padding: 0 0 6px 0;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #ddd;
+      color: var(--foreground); }
+    .group--checklist > .checklist__item.error {
+      margin: -7px -10px 10px;
+      padding: 2px 10px;
+      font-size: 13px;
+      border: 1px solid #fde5e5;
+      background: #fff5f5;
+      color: #c13e32;
+      box-shadow: 0 10px 10px -5px rgba(255, 0, 0, 0.15); }
+
+.checkmark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 5px;
+  stroke: white;
+  stroke-miterlimit: 10;
+  margin: 10% auto; }
+  .checkmark.idle {
+    box-shadow: inset 0px 0px 0px #eeeeee;
+    animation: check-idle .4s ease-in-out .4s forwards, check-scale .3s ease-in-out .9s both; }
+    .checkmark.idle > .checkmark__circle {
+      stroke: #eeeeee; }
+  .checkmark.success {
+    box-shadow: inset 0px 0px 0px #00C851;
+    animation: check-success .4s ease-in-out .4s forwards, check-scale .3s ease-in-out .9s both; }
+    .checkmark.success > .checkmark__circle {
+      stroke: #00C851; }
+  .checkmark.error {
+    box-shadow: inset 0px 0px 0px #ff4444;
+    animation: check-error .4s ease-in-out .4s forwards, check-scale .3s ease-in-out .9s both; }
+    .checkmark.error > .checkmark__circle {
+      stroke: #ff4444; }
+
+.checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 5px;
+  stroke-miterlimit: 10;
+  animation: check-stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+
+.checkmark__icon {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: check-stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.9s forwards; }
+
+@keyframes check-idle {
+  100% {
+    box-shadow: inset 0px 0px 0px 18px #eeeeee; } }
+
+@keyframes check-success {
+  100% {
+    box-shadow: inset 0px 0px 0px 18px #00C851; } }
+
+@keyframes check-error {
+  100% {
+    box-shadow: inset 0px 0px 0px 18px #ff4444; } }
+
+@keyframes check-scale {
+  0%,
+  100% {
+    transform: none; }
+  50% {
+    transform: scale3d(1.1, 1.1, 1); } }
+
+@keyframes check-stroke {
+  100% {
+    stroke-dashoffset: 0; } }
+
 .ui {
   position: relative;
   display: flex;
@@ -5041,7 +5125,8 @@ model-viewer {
   padding-top: 75%;
   overflow: hidden;
   width: auto;
-  border-radius: 6px 6px 0 0; }
+  border-radius: 6px 6px 0 0;
+  display: none; }
   .agora-device-preview > img,
   .agora-device-preview > svg,
   .agora-device-preview > video,
@@ -5076,6 +5161,8 @@ model-viewer {
       background: white;
       opacity: 0;
       transform: scale(1, 0); }
+  .agora-device-preview.ready {
+    display: flex; }
 
 .agora-stream {
   position: relative; }

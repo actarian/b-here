@@ -9,7 +9,7 @@ import AgoraService from './agora.service';
 export default class AgoraDeviceComponent extends Component {
 
 	get hasPreview() {
-		return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset;
+		return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset; // && this.form && this.form.value.video;
 	}
 
 	onInit() {

@@ -42,7 +42,7 @@ export default class NavModalComponent extends Component {
 			title: null,
 			abstract: null,
 			viewId: new FormControl(null, RequiredValidator()),
-			// keepOrientation: false,
+			keepOrientation: false,
 			position: this.position.toArray(),
 			asset: null,
 			link: new FormGroup({

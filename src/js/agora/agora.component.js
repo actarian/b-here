@@ -3,6 +3,7 @@ import { first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
+import LocalStorageService from '../local-storage/local-storage.service';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import ModalService from '../modal/modal.service';
@@ -84,7 +85,9 @@ export default class AgoraComponent extends Component {
 	setNextStatus() {
 		let status = AgoraStatus.Idle;
 		const state = StateService.state;
-		if (!state.link) {
+		if (!state.checklist) {
+			status = AgoraStatus.Checklist;
+		} else if (!state.link) {
 			status = AgoraStatus.Link;
 		} else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
 			status = AgoraStatus.Login;
@@ -107,12 +110,14 @@ export default class AgoraComponent extends Component {
 			user = { type: role };
 		}
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
+		const checklist = LocalStorageService.get('checklist') || null;
 		const hosted = role === RoleType.Publisher ? true : false;
 		const live = (DEBUG || role === RoleType.SelfService) ? false : true;
 		const state = {
 			user: user,
 			role: role,
 			name: name,
+			checklist: checklist,
 			link: link,
 			channelName: environment.channelName,
 			uid: null,
@@ -136,18 +141,21 @@ export default class AgoraComponent extends Component {
 			this.pushChanges();
 			// console.log(state);
 		});
-		this.loadView();
+		this.initAgora();
+		this.viewObserver$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(view => {
+			// console.log('AgoraComponent.viewObserver$', view);
+		});
 	}
 
-	loadView() {
-		this.initAgora();
-		ViewService.data$().pipe(
+	viewObserver$() {
+		return ViewService.data$().pipe(
 			switchMap(data => {
 				this.data = data;
 				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 				return ViewService.hostedView$(data);
 			}),
-			takeUntil(this.unsubscribe$),
 			/*
 			tap(view => {
 				this.view = null;
@@ -156,15 +164,14 @@ export default class AgoraComponent extends Component {
 			delay(1),
 			*/
 			tap(view => {
+				// !!! move navToView to user action?
 				if (this.agora) {
 					this.agora.navToView(view.id);
 				}
 				this.view = view;
 				this.pushChanges();
 			}),
-		).subscribe(view => {
-			console.log('AgoraComponent.hostedView$', view);
-		});
+		);
 	}
 
 	initAgora() {
@@ -239,18 +246,7 @@ export default class AgoraComponent extends Component {
 					break;
 				*/
 				case MessageType.NavToView:
-					if (message.viewId) {
-						if (ViewService.viewId !== message.viewId) {
-							ViewService.viewId = message.viewId;
-							if (message.gridIndex !== undefined) {
-								const view = this.data.views.find(x => x.id === message.viewId);
-								if (view instanceof PanoramaGridView) {
-									view.index = message.gridIndex;
-								}
-							}
-							// console.log('AgoraComponent.NavToView', message.viewId);
-						}
-					}
+					this.onRemoteNavTo(message);
 					break;
 				case MessageType.AddLike:
 					ViewService.setViewLike$(message).pipe(
@@ -271,6 +267,12 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
+	onChecked(checklist) {
+		// console.log('AgoraComponent.onChecked', checklist);
+		StateService.patchState({ checklist: true });
+		this.setNextStatus();
+	}
+
 	onLink(link) {
 		const role = this.getLinkRole();
 		const user = StateService.state.user;
@@ -286,17 +288,6 @@ export default class AgoraComponent extends Component {
 		} else {
 			StateService.patchState({ link, role, status: AgoraStatus.Name });
 		}
-		/*
-		if (StateService.state.name) {
-			if (StateService.state.role === RoleType.Viewer) {
-				this.connect();
-			} else {
-				StateService.patchState({ link, status: AgoraStatus.Device });
-			}
-		} else {
-			StateService.patchState({ link, status: AgoraStatus.Name });
-		}
-		*/
 	}
 
 	onLogin(user) {
@@ -358,8 +349,27 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	onNavTo(viewId) {
-		ViewService.viewId = viewId;
+	onNavTo(navItem) {
+		const viewId = navItem.viewId;
+		const view = this.data.views.find(x => x.id === viewId);
+		if (view) {
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
+		}
+	}
+
+	onRemoteNavTo(message) {
+		const viewId = message.viewId;
+		const gridIndex = message.gridIndex;
+		if (viewId && ViewService.viewId !== viewId) {
+			const view = this.data.views.find(x => x.id === viewId);
+			if (view) {
+				ViewService.action = { viewId, keepOrientation: message.keepOrientation };
+				if (gridIndex != null && view instanceof PanoramaGridView) {
+					view.index = gridIndex;
+				}
+			}
+			// console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
+		}
 	}
 
 	/*

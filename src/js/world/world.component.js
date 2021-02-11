@@ -275,7 +275,7 @@ export default class WorldComponent extends Component {
 					this.orbit.setOrientation(message.orientation);
 					this.orbit.zoom = message.zoom;
 					this.camera.updateProjectionMatrix();
-				} else {
+				} else if (!view.keepOrientation) {
 					this.orbit.setOrientation(view.orientation);
 					this.orbit.zoom = view.zoom;
 					this.camera.updateProjectionMatrix();
@@ -823,7 +823,7 @@ export default class WorldComponent extends Component {
 	onMenuNav(event) {
 		// console.log('WorldComponent.onMenuNav', event.id, event);
 		this.menu = undefined;
-		this.navTo.next(event.id);
+		this.navTo.next({ viewId: event.id });
 	}
 
 	onMenuToggle(event) {
@@ -870,7 +870,7 @@ export default class WorldComponent extends Component {
 			this.resizeItem = event;
 			this.select.next(event);
 		} else {
-			this.navTo.next(event.item.viewId);
+			this.navTo.next(event.item);
 		}
 	}
 

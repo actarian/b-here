@@ -104,7 +104,7 @@
 							<div class="panel__title" [innerHTML]="item.title"></div>
 							<div class="panel__abstract" [innerHTML]="item.abstract"></div>
 							<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-							<a class="panel__link" [href]="item.link.href" target="_blank" *if="item.link" [innerHTML]="item.link.title"></a>
+							<a class="panel__link" [href]="item.link.href" target="_blank" rel="noopener" *if="item.link" [innerHTML]="item.link.title"></a>
 						</div>
 						</div>
 					</div>
