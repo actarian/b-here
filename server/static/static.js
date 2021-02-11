@@ -31,13 +31,13 @@ const MIME_CONTENT_TYPES = {
 	"mid": "audio/midi audio/x-midi", // Musical Instrument Digital Interface (MIDI)
 	"midi": "audio/midi audio/x-midi", // Musical Instrument Digital Interface (MIDI)
 	"mp3": "audio/mpeg", // MP3 audio
-	"mp4": "audio/mp4", // MP4 video
 	"oga": "audio/ogg", // OGG audio
 	"opus": "audio/opus", // Opus audio
 	"wav": "audio/wav", // Waveform Audio Format
 	"weba": "audio/webm", // WEBM audio
 	"avi": "video/x-msvideo", // AVI: Audio Video Interleave
 	"mpeg": "video/mpeg", // MPEG Video
+	"mp4": "video/mp4", // MP4 video
 	"ogv": "video/ogg", // OGG video
 	"ts": "video/mp2t", // MPEG transport stream
 	"webm": "video/webm", // WEBM video
@@ -142,6 +142,11 @@ function staticMiddleware(vars) {
 				console.log('NodeJs.staticMiddleware.serving', file);
 				response.set('Content-Length', data.length);
 				response.set('Content-Type', MIME_CONTENT_TYPES[extension]);
+				/*
+				response.set('Cache-Control', 'public,max-age=14400,public');
+				response.set('Accept-Ranges', 'bytes');
+				response.set('Age', '11155');
+				*/
 				// response.set('Cache-Control', 'max-age=31536000');
 				response.send(data);
 			});

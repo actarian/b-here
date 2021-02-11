@@ -95,6 +95,7 @@ export function getStreamQuality(state) {
 
 export const AgoraStatus = {
 	Idle: 'idle',
+	Checklist: 'checklist',
 	Link: 'link',
 	Login: 'login',
 	Name: 'name',

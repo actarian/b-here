@@ -64,5 +64,4 @@ export default class LocalStorageService {
 		this.supported = supported;
 		return supported;
 	}
-
 }

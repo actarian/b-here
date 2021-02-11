@@ -103,6 +103,36 @@ export default class AgoraService extends Emittable {
 		inputs.audios = defaultAudios.slice();
 		return from(new Promise((resolve, reject) => {
 			const getDevices = () => {
+				AgoraService.getDevices().then((devices) => {
+					// console.log('AgoraRTC.getDevices', devices);
+					tempStream.close();
+					for (let i = 0; i < devices.length; i++) {
+						const device = devices[i];
+						// console.log('device', device.deviceId);
+						if (device.kind === 'videoinput' && device.deviceId) {
+							inputs.videos.push({
+								label: device.label || 'camera-' + inputs.videos.length,
+								deviceId: device.deviceId,
+								kind: device.kind
+							});
+						}
+						if (device.kind === 'audioinput' && device.deviceId) {
+							inputs.audios.push({
+								label: device.label || 'microphone-' + inputs.audios.length,
+								deviceId: device.deviceId,
+								kind: device.kind
+							});
+						}
+					}
+					if (inputs.videos.length > 0 || inputs.audios.length > 0) {
+						resolve(inputs);
+					} else {
+						reject(inputs);
+					}
+				}).catch((error) => {
+					reject(error);
+				});
+				/*
 				AgoraRTC.getDevices((devices) => {
 					// console.log('AgoraRTC.getDevices', devices);
 					tempStream.close();
@@ -130,6 +160,7 @@ export default class AgoraService extends Emittable {
 						reject(inputs);
 					}
 				});
+				*/
 			};
 			const tempStream = AgoraRTC.createStream({ audio: true, video: true });
 			tempStream.init(() => {
@@ -152,7 +183,7 @@ export default class AgoraService extends Emittable {
 			setTimeout(() => {
 				this.createClient(() => {
 					const channelNameLink = this.getChannelNameLink();
-					this.rtcToken$(channelNameLink).subscribe(token => {
+					AgoraService.rtcToken$(channelNameLink).subscribe(token => {
 						// console.log('AgoraService.rtcToken$', token);
 						this.join(token.token, channelNameLink);
 					});
@@ -185,22 +216,6 @@ export default class AgoraService extends Emittable {
 			this.membersCountSubscription.unsubscribe();
 			this.membersCountSubscription = null;
 			StateService.patchState({ membersCount: 0 });
-		}
-	}
-
-	rtcToken$(channelNameLink) {
-		if (environment.flags.useToken) {
-			return HttpService.post$('/api/token/rtc', { channelName: channelNameLink, uid: null });
-		} else {
-			return of({ token: null });
-		}
-	}
-
-	rtmToken$(uid) {
-		if (environment.flags.useToken) {
-			return HttpService.post$('/api/token/rtm', { uid: uid });
-		} else {
-			return of({ token: null });
 		}
 	}
 
@@ -291,7 +306,7 @@ export default class AgoraService extends Emittable {
 			// console.log('AgoraService.join', uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });
 			if (USE_RTM) {
-				this.rtmToken$(uid).subscribe(token => {
+				AgoraService.rtmToken$(uid).subscribe(token => {
 					// console.log('AgoraService.rtmToken$', token);
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
@@ -313,7 +328,7 @@ export default class AgoraService extends Emittable {
 		}, (error) => {
 			console.log('AgoraService.join.error', error);
 			if (error === 'DYNAMIC_KEY_EXPIRED') {
-				this.rtcToken$(channelNameLink).subscribe(token => {
+				AgoraService.rtcToken$(channelNameLink).subscribe(token => {
 					this.join(token.token, channelNameLink);
 				});
 			}
@@ -340,7 +355,7 @@ export default class AgoraService extends Emittable {
 	}
 
 	detectDevices(next) {
-		AgoraRTC.getDevices((devices) => {
+		AgoraService.getDevices().then((devices) => {
 			const videos = [];
 			const audios = [];
 			for (let i = 0; i < devices.length; i++) {
@@ -361,6 +376,8 @@ export default class AgoraService extends Emittable {
 				}
 			}
 			next({ videos: videos, audios: audios });
+		}).catch((error) => {
+			console.log('AgoraService.detectDevices', error);
 		});
 	}
 
@@ -1150,7 +1167,7 @@ export default class AgoraService extends Emittable {
 		console.log('AgoraService.onTokenPrivilegeWillExpire');
 		const client = this.client;
 		const channelNameLink = this.getChannelNameLink();
-		this.rtcToken$(channelNameLink).subscribe(token => {
+		AgoraService.rtcToken$(channelNameLink).subscribe(token => {
 			if (token.token) {
 				client.renewToken(token.token);
 				console.log('AgoraService.onTokenPrivilegeWillExpire.renewed');
@@ -1162,7 +1179,7 @@ export default class AgoraService extends Emittable {
 		console.log('AgoraService.onTokenPrivilegeDidExpire');
 		const client = this.client;
 		const channelNameLink = this.getChannelNameLink();
-		this.rtcToken$(channelNameLink).subscribe(token => {
+		AgoraService.rtcToken$(channelNameLink).subscribe(token => {
 			if (token.token) {
 				client.renewToken(token.token);
 				console.log('AgoraService.onTokenPrivilegeDidExpire.renewed');
@@ -1182,7 +1199,7 @@ export default class AgoraService extends Emittable {
 			} else {
 				this.createScreenClient(() => {
 					const channelNameLink = this.getChannelNameLink();
-					this.rtcToken$(channelNameLink).subscribe(token => {
+					AgoraService.rtcToken$(channelNameLink).subscribe(token => {
 						// console.log('AgoraService.rtcToken$', token);
 						this.screenJoin(token.token, channelNameLink);
 					});
@@ -1235,7 +1252,7 @@ export default class AgoraService extends Emittable {
 		}, (error) => {
 			console.log('AgoraService.screenJoin.error', error);
 			if (error === 'DYNAMIC_KEY_EXPIRED') {
-				this.rtcToken$(channelNameLink).subscribe(token => {
+				AgoraService.rtcToken$(channelNameLink).subscribe(token => {
 					this.screenJoin(token.token, channelNameLink);
 				});
 			}
@@ -1345,5 +1362,142 @@ export default class AgoraService extends Emittable {
 	onScreenStreamUnpublished(event) {
 		// console.log('AgoraService.onScreenStreamUnpublished');
 		StreamService.screen = null;
+	}
+
+	// tokens
+	static rtcToken$(channelNameLink) {
+		if (environment.flags.useToken) {
+			return HttpService.post$('/api/token/rtc', { channelName: channelNameLink, uid: null });
+		} else {
+			return of({ token: null });
+		}
+	}
+
+	static rtmToken$(uid) {
+		if (environment.flags.useToken) {
+			return HttpService.post$('/api/token/rtm', { uid: uid });
+		} else {
+			return of({ token: null });
+		}
+	}
+
+	// checks
+	static checkRtcConnection() {
+		return new Promise((resolve, reject) => {
+			const client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' });
+			if (environment.flags.useProxy) {
+				client.startProxyServer(3);
+			}
+			client.init(environment.appKey, () => {
+				AgoraService.checkRtcTryJoin(client).then(uid => {
+					resolve(uid);
+				}).catch(error => {
+					reject(error);
+				}).finally(() => {
+					// clear
+					client.leave(() => {
+						if (environment.flags.useProxy) {
+							client.stopProxyServer();
+						}
+					}, () => {});
+				});
+			}, (error) => {
+				reject(error);
+			});
+		});
+	}
+
+	static checkRtcTryJoin(client) {
+		return new Promise((resolve, reject) => {
+			const channelName = 'checkRtcConnection';
+			AgoraService.rtcToken$(channelName).subscribe(token => {
+				client.join(token.token, channelName, null, (uid) => {
+					// this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+					resolve(uid);
+				}, (error) => {
+					if (error === 'DYNAMIC_KEY_EXPIRED') {
+						return AgoraService.checkRtcTryJoin(client);
+					} else {
+						console.log('AgoraService.checkRtcConnection.error', error);
+						reject(error);
+					}
+				});
+			});
+		});
+	}
+
+	static checkRtmConnection(uid) {
+		return new Promise((resolve, reject) => {
+			if (!USE_RTM) {
+				return resolve();
+			}
+			let client = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF });
+			client.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
+			let channel;
+			AgoraService.rtmToken$(uid).subscribe(token => {
+				// console.log('AgoraService.rtmToken$', token);
+				const channelName = 'checkRtcConnection';
+				client.login({ token: token.token, uid: uid.toString() }).then(() => {
+					channel = client.createChannel(channelName);
+					channel.join().then(() => {
+						resolve(uid);
+						channel.leave();
+					}).catch((error) => {
+						reject(error);
+					}).finally(() => {
+						// clear
+						channel.leave().then(() => {
+							channel = null;
+							client.logout().then(() => {
+								client = null;
+							}).catch(() => {});
+						}).catch(() => {});
+					})
+				}).catch((error) => {
+					reject(error);
+				}).finally(() => {
+					// clear
+					if (client) {
+						client.logout().then(() => {
+							client = null;
+						}).catch(() => {});
+					}
+				});
+			});
+		});
+	}
+
+	static getDevices() {
+		return new Promise((resolve, reject) => {
+			let devices_ = AgoraService.devices_;
+			if (devices_) {
+				resolve(devices_);
+			} else {
+				devices_ = AgoraService.devices_ = [];
+				var constraints = {
+					audio: false,
+					video: true,
+				};
+				if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+					navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+						navigator.mediaDevices.enumerateDevices().then((devices) => {
+							stream.getTracks().forEach((track) => {
+								track.stop();
+							});
+							devices.forEach((device) => {
+								devices_.push(device);
+							});
+							resolve(devices_);
+						}).catch((error) => {
+							reject(error);
+						})
+					}).catch((error) => {
+						reject(error);
+					});
+				} else {
+					reject('Media device not available');
+				}
+			}
+		});
 	}
 }

@@ -71,12 +71,6 @@
 		<img [src]="env.background.image" *if="env.background.image" />
 		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
-	<!--
-	<div class="background background--image background--video">
-		<img src="/b-here/img/background.jpg" />
-		<video src="/b-here/img/background.mp4" oncanplay="this.muted = true;" playsinline autoplay muted loop></video>
-	</div>
-	-->
 	<!-- Status Link -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<a [href]="editorLink" class="btn--absolute" *if="flags.editor && !heroku && state.role == 'publisher'">

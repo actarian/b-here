@@ -1,6 +1,8 @@
 import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
 import AccessComponent from './access/access.component';
+import AgoraCheckComponent from './agora/agora-check.component';
+import AgoraChecklistComponent from './agora/agora-checklist.component';
 import AgoraDevicePreviewComponent from './agora/agora-device-preview.component';
 import AgoraDeviceComponent from './agora/agora-device.component';
 import AgoraLinkComponent from './agora/agora-link.component';
@@ -73,6 +75,8 @@ AppModule.meta = {
 	],
 	declarations: [
 		AccessComponent,
+		AgoraCheckComponent,
+		AgoraChecklistComponent,
 		AgoraComponent,
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,

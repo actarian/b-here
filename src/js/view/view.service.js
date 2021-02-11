@@ -8,12 +8,22 @@ import { mapView } from '../view/view';
 
 export default class ViewService {
 
-	static viewId$_ = new BehaviorSubject(null);
+	// action: { viewId:number, keepOrientation:boolean };
+	static action$_ = new BehaviorSubject(null);
+	static set action(action) {
+		this.action$_.next(action);
+	}
+	static get action() {
+		return this.action$_.getValue();
+	}
+
+	// static viewId$_ = new BehaviorSubject(null);
 	static set viewId(viewId) {
-		this.viewId$_.next(viewId);
+		this.action$_.next({ viewId, keepOrientation: false });
 	}
 	static get viewId() {
-		return this.viewId$_.getValue();
+		const action = this.action$_.getValue();
+		return action ? action.viewId : null;
 	}
 
 	static data$() {
@@ -34,11 +44,14 @@ export default class ViewService {
 	static view$(data, editor) {
 		const views = editor ? data.views : data.views.filter(x => x.type.name !== 'waiting-room');
 		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : (views.length ? views[0].id : null);
-		this.viewId$_.next(initialViewId);
-		return this.viewId$_.pipe(
-			distinctUntilChanged(),
-			map(viewId => {
-				const view = data.views.find(view => view.id === viewId);
+		this.action$_.next({ viewId: initialViewId });
+		return this.action$_.pipe(
+			distinctUntilChanged((a, b) => a.viewId === b.viewId),
+			map(action => {
+				const view = data.views.find(view => view.id === action.viewId);
+				if (view) {
+					view.keepOrientation = action.keepOrientation || false;
+				}
 				return view || this.getWaitingRoom(data);
 			}),
 		);
@@ -128,5 +141,4 @@ export default class ViewService {
 			}
 		};
 	}
-
 }

@@ -31,7 +31,7 @@
 		access_phone_number: 'Telefono',
 		access_website: 'Sito Web',
 		access_role: 'Ruolo',
-		access_privacy_disclaimer: 'Ho letto l\'<a href="/it/it/pagineinterne/informativa_sulla_privacy" target="_blank">informativa</a> e do il consenso al trattamento del dato',
+		access_privacy_disclaimer: 'Ho letto l\'<a href="/it/it/pagineinterne/informativa_sulla_privacy" target="_blank" rel="noopener noreferrer">informativa</a> e do il consenso al trattamento del dato',
 		access_take_part: 'partecipa al meeting',
 		access_send: 'Invia',
 		access_sent: 'Inviato!',
@@ -84,12 +84,6 @@
 		<img [src]="env.background.image" *if="env.background.image" />
 		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
-	<!--
-	<div class="background background--image background--video">
-		<img src="/b-here/img/background.jpg" />
-		<video src="/b-here/img/background.mp4" oncanplay="this.muted = true;" playsinline autoplay muted loop></video>
-	</div>
-	-->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'access'">
 		<button type="button" class="btn--absolute" (click)="onLogin($event)">
 			<span [innerHTML]="'access_cta' | label"></span>
