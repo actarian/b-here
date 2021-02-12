@@ -84,6 +84,7 @@
 		<img [src]="env.background.image" *if="env.background.image" />
 		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 	</div>
+	<!-- access -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'access'">
 		<button type="button" class="btn--absolute" (click)="onLogin($event)">
 			<span [innerHTML]="'access_cta' | label"></span>
@@ -91,13 +92,13 @@
 		<div class="group--info">
 			<div class="group--info__content stagger--childs">
 				<div class="title" [innerHTML]="'access_title' | label"></div>
-				<div *if="env.flags.selfService">
+				<div *if="'selfService' | flag">
 					<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 						<span [innerHTML]="'access_tour' | label"></span>
 					</button>
 					<div class="info" [innerHTML]="'access_or' | label"></div>
 				</div>
-				<div *if="env.flags.guidedTourRequest">
+				<div *if="'guidedTourRequest' | flag">
 					<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
 						<span [innerHTML]="'access_guided_tour' | label"></span>
 					</button>
@@ -109,6 +110,7 @@
 			</div>
 		</div>
 	</div>
+	<!-- guided-tour -->
 	<div class="ui ui--info" *if="state.status == 'self-service-tour' || state.status == 'guided-tour'">
 		<div class="group--info">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
@@ -144,6 +146,7 @@
 			</form>
 		</div>
 	</div>
+	<!-- guided-tour success -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'guided-tour-success'">
 		<div class="group--info">
 			<div class="group--info__content stagger--childs">
@@ -156,6 +159,7 @@
 			</div>
 		</div>
 	</div>
+	<!-- login -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'login'">
 		<div class="group--info">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
@@ -182,9 +186,12 @@
 			</form>
 		</div>
 	</div>
-	<div class="btn group--logo" (click)="onBack($event)">
+	<div class="btn--logo" (click)="onBack($event)">
 		<img [src]="env.logo" *if="env.logo" />
 		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
 	</div>
+	<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
+		<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+	</a>
 </div>
 <!-- @@close-->

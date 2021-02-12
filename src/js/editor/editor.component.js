@@ -20,7 +20,6 @@ export default class EditorComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
-		this.flags = environment.flags;
 		this.aside = false;
 		this.settings = false;
 		this.state = {};

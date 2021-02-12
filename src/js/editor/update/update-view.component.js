@@ -14,7 +14,6 @@ export default class UpdateViewComponent extends Component {
 
 	onInit() {
 		this.busy = false;
-		this.flags = environment.flags;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		this.doUpdateForm();

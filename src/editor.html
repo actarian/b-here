@@ -72,7 +72,7 @@
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
-			<div class="btn--menu" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="flags.menu">
+			<div class="btn--menu" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 			</div>
 			<div class="headline" *if="view">

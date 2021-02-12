@@ -2,20 +2,13 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
-import { environment, HEROKU } from '../environment';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 
 export default class AgoraLinkComponent extends Component {
 
-	get heroku() {
-		return HEROKU;
-	}
-
 	onInit() {
-		this.flags = environment.flags;
-		this.editorLink = environment.url.editor;
 		this.state = {};
 		const form = this.form = new FormGroup({
 			link: new FormControl(null, [Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), Validators.RequiredValidator()]),

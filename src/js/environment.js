@@ -111,6 +111,7 @@ const defaultAppOptions = {
 		streamer: true,
 		viewer: true,
 		maxQuality: false,
+		heroku: HEROKU,
 	},
 };
 

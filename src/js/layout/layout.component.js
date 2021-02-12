@@ -1,8 +1,10 @@
 import { Component } from 'rxcomp';
+import { environment } from '../environment';
 
 export default class LayoutComponent extends Component {
 
 	onInit() {
+		this.env = environment;
 		this.state = {
 			status: 'connected',
 			role: 'publisher',

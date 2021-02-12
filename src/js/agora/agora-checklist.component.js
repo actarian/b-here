@@ -1,7 +1,6 @@
 import { Component } from 'rxcomp';
 import { first } from 'rxjs/operators';
 import { DeviceService } from '../device/device.service';
-import { environment, HEROKU } from '../environment';
 import LabelPipe from '../label/label.pipe';
 import LocalStorageService from '../local-storage/local-storage.service';
 import StateService from '../state/state.service';
@@ -12,13 +11,7 @@ const TIMEOUT = 100;
 
 export default class AgoraChecklistComponent extends Component {
 
-	get heroku() {
-		return HEROKU;
-	}
-
 	onInit() {
-		this.flags = environment.flags;
-		this.editorLink = environment.url.editor;
 		this.platform = DeviceService.platform; // !!!
 		this.checklist = {};
 		this.errors = {};
