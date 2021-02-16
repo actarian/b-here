@@ -128,6 +128,9 @@ export default class MediaMesh extends InteractiveMesh {
 	static isAttendeeStream(stream) {
 		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee;
 	}
+	static isSmartDeviceStream(stream) {
+		return stream.clientInfo && stream.clientInfo.role === RoleType.SmartDevice;
+	}
 	static isPublisherScreen(stream) {
 		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid !== stream.getId();
 	}
@@ -142,6 +145,9 @@ export default class MediaMesh extends InteractiveMesh {
 				break;
 			case AssetType.AttendeeStream.name:
 				matcher = this.isAttendeeStream;
+				break;
+			case AssetType.SmartDeviceStream.name:
+				matcher = this.isSmartDeviceStream;
 				break;
 			case AssetType.PublisherScreen.name:
 				matcher = this.isPublisherScreen;

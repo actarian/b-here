@@ -25,6 +25,7 @@
 		bhere_attendee_meeting_id: 'Attendee Meeting ID',
 		bhere_streamer_meeting_id: 'Streamer Meeting ID',
 		bhere_viewer_meeting_id: 'Viewer Meeting ID',
+		bhere_smart_device_meeting_id: 'Smart Device ID',
 		bhere_invalid_meeting_id: 'meeting id non valido',
 		bhere_take_part_meeting: 'partecipa al meeting',
 		bhere_generate_meeting_id: 'Genera un Meeting ID',
@@ -157,6 +158,13 @@
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>
+						<div class="group--form group--form--addon addon" *if="('smartDevice' | flag) && controls.linkSmartDevice.valid && controls.linkSmartDevice.value !== null">
+							<label [innerHTML]="'bhere_smart_device_meeting_id' | label"></label>
+							<input type="text" class="control--text" [formControl]="controls.linkSmartDevice" [placeholder]="'bhere_smart_device_meeting_id' | label" readonly />
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkSmartDevice.value)" *if="controls.linkSmartDevice.valid">
+								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+							</div>
+						</div>
 					</div>
 					<div class="info" *if="controls.link.errors.required" [innerHTML]="'bhere_insert_meeting_id' | label"></div>
 					<div class="info" *if="controls.link.errors.pattern" [innerHTML]="'bhere_invalid_meeting_id' | label"></div>
@@ -248,7 +256,7 @@
 		</div>
 	</div>
 	<!-- Status Connected -->
-	<div class="ui" [class]="state.role" *if="state.status == 'connected'">
+	<div class="ui" [class]="state.role" *if="state.status == 'connected' && state.has3D">
 		<div class="ui__body">
 			<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)">
 				<div class="world__view" *if="view">
@@ -303,7 +311,7 @@
 					</button>
 				</div>
 			</div>
-			<div class="group--last">
+			<div class="group--members">
 				<div class="members">
 					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 					<span class="members__count" [innerHTML]="state.membersCount"></span>
@@ -373,6 +381,59 @@
 		</div>
 		<!-- lock -->
 		<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
+	</div>
+	<!-- Status SmartDevice -->
+	<div class="ui" [class]="state.role" *if="state.status == 'connected' && !state.has3D">
+		<div class="ui__body">
+		</div>
+		<!-- remote sidebar -->
+		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
+				<div class="agora-stream__player"></div>
+				<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
+					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
+					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+					<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>
+					<button type="button" class="btn--spy" (click)="onToggleSpy(stream.clientInfo.uid)" *if="state.role === 'publisher' && stream.clientInfo">
+						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- local streams -->
+		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
+			<div class="agora-stream" agora-stream [stream]="local" *if="local">
+				<div class="agora-stream__player"></div>
+				<div class="agora-stream__info">
+					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
+					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+				</div>
+			</div>
+		</div>
+		<!-- controls -->
+		<div class="group--controls" *if="state.live">
+			<button type="button" class="btn--call" (click)="disconnect()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
+			</button>
+			<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
+			</button>
+			<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
+			</button>
+		</div>
+		<!-- members -->
+		<div class="group--members">
+			<div class="members">
+				<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+				<span class="members__count" [innerHTML]="state.membersCount"></span>
+			</div>
+			<div class="credits">
+				<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+					<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+				</a>
+			</div>
+		</div>
 	</div>
 	<a class="btn--logo" [href]="'index' | slug" *if="state.status != 'connected'">
 		<img [src]="env.logo" *if="env.logo" />

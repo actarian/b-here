@@ -85,6 +85,9 @@ export default class AgoraComponent extends Component {
 	setNextStatus() {
 		let status = AgoraStatus.Idle;
 		const state = StateService.state;
+		if (state.role === RoleType.SmartDevice) {
+			state.name = state.name || 'Smart Device';
+		}
 		if (!state.checklist) {
 			status = AgoraStatus.Checklist;
 		} else if (!state.link) {
@@ -93,7 +96,7 @@ export default class AgoraComponent extends Component {
 			status = AgoraStatus.Login;
 		} else if (!state.name) {
 			status = AgoraStatus.Name;
-		} else if (state.role !== RoleType.Viewer) {
+		} else if (state.role !== RoleType.Viewer && state.role !== RoleType.SmartDevice) {
 			status = AgoraStatus.Device;
 		} else {
 			status = AgoraStatus.ShouldConnect;
@@ -103,12 +106,14 @@ export default class AgoraComponent extends Component {
 	}
 
 	initWithUser(user) {
+		console.log('initWithUser', user);
 		const link = LocationService.get('link') || null;
 		const role = this.getLinkRole() || (user ? user.type : null);
 		user = user || { type: role };
 		if (role !== user.type) {
 			user = { type: role };
 		}
+		const has3D = role !== RoleType.SmartDevice;
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
 		const checklist = LocalStorageService.get('checklist') || null;
 		const hosted = role === RoleType.Publisher ? true : false;
@@ -116,6 +121,7 @@ export default class AgoraComponent extends Component {
 		const state = {
 			user: user,
 			role: role,
+			has3D: has3D,
 			name: name,
 			checklist: checklist,
 			link: link,
@@ -275,18 +281,19 @@ export default class AgoraComponent extends Component {
 
 	onLink(link) {
 		const role = this.getLinkRole();
+		const has3D = role !== RoleType.SmartDevice;
 		const user = StateService.state.user;
 		if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
-			StateService.patchState({ link, role, status: AgoraStatus.Login });
+			StateService.patchState({ link, role, has3D, status: AgoraStatus.Login });
 		} else if (StateService.state.name) {
-			if (role === RoleType.Viewer) {
-				StateService.patchState({ link, role });
+			if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
+				StateService.patchState({ link, role, has3D });
 				this.connect();
 			} else {
-				StateService.patchState({ link, role, status: AgoraStatus.Device });
+				StateService.patchState({ link, role, has3D, status: AgoraStatus.Device });
 			}
 		} else {
-			StateService.patchState({ link, role, status: AgoraStatus.Name });
+			StateService.patchState({ link, role, has3D, status: AgoraStatus.Name });
 		}
 	}
 
@@ -300,7 +307,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onName(name) {
-		if (StateService.state.role === RoleType.Viewer) {
+		if (StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SmartDevice) {
 			StateService.patchState({ name });
 			this.connect();
 		} else {

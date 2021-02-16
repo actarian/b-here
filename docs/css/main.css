@@ -4662,7 +4662,7 @@ body {
   background: black;
   flex-shrink: 0; }
 
-.group--remote .group--last {
+.group--members {
   position: absolute;
   width: 120px;
   height: 90px;
@@ -4671,68 +4671,28 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column; }
-
-@media (min-width: 768px) {
-  .group--remote {
-    position: absolute;
+  .group--members .members {
     display: flex;
-    background: var(--background-negative); } }
-  @media (min-width: 768px) and (orientation: landscape) {
-    .group--remote {
-      flex-direction: column;
-      justify-content: flex-start;
-      top: 0;
-      left: 0;
-      width: 120px;
-      height: 100%;
-      flex: 1 1 120px; }
-      .group--remote .group--last {
-        width: 100%;
-        bottom: 0; } }
-  @media (min-width: 768px) and (orientation: portrait) {
-    .group--remote {
-      flex-direction: row;
-      justify-content: flex-start;
-      bottom: -90px;
-      left: 0;
-      width: 100%;
-      height: 90px;
-      flex: 1 1 100%; }
-      .group--remote .group--last {
-        right: 0;
-        height: 100%; } }
-
-@media (max-width: 767.98px) {
-  .group--remote {
-    position: absolute;
-    top: 0;
-    left: 0; }
-    .group--remote .group--last {
-      display: none; } }
-
-.group--last .members {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  line-height: 1;
-  color: var(--foreground-negative); }
-  .group--last .members svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor; }
-  .group--last .members__count {
-    margin-left: 7px;
-    padding: 3px 5px;
-    min-width: 20px;
-    text-align: center;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1); }
-
-.group--last .credits {
-  display: flex;
-  justify-content: center;
-  align-items: center; }
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--foreground-negative); }
+    .group--members .members svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor; }
+    .group--members .members__count {
+      margin-left: 7px;
+      padding: 3px 5px;
+      min-width: 20px;
+      text-align: center;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1); }
+  .group--members .credits {
+    display: flex;
+    justify-content: center;
+    align-items: center; }
 
 .group--local {
   position: absolute;
@@ -4859,18 +4819,135 @@ body {
   -webkit-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+  @media (min-width: 768px) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      position: absolute;
+      display: flex;
+      background: var(--background-negative); } }
+  @media (min-width: 768px) and (orientation: landscape) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      flex-direction: column;
+      justify-content: flex-start;
+      top: 0;
+      left: -120px;
+      width: 120px;
+      height: 100%;
+      flex: 1 1 120px; }
+      .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
+        width: 120px;
+        bottom: 0; } }
+  @media (min-width: 768px) and (orientation: portrait) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      flex-direction: row;
+      justify-content: flex-start;
+      bottom: -90px;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      flex: 1 1 100%; }
+      .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
+        right: 0;
+        height: 100%; } }
+  @media (max-width: 767.98px) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      position: absolute;
+      top: 0;
+      left: 0; }
+      .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
+        display: none; } }
 
 @media (min-width: 768px) and (orientation: landscape) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     width: calc(100% - 120px);
     margin-left: 120px; }
-    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+    .ui.publisher .group--members, .ui.attendee .group--members, .ui.streamer .group--members, .ui.viewer .group--members {
       left: -120px; } }
 
 @media (min-width: 768px) and (orientation: portrait) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     height: calc(100% - 90px);
     margin-bottom: 90px; } }
+  .ui.smart-device .group--remote {
+    position: absolute;
+    display: flex;
+    background: var(--background-negative);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    /*
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			*/
+    top: 0;
+    left: 0;
+    flex: 0 0 auto; }
+    .ui.smart-device .group--remote .agora-stream {
+      height: auto; }
+      .ui.smart-device .group--remote .agora-stream .agora-stream__player {
+        position: relative;
+        width: 100%;
+        padding-top: 75%;
+        overflow: hidden; }
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > img,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > svg,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > video,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > canvas,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > .video,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover; }
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > div {
+          position: absolute !important;
+          top: 0;
+          left: 0; }
+    @media screen and (min-width: 1024px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 25%;
+        width: 25%; }
+        .ui.smart-device .group--remote .agora-stream:nth-child(1), .ui.smart-device .group--remote .agora-stream:nth-child(2), .ui.smart-device .group--remote .agora-stream:nth-child(3) {
+          flex: 0 1 33.3333%;
+          width: 33.3333%; } }
+    @media screen and (min-width: 1440px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 33.3333%;
+        width: 33.3333%; }
+        .ui.smart-device .group--remote .agora-stream:nth-child(1), .ui.smart-device .group--remote .agora-stream:nth-child(2), .ui.smart-device .group--remote .agora-stream:nth-child(3) {
+          flex: 0 1 50%;
+          width: 50%; } }
+    @media screen and (min-width: 1600px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 20%;
+        width: 20%; }
+        .ui.smart-device .group--remote .agora-stream:nth-child(1), .ui.smart-device .group--remote .agora-stream:nth-child(2), .ui.smart-device .group--remote .agora-stream:nth-child(3), .ui.smart-device .group--remote .agora-stream:nth-child(4) {
+          flex: 0 1 25%;
+          width: 25%; } }
+    @media screen and (max-width: 1023px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 33.3333%;
+        width: 33.3333%; } }
+    @media screen and (max-width: 767px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 50%;
+        width: 50%; } }
+    @media screen and (max-width: 374px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 100%;
+        width: 100%; } }
+  .ui.smart-device .group--local {
+    display: none; }
+  .ui.smart-device .group--members {
+    width: 120px;
+    height: 90px;
+    bottom: 0;
+    right: 0; }
   .ui.self-service .group--remote {
     display: none; }
   .ui.publisher .group--local .agora-stream {

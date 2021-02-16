@@ -1,22 +1,26 @@
 import { Component } from 'rxcomp';
 import { environment } from '../environment';
+import LocationService from '../location/location.service';
+import { RoleType } from '../user/user';
 
 export default class LayoutComponent extends Component {
 
 	onInit() {
 		this.env = environment;
 		this.state = {
-			status: 'connected',
-			role: 'publisher',
+			status: LocationService.get('status') || 'connected',
+			role: LocationService.get('role') || 'publisher',
 			membersCount: 1,
 			live: true,
 		};
+		this.state.has3D = this.state.role !== RoleType.SmartDevice;
 		this.view = {
 			likes: 41,
 		};
 		this.local = {};
 		this.screen = {};
 		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1, }));
+		console.log('LayoutComponent', this);
 	}
 
 	patchState(state) {

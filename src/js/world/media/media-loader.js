@@ -45,6 +45,10 @@ export default class MediaLoader {
 		return item.asset && item.asset.type.name === AssetType.AttendeeStream.name;
 	}
 
+	static isSmartDeviceStream(item) {
+		return item.asset && item.asset.type.name === AssetType.SmartDeviceStream.name;
+	}
+
 	static isPublisherScreen(item) {
 		return item.asset && item.asset.type.name === AssetType.PublisherScreen.name;
 	}
@@ -67,6 +71,10 @@ export default class MediaLoader {
 
 	get isAttendeeStream() {
 		return MediaLoader.isAttendeeStream(this.item);
+	}
+
+	get isSmartDeviceStream() {
+		return MediaLoader.isSmartDeviceStream(this.item);
 	}
 
 	get isPublisherScreen() {

@@ -204,10 +204,13 @@ export default class AgoraChecklistComponent extends Component {
 		this.checklist.error = !success;
 		this.busy = false;
 		this.pushChanges();
+		if (state.role === RoleType.SmartDevice) {
+			this.onNext();
+		}
 	}
 
 	onNext() {
-		if (this.checklist) {
+		if (this.checklist.success) {
 			LocalStorageService.set('checklist', true);
 		}
 		this.checked.next(this.checklist);

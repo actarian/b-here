@@ -289,72 +289,22 @@
 }
 
 .group--remote {
-
 	.agora-stream {
 		@include ratio(120px, 4 / 3);
 		background: black;
 		flex-shrink: 0;
 	}
-
-	.group--last {
-		position: absolute;
-		width: 120px;
-		height: 90px;
-		padding: 8px 10px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-	}
-
-	@include media-up(sm) {
-		position: absolute;
-		display: flex;
-		background: $background-negative;
-
-		@media (orientation: landscape) {
-			flex-direction: column;
-			justify-content: flex-start;
-			top: 0;
-			left: 0;
-			width: 120px;
-			height: 100%;
-			flex: 1 1 120px;
-
-			.group--last {
-				width: 100%;
-				bottom: 0;
-			}
-		}
-
-		@media (orientation: portrait) {
-			flex-direction: row;
-			justify-content: flex-start;
-			bottom: -90px;
-			left: 0;
-			width: 100%;
-			height: 90px;
-			flex: 1 1 100%;
-
-			.group--last {
-				right: 0;
-				height: 100%;
-			}
-		}
-	}
-
-	@include media-down(xs) {
-		position: absolute;
-		top: 0;
-		left: 0;
-
-		.group--last {
-			display: none;
-		}
-	}
 }
 
-.group--last {
+.group--members {
+	position: absolute;
+	width: 120px;
+	height: 90px;
+	padding: 8px 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 
 	.members {
 		display: flex;

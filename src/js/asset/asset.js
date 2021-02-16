@@ -18,6 +18,7 @@ export const AssetType = {
 	AttendeeStream: { id: 5, name: 'next-attendee-stream', file: 'nextAttendeeStream' }, // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
 	PublisherScreen: { id: 6, name: 'publisher-screen', file: 'publisherScreen' }, // valore fisso di file a ‘publisherScreen’ e folder string.empty
 	AttendeeScreen: { id: 7, name: 'attendee-screen', file: 'attendeeScreen' }, // valore fisso di file a ‘attendeeScreen’ e folder string.empty
+	SmartDeviceStream: { id: 8, name: 'smart-device-stream', file: 'smartDeviceStream' }, // valore fisso di file a smartDeviceStream e folder string.empty
 };
 
 export const AssetGroupType = {
@@ -34,11 +35,14 @@ if (environment.flags.editorAssetScreen) {
 	AssetGroupType.AttendeeScreen = { id: 6, name: 'AttendeeScreen', ids: [7] };
 }
 
+AssetGroupType.SmartDevice = { id: 7, name: 'Smart Device', ids: [8] };
+
 export const STREAM_TYPES = [
 	AssetType.PublisherStream.name,
 	AssetType.AttendeeStream.name,
 	AssetType.PublisherScreen.name,
 	AssetType.AttendeeScreen.name,
+	AssetType.SmartDeviceStream.name,
 ];
 
 export function assetIsStream(asset) {
@@ -78,8 +82,6 @@ export function assetPayloadFromGroupTypeId(groupTypeId) {
 	const groupType = assetGroupTypeById(groupTypeId);
 	const type = assetTypeById(groupType.ids[0]);
 	const file = type.file;
-	// const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.AttendeeStream;
-	// const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
 	const asset = {
 		type: type,
 		folder: '',

@@ -137,6 +137,7 @@ function _readOnlyError(name) {
     attendee: true,
     streamer: true,
     viewer: true,
+    smartDevice: true,
     maxQuality: false
   },
   logo: null,
@@ -209,6 +210,7 @@ function _readOnlyError(name) {
     attendee: true,
     streamer: true,
     viewer: true,
+    smartDevice: true,
     maxQuality: false
   },
   logo: null,
@@ -402,6 +404,7 @@ var defaultAppOptions = {
     attendee: true,
     streamer: true,
     viewer: true,
+    smartDevice: true,
     maxQuality: false,
     heroku: HEROKU
   }
@@ -705,6 +708,7 @@ function patchFields(fields, form) {
   Attendee: 'attendee',
   Streamer: 'streamer',
   Viewer: 'viewer',
+  SmartDevice: 'smart-device',
   SelfService: 'self-service'
 };
 var User = function User(options) {
@@ -1441,8 +1445,17 @@ var StreamService = /*#__PURE__*/function () {
                 uid: 'editor'
               }
             };
+            var fakeSmartDeviceStream = {
+              getId: function getId() {
+                return 'editor';
+              },
+              clientInfo: {
+                role: RoleType.SmartDevice,
+                uid: 'editor'
+              }
+            };
 
-            _this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]); // StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
+            _this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeSmartDeviceStream]); // StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 
           };
 
@@ -1702,7 +1715,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
 
   return streams;
-}), operators.shareReplay(1)));var StreamQualities = [{
+}), operators.shareReplay(1)));var USE_AUTODETECT = false;
+var StreamQualities = [{
   // id: 1,
   // name: '4K 2160p 3840x2160',
   profile: '4K',
@@ -1786,7 +1800,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 function getStreamQuality(state) {
   var lowestQuality = StreamQualities[StreamQualities.length - 1];
   var highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-  return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
+  return state.role === RoleType.Publisher || state.role === RoleType.SmartDevice ? highestQuality : lowestQuality;
 }
 var AgoraStatus = {
   Idle: 'idle',
@@ -1950,7 +1964,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   	if (!name) {
   		return AgoraStatus.Name;
   	}
-  	if (role !== RoleType.Viewer) {
+  	if (role !== RoleType.Viewer && role !== RoleType.SmartDevice) {
   		return AgoraStatus.Device;
   	}
   	return AgoraStatus.ShouldConnect;
@@ -2251,9 +2265,9 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           _this4.joinMessageChannel(token.token, uid).then(function (success) {
             // console.log('joinMessageChannel.success', success);
             if (StateService.state.role !== RoleType.Viewer) {
-              _this4.autoDetectDevice();
-
-              _this4.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+              _this4.autoDetectDevice().then(function (devices) {
+                _this4.createMediaStream(uid, devices.video, devices.audio);
+              });
             }
 
             _this4.observeMemberCount();
@@ -2441,6 +2455,38 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   _proto.autoDetectDevice = function autoDetectDevice() {
+    return new Promise(function (resolve, reject) {
+      var state = StateService.state;
+
+      if (state.role === RoleType.SmartDevice || USE_AUTODETECT) {
+        AgoraService.getDevices().then(function (inputDevices) {
+          var devices = {
+            videos: [],
+            audios: [],
+            video: null,
+            audio: null
+          };
+          inputDevices.forEach(function (x) {
+            if (x.kind === 'videoinput') {
+              devices.videos.push(x);
+            } else if (x.kind === 'audioinput') {
+              devices.audios.push(x);
+            }
+          });
+          console.log(devices);
+          devices.video = devices.videos[0] || null;
+          devices.audio = devices.audios[0] || null;
+          StateService.patchState({
+            devices: devices
+          });
+          resolve(devices);
+        }).catch(function (error) {
+          reject(error);
+        });
+      } else {
+        resolve(state.devices);
+      }
+    });
   };
 
   _proto.createMediaStream = function createMediaStream(uid, video, audio) {
@@ -3609,7 +3655,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       } else {
         devices_ = AgoraService.devices_ = [];
         var constraints = {
-          audio: false,
+          audio: true,
           video: true
         };
 
@@ -3876,10 +3922,14 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
     this.checklist.error = !success;
     this.busy = false;
     this.pushChanges();
+
+    if (state.role === RoleType.SmartDevice) {
+      this.onNext();
+    }
   };
 
   _proto.onNext = function onNext() {
-    if (this.checklist) {
+    if (this.checklist.success) {
       LocalStorageService.set('checklist', true);
     }
 
@@ -4627,7 +4677,8 @@ AgoraDeviceComponent.meta = {
       link: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), rxcompForm.Validators.RequiredValidator()]),
       linkAttendee: null,
       linkStreamer: null,
-      linkViewer: null // link: new FormControl(null),
+      linkViewer: null,
+      linkSmartDevice: null // link: new FormControl(null),
 
     });
     var controls = this.controls = form.controls;
@@ -4650,7 +4701,8 @@ AgoraDeviceComponent.meta = {
       link: this.getRoleMeetingId(timestamp, RoleType.Publisher),
       linkAttendee: this.getRoleMeetingId(timestamp, RoleType.Attendee),
       linkStreamer: this.getRoleMeetingId(timestamp, RoleType.Streamer),
-      linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer)
+      linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer),
+      linkSmartDevice: this.getRoleMeetingId(timestamp, RoleType.SmartDevice)
     });
   };
 
@@ -4676,7 +4728,8 @@ AgoraDeviceComponent.meta = {
           link: _this2.setRoleMeetingId(value, RoleType.Publisher),
           linkAttendee: _this2.setRoleMeetingId(value, RoleType.Attendee),
           linkStreamer: _this2.setRoleMeetingId(value, RoleType.Streamer),
-          linkViewer: _this2.setRoleMeetingId(value, RoleType.Viewer)
+          linkViewer: _this2.setRoleMeetingId(value, RoleType.Viewer),
+          linkSmartDevice: _this2.setRoleMeetingId(value, RoleType.SmartDevice)
         });
       } else {
         _this2.form.get('linkAttendee').reset();
@@ -5401,6 +5454,7 @@ var View = /*#__PURE__*/function () {
     if (items) {
       var publisherStreamIndex = 0;
       var attendeeStreamIndex = 0;
+      var smartDeviceStream = 0;
       var publisherScreenIndex = 0;
       var attendeeScreenIndex = 0;
       items.forEach(function (item, index) {
@@ -5414,6 +5468,10 @@ var View = /*#__PURE__*/function () {
 
             case 'nextAttendeeStream':
               item.asset.index = attendeeStreamIndex++;
+              break;
+
+            case 'smartDeviceStream':
+              item.asset.index = smartDeviceStream++;
               break;
 
             case 'publisherScreen':
@@ -6164,6 +6222,10 @@ var VRService = /*#__PURE__*/function () {
     var status = AgoraStatus.Idle;
     var state = StateService.state;
 
+    if (state.role === RoleType.SmartDevice) {
+      state.name = state.name || 'Smart Device';
+    }
+
     if (!state.checklist) {
       status = AgoraStatus.Checklist;
     } else if (!state.link) {
@@ -6172,7 +6234,7 @@ var VRService = /*#__PURE__*/function () {
       status = AgoraStatus.Login;
     } else if (!state.name) {
       status = AgoraStatus.Name;
-    } else if (state.role !== RoleType.Viewer) {
+    } else if (state.role !== RoleType.Viewer && state.role !== RoleType.SmartDevice) {
       status = AgoraStatus.Device;
     } else {
       status = AgoraStatus.ShouldConnect;
@@ -6187,6 +6249,7 @@ var VRService = /*#__PURE__*/function () {
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
+    console.log('initWithUser', user);
     var link = LocationService.get('link') || null;
     var role = this.getLinkRole() || (user ? user.type : null);
     user = user || {
@@ -6199,6 +6262,7 @@ var VRService = /*#__PURE__*/function () {
       };
     }
 
+    var has3D = role !== RoleType.SmartDevice;
     var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
     var checklist = LocalStorageService.get('checklist') || null;
     var hosted = role === RoleType.Publisher ? true : false;
@@ -6206,6 +6270,7 @@ var VRService = /*#__PURE__*/function () {
     var state = {
       user: user,
       role: role,
+      has3D: has3D,
       name: name,
       checklist: checklist,
       link: link,
@@ -6376,25 +6441,29 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.onLink = function onLink(link) {
     var role = this.getLinkRole();
+    var has3D = role !== RoleType.SmartDevice;
     var user = StateService.state.user;
 
     if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
       StateService.patchState({
         link: link,
         role: role,
+        has3D: has3D,
         status: AgoraStatus.Login
       });
     } else if (StateService.state.name) {
-      if (role === RoleType.Viewer) {
+      if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
         StateService.patchState({
           link: link,
-          role: role
+          role: role,
+          has3D: has3D
         });
         this.connect();
       } else {
         StateService.patchState({
           link: link,
           role: role,
+          has3D: has3D,
           status: AgoraStatus.Device
         });
       }
@@ -6402,6 +6471,7 @@ var VRService = /*#__PURE__*/function () {
       StateService.patchState({
         link: link,
         role: role,
+        has3D: has3D,
         status: AgoraStatus.Name
       });
     }
@@ -6425,7 +6495,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onName = function onName(name) {
-    if (StateService.state.role === RoleType.Viewer) {
+    if (StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SmartDevice) {
       StateService.patchState({
         name: name
       });
@@ -6733,7 +6803,13 @@ var AssetType = {
     id: 7,
     name: 'attendee-screen',
     file: 'attendeeScreen'
-  } // valore fisso di file a ‘attendeeScreen’ e folder string.empty
+  },
+  // valore fisso di file a ‘attendeeScreen’ e folder string.empty
+  SmartDeviceStream: {
+    id: 8,
+    name: 'smart-device-stream',
+    file: 'smartDeviceStream'
+  } // valore fisso di file a smartDeviceStream e folder string.empty
 
 };
 var AssetGroupType = {
@@ -6770,7 +6846,12 @@ if (environment.flags.editorAssetScreen) {
   };
 }
 
-var STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name];
+AssetGroupType.SmartDevice = {
+  id: 7,
+  name: 'Smart Device',
+  ids: [8]
+};
+var STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name, AssetType.SmartDeviceStream.name];
 function assetIsStream(asset) {
   return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
 }
@@ -6803,9 +6884,7 @@ function assetGroupTypeFromItem(item) {
 function assetPayloadFromGroupTypeId(groupTypeId) {
   var groupType = assetGroupTypeById(groupTypeId);
   var type = assetTypeById(groupType.ids[0]);
-  var file = type.file; // const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.AttendeeStream;
-  // const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
-
+  var file = type.file;
   var asset = {
     type: type,
     folder: '',
@@ -6923,6 +7002,7 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
         case AssetType.AttendeeStream.name:
         case AssetType.PublisherScreen.name:
         case AssetType.AttendeeScreen.name:
+        case AssetType.SmartDeviceStream.name:
           asset = environment.getPath(asset.file);
           break;
 
@@ -7747,47 +7827,7 @@ AsideComponent.meta = {
     this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {// console.log('EditorComponent.viewObserver$', view);
     });
     StreamService.mode = StreamServiceMode.Editor; // this.getUserMedia();
-  }
-  /*
-  getUserMedia() {
-  	if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  		const body = document.querySelector('body');
-  		const media = document.createElement('div');
-  		const video = document.createElement('video');
-  		media.setAttribute('id', 'stream-editor');
-  		media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
-  		media.appendChild(video);
-  		body.appendChild(media);
-  		navigator.mediaDevices.getUserMedia({
-  			video: { width: 800, height: 450 },
-  		}).then((stream) => {
-  			// console.log(stream);
-  			if ('srcObject' in video) {
-  				video.srcObject = stream;
-  			} else {
-  				video.src = window.URL.createObjectURL(stream);
-  			}
-  			video.play();
-  			const fakePublisherStream = {
-  				getId: () => 'editor',
-  				clientInfo: {
-  					role: RoleType.Publisher,
-  				}
-  			};
-  			const fakeAttendeeStream = {
-  				getId: () => 'editor',
-  				clientInfo: {
-  					role: RoleType.Attendee,
-  				}
-  			};
-  			StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
-  		}).catch((error) => {
-  			console.log('EditorComponent.getUserMedia.error', error.name, error.message);
-  		});
-  	}
-  }
-  */
-  ;
+  };
 
   _proto.viewObserver$ = function viewObserver$() {
     var _this4 = this;
@@ -10256,7 +10296,7 @@ UpdateViewComponent.meta = {
   inputs: ['view'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && flags.ar\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && ('ar' | flag)\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
@@ -11569,11 +11609,12 @@ IdDirective.meta = {
   _proto.onInit = function onInit() {
     this.env = environment;
     this.state = {
-      status: 'connected',
-      role: 'publisher',
+      status: LocationService.get('status') || 'connected',
+      role: LocationService.get('role') || 'publisher',
       membersCount: 1,
       live: true
     };
+    this.state.has3D = this.state.role !== RoleType.SmartDevice;
     this.view = {
       likes: 41
     };
@@ -11584,6 +11625,7 @@ IdDirective.meta = {
         id: i + 1
       };
     });
+    console.log(this);
   };
 
   _proto.patchState = function patchState(state) {
@@ -13448,6 +13490,10 @@ var MediaLoader = /*#__PURE__*/function () {
     return item.asset && item.asset.type.name === AssetType.AttendeeStream.name;
   };
 
+  MediaLoader.isSmartDeviceStream = function isSmartDeviceStream(item) {
+    return item.asset && item.asset.type.name === AssetType.SmartDeviceStream.name;
+  };
+
   MediaLoader.isPublisherScreen = function isPublisherScreen(item) {
     return item.asset && item.asset.type.name === AssetType.PublisherScreen.name;
   };
@@ -13475,6 +13521,11 @@ var MediaLoader = /*#__PURE__*/function () {
     key: "isAttendeeStream",
     get: function get() {
       return MediaLoader.isAttendeeStream(this.item);
+    }
+  }, {
+    key: "isSmartDeviceStream",
+    get: function get() {
+      return MediaLoader.isSmartDeviceStream(this.item);
     }
   }, {
     key: "isPublisherScreen",
@@ -13780,6 +13831,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee;
   };
 
+  MediaMesh.isSmartDeviceStream = function isSmartDeviceStream(stream) {
+    return stream.clientInfo && stream.clientInfo.role === RoleType.SmartDevice;
+  };
+
   MediaMesh.isPublisherScreen = function isPublisherScreen(stream) {
     return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid !== stream.getId();
   };
@@ -13798,6 +13853,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
       case AssetType.AttendeeStream.name:
         matcher = this.isAttendeeStream;
+        break;
+
+      case AssetType.SmartDeviceStream.name:
+        matcher = this.isSmartDeviceStream;
         break;
 
       case AssetType.PublisherScreen.name:
@@ -14388,7 +14447,8 @@ var orbitMoveEvent = new OrbitMoveEvent();
 var orbitDragEvent = new OrbitDragEvent();
 var orbitResizeEvent = new OrbitResizeEvent();
 var DOLLY_MIN = 15;
-var DOLLY_MAX = 75;
+var DOLLY_MAX = 75; // 115
+
 var ZOOM_MIN = 15;
 var ZOOM_MAX = 75;
 

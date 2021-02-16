@@ -61,7 +61,7 @@ export default class AgoraService extends Emittable {
 		if (!name) {
 			return AgoraStatus.Name;
 		}
-		if (role !== RoleType.Viewer) {
+		if (role !== RoleType.Viewer && role !== RoleType.SmartDevice) {
 			return AgoraStatus.Device;
 		}
 		return AgoraStatus.ShouldConnect;
@@ -311,8 +311,9 @@ export default class AgoraService extends Emittable {
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
 						if (StateService.state.role !== RoleType.Viewer) {
-							this.autoDetectDevice();
-							this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+							this.autoDetectDevice().then(devices => {
+								this.createMediaStream(uid, devices.video, devices.audio);
+							});
 						}
 						this.observeMemberCount();
 					}, error => {
@@ -321,8 +322,9 @@ export default class AgoraService extends Emittable {
 				});
 			} else {
 				if (StateService.state.role !== RoleType.Viewer) {
-					this.autoDetectDevice();
-					this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
+					this.autoDetectDevice().then(devices => {
+						this.createMediaStream(uid, devices.video, devices.audio);
+					});
 				}
 			}
 		}, (error) => {
@@ -486,10 +488,30 @@ export default class AgoraService extends Emittable {
 	}
 
 	autoDetectDevice() {
-		if (USE_AUTODETECT) {
-			StateService.state.devices.video = StateService.state.devices.videos[0] || null;
-			StateService.state.devices.audio = StateService.state.devices.audios[0] || null;
-		}
+		return new Promise((resolve, reject) => {
+			const state = StateService.state;
+			if (state.role === RoleType.SmartDevice || USE_AUTODETECT) {
+				AgoraService.getDevices().then(inputDevices => {
+					const devices = { videos: [], audios: [], video: null, audio: null };
+					inputDevices.forEach(x => {
+						if (x.kind === 'videoinput') {
+							devices.videos.push(x);
+						} else if (x.kind === 'audioinput') {
+							devices.audios.push(x);
+						}
+					});
+					console.log(devices)
+					devices.video = devices.videos[0] || null;
+					devices.audio = devices.audios[0] || null;
+					StateService.patchState({ devices });
+					resolve(devices);
+				}).catch(error => {
+					reject(error);
+				});
+			} else {
+				resolve(state.devices);
+			}
+		});
 	}
 
 	createMediaStream(uid, video, audio) {
@@ -1475,7 +1497,7 @@ export default class AgoraService extends Emittable {
 			} else {
 				devices_ = AgoraService.devices_ = [];
 				var constraints = {
-					audio: false,
+					audio: true,
 					video: true,
 				};
 				if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

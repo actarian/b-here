@@ -89,46 +89,6 @@ export default class EditorComponent extends Component {
 		// this.getUserMedia();
 	}
 
-	/*
-	getUserMedia() {
-		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-			const body = document.querySelector('body');
-			const media = document.createElement('div');
-			const video = document.createElement('video');
-			media.setAttribute('id', 'stream-editor');
-			media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
-			media.appendChild(video);
-			body.appendChild(media);
-			navigator.mediaDevices.getUserMedia({
-				video: { width: 800, height: 450 },
-			}).then((stream) => {
-				// console.log(stream);
-				if ('srcObject' in video) {
-					video.srcObject = stream;
-				} else {
-					video.src = window.URL.createObjectURL(stream);
-				}
-				video.play();
-				const fakePublisherStream = {
-					getId: () => 'editor',
-					clientInfo: {
-						role: RoleType.Publisher,
-					}
-				};
-				const fakeAttendeeStream = {
-					getId: () => 'editor',
-					clientInfo: {
-						role: RoleType.Attendee,
-					}
-				};
-				StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
-			}).catch((error) => {
-				console.log('EditorComponent.getUserMedia.error', error.name, error.message);
-			});
-		}
-	}
-	*/
-
 	viewObserver$() {
 		return EditorService.data$().pipe(
 			switchMap(data => {
