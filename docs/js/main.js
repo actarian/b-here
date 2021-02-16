@@ -11625,7 +11625,7 @@ IdDirective.meta = {
         id: i + 1
       };
     });
-    console.log(this);
+    console.log('LayoutComponent', this);
   };
 
   _proto.patchState = function patchState(state) {

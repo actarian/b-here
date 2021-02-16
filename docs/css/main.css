@@ -4859,9 +4859,7 @@ body {
 @media (min-width: 768px) and (orientation: landscape) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     width: calc(100% - 120px);
-    margin-left: 120px; }
-    .ui.publisher .group--members, .ui.attendee .group--members, .ui.streamer .group--members, .ui.viewer .group--members {
-      left: -120px; } }
+    margin-left: 120px; } }
 
 @media (min-width: 768px) and (orientation: portrait) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {

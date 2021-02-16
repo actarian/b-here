@@ -7446,6 +7446,65 @@
         }
       ],
       "hidden": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Smart Device",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "29397822934199_cinema.jpg",
+        "id": 29397859387200
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 29400359638600,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            20,
+            1.4,
+            0
+          ],
+          "rotation": [
+            1.5480729659532528,
+            -1.490297652712814,
+            1.5479991680714913,
+            "XYZ"
+          ],
+          "scale": [
+            21,
+            12.5,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 8,
+              "name": "smart-device-stream",
+              "file": "smartDeviceStream"
+            },
+            "folder": "",
+            "file": "smartDeviceStream",
+            "id": 29476283755900,
+            "chromaKeyColor": null,
+            "index": 0
+          },
+          "id": 29409055472800
+        }
+      ]
     }
   ],
   "menu": [
@@ -7518,6 +7577,13 @@
       "viewId": 75312896909800,
       "name": "Cinema",
       "order": 20
+    },
+    {
+      "id": 29549466439599,
+      "parentId": 74581921776600,
+      "viewId": 29400359638600,
+      "name": "Smart Device",
+      "order": 30
     },
     {
       "id": 74619434248400,
@@ -9184,6 +9250,26 @@
       "folder": "",
       "file": "publisherStream",
       "id": 359661442470999,
+      "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "29397822934199_cinema.jpg",
+      "id": 29397859387200
+    },
+    {
+      "type": {
+        "id": 8,
+        "name": "smart-device-stream",
+        "file": "smartDeviceStream"
+      },
+      "folder": "",
+      "file": "smartDeviceStream",
+      "id": 29476283755900,
       "chromaKeyColor": null
     }
   ],
