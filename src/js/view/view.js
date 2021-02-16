@@ -59,6 +59,7 @@ export class View {
 		if (items) {
 			let publisherStreamIndex = 0;
 			let attendeeStreamIndex = 0;
+			let smartDeviceStream = 0;
 			let publisherScreenIndex = 0;
 			let attendeeScreenIndex = 0;
 			items.forEach((item, index) => {
@@ -70,6 +71,9 @@ export class View {
 						break;
 						case 'nextAttendeeStream':
 							item.asset.index = attendeeStreamIndex++;
+						break;
+						case 'smartDeviceStream':
+							item.asset.index = smartDeviceStream++;
 						break;
 						case 'publisherScreen':
 							item.asset.index = publisherScreenIndex++;

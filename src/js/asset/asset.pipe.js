@@ -50,6 +50,7 @@ export default class AssetPipe extends Pipe {
 				case AssetType.AttendeeStream.name:
 				case AssetType.PublisherScreen.name:
 				case AssetType.AttendeeScreen.name:
+				case AssetType.SmartDeviceStream.name:
 					asset = environment.getPath(asset.file);
 					break;
 				default:

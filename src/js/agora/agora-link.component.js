@@ -2,26 +2,20 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
-import { environment, HEROKU } from '../environment';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 
 export default class AgoraLinkComponent extends Component {
 
-	get heroku() {
-		return HEROKU;
-	}
-
 	onInit() {
-		this.flags = environment.flags;
-		this.editorLink = environment.url.editor;
 		this.state = {};
 		const form = this.form = new FormGroup({
 			link: new FormControl(null, [Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), Validators.RequiredValidator()]),
 			linkAttendee: null,
 			linkStreamer: null,
 			linkViewer: null,
+			linkSmartDevice: null,
 			// link: new FormControl(null),
 		});
 		const controls = this.controls = form.controls;
@@ -48,6 +42,7 @@ export default class AgoraLinkComponent extends Component {
 			linkAttendee: this.getRoleMeetingId(timestamp, RoleType.Attendee),
 			linkStreamer: this.getRoleMeetingId(timestamp, RoleType.Streamer),
 			linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer),
+			linkSmartDevice: this.getRoleMeetingId(timestamp, RoleType.SmartDevice),
 		});
 	}
 
@@ -70,6 +65,7 @@ export default class AgoraLinkComponent extends Component {
 					linkAttendee: this.setRoleMeetingId(value, RoleType.Attendee),
 					linkStreamer: this.setRoleMeetingId(value, RoleType.Streamer),
 					linkViewer: this.setRoleMeetingId(value, RoleType.Viewer),
+					linkSmartDevice: this.setRoleMeetingId(value, RoleType.SmartDevice),
 				});
 			} else {
 				this.form.get('linkAttendee').reset();

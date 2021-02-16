@@ -14,7 +14,6 @@ export default class UpdateViewComponent extends Component {
 
 	onInit() {
 		this.busy = false;
-		this.flags = environment.flags;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		this.doUpdateForm();
@@ -231,7 +230,7 @@ UpdateViewComponent.meta = {
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
 			</div>
-			<div class="form-controls" *if="view.type.name != 'waiting-room' && flags.ar">
+			<div class="form-controls" *if="view.type.name != 'waiting-room' && ('ar' | flag)">
 				<div control-model [control]="controls.usdz" label="AR IOS (.usdz)" accept=".usdz"></div>
 				<div control-model [control]="controls.gltf" label="AR Android (.glb)" accept=".glb"></div>
 			</div>

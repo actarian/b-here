@@ -85,4 +85,10 @@ body {
 			}
 		}
 	}
+
+	&>.btn--credits {
+		position: absolute;
+		right: 30px;
+		bottom: 26px;
+	}
 }

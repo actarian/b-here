@@ -90,7 +90,7 @@ export const StreamQualities = [{
 export function getStreamQuality(state) {
 	const lowestQuality = StreamQualities[StreamQualities.length - 1];
 	const highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-	return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
+	return (state.role === RoleType.Publisher || state.role === RoleType.SmartDevice) ? highestQuality : lowestQuality;
 }
 
 export const AgoraStatus = {

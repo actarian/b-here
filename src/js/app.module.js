@@ -17,6 +17,7 @@ import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
 import { EditorModule } from './editor/editor.module';
+import FlagPipe from './flag/flag.pipe';
 import ControlAssetComponent from './forms/control-asset.component';
 import ControlAssetsComponent from './forms/control-assets.component';
 import ControlCheckboxComponent from './forms/control-checkbox.component';
@@ -44,6 +45,7 @@ import LayoutComponent from './layout/layout.component';
 import LazyDirective from './lazy/lazy.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
+import SlugPipe from './slug/slug.pipe';
 import SvgIconStructure from './svg/svg-icon.structure';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
@@ -86,42 +88,43 @@ AppModule.meta = {
 		AgoraStreamComponent,
 		AssetPipe,
 		ControlAssetComponent,
-		ControlMenuComponent,
-		ControlModelComponent,
 		ControlAssetsComponent,
-		ControlLocalizedAssetComponent,
 		ControlCheckboxComponent,
 		ControlCustomSelectComponent,
 		ControlLinkComponent,
+		ControlLocalizedAssetComponent,
+		ControlMenuComponent,
+		ControlModelComponent,
 		ControlNumberComponent,
 		ControlPasswordComponent,
 		ControlRequestModalComponent,
-		ControlSelectComponent,
-		ControlTextComponent,
-		ControlTextareaComponent,
-		ControlVectorComponent,
 		ControlsComponent,
+		ControlSelectComponent,
+		ControlTextareaComponent,
+		ControlTextComponent,
+		ControlVectorComponent,
 		DisabledDirective,
 		DropDirective,
 		DropdownDirective,
 		DropdownItemDirective,
 		ErrorsComponent,
-		HtmlPipe,
+		FlagPipe,
 		HlsDirective,
+		HtmlPipe,
 		IdDirective,
 		InputValueComponent,
 		LabelPipe,
-		LazyDirective,
 		LayoutComponent,
+		LazyDirective,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,
 		ModelComponent,
 		ModelCurvedPlaneComponent,
 		ModelDebugComponent,
-		ModelModelComponent,
 		ModelGridComponent,
 		ModelMenuComponent,
+		ModelModelComponent,
 		ModelNavComponent,
 		ModelPanelComponent,
 		ModelPictureComponent,
@@ -129,6 +132,7 @@ AppModule.meta = {
 		ModelProgressComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
+		SlugPipe,
 		SvgIconStructure,
 		TestComponent,
 		TryInARComponent,

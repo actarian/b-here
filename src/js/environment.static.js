@@ -15,6 +15,7 @@ export const environmentStatic = {
 		attendee: true,
 		streamer: true,
 		viewer: true,
+		smartDevice: true,
 		maxQuality: false,
 	},
 	logo: null,

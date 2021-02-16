@@ -174,7 +174,14 @@ export default class StreamService {
 									uid: 'editor',
 								}
 							};
-							this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream]);
+							const fakeSmartDeviceStream = {
+								getId: () => 'editor',
+								clientInfo: {
+									role: RoleType.SmartDevice,
+									uid: 'editor',
+								}
+							};
+							this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeSmartDeviceStream]);
 							// StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
 						}
 						video.play();

@@ -4,6 +4,7 @@ export const RoleType = {
 	Attendee: 'attendee',
 	Streamer: 'streamer',
 	Viewer: 'viewer',
+	SmartDevice: 'smart-device',
 	SelfService: 'self-service',
 };
 

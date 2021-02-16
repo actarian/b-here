@@ -218,7 +218,7 @@ strong {
 .btn--mic,
 .btn--screen,
 .btn--call, .btn--edit, a,
-button, .btn--heart, .btn--close, .agora-stream .btn--spy {
+button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy {
   display: inline-block;
   padding: 0;
   border: none;
@@ -244,7 +244,7 @@ button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   .btn--mic,
   .btn--screen,
   .btn--call, .btn--edit, a,
-  button, .btn--heart, .btn--close, .agora-stream .btn--spy, .btn--volume:active, .btn--control:active, .btn--menu:active, .btn--ar:active,
+  button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy, .btn--volume:active, .btn--control:active, .btn--menu:active, .btn--ar:active,
   .btn--vr:active, .btn--generate:active,
   .btn--next:active,
   .btn--connect:active,
@@ -259,7 +259,7 @@ button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   .btn--mic:active,
   .btn--screen:active,
   .btn--call:active, .btn--edit:active, a:active,
-  button:active, .btn--heart:active, .btn--close:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--control:focus, .btn--menu:focus, .btn--ar:focus,
+  button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--control:focus, .btn--menu:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--generate:focus,
   .btn--next:focus,
   .btn--connect:focus,
@@ -274,7 +274,7 @@ button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   .btn--mic:focus,
   .btn--screen:focus,
   .btn--call:focus, .btn--edit:focus, a:focus,
-  button:focus, .btn--heart:focus, .btn--close:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--control:hover, .btn--menu:hover, .btn--ar:hover,
+  button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--control:hover, .btn--menu:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--generate:hover,
   .btn--next:hover,
   .btn--connect:hover,
@@ -289,7 +289,7 @@ button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   .btn--mic:hover,
   .btn--screen:hover,
   .btn--call:hover, .btn--edit:hover, a:hover,
-  button:hover, .btn--heart:hover, .btn--close:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--control:visited, .btn--menu:visited, .btn--ar:visited,
+  button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--control:visited, .btn--menu:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
@@ -304,7 +304,7 @@ button, .btn--heart, .btn--close, .agora-stream .btn--spy {
   .btn--mic:visited,
   .btn--screen:visited,
   .btn--call:visited, .btn--edit:visited, a:visited,
-  button:visited, .btn--heart:visited, .btn--close:visited, .agora-stream .btn--spy:visited {
+  button:visited, .btn--heart:visited, .btn--close:visited, .btn--logo:visited, .btn--credits:visited, .agora-stream .btn--spy:visited {
     color: inherit;
     text-decoration: none;
     outline: none; }
@@ -4127,6 +4127,10 @@ body {
         display: block; }
       .page > .background > video {
         display: none; } }
+  .page > .btn--credits {
+    position: absolute;
+    right: 30px;
+    bottom: 26px; }
 
 .btn--cam,
 .btn--mic,
@@ -4377,6 +4381,36 @@ body {
     width: 20px;
     height: 20px; }
 
+.btn--logo {
+  position: absolute;
+  z-index: 100;
+  top: 28px;
+  left: 30px; }
+  .btn--logo, .btn--logo:hover, .btn--logo:active, .btn--logo:visited {
+    color: var(--foreground-primary); }
+  .btn--logo svg {
+    width: 66px;
+    fill: currentColor; }
+  .btn--logo img {
+    max-width: 160px;
+    max-height: 60px; }
+  @media (max-width: 767.98px) {
+    .btn--logo {
+      left: 15px; } }
+
+.btn--credits {
+  display: block;
+  width: 46px;
+  height: 17px;
+  margin: 3px 0 0 0;
+  transition: transform ease-in-out 200ms; }
+  .btn--credits svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--foreground-primary); }
+  .btn--credits:hover {
+    transform: translateX(4px); }
+
 .group--controls {
   position: absolute;
   display: flex;
@@ -4410,23 +4444,6 @@ body {
     .group--controls_ .btn--mic,
     .group--controls_ .btn--screen {
       display: none; } }
-
-.group--logo {
-  position: absolute;
-  z-index: 100;
-  top: 28px;
-  left: 30px; }
-  .group--logo, .group--logo:hover, .group--logo:active, .group--logo:visited {
-    color: var(--foreground-primary); }
-  .group--logo svg {
-    width: 66px;
-    fill: currentColor; }
-  .group--logo img {
-    max-width: 160px;
-    max-height: 60px; }
-  @media (max-width: 767.98px) {
-    .group--logo {
-      left: 15px; } }
 
 .group--info {
   position: relative;
@@ -4642,9 +4659,10 @@ body {
 .group--remote .agora-stream {
   width: 120px;
   height: 90px;
-  background: black; }
+  background: black;
+  flex-shrink: 0; }
 
-.group--remote .members {
+.group--members {
   position: absolute;
   width: 120px;
   height: 90px;
@@ -4652,70 +4670,29 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
-  line-height: 1;
-  color: var(--foreground-negative);
-  /*
-		&:before {
-			content: '';
-			display: block;
-			width: 8px;
-			height: 8px;
-			border-radius: 4px;
-			margin-right: 4px;
-			margin-left: -10px;
-			background: greenyellow;
-		}
-		*/ }
-  .group--remote .members svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor; }
-  .group--remote .members__count {
-    margin-left: 7px;
-    padding: 3px 5px;
-    min-width: 20px;
-    text-align: center;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1); }
-
-@media (min-width: 768px) {
-  .group--remote {
-    position: absolute;
+  flex-direction: column; }
+  .group--members .members {
     display: flex;
-    background: var(--background-negative); } }
-  @media (min-width: 768px) and (orientation: landscape) {
-    .group--remote {
-      flex-direction: column;
-      justify-content: flex-start;
-      top: 0;
-      left: 0;
-      width: 120px;
-      height: 100%;
-      flex: 1 1 120px; }
-      .group--remote .members {
-        width: 100%;
-        bottom: 0; } }
-  @media (min-width: 768px) and (orientation: portrait) {
-    .group--remote {
-      flex-direction: row;
-      justify-content: flex-start;
-      bottom: -90px;
-      left: 0;
-      min-width: 100%;
-      height: 90px;
-      flex: 1 1 100%; }
-      .group--remote .members {
-        right: 0;
-        height: 100%; } }
-
-@media (max-width: 767.98px) {
-  .group--remote {
-    position: absolute;
-    top: 0;
-    left: 0; }
-    .group--remote .members {
-      display: none; } }
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    line-height: 1;
+    color: var(--foreground-negative); }
+    .group--members .members svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor; }
+    .group--members .members__count {
+      margin-left: 7px;
+      padding: 3px 5px;
+      min-width: 20px;
+      text-align: center;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1); }
+  .group--members .credits {
+    display: flex;
+    justify-content: center;
+    align-items: center; }
 
 .group--local {
   position: absolute;
@@ -4842,18 +4819,135 @@ body {
   -webkit-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+  @media (min-width: 768px) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      position: absolute;
+      display: flex;
+      background: var(--background-negative); } }
+  @media (min-width: 768px) and (orientation: landscape) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      flex-direction: column;
+      justify-content: flex-start;
+      top: 0;
+      left: -120px;
+      width: 120px;
+      height: 100%;
+      flex: 1 1 120px; }
+      .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
+        width: 120px;
+        bottom: 0; } }
+  @media (min-width: 768px) and (orientation: portrait) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      flex-direction: row;
+      justify-content: flex-start;
+      bottom: -90px;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      flex: 1 1 100%; }
+      .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
+        right: 0;
+        height: 100%; } }
+  @media (max-width: 767.98px) {
+    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+      position: absolute;
+      top: 0;
+      left: 0; }
+      .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
+        display: none; } }
 
 @media (min-width: 768px) and (orientation: landscape) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     width: calc(100% - 120px);
     margin-left: 120px; }
-    .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
+    .ui.publisher .group--members, .ui.attendee .group--members, .ui.streamer .group--members, .ui.viewer .group--members {
       left: -120px; } }
 
 @media (min-width: 768px) and (orientation: portrait) {
   .ui.publisher, .ui.attendee, .ui.streamer, .ui.viewer {
     height: calc(100% - 90px);
     margin-bottom: 90px; } }
+  .ui.smart-device .group--remote {
+    position: absolute;
+    display: flex;
+    background: var(--background-negative);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    /*
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			*/
+    top: 0;
+    left: 0;
+    flex: 0 0 auto; }
+    .ui.smart-device .group--remote .agora-stream {
+      height: auto; }
+      .ui.smart-device .group--remote .agora-stream .agora-stream__player {
+        position: relative;
+        width: 100%;
+        padding-top: 75%;
+        overflow: hidden; }
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > img,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > svg,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > video,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > canvas,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > .video,
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover; }
+        .ui.smart-device .group--remote .agora-stream .agora-stream__player > div {
+          position: absolute !important;
+          top: 0;
+          left: 0; }
+    @media screen and (min-width: 1024px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 25%;
+        width: 25%; }
+        .ui.smart-device .group--remote .agora-stream:nth-child(1), .ui.smart-device .group--remote .agora-stream:nth-child(2), .ui.smart-device .group--remote .agora-stream:nth-child(3) {
+          flex: 0 1 33.3333%;
+          width: 33.3333%; } }
+    @media screen and (min-width: 1440px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 33.3333%;
+        width: 33.3333%; }
+        .ui.smart-device .group--remote .agora-stream:nth-child(1), .ui.smart-device .group--remote .agora-stream:nth-child(2), .ui.smart-device .group--remote .agora-stream:nth-child(3) {
+          flex: 0 1 50%;
+          width: 50%; } }
+    @media screen and (min-width: 1600px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 20%;
+        width: 20%; }
+        .ui.smart-device .group--remote .agora-stream:nth-child(1), .ui.smart-device .group--remote .agora-stream:nth-child(2), .ui.smart-device .group--remote .agora-stream:nth-child(3), .ui.smart-device .group--remote .agora-stream:nth-child(4) {
+          flex: 0 1 25%;
+          width: 25%; } }
+    @media screen and (max-width: 1023px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 33.3333%;
+        width: 33.3333%; } }
+    @media screen and (max-width: 767px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 50%;
+        width: 50%; } }
+    @media screen and (max-width: 374px) {
+      .ui.smart-device .group--remote .agora-stream {
+        flex: 0 1 100%;
+        width: 100%; } }
+  .ui.smart-device .group--local {
+    display: none; }
+  .ui.smart-device .group--members {
+    width: 120px;
+    height: 90px;
+    bottom: 0;
+    right: 0; }
   .ui.self-service .group--remote {
     display: none; }
   .ui.publisher .group--local .agora-stream {
