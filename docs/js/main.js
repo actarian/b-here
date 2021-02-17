@@ -169,7 +169,8 @@ function _readOnlyError(name) {
     access: '/',
     editor: '/editor',
     selfServiceTour: '/self-service-tour',
-    guidedTour: '/guided-tour'
+    guidedTour: '/guided-tour',
+    accessCode: '/access-code'
   },
   template: {
     tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
@@ -242,7 +243,8 @@ function _readOnlyError(name) {
     access: '/',
     editor: '/editor',
     selfServiceTour: '/self-service-tour',
-    guidedTour: '/guided-tour'
+    guidedTour: '/guided-tour',
+    accessCode: '/access-code'
   },
   template: {
     tryInAr: '/try-in-ar.html?viewId=$viewId',
@@ -413,7 +415,117 @@ var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
 options = Utils.merge(options, window.bhere);
 var environment = new Environment(options);
-console.log('environment', environment);var _Utils$merge;
+console.log('environment', environment);var LocationService = /*#__PURE__*/function () {
+  function LocationService() {}
+
+  LocationService.has = function has(key) {
+    var params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+
+    return params.has(key);
+  };
+
+  LocationService.get = function get(key) {
+    var params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
+
+    return params.get(key);
+  };
+
+  LocationService.set = function set(keyOrValue, value) {
+    var params = new URLSearchParams(window.location.search);
+
+    if (typeof keyOrValue === 'string') {
+      params.set(keyOrValue, value);
+    } else {
+      params.set(keyOrValue, '');
+    }
+
+    this.replace(params); // console.log('LocationService.set', params, keyOrValue, value);
+  };
+
+  LocationService.replace = function replace(params) {
+    if (window.history && window.history.pushState) {
+      var title = document.title;
+      var url = window.location.href.split('?')[0] + "?" + params.toString();
+      window.history.pushState(params.toString(), title, url);
+    }
+  };
+
+  LocationService.deserialize = function deserialize(key) {
+    var encoded = this.get('params');
+    return this.decode(key, encoded);
+  };
+
+  LocationService.serialize = function serialize(keyOrValue, value) {
+    var params = this.deserialize();
+    var encoded = this.encode(keyOrValue, value, params);
+    this.set('params', encoded);
+  };
+
+  LocationService.decode = function decode(key, encoded) {
+    var decoded = null;
+
+    if (encoded) {
+      var json = window.atob(encoded);
+      decoded = JSON.parse(json);
+    }
+
+    if (key && decoded) {
+      decoded = decoded[key];
+    }
+
+    return decoded || null;
+  };
+
+  LocationService.encode = function encode(keyOrValue, value, params) {
+    params = params || {};
+    var encoded = null;
+
+    if (typeof keyOrValue === 'string') {
+      params[keyOrValue] = value;
+    } else {
+      params = keyOrValue;
+    }
+
+    var json = JSON.stringify(params);
+    encoded = window.btoa(json);
+    return encoded;
+  };
+
+  return LocationService;
+}();var AccessCodeComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AccessCodeComponent, _Component);
+
+  function AccessCodeComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AccessCodeComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.env = environment;
+    var link = LocationService.get('link');
+
+    if (!link) {
+      window.location.href = "" + window.location.origin + environment.url.guidedTour;
+    }
+
+    var url = "" + window.location.origin + environment.url.guidedTour + "?link=" + link;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var qrcode = new QRious({
+      element: node.querySelector('.qrcode'),
+      value: url,
+      size: 256
+    });
+  };
+
+  return AccessCodeComponent;
+}(rxcomp.Component);
+AccessCodeComponent.meta = {
+  selector: '[access-code-component]'
+};var _Utils$merge;
 var LABELS = Utils.merge((_Utils$merge = {
   browse: 'Browse',
   cancel: 'Cancel',
@@ -4583,84 +4695,7 @@ AgoraDevicePreviewComponent.meta = {
 AgoraDeviceComponent.meta = {
   selector: '[agora-device]',
   outputs: ['enter']
-};var LocationService = /*#__PURE__*/function () {
-  function LocationService() {}
-
-  LocationService.has = function has(key) {
-    var params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
-
-    return params.has(key);
-  };
-
-  LocationService.get = function get(key) {
-    var params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
-
-    return params.get(key);
-  };
-
-  LocationService.set = function set(keyOrValue, value) {
-    var params = new URLSearchParams(window.location.search);
-
-    if (typeof keyOrValue === 'string') {
-      params.set(keyOrValue, value);
-    } else {
-      params.set(keyOrValue, '');
-    }
-
-    this.replace(params); // console.log('LocationService.set', params, keyOrValue, value);
-  };
-
-  LocationService.replace = function replace(params) {
-    if (window.history && window.history.pushState) {
-      var title = document.title;
-      var url = window.location.href.split('?')[0] + "?" + params.toString();
-      window.history.pushState(params.toString(), title, url);
-    }
-  };
-
-  LocationService.deserialize = function deserialize(key) {
-    var encoded = this.get('params');
-    return this.decode(key, encoded);
-  };
-
-  LocationService.serialize = function serialize(keyOrValue, value) {
-    var params = this.deserialize();
-    var encoded = this.encode(keyOrValue, value, params);
-    this.set('params', encoded);
-  };
-
-  LocationService.decode = function decode(key, encoded) {
-    var decoded = null;
-
-    if (encoded) {
-      var json = window.atob(encoded);
-      decoded = JSON.parse(json);
-    }
-
-    if (key && decoded) {
-      decoded = decoded[key];
-    }
-
-    return decoded || null;
-  };
-
-  LocationService.encode = function encode(keyOrValue, value, params) {
-    params = params || {};
-    var encoded = null;
-
-    if (typeof keyOrValue === 'string') {
-      params[keyOrValue] = value;
-    } else {
-      params = keyOrValue;
-    }
-
-    var json = JSON.stringify(params);
-    encoded = window.btoa(json);
-    return encoded;
-  };
-
-  return LocationService;
-}();var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
+};var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLinkComponent, _Component);
 
   function AgoraLinkComponent() {
@@ -4756,13 +4791,17 @@ AgoraDeviceComponent.meta = {
     }, -1);
   };
 
-  _proto.onCopyToClipBoard = function onCopyToClipBoard(meetingId) {
+  _proto.onCopyToClipBoard = function onCopyToClipBoard(meetingId, asAccessCode) {
+    if (asAccessCode === void 0) {
+      asAccessCode = false;
+    }
+
     var input = document.createElement('input');
     input.style.position = 'absolute';
     input.style.top = '1000vh'; // input.style.visibility = 'hidden';
 
     document.querySelector('body').appendChild(input);
-    input.value = this.getUrl(meetingId, true);
+    input.value = asAccessCode ? this.getAccessCodeUrl(meetingId, true) : this.getUrl(meetingId, true);
     input.focus();
     input.select();
     input.setSelectionRange(0, 99999);
@@ -4796,6 +4835,17 @@ AgoraDeviceComponent.meta = {
     var role = LocationService.get('role') || null;
     var name = LocationService.get('name') || null;
     var url = "" + window.location.origin + window.location.pathname + "?link=" + meetingId + (name ? "&name=" + name : '') + (role && !shareable ? "&role=" + role : '');
+    return url;
+  };
+
+  _proto.getAccessCodeUrl = function getAccessCodeUrl(meetingId, shareable) {
+    if (shareable === void 0) {
+      shareable = false;
+    }
+
+    var role = LocationService.get('role') || null;
+    var name = LocationService.get('name') || null;
+    var url = "" + window.location.origin + environment.url.accessCode + "?link=" + meetingId + (name ? "&name=" + name : '') + (role && !shareable ? "&role=" + role : '');
     return url;
   };
 
@@ -20888,6 +20938,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

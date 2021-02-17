@@ -103,6 +103,9 @@ app.get('/b-here', function(request, response) {
 app.get('/editor', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/editor.html'));
 });
+app.get('/access-code', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/access-code.html'));
+});
 
 app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);

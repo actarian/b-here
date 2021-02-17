@@ -4959,6 +4959,10 @@ body {
     .ui--info:not(.ui--info-centered) {
       justify-content: flex-start; } }
 
+.ui--info-centered .picture {
+  display: flex;
+  justify-content: center; }
+
 .ui__body {
   position: absolute;
   width: 100%;

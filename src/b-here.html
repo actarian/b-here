@@ -161,7 +161,7 @@
 						<div class="group--form group--form--addon addon" *if="('smartDevice' | flag) && controls.linkSmartDevice.valid && controls.linkSmartDevice.value !== null">
 							<label [innerHTML]="'bhere_smart_device_meeting_id' | label"></label>
 							<input type="text" class="control--text" [formControl]="controls.linkSmartDevice" [placeholder]="'bhere_smart_device_meeting_id' | label" readonly />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkSmartDevice.value)" *if="controls.linkSmartDevice.valid">
+							<div class="control--addon" (click)="onCopyToClipBoard(controls.linkSmartDevice.value, true)" *if="controls.linkSmartDevice.valid">
 								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 							</div>
 						</div>

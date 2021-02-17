@@ -1,5 +1,6 @@
 import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
+import AccessCodeComponent from './access/access-code.component';
 import AccessComponent from './access/access.component';
 import AgoraCheckComponent from './agora/agora-check.component';
 import AgoraChecklistComponent from './agora/agora-checklist.component';
@@ -76,6 +77,7 @@ AppModule.meta = {
 		EditorModule,
 	],
 	declarations: [
+		AccessCodeComponent,
 		AccessComponent,
 		AgoraCheckComponent,
 		AgoraChecklistComponent,
