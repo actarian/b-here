@@ -2,6 +2,7 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
+import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
@@ -90,13 +91,13 @@ export default class AgoraLinkComponent extends Component {
 		}, -1);
 	}
 
-	onCopyToClipBoard(meetingId) {
+	onCopyToClipBoard(meetingId, asAccessCode = false) {
 		const input = document.createElement('input');
 		input.style.position = 'absolute';
 		input.style.top = '1000vh';
 		// input.style.visibility = 'hidden';
 		document.querySelector('body').appendChild(input);
-		input.value = this.getUrl(meetingId, true);
+		input.value = asAccessCode ? this.getAccessCodeUrl(meetingId, true) : this.getUrl(meetingId, true);
 		input.focus();
 		input.select();
 		input.setSelectionRange(0, 99999);
@@ -125,6 +126,13 @@ export default class AgoraLinkComponent extends Component {
 		const role = LocationService.get('role') || null;
 		const name = LocationService.get('name') || null;
 		const url = `${window.location.origin}${window.location.pathname}?link=${meetingId}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
+		return url;
+	}
+
+	getAccessCodeUrl(meetingId, shareable = false) {
+		const role = LocationService.get('role') || null;
+		const name = LocationService.get('name') || null;
+		const url = `${window.location.origin}${environment.url.accessCode}?link=${meetingId}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
 		return url;
 	}
 
