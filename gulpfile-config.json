@@ -63,6 +63,7 @@
             "node_modules/three/examples/js/loaders/RGBELoader.js",
             "node_modules/three/examples/js/loaders/GLTFLoader.js",
             "node_modules/three/examples/js/loaders/FBXLoader.js",
+            "node_modules/three/examples/js/loaders/DRACOLoader.js",
             "node_modules/qrious/dist/qrious.js",
             "node_modules/html2canvas/dist/html2canvas.js"
           ],
@@ -76,7 +77,11 @@
           "output": "docs/css/vendors.css",
           "minify": true
         }
-      ]
+      ],
+      "copy": [{
+        "input": "node_modules/three/examples/js/libs/draco/**/*.*",
+        "output": "docs/js/draco/"
+      }]
     }
   },
   "tfs": false,

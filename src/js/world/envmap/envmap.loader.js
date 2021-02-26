@@ -1,9 +1,6 @@
-/* global THREE, RGBELoader */
-
 import { fromEvent } from 'rxjs';
 import { filter, first, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { AssetType } from '../../asset/asset';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';

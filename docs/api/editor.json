@@ -7505,6 +7505,46 @@
           "id": 29409055472800
         }
       ]
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "model"
+      },
+      "name": "Soldier",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "17340877376900_dressroom.jpg",
+        "id": 17340893923699
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 17352699801799,
+      "items": [
+        {
+          "type": {
+            "id": 4,
+            "name": "model"
+          },
+          "asset": {
+            "type": {
+              "id": 3,
+              "name": "model"
+            },
+            "folder": "/uploads/",
+            "file": "17346053300100_Soldier.glb",
+            "id": 17346063499600
+          },
+          "id": 17352710344799
+        }
+      ]
     }
   ],
   "menu": [
@@ -7689,6 +7729,13 @@
       "viewId": 1372936424527899,
       "name": "Porsche",
       "order": 40
+    },
+    {
+      "id": 17389524278300,
+      "parentId": 74709201159299,
+      "viewId": 17352699801799,
+      "name": "Soldier",
+      "order": 50
     },
     {
       "id": 1797484276534400,
@@ -9271,6 +9318,24 @@
       "file": "smartDeviceStream",
       "id": 29476283755900,
       "chromaKeyColor": null
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "17340877376900_dressroom.jpg",
+      "id": 17340893923699
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "17346053300100_Soldier.glb",
+      "id": 17346063499600
     }
   ],
   "users": [

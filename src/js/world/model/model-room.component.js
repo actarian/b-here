@@ -1,5 +1,3 @@
-// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';

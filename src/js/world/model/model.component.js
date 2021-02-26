@@ -1,7 +1,5 @@
 import { Component, getContext } from 'rxcomp';
 import Interactive from '../interactive/interactive';
-import InteractiveMesh from '../interactive/interactive.mesh';
-import InteractiveSprite from '../interactive/interactive.sprite';
 // import Ease from '../ease/ease';
 import WorldComponent from '../world.component';
 
@@ -115,7 +113,7 @@ export default class ModelComponent extends Component {
 
 	disposeObject(object) {
 		object.traverse(child => {
-			if (child instanceof InteractiveMesh || child instanceof InteractiveSprite) {
+			if (child.isInteractiveMesh || child.isInteractiveSprite) {
 				Interactive.dispose(child);
 			}
 			if (child.isMesh) {

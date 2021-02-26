@@ -233,7 +233,7 @@ function _readOnlyError(name) {
     disabledViewTypes: ['waiting-room', 'room-3d'],
     disabledViewItemTypes: ['texture']
   },
-  assets: './',
+  assets: '/b-here/',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
   language: '',
@@ -12894,6 +12894,11 @@ function interactiveDispose(object) {
   }
 
   _createClass(InteractiveMesh, [{
+    key: "isInteractiveMesh",
+    get: function get() {
+      return true;
+    }
+  }, {
     key: "over",
     get: function get() {
       return this.over_;
@@ -17231,166 +17236,7 @@ WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views', 'editor'],
   outputs: ['navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
-};var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
-  _inheritsLoose(FreezableSprite, _THREE$Sprite);
-
-  _createClass(FreezableSprite, [{
-    key: "freezed",
-    get: function get() {
-      return this.freezed_;
-    },
-    set: function set(freezed) {
-      // !!! cycle through freezable and not freezable
-      this.freezed_ = freezed;
-      this.children.filter(function (x) {
-        return x.__lookupGetter__('freezed');
-      }).forEach(function (x) {
-        return x.freezed = freezed;
-      });
-    }
-  }]);
-
-  function FreezableSprite(material) {
-    var _this;
-
-    material = material || new THREE.SpriteMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _THREE$Sprite.call(this, material) || this;
-    _this.freezed = false;
-    return _this;
-  }
-
-  var _proto = FreezableSprite.prototype;
-
-  _proto.freeze = function freeze() {
-    this.freezed = true;
-  };
-
-  _proto.unfreeze = function unfreeze() {
-    this.freezed = false;
-  };
-
-  return FreezableSprite;
-}(THREE.Sprite);var EmittableSprite = /*#__PURE__*/function (_FreezableSprite) {
-  _inheritsLoose(EmittableSprite, _FreezableSprite);
-
-  function EmittableSprite(material) {
-    var _this;
-
-    material = material || new THREE.SpriteMaterial({
-      color: 0xff00ff // opacity: 1,
-      // transparent: true,
-
-    });
-    _this = _FreezableSprite.call(this, material) || this;
-    _this.events = {};
-    return _this;
-  }
-
-  var _proto = EmittableSprite.prototype;
-
-  _proto.on = function on(type, callback) {
-    var _this2 = this;
-
-    var event = this.events[type] = this.events[type] || [];
-    event.push(callback);
-    return function () {
-      _this2.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    };
-  };
-
-  _proto.off = function off(type, callback) {
-    var event = this.events[type];
-
-    if (event) {
-      this.events[type] = event.filter(function (x) {
-        return x !== callback;
-      });
-    }
-  };
-
-  _proto.emit = function emit(type, data) {
-    var event = this.events[type];
-
-    if (event) {
-      event.forEach(function (callback) {
-        // callback.call(this, data);
-        callback(data);
-      });
-    }
-
-    var broadcast = this.events.broadcast;
-
-    if (broadcast) {
-      broadcast.forEach(function (callback) {
-        callback(type, data);
-      });
-    }
-  };
-
-  return EmittableSprite;
-}(FreezableSprite);var InteractiveSprite = /*#__PURE__*/function (_EmittableSprite) {
-  _inheritsLoose(InteractiveSprite, _EmittableSprite);
-
-  function InteractiveSprite(material) {
-    var _this;
-
-    _this = _EmittableSprite.call(this, material) || this;
-    _this.depthTest = true;
-    _this.over_ = false;
-    _this.down_ = false;
-    Interactive.items.push(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(InteractiveSprite, [{
-    key: "over",
-    get: function get() {
-      return this.over_;
-    },
-    set: function set(over) {
-      if (this.over_ != over) {
-        this.over_ = over;
-        /*
-        if (over) {
-        	this.emit('hit', this);
-        }
-        */
-
-        if (over) {
-          this.emit('over', this);
-        } else {
-          this.emit('out', this);
-        }
-      }
-    }
-  }, {
-    key: "down",
-    get: function get() {
-      return this.down_;
-    },
-    set: function set(down) {
-      down = down && this.over;
-
-      if (this.down_ != down) {
-        this.down_ = down;
-
-        if (down) {
-          this.emit('down', this);
-        } else {
-          this.emit('up', this);
-        }
-      }
-    }
-  }]);
-
-  return InteractiveSprite;
-}(EmittableSprite);var deg = THREE.Math.degToRad;
+};var deg = THREE.Math.degToRad;
 var GEOMETRY = new THREE.BoxBufferGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
 var ModelComponent = /*#__PURE__*/function (_Component) {
@@ -17519,7 +17365,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
 
   _proto.disposeObject = function disposeObject(object) {
     object.traverse(function (child) {
-      if (child instanceof InteractiveMesh || child instanceof InteractiveSprite) {
+      if (child.isInteractiveMesh || child.isInteractiveSprite) {
         Interactive.dispose(child);
       }
 
@@ -19320,27 +19166,33 @@ ModelMenuComponent.meta = {
     var _this2 = this;
 
     // this.renderOrder = environment.renderOrder.model;
-    this.loadGltfModel(environment.getPath(this.item.asset.folder), this.item.asset.file, function (mesh) {
-      _this2.onGltfModelLoaded(mesh, mount, dismount);
+    this.loadGlb(environment.getPath(this.item.asset.folder), this.item.asset.file, function (mesh, animations) {
+      _this2.onGlbLoaded(mesh, animations, mount, dismount);
     });
   };
 
-  _proto.loadGltfModel = function loadGltfModel(path, file, callback) {
+  _proto.loadGlb = function loadGlb(path, file, callback) {
     var renderer = this.host.renderer; // const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 
     var progressRef = LoaderService.getRef(); // console.log('progressRef');
 
-    var loader = new THREE.GLTFLoader().setPath(path);
-    loader.load(file, function (gltf) {
+    var loader = new THREE.GLTFLoader().setPath(path); // Optional: Provide a DRACOLoader instance to decode compressed mesh data
+
+    var decoderPath = environment.assets + "js/draco/"; // console.log(decoderPath);
+
+    var dracoLoader = new THREE.DRACOLoader();
+    dracoLoader.setDecoderPath(decoderPath);
+    loader.setDRACOLoader(dracoLoader);
+    loader.load(file, function (glb) {
       /*
-      gltf.scene.traverse((child) => {
+      glb.scene.traverse((child) => {
       	if (child.isMesh) {
       		// roughnessMipmapper.generateMipmaps(child.material);
       	}
       });
       */
       if (typeof callback === 'function') {
-        callback(gltf.scene);
+        callback(glb.scene, glb.animations);
       }
 
       LoaderService.setProgress(progressRef, 1); // this.progress = null;
@@ -19362,10 +19214,79 @@ ModelMenuComponent.meta = {
     });
   };
 
-  _proto.onGltfModelLoaded = function onGltfModelLoaded(mesh, mount, dismount) {
+  _proto.parseAnimations = function parseAnimations(mesh, animations) {
+    // animations
+    // console.log('ModelModelComponent.onGlbLoaded', 'animations', animations);
+    var actionIndex = this.actionIndex = -1;
+    var actions = this.actions = [];
+
+    if (animations && animations.length) {
+      var clock = this.clock = new THREE.Clock();
+      var mixer = this.mixer = new THREE.AnimationMixer(mesh);
+      mixer.timeScale = 1;
+      animations.forEach(function (animation) {
+        var action = mixer.clipAction(animation);
+        action.enabled = true;
+        action.setEffectiveTimeScale(1);
+        action.setEffectiveWeight(1); // action.setLoop(THREE.LoopPingPong);
+
+        action.setLoop(THREE.LoopRepeat); // action.clampWhenFinished = true; // pause on last frame
+
+        actions.push(action);
+      });
+    }
+  };
+
+  _proto.onClipToggle = function onClipToggle() {
+    var actions = this.actions;
+
+    if (actions.length === 1) {
+      var action = actions[0];
+
+      if (this.actionIndex === -1) {
+        this.actionIndex = 0;
+
+        if (action.paused || action.timeScale === 0) {
+          action.paused = false;
+        } else {
+          action.play();
+        }
+      } else if (this.actionIndex === 0) {
+        this.actionIndex = -1;
+        action.halt(0.3);
+      }
+    } else if (actions.length > 1) {
+      if (this.actionIndex > -1 && this.actionIndex < actions.length) {
+        var previousClip = actions[this.actionIndex];
+        previousClip.halt(0.3);
+      }
+
+      this.actionIndex++;
+
+      if (this.actionIndex === actions.length) {
+        this.actionIndex = -1; // nothing
+      } else {
+        var _action = actions[this.actionIndex]; // console.log(this.actionIndex, action);
+
+        if (_action.paused) {
+          _action.paused = false;
+        }
+
+        if (_action.timeScale === 0) {
+          _action.timeScale = 1;
+        }
+
+        _action.play();
+      }
+    }
+  };
+
+  _proto.onGlbLoaded = function onGlbLoaded(mesh, animations, mount, dismount) {
     var _this3 = this;
 
-    // scale
+    // animations
+    this.parseAnimations(mesh, animations); // scale
+
     var box = new THREE.Box3().setFromObject(mesh);
     var size = box.max.clone().sub(box.min);
     var max = Math.max(size.x, size.y, size.z);
@@ -19508,6 +19429,14 @@ ModelMenuComponent.meta = {
         }
       }
     }
+
+    var mixer = this.mixer;
+    var clock = this.clock;
+
+    if (mixer) {
+      var delta = clock.getDelta();
+      mixer.update(delta);
+    }
   } // called by UpdateViewItemComponent
   ;
 
@@ -19537,8 +19466,8 @@ ModelMenuComponent.meta = {
     var _this4 = this;
 
     // console.log('ModelModelComponent.onUpdateAsset', item);
-    this.loadGltfModel(environment.getPath(item.asset.folder), item.asset.file, function (mesh) {
-      _this4.onGltfModelLoaded(mesh, function (mesh, item) {
+    this.loadGlb(environment.getPath(item.asset.folder), item.asset.file, function (mesh, animations) {
+      _this4.onGlbLoaded(mesh, animations, function (mesh, item) {
         return _this4.onMount(mesh, item);
       }, function (mesh, item) {
         return _this4.onDismount(mesh, item);
@@ -19579,34 +19508,75 @@ ModelMenuComponent.meta = {
     this.editing = false;
   };
 
+  ModelModelComponent.getInteractiveDescriptors = function getInteractiveDescriptors() {
+    var descriptors = ModelModelComponent.interactiveDescriptors;
+
+    if (!descriptors) {
+      var freezableDescriptors = Object.getOwnPropertyDescriptors(FreezableMesh.prototype);
+      var emittableDescriptors = Object.getOwnPropertyDescriptors(EmittableMesh.prototype);
+      var interactiveDescriptors = Object.getOwnPropertyDescriptors(InteractiveMesh.prototype);
+      descriptors = Object.assign({}, freezableDescriptors, emittableDescriptors, interactiveDescriptors);
+      ModelModelComponent.interactiveDescriptors = descriptors;
+    }
+
+    return descriptors;
+  };
+
   _proto.makeInteractive = function makeInteractive(mesh) {
     var _this5 = this;
 
-    var newChild = null;
+    var interactiveDescriptors = ModelModelComponent.getInteractiveDescriptors();
     mesh.traverse(function (child) {
-      if (newChild === null && child.isMesh && !(child instanceof InteractiveMesh)) {
-        // roughnessMipmapper.generateMipmaps(child.material);
-        var parent = child.parent;
-        newChild = new InteractiveMesh(child.geometry, child.material); // newChild.depthTest = true;
-        // newChild.renderOrder = 0;
+      if (child.isMesh) {
+        Object.keys(interactiveDescriptors).forEach(function (key) {
+          if (key !== 'constructor') {
+            Object.defineProperty(child, key, interactiveDescriptors[key]);
+          }
+        });
+        child.freezed = false;
+        child.events = {};
+        child.depthTest = true;
+        child.over_ = false;
+        child.down_ = false;
+        Interactive.items.push(child);
+        child.on('down', function () {
+          // console.log('ModelModelComponent.down', child);
+          _this5.onClipToggle();
 
-        newChild.name = child.name;
-        newChild.position.copy(child.position);
-        newChild.rotation.copy(child.rotation);
-        newChild.scale.copy(child.scale);
-        newChild.on('down', function () {
-          // console.log('ModelModelComponent.down');
           _this5.down.next(_this5);
         });
-        parent.remove(child);
-        parent.add(newChild);
       }
     });
-
-    if (newChild !== null) {
-      this.makeInteractive(mesh);
-    }
-  };
+  }
+  /*
+  makeInteractive__(mesh) {
+  	let newChild = null;
+  	mesh.traverse((child) => {
+  		if (newChild === null && child.isMesh && !(child.isInteractiveMesh)) {
+  			// roughnessMipmapper.generateMipmaps(child.material);
+  			const parent = child.parent;
+  			newChild = new InteractiveMesh(child.geometry, child.material);
+  			// newChild.depthTest = true;
+  			// newChild.renderOrder = 0;
+  			newChild.name = child.name;
+  			newChild.position.copy(child.position);
+  			newChild.rotation.copy(child.rotation);
+  			newChild.scale.copy(child.scale);
+  			newChild.on('down', () => {
+  				// console.log('ModelModelComponent.down');
+  				this.onClipToggle();
+  				this.down.next(this);
+  			});
+  			parent.remove(child);
+  			parent.add(newChild);
+  		}
+  	});
+  	if (newChild !== null) {
+  		this.makeInteractive(mesh);
+  	}
+  }
+  */
+  ;
 
   _createClass(ModelModelComponent, [{
     key: "freezed",
@@ -19626,7 +19596,7 @@ ModelMenuComponent.meta = {
 
         if (mesh) {
           mesh.traverse(function (child) {
-            if (child instanceof InteractiveMesh) {
+            if (child.isInteractiveMesh) {
               child.freezed = freezed;
             }
           });
@@ -20016,7 +19986,171 @@ ModelNavComponent.meta = {
   },
   outputs: ['over', 'out', 'down'],
   inputs: ['item', 'view']
-};var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
+};var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
+  _inheritsLoose(FreezableSprite, _THREE$Sprite);
+
+  _createClass(FreezableSprite, [{
+    key: "freezed",
+    get: function get() {
+      return this.freezed_;
+    },
+    set: function set(freezed) {
+      // !!! cycle through freezable and not freezable
+      this.freezed_ = freezed;
+      this.children.filter(function (x) {
+        return x.__lookupGetter__('freezed');
+      }).forEach(function (x) {
+        return x.freezed = freezed;
+      });
+    }
+  }]);
+
+  function FreezableSprite(material) {
+    var _this;
+
+    material = material || new THREE.SpriteMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _THREE$Sprite.call(this, material) || this;
+    _this.freezed = false;
+    return _this;
+  }
+
+  var _proto = FreezableSprite.prototype;
+
+  _proto.freeze = function freeze() {
+    this.freezed = true;
+  };
+
+  _proto.unfreeze = function unfreeze() {
+    this.freezed = false;
+  };
+
+  return FreezableSprite;
+}(THREE.Sprite);var EmittableSprite = /*#__PURE__*/function (_FreezableSprite) {
+  _inheritsLoose(EmittableSprite, _FreezableSprite);
+
+  function EmittableSprite(material) {
+    var _this;
+
+    material = material || new THREE.SpriteMaterial({
+      color: 0xff00ff // opacity: 1,
+      // transparent: true,
+
+    });
+    _this = _FreezableSprite.call(this, material) || this;
+    _this.events = {};
+    return _this;
+  }
+
+  var _proto = EmittableSprite.prototype;
+
+  _proto.on = function on(type, callback) {
+    var _this2 = this;
+
+    var event = this.events[type] = this.events[type] || [];
+    event.push(callback);
+    return function () {
+      _this2.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    };
+  };
+
+  _proto.off = function off(type, callback) {
+    var event = this.events[type];
+
+    if (event) {
+      this.events[type] = event.filter(function (x) {
+        return x !== callback;
+      });
+    }
+  };
+
+  _proto.emit = function emit(type, data) {
+    var event = this.events[type];
+
+    if (event) {
+      event.forEach(function (callback) {
+        // callback.call(this, data);
+        callback(data);
+      });
+    }
+
+    var broadcast = this.events.broadcast;
+
+    if (broadcast) {
+      broadcast.forEach(function (callback) {
+        callback(type, data);
+      });
+    }
+  };
+
+  return EmittableSprite;
+}(FreezableSprite);var InteractiveSprite = /*#__PURE__*/function (_EmittableSprite) {
+  _inheritsLoose(InteractiveSprite, _EmittableSprite);
+
+  function InteractiveSprite(material) {
+    var _this;
+
+    _this = _EmittableSprite.call(this, material) || this;
+    _this.depthTest = true;
+    _this.over_ = false;
+    _this.down_ = false;
+    Interactive.items.push(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(InteractiveSprite, [{
+    key: "isInteractiveSprite",
+    get: function get() {
+      return true;
+    }
+  }, {
+    key: "over",
+    get: function get() {
+      return this.over_;
+    },
+    set: function set(over) {
+      if (this.over_ != over) {
+        this.over_ = over;
+        /*
+        if (over) {
+        	this.emit('hit', this);
+        }
+        */
+
+        if (over) {
+          this.emit('over', this);
+        } else {
+          this.emit('out', this);
+        }
+      }
+    }
+  }, {
+    key: "down",
+    get: function get() {
+      return this.down_;
+    },
+    set: function set(down) {
+      down = down && this.over;
+
+      if (this.down_ != down) {
+        this.down_ = down;
+
+        if (down) {
+          this.emit('down', this);
+        } else {
+          this.emit('up', this);
+        }
+      }
+    }
+  }]);
+
+  return InteractiveSprite;
+}(EmittableSprite);var ModelPanelComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelPanelComponent, _ModelComponent);
 
   function ModelPanelComponent() {

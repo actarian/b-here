@@ -1,4 +1,3 @@
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../environment';
 
 export class RgbeLoader {
