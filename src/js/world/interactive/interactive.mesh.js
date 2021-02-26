@@ -11,6 +11,10 @@ export default class InteractiveMesh extends EmittableMesh {
 		Interactive.items.push(this);
 	}
 
+	get isInteractiveMesh() {
+		return true;
+	}
+
 	get over() {
 		return this.over_;
 	}

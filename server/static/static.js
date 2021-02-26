@@ -85,6 +85,7 @@ const MIME_CONTENT_TYPES = {
 	"gltf": "application/octet-stream", // Gltf
 	"fbx": "application/octet-stream", // Fbx
 	"usdz": "application/octet-stream", // Usdz
+	"wasm": "application/wasm", // Wasm
 };
 const MIME_TEXT = [
 	'css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml',
@@ -103,7 +104,7 @@ const MIME_VIDEO = [
 ];
 const MIME_APPLICATION = [
 	'abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z',
-	'glb', 'gltf', 'fbx', 'usdz',
+	'glb', 'gltf', 'fbx', 'usdz', 'wasm',
 ];
 const MIME_TYPES = [
 	...MIME_TEXT,

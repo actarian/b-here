@@ -11,6 +11,10 @@ export default class InteractiveSprite extends EmittableSprite {
 		Interactive.items.push(this);
 	}
 
+	get isInteractiveSprite() {
+		return true;
+	}
+
 	get over() {
 		return this.over_;
 	}
