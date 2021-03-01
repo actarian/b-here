@@ -5,7 +5,7 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
-import LocalStorageService from '../local-storage/local-storage.service';
+import SessionStorageService from '../local-storage/session-storage.service';
 // import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
@@ -319,12 +319,12 @@ export default class AgoraService extends Emittable {
 	join(token, channelNameLink) {
 		this.channel = null;
 		const client = this.client;
-		const clientId = LocalStorageService.get('bHereClientId') || AgoraService.getUniqueUserId();
+		const clientId = SessionStorageService.get('bHereClientId') || AgoraService.getUniqueUserId();
 		// console.log('AgoraService.join', { token, channelNameLink, clientId });
 		client.join(token, channelNameLink, clientId, (uid) => {
 			// console.log('AgoraService.join', uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });
-			LocalStorageService.set('bHereClientId', uid);
+			SessionStorageService.set('bHereClientId', uid);
 			if (USE_RTM) {
 				AgoraService.rtmToken$(uid).subscribe(token => {
 					// console.log('AgoraService.rtmToken$', token);
