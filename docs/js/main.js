@@ -134,6 +134,7 @@ function _readOnlyError(name) {
     editorAssetScreen: false,
     ar: true,
     menu: true,
+    chat: false,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -208,6 +209,7 @@ function _readOnlyError(name) {
     editorAssetScreen: true,
     ar: true,
     menu: true,
+    chat: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -1186,156 +1188,39 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 }(rxcomp.Component);
 AccessComponent.meta = {
   selector: '[access-component]'
-};var AgoraCheckComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AgoraCheckComponent, _Component);
+};var MessageService = /*#__PURE__*/function () {
+  function MessageService() {}
 
-  function AgoraCheckComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  return AgoraCheckComponent;
-}(rxcomp.Component);
-AgoraCheckComponent.meta = {
-  selector: '[agora-check]',
-  inputs: ['value'],
-  template:
-  /* html */
-  "\n\t\t<svg *if=\"value == null\" class=\"checkmark idle\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === true\" class=\"checkmark success\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" fill=\"none\" d=\"M14.1 27.2l7.1 7.2 16.7-16.8\" stroke-linecap=\"round\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === false\" class=\"checkmark error\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" stroke-linecap=\"round\" fill=\"none\" d=\"M16 16 36 36 M36 16 16 36\"/>\n\t\t</svg>\n\t"
-};var DevicePlatform = {
-  Unknown: 'unknown',
-  IOS: 'ios',
-  Android: 'android',
-  WindowsPhone: 'windowsPhone',
-  VRHeadset: 'vrHeadset'
-};
-var DeviceService = /*#__PURE__*/function () {
-  function DeviceService() {}
-
-  DeviceService.getDevicePlatform = function getDevicePlatform() {
-    var userAgent = navigator.userAgent || navigator.vendor || window.opera; // Windows Phone must come first because its UA also contains 'Android'
-
-    if (/windows phone/i.test(userAgent)) {
-      return DevicePlatform.WindowsPhone;
-    }
-
-    if (/android/i.test(userAgent)) {
-      return DevicePlatform.Android;
-    } // iOS detection from: http://stackoverflow.com/a/9039885/177710
-    // if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-
-
-    if (this.isIOS) {
-      return DevicePlatform.IOS;
-    }
-
-    if (this.isVRHeadset) {
-      return DevicePlatform.VRHeadset;
-    }
-
-    return DevicePlatform.Unknown;
+  MessageService.message = function message(_message) {
+    this.message$.next(_message);
   };
 
-  _createClass(DeviceService, null, [{
-    key: "platform",
-    get: function get() {
-      if (!this.platform_) {
-        this.platform_ = this.getDevicePlatform();
-      }
-
-      return this.platform_;
-    }
-  }, {
-    key: "isIOS",
-    get: function get() {
-      return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) !== -1 // iPad on iOS 13 detection
-      || navigator.userAgent.indexOf('Mac') !== -1 && 'ontouchend' in document;
-    }
-  }, {
-    key: "isVRHeadset",
-    get: function get() {
-      return navigator.userAgent.indexOf('VR') !== -1 || navigator.userAgent.indexOf('Quest') !== -1 || navigator.userAgent.indexOf('Oculus') !== -1;
-    }
-  }]);
-
-  return DeviceService;
-}();var LocalStorageService = /*#__PURE__*/function () {
-  function LocalStorageService() {}
-
-  LocalStorageService.delete = function _delete(name) {
-    if (this.isLocalStorageSupported()) {
-      window.localStorage.removeItem(name);
-    }
+  MessageService.in = function _in(message) {
+    this.in$.next(message);
   };
 
-  LocalStorageService.exist = function exist(name) {
-    if (this.isLocalStorageSupported()) {
-      return window.localStorage[name] !== undefined;
-    }
+  MessageService.sendBack = function sendBack(message) {
+    message = Object.assign({}, message, {
+      remoteId: message.clientId
+    }); // console.log('MessageService.sendBack', message);
+
+    this.in$.next(message);
   };
 
-  LocalStorageService.get = function get(name) {
-    var value = null;
-
-    if (this.isLocalStorageSupported() && window.localStorage[name] !== undefined) {
-      try {
-        value = JSON.parse(window.localStorage[name]);
-      } catch (e) {
-        console.log('LocalStorageService.get.error parsing', name, e);
-      }
-    }
-
-    return value;
+  MessageService.out = function out(message) {
+    this.out$.next(message);
   };
 
-  LocalStorageService.set = function set(name, value) {
-    if (this.isLocalStorageSupported()) {
-      try {
-        var cache = [];
-        var json = JSON.stringify(value, function (key, value) {
-          if (typeof value === 'object' && value !== null) {
-            if (cache.indexOf(value) !== -1) {
-              // Circular reference found, discard key
-              return;
-            }
+  return MessageService;
+}();
 
-            cache.push(value);
-          }
+_defineProperty(MessageService, "message$", new rxjs.ReplaySubject(1));
 
-          return value;
-        });
-        window.localStorage.setItem(name, json);
-      } catch (e) {
-        console.log('LocalStorageService.set.error serializing', name, value, e);
-      }
-    }
-  };
+_defineProperty(MessageService, "in$", new rxjs.ReplaySubject(1));
 
-  LocalStorageService.isLocalStorageSupported = function isLocalStorageSupported() {
-    if (this.supported) {
-      return true;
-    }
+_defineProperty(MessageService, "send", MessageService.in);
 
-    var supported = false;
-
-    try {
-      supported = 'localStorage' in window && window.localStorage !== null;
-
-      if (supported) {
-        window.localStorage.setItem('test', '1');
-        window.localStorage.removeItem('test');
-      } else {
-        supported = false;
-      }
-    } catch (e) {
-      supported = false;
-    }
-
-    this.supported = supported;
-    return supported;
-  };
-
-  return LocalStorageService;
-}();var StateService = /*#__PURE__*/function () {
+_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StateService = /*#__PURE__*/function () {
   function StateService() {}
 
   StateService.patchState = function patchState(state) {
@@ -1422,39 +1307,84 @@ _defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emitta
   };
 
   return Emittable;
-}();var MessageService = /*#__PURE__*/function () {
-  function MessageService() {}
+}();var LocalStorageService = /*#__PURE__*/function () {
+  function LocalStorageService() {}
 
-  MessageService.message = function message(_message) {
-    this.message$.next(_message);
+  LocalStorageService.delete = function _delete(name) {
+    if (this.isLocalStorageSupported()) {
+      window.localStorage.removeItem(name);
+    }
   };
 
-  MessageService.in = function _in(message) {
-    this.in$.next(message);
+  LocalStorageService.exist = function exist(name) {
+    if (this.isLocalStorageSupported()) {
+      return window.localStorage[name] !== undefined;
+    }
   };
 
-  MessageService.sendBack = function sendBack(message) {
-    message = Object.assign({}, message, {
-      remoteId: message.clientId
-    }); // console.log('MessageService.sendBack', message);
+  LocalStorageService.get = function get(name) {
+    var value = null;
 
-    this.in$.next(message);
+    if (this.isLocalStorageSupported() && window.localStorage[name] !== undefined) {
+      try {
+        value = JSON.parse(window.localStorage[name]);
+      } catch (e) {
+        console.log('LocalStorageService.get.error parsing', name, e);
+      }
+    }
+
+    return value;
   };
 
-  MessageService.out = function out(message) {
-    this.out$.next(message);
+  LocalStorageService.set = function set(name, value) {
+    if (this.isLocalStorageSupported()) {
+      try {
+        var cache = [];
+        var json = JSON.stringify(value, function (key, value) {
+          if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+              // Circular reference found, discard key
+              return;
+            }
+
+            cache.push(value);
+          }
+
+          return value;
+        });
+        window.localStorage.setItem(name, json);
+      } catch (e) {
+        console.log('LocalStorageService.set.error serializing', name, value, e);
+      }
+    }
   };
 
-  return MessageService;
-}();
+  LocalStorageService.isLocalStorageSupported = function isLocalStorageSupported() {
+    if (this.supported) {
+      return true;
+    }
 
-_defineProperty(MessageService, "message$", new rxjs.ReplaySubject(1));
+    var supported = false;
 
-_defineProperty(MessageService, "in$", new rxjs.ReplaySubject(1));
+    try {
+      supported = 'localStorage' in window && window.localStorage !== null;
 
-_defineProperty(MessageService, "send", MessageService.in);
+      if (supported) {
+        window.localStorage.setItem('test', '1');
+        window.localStorage.removeItem('test');
+      } else {
+        supported = false;
+      }
+    } catch (e) {
+      supported = false;
+    }
 
-_defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var MAX_VISIBLE_STREAMS = 8;
+    this.supported = supported;
+    return supported;
+  };
+
+  return LocalStorageService;
+}();var MAX_VISIBLE_STREAMS = 8;
 var StreamServiceMode = {
   Client: 'client',
   Editor: 'editor'
@@ -1951,7 +1881,10 @@ var MessageType = {
   VRStarted: 'vrStarted',
   VREnded: 'vrEnded',
   VRState: 'vrState',
-  MenuToggle: 'menuToggle'
+  MenuToggle: 'menuToggle',
+  ChatMessage: 'chatMessage',
+  ChatTypingBegin: 'chatTypingBegin',
+  ChatTypingEnd: 'chatTypingEnd'
 };
 var AgoraEvent = function AgoraEvent(options) {
   Object.assign(this, options);
@@ -2355,12 +2288,27 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     return channelNameLink;
   };
 
+  AgoraService.getUniqueUserId = function getUniqueUserId() {
+    var mult = 10000000000000;
+    var a = (1 + Math.floor(Math.random() * 8)) * 100;
+    var b = (1 + Math.floor(Math.random() * 8)) * 10;
+    var c = (1 + Math.floor(Math.random() * 8)) * 1;
+    var combo = a + b + c;
+    var date = Date.now();
+    var uid = combo * mult + date; // console.log(combo);
+    // console.log(date);
+    // console.log(m);
+    // console.log('AgoraService.getUniqueUserId', uid);
+
+    return uid.toString();
+  };
+
   _proto.join = function join(token, channelNameLink) {
     var _this4 = this;
 
     this.channel = null;
     var client = this.client;
-    var clientId = null; // console.log('AgoraService.join', { token, channelNameLink, clientId });
+    var clientId = LocalStorageService.get('bHereClientId') || AgoraService.getUniqueUserId(); // console.log('AgoraService.join', { token, channelNameLink, clientId });
 
     client.join(token, channelNameLink, clientId, function (uid) {
       // console.log('AgoraService.join', uid);
@@ -2370,6 +2318,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         connected: true,
         uid: uid
       });
+      LocalStorageService.set('bHereClientId', uid);
 
       {
         AgoraService.rtmToken$(uid).subscribe(function (token) {
@@ -2413,8 +2362,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         channel = messageClient.createChannel(StateService.state.channelNameLink);
         return channel.join();
       }).then(function () {
-        channel.on('ChannelMessage', _this5.onMessage);
         _this5.channel = channel;
+        channel.on('ChannelMessage', _this5.onMessage);
 
         _this5.emit('channel', channel); // console.log('AgoraService.joinMessageChannel.success');
 
@@ -3129,6 +3078,56 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     });
   };
 
+  _proto.addOrUpdateChannelAttributes = function addOrUpdateChannelAttributes(messages) {
+    var messageClient = this.messageClient;
+
+    if (messageClient) {
+      var attributes = {};
+      messages.forEach(function (message) {
+        var key = message.date.toString();
+        attributes[key] = JSON.stringify(message);
+      });
+
+      if (Object.keys(attributes).length) {
+        // console.log('AgoraService.setChannelAttributes', attributes);
+        var promise = messageClient.addOrUpdateChannelAttributes(StateService.state.channelNameLink, attributes, {
+          enableNotificationToChannelMembers: false
+        });
+        return rxjs.from(promise);
+      } else {
+        return rxjs.of(null);
+      }
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  _proto.getChannelAttributes = function getChannelAttributes() {
+    var messageClient = this.messageClient;
+
+    if (messageClient) {
+      var promise = messageClient.getChannelAttributes(StateService.state.channelNameLink);
+      return rxjs.from(promise).pipe(operators.map(function (attributes) {
+        return Object.keys(attributes).map(function (key) {
+          return attributes[key];
+        });
+      }), operators.map(function (attributes) {
+        attributes.sort(function (a, b) {
+          return a.lastUpdateTs - b.lastUpdateTs;
+        });
+        var messages = attributes.map(function (attribute) {
+          var message = JSON.parse(attribute.value); // console.log('AgoraService.getChannelAttributes.attribute', attribute, message);
+
+          return message;
+        }); // console.log('AgoraService.getChannelAttributes', messages);
+
+        return messages;
+      }));
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
   _proto.checkBroadcastMessage = function checkBroadcastMessage(message) {
     // filter for broadcast
     // !!! filter events here
@@ -3795,7 +3794,510 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
   };
 
   return AgoraService;
-}(Emittable);var TIMEOUT = 100;
+}(Emittable);var ChatMessage = /*#__PURE__*/function () {
+  function ChatMessage(message, clientId, name) {
+    this.type = MessageType.ChatMessage;
+    this.clientId_ = clientId;
+
+    if (typeof message === 'string') {
+      this.date = Date.now();
+      this.clientId = clientId;
+      this.name = name;
+      this.message = message;
+    } else if (typeof message === 'object') {
+      this.date = message.date;
+      this.clientId = message.clientId;
+      this.name = message.name;
+      this.message = message.message;
+    }
+
+    var names = this.name.split(' ');
+    this.shortName = names[0].substr(0, 1).toUpperCase() + (names.length > 1 ? names[1] : names[0]).substr(0, 1).toUpperCase();
+  }
+
+  var _proto = ChatMessage.prototype;
+
+  _proto.getPayload = function getPayload() {
+    return {
+      date: this.date,
+      clientId: this.clientId,
+      name: this.name,
+      message: this.message
+    };
+  };
+
+  _proto.getCopy = function getCopy() {
+    return new ChatMessage({
+      date: this.date,
+      clientId: this.clientId,
+      name: this.name,
+      message: this.message
+    }, this.clientId_);
+  };
+
+  _createClass(ChatMessage, [{
+    key: "me",
+    get: function get() {
+      return this.clientId === this.clientId_;
+    }
+  }]);
+
+  return ChatMessage;
+}();
+
+var AgoraChatComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraChatComponent, _Component);
+
+  function AgoraChatComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto2 = AgoraChatComponent.prototype;
+
+  _proto2.onInit = function onInit() {
+    var _this = this;
+
+    var form = this.form = new rxcompForm.FormGroup({
+      message: null
+    });
+    var controls = this.controls = form.controls;
+    form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      // console.log('AgoraChatComponent.changes$', form.value);
+      _this.checkTypings(changes);
+
+      _this.pushChanges();
+    });
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {// console.log('AgoraChatComponent.state', state);
+    });
+    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      // console.log('AgoraChatComponent.MessageService', message);
+      switch (message.type) {
+        case MessageType.ChatMessage:
+          _this.pushMessage(new ChatMessage(message, StateService.state.uid, StateService.state.name));
+
+          break;
+
+        case MessageType.ChatTypingBegin:
+          _this.typingBegin(message);
+
+          break;
+
+        case MessageType.ChatTypingEnd:
+          _this.typingEnd(message);
+
+          break;
+      }
+    });
+    this.messages = [];
+    this.groupedMessages = [];
+
+    if (this.demo) {
+      // !!! only for demo
+      var messages = AgoraChatComponent.getFakeList().map(function (x) {
+        return new ChatMessage(x, StateService.state.uid, StateService.state.name);
+      });
+      this.updateMessages(messages);
+      MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+        message.clientId = message.clientId || StateService.state.uid; // console.log('AgoraChatComponent.MessageService.in$', message);
+
+        switch (message.type) {
+          case MessageType.ChatMessage:
+            break;
+
+          case MessageType.ChatTypingBegin:
+            MessageService.out(message);
+            break;
+
+          case MessageType.ChatTypingEnd:
+            MessageService.out(message);
+            break;
+        }
+      }); // !!! only for demo
+    } else {
+      var agora = this.agora = AgoraService.getSingleton();
+
+      if (agora) {
+        agora.getChannelAttributes().pipe(operators.first()).subscribe(function (messages) {
+          messages = messages.map(function (x) {
+            return new ChatMessage(x, StateService.state.uid, StateService.state.name);
+          }); // console.log('AgoraChatComponent.getChannelAttributes.messages', messages);
+
+          _this.updateMessages(messages);
+        });
+      }
+    }
+  };
+
+  _proto2.onView = function onView() {// this.scrollToBottom();
+  };
+
+  _proto2.onChanges = function onChanges() {// this.scrollToBottom();
+  };
+
+  _proto2.onSubmit = function onSubmit() {
+    var message = this.createMessage(this.form.value.message);
+    this.sendMessage(message);
+    this.form.get('message').value = null;
+
+    if (this.demo) {
+      this.randomMessage();
+    }
+  };
+
+  _proto2.createMessage = function createMessage(text) {
+    var message = new ChatMessage(text, StateService.state.uid, StateService.state.name);
+    return message;
+  };
+
+  _proto2.sendMessage = function sendMessage(message) {
+    this.pushMessage(message);
+    var agora = this.agora;
+
+    if (agora) {
+      agora.addOrUpdateChannelAttributes([message.getPayload()]).pipe(operators.first()).subscribe();
+    }
+
+    MessageService.send(message);
+  };
+
+  _proto2.onClose = function onClose(event) {
+    this.close.next();
+  };
+
+  _proto2.scrollToBottom = function scrollToBottom() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var scrollView = node.querySelector('.group--scrollview');
+    scrollView.scrollTop = scrollView.scrollHeight;
+  };
+
+  _proto2.pushMessage = function pushMessage(message) {
+    var messages = this.messages ? this.messages.slice() : [];
+    this.removeTyping({
+      type: MessageType.ChatTypingBegin,
+      clientId: message.clientId
+    }, this.messages);
+    messages.push(message);
+    this.updateMessages(messages);
+  };
+
+  _proto2.typingBegin = function typingBegin(message) {
+    // console.log('AgoraChatComponent.typingBegin', message);
+    var messages = this.messages ? this.messages.slice() : [];
+    messages.push(message);
+    this.updateMessages(messages);
+  };
+
+  _proto2.typingEnd = function typingEnd(message) {
+    // console.log('AgoraChatComponent.typingEnd', message);
+    var messages = this.messages ? this.messages.slice() : [];
+    this.removeTyping({
+      type: MessageType.ChatTypingBegin,
+      clientId: message.clientId
+    }, messages);
+    this.updateMessages(messages);
+  };
+
+  _proto2.removeTyping = function removeTyping(message, messages, recursive) {
+    if (recursive === void 0) {
+      recursive = true;
+    }
+
+    var index = messages.reduce(function (p, c, i) {
+      return c.type === message.type && c.clientId === message.clientId ? i : p;
+    }, -1);
+
+    if (index !== -1) {
+      messages.splice(index, 1);
+
+      if (recursive === true) {
+        this.removeTyping(message, messages, true);
+      }
+    }
+
+    return index;
+  };
+
+  _proto2.checkTypings = function checkTypings(changes) {
+    var typings = changes.message && changes.message.length > 0; // console.log('AgoraChatComponent.checkTypings', typings);
+
+    if (this.typings_ !== typings) {
+      this.typings_ = typings;
+
+      if (typings) {
+        MessageService.send({
+          type: MessageType.ChatTypingBegin
+        });
+      } else {
+        MessageService.send({
+          type: MessageType.ChatTypingEnd
+        });
+      }
+    }
+  };
+
+  _proto2.updateMessages = function updateMessages(messages) {
+    var _this2 = this;
+
+    this.messages = messages;
+
+    {
+      this.groupedMessages = [];
+      this.pushChanges();
+    }
+
+    var groupedMessages = [];
+    messages.forEach(function (message) {
+      if (message.type === MessageType.ChatMessage) {
+        // ChatMessage
+        var lastMessage = groupedMessages.length ? groupedMessages[groupedMessages.length - 1] : null;
+
+        if (lastMessage && lastMessage.clientId === message.clientId) {
+          lastMessage.message += "<br />" + message.message;
+        } else {
+          groupedMessages.push(message.getCopy());
+        }
+      } else if (message.type === MessageType.ChatTypingBegin) {
+        // ChatTypingBegin
+        var _lastMessage = groupedMessages.reduce(function (p, c, i) {
+          return c.clientId === message.clientId ? c : p;
+        }, null);
+
+        if (_lastMessage) {
+          _lastMessage.typing = true;
+        } // console.log('MessageType.ChatTypingBegin', lastMessage, message);
+
+      }
+    });
+    setTimeout(function () {
+      _this2.groupedMessages = groupedMessages;
+
+      _this2.pushChanges(); // console.log('AgoraChatComponent.updateMessages', messages, groupedMessages);
+
+
+      setTimeout(function () {
+        _this2.scrollToBottom();
+      }, 1);
+    }, 1);
+  };
+
+  _proto2.isValid = function isValid() {
+    var isValid = this.form.valid;
+    return isValid && this.form.value.message && this.form.value.message.length > 0;
+  } // demo
+  ;
+
+  _proto2.randomMessage = function randomMessage() {
+    var _this3 = this;
+
+    setTimeout(function () {
+      var message = _this3.createRandomMessage();
+
+      _this3.sendMessage(message);
+    }, (1 + Math.random() * 5) * 1000);
+  };
+
+  _proto2.createRandomMessage = function createRandomMessage(text) {
+    var message = new ChatMessage({
+      date: Date.now(),
+      clientId: '9fe0e1b9-6a6b-418b-b916-4bbff3eeb123',
+      name: 'Herman frederick',
+      message: 'Lorem ipsum dolor'
+    }, StateService.state.uid, StateService.state.name);
+    return message;
+  };
+
+  return AgoraChatComponent;
+}(rxcomp.Component);
+AgoraChatComponent.meta = {
+  selector: '[agora-chat]',
+  outputs: ['close'],
+  inputs: ['demo']
+};
+
+AgoraChatComponent.getFakeList = function () {
+  var messages = [{
+    "date": 1614592230000,
+    "name": "Jhon Appleseed",
+    "message": "Function-based web-enabled benchmark",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592240000,
+    "name": "Jhon Appleseed",
+    "message": "Customizable exuding superstructure",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592250000,
+    "name": "Gilles Pitkins",
+    "message": "Synergistic interactive archive",
+    "clientId": "cfe9ff5b-f7da-449d-bf5a-3184b5eba6ea"
+  }, {
+    "date": 1614592260000,
+    "name": "Jhon Appleseed",
+    "message": "Digitized client-server initiative",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592270000,
+    "name": "Jhon Appleseed",
+    "message": "Quality-focused tertiary open system",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592280000,
+    "name": "Jhon Appleseed",
+    "message": "Exclusive uniform middleware",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592290000,
+    "name": "John Pruckner",
+    "message": "Decentralized disintermediate extranet",
+    "clientId": "ae51e846-d043-41e9-bb5c-3189181e5b43"
+  }, {
+    "date": 1614592300000,
+    "name": "Lamont Georgievski",
+    "message": "Enhanced static approach",
+    "clientId": "1961cd9e-93aa-4bd0-b96a-89fcbd36b257"
+  }, {
+    "date": 1614592310000,
+    "name": "Jhon Appleseed",
+    "message": "Ergonomic clear-thinking info-mediaries",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592320000,
+    "name": "Jeri Pedroni",
+    "message": "Grass-roots dynamic encryption",
+    "clientId": "13d69bba-3656-449b-8fe3-d7a87062b044"
+  }, {
+    "date": 1614592330000,
+    "name": "Frederik Dechelle",
+    "message": "Compatible disintermediate policy",
+    "clientId": "9151ebe0-efa8-40b4-a341-b8fd489e9c88"
+  }, {
+    "date": 1614592340000,
+    "name": "Jhon Appleseed",
+    "message": "Inverse user-facing adapter",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592350000,
+    "name": "Jhon Appleseed",
+    "message": "Future-proofed even-keeled application",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592360000,
+    "name": "Cassie Jonathon",
+    "message": "Profit-focused content-based budgetary management",
+    "clientId": "5b3dc6f3-2a3d-493d-aac5-66ddfce2d709"
+  }, {
+    "date": 1614592370000,
+    "name": "Jhon Appleseed",
+    "message": "Managed intermediate monitoring",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592380000,
+    "name": "Jhon Appleseed",
+    "message": "Exclusive client-server encoding",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592390000,
+    "name": "Jhon Appleseed",
+    "message": "Cross-group system-worthy matrices",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592400000,
+    "name": "Jhon Appleseed",
+    "message": "Upgradable encompassing benchmark",
+    "clientId": "7341614597544882"
+  }, {
+    "date": 1614592410000,
+    "name": "Emelen Beevors",
+    "message": "Function-based full-range knowledge base",
+    "clientId": "c93aea47-ebd8-4e5e-88fd-52053dd35cd1"
+  }, {
+    "date": 1614592420000,
+    "name": "Jhon Appleseed",
+    "message": "Synergistic system-worthy capability",
+    "clientId": "7341614597544882"
+  }];
+
+  while (messages.length < 100) {
+    messages = messages.concat(messages);
+  } // return messages;
+
+
+  return messages.slice(0, 5);
+};var AgoraCheckComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraCheckComponent, _Component);
+
+  function AgoraCheckComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  return AgoraCheckComponent;
+}(rxcomp.Component);
+AgoraCheckComponent.meta = {
+  selector: '[agora-check]',
+  inputs: ['value'],
+  template:
+  /* html */
+  "\n\t\t<svg *if=\"value == null\" class=\"checkmark idle\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === true\" class=\"checkmark success\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" fill=\"none\" d=\"M14.1 27.2l7.1 7.2 16.7-16.8\" stroke-linecap=\"round\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === false\" class=\"checkmark error\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" stroke-linecap=\"round\" fill=\"none\" d=\"M16 16 36 36 M36 16 16 36\"/>\n\t\t</svg>\n\t"
+};var DevicePlatform = {
+  Unknown: 'unknown',
+  IOS: 'ios',
+  Android: 'android',
+  WindowsPhone: 'windowsPhone',
+  VRHeadset: 'vrHeadset'
+};
+var DeviceService = /*#__PURE__*/function () {
+  function DeviceService() {}
+
+  DeviceService.getDevicePlatform = function getDevicePlatform() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera; // Windows Phone must come first because its UA also contains 'Android'
+
+    if (/windows phone/i.test(userAgent)) {
+      return DevicePlatform.WindowsPhone;
+    }
+
+    if (/android/i.test(userAgent)) {
+      return DevicePlatform.Android;
+    } // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    // if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+
+
+    if (this.isIOS) {
+      return DevicePlatform.IOS;
+    }
+
+    if (this.isVRHeadset) {
+      return DevicePlatform.VRHeadset;
+    }
+
+    return DevicePlatform.Unknown;
+  };
+
+  _createClass(DeviceService, null, [{
+    key: "platform",
+    get: function get() {
+      if (!this.platform_) {
+        this.platform_ = this.getDevicePlatform();
+      }
+
+      return this.platform_;
+    }
+  }, {
+    key: "isIOS",
+    get: function get() {
+      return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) !== -1 // iPad on iOS 13 detection
+      || navigator.userAgent.indexOf('Mac') !== -1 && 'ontouchend' in document;
+    }
+  }, {
+    key: "isVRHeadset",
+    get: function get() {
+      return navigator.userAgent.indexOf('VR') !== -1 || navigator.userAgent.indexOf('Quest') !== -1 || navigator.userAgent.indexOf('Oculus') !== -1;
+    }
+  }]);
+
+  return DeviceService;
+}();var TIMEOUT = 100;
 
 var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraChecklistComponent, _Component);
@@ -6468,6 +6970,15 @@ var VRService = /*#__PURE__*/function () {
             return _this5.showLove(view);
           });
           break;
+
+        case MessageType.ChatMessage:
+          if (!StateService.state.chat) {
+            StateService.patchState({
+              chatDirty: true
+            });
+          }
+
+          break;
       }
     });
     MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
@@ -6704,6 +7215,19 @@ var VRService = /*#__PURE__*/function () {
     });
   };
 
+  _proto.toggleChat = function toggleChat() {
+    StateService.patchState({
+      chat: !this.state.chat,
+      chatDirty: false
+    });
+  };
+
+  _proto.onChatClose = function onChatClose() {
+    this.patchState({
+      chat: false
+    });
+  };
+
   _proto.onToggleControl = function onToggleControl() {
     if (this.agora) {
       this.agora.toggleControl();
@@ -6787,6 +7311,16 @@ var VRService = /*#__PURE__*/function () {
   }
   */
   ;
+
+  _createClass(AgoraComponent, [{
+    key: "uiClass",
+    get: function get() {
+      var uiClass = {};
+      uiClass[this.state.role] = true;
+      uiClass.chat = this.state.chat;
+      return uiClass;
+    }
+  }]);
 
   return AgoraComponent;
 }(rxcomp.Component);
@@ -11662,20 +12196,25 @@ IdDirective.meta = {
       status: LocationService.get('status') || 'connected',
       role: LocationService.get('role') || 'publisher',
       membersCount: 1,
-      live: true
+      live: true,
+      chat: false,
+      chatDirty: true,
+      name: "Jhon Appleseed",
+      uid: "7341614597544882"
     };
     this.state.has3D = this.state.role !== RoleType.SmartDevice;
     this.view = {
       likes: 41
     };
     this.local = {};
-    this.screen = {};
+    this.screen = null;
     this.remotes = new Array(8).fill(0).map(function (x, i) {
       return {
         id: i + 1
       };
     });
-    console.log('LayoutComponent', this);
+    StateService.patchState(this.state);
+    console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
   };
 
   _proto.patchState = function patchState(state) {
@@ -11704,6 +12243,19 @@ IdDirective.meta = {
   _proto.toggleVolume = function toggleVolume() {
     this.patchState({
       volumeMuted: !this.state.volumeMuted
+    });
+  };
+
+  _proto.toggleChat = function toggleChat() {
+    this.patchState({
+      chat: !this.state.chat,
+      chatDirty: false
+    });
+  };
+
+  _proto.onChatClose = function onChatClose() {
+    this.patchState({
+      chat: false
     });
   };
 
@@ -11748,6 +12300,16 @@ IdDirective.meta = {
   };
 
   _proto.disconnect = function disconnect() {};
+
+  _createClass(LayoutComponent, [{
+    key: "uiClass",
+    get: function get() {
+      var uiClass = {};
+      uiClass[this.state.role] = true;
+      uiClass.chat = this.state.chat;
+      return uiClass;
+    }
+  }]);
 
   return LayoutComponent;
 }(rxcomp.Component);
@@ -12308,6 +12870,608 @@ UploadItemComponent.meta = {
 HlsDirective.meta = {
   selector: '[[hls]]',
   inputs: ['hls']
+};var VirtualItem = /*#__PURE__*/function (_Context) {
+  _inheritsLoose(VirtualItem, _Context);
+
+  function VirtualItem(key, $key, value, $value, index, count, parentInstance) {
+    var _this;
+
+    _this = _Context.call(this, parentInstance) || this;
+    _this[key] = $key;
+    _this[value] = $value;
+    _this.index = index;
+    _this.count = count;
+    return _this;
+  }
+
+  _createClass(VirtualItem, [{
+    key: "first",
+    get: function get() {
+      return this.index === 0;
+    }
+  }, {
+    key: "last",
+    get: function get() {
+      return this.index === this.count - 1;
+    }
+  }, {
+    key: "even",
+    get: function get() {
+      return this.index % 2 === 0;
+    }
+  }, {
+    key: "odd",
+    get: function get() {
+      return !this.even;
+    }
+  }]);
+
+  return VirtualItem;
+}(rxcomp.Context);var VirtualMode = {
+  Responsive: 1,
+  Grid: 2,
+  Centered: 3,
+  List: 4
+};
+
+var VirtualStructure = /*#__PURE__*/function (_Structure) {
+  _inheritsLoose(VirtualStructure, _Structure);
+
+  function VirtualStructure() {
+    return _Structure.apply(this, arguments) || this;
+  }
+
+  var _proto = VirtualStructure.prototype;
+
+  _proto.onInit = function onInit() {
+    var _getContext = rxcomp.getContext(this),
+        module = _getContext.module,
+        node = _getContext.node;
+
+    var template = node.firstElementChild;
+    var expression = node.getAttribute('*virtual');
+    node.removeAttribute('*virtual');
+    node.removeChild(template);
+    var tokens = this.tokens = this.getExpressionTokens(expression);
+    this.virtualFunction = module.makeFunction(tokens.iterable);
+    this.container = node;
+    this.template = template;
+    this.mode = this.mode || 1;
+    this.width = this.width || 250;
+    this.gutter = this.gutter !== undefined ? this.gutter : 20;
+    this.reverse = this.reverse === true ? true : false;
+    this.options = {
+      width: this.width,
+      gutter: this.gutter,
+      reverse: this.reverse,
+      containerWidth: 0,
+      containerHeight: 0,
+      top: 0,
+      cols: [0]
+    };
+    this.cachedRects = {};
+    this.cachedInstances = [];
+    this.cacheNodes = [];
+    this.items$ = new rxjs.BehaviorSubject([]);
+    this.update$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (visibleItems) {// console.log(visibleItems.length);
+    });
+  };
+
+  _proto.onChanges = function onChanges(changes) {
+    var context = rxcomp.getContext(this);
+    var module = context.module; // resolve
+
+    var items = module.resolve(this.virtualFunction, context.parentInstance, this) || [];
+    this.mode = this.mode || 1;
+    this.width = this.width || 250;
+    this.gutter = this.gutter !== undefined ? this.gutter : 20;
+    this.options.width = this.width;
+    this.updateView(true);
+    this.items$.next(items); // console.log('VirtualStructure', 'items.length', items.length);
+  };
+
+  _proto.update$ = function update$() {
+    var _this = this;
+
+    return rxjs.merge(this.scroll$(), this.resize$(), this.items$.pipe(operators.distinctUntilChanged())).pipe(operators.map(function (_) {
+      var visibleItems = _this.updateForward();
+
+      return visibleItems;
+    }));
+  };
+
+  _proto.updateForward = function updateForward() {
+    var _this2 = this;
+
+    var options = this.options;
+    var items = this.items$.getValue(); // console.log('VirtualStructure', 'items.length', items.length);
+
+    var total = items.length;
+    this.container.position = 'relative';
+    var highestHeight = 0;
+    var width = this.getWidth();
+    var gutter = this.getGutter(width);
+    var visibleItems = [];
+
+    for (var i = 0, len = items.length; i < len; i++) {
+      var item = items[i];
+      var col = void 0,
+          height = void 0,
+          top = void 0,
+          left = void 0,
+          bottom = void 0;
+      var rect = this.cachedRects[i];
+
+      if (rect) {
+        col = rect.col;
+        height = rect.height;
+        left = rect.left; // top = rect.top;
+        // bottom = rect.bottom;
+      } else {
+        col = this.getCol();
+        height = this.getHeight(width, item);
+      }
+
+      top = options.cols[col];
+
+      if (this.intersect(top + options.top, top + height + options.top, options.top, options.top + options.containerHeight)) {
+        if (!rect) {
+          left = this.getLeft(col, width, gutter);
+        }
+
+        var node = this.cachedNode(i, i, item, total);
+        node.style.position = 'absolute';
+        node.style.top = top + 'px';
+        node.style.left = left + 'px';
+        node.style.width = width + 'px';
+
+        if (height !== node.offsetHeight) {
+          height = node.offsetHeight;
+        }
+
+        bottom = top + height + options.gutter;
+        highestHeight = Math.max(highestHeight, bottom);
+        options.cols[col] = bottom;
+
+        if (!rect) {
+          this.cachedRects[i] = {
+            col: col,
+            width: width,
+            height: height,
+            left: left,
+            top: top,
+            bottom: bottom
+          };
+        } else {
+          rect.height = height;
+          rect.bottom = bottom;
+        }
+
+        visibleItems.push(item);
+      } else {
+        this.removeNode(i);
+        bottom = top + height + options.gutter;
+        options.cols[col] = bottom;
+        highestHeight = Math.max(highestHeight, bottom);
+      }
+    }
+
+    var removeIndex = items.length;
+
+    while (removeIndex < this.cacheNodes.length) {
+      this.removeNode(removeIndex);
+      removeIndex++;
+    }
+
+    this.cacheNodes.length = items.length;
+    var parentContainer = this.container.parentNode;
+
+    if (this.reverse && highestHeight < parentContainer.offsetHeight - 1) {
+      var diff = parentContainer.offsetHeight - 1 - highestHeight;
+      items.forEach(function (item, i) {
+        if (visibleItems.indexOf(item) !== -1) {
+          var _rect = _this2.cachedRects[i];
+
+          var _node = _this2.cachedNode(i, i, item, total);
+
+          _node.style.top = _rect.top + diff + 'px';
+        }
+      });
+      this.container.style.height = parentContainer.offsetHeight - 1 + "px";
+    } else {
+      this.container.style.height = highestHeight + "px";
+    }
+
+    return visibleItems;
+  }
+  /*
+  updateForward__() {
+  	const options = this.options;
+  	const items = this.items$.getValue();
+  	// console.log('VirtualStructure', 'items.length', items.length);
+  	const total = items.length;
+  	this.container.position = 'relative';
+  	let highestHeight = 0;
+  	const width = this.getWidth();
+  	const gutter = this.getGutter(width);
+  	const visibleItems = items.filter((item, i) => {
+  		let col, height, top, left, bottom;
+  		let rect = this.cachedRects[i];
+  		if (rect) {
+  			col = rect.col;
+  			height = rect.height;
+  			left = rect.left;
+  			// top = rect.top;
+  			// bottom = rect.bottom;
+  		} else {
+  			col = this.getCol();
+  			height = this.getHeight(width, item);
+  		}
+  		top = options.cols[col];
+  		if (this.intersect(top + options.top, top + height + options.top, options.top, options.top + options.containerHeight)) {
+  			if (!rect) {
+  				left = this.getLeft(col, width, gutter);
+  			}
+  			const node = this.cachedNode(i, i, item, total);
+  			node.style.position = 'absolute';
+  			node.style.top = top + 'px';
+  			node.style.left = left + 'px';
+  			node.style.width = width + 'px';
+  			if (height !== node.offsetHeight) {
+  				height = node.offsetHeight;
+  			}
+  			bottom = top + height + options.gutter;
+  			highestHeight = Math.max(highestHeight, bottom);
+  			options.cols[col] = bottom;
+  			if (!rect) {
+  				this.cachedRects[i] = { col, width, height, left, top, bottom };
+  			} else {
+  				rect.height = height;
+  				rect.bottom = bottom;
+  			}
+  			return true;
+  		} else {
+  			this.removeNode(i);
+  			bottom = top + height + options.gutter;
+  			options.cols[col] = bottom;
+  			highestHeight = Math.max(highestHeight, bottom);
+  			return false;
+  		}
+  	});
+  	let removeIndex = items.length;
+  	while (removeIndex < this.cacheNodes.length) {
+  		this.removeNode(removeIndex);
+  		removeIndex++;
+  	}
+  	this.cacheNodes.length = items.length;
+  	this.container.style.height = `${highestHeight}px`;
+  	return visibleItems;
+  }
+  
+  updateBackward__() {
+  	const options = this.options;
+  	const items = this.items$.getValue();
+  	// console.log('VirtualStructure', 'items.length', items.length);
+  	const total = items.length;
+  	this.container.position = 'relative';
+  	let lowestHeight = 0;
+  	const width = this.getWidth();
+  	const gutter = this.getGutter(width);
+  	const visibleItems = [];
+  	for (let i = items.length - 1; i >= 0; i--) {
+  		const item = items[i];
+  		let col, height, top, left, bottom;
+  		let rect = this.cachedRects[i];
+  		if (rect) {
+  			col = rect.col;
+  			height = rect.height;
+  			left = rect.left;
+  			// top = rect.top;
+  			// bottom = rect.bottom;
+  		} else {
+  			col = this.getCol();
+  			height = this.getHeight(width, item);
+  		}
+  		bottom = options.cols[col];
+  		if (this.intersect(bottom - height + options.top, bottom + options.top, options.top, options.top + options.containerHeight)) {
+  			if (!rect) {
+  				left = this.getLeft(col, width, gutter);
+  			}
+  			const node = this.cachedNode(i, i, item, total);
+  			node.style.position = 'absolute';
+  			node.style.top = top + 'px';
+  			node.style.left = left + 'px';
+  			node.style.width = width + 'px';
+  			if (height !== node.offsetHeight) {
+  				height = node.offsetHeight;
+  			}
+  			top = bottom - height - options.gutter;
+  			lowestHeight = Math.min(lowestHeight, -top);
+  			options.cols[col] = top;
+  			if (!rect) {
+  				this.cachedRects[i] = { col, width, height, left, top, bottom: bottom };
+  			} else {
+  				rect.height = height;
+  				rect.top = top;
+  			}
+  			visibleItems.push(item);
+  		} else {
+  			this.removeNode(i);
+  			top = bottom - height - options.gutter;
+  			options.cols[col] = top;
+  			lowestHeight = Math.min(lowestHeight, top);
+  		}
+  	}
+  	let removeIndex = items.length;
+  	while (removeIndex < this.cacheNodes.length) {
+  		this.removeNode(removeIndex);
+  		removeIndex++;
+  	}
+  	this.cacheNodes.length = items.length;
+  	this.container.style.height = `${-lowestHeight}px`;
+  	return visibleItems;
+  }
+  */
+  ;
+
+  _proto.getCols = function getCols() {
+    var options = this.options;
+    var cols = Math.floor((options.containerWidth + options.gutter) / (options.width + options.gutter)) || 1;
+    return new Array(cols).fill(0);
+  };
+
+  _proto.getCol = function getCol() {
+    var options = this.options;
+    var col;
+
+    switch (this.mode) {
+      case VirtualMode.Grid:
+      case VirtualMode.Centered:
+      case VirtualMode.Responsive:
+        col = options.cols.reduce(function (p, c, i, a) {
+          return c < a[p] ? i : p;
+        }, 0);
+        break;
+
+      case VirtualMode.List:
+      default:
+        col = 0;
+    }
+
+    return col;
+  };
+
+  _proto.getWidth = function getWidth() {
+    var options = this.options;
+    var width;
+
+    switch (this.mode) {
+      case VirtualMode.Grid:
+      case VirtualMode.Centered:
+        width = options.width;
+        break;
+
+      case VirtualMode.Responsive:
+        width = (options.containerWidth - (options.cols.length - 1) * options.gutter) / options.cols.length;
+        break;
+
+      case VirtualMode.List:
+      default:
+        width = options.containerWidth;
+    }
+
+    return width;
+  };
+
+  _proto.getHeight = function getHeight(width, item) {
+    var options = this.options;
+    var height;
+
+    switch (this.mode) {
+      case VirtualMode.Grid:
+      case VirtualMode.Centered:
+      case VirtualMode.Responsive:
+        height = options.width;
+        break;
+
+      case VirtualMode.List:
+      default:
+        height = 80;
+    }
+
+    return height;
+  };
+
+  _proto.getGutter = function getGutter(width) {
+    var options = this.options;
+    var gutter;
+
+    switch (this.mode) {
+      case VirtualMode.Grid:
+      case VirtualMode.Centered:
+        gutter = options.gutter;
+        break;
+
+      case VirtualMode.Responsive:
+        gutter = (options.containerWidth - options.cols.length * width) / (options.cols.length - 1);
+        break;
+
+      case VirtualMode.List:
+      default:
+        gutter = 0;
+    }
+
+    return gutter;
+  };
+
+  _proto.getLeft = function getLeft(index, width, gutter) {
+    var options = this.options;
+    var left;
+
+    switch (this.mode) {
+      case VirtualMode.Grid:
+      case VirtualMode.Responsive:
+        left = index * (width + gutter);
+        break;
+
+      case VirtualMode.Centered:
+        left = (options.containerWidth - options.cols.length * (width + gutter) + gutter) / 2 + index * (width + gutter);
+        break;
+
+      case VirtualMode.List:
+      default:
+        left = 0;
+    }
+
+    return left;
+  };
+
+  _proto.cachedNode = function cachedNode(index, i, value, total) {
+    if (this.cacheNodes[index]) {
+      return this.updateNode(index, i, value);
+    } else {
+      return this.createNode(index, i, value, total);
+    }
+  };
+
+  _proto.createNode = function createNode(index, i, value, total) {
+    var clonedNode = this.template.cloneNode(true);
+    delete clonedNode.rxcompId;
+    this.container.appendChild(clonedNode);
+    this.cacheNodes[index] = clonedNode;
+    var context = rxcomp.getContext(this);
+    var module = context.module;
+    var tokens = this.tokens;
+    var args = [tokens.key, i, tokens.value, value, i, total, context.parentInstance];
+    var instance = module.makeInstance(clonedNode, VirtualItem, context.selector, context.parentInstance, args);
+    var forItemContext = rxcomp.getContext(instance);
+    module.compile(clonedNode, forItemContext.instance);
+    this.cachedInstances[index] = instance;
+    return clonedNode;
+  };
+
+  _proto.updateNode = function updateNode(index, i, value) {
+    var instance = this.cachedInstances[index];
+    var tokens = this.tokens;
+
+    if (instance[tokens.key] !== i) {
+      instance[tokens.key] = i;
+      instance[tokens.value] = value;
+      instance.pushChanges();
+    } // console.log(index, i, value);
+
+
+    return this.cacheNodes[index];
+  };
+
+  _proto.removeNode = function removeNode(index) {
+    this.cachedInstances[index] = undefined;
+    var node = this.cacheNodes[index];
+
+    if (node) {
+      var context = rxcomp.getContext(this);
+      var module = context.module;
+      node.parentNode.removeChild(node);
+      module.remove(node);
+    }
+
+    this.cacheNodes[index] = undefined;
+    return node;
+  };
+
+  _proto.intersect = function intersect(top1, bottom1, top2, bottom2) {
+    return top2 < bottom1 && bottom2 > top1;
+  };
+
+  _proto.resize$ = function resize$() {
+    var _this3 = this;
+
+    return rxjs.fromEvent(window, 'resize').pipe(operators.auditTime(100), operators.startWith(null), operators.tap(function () {
+      return _this3.updateView(true);
+    }));
+  };
+
+  _proto.scroll$ = function scroll$() {
+    var _this4 = this;
+
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node; // console.log(node.parentNode, getComputedStyle(node.parentNode).overflowY, node.parentNode.style.overflowY);
+
+
+    if (node.parentNode && getComputedStyle(node.parentNode).overflowY === 'auto') {
+      return rxjs.fromEvent(node.parentNode, 'scroll').pipe(operators.tap(function () {
+        _this4.updateView();
+      }));
+    } else {
+      return rxjs.fromEvent(window, 'scroll').pipe(operators.tap(function () {
+        return _this4.updateView();
+      }));
+    }
+  };
+
+  _proto.updateView = function updateView(reset) {
+    var rect = this.container.getBoundingClientRect();
+    var options = this.options;
+    options.top = rect.top;
+    options.containerWidth = rect.width;
+    options.containerHeight = rect.height; // window.innerHeight;
+
+    options.cols = this.getCols();
+
+    if (reset) {
+      this.cachedRects = {};
+    }
+  };
+
+  _proto.getExpressionTokens = function getExpressionTokens(expression) {
+    if (expression === null) {
+      throw new Error('invalid virtual');
+    }
+
+    if (expression.trim().indexOf('let ') === -1 || expression.trim().indexOf(' of ') === -1) {
+      throw new Error('invalid virtual');
+    }
+
+    var expressions = expression.split(';').map(function (x) {
+      return x.trim();
+    }).filter(function (x) {
+      return x !== '';
+    });
+    var virtualExpressions = expressions[0].split(' of ').map(function (x) {
+      return x.trim();
+    });
+    var value = virtualExpressions[0].replace(/\s*let\s*/, '');
+    var iterable = virtualExpressions[1];
+    var key = 'index';
+    var keyValueMatches = value.match(/\[(.+)\s*,\s*(.+)\]/);
+
+    if (keyValueMatches) {
+      key = keyValueMatches[1];
+      value = keyValueMatches[2];
+    }
+
+    if (expressions.length > 1) {
+      var indexExpressions = expressions[1].split(/\s*let\s*|\s*=\s*index/).map(function (x) {
+        return x.trim();
+      });
+
+      if (indexExpressions.length === 3) {
+        key = indexExpressions[1];
+      }
+    }
+
+    return {
+      key: key,
+      value: value,
+      iterable: iterable
+    };
+  };
+
+  return VirtualStructure;
+}(rxcomp.Structure);
+VirtualStructure.meta = {
+  selector: '[*virtual]',
+  inputs: ['mode', 'width', 'gutter', 'reverse']
 };var LOADER_UID = 0;
 
 var LoaderService = /*#__PURE__*/function () {
@@ -21068,6 +22232,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, WorldComponent],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

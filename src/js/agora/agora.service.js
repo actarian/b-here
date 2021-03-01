@@ -5,6 +5,7 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
+import LocalStorageService from '../local-storage/local-storage.service';
 // import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
@@ -297,14 +298,33 @@ export default class AgoraService extends Emittable {
 		return channelNameLink;
 	}
 
+	static getUniqueUserId() {
+		// max safe integer 9007199254740991 length 16
+		// max allowed integer 4294967296 2^32
+		const m = 9007199254740991;
+		const mult = 10000000000000;
+		const a = (1 + Math.floor(Math.random() * 8)) * 100;
+		const b = (1 + Math.floor(Math.random() * 8)) * 10;
+		const c = (1 + Math.floor(Math.random() * 8)) * 1;
+		const combo = (a + b + c);
+		const date = Date.now();
+		const uid = combo * mult + date;
+		// console.log(combo);
+		// console.log(date);
+		// console.log(m);
+		// console.log('AgoraService.getUniqueUserId', uid);
+		return uid.toString();
+	}
+
 	join(token, channelNameLink) {
 		this.channel = null;
 		const client = this.client;
-		const clientId = null;
+		const clientId = LocalStorageService.get('bHereClientId') || AgoraService.getUniqueUserId();
 		// console.log('AgoraService.join', { token, channelNameLink, clientId });
 		client.join(token, channelNameLink, clientId, (uid) => {
 			// console.log('AgoraService.join', uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });
+			LocalStorageService.set('bHereClientId', uid);
 			if (USE_RTM) {
 				AgoraService.rtmToken$(uid).subscribe(token => {
 					// console.log('AgoraService.rtmToken$', token);
@@ -347,8 +367,8 @@ export default class AgoraService extends Emittable {
 				channel = messageClient.createChannel(StateService.state.channelNameLink);
 				return channel.join();
 			}).then(() => {
-				channel.on('ChannelMessage', this.onMessage);
 				this.channel = channel;
+				channel.on('ChannelMessage', this.onMessage);
 				this.emit('channel', channel);
 				// console.log('AgoraService.joinMessageChannel.success');
 				resolve(uid);
@@ -956,6 +976,50 @@ export default class AgoraService extends Emittable {
 				// reject();
 			}
 		})
+	}
+
+	addOrUpdateChannelAttributes(messages) {
+		const messageClient = this.messageClient;
+		if (messageClient) {
+			const attributes = {};
+			messages.forEach(message => {
+				const key = message.date.toString();
+				attributes[key] = JSON.stringify(message);
+			});
+			if (Object.keys(attributes).length) {
+				// console.log('AgoraService.setChannelAttributes', attributes);
+				const promise = messageClient.addOrUpdateChannelAttributes(StateService.state.channelNameLink, attributes, { enableNotificationToChannelMembers: false });
+				return from(promise);
+			} else {
+				return of(null);
+			}
+		} else {
+			return of(null);
+		}
+	}
+
+	getChannelAttributes() {
+		const messageClient = this.messageClient;
+		if (messageClient) {
+			const promise = messageClient.getChannelAttributes(StateService.state.channelNameLink);
+			return from(promise).pipe(
+				map(attributes => Object.keys(attributes).map(key => attributes[key])),
+				map(attributes => {
+					attributes.sort((a, b) => {
+						return a.lastUpdateTs - b.lastUpdateTs;
+					});
+					const messages = attributes.map(attribute => {
+						const message = JSON.parse(attribute.value);
+						// console.log('AgoraService.getChannelAttributes.attribute', attribute, message);
+						return message;
+					});
+					// console.log('AgoraService.getChannelAttributes', messages);
+					return messages;
+				}),
+			);
+		} else {
+			return of(null);
+		}
 	}
 
 	checkBroadcastMessage(message) {

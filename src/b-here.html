@@ -56,6 +56,7 @@
 		bhere_checklist_error: 'Verifica fallita', // 'Checking system',
 		bhere_browser_error: 'clicca qui per aggiornare il browser', // 'click here to upgrade your browser',
 		bhere_https_error: 'clicca qui per ricaricare la pagina in https', // 'click here to reload in https',
+		bhere_write_a_message: 'Scrivi...',
 	};
 </script>
 <style>
@@ -67,12 +68,14 @@
 		--background-secondary: #ff4332;
 		--background-tertiary: #d8dfe4;
 		--background-primary-disabled: #c4d3dd;
+		--background-primary-dimmed: rgba(0,153,255,0.08);
 		--foreground: #101010;
-		--foreground-negative: #ffffff;
+		--foreground-negative: #fcfcfc;
 		--foreground-primary: #0099ff;
 		--foreground-secondary: #ff4332;
 		--foreground-tertiary: #6d7b84;
 		--foreground-primary-disabled: #c4d3dd;
+		--foreground-primary-dimmed: rgba(0,153,255,0.5);
 		--border: #101010;
 		--shadow: rgba(86, 125, 151, .65);
 	}
@@ -256,7 +259,7 @@
 		</div>
 	</div>
 	<!-- Status Connected -->
-	<div class="ui" [class]="state.role" *if="state.status == 'connected' && state.has3D">
+	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.has3D">
 		<div class="ui__body">
 			<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)">
 				<div class="world__view" *if="view">
@@ -340,6 +343,40 @@
 				<div class="agora-stream__player"></div>
 			</div>
 		</div>
+		<!-- chat -->
+		<div class="group--chat" *if="state.chat" [agora-chat] (close)="onChatClose()">
+			<div class="group--scrollview">
+				<div class="group--virtual" *virtual="let item of groupedMessages" [mode]="4" [width]="350" [gutter]="0" [reverse]="true">
+					<!-- serve un nodo figlio -->
+					<div class="listing__item message" [class]="{ me: item.me, typing: item.typing }">
+						<div class="message__avatar"><span [innerHTML]="item.shortName"></span></div>
+						<div class="message__content">
+							<div [innerHTML]="item.message"></div>
+							<div class="typing-indicator">
+								<span></span>
+								<span></span>
+								<span></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="group--message">
+				<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit($event)" name="form" role="form" novalidate autocomplete="off">
+					<div class="group--form group--form--addon" [class]="{ required: controls.message.validators.length, 'addon': controls.message.valid }">
+						<input type="text" class="control--text" [formControl]="controls.message" [placeholder]="'bhere_write_a_message' | label" />
+						<button type="submit" class="control--addon">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#send"></use></svg>
+						</button>
+					</div>
+				</form>
+			</div>
+			<div class="group--close">
+				<button type="button" class="btn--close" (click)="onClose($event)">
+					<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+				</button>
+			</div>
+		</div>
 		<!-- main volume -->
 		<div class="group--volume">
 			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
@@ -360,6 +397,9 @@
 			</button>
 			<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee'">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
+			</button>
+			<button type="button" class="btn--chat" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#chat"></use></svg>
 			</button>
 		</div>
 		<!-- ar-vr -->

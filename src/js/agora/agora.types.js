@@ -132,6 +132,9 @@ export const MessageType = {
 	VREnded: 'vrEnded',
 	VRState: 'vrState',
 	MenuToggle: 'menuToggle',
+	ChatMessage: 'chatMessage',
+	ChatTypingBegin: 'chatTypingBegin',
+	ChatTypingEnd: 'chatTypingEnd',
 };
 export class AgoraEvent {
 	constructor(options) {

@@ -1,3 +1,7 @@
+$remote-width: 120px;
+$remote-height: 90px;
+$chat-width: 240px;
+
 .ui {
 	position: relative;
 	display: flex;
@@ -24,13 +28,13 @@
 					flex-direction: column;
 					justify-content: flex-start;
 					top: 0;
-					left: -120px;
-					width: 120px;
+					left: -$remote-width;
+					width: $remote-width;
 					height: 100%;
-					flex: 1 1 120px;
+					flex: 1 1 $remote-width;
 
 					.group--members {
-						width: 120px;
+						width: $remote-width;
 						bottom: 0;
 					}
 				}
@@ -38,10 +42,10 @@
 				@media (orientation: portrait) {
 					flex-direction: row;
 					justify-content: flex-start;
-					bottom: -90px;
+					bottom: -$remote-height;
 					left: 0;
 					width: 100%;
-					height: 90px;
+					height: $remote-height;
 					flex: 1 1 100%;
 
 					.group--members {
@@ -64,17 +68,67 @@
 
 		@include media-up(sm) {
 			@media (orientation: landscape) {
-				width: calc(100% - 120px);
-				margin-left: 120px;
+				width: calc(100% - #{$remote-width});
+				margin-left: $remote-width;
 
 				.group--members {
-					left: -120px;
+					left: -$remote-width;
 				}
 			}
 
 			@media (orientation: portrait) {
-				height: calc(100% - 90px);
-				margin-bottom: 90px;
+				height: calc(100% - #{$remote-height});
+				margin-bottom: $remote-height;
+			}
+		}
+
+		&.chat {
+
+			.group--chat {
+
+				@include media-up(sm) {
+
+					@media (orientation: landscape) {
+						top: 0;
+						right: -$chat-width;
+						width: $chat-width;
+						height: 100%;
+						flex: 1 1 $chat-width;
+					}
+
+					@media (orientation: portrait) {
+						display: none;
+					}
+				}
+
+				@include media-down(xs) {
+					display: none;
+				}
+			}
+
+			@include media-up(sm) {
+				@media (orientation: landscape) {
+					width: calc(100% - #{$remote-width} - #{$chat-width});
+					margin-left: $remote-width;
+					margin-right: $chat-width;
+
+					.group--members {
+						left: -$remote-width;
+					}
+
+					.group--chat {
+						right: -$chat-width;
+					}
+				}
+
+				@media (orientation: portrait) {
+					height: calc(100% - #{$remote-height});
+					margin-bottom: $remote-height;
+
+					.group--chat {
+						display: none;
+					}
+				}
 			}
 		}
 	}
@@ -101,8 +155,8 @@
 			top: 0;
 			left: 0;
 			flex: 0 0 auto;
-			// height: calc(100% - 90px);
-			// flex: 0 0 calc(100% - 90px);
+			// height: calc(100% - #{$remote-height});
+			// flex: 0 0 calc(100% - #{$remote-height});
 
 			.agora-stream {
 				height: auto;
@@ -111,7 +165,7 @@
 					@include aspect-clip(4, 3);
 
 					&>div {
-						position: absolute!important;
+						position: absolute !important;
 						top: 0;
 						left: 0;
 					}
@@ -188,8 +242,8 @@
 		}
 
 		.group--members {
-			width: 120px;
-			height: 90px;
+			width: $remote-width;
+			height: $remote-height;
 			bottom: 0;
 			right: 0;
 		}
@@ -231,7 +285,7 @@
 .ui--info-centered {
 	.picture {
 		display: flex;
-    	justify-content: center;
+		justify-content: center;
 	}
 }
 
@@ -246,8 +300,8 @@
 	position: absolute;
 	width: 100%;
 	height: calc(100% - 2px);
-    top: 0;
-    left: 0;
+	top: 0;
+	left: 0;
 	border: 2px solid $foreground-secondary;
 	z-index: 2;
 
