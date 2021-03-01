@@ -1307,37 +1307,37 @@ _defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emitta
   };
 
   return Emittable;
-}();var LocalStorageService = /*#__PURE__*/function () {
-  function LocalStorageService() {}
+}();var SessionStorageService = /*#__PURE__*/function () {
+  function SessionStorageService() {}
 
-  LocalStorageService.delete = function _delete(name) {
-    if (this.isLocalStorageSupported()) {
-      window.localStorage.removeItem(name);
+  SessionStorageService.delete = function _delete(name) {
+    if (this.isSessionStorageSupported()) {
+      window.sessionStorage.removeItem(name);
     }
   };
 
-  LocalStorageService.exist = function exist(name) {
-    if (this.isLocalStorageSupported()) {
-      return window.localStorage[name] !== undefined;
+  SessionStorageService.exist = function exist(name) {
+    if (this.isSessionStorageSupported()) {
+      return window.sessionStorage[name] !== undefined;
     }
   };
 
-  LocalStorageService.get = function get(name) {
+  SessionStorageService.get = function get(name) {
     var value = null;
 
-    if (this.isLocalStorageSupported() && window.localStorage[name] !== undefined) {
+    if (this.isSessionStorageSupported() && window.sessionStorage[name] !== undefined) {
       try {
-        value = JSON.parse(window.localStorage[name]);
+        value = JSON.parse(window.sessionStorage[name]);
       } catch (e) {
-        console.log('LocalStorageService.get.error parsing', name, e);
+        console.log('SessionStorageService.get.error parsing', name, e);
       }
     }
 
     return value;
   };
 
-  LocalStorageService.set = function set(name, value) {
-    if (this.isLocalStorageSupported()) {
+  SessionStorageService.set = function set(name, value) {
+    if (this.isSessionStorageSupported()) {
       try {
         var cache = [];
         var json = JSON.stringify(value, function (key, value) {
@@ -1352,14 +1352,14 @@ _defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emitta
 
           return value;
         });
-        window.localStorage.setItem(name, json);
+        window.sessionStorage.setItem(name, json);
       } catch (e) {
-        console.log('LocalStorageService.set.error serializing', name, value, e);
+        console.log('SessionStorageService.set.error serializing', name, value, e);
       }
     }
   };
 
-  LocalStorageService.isLocalStorageSupported = function isLocalStorageSupported() {
+  SessionStorageService.isSessionStorageSupported = function isSessionStorageSupported() {
     if (this.supported) {
       return true;
     }
@@ -1367,11 +1367,11 @@ _defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emitta
     var supported = false;
 
     try {
-      supported = 'localStorage' in window && window.localStorage !== null;
+      supported = 'sessionStorage' in window && window.sessionStorage !== null;
 
       if (supported) {
-        window.localStorage.setItem('test', '1');
-        window.localStorage.removeItem('test');
+        window.sessionStorage.setItem('test', '1');
+        window.sessionStorage.removeItem('test');
       } else {
         supported = false;
       }
@@ -1383,7 +1383,7 @@ _defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emitta
     return supported;
   };
 
-  return LocalStorageService;
+  return SessionStorageService;
 }();var MAX_VISIBLE_STREAMS = 8;
 var StreamServiceMode = {
   Client: 'client',
@@ -2308,7 +2308,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
 
     this.channel = null;
     var client = this.client;
-    var clientId = LocalStorageService.get('bHereClientId') || AgoraService.getUniqueUserId(); // console.log('AgoraService.join', { token, channelNameLink, clientId });
+    var clientId = SessionStorageService.get('bHereClientId') || AgoraService.getUniqueUserId(); // console.log('AgoraService.join', { token, channelNameLink, clientId });
 
     client.join(token, channelNameLink, clientId, function (uid) {
       // console.log('AgoraService.join', uid);
@@ -2318,7 +2318,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
         connected: true,
         uid: uid
       });
-      LocalStorageService.set('bHereClientId', uid);
+      SessionStorageService.set('bHereClientId', uid);
 
       {
         AgoraService.rtmToken$(uid).subscribe(function (token) {
@@ -4297,6 +4297,83 @@ var DeviceService = /*#__PURE__*/function () {
   }]);
 
   return DeviceService;
+}();var LocalStorageService = /*#__PURE__*/function () {
+  function LocalStorageService() {}
+
+  LocalStorageService.delete = function _delete(name) {
+    if (this.isLocalStorageSupported()) {
+      window.localStorage.removeItem(name);
+    }
+  };
+
+  LocalStorageService.exist = function exist(name) {
+    if (this.isLocalStorageSupported()) {
+      return window.localStorage[name] !== undefined;
+    }
+  };
+
+  LocalStorageService.get = function get(name) {
+    var value = null;
+
+    if (this.isLocalStorageSupported() && window.localStorage[name] !== undefined) {
+      try {
+        value = JSON.parse(window.localStorage[name]);
+      } catch (e) {
+        console.log('LocalStorageService.get.error parsing', name, e);
+      }
+    }
+
+    return value;
+  };
+
+  LocalStorageService.set = function set(name, value) {
+    if (this.isLocalStorageSupported()) {
+      try {
+        var cache = [];
+        var json = JSON.stringify(value, function (key, value) {
+          if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+              // Circular reference found, discard key
+              return;
+            }
+
+            cache.push(value);
+          }
+
+          return value;
+        });
+        window.localStorage.setItem(name, json);
+      } catch (e) {
+        console.log('LocalStorageService.set.error serializing', name, value, e);
+      }
+    }
+  };
+
+  LocalStorageService.isLocalStorageSupported = function isLocalStorageSupported() {
+    if (this.supported) {
+      return true;
+    }
+
+    var supported = false;
+
+    try {
+      supported = 'localStorage' in window && window.localStorage !== null;
+
+      if (supported) {
+        window.localStorage.setItem('test', '1');
+        window.localStorage.removeItem('test');
+      } else {
+        supported = false;
+      }
+    } catch (e) {
+      supported = false;
+    }
+
+    this.supported = supported;
+    return supported;
+  };
+
+  return LocalStorageService;
 }();var TIMEOUT = 100;
 
 var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
