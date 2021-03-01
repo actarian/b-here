@@ -20,6 +20,13 @@ import { AgoraStatus, MessageType } from './agora.types';
 
 export default class AgoraComponent extends Component {
 
+	get uiClass() {
+		const uiClass = {};
+		uiClass[this.state.role] = true;
+		uiClass.chat = this.state.chat;
+		return uiClass;
+	}
+
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
@@ -259,6 +266,11 @@ export default class AgoraComponent extends Component {
 						first(),
 					).subscribe(view => this.showLove(view));
 					break;
+				case MessageType.ChatMessage:
+					if (!StateService.state.chat) {
+						StateService.patchState({ chatDirty: true });
+					}
+					break;
 			}
 		});
 		MessageService.in$.pipe(
@@ -439,6 +451,14 @@ export default class AgoraComponent extends Component {
 	toggleVolume() {
 		const volumeMuted = !this.state.volumeMuted;
 		StateService.patchState({ volumeMuted })
+	}
+
+	toggleChat() {
+		StateService.patchState({ chat: !this.state.chat, chatDirty: false });
+	}
+
+	onChatClose() {
+		this.patchState({ chat: false });
 	}
 
 	onToggleControl() {

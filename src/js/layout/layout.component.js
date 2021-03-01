@@ -1,9 +1,17 @@
 import { Component } from 'rxcomp';
 import { environment } from '../environment';
 import LocationService from '../location/location.service';
+import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 
 export default class LayoutComponent extends Component {
+
+	get uiClass() {
+		const uiClass = {};
+		uiClass[this.state.role] = true;
+		uiClass.chat = this.state.chat;
+		return uiClass;
+	}
 
 	onInit() {
 		this.env = environment;
@@ -12,15 +20,21 @@ export default class LayoutComponent extends Component {
 			role: LocationService.get('role') || 'publisher',
 			membersCount: 1,
 			live: true,
+			chat: false,
+			chatDirty: true,
+			name: "Jhon Appleseed",
+			uid: "7341614597544882"
 		};
 		this.state.has3D = this.state.role !== RoleType.SmartDevice;
 		this.view = {
 			likes: 41,
 		};
 		this.local = {};
-		this.screen = {};
+		this.screen = null;
 		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1, }));
+		StateService.patchState(this.state);
 		console.log('LayoutComponent', this);
+		// console.log(AgoraService.getUniqueUserId());
 	}
 
 	patchState(state) {
@@ -42,6 +56,14 @@ export default class LayoutComponent extends Component {
 
 	toggleVolume() {
 		this.patchState({ volumeMuted: !this.state.volumeMuted });
+	}
+
+	toggleChat() {
+		this.patchState({ chat: !this.state.chat, chatDirty: false });
+	}
+
+	onChatClose() {
+		this.patchState({ chat: false });
 	}
 
 	onToggleControl() {

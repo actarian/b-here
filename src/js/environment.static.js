@@ -12,6 +12,7 @@ export const environmentStatic = {
 		editorAssetScreen: true,
 		ar: true,
 		menu: true,
+		chat: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,

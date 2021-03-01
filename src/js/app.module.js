@@ -2,6 +2,7 @@ import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
 import AccessCodeComponent from './access/access-code.component';
 import AccessComponent from './access/access.component';
+import AgoraChatComponent from './agora/agora-chat.component';
 import AgoraCheckComponent from './agora/agora-check.component';
 import AgoraChecklistComponent from './agora/agora-checklist.component';
 import AgoraDevicePreviewComponent from './agora/agora-device-preview.component';
@@ -52,6 +53,7 @@ import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
 import UploadItemComponent from './upload/upload-item.component';
 import HlsDirective from './video/hls.directive';
+import VirtualStructure from './virtual/virtual.structure';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
 import ModelDebugComponent from './world/model/model-debug.component';
@@ -79,6 +81,7 @@ AppModule.meta = {
 	declarations: [
 		AccessCodeComponent,
 		AccessComponent,
+		AgoraChatComponent,
 		AgoraCheckComponent,
 		AgoraChecklistComponent,
 		AgoraComponent,
@@ -141,6 +144,7 @@ AppModule.meta = {
 		TryInARModalComponent,
 		UploadItemComponent,
 		ValueDirective,
+		VirtualStructure,
 		WorldComponent
 	],
 	bootstrap: AppComponent,

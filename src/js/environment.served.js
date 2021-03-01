@@ -12,6 +12,7 @@ export const environmentServed = {
 		editorAssetScreen: false,
 		ar: true,
 		menu: true,
+		chat: false,
 		attendee: true,
 		streamer: true,
 		viewer: true,
