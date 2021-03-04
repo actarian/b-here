@@ -210,7 +210,7 @@
 	}
 }
 
-.group--volume {
+.group--service {
 	position: absolute;
 	display: flex;
 	justify-content: flex-start;
@@ -225,6 +225,10 @@
 	@include media-down(xs) {
 
 		.btn--volume {
+			display: none;
+		}
+
+		.btn--fullscreen {
 			display: none;
 		}
 	}

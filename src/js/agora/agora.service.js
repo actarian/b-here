@@ -520,7 +520,7 @@ export default class AgoraService extends Emittable {
 							devices.audios.push(x);
 						}
 					});
-					console.log(devices)
+					// console.log(devices);
 					devices.video = devices.videos[0] || null;
 					devices.audio = devices.audios[0] || null;
 					StateService.patchState({ devices });
@@ -1132,8 +1132,8 @@ export default class AgoraService extends Emittable {
 			return;
 		}
 		const streamId = stream.getId();
+		// console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
 		if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
-			// console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
 			client.subscribe(stream, (error) => {
 				console.log('AgoraService.onStreamAdded.subscribe.error', error);
 			});
@@ -1329,12 +1329,13 @@ export default class AgoraService extends Emittable {
 
 	screenJoin(token, channelNameLink) {
 		const screenClient = this.screenClient;
-		const screenClientId = null;
-		// console.log('AgoraService.join', { token, channelNameLink, screenClientId });
-		screenClient.join(token, channelNameLink, screenClientId, (uid) => {
-			// console.log('AgoraService.join', uid);
-			StateService.patchState({ screenUid: uid });
-			this.createScreenStream(uid);
+		const screenClientId = AgoraService.getUniqueUserId();
+		// const screenClientId = SessionStorageService.get('bHereClientId') || AgoraService.getUniqueUserId();
+		// console.log('AgoraService.screenJoin', { token, channelNameLink, screenClientId });
+		screenClient.join(token, channelNameLink, screenClientId, (screenUid) => {
+			// console.log('AgoraService.join', screenUid);
+			StateService.patchState({ screenUid });
+			this.createScreenStream(screenUid);
 		}, (error) => {
 			console.log('AgoraService.screenJoin.error', error);
 			if (error === 'DYNAMIC_KEY_EXPIRED') {

@@ -453,8 +453,32 @@ export default class AgoraComponent extends Component {
 		StateService.patchState({ volumeMuted })
 	}
 
+	toggleFullScreen() {
+		const { node } = getContext(this);
+		const fullScreen = !this.state.fullScreen;
+		if (fullScreen) {
+			if (node.requestFullscreen) {
+				node.requestFullscreen();
+			} else if (node.webkitRequestFullscreen) {
+				node.webkitRequestFullscreen();
+			} else if (node.msRequestFullscreen) {
+				node.msRequestFullscreen();
+			}
+		} else {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen();
+			}
+		}
+		StateService.patchState({ fullScreen });
+	}
+
 	toggleChat() {
 		StateService.patchState({ chat: !this.state.chat, chatDirty: false });
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	onChatClose() {

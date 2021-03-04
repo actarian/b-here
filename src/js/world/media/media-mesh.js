@@ -481,7 +481,6 @@ export default class MediaMesh extends InteractiveMesh {
 	dispose() {
 		this.disposeMediaLoader();
 	}
-
 }
 
 /*

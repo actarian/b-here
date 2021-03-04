@@ -305,5 +305,4 @@ export default class StreamService {
 		}
 		this.remotes = remotes;
 	}
-
 }
