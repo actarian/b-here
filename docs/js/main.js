@@ -2533,8 +2533,8 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
             } else if (x.kind === 'audioinput') {
               devices.audios.push(x);
             }
-          });
-          console.log(devices);
+          }); // console.log(devices);
+
           devices.video = devices.videos[0] || null;
           devices.audio = devices.audios[0] || null;
           StateService.patchState({
@@ -3254,10 +3254,9 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       return;
     }
 
-    var streamId = stream.getId();
+    var streamId = stream.getId(); // console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
 
     if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
-      // console.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
       client.subscribe(stream, function (error) {
         console.log('AgoraService.onStreamAdded.subscribe.error', error);
       });
@@ -3501,15 +3500,16 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
     var _this23 = this;
 
     var screenClient = this.screenClient;
-    var screenClientId = null; // console.log('AgoraService.join', { token, channelNameLink, screenClientId });
+    var screenClientId = AgoraService.getUniqueUserId(); // const screenClientId = SessionStorageService.get('bHereClientId') || AgoraService.getUniqueUserId();
+    // console.log('AgoraService.screenJoin', { token, channelNameLink, screenClientId });
 
-    screenClient.join(token, channelNameLink, screenClientId, function (uid) {
-      // console.log('AgoraService.join', uid);
+    screenClient.join(token, channelNameLink, screenClientId, function (screenUid) {
+      // console.log('AgoraService.join', screenUid);
       StateService.patchState({
-        screenUid: uid
+        screenUid: screenUid
       });
 
-      _this23.createScreenStream(uid);
+      _this23.createScreenStream(screenUid);
     }, function (error) {
       console.log('AgoraService.screenJoin.error', error);
 
@@ -7292,11 +7292,41 @@ var VRService = /*#__PURE__*/function () {
     });
   };
 
+  _proto.toggleFullScreen = function toggleFullScreen() {
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    var fullScreen = !this.state.fullScreen;
+
+    if (fullScreen) {
+      if (node.requestFullscreen) {
+        node.requestFullscreen();
+      } else if (node.webkitRequestFullscreen) {
+        node.webkitRequestFullscreen();
+      } else if (node.msRequestFullscreen) {
+        node.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+
+    StateService.patchState({
+      fullScreen: fullScreen
+    });
+  };
+
   _proto.toggleChat = function toggleChat() {
     StateService.patchState({
       chat: !this.state.chat,
       chatDirty: false
     });
+    window.dispatchEvent(new Event('resize'));
   };
 
   _proto.onChatClose = function onChatClose() {
@@ -12323,11 +12353,41 @@ IdDirective.meta = {
     });
   };
 
+  _proto.toggleFullScreen = function toggleFullScreen() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var fullScreen = !this.state.fullScreen;
+
+    if (fullScreen) {
+      if (node.requestFullscreen) {
+        node.requestFullscreen();
+      } else if (node.webkitRequestFullscreen) {
+        node.webkitRequestFullscreen();
+      } else if (node.msRequestFullscreen) {
+        node.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+
+    this.patchState({
+      fullScreen: fullScreen
+    });
+  };
+
   _proto.toggleChat = function toggleChat() {
     this.patchState({
       chat: !this.state.chat,
       chatDirty: false
     });
+    window.dispatchEvent(new Event('resize'));
   };
 
   _proto.onChatClose = function onChatClose() {

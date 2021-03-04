@@ -1,4 +1,4 @@
-import { Component } from 'rxcomp';
+import { Component, getContext } from 'rxcomp';
 import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
@@ -58,8 +58,32 @@ export default class LayoutComponent extends Component {
 		this.patchState({ volumeMuted: !this.state.volumeMuted });
 	}
 
+	toggleFullScreen() {
+		const { node } = getContext(this);
+		const fullScreen = !this.state.fullScreen;
+		if (fullScreen) {
+			if (node.requestFullscreen) {
+				node.requestFullscreen();
+			} else if (node.webkitRequestFullscreen) {
+				node.webkitRequestFullscreen();
+			} else if (node.msRequestFullscreen) {
+				node.msRequestFullscreen();
+			}
+		} else {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen();
+			}
+		}
+		this.patchState({ fullScreen });
+	}
+
 	toggleChat() {
 		this.patchState({ chat: !this.state.chat, chatDirty: false });
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	onChatClose() {

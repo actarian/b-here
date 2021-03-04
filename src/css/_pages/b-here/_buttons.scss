@@ -146,6 +146,44 @@
 	}
 }
 
+.btn--fullscreen {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out 350ms;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		// border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-negative;
+	}
+
+	&.disabled {
+		display: none;
+		pointer-events: none;
+	}
+
+	&.muted {
+		border-color: transparent;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
 .btn--control {
 	@extend %btn-circle;
 	width: 40px;

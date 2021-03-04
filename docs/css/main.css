@@ -205,7 +205,7 @@ strong {
 .h6 {
   font-size: 1.5rem; }
 
-.btn--volume, .btn--control, .btn--menu, .btn--ar,
+.btn--volume, .btn--fullscreen, .btn--control, .btn--menu, .btn--ar,
 .btn--vr, .btn--generate,
 .btn--next,
 .btn--connect,
@@ -232,7 +232,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   font: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
-  .btn--volume, .btn--control, .btn--menu, .btn--ar,
+  .btn--volume, .btn--fullscreen, .btn--control, .btn--menu, .btn--ar,
   .btn--vr, .btn--generate,
   .btn--next,
   .btn--connect,
@@ -248,7 +248,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--screen,
   .btn--chat,
   .btn--call, .btn--edit, a,
-  button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy, .btn--volume:active, .btn--control:active, .btn--menu:active, .btn--ar:active,
+  button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy, .btn--volume:active, .btn--fullscreen:active, .btn--control:active, .btn--menu:active, .btn--ar:active,
   .btn--vr:active, .btn--generate:active,
   .btn--next:active,
   .btn--connect:active,
@@ -264,7 +264,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--screen:active,
   .btn--chat:active,
   .btn--call:active, .btn--edit:active, a:active,
-  button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--control:focus, .btn--menu:focus, .btn--ar:focus,
+  button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--fullscreen:focus, .btn--control:focus, .btn--menu:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--generate:focus,
   .btn--next:focus,
   .btn--connect:focus,
@@ -280,7 +280,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--screen:focus,
   .btn--chat:focus,
   .btn--call:focus, .btn--edit:focus, a:focus,
-  button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--control:hover, .btn--menu:hover, .btn--ar:hover,
+  button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--fullscreen:hover, .btn--control:hover, .btn--menu:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--generate:hover,
   .btn--next:hover,
   .btn--connect:hover,
@@ -296,7 +296,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--screen:hover,
   .btn--chat:hover,
   .btn--call:hover, .btn--edit:hover, a:hover,
-  button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--control:visited, .btn--menu:visited, .btn--ar:visited,
+  button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--fullscreen:visited, .btn--control:visited, .btn--menu:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
@@ -317,7 +317,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
     text-decoration: none;
     outline: none; }
 
-.btn--volume[disabled], .btn--control[disabled], .btn--menu[disabled], .btn--ar[disabled],
+.btn--volume[disabled], .btn--fullscreen[disabled], .btn--control[disabled], .btn--menu[disabled], .btn--ar[disabled],
 .btn--vr[disabled], .btn--generate[disabled],
 .btn--next[disabled],
 .btn--connect[disabled],
@@ -336,7 +336,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   opacity: 0.5;
   pointer-events: none; }
 
-.btn--volume, .btn--control, .btn--menu {
+.btn--volume, .btn--fullscreen, .btn--control, .btn--menu {
   width: 50px;
   height: 50px;
   display: flex;
@@ -344,19 +344,19 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   align-items: center;
   border-radius: 25px;
   transition: all ease-in-out 350ms; }
-  .btn--volume svg, .btn--control svg, .btn--menu svg {
+  .btn--volume svg, .btn--fullscreen svg, .btn--control svg, .btn--menu svg {
     width: 24px;
     height: 24px;
     fill: currentColor; }
   @media (max-width: 1023.98px) {
-    .btn--volume, .btn--control, .btn--menu {
+    .btn--volume, .btn--fullscreen, .btn--control, .btn--menu {
       width: 40px;
       height: 40px;
       border-radius: 20px; }
-      .btn--volume svg, .btn--control svg, .btn--menu svg {
+      .btn--volume svg, .btn--fullscreen svg, .btn--control svg, .btn--menu svg {
         width: 20px;
         height: 20px; } }
-  .btn--volume, .btn--control, .btn--menu, .btn--volume:active, .btn--control:active, .btn--menu:active, .btn--volume:focus, .btn--control:focus, .btn--menu:focus, .btn--volume:hover, .btn--control:hover, .btn--menu:hover, .btn--volume:visited, .btn--control:visited, .btn--menu:visited {
+  .btn--volume, .btn--fullscreen, .btn--control, .btn--menu, .btn--volume:active, .btn--fullscreen:active, .btn--control:active, .btn--menu:active, .btn--volume:focus, .btn--fullscreen:focus, .btn--control:focus, .btn--menu:focus, .btn--volume:hover, .btn--fullscreen:hover, .btn--control:hover, .btn--menu:hover, .btn--volume:visited, .btn--fullscreen:visited, .btn--control:visited, .btn--menu:visited {
     background: var(--background);
     color: var(--foreground); }
 
@@ -4285,6 +4285,27 @@ body {
   .btn--volume:hover {
     opacity: 1; }
 
+.btn--fullscreen {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  opacity: 0.4;
+  transition: opacity ease-in-out 350ms; }
+  .btn--fullscreen > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor; }
+  .btn--fullscreen, .btn--fullscreen:active, .btn--fullscreen:hover, .btn--fullscreen:focus, .btn--fullscreen:visited {
+    background: transparent;
+    color: var(--foreground-negative); }
+  .btn--fullscreen.disabled {
+    display: none;
+    pointer-events: none; }
+  .btn--fullscreen.muted {
+    border-color: transparent; }
+  .btn--fullscreen:hover {
+    opacity: 1; }
+
 .btn--control {
   width: 40px;
   height: 40px;
@@ -4644,17 +4665,19 @@ body {
   .group--select .group--form--select {
     margin: 0; }
 
-.group--volume {
+.group--service {
   position: absolute;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   left: 15px;
   top: 15px; }
-  .group--volume > button + button {
+  .group--service > button + button {
     margin-left: 10px; }
   @media (max-width: 767.98px) {
-    .group--volume .btn--volume {
+    .group--service .btn--volume {
+      display: none; }
+    .group--service .btn--fullscreen {
       display: none; } }
 
 .group--ar-vr {

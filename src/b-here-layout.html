@@ -317,11 +317,15 @@
 				</button>
 			</div>
 		</div>
-		<!-- main volume -->
-		<div class="group--volume">
+		<!-- service -->
+		<div class="group--service">
 			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
+			</button>
+			<button type="button" class="btn--fullscreen" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
+				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
+				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
 			</button>
 		</div>
 		<!-- controls -->
