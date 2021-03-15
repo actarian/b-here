@@ -43,12 +43,14 @@ import ValueDirective from './forms/value.directive';
 import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
 import LabelPipe from './label/label.pipe';
+import LanguageComponent from './language/language.component';
 import LayoutComponent from './layout/layout.component';
 import LazyDirective from './lazy/lazy.directive';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
 import SlugPipe from './slug/slug.pipe';
 import SvgIconStructure from './svg/svg-icon.structure';
+import TitleDirective from './title/title.directive';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
 import UploadItemComponent from './upload/upload-item.component';
@@ -119,6 +121,7 @@ AppModule.meta = {
 		IdDirective,
 		InputValueComponent,
 		LabelPipe,
+		LanguageComponent,
 		LayoutComponent,
 		LazyDirective,
 		ModalComponent,
@@ -140,6 +143,7 @@ AppModule.meta = {
 		SlugPipe,
 		SvgIconStructure,
 		TestComponent,
+		TitleDirective,
 		TryInARComponent,
 		TryInARModalComponent,
 		UploadItemComponent,

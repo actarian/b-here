@@ -592,9 +592,10 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   to {
     transform: translateY(-10px); } }
 
-.nav--editor > li > a,
+.nav--language > li > a, .nav--editor > li > a,
+.nav--language > li > span,
 .nav--editor > li > span, .nav--dropdown > li > a,
-.nav--dropdown > li > span, .nav--editor > li {
+.nav--dropdown > li > span, .nav--language > li, .nav--editor > li {
   position: relative;
   display: flex;
   justify-content: flex-start;
@@ -603,33 +604,34 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   z-index: 1;
   transition: ease-in-out 350ms;
   transition-property: background-color, color, border, opacity; }
-  .nav--editor > li > a svg, .nav--editor > li > span svg, .nav--dropdown > li > a svg, .nav--dropdown > li > span svg, .nav--editor > li svg {
+  .nav--language > li > a svg, .nav--editor > li > a svg, .nav--language > li > span svg, .nav--editor > li > span svg, .nav--dropdown > li > a svg, .nav--dropdown > li > span svg, .nav--language > li svg, .nav--editor > li svg {
     transition: ease-in-out 350ms;
     transition-property: fill, opacity; }
-  .nav--editor > li > a:focus,
+  .nav--language > li > a:focus, .nav--editor > li > a:focus,
+  .nav--language > li > span:focus,
   .nav--editor > li > span:focus, .nav--dropdown > li > a:focus,
-  .nav--dropdown > li > span:focus, .nav--editor > li:focus {
+  .nav--dropdown > li > span:focus, .nav--language > li:focus, .nav--editor > li:focus {
     outline: 0; }
 
-.nav--editor, [control-localized-asset] .nav--languages, .nav--dropdown, .group--checklist, .nav--tab {
+.nav--language, .nav--editor, [control-localized-asset] .nav--languages, .nav--dropdown, .group--checklist, .nav--tab {
   list-style: none;
   padding: 0;
   margin: 0; }
 
-.nav--editor > li {
+.nav--language > li, .nav--editor > li {
   position: relative;
   display: block;
   flex: 1 1 auto; }
 
 @media (min-width: 1024px) {
-  .nav--editor {
+  .nav--language, .nav--editor {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center; } }
 
 @media (max-width: 1023.98px) {
-  .nav--editor {
+  .nav--language, .nav--editor {
     display: block; } }
 
 .group--form label, .group--form--textarea label, .group--form--select label, .group--form--checkbox label, .group--form--file label, errors-component .inner, .required .required__badge {
@@ -4427,10 +4429,17 @@ body {
     transform: rotate(360deg); } }
 
 .btn--absolute {
+  /*
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	z-index: 10000;
+	*/
   position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 10000; }
+  left: 50%;
+  bottom: 15px;
+  z-index: 10000;
+  transform: translateX(-50%); }
 
 .btn--close {
   width: 40px;
@@ -5649,6 +5658,41 @@ model-viewer {
 .abstract {
   font-size: 40px;
   line-height: 1; }
+
+.group--language {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  color: var(--foreground-negative); }
+
+.btn--language {
+  display: flex;
+  align-items: center;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--foreground-negative); }
+  .btn--language svg {
+    width: 8px;
+    height: 5px;
+    margin-left: 7px;
+    fill: currentColor; }
+
+.nav--language {
+  align-items: flex-start;
+  margin-top: 5px;
+  padding: 4px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px; }
+  .nav--language > li {
+    padding: 4px 15px;
+    width: 100%;
+    line-height: 1;
+    font-size: 15px; }
+  .nav--language > li + li {
+    border-top: 1px solid rgba(255, 255, 255, 0.1); }
 
 [editor-component] .ui.open {
   width: calc(100% - 300px); }

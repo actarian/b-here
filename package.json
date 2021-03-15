@@ -14,7 +14,8 @@
   "main": "server/main.js",
   "scripts": {
     "start": "node server/main.js",
-    "serve": "node server/main.js"
+    "serve": "node server/main.js",
+    "test": "node test/selenium-test.js"
   },
   "dependencies": {
     "agora-access-token": "2.0.4",
@@ -37,6 +38,7 @@
     "three": "0.117.1"
   },
   "devDependencies": {
-    "gulpfile-config": "1.0.0-alpha.14"
+    "gulpfile-config": "1.0.0-alpha.14",
+    "selenium-webdriver": "4.0.0-beta.1"
   }
 }

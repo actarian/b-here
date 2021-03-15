@@ -138,6 +138,7 @@
 	}
 
 	&__info {
+
 		/*
 		// [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }"
 		&.talking {
@@ -175,4 +176,51 @@
 .abstract {
 	font-size: 40px;
 	line-height: 1;
+}
+
+.group--language {
+	position: absolute;
+	top: 25px;
+	right: 25px;
+	color: $foreground-negative;
+}
+
+.btn--language {
+	display: flex;
+	align-items: center;
+	padding: 6px 15px;
+	border-radius: 20px;
+
+	font-size: 16px;
+	line-height: 1;
+	background: rgba(255, 255, 255, 0.1);
+	color: var(--foreground-negative);
+
+	svg {
+		width: 8px;
+		height: 5px;
+		margin-left: 7px;
+		fill: currentColor;
+	}
+}
+
+.nav--language {
+	@extend %nav-vertical;
+	align-items: flex-start;
+	margin-top: 5px;
+	padding: 4px 0;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+
+	&>li {
+		@extend %nav-item;
+		padding: 4px 15px;
+		width: 100%;
+		line-height: 1;
+		font-size: 15px;
+	}
+
+	&>li+li {
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+	}
 }

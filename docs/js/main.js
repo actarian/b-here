@@ -163,16 +163,6 @@ function _readOnlyError(name) {
   assets: '/Modules/B-Here/Client/docs/',
   worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
-  language: '/it',
-  market: '/it',
-  url: {
-    index: '/',
-    access: '/',
-    editor: '/editor',
-    selfServiceTour: '/self-service-tour',
-    guidedTour: '/guided-tour',
-    accessCode: '/access-code'
-  },
   template: {
     tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
     modal: {
@@ -193,9 +183,7 @@ function _readOnlyError(name) {
       },
       remove: '/template/modules/b-here/remove-modal.cshtml'
     }
-  },
-  languages: ['en'],
-  defaultLanguage: 'en'
+  }
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
@@ -238,16 +226,6 @@ function _readOnlyError(name) {
   assets: '/b-here/',
   worker: './js/workers/image.service.worker.js',
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
-  language: '',
-  market: '',
-  url: {
-    index: '/',
-    access: '/',
-    editor: '/editor',
-    selfServiceTour: '/self-service-tour',
-    guidedTour: '/guided-tour',
-    accessCode: '/access-code'
-  },
   template: {
     tryInAr: '/try-in-ar.html?viewId=$viewId',
     modal: {
@@ -268,9 +246,7 @@ function _readOnlyError(name) {
       },
       remove: '/remove-modal.html'
     }
-  },
-  languages: ['en'],
-  defaultLanguage: 'en'
+  }
 };var Utils = /*#__PURE__*/function () {
   function Utils() {}
 
@@ -350,14 +326,6 @@ var Environment = /*#__PURE__*/function () {
 
   function Environment(options) {
     if (options) {
-      if (typeof options.url === 'object') {
-        var language = options.language || '';
-        var market = options.market || '';
-        Object.keys(options.url).forEach(function (key) {
-          options.url[key] = language + market + options.url[key];
-        });
-      }
-
       Object.assign(this, options);
     }
   }
@@ -411,7 +379,10 @@ var defaultAppOptions = {
     smartDevice: true,
     maxQuality: false,
     heroku: HEROKU
-  }
+  },
+  url: {},
+  languages: ['it', 'en'],
+  defaultLanguage: 'it'
 };
 var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
 var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
@@ -441,14 +412,32 @@ console.log('environment', environment);var LocationService = /*#__PURE__*/funct
       params.set(keyOrValue, '');
     }
 
-    this.replace(params); // console.log('LocationService.set', params, keyOrValue, value);
+    this.pushParams(params); // console.log('LocationService.set', params, keyOrValue, value);
   };
 
-  LocationService.replace = function replace(params) {
+  LocationService.pushParams = function pushParams(params) {
     if (window.history && window.history.pushState) {
       var title = document.title;
       var url = window.location.href.split('?')[0] + "?" + params.toString();
       window.history.pushState(params.toString(), title, url);
+    }
+  };
+
+  LocationService.replace = function replace(from, to) {
+    var history = window.history;
+
+    if (history && history.replaceState) {
+      var location = window.location;
+      var title = document.title;
+
+      if (location.pathname === '/') {
+        var url = location.origin + to + location.search;
+        history.replaceState(history.state, title, url);
+      } else if (location.href.indexOf(from) !== -1) {
+        var _url = location.href.replace(from, to);
+
+        history.replaceState(history.state, title, _url);
+      }
     }
   };
 
@@ -527,60 +516,6 @@ console.log('environment', environment);var LocationService = /*#__PURE__*/funct
 }(rxcomp.Component);
 AccessCodeComponent.meta = {
   selector: '[access-code-component]'
-};var _Utils$merge;
-var LABELS = Utils.merge((_Utils$merge = {
-  browse: 'Browse',
-  cancel: 'Cancel',
-  drag_and_drop_images: 'Drag And Drop your images here',
-  error_email: 'Invalid email',
-  error_match: 'Fields do not match',
-  error_required: 'Field is required',
-  loading: 'loading',
-  remove: 'Remove',
-  required: 'Required',
-  select: 'Select',
-  select_file: 'Select a file...',
-  update: 'Update',
-  upload: 'Upload',
-  waiting_host: 'waiting host',
-  // editor
-  editor_image: 'Image',
-  editor_video: 'Video',
-  editor_model: 'Model',
-  editor_publisher_stream: 'Publisher Stream',
-  editor_next_attendee_stream: 'Next Attendee Stream',
-  editor_waiting_room: 'Waiting Room',
-  editor_panorama: 'Panorama',
-  editor_panorama_grid: 'Panorama Grid',
-  editor_room_3d: 'Room 3D'
-}, _Utils$merge["editor_model"] = 'Model', _Utils$merge.editor_nav = 'Nav Tooltip', _Utils$merge.editor_gltf = 'Gltf Model', _Utils$merge.editor_plane = 'Plane', _Utils$merge.editor_curved_plane = 'Curved Plane', _Utils$merge.editor_texture = 'Texture', _Utils$merge), window.labels);
-
-var LabelPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(LabelPipe, _Pipe);
-
-  function LabelPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  LabelPipe.transform = function transform(key) {
-    var labels = LABELS;
-    return labels[key] || "#" + key + "#";
-  };
-
-  LabelPipe.getKeys = function getKeys() {
-    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
-      keys[_key] = arguments[_key];
-    }
-
-    return this.transform(keys.map(function (x) {
-      return x.replace('-', '_');
-    }).join('_'));
-  };
-
-  return LabelPipe;
-}(rxcomp.Pipe);
-LabelPipe.meta = {
-  name: 'label'
 };var ControlsComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlsComponent, _Component);
 
@@ -647,8 +582,9 @@ function fieldsToFormControls(fields) {
       var options = (c.options || []).slice();
       options.unshift({
         id: null,
-        name: LabelPipe.transform('select')
-      });
+        name: 'select'
+      }); // LabelPipe.transform('select')
+
       p[c.name].options = options;
     }
 
@@ -1077,7 +1013,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
     var controls = this.controls = form.controls;
     /*
     const options = data.roles.slice();
-    options.unshift({ id: null, name: LabelPipe.transform('select') });
+    options.unshift({ id: null, name: 'select', // LabelPipe.transform('select') });
     controls.role.options = options;
     */
 
@@ -4297,7 +4233,66 @@ var DeviceService = /*#__PURE__*/function () {
   }]);
 
   return DeviceService;
-}();var LocalStorageService = /*#__PURE__*/function () {
+}();var LabelPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(LabelPipe, _Pipe);
+
+  function LabelPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  LabelPipe.transform = function transform(key) {
+    var labels = LabelPipe.labels_;
+    return labels[key] || key; // `#${key}#`;
+  };
+
+  LabelPipe.getKeys = function getKeys() {
+    for (var _len = arguments.length, keys = new Array(_len), _key = 0; _key < _len; _key++) {
+      keys[_key] = arguments[_key];
+    }
+
+    return LabelPipe.transform(keys.map(function (x) {
+      return x.replace('-', '_');
+    }).join('_'));
+  };
+
+  LabelPipe.setLabels = function setLabels() {
+    var _Utils$merge;
+
+    var LABELS = Utils.merge((_Utils$merge = {
+      browse: 'Browse',
+      cancel: 'Cancel',
+      drag_and_drop_images: 'Drag And Drop your images here',
+      error_email: 'Invalid email',
+      error_match: 'Fields do not match',
+      error_required: 'Field is required',
+      loading: 'loading',
+      remove: 'Remove',
+      required: 'Required',
+      select: 'Select',
+      select_file: 'Select a file...',
+      update: 'Update',
+      upload: 'Upload',
+      waiting_host: 'waiting host',
+      // editor
+      editor_image: 'Image',
+      editor_video: 'Video',
+      editor_model: 'Model',
+      editor_publisher_stream: 'Publisher Stream',
+      editor_next_attendee_stream: 'Next Attendee Stream',
+      editor_waiting_room: 'Waiting Room',
+      editor_panorama: 'Panorama',
+      editor_panorama_grid: 'Panorama Grid',
+      editor_room_3d: 'Room 3D'
+    }, _Utils$merge["editor_model"] = 'Model', _Utils$merge.editor_nav = 'Nav Tooltip', _Utils$merge.editor_gltf = 'Gltf Model', _Utils$merge.editor_plane = 'Plane', _Utils$merge.editor_curved_plane = 'Curved Plane', _Utils$merge.editor_texture = 'Texture', _Utils$merge), window.labels);
+    this.labels_ = LABELS;
+  };
+
+  return LabelPipe;
+}(rxcomp.Pipe);
+LabelPipe.setLabels();
+LabelPipe.meta = {
+  name: 'label'
+};var LocalStorageService = /*#__PURE__*/function () {
   function LocalStorageService() {}
 
   LocalStorageService.delete = function _delete(name) {
@@ -5209,7 +5204,8 @@ AgoraDevicePreviewComponent.meta = {
     if (videoOptions.length > 0) {
       videoOptions.unshift({
         id: null,
-        name: LabelPipe.transform('bhere_select_video')
+        name: 'bhere_select_video' // LabelPipe.transform('bhere_select_video')
+
       });
     }
 
@@ -5224,7 +5220,8 @@ AgoraDevicePreviewComponent.meta = {
     if (audioOptions.length > 0) {
       audioOptions.unshift({
         id: null,
-        name: LabelPipe.transform('bhere_select_audio')
+        name: 'bhere_select_audio' // LabelPipe.transform('bhere_select_audio')
+
       });
     }
 
@@ -6430,12 +6427,88 @@ function mapViewItem(item) {
 }
 function mapViewTile(tile) {
   return new ViewTile(tile);
-}var ViewService = /*#__PURE__*/function () {
+}var LanguageService = /*#__PURE__*/function () {
+  function LanguageService() {}
+
+  LanguageService.getDefaultLanguages = function getDefaultLanguages() {
+    return environment.alternates || [];
+  };
+
+  LanguageService.getDefaultLanguage = function getDefaultLanguage() {
+    return environment.defaultLanguage || (this.languages ? this.languages[0].lang : null);
+  };
+
+  LanguageService.setLanguage = function setLanguage(language) {
+    this.selectedLanguage = language.lang;
+  };
+
+  LanguageService.setLanguage$ = function setLanguage$(language) {
+    var _this = this;
+
+    return rxjs.from(fetch(language.href).then(function (response) {
+      return response.text();
+    })).pipe(operators.tap(function (html) {
+      // console.log('html', html);
+      var labelsMatch = /(window\.labels[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\n*[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\{((\{[\s\S]+?\})|[\s\S])+?\})/gm.exec(html);
+
+      if (labelsMatch) {
+        // console.log('labels', labelsMatch[0]);
+        new Function(labelsMatch[0]).call(window);
+        LabelPipe.setLabels();
+      }
+
+      var bhereMatch = /(window\.bhere[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\n*[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\{((\{[\s\S]+?\})|[\s\S])+?\})/gm.exec(html);
+
+      if (bhereMatch) {
+        // console.log('bhere', bhereMatch[0]);
+        var data = {};
+        new Function(bhereMatch[0].replace('window', 'this')).call(data);
+
+        if (data.bhere) {
+          Utils.merge(environment, data.bhere);
+        }
+      }
+
+      LocationService.replace(_this.activeLanguage.href, language.href); // console.log(window.labels);
+
+      _this.selectedLanguage = language.lang;
+    }));
+  };
+
+  LanguageService.toggleLanguages = function toggleLanguages() {
+    this.showLanguages = !this.showLanguages;
+    this.pushChanges();
+  };
+
+  _createClass(LanguageService, null, [{
+    key: "hasLanguages",
+    get: function get() {
+      return this.languages.length > 1;
+    }
+  }, {
+    key: "activeLanguage",
+    get: function get() {
+      var _this2 = this;
+
+      return this.languages.find(function (language) {
+        return language.lang === _this2.selectedLanguage;
+      });
+    }
+  }]);
+
+  return LanguageService;
+}();
+
+_defineProperty(LanguageService, "languages", LanguageService.getDefaultLanguages());
+
+_defineProperty(LanguageService, "defaultLanguage", LanguageService.getDefaultLanguage());
+
+_defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLanguage);var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
   ViewService.data$ = function data$() {
     if (!this.data$_) {
-      var dataUrl = environment.flags.production ? '/api/view' : './api/data.json';
+      var dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
       this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(function (data) {
         data.views = data.views.map(function (view) {
           return mapView(view);
@@ -6893,7 +6966,7 @@ var VRService = /*#__PURE__*/function () {
 
     var has3D = role !== RoleType.SmartDevice;
     var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
-    var checklist = LocalStorageService.get('checklist') || null;
+    var checklist = LocalStorageService.get('checklist') || LocationService.get('skip-checklist') != null || null;
     var hosted = role === RoleType.Publisher ? true : false;
     var live = DEBUG || role === RoleType.SelfService ? false : true;
     var state = {
@@ -6925,8 +6998,6 @@ var VRService = /*#__PURE__*/function () {
 
     });
     this.initAgora();
-    this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {// console.log('AgoraComponent.viewObserver$', view);
-    });
   };
 
   _proto.viewObserver$ = function viewObserver$() {
@@ -6958,15 +7029,35 @@ var VRService = /*#__PURE__*/function () {
     }));
   };
 
-  _proto.initAgora = function initAgora() {
+  _proto.load = function load(callback) {
+    this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {
+      console.log('AgoraComponent.viewObserver$', view);
+
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  };
+
+  _proto.loadAndConnect = function loadAndConnect(preferences) {
     var _this5 = this;
+
+    this.load(function () {
+      _this5.connect(preferences);
+    });
+  };
+
+  _proto.initAgora = function initAgora() {
+    var _this6 = this;
 
     var agora = null;
 
     if (DEBUG || this.state.role === RoleType.SelfService) {
-      StateService.patchState({
-        status: AgoraStatus.Connected,
-        hosted: true
+      this.load(function () {
+        StateService.patchState({
+          status: AgoraStatus.Connected,
+          hosted: true
+        });
       });
     } else {
       agora = this.agora = AgoraService.getSingleton();
@@ -6976,21 +7067,21 @@ var VRService = /*#__PURE__*/function () {
 
     StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
       // console.log('AgoraComponent.local', local);
-      _this5.local = local;
+      _this6.local = local;
 
-      _this5.pushChanges();
+      _this6.pushChanges();
     });
     StreamService.screen$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (screen) {
       // console.log('AgoraComponent.screen', screen);
-      _this5.screen = screen;
+      _this6.screen = screen;
 
-      _this5.pushChanges();
+      _this6.pushChanges();
     });
     StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
       // console.log('AgoraComponent.remotes', remotes);
-      _this5.remotes = remotes;
+      _this6.remotes = remotes;
 
-      _this5.pushChanges();
+      _this6.pushChanges();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       // console.log('AgoraComponent.message', message);
@@ -7015,8 +7106,8 @@ var VRService = /*#__PURE__*/function () {
             locked: true
           });
 
-          if (_this5.agora) {
-            _this5.agora.sendControlRemoteRequestInfo(message.clientId);
+          if (_this6.agora) {
+            _this6.agora.sendControlRemoteRequestInfo(message.clientId);
           } // !!! control request permission not required
           // this.onRemoteControlRequest(message);
 
@@ -7038,13 +7129,13 @@ var VRService = /*#__PURE__*/function () {
         */
 
         case MessageType.NavToView:
-          _this5.onRemoteNavTo(message);
+          _this6.onRemoteNavTo(message);
 
           break;
 
         case MessageType.AddLike:
           ViewService.setViewLike$(message).pipe(operators.first()).subscribe(function (view) {
-            return _this5.showLove(view);
+            return _this6.showLove(view);
           });
           break;
 
@@ -7065,7 +7156,7 @@ var VRService = /*#__PURE__*/function () {
     });
 
     if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
-      this.connect();
+      this.loadAndConnect();
     }
   };
 
@@ -7096,7 +7187,7 @@ var VRService = /*#__PURE__*/function () {
           role: role,
           has3D: has3D
         });
-        this.connect();
+        this.loadAndConnect();
       } else {
         StateService.patchState({
           link: link,
@@ -7137,7 +7228,7 @@ var VRService = /*#__PURE__*/function () {
       StateService.patchState({
         name: name
       });
-      this.connect();
+      this.loadAndConnect();
     } else {
       StateService.patchState({
         name: name,
@@ -7147,7 +7238,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.onEnter = function onEnter(preferences) {
-    this.connect(preferences);
+    this.loadAndConnect(preferences);
   };
 
   _proto.connect = function connect(preferences) {
@@ -7333,6 +7424,7 @@ var VRService = /*#__PURE__*/function () {
     this.patchState({
       chat: false
     });
+    window.dispatchEvent(new Event('resize'));
   };
 
   _proto.onToggleControl = function onToggleControl() {
@@ -7362,27 +7454,27 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.addLike = function addLike() {
-    var _this6 = this;
+    var _this7 = this;
 
     ViewService.viewLike$(this.view).pipe(operators.first()).subscribe(function (view) {
       if (view) {
-        _this6.view.liked = true; // view.liked;
+        _this7.view.liked = true; // view.liked;
 
-        _this6.showLove(view); // this.view.likes = view.likes;
+        _this7.showLove(view); // this.view.likes = view.likes;
         // this.pushChanges();
 
 
         MessageService.send({
           type: MessageType.AddLike,
-          viewId: _this6.view.id,
-          likes: _this6.view.likes
+          viewId: _this7.view.id,
+          likes: _this7.view.likes
         });
       }
     });
   };
 
   _proto.showLove = function showLove(view) {
-    var _this7 = this;
+    var _this8 = this;
 
     if (view && this.view.id === view.id) {
       var skipTimeout = this.view.showLove;
@@ -7392,9 +7484,9 @@ var VRService = /*#__PURE__*/function () {
 
       if (!skipTimeout) {
         setTimeout(function () {
-          _this7.view.showLove = false;
+          _this8.view.showLove = false;
 
-          _this7.pushChanges();
+          _this8.pushChanges();
         }, 3100);
       }
     }
@@ -8300,8 +8392,9 @@ AsideComponent.meta = {
       });
       options.unshift({
         id: null,
-        name: LabelPipe.transform('select')
-      });
+        name: 'select'
+      }); // LabelPipe.transform('select')
+
       return options;
     }));
   };
@@ -11547,7 +11640,13 @@ _defineProperty(KeyboardService, "keys", {});var ControlCustomSelectComponent = 
     	this.scrollToKey(key);
     });
     */
-  };
+  }
+  /*
+  onChanges() {
+  	console.log('ControlCustomSelectComponent.onChanges');
+  }
+  */
+  ;
 
   _proto.scrollToWord = function scrollToWord(word) {
     // console.log('ControlCustomSelectComponent.scrollToWord', word);
@@ -11625,7 +11724,7 @@ _defineProperty(KeyboardService, "keys", {});var ControlCustomSelectComponent = 
           return item ? item.name : '';
         }).join(', ');
       } else {
-        return LabelPipe.transform('select');
+        return 'select'; // LabelPipe.transform('select');
       }
     } else {
       var item = items.find(function (x) {
@@ -11635,7 +11734,7 @@ _defineProperty(KeyboardService, "keys", {});var ControlCustomSelectComponent = 
       if (item) {
         return item.name;
       } else {
-        return LabelPipe.transform('select');
+        return 'select'; // LabelPipe.transform('select');
       }
     }
   };
@@ -11664,7 +11763,7 @@ ControlCustomSelectComponent.meta = {
   inputs: ['control', 'label', 'multiple'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"getLabel()\"></span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t\t<li (click)=\"setOption(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.options\">\n\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"group--form--select\" [class]=\"{ required: control.validators.length, multiple: isMultiple }\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"getLabel() | label\"></span>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t<div class=\"category\" [innerHTML]=\"label\"></div>\n\t\t\t<ul class=\"nav--dropdown\" [class]=\"{ multiple: isMultiple }\">\n\t\t\t\t<li (click)=\"setOption(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.options\">\n\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name | label\"></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t"
 };var ControlLinkComponent = /*#__PURE__*/function (_ControlComponent) {
   _inheritsLoose(ControlLinkComponent, _ControlComponent);
 
@@ -12288,6 +12387,45 @@ HtmlPipe.meta = {
 IdDirective.meta = {
   selector: '[id]',
   inputs: ['id']
+};var LanguageComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(LanguageComponent, _Component);
+
+  function LanguageComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = LanguageComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.showLanguages = false;
+    this.languageService = LanguageService;
+  };
+
+  _proto.setLanguage = function setLanguage(language) {
+    var _this = this;
+
+    this.languageService.setLanguage$(language).pipe(operators.first()).subscribe(function (_) {
+      _this.showLanguages = false;
+
+      _this.pushChanges();
+
+      _this.set.next();
+    });
+  };
+
+  _proto.toggleLanguages = function toggleLanguages() {
+    this.showLanguages = !this.showLanguages;
+    this.pushChanges();
+  };
+
+  return LanguageComponent;
+}(rxcomp.Component);
+LanguageComponent.meta = {
+  selector: '[language]',
+  outputs: ['set'],
+  template:
+  /* html */
+  "\n\t\t<button type=\"button\" class=\"btn--language\" (click)=\"toggleLanguages()\" *if=\"languageService.hasLanguages\"><span [innerHTML]=\"languageService.activeLanguage.title\"></span> <svg viewBox=\"0 0 8 5\"><use xlink:href=\"#caret-down\"></use></svg></button>\n\t\t<ul class=\"nav--language\" *if=\"showLanguages\">\n\t\t\t<li (click)=\"setLanguage(language)\" *for=\"let language of languageService.languages\"><span [innerHTML]=\"language.title\"></span></li>\n\t\t</ul>\n\t"
 };var LayoutComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(LayoutComponent, _Component);
 
@@ -12320,8 +12458,25 @@ IdDirective.meta = {
         id: i + 1
       };
     });
+    this.languageService = LanguageService;
+    this.showLanguages = false;
     StateService.patchState(this.state);
     console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
+  };
+
+  _proto.setLanguage = function setLanguage(language) {
+    var _this = this;
+
+    this.languageService.setLanguage$(language).pipe(first()).subscribe(function (_) {
+      _this.showLanguages = false;
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.toggleLanguages = function toggleLanguages() {
+    this.showLanguages = !this.showLanguages;
+    this.pushChanges();
   };
 
   _proto.patchState = function patchState(state) {
@@ -12394,6 +12549,7 @@ IdDirective.meta = {
     this.patchState({
       chat: false
     });
+    window.dispatchEvent(new Event('resize'));
   };
 
   _proto.onToggleControl = function onToggleControl() {
@@ -12418,7 +12574,7 @@ IdDirective.meta = {
   };
 
   _proto.showLove = function showLove(view) {
-    var _this = this;
+    var _this2 = this;
 
     if (view && this.view.id === view.id) {
       var skipTimeout = this.view.showLove;
@@ -12428,9 +12584,9 @@ IdDirective.meta = {
 
       if (!skipTimeout) {
         setTimeout(function () {
-          _this.view.showLove = false;
+          _this2.view.showLove = false;
 
-          _this.pushChanges();
+          _this2.pushChanges();
         }, 3100);
       }
     }
@@ -12769,7 +12925,36 @@ SvgIconStructure.meta = {
 };
 /*
 <svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-*/var TryInARComponent = /*#__PURE__*/function (_Component) {
+*/var TitleDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(TitleDirective, _Directive);
+
+  function TitleDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  _createClass(TitleDirective, [{
+    key: "title",
+    set: function set(title) {
+      if (this.title_ !== title) {
+        this.title_ = title;
+
+        var _getContext = rxcomp.getContext(this),
+            node = _getContext.node;
+
+        title ? node.setAttribute('title', title) : node.removeAttribute('title');
+      }
+    },
+    get: function get() {
+      return this.title_;
+    }
+  }]);
+
+  return TitleDirective;
+}(rxcomp.Directive);
+TitleDirective.meta = {
+  selector: '[[title]]',
+  inputs: ['title']
+};var TryInARComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(TryInARComponent, _Component);
 
   function TryInARComponent() {
@@ -22369,6 +22554,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

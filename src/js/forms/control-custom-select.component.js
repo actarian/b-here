@@ -2,7 +2,6 @@ import { getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 import DropdownDirective from '../dropdown/dropdown.directive';
 import KeyboardService from '../keyboard/keyboard.service';
-import LabelPipe from '../label/label.pipe';
 import ControlComponent from './control.component';
 
 export default class ControlCustomSelectComponent extends ControlComponent {
@@ -24,6 +23,12 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 		});
 		*/
 	}
+
+	/*
+	onChanges() {
+		console.log('ControlCustomSelectComponent.onChanges');
+	}
+	*/
 
 	scrollToWord(word) {
 		// console.log('ControlCustomSelectComponent.scrollToWord', word);
@@ -88,14 +93,14 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 					return item ? item.name : '';
 				}).join(', ');
 			} else {
-				return LabelPipe.transform('select');
+				return 'select'; // LabelPipe.transform('select');
 			}
 		} else {
 			const item = items.find(x => x.id === value || x.name === value);
 			if (item) {
 				return item.name;
 			} else {
-				return LabelPipe.transform('select');
+				return 'select'; // LabelPipe.transform('select');
 			}
 		}
 	}
@@ -120,7 +125,7 @@ ControlCustomSelectComponent.meta = {
 	template: /* html */ `
 		<div class="group--form--select" [class]="{ required: control.validators.length, multiple: isMultiple }" [dropdown]="dropdownId" (dropped)="onDropped($event)">
 			<label [innerHTML]="label"></label>
-			<span class="control--custom-select" [innerHTML]="getLabel()"></span>
+			<span class="control--custom-select" [innerHTML]="getLabel() | label"></span>
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
@@ -129,7 +134,7 @@ ControlCustomSelectComponent.meta = {
 			<div class="category" [innerHTML]="label"></div>
 			<ul class="nav--dropdown" [class]="{ multiple: isMultiple }">
 				<li (click)="setOption(item)" [class]="{ empty: item.id == null }" *for="let item of control.options">
-					<span [class]="{ active: hasOption(item) }" [innerHTML]="item.name"></span>
+					<span [class]="{ active: hasOption(item) }" [innerHTML]="item.name | label"></span>
 				</li>
 			</ul>
 		</div>

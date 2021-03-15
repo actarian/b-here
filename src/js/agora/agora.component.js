@@ -122,7 +122,7 @@ export default class AgoraComponent extends Component {
 		}
 		const has3D = role !== RoleType.SmartDevice;
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
-		const checklist = LocalStorageService.get('checklist') || null;
+		const checklist = LocalStorageService.get('checklist') || (LocationService.get('skip-checklist') != null) || null;
 		const hosted = role === RoleType.Publisher ? true : false;
 		const live = (DEBUG || role === RoleType.SelfService) ? false : true;
 		const state = {
@@ -155,11 +155,6 @@ export default class AgoraComponent extends Component {
 			// console.log(state);
 		});
 		this.initAgora();
-		this.viewObserver$().pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(view => {
-			// console.log('AgoraComponent.viewObserver$', view);
-		});
 	}
 
 	viewObserver$() {
@@ -187,10 +182,29 @@ export default class AgoraComponent extends Component {
 		);
 	}
 
+	load(callback) {
+		this.viewObserver$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(view => {
+			console.log('AgoraComponent.viewObserver$', view);
+			if (typeof callback === 'function') {
+				callback();
+			}
+		});
+	}
+
+	loadAndConnect(preferences) {
+		this.load(() => {
+			this.connect(preferences);
+		});
+	}
+
 	initAgora() {
 		let agora = null;
 		if (DEBUG || this.state.role === RoleType.SelfService) {
-			StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
+			this.load(() => {
+				StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
+			});
 		} else {
 			agora = this.agora = AgoraService.getSingleton();
 			const role = this.getLinkRole();
@@ -281,7 +295,7 @@ export default class AgoraComponent extends Component {
 			}
 		});
 		if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
-			this.connect();
+			this.loadAndConnect();
 		}
 	}
 
@@ -300,7 +314,7 @@ export default class AgoraComponent extends Component {
 		} else if (StateService.state.name) {
 			if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
 				StateService.patchState({ link, role, has3D });
-				this.connect();
+				this.loadAndConnect();
 			} else {
 				StateService.patchState({ link, role, has3D, status: AgoraStatus.Device });
 			}
@@ -321,14 +335,14 @@ export default class AgoraComponent extends Component {
 	onName(name) {
 		if (StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SmartDevice) {
 			StateService.patchState({ name });
-			this.connect();
+			this.loadAndConnect();
 		} else {
 			StateService.patchState({ name, status: AgoraStatus.Device });
 		}
 	}
 
 	onEnter(preferences) {
-		this.connect(preferences);
+		this.loadAndConnect(preferences);
 	}
 
 	connect(preferences) {
@@ -483,6 +497,7 @@ export default class AgoraComponent extends Component {
 
 	onChatClose() {
 		this.patchState({ chat: false });
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	onToggleControl() {

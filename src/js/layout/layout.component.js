@@ -1,5 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { environment } from '../environment';
+import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
@@ -32,9 +33,25 @@ export default class LayoutComponent extends Component {
 		this.local = {};
 		this.screen = null;
 		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1, }));
+		this.languageService = LanguageService;
+		this.showLanguages = false;
 		StateService.patchState(this.state);
 		console.log('LayoutComponent', this);
 		// console.log(AgoraService.getUniqueUserId());
+	}
+
+	setLanguage(language) {
+		this.languageService.setLanguage$(language).pipe(
+			first(),
+		).subscribe(_ => {
+			this.showLanguages = false;
+			this.pushChanges();
+		});
+	}
+
+	toggleLanguages() {
+		this.showLanguages = !this.showLanguages;
+		this.pushChanges();
 	}
 
 	patchState(state) {
@@ -88,6 +105,7 @@ export default class LayoutComponent extends Component {
 
 	onChatClose() {
 		this.patchState({ chat: false });
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	onToggleControl() {

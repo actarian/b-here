@@ -2,6 +2,7 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 import { environment } from '../environment';
 import HttpService from '../http/http.service';
+import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { mapView } from '../view/view';
@@ -28,7 +29,7 @@ export default class ViewService {
 
 	static data$() {
 		if (!this.data$_) {
-			const dataUrl = environment.flags.production ? '/api/view' : './api/data.json';
+			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
 			this.data$_ = HttpService.get$(dataUrl).pipe(
 				map(data => {
 					data.views = data.views.map(view => mapView(view));

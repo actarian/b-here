@@ -1,6 +1,5 @@
 import { Component } from 'rxcomp';
 import { FormAbstractCollectionDirective, FormControl, FormGroup, Validators } from 'rxcomp-form';
-import LabelPipe from '../label/label.pipe';
 
 export default class ControlsComponent extends Component {
 
@@ -54,7 +53,7 @@ export function fieldsToFormControls(fields) {
 		p[c.name] = new FormControl((c.value != null ? c.value : null), validators);
 		if (c.type === 'select' || c.type === 'custom-select') {
 			const options = (c.options || []).slice();
-			options.unshift({ id: null, name: LabelPipe.transform('select') });
+			options.unshift({ id: null, name: 'select', }); // LabelPipe.transform('select')
 			p[c.name].options = options;
 		}
 		return p;
