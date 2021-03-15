@@ -1,85 +1,8 @@
 <!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
 <!-- @@block = main-->
-<script>
-	// window.antiforgery = '';
-    window.labels = {
-		browse: 'Apri',
-		close: 'Chiudi',
-		cancel: 'Annulla',
-		drag_and_drop_images: 'trascina qui le immagini',
-		error_email: 'email non valida',
-		error_match: 'i campi non corrispondono',
-		error_required: 'campo obbligatorio',
-		error_credentials: 'credenziali non valide',
-		loading: 'loading',
-		remove: 'Rimuovi',
-		required: 'Richiesto',
-		select: 'Seleziona',
-		select_file: 'Scegli un file...',
-		update: 'Salva',
-		upload: 'Carica',
-		waiting_host: 'attendere',
-		bhere_editor: 'editor',
-		bhere_insert_meeting_id: 'Inserisci un Meeting ID',
-		bhere_meeting_id: 'Meeting ID',
-		bhere_attendee_meeting_id: 'Attendee Meeting ID',
-		bhere_streamer_meeting_id: 'Streamer Meeting ID',
-		bhere_viewer_meeting_id: 'Viewer Meeting ID',
-		bhere_smart_device_meeting_id: 'Smart Device ID',
-		bhere_invalid_meeting_id: 'meeting id non valido',
-		bhere_take_part_meeting: 'partecipa al meeting',
-		bhere_generate_meeting_id: 'Genera un Meeting ID',
-		bhere_take_part: 'Partecipa',
-		bhere_login: 'Login.',
-		bhere_username: 'Username',
-		bhere_password: 'Password',
-		bhere_cta: 'Accedi',
-		bhere_fill_fullname: 'Inserisci il nome completo',
-		bhere_fill_name_and_surname: 'inserisci un nome e un cognome',
-		bhere_proceed_as: 'prosegui come',
-		bhere_proceed: 'Prosegui',
-		bhere_name_and_surname: 'Nome Cognome',
-		bhere_invalid_protocol: 'Protocollo errato.',
-		bhere_reload_in_https: 'riapri la pagina in https<br>per accedere al microfono e alla webcam.',
-		bhere_reload: 'Riapri',
-		bhere_video: 'Video',
-		bhere_audio: 'Audio',
-		bhere_select_video_audio: 'seleziona una sorgente audio e video',
-		bhere_select_video: 'Seleziona una sorgente video',
-		bhere_select_audio: 'Seleziona una sorgente audio',
-		bhere_video_audio_connected: 'audio e video connessi',
-		bhere_enter: 'Entra',
-		bhere_connecting: 'In connessione...',
-		bhere_ar: 'Inquadra il qrcode con il cellulare o il tablet per vedere il VR.',
-		bhere_checklist_busy: 'Verifica sistema', // 'Checking system',
-		bhere_checklist_success: 'Verifica completata', // 'Checking system',
-		bhere_checklist_error: 'Verifica fallita', // 'Checking system',
-		bhere_browser_error: 'clicca qui per aggiornare il browser', // 'click here to upgrade your browser',
-		bhere_https_error: 'clicca qui per ricaricare la pagina in https', // 'click here to reload in https',
-		bhere_write_a_message: 'Scrivi...',
-	};
-</script>
-<style>
-	.page {
-		--font-primary: GT Walsheim,Maven Pro,Arial,sans-serif;
-		--background: #ffffff;
-		--background-negative: #101010;
-		--background-primary: #0099ff;
-		--background-secondary: #ff4332;
-		--background-tertiary: #d8dfe4;
-		--background-primary-disabled: #c4d3dd;
-		--background-primary-dimmed: rgba(0,153,255,0.08);
-		--foreground: #101010;
-		--foreground-negative: #fcfcfc;
-		--foreground-primary: #0099ff;
-		--foreground-secondary: #ff4332;
-		--foreground-tertiary: #6d7b84;
-		--foreground-primary-disabled: #c4d3dd;
-		--foreground-primary-dimmed: rgba(0,153,255,0.5);
-		--border: #101010;
-		--shadow: rgba(86, 125, 151, .65);
-	}
-</style>
+<!-- @@include ./templates/shared/css-vars.html -->
+<!-- @@include ./templates/it.html -->
+<!-- @@include ./templates/b-here/language__it.html -->
 <div class="page" agora-component>
 	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }" *if="state.status != 'connected'">
 		<img [src]="env.background.image" *if="env.background.image" />
@@ -87,9 +10,6 @@
 	</div>
 	<!-- Status Checklist -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'checklist'" [agora-checklist] (checked)="onChecked($event)">
-		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span>
-		</a>
 		<div class="group--info">
 			<div class="group--info__content stagger--childs">
 				<div class="title" *if="busy" [innerHTML]="'bhere_checklist_busy' | label"></div>
@@ -109,17 +29,17 @@
 					<li class="checklist__item check"><span>Realtime Messaging</span> <span agora-check [value]="checklist.rtm"></span></li>
 					<li class="checklist__item error" *if="errors.rtm"><span [innerHTML]="errors.rtm"></span></li>
 				</ul>
-				<button type="submit" class="btn--next" [class]="{ disabled: !checklist.success }" (click)="onNext()">
+				<button type="submit" class="btn--next" [class]="{ disabled: !checklist.success, ready: checklist.success }" (click)="onNext()">
 					<span [innerHTML]="'bhere_proceed' | label"></span>
 				</button>
 			</div>
 		</div>
-	</div>
-	<!-- Status Link -->
-	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
 			<span [innerHTML]="'bhere_editor' | label"></span>
 		</a>
+	</div>
+	<!-- Status Link -->
+	<div class="ui ui--info ui--info-centered" *if="state.status == 'link'" [agora-link] (link)="onLink($event)">
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
 				<div class="group--info__content stagger--childs">
@@ -181,6 +101,9 @@
 				</div>
 			</form>
 		</div>
+		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
+			<span [innerHTML]="'bhere_editor' | label"></span>
+		</a>
 	</div>
 	<!-- Status Login -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'login'" [agora-login] (login)="onLogin($event)">
@@ -349,7 +272,7 @@
 				<div class="group--virtual" *virtual="let item of groupedMessages" [mode]="4" [width]="350" [gutter]="0" [reverse]="true">
 					<!-- serve un nodo figlio -->
 					<div class="listing__item message" [class]="{ me: item.me, typing: item.typing }">
-						<div class="message__avatar"><span [innerHTML]="item.shortName"></span></div>
+						<div class="message__avatar" [title]="item.name"><span [innerHTML]="item.shortName"></span></div>
 						<div class="message__content">
 							<div [innerHTML]="item.message"></div>
 							<div class="typing-indicator">

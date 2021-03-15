@@ -1,0 +1,38 @@
+<script>
+	window.bhere = Object.assign((window.bhere || {}), {
+		alternates: [{
+			href: '/it/codice-di-accesso',
+			lang: 'it',
+			title: 'Italiano',
+		}, {
+			href: '/en/access-code',
+			lang: 'en',
+			title: 'English',
+		}],
+	});
+</script>
+<div class="page" access-code-component>
+	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
+		<img [src]="env.background.image" *if="env.background.image" />
+		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
+	</div>
+	<!-- access-code -->
+	<div class="ui ui--info ui--info-centered">
+		<div class="group--info">
+			<div class="group--info__content stagger--childs">
+				<div class="title" [innerHTML]="'access_code_title' | label"></div>
+				<div class="picture">
+					<canvas class="qrcode"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<a class="btn--logo" [href]="'index' | slug">
+		<img [src]="env.logo" *if="env.logo" />
+		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
+	</a>
+	<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+		<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+	</a>
+	<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+</div>

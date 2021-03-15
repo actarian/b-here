@@ -53,13 +53,6 @@ export class Environment {
 
 	constructor(options) {
 		if (options) {
-			if (typeof options.url === 'object') {
-				const language = options.language || '';
-				const market = options.market || '';
-				Object.keys(options.url).forEach(key => {
-					options.url[key] = language + market + options.url[key];
-				});
-			}
 			Object.assign(this, options);
 		}
 	}
@@ -114,6 +107,9 @@ const defaultAppOptions = {
 		maxQuality: false,
 		heroku: HEROKU,
 	},
+	url: {},
+	languages: ['it', 'en'],
+	defaultLanguage: 'it',
 };
 
 const environmentOptions = window.STATIC ? environmentStatic : environmentServed;

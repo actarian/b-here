@@ -98,7 +98,7 @@ export default class AccessComponent extends Component {
 		const controls = this.controls = form.controls;
 		/*
 		const options = data.roles.slice();
-		options.unshift({ id: null, name: LabelPipe.transform('select') });
+		options.unshift({ id: null, name: 'select', // LabelPipe.transform('select') });
 		controls.role.options = options;
 		*/
 

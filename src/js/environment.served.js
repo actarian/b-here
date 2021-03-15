@@ -41,16 +41,6 @@ export const environmentServed = {
 	assets: '/Modules/B-Here/Client/docs/',
 	worker: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
-	language: '/it',
-	market: '/it',
-	url: {
-		index: '/',
-		access: '/',
-		editor: '/editor',
-		selfServiceTour: '/self-service-tour',
-		guidedTour: '/guided-tour',
-		accessCode: '/access-code',
-	},
 	template: {
 		tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
 		modal: {
@@ -72,6 +62,4 @@ export const environmentServed = {
 			remove: '/template/modules/b-here/remove-modal.cshtml',
 		}
 	},
-	languages: ['en'],
-	defaultLanguage: 'en',
 };

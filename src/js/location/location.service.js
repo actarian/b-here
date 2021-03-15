@@ -19,15 +19,30 @@ export default class LocationService {
 		} else {
 			params.set(keyOrValue, '');
 		}
-		this.replace(params);
+		this.pushParams(params);
 		// console.log('LocationService.set', params, keyOrValue, value);
 	}
 
-	static replace(params) {
+	static pushParams(params) {
 		if (window.history && window.history.pushState) {
 			const title = document.title;
 			const url = `${window.location.href.split('?')[0]}?${params.toString()}`;
 			window.history.pushState(params.toString(), title, url);
+		}
+	}
+
+	static replace(from, to) {
+		const history = window.history;
+		if (history && history.replaceState) {
+			const location = window.location;
+			const title = document.title;
+			if (location.pathname === '/') {
+				const url = location.origin + to + location.search;
+				history.replaceState(history.state, title, url);
+			} else if (location.href.indexOf(from) !== -1) {
+				const url = location.href.replace(from, to);
+				history.replaceState(history.state, title, url);
+			}
 		}
 	}
 

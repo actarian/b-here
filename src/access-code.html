@@ -1,31 +1,8 @@
 <!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
 <!-- @@block = main-->
-<script>
-	window.labels = {
-		access_code_title: 'Scansiona il codice<br> e accedi al tour virtuale',
-	};
-</script>
-<style>
-	.page {
-		--font-primary: GT Walsheim,Maven Pro,Arial,sans-serif;
-		--background: #ffffff;
-		--background-negative: #101010;
-		--background-primary: #0099ff;
-		--background-secondary: #ff4332;
-		--background-tertiary: #d8dfe4;
-		--background-primary-disabled: #c4d3dd;
-		--background-primary-dimmed: rgba(0,153,255,0.08);
-		--foreground: #101010;
-		--foreground-negative: #fcfcfc;
-		--foreground-primary: #0099ff;
-		--foreground-secondary: #ff4332;
-		--foreground-tertiary: #6d7b84;
-		--foreground-primary-disabled: #c4d3dd;
-		--foreground-primary-dimmed: rgba(0,153,255,0.5);
-		--border: #101010;
-		--shadow: rgba(86, 125, 151, .65);
-	}
-</style>
+<!-- @@include ./templates/shared/css-vars.html -->
+<!-- @@include ./templates/it.html -->
+<!-- @@include ./templates/access-code/language__it.html -->
 <div class="page" access-code-component>
 	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
 		<img [src]="env.background.image" *if="env.background.image" />

@@ -87,24 +87,52 @@ app.options('/api/upload', function(request, response) {
 });
 
 app.get('/', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/access.html'));
+	response.sendFile(path.join(__dirname, '../docs/access__it.html'));
+});
+app.get('/it/', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/access__it.html'));
+});
+app.get('/en/', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/access__en.html'));
 });
 app.get('/self-service-tour', function(request, response) {
 	// !!! session user
 	setSessionUser(request, RoleType.SelfService);
-	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/it/toue-self-service', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.SelfService);
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/en/self-service-tour', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.SelfService);
+	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
+});
+app.get('/access-code', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/access-code__it.html'));
+});
+app.get('/it/codice-di-accesso', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/access-code__it.html'));
+});
+app.get('/en/access-code', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/access-code__en.html'));
 });
 app.get('/guided-tour', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/it/tour-guidato', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/en/guided-tour', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
 });
 app.get('/b-here', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
 });
 app.get('/editor', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/editor.html'));
-});
-app.get('/access-code', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/access-code.html'));
 });
 
 app.listen(Vars.port, () => {

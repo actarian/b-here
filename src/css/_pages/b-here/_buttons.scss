@@ -429,10 +429,17 @@
 }
 
 .btn--absolute {
+	/*
 	position: absolute;
 	top: 15px;
 	right: 15px;
 	z-index: 10000;
+	*/
+	position: absolute;
+	left: 50%;
+	bottom: 15px;
+	z-index: 10000;
+	transform: translateX(-50%);
 }
 
 .btn--cancel,
