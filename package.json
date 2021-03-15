@@ -35,7 +35,7 @@
     "rxcomp-form": "1.0.0-beta.18",
     "rxcomp": "1.0.0-beta.20",
     "rxjs": "6.6.2",
-    "three": "0.117.1"
+    "three": "0.125.0"
   },
   "devDependencies": {
     "gulpfile-config": "1.0.0-alpha.14",
