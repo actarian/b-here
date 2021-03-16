@@ -38,7 +38,7 @@
 			</div>
 		</div>
 		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span>
+			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 		</a>
 	</div>
 	<!-- Status Link -->
@@ -105,10 +105,10 @@
 			</form>
 		</div>
 		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span>
+			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 		</a>
 		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span>
+			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 		</a>
 	</div>
 	<!-- Status Name -->
