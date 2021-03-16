@@ -88,7 +88,22 @@ body {
 
 	&>.btn--credits {
 		position: absolute;
-		right: 30px;
+		left: 30px;
 		bottom: 26px;
+	}
+
+	.btn--absolute {
+		/*
+		position: absolute;
+		top: 15px;
+		right: 15px;
+		z-index: 10000;
+		*/
+		position: absolute;
+		right: 15px;
+		bottom: 15px;
+		z-index: 10000;
+		// left: 50%;
+		// transform: translateX(-50%);
 	}
 }

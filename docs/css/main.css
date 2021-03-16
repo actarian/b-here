@@ -4140,8 +4140,19 @@ body {
         display: none; } }
   .page > .btn--credits {
     position: absolute;
-    right: 30px;
+    left: 30px;
     bottom: 26px; }
+  .page .btn--absolute {
+    /*
+		position: absolute;
+		top: 15px;
+		right: 15px;
+		z-index: 10000;
+		*/
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    z-index: 10000; }
 
 .btn--cam,
 .btn--mic,
@@ -4429,17 +4440,16 @@ body {
     transform: rotate(360deg); } }
 
 .btn--absolute {
-  /*
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	z-index: 10000;
-	*/
-  position: absolute;
-  left: 50%;
-  bottom: 15px;
-  z-index: 10000;
-  transform: translateX(-50%); }
+  height: auto;
+  min-height: auto;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase; }
+  .btn--absolute svg {
+    width: 12px;
+    height: 12px;
+    margin: 0 -5px 2px 5px; }
 
 .btn--close {
   width: 40px;
