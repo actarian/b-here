@@ -4609,7 +4609,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
     this.busy = false;
     this.pushChanges();
 
-    if (state.role === RoleType.SmartDevice) {
+    if (this.state.role === RoleType.SmartDevice) {
       this.onNext();
     }
   };
