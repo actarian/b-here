@@ -1106,9 +1106,9 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
 
       default:
         mode = UIMode.None;
-    }
+    } // console.log('UserService.getMode', role, mode);
 
-    console.log('UserService.getMode', role, mode);
+
     return mode;
   };
 

@@ -119,7 +119,7 @@ export class UserService {
 			default:
 				mode = UIMode.None;
 		}
-		console.log('UserService.getMode', role, mode);
+		// console.log('UserService.getMode', role, mode);
 		return mode;
 	}
 
