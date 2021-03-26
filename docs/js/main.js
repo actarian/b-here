@@ -6103,7 +6103,7 @@ var View = /*#__PURE__*/function () {
     }
 
     this.items = (this.items || []).filter(function (item) {
-      return filterViewItem;
+      return filterViewItem(item);
     }).map(function (item) {
       return mapViewItem(item);
     });
@@ -6461,7 +6461,7 @@ function filterViewItem(item) {
 
   switch (item.type.name) {
     case ViewItemType.Nav.name:
-      flag = item.viewId == null || StateService.state.navigable;
+      flag = item.viewId == null || isNavMove(item) || StateService.state.navigable;
       break;
 
     default:
@@ -6484,6 +6484,12 @@ function mapViewItem(item) {
 }
 function mapViewTile(tile) {
   return new ViewTile(tile);
+}
+function isNavMove(item) {
+  return !isValidText(item.title) && !isValidText(item.abstract);
+}
+function isValidText(text) {
+  return text && text.length > 0;
 }var LanguageService = /*#__PURE__*/function () {
   function LanguageService() {}
 
