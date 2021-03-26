@@ -27,7 +27,7 @@ export class View {
 			Object.assign(this, options);
 			this.updateIndices(options.items);
 		}
-		this.items = (this.items || []).filter(item => filterViewItem).map(item => mapViewItem(item));
+		this.items = (this.items || []).filter(item => filterViewItem(item)).map(item => mapViewItem(item));
 		if (this.tiles) {
 			this.tiles = this.tiles.map(tile => mapViewTile(tile));
 		}
@@ -269,7 +269,7 @@ export function filterViewItem(item) {
 	let flag;
 	switch (item.type.name) {
 		case ViewItemType.Nav.name:
-			flag = item.viewId == null || StateService.state.navigable;
+			flag = item.viewId == null || isNavMove(item) || StateService.state.navigable;
 			break;
 		default:
 			flag = true;
@@ -290,4 +290,12 @@ export function mapViewItem(item) {
 
 export function mapViewTile(tile) {
 	return new ViewTile(tile);
+}
+
+export function isNavMove(item) {
+	return !isValidText(item.title) && !isValidText(item.abstract);
+}
+
+export function isValidText(text) {
+	return text && text.length > 0;
 }
