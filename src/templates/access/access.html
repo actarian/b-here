@@ -1,21 +1,19 @@
 <script>
-	window.bhere = Object.assign((window.bhere || {}), {
-		alternates: [{
-			href: '/it/',
-			lang: 'it',
-			title: 'Italiano',
-		}, {
-			href: '/en/',
-			lang: 'en',
-			title: 'English',
-		}],
-	});
+window.bhere = Object.assign((window.bhere || {}), {
+	alternates: [{
+		href: '/it/',
+		lang: 'it',
+		title: 'Italiano',
+	}, {
+		href: '/en/',
+		lang: 'en',
+		title: 'English',
+	}],
+});
+
 </script>
 <div class="page" access-component>
-	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
-		<img [src]="env.background.image" *if="env.background.image" />
-		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
-	</div>
+	<!-- @@include ../components/background.html -->
 	<!-- access -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'access'">
 		<div class="group--info">
@@ -119,11 +117,9 @@
 		</div>
 	</div>
 	<div class="btn--logo" (click)="onBack($event)">
-		<img [src]="env.logo" *if="env.logo" />
-		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
+		<img [src]="'logo' | env" *if="'logo' | env" />
+		<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
 	</div>
-	<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-		<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-	</a>
-	<div class="group--language" language (set)="pushChanges()"></div>
+	<!-- @@include ../components/credits.html -->
+	<!-- @@include ../components/language.html -->
 </div>

@@ -930,6 +930,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.NavToGrid:
 					case MessageType.ShowPanel:
 					case MessageType.PlayMedia:
+					case MessageType.PlayModel:
 						if (!StateService.state.control && !StateService.state.spyed) {
 							return;
 						}
@@ -1053,6 +1054,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ControlInfo:
 			case MessageType.ShowPanel:
 			case MessageType.PlayMedia:
+			case MessageType.PlayModel:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:
 				if (StateService.state.locked || (StateService.state.spying && StateService.state.spying === message.clientId)) {
@@ -1486,7 +1488,7 @@ export default class AgoraService extends Emittable {
 						if (environment.flags.useProxy) {
 							client.stopProxyServer();
 						}
-					}, () => {});
+					}, () => { });
 				});
 			}, (error) => {
 				reject(error);
@@ -1537,8 +1539,8 @@ export default class AgoraService extends Emittable {
 							channel = null;
 							client.logout().then(() => {
 								client = null;
-							}).catch(() => {});
-						}).catch(() => {});
+							}).catch(() => { });
+						}).catch(() => { });
 					})
 				}).catch((error) => {
 					reject(error);
@@ -1547,7 +1549,7 @@ export default class AgoraService extends Emittable {
 					if (client) {
 						client.logout().then(() => {
 							client = null;
-						}).catch(() => {});
+						}).catch(() => { });
 					}
 				});
 			});

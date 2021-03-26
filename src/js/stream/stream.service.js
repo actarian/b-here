@@ -82,15 +82,11 @@ export default class StreamService {
 				});
 				orderedRemotes.sort((a, b) => {
 					if (a.clientInfo && b.clientInfo) {
-						if (a.clientInfo.role === RoleType.Publisher) {
-							return -1;
-						} else if (b.clientInfo.role === RoleType.Publisher) {
-							return 1;
-						} else {
-							// sort on audioLevel or lastOrder
-							return b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel ||
-							(a.clientInfo.order || 0) - (b.clientInfo.order || 0);
-						}
+						const av = a.clientInfo.role === RoleType.Publisher ? 2 : (a.clientInfo.role === RoleType.Attendee ? 1 : 0);
+						const bv = b.clientInfo.role === RoleType.Publisher ? 2 : (b.clientInfo.role === RoleType.Attendee ? 1 : 0);
+						return (bv - av) ||
+							(b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel) ||
+							((a.clientInfo.order || 0) - (b.clientInfo.order || 0));
 					} else {
 						return 0;
 					}
@@ -106,7 +102,7 @@ export default class StreamService {
 			}),
 			distinctUntilChanged((a, b) => {
 				return a.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|') ===
-				b.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|');
+					b.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|');
 			}),
 		);
 	}

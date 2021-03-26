@@ -1,9 +1,13 @@
 import { Component, getContext } from 'rxcomp';
-import { environment } from '../environment';
+import { fromEvent } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
+import { AgoraStatus } from '../agora/agora.types';
+import { DEBUG } from '../environment';
 import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
+import { UserService } from '../user/user.service';
 
 export default class LayoutComponent extends Component {
 
@@ -15,18 +19,19 @@ export default class LayoutComponent extends Component {
 	}
 
 	onInit() {
-		this.env = environment;
 		this.state = {
-			status: LocationService.get('status') || 'connected',
-			role: LocationService.get('role') || 'publisher',
-			membersCount: 1,
-			live: true,
+			status: LocationService.get('status') || AgoraStatus.Connected,
+			role: LocationService.get('role') || RoleType.Embed, // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
+			membersCount: 3,
 			chat: false,
 			chatDirty: true,
 			name: "Jhon Appleseed",
 			uid: "7341614597544882"
 		};
-		this.state.has3D = this.state.role !== RoleType.SmartDevice;
+		this.state.live = (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) ? false : true;
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		this.state.navigable = embedViewId == null;
+		this.state.mode = UserService.getMode(this.state.role);
 		this.view = {
 			likes: 41,
 		};
@@ -36,6 +41,9 @@ export default class LayoutComponent extends Component {
 		this.languageService = LanguageService;
 		this.showLanguages = false;
 		StateService.patchState(this.state);
+		this.fullscreen$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe();
 		console.log('LayoutComponent', this);
 		// console.log(AgoraService.getUniqueUserId());
 	}
@@ -95,7 +103,17 @@ export default class LayoutComponent extends Component {
 				document.msExitFullscreen();
 			}
 		}
-		this.patchState({ fullScreen });
+		// this.patchState({ fullScreen });
+	}
+
+	fullscreen$() {
+		return fromEvent(document, 'fullscreenchange').pipe(
+			tap(_ => {
+				const fullScreen = document.fullscreenElement != null;
+				console.log('fullscreen$', fullScreen);
+				this.patchState({ fullScreen });
+			}),
+		);
 	}
 
 	toggleChat() {

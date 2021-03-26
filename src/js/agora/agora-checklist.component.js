@@ -204,7 +204,7 @@ export default class AgoraChecklistComponent extends Component {
 		this.checklist.error = !success;
 		this.busy = false;
 		this.pushChanges();
-		if (state.role === RoleType.SmartDevice) {
+		if (this.state.role === RoleType.SmartDevice) {
 			this.onNext();
 		}
 	}

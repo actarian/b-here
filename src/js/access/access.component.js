@@ -9,7 +9,6 @@ import { UserService } from '../user/user.service';
 export default class AccessComponent extends Component {
 
 	onInit() {
-		this.env = environment;
 		this.state = {
 			status: 'access',
 		};

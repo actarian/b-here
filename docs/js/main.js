@@ -132,9 +132,10 @@ function _readOnlyError(name) {
     guidedTourRequest: true,
     editor: false,
     editorAssetScreen: false,
-    ar: true,
     menu: true,
     chat: false,
+    ar: true,
+    like: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -143,7 +144,7 @@ function _readOnlyError(name) {
   },
   logo: null,
   background: {
-    image: '/Modules/B-Here/Client/docs/img/background.jpg',
+    // image: '/Modules/B-Here/Client/docs/img/background.jpg',
     video: '/Modules/B-Here/Client/docs/img/background.mp4'
   },
   colors: {
@@ -195,9 +196,10 @@ function _readOnlyError(name) {
     guidedTourRequest: true,
     editor: true,
     editorAssetScreen: true,
-    ar: true,
     menu: true,
     chat: true,
+    ar: true,
+    like: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -206,7 +208,7 @@ function _readOnlyError(name) {
   },
   logo: null,
   background: {
-    image: '/b-here/img/background.jpg',
+    // image: '/b-here/img/background.jpg',
     video: '/b-here/img/background.mp4'
   },
   colors: {
@@ -371,8 +373,10 @@ var defaultAppOptions = {
     selfService: true,
     guidedTourRequest: true,
     editor: true,
-    ar: true,
     menu: true,
+    chat: true,
+    ar: true,
+    like: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -493,7 +497,6 @@ console.log('environment', environment);var LocationService = /*#__PURE__*/funct
   var _proto = AccessCodeComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.env = environment;
     var link = LocationService.get('link');
 
     if (!link) {
@@ -604,7 +607,222 @@ function patchFields(fields, form) {
     return p;
   }, {});
   form.patch(testValues);
-}var HttpService = /*#__PURE__*/function () {
+}var RoleType = {
+  Publisher: 'publisher',
+  Attendee: 'attendee',
+  Streamer: 'streamer',
+  Viewer: 'viewer',
+  SmartDevice: 'smart-device',
+  SelfService: 'self-service',
+  Embed: 'embed'
+};
+var User = function User(options) {
+  if (options) {
+    Object.assign(this, options);
+  }
+};var USE_AUTODETECT = false;
+var StreamQualities = [{
+  // id: 1,
+  // name: '4K 2160p 3840x2160',
+  profile: '4K',
+  resolution: {
+    width: 3840,
+    height: 2160
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 8910,
+    max: 13500
+  }
+}, {
+  // id: 2,
+  // name: 'HD 1440p 2560×1440',
+  profile: '1440p',
+  resolution: {
+    width: 2560,
+    height: 1440
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 4850,
+    max: 7350
+  }
+}, {
+  // id: 3,
+  // name: 'HD 1080p 1920x1080',
+  profile: '1080p',
+  resolution: {
+    width: 1920,
+    height: 1080
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 2080,
+    max: 4780
+  }
+}, {
+  // id: 4,
+  // name: 'LOW 720p 1280x720',
+  profile: '720p_3',
+  resolution: {
+    width: 1280,
+    height: 720
+  },
+  frameRate: {
+    min: 15,
+    max: 30
+  },
+  bitrate: {
+    min: 1130,
+    max: 1710
+  }
+}, {
+  // id: 5,
+  // name: 'LOWEST 240p 320x240',
+  profile: '240p_1',
+  resolution: {
+    width: 320,
+    height: 240
+  },
+  frameRate: {
+    min: 15,
+    max: 15
+  },
+  bitrate: {
+    min: 140,
+    max: 200
+  }
+}];
+function getStreamQuality(state) {
+  var lowestQuality = StreamQualities[StreamQualities.length - 1];
+  var highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
+  return state.role === RoleType.Publisher || state.role === RoleType.SmartDevice ? highestQuality : lowestQuality;
+}
+var AgoraStatus = {
+  Idle: 'idle',
+  Checklist: 'checklist',
+  Link: 'link',
+  Login: 'login',
+  Name: 'name',
+  Device: 'device',
+  ShouldConnect: 'should-connect',
+  Connecting: 'connecting',
+  Connected: 'connected',
+  Disconnected: 'disconnected'
+};
+var MessageType = {
+  AgoraEvent: 'agoraEvent',
+  Ping: 'ping',
+  RequestControl: 'requestControl',
+  RequestControlAccepted: 'requestControlAccepted',
+  RequestControlRejected: 'requestControlRejected',
+  RequestControlDismiss: 'requestControlDismiss',
+  RequestControlDismissed: 'requestControlDismissed',
+  RequestPeerInfo: 'requestPeerInfo',
+  RequestPeerInfoResult: 'requestPeerInfoResult',
+  RequestInfo: 'requestInfo',
+  RequestInfoResult: 'requestInfoResult',
+  RequestInfoDismiss: 'requestInfoDismiss',
+  RequestInfoDismissed: 'requestInfoDismissed',
+  RequestInfoRejected: 'requestInfoRejected',
+  SlideChange: 'slideChange',
+  ControlInfo: 'controlInfo',
+  AddLike: 'addLike',
+  ShowPanel: 'showPanel',
+  PlayMedia: 'playMedia',
+  PlayModel: 'playModel',
+  NavToView: 'navToView',
+  NavToGrid: 'navToGrid',
+  VRStarted: 'vrStarted',
+  VREnded: 'vrEnded',
+  VRState: 'vrState',
+  MenuToggle: 'menuToggle',
+  ChatMessage: 'chatMessage',
+  ChatTypingBegin: 'chatTypingBegin',
+  ChatTypingEnd: 'chatTypingEnd'
+};
+var UIMode = {
+  VirtualTour: 'virtual-tour',
+  LiveMeeting: 'live-meeting',
+  SelfServiceTour: 'self-service-tour',
+  Embed: 'embed',
+  None: 'none'
+};
+var AgoraEvent = function AgoraEvent(options) {
+  Object.assign(this, options);
+};
+var AgoraPeerEvent = /*#__PURE__*/function (_AgoraEvent) {
+  _inheritsLoose(AgoraPeerEvent, _AgoraEvent);
+
+  function AgoraPeerEvent() {
+    return _AgoraEvent.apply(this, arguments) || this;
+  }
+
+  return AgoraPeerEvent;
+}(AgoraEvent);
+var AgoraRemoteEvent = /*#__PURE__*/function (_AgoraEvent2) {
+  _inheritsLoose(AgoraRemoteEvent, _AgoraEvent2);
+
+  function AgoraRemoteEvent() {
+    return _AgoraEvent2.apply(this, arguments) || this;
+  }
+
+  return AgoraRemoteEvent;
+}(AgoraEvent);
+var AgoraMuteVideoEvent = /*#__PURE__*/function (_AgoraEvent3) {
+  _inheritsLoose(AgoraMuteVideoEvent, _AgoraEvent3);
+
+  function AgoraMuteVideoEvent() {
+    return _AgoraEvent3.apply(this, arguments) || this;
+  }
+
+  return AgoraMuteVideoEvent;
+}(AgoraEvent);
+var AgoraUnmuteVideoEvent = /*#__PURE__*/function (_AgoraEvent4) {
+  _inheritsLoose(AgoraUnmuteVideoEvent, _AgoraEvent4);
+
+  function AgoraUnmuteVideoEvent() {
+    return _AgoraEvent4.apply(this, arguments) || this;
+  }
+
+  return AgoraUnmuteVideoEvent;
+}(AgoraEvent);
+var AgoraMuteAudioEvent = /*#__PURE__*/function (_AgoraEvent5) {
+  _inheritsLoose(AgoraMuteAudioEvent, _AgoraEvent5);
+
+  function AgoraMuteAudioEvent() {
+    return _AgoraEvent5.apply(this, arguments) || this;
+  }
+
+  return AgoraMuteAudioEvent;
+}(AgoraEvent);
+var AgoraUnmuteAudioEvent = /*#__PURE__*/function (_AgoraEvent6) {
+  _inheritsLoose(AgoraUnmuteAudioEvent, _AgoraEvent6);
+
+  function AgoraUnmuteAudioEvent() {
+    return _AgoraEvent6.apply(this, arguments) || this;
+  }
+
+  return AgoraUnmuteAudioEvent;
+}(AgoraEvent);
+var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
+  _inheritsLoose(AgoraVolumeLevelsEvent, _AgoraEvent7);
+
+  function AgoraVolumeLevelsEvent() {
+    return _AgoraEvent7.apply(this, arguments) || this;
+  }
+
+  return AgoraVolumeLevelsEvent;
+}(AgoraEvent);var HttpService = /*#__PURE__*/function () {
   function HttpService() {}
 
   HttpService.http$ = function http$(method, url, data, format) {
@@ -753,19 +971,7 @@ function patchFields(fields, form) {
   };
 
   return HttpService;
-}();var RoleType = {
-  Publisher: 'publisher',
-  Attendee: 'attendee',
-  Streamer: 'streamer',
-  Viewer: 'viewer',
-  SmartDevice: 'smart-device',
-  SelfService: 'self-service'
-};
-var User = function User(options) {
-  if (options) {
-    Object.assign(this, options);
-  }
-};var UserService = /*#__PURE__*/function () {
+}();var UserService = /*#__PURE__*/function () {
   function UserService() {}
 
   UserService.setUser = function setUser(user) {
@@ -873,6 +1079,39 @@ var User = function User(options) {
     return new User(user);
   };
 
+  UserService.getMode = function getMode(role) {
+    var mode;
+
+    switch (role) {
+      case RoleType.Publisher:
+      case RoleType.Attendee:
+      case RoleType.Streamer:
+      case RoleType.Viewer:
+      case RoleType.Publisher:
+      case RoleType.Publisher:
+        mode = UIMode.VirtualTour;
+        break;
+
+      case RoleType.SelfService:
+        mode = UIMode.SelfServiceTour;
+        break;
+
+      case RoleType.SmartDevice:
+        mode = UIMode.LiveMeeting;
+        break;
+
+      case RoleType.Embed:
+        mode = UIMode.Embed;
+        break;
+
+      default:
+        mode = UIMode.None;
+    } // console.log('UserService.getMode', role, mode);
+
+
+    return mode;
+  };
+
   return UserService;
 }();
 UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PURE__*/function (_Component) {
@@ -885,7 +1124,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   var _proto = AccessComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.env = environment;
     this.state = {
       status: 'access'
     };
@@ -1350,14 +1588,9 @@ var StreamService = /*#__PURE__*/function () {
       });
       orderedRemotes.sort(function (a, b) {
         if (a.clientInfo && b.clientInfo) {
-          if (a.clientInfo.role === RoleType.Publisher) {
-            return -1;
-          } else if (b.clientInfo.role === RoleType.Publisher) {
-            return 1;
-          } else {
-            // sort on audioLevel or lastOrder
-            return b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel || (a.clientInfo.order || 0) - (b.clientInfo.order || 0);
-          }
+          var av = a.clientInfo.role === RoleType.Publisher ? 2 : a.clientInfo.role === RoleType.Attendee ? 1 : 0;
+          var bv = b.clientInfo.role === RoleType.Publisher ? 2 : b.clientInfo.role === RoleType.Attendee ? 1 : 0;
+          return bv - av || b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel || (a.clientInfo.order || 0) - (b.clientInfo.order || 0);
         } else {
           return 0;
         }
@@ -1693,201 +1926,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
 
   return streams;
-}), operators.shareReplay(1)));var USE_AUTODETECT = false;
-var StreamQualities = [{
-  // id: 1,
-  // name: '4K 2160p 3840x2160',
-  profile: '4K',
-  resolution: {
-    width: 3840,
-    height: 2160
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 8910,
-    max: 13500
-  }
-}, {
-  // id: 2,
-  // name: 'HD 1440p 2560×1440',
-  profile: '1440p',
-  resolution: {
-    width: 2560,
-    height: 1440
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 4850,
-    max: 7350
-  }
-}, {
-  // id: 3,
-  // name: 'HD 1080p 1920x1080',
-  profile: '1080p',
-  resolution: {
-    width: 1920,
-    height: 1080
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 2080,
-    max: 4780
-  }
-}, {
-  // id: 4,
-  // name: 'LOW 720p 1280x720',
-  profile: '720p_3',
-  resolution: {
-    width: 1280,
-    height: 720
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 1130,
-    max: 1710
-  }
-}, {
-  // id: 5,
-  // name: 'LOWEST 240p 320x240',
-  profile: '240p_1',
-  resolution: {
-    width: 320,
-    height: 240
-  },
-  frameRate: {
-    min: 15,
-    max: 15
-  },
-  bitrate: {
-    min: 140,
-    max: 200
-  }
-}];
-function getStreamQuality(state) {
-  var lowestQuality = StreamQualities[StreamQualities.length - 1];
-  var highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-  return state.role === RoleType.Publisher || state.role === RoleType.SmartDevice ? highestQuality : lowestQuality;
-}
-var AgoraStatus = {
-  Idle: 'idle',
-  Checklist: 'checklist',
-  Link: 'link',
-  Login: 'login',
-  Name: 'name',
-  Device: 'device',
-  ShouldConnect: 'should-connect',
-  Connecting: 'connecting',
-  Connected: 'connected',
-  Disconnected: 'disconnected'
-};
-var MessageType = {
-  AgoraEvent: 'agoraEvent',
-  Ping: 'ping',
-  RequestControl: 'requestControl',
-  RequestControlAccepted: 'requestControlAccepted',
-  RequestControlRejected: 'requestControlRejected',
-  RequestControlDismiss: 'requestControlDismiss',
-  RequestControlDismissed: 'requestControlDismissed',
-  RequestPeerInfo: 'requestPeerInfo',
-  RequestPeerInfoResult: 'requestPeerInfoResult',
-  RequestInfo: 'requestInfo',
-  RequestInfoResult: 'requestInfoResult',
-  RequestInfoDismiss: 'requestInfoDismiss',
-  RequestInfoDismissed: 'requestInfoDismissed',
-  RequestInfoRejected: 'requestInfoRejected',
-  SlideChange: 'slideChange',
-  ControlInfo: 'controlInfo',
-  AddLike: 'addLike',
-  ShowPanel: 'showPanel',
-  PlayMedia: 'playMedia',
-  NavToView: 'navToView',
-  NavToGrid: 'navToGrid',
-  VRStarted: 'vrStarted',
-  VREnded: 'vrEnded',
-  VRState: 'vrState',
-  MenuToggle: 'menuToggle',
-  ChatMessage: 'chatMessage',
-  ChatTypingBegin: 'chatTypingBegin',
-  ChatTypingEnd: 'chatTypingEnd'
-};
-var AgoraEvent = function AgoraEvent(options) {
-  Object.assign(this, options);
-};
-var AgoraPeerEvent = /*#__PURE__*/function (_AgoraEvent) {
-  _inheritsLoose(AgoraPeerEvent, _AgoraEvent);
-
-  function AgoraPeerEvent() {
-    return _AgoraEvent.apply(this, arguments) || this;
-  }
-
-  return AgoraPeerEvent;
-}(AgoraEvent);
-var AgoraRemoteEvent = /*#__PURE__*/function (_AgoraEvent2) {
-  _inheritsLoose(AgoraRemoteEvent, _AgoraEvent2);
-
-  function AgoraRemoteEvent() {
-    return _AgoraEvent2.apply(this, arguments) || this;
-  }
-
-  return AgoraRemoteEvent;
-}(AgoraEvent);
-var AgoraMuteVideoEvent = /*#__PURE__*/function (_AgoraEvent3) {
-  _inheritsLoose(AgoraMuteVideoEvent, _AgoraEvent3);
-
-  function AgoraMuteVideoEvent() {
-    return _AgoraEvent3.apply(this, arguments) || this;
-  }
-
-  return AgoraMuteVideoEvent;
-}(AgoraEvent);
-var AgoraUnmuteVideoEvent = /*#__PURE__*/function (_AgoraEvent4) {
-  _inheritsLoose(AgoraUnmuteVideoEvent, _AgoraEvent4);
-
-  function AgoraUnmuteVideoEvent() {
-    return _AgoraEvent4.apply(this, arguments) || this;
-  }
-
-  return AgoraUnmuteVideoEvent;
-}(AgoraEvent);
-var AgoraMuteAudioEvent = /*#__PURE__*/function (_AgoraEvent5) {
-  _inheritsLoose(AgoraMuteAudioEvent, _AgoraEvent5);
-
-  function AgoraMuteAudioEvent() {
-    return _AgoraEvent5.apply(this, arguments) || this;
-  }
-
-  return AgoraMuteAudioEvent;
-}(AgoraEvent);
-var AgoraUnmuteAudioEvent = /*#__PURE__*/function (_AgoraEvent6) {
-  _inheritsLoose(AgoraUnmuteAudioEvent, _AgoraEvent6);
-
-  function AgoraUnmuteAudioEvent() {
-    return _AgoraEvent6.apply(this, arguments) || this;
-  }
-
-  return AgoraUnmuteAudioEvent;
-}(AgoraEvent);
-var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
-  _inheritsLoose(AgoraVolumeLevelsEvent, _AgoraEvent7);
-
-  function AgoraVolumeLevelsEvent() {
-    return _AgoraEvent7.apply(this, arguments) || this;
-  }
-
-  return AgoraVolumeLevelsEvent;
-}(AgoraEvent);var AgoraService = /*#__PURE__*/function (_Emittable) {
+}), operators.shareReplay(1)));var AgoraService = /*#__PURE__*/function (_Emittable) {
   _inheritsLoose(AgoraService, _Emittable);
 
   AgoraService.getSingleton = function getSingleton(defaultDevices) {
@@ -2962,6 +3001,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           case MessageType.NavToGrid:
           case MessageType.ShowPanel:
           case MessageType.PlayMedia:
+          case MessageType.PlayModel:
             if (!StateService.state.control && !StateService.state.spyed) {
               return;
             }
@@ -3103,6 +3143,7 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
       case MessageType.ControlInfo:
       case MessageType.ShowPanel:
       case MessageType.PlayMedia:
+      case MessageType.PlayModel:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
         if (StateService.state.locked || StateService.state.spying && StateService.state.spying === message.clientId) {
@@ -4609,7 +4650,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
     this.busy = false;
     this.pushChanges();
 
-    if (state.role === RoleType.SmartDevice) {
+    if (this.state.role === RoleType.SmartDevice) {
       this.onNext();
     }
   };
@@ -6061,7 +6102,9 @@ var View = /*#__PURE__*/function () {
       this.updateIndices(options.items);
     }
 
-    this.items = (this.items || []).map(function (item) {
+    this.items = (this.items || []).filter(function (item) {
+      return filterViewItem;
+    }).map(function (item) {
       return mapViewItem(item);
     });
 
@@ -6413,6 +6456,20 @@ function mapView(view) {
 
   return view;
 }
+function filterViewItem(item) {
+  var flag;
+
+  switch (item.type.name) {
+    case ViewItemType.Nav.name:
+      flag = item.viewId == null || StateService.state.navigable;
+      break;
+
+    default:
+      flag = true;
+  }
+
+  return flag;
+}
 function mapViewItem(item) {
   switch (item.type.name) {
     case ViewItemType.Nav.name:
@@ -6527,7 +6584,10 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     var views = editor ? data.views : data.views.filter(function (x) {
       return x.type.name !== 'waiting-room';
     });
-    var initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : views.length ? views[0].id : null;
+    var viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
+    var embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+    var firstViewId = views.length ? views[0].id : null;
+    var initialViewId = embedViewId || viewId || firstViewId;
     this.action$_.next({
       viewId: initialViewId
     });
@@ -6853,7 +6913,6 @@ var VRService = /*#__PURE__*/function () {
         node = _getContext.node;
 
     node.classList.remove('hidden');
-    this.env = environment;
     this.platform = DeviceService.platform;
     this.state = {};
     this.hosted = null;
@@ -6964,21 +7023,23 @@ var VRService = /*#__PURE__*/function () {
       };
     }
 
-    var has3D = role !== RoleType.SmartDevice;
+    var mode = UserService.getMode(role);
     var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
     var checklist = LocalStorageService.get('checklist') || LocationService.get('skip-checklist') != null || null;
     var hosted = role === RoleType.Publisher ? true : false;
-    var live = DEBUG || role === RoleType.SelfService ? false : true;
+    var live = role === RoleType.SelfService || role === RoleType.Embed || DEBUG ? false : true;
+    var embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+    var navigable = embedViewId == null;
     var state = {
       user: user,
       role: role,
-      has3D: has3D,
+      mode: mode,
       name: name,
       checklist: checklist,
       link: link,
       channelName: environment.channelName,
       uid: null,
-      status: 'idle',
+      status: AgoraStatus.Idle,
       connecting: false,
       connected: false,
       locked: false,
@@ -6986,6 +7047,7 @@ var VRService = /*#__PURE__*/function () {
       spyed: false,
       hosted: hosted,
       live: live,
+      navigable: navigable,
       cameraMuted: false,
       audioMuted: false
     };
@@ -7052,7 +7114,7 @@ var VRService = /*#__PURE__*/function () {
 
     var agora = null;
 
-    if (DEBUG || this.state.role === RoleType.SelfService) {
+    if (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) {
       this.load(function () {
         StateService.patchState({
           status: AgoraStatus.Connected,
@@ -7154,6 +7216,7 @@ var VRService = /*#__PURE__*/function () {
         agora.sendMessage(message);
       }
     });
+    this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
 
     if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
       this.loadAndConnect();
@@ -7170,14 +7233,14 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.onLink = function onLink(link) {
     var role = this.getLinkRole();
-    var has3D = role !== RoleType.SmartDevice;
+    var mode = UserService.getMode(role);
     var user = StateService.state.user;
 
     if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
       StateService.patchState({
         link: link,
         role: role,
-        has3D: has3D,
+        mode: mode,
         status: AgoraStatus.Login
       });
     } else if (StateService.state.name) {
@@ -7185,14 +7248,14 @@ var VRService = /*#__PURE__*/function () {
         StateService.patchState({
           link: link,
           role: role,
-          has3D: has3D
+          mode: mode
         });
         this.loadAndConnect();
       } else {
         StateService.patchState({
           link: link,
           role: role,
-          has3D: has3D,
+          mode: mode,
           status: AgoraStatus.Device
         });
       }
@@ -7200,7 +7263,7 @@ var VRService = /*#__PURE__*/function () {
       StateService.patchState({
         link: link,
         role: role,
-        has3D: has3D,
+        mode: mode,
         status: AgoraStatus.Name
       });
     }
@@ -7244,7 +7307,17 @@ var VRService = /*#__PURE__*/function () {
   _proto.connect = function connect(preferences) {
     this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('AgoraComponent.connect', this.state.role);
 
-    if (this.state.role !== RoleType.SelfService) {
+    if (this.state.role === RoleType.SelfService) {
+      GtmService.push({
+        action: 'b-here-tour',
+        userType: this.state.role
+      });
+    } else if (this.state.role === RoleType.Embed) {
+      GtmService.push({
+        action: 'b-here-embed',
+        userType: this.state.role
+      });
+    } else {
       var sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
       var log = {
         meetingId: this.state.link,
@@ -7405,11 +7478,18 @@ var VRService = /*#__PURE__*/function () {
       } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
       }
-    }
+    } // StateService.patchState({ fullScreen });
 
-    StateService.patchState({
-      fullScreen: fullScreen
-    });
+  };
+
+  _proto.fullscreen$ = function fullscreen$() {
+    return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
+      var fullScreen = document.fullscreenElement != null; // console.log('fullscreen$', fullScreen);
+
+      StateService.patchState({
+        fullScreen: fullScreen
+      });
+    }));
   };
 
   _proto.toggleChat = function toggleChat() {
@@ -8587,6 +8667,7 @@ AsideComponent.meta = {
       user: user,
       role: role,
       name: name,
+      mode: UIMode.VirtualTour,
       link: null,
       channelName: environment.channelName,
       uid: null,
@@ -8598,6 +8679,7 @@ AsideComponent.meta = {
       spyed: false,
       hosted: true,
       live: false,
+      navigable: true,
       cameraMuted: false,
       audioMuted: false
     };
@@ -10760,7 +10842,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"1\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -11096,6 +11178,31 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
+};var EnvPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(EnvPipe, _Pipe);
+
+  function EnvPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  EnvPipe.transform = function transform(keypath) {
+    var env = environment;
+    var keys = keypath.split('.');
+    var k = keys.shift();
+
+    while (keys.length > 0 && env[k]) {
+      env = env[k];
+      k = keys.shift();
+    }
+
+    var value = env[k] || null;
+    return value;
+  };
+
+  return EnvPipe;
+}(rxcomp.Pipe);
+EnvPipe.meta = {
+  name: 'env'
 };var FlagPipe = /*#__PURE__*/function (_Pipe) {
   _inheritsLoose(FlagPipe, _Pipe);
 
@@ -12197,7 +12304,9 @@ ErrorsComponent.meta = {
     rxjs.merge(rxjs.fromEvent(input, 'input')).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       return _this.onInputDidChange(event);
     });
-    rxjs.fromEvent(input, 'blur').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    rxjs.merge(rxjs.fromEvent(input, 'blur'), rxjs.fromEvent(input, 'keydown').pipe(operators.filter(function (event) {
+      return event.key === 'Enter' || event.keyCode === 13;
+    }))).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       return _this.onInputDidBlur(event);
     }); // fromEvent(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
   };
@@ -12205,7 +12314,7 @@ ErrorsComponent.meta = {
   _proto.onInputDidChange = function onInputDidChange(event) {
     // const node = getContext(this).node;
     // const value = node.value === '' ? null : node.value;
-    event.target.value = event.target.value.replace(/[^\d|\.]/g, ''); // console.log('InputValueComponent.onInputDidChange', event.target.value);
+    event.target.value = event.target.value.replace(/[^\d|\.|-]/g, ''); // console.log('InputValueComponent.onInputDidChange', event.target.value);
 
     /*
     const value = parseFloat(event.target.value);
@@ -12243,7 +12352,7 @@ ErrorsComponent.meta = {
     var m, increment;
     return rxjs.race(rxjs.fromEvent(element, 'mousedown'), rxjs.fromEvent(element, 'touchstart')).pipe(operators.tap(function () {
       increment = _this2.increment;
-      m = 32;
+      m = 16;
     }), operators.switchMap(function (e) {
       return rxjs.interval(30).pipe(operators.filter(function (i) {
         return i % m === 0;
@@ -12436,18 +12545,20 @@ LanguageComponent.meta = {
   var _proto = LayoutComponent.prototype;
 
   _proto.onInit = function onInit() {
-    this.env = environment;
     this.state = {
-      status: LocationService.get('status') || 'connected',
-      role: LocationService.get('role') || 'publisher',
-      membersCount: 1,
-      live: true,
+      status: LocationService.get('status') || AgoraStatus.Connected,
+      role: LocationService.get('role') || RoleType.Embed,
+      // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
+      membersCount: 3,
       chat: false,
       chatDirty: true,
       name: "Jhon Appleseed",
       uid: "7341614597544882"
     };
-    this.state.has3D = this.state.role !== RoleType.SmartDevice;
+    this.state.live = this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG ? false : true;
+    var embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+    this.state.navigable = embedViewId == null;
+    this.state.mode = UserService.getMode(this.state.role);
     this.view = {
       likes: 41
     };
@@ -12461,6 +12572,7 @@ LanguageComponent.meta = {
     this.languageService = LanguageService;
     this.showLanguages = false;
     StateService.patchState(this.state);
+    this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
   };
 
@@ -12530,11 +12642,21 @@ LanguageComponent.meta = {
       } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
       }
-    }
+    } // this.patchState({ fullScreen });
 
-    this.patchState({
-      fullScreen: fullScreen
-    });
+  };
+
+  _proto.fullscreen$ = function fullscreen$() {
+    var _this2 = this;
+
+    return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
+      var fullScreen = document.fullscreenElement != null;
+      console.log('fullscreen$', fullScreen);
+
+      _this2.patchState({
+        fullScreen: fullScreen
+      });
+    }));
   };
 
   _proto.toggleChat = function toggleChat() {
@@ -12574,7 +12696,7 @@ LanguageComponent.meta = {
   };
 
   _proto.showLove = function showLove(view) {
-    var _this2 = this;
+    var _this3 = this;
 
     if (view && this.view.id === view.id) {
       var skipTimeout = this.view.showLove;
@@ -12584,9 +12706,9 @@ LanguageComponent.meta = {
 
       if (!skipTimeout) {
         setTimeout(function () {
-          _this2.view.showLove = false;
+          _this3.view.showLove = false;
 
-          _this2.pushChanges();
+          _this3.pushChanges();
         }, 3100);
       }
     }
@@ -18379,6 +18501,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     });
   };
 
+  _proto.onPlayModel = function onPlayModel(event) {
+    MessageService.send({
+      type: MessageType.PlayModel,
+      itemId: event.itemId,
+      actionIndex: event.actionIndex
+    });
+  };
+
   _proto.onPanelDown = function onPanelDown(event) {
     // console.log('WorldComponent.onPanelDown', href, target);
     var href = event.getAttribute('href');
@@ -18588,15 +18718,31 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           break;
 
         case MessageType.PlayMedia:
-          var item = _this8.view.items.find(function (item) {
-            return item.id === message.itemId;
-          });
+          {
+            // !!! uniformare a PlayModel
+            var item = _this8.view.items.find(function (item) {
+              return item.id === message.itemId;
+            });
 
-          if (item && item.mesh instanceof MediaMesh) {
-            item.mesh.setPlayingState(message.playing);
+            if (item && item.mesh instanceof MediaMesh) {
+              item.mesh.setPlayingState(message.playing);
+            }
+
+            break;
           }
 
-          break;
+        case MessageType.PlayModel:
+          {
+            var _item = _this8.view.items.find(function (item) {
+              return item.id === message.itemId;
+            });
+
+            if (_item) {
+              _item.onMessage(message);
+            }
+
+            break;
+          }
 
         case MessageType.NavToGrid:
           // console.log('WorldComponent.NavToGrid', this.view.id, message);
@@ -18817,6 +18963,10 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
       item.onUpdateAsset = function () {
         _this2.onUpdateAsset(item, mesh);
       };
+
+      item.onMessage = function (message) {
+        _this2.onMessage(message);
+      };
     }
 
     this.group.add(mesh); // this.host.render(); !!!
@@ -18846,6 +18996,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
       delete item.mesh;
       delete item.onUpdate;
       delete item.onUpdateAsset;
+      delete item.onMessage;
     }
   };
 
@@ -18911,7 +19062,10 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
   _proto.onUpdate = function onUpdate(item, mesh) {} // called by UpdateViewItemComponent
   ;
 
-  _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {};
+  _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {} // called by remote events
+  ;
+
+  _proto.onMessage = function onMessage(message) {};
 
   _createClass(ModelComponent, [{
     key: "renderOrder",
@@ -20724,46 +20878,84 @@ ModelMenuComponent.meta = {
   };
 
   _proto.onClipToggle = function onClipToggle() {
+    var actionIndex;
     var actions = this.actions;
 
     if (actions.length === 1) {
-      var action = actions[0];
+      actionIndex = this.actionIndex === -1 ? 0 : -1;
+      this.setSingleAction(actionIndex);
+    } else if (actions.length > 1) {
+      actionIndex = this.actionIndex + 1;
 
-      if (this.actionIndex === -1) {
-        this.actionIndex = 0;
+      if (actionIndex === actions.length) {
+        actionIndex = -1;
+      }
 
+      this.setMultiAction(actionIndex);
+    }
+
+    this.play.next({
+      itemId: this.item.id,
+      actionIndex: actionIndex
+    });
+  };
+
+  _proto.setSingleAction = function setSingleAction(actionIndex) {
+    if (this.actionIndex !== actionIndex) {
+      this.actionIndex = actionIndex;
+      var action = this.actions[0];
+
+      if (actionIndex === 0) {
         if (action.paused || action.timeScale === 0) {
           action.paused = false;
         } else {
           action.play();
         }
-      } else if (this.actionIndex === 0) {
-        this.actionIndex = -1;
+      } else if (actionIndex === -1) {
         action.halt(0.3);
       }
-    } else if (actions.length > 1) {
-      if (this.actionIndex > -1 && this.actionIndex < actions.length) {
-        var previousClip = actions[this.actionIndex];
+    }
+  };
+
+  _proto.setMultiAction = function setMultiAction(actionIndex) {
+    if (this.actionIndex !== actionIndex) {
+      var actions = this.actions;
+      var previousClip = this.actionIndex > -1 ? actions[this.actionIndex] : null;
+      this.actionIndex = actionIndex;
+
+      if (previousClip) {
         previousClip.halt(0.3);
-      }
+      } // console.log('setMultiAction', actionIndex, actions.length);
 
-      this.actionIndex++;
 
-      if (this.actionIndex === actions.length) {
-        this.actionIndex = -1; // nothing
-      } else {
-        var _action = actions[this.actionIndex]; // console.log(this.actionIndex, action);
+      if (actionIndex > -1) {
+        var action = actions[actionIndex];
 
-        if (_action.paused) {
-          _action.paused = false;
+        if (action.paused) {
+          action.paused = false;
         }
 
-        if (_action.timeScale === 0) {
-          _action.timeScale = 1;
+        if (action.timeScale === 0) {
+          action.timeScale = 1;
         }
 
-        _action.play();
+        action.play();
       }
+    }
+  };
+
+  _proto.onMessage = function onMessage(message) {
+    switch (message.type) {
+      case MessageType.PlayModel:
+        var actions = this.actions;
+
+        if (actions.length === 1) {
+          this.setSingleAction(message.actionIndex);
+        } else if (actions.length > 1) {
+          this.setMultiAction(message.actionIndex);
+        }
+
+        break;
     }
   };
 
@@ -21099,7 +21291,7 @@ ModelModelComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down'],
+  outputs: ['down', 'play'],
   inputs: ['item', 'view']
 };var NavModeType = {
   None: 'none',
@@ -22558,6 +22750,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

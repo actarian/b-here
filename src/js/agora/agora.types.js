@@ -126,6 +126,7 @@ export const MessageType = {
 	AddLike: 'addLike',
 	ShowPanel: 'showPanel',
 	PlayMedia: 'playMedia',
+	PlayModel: 'playModel',
 	NavToView: 'navToView',
 	NavToGrid: 'navToGrid',
 	VRStarted: 'vrStarted',
@@ -136,6 +137,15 @@ export const MessageType = {
 	ChatTypingBegin: 'chatTypingBegin',
 	ChatTypingEnd: 'chatTypingEnd',
 };
+
+export const UIMode = {
+	VirtualTour: 'virtual-tour',
+	LiveMeeting: 'live-meeting',
+	SelfServiceTour: 'self-service-tour',
+	Embed: 'embed',
+	None: 'none',
+};
+
 export class AgoraEvent {
 	constructor(options) {
 		Object.assign(this, options);

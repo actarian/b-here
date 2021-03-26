@@ -19,6 +19,7 @@ import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
 import { EditorModule } from './editor/editor.module';
+import EnvPipe from './env/env.pipe';
 import FlagPipe from './flag/flag.pipe';
 import ControlAssetComponent from './forms/control-asset.component';
 import ControlAssetsComponent from './forms/control-assets.component';
@@ -114,6 +115,7 @@ AppModule.meta = {
 		DropDirective,
 		DropdownDirective,
 		DropdownItemDirective,
+		EnvPipe,
 		ErrorsComponent,
 		FlagPipe,
 		HlsDirective,

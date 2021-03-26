@@ -276,7 +276,7 @@ UpdateViewItemComponent.meta = {
 				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'plane'">
-				<div control-vector [control]="controls.position" label="Position" [precision]="1"></div>
+				<div control-vector [control]="controls.position" label="Position" [precision]="2"></div>
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
@@ -284,7 +284,7 @@ UpdateViewItemComponent.meta = {
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'curved-plane'">
-				<div control-vector [control]="controls.position" label="Position" [precision]="1"></div>
+				<div control-vector [control]="controls.position" label="Position" [precision]="2"></div>
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<!-- <div control-vector [control]="controls.scale" label="Scale" [precision]="2" [disabled]="true"></div> -->
 				<div control-number [control]="controls.radius" label="Radius" [precision]="2"></div>
@@ -295,7 +295,7 @@ UpdateViewItemComponent.meta = {
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'model'">
-				<div control-vector [control]="controls.position" label="Position" [precision]="1" *if="view.type.name !== 'model'"></div>
+				<div control-vector [control]="controls.position" label="Position" [precision]="2" *if="view.type.name !== 'model'"></div>
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360" *if="view.type.name !== 'model'"></div>
 				<div control-model [control]="controls.asset" label="Model (.glb)" accept=".glb"></div>
 			</div>

@@ -1,73 +1,74 @@
 <!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
 <!-- @@block = main-->
 <script>
-	// window.antiforgery = '';
-	window.labels = {
-		browse: 'Apri',
-		close: 'Chiudi',
-		cancel: 'Annulla',
-		drag_and_drop_images: 'trascina qui le immagini',
-		error_email: 'email non valida',
-		error_match: 'i campi non corrispondono',
-		error_required: 'campo obbligatorio',
-		loading: 'caricamento',
-		remove: 'Rimuovi',
-		required: 'Richiesto',
-		select: 'Seleziona',
-		select_file: 'Scegli un file...',
-		update: 'Salva',
-		upload: 'Carica',
-		waiting_host: 'attendere',
-		editor_properties: 'Properties',
-		editor_views: 'Views',
-		editor_view_items: 'View Items',
-		editor_items: 'Items',
-		editor_no_items: 'This view has no items',
-		editor_add_item: 'Add item',
-		editor_add: 'Add',
-		editor_save: 'Save',
-		editor_image: 'Image',
-		editor_video: 'Video',
-		editor_model: 'Model',
-		editor_publisher_stream: 'Publisher Stream',
-		editor_next_attendee_stream: 'Next Attendee Stream',
-		editor_waiting_room: 'Waiting Room',
-		editor_panorama: 'Panorama',
-		editor_panorama_grid: 'Panorama Grid',
-		editor_room_3d: 'Room 3D',
-		editor_nav: 'Nav Tooltip',
-		editor_gltf: 'Gltf Model',
-		editor_plane: 'Plane',
-		editor_curved_plane: 'Curved Plane',
-		editor_texture: 'Texture',
-		editor_id: 'Id',
-		editor_name: 'Name',
-		editor_hide: 'Hide from menu',
-		editor_latitude: 'Latitude',
-		editor_longitude: 'Longitude',
-		editor_zoom: 'Zoom',
-		editor_ar_ios: 'AR IOS (.usdz)',
-		editor_ar_android: 'AR Android (.glb)',
-		editor_title: 'Title',
-		editor_abstract: 'Abstract',
-		editor_nav_to_view: 'NavToView',
-		editor_link_title: 'Link Title',
-		editor_link_url: 'Link Url',
-		editor_position: 'Position',
-		editor_rotation: 'Rotation',
-		editor_scale: 'Scale',
-		editor_radius: 'Radius',
-		editor_height: 'Height',
-		editor_arc: 'Arc',
-		editor_asset: 'Asset',
-		editor_image_or_video: 'Image or Video',
-		editor_use_green_screen: 'Use Green Screen',
-		editor_are_you_sure: 'are you sure?',
-		editor_remove: 'Remove',
-		editor_cancel: 'Cancel',
-		editor_create: 'Create',
-		editor_click_a_point: 'Click a point on the view',
-	};
+// window.antiforgery = '';
+window.labels = {
+	browse: 'Apri',
+	close: 'Chiudi',
+	cancel: 'Annulla',
+	drag_and_drop_images: 'trascina qui le immagini',
+	error_email: 'email non valida',
+	error_match: 'i campi non corrispondono',
+	error_required: 'campo obbligatorio',
+	loading: 'caricamento',
+	remove: 'Rimuovi',
+	required: 'Richiesto',
+	select: 'Seleziona',
+	select_file: 'Scegli un file...',
+	update: 'Salva',
+	upload: 'Carica',
+	waiting_host: 'attendere',
+	editor_properties: 'Properties',
+	editor_views: 'Views',
+	editor_view_items: 'View Items',
+	editor_items: 'Items',
+	editor_no_items: 'This view has no items',
+	editor_add_item: 'Add item',
+	editor_add: 'Add',
+	editor_save: 'Save',
+	editor_image: 'Image',
+	editor_video: 'Video',
+	editor_model: 'Model',
+	editor_publisher_stream: 'Publisher Stream',
+	editor_next_attendee_stream: 'Next Attendee Stream',
+	editor_waiting_room: 'Waiting Room',
+	editor_panorama: 'Panorama',
+	editor_panorama_grid: 'Panorama Grid',
+	editor_room_3d: 'Room 3D',
+	editor_nav: 'Nav Tooltip',
+	editor_gltf: 'Gltf Model',
+	editor_plane: 'Plane',
+	editor_curved_plane: 'Curved Plane',
+	editor_texture: 'Texture',
+	editor_id: 'Id',
+	editor_name: 'Name',
+	editor_hide: 'Hide from menu',
+	editor_latitude: 'Latitude',
+	editor_longitude: 'Longitude',
+	editor_zoom: 'Zoom',
+	editor_ar_ios: 'AR IOS (.usdz)',
+	editor_ar_android: 'AR Android (.glb)',
+	editor_title: 'Title',
+	editor_abstract: 'Abstract',
+	editor_nav_to_view: 'NavToView',
+	editor_link_title: 'Link Title',
+	editor_link_url: 'Link Url',
+	editor_position: 'Position',
+	editor_rotation: 'Rotation',
+	editor_scale: 'Scale',
+	editor_radius: 'Radius',
+	editor_height: 'Height',
+	editor_arc: 'Arc',
+	editor_asset: 'Asset',
+	editor_image_or_video: 'Image or Video',
+	editor_use_green_screen: 'Use Green Screen',
+	editor_are_you_sure: 'are you sure?',
+	editor_remove: 'Remove',
+	editor_cancel: 'Cancel',
+	editor_create: 'Create',
+	editor_click_a_point: 'Click a point on the view',
+};
+
 </script>
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
@@ -93,19 +94,19 @@
 					<div *if="view.ready">
 						<div model-room [item]="view" *if="view.type.name === 'room-3d'"></div>
 						<div class="world__item" *for="let item of view.items; let index = index;">
-						<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
-						<div model-plane [item]="item" [items]="view.items" (down)="onObjectDown($event)" *if="item.type.name == 'plane'"></div>
-						<div model-curved-plane [item]="item" [items]="view.items" (down)="onObjectDown($event)" *if="item.type.name == 'curved-plane'"></div>
-						<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onObjectDown($event)" *if="item.type.name == 'model'">
-							<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
-							<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
-						</div>
-						<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
-							<div class="panel__title" [innerHTML]="item.title"></div>
-							<div class="panel__abstract" [innerHTML]="item.abstract"></div>
-							<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-							<a class="panel__link" [href]="item.link.href" target="_blank" rel="noopener" *if="item.link" [innerHTML]="item.link.title"></a>
-						</div>
+							<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
+							<div model-plane [item]="item" [items]="view.items" (down)="onObjectDown($event)" *if="item.type.name == 'plane'"></div>
+							<div model-curved-plane [item]="item" [items]="view.items" (down)="onObjectDown($event)" *if="item.type.name == 'curved-plane'"></div>
+							<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onObjectDown($event)" *if="item.type.name == 'model'">
+								<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
+								<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
+							</div>
+							<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
+								<div class="panel__title" [innerHTML]="item.title"></div>
+								<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+								<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
+								<a class="panel__link" [href]="item.link.href" target="_blank" rel="noopener" *if="item.link" [innerHTML]="item.link.title"></a>
+							</div>
 						</div>
 					</div>
 					<!--

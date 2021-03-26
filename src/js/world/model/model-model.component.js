@@ -1,5 +1,6 @@
 // import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { takeUntil } from 'rxjs/operators';
+import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
@@ -133,32 +134,48 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	}
 
 	onClipToggle() {
+		let actionIndex;
 		const actions = this.actions;
 		if (actions.length === 1) {
-			const action = actions[0];
-			if (this.actionIndex === -1) {
-				this.actionIndex = 0;
+			actionIndex = this.actionIndex === -1 ? 0 : -1;
+			this.setSingleAction(actionIndex);
+		} else if (actions.length > 1) {
+			actionIndex = this.actionIndex + 1;
+			if (actionIndex === actions.length) {
+				actionIndex = -1;
+			}
+			this.setMultiAction(actionIndex);
+		}
+		this.play.next({ itemId: this.item.id, actionIndex });
+	}
+
+	setSingleAction(actionIndex) {
+		if (this.actionIndex !== actionIndex) {
+			this.actionIndex = actionIndex;
+			const action = this.actions[0];
+			if (actionIndex === 0) {
 				if (action.paused || action.timeScale === 0) {
 					action.paused = false;
 				} else {
 					action.play();
 				}
-			} else if (this.actionIndex === 0) {
-				this.actionIndex = -1;
+			} else if (actionIndex === -1) {
 				action.halt(0.3);
 			}
-		} else if (actions.length > 1) {
-			if (this.actionIndex > -1 && this.actionIndex < actions.length) {
-				const previousClip = actions[this.actionIndex];
+		}
+	}
+
+	setMultiAction(actionIndex) {
+		if (this.actionIndex !== actionIndex) {
+			const actions = this.actions;
+			const previousClip = this.actionIndex > -1 ? actions[this.actionIndex] : null;
+			this.actionIndex = actionIndex;
+			if (previousClip) {
 				previousClip.halt(0.3);
 			}
-			this.actionIndex ++;
-			if (this.actionIndex === actions.length) {
-				this.actionIndex = -1;
-				// nothing
-			} else {
-				const action = actions[this.actionIndex];
-				// console.log(this.actionIndex, action);
+			// console.log('setMultiAction', actionIndex, actions.length);
+			if (actionIndex > -1) {
+				const action = actions[actionIndex];
 				if (action.paused) {
 					action.paused = false;
 				}
@@ -167,6 +184,19 @@ export default class ModelModelComponent extends ModelEditableComponent {
 				}
 				action.play();
 			}
+		}
+	}
+
+	onMessage(message) {
+		switch (message.type) {
+			case MessageType.PlayModel:
+				const actions = this.actions;
+				if (actions.length === 1) {
+					this.setSingleAction(message.actionIndex);
+				} else if (actions.length > 1) {
+					this.setMultiAction(message.actionIndex);
+				}
+				break;
 		}
 	}
 
@@ -443,6 +473,6 @@ ModelModelComponent.ORIGIN = new THREE.Vector3();
 ModelModelComponent.meta = {
 	selector: '[model-model]',
 	hosts: { host: WorldComponent },
-	outputs: ['down'],
+	outputs: ['down', 'play'],
 	inputs: ['item', 'view'],
 };

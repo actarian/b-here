@@ -95,21 +95,6 @@ app.get('/it/', function(request, response) {
 app.get('/en/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access__en.html'));
 });
-app.get('/self-service-tour', function(request, response) {
-	// !!! session user
-	setSessionUser(request, RoleType.SelfService);
-	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
-});
-app.get('/it/toue-self-service', function(request, response) {
-	// !!! session user
-	setSessionUser(request, RoleType.SelfService);
-	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
-});
-app.get('/en/self-service-tour', function(request, response) {
-	// !!! session user
-	setSessionUser(request, RoleType.SelfService);
-	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
-});
 app.get('/access-code', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access-code__it.html'));
 });
@@ -130,6 +115,36 @@ app.get('/en/guided-tour', function(request, response) {
 });
 app.get('/b-here', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/self-service-tour', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.SelfService);
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/it/tour-self-service', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.SelfService);
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/en/self-service-tour', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.SelfService);
+	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
+});
+app.get('/embed', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.Embed);
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/it/embed', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.Embed);
+	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
+});
+app.get('/en/embed', function(request, response) {
+	// !!! session user
+	setSessionUser(request, RoleType.Embed);
+	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
 });
 app.get('/editor', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/editor.html'));

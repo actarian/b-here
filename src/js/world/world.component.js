@@ -321,7 +321,7 @@ export default class WorldComponent extends Component {
 			// 1: squeeze
 			// 4: x / a
 			// 5: y / b
-			switch(event.index) {
+			switch (event.index) {
 				case 0:
 					// select
 					break;
@@ -896,6 +896,14 @@ export default class WorldComponent extends Component {
 		});
 	}
 
+	onPlayModel(event) {
+		MessageService.send({
+			type: MessageType.PlayModel,
+			itemId: event.itemId,
+			actionIndex: event.actionIndex,
+		});
+	}
+
 	onPanelDown(event) {
 		// console.log('WorldComponent.onPanelDown', href, target);
 		const href = event.getAttribute('href');
@@ -1078,12 +1086,21 @@ export default class WorldComponent extends Component {
 					this.view.items.forEach(item => item.showPanel = (item.id === message.itemId));
 					this.pushChanges();
 					break;
-				case MessageType.PlayMedia:
+				case MessageType.PlayMedia: {
+					// !!! uniformare a PlayModel
 					const item = this.view.items.find(item => item.id === message.itemId);
 					if (item && item.mesh instanceof MediaMesh) {
 						item.mesh.setPlayingState(message.playing);
 					}
 					break;
+				}
+				case MessageType.PlayModel: {
+					const item = this.view.items.find(item => item.id === message.itemId);
+					if (item) {
+						item.onMessage(message);
+					}
+					break;
+				}
 				case MessageType.NavToGrid:
 					// console.log('WorldComponent.NavToGrid', this.view.id, message);
 					if (this.view.id === message.viewId) {
