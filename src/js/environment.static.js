@@ -10,9 +10,10 @@ export const environmentStatic = {
 		guidedTourRequest: true,
 		editor: true,
 		editorAssetScreen: true,
-		ar: true,
 		menu: true,
 		chat: true,
+		ar: true,
+		like: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,
@@ -21,7 +22,7 @@ export const environmentStatic = {
 	},
 	logo: null,
 	background: {
-		image: '/b-here/img/background.jpg',
+		// image: '/b-here/img/background.jpg',
 		video: '/b-here/img/background.mp4',
 	},
 	colors: {

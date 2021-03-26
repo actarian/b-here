@@ -36,6 +36,7 @@ $chat-width: 240px;
 					.group--members {
 						width: $remote-width;
 						bottom: 0;
+						left: 0;
 					}
 				}
 
@@ -246,6 +247,12 @@ $chat-width: 240px;
 			height: $remote-height;
 			bottom: 0;
 			right: 0;
+		}
+	}
+
+	&.embed {
+		.group--remote {
+			display: none;
 		}
 	}
 

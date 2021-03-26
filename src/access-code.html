@@ -4,10 +4,7 @@
 <!-- @@include ./templates/it.html -->
 <!-- @@include ./templates/access-code/language__it.html -->
 <div class="page" access-code-component>
-	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }">
-		<img [src]="env.background.image" *if="env.background.image" />
-		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
-	</div>
+	<!-- @@include ./templates/components/background.html -->
 	<!-- access-code -->
 	<div class="ui ui--info ui--info-centered">
 		<div class="group--info">
@@ -19,12 +16,7 @@
 			</div>
 		</div>
 	</div>
-	<a class="btn--logo" [href]="'index' | slug" *if="state.status != 'connected'">
-		<img [src]="env.logo" *if="env.logo" />
-		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
-	</a>
-	<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
-		<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-	</a>
+	<!-- @@include ./templates/components/logo.html -->
+	<!-- @@include ./templates/components/credits.html -->
 </div>
 <!-- @@close-->

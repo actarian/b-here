@@ -1,4 +1,5 @@
 import { Component, getContext } from 'rxcomp';
+import { fromEvent } from 'rxjs';
 import { first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
@@ -30,7 +31,6 @@ export default class AgoraComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
-		this.env = environment;
 		this.platform = DeviceService.platform;
 		this.state = {};
 		this.hosted = null;
@@ -120,21 +120,23 @@ export default class AgoraComponent extends Component {
 		if (role !== user.type) {
 			user = { type: role };
 		}
-		const has3D = role !== RoleType.SmartDevice;
+		const mode = UserService.getMode(role);
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
 		const checklist = LocalStorageService.get('checklist') || (LocationService.get('skip-checklist') != null) || null;
 		const hosted = role === RoleType.Publisher ? true : false;
-		const live = (DEBUG || role === RoleType.SelfService) ? false : true;
+		const live = (role === RoleType.SelfService || role === RoleType.Embed || DEBUG) ? false : true;
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const navigable = embedViewId == null;
 		const state = {
 			user: user,
 			role: role,
-			has3D: has3D,
+			mode: mode,
 			name: name,
 			checklist: checklist,
 			link: link,
 			channelName: environment.channelName,
 			uid: null,
-			status: 'idle',
+			status: AgoraStatus.Idle,
 			connecting: false,
 			connected: false,
 			locked: false,
@@ -142,6 +144,7 @@ export default class AgoraComponent extends Component {
 			spyed: false,
 			hosted: hosted,
 			live: live,
+			navigable: navigable,
 			cameraMuted: false,
 			audioMuted: false,
 		};
@@ -201,7 +204,7 @@ export default class AgoraComponent extends Component {
 
 	initAgora() {
 		let agora = null;
-		if (DEBUG || this.state.role === RoleType.SelfService) {
+		if (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) {
 			this.load(() => {
 				StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
 			});
@@ -294,6 +297,9 @@ export default class AgoraComponent extends Component {
 				agora.sendMessage(message);
 			}
 		});
+		this.fullscreen$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe();
 		if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
 			this.loadAndConnect();
 		}
@@ -307,19 +313,19 @@ export default class AgoraComponent extends Component {
 
 	onLink(link) {
 		const role = this.getLinkRole();
-		const has3D = role !== RoleType.SmartDevice;
+		const mode = UserService.getMode(role);
 		const user = StateService.state.user;
 		if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
-			StateService.patchState({ link, role, has3D, status: AgoraStatus.Login });
+			StateService.patchState({ link, role, mode, status: AgoraStatus.Login });
 		} else if (StateService.state.name) {
 			if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
-				StateService.patchState({ link, role, has3D });
+				StateService.patchState({ link, role, mode });
 				this.loadAndConnect();
 			} else {
-				StateService.patchState({ link, role, has3D, status: AgoraStatus.Device });
+				StateService.patchState({ link, role, mode, status: AgoraStatus.Device });
 			}
 		} else {
-			StateService.patchState({ link, role, has3D, status: AgoraStatus.Name });
+			StateService.patchState({ link, role, mode, status: AgoraStatus.Name });
 		}
 	}
 
@@ -350,7 +356,17 @@ export default class AgoraComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe();
 		// console.log('AgoraComponent.connect', this.state.role);
-		if (this.state.role !== RoleType.SelfService) {
+		if (this.state.role === RoleType.SelfService) {
+			GtmService.push({
+				action: 'b-here-tour',
+				userType: this.state.role
+			});
+		} else if (this.state.role === RoleType.Embed) {
+			GtmService.push({
+				action: 'b-here-embed',
+				userType: this.state.role
+			});
+		} else {
 			const sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
 			const log = {
 				meetingId: this.state.link,
@@ -487,7 +503,17 @@ export default class AgoraComponent extends Component {
 				document.msExitFullscreen();
 			}
 		}
-		StateService.patchState({ fullScreen });
+		// StateService.patchState({ fullScreen });
+	}
+
+	fullscreen$() {
+		return fromEvent(document, 'fullscreenchange').pipe(
+			tap(_ => {
+				const fullScreen = document.fullscreenElement != null;
+				// console.log('fullscreen$', fullScreen);
+				StateService.patchState({ fullScreen });
+			}),
+		);
 	}
 
 	toggleChat() {

@@ -4,10 +4,7 @@
 <!-- @@include ./templates/it.html -->
 <!-- @@include ./templates/b-here/language__it.html -->
 <div class="page" agora-component>
-	<div class="background" [class]="{ 'background--image': env.background.image, 'background--video': env.background.video }" *if="state.status != 'connected'">
-		<img [src]="env.background.image" *if="env.background.image" />
-		<video [src]="env.background.video" *if="env.background.video" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
-	</div>
+	<!-- @@include ./templates/components/background.html -->
 	<!-- Status Checklist -->
 	<div class="ui ui--info ui--info-centered" *if="state.status == 'checklist'" [agora-checklist] (checked)="onChecked($event)">
 		<div class="group--info">
@@ -182,7 +179,7 @@
 		</div>
 	</div>
 	<!-- Status Connected -->
-	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.has3D">
+	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'virtual-tour'">
 		<div class="ui__body">
 			<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)">
 				<div class="world__view" *if="view">
@@ -193,7 +190,7 @@
 							<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
 							<div model-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'plane'"></div>
 							<div model-curved-plane [item]="item" [items]="view.items" (play)="onPlayMedia($event)" *if="item.type.name == 'curved-plane'"></div>
-							<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" *if="item.type.name == 'model'">
+							<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" (play)="onPlayModel($event)" *if="item.type.name == 'model'">
 								<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
 								<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
 							</div>
@@ -350,7 +347,7 @@
 		<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
 	</div>
 	<!-- Status SmartDevice -->
-	<div class="ui" [class]="state.role" *if="state.status == 'connected' && !state.has3D">
+	<div class="ui" [class]="state.role" *if="state.status == 'connected' && state.mode == 'live-meeting'">
 		<div class="ui__body">
 		</div>
 		<!-- remote sidebar -->
@@ -402,12 +399,8 @@
 			</div>
 		</div>
 	</div>
-	<a class="btn--logo" [href]="'index' | slug" *if="state.status != 'connected'">
-		<img [src]="env.logo" *if="env.logo" />
-		<svg viewBox="0 0 270 98" *if="!env.logo"><use xlink:href="#b-here"></use></svg>
-	</a>
-	<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
-		<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-	</a>
+	<!-- @@include ./templates/components/logo.html -->
+	<!-- @@include ./templates/components/credits.html -->
+	<!-- @@include ./templates/components/language.html -->
 </div>
 <!-- @@close-->

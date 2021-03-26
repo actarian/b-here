@@ -138,13 +138,16 @@ app.get('/api/download/:identifier', function(request, response) {
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access.html'));
 });
-app.get('/self-service-tour', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
-});
 app.get('/guided-tour', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
 });
 app.get('/b-here', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
+app.get('/self-service-tour', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
+});
+app.get('/embed', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/b-here.html'));
 });
 app.get('/editor', function(request, response) {

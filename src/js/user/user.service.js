@@ -1,7 +1,8 @@
 import { BehaviorSubject, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { UIMode } from '../agora/agora.types';
 import HttpService from '../http/http.service';
-import { User } from './user';
+import { RoleType, User } from './user';
 
 export class UserService {
 
@@ -93,6 +94,33 @@ export class UserService {
 
 	static mapUser(user) {
 		return new User(user);
+	}
+
+	static getMode(role) {
+		let mode;
+		switch (role) {
+			case RoleType.Publisher:
+			case RoleType.Attendee:
+			case RoleType.Streamer:
+			case RoleType.Viewer:
+			case RoleType.Publisher:
+			case RoleType.Publisher:
+				mode = UIMode.VirtualTour;
+				break;
+			case RoleType.SelfService:
+				mode = UIMode.SelfServiceTour;
+				break;
+			case RoleType.SmartDevice:
+				mode = UIMode.LiveMeeting;
+				break;
+			case RoleType.Embed:
+				mode = UIMode.Embed;
+				break;
+			default:
+				mode = UIMode.None;
+		}
+		console.log('UserService.getMode', role, mode);
+		return mode;
 	}
 
 }

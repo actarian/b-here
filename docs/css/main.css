@@ -4919,7 +4919,8 @@ body {
       flex: 1 1 120px; }
       .ui.publisher .group--remote .group--members, .ui.attendee .group--remote .group--members, .ui.streamer .group--remote .group--members, .ui.viewer .group--remote .group--members {
         width: 120px;
-        bottom: 0; } }
+        bottom: 0;
+        left: 0; } }
   @media (min-width: 768px) and (orientation: portrait) {
     .ui.publisher .group--remote, .ui.attendee .group--remote, .ui.streamer .group--remote, .ui.viewer .group--remote {
       flex-direction: row;
@@ -5064,6 +5065,8 @@ body {
     height: 90px;
     bottom: 0;
     right: 0; }
+  .ui.embed .group--remote {
+    display: none; }
   .ui.self-service .group--remote {
     display: none; }
   .ui.publisher .group--local .agora-stream {

@@ -44,7 +44,10 @@ export default class ViewService {
 
 	static view$(data, editor) {
 		const views = editor ? data.views : data.views.filter(x => x.type.name !== 'waiting-room');
-		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : (views.length ? views[0].id : null);
+		const viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const firstViewId = views.length ? views[0].id : null;
+		const initialViewId = embedViewId || viewId || firstViewId;
 		this.action$_.next({ viewId: initialViewId });
 		return this.action$_.pipe(
 			distinctUntilChanged((a, b) => a.viewId === b.viewId),

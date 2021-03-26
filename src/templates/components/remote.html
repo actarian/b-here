@@ -1,0 +1,25 @@
+<!-- remote sidebar -->
+<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+	<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
+		<div class="agora-stream__player"></div>
+		<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
+			<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
+			<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+			<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>
+			<button type="button" class="btn--spy" (click)="onToggleSpy(stream.clientInfo.uid)" *if="state.role === 'publisher' && stream.clientInfo">
+				<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
+			</button>
+		</div>
+	</div>
+	<div class="group--members">
+		<div class="members">
+			<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+			<span class="members__count" [innerHTML]="state.membersCount"></span>
+		</div>
+		<div class="credits">
+			<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+			</a>
+		</div>
+	</div>
+</div>

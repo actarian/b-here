@@ -5,7 +5,6 @@ import LocationService from '../location/location.service';
 export default class AccessCodeComponent extends Component {
 
 	onInit() {
-		this.env = environment;
 		const link = LocationService.get('link');
 		if (!link) {
 			window.location.href = `${window.location.origin}${environment.url.guidedTour}`;

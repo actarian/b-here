@@ -1,7 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 import { Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { AgoraStatus } from '../agora/agora.types';
+import { AgoraStatus, UIMode } from '../agora/agora.types';
 import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
@@ -58,6 +58,7 @@ export default class EditorComponent extends Component {
 			user: user,
 			role: role,
 			name: name,
+			mode: UIMode.VirtualTour,
 			link: null,
 			channelName: environment.channelName,
 			uid: null,
@@ -69,6 +70,7 @@ export default class EditorComponent extends Component {
 			spyed: false,
 			hosted: true,
 			live: false,
+			navigable: true,
 			cameraMuted: false,
 			audioMuted: false,
 		};
@@ -240,7 +242,7 @@ export default class EditorComponent extends Component {
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				console.log('EditorComponent.onOpenModal.resolve', event);
-				switch(modal.type) {
+				switch (modal.type) {
 					case 'view':
 						switch (modal.value) {
 							case ViewType.Panorama.name:

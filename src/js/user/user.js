@@ -6,6 +6,7 @@ export const RoleType = {
 	Viewer: 'viewer',
 	SmartDevice: 'smart-device',
 	SelfService: 'self-service',
+	Embed: 'embed',
 };
 
 export class User {
