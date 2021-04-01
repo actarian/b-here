@@ -24,7 +24,7 @@ export default class UpdateViewTileComponent extends Component {
 			}
 			this.pushChanges();
 		});
-		console.log('UpdateViewTileComponent.onInit', this.view, this.tile);
+		// console.log('UpdateViewTileComponent.onInit', this.view, this.tile);
 	}
 
 	onSubmit() {

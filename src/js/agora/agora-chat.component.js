@@ -90,7 +90,7 @@ export default class AgoraChatComponent extends Component {
 		if (this.demo) {
 			// !!! only for demo
 			const messages = AgoraChatComponent.getFakeList().map(x => new ChatMessage(x, StateService.state.uid, StateService.state.name));
-			this.updateMessages(messages);
+			this.updateMessages(messages.slice(0, 5));
 			MessageService.in$.pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(message => {
@@ -107,6 +107,7 @@ export default class AgoraChatComponent extends Component {
 						break;
 				}
 			});
+			AgoraChatComponent.randomMessage(this, messages);
 			// !!! only for demo
 		} else {
 			const agora = this.agora = AgoraService.getSingleton();
@@ -187,7 +188,7 @@ export default class AgoraChatComponent extends Component {
 	}
 
 	removeTyping(message, messages, recursive = true) {
-		const index = messages.reduce((p,c,i) => {
+		const index = messages.reduce((p, c, i) => {
 			return (c.type === message.type && c.clientId === message.clientId) ? i : p;
 		}, -1);
 		if (index !== -1) {
@@ -224,7 +225,7 @@ export default class AgoraChatComponent extends Component {
 				// ChatMessage
 				const lastMessage = groupedMessages.length ? groupedMessages[groupedMessages.length - 1] : null;
 				if (lastMessage && lastMessage.clientId === message.clientId) {
-					lastMessage.message += `<br />${message.message}`;
+					lastMessage.message += `<p>${message.message}</p>`;
 				} else {
 					groupedMessages.push(message.getCopy());
 				}
@@ -239,14 +240,14 @@ export default class AgoraChatComponent extends Component {
 				// console.log('MessageType.ChatTypingBegin', lastMessage, message);
 			}
 		});
+		// setTimeout(() => {
+		this.groupedMessages = groupedMessages;
+		this.pushChanges();
+		// console.log('AgoraChatComponent.updateMessages', messages, groupedMessages);
 		setTimeout(() => {
-			this.groupedMessages = groupedMessages;
-			this.pushChanges();
-			// console.log('AgoraChatComponent.updateMessages', messages, groupedMessages);
-			setTimeout(() => {
-				this.scrollToBottom();
-			}, 1);
+			this.scrollToBottom();
 		}, 1);
+		// }, 1);
 	}
 
 	isValid() {
@@ -258,22 +259,12 @@ export default class AgoraChatComponent extends Component {
 
 	randomMessage() {
 		setTimeout(() => {
-			const message = this.createRandomMessage();
+			const message = AgoraChatComponent.createRandomMessage();
 			this.sendMessage(message);
-		}, (1 + Math.random() * 5) * 1000);
+		}, (2 + Math.random() * 6) * 1000);
 	}
 
-	createRandomMessage(text) {
-		const message = new ChatMessage({
-			date: Date.now(),
-			clientId: '9fe0e1b9-6a6b-418b-b916-4bbff3eeb123',
-			name: 'Herman frederick',
-			message: 'Lorem ipsum dolor',
-		}, StateService.state.uid, StateService.state.name);
-		return message;
-	}
 }
-
 AgoraChatComponent.meta = {
 	selector: '[agora-chat]',
 	outputs: ['close'],
@@ -406,6 +397,35 @@ AgoraChatComponent.getFakeList = () => {
 	while (messages.length < 100) {
 		messages = messages.concat(messages);
 	}
-	// return messages;
-	return messages.slice(0, 5);
+	return messages;
+	// return messages.slice(0, 5);
+}
+
+AgoraChatComponent.createRandomMessage = (text) => {
+	const message = new ChatMessage({
+		date: Date.now(),
+		clientId: '9fe0e1b9-6a6b-418b-b916-4bbff3eeb123',
+		name: 'Herman frederick',
+		message: 'Lorem ipsum dolor',
+	}, StateService.state.uid, StateService.state.name);
+	return message;
+}
+
+AgoraChatComponent.randomMessage = (instance, messages) => {
+	const getRandomMessage = function() {
+		const others = messages.filter(x => x.id !== '7341614597544882');
+		let message = others[Math.floor(others.length * Math.random())];
+		message = new ChatMessage({
+			date: Date.now(),
+			clientId: '9fe0e1b9-6a6b-418b-b916-4bbff3eeb123',
+			name: message.name,
+			message: message.message,
+		}, StateService.state.uid, StateService.state.name);
+		return message;
+	}
+	setTimeout(() => {
+		const message = getRandomMessage();
+		instance.sendMessage(message);
+		AgoraChatComponent.randomMessage(instance, messages);
+	}, (2 + Math.random() * 6) * 1000);
 }

@@ -558,9 +558,9 @@ export default class AgoraService extends Emittable {
 			if (options.video) {
 				options.video.width = { ideal: 4096 };
 				options.video.height = { ideal: 2160 };
-				console.log('getUserMedia', options.video.width.ideal, options.video.height.ideal);
+				// console.log('getUserMedia', options.video.width.ideal, options.video.height.ideal);
 			}
-			console.log('getUserMedia', options);
+			// console.log('getUserMedia', options);
 			return getUserMedia.call(navigator.mediaDevices, options);
 		}
 		*/
@@ -893,11 +893,12 @@ export default class AgoraService extends Emittable {
 		});
 	}
 
-	navToView(viewId) {
+	navToView(viewId, keepOrientation = false) {
 		if (StateService.state.control || StateService.state.spyed) {
 			this.sendMessage({
 				type: MessageType.NavToView,
 				viewId: viewId,
+				keepOrientation: keepOrientation,
 			});
 		}
 	}
@@ -1099,7 +1100,7 @@ export default class AgoraService extends Emittable {
 			}
 			/*
 			if (message.type === MessageType.VRStarted || message.type === MessageType.VREnded) {
-				console.log('AgoraService.onMessage', message.type, message);
+				// console.log('AgoraService.onMessage', message.type, message);
 			}
 			*/
 			this.checkBroadcastMessage(message);
@@ -1473,26 +1474,30 @@ export default class AgoraService extends Emittable {
 	// checks
 	static checkRtcConnection() {
 		return new Promise((resolve, reject) => {
-			const client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' });
-			if (environment.flags.useProxy) {
-				client.startProxyServer(3);
-			}
-			client.init(environment.appKey, () => {
-				AgoraService.checkRtcTryJoin(client).then(uid => {
-					resolve(uid);
-				}).catch(error => {
+			try {
+				const client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' });
+				if (environment.flags.useProxy) {
+					client.startProxyServer(3);
+				}
+				client.init(environment.appKey, () => {
+					AgoraService.checkRtcTryJoin(client).then(uid => {
+						resolve(uid);
+					}).catch(error => {
+						reject(error);
+					}).finally(() => {
+						// clear
+						client.leave(() => {
+							if (environment.flags.useProxy) {
+								client.stopProxyServer();
+							}
+						}, () => { });
+					});
+				}, (error) => {
 					reject(error);
-				}).finally(() => {
-					// clear
-					client.leave(() => {
-						if (environment.flags.useProxy) {
-							client.stopProxyServer();
-						}
-					}, () => { });
 				});
-			}, (error) => {
+			} catch (error) {
 				reject(error);
-			});
+			}
 		});
 	}
 
@@ -1511,7 +1516,7 @@ export default class AgoraService extends Emittable {
 						reject(error);
 					}
 				});
-			});
+			}, error => reject(error));
 		});
 	}
 
@@ -1520,39 +1525,43 @@ export default class AgoraService extends Emittable {
 			if (!USE_RTM) {
 				return resolve();
 			}
-			let client = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF });
-			client.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
-			let channel;
-			AgoraService.rtmToken$(uid).subscribe(token => {
-				// console.log('AgoraService.rtmToken$', token);
-				const channelName = 'checkRtcConnection';
-				client.login({ token: token.token, uid: uid.toString() }).then(() => {
-					channel = client.createChannel(channelName);
-					channel.join().then(() => {
-						resolve(uid);
-						channel.leave();
+			try {
+				let client = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF });
+				client.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
+				let channel;
+				AgoraService.rtmToken$(uid).subscribe(token => {
+					// console.log('AgoraService.rtmToken$', token);
+					const channelName = 'checkRtcConnection';
+					client.login({ token: token.token, uid: uid.toString() }).then(() => {
+						channel = client.createChannel(channelName);
+						channel.join().then(() => {
+							resolve(uid);
+							channel.leave();
+						}).catch((error) => {
+							reject(error);
+						}).finally(() => {
+							// clear
+							channel.leave().then(() => {
+								channel = null;
+								client.logout().then(() => {
+									client = null;
+								}).catch(() => { });
+							}).catch(() => { });
+						})
 					}).catch((error) => {
 						reject(error);
 					}).finally(() => {
 						// clear
-						channel.leave().then(() => {
-							channel = null;
+						if (client) {
 							client.logout().then(() => {
 								client = null;
 							}).catch(() => { });
-						}).catch(() => { });
-					})
-				}).catch((error) => {
-					reject(error);
-				}).finally(() => {
-					// clear
-					if (client) {
-						client.logout().then(() => {
-							client = null;
-						}).catch(() => { });
-					}
-				});
-			});
+						}
+					});
+				}, error => reject(error));
+			} catch (error) {
+				reject(error);
+			}
 		});
 	}
 

@@ -22,7 +22,7 @@ export default class AgoraChecklistComponent extends Component {
 		StateService.state$.pipe(
 			first(),
 		).subscribe(state => {
-			console.log('AgoraChecklistComponent', state);
+			// console.log('AgoraChecklistComponent', state);
 			this.state = state;
 			if (state.role === RoleType.Viewer) {
 				this.shouldCheckDevices = false;
@@ -100,7 +100,7 @@ export default class AgoraChecklistComponent extends Component {
 			});
 			/*
 			AgoraRTC.getDevices((devices) => {
-				console.log('checkAudio', devices);
+				// console.log('checkAudio', devices);
 				const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
 				this.checklist.audio = audioinput != null;
 				this.pushChanges();
@@ -141,7 +141,7 @@ export default class AgoraChecklistComponent extends Component {
 			});
 			/*
 			AgoraRTC.getDevices((devices) => {
-				console.log('checkVideo', devices);
+				// console.log('checkVideo', devices);
 				const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
 				this.checklist.video = videoinput != null;
 				setTimeout(() => {
@@ -196,7 +196,7 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	onComplete() {
-		console.log('AgoraChecklistComponent.onComplete');
+		// console.log('AgoraChecklistComponent.onComplete');
 		const success = Object.keys(this.checklist).reduce((p, c) => {
 			return p && this.checklist[c];
 		}, true);

@@ -133,17 +133,17 @@ app.get('/en/self-service-tour', function(request, response) {
 });
 app.get('/embed', function(request, response) {
 	// !!! session user
-	setSessionUser(request, RoleType.Embed);
+	// setSessionUser(request, RoleType.Embed);
 	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
 });
 app.get('/it/embed', function(request, response) {
 	// !!! session user
-	setSessionUser(request, RoleType.Embed);
+	// setSessionUser(request, RoleType.Embed);
 	response.sendFile(path.join(__dirname, '../docs/b-here__it.html'));
 });
 app.get('/en/embed', function(request, response) {
 	// !!! session user
-	setSessionUser(request, RoleType.Embed);
+	// setSessionUser(request, RoleType.Embed);
 	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
 });
 app.get('/editor', function(request, response) {

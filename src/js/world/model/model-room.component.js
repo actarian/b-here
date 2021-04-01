@@ -100,11 +100,11 @@ export default class ModelRoomComponent extends ModelComponent {
 						}
 					});
 					mesh.on('down', () => {
-						console.log('ModelRoomComponent.down');
+						// console.log('ModelRoomComponent.down');
 						this.down.next(this);
 					});
 					mesh.on('playing', (playing) => {
-						console.log('ModelRoomComponent.playing', playing);
+						// console.log('ModelRoomComponent.playing', playing);
 						this.play.next({ itemId: item.id, playing });
 					});
 				}

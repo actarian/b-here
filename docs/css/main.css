@@ -5259,7 +5259,16 @@ body {
       order: 1;
       border-radius: 10px 0 10px 10px;
       background: var(--background-primary-dimmed);
-      color: #ccc; }
+      color: #ccc;
+      /*
+			br {
+				display: block;
+				margin-bottom: 10px;
+			}
+			*/ }
+      .message.me .message__content p {
+        margin: 5px 0 0 0;
+        padding-top: 5px; }
   .message:not(.me) .message__avatar {
     margin-right: 5px; }
   .message:not(.typing) .typing-indicator {

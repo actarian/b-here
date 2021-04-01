@@ -26,7 +26,7 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 
 	/*
 	onChanges() {
-		console.log('ControlCustomSelectComponent.onChanges');
+		// console.log('ControlCustomSelectComponent.onChanges');
 	}
 	*/
 

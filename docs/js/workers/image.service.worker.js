@@ -93,7 +93,7 @@ self.addEventListener('message', function (event) {
     })).then(function (response) {
       return response.blob();
     }, function (error) {
-      console.log(error);
+      console.log('ImageServiceWorker.error', error);
     }).then(function (blob) {
       delete controllers[id];
 
@@ -103,7 +103,7 @@ self.addEventListener('message', function (event) {
         sendMessage(ImageServiceWorkerEvent.Complete, src, blob);
       }
     }, function (error) {
-      console.log(error);
+      console.log('ImageServiceWorker.error', error);
     });
   } else {
     var request = new XMLHttpRequest();
@@ -263,7 +263,7 @@ function fetchProgress__(response, onProgress) {
 		if (typeof onProgress === 'function') {
 			onProgress(receivedLength, contentLength);
 		}
-		console.log(`ImageServiceWorker.onProgress ${receivedLength} of ${contentLength}`)
+		// console.log(`ImageServiceWorker.onProgress ${receivedLength} of ${contentLength}`)
 	}
 	// Step 4: concatenate chunks into single Uint8Array
 	let chunksAll = new Uint8Array(receivedLength); // (4.1)

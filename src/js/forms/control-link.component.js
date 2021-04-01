@@ -26,7 +26,7 @@ export default class ControlLinkComponent extends ControlComponent {
 	}
 
 	onInputDidBlur(event) {
-		console.log('ControlLinkComponent.onInputDidBlur', event.target.value);
+		// console.log('ControlLinkComponent.onInputDidBlur', event.target.value);
 		this.control.touched = true;
 		this.value = this.input.value;
 	}

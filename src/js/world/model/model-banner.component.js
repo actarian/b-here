@@ -26,11 +26,11 @@ export default class ModelBannerComponent extends ModelComponent {
 	/*
 	onInit() {
 		super.onInit();
-		console.log('ModelBannerComponent.onInit', this.item);
+		// console.log('ModelBannerComponent.onInit', this.item);
 	}
 
 	onView() {
-		console.log('ModelBannerComponent.onView', this.item);
+		// console.log('ModelBannerComponent.onView', this.item);
 		if (this.viewed) {
 			return;
 		}

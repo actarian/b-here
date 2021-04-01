@@ -28,6 +28,12 @@ export default class AgoraComponent extends Component {
 		return uiClass;
 	}
 
+	get isNavigable() {
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const navigable = embedViewId == null;
+		return navigable;
+	}
+
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
@@ -61,12 +67,20 @@ export default class AgoraComponent extends Component {
 	}
 
 	resolveUser() {
-		UserService.me$().pipe(
-			first(),
-		).subscribe(user => {
-			this.initWithUser(user);
-			// this.userGuard(user);
-		});
+		if (this.isNavigable) {
+			UserService.me$().pipe(
+				first(),
+			).subscribe(user => {
+				this.initWithUser(user);
+				// this.userGuard(user);
+			});
+		} else {
+			UserService.temporaryUser$(RoleType.Embed).pipe(
+				first(),
+			).subscribe(user => {
+				this.initWithUser(user);
+			});
+		}
 	}
 
 	userGuard(user) {
@@ -125,8 +139,7 @@ export default class AgoraComponent extends Component {
 		const checklist = LocalStorageService.get('checklist') || (LocationService.get('skip-checklist') != null) || null;
 		const hosted = role === RoleType.Publisher ? true : false;
 		const live = (role === RoleType.SelfService || role === RoleType.Embed || DEBUG) ? false : true;
-		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
-		const navigable = embedViewId == null;
+		const navigable = this.isNavigable;
 		const state = {
 			user: user,
 			role: role,
@@ -175,9 +188,10 @@ export default class AgoraComponent extends Component {
 			delay(1),
 			*/
 			tap(view => {
+				// console.log('AgoraComponent.viewObserver$', view);
 				// !!! move navToView to user action?
 				if (this.agora) {
-					this.agora.navToView(view.id);
+					this.agora.navToView(view.id, view.keepOrientation);
 				}
 				this.view = view;
 				this.pushChanges();
@@ -270,7 +284,7 @@ export default class AgoraComponent extends Component {
 					}
 					break;
 				case MessageType.RequestInfoResult:
-					console.log('AgoraComponent.RequestInfoResult', ViewService.viewId, message.viewId);
+					// console.log('AgoraComponent.RequestInfoResult', ViewService.viewId, message.viewId);
 					ViewService.viewId = message.viewId;
 					// console.log('AgoraComponent.RequestInfoResult', message.viewId);
 					break;
@@ -402,6 +416,7 @@ export default class AgoraComponent extends Component {
 		const viewId = navItem.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
+			// console.log('AgoraComponent.onNavTo', navItem, view);
 			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
 		}
 	}
@@ -412,6 +427,7 @@ export default class AgoraComponent extends Component {
 		if (viewId && ViewService.viewId !== viewId) {
 			const view = this.data.views.find(x => x.id === viewId);
 			if (view) {
+				// console.log('AgoraComponent.onRemoteNavTo', message, view);
 				ViewService.action = { viewId, keepOrientation: message.keepOrientation };
 				if (gridIndex != null && view instanceof PanoramaGridView) {
 					view.index = gridIndex;

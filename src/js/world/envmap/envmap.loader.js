@@ -91,7 +91,7 @@ export class EnvMapLoader {
 			}
 			LoaderService.setProgress(progressRef, 1);
 		}, (request) => {
-			console.log(request.loaded, request.total);
+			// console.log(request.loaded, request.total);
 			LoaderService.setProgress(progressRef, request.loaded, request.total);
 		});
 		return loader;

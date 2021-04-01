@@ -430,7 +430,7 @@ export default class WorldComponent extends Component {
 	}
 
 	buildController(data) {
-		console.log('buildController', data);
+		// console.log('buildController', data);
 		let geometry, material;
 		switch (data.targetRayMode) {
 			case 'tracked-pointer':

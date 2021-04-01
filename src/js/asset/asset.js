@@ -87,7 +87,7 @@ export function assetPayloadFromGroupTypeId(groupTypeId) {
 		folder: '',
 		file: file,
 	}
-	console.log('assetPayloadFromGroupTypeId', asset);
+	// console.log('assetPayloadFromGroupTypeId', asset);
 	return new Asset(asset);
 }
 

@@ -84,7 +84,7 @@ export default class NavModalComponent extends Component {
 			EditorService.inferItemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('NavModalComponent.onSubmit.success', response);
+				// console.log('NavModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => {
 				console.log('NavModalComponent.onSubmit.error', error);
