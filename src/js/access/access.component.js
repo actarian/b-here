@@ -16,7 +16,7 @@ export default class AccessComponent extends Component {
 		StateService.state$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(state => {
-			console.log('AccessComponent.state', state);
+			// console.log('AccessComponent.state', state);
 			this.state = state;
 			this.pushChanges();
 		});
@@ -174,7 +174,7 @@ export default class AccessComponent extends Component {
 			UserService.resolve$(payload, status).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('AccessComponent.onSubmit', response);
+				// console.log('AccessComponent.onSubmit', response);
 				switch (status) {
 					case 'guided-tour':
 						this.state.status = 'guided-tour-success';

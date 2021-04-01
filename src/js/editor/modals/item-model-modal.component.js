@@ -60,11 +60,11 @@ export default class ItemModelModalComponent extends Component {
 		if (this.form.valid) {
 			const item = Object.assign({}, this.form.value);
 			// item.viewId = parseInt(item.viewId);
-			console.log('ItemModelModalComponent.onSubmit', this.view, item);
+			// console.log('ItemModelModalComponent.onSubmit', this.view, item);
 			EditorService.inferItemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('ItemModelModalComponent.onSubmit.success', response);
+				// console.log('ItemModelModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => console.log('ItemModelModalComponent.onSubmit.error', error));
 		} else {

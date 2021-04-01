@@ -36,7 +36,7 @@ export default class ModelModalComponent extends Component {
 				},
 				zoom: 75
 			};
-			console.log('ModelModalComponent.onSubmit.view', view);
+			// console.log('ModelModalComponent.onSubmit.view', view);
 			return EditorService.viewCreate$(view).pipe(
 				switchMap(view => {
 					const item = {
@@ -52,7 +52,7 @@ export default class ModelModalComponent extends Component {
 				}),
 				first(),
 			).subscribe(response => {
-				console.log('ModelModalComponent.onSubmit.success', response);
+				// console.log('ModelModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => {
 				console.log('ModelModalComponent.onSubmit.error', error);

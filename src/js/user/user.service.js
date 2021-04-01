@@ -72,6 +72,28 @@ export class UserService {
 		return HttpService.post$('/api/user/log', payload);
 	}
 
+	static temporaryUser$(roleType = RoleType.Embed) {
+		return of({
+			id: this.uuid(),
+			type: roleType,
+			username: roleType,
+			firstName: 'Jhon',
+			lastName: 'Appleseed',
+		}).pipe(
+			map((user) => this.mapUser(user)),
+			switchMap(user => {
+				// console.log('UserService.temporaryUser$', user);
+				this.setUser(user);
+				return this.user$;
+			}),
+		);
+	}
+
+	static uuid() {
+		return new Date().getTime();
+		// return parseInt(process.hrtime.bigint().toString());
+	}
+
 	/*
 	static retrieve$(payload) {
 		return HttpService.post$('/api/user/retrievepassword', payload).pipe(

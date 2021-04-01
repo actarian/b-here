@@ -21,7 +21,7 @@ export default class LayoutComponent extends Component {
 	onInit() {
 		this.state = {
 			status: LocationService.get('status') || AgoraStatus.Connected,
-			role: LocationService.get('role') || RoleType.Embed, // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
+			role: LocationService.get('role') || RoleType.Publisher, // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
 			membersCount: 3,
 			chat: false,
 			chatDirty: true,
@@ -110,7 +110,7 @@ export default class LayoutComponent extends Component {
 		return fromEvent(document, 'fullscreenchange').pipe(
 			tap(_ => {
 				const fullScreen = document.fullscreenElement != null;
-				console.log('fullscreen$', fullScreen);
+				// console.log('fullscreen$', fullScreen);
 				this.patchState({ fullScreen });
 			}),
 		);

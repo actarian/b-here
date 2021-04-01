@@ -372,7 +372,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideDelete(event) {
-		console.log('onAsideDelete', event);
+		// console.log('onAsideDelete', event);
 		if (event.item && event.view) {
 			EditorService.inferItemDelete$(event.view, event.item).pipe(
 				first(),

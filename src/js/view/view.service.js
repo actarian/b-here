@@ -56,6 +56,7 @@ export default class ViewService {
 				if (view) {
 					view.keepOrientation = action.keepOrientation || false;
 				}
+				// console.log('ViewService.view$', action.viewId, action.keepOrientation);
 				return view || this.getWaitingRoom(data);
 			}),
 		);
