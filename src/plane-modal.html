@@ -13,7 +13,7 @@
 					<div control-vector [control]="controls.position" label="Position" [precision]="2" [disabled]="true"></div>
 					<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360" [disabled]="true"></div>
 					<div control-vector [control]="controls.scale" label="Scale" [precision]="2" [disabled]="true"></div>
-					<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4"></div>
+					<div control-localized-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4"></div>
 				</div>
 				<div class="group--cta">
 					<button type="submit" class="btn--accept">

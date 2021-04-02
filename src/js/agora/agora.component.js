@@ -28,6 +28,11 @@ export default class AgoraComponent extends Component {
 		return uiClass;
 	}
 
+	get isEmbed() {
+		const isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
+		return isEmbed;
+	}
+
 	get isNavigable() {
 		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
 		const navigable = embedViewId == null;
@@ -67,18 +72,18 @@ export default class AgoraComponent extends Component {
 	}
 
 	resolveUser() {
-		if (this.isNavigable) {
+		if (this.isEmbed) {
+			UserService.temporaryUser$(RoleType.Embed).pipe(
+				first(),
+			).subscribe(user => {
+				this.initWithUser(user);
+			});
+		} else {
 			UserService.me$().pipe(
 				first(),
 			).subscribe(user => {
 				this.initWithUser(user);
 				// this.userGuard(user);
-			});
-		} else {
-			UserService.temporaryUser$(RoleType.Embed).pipe(
-				first(),
-			).subscribe(user => {
-				this.initWithUser(user);
 			});
 		}
 	}
