@@ -497,6 +497,7 @@ console.log('environment', environment);var LocationService = /*#__PURE__*/funct
   var _proto = AccessCodeComponent.prototype;
 
   _proto.onInit = function onInit() {
+    this.state = {};
     var link = LocationService.get('link');
 
     if (!link) {
@@ -7016,14 +7017,14 @@ var VRService = /*#__PURE__*/function () {
   _proto.resolveUser = function resolveUser() {
     var _this2 = this;
 
-    if (this.isNavigable) {
+    if (this.isEmbed) {
+      UserService.temporaryUser$(RoleType.Embed).pipe(operators.first()).subscribe(function (user) {
+        _this2.initWithUser(user);
+      });
+    } else {
       UserService.me$().pipe(operators.first()).subscribe(function (user) {
         _this2.initWithUser(user); // this.userGuard(user);
 
-      });
-    } else {
-      UserService.temporaryUser$(RoleType.Embed).pipe(operators.first()).subscribe(function (user) {
-        _this2.initWithUser(user);
       });
     }
   };
@@ -7675,6 +7676,12 @@ var VRService = /*#__PURE__*/function () {
       uiClass[this.state.role] = true;
       uiClass.chat = this.state.chat;
       return uiClass;
+    }
+  }, {
+    key: "isEmbed",
+    get: function get() {
+      var isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
+      return isEmbed;
     }
   }, {
     key: "isNavigable",
