@@ -5289,6 +5289,8 @@ body {
     display: none; }
   .ui.smart-device .group--local {
     display: none; }
+  .ui.self-service .btn--view-mode {
+    display: none; }
   .ui.embed .group--remote {
     display: none; }
   .ui.self-service .group--remote {
