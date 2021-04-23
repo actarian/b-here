@@ -30,12 +30,34 @@ export default class NavModalComponent extends Component {
 		let position = null;
 		const data = this.data;
 		if (data) {
-			position = data.position;
+			position = data.hit.position;
 		}
 		return position;
 	}
 
+	get object() {
+		const object = new THREE.Object3D();
+		const data = this.data;
+		if (data) {
+			const position = data.hit.position.clone();
+			const normal = data.hit.normal.clone();
+			const spherical = data.hit.spherical;
+			if (spherical) {
+				// position.normalize().multiplyScalar(4);
+				position.normalize();
+				object.position.copy(position);
+				object.lookAt(ItemModelModalComponent.ORIGIN); // cameraGroup?
+			} else {
+				object.lookAt(normal);
+				object.position.set(position.x, position.y, position.z);
+				object.position.add(normal.multiplyScalar(0.01));
+			}
+		}
+		return object;
+	}
+
 	onInit() {
+		const object = this.object;
 		this.error = null;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Nav,
@@ -43,7 +65,8 @@ export default class NavModalComponent extends Component {
 			abstract: null,
 			viewId: new FormControl(null, RequiredValidator()),
 			keepOrientation: false,
-			position: this.position.toArray(),
+			important: false,
+			position: object.position.toArray(),
 			asset: null,
 			link: new FormGroup({
 				title: new FormControl(null),

@@ -54,7 +54,7 @@ export class PhoneStreamElement {
 	}
 
 	addStreamTexture(streamId, callback) {
-		const target = `#stream-${streamId}`;
+		const target = `#stream-${streamId}`; // `#stream-remote-${streamId}`;
 		const video = document.querySelector(`${target} video`);
 		if (!video) {
 			return;

@@ -1,5 +1,9 @@
 <!-- service -->
 <div class="group--service">
+	<button type="button" class="btn--view-mode" (click)="toggleMode($event)">
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
+	</button>
 	<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>

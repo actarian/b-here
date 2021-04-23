@@ -1,8 +1,8 @@
 import { Component, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
-import { AgoraStatus } from '../agora/agora.types';
-import { DEBUG } from '../environment';
+import { AgoraStatus, UIMode } from '../agora/agora.types';
+import { DEBUG, environment } from '../environment';
 import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
@@ -11,11 +11,60 @@ import { UserService } from '../user/user.service';
 
 export default class LayoutComponent extends Component {
 
+	get isVirtualTourUser() {
+		return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
+	}
+
+	get isEmbed() {
+		const isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
+		return isEmbed;
+	}
+
+	get isNavigable() {
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const navigable = embedViewId == null;
+		return navigable;
+	}
+
 	get uiClass() {
 		const uiClass = {};
 		uiClass[this.state.role] = true;
+		// uiClass[this.state.mode] = true;
 		uiClass.chat = this.state.chat;
+		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
+		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+		uiClass.media = !uiClass.remotes && this.media;
 		return uiClass;
+	}
+
+	get controlled() {
+		return (this.state.controlling && this.state.controlling !== this.state.uid);
+	}
+
+	get controlling() {
+		return (this.state.controlling && this.state.controlling === this.state.uid);
+	}
+
+	get spyed() {
+		return (this.state.spying && this.state.spying === this.state.uid);
+	}
+
+	get spying() {
+		return (this.state.spying && this.state.spying !== this.state.uid);
+	}
+
+	get locked() {
+		return this.controlled || this.spying;
+	}
+
+	get remoteScreen() {
+		return this.remoteScreen_;
+	}
+	set remoteScreen(remoteScreen) {
+		if (this.remoteScreen_ !== remoteScreen) {
+			this.remoteScreen_ = remoteScreen;
+			window.dispatchEvent(new Event('resize'));
+		}
 	}
 
 	onInit() {
@@ -23,6 +72,9 @@ export default class LayoutComponent extends Component {
 			status: LocationService.get('status') || AgoraStatus.Connected,
 			role: LocationService.get('role') || RoleType.Publisher, // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
 			membersCount: 3,
+			controlling: false,
+			spying: false,
+			hosted: true,
 			chat: false,
 			chatDirty: true,
 			name: "Jhon Appleseed",
@@ -37,6 +89,10 @@ export default class LayoutComponent extends Component {
 		};
 		this.local = {};
 		this.screen = null;
+		this.remoteScreen_ = null;
+		this.media = null;
+		this.hasScreenViewItem = false;
+		this.media = true;
 		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1, }));
 		this.languageService = LanguageService;
 		this.showLanguages = false;
@@ -64,6 +120,8 @@ export default class LayoutComponent extends Component {
 
 	patchState(state) {
 		this.state = Object.assign({}, this.state, state);
+		this.screen = this.state.screen || null;
+		this.remoteScreen = this.screen;
 		this.pushChanges();
 	}
 
@@ -81,6 +139,12 @@ export default class LayoutComponent extends Component {
 
 	toggleVolume() {
 		this.patchState({ volumeMuted: !this.state.volumeMuted });
+	}
+
+	toggleMode() {
+		const mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+		this.patchState({ mode: mode });
+		// this.pushChanges();
 	}
 
 	toggleFullScreen() {
@@ -126,13 +190,14 @@ export default class LayoutComponent extends Component {
 		window.dispatchEvent(new Event('resize'));
 	}
 
-	onToggleControl() {
-		this.patchState({ control: !this.state.control, spying: false });
+	onToggleControl(remoteId) {
+		const controlling = this.state.controlling === remoteId ? null : remoteId;
+		this.patchState({ controlling, spying: false });
 	}
 
 	onToggleSpy(remoteId) {
 		const spying = this.state.spying === remoteId ? null : remoteId;
-		this.patchState({ spying, control: false });
+		this.patchState({ spying, controlling: false });
 	}
 
 	addLike() {

@@ -80,7 +80,7 @@ export default class ModelDebugComponent extends ModelComponent {
 			// side: THREE.DoubleSide
 		});
 		const text = new THREE.Mesh(geometry, material);
-		text.renderer = environment.renderOrder.debug;
+		text.renderOrder = environment.renderOrder.debug;
 		text.position.y = 0;
 		return text;
 	}

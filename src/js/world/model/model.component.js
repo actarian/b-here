@@ -37,6 +37,7 @@ export default class ModelComponent extends Component {
 	}
 
 	onDestroy() {
+		// console.log('ModelComponent', this);
 		const group = this.group;
 		this.getContainer().remove(group);
 		delete group.userData.render;

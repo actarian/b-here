@@ -241,9 +241,7 @@ export class EnvMapLoader {
 
 	static loadPublisherStreamBackground(renderer, callback) {
 		const onPublisherStreamId = (publisherStreamId) => {
-			// const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-			const target = `#stream-${publisherStreamId}`;
-			const video = document.querySelector(`${target} video`);
+			const video = document.querySelector(`#stream-${publisherStreamId} video`); // document.querySelector(`#stream-remote-${publisherStreamId} video`) || document.querySelector(`#stream-local-${publisherStreamId} video`);
 			if (!video) {
 				return;
 			}

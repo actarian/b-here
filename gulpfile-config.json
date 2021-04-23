@@ -37,6 +37,14 @@
             "format": "umd"
           },
           "minify": true
+        },
+        {
+          "input": "src/js/prefetch/prefetch.service.worker.js",
+          "output": {
+            "file": "docs/js/workers/prefetch.service.worker.js",
+            "format": "umd"
+          },
+          "minify": true
         }
       ],
       "bundle": [],

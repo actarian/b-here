@@ -26,24 +26,31 @@ export default class ItemModelModalComponent extends Component {
 		return view;
 	}
 
-	get position() {
-		let position = null;
+	get object() {
+		const object = new THREE.Object3D();
 		const data = this.data;
 		if (data) {
-			position = data.position;
+			const position = data.hit.position.clone();
+			const normal = data.hit.normal.clone();
+			const spherical = data.hit.spherical;
+			if (spherical) {
+				position.normalize().multiplyScalar(4);
+				object.position.copy(position);
+				object.lookAt(ItemModelModalComponent.ORIGIN); // cameraGroup?
+			} else {
+				object.lookAt(normal);
+				object.position.set(position.x, position.y, position.z);
+				object.position.add(normal.multiplyScalar(0.01));
+			}
 		}
-		return position;
+		return object;
 	}
 
 	onInit() {
-		/*
-		const object = new THREE.Object3D();
-		object.position.copy(this.position);
-		object.lookAt(ItemModelModalComponent.ORIGIN);
-		*/
+		const object = this.object;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Model,
-			position: new FormControl(this.position.multiplyScalar(4).toArray(), RequiredValidator()),
+			position: new FormControl(object.position.toArray(), RequiredValidator()),
 			rotation: new FormControl([0, 0, 0], RequiredValidator()), // [0, -Math.PI / 2, 0],
 			// rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
 			scale: new FormControl([1, 1, 1], RequiredValidator()),

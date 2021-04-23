@@ -12,14 +12,14 @@ export default class ImageService {
 
 	static worker() {
 		if (!this.worker_) {
-			this.worker_ = new Worker(environment.worker);
+			this.worker_ = new Worker(environment.workers.image);
 		}
 		return this.worker_;
 	}
 
 	static events$(src, size) {
 		if (!('Worker' in window) || this.isBlob(src) || this.isCors(src)) {
-			return of({ type: ImageServiceEvent.Complete, data:src });
+			return of({ type: ImageServiceEvent.Complete, data: src });
 		}
 		const id = ++UID;
 		const worker = this.worker();

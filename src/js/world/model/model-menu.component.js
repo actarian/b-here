@@ -10,7 +10,7 @@ import StateService from '../../state/state.service';
 // import DebugService from '../debug.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import OrbitService, { OrbitMode } from '../orbit/orbit';
+import OrbitService, { OrbitMode } from '../orbit/orbit.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -234,6 +234,26 @@ export class BackButton extends MenuButton {
 
 export default class ModelMenuComponent extends ModelComponent {
 
+	get controlled() {
+		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
+	}
+
+	get controlling() {
+		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
+	}
+
+	get spyed() {
+		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
+	}
+
+	get spying() {
+		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid);
+	}
+
+	get locked() {
+		return this.controlled || this.spying;
+	}
+
 	get loading() {
 		return this.loading_;
 	}
@@ -346,6 +366,7 @@ export default class ModelMenuComponent extends ModelComponent {
 
 	render(time, tick) {
 		const group = this.group;
+		const cameraGroup = this.host.cameraGroup;
 		let camera = this.host.camera;
 		const position = this.position;
 		if (this.host.renderer.xr.isPresenting) {
@@ -357,7 +378,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			position.y += this.host.cameraGroup.position.y;
 			group.position.copy(position);
 			group.scale.set(1, 1, 1);
-			group.lookAt(camera.position);
+			group.lookAt(cameraGroup.position);
 			// group.lookAt(ModelMenuComponent.ORIGIN);
 		} else {
 			camera.getWorldDirection(position);
@@ -369,7 +390,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			group.position.copy(position);
 			const s = 1 / camera.zoom;
 			group.scale.set(s, s, s);
-			group.lookAt(ModelMenuComponent.ORIGIN);
+			group.lookAt(cameraGroup.position); // ModelMenuComponent.ORIGIN);
 		}
 	}
 
@@ -508,7 +529,7 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 
 	onToggle() {
-		if (StateService.state.locked || StateService.state.spying) {
+		if (this.locked) {
 			return;
 		}
 		if (MenuService.active) {

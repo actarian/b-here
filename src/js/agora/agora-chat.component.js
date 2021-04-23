@@ -131,6 +131,13 @@ export default class AgoraChatComponent extends Component {
 		// this.scrollToBottom();
 	}
 
+	onDestroy() {
+		if (AgoraChatComponent.to) {
+			clearTimeout(AgoraChatComponent.to);
+			AgoraChatComponent.to = null;
+		}
+	}
+
 	onSubmit() {
 		const message = this.createMessage(this.form.value.message);
 		this.sendMessage(message);
@@ -258,7 +265,11 @@ export default class AgoraChatComponent extends Component {
 	// demo
 
 	randomMessage() {
-		setTimeout(() => {
+		if (AgoraChatComponent.to) {
+			clearTimeout(AgoraChatComponent.to);
+			AgoraChatComponent.to = null;
+		}
+		AgoraChatComponent.to = setTimeout(() => {
 			const message = AgoraChatComponent.createRandomMessage();
 			this.sendMessage(message);
 		}, (2 + Math.random() * 6) * 1000);
@@ -423,7 +434,11 @@ AgoraChatComponent.randomMessage = (instance, messages) => {
 		}, StateService.state.uid, StateService.state.name);
 		return message;
 	}
-	setTimeout(() => {
+	if (AgoraChatComponent.to) {
+		clearTimeout(AgoraChatComponent.to);
+		AgoraChatComponent.to = null;
+	}
+	AgoraChatComponent.to = setTimeout(() => {
 		const message = getRandomMessage();
 		instance.sendMessage(message);
 		AgoraChatComponent.randomMessage(instance, messages);

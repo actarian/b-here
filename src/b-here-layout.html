@@ -166,7 +166,7 @@ window.labels = Object.assign(window.labels, {});
 		</div>
 	</div>
 	<!-- Virtual Tour -->
-	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'virtual-tour'">
+	<div class="ui virtual-tour" [class]="uiClass" *if="state.status == 'connected' && isVirtualTourUser">
 		<!-- world -->
 		<div class="ui__body">
 			<div class="world"></div>
@@ -175,16 +175,19 @@ window.labels = Object.assign(window.labels, {});
 		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
 			<div class="agora-stream" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
-				<div class="agora-stream__info" [class]="{ spyed: state.spying == remote.id }">
+				<div class="agora-stream__info" [class]="{ spyed: state.spying == remote.id, controlling: state.controlling == remote.id }">
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id">name</div>
-					<button type="button" class="btn--spy" *if="state.role === 'publisher'" (click)="onToggleSpy(remote.id)">
+					<button type="button" class="btn--control" (click)="onToggleControl(remote.id)" *if="state.role === 'publisher'">
+						<svg class="control" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
+					</button>
+					<button type="button" class="btn--spy" (click)="onToggleSpy(remote.id)" *if="state.role === 'publisher'">
 						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 					</button>
 				</div>
 			</div>
-			<div class="group--members">
+			<div class="group--members" *if="state.mode == 'virtual-tour'">
 				<div class="members">
 					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 					<span class="members__count" [innerHTML]="state.membersCount"></span>
@@ -196,10 +199,19 @@ window.labels = Object.assign(window.labels, {});
 				</div>
 			</div>
 		</div>
+		<!-- remote screen -->
+		<div class="group--remote-screen" *if="remoteScreen">
+			<div class="agora-stream">
+				<div class="agora-stream__player"></div>
+				<div class="agora-stream__info">
+					<div class="id">name</div>
+				</div>
+			</div>
+		</div>
 		<!-- local streams -->
 		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
-			<button type="button" class="btn--control" [class]="{ active: state.control }" (click)="onToggleControl($event)" *if="state.role == 'publisher'">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#gamepad"></use></svg>
+			<button type="button" class="btn--control" [class]="{ active: state.controlling == state.uid }" (click)="onToggleControl(state.uid)" *if="state.role == 'publisher'">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
 			</button>
 			<div class="agora-stream" *if="!local"></div>
 			<div class="agora-stream" *if="local">
@@ -257,6 +269,10 @@ window.labels = Object.assign(window.labels, {});
 		</div>
 		<!-- service -->
 		<div class="group--service">
+			<button type="button" class="btn--view-mode" (click)="toggleMode($event)">
+				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
+				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
+			</button>
 			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
@@ -277,12 +293,24 @@ window.labels = Object.assign(window.labels, {});
 			<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 			</button>
-			<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee'">
+			<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
 			</button>
 			<button type="button" class="btn--chat" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#chat"></use></svg>
 			</button>
+		</div>
+		<!-- media -->
+		<div class="group--media" media-player>
+			<button type="button" class="btn--play" (click)="play($event)" *if="!playing">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#play"></use></svg>
+			</button>
+			<button type="button" class="btn--pause" (click)="pause($event)" *if="playing">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pause"></use></svg>
+			</button>
+			<div class="track">
+				<div class="track__progress" [style]="{ transform: 'scale(' + this.progress + ', 1)'}"></div>
+			</div>
 		</div>
 		<!-- ar-vr -->
 		<div class="group--ar-vr">
@@ -301,11 +329,23 @@ window.labels = Object.assign(window.labels, {});
 				<span class="badge" [innerHTML]="view?.likes"></span>
 			</button>
 		</div>
+		<!-- members -->
+		<div class="group--members" *if="state.mode == 'live-meeting'">
+			<div class="members">
+				<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+				<span class="members__count" [innerHTML]="state.membersCount"></span>
+			</div>
+			<div class="credits">
+				<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+					<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+				</a>
+			</div>
+		</div>
 		<!-- lock -->
-		<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
+		<div class="ui__lock" *if="locked || controlling"></div>
 	</div>
-	<!-- Live Meeting -->
-	<div class="ui" [class]="state.role" *if="state.status == 'connected' && state.mode == 'live-meeting'">
+	<!-- Smart Device -->
+	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
 		<!-- world -->
 		<div class="ui__body">
 		</div>
@@ -313,7 +353,7 @@ window.labels = Object.assign(window.labels, {});
 		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
 			<div class="agora-stream" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
-				<div class="agora-stream__info" [class]="{ spyed: state.spying == remote.id }">
+				<div class="agora-stream__info">
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id">name</div>

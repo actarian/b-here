@@ -19,6 +19,7 @@ export default class ModelEditableComponent extends ModelComponent {
 	}
 
 	onDestroy() {
+		// console.log('ModelEditableComponent', this);
 		this.editing = false;
 		super.onDestroy();
 	}

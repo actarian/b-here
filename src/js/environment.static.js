@@ -36,11 +36,17 @@ export const environmentStatic = {
 		menuBackOverForeground: '#ffffff',
 	},
 	editor: {
-		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewTypes: ['waiting-room'],
 		disabledViewItemTypes: ['texture'],
 	},
 	assets: '/b-here/',
-	worker: './js/workers/image.service.worker.js',
+	workers: {
+		image: './js/workers/image.service.worker.js',
+		prefetch: './js/workers/prefetch.service.worker.js',
+	},
+	textures: {
+		envMap: 'textures/envMap/flower_road_1k.hdr',
+	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
 	template: {
 		tryInAr: '/try-in-ar.html?viewId=$viewId',

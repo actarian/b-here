@@ -57,6 +57,7 @@ import TryInARComponent from './try-in-ar/try-in-ar.component';
 import UploadItemComponent from './upload/upload-item.component';
 import HlsDirective from './video/hls.directive';
 import VirtualStructure from './virtual/virtual.structure';
+import MediaPlayerComponent from './world/media/media-player.component';
 import ModelBannerComponent from './world/model/model-banner.component';
 import ModelCurvedPlaneComponent from './world/model/model-curved-plane.component';
 import ModelDebugComponent from './world/model/model-debug.component';
@@ -126,6 +127,7 @@ AppModule.meta = {
 		LanguageComponent,
 		LayoutComponent,
 		LazyDirective,
+		MediaPlayerComponent,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,

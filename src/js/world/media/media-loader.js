@@ -4,15 +4,18 @@ import { environment } from '../../environment';
 import StateService from '../../state/state.service';
 
 export class MediaLoaderEvent {
-	constructor(src, id) {
-		this.src = src;
-		this.id = id;
+	constructor(loader) {
+		this.loader = loader;
 	}
 }
 
 export class MediaLoaderPlayEvent extends MediaLoaderEvent { }
 
 export class MediaLoaderPauseEvent extends MediaLoaderEvent { }
+
+export class MediaLoaderDisposeEvent extends MediaLoaderEvent { }
+
+export class MediaLoaderTimeUpdateEvent extends MediaLoaderEvent { }
 
 export default class MediaLoader {
 
@@ -86,11 +89,11 @@ export default class MediaLoader {
 	}
 
 	get isPlayableVideo() {
-		return this.isVideo && !this.item.asset.autoplay;
+		return this.isVideo; // && !this.item.asset.autoplay;
 	}
 
 	get isAutoplayVideo() {
-		return this.isStream || (this.isVideo && (this.item.asset.autoplay != null));
+		return this.isStream; // || (this.isVideo && (this.item.asset.autoplay != null));
 	}
 
 	get muted() {
@@ -100,7 +103,7 @@ export default class MediaLoader {
 	set muted(muted) {
 		this.muted_ = muted;
 		// console.log('MediaLoader.muted', muted, this.video);
-		if (this.video) {
+		if (this.video && this.isVideo) {
 			this.video.muted = muted === true;
 		}
 	}
@@ -118,8 +121,7 @@ export default class MediaLoader {
 		// console.log('MediaLoader.load', item, this.isStream);
 		if (this.isStream && item.streamId) {
 			const streamId = item.streamId;
-			const target = `#stream-${streamId}`;
-			const video = document.querySelector(`${target} video`);
+			const video = document.querySelector(`#stream-${streamId} video`); // document.querySelector(`#stream-remote-${streamId} video`) || document.querySelector(`#stream-local-${streamId} video`);
 			if (!video) {
 				return;
 			}
@@ -138,6 +140,8 @@ export default class MediaLoader {
 				}
 			};
 			video.crossOrigin = 'anonymous';
+			video.volume = 1;
+			video.muted = false;
 			if (video.readyState >= video.HAVE_FUTURE_DATA) {
 				onCanPlay();
 			} else {
@@ -145,16 +149,17 @@ export default class MediaLoader {
 			}
 		} else if (this.isVideo) {
 			// create the video element
+			const autoplay = (item.asset && item.asset.autoplay) || false;
+			const loop = (item.asset && item.asset.loop) || false;
 			const video = this.video = document.createElement('video');
 			video.preload = 'metadata';
 			video.volume = 0.8;
 			video.muted = true;
 			video.playsInline = true;
 			video.crossOrigin = 'anonymous';
-			if (item.asset && item.asset.autoplay) {
-				video.loop = true;
-			}
+			video.loop = loop;
 			const onCanPlay = () => {
+				// console.log('MediaLoader', 'onCanPlay');
 				video.oncanplay = null;
 				texture = new THREE.VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
@@ -164,17 +169,26 @@ export default class MediaLoader {
 				// texture.image.width = video.videoWidth;
 				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
-				if (!item.asset || !item.asset.autoplay) {
-					video.pause();
-				}
 				if (typeof callback === 'function') {
 					callback(texture, this);
 				}
+				if (autoplay) {
+					this.play();
+				} else {
+					video.pause();
+				}
+			};
+			const onTimeUpdate = () => {
+				MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(this));
+			};
+			const onEnded = () => {
+				MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
 			};
 			video.oncanplay = onCanPlay;
+			video.ontimeupdate = onTimeUpdate;
+			video.onended = onEnded;
 			video.src = MediaLoader.getPath(item);
 			video.load(); // must call after setting/changing source
-			this.play(true);
 		} else if (item.asset) {
 			MediaLoader.loadTexture(item, texture => {
 				texture.minFilter = THREE.LinearFilter;
@@ -193,34 +207,51 @@ export default class MediaLoader {
 		return this;
 	}
 
+	get progress() {
+		if (this.video) {
+			return this.video.currentTime / this.video.duration;
+		} else {
+			return 0;
+		}
+	}
+	set progress(progress) {
+		if (this.video) {
+			const currentTime = this.video.duration * progress;
+			if (this.video.seekable.length > progress && this.video.currentTime !== currentTime) {
+				// console.log('MediaLoader', 'progress', progress, 'currentTime', currentTime, 'duration', this.video.duration, 'seekable', this.video.seekable);
+				this.video.currentTime = currentTime;
+			}
+		}
+	}
+
 	play(silent) {
 		// console.log('MediaLoader.play');
 		if (this.video) {
 			this.video.play().then(() => {
 				// console.log('MediaLoader.play.success', this.item.asset.file);
+				if (!silent) {
+					MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
+				}
 			}, error => {
 				console.log('MediaLoader.play.error', this.item.asset.file, error);
 			});
-			if (!silent) {
-				MediaLoader.events$.next(new MediaLoaderPlayEvent(this.video.src, this.item.id));
-			}
 		}
 	}
 
 	pause(silent) {
 		// console.log('MediaLoader.pause');
-		if (this.video) {
+		if (this.video && this.isVideo) {
 			this.video.muted = true;
 			this.video.pause();
 			if (!silent) {
-				MediaLoader.events$.next(new MediaLoaderPauseEvent(this.video.src, this.item.id));
+				MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
 			}
 		}
 	}
 
 	toggle() {
 		// console.log('MediaLoader.toggle', this.video);
-		if (this.video) {
+		if (this.video && this.isVideo) {
 			if (this.video.paused) {
 				this.video.muted = this.muted_;
 				this.play();
@@ -234,7 +265,12 @@ export default class MediaLoader {
 
 	dispose() {
 		this.subscription.unsubscribe();
-		this.pause();
+		this.pause(true);
+		if (this.isVideo && this.video) {
+			this.video.ontimeupdate = null;
+			this.video.onended = null;
+			MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
+		}
 		delete this.video;
 	}
 

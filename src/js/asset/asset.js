@@ -1,7 +1,7 @@
 import { environment } from "../environment";
 
 export const EXT_IMAGE = [
-	'jpeg', 'jpg', 'png',
+	'jpeg', 'jpg', 'png', 'hdr'
 ];
 export const EXT_VIDEO = [
 	'mp4', 'webm',
@@ -108,7 +108,7 @@ export function isAssetType(path, type) {
 }
 
 export class Asset {
-	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor'];
+	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor', 'autoplay', 'loop'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -137,7 +137,7 @@ export class Asset {
 }
 
 export function mapAsset(asset) {
-	switch (asset.type) {
+	switch (asset.type.name) {
 		default:
 			asset = new Asset(asset);
 	}

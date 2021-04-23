@@ -1,2 +1,2 @@
 <!-- lock -->
-<div class="ui__lock" [class]="{ locked: state.locked, control: state.control }" *if="state.locked || state.control"></div>
+<div class="ui__lock" *if="locked || controlling"></div>

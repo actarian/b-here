@@ -1,9 +1,10 @@
 import { Component, getContext } from 'rxcomp';
 import { Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { AgoraStatus, UIMode } from '../agora/agora.types';
+import { AgoraStatus, MessageType, UIMode } from '../agora/agora.types';
 import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
+import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService, { StreamServiceMode } from '../stream/stream.service';
@@ -65,9 +66,8 @@ export default class EditorComponent extends Component {
 			status: AgoraStatus.Connected,
 			connecting: false,
 			connected: true,
-			locked: false,
-			control: false,
-			spyed: false,
+			controlling: false,
+			spying: false,
 			hosted: true,
 			live: false,
 			navigable: true,
@@ -119,18 +119,6 @@ export default class EditorComponent extends Component {
 		}
 	}
 
-	onRemoteControlRequest(message) {
-		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(event => {
-			if (event instanceof ModalResolveEvent) {
-				this.patchState({ control: true, spying: false });
-			} else {
-				this.patchState({ control: false, spying: false });
-			}
-		});
-	}
-
 	patchState(state) {
 		this.state = Object.assign({}, this.state, state);
 		this.pushChanges();
@@ -144,13 +132,6 @@ export default class EditorComponent extends Component {
 			// this.pushChanges();
 		});
 	}
-
-	/*
-	onPrevent(event) {
-		event.preventDefault();
-		event.stopImmediatePropagation();
-	}
-	*/
 
 	replaceUrl() {
 		if ('history' in window) {
@@ -192,7 +173,7 @@ export default class EditorComponent extends Component {
 		if (typeof callback === 'function') {
 			this.viewHitSubscription = this.viewHit.pipe(
 				first(),
-			).subscribe(position => callback(position))
+			).subscribe(event => callback(event))
 		}
 	}
 
@@ -248,9 +229,10 @@ export default class EditorComponent extends Component {
 							case ViewType.Panorama.name:
 							case ViewType.PanoramaGrid.name:
 							case ViewType.Model.name:
+							case ViewType.Room3d.name:
 								this.data.views.push(event.data);
 								ViewService.viewId = event.data.id;
-								this.pushChanges(); // !!!
+								this.pushChanges();
 								break;
 							default:
 						}
@@ -291,8 +273,8 @@ export default class EditorComponent extends Component {
 				case ViewItemType.Nav.name:
 				case ViewItemType.Plane.name:
 				case ViewItemType.CurvedPlane.name:
-					this.onViewHitted((position) => {
-						this.onOpenModal(event, { view: this.view, position });
+					this.onViewHitted((hit) => {
+						this.onOpenModal(event, { view: this.view, hit });
 					});
 					ToastService.open$({ message: 'Click a point on the view' });
 					break;
@@ -301,8 +283,8 @@ export default class EditorComponent extends Component {
 						if (this.view.type.name === ViewType.Model.name) {
 							return;
 						}
-						this.onViewHitted((position) => {
-							this.onOpenModal(event, { view: this.view, position });
+						this.onViewHitted((hit) => {
+							this.onOpenModal(event, { view: this.view, hit });
 						});
 						ToastService.open$({ message: 'Click a point on the view' });
 					} else {
@@ -315,20 +297,26 @@ export default class EditorComponent extends Component {
 		} else if (event.view && (event.item || event.item === null)) {
 			event.view.selected = false;
 			event.view.items.forEach(item => item.selected = item === event.item);
+			MessageService.send({
+				type: MessageType.SelectItem,
+			});
 			this.pushChanges();
 		} else if (event.view && (event.tile || event.tile === null)) {
 			event.view.selected = false;
 			event.view.tiles.forEach(tile => tile.selected = tile === event.tile);
+			MessageService.send({
+				type: MessageType.SelectItem,
+			});
 			/*
 			// if tile selected
 			// send ChangeTile message to world component
-			this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
+			this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
 				const item = this.view.getTile(event.indices.x, event.indices.y);
 				if (item) {
 					this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
 						// this.scene.background = envMap;
 						this.scene.environment = envMap;
-						this.orbit.walkComplete(headingLongitude, headingLatitude);
+						this.orbitService.walkComplete(headingLongitude, headingLatitude);
 						// this.render();
 						// this.pushChanges();
 					});
@@ -343,6 +331,9 @@ export default class EditorComponent extends Component {
 			if (currentTile) {
 				this.view.tiles.forEach(tile => tile.selected = tile === currentTile);
 			}
+			MessageService.send({
+				type: MessageType.SelectItem,
+			});
 			this.pushChanges();
 		}
 	}
@@ -396,7 +387,6 @@ export default class EditorComponent extends Component {
 			}, error => console.log('EditorComponent.onAsideDelete.viewDelete$.error', error));
 		}
 	}
-
 }
 
 EditorComponent.meta = {

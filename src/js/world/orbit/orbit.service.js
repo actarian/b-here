@@ -65,6 +65,26 @@ export default class OrbitService {
 		}
 	}
 
+	get controlled() {
+		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
+	}
+
+	get controlling() {
+		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
+	}
+
+	get spyed() {
+		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
+	}
+
+	get spying() {
+		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid);
+	}
+
+	get locked() {
+		return this.controlled || this.spying;
+	}
+
 	constructor(camera) {
 		this.mode_ = OrbitService.mode = OrbitMode.Panorama;
 		this.dolly_ = 70;
@@ -114,7 +134,7 @@ export default class OrbitService {
 		// const camera = this.camera;
 		let latitude, longitude;
 		return combineLatest([KeyboardService.keys$(), DragService.observe$(node)]).pipe(
-			filter(event => (!StateService.state.locked && !StateService.state.spying)),
+			filter(event => !this.locked),
 			map((datas) => {
 				const keys = datas[0];
 				const event = datas[1];
@@ -151,6 +171,7 @@ export default class OrbitService {
 		const phi = THREE.MathUtils.degToRad(90 - this.latitude);
 		const theta = THREE.MathUtils.degToRad(this.longitude);
 		const camera = this.camera;
+		const cameraGroup = camera.parent;
 		switch (this.mode_) {
 			case OrbitMode.Model:
 				radius = USE_DOLLY ? 3 + 3 * dolly : 3;
@@ -158,6 +179,8 @@ export default class OrbitService {
 				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
 				target.y = this.position.y + radius * Math.cos(phi);
 				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
+				// position = cameraGroup.worldToLocal(position);
+				// target = cameraGroup.worldToLocal(target);
 				camera.target.copy(position);
 				camera.position.copy(target);
 				break;
@@ -171,7 +194,10 @@ export default class OrbitService {
 				} else {
 					position.copy(this.position);
 				}
-				camera.position.copy(position);
+				// !!! position for walking panorama-grid
+				// position = cameraGroup.worldToLocal(position);
+				target = cameraGroup.worldToLocal(target);
+				// camera.position.copy(position);
 				camera.target.copy(target);
 		}
 		// console.log(camera.position.x, camera.position.y, camera.position.z);
@@ -185,25 +211,6 @@ export default class OrbitService {
 		camera.updateProjectionMatrix();
 		this.events$.next(orbitMoveEvent);
 	}
-
-	/*
-	inverse() {
-		let position, radius;
-		switch (this.mode_) {
-			case OrbitMode.Model:
-				radius = 3;
-				position = this.camera.position;
-				break;
-			default:
-				radius = this.radius;
-				position = this.camera.target;
-		}
-		radius = Math.sqrt(position.x * position.x + position.y * position.y + position.z * position.z);
-		const phi = Math.acos(position.y / radius);
-		const theta = Math.atan2(position.z, position.x);
-		// console.log('phi', phi, 'theta', theta);
-	}
-	*/
 
 	render() {
 		this.longitude += 0.025;
@@ -257,16 +264,13 @@ export default class OrbitService {
 		this.update();
 	}
 
-	lookAt(object3d) {
-		// !!! fix
-		if (object3d) {
-			/*
+	lookAt(object) {
+		// console.log('OrbitService.lookAt', object);
+		if (object) {
+			let position = object.position.clone();
 			const camera = this.camera;
-			camera.target.copy(object3d.position);
-			camera.lookAt(camera.target);
-			camera.updateProjectionMatrix();
-			*/
-			const position = object3d.position;
+			const cameraGroup = camera.parent;
+			position = cameraGroup.worldToLocal(position);
 			let radius;
 			switch (this.mode_) {
 				case OrbitMode.Model:
@@ -284,56 +288,11 @@ export default class OrbitService {
 			latitude = Math.max(-80, Math.min(80, latitude));
 			this.setLongitudeLatitude(longitude, latitude);
 			this.update();
-			// this.events$.next(orbitMoveEvent);
 		}
-		/*
-		let radius, position = this.updatePosition, target = this.updateTarget;
-		const zoom = this.getZoomValue();
-		const dolly = this.getDollyValue();
-		// console.log('dolly', dolly);
-		const phi = THREE.MathUtils.degToRad(90 - this.latitude);
-		const theta = THREE.MathUtils.degToRad(this.longitude);
-		const camera = this.camera;
-		switch (this.mode_) {
-			case OrbitMode.Model:
-				radius = USE_DOLLY ? 3 + 3 * dolly : 3;
-				position.copy(this.position);
-				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
-				target.y = this.position.y + radius * Math.cos(phi);
-				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
-				camera.target.copy(position);
-				camera.position.copy(target);
-				break;
-			default:
-				radius = this.radius;
-				target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
-				target.y = this.position.y + radius * Math.cos(phi);
-				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
-				if (USE_DOLLY) {
-					position.copy(target).position.multiplyScalar(-1 * dolly);
-				} else {
-					position.copy(this.position);
-				}
-				camera.position.copy(position);
-				camera.target.copy(target);
-		}
-		// console.log(camera.position.x, camera.position.y, camera.position.z);
-		// console.log(camera.target.x, camera.target.y, camera.target.z);
-		// console.log('phi', phi, 'theta', theta);
-		// this.inverse();
-		if (!USE_DOLLY) {
-			camera.zoom = zoom;
-		}
-		camera.lookAt(camera.target);
-		camera.updateProjectionMatrix();
-		this.events$.next(orbitMoveEvent);
-		*/
 	}
 
 	setVRCamera(camera) {
 		if (camera) {
-			// head.quaternion.set(camera[3], camera[4], camera[5], camera[6]);
-			// head.position.set(camera[0], camera[1], camera[2]);
 			const radius = this.radius;
 			const position = new THREE.Vector3(0, 0, -radius);
 			const quaternion = new THREE.Quaternion(camera[3], camera[4], camera[5], camera[6]);
