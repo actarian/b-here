@@ -7545,6 +7545,76 @@
           "id": 17352710344799
         }
       ]
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "room-3d"
+      },
+      "name": "Gallery2",
+      "asset": {
+        "type": {
+          "id": 3,
+          "name": "model"
+        },
+        "folder": "/uploads/",
+        "file": "27470012128000_gallery2.glb",
+        "id": 27470098417800
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 27478390045700,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            11.883169709801265,
+            0.31076195285221386,
+            -9.139272441663087
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            "XYZ"
+          ],
+          "scale": [
+            6,
+            3,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "27536898126099_mountains.mp4",
+            "id": 27536911344199,
+            "locale": {
+              "it": {
+                "type": {
+                  "id": 2,
+                  "name": "video"
+                },
+                "folder": "/uploads/",
+                "file": "27536898126099_mountains.mp4",
+                "id": 27536911344199
+              }
+            },
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false
+          },
+          "id": 27501600733699
+        }
+      ]
     }
   ],
   "menu": [
@@ -7589,6 +7659,13 @@
       "viewId": 138614587173299,
       "name": "Kitchen Grid",
       "order": 30
+    },
+    {
+      "id": 27634835231100,
+      "parentId": 74540000298999,
+      "viewId": 27478390045700,
+      "name": "Virtual Room",
+      "order": 40
     },
     {
       "id": 74581921776600,
@@ -9336,6 +9413,38 @@
       "folder": "/uploads/",
       "file": "17346053300100_Soldier.glb",
       "id": 17346063499600
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "27470012128000_gallery2.glb",
+      "id": 27470098417800
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "27536898126099_mountains.mp4",
+      "id": 27536911344199,
+      "locale": {
+        "it": {
+          "type": {
+            "id": 2,
+            "name": "video"
+          },
+          "folder": "/uploads/",
+          "file": "27536898126099_mountains.mp4",
+          "id": 27536911344199
+        }
+      },
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
     }
   ],
   "users": [
