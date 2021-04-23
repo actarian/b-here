@@ -188,37 +188,47 @@ window.bhere = Object.assign((window.bhere || {}), {
 		</div>
 	</div>
 	<!-- Virtual Tour -->
-	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'virtual-tour'">
+	<div class="ui virtual-tour" [class]="uiClass" *if="state.status == 'connected' && isVirtualTourUser">
 		<!-- @@include ../components/world.html -->
 		<!-- @@include ../components/remote.html -->
 		<!-- @@include ../components/local.html -->
 		<!-- @@include ../components/chat.html -->
 		<!-- @@include ../components/service.html -->
 		<!-- @@include ../components/controls.html -->
+		<!-- @@include ../components/media.html -->
 		<!-- @@include ../components/ar-vr.html -->
 		<!-- @@include ../components/like.html -->
+		<!-- members -->
+		<div class="group--members" *if="state.mode == 'live-meeting'">
+			<div class="members">
+				<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+				<span class="members__count" [innerHTML]="state.membersCount"></span>
+			</div>
+			<div class="credits">
+				<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+					<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+				</a>
+			</div>
+		</div>
 		<!-- @@include ../components/lock.html -->
 	</div>
-	<!-- Live Meeting -->
-	<div class="ui" [class]="state.role" *if="state.status == 'connected' && state.mode == 'live-meeting'">
+	<!-- Smart Device -->
+	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
 		<div class="ui__body"></div>
 		<!-- remote sidebar -->
 		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
-			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" *for="let remote of remotes">
+			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" type="remote" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
-				<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId }">
+				<div class="agora-stream__info">
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>
-					<button type="button" class="btn--spy" (click)="onToggleSpy(stream.clientInfo.uid)" *if="state.role === 'publisher' && stream.clientInfo">
-						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
-					</button>
 				</div>
 			</div>
 		</div>
 		<!-- local streams -->
 		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
-			<div class="agora-stream" agora-stream [stream]="local" *if="local">
+			<div class="agora-stream" agora-stream [stream]="local" type="local" *if="local">
 				<div class="agora-stream__player"></div>
 				<div class="agora-stream__info">
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
@@ -255,6 +265,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'self-service-tour'">
 		<!-- @@include ../components/world.html -->
 		<!-- @@include ../components/service.html -->
+		<!-- @@include ../components/media.html -->
 		<!-- @@include ../components/ar-vr.html -->
 		<!-- @@include ../components/like.html -->
 	</div>

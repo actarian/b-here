@@ -69,41 +69,46 @@ export default class StreamService {
 				remotes.forEach(remote => {
 					// const audioLevel = remote.getAudioLevel();
 					// console.log('audioLevel', audioLevel, remote);
+					let role = null, uid = null, screenUid = null, audioLevel = 0, peekAudioLevel = 0, order = 0;
 					if (remote.clientInfo) {
-						remote.clientInfo.audioLevel = remote.getAudioLevel();
-						remote.clientInfo.peekAudioLevel = Math.max(remote.clientInfo.audioLevel, 0.2);
+						audioLevel = remote.clientInfo.audioLevel = remote.getAudioLevel();
+						peekAudioLevel = remote.clientInfo.peekAudioLevel = Math.max(remote.clientInfo.audioLevel, 0.2);
+						order = remote.clientInfo.order;
+						role = remote.clientInfo.role || null;
+						uid = remote.clientInfo.uid || null;
+						screenUid = remote.clientInfo.screenUid || null;
 						/*
 						if (remote.clientInfo.screenUid !== remote.getId()) {
 							orderedRemotes.push(remote);
 						}
 						*/
 					}
-					orderedRemotes.push(remote);
+					orderedRemotes.push({ role, uid, screenUid, audioLevel, peekAudioLevel, order, remote });
 				});
 				orderedRemotes.sort((a, b) => {
-					if (a.clientInfo && b.clientInfo) {
-						const av = a.clientInfo.role === RoleType.Publisher ? 2 : (a.clientInfo.role === RoleType.Attendee ? 1 : 0);
-						const bv = b.clientInfo.role === RoleType.Publisher ? 2 : (b.clientInfo.role === RoleType.Attendee ? 1 : 0);
-						return (bv - av) ||
-							(b.clientInfo.peekAudioLevel - a.clientInfo.peekAudioLevel) ||
-							((a.clientInfo.order || 0) - (b.clientInfo.order || 0));
-					} else {
-						return 0;
-					}
+					const av = a.role === RoleType.Publisher ? 2 : (a.role === RoleType.Attendee ? 1 : 0);
+					const bv = b.role === RoleType.Publisher ? 2 : (b.role === RoleType.Attendee ? 1 : 0);
+					return (bv - av) ||
+						(b.peekAudioLevel - a.peekAudioLevel) ||
+						((a.order || 0) - (b.order || 0));
 				});
-				orderedRemotes.forEach((remote, i) => {
-					if (remote.clientInfo) {
-						remote.clientInfo.order = i;
+				orderedRemotes.forEach((x, i) => {
+					if (x.remote.clientInfo) {
+						x.remote.clientInfo.order = i;
 					}
 				});
 				// !!! hard limit max visible stream
-				orderedRemotes.length = Math.min(orderedRemotes.length, MAX_VISIBLE_STREAMS);
+				// orderedRemotes.length = Math.min(orderedRemotes.length, MAX_VISIBLE_STREAMS);
+				// console.log('StreamService.orderedRemotes$', orderedRemotes);
 				return orderedRemotes;
 			}),
 			distinctUntilChanged((a, b) => {
-				return a.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|') ===
-					b.map(remote => remote.clientInfo ? remote.clientInfo.uid : '').join('|');
+				const auid = a.map(x => `${x.uid}-${x.screenUid}`).join('|');
+				const buid = b.map(x => `${x.uid}-${x.screenUid}`).join('|');
+				// console.log('StreamService.orderedRemotes$', auid, buid);
+				return auid === buid;
 			}),
+			map(remotes => remotes.map(x => x.remote)),
 		);
 	}
 
@@ -129,7 +134,6 @@ export default class StreamService {
 			if (editorScreens) { // editor screens
 				streams.push(...editorScreens);
 			}
-			// console.log('StreamService.streams$', streams, local, screen, remotes);
 			return streams;
 		}),
 		shareReplay(1),
@@ -245,7 +249,7 @@ export default class StreamService {
 		if (local) {
 			streams.unshift(local);
 		}
-		const publisherStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher);
+		const publisherStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher && x.clientInfo.uid === x.getId());
 		if (publisherStream) {
 			return publisherStream.getId();
 		}

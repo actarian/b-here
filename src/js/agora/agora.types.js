@@ -136,6 +136,7 @@ export const MessageType = {
 	ChatMessage: 'chatMessage',
 	ChatTypingBegin: 'chatTypingBegin',
 	ChatTypingEnd: 'chatTypingEnd',
+	SelectItem: 'selectItem',
 };
 
 export const UIMode = {

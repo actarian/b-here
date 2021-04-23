@@ -1,4 +1,3 @@
-
 .control-request-modal,
 .try-in-ar-modal {
 	margin: 0;
@@ -8,7 +7,7 @@
 
 	.form {
 		.title {
-			font-weight: 800;
+			font-weight: $font-extrabold;
 			line-height: 1;
 			font-size: 28px;
 		}
@@ -64,7 +63,7 @@ model-viewer {
 	}
 
 	&__title {
-		font-weight: 300;
+		font-weight: $font-regular;
 		font-size: 60px;
 		line-height: 1.2;
 		margin-bottom: 10px;
@@ -94,7 +93,7 @@ model-viewer {
 	&__link {
 		font-size: 28px;
 		color: $foreground-secondary;
-		font-weight: 300;
+		font-weight: $font-regular;
 		text-decoration: underline;
 		margin-bottom: 10px;
 	}
@@ -121,13 +120,13 @@ model-viewer {
 
 .progress {
 	color: $foreground-negative;
-	font-weight: 800;
+	font-weight: $font-extrabold;
 	font-size: 70px;
 	text-shadow: 0 10px 10px $black-50;
 }
 
 .canvas--debug {
 	position: absolute;
-    top: 0;
-    left: 0;
+	top: 0;
+	left: 0;
 }

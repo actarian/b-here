@@ -28,26 +28,38 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
 	}
 
+	static getTexturePointImportant() {
+		return ModelNavComponent.texturePointImportant || (ModelNavComponent.texturePointImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point-important.png')));
+	}
+
 	static getTextureMove() {
 		return ModelNavComponent.textureMove || (ModelNavComponent.textureMove = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-more.png')));
+	}
+
+	static getTextureMoveImportant() {
+		return ModelNavComponent.textureMoveImportant || (ModelNavComponent.textureMoveImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-more-important.png')));
 	}
 
 	static getTextureInfo() {
 		return ModelNavComponent.textureInfo || (ModelNavComponent.textureInfo = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info.png')));
 	}
 
-	static getTexture(mode) {
+	static getTextureInfoImportant() {
+		return ModelNavComponent.textureInfoImportant || (ModelNavComponent.textureInfoImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info-important.png')));
+	}
+
+	static getTexture(mode, important) {
 		let texture;
 		switch (mode) {
 			case NavModeType.Move:
-				texture = this.getTextureMove();
+				texture = important ? this.getTextureMoveImportant() : this.getTextureMove();
 				break;
 			case NavModeType.Info:
-				texture = this.getTextureInfo();
+				texture = important ? this.getTextureInfoImportant() : this.getTextureInfo();
 				break;
 			case NavModeType.Point:
 			case NavModeType.Title:
-				texture = this.getTexturePoint();
+				texture = important ? this.getTexturePointImportant() : this.getTexturePoint();
 				break;
 			default:
 				break;
@@ -66,14 +78,14 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			const ctx = canvas.getContext('2d');
 			ctx.imageSmoothingEnabled = true;
 			ctx.imageSmoothingQuality = 'high';
-			ctx.font = `28px ${environment.fontFamily}`;
+			ctx.font = `24px ${environment.fontFamily}`;
 			const metrics = ctx.measureText(text);
 			let w = metrics.width + 8;
 			w = Math.pow(2, Math.ceil(Math.log(w) / Math.log(2)));
 			const x = w / 2;
 			const y = 16;
 			canvas.width = w;
-			ctx.font = `28px ${environment.fontFamily}`;
+			ctx.font = `24px ${environment.fontFamily}`;
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 			ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
@@ -232,7 +244,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		if (mode === NavModeType.None) {
 			return;
 		}
-		const map = ModelNavComponent.getTexture(mode);
+		const map = ModelNavComponent.getTexture(mode, this.item.important);
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.SpriteMaterial({
@@ -309,10 +321,15 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	// called by WorldComponent
-	onDragMove(position) {
+	onDragMove(position, normal, spherical) {
+		// console.log('ModelNavComponent.onDragMove', position, normal, spherical);
+		if (spherical) {
+			position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
+			// normal = cameraGroup?
+		}
 		this.editing = true;
 		this.item.showPanel = false;
-		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
+		this.mesh.position.set(position.x, position.y, position.z);
 		this.updateHelper();
 	}
 

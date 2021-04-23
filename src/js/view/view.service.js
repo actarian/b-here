@@ -1,11 +1,12 @@
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
+import { AssetType } from '../asset/asset';
 import { environment } from '../environment';
 import HttpService from '../http/http.service';
 import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
-import { mapView } from '../view/view';
+import { mapView, ViewItemType } from '../view/view';
 
 export default class ViewService {
 
@@ -73,6 +74,8 @@ export default class ViewService {
 			tap(view => {
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
+					const prefetchAssets = ViewService.getPrefetchAssets(view, data);
+					view.prefetchAssets = prefetchAssets;
 				}
 			}),
 		);
@@ -145,5 +148,19 @@ export default class ViewService {
 				longitude: 0
 			}
 		};
+	}
+
+	static getPrefetchAssets(view, data) {
+		const assets = view.items
+			// filter nav items
+			.filter(x => x.type.name === ViewItemType.Nav.name && x.viewId != null)
+			// map to view
+			.map(x => data.views.find(v => v.id === x.viewId))
+			// filter view with image
+			.filter(v => v && v.asset && v.asset.type.name === AssetType.Image.name)
+			// map to asset
+			.map(v => environment.getPath(v.asset.folder + v.asset.file));
+		// console.log('ViewService.getPrefetchAssets', assets);
+		return assets;
 	}
 }

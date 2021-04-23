@@ -16,7 +16,8 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 
 	onCreate(mount, dismount) {
 		const item = this.item;
-		const items = this.items;
+		const view = this.view;
+		const items = view.items;
 		const geometry = this.getCurvedPanelGeometry(item);
 		let mesh;
 		let subscription;
@@ -117,11 +118,20 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 	}
 
 	// called by WorldComponent
-	onDragMove(position) {
+	onDragMove(position, normal, spherical) {
+		// console.log('ModelCurvedPlaneComponent.onDragMove', position, normal, spherical);
 		this.item.showPanel = false;
 		this.editing = true;
-		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
-		this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN);
+		this.mesh.position.set(position.x, position.y, position.z);
+		if (spherical) {
+			position.normalize().multiplyScalar(20);
+			this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN); // cameraGroup?
+		} else {
+			this.mesh.position.set(0, 0, 0);
+			this.mesh.lookAt(normal);
+			this.mesh.position.set(position.x, position.y, position.z);
+			this.mesh.position.add(normal.multiplyScalar(0.01));
+		}
 		this.updateHelper();
 	}
 
@@ -153,5 +163,5 @@ ModelCurvedPlaneComponent.meta = {
 	selector: '[model-curved-plane]',
 	hosts: { host: WorldComponent },
 	outputs: ['down', 'play'],
-	inputs: ['item', 'items'],
+	inputs: ['item', 'view'],
 };

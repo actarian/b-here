@@ -55,6 +55,7 @@
 		position: relative;
 		overflow: hidden;
 		background-color: black;
+		border: 1px solid #333; // !!!
 
 		&>video {
 			position: absolute;
@@ -99,7 +100,8 @@
 		fill: $foreground-negative;
 	}
 
-	.btn--spy {
+	.btn--spy,
+	.btn--control {
 		@extend %btn-reset;
 		position: absolute;
 		display: flex;
@@ -107,12 +109,29 @@
 		align-items: center;
 		width: 32px;
 		height: 23px;
-		top: 0;
-		right: 0;
 		cursor: pointer;
 	}
 
+	.btn--spy {
+		top: 0;
+		right: 0;
+	}
+
 	.spy {
+		width: 18px;
+		height: 18px;
+		fill: $foreground-negative;
+		stroke: black;
+		stroke-width: 1px;
+	}
+
+	.btn--control {
+		top: 0;
+		left: 0;
+		opacity: 1;
+	}
+
+	.control {
 		width: 18px;
 		height: 18px;
 		fill: $foreground-negative;
@@ -137,23 +156,6 @@
 		// display: none; // !!!
 	}
 
-	&__info {
-
-		/*
-		// [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }"
-		&.talking {
-			border-color: #00ff00;
-		}
-		*/
-		&.spyed {
-			border-color: $background-secondary;
-
-			.spy {
-				fill: $foreground-secondary;
-			}
-		}
-	}
-
 	&.video--muted {
 		.cam-muted {
 			display: block;
@@ -168,7 +170,7 @@
 }
 
 .title {
-	font-weight: 800;
+	font-weight: $font-extrabold;
 	font-size: 80px;
 	line-height: 1;
 }

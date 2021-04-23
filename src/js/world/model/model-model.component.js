@@ -14,12 +14,6 @@ import ModelEditableComponent from './model-editable.component';
 
 export default class ModelModelComponent extends ModelEditableComponent {
 
-	/*
-	static getInteractiveGeometry() {
-		return ModelModelComponent.interactiveGeometry || (ModelModelComponent.interactiveGeometry = new THREE.SphereBufferGeometry(1, 8, 8));
-	}
-	*/
-
 	get freezed() {
 		return this.freezed_;
 	}
@@ -39,22 +33,10 @@ export default class ModelModelComponent extends ModelEditableComponent {
 
 	onInit() {
 		super.onInit();
-		this.progress = null;
 		this.isPresenting = false;
-		/*
-		if (this.view.type.name === ViewType.Model.name) {
-			const vrService = this.vrService = VRService.getService();
-			vrService.session$.pipe(
-				takeUntil(this.unsubscribe$),
-			).subscribe((session) => {
-				this.onUpdateVRSession(session);
-			});
-		}
-		*/
 		MenuService.active$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(active => this.freezed = active);
-		// console.log('ModelModelComponent.onInit');
 	}
 
 	onChanges() {
@@ -62,7 +44,6 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	}
 
 	onCreate(mount, dismount) {
-		// this.renderOrder = environment.renderOrder.model;
 		this.loadGlb(environment.getPath(this.item.asset.folder), this.item.asset.file, (mesh, animations) => {
 			this.onGlbLoaded(mesh, animations, mount, dismount);
 		});
@@ -92,112 +73,10 @@ export default class ModelModelComponent extends ModelEditableComponent {
 				callback(glb.scene, glb.animations);
 			}
 			LoaderService.setProgress(progressRef, 1);
-			// this.progress = null;
-			// this.pushChanges();
 			// roughnessMipmapper.dispose();
 		}, (progressEvent) => {
-			/*
-			let value = this.progress ? this.progress.value : 0;
-			if (progressEvent.lengthComputable) {
-				value = Math.round(progressEvent.loaded / progressEvent.total * 100);
-			} else {
-				value = Math.floor(Math.min(100, value + 0.1));
-			}
-			this.progress = { value, title: `${value}%` };
-			// console.log('progressEvent', progressEvent.loaded, progressEvent.total);
-			this.pushChanges();
-			*/
 			LoaderService.setProgress(progressRef, progressEvent.loaded, progressEvent.total);
 		});
-	}
-
-	parseAnimations(mesh, animations) {
-		// animations
-		// console.log('ModelModelComponent.onGlbLoaded', 'animations', animations);
-		const actionIndex = this.actionIndex = -1;
-		const actions = this.actions = [];
-		if (animations && animations.length) {
-			const clock = this.clock = new THREE.Clock();
-			const mixer = this.mixer = new THREE.AnimationMixer(mesh);
-			mixer.timeScale = 1;
-			animations.forEach(animation => {
-				const action = mixer.clipAction(animation);
-				action.enabled = true;
-				action.setEffectiveTimeScale(1);
-				action.setEffectiveWeight(1);
-				// action.setLoop(THREE.LoopPingPong);
-				action.setLoop(THREE.LoopRepeat);
-				// action.clampWhenFinished = true; // pause on last frame
-				actions.push(action);
-			});
-		}
-	}
-
-	onClipToggle() {
-		let actionIndex;
-		const actions = this.actions;
-		if (actions.length === 1) {
-			actionIndex = this.actionIndex === -1 ? 0 : -1;
-			this.setSingleAction(actionIndex);
-		} else if (actions.length > 1) {
-			actionIndex = this.actionIndex + 1;
-			if (actionIndex === actions.length) {
-				actionIndex = -1;
-			}
-			this.setMultiAction(actionIndex);
-		}
-		this.play.next({ itemId: this.item.id, actionIndex });
-	}
-
-	setSingleAction(actionIndex) {
-		if (this.actionIndex !== actionIndex) {
-			this.actionIndex = actionIndex;
-			const action = this.actions[0];
-			if (actionIndex === 0) {
-				if (action.paused || action.timeScale === 0) {
-					action.paused = false;
-				} else {
-					action.play();
-				}
-			} else if (actionIndex === -1) {
-				action.halt(0.3);
-			}
-		}
-	}
-
-	setMultiAction(actionIndex) {
-		if (this.actionIndex !== actionIndex) {
-			const actions = this.actions;
-			const previousClip = this.actionIndex > -1 ? actions[this.actionIndex] : null;
-			this.actionIndex = actionIndex;
-			if (previousClip) {
-				previousClip.halt(0.3);
-			}
-			// console.log('setMultiAction', actionIndex, actions.length);
-			if (actionIndex > -1) {
-				const action = actions[actionIndex];
-				if (action.paused) {
-					action.paused = false;
-				}
-				if (action.timeScale === 0) {
-					action.timeScale = 1;
-				}
-				action.play();
-			}
-		}
-	}
-
-	onMessage(message) {
-		switch (message.type) {
-			case MessageType.PlayModel:
-				const actions = this.actions;
-				if (actions.length === 1) {
-					this.setSingleAction(message.actionIndex);
-				} else if (actions.length > 1) {
-					this.setMultiAction(message.actionIndex);
-				}
-				break;
-		}
 	}
 
 	onGlbLoaded(mesh, animations, mount, dismount) {
@@ -291,20 +170,96 @@ export default class ModelModelComponent extends ModelEditableComponent {
 			mount(dummy, this.item);
 			this.freezed = MenuService.active;
 		}
-		/*
-		this.progress = null;
-		this.pushChanges();
-		*/
 	}
 
-	/*
-	onUpdateVRSession(session) {
-		const mesh = this.mesh;
-		if (session && mesh) {
-			mesh.position.z = -2;
+	parseAnimations(mesh, animations) {
+		// animations
+		// console.log('ModelModelComponent.onGlbLoaded', 'animations', animations);
+		const actionIndex = this.actionIndex = -1;
+		const actions = this.actions = [];
+		if (animations && animations.length) {
+			const clock = this.clock = new THREE.Clock();
+			const mixer = this.mixer = new THREE.AnimationMixer(mesh);
+			mixer.timeScale = 1;
+			animations.forEach(animation => {
+				const action = mixer.clipAction(animation);
+				action.enabled = true;
+				action.setEffectiveTimeScale(1);
+				action.setEffectiveWeight(1);
+				// action.setLoop(THREE.LoopPingPong);
+				action.setLoop(THREE.LoopRepeat);
+				// action.clampWhenFinished = true; // pause on last frame
+				actions.push(action);
+			});
 		}
 	}
-	*/
+
+	onClipToggle() {
+		let actionIndex;
+		const actions = this.actions;
+		if (actions.length === 1) {
+			actionIndex = this.actionIndex === -1 ? 0 : -1;
+			this.setSingleAction(actionIndex);
+		} else if (actions.length > 1) {
+			actionIndex = this.actionIndex + 1;
+			if (actionIndex === actions.length) {
+				actionIndex = -1;
+			}
+			this.setMultiAction(actionIndex);
+		}
+		this.play.next({ itemId: this.item.id, actionIndex });
+	}
+
+	setSingleAction(actionIndex) {
+		if (this.actionIndex !== actionIndex) {
+			this.actionIndex = actionIndex;
+			const action = this.actions[0];
+			if (actionIndex === 0) {
+				if (action.paused || action.timeScale === 0) {
+					action.paused = false;
+				} else {
+					action.play();
+				}
+			} else if (actionIndex === -1) {
+				action.halt(0.3);
+			}
+		}
+	}
+
+	setMultiAction(actionIndex) {
+		if (this.actionIndex !== actionIndex) {
+			const actions = this.actions;
+			const previousClip = this.actionIndex > -1 ? actions[this.actionIndex] : null;
+			this.actionIndex = actionIndex;
+			if (previousClip) {
+				previousClip.halt(0.3);
+			}
+			// console.log('setMultiAction', actionIndex, actions.length);
+			if (actionIndex > -1) {
+				const action = actions[actionIndex];
+				if (action.paused) {
+					action.paused = false;
+				}
+				if (action.timeScale === 0) {
+					action.timeScale = 1;
+				}
+				action.play();
+			}
+		}
+	}
+
+	onMessage(message) {
+		switch (message.type) {
+			case MessageType.PlayModel:
+				const actions = this.actions;
+				if (actions.length === 1) {
+					this.setSingleAction(message.actionIndex);
+				} else if (actions.length > 1) {
+					this.setMultiAction(message.actionIndex);
+				}
+				break;
+		}
+	}
 
 	render(time, tick) {
 		const view = this.view;
@@ -378,12 +333,16 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	}
 
 	// called by WorldComponent
-	onDragMove(position) {
-		// console.log('ModelModelComponent.onDragMove', position);
+	onDragMove(position, normal, spherical) {
+		// console.log('ModelModelComponent.onDragMove', position, normal, spherical);
+		if (spherical) {
+			position.normalize().multiplyScalar(4);
+			// normal = ModelModelComponent.ORIGIN; // cameraGroup?
+		}
 		this.editing = true;
 		const view = this.view;
 		if (view.type.name !== ViewType.Model.name) {
-			this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(4);
+			this.mesh.position.set(position.x, position.y, position.z);
 			// this.mesh.lookAt(ModelModelComponent.ORIGIN);
 		}
 		this.updateHelper();
@@ -436,35 +395,6 @@ export default class ModelModelComponent extends ModelEditableComponent {
 			}
 		});
 	}
-
-	/*
-	makeInteractive__(mesh) {
-		let newChild = null;
-		mesh.traverse((child) => {
-			if (newChild === null && child.isMesh && !(child.isInteractiveMesh)) {
-				// roughnessMipmapper.generateMipmaps(child.material);
-				const parent = child.parent;
-				newChild = new InteractiveMesh(child.geometry, child.material);
-				// newChild.depthTest = true;
-				// newChild.renderOrder = 0;
-				newChild.name = child.name;
-				newChild.position.copy(child.position);
-				newChild.rotation.copy(child.rotation);
-				newChild.scale.copy(child.scale);
-				newChild.on('down', () => {
-					// console.log('ModelModelComponent.down');
-					this.onClipToggle();
-					this.down.next(this);
-				});
-				parent.remove(child);
-				parent.add(newChild);
-			}
-		});
-		if (newChild !== null) {
-			this.makeInteractive(mesh);
-		}
-	}
-	*/
 
 }
 

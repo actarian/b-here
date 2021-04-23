@@ -23,6 +23,7 @@ const MIME_CONTENT_TYPES = {
 	"tif": "image/tiff", // Tagged Image File Format (TIFF)
 	"tiff": "image/tiff", // Tagged Image File Format (TIFF)
 	"webp": "image/webp", // WEBP image
+	"hdr": "image/vnd.radiance", // HDR image
 	"otf": "font/otf", // OpenType font
 	"ttf": "font/ttf", // TrueType Font
 	"woff": "font/woff", // Web Open Font Format (WOFF)
@@ -91,7 +92,7 @@ const MIME_TEXT = [
 	'css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml',
 ];
 const MIME_IMAGE = [
-	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp',
+	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'
 ];
 const MIME_FONTS = [
 	'otf', 'ttf', 'woff', 'woff2',
@@ -143,6 +144,9 @@ function staticMiddleware(vars) {
 				console.log('NodeJs.staticMiddleware.serving', file);
 				response.set('Content-Length', data.length);
 				response.set('Content-Type', MIME_CONTENT_TYPES[extension]);
+				if (MIME_VIDEO.indexOf(extension) !== -1) {
+					response.set('Accept-Ranges', 'bytes');
+				}
 				/*
 				response.set('Cache-Control', 'public,max-age=14400,public');
 				response.set('Accept-Ranges', 'bytes');

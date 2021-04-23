@@ -16,7 +16,8 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	onCreate(mount, dismount) {
 		const item = this.item;
-		const items = this.items;
+		const view = this.view;
+		const items = view.items;
 		const geometry = new THREE.PlaneBufferGeometry(1, 1, 2, 2);
 		let mesh;
 		let subscription;
@@ -72,6 +73,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 	}
 
 	onDestroy() {
+		// console.log('ModelPlaneComponent', this);
 		super.onDestroy();
 		if (this.mesh) {
 			this.mesh.dispose();
@@ -109,12 +111,20 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 	}
 
 	// called by WorldComponent
-	onDragMove(position) {
-		// console.log('ModelPlaneComponent.onDragMove', position);
+	onDragMove(position, normal, spherical) {
+		// console.log('ModelPlaneComponent.onDragMove', position, normal, spherical);
 		this.item.showPanel = false;
 		this.editing = true;
-		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(20);
-		this.mesh.lookAt(ModelPlaneComponent.ORIGIN);
+		if (spherical) {
+			position.normalize().multiplyScalar(20);
+			this.mesh.position.set(position.x, position.y, position.z);
+			this.mesh.lookAt(ModelPlaneComponent.ORIGIN); // cameraGroup?
+		} else {
+			this.mesh.position.set(0, 0, 0);
+			this.mesh.lookAt(normal);
+			this.mesh.position.set(position.x, position.y, position.z);
+			this.mesh.position.add(normal.multiplyScalar(0.01));
+		}
 		this.updateHelper();
 	}
 
@@ -126,7 +136,6 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 		this.item.scale = this.mesh.scale.toArray();
 		this.editing = false;
 	}
-
 }
 
 ModelPlaneComponent.ORIGIN = new THREE.Vector3();
@@ -136,5 +145,5 @@ ModelPlaneComponent.meta = {
 	selector: '[model-plane]',
 	hosts: { host: WorldComponent },
 	outputs: ['down', 'play'],
-	inputs: ['item', 'items'],
+	inputs: ['item', 'view'],
 };

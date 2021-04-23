@@ -43,8 +43,9 @@ export default class AgoraStreamComponent extends Component {
 				player.removeChild(player.firstElementChild);
 			}
 			// player.textContent = '';
+			// !!!
 			if (this.stream_ && this.stream_.isPlaying() && this.stream_.player.div.parentNode === player) {
-				// console.log('AgoraStreamComponent stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
+				console.log('AgoraStreamComponent stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
 				this.stream_.stop();
 			}
 			this.stream_ = stream;
@@ -56,6 +57,7 @@ export default class AgoraStreamComponent extends Component {
 			this.streamId = streamId;
 			// console.log('AgoraStreamComponent streamId', streamId);
 			if (streamId) {
+				// const name = `stream-${node.getAttribute('type')}-${streamId}`;
 				const name = `stream-${streamId}`;
 				player.setAttribute('id', name);
 				const self = this;
@@ -172,6 +174,10 @@ export default class AgoraStreamComponent extends Component {
 		});
 	}
 
+	onToggleControl($event) {
+		this.toggleControl.next($event);
+	}
+
 	onToggleSpy($event) {
 		this.toggleSpy.next($event);
 	}
@@ -179,6 +185,6 @@ export default class AgoraStreamComponent extends Component {
 
 AgoraStreamComponent.meta = {
 	selector: '[agora-stream]',
-	outputs: ['toggleSpy'],
+	outputs: ['toggleControl', 'toggleSpy'],
 	inputs: ['stream'],
 };

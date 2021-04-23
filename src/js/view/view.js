@@ -189,8 +189,14 @@ export class ModelView extends View {
 	}
 }
 
+export class Room3DView extends View {
+	constructor(options) {
+		super(options);
+	}
+}
+
 export class ViewItem {
-	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'important', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -255,6 +261,9 @@ export function mapView(view) {
 			break;
 		case ViewType.PanoramaGrid.name:
 			view = new PanoramaGridView(view);
+			break;
+		case ViewType.Room3d.name:
+			view = new Room3DView(view);
 			break;
 		case ViewType.Model.name:
 			view = new ModelView(view);

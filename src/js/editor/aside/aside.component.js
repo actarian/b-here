@@ -82,7 +82,7 @@ export default class AsideComponent extends Component {
 				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
 				break;
 			case ViewType.Room3d.name:
-				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
+				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
 				break;
 			case ViewType.Model.name:
 				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;

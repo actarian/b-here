@@ -15,17 +15,15 @@ import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView } from '../view/view';
 import ViewService from '../view/view.service';
+import MediaLoader from '../world/media/media-loader';
 import VRService from '../world/vr.service';
 import AgoraService from './agora.service';
-import { AgoraStatus, MessageType } from './agora.types';
+import { AgoraStatus, MessageType, UIMode } from './agora.types';
 
 export default class AgoraComponent extends Component {
 
-	get uiClass() {
-		const uiClass = {};
-		uiClass[this.state.role] = true;
-		uiClass.chat = this.state.chat;
-		return uiClass;
+	get isVirtualTourUser() {
+		return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
 	}
 
 	get isEmbed() {
@@ -37,6 +35,47 @@ export default class AgoraComponent extends Component {
 		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
 		const navigable = embedViewId == null;
 		return navigable;
+	}
+
+	get uiClass() {
+		const uiClass = {};
+		uiClass[this.state.role] = true;
+		// uiClass[this.state.mode] = true;
+		uiClass.chat = this.state.chat;
+		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
+		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+		// uiClass.media = !uiClass.remotes && this.media;
+		return uiClass;
+	}
+
+	get controlled() {
+		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
+	}
+
+	get controlling() {
+		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
+	}
+
+	get spyed() {
+		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
+	}
+
+	get spying() {
+		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid);
+	}
+
+	get locked() {
+		return this.controlled || this.spying;
+	}
+
+	get remoteScreen() {
+		return this.remoteScreen_;
+	}
+	set remoteScreen(remoteScreen) {
+		if (this.remoteScreen_ !== remoteScreen) {
+			this.remoteScreen_ = remoteScreen;
+			window.dispatchEvent(new Event('resize'));
+		}
 	}
 
 	onInit() {
@@ -51,6 +90,9 @@ export default class AgoraComponent extends Component {
 		this.form = null;
 		this.local = null;
 		this.screen = null;
+		this.remoteScreen_ = null;
+		// this.media = null;
+		this.hasScreenViewItem = false;
 		this.remotes = [];
 		const vrService = this.vrService = VRService.getService();
 		vrService.status$.pipe(
@@ -157,9 +199,8 @@ export default class AgoraComponent extends Component {
 			status: AgoraStatus.Idle,
 			connecting: false,
 			connected: false,
-			locked: false,
-			control: false,
-			spyed: false,
+			controlling: false,
+			spying: false,
 			hosted: hosted,
 			live: live,
 			navigable: navigable,
@@ -199,6 +240,7 @@ export default class AgoraComponent extends Component {
 					this.agora.navToView(view.id, view.keepOrientation);
 				}
 				this.view = view;
+				this.hasScreenViewItem = view.items.find(x => MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x)) != null;
 				this.pushChanges();
 			}),
 		);
@@ -244,16 +286,45 @@ export default class AgoraComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe(screen => {
 			// console.log('AgoraComponent.screen', screen);
+			if (this.screen === this.remoteScreen) {
+				this.remoteScreen = null;
+			}
 			this.screen = screen;
+			this.remoteScreen = screen || this.remoteScreen;
 			this.pushChanges();
 		});
 		StreamService.orderedRemotes$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(remotes => {
-			// console.log('AgoraComponent.remotes', remotes);
-			this.remotes = remotes;
+			this.remotes = [];
+			this.remoteScreen = this.screen;
+			remotes.forEach(x => {
+				if (x.clientInfo && x.clientInfo.screenUid === x.getId()) {
+					this.remoteScreen = x;
+				} else {
+					this.remotes.push(x);
+				}
+			});
+			// console.log('AgoraComponent.remotes', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
 			this.pushChanges();
 		});
+		/*
+		MediaLoader.events$.pipe(
+			tap(event => {
+				if (event instanceof MediaLoaderPlayEvent) {
+					this.media = event.loader;
+					// this.pushChanges();
+				} else if (event instanceof MediaLoaderDisposeEvent) {
+					if (this.media === event.loader) {
+						this.media = null;
+						// this.pushChanges();
+					}
+				}
+				// console.log('AgoraComponent.MediaLoader.events$', event);
+			}),
+			takeUntil(this.unsubscribe$)
+		).subscribe();
+		*/
 		MessageService.out$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
@@ -266,7 +337,7 @@ export default class AgoraComponent extends Component {
 						name: StateService.state.name,
 						uid: StateService.state.uid,
 						screenUid: StateService.state.screenUid,
-						control: StateService.state.control,
+						controllingId: StateService.state.controlling,
 					};
 					MessageService.sendBack(message);
 					break;
@@ -274,26 +345,11 @@ export default class AgoraComponent extends Component {
 					// console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
 					message.type = MessageType.RequestControlAccepted;
 					MessageService.sendBack(message);
-					StateService.patchState({ locked: true });
+					StateService.patchState({ controlling: message.controllingId });
 					if (this.agora) {
-						this.agora.sendControlRemoteRequestInfo(message.clientId);
-					}
-					// !!! control request permission not required
-					// this.onRemoteControlRequest(message);
-					break;
-				// !!! moved to WorldComponent
-				/*
-				case MessageType.RequestInfo:
-					if (StateService.state.role !== RoleType.Publisher) {
-						StateService.patchState({ spyed: true });
+						this.agora.sendControlRemoteRequestInfo(message.controllingId);
 					}
 					break;
-				case MessageType.RequestInfoResult:
-					// console.log('AgoraComponent.RequestInfoResult', ViewService.viewId, message.viewId);
-					ViewService.viewId = message.viewId;
-					// console.log('AgoraComponent.RequestInfoResult', message.viewId);
-					break;
-				*/
 				case MessageType.NavToView:
 					this.onRemoteNavTo(message);
 					break;
@@ -442,31 +498,6 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	/*
-	onRemoteControlRequest(message) {
-		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(event => {
-			if (!DEBUG) {
-				if (event instanceof ModalResolveEvent) {
-					message.type = MessageType.RequestControlAccepted;
-					this.state.locked = true;
-				} else {
-					message.type = MessageType.RequestControlRejected;
-					this.state.locked = false;
-				}
-				MessageService.sendBack(message);
-				this.pushChanges();
-			} else {
-				if (event instanceof ModalResolveEvent) {
-					this.patchState({ control: true, spying: false });
-				} else {
-					this.patchState({ control: false, spying: false });
-				}
-			}
-		});
-	}
-	*/
 
 	// !!! why locally?
 	patchState(state) {
@@ -501,7 +532,13 @@ export default class AgoraComponent extends Component {
 
 	toggleVolume() {
 		const volumeMuted = !this.state.volumeMuted;
-		StateService.patchState({ volumeMuted })
+		StateService.patchState({ volumeMuted });
+	}
+
+	toggleMode() {
+		const mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+		StateService.patchState({ mode });
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	toggleFullScreen() {
@@ -547,11 +584,12 @@ export default class AgoraComponent extends Component {
 		window.dispatchEvent(new Event('resize'));
 	}
 
-	onToggleControl() {
+	onToggleControl(remoteId) {
 		if (this.agora) {
-			this.agora.toggleControl();
-		} else if (this.state.control) {
-			this.patchState({ control: false });
+			this.agora.toggleControl(remoteId);
+		} else {
+			const controlling = this.state.controlling === remoteId ? null : remoteId;
+			this.patchState({ controlling, spying: false });
 		}/* else {
 			this.onRemoteControlRequest({});
 		}
@@ -562,7 +600,8 @@ export default class AgoraComponent extends Component {
 		if (this.agora) {
 			this.agora.toggleSpy(remoteId);
 		} else {
-			this.patchState({ spying: !this.state.spying, control: false });
+			const spying = this.state.spying === remoteId ? null : remoteId;
+			this.patchState({ spying, controlling: false });
 		}
 	}
 

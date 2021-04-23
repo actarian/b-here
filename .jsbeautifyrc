@@ -22,7 +22,8 @@
     "allowed_file_extensions": ["css", "scss", "sass", "less"],
     "newline_between_rules": true,
     "selector_separator": " ",
-    "selector_separator_newline": true,
+    "selector_separator_newline": false,
+    "preserve_newlines": true,
     "max_preserve_newlines": 10
   },
   "js": {

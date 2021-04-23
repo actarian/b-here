@@ -28,6 +28,7 @@ export default class UpdateViewComponent extends Component {
 			switch (this.view.type.name) {
 				case ViewType.Panorama.name:
 				case ViewType.PanoramaGrid.name:
+				case ViewType.Room3d.name:
 				case ViewType.Model.name:
 					this.form.patch({
 						latitude: message.orientation.latitude,
@@ -95,6 +96,9 @@ export default class UpdateViewComponent extends Component {
 					break;
 				case ViewType.PanoramaGrid.name:
 					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom'];
+					break;
+				case ViewType.Room3d.name:
+					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
 					break;
 				case ViewType.Model.name:
 					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
@@ -219,6 +223,13 @@ UpdateViewComponent.meta = {
 			</div>
 			<div class="form-controls" *if="view.type.name == 'panorama-grid'">
 				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
+				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
+				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
+				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
+			</div>
+			<div class="form-controls" *if="view.type.name == 'room-3d'">
+				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
+				<div control-model [control]="controls.asset" label="Model (.glb)" accept=".glb"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>

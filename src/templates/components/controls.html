@@ -9,7 +9,7 @@
 	<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 	</button>
-	<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee'">
+	<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
 	</button>
 	<button type="button" class="btn--chat" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">

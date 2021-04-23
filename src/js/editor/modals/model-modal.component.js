@@ -67,7 +67,6 @@ export default class ModelModalComponent extends Component {
 	close() {
 		ModalService.reject();
 	}
-
 }
 
 ModelModalComponent.meta = {

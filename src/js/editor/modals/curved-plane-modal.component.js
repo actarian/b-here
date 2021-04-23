@@ -26,23 +26,32 @@ export default class CurvedPlaneModalComponent extends Component {
 		return view;
 	}
 
-	get position() {
-		let position = null;
+	get object() {
+		const object = new THREE.Object3D();
 		const data = this.data;
 		if (data) {
-			position = data.position;
+			const position = data.hit.position.clone();
+			const normal = data.hit.normal.clone();
+			const spherical = data.hit.spherical;
+			if (spherical) {
+				position.normalize().multiplyScalar(20);
+				object.position.copy(position);
+				object.lookAt(CurvedPlaneModalComponent.ORIGIN); // cameraGroup?
+			} else {
+				object.lookAt(normal);
+				object.position.set(position.x, position.y, position.z);
+				object.position.add(normal.multiplyScalar(0.01));
+			}
 		}
-		return position;
+		return object;
 	}
 
 	onInit() {
-		const object = new THREE.Object3D();
-		object.position.copy(this.position);
-		object.lookAt(CurvedPlaneModalComponent.ORIGIN);
+		const object = this.object;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.CurvedPlane,
-			position: new FormControl(this.position.multiplyScalar(20).toArray(), RequiredValidator()),
-			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
+			position: new FormControl(object.position.toArray(), RequiredValidator()),
+			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()),
 			scale: new FormControl([1, 1, 1], RequiredValidator()),
 			radius: new FormControl(35, RequiredValidator()),
 			height: new FormControl(20, RequiredValidator()),

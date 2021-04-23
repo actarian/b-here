@@ -1,3 +1,4 @@
+import { AssetType } from '../../asset/asset';
 import StateService from '../../state/state.service';
 import { PanoramaGridView } from '../../view/view';
 import { EnvMapLoader } from '../envmap/envmap.loader';
@@ -167,38 +168,38 @@ export default class Panorama {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
 		// setTimeout(() => {
-			this.load(item, renderer, (envMap, texture, rgbe) => {
-				// setTimeout(() => {
-					if (typeof onexit === 'function') {
-						onexit(view);
-					}
-					material.uniforms.tween.value = 1;
+		this.load(item, renderer, (envMap, texture, rgbe) => {
+			// setTimeout(() => {
+			if (typeof onexit === 'function') {
+				onexit(view);
+			}
+			material.uniforms.tween.value = 1;
+			material.needsUpdate = true;
+			setTimeout(function() {
+				if (typeof callback === 'function') {
+					callback(envMap, texture, rgbe);
+				}
+			}, 100); // !!! delay
+			/*
+			gsap.to(this, {
+				duration: 0.5,
+				tween: 1,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					material.uniforms.tween.value = this.tween;
 					material.needsUpdate = true;
+				},
+				onComplete: () => {
 					setTimeout(function () {
 						if (typeof callback === 'function') {
 							callback(envMap, texture, rgbe);
 						}
 					}, 100); // !!! delay
-					/*
-					gsap.to(this, {
-						duration: 0.5,
-						tween: 1,
-						ease: Power2.easeInOut,
-						onUpdate: () => {
-							material.uniforms.tween.value = this.tween;
-							material.needsUpdate = true;
-						},
-						onComplete: () => {
-							setTimeout(function () {
-								if (typeof callback === 'function') {
-									callback(envMap, texture, rgbe);
-								}
-							}, 100); // !!! delay
-						},
-					});
-					*/
-				// }, 100); // !!! delay
+				},
 			});
+			*/
+			// }, 100); // !!! delay
+		});
 		// }, 300); // !!! delay
 	}
 
@@ -215,6 +216,13 @@ export default class Panorama {
 
 	load(item, renderer, callback) {
 		if (!item.asset) {
+			return;
+		}
+		if (item.asset.type.name === AssetType.Model.name) {
+			if (typeof callback === 'function') {
+				callback(null, null, null);
+				// console.log('Panorama', item.asset.type);
+			}
 			return;
 		}
 		this.currentAsset = item.asset.folder + item.asset.file;

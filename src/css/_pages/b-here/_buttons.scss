@@ -184,6 +184,40 @@
 	}
 }
 
+.btn--view-mode {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out 350ms;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		// border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-negative;
+	}
+
+	&.disabled {
+		display: none;
+		pointer-events: none;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
 .btn--control {
 	@extend %btn-circle;
 	width: 40px;
@@ -272,7 +306,7 @@
 		height: 20px;
 		background: $background;
 		border-radius: 10px;
-		font-weight: 800;
+		font-weight: $font-extrabold;
 		font-size: 10px;
 		display: flex;
 		justify-content: center;
@@ -433,13 +467,13 @@
 	min-height: auto;
 	padding: 10px 20px;
 	font-size: 13px;
-	font-weight: 600;
+	font-weight: $font-semibold;
 	text-transform: uppercase;
 
 	svg {
 		width: 12px;
-  		height: 12px;
-  		margin: 0 -5px 2px 5px;
+		height: 12px;
+		margin: 0 -5px 2px 5px;
 	}
 }
 
@@ -457,8 +491,8 @@
 	align-items: center;
 
 	svg {
-		width: 20px;
-		height: 20px;
+		width: 16px;
+		height: 16px;
 	}
 }
 
@@ -494,9 +528,9 @@
 .btn--credits {
 	@extend %btn-reset;
 	display: block;
-    width: 46px;
-    height: 17px;
-    margin: 3px 0 0 0;
+	width: 46px;
+	height: 17px;
+	margin: 3px 0 0 0;
 	transition: transform ease-in-out 200ms;
 
 	svg {
