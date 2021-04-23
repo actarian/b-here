@@ -233,6 +233,12 @@ $chat-width: 240px;
 		}
 	}
 
+	&.self-service {
+		.btn--view-mode {
+			display: none;
+		}
+	}
+
 	&.embed {
 		.group--remote {
 			display: none;
