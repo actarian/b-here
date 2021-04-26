@@ -14,13 +14,19 @@ export class ModalRejectEvent extends ModalEvent { }
 
 export default class ModalService {
 
+	static hasModal = false;
+
 	static open$(modal) {
 		return this.getTemplate$(modal.src).pipe(
 			map(template => {
 				return { node: this.getNode(template), data: modal.data, modal: modal };
 			}),
-			tap(node => this.modal$.next(node)),
+			tap(node => {
+				this.modal$.next(node);
+				this.hasModal = true;
+			}),
 			switchMap(node => this.events$),
+			tap(_ => this.hasModal = false)
 		)
 	}
 

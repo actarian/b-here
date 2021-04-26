@@ -310,3 +310,5 @@ export default class OrbitService {
 	}
 
 }
+
+OrbitService.orbitMoveEvent = orbitMoveEvent;

@@ -272,7 +272,7 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		transition: all ease-out 350ms;
+		transition: all ease-out $fastest;
 		cursor: pointer;
 	}
 
@@ -291,7 +291,7 @@
 	padding: 4px 0 4px 4px;
 	padding: 4px;
 	border-radius: 4px;
-	transition: all ease-out 350ms;
+	transition: all ease-out $fastest;
 	cursor: pointer;
 
 	&>.title {
@@ -382,7 +382,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	transition: all ease-in-out 350ms;
+	transition: all ease-in-out $fastest;
 	pointer-events: all;
 
 	svg {
@@ -557,7 +557,7 @@ update-view-tile {
 		.icon--caret-down {
 			width: 6px;
 			height: 6px;
-			transition: transform ease-out 350ms;
+			transition: transform ease-out $fast;
 		}
 
 		&.active {
@@ -699,7 +699,7 @@ update-view-tile {
 		align-items: center;
 		min-height: 24px;
 		border: 1px solid transparent;
-		transition: all ease-in-out 350ms;
+		transition: all ease-in-out $fastest;
 		cursor: pointer;
 
 		&:hover {

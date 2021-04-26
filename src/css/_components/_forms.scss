@@ -9,6 +9,10 @@ $touched: $foreground;
 $valid: $foreground;
 $invalid: $foreground-primary;
 
+::-webkit-file-upload-button {
+	cursor: pointer;
+}
+
 %btn--disabled {
 	opacity: 0.5;
 	background: rgb(125, 125, 125);

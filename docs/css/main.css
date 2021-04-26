@@ -25,6 +25,8 @@ body {
   --background-primary: #0099ff;
   --background-secondary: #ff4332;
   --background-tertiary: #d8dfe4;
+  --background-primary-darker: #008ae6;
+  --background-primary-darkest: #007acc;
   --background-primary-disabled: #c4d3dd;
   --background-primary-dimmed: rgba(0, 153, 255, 0.08);
   --foreground: #101010;
@@ -32,6 +34,8 @@ body {
   --foreground-primary: #0099ff;
   --foreground-secondary: #ff4332;
   --foreground-tertiary: #6d7b84;
+  --foreground-primary-darker: #008ae6;
+  --foreground-primary-darkest: #007acc;
   --foreground-primary-disabled: #c4d3dd;
   --foreground-primary-dimmed: rgba(0, 153, 255, 0.5);
   --border: #101010;
@@ -44,7 +48,10 @@ body {
   --black-60: rgba(16, 16, 16, 0.6);
   --black-70: rgba(16, 16, 16, 0.7);
   --black-80: rgba(16, 16, 16, 0.8);
-  --black-90: rgba(16, 16, 16, 0.9); }
+  --black-90: rgba(16, 16, 16, 0.9);
+  --fastest: 150ms;
+  --fast: 250ms;
+  --slow: 350ms; }
 
 /*
 @font-face {
@@ -350,7 +357,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   justify-content: center;
   align-items: center;
   border-radius: 25px;
-  transition: all ease-in-out 350ms; }
+  transition: all ease-in-out 150ms; }
   .btn--volume svg, .btn--fullscreen svg, .btn--view-mode svg, .btn--control svg, .btn--menu svg {
     width: 24px;
     height: 24px;
@@ -388,7 +395,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   padding: 0 25px;
   font-weight: var(--font-semibold);
   font-size: 16px;
-  transition: all ease-in-out 350ms; }
+  transition: all ease-in-out 150ms; }
   @media (max-width: 1023.98px) {
     .btn--ar,
     .btn--vr, .btn--generate,
@@ -413,6 +420,8 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
     margin-right: 10px; }
   .btn--ar span, .btn--vr span, .btn--generate span, .btn--next span, .btn--connect span, .btn--absolute span, .btn--cancel span, .btn--accept span, .btn--browse span, .btn--upload span, .btn--pause span, .btn--resume span, .btn--remove span, .btn--update span, .btn--mode span {
     display: block; }
+  .btn--ar svg, .btn--vr svg, .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg {
+    fill: currentColor; }
   .btn--ar,
   .btn--vr, .btn--generate,
   .btn--next,
@@ -446,18 +455,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:focus,
   .btn--remove:focus,
   .btn--update:focus,
-  .btn--mode:focus, .btn--ar:hover,
-  .btn--vr:hover, .btn--generate:hover,
-  .btn--next:hover,
-  .btn--connect:hover,
-  .btn--absolute:hover, .btn--cancel:hover,
-  .btn--accept:hover, .btn--browse:hover,
-  .btn--upload:hover,
-  .btn--pause:hover,
-  .btn--resume:hover,
-  .btn--remove:hover,
-  .btn--update:hover,
-  .btn--mode:hover, .btn--ar:visited,
+  .btn--mode:focus, .btn--ar:visited,
   .btn--vr:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
@@ -471,8 +469,35 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--mode:visited {
     background: var(--background-primary);
     color: var(--foreground-negative); }
-    .btn--ar svg, .btn--vr svg, .btn--generate svg, .btn--next svg, .btn--connect svg, .btn--absolute svg, .btn--cancel svg, .btn--accept svg, .btn--browse svg, .btn--upload svg, .btn--pause svg, .btn--resume svg, .btn--remove svg, .btn--update svg, .btn--mode svg, .btn--ar:active svg, .btn--vr:active svg, .btn--generate:active svg, .btn--next:active svg, .btn--connect:active svg, .btn--absolute:active svg, .btn--cancel:active svg, .btn--accept:active svg, .btn--browse:active svg, .btn--upload:active svg, .btn--pause:active svg, .btn--resume:active svg, .btn--remove:active svg, .btn--update:active svg, .btn--mode:active svg, .btn--ar:focus svg, .btn--vr:focus svg, .btn--generate:focus svg, .btn--next:focus svg, .btn--connect:focus svg, .btn--absolute:focus svg, .btn--cancel:focus svg, .btn--accept:focus svg, .btn--browse:focus svg, .btn--upload:focus svg, .btn--pause:focus svg, .btn--resume:focus svg, .btn--remove:focus svg, .btn--update:focus svg, .btn--mode:focus svg, .btn--ar:hover svg, .btn--vr:hover svg, .btn--generate:hover svg, .btn--next:hover svg, .btn--connect:hover svg, .btn--absolute:hover svg, .btn--cancel:hover svg, .btn--accept:hover svg, .btn--browse:hover svg, .btn--upload:hover svg, .btn--pause:hover svg, .btn--resume:hover svg, .btn--remove:hover svg, .btn--update:hover svg, .btn--mode:hover svg, .btn--ar:visited svg, .btn--vr:visited svg, .btn--generate:visited svg, .btn--next:visited svg, .btn--connect:visited svg, .btn--absolute:visited svg, .btn--cancel:visited svg, .btn--accept:visited svg, .btn--browse:visited svg, .btn--upload:visited svg, .btn--pause:visited svg, .btn--resume:visited svg, .btn--remove:visited svg, .btn--update:visited svg, .btn--mode:visited svg {
-      fill: currentColor; }
+  .btn--ar:hover,
+  .btn--vr:hover, .btn--generate:hover,
+  .btn--next:hover,
+  .btn--connect:hover,
+  .btn--absolute:hover, .btn--cancel:hover,
+  .btn--accept:hover, .btn--browse:hover,
+  .btn--upload:hover,
+  .btn--pause:hover,
+  .btn--resume:hover,
+  .btn--remove:hover,
+  .btn--update:hover,
+  .btn--mode:hover {
+    background: var(--background-primary-darker);
+    color: var(--foreground-negative); }
+  .btn--ar:active:hover,
+  .btn--vr:active:hover, .btn--generate:active:hover,
+  .btn--next:active:hover,
+  .btn--connect:active:hover,
+  .btn--absolute:active:hover, .btn--cancel:active:hover,
+  .btn--accept:active:hover, .btn--browse:active:hover,
+  .btn--upload:active:hover,
+  .btn--pause:active:hover,
+  .btn--resume:active:hover,
+  .btn--remove:active:hover,
+  .btn--update:active:hover,
+  .btn--mode:active:hover {
+    background: var(--background-primary-darkest);
+    color: var(--foreground-negative);
+    transition: none; }
   .disabled.btn--ar,
   .disabled.btn--vr, .disabled.btn--generate,
   .disabled.btn--next,
@@ -609,10 +634,10 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   align-items: center;
   cursor: pointer;
   z-index: 1;
-  transition: ease-in-out 350ms;
+  transition: ease-in-out 250ms;
   transition-property: background-color, color, border, opacity; }
   .nav--language > li > a svg, .nav--editor > li > a svg, .nav--language > li > span svg, .nav--editor > li > span svg, .nav--dropdown > li > a svg, .nav--dropdown > li > span svg, .nav--language > li svg, .nav--editor > li svg {
-    transition: ease-in-out 350ms;
+    transition: ease-in-out 250ms;
     transition-property: fill, opacity; }
   .nav--language > li > a:focus, .nav--editor > li > a:focus,
   .nav--language > li > span:focus,
@@ -640,6 +665,9 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
 @media (max-width: 1023.98px) {
   .nav--language, .nav--editor {
     display: block; } }
+
+::-webkit-file-upload-button {
+  cursor: pointer; }
 
 .group--form label, .group--form--textarea label, .group--form--select label, .group--form--checkbox label, .group--form--file label, errors-component .inner, .required .required__badge {
   display: block;
@@ -3927,83 +3955,83 @@ test-component .btn--mode {
   .nav--dropdown li:nth-of-type(1) > a,
   .nav--dropdown li:nth-of-type(1) > span {
     animation-delay: 40ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(2) > a,
   .nav--dropdown li:nth-of-type(2) > span {
     animation-delay: 80ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(3) > a,
   .nav--dropdown li:nth-of-type(3) > span {
     animation-delay: 120ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(4) > a,
   .nav--dropdown li:nth-of-type(4) > span {
     animation-delay: 160ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(5) > a,
   .nav--dropdown li:nth-of-type(5) > span {
     animation-delay: 200ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(6) > a,
   .nav--dropdown li:nth-of-type(6) > span {
     animation-delay: 240ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(7) > a,
   .nav--dropdown li:nth-of-type(7) > span {
     animation-delay: 280ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(8) > a,
   .nav--dropdown li:nth-of-type(8) > span {
     animation-delay: 320ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(9) > a,
   .nav--dropdown li:nth-of-type(9) > span {
     animation-delay: 360ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(10) > a,
   .nav--dropdown li:nth-of-type(10) > span {
     animation-delay: 400ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(11) > a,
   .nav--dropdown li:nth-of-type(11) > span {
     animation-delay: 440ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(12) > a,
   .nav--dropdown li:nth-of-type(12) > span {
     animation-delay: 480ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(13) > a,
   .nav--dropdown li:nth-of-type(13) > span {
     animation-delay: 520ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(14) > a,
   .nav--dropdown li:nth-of-type(14) > span {
     animation-delay: 560ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(15) > a,
   .nav--dropdown li:nth-of-type(15) > span {
     animation-delay: 600ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(16) > a,
   .nav--dropdown li:nth-of-type(16) > span {
     animation-delay: 640ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(17) > a,
   .nav--dropdown li:nth-of-type(17) > span {
     animation-delay: 680ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(18) > a,
   .nav--dropdown li:nth-of-type(18) > span {
     animation-delay: 720ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(19) > a,
   .nav--dropdown li:nth-of-type(19) > span {
     animation-delay: 760ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
   .nav--dropdown li:nth-of-type(20) > a,
   .nav--dropdown li:nth-of-type(20) > span {
     animation-delay: 800ms;
-    animation-duration: 350ms; }
+    animation-duration: 250ms; }
 
 .category + .nav--dropdown {
   padding-top: 0; }
@@ -4172,7 +4200,7 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-  transition: all ease-in-out 350ms; }
+  transition: all ease-in-out 150ms; }
   .btn--cam svg,
   .btn--mic svg,
   .btn--screen svg,
@@ -4288,7 +4316,7 @@ body {
   height: 40px;
   border: 2px solid transparent;
   opacity: 0.4;
-  transition: opacity ease-in-out 350ms; }
+  transition: opacity ease-in-out 150ms; }
   .btn--volume > svg {
     width: 18px;
     height: 18px;
@@ -4310,7 +4338,7 @@ body {
   height: 40px;
   border: 2px solid transparent;
   opacity: 0.4;
-  transition: opacity ease-in-out 350ms; }
+  transition: opacity ease-in-out 150ms; }
   .btn--fullscreen > svg {
     width: 18px;
     height: 18px;
@@ -4331,7 +4359,7 @@ body {
   height: 40px;
   border: 2px solid transparent;
   opacity: 0.4;
-  transition: opacity ease-in-out 350ms; }
+  transition: opacity ease-in-out 150ms; }
   .btn--view-mode > svg {
     width: 18px;
     height: 18px;
@@ -4350,7 +4378,7 @@ body {
   height: 40px;
   border: 2px solid transparent;
   opacity: 0.4;
-  transition: opacity ease-in-out 350ms;
+  transition: opacity ease-in-out 150ms;
   /*
 	@extend %btn-circle;
 	margin-left: 10px;
@@ -4795,6 +4823,8 @@ body {
       background: var(--foreground-negative); }
   .group--media.active {
     display: flex; }
+  .locked .group--media {
+    display: none; }
 
 .group--info {
   position: relative;
@@ -4918,10 +4948,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--background-primary-disabled);
-    color: var(--foreground-negative); }
+    color: var(--foreground-primary-disabled);
+    transition: color ease-in-out 150ms; }
     .group--info .control--addon svg {
       fill: currentColor; }
+    .group--info .control--addon:hover {
+      color: var(--foreground-tertiary); }
   .group--info .btn--generate,
   .group--info .btn--next,
   .group--info .btn--connect {
@@ -5322,9 +5354,11 @@ body {
   height: calc(100% - 2px);
   top: 0;
   left: 0;
-  border: 2px solid var(--foreground-secondary);
+  border: 1px solid var(--foreground-secondary);
   pointer-events: none;
   z-index: 2; }
+  .ui__lock.spying {
+    border-color: var(--foreground-primary); }
 
 .world {
   width: 100%;
@@ -6130,7 +6164,7 @@ model-viewer {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    transition: all ease-out 350ms;
+    transition: all ease-out 150ms;
     cursor: pointer; }
   .nav--editor .control--text {
     font-size: 11px;
@@ -6176,7 +6210,7 @@ model-viewer {
 	padding: 4px 0 4px 4px;
 	padding: 4px;
 	border-radius: 4px;
-	transition: all ease-out 350ms;
+	transition: all ease-out $fastest;
 	cursor: pointer;
 
 	&>.title {
@@ -6263,7 +6297,7 @@ model-viewer {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all ease-in-out 350ms;
+  transition: all ease-in-out 150ms;
   pointer-events: all; }
   .btn--edit svg {
     width: 24px;
@@ -6397,7 +6431,7 @@ update-view-tile {
     update-view-tile .group--headline .icon--caret-down {
       width: 6px;
       height: 6px;
-      transition: transform ease-out 350ms; }
+      transition: transform ease-out 250ms; }
     update-view .group--headline.active .icon--caret-down,
     update-view-item .group--headline.active .icon--caret-down,
     update-view-tile .group--headline.active .icon--caret-down {
@@ -6556,7 +6590,7 @@ update-view-tile {
     align-items: center;
     min-height: 24px;
     border: 1px solid transparent;
-    transition: all ease-in-out 350ms;
+    transition: all ease-in-out 150ms;
     cursor: pointer; }
     .nav--tree .nav__item:hover,
     .nav--views .nav__item:hover {

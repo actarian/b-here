@@ -65,6 +65,7 @@ export default class MenuService {
 				if (menu && menu.length) {
 					return this.mapMenuItems(menu);
 				} else {
+					// console.log('MenuService.getModelMenu$.Views', views);
 					const keys = {};
 					views.forEach(item => {
 						if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || editor)) {
@@ -111,7 +112,6 @@ export default class MenuService {
 	}
 
 	static mapMenuItems(items, parentId = null) {
-		return items.filter(item => (item.parentId || null) === parentId ).map(item => this.mapMenuItem(item, items))
+		return items.filter(item => (item.parentId || null) === parentId).map(item => this.mapMenuItem(item, items))
 	}
-
 }

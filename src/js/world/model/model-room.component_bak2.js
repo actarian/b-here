@@ -113,6 +113,10 @@ export default class ModelRoomComponent extends ModelComponent {
 						// console.log('ModelRoomComponent.playing', playing);
 						this.play.next({ itemId: item.id, playing });
 					});
+					mesh.on('currentTime', (currentTime) => {
+						// console.log('ModelRoomComponent.playing', playing);
+						this.currentTime.next({ itemId: item.id, currentTime });
+					});
 				}
 			});
 			const lights = new Array(3).fill(0).map((x, i) => {
@@ -176,6 +180,6 @@ ModelRoomComponent.textures = {};
 ModelRoomComponent.meta = {
 	selector: '[model-room]',
 	hosts: { host: WorldComponent },
-	outputs: ['down', 'play'],
+	outputs: ['down', 'play', 'currentTime'],
 	inputs: ['item'],
 };

@@ -754,6 +754,7 @@ var MessageType = {
   AddLike: 'addLike',
   ShowPanel: 'showPanel',
   PlayMedia: 'playMedia',
+  CurrentTimeMedia: 'currentTimeMedia',
   PlayModel: 'playModel',
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
@@ -1458,7 +1459,64 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StateServ
   return StateService;
 }();
 
-_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var Emittable = /*#__PURE__*/function () {
+_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var DevicePlatform = {
+  Unknown: 'unknown',
+  IOS: 'ios',
+  Android: 'android',
+  WindowsPhone: 'windowsPhone',
+  VRHeadset: 'vrHeadset'
+};
+var DeviceService = /*#__PURE__*/function () {
+  function DeviceService() {}
+
+  DeviceService.getDevicePlatform = function getDevicePlatform() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera; // Windows Phone must come first because its UA also contains 'Android'
+
+    if (/windows phone/i.test(userAgent)) {
+      return DevicePlatform.WindowsPhone;
+    }
+
+    if (/android/i.test(userAgent)) {
+      return DevicePlatform.Android;
+    } // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    // if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+
+
+    if (this.isIOS) {
+      return DevicePlatform.IOS;
+    }
+
+    if (this.isVRHeadset) {
+      return DevicePlatform.VRHeadset;
+    }
+
+    return DevicePlatform.Unknown;
+  };
+
+  _createClass(DeviceService, null, [{
+    key: "platform",
+    get: function get() {
+      if (!this.platform_) {
+        this.platform_ = this.getDevicePlatform();
+      }
+
+      return this.platform_;
+    }
+  }, {
+    key: "isIOS",
+    get: function get() {
+      return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) !== -1 // iPad on iOS 13 detection
+      || navigator.userAgent.indexOf('Mac') !== -1 && 'ontouchend' in document;
+    }
+  }, {
+    key: "isVRHeadset",
+    get: function get() {
+      return navigator.userAgent.indexOf('VR') !== -1 || navigator.userAgent.indexOf('Quest') !== -1 || navigator.userAgent.indexOf('Oculus') !== -1;
+    }
+  }]);
+
+  return DeviceService;
+}();var Emittable = /*#__PURE__*/function () {
   function Emittable() {
     this.events = {};
   }
@@ -2013,6 +2071,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
 
     _this = _Emittable.call(this) || this;
+    _this.platform = DeviceService.platform;
     _this.onStreamPublished = _this.onStreamPublished.bind(_assertThisInitialized(_this));
     _this.onStreamUnpublished = _this.onStreamUnpublished.bind(_assertThisInitialized(_this));
     _this.onStreamAdded = _this.onStreamAdded.bind(_assertThisInitialized(_this));
@@ -2599,6 +2658,13 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       audio: Boolean(audio),
       screen: false
     };
+
+    if (this.platform === DevicePlatform.IOS) {
+      options.video = {
+        facingMode: 'user'
+      };
+    }
+
     Promise.all([this.getVideoOptions(options, video), this.getAudioOptions(options, audio)]).then(function (success) {
       var quality = Object.assign({}, StateService.state.quality);
 
@@ -3095,6 +3161,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.NavToGrid:
           case MessageType.ShowPanel:
           case MessageType.PlayMedia:
+          case MessageType.CurrentTimeMedia:
           case MessageType.PlayModel:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
             if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
@@ -3243,6 +3310,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.ControlInfo:
       case MessageType.ShowPanel:
       case MessageType.PlayMedia:
+      case MessageType.CurrentTimeMedia:
       case MessageType.PlayModel:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
@@ -4377,64 +4445,7 @@ AgoraCheckComponent.meta = {
   template:
   /* html */
   "\n\t\t<svg *if=\"value == null\" class=\"checkmark idle\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === true\" class=\"checkmark success\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" fill=\"none\" d=\"M14.1 27.2l7.1 7.2 16.7-16.8\" stroke-linecap=\"round\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === false\" class=\"checkmark error\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" stroke-linecap=\"round\" fill=\"none\" d=\"M16 16 36 36 M36 16 16 36\"/>\n\t\t</svg>\n\t"
-};var DevicePlatform = {
-  Unknown: 'unknown',
-  IOS: 'ios',
-  Android: 'android',
-  WindowsPhone: 'windowsPhone',
-  VRHeadset: 'vrHeadset'
-};
-var DeviceService = /*#__PURE__*/function () {
-  function DeviceService() {}
-
-  DeviceService.getDevicePlatform = function getDevicePlatform() {
-    var userAgent = navigator.userAgent || navigator.vendor || window.opera; // Windows Phone must come first because its UA also contains 'Android'
-
-    if (/windows phone/i.test(userAgent)) {
-      return DevicePlatform.WindowsPhone;
-    }
-
-    if (/android/i.test(userAgent)) {
-      return DevicePlatform.Android;
-    } // iOS detection from: http://stackoverflow.com/a/9039885/177710
-    // if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-
-
-    if (this.isIOS) {
-      return DevicePlatform.IOS;
-    }
-
-    if (this.isVRHeadset) {
-      return DevicePlatform.VRHeadset;
-    }
-
-    return DevicePlatform.Unknown;
-  };
-
-  _createClass(DeviceService, null, [{
-    key: "platform",
-    get: function get() {
-      if (!this.platform_) {
-        this.platform_ = this.getDevicePlatform();
-      }
-
-      return this.platform_;
-    }
-  }, {
-    key: "isIOS",
-    get: function get() {
-      return ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].indexOf(navigator.platform) !== -1 // iPad on iOS 13 detection
-      || navigator.userAgent.indexOf('Mac') !== -1 && 'ontouchend' in document;
-    }
-  }, {
-    key: "isVRHeadset",
-    get: function get() {
-      return navigator.userAgent.indexOf('VR') !== -1 || navigator.userAgent.indexOf('Quest') !== -1 || navigator.userAgent.indexOf('Oculus') !== -1;
-    }
-  }]);
-
-  return DeviceService;
-}();var LabelPipe = /*#__PURE__*/function (_Pipe) {
+};var LabelPipe = /*#__PURE__*/function (_Pipe) {
   _inheritsLoose(LabelPipe, _Pipe);
 
   function LabelPipe() {
@@ -5221,7 +5232,12 @@ operators.filter(function (frame) {
           audio: this.audio_ ? {
             deviceId: this.audio_
           } : false
-        }; // console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
+        };
+
+        if (this.platform === DevicePlatform.IOS) {
+          options.video.facingMode = 'user';
+        } // console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
+
 
         navigator.mediaDevices.getUserMedia(options).then(function (stream) {
           if (_this.hasPreview) {
@@ -6073,9 +6089,13 @@ var ModalService = /*#__PURE__*/function () {
         modal: modal
       };
     }), operators.tap(function (node) {
-      return _this.modal$.next(node);
+      _this.modal$.next(node);
+
+      _this.hasModal = true;
     }), operators.switchMap(function (node) {
       return _this.events$;
+    }), operators.tap(function (_) {
+      return _this.hasModal = false;
     }));
   };
 
@@ -6106,6 +6126,8 @@ var ModalService = /*#__PURE__*/function () {
 
   return ModalService;
 }();
+
+_defineProperty(ModalService, "hasModal", false);
 ModalService.modal$ = new rxjs.Subject();
 ModalService.events$ = new rxjs.Subject();var ModalOutletComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModalOutletComponent, _Component);
@@ -7156,6 +7178,15 @@ var MediaLoaderTimeUpdateEvent = /*#__PURE__*/function (_MediaLoaderEvent4) {
 
   return MediaLoaderTimeUpdateEvent;
 }(MediaLoaderEvent);
+var MediaLoaderTimeSetEvent = /*#__PURE__*/function (_MediaLoaderEvent5) {
+  _inheritsLoose(MediaLoaderTimeSetEvent, _MediaLoaderEvent5);
+
+  function MediaLoaderTimeSetEvent() {
+    return _MediaLoaderEvent5.apply(this, arguments) || this;
+  }
+
+  return MediaLoaderTimeSetEvent;
+}(MediaLoaderEvent);
 
 var MediaLoader = /*#__PURE__*/function () {
   MediaLoader.getLoader = function getLoader() {
@@ -7352,7 +7383,9 @@ var MediaLoader = /*#__PURE__*/function () {
       };
 
       var onEnded = function onEnded() {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
+        if (!loop) {
+          MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
+        }
       };
 
       _video.oncanplay = _onCanPlay;
@@ -7453,6 +7486,7 @@ var MediaLoader = /*#__PURE__*/function () {
         if (this.video.seekable.length > progress && this.video.currentTime !== currentTime) {
           // console.log('MediaLoader', 'progress', progress, 'currentTime', currentTime, 'duration', this.video.duration, 'seekable', this.video.seekable);
           this.video.currentTime = currentTime;
+          MediaLoader.events$.next(new MediaLoaderTimeSetEvent(this));
         }
       }
     }
@@ -8368,7 +8402,8 @@ var VRService = /*#__PURE__*/function () {
 
       uiClass.chat = this.state.chat;
       uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
-      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem; // uiClass.media = !uiClass.remotes && this.media;
+      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+      uiClass.locked = this.locked; // uiClass.media = !uiClass.remotes && this.media;
 
       return uiClass;
     }
@@ -9473,6 +9508,7 @@ AsideComponent.meta = {
               case ViewType.Room3d.name:
                 _this6.data.views.push(event.data);
 
+                _this6.views = _this6.data.views.slice();
                 ViewService.viewId = event.data.id;
 
                 _this6.pushChanges();
@@ -9660,13 +9696,15 @@ AsideComponent.meta = {
     } else if (event.view) {
       EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
         // console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-        var index = _this8.data.views.indexOf(event.view);
+        var views = _this8.data.views;
+        var index = views.indexOf(event.view);
 
         if (index !== -1) {
-          _this8.data.views.splice(index, 1);
+          views.splice(index, 1);
         }
 
-        _this8.views = _this8.data.views.slice();
+        _this8.data.views = views;
+        _this8.views = views.slice();
         ViewService.viewId = _this8.views[0].id; // this.pushChanges();
       }, function (error) {
         return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
@@ -9743,6 +9781,7 @@ var MenuService = /*#__PURE__*/function () {
       if (menu && menu.length) {
         return _this2.mapMenuItems(menu);
       } else {
+        // console.log('MenuService.getModelMenu$.Views', views);
         var keys = {};
         views.forEach(function (item) {
           if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || editor)) {
@@ -13509,6 +13548,7 @@ LanguageComponent.meta = {
       uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
       uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
       uiClass.media = !uiClass.remotes && this.media;
+      uiClass.locked = this.locked;
       return uiClass;
     }
   }, {
@@ -16237,39 +16277,7 @@ var AvatarElement = /*#__PURE__*/function () {
   };
 
   return AvatarElement;
-}();var Camera = /*#__PURE__*/function (_THREE$PerspectiveCam) {
-  _inheritsLoose(Camera, _THREE$PerspectiveCam);
-
-  function Camera(fov, aspect, near, far, dolly) {
-    var _this;
-
-    if (fov === void 0) {
-      fov = 70;
-    }
-
-    if (aspect === void 0) {
-      aspect = 1;
-    }
-
-    if (near === void 0) {
-      near = 0.01;
-    }
-
-    if (far === void 0) {
-      far = 1000;
-    }
-
-    _this = _THREE$PerspectiveCam.call(this, fov, aspect, near, far) || this;
-    _this.target = new THREE.Vector3();
-    _this.box = new THREE.Group();
-
-    _this.add(_this.box);
-
-    return _this;
-  }
-
-  return Camera;
-}(THREE.PerspectiveCamera);var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvarying vec4 modelViewPosition;\nvarying vec3 vecNormal;\n\nvoid main() {\n\tvUv = uv;\n\tvec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);\n\tvecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz; //????????\n\tgl_Position = projectionMatrix * modelViewPosition;\n}\n";
+}();var VERTEX_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nvarying vec4 modelViewPosition;\nvarying vec3 vecNormal;\n\nvoid main() {\n\tvUv = uv;\n\tvec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);\n\tvecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz; //????????\n\tgl_Position = projectionMatrix * modelViewPosition;\n}\n";
 var FRAGMENT_SHADER$1 = "\n#extension GL_EXT_frag_depth : enable\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tif (video) {\n\t\tvec4 colorB = texture2D(textureB, vUv);\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);\n\t} else {\n\t\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);\n\t}\n\tgl_FragColor = color;\n}\n";
 var FRAGMENT_CHROMA_KEY_SHADER = "\n#extension GL_EXT_frag_depth : enable\n\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUv;\nuniform bool video;\nuniform float opacity;\nuniform float overlay;\nuniform float tween;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform vec2 resolutionA;\nuniform vec2 resolutionB;\nuniform vec3 chromaKeyColor;\nuniform vec3 overlayColor;\n\nvoid main() {\n\tvec4 color;\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\tcolor = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);\n\tgl_FragColor = color;\n}\n";
 
@@ -16646,6 +16654,8 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         _this4.emit('playing', false);
 
         _this4.onOut();
+      } else if (event instanceof MediaLoaderTimeSetEvent) {
+        _this4.emit('currentTime', event.loader.video.currentTime);
       } // console.log('MediaMesh', this.playing);
 
 
@@ -16775,6 +16785,13 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       this.playing = playing;
       playing ? this.mediaLoader.play() : this.mediaLoader.pause();
       this.onOut();
+    }
+  };
+
+  _proto.setCurrentTime = function setCurrentTime(currentTime) {
+    // !!!
+    if (this.mediaLoader.video) {
+      this.mediaLoader.video.currentTime = currentTime;
     }
   };
 
@@ -17184,7 +17201,8 @@ var OrbitService = /*#__PURE__*/function () {
   };
 
   return OrbitService;
-}();var W$1 = 12;
+}();
+OrbitService.orbitMoveEvent = orbitMoveEvent;var W$1 = 12;
 var H$1 = 27;
 var D = 0.5;
 var R = 4 / 3;
@@ -18318,6 +18336,19 @@ var XRControllerModelFactory = function () {
   return XRControllerModelFactory;
 }();var ORIGIN$1 = new THREE.Vector3();
 var DOWN = new THREE.Vector3(0, -1, 0);
+var CONTROL_INFO = {
+  type: MessageType.ControlInfo,
+  orientation: {
+    latitude: 0,
+    longitude: 0
+  },
+  zoom: 1,
+  cameraGroup: {
+    position: [0, 0, 0],
+    rotation: [0, 0, 0]
+  },
+  pointer: [0, 0, 0]
+};
 
 var WorldComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(WorldComponent, _Component);
@@ -18384,19 +18415,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var container = this.container = node;
     var info = this.info = node.querySelector('.world__info');
     var worldRect = this.worldRect = Rect.fromNode(container);
-    var cameraRect = this.cameraRect = new Rect(); // !!! eliminabile?
-
+    var cameraRect = this.cameraRect = new Rect();
     var cameraGroup = this.cameraGroup = new THREE.Group(); // new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, ROOM_RADIUS * 2);
     // const camera = this.camera = new THREE.PerspectiveCamera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
 
-    var camera = this.camera = new Camera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
-    /*
-    camera.position.set(0, 20, 20);
-    camera.lookAt(camera.target);
-    */
+    var camera = this.camera = new THREE.PerspectiveCamera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
+    camera.target = new THREE.Vector3();
+    cameraGroup.add(camera); // cameraGroup.target = new THREE.Vector3();
 
-    cameraGroup.add(camera);
-    cameraGroup.target = new THREE.Vector3();
     var orbitService = this.orbitService = new OrbitService(camera);
     var renderer = this.renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -18524,7 +18550,8 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       }
 
       view.ready = false;
-      this.cameraGroup.position.set(0, 0, 0); // console.log(this.cameraGroup.position);
+      this.cameraGroup.position.set(0, 0, 0);
+      this.cameraGroup.rotation.set(0, 0, 0);
 
       if (view.type.name === ViewType.Room3d.name) {
         this.renderer.setClearColor(0x000000, 1); // this.renderer.setClearColor(0x7dc1fc, 1); // !!!
@@ -18953,7 +18980,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.navWithKeys = function navWithKeys() {
-    if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh) {
+    if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !this.locked && !ModalService.hasModal) {
       this.intersectObjects = this.view.intersectObjects;
       var velocity = this.velocity || (this.velocity = new THREE.Vector3());
       var direction = this.direction || (this.direction = new THREE.Vector3());
@@ -19002,6 +19029,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           // console.log(manhattanLength, intersects);
           this.cameraGroup.position.add(velocity);
           this.cameraGroup.position.y = 0;
+          this.orbitService.events$.next(OrbitService.orbitMoveEvent);
         }
 
         velocity.lerp(ORIGIN$1, 0.1);
@@ -19108,7 +19136,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       }
       */
 
-      this.controlEvent$.next(this.control);
+      this.controlEvent$.next(CONTROL_INFO);
     }
   };
 
@@ -19214,7 +19242,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onOrientationDidChange = function onOrientationDidChange() {
-    this.controlEvent$.next(this.control);
+    this.controlEvent$.next(CONTROL_INFO);
   };
 
   _proto.checkSelectedItem = function checkSelectedItem() {
@@ -19343,6 +19371,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     });
   };
 
+  _proto.onCurrentTimeMedia = function onCurrentTimeMedia(event) {
+    MessageService.send({
+      type: MessageType.CurrentTimeMedia,
+      itemId: event.itemId,
+      currentTime: event.currentTime
+    });
+  };
+
   _proto.onPlayModel = function onPlayModel(event) {
     MessageService.send({
       type: MessageType.PlayModel,
@@ -19412,6 +19448,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       control.orientation.latitude = _this8.orbitService.latitude;
       control.orientation.longitude = _this8.orbitService.longitude;
       control.zoom = _this8.orbitService.zoom;
+      control.cameraGroup = {
+        position: _this8.cameraGroup.position.toArray(),
+        rotation: _this8.cameraGroup.rotation.toArray()
+      };
 
       var intersections = _this8.raycaster.intersectObjects(_this8.intersectObjects);
 
@@ -19430,15 +19470,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   _proto.addListeners = function addListeners() {
     var _this9 = this;
 
-    this.control = {
-      type: MessageType.ControlInfo,
-      orientation: {
-        latitude: 0,
-        longitude: 0
-      },
-      zoom: 1,
-      pointer: [0, 0, 0]
-    };
     this.controlEvent$ = new rxjs.ReplaySubject(1);
     this.control$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     var vrService = this.vrService = VRService.getService();
@@ -19475,6 +19506,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           message.viewId = _this9.view.id;
           message.orientation = _this9.orbitService.getOrientation();
           message.zoom = _this9.orbitService.zoom;
+          message.cameraGroup = {
+            position: _this9.cameraGroup.position.toArray(),
+            rotation: _this9.cameraGroup.rotation.toArray()
+          };
 
           if (_this9.view instanceof PanoramaGridView) {
             message.gridIndex = _this9.view.index;
@@ -19497,12 +19532,15 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             ViewService.viewId = message.viewId;
             _this9.requestInfoResult = message;
           } else {
-            _this9.orbitService.setOrientation(message.orientation);
-
             if (!_this9.renderer.xr.isPresenting) {
+              _this9.orbitService.setOrientation(message.orientation);
+
               _this9.orbitService.zoom = message.zoom;
 
-              _this9.camera.updateProjectionMatrix();
+              _this9.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+
+              _this9.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
+
             }
 
             if (_this9.view instanceof PanoramaGridView && message.gridIndex) {
@@ -19543,14 +19581,27 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             break;
           }
 
-        case MessageType.PlayModel:
+        case MessageType.CurrentTimeMedia:
           {
             var _item = _this9.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
-            if (_item) {
-              _item.onMessage(message);
+            if (_item && _item.mesh instanceof MediaMesh) {
+              _item.mesh.setCurrentTime(message.currentTime);
+            }
+
+            break;
+          }
+
+        case MessageType.PlayModel:
+          {
+            var _item2 = _this9.view.items.find(function (item) {
+              return item.id === message.itemId;
+            });
+
+            if (_item2) {
+              _item2.onMessage(message);
             }
 
             break;
@@ -19587,8 +19638,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           if (!_this9.renderer.xr.isPresenting) {
             _this9.orbitService.setOrientation(message.orientation);
 
-            _this9.orbitService.zoom = message.zoom; // this.camera.updateProjectionMatrix();
-            // this.render();
+            _this9.orbitService.zoom = message.zoom;
+
+            _this9.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+
+            _this9.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
+
           }
 
           _this9.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
@@ -20338,6 +20393,13 @@ ModelEditableComponent.meta = {
               playing: playing
             });
           });
+          mesh.on('currentTime', function (currentTime) {
+            // console.log('ModelCurvedPanelComponent.playing', playing);
+            _this.currentTime.next({
+              itemId: _this.item.id,
+              currentTime: currentTime
+            });
+          });
         } else if (_this.mesh) {
           dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
@@ -20443,7 +20505,7 @@ ModelCurvedPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play'],
+  outputs: ['down', 'play', 'currentTime'],
   inputs: ['item', 'view']
 };var DebugService = /*#__PURE__*/function () {
   DebugService.getService = function getService() {
@@ -21314,55 +21376,18 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
           break;
       }
     });
-  };
-
-  _proto3.onChanges = function onChanges() {// this.buildMenu();
-  };
-
-  _proto3.buildMenu = function buildMenu() {
-    var _this5 = this;
-
-    if (!this.items) {
-      return;
-    }
-
-    MenuService.getModelMenu$(this.items, this.editor).pipe(operators.first()).subscribe(function (menu) {
-      return _this5.groups = menu;
-    });
-    /*
-    const menu = {};
-    this.items.forEach(item => {
-    	if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
-    		let group = menu[item.type.name];
-    		if (!group) {
-    			group = menu[item.type.name] = [];
-    		}
-    		group.push(item);
-    	}
-    });
-    this.groups = Object.keys(menu).map(typeName => {
-    	let name = 'Button';
-    	switch (typeName) {
-    		case ViewType.WaitingRoom.name:
-    			name = 'Waiting Room';
-    			break;
-    		case ViewType.Panorama.name:
-    			name = 'Experience';
-    			break;
-    		case ViewType.PanoramaGrid.name:
-    			name = 'Virtual Tour';
-    			break;
-    		case ViewType.Room3d.name:
-    			name = 'Stanze 3D';
-    			break;
-    		case ViewType.Model.name:
-    			name = 'Modelli 3D';
-    			break;
-    	}
-    	return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
-    });
-    */
-  };
+  }
+  /*
+  buildMenu() {
+  	if (!this.views) {
+  		return;
+  	}
+  	MenuService.getModelMenu$(this.views, this.editor).pipe(
+  		first(),
+  	).subscribe(menu => this.groups = menu);
+  }
+  */
+  ;
 
   _proto3.onDestroy = function onDestroy() {
     if (this.buttons) {
@@ -21427,12 +21452,12 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     if (item) {
       return rxjs.of(item.items);
     } else {
-      return MenuService.getModelMenu$(this.items, this.editor).pipe(operators.first());
+      return MenuService.getModelMenu$(this.views, this.editor).pipe(operators.first());
     }
   };
 
   _proto3.addMenu = function addMenu(item) {
-    var _this6 = this;
+    var _this5 = this;
 
     if (item === void 0) {
       item = null;
@@ -21451,7 +21476,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     }
 
     MenuService.active = true;
-    this.items$(item).subscribe(function (items) {
+    this.items$(item).pipe(operators.first()).subscribe(function (items) {
       if (items) {
         items = items.slice();
         var back = {
@@ -21462,7 +21487,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
           backItem: item
         };
         items.push(back);
-        var buttons = _this6.buttons = items.map(function (x, i, a) {
+        var buttons = _this5.buttons = items.map(function (x, i, a) {
           x.backItem = item;
           return x.type.name === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
         });
@@ -21470,9 +21495,9 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
           button.depthTest = false;
           button.on('over', button.onOver);
           button.on('out', button.onOut);
-          button.on('down', _this6.onDown);
+          button.on('down', _this5.onDown);
 
-          _this6.menuGroup.add(button);
+          _this5.menuGroup.add(button);
           /*
           var box = new THREE.BoxHelper(button, 0xffff00);
           this.host.scene.add(box);
@@ -21506,17 +21531,17 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto3.removeButtons = function removeButtons() {
-    var _this7 = this;
+    var _this6 = this;
 
     var buttons = this.buttons;
 
     if (buttons) {
       buttons.forEach(function (button) {
-        _this7.menuGroup.remove(button);
+        _this6.menuGroup.remove(button);
 
         button.off('over', button.onOver);
         button.off('out', button.onOut);
-        button.off('down', _this7.onDown);
+        button.off('down', _this6.onDown);
         button.dispose();
       });
     }
@@ -21645,7 +21670,7 @@ ModelMenuComponent.meta = {
   },
   // outputs: ['over', 'out', 'down', 'nav'],
   outputs: ['nav', 'toggle'],
-  inputs: ['items', 'editor']
+  inputs: ['views', 'editor']
 };var ModelModelComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   _inheritsLoose(ModelModelComponent, _ModelEditableCompone);
 
@@ -22990,6 +23015,13 @@ ModelPictureComponent.meta = {
               playing: playing
             });
           });
+          mesh.on('currentTime', function (currentTime) {
+            // console.log('ModelPanelComponent.playing', playing);
+            _this.currentTime.next({
+              itemId: _this.item.id,
+              currentTime: currentTime
+            });
+          });
         } else if (_this.mesh) {
           dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
@@ -23079,7 +23111,7 @@ ModelPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play'],
+  outputs: ['down', 'play', 'currentTime'],
   inputs: ['item', 'view']
 };var LOADING_BANNER = {
   title: LabelPipe.transform('loading')

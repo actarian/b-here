@@ -34,6 +34,7 @@ export default class LayoutComponent extends Component {
 		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
 		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
 		uiClass.media = !uiClass.remotes && this.media;
+		uiClass.locked = this.locked;
 		return uiClass;
 	}
 

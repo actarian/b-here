@@ -2,6 +2,7 @@
 // import AgoraRTM from 'agora-rtm-sdk';
 import { from, interval, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { DevicePlatform, DeviceService } from '../device/device.service';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
@@ -30,6 +31,7 @@ export default class AgoraService extends Emittable {
 			throw ('AgoraService is a singleton');
 		}
 		super();
+		this.platform = DeviceService.platform;
 		this.onStreamPublished = this.onStreamPublished.bind(this);
 		this.onStreamUnpublished = this.onStreamUnpublished.bind(this);
 		this.onStreamAdded = this.onStreamAdded.bind(this);
@@ -542,6 +544,9 @@ export default class AgoraService extends Emittable {
 			audio: Boolean(audio),
 			screen: false,
 		};
+		if (this.platform === DevicePlatform.IOS) {
+			options.video = { facingMode: 'user' };
+		}
 		Promise.all([
 			this.getVideoOptions(options, video),
 			this.getAudioOptions(options, audio)
@@ -956,6 +961,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.NavToGrid:
 					case MessageType.ShowPanel:
 					case MessageType.PlayMedia:
+					case MessageType.CurrentTimeMedia:
 					case MessageType.PlayModel:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
@@ -1084,6 +1090,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ControlInfo:
 			case MessageType.ShowPanel:
 			case MessageType.PlayMedia:
+			case MessageType.CurrentTimeMedia:
 			case MessageType.PlayModel:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:

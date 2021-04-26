@@ -136,24 +136,75 @@ function staticMiddleware(vars) {
 			const extension = matches[4];
 			const file = path.join(matches[2] + '.' + extension);
 			const filePath = path.join(__dirname, '../', vars.root, file);
-			fs.readFile(filePath, {}, (error, data) => {
+
+			fs.stat(filePath, (error, stats) => {
 				if (error) {
 					console.log('NodeJs.staticMiddleware.notFound', file);
 					return next();
 				}
-				console.log('NodeJs.staticMiddleware.serving', file);
-				response.set('Content-Length', data.length);
-				response.set('Content-Type', MIME_CONTENT_TYPES[extension]);
-				if (MIME_VIDEO.indexOf(extension) !== -1) {
-					response.set('Accept-Ranges', 'bytes');
+
+				const lastModified = stats.mtime.toUTCString();
+				response.setHeader('Last-Modified', lastModified);
+				// nginx style treat last-modified as a tag since browsers echo it back
+				if (request.headers['if-modified-since'] === lastModified && !request.headers.range) {
+					response.writeHead(304);
+					return response.end();
 				}
-				/*
-				response.set('Cache-Control', 'public,max-age=14400,public');
-				response.set('Accept-Ranges', 'bytes');
-				response.set('Age', '11155');
-				*/
-				// response.set('Cache-Control', 'max-age=31536000');
-				response.send(data);
+
+				// console.log('NodeJs.staticMiddleware.serving', file);
+				const mimeType = MIME_CONTENT_TYPES[extension];
+
+				if (request.method === 'HEAD') {
+					response.status(200);
+					response.setHeader('Accept-Ranges', 'bytes');
+					response.setHeader('Content-Length', stats.size);
+					return response.end();
+				}
+
+				const contentLength = stats.size;
+
+				if (request.headers.range) {
+					const range = request.headers.range;
+					let start, end;
+					const prefix = 'bytes=';
+					if (range.startsWith(prefix)) {
+						const ranges = range.substring(prefix.length).split('-').map(x => x.trim());
+						if (ranges.length === 2) {
+							start = ranges[0] !== '' ? parseInt(ranges[0]) : start;
+							end = ranges[1] !== '' ? parseInt(ranges[1]) : end;
+						}
+					}
+					let chunkLength;
+					if (start !== undefined && end !== undefined) {
+						chunkLength = (end + 1) - start;
+					} else if (start !== undefined) {
+						chunkLength = contentLength - start;
+					} else if (end !== undefined) {
+						chunkLength = (end + 1);
+					} else {
+						chunkLength = contentLength;
+					}
+					response.setHeader('Content-Range', `bytes ${start || 0}-${end || (contentLength - 1)}/${contentLength}`);
+					response.setHeader('Accept-Ranges', 'bytes');
+					response.setHeader('Content-Length', chunkLength);
+					response.setHeader('Content-Type', mimeType);
+					response.status((start === 0 && end === contentLength) ? 200 : 206);
+					// console.log(start, end, contentLength);
+					return fs.createReadStream(filePath, { start, end }).pipe(response);
+					// return response.end(buffer.slice(start, end));
+				} else {
+					response.setHeader('Cache-Control', 'private, max-age=0, must-revalidate');
+					response.setHeader('Content-Length', contentLength);
+					response.setHeader('Content-Type', mimeType);
+					if (MIME_VIDEO.indexOf(extension) !== -1) {
+						response.set('Accept-Ranges', 'bytes');
+					}
+					response.writeHead(200);
+					// read file sync so we don't hold open the file creating a race with
+					// the builder (Windows does not allow us to delete while the file is open).
+					const buffer = fs.readFileSync(filePath);
+					return response.end(buffer);
+				}
 			});
 		} else {
 			// console.log('NodeJs.staticMiddleware.unmatch', file);

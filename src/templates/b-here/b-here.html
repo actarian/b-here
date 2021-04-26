@@ -226,6 +226,15 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</div>
 			</div>
 		</div>
+		<!-- remote screen -->
+		<div class="group--remote-screen" *if="remoteScreen && !hasScreenViewItem">
+			<div class="agora-stream" agora-stream [stream]="remoteScreen" type="remote">
+				<div class="agora-stream__player"></div>
+				<div class="agora-stream__info">
+					<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>
+				</div>
+			</div>
+		</div>
 		<!-- local streams -->
 		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
 			<div class="agora-stream" agora-stream [stream]="local" type="local" *if="local">

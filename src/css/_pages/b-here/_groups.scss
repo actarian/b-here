@@ -336,6 +336,10 @@
 	&.active {
 		display: flex;
 	}
+
+	.locked & {
+		display: none;
+	}
 }
 
 .group--info {
@@ -446,11 +450,16 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: $background-primary-disabled;
-		color: $foreground-negative;
+		color: $foreground-primary-disabled;
+		// color: $foreground-negative;
+		transition: color ease-in-out 150ms;
 
 		svg {
 			fill: currentColor;
+		}
+
+		&:hover {
+			color: $foreground-tertiary;
 		}
 	}
 

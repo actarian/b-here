@@ -298,51 +298,16 @@ export default class ModelMenuComponent extends ModelComponent {
 		});
 	}
 
-	onChanges() {
-		// this.buildMenu();
-	}
-
+	/*
 	buildMenu() {
-		if (!this.items) {
+		if (!this.views) {
 			return;
 		}
-		MenuService.getModelMenu$(this.items, this.editor).pipe(
+		MenuService.getModelMenu$(this.views, this.editor).pipe(
 			first(),
 		).subscribe(menu => this.groups = menu);
-		/*
-		const menu = {};
-		this.items.forEach(item => {
-			if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || this.editor)) {
-				let group = menu[item.type.name];
-				if (!group) {
-					group = menu[item.type.name] = [];
-				}
-				group.push(item);
-			}
-		});
-		this.groups = Object.keys(menu).map(typeName => {
-			let name = 'Button';
-			switch (typeName) {
-				case ViewType.WaitingRoom.name:
-					name = 'Waiting Room';
-					break;
-				case ViewType.Panorama.name:
-					name = 'Experience';
-					break;
-				case ViewType.PanoramaGrid.name:
-					name = 'Virtual Tour';
-					break;
-				case ViewType.Room3d.name:
-					name = 'Stanze 3D';
-					break;
-				case ViewType.Model.name:
-					name = 'Modelli 3D';
-					break;
-			}
-			return { name, type: { name: 'menu-group' }, items: this.items.filter(x => x.type.name === typeName && (!x.hidden || this.editor)) };
-		});
-		*/
 	}
+	*/
 
 	onDestroy() {
 		if (this.buttons) {
@@ -398,7 +363,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (item) {
 			return of(item.items);
 		} else {
-			return MenuService.getModelMenu$(this.items, this.editor).pipe(
+			return MenuService.getModelMenu$(this.views, this.editor).pipe(
 				first(),
 			);
 		}
@@ -417,7 +382,9 @@ export default class ModelMenuComponent extends ModelComponent {
 			return;
 		}
 		MenuService.active = true;
-		this.items$(item).subscribe(items => {
+		this.items$(item).pipe(
+			first(),
+		).subscribe(items => {
 			if (items) {
 				items = items.slice();
 				const back = {
@@ -576,5 +543,5 @@ ModelMenuComponent.meta = {
 	hosts: { host: WorldComponent },
 	// outputs: ['over', 'out', 'down', 'nav'],
 	outputs: ['nav', 'toggle'],
-	inputs: ['items', 'editor'],
+	inputs: ['views', 'editor'],
 };

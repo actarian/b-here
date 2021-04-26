@@ -5,7 +5,7 @@ import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
+import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent } from './media-loader';
 
 const VERTEX_SHADER = `
 #extension GL_EXT_frag_depth : enable
@@ -345,6 +345,8 @@ export default class MediaMesh extends InteractiveMesh {
 					this.playing = false;
 					this.emit('playing', false);
 					this.onOut();
+				} else if (event instanceof MediaLoaderTimeSetEvent) {
+					this.emit('currentTime', event.loader.video.currentTime);
 				}
 				// console.log('MediaMesh', this.playing);
 				if (item.asset && item.asset.linkedPlayId) {
@@ -466,6 +468,13 @@ export default class MediaMesh extends InteractiveMesh {
 			this.playing = playing;
 			playing ? this.mediaLoader.play() : this.mediaLoader.pause();
 			this.onOut();
+		}
+	}
+
+	setCurrentTime(currentTime) {
+		// !!!
+		if (this.mediaLoader.video) {
+			this.mediaLoader.video.currentTime = currentTime;
 		}
 	}
 
