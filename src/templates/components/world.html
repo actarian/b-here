@@ -4,11 +4,11 @@
 		<div class="world__view" *if="view">
 			<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 			<div *if="view.ready">
-				<div model-room [view]="view" (play)="onPlayMedia($event)" *if="view.type.name === 'room-3d'"></div>
+				<div model-room [view]="view" (play)="onPlayMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="view.type.name === 'room-3d'"></div>
 				<div class="world__item" *for="let item of view.items; let index = index;">
 					<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
-					<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" *if="item.type.name == 'plane'"></div>
-					<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" *if="item.type.name == 'curved-plane'"></div>
+					<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'plane'"></div>
+					<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'curved-plane'"></div>
 					<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" (play)="onPlayModel($event)" *if="item.type.name == 'model'">
 						<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
 						<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->

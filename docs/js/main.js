@@ -754,6 +754,7 @@ var MessageType = {
   AddLike: 'addLike',
   ShowPanel: 'showPanel',
   PlayMedia: 'playMedia',
+  CurrentTimeMedia: 'currentTimeMedia',
   PlayModel: 'playModel',
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
@@ -3160,6 +3161,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.NavToGrid:
           case MessageType.ShowPanel:
           case MessageType.PlayMedia:
+          case MessageType.CurrentTimeMedia:
           case MessageType.PlayModel:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
             if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
@@ -3308,6 +3310,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.ControlInfo:
       case MessageType.ShowPanel:
       case MessageType.PlayMedia:
+      case MessageType.CurrentTimeMedia:
       case MessageType.PlayModel:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
@@ -7175,6 +7178,15 @@ var MediaLoaderTimeUpdateEvent = /*#__PURE__*/function (_MediaLoaderEvent4) {
 
   return MediaLoaderTimeUpdateEvent;
 }(MediaLoaderEvent);
+var MediaLoaderTimeSetEvent = /*#__PURE__*/function (_MediaLoaderEvent5) {
+  _inheritsLoose(MediaLoaderTimeSetEvent, _MediaLoaderEvent5);
+
+  function MediaLoaderTimeSetEvent() {
+    return _MediaLoaderEvent5.apply(this, arguments) || this;
+  }
+
+  return MediaLoaderTimeSetEvent;
+}(MediaLoaderEvent);
 
 var MediaLoader = /*#__PURE__*/function () {
   MediaLoader.getLoader = function getLoader() {
@@ -7371,7 +7383,9 @@ var MediaLoader = /*#__PURE__*/function () {
       };
 
       var onEnded = function onEnded() {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
+        if (!loop) {
+          MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
+        }
       };
 
       _video.oncanplay = _onCanPlay;
@@ -7472,6 +7486,7 @@ var MediaLoader = /*#__PURE__*/function () {
         if (this.video.seekable.length > progress && this.video.currentTime !== currentTime) {
           // console.log('MediaLoader', 'progress', progress, 'currentTime', currentTime, 'duration', this.video.duration, 'seekable', this.video.seekable);
           this.video.currentTime = currentTime;
+          MediaLoader.events$.next(new MediaLoaderTimeSetEvent(this));
         }
       }
     }
@@ -8387,7 +8402,8 @@ var VRService = /*#__PURE__*/function () {
 
       uiClass.chat = this.state.chat;
       uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
-      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem; // uiClass.media = !uiClass.remotes && this.media;
+      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+      uiClass.locked = this.locked; // uiClass.media = !uiClass.remotes && this.media;
 
       return uiClass;
     }
@@ -13532,6 +13548,7 @@ LanguageComponent.meta = {
       uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
       uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
       uiClass.media = !uiClass.remotes && this.media;
+      uiClass.locked = this.locked;
       return uiClass;
     }
   }, {
@@ -16637,6 +16654,8 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         _this4.emit('playing', false);
 
         _this4.onOut();
+      } else if (event instanceof MediaLoaderTimeSetEvent) {
+        _this4.emit('currentTime', event.loader.video.currentTime);
       } // console.log('MediaMesh', this.playing);
 
 
@@ -16766,6 +16785,13 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       this.playing = playing;
       playing ? this.mediaLoader.play() : this.mediaLoader.pause();
       this.onOut();
+    }
+  };
+
+  _proto.setCurrentTime = function setCurrentTime(currentTime) {
+    // !!!
+    if (this.mediaLoader.video) {
+      this.mediaLoader.video.currentTime = currentTime;
     }
   };
 
@@ -19341,6 +19367,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     });
   };
 
+  _proto.onCurrentTimeMedia = function onCurrentTimeMedia(event) {
+    MessageService.send({
+      type: MessageType.CurrentTimeMedia,
+      itemId: event.itemId,
+      currentTime: event.currentTime
+    });
+  };
+
   _proto.onPlayModel = function onPlayModel(event) {
     MessageService.send({
       type: MessageType.PlayModel,
@@ -19543,14 +19577,27 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             break;
           }
 
-        case MessageType.PlayModel:
+        case MessageType.CurrentTimeMedia:
           {
             var _item = _this9.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
-            if (_item) {
-              _item.onMessage(message);
+            if (_item && _item.mesh instanceof MediaMesh) {
+              _item.mesh.setCurrentTime(message.currentTime);
+            }
+
+            break;
+          }
+
+        case MessageType.PlayModel:
+          {
+            var _item2 = _this9.view.items.find(function (item) {
+              return item.id === message.itemId;
+            });
+
+            if (_item2) {
+              _item2.onMessage(message);
             }
 
             break;
@@ -20342,6 +20389,13 @@ ModelEditableComponent.meta = {
               playing: playing
             });
           });
+          mesh.on('currentTime', function (currentTime) {
+            // console.log('ModelCurvedPanelComponent.playing', playing);
+            _this.currentTime.next({
+              itemId: _this.item.id,
+              currentTime: currentTime
+            });
+          });
         } else if (_this.mesh) {
           dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
@@ -20447,7 +20501,7 @@ ModelCurvedPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play'],
+  outputs: ['down', 'play', 'currentTime'],
   inputs: ['item', 'view']
 };var DebugService = /*#__PURE__*/function () {
   DebugService.getService = function getService() {
@@ -22957,6 +23011,13 @@ ModelPictureComponent.meta = {
               playing: playing
             });
           });
+          mesh.on('currentTime', function (currentTime) {
+            // console.log('ModelPanelComponent.playing', playing);
+            _this.currentTime.next({
+              itemId: _this.item.id,
+              currentTime: currentTime
+            });
+          });
         } else if (_this.mesh) {
           dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
@@ -23046,7 +23107,7 @@ ModelPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play'],
+  outputs: ['down', 'play', 'currentTime'],
   inputs: ['item', 'view']
 };var LOADING_BANNER = {
   title: LabelPipe.transform('loading')

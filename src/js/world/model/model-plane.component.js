@@ -64,6 +64,10 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 						// console.log('ModelPanelComponent.playing', playing);
 						this.play.next({ itemId: this.item.id, playing });
 					});
+					mesh.on('currentTime', (currentTime) => {
+						// console.log('ModelPanelComponent.playing', playing);
+						this.currentTime.next({ itemId: this.item.id, currentTime });
+					});
 				} else if (this.mesh) {
 					dismount(this.mesh, item);
 				}
@@ -144,6 +148,6 @@ ModelPlaneComponent.textures = {};
 ModelPlaneComponent.meta = {
 	selector: '[model-plane]',
 	hosts: { host: WorldComponent },
-	outputs: ['down', 'play'],
+	outputs: ['down', 'play', 'currentTime'],
 	inputs: ['item', 'view'],
 };

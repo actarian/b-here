@@ -961,6 +961,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.NavToGrid:
 					case MessageType.ShowPanel:
 					case MessageType.PlayMedia:
+					case MessageType.CurrentTimeMedia:
 					case MessageType.PlayModel:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
@@ -1089,6 +1090,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ControlInfo:
 			case MessageType.ShowPanel:
 			case MessageType.PlayMedia:
+			case MessageType.CurrentTimeMedia:
 			case MessageType.PlayModel:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:

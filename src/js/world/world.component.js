@@ -1041,6 +1041,14 @@ export default class WorldComponent extends Component {
 		});
 	}
 
+	onCurrentTimeMedia(event) {
+		MessageService.send({
+			type: MessageType.CurrentTimeMedia,
+			itemId: event.itemId,
+			currentTime: event.currentTime,
+		});
+	}
+
 	onPlayModel(event) {
 		MessageService.send({
 			type: MessageType.PlayModel,
@@ -1213,6 +1221,13 @@ export default class WorldComponent extends Component {
 					const item = this.view.items.find(item => item.id === message.itemId);
 					if (item && item.mesh instanceof MediaMesh) {
 						item.mesh.setPlayingState(message.playing);
+					}
+					break;
+				}
+				case MessageType.CurrentTimeMedia: {
+					const item = this.view.items.find(item => item.id === message.itemId);
+					if (item && item.mesh instanceof MediaMesh) {
+						item.mesh.setCurrentTime(message.currentTime);
 					}
 					break;
 				}

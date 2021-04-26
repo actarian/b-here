@@ -4823,6 +4823,8 @@ body {
       background: var(--foreground-negative); }
   .group--media.active {
     display: flex; }
+  .locked .group--media {
+    display: none; }
 
 .group--info {
   position: relative;

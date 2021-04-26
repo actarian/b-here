@@ -17,6 +17,8 @@ export class MediaLoaderDisposeEvent extends MediaLoaderEvent { }
 
 export class MediaLoaderTimeUpdateEvent extends MediaLoaderEvent { }
 
+export class MediaLoaderTimeSetEvent extends MediaLoaderEvent { }
+
 export default class MediaLoader {
 
 	static getLoader() {
@@ -182,7 +184,9 @@ export default class MediaLoader {
 				MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(this));
 			};
 			const onEnded = () => {
-				MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+				if (!loop) {
+					MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+				}
 			};
 			video.oncanplay = onCanPlay;
 			video.ontimeupdate = onTimeUpdate;
@@ -220,6 +224,7 @@ export default class MediaLoader {
 			if (this.video.seekable.length > progress && this.video.currentTime !== currentTime) {
 				// console.log('MediaLoader', 'progress', progress, 'currentTime', currentTime, 'duration', this.video.duration, 'seekable', this.video.seekable);
 				this.video.currentTime = currentTime;
+				MediaLoader.events$.next(new MediaLoaderTimeSetEvent(this));
 			}
 		}
 	}

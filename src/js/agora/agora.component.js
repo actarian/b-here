@@ -44,6 +44,7 @@ export default class AgoraComponent extends Component {
 		uiClass.chat = this.state.chat;
 		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
 		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+		uiClass.locked = this.locked;
 		// uiClass.media = !uiClass.remotes && this.media;
 		return uiClass;
 	}

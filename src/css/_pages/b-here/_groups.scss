@@ -336,6 +336,10 @@
 	&.active {
 		display: flex;
 	}
+
+	.locked & {
+		display: none;
+	}
 }
 
 .group--info {
