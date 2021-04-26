@@ -231,6 +231,7 @@ export default class EditorComponent extends Component {
 							case ViewType.Model.name:
 							case ViewType.Room3d.name:
 								this.data.views.push(event.data);
+								this.views = this.data.views.slice();
 								ViewService.viewId = event.data.id;
 								this.pushChanges();
 								break;
@@ -377,11 +378,13 @@ export default class EditorComponent extends Component {
 				first(),
 			).subscribe(response => {
 				// console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-				const index = this.data.views.indexOf(event.view);
+				const views = this.data.views;
+				const index = views.indexOf(event.view);
 				if (index !== -1) {
-					this.data.views.splice(index, 1);
+					views.splice(index, 1);
 				}
-				this.views = this.data.views.slice();
+				this.data.views = views;
+				this.views = views.slice();
 				ViewService.viewId = this.views[0].id;
 				// this.pushChanges();
 			}, error => console.log('EditorComponent.onAsideDelete.viewDelete$.error', error));

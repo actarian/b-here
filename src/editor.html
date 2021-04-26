@@ -119,7 +119,7 @@ window.labels = {
 					-->
 				</div>
 				<div class="banner progress" model-progress [view]="view"></div>
-				<div model-menu [items]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
+				<div model-menu [views]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 					</div>

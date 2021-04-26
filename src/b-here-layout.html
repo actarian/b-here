@@ -342,7 +342,7 @@ window.labels = Object.assign(window.labels, {});
 			</div>
 		</div>
 		<!-- lock -->
-		<div class="ui__lock" *if="locked || controlling"></div>
+		<div class="ui__lock" [class]="{ spying: spying }" *if="locked || controlling"></div>
 	</div>
 	<!-- Smart Device -->
 	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
@@ -360,6 +360,15 @@ window.labels = Object.assign(window.labels, {});
 					<button type="button" class="btn--spy" *if="state.role === 'publisher'" (click)="onToggleSpy(remote.id)">
 						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 					</button>
+				</div>
+			</div>
+		</div>
+		<!-- remote screen -->
+		<div class="group--remote-screen" *if="remoteScreen">
+			<div class="agora-stream">
+				<div class="agora-stream__player"></div>
+				<div class="agora-stream__info">
+					<div class="id">name</div>
 				</div>
 			</div>
 		</div>

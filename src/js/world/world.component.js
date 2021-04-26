@@ -5,6 +5,7 @@ import { MessageType, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
 import MessageService from '../message/message.service';
+import ModalService from '../modal/modal.service';
 import PrefetchService from '../prefetch/prefetch.service';
 import { Rect } from '../rect/rect';
 import StateService from '../state/state.service';
@@ -12,7 +13,6 @@ import { RoleType } from '../user/user';
 import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
-import Camera from './camera/camera';
 import Interactive from './interactive/interactive';
 import MediaMesh from './media/media-mesh';
 import OrbitService, { OrbitMoveEvent } from './orbit/orbit.service';
@@ -27,6 +27,17 @@ const ORIGIN = new THREE.Vector3();
 const DOWN = new THREE.Vector3(0, -1, 0);
 const USE_SHADOW = false;
 const USE_PHONE = true;
+
+const CONTROL_INFO = {
+	type: MessageType.ControlInfo,
+	orientation: { latitude: 0, longitude: 0 },
+	zoom: 1,
+	cameraGroup: {
+		position: [0, 0, 0],
+		rotation: [0, 0, 0],
+	},
+	pointer: [0, 0, 0],
+};
 
 export default class WorldComponent extends Component {
 
@@ -139,17 +150,13 @@ export default class WorldComponent extends Component {
 		const worldRect = this.worldRect = Rect.fromNode(container);
 		const cameraRect = this.cameraRect = new Rect();
 
-		// !!! eliminabile?
 		const cameraGroup = this.cameraGroup = new THREE.Group();
 		// new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, ROOM_RADIUS * 2);
 		// const camera = this.camera = new THREE.PerspectiveCamera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
-		const camera = this.camera = new Camera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
-		/*
-		camera.position.set(0, 20, 20);
-		camera.lookAt(camera.target);
-		*/
+		const camera = this.camera = new THREE.PerspectiveCamera(70, container.offsetWidth / container.offsetHeight, 0.01, 1000);
+		camera.target = new THREE.Vector3();
 		cameraGroup.add(camera);
-		cameraGroup.target = new THREE.Vector3();
+		// cameraGroup.target = new THREE.Vector3();
 
 		const orbitService = this.orbitService = new OrbitService(camera);
 
@@ -283,7 +290,7 @@ export default class WorldComponent extends Component {
 			}
 			view.ready = false;
 			this.cameraGroup.position.set(0, 0, 0);
-			// console.log(this.cameraGroup.position);
+			this.cameraGroup.rotation.set(0, 0, 0);
 			if (view.type.name === ViewType.Room3d.name) {
 				this.renderer.setClearColor(0x000000, 1);
 				// this.renderer.setClearColor(0x7dc1fc, 1); // !!!
@@ -668,7 +675,7 @@ export default class WorldComponent extends Component {
 	}
 
 	navWithKeys() {
-		if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh) {
+		if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !this.locked && !ModalService.hasModal) {
 			this.intersectObjects = this.view.intersectObjects;
 			const velocity = this.velocity || (this.velocity = new THREE.Vector3());
 			const direction = this.direction || (this.direction = new THREE.Vector3());
@@ -710,6 +717,7 @@ export default class WorldComponent extends Component {
 					// console.log(manhattanLength, intersects);
 					this.cameraGroup.position.add(velocity);
 					this.cameraGroup.position.y = 0;
+					this.orbitService.events$.next(OrbitService.orbitMoveEvent);
 				}
 				velocity.lerp(ORIGIN, 0.1);
 			}
@@ -820,7 +828,7 @@ export default class WorldComponent extends Component {
 				// console.log('hit', hit);
 			}
 			*/
-			this.controlEvent$.next(this.control);
+			this.controlEvent$.next(CONTROL_INFO);
 		}
 	}
 
@@ -916,7 +924,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onOrientationDidChange() {
-		this.controlEvent$.next(this.control);
+		this.controlEvent$.next(CONTROL_INFO);
 	}
 
 	checkSelectedItem() {
@@ -1093,6 +1101,10 @@ export default class WorldComponent extends Component {
 				control.orientation.latitude = this.orbitService.latitude;
 				control.orientation.longitude = this.orbitService.longitude;
 				control.zoom = this.orbitService.zoom;
+				control.cameraGroup = {
+					position: this.cameraGroup.position.toArray(),
+					rotation: this.cameraGroup.rotation.toArray(),
+				};
 				const intersections = this.raycaster.intersectObjects(this.intersectObjects);
 				const point = intersections.length ? intersections[0].point.normalize() : null;
 				if (point) {
@@ -1106,12 +1118,6 @@ export default class WorldComponent extends Component {
 	}
 
 	addListeners() {
-		this.control = {
-			type: MessageType.ControlInfo,
-			orientation: { latitude: 0, longitude: 0 },
-			zoom: 1,
-			pointer: [0, 0, 0],
-		};
 		this.controlEvent$ = new ReplaySubject(1);
 		this.control$().pipe(
 			takeUntil(this.unsubscribe$)
@@ -1160,6 +1166,10 @@ export default class WorldComponent extends Component {
 					message.viewId = this.view.id;
 					message.orientation = this.orbitService.getOrientation();
 					message.zoom = this.orbitService.zoom;
+					message.cameraGroup = {
+						position: this.cameraGroup.position.toArray(),
+						rotation: this.cameraGroup.rotation.toArray(),
+					}
 					if (this.view instanceof PanoramaGridView) {
 						message.gridIndex = this.view.index;
 					}
@@ -1176,10 +1186,12 @@ export default class WorldComponent extends Component {
 						ViewService.viewId = message.viewId;
 						this.requestInfoResult = message;
 					} else {
-						this.orbitService.setOrientation(message.orientation);
 						if (!this.renderer.xr.isPresenting) {
+							this.orbitService.setOrientation(message.orientation);
 							this.orbitService.zoom = message.zoom;
-							this.camera.updateProjectionMatrix();
+							this.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+							this.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]);
+							// this.camera.updateProjectionMatrix();
 						}
 						if (this.view instanceof PanoramaGridView && message.gridIndex) {
 							this.view.index = message.gridIndex;
@@ -1233,8 +1245,9 @@ export default class WorldComponent extends Component {
 					if (!this.renderer.xr.isPresenting) {
 						this.orbitService.setOrientation(message.orientation);
 						this.orbitService.zoom = message.zoom;
+						this.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+						this.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]);
 						// this.camera.updateProjectionMatrix();
-						// this.render();
 					}
 					this.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
 					break;

@@ -31,7 +31,7 @@
 			-->
 		</div>
 		<div class="banner progress" model-progress [view]="view"></div>
-		<div model-menu [items]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="state.hosted && state.navigable">
+		<div model-menu [views]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="state.hosted && state.navigable">
 			<div class="btn--menu" (click)="onToggle($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 			</div>

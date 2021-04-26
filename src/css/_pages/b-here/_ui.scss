@@ -298,7 +298,11 @@ $chat-width: 240px;
 	height: calc(100% - 2px);
 	top: 0;
 	left: 0;
-	border: 2px solid $foreground-secondary;
+	border: 1px solid $foreground-secondary;
 	pointer-events: none;
 	z-index: 2;
+
+	&.spying {
+		border-color: $foreground-primary;
+	}
 }

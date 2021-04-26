@@ -95,6 +95,9 @@ export default class AgoraDevicePreviewComponent extends Component {
 					} : false,
 					audio: this.audio_ ? { deviceId: this.audio_ } : false,
 				};
+				if (this.platform === DevicePlatform.IOS) {
+					options.video.facingMode = 'user';
+				}
 				// console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
 				navigator.mediaDevices.getUserMedia(options).then((stream) => {
 					if (this.hasPreview) {

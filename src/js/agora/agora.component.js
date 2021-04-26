@@ -498,7 +498,6 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-
 	// !!! why locally?
 	patchState(state) {
 		this.state = Object.assign({}, this.state, state);
