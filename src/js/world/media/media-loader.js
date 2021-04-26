@@ -232,6 +232,7 @@ export default class MediaLoader {
 	play(silent) {
 		// console.log('MediaLoader.play');
 		if (this.video) {
+			this.video.muted = this.muted_;
 			this.video.play().then(() => {
 				// console.log('MediaLoader.play.success', this.item.asset.file);
 				if (!silent) {

@@ -583,37 +583,6 @@ export default class WorldComponent extends Component {
 		}
 	}
 
-	raycasterHitTest() {
-		try {
-			if (this.renderer.xr.isPresenting) {
-				const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
-				if (raycaster) {
-					const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
-					this.indicator.update();
-					/*
-					if (hit && hit !== this.panorama.mesh) {
-						// controllers.feedback();
-					}
-					*/
-				}
-			} else if (!this.dragItem && !this.resizeItem) {
-				return; // !!!
-				const raycaster = this.raycaster;
-				if (raycaster) {
-					const hit = Interactive.hittest(raycaster);
-					/*
-					if (hit && hit !== this.panorama.mesh) {
-						// console.log('hit', hit);
-					}
-					*/
-				}
-			}
-		} catch (error) {
-			this.error = error;
-			// throw (error);
-		}
-	}
-
 	repos(object, rect) {
 		const worldRect = this.worldRect;
 		const sx = 0.8;
@@ -781,7 +750,7 @@ export default class WorldComponent extends Component {
 	}
 
 	raycasterXRHitTest() {
-		if (this.renderer.xr.isPresenting) {
+		if (this.renderer.xr.isPresenting && !this.locked) {
 			const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 			if (raycaster) {
 				const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
@@ -814,8 +783,8 @@ export default class WorldComponent extends Component {
 				}
 			}
 		} else if (this.resizeItem) {
+			/*
 			if (typeof this.resizeItem.onResizeMove === 'function') {
-				/*
 				// calc arc x & y as scale;
 				const intersections = raycaster.intersectObjects(this.intersectObjects);
 				if (intersections.length) {
@@ -824,21 +793,19 @@ export default class WorldComponent extends Component {
 					const position = new THREE.Vector3().copy(intersection.point).normalize();
 					this.resizeItem.onResizeMove(position);
 				}
-				*/
-			}
-		} else {
-			const hit = Interactive.hittest(raycaster);
-			/*
-			if (hit && hit !== this.panorama.mesh) {
-				// console.log('hit', hit);
 			}
 			*/
+		} else {
+			const hit = Interactive.hittest(raycaster);
 			this.controlEvent$.next(CONTROL_INFO);
 		}
 	}
 
 	onMouseDown(event) {
 		try {
+			if (this.locked) {
+				return;
+			}
 			if (event.button !== 0) {
 				return;
 			}

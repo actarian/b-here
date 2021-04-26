@@ -4799,15 +4799,22 @@ body {
     height: 40px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    color: var(--foreground-negative);
-    background: none; }
+    align-items: center; }
     .group--media .btn--play svg,
     .group--media .btn--pause svg {
       margin: 0;
       width: 16px;
       height: 16px;
       fill: currentColor; }
+    .group--media .btn--play, .group--media .btn--play:active, .group--media .btn--play:focus, .group--media .btn--play:visited, .group--media .btn--play:hover, .group--media .btn--play:active:hover,
+    .group--media .btn--pause,
+    .group--media .btn--pause:active,
+    .group--media .btn--pause:focus,
+    .group--media .btn--pause:visited,
+    .group--media .btn--pause:hover,
+    .group--media .btn--pause:active:hover {
+      background: none;
+      color: var(--foreground-negative); }
   .group--media .track {
     flex: 1 1 calc(100% - 60px);
     max-width: calc(100% - 60px);
