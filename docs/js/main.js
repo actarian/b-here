@@ -1458,7 +1458,7 @@ _defineProperty(MessageService, "out$", new rxjs.ReplaySubject(1));var StateServ
   return StateService;
 }();
 
-_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var DevicePlatform$1 = {
+_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var DevicePlatform = {
   Unknown: 'unknown',
   IOS: 'ios',
   Android: 'android',
@@ -1472,24 +1472,24 @@ var DeviceService = /*#__PURE__*/function () {
     var userAgent = navigator.userAgent || navigator.vendor || window.opera; // Windows Phone must come first because its UA also contains 'Android'
 
     if (/windows phone/i.test(userAgent)) {
-      return DevicePlatform$1.WindowsPhone;
+      return DevicePlatform.WindowsPhone;
     }
 
     if (/android/i.test(userAgent)) {
-      return DevicePlatform$1.Android;
+      return DevicePlatform.Android;
     } // iOS detection from: http://stackoverflow.com/a/9039885/177710
     // if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
 
 
     if (this.isIOS) {
-      return DevicePlatform$1.IOS;
+      return DevicePlatform.IOS;
     }
 
     if (this.isVRHeadset) {
-      return DevicePlatform$1.VRHeadset;
+      return DevicePlatform.VRHeadset;
     }
 
-    return DevicePlatform$1.Unknown;
+    return DevicePlatform.Unknown;
   };
 
   _createClass(DeviceService, null, [{
@@ -5231,7 +5231,7 @@ operators.filter(function (frame) {
           } : false
         };
 
-        if (this.platform === DevicePlatform$1.IOS) {
+        if (this.platform === DevicePlatform.IOS) {
           options.video.facingMode = 'user';
         } // console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
 
@@ -5342,7 +5342,7 @@ operators.filter(function (frame) {
   }, {
     key: "hasPreview",
     get: function get() {
-      return this.platform !== DevicePlatform$1.IOS && this.platform !== DevicePlatform$1.VRHeadset;
+      return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset;
     }
   }]);
 
@@ -5476,7 +5476,7 @@ AgoraDevicePreviewComponent.meta = {
   _createClass(AgoraDeviceComponent, [{
     key: "hasPreview",
     get: function get() {
-      return this.platform !== DevicePlatform$1.IOS && this.platform !== DevicePlatform$1.VRHeadset; // && this.form && this.form.value.video;
+      return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset; // && this.form && this.form.value.video;
     }
   }]);
 
@@ -8343,7 +8343,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.tryInAr = function tryInAr() {
-    if (this.platform === DevicePlatform$1.IOS || this.platform === DevicePlatform$1.Android) {
+    if (this.platform === DevicePlatform.IOS || this.platform === DevicePlatform.Android) {
       TryInARModalComponent.openInAR(this.view);
     } else {
       ModalService.open$({
@@ -13951,7 +13951,7 @@ TitleDirective.meta = {
         } // console.log('TryInARComponent.view', view);
 
 
-        if (_this.platform === DevicePlatform$1.IOS) {
+        if (_this.platform === DevicePlatform.IOS) {
           var usdzSrc = _this.getUsdzSrc(view);
 
           if (usdzSrc) {

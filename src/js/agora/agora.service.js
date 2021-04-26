@@ -2,7 +2,7 @@
 // import AgoraRTM from 'agora-rtm-sdk';
 import { from, interval, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { DeviceService } from '../device/device.service';
+import { DevicePlatform, DeviceService } from '../device/device.service';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
