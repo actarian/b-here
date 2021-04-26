@@ -233,11 +233,6 @@ export default class MediaMesh extends InteractiveMesh {
 		this.items = items;
 		this.uniforms = MediaMesh.getUniformsByItem(item);
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
-		/*
-		if (item.asset && !mediaLoader.isVideo) {
-			this.freeze();
-		}
-		*/
 	}
 
 	load(callback) {

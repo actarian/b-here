@@ -7420,6 +7420,7 @@ var MediaLoader = /*#__PURE__*/function () {
 
     // console.log('MediaLoader.play');
     if (this.video) {
+      this.video.muted = this.muted_;
       this.video.play().then(function () {
         // console.log('MediaLoader.play.success', this.item.asset.file);
         if (!silent) {
@@ -16513,12 +16514,6 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     _this.items = items;
     _this.uniforms = MediaMesh.getUniformsByItem(item);
     var mediaLoader = _this.mediaLoader = new MediaLoader(item);
-    /*
-    if (item.asset && !mediaLoader.isVideo) {
-    	this.freeze();
-    }
-    */
-
     return _this;
   }
 
@@ -18870,40 +18865,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
-  _proto.raycasterHitTest = function raycasterHitTest() {
-    try {
-      if (this.renderer.xr.isPresenting) {
-        var raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
-
-        if (raycaster) {
-          var hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
-          this.indicator.update();
-          /*
-          if (hit && hit !== this.panorama.mesh) {
-          	// controllers.feedback();
-          }
-          */
-        }
-      } else if (!this.dragItem && !this.resizeItem) {
-        return; // !!!
-
-        var _raycaster = this.raycaster;
-
-        if (_raycaster) {
-          var _hit = Interactive.hittest(_raycaster);
-          /*
-          if (hit && hit !== this.panorama.mesh) {
-          	// console.log('hit', hit);
-          }
-          */
-
-        }
-      }
-    } catch (error) {
-      this.error = error; // throw (error);
-    }
-  };
-
   _proto.repos = function repos(object, rect) {
     var worldRect = this.worldRect;
     var sx = 0.8; // const sx = rect.width / worldRect.width;
@@ -19086,7 +19047,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.raycasterXRHitTest = function raycasterXRHitTest() {
-    if (this.renderer.xr.isPresenting) {
+    if (this.renderer.xr.isPresenting && !this.locked) {
       var raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 
       if (raycaster) {
@@ -19122,22 +19083,18 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           this.dragItem.onDragMove(position, normal, this.intersectObjects === this.panoramaIntersectObjects);
         }
       }
-    } else if (this.resizeItem) {
-      if (typeof this.resizeItem.onResizeMove === 'function') ;
-    } else {
+    } else if (this.resizeItem) ; else {
       var hit = Interactive.hittest(raycaster);
-      /*
-      if (hit && hit !== this.panorama.mesh) {
-      	// console.log('hit', hit);
-      }
-      */
-
       this.controlEvent$.next(CONTROL_INFO);
     }
   };
 
   _proto.onMouseDown = function onMouseDown(event) {
     try {
+      if (this.locked) {
+        return;
+      }
+
       if (event.button !== 0) {
         return;
       }
