@@ -1,12 +1,11 @@
 import { takeUntil } from 'rxjs/operators';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
 const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
 varying vec2 vUv;
 void main() {
 	vUv = uv;
@@ -15,8 +14,6 @@ void main() {
 `;
 
 const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
 varying vec2 vUv;
 uniform sampler2D textureA;
 uniform sampler2D textureB;
@@ -172,6 +169,9 @@ export default class ModelGridComponent extends ModelComponent {
 					textureB: { type: "t", value: mapOver },
 					tween: { value: 0 },
 					opacity: { value: 0 },
+				},
+				extensions: {
+					fragDepth: true,
 				},
 				// side: THREE.DoubleSide
 			});

@@ -1,8 +1,8 @@
 import { filter, take, takeUntil } from 'rxjs/operators';
+// import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
-
 export default class ModelPlaneComponent extends ModelEditableComponent {
 
 	onInit() {

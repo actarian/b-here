@@ -1,3 +1,4 @@
+// import * as THREE from 'three';
 import { AssetType } from '../../asset/asset';
 import StateService from '../../state/state.service';
 import { PanoramaGridView } from '../../view/view';
@@ -8,24 +9,24 @@ import { VideoTexture } from '../video-texture';
 export const PANORAMA_RADIUS = 101;
 
 const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
+varying vec3 vNormal;
 varying vec2 vUv;
+
 void main() {
+	vNormal = normal;
 	vUv = uv;
-	// gl_PointSize = 8.0;
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `;
 
 const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
+varying vec3 vNormal;
 varying vec2 vUv;
-uniform vec2 resolution;
-uniform float tween;
-uniform bool rgbe;
-uniform sampler2D texture;
+
+uniform vec2 uResolution;
+uniform float uTween;
+uniform bool uRgbe;
+uniform sampler2D uTexture;
 
 vec3 ACESFilmicToneMapping_( vec3 color ) {
 	color *= 1.8;
@@ -33,7 +34,7 @@ vec3 ACESFilmicToneMapping_( vec3 color ) {
 }
 
 vec4 getColor(vec2 p) {
-	return texture2D(texture, p);
+	return texture2D(uTexture, p);
 }
 
 vec3 encodeColor(vec4 color) {
@@ -51,7 +52,7 @@ vec4 Blur(vec2 st, vec4 color) {
 	const float PI2 = 6.28318530718;
 	const float qq = 1.0;
 	const float q = 1.0 / quality;
-	vec2 radius = size / resolution.xy;
+	vec2 radius = size / uResolution.xy;
 	for (float d = 0.0; d < PI2; d += PI2 / directions) {
 		for (float i = q; i <= qq; i += q) {
 			vec2 dUv = vec2(cos(d), sin(d)) * radius * i;
@@ -62,12 +63,12 @@ vec4 Blur(vec2 st, vec4 color) {
 }
 
 void main() {
-	vec4 color = texture2D(texture, vUv);
+	vec4 color = texture2D(uTexture, vUv);
 	// color = Blur(vUv, color);
-	if (rgbe) {
-		color = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);
+	if (uRgbe) {
+		color = vec4(encodeColor(color) * uTween + rand(vUv) * 0.01, 1.0);
 	} else {
-		color = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);
+		color = vec4(color.rgb * uTween + rand(vUv) * 0.01, 1.0);
 	}
 	gl_FragColor = color;
 }
@@ -92,10 +93,13 @@ export default class Panorama {
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
 			uniforms: {
-				texture: { type: "t", value: null },
-				resolution: { value: new THREE.Vector2() },
-				tween: { value: 0 },
-				rgbe: { value: false },
+				uTexture: { type: "t", value: null },
+				uResolution: { value: new THREE.Vector2() },
+				uTween: { value: 0 },
+				uRgbe: { value: false },
+			},
+			extensions: {
+				fragDepth: true,
 			},
 		});
 		/*
@@ -119,7 +123,7 @@ export default class Panorama {
 				tween: 0,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					material.uniforms.tween.value = this.tween;
+					material.uniforms.uTween.value = this.tween;
 					material.needsUpdate = true;
 				},
 				onComplete: () => {
@@ -132,7 +136,7 @@ export default class Panorama {
 							tween: 1,
 							ease: Power2.easeInOut,
 							onUpdate: () => {
-								material.uniforms.tween.value = this.tween;
+								material.uniforms.uTween.value = this.tween;
 								material.needsUpdate = true;
 							}
 						});
@@ -152,7 +156,7 @@ export default class Panorama {
 					tween: 1,
 					ease: Power2.easeInOut,
 					onUpdate: () => {
-						material.uniforms.tween.value = this.tween;
+						material.uniforms.uTween.value = this.tween;
 						material.needsUpdate = true;
 					}
 				});
@@ -173,7 +177,7 @@ export default class Panorama {
 			if (typeof onexit === 'function') {
 				onexit(view);
 			}
-			material.uniforms.tween.value = 1;
+			material.uniforms.uTween.value = 1;
 			material.needsUpdate = true;
 			setTimeout(function() {
 				if (typeof callback === 'function') {
@@ -186,7 +190,7 @@ export default class Panorama {
 				tween: 1,
 				ease: Power2.easeInOut,
 				onUpdate: () => {
-					material.uniforms.tween.value = this.tween;
+					material.uniforms.uTween.value = this.tween;
 					material.needsUpdate = true;
 				},
 				onComplete: () => {
@@ -206,7 +210,7 @@ export default class Panorama {
 	crossfade(item, renderer, callback) {
 		const material = this.mesh.material;
 		this.load(item, renderer, (envMap, texture, rgbe) => {
-			material.uniforms.tween.value = 1;
+			material.uniforms.uTween.value = 1;
 			material.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(envMap, texture, rgbe);
@@ -232,19 +236,19 @@ export default class Panorama {
 				texture.dispose();
 				return;
 			}
-			if (material.uniforms.texture.value) {
-				material.uniforms.texture.value.dispose();
-				material.uniforms.texture.value = null;
+			if (material.uniforms.uTexture.value) {
+				material.uniforms.uTexture.value.dispose();
+				material.uniforms.uTexture.value = null;
 			}
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
 			texture.needsUpdate = true;
 			// material.map = texture;
-			material.uniforms.texture.value = texture;
-			material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
-			material.uniforms.tween.value = 0;
-			material.uniforms.rgbe.value = rgbe;
+			material.uniforms.uTexture.value = texture;
+			material.uniforms.uResolution.value = new THREE.Vector2(texture.width, texture.height);
+			material.uniforms.uTween.value = 0;
+			material.uniforms.uRgbe.value = rgbe;
 			material.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(envMap, texture, rgbe);
@@ -275,8 +279,8 @@ export default class Panorama {
 				texture.needsUpdate = true;
 				const material = this.mesh.material;
 				material.map = texture;
-				material.uniforms.texture.value = texture;
-				material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
+				material.uniforms.uTexture.value = texture;
+				material.uniforms.uResolution.value = new THREE.Vector2(texture.width, texture.height);
 				material.needsUpdate = true;
 			};
 			// video.addEventListener('canplay', onPlaying);

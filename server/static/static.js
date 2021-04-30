@@ -184,13 +184,19 @@ function staticMiddleware(vars) {
 					} else {
 						chunkLength = contentLength;
 					}
-					response.setHeader('Content-Range', `bytes ${start || 0}-${end || (contentLength - 1)}/${contentLength}`);
+					end = end || contentLength - 1;
+					// console.log(filePath, 'start', start, 'end', end, 'chunkLength', chunkLength, 'contentLength', contentLength);
+					response.setHeader('Cache-Control', 'private, max-age=0, must-revalidate');
+					response.setHeader('Content-Range', `bytes ${start || 0}-${end}/${contentLength}`);
 					response.setHeader('Accept-Ranges', 'bytes');
 					response.setHeader('Content-Length', chunkLength);
 					response.setHeader('Content-Type', mimeType);
 					response.status((start === 0 && end === contentLength) ? 200 : 206);
-					// console.log(start, end, contentLength);
-					return fs.createReadStream(filePath, { start, end }).pipe(response);
+					// read file sync so we don't hold open the file creating a race with
+					// the builder (Windows does not allow us to delete while the file is open).
+					// const buffer = fs.readFileSync(filePath);
+					// return response.end(buffer.slice(start, chunkLength));
+					return fs.createReadStream(filePath, { start, chunkLength }).pipe(response);
 					// return response.end(buffer.slice(start, end));
 				} else {
 					response.setHeader('Cache-Control', 'private, max-age=0, must-revalidate');

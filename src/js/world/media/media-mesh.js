@@ -1,5 +1,6 @@
 import { of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+// import * as THREE from 'three';
 import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
@@ -8,73 +9,230 @@ import InteractiveMesh from '../interactive/interactive.mesh';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent } from './media-loader';
 
 const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
+varying vec2 vUvShader;
 
-varying vec2 vUv;
-varying vec4 modelViewPosition;
-varying vec3 vecNormal;
+#include <common>
+#include <uv_pars_vertex>
+#include <uv2_pars_vertex>
+#include <envmap_pars_vertex>
+#include <color_pars_vertex>
+#include <fog_pars_vertex>
+#include <morphtarget_pars_vertex>
+#include <skinning_pars_vertex>
+#include <logdepthbuf_pars_vertex>
+#include <clipping_planes_pars_vertex>
 
 void main() {
-	vUv = uv;
-	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-	vecNormal = (modelViewMatrix * vec4(normal, 0.0)).xyz; //????????
-	gl_Position = projectionMatrix * modelViewPosition;
+	vUvShader = uv;
+
+	#include <uv_vertex>
+	#include <uv2_vertex>
+	#include <color_vertex>
+	#include <skinbase_vertex>
+	#ifdef USE_ENVMAP
+	#include <beginnormal_vertex>
+	#include <morphnormal_vertex>
+	#include <skinnormal_vertex>
+	#include <defaultnormal_vertex>
+	#endif
+	#include <begin_vertex>
+	#include <morphtarget_vertex>
+	#include <skinning_vertex>
+	#include <project_vertex>
+	#include <logdepthbuf_vertex>
+	#include <worldpos_vertex>
+	#include <clipping_planes_vertex>
+	#include <envmap_vertex>
+	#include <fog_vertex>
 }
 `;
 
 const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
+#define USE_MAP
 
-varying vec2 vUv;
-uniform bool video;
+varying vec2 vUvShader;
+uniform vec3 diffuse;
 uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-uniform vec3 overlayColor;
+
+#ifndef FLAT_SHADED
+	varying vec3 vNormal;
+#endif
+
+#include <common>
+#include <dithering_pars_fragment>
+#include <color_pars_fragment>
+#include <uv_pars_fragment>
+#include <uv2_pars_fragment>
+#include <map_pars_fragment>
+#include <alphamap_pars_fragment>
+#include <aomap_pars_fragment>
+#include <lightmap_pars_fragment>
+#include <envmap_common_pars_fragment>
+#include <envmap_pars_fragment>
+#include <cube_uv_reflection_fragment>
+#include <fog_pars_fragment>
+#include <specularmap_pars_fragment>
+#include <logdepthbuf_pars_fragment>
+#include <clipping_planes_pars_fragment>
+
+// uniform sampler2D map;
+uniform sampler2D playMap;
+uniform vec2 mapResolution;
+uniform vec2 playMapResolution;
+uniform float mapTween;
+uniform float playMapTween;
+uniform vec3 playMapColor;
+uniform bool isVideo;
 
 void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
-	if (video) {
-		vec4 colorB = texture2D(textureB, vUv);
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
+	#include <clipping_planes_fragment>
+
+	vec4 diffuseColor = vec4(vec3(1.0), opacity);
+
+	#include <logdepthbuf_fragment>
+	#include <map_fragment>
+	#include <color_fragment>
+
+	// main
+	vec4 mapRgba = texture2D(map, vUvShader);
+	mapRgba = mapTexelToLinear(mapRgba);
+	if (isVideo) {
+		vec4 playMapRgba = texture2D(playMap, vUvShader);
+		playMapRgba = mapTexelToLinear(playMapRgba);
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity);
 	} else {
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity);
 	}
-	gl_FragColor = color;
+
+	#include <alphamap_fragment>
+	#include <alphatest_fragment>
+	#include <specularmap_fragment>
+
+	ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
+
+	// accumulation (baked indirect lighting only)
+	#ifdef USE_LIGHTMAP
+		vec4 lightMapRgba = texture2D(lightMap, vUv2);
+		reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;
+	#else
+		reflectedLight.indirectDiffuse += vec3(1.0);
+	#endif
+
+	// modulation
+	#include <aomap_fragment>
+
+	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
+
+	vec3 outgoingLight = reflectedLight.indirectDiffuse;
+
+	#include <envmap_fragment>
+
+	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+
+	#include <tonemapping_fragment>
+	#include <encodings_fragment>
+	#include <fog_fragment>
+	#include <premultiplied_alpha_fragment>
+	#include <dithering_fragment>
 }
 `;
 
 const FRAGMENT_CHROMA_KEY_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
+#define USE_MAP
 #define threshold 0.55
 #define padding 0.05
 
-varying vec2 vUv;
-uniform bool video;
+varying vec2 vUvShader;
+uniform vec3 diffuse;
 uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
+
+#ifndef FLAT_SHADED
+	varying vec3 vNormal;
+#endif
+
+#include <common>
+#include <dithering_pars_fragment>
+#include <color_pars_fragment>
+#include <uv_pars_fragment>
+#include <uv2_pars_fragment>
+#include <map_pars_fragment>
+#include <alphamap_pars_fragment>
+#include <aomap_pars_fragment>
+#include <lightmap_pars_fragment>
+#include <envmap_common_pars_fragment>
+#include <envmap_pars_fragment>
+#include <cube_uv_reflection_fragment>
+#include <fog_pars_fragment>
+#include <specularmap_pars_fragment>
+#include <logdepthbuf_pars_fragment>
+#include <clipping_planes_pars_fragment>
+
+// uniform sampler2D map;
+uniform sampler2D playMap;
+uniform vec2 mapResolution;
+uniform vec2 playMapResolution;
+uniform float mapTween;
+uniform float playMapTween;
+uniform vec3 playMapColor;
 uniform vec3 chromaKeyColor;
-uniform vec3 overlayColor;
+uniform bool isVideo;
 
 void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
+	#include <clipping_planes_fragment>
+
+	vec4 diffuseColor = vec4(vec3(1.0), opacity);
+
+	#include <logdepthbuf_fragment>
+	#include <map_fragment>
+	#include <color_fragment>
+
+	// main
+	vec4 mapRgba = texture2D(map, vUvShader);
+	mapRgba = mapTexelToLinear(mapRgba);
 	vec4 chromaKey = vec4(chromaKeyColor, 1.0);
-    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;
+    vec3 chromaKeyDiff = mapRgba.rgb - chromaKey.rgb;
     float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));
-	color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);
-	gl_FragColor = color;
+	/*
+	if (isVideo) {
+		vec4 playMapRgba = texture2D(playMap, vUvShader);
+		playMapRgba = mapTexelToLinear(playMapRgba);
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity * chromaKeyValue);
+	} else {
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
+	}
+	*/
+	diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
+
+	#include <alphamap_fragment>
+	#include <alphatest_fragment>
+	#include <specularmap_fragment>
+
+	ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
+
+	// accumulation (baked indirect lighting only)
+	#ifdef USE_LIGHTMAP
+		vec4 lightMapRgba = texture2D(lightMap, vUv2);
+		reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;
+	#else
+		reflectedLight.indirectDiffuse += vec3(1.0);
+	#endif
+
+	// modulation
+	#include <aomap_fragment>
+
+	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
+
+	vec3 outgoingLight = reflectedLight.indirectDiffuse;
+
+	#include <envmap_fragment>
+
+	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+
+	#include <tonemapping_fragment>
+	#include <encodings_fragment>
+	#include <fog_fragment>
+	#include <premultiplied_alpha_fragment>
+	#include <dithering_fragment>
 }
 `;
 
@@ -82,7 +240,7 @@ export default class MediaMesh extends InteractiveMesh {
 
 	static getMaterial(useChromaKey) {
 		const material = new THREE.ShaderMaterial({
-			depthTest: false, // !!!
+			depthTest: true, // !!!
 			depthWrite: true,
 			transparent: true,
 			// side: THREE.DoubleSide,
@@ -90,15 +248,19 @@ export default class MediaMesh extends InteractiveMesh {
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER,
 			uniforms: {
-				video: { value: false },
-				textureA: { type: "t", value: null },
-				textureB: { type: "t", value: null },
-				resolutionA: { value: new THREE.Vector2() },
-				resolutionB: { value: new THREE.Vector2() },
-				overlayColor: { value: new THREE.Color('#000000') },
-				overlay: { value: 0 },
-				tween: { value: 1 },
+				map: { type: "t", value: null },
+				mapResolution: { value: new THREE.Vector2() },
+				mapTween: { value: 1 },
+				color: { value: new THREE.Color('#FFFFFF') },
+				playMap: { type: "t", value: null },
+				playMapResolution: { value: new THREE.Vector2() },
+				playMapTween: { value: 0 },
+				playMapColor: { value: new THREE.Color('#000000') },
 				opacity: { value: 0 },
+				isVideo: { value: false },
+			},
+			extensions: {
+				fragDepth: true,
 			},
 		});
 		return material;
@@ -106,24 +268,27 @@ export default class MediaMesh extends InteractiveMesh {
 
 	static getChromaKeyMaterial(chromaKeyColor = [0.0, 1.0, 0.0]) {
 		const material = new THREE.ShaderMaterial({
-			depthTest: false, // !!!
-			depthWrite: false,
+			depthTest: true, // !!!
+			depthWrite: true,
 			transparent: true,
-			// side: THREE.DoubleSide
+			// side: THREE.DoubleSide,
 			// blending: THREE.AdditiveBlending,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
 			uniforms: {
-				video: { value: false },
-				textureA: { type: "t", value: null },
-				textureB: { type: "t", value: null },
-				resolutionA: { value: new THREE.Vector2() },
-				resolutionB: { value: new THREE.Vector2() },
-				chromaKeyColor: { value: new THREE.Vector3(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2]) },
-				overlayColor: { value: new THREE.Color('#000000') },
-				overlay: { value: 0 },
-				tween: { value: 1 },
+				map: { type: "t", value: null },
+				mapResolution: { value: new THREE.Vector2() },
+				mapTween: { value: 1 },
+				color: { value: new THREE.Color('#FFFFFF') },
+				playMap: { type: "t", value: null },
+				playMapResolution: { value: new THREE.Vector2() },
+				playMapTween: { value: 0 },
+				playMapColor: { value: new THREE.Color('#000000') },
 				opacity: { value: 0 },
+				isVideo: { value: false },
+			},
+			extensions: {
+				fragDepth: true,
 			},
 		});
 		return material;
@@ -217,8 +382,8 @@ export default class MediaMesh extends InteractiveMesh {
 		let uniforms = null;
 		if (item.asset) {
 			uniforms = {
-				overlay: 0,
-				tween: 1,
+				mapTween: 1,
+				playMapTween: 0,
 				opacity: 0,
 			};
 		}
@@ -245,35 +410,40 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		mediaLoader.load((textureA) => {
-			// console.log('MediaMesh.textureA', textureA);
-			if (textureA) {
-				material.uniforms.textureA.value = textureA;
-				// material.uniforms.resolutionA.value.x = textureA.image.width;
-				// material.uniforms.resolutionA.value.y = textureA.image.height;
-				material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-				material.needsUpdate = true;
-				if (mediaLoader.isPlayableVideo) {
-					this.createTextureB(textureA, (textureB) => {
-						// console.log('MediaMesh.textureB', textureB);
-						textureB.minFilter = THREE.LinearFilter;
-						textureB.magFilter = THREE.LinearFilter;
-						textureB.mapping = THREE.UVMapping;
-						// textureB.format = THREE.RGBFormat;
-						textureB.wrapS = THREE.RepeatWrapping;
-						textureB.wrapT = THREE.RepeatWrapping;
-						material.uniforms.textureB.value = textureB;
-						// material.uniforms.resolutionB.value.x = textureB.image.width;
-						// material.uniforms.resolutionB.value.y = textureB.image.height;
-						material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
-						// console.log(material.uniforms.resolutionB.value, textureB);
-						material.needsUpdate = true;
-					});
+		mediaLoader.load((map) => {
+			// console.log('MediaMesh.map', map);
+			if (map) {
+				material.map = map; // !!! Enables USE_MAP
+				if (material.uniforms) {
+					material.uniforms.map.value = map;
+					// material.uniforms.mapResolution.value.x = map.image.width;
+					// material.uniforms.mapResolution.value.y = map.image.height;
+					material.uniforms.mapResolution.value = new THREE.Vector2(map.image.width || map.image.videoWidth, map.image.height || map.image.videoHeight);
+					material.needsUpdate = true;
+					if (mediaLoader.isPlayableVideo) {
+						this.makePlayMap(map, (playMap) => {
+							// console.log('MediaMesh.playMap', playMap);
+							playMap.minFilter = THREE.LinearFilter;
+							playMap.magFilter = THREE.LinearFilter;
+							playMap.mapping = THREE.UVMapping;
+							// playMap.format = THREE.RGBFormat;
+							playMap.wrapS = THREE.RepeatWrapping;
+							playMap.wrapT = THREE.RepeatWrapping;
+							material.uniforms.playMap.value = playMap;
+							// material.uniforms.playMapResolution.value.x = playMap.image.width;
+							// material.uniforms.playMapResolution.value.y = playMap.image.height;
+							material.uniforms.playMapResolution.value = new THREE.Vector2(playMap.image.width, playMap.image.height);
+							// console.log(material.uniforms.playMapResolution.value, playMap);
+							material.needsUpdate = true;
+						});
+					}
 				}
 			}
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
-				material.uniforms.video.value = true;
+				if (material.uniforms) {
+					material.uniforms.isVideo.value = true;
+				}
 				this.onOver = this.onOver.bind(this);
 				this.onOut = this.onOut.bind(this);
 				this.onToggle = this.onToggle.bind(this);
@@ -287,9 +457,9 @@ export default class MediaMesh extends InteractiveMesh {
 		});
 	}
 
-	createTextureB(textureA, callback) {
-		const aw = textureA.image.width || textureA.image.videoWidth;
-		const ah = textureA.image.height || textureA.image.videoHeight;
+	makePlayMap(map, callback) {
+		const aw = map.image.width || map.image.videoWidth;
+		const ah = map.image.height || map.image.videoHeight;
 		const ar = aw / ah;
 		const scale = 0.32;
 		const canvas = document.createElement('canvas');
@@ -314,9 +484,9 @@ export default class MediaMesh extends InteractiveMesh {
 				w = h * br;
 			}
 			ctx.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
-			const textureB = new THREE.CanvasTexture(canvas);
+			const playMap = new THREE.CanvasTexture(canvas);
 			if (typeof callback === 'function') {
-				callback(textureB);
+				callback(playMap);
 			}
 		}
 		image.crossOrigin = 'anonymous';
@@ -398,14 +568,14 @@ export default class MediaMesh extends InteractiveMesh {
 		if (material.uniforms) {
 			gsap.to(uniforms, {
 				duration: 0.4,
-				overlay: 1,
-				tween: this.playing ? 0 : 1,
+				mapTween: this.playing ? 0 : 1,
+				playMapTween: 1,
 				opacity: 1,
 				ease: Power2.easeInOut,
 				overwrite: true,
 				onUpdate: () => {
-					material.uniforms.overlay.value = uniforms.overlay;
-					material.uniforms.tween.value = uniforms.tween;
+					material.uniforms.mapTween.value = uniforms.mapTween;
+					material.uniforms.playMapTween.value = uniforms.playMapTween;
 					material.uniforms.opacity.value = uniforms.opacity;
 					material.needsUpdate = true;
 				},
@@ -419,14 +589,14 @@ export default class MediaMesh extends InteractiveMesh {
 		if (material.uniforms) {
 			gsap.to(uniforms, {
 				duration: 0.4,
-				overlay: 0,
-				tween: this.playing ? 0 : 1,
+				mapTween: this.playing ? 0 : 1,
+				playMapTween: 0,
 				opacity: 1,
 				ease: Power2.easeInOut,
 				overwrite: true,
 				onUpdate: () => {
-					material.uniforms.overlay.value = uniforms.overlay;
-					material.uniforms.tween.value = uniforms.tween;
+					material.uniforms.mapTween.value = uniforms.mapTween;
+					material.uniforms.playMapTween.value = uniforms.playMapTween;
 					material.uniforms.opacity.value = uniforms.opacity;
 					material.needsUpdate = true;
 				},
@@ -508,143 +678,3 @@ export default class MediaMesh extends InteractiveMesh {
 		this.disposeMediaLoader();
 	}
 }
-
-const VERTEX_SHADER_BASE = `
-#extension GL_EXT_frag_depth : enable
-
-#include <common>
-#include <uv_pars_vertex>
-// #include <uv2_pars_vertex>
-// #include <displacementmap_pars_vertex>
-// #include <envmap_pars_vertex>
-// #include <color_pars_vertex>
-// #include <fog_pars_vertex>
-// #include <morphtarget_pars_vertex>
-// #include <skinning_pars_vertex>
-// #include <shadowmap_pars_vertex>
-// #include <logdepthbuf_pars_vertex>
-#include <clipping_planes_pars_vertex>
-
-varying vec2 vUv;
-void main() {
-	#include <uv_vertex>
-	// #include <uv2_vertex>
-	// #include <color_vertex>
-	#include <beginnormal_vertex>
-	// #include <morphnormal_vertex>
-	// #include <skinbase_vertex>
-	// #include <skinnormal_vertex>
-	#include <defaultnormal_vertex>
-
-	// vUv = uv;
-	// gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-
-	#include <begin_vertex>
-	// #include <morphtarget_vertex>
-	// #include <skinning_vertex>
-	// #include <displacementmap_vertex>
-	#include <project_vertex>
-	#include <logdepthbuf_vertex>
-	#include <clipping_planes_vertex>
-
-	vViewPosition = - mvPosition.xyz;
-
-	#include <worldpos_vertex>
-	// #include <envmap_vertex>
-	// #include <shadowmap_vertex>
-	// #include <fog_vertex>
-}
-`;
-
-const FRAGMENT_SHADER_BASE = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-uniform bool video;
-uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-uniform vec3 overlayColor;
-
-// uniform vec3 diffuse;
-// uniform vec3 emissive;
-// uniform vec3 specular;
-// uniform float shininess;
-// uniform float opacity;
-
-#include <common>
-#include <packing>
-// #include <dithering_pars_fragment>
-// #include <color_pars_fragment>
-#include <uv_pars_fragment>
-// #include <uv2_pars_fragment>
-// #include <map_pars_fragment>
-// #include <alphamap_pars_fragment>
-// #include <aomap_pars_fragment>
-// #include <lightmap_pars_fragment>
-// #include <emissivemap_pars_fragment>
-// #include <envmap_pars_fragment>
-// #include <gradientmap_pars_fragment>
-// #include <fog_pars_fragment>
-// #include <bsdfs>
-// #include <lights_pars>
-// #include <lights_phong_pars_fragment>
-// #include <shadowmap_pars_fragment>
-// #include <bumpmap_pars_fragment>
-#include <normalmap_pars_fragment>
-// #include <specularmap_pars_fragment>
-#include <logdepthbuf_pars_fragment>
-#include <clipping_planes_pars_fragment>
-
-void main() {
-	#include <clipping_planes_fragment>
-
-	/*
-	vec4 diffuseColor = vec4( diffuse, opacity );
-	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
-	vec3 totalEmissiveRadiance = emissive;
-	*/
-
-	#include <logdepthbuf_fragment>
-	// #include <map_fragment>
-	// #include <color_fragment>
-	// #include <alphamap_fragment>
-	// #include <alphatest_fragment>
-	// #include <specularmap_fragment>
-	#include <normal_fragment>
-	// #include <emissivemap_fragment>
-
-	// accumulation
-	// #include <lights_phong_fragment>
-	// #include <lights_template>
-
-	// modulation
-	// #include <aomap_fragment>
-
-	// vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
-
-	// #include <envmap_fragment>
-
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
-	if (video) {
-		vec4 colorB = texture2D(textureB, vUv);
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
-	} else {
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
-	}
-	gl_FragColor = color;
-
-	// gl_FragColor = vec4( outgoingLight, diffuseColor.a );
-
-	// #include <tonemapping_fragment>
-	// #include <encodings_fragment>
-	// #include <fog_fragment>
-	// #include <premultiplied_alpha_fragment>
-	// #include <dithering_fragment>
-}
-`;

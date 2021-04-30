@@ -590,8 +590,9 @@ export default class AgoraService extends Emittable {
 		if (quality) {
 			local.setVideoProfile(quality.profile);
 			local.setVideoEncoderConfiguration(quality);
+
 		}
-		// console.log('local', local.attributes);
+		console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
 		local.init(() => {
 			StreamService.local = local;
 			setTimeout(() => {
@@ -1413,6 +1414,7 @@ export default class AgoraService extends Emittable {
 			// stream.setVideoProfile(quality.profile);
 			// stream.setVideoEncoderConfiguration(quality);
 		}
+		console.log('AgoraService.createScreenStream', screenUid, options, quality);
 		const onStopScreenSharing = () => {
 			this.unpublishScreenStream();
 		};

@@ -1,4 +1,5 @@
 import { Component, getContext } from 'rxcomp';
+// import * as THREE from 'three';
 import Interactive from '../interactive/interactive';
 // import Ease from '../ease/ease';
 import WorldComponent from '../world.component';

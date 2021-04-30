@@ -1,3 +1,5 @@
+// import * as THREE from 'three';
+
 export default class FreezableGroup extends THREE.Group {
 
 	get freezed() {

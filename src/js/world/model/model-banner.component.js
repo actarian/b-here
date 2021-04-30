@@ -1,3 +1,4 @@
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import { PANORAMA_RADIUS } from '../panorama/panorama';
 import WorldComponent from '../world.component';
