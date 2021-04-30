@@ -15,6 +15,21 @@ $chat-width: 240px;
 	.group--remote-screen {
 		@extend %live-meeting-remote;
 		background: none;
+
+		.agora-stream {
+			.agora-stream__player {
+				padding-top: 0;
+
+				&>div {
+					position: relative !important;
+
+					&>video {
+						position: relative !important;
+						object-fit: contain !important;
+					}
+				}
+			}
+		}
 	}
 
 	&.virtual-tour {

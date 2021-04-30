@@ -1,6 +1,7 @@
 import { getContext } from 'rxcomp';
 import { of } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+// import * as THREE from 'three';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
@@ -63,6 +64,9 @@ export class MenuButton extends InteractiveMesh {
 				resolutionB: { value: new THREE.Vector2() },
 				tween: { value: 0 },
 				opacity: { value: 0 },
+			},
+			extensions: {
+				fragDepth: true,
 			},
 		});
 		/*
@@ -511,8 +515,6 @@ export default class ModelMenuComponent extends ModelComponent {
 
 ModelMenuComponent.ORIGIN = new THREE.Vector3();
 ModelMenuComponent.VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
 varying vec2 vUv;
 void main() {
 	vUv = uv;
@@ -520,8 +522,6 @@ void main() {
 }
 `;
 ModelMenuComponent.FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
 varying vec2 vUv;
 uniform float opacity;
 uniform float tween;

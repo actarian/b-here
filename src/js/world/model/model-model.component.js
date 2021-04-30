@@ -1,4 +1,3 @@
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { takeUntil } from 'rxjs/operators';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
@@ -9,6 +8,9 @@ import EmittableMesh from '../interactive/emittable.mesh';
 import FreezableMesh from '../interactive/freezable.mesh';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
+// import * as THREE from 'three';
+import { DRACOLoader } from '../loaders/DRACOLoader';
+import { GLTFLoader } from '../loaders/GLTFLoader';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
 
@@ -54,11 +56,11 @@ export default class ModelModelComponent extends ModelEditableComponent {
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 		const progressRef = LoaderService.getRef();
 		// console.log('progressRef');
-		const loader = new THREE.GLTFLoader().setPath(path);
+		const loader = new GLTFLoader().setPath(path);
 		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
 		const decoderPath = `${environment.assets}js/draco/`;
 		// console.log(decoderPath);
-		const dracoLoader = new THREE.DRACOLoader();
+		const dracoLoader = new DRACOLoader();
 		dracoLoader.setDecoderPath(decoderPath);
 		loader.setDRACOLoader(dracoLoader);
 		loader.load(file, (glb) => {

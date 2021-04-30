@@ -2,6 +2,9 @@ import { takeUntil } from 'rxjs/operators';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
+// import * as THREE from 'three';
+import { DRACOLoader } from '../loaders/DRACOLoader';
+import { GLTFLoader } from '../loaders/GLTFLoader';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
@@ -66,11 +69,11 @@ export default class ModelRoomComponent extends ModelComponent {
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 		const progressRef = LoaderService.getRef();
 		// console.log('progressRef');
-		const loader = new THREE.GLTFLoader().setPath(path);
+		const loader = new GLTFLoader().setPath(path);
 		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
 		const decoderPath = `${environment.assets}js/draco/`;
 		// console.log(decoderPath);
-		const dracoLoader = new THREE.DRACOLoader();
+		const dracoLoader = new DRACOLoader();
 		dracoLoader.setDecoderPath(decoderPath);
 		loader.setDRACOLoader(dracoLoader);
 		loader.load(file, (glb) => {

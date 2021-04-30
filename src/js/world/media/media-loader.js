@@ -1,4 +1,5 @@
 import { ReplaySubject } from 'rxjs';
+// import * as THREE from 'three';
 import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
@@ -154,11 +155,11 @@ export default class MediaLoader {
 			const autoplay = (item.asset && item.asset.autoplay) || false;
 			const loop = (item.asset && item.asset.loop) || false;
 			const video = this.video = document.createElement('video');
+			video.crossOrigin = 'anonymous';
 			video.preload = 'metadata';
 			video.volume = 0.8;
-			video.muted = true;
+			video.muted = autoplay;
 			video.playsInline = true;
-			video.crossOrigin = 'anonymous';
 			video.loop = loop;
 			const onCanPlay = () => {
 				// console.log('MediaLoader', 'onCanPlay');

@@ -209,7 +209,8 @@ function rollupInput(item) {
 				'@babel/plugin-proposal-class-properties',
 				'@babel/plugin-proposal-object-rest-spread'
 			],
-			exclude: 'node_modules/**', // only transpile our source code
+			// exclude: 'node_modules/**', // only transpile our source code
+			exclude: 'node_modules\/(?!(threejs)\/).*', // ← Here I try to ES5 transpile roughjs which lives in `node_modules/roughjs/bundled/rough.esm.js`
 			comments: output.format !== 'iife',
 			// babelHelpers: 'bundled', // only for version 5
 			// babelrc: false,

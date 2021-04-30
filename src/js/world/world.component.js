@@ -14,6 +14,8 @@ import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
 import Interactive from './interactive/interactive';
+// import * as THREE from 'three';
+import { RGBELoader } from './loaders/RGBELoader';
 import MediaMesh from './media/media-mesh';
 import OrbitService, { OrbitMoveEvent } from './orbit/orbit.service';
 import Panorama from './panorama/panorama';
@@ -21,7 +23,7 @@ import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
 import VRService from './vr.service';
 import { Gamepad } from './webxr/gamepad';
-import { XRControllerModelFactory } from './webxr/xr-controller-model-factory';
+import { XRControllerModelFactory } from './webxr/xr-controller-model.factory';
 
 const ORIGIN = new THREE.Vector3();
 const DOWN = new THREE.Vector3(0, -1, 0);
@@ -238,7 +240,7 @@ export default class WorldComponent extends Component {
 		const segments = environment.textures.envMap.split('/');
 		const filename = segments.pop();
 		const folder = segments.join('/');
-		const loader = new THREE.RGBELoader()
+		const loader = new RGBELoader()
 			.setDataType(THREE.UnsignedByteType)
 			.setPath(environment.getPath(folder))
 			.load(filename, (texture) => {
@@ -686,9 +688,13 @@ export default class WorldComponent extends Component {
 					// console.log(manhattanLength, intersects);
 					this.cameraGroup.position.add(velocity);
 					this.cameraGroup.position.y = 0;
-					this.orbitService.events$.next(OrbitService.orbitMoveEvent);
+					this.orbitService.update();
+					// this.orbitService.events$.next(OrbitService.orbitMoveEvent);
+					// camera.updateProjectionMatrix();
 				}
 				velocity.lerp(ORIGIN, 0.1);
+			} else {
+				velocity.set(0, 0, 0);
 			}
 		} else {
 			this.intersectObjects = this.panoramaIntersectObjects;

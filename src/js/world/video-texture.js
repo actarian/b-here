@@ -1,7 +1,7 @@
-import { Texture } from 'three';
+// import * as THREE from 'three';
 
 function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-	Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
+	THREE.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
 	this.format = format !== undefined ? format : THREE.RGBFormat;
 	this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
 	this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
@@ -9,7 +9,7 @@ function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format
 	this.generateMipmaps = false;
 }
 
-VideoTexture.prototype = Object.assign(Object.create(Texture.prototype), {
+VideoTexture.prototype = Object.assign(Object.create(THREE.Texture.prototype), {
 
 	constructor: VideoTexture,
 
@@ -25,3 +25,4 @@ VideoTexture.prototype = Object.assign(Object.create(Texture.prototype), {
 });
 
 export { VideoTexture };
+

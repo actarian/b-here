@@ -5205,6 +5205,13 @@ body {
           user-select: none; }
   .ui .group--remote-screen {
     background: none; }
+    .ui .group--remote-screen .agora-stream .agora-stream__player {
+      padding-top: 0; }
+      .ui .group--remote-screen .agora-stream .agora-stream__player > div {
+        position: relative !important; }
+        .ui .group--remote-screen .agora-stream .agora-stream__player > div > video {
+          position: relative !important;
+          object-fit: contain !important; }
   .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
     width: 120px;
     height: 90px;

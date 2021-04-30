@@ -6,6 +6,8 @@ import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
 // import DebugService from '../debug.service';
+// import * as THREE from 'three';
+import { RGBELoader } from '../loaders/RGBELoader';
 
 export class EnvMapLoader {
 
@@ -78,7 +80,7 @@ export class EnvMapLoader {
 	}
 
 	static loadBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
+		const pmremGenerator = new PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		// console.log('loadBackground.progressRef');
@@ -129,10 +131,10 @@ export class EnvMapLoader {
 	}
 
 	static loadRgbeBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
+		const pmremGenerator = new PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
-		const loader = new THREE.RGBELoader();
+		const loader = new RGBELoader();
 		loader
 			.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)

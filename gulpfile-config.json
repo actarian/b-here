@@ -53,12 +53,23 @@
         "output": "docs/modals/"
       }]
     },
+    "three": {
+      "compile": [{
+        "input": "node_modules/three/build/three.module.js",
+        "output": {
+          "file": "docs/js/three.umd.js",
+          "format": "umd"
+        },
+        "name": "THREE"
+      }],
+      "bundle": [],
+      "copy": []
+    },
     "vendors": {
       "compile": [],
       "bundle": [
         {
           "input": [
-            "node_modules/three/examples/js/libs/inflate.min.js",
             "node_modules/agora-rtc-sdk/AgoraRTCSDK.min.js",
             "node_modules/agora-rtm-sdk/index.js",
             "node_modules/hls.js/dist/hls.js",
@@ -67,13 +78,9 @@
             "node_modules/rxcomp-form/dist/iife/rxcomp-form.js",
             "node_modules/gsap/dist/EasePack.js",
             "node_modules/gsap/dist/gsap.js",
-            "node_modules/three/build/three.js",
-            "node_modules/three/examples/js/loaders/RGBELoader.js",
-            "node_modules/three/examples/js/loaders/GLTFLoader.js",
-            "node_modules/three/examples/js/loaders/FBXLoader.js",
-            "node_modules/three/examples/js/loaders/DRACOLoader.js",
             "node_modules/qrious/dist/qrious.js",
-            "node_modules/html2canvas/dist/html2canvas.js"
+            "node_modules/html2canvas/dist/html2canvas.js",
+            "docs/js/three.umd.js"
           ],
           "output": "docs/js/vendors.js",
           "minify": true

@@ -136,6 +136,7 @@ export default class LayoutComponent extends Component {
 
 	toggleScreen() {
 		this.patchState({ screen: !this.state.screen });
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	toggleVolume() {

@@ -528,6 +528,7 @@ export default class AgoraComponent extends Component {
 		} else {
 			this.patchState({ screen: !this.state.screen });
 		}
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	toggleVolume() {

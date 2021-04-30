@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "agora-access-token": "2.0.4",
-    "agora-rtc-sdk": "3.3.1",
-    "agora-rtm-sdk": "1.4.1",
+    "agora-rtc-sdk": "3.5.2",
+    "agora-rtm-sdk": "1.4.2",
     "body-parser": "1.19.0",
     "connect-multiparty": "2.2.0",
     "events": "3.2.0",
@@ -36,7 +36,7 @@
     "rxcomp-form": "1.0.0-beta.18",
     "rxcomp": "1.0.0-beta.20",
     "rxjs": "6.6.2",
-    "three": "0.117.1"
+    "three": "0.128.0"
   },
   "devDependencies": {
     "gulpfile-config": "1.0.0-alpha.14",

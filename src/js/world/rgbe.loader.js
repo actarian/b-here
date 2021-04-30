@@ -1,5 +1,6 @@
+// import * as THREE from 'three';
 import { environment } from '../environment';
-
+import { RGBELoader } from './loaders/RGBELoader';
 export class RgbeLoader {
 
 	static load(item, renderer, callback) {
@@ -9,7 +10,7 @@ export class RgbeLoader {
 	static loadRgbeBackground(path, file, renderer, callback) {
 		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
-		const loader = new THREE.RGBELoader();
+		const loader = new RGBELoader();
 		loader
 			.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)

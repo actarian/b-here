@@ -1,10 +1,10 @@
+// import * as THREE from 'three';
 import { POINTER_RADIUS, TEST_ENABLED } from '../const';
 import Emittable from '../interactive/emittable';
 import Menu from '../menu/menu';
 // import Controller from './controller/controller';
 import OculusQuestController from './controller/oculus-quest-controller';
 import Gamepads, { GAMEPAD_HANDS } from './gamepads';
-
 export default class Controllers extends Emittable {
 
 	constructor(renderer, scene, pivot) {

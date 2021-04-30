@@ -1,5 +1,6 @@
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
+// import * as THREE from 'three';
 import DragService from '../../drag/drag.service';
 import { environment } from '../../environment';
 import InteractiveSprite from '../interactive/interactive.sprite';
