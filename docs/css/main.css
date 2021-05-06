@@ -4105,7 +4105,7 @@ test-component .btn--mode {
   pointer-events: none; }
   .slider-pagination .btn--prev,
   .slider-pagination .btn--next {
-    pointer-events: all; }
+    pointer-events: auto; }
     .slider-pagination .btn--prev.disabled,
     .slider-pagination .btn--next.disabled {
       pointer-events: none;
@@ -4448,7 +4448,7 @@ body {
 
 .btn--menu {
   position: absolute;
-  pointer-events: all;
+  pointer-events: auto;
   right: 20px;
   top: 50%; }
   .btn--menu svg {
@@ -4740,54 +4740,108 @@ body {
     .ui .group--remote--9.group--remote-screen, .ui.remotes .group--remote--9.group--remote {
       grid-template-columns: repeat(auto-fit, minmax(calc(20% - 1px), 1fr)); } }
 
-.group--controls {
+.group--header {
   position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  min-height: 90px;
+  pointer-events: none; }
+  .group--header > div {
+    pointer-events: auto; }
+
+.group--service {
+  position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-left: 15px; }
+  .group--service > button + button {
+    margin-left: 10px; }
+  @media (max-width: 767.98px) {
+    .group--service .btn--view-mode {
+      display: none; }
+    .group--service .btn--volume {
+      display: none; }
+    .group--service .btn--fullscreen {
+      display: none; } }
+
+.group--local {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 1; }
+  .group--local .agora-stream {
+    width: 120px;
+    height: 90px;
+    background: black; }
+  .group--local .agora-stream--screen {
+    /*
+		position: absolute;
+		top: 90px;
+		right: 0;
+		*/ }
+    .group--local .agora-stream--screen .agora-stream__player {
+      border-left: 0; }
+  @media (max-width: 767.98px) {
+    .group--local {
+      position: absolute;
+      visibility: hidden;
+      pointer-events: none; } }
+
+.group--footer {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   left: 15px;
-  bottom: 25px;
+  bottom: 0;
+  width: calc(100% - 30px);
+  min-height: 90px;
+  pointer-events: none; }
+  .group--footer > div {
+    pointer-events: auto; }
+
+.group--controls {
+  position: relative;
+  flex-basis: 30%; }
+
+.group--actions {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
   overflow: hidden; }
-  .group--controls > button + button {
+  .group--actions > button + button {
     margin-left: 10px; }
   @media (max-width: 767.98px) {
-    .group--controls .btn--cam,
-    .group--controls .btn--mic,
-    .group--controls .btn--screen,
-    .group--controls .btn--chat {
+    .group--actions .btn--screen,
+    .group--actions .btn--chat {
       display: none; } }
 
-.group--controls_ {
-  position: absolute;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  left: 15px;
-  bottom: 25px; }
-  .group--controls_ > button + button {
-    margin-left: 10px; }
-  @media (max-width: 767.98px) {
-    .group--controls_ .btn--cam,
-    .group--controls_ .btn--mic,
-    .group--controls_ .btn--screen,
-    .group--controls_ .btn--chat {
-      display: none; } }
+.group--spacer {
+  flex-basis: 30%; }
+  .media-player-active .group--spacer {
+    display: none; }
 
 .group--media {
-  position: absolute;
+  position: relative;
   display: none;
   justify-content: flex-start;
   align-items: center;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100vw - 690px);
-  bottom: 25px;
+  flex-grow: 1;
+  /*
+	left: 50%;
+	transform: translateX(-50%);
+	width: calc(100vw - 690px);
+	bottom: 25px;
+	*/
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
   overflow: hidden;
   height: 40px; }
   .group--media .btn--play,
@@ -4828,10 +4882,48 @@ body {
       width: 100%;
       transform-origin: left;
       background: var(--foreground-negative); }
-  .group--media.active {
+  .media-player-active .group--media {
     display: flex; }
   .locked .group--media {
     display: none; }
+
+.group--ar-vr {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1; }
+  @media (min-width: 768px) {
+    .group--ar-vr .btn--vr {
+      margin-left: 10px; } }
+  @media (max-width: 767.98px) {
+    .group--ar-vr .btn--vr {
+      display: none; } }
+  @media (max-width: 1023.98px) {
+    .group--ar-vr .btn--ar,
+    .group--ar-vr .btn--vr {
+      font-size: 13px; } }
+
+.group--heart {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-basis: 30%; }
+  @media (max-width: 1023.98px) {
+    .group--heart .btn--heart {
+      margin: 0; } }
+  .group--heart .love {
+    display: none;
+    position: absolute;
+    left: 13px;
+    top: -50%;
+    width: 12px;
+    height: 12px;
+    fill: var(--foreground-secondary); }
+    .group--heart .love.active {
+      display: block;
+      animation: love-rise 3s linear infinite, love-swing 1s ease-in-out infinite alternate; }
 
 .group--info {
   position: relative;
@@ -4992,64 +5084,6 @@ body {
   .group--select .group--form--select {
     margin: 0; }
 
-.group--service {
-  position: absolute;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  left: 15px;
-  top: 25px; }
-  .group--service > button + button {
-    margin-left: 10px; }
-  @media (max-width: 767.98px) {
-    .group--service .btn--view-mode {
-      display: none; }
-    .group--service .btn--volume {
-      display: none; }
-    .group--service .btn--fullscreen {
-      display: none; } }
-
-.group--ar-vr {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  left: 50%;
-  bottom: 25px;
-  transform: translateX(-50%); }
-  @media (min-width: 768px) {
-    .group--ar-vr .btn--vr {
-      margin-left: 10px; } }
-  @media (max-width: 767.98px) {
-    .group--ar-vr .btn--vr {
-      display: none; } }
-  @media (max-width: 1023.98px) {
-    .group--ar-vr .btn--ar,
-    .group--ar-vr .btn--vr {
-      font-size: 13px; } }
-
-.group--heart {
-  position: absolute;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  right: 15px;
-  bottom: 25px; }
-  @media (max-width: 1023.98px) {
-    .group--heart .btn--heart {
-      margin: 0; } }
-  .group--heart .love {
-    display: none;
-    position: absolute;
-    left: 13px;
-    top: -50%;
-    width: 12px;
-    height: 12px;
-    fill: var(--foreground-secondary); }
-    .group--heart .love.active {
-      display: block;
-      animation: love-rise 3s linear infinite, love-swing 1s ease-in-out infinite alternate; }
-
 .group--members {
   position: absolute;
   width: 120px;
@@ -5081,31 +5115,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center; }
-
-.group--local {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  top: 0;
-  right: 0;
-  z-index: 1; }
-  .group--local .agora-stream {
-    width: 120px;
-    height: 90px;
-    background: black; }
-  .group--local .agora-stream--screen {
-    /*
-		position: absolute;
-		top: 90px;
-		right: 0;
-		*/ }
-    .group--local .agora-stream--screen .agora-stream__player {
-      border-left: 0; }
-  @media (max-width: 767.98px) {
-    .group--local {
-      position: absolute;
-      visibility: hidden;
-      pointer-events: none; } }
 
 .group--checklist {
   display: flex;
@@ -6312,7 +6321,7 @@ model-viewer {
   justify-content: center;
   align-items: center;
   transition: all ease-in-out 150ms;
-  pointer-events: all; }
+  pointer-events: auto; }
   .btn--edit svg {
     width: 24px;
     height: 24px; }

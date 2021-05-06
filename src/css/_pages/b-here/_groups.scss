@@ -229,16 +229,113 @@
 	*/
 }
 
-.group--controls {
+.group--header {
 	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	left: 0;
+	top: 0;
+	width: 100%;
+	min-height: 90px;
+	pointer-events: none;
+
+	&>div {
+		pointer-events: auto;
+	}
+}
+
+.group--service {
+	position: relative;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
+	// flex-basis: 30%;
+	margin-left: 15px;
+	// margin-top: 25px;
+
+	&>button+button {
+		margin-left: 10px;
+	}
+
+	@include media-down(xs) {
+
+		.btn--view-mode {
+			display: none;
+		}
+
+		.btn--volume {
+			display: none;
+		}
+
+		.btn--fullscreen {
+			display: none;
+		}
+	}
+}
+
+.group--local {
+	position: relative;
+	display: flex;
+	align-items: center;
+	// flex-basis: 30%;
+	// top: 0;
+	// right: 0;
+	z-index: 1;
+
+	.agora-stream {
+		@include ratio(120px, 4 / 3);
+		background: black;
+		// margin-left: 15px;
+	}
+
+	.agora-stream--screen {
+
+		/*
+		position: absolute;
+		top: 90px;
+		right: 0;
+		*/
+		.agora-stream__player {
+			border-left: 0;
+		}
+	}
+
+	@include media-down(xs) {
+		position: absolute;
+		visibility: hidden;
+		pointer-events: none;
+	}
+}
+
+.group--footer {
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	left: 15px;
-	bottom: 25px;
+	bottom: 0;
+	width: calc(100% - 30px);
+	min-height: 90px;
+	pointer-events: none;
+
+	&>div {
+		pointer-events: auto;
+	}
+}
+
+.group--controls {
+	position: relative;
+	flex-basis: 30%;
+}
+
+.group--actions {
+	display: inline-flex;
+	justify-content: flex-start;
+	align-items: center;
 	border-radius: 20px;
 	background: rgba(0, 0, 0, 0.5);
-	box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+	// box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 	overflow: hidden;
 
 	&>button+button {
@@ -247,8 +344,6 @@
 
 	@include media-down(xs) {
 
-		.btn--cam,
-		.btn--mic,
 		.btn--screen,
 		.btn--chat {
 			display: none;
@@ -256,41 +351,29 @@
 	}
 }
 
-.group--controls_ {
-	position: absolute;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	left: 15px;
-	bottom: 25px;
+.group--spacer {
+	flex-basis: 30%;
 
-	&>button+button {
-		margin-left: 10px;
-	}
-
-	@include media-down(xs) {
-
-		.btn--cam,
-		.btn--mic,
-		.btn--screen,
-		.btn--chat {
-			display: none;
-		}
+	.media-player-active & {
+		display: none;
 	}
 }
 
 .group--media {
-	position: absolute;
+	position: relative;
 	display: none;
 	justify-content: flex-start;
 	align-items: center;
+	flex-grow: 1;
+	/*
 	left: 50%;
 	transform: translateX(-50%);
 	width: calc(100vw - 690px);
 	bottom: 25px;
+	*/
 	border-radius: 20px;
 	background: rgba(0, 0, 0, 0.5);
-	box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+	// box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 	overflow: hidden;
 	height: 40px;
 
@@ -340,12 +423,72 @@
 		}
 	}
 
-	&.active {
+	.media-player-active & {
 		display: flex;
 	}
 
 	.locked & {
 		display: none;
+	}
+}
+
+.group--ar-vr {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-grow: 1;
+	// left: 50%;
+	// bottom: 25px;
+	// transform: translateX(-50%);
+
+	@include media-up(sm) {
+		.btn--vr {
+			margin-left: 10px;
+		}
+	}
+
+	@include media-down(xs) {
+		.btn--vr {
+			display: none;
+		}
+	}
+
+	@include media-down(sm) {
+
+		.btn--ar,
+		.btn--vr {
+			font-size: 13px;
+		}
+	}
+}
+
+.group--heart {
+	position: relative;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-basis: 30%;
+
+	@include media-down(sm) {
+		.btn--heart {
+			margin: 0;
+		}
+	}
+
+	.love {
+		display: none;
+		position: absolute;
+		left: 13px;
+		top: -50%;
+		width: 12px;
+		height: 12px;
+		fill: $foreground-secondary;
+
+		&.active {
+			display: block;
+			animation: love-rise 3s linear infinite, love-swing 1s ease-in-out infinite alternate;
+		}
 	}
 }
 
@@ -516,94 +659,6 @@
 	}
 }
 
-.group--service {
-	position: absolute;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	left: 15px;
-	top: 25px;
-
-	&>button+button {
-		margin-left: 10px;
-	}
-
-	@include media-down(xs) {
-
-		.btn--view-mode {
-			display: none;
-		}
-
-		.btn--volume {
-			display: none;
-		}
-
-		.btn--fullscreen {
-			display: none;
-		}
-	}
-}
-
-.group--ar-vr {
-	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	left: 50%;
-	bottom: 25px;
-	transform: translateX(-50%);
-
-	@include media-up(sm) {
-		.btn--vr {
-			margin-left: 10px;
-		}
-	}
-
-	@include media-down(xs) {
-		.btn--vr {
-			display: none;
-		}
-	}
-
-	@include media-down(sm) {
-
-		.btn--ar,
-		.btn--vr {
-			font-size: 13px;
-		}
-	}
-}
-
-.group--heart {
-	position: absolute;
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	right: 15px;
-	bottom: 25px;
-
-	@include media-down(sm) {
-		.btn--heart {
-			margin: 0;
-		}
-	}
-
-	.love {
-		display: none;
-		position: absolute;
-		left: 13px;
-		top: -50%;
-		width: 12px;
-		height: 12px;
-		fill: $foreground-secondary;
-
-		&.active {
-			display: block;
-			animation: love-rise 3s linear infinite, love-swing 1s ease-in-out infinite alternate;
-		}
-	}
-}
-
 .group--members {
 	position: absolute;
 	width: 120px;
@@ -642,39 +697,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-}
-
-.group--local {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	top: 0;
-	right: 0;
-	z-index: 1;
-
-	.agora-stream {
-		@include ratio(120px, 4 / 3);
-		background: black;
-		// margin-left: 15px;
-	}
-
-	.agora-stream--screen {
-
-		/*
-		position: absolute;
-		top: 90px;
-		right: 0;
-		*/
-		.agora-stream__player {
-			border-left: 0;
-		}
-	}
-
-	@include media-down(xs) {
-		position: absolute;
-		visibility: hidden;
-		pointer-events: none;
 	}
 }
 

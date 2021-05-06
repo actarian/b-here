@@ -11,7 +11,7 @@ export default class AvatarElement {
 
 	static get headGeometry() {
 		if (!this.headGeometry_) {
-			this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 48, 48);
+			this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 36, 24);
 		}
 		return this.headGeometry_;
 	}

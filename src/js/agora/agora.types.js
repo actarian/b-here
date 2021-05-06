@@ -126,6 +126,7 @@ export const MessageType = {
 	AddLike: 'addLike',
 	ShowPanel: 'showPanel',
 	PlayMedia: 'playMedia',
+	ZoomMedia: 'zoomMedia',
 	CurrentTimeMedia: 'currentTimeMedia',
 	PlayModel: 'playModel',
 	NavToView: 'navToView',

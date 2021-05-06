@@ -754,6 +754,7 @@ var MessageType = {
   AddLike: 'addLike',
   ShowPanel: 'showPanel',
   PlayMedia: 'playMedia',
+  ZoomMedia: 'zoomMedia',
   CurrentTimeMedia: 'currentTimeMedia',
   PlayModel: 'playModel',
   NavToView: 'navToView',
@@ -2071,7 +2072,6 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
 
     _this = _Emittable.call(this) || this;
-    _this.platform = DeviceService.platform;
     _this.onStreamPublished = _this.onStreamPublished.bind(_assertThisInitialized(_this));
     _this.onStreamUnpublished = _this.onStreamUnpublished.bind(_assertThisInitialized(_this));
     _this.onStreamAdded = _this.onStreamAdded.bind(_assertThisInitialized(_this));
@@ -2631,7 +2631,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
             } else if (x.kind === 'audioinput') {
               devices.audios.push(x);
             }
-          }); // console.log(devices);
+          });
+          console.log(inputDevices); // console.log(devices);
 
           devices.video = devices.videos[0] || null;
           devices.audio = devices.audios[0] || null;
@@ -2658,13 +2659,6 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       audio: Boolean(audio),
       screen: false
     };
-
-    if (this.platform === DevicePlatform.IOS) {
-      options.video = {
-        facingMode: 'user'
-      };
-    }
-
     Promise.all([this.getVideoOptions(options, video), this.getAudioOptions(options, audio)]).then(function (success) {
       var quality = Object.assign({}, StateService.state.quality);
 
@@ -3161,6 +3155,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.NavToGrid:
           case MessageType.ShowPanel:
           case MessageType.PlayMedia:
+          case MessageType.ZoomMedia:
           case MessageType.CurrentTimeMedia:
           case MessageType.PlayModel:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
@@ -3310,6 +3305,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.ControlInfo:
       case MessageType.ShowPanel:
       case MessageType.PlayMedia:
+      case MessageType.ZoomMedia:
       case MessageType.CurrentTimeMedia:
       case MessageType.PlayModel:
       case MessageType.NavToView:
@@ -3940,6 +3936,12 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           audio: true,
           video: true
         };
+
+        if (DeviceService.platform === DevicePlatform.IOS) {
+          constraints.video = {
+            facingMode: 'user'
+          };
+        }
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
@@ -14972,12 +14974,14 @@ var DragService = /*#__PURE__*/function () {
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;
 
+    var page = document.querySelector('.page');
     return MediaLoader.events$.pipe( // filter(event => event.loader.item.id === this.media.item.id),
     operators.tap(function (event) {
       if (event instanceof MediaLoaderPlayEvent) {
         _this.media = event.loader;
         _this.playing = true;
         node.classList.add('active');
+        page.classList.add('media-player-active');
 
         _this.pushChanges();
       } else if (_this.media === event.loader) {
@@ -14994,6 +14998,7 @@ var DragService = /*#__PURE__*/function () {
         } else if (event instanceof MediaLoaderDisposeEvent) {
           _this.media = null;
           node.classList.remove('active');
+          page.classList.remove('media-player-active');
 
           _this.pushChanges();
         }
@@ -15864,7 +15869,28 @@ var RGBELoader = /*#__PURE__*/function (_DataTextureLoader) {
 
   return EnvMapLoader;
 }();// import * as THREE from 'three';
-var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
+var Geometry = /*#__PURE__*/function () {
+  function Geometry() {}
+
+  _createClass(Geometry, null, [{
+    key: "defaultGeometry",
+    get: function get() {
+      return Geometry.defaultGeometry_ || (Geometry.defaultGeometry_ = new THREE.BoxBufferGeometry(1, 1, 1));
+    }
+  }, {
+    key: "planeGeometry",
+    get: function get() {
+      return Geometry.planeGeometry_ || (Geometry.planeGeometry_ = new THREE.PlaneBufferGeometry(1, 1, 2, 2));
+    }
+  }, {
+    key: "sphereGeometry",
+    get: function get() {
+      return Geometry.sphereGeometry_ || (Geometry.sphereGeometry_ = new THREE.SphereBufferGeometry(3, 12, 12));
+    }
+  }]);
+
+  return Geometry;
+}();var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
   _inheritsLoose(FreezableMesh, _THREE$Mesh);
 
   _createClass(FreezableMesh, [{
@@ -15886,7 +15912,7 @@ var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
   function FreezableMesh(geometry, material) {
     var _this;
 
-    geometry = geometry || new THREE.BoxBufferGeometry(5, 5, 5);
+    geometry = geometry || Geometry.defaultGeometry;
     material = material || new THREE.MeshBasicMaterial({
       color: 0xff00ff // opacity: 1,
       // transparent: true,
@@ -15914,7 +15940,7 @@ var FreezableMesh = /*#__PURE__*/function (_THREE$Mesh) {
   function EmittableMesh(geometry, material) {
     var _this;
 
-    geometry = geometry || new THREE.BoxBufferGeometry(5, 5, 5);
+    geometry = geometry || Geometry.defaultGeometry;
     material = material || new THREE.MeshBasicMaterial({
       color: 0xff00ff // opacity: 1,
       // transparent: true,
@@ -16137,7 +16163,7 @@ var Panorama = /*#__PURE__*/function () {
   var _proto = Panorama.prototype;
 
   _proto.create = function create() {
-    var geometry = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
+    var geometry = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 44, 30);
     geometry.scale(-1, 1, 1);
     geometry.rotateY(Math.PI);
     var material = new THREE.ShaderMaterial({
@@ -16578,7 +16604,7 @@ var AvatarElement = /*#__PURE__*/function () {
     key: "headGeometry",
     get: function get() {
       if (!this.headGeometry_) {
-        this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 48, 48);
+        this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 36, 24);
       }
 
       return this.headGeometry_;
@@ -16708,7 +16734,423 @@ var AvatarElement = /*#__PURE__*/function () {
   };
 
   return AvatarElement;
-}();var VERTEX_SHADER$1 = "\nvarying vec2 vUvShader;\n\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\n\nvoid main() {\n\tvUvShader = uv;\n\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <skinbase_vertex>\n\t#ifdef USE_ENVMAP\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <worldpos_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <envmap_vertex>\n\t#include <fog_vertex>\n}\n";
+}();// import * as THREE from 'three';
+var Texture = /*#__PURE__*/function () {
+  function Texture() {}
+
+  _createClass(Texture, null, [{
+    key: "defaultTexture",
+    get: function get() {
+      return Texture.defaultTexture_ || (Texture.defaultTexture_ = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LjE2NDc1MywgMjAyMS8wMi8xNS0xMTo1MjoxMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjMgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjcyODFGQkE0QUMxODExRUJBQkRBQTEyMzUzMjUxRjg2IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjcyODFGQkE1QUMxODExRUJBQkRBQTEyMzUzMjUxRjg2Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NzI4MUZCQTJBQzE4MTFFQkFCREFBMTIzNTMyNTFGODYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NzI4MUZCQTNBQzE4MTFFQkFCREFBMTIzNTMyNTFGODYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz55AlN+AAAAZUlEQVR42uzQAQEAAAQDMPTvfD3YIqyT1GdTzwkQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAgAtWgAEAVbYDfaostxgAAAAASUVORK5CYII='));
+    }
+  }]);
+
+  return Texture;
+}();var MediaPlayMesh = /*#__PURE__*/function (_InteractiveMesh) {
+  _inheritsLoose(MediaPlayMesh, _InteractiveMesh);
+
+  MediaPlayMesh.getLoader = function getLoader() {
+    return MediaPlayMesh.loader || (MediaPlayMesh.loader = new THREE.TextureLoader());
+  };
+
+  MediaPlayMesh.getTextureOff = function getTextureOff() {
+    return MediaPlayMesh.textureOff || (MediaPlayMesh.textureOff = MediaPlayMesh.getLoader().load(environment.getPath('textures/ui/play-off.png')));
+  };
+
+  MediaPlayMesh.getTextureOn = function getTextureOn() {
+    return MediaPlayMesh.textureOn || (MediaPlayMesh.textureOn = MediaPlayMesh.getLoader().load(environment.getPath('textures/ui/play-on.png')));
+  };
+
+  MediaPlayMesh.getMaterial = function getMaterial() {
+    var material = new THREE.MeshBasicMaterial({
+      map: MediaPlayMesh.getTextureOff(),
+      color: 0xffffff,
+      opacity: 1,
+      transparent: true
+    });
+    return material;
+  };
+
+  _createClass(MediaPlayMesh, [{
+    key: "playing",
+    get: function get() {
+      return this.playing_;
+    },
+    set: function set(playing) {
+      if (this.playing_ !== playing) {
+        this.playing_ = playing;
+        var material = this.material;
+        material.map = playing ? MediaPlayMesh.getTextureOn() : MediaPlayMesh.getTextureOff();
+        this.onOut(); // material.needsUpdate = true;
+        // this.emit('playing', playing);
+        // console.log('MediaPlayMesh.playing', playing);
+      }
+    }
+  }]);
+
+  function MediaPlayMesh(host) {
+    var _this;
+
+    var geometry = Geometry.planeGeometry;
+    var material = MediaPlayMesh.getMaterial();
+    _this = _InteractiveMesh.call(this, geometry, material) || this;
+
+    _defineProperty(_assertThisInitialized(_this), "playing_", false);
+
+    _this.material = material;
+    _this.host = host; // this.color = new THREE.Color(material.color.getHex());
+
+    _this.colorOff = new THREE.Color(material.color.getHex());
+    _this.colorOn = new THREE.Color('#888888'); // new THREE.Color('#0099ff');
+
+    _this.addEventListener();
+
+    return _this;
+  }
+
+  var _proto = MediaPlayMesh.prototype;
+
+  _proto.update = function update(parent) {
+    var scale = this.scale;
+    var parentRatio = parent.scale.x / parent.scale.y;
+    var size = 0.3;
+    scale.set(size / parentRatio, size, 1); // console.log('MediaPlayMesh.setParentScale', parent.scale, scale, position);
+  };
+
+  _proto.disposeMaterial = function disposeMaterial() {
+    if (this.material) {
+      if (this.material.map && this.material.map.disposable !== false) {
+        this.material.map.dispose();
+      }
+
+      this.material.dispose();
+      this.material = null;
+    }
+  };
+
+  _proto.dispose = function dispose() {
+    this.removeEventListener();
+    this.disposeMaterial();
+  };
+
+  _proto.onOver = function onOver() {
+    var color = this.material.color;
+    var target = this.colorOn;
+    var material = this.material; // console.log('MediaPlayMesh.onOver');
+
+    gsap.to(color, {
+      r: target.r,
+      g: target.g,
+      b: target.b,
+      duration: 0.2,
+      ease: Power2.easeInOut
+    });
+    gsap.to(material, {
+      opacity: 1,
+      duration: 0.2,
+      ease: Power2.easeInOut
+    });
+  };
+
+  _proto.onOut = function onOut() {
+    var color = this.material.color;
+    var target = this.colorOff;
+    var material = this.material; // console.log('MediaPlayMesh.onOut');
+
+    gsap.to(color, {
+      r: target.r,
+      g: target.g,
+      b: target.b,
+      duration: 0.2,
+      ease: Power2.easeInOut
+    });
+    gsap.to(material, {
+      opacity: this.playing ? 0 : 1,
+      duration: 0.2,
+      ease: Power2.easeInOut
+    });
+  };
+
+  _proto.addEventListener = function addEventListener() {
+    this.onOver = this.onOver.bind(this);
+    this.onOut = this.onOut.bind(this);
+    this.on('over', this.onOver);
+    this.on('out', this.onOut);
+  };
+
+  _proto.removeEventListener = function removeEventListener() {
+    this.off('over', this.onOver);
+    this.off('out', this.onOut);
+  };
+
+  return MediaPlayMesh;
+}(InteractiveMesh);var MediaZoomMesh = /*#__PURE__*/function (_InteractiveMesh) {
+  _inheritsLoose(MediaZoomMesh, _InteractiveMesh);
+
+  MediaZoomMesh.getLoader = function getLoader() {
+    return MediaZoomMesh.loader || (MediaZoomMesh.loader = new THREE.TextureLoader());
+  };
+
+  MediaZoomMesh.getTextureOff = function getTextureOff() {
+    return MediaZoomMesh.textureOff || (MediaZoomMesh.textureOff = MediaZoomMesh.getLoader().load(environment.getPath('textures/ui/zoom-off.png')));
+  };
+
+  MediaZoomMesh.getTextureOn = function getTextureOn() {
+    return MediaZoomMesh.textureOn || (MediaZoomMesh.textureOn = MediaZoomMesh.getLoader().load(environment.getPath('textures/ui/zoom-on.png')));
+  };
+
+  MediaZoomMesh.getMaterial = function getMaterial() {
+    var material = new THREE.MeshBasicMaterial({
+      map: MediaZoomMesh.getTextureOff(),
+      color: 0xffffff,
+      opacity: 1,
+      transparent: true
+    });
+    return material;
+  }
+  /*
+  visible_ = false;
+  get visible() {
+  	return this.visible_;
+  }
+  set visible(visible) {
+  	if (this.visible_ !== visible) {
+  		this.visible_ = visible;
+  		const material = this.material;
+  		// console.log('MediaZoomMesh.onOver');
+  		gsap.to(material, {
+  			opacity: visible ? 1 : 0,
+  			duration: 0.2,
+  			ease: Power2.easeInOut,
+  		});
+  		// console.log('MediaZoomMesh.visible', visible);
+  	}
+  }
+  */
+  ;
+
+  _createClass(MediaZoomMesh, [{
+    key: "zoomed",
+    get: function get() {
+      return this.zoomed_;
+    },
+    set: function set(zoomed) {
+      if (this.zoomed_ !== zoomed) {
+        this.zoomed_ = zoomed;
+        var material = this.material;
+        material.map = zoomed ? MediaZoomMesh.getTextureOn() : MediaZoomMesh.getTextureOff(); // material.needsUpdate = true;
+
+        if (zoomed) ; else {
+          this.endObject.position.copy(this.originalPosition);
+          this.endObject.scale.copy(this.originalScale);
+          this.endObject.quaternion.copy(this.originalQuaternion);
+        }
+
+        this.updateObjectMatrix();
+        this.emit('zoomed', zoomed); // console.log('MediaZoomMesh.zoomed', zoomed);
+      }
+    }
+  }]);
+
+  function MediaZoomMesh(host) {
+    var _this;
+
+    var geometry = Geometry.planeGeometry;
+    var material = MediaZoomMesh.getMaterial();
+    _this = _InteractiveMesh.call(this, geometry, material) || this;
+
+    _defineProperty(_assertThisInitialized(_this), "zoomed_", false);
+
+    _this.material = material;
+    _this.host = host; // this.color = new THREE.Color(material.color.getHex());
+
+    _this.colorOff = new THREE.Color(material.color.getHex());
+    _this.colorOn = new THREE.Color('#888888'); // new THREE.Color('#0099ff');
+
+    _this.endObject = new THREE.Object3D();
+
+    _this.addEventListener();
+
+    return _this;
+  }
+
+  var _proto = MediaZoomMesh.prototype;
+
+  _proto.update = function update(parent) {
+    this.originalPosition = parent.position.clone();
+    this.originalScale = parent.scale.clone();
+    this.originalQuaternion = parent.quaternion.clone();
+    this.endObject.position.copy(this.originalPosition);
+    this.endObject.scale.copy(this.originalScale);
+    this.endObject.quaternion.copy(this.originalQuaternion);
+    var scale = this.scale;
+    var position = this.position;
+    var parentRatio = parent.scale.x / parent.scale.y;
+    var size = 0.1;
+    scale.set(size / parentRatio, size, 1);
+    position.x = 0.5 - size / parentRatio / 2;
+    position.y = 0.5 - size / 2; // console.log('MediaZoomMesh.setParentScale', parent.scale, scale, position);
+  };
+
+  _proto.render = function render(time, tick) {
+    var parent = this.parent;
+
+    if (!parent) {
+      return;
+    } // const object = this.updateObjectMatrix();
+
+
+    var object = this.endObject;
+    /*
+    parent.position.lerp(object.position, 0.2);
+    parent.scale.lerp(object.scale, 0.2);
+    parent.quaternion.slerp(object.quaternion, 0.2);
+    */
+
+    parent.position.copy(object.position);
+    parent.scale.copy(object.scale);
+    parent.quaternion.copy(object.quaternion);
+  };
+
+  _proto.updateObjectMatrix = function updateObjectMatrix() {
+    var object = this.endObject;
+    var host = this.host;
+
+    if (this.zoomed) {
+      var cameraGroup = host.cameraGroup;
+      var originalScale = this.originalScale;
+      var camera = host.camera,
+          scale;
+      var position = object.position;
+      var aspect = originalScale.x / originalScale.y;
+      var xr = host.renderer.xr;
+
+      if (xr.isPresenting) {
+        camera = xr.getCamera(camera);
+        camera.getWorldDirection(position);
+        scale = 0.3;
+        object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+        var distance = this.getDistanceToCamera(camera, object.scale);
+        position.multiplyScalar(distance * 1);
+        position.add(cameraGroup.position);
+        position.y -= 0.2;
+        object.position.copy(position);
+        /*
+        position.multiplyScalar(distance * 0.75);
+        position.y -= 0.2;
+        cameraGroup.worldToLocal(position);
+        position.y += cameraGroup.position.y;
+        object.position.copy(position);
+        */
+
+        object.lookAt(cameraGroup.position);
+      } else {
+        camera.getWorldDirection(position);
+        scale = 0.1;
+        object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+
+        var _distance = this.getDistanceToCamera(camera, object.scale);
+
+        position.multiplyScalar(_distance);
+        cameraGroup.localToWorld(position);
+        object.position.copy(position);
+        object.lookAt(cameraGroup.position);
+      }
+    }
+
+    return object;
+  };
+
+  _proto.getDistanceToCamera = function getDistanceToCamera(camera, size, fitOffset) {
+    if (fitOffset === void 0) {
+      fitOffset = 1;
+    }
+
+    var factor = 2 * Math.atan(Math.PI * camera.fov / 360);
+    var heightDistance = size.y * camera.zoom / factor;
+    var widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
+
+    var distance = fitOffset * Math.max(heightDistance, widthDistance);
+    return distance;
+  };
+
+  _proto.disposeMaterial = function disposeMaterial() {
+    if (this.material) {
+      if (this.material.map && this.material.map.disposable !== false) {
+        this.material.map.dispose();
+      }
+
+      this.material.dispose();
+      this.material = null;
+    }
+  };
+
+  _proto.dispose = function dispose() {
+    this.removeEventListener();
+    this.disposeMaterial();
+  };
+
+  _proto.onOver = function onOver() {
+    var color = this.material.color;
+    var target = this.colorOn;
+    var material = this.material; // console.log('MediaZoomMesh.onOver');
+
+    gsap.to(color, {
+      r: target.r,
+      g: target.g,
+      b: target.b,
+      duration: 0.2,
+      ease: Power2.easeInOut
+      /*
+      onUpdate: () => {
+      	material.needsUpdate = true;
+      },
+      */
+
+    }); // this.innerVisible = true;
+  };
+
+  _proto.onOut = function onOut() {
+    var color = this.material.color;
+    var target = this.colorOff;
+    var material = this.material; // console.log('MediaZoomMesh.onOut');
+
+    gsap.to(color, {
+      r: target.r,
+      g: target.g,
+      b: target.b,
+      duration: 0.2,
+      ease: Power2.easeInOut
+      /*
+      onUpdate: () => {
+      	material.needsUpdate = true;
+      },
+      */
+
+    }); // this.innerVisible = false;
+  };
+
+  _proto.onToggle = function onToggle() {
+    this.zoomed = !this.zoomed;
+  };
+
+  _proto.addEventListener = function addEventListener() {
+    this.onOver = this.onOver.bind(this);
+    this.onOut = this.onOut.bind(this);
+    this.onToggle = this.onToggle.bind(this);
+    this.on('over', this.onOver);
+    this.on('out', this.onOut);
+    this.on('down', this.onToggle);
+  };
+
+  _proto.removeEventListener = function removeEventListener() {
+    this.off('over', this.onOver);
+    this.off('out', this.onOut);
+    this.off('down', this.onToggle);
+  };
+
+  return MediaZoomMesh;
+}(InteractiveMesh);var VERTEX_SHADER$1 = "\nvarying vec2 vUvShader;\n\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\n\nvoid main() {\n\tvUvShader = uv;\n\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <skinbase_vertex>\n\t#ifdef USE_ENVMAP\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <worldpos_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <envmap_vertex>\n\t#include <fog_vertex>\n}\n";
 var FRAGMENT_SHADER$1 = "\n#define USE_MAP\n\nvarying vec2 vUvShader;\nuniform vec3 diffuse;\nuniform float opacity;\n\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n\n#include <common>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <envmap_common_pars_fragment>\n#include <envmap_pars_fragment>\n#include <cube_uv_reflection_fragment>\n#include <fog_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\n\n// uniform sampler2D map;\nuniform sampler2D playMap;\nuniform vec2 mapResolution;\nuniform vec2 playMapResolution;\nuniform float mapTween;\nuniform float playMapTween;\nuniform vec3 playMapColor;\nuniform bool isVideo;\n\nvoid main() {\n\t#include <clipping_planes_fragment>\n\n\tvec4 diffuseColor = vec4(vec3(1.0), opacity);\n\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\n\t// main\n\tvec4 mapRgba = texture2D(map, vUvShader);\n\tmapRgba = mapTexelToLinear(mapRgba);\n\tif (isVideo) {\n\t\tvec4 playMapRgba = texture2D(playMap, vUvShader);\n\t\tplayMapRgba = mapTexelToLinear(playMapRgba);\n\t\tdiffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity);\n\t} else {\n\t\tdiffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity);\n\t}\n\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\n\tReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));\n\n\t// accumulation (baked indirect lighting only)\n\t#ifdef USE_LIGHTMAP\n\t\tvec4 lightMapRgba = texture2D(lightMap, vUv2);\n\t\treflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;\n\t#else\n\t\treflectedLight.indirectDiffuse += vec3(1.0);\n\t#endif\n\n\t// modulation\n\t#include <aomap_fragment>\n\n\treflectedLight.indirectDiffuse *= diffuseColor.rgb;\n\n\tvec3 outgoingLight = reflectedLight.indirectDiffuse;\n\n\t#include <envmap_fragment>\n\n\tgl_FragColor = vec4(outgoingLight, diffuseColor.a);\n\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}\n";
 var FRAGMENT_CHROMA_KEY_SHADER = "\n#define USE_MAP\n#define threshold 0.55\n#define padding 0.05\n\nvarying vec2 vUvShader;\nuniform vec3 diffuse;\nuniform float opacity;\n\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n\n#include <common>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <envmap_common_pars_fragment>\n#include <envmap_pars_fragment>\n#include <cube_uv_reflection_fragment>\n#include <fog_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\n\n// uniform sampler2D map;\nuniform sampler2D playMap;\nuniform vec2 mapResolution;\nuniform vec2 playMapResolution;\nuniform float mapTween;\nuniform float playMapTween;\nuniform vec3 playMapColor;\nuniform vec3 chromaKeyColor;\nuniform bool isVideo;\n\nvoid main() {\n\t#include <clipping_planes_fragment>\n\n\tvec4 diffuseColor = vec4(vec3(1.0), opacity);\n\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\n\t// main\n\tvec4 mapRgba = texture2D(map, vUvShader);\n\tmapRgba = mapTexelToLinear(mapRgba);\n\tvec4 chromaKey = vec4(chromaKeyColor, 1.0);\n    vec3 chromaKeyDiff = mapRgba.rgb - chromaKey.rgb;\n    float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));\n\t/*\n\tif (isVideo) {\n\t\tvec4 playMapRgba = texture2D(playMap, vUvShader);\n\t\tplayMapRgba = mapTexelToLinear(playMapRgba);\n\t\tdiffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity * chromaKeyValue);\n\t} else {\n\t\tdiffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);\n\t}\n\t*/\n\tdiffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);\n\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\n\tReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));\n\n\t// accumulation (baked indirect lighting only)\n\t#ifdef USE_LIGHTMAP\n\t\tvec4 lightMapRgba = texture2D(lightMap, vUv2);\n\t\treflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;\n\t#else\n\t\treflectedLight.indirectDiffuse += vec3(1.0);\n\t#endif\n\n\t// modulation\n\t#include <aomap_fragment>\n\n\treflectedLight.indirectDiffuse *= diffuseColor.rgb;\n\n\tvec3 outgoingLight = reflectedLight.indirectDiffuse;\n\n\t#include <envmap_fragment>\n\n\tgl_FragColor = vec4(outgoingLight, diffuseColor.a);\n\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}\n";
 
@@ -16728,7 +17170,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       uniforms: {
         map: {
           type: "t",
-          value: null
+          value: Texture.defaultTexture
         },
         mapResolution: {
           value: new THREE.Vector2()
@@ -16741,7 +17183,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         },
         playMap: {
           type: "t",
-          value: null
+          value: Texture.defaultTexture
         },
         playMapResolution: {
           value: new THREE.Vector2()
@@ -16780,7 +17222,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       uniforms: {
         map: {
           type: "t",
-          value: null
+          value: Texture.defaultTexture
         },
         mapResolution: {
           value: new THREE.Vector2()
@@ -16793,7 +17235,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         },
         playMap: {
           type: "t",
-          value: null
+          value: Texture.defaultTexture
         },
         playMapResolution: {
           value: new THREE.Vector2()
@@ -16916,7 +17358,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     if (item.asset && item.asset.chromaKeyColor) {
       material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
     } else if (item.asset) {
-      material = MediaMesh.getMaterial();
+      material = new THREE.MeshBasicMaterial({
+        color: 0x888888
+      }); // MediaMesh.getMaterial();
     } else {
       material = new THREE.MeshBasicMaterial({
         color: 0x888888
@@ -16940,7 +17384,23 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return uniforms;
   };
 
-  function MediaMesh(item, items, geometry) {
+  _createClass(MediaMesh, [{
+    key: "editing",
+    get: function get() {
+      return this.editing_;
+    },
+    set: function set(editing) {
+      if (this.editing_ !== editing) {
+        this.editing_ = editing;
+
+        if (this.zoomBtn && editing) {
+          this.zoomBtn.zoomed = false;
+        }
+      }
+    }
+  }]);
+
+  function MediaMesh(item, items, geometry, host) {
     var _this;
 
     var material = MediaMesh.getMaterialByItem(item);
@@ -16948,8 +17408,22 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
     _this.item = item;
     _this.items = items;
+    _this.host = host;
     _this.uniforms = MediaMesh.getUniformsByItem(item);
     var mediaLoader = _this.mediaLoader = new MediaLoader(item);
+    _this.onOver = _this.onOver.bind(_assertThisInitialized(_this));
+    _this.onOut = _this.onOut.bind(_assertThisInitialized(_this));
+    _this.onToggle = _this.onToggle.bind(_assertThisInitialized(_this));
+    _this.onZoomed = _this.onZoomed.bind(_assertThisInitialized(_this));
+
+    _this.addZoomBtn();
+
+    _this.addPlayBtn();
+
+    _this.userData.render = function (time, tick) {
+      _this.render(_assertThisInitialized(_this), time, tick);
+    };
+
     return _this;
   }
 
@@ -16957,6 +17431,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
   _proto.load = function load(callback) {
     var _this3 = this;
+
+    this.remove(this.playBtn);
+    this.remove(this.zoomBtn);
 
     if (!this.item.asset) {
       this.onAppear();
@@ -17009,16 +17486,16 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
           material.uniforms.isVideo.value = true;
         }
 
-        _this3.onOver = _this3.onOver.bind(_this3);
-        _this3.onOut = _this3.onOut.bind(_this3);
-        _this3.onToggle = _this3.onToggle.bind(_this3);
-
         _this3.on('over', _this3.onOver);
 
         _this3.on('out', _this3.onOut);
 
         _this3.on('down', _this3.onToggle);
+
+        _this3.add(_this3.playBtn);
       }
+
+      _this3.add(_this3.zoomBtn);
 
       if (typeof callback === 'function') {
         callback(_this3);
@@ -17083,11 +17560,19 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       if (event instanceof MediaLoaderPlayEvent) {
         _this4.playing = true;
 
+        if (_this4.playBtn) {
+          _this4.playBtn.playing = true;
+        }
+
         _this4.emit('playing', true);
 
         _this4.onOut();
       } else if (event instanceof MediaLoaderPauseEvent) {
         _this4.playing = false;
+
+        if (_this4.playBtn) {
+          _this4.playBtn.playing = false;
+        }
 
         _this4.emit('playing', false);
 
@@ -17126,8 +17611,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         opacity: 1,
         ease: Power2.easeInOut,
         onUpdate: function onUpdate() {
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
+          material.uniforms.opacity.value = uniforms.opacity; // material.needsUpdate = true;
         }
       });
     }
@@ -17143,8 +17627,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         opacity: 0,
         ease: Power2.easeInOut,
         onUpdate: function onUpdate() {
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
+          material.uniforms.opacity.value = uniforms.opacity; // material.needsUpdate = true;
         }
       });
     }
@@ -17165,11 +17648,15 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         onUpdate: function onUpdate() {
           material.uniforms.mapTween.value = uniforms.mapTween;
           material.uniforms.playMapTween.value = uniforms.playMapTween;
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
+          material.uniforms.opacity.value = uniforms.opacity; // material.needsUpdate = true;
         }
       });
     }
+
+    if (this.playBtn) {
+      this.playBtn.onOver();
+    } // this.zoomBtn.visible = true;
+
   };
 
   _proto.onOut = function onOut() {
@@ -17187,15 +17674,24 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         onUpdate: function onUpdate() {
           material.uniforms.mapTween.value = uniforms.mapTween;
           material.uniforms.playMapTween.value = uniforms.playMapTween;
-          material.uniforms.opacity.value = uniforms.opacity;
-          material.needsUpdate = true;
+          material.uniforms.opacity.value = uniforms.opacity; // material.needsUpdate = true;
         }
       });
     }
+
+    if (this.playBtn) {
+      this.playBtn.onOut();
+    } // this.zoomBtn.visible = false;
+
   };
 
   _proto.onToggle = function onToggle() {
     this.playing = this.mediaLoader.toggle();
+
+    if (this.playBtn) {
+      this.playBtn.playing = this.playing;
+    }
+
     this.emit('playing', this.playing);
     this.onOut();
   };
@@ -17223,6 +17719,16 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       this.playing = playing;
       playing ? this.mediaLoader.play() : this.mediaLoader.pause();
       this.onOut();
+
+      if (this.playBtn) {
+        this.playBtn.playing = playing;
+      }
+    }
+  };
+
+  _proto.setZoomedState = function setZoomedState(zoomed) {
+    if (this.zoomBtn) {
+      this.zoomBtn.zoomed = zoomed;
     }
   };
 
@@ -17268,7 +17774,73 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   _proto.dispose = function dispose() {
+    this.removePlayBtn();
+    this.removeZoomBtn();
     this.disposeMediaLoader();
+  };
+
+  _proto.addPlayBtn = function addPlayBtn() {
+    var playBtn = this.playBtn = new MediaPlayMesh(this.host);
+    playBtn.on('over', this.onOver);
+    playBtn.on('out', this.onOut);
+    playBtn.on('down', this.onToggle);
+    playBtn.position.z = 0.01;
+  };
+
+  _proto.removePlayBtn = function removePlayBtn() {
+    if (this.playBtn) {
+      this.playBtn.off('over', this.onOver);
+      this.playBtn.off('out', this.onOut);
+      this.playBtn.off('down', this.onToggle);
+      this.playBtn.dispose();
+      delete this.playBtn;
+    }
+  };
+
+  _proto.onZoomed = function onZoomed(zoomed) {
+    this.emit('zoomed', zoomed);
+  };
+
+  _proto.addZoomBtn = function addZoomBtn() {
+    var zoomBtn = this.zoomBtn = new MediaZoomMesh(this.host);
+    zoomBtn.on('zoomed', this.onZoomed);
+    zoomBtn.position.z = 0.01;
+  };
+
+  _proto.removeZoomBtn = function removeZoomBtn() {
+    if (this.zoomBtn) {
+      this.zoomBtn.off('zoomed', this.onZoomed);
+      this.zoomBtn.dispose();
+      delete this.zoomBtn;
+    }
+  };
+
+  _proto.updateFromItem = function updateFromItem(item) {
+    if (item.position) {
+      this.position.fromArray(item.position);
+    }
+
+    if (item.rotation) {
+      this.rotation.fromArray(item.rotation);
+    }
+
+    if (item.scale) {
+      this.scale.fromArray(item.scale);
+    }
+
+    if (this.playBtn) {
+      this.playBtn.update(this);
+    }
+
+    if (this.zoomBtn) {
+      this.zoomBtn.update(this);
+    }
+  };
+
+  _proto.render = function render(time, tick) {
+    if (this.zoomBtn && !this.editing) {
+      this.zoomBtn.render(time, tick);
+    }
   };
 
   return MediaMesh;
@@ -17817,7 +18389,10 @@ var PointerElement = /*#__PURE__*/function () {
       color = '#ffffff';
     }
 
-    var geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
+    var position = this.position = new THREE.Vector3();
+    var targetPosition = this.targetPosition = new THREE.Vector3();
+    var geometry = Geometry.planeGeometry; // new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
+
     var loader = new THREE.TextureLoader();
     var texture = loader.load(environment.getPath('textures/ui/nav-point.png'));
     var material = new THREE.MeshBasicMaterial({
@@ -17835,26 +18410,155 @@ var PointerElement = /*#__PURE__*/function () {
 
   var _proto = PointerElement.prototype;
 
-  _proto.update = function update() {
+  _proto.update = function update(camera) {
     if (Interactive.lastIntersectedObject) {
+      var position = this.position;
+      position.copy(Interactive.lastIntersectedObject.intersection.point);
+      position.multiplyScalar(0.99);
       var mesh = this.mesh;
-      var position = Interactive.lastIntersectedObject.intersection.point.multiplyScalar(0.99);
       mesh.position.set(position.x, position.y, position.z);
-      var s = mesh.position.length() / 80;
+      position.sub(camera.position);
+      var s = position.length() / 80;
       mesh.scale.set(s, s, s);
-      mesh.lookAt(ORIGIN);
+      var targetPosition = this.targetPosition;
+      targetPosition.set(0, 0, 0);
+      camera.localToWorld(targetPosition);
+      mesh.lookAt(targetPosition);
     }
   };
 
-  _proto.setPosition = function setPosition(x, y, z) {
+  _proto.setPosition = function setPosition(x, y, z, camera) {
+    var position = this.position;
+    position.set(x, y, z).multiplyScalar(80);
     var mesh = this.mesh;
-    mesh.position.set(x, y, z).multiplyScalar(80);
-    var s = mesh.position.length() / 80;
+    mesh.position.copy(position);
+    position.sub(camera.position);
+    var s = position.length() / 80;
     mesh.scale.set(s, s, s);
-    mesh.lookAt(ORIGIN); // console.log('PointerElement.setPosition', x, y, z);
+    var targetPosition = this.targetPosition;
+    targetPosition.set(0, 0, 0);
+    camera.localToWorld(targetPosition);
+    mesh.lookAt(targetPosition);
   };
 
   return PointerElement;
+}();// import * as THREE from 'three';
+var LINE_SEGMENTS = 10;
+var TeleportElement = /*#__PURE__*/function () {
+  function TeleportElement() {
+    var gravity = this.gravity = new THREE.Vector3(0, -9.8, 0);
+    var controllerPosition = this.controllerPosition = new THREE.Vector3();
+    var controllerDirection = this.controllerDirection = new THREE.Vector3();
+    var currentPosition = this.currentPosition = new THREE.Vector3();
+    var targetPosition = this.targetPosition = new THREE.Vector3();
+    var geometry = new THREE.BufferGeometry();
+    var vertices = this.vertices = new Float32Array((LINE_SEGMENTS + 1) * 3);
+    vertices.fill(0);
+    var colors = new Float32Array((LINE_SEGMENTS + 1) * 3);
+    colors.fill(0.5);
+    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    var lineMaterial = new THREE.LineBasicMaterial({
+      vertexColors: true,
+      blending: THREE.AdditiveBlending
+    });
+    var line = this.line = new THREE.Line(geometry, lineMaterial); // const light = this.light = new THREE.PointLight(0xffeeaa, 0, 2);
+
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load(environment.getPath('textures/ui/nav-point.png'));
+    var target = this.target = new THREE.Mesh(new THREE.PlaneBufferGeometry(0.3, 0.3, 1, 1), new THREE.MeshBasicMaterial({
+      map: texture,
+      blending: THREE.AdditiveBlending,
+      color: 0x555555,
+      transparent: true
+    }));
+    target.rotation.x = -Math.PI / 2;
+  }
+
+  var _proto = TeleportElement.prototype;
+
+  _proto.addToController = function addToController(controller, scene) {
+    this.currentController = controller; // this.light.intensity = 1;
+
+    controller.add(this.line);
+    scene.add(this.target);
+  };
+
+  _proto.removeFromController = function removeFromController(controller, scene, renderer, camera, cameraGroup) {
+    var currentController = this.currentController;
+
+    if (currentController === controller) {
+      var gravity = this.gravity;
+      var currentPosition = this.currentPosition;
+      var controllerPosition = this.controllerPosition;
+      var controllerDirection = this.controllerDirection;
+      renderer.xr.getCamera(camera).getWorldPosition(currentPosition);
+      currentPosition.y = 0;
+      currentController.getWorldPosition(controllerPosition);
+      currentController.getWorldDirection(controllerDirection);
+      controllerDirection.multiplyScalar(6);
+      var T = (-controllerDirection.y + Math.sqrt(Math.pow(controllerDirection.y, 2) - 2 * controllerPosition.y * gravity.y)) / gravity.y;
+      var targetPosition = this.getPositionT(this.targetPosition, T, controllerPosition, controllerDirection, gravity);
+      targetPosition.addScaledVector(currentPosition, -1);
+      cameraGroup.position.add(targetPosition); // this.teleport(targetPosition, cameraGroup);
+
+      this.currentController = null; // this.light.intensity = 0;
+
+      currentController.remove(this.line);
+      scene.remove(this.target);
+    }
+  };
+
+  _proto.update = function update() {
+    var currentController = this.currentController;
+
+    if (currentController) {
+      var gravity = this.gravity;
+      var controllerPosition = this.controllerPosition;
+      var controllerDirection = this.controllerDirection;
+      var targetPosition = this.targetPosition; // Controller start position
+
+      currentController.getWorldPosition(controllerPosition); // Set Vector V to the direction of the controller, at 1m/s
+
+      currentController.getWorldDirection(controllerDirection); // Scale the initial velocity to 6m/s
+
+      controllerDirection.multiplyScalar(6); // Time for tele ball to hit ground
+
+      var T = (-controllerDirection.y + Math.sqrt(Math.pow(controllerDirection.y, 2) - 2 * controllerPosition.y * gravity.y)) / gravity.y;
+      var vertex = targetPosition.set(0, 0, 0);
+
+      for (var i = 1; i <= LINE_SEGMENTS; i++) {
+        // set vertex to current position of the virtual ball at time t
+        this.getPositionT(vertex, i * T / LINE_SEGMENTS, controllerPosition, controllerDirection, gravity);
+        currentController.worldToLocal(vertex);
+        vertex.toArray(this.vertices, i * 3);
+      }
+
+      this.line.geometry.attributes.position.needsUpdate = true; // Place the light and sprite near the end of the poing
+      // this.getPositionT(this.light.position, T * 0.98, controllerPosition, controllerDirection, gravity);
+
+      this.getPositionT(this.target.position, T * 0.98, controllerPosition, controllerDirection, gravity);
+    }
+  };
+
+  _proto.getPositionT = function getPositionT(position, T, controllerPosition, controllerDirection, gravity) {
+    position.copy(controllerPosition);
+    position.addScaledVector(controllerDirection, T);
+    position.addScaledVector(gravity, 0.5 * Math.pow(T, 2));
+    return position;
+  }
+  /*
+  teleport(offsetPosition, cameraGroup) {
+  	const position = new THREE.Vector3();
+  	position.copy(cameraGroup.position);
+  	position.add(offsetPosition);
+  	// const distance = offsetPosition.length();
+  	cameraGroup.position.copy(position);
+  }
+  */
+  ;
+
+  return TeleportElement;
 }();var Emittable$1 = /*#__PURE__*/function () {
   function Emittable() {
     this.events = {};
@@ -22008,6 +22712,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
   _proto.addControllers = function addControllers() {
     var controllerGroup = this.controllerGroup = new THREE.Group();
+    var teleport = this.teleport = new TeleportElement();
     this.controllers = [];
     this.controllerModelFactory = new XRControllerModelFactory();
     this.addController(0);
@@ -22023,6 +22728,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var controllerGroup = this.controllerGroup;
     var controller = renderer.xr.getController(index);
     var controllerModelFactory = this.controllerModelFactory;
+    var teleport = this.teleport;
+    var scene = this.scene;
+    var camera = this.camera;
+    var cameraGroup = this.cameraGroup;
     controller.name = "[controller" + (index + 1) + "]";
     controllerGroup.add(controller);
 
@@ -22038,6 +22747,23 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
     var onSelectEnd = function onSelectEnd(event) {
       controller.userData.isSelecting = false;
+    };
+
+    var onSqueezeStart = function onSqueezeStart(event) {
+      if (_this5.view && _this5.view.type.name === ViewType.Room3d.name) {
+        teleport.addToController(controller, scene); // this.scene.remove(this.indicator.mesh);
+
+        _this5.indicator.mesh.visible = false;
+        controller.children[0].visible = false;
+      }
+    };
+
+    var onSqueezeEnd = function onSqueezeEnd(event) {
+      // if (this.view && this.view.type.name === ViewType.Room3d.name) {
+      teleport.removeFromController(controller, scene, renderer, camera, cameraGroup); // this.scene.add(this.indicator.mesh);
+
+      _this5.indicator.mesh.visible = true;
+      controller.children[0].visible = true; // }
     }; // const debugService = DebugService.getService();
     // debugService.setMessage('DebugService 1001');
 
@@ -22130,7 +22856,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       if (!showPhone || event.data.handedness === 'right') {
         var controllerGrip = renderer.xr.getControllerGrip(index);
         controllerGrip.name = "[controller-grip" + (index + 1) + "]";
-        controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
+        var controllerModel = controllerModelFactory.createControllerModel(controllerGrip);
+        controller.userData.model = controllerModel;
+        controllerGrip.add(controllerModel);
         controllerGroup.add(controllerGrip);
       }
 
@@ -22143,6 +22871,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       // gamepad.on('down', onDown);
 
       controller.userData.gamepad = gamepad;
+
+      controller.userData.update = function () {
+        gamepad.update();
+      };
     };
 
     var onDisconnected = function onDisconnected(event) {
@@ -22157,19 +22889,33 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       }
 
       controllerGroup.remove(controllerGrip);
+
+      controller.userData.update = function () {};
+
       var gamepad = controller.userData.gamepad;
-      gamepad.off('press', onPress);
-      gamepad.off('release', onRelease);
-      gamepad.off('left', onLeft);
-      gamepad.off('right', onRight);
-      gamepad.off('axis', onAxis); // gamepad.off('up', onUp);
-      // gamepad.off('down', onDown);
+
+      if (gamepad) {
+        gamepad.off('press', onPress);
+        gamepad.off('release', onRelease);
+        gamepad.off('left', onLeft);
+        gamepad.off('right', onRight);
+        gamepad.off('axis', onAxis); // gamepad.off('up', onUp);
+        // gamepad.off('down', onDown);
+
+        delete controller.userData.gamepad;
+      }
+
+      teleport.removeFromController(controller, scene, renderer, camera, cameraGroup);
     };
+
+    controller.userData.update = function () {};
 
     controller.addEventListener('selectstart', onSelectStart);
     controller.addEventListener('selectend', onSelectEnd);
     controller.addEventListener('connected', onConnected);
     controller.addEventListener('disconnected', onDisconnected);
+    controller.addEventListener('squeezestart', onSqueezeStart);
+    controller.addEventListener('squeezeend', onSqueezeEnd);
     var controllers = this.controllers;
     controllers.push(controller);
   };
@@ -22291,27 +23037,28 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         return;
       }
 
+      if (isPresenting) {
+        gsap.ticker.tick();
+        this.controllers.forEach(function (controller) {
+          return controller.userData.update();
+        });
+        this.teleport.update();
+      } else {
+        this.navWithKeys();
+      }
+
       var time = performance.now();
       var tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
-      this.raycasterXRHitTest();
       this.scene.traverse(function (child) {
         if (typeof child.userData.render === 'function') {
           child.userData.render(time, tick);
         }
       });
-      this.vrService.updateState(this);
       Object.keys(this.avatars).forEach(function (key) {
         _this6.avatars[key].render();
       });
-
-      if (isPresenting) {
-        gsap.ticker.tick();
-        this.controllers.forEach(function (controller) {
-          controller.userData.gamepad.update();
-        });
-      } else {
-        this.navWithKeys();
-      }
+      this.vrService.updateState(this);
+      this.raycasterXRHitTest();
       /*
       const objects = this.objects;
       for (let i = 0; i < objects.children.length; i++) {
@@ -22321,7 +23068,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       	}
       }
       */
-
 
       renderer.render(this.scene, this.camera);
 
@@ -22452,7 +23198,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
       if (raycaster) {
         var hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
-        this.indicator.update();
+        this.indicator.update(this.renderer.xr.getCamera(this.camera));
         /*
         if (hit && hit !== this.panorama.mesh) {
         	// controllers.feedback();
@@ -22724,6 +23470,26 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     });
   };
 
+  _proto.onZoomMedia = function onZoomMedia(event) {
+    if (event.zoomed) {
+      this.view.items.forEach(function (item) {
+        if (item.mesh instanceof MediaMesh) {
+          console.log(item.id, event.itemId, item.id !== event.itemId);
+
+          if (item.id !== event.itemId) {
+            item.mesh.setZoomedState(false);
+          }
+        }
+      });
+    }
+
+    MessageService.send({
+      type: MessageType.ZoomMedia,
+      itemId: event.itemId,
+      zoomed: event.zoomed
+    });
+  };
+
   _proto.onCurrentTimeMedia = function onCurrentTimeMedia(event) {
     MessageService.send({
       type: MessageType.CurrentTimeMedia,
@@ -22934,6 +23700,21 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             break;
           }
 
+        case MessageType.ZoomMedia:
+          {
+            _this9.view.items.forEach(function (item) {
+              if (item.mesh instanceof MediaMesh) {
+                if (item.id === message.itemId) {
+                  item.mesh.setZoomedState(message.zoomed);
+                } else {
+                  item.mesh.setZoomedState(false);
+                }
+              }
+            });
+
+            break;
+          }
+
         case MessageType.CurrentTimeMedia:
           {
             var _item = _this9.view.items.find(function (item) {
@@ -22999,7 +23780,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
           }
 
-          _this9.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
+          _this9.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2], _this9.camera);
 
           break;
       }
@@ -23116,10 +23897,7 @@ WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views', 'editor'],
   outputs: ['navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
-};var deg = THREE.Math.degToRad;
-var GEOMETRY = new THREE.BoxBufferGeometry(1, 1, 1); // const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
-
-var ModelComponent = /*#__PURE__*/function (_Component) {
+};var ModelComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModelComponent, _Component);
 
   function ModelComponent() {
@@ -23182,7 +23960,7 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
       transparent: true,
       opacity: 0.9
     });
-    var mesh = new THREE.Mesh(GEOMETRY, material);
+    var mesh = new THREE.Mesh(Geometry.defaultGeometry, material);
 
     if (typeof mounth === 'function') {
       mounth(mesh);
@@ -23288,8 +24066,8 @@ var ModelComponent = /*#__PURE__*/function (_Component) {
     const position = this.position;
     group.position.set(position.x, 0, 0);
     // const tween = this.tween();
-    // group.rotation.x = deg(180) * tween;
-    // group.rotation.y = deg(360) * tween;
+    // group.rotation.x = THREE.Math.degToRad(180) * tween;
+    // group.rotation.y = THREE.Math.degToRad(360) * tween;
     */
   };
 
@@ -23683,7 +24461,12 @@ ModelEditableComponent.meta = {
   };
 
   _proto.onChanges = function onChanges() {
-    this.editing = this.item.selected;
+    var selected = this.item.selected;
+    this.editing = selected;
+
+    if (this.mesh) {
+      this.mesh.editing = selected;
+    }
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
@@ -23693,6 +24476,10 @@ ModelEditableComponent.meta = {
     var view = this.view;
     var items = view.items;
     var geometry = this.getCurvedPanelGeometry(item);
+    this.onMeshDown = this.onMeshDown.bind(this);
+    this.onMeshPlaying = this.onMeshPlaying.bind(this);
+    this.onMeshZoomed = this.onMeshZoomed.bind(this);
+    this.onMeshCurrentTime = this.onMeshCurrentTime.bind(this);
     var mesh;
     var subscription;
     MediaMesh.getStreamId$(item).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
@@ -23713,21 +24500,9 @@ ModelEditableComponent.meta = {
 
         if (streamId || !item.asset) {
           item.streamId = streamId;
-          mesh = new MediaMesh(item, items, geometry);
+          mesh = new MediaMesh(item, items, geometry, _this.host);
+          mesh.updateFromItem(item);
           mesh.name = 'curved-plane';
-
-          if (item.position) {
-            mesh.position.fromArray(item.position);
-          }
-
-          if (item.rotation) {
-            mesh.rotation.fromArray(item.rotation);
-          }
-
-          if (item.scale) {
-            mesh.scale.fromArray(item.scale);
-          }
-
           mesh.load(function () {
             if (typeof mount === 'function') {
               mount(mesh, item);
@@ -23735,29 +24510,56 @@ ModelEditableComponent.meta = {
 
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
-          mesh.on('down', function () {
-            // console.log('ModelCurvedPanelComponent.down');
-            _this.down.next(_this);
-          });
-          mesh.on('playing', function (playing) {
-            // console.log('ModelCurvedPanelComponent.playing', playing);
-            _this.play.next({
-              itemId: _this.item.id,
-              playing: playing
-            });
-          });
-          mesh.on('currentTime', function (currentTime) {
-            // console.log('ModelCurvedPanelComponent.playing', playing);
-            _this.currentTime.next({
-              itemId: _this.item.id,
-              currentTime: currentTime
-            });
-          });
+
+          _this.addMeshListeners(mesh);
         } else if (_this.mesh) {
           dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
 
       }
+    });
+  };
+
+  _proto.addMeshListeners = function addMeshListeners(mesh) {
+    mesh.on('down', this.onMeshDown);
+    mesh.on('playing', this.onMeshPlaying);
+    mesh.on('zoomed', this.onMeshZoomed);
+    mesh.on('currentTime', this.onMeshCurrentTime);
+  };
+
+  _proto.removeMeshListeners = function removeMeshListeners(mesh) {
+    mesh.off('down', this.onMeshDown);
+    mesh.off('playing', this.onMeshPlaying);
+    mesh.off('zoomed', this.onMeshZoomed);
+    mesh.off('currentTime', this.onMeshCurrentTime);
+  };
+
+  _proto.onMeshDown = function onMeshDown() {
+    // console.log('ModelCurvedPanelComponent.onMeshDown');
+    this.down.next(this);
+  };
+
+  _proto.onMeshPlaying = function onMeshPlaying(playing) {
+    // console.log('ModelCurvedPanelComponent.playing', playing);
+    this.play.next({
+      itemId: this.item.id,
+      playing: playing
+    });
+  };
+
+  _proto.onMeshZoomed = function onMeshZoomed(zoomed) {
+    // console.log('ModelCurvedPanelComponent.zoomed', zoomed);
+    this.zoom.next({
+      itemId: this.item.id,
+      zoomed: zoomed
+    });
+  };
+
+  _proto.onMeshCurrentTime = function onMeshCurrentTime(currentTime) {
+    // console.log('ModelCurvedPanelComponent.playing', playing);
+    this.currentTime.next({
+      itemId: this.item.id,
+      currentTime: currentTime
     });
   };
 
@@ -23786,26 +24588,24 @@ ModelEditableComponent.meta = {
 
 
     if ( (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
-      this.mesh.geometry.dispose();
+      mesh.geometry.dispose();
       var geometry = this.getCurvedPanelGeometry(item);
-      this.mesh.geometry = geometry;
+      mesh.geometry = geometry;
     }
 
+    mesh.updateFromItem(item);
     this.updateHelper();
   } // called by UpdateViewItemComponent
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
-    var _this2 = this;
-
     // console.log('ModelCurvedPlaneComponent.onUpdateAsset', item);
-    this.mesh.updateByItem(item);
+    mesh.updateByItem(item);
     MediaMesh.getStreamId$(item).pipe(operators.filter(function (streamId) {
       return streamId !== null;
     }), operators.take(1)).subscribe(function (streamId) {
       item.streamId = streamId;
-
-      _this2.mesh.load(function () {// console.log('ModelCurvedPlaneComponent.mesh.load.complete');
+      mesh.load(function () {// console.log('ModelCurvedPlaneComponent.mesh.load.complete');
       });
     });
   } // called by WorldComponent
@@ -23813,18 +24613,20 @@ ModelEditableComponent.meta = {
 
   _proto.onDragMove = function onDragMove(position, normal, spherical) {
     // console.log('ModelCurvedPlaneComponent.onDragMove', position, normal, spherical);
-    this.item.showPanel = false;
+    var item = this.item;
+    var mesh = this.mesh;
+    item.showPanel = false;
     this.editing = true;
-    this.mesh.position.set(position.x, position.y, position.z);
+    mesh.position.set(position.x, position.y, position.z);
 
     if (spherical) {
       position.normalize().multiplyScalar(20);
-      this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN); // cameraGroup?
+      mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN); // cameraGroup?
     } else {
-      this.mesh.position.set(0, 0, 0);
-      this.mesh.lookAt(normal);
-      this.mesh.position.set(position.x, position.y, position.z);
-      this.mesh.position.add(normal.multiplyScalar(0.01));
+      mesh.position.set(0, 0, 0);
+      mesh.lookAt(normal);
+      mesh.position.set(position.x, position.y, position.z);
+      mesh.position.add(normal.multiplyScalar(0.01));
     }
 
     this.updateHelper();
@@ -23832,9 +24634,12 @@ ModelEditableComponent.meta = {
   ;
 
   _proto.onDragEnd = function onDragEnd() {
-    this.item.position = this.mesh.position.toArray();
-    this.item.rotation = this.mesh.rotation.toArray();
-    this.item.scale = this.mesh.scale.toArray();
+    var item = this.item;
+    var mesh = this.mesh;
+    item.position = mesh.position.toArray();
+    item.rotation = mesh.rotation.toArray();
+    item.scale = mesh.scale.toArray();
+    mesh.updateFromItem(item);
     this.editing = false;
   };
 
@@ -23858,7 +24663,7 @@ ModelCurvedPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play', 'currentTime'],
+  outputs: ['down', 'play', 'zoom', 'currentTime'],
   inputs: ['item', 'view']
 };var DebugService = /*#__PURE__*/function () {
   DebugService.getService = function getService() {
@@ -24234,7 +25039,8 @@ var ModelGridComponent = /*#__PURE__*/function (_ModelComponent) {
     this.onGroundMove = this.onGroundMove.bind(this);
     this.onGroundDown = this.onGroundDown.bind(this);
     this.onGroundOut = this.onGroundOut.bind(this);
-    var geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 20, 20);
+    var geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 8, 8); // 20, 20
+
     geometry.rotateX(-Math.PI / 2); // geometry.scale(-1, 1, 1);
 
     var material = new THREE.MeshBasicMaterial({
@@ -24464,9 +25270,7 @@ ModelGridComponent.meta = {
         return this.geometry_;
       }
 
-      var geometry = new THREE.PlaneBufferGeometry(1, 1 / MenuButton.W * MenuButton.H, 2, 2); // geometry.rotateX(-Math.PI);
-      // geometry.scale(-1, 1, 1);
-
+      var geometry = new THREE.PlaneBufferGeometry(1, 1 / MenuButton.W * MenuButton.H, 2, 2);
       this.geometry_ = geometry;
       return geometry;
     }
@@ -25977,12 +26781,6 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     return _ModelEditableCompone.apply(this, arguments) || this;
   }
 
-  ModelNavComponent.getNavGeometry = function getNavGeometry() {
-    // const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
-    // const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
-    return ModelNavComponent.navGeometry || (ModelNavComponent.navGeometry = new THREE.SphereBufferGeometry(3, 12, 12));
-  };
-
   ModelNavComponent.getLoader = function getLoader() {
     return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
   };
@@ -26129,7 +26927,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
 
     nav.position.set(position.x, position.y, position.z);
     this.onCreateSprites(nav);
-    var geometry = ModelNavComponent.getNavGeometry();
+    var geometry = Geometry.sphereGeometry;
     var sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
       depthTest: false,
       depthWrite: false,
@@ -26790,7 +27588,12 @@ ModelPictureComponent.meta = {
   };
 
   _proto.onChanges = function onChanges() {
-    this.editing = this.item.selected;
+    var selected = this.item.selected;
+    this.editing = selected;
+
+    if (this.mesh) {
+      this.mesh.editing = selected;
+    }
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
@@ -26799,7 +27602,11 @@ ModelPictureComponent.meta = {
     var item = this.item;
     var view = this.view;
     var items = view.items;
-    var geometry = new THREE.PlaneBufferGeometry(1, 1, 2, 2);
+    var geometry = Geometry.planeGeometry;
+    this.onMeshDown = this.onMeshDown.bind(this);
+    this.onMeshPlaying = this.onMeshPlaying.bind(this);
+    this.onMeshZoomed = this.onMeshZoomed.bind(this);
+    this.onMeshCurrentTime = this.onMeshCurrentTime.bind(this);
     var mesh;
     var subscription;
     MediaMesh.getStreamId$(item).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
@@ -26819,20 +27626,9 @@ ModelPictureComponent.meta = {
 
         if (streamId || !item.asset) {
           item.streamId = streamId;
-          mesh = new MediaMesh(item, items, geometry);
-
-          if (item.position) {
-            mesh.position.fromArray(item.position);
-          }
-
-          if (item.rotation) {
-            mesh.rotation.fromArray(item.rotation);
-          }
-
-          if (item.scale) {
-            mesh.scale.fromArray(item.scale);
-          }
-
+          mesh = new MediaMesh(item, items, geometry, _this.host);
+          mesh.updateFromItem(item);
+          mesh.name = 'plane';
           mesh.load(function () {
             if (typeof mount === 'function') {
               mount(mesh, item);
@@ -26840,24 +27636,8 @@ ModelPictureComponent.meta = {
 
             subscription = mesh.events$().pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function () {});
           });
-          mesh.on('down', function () {
-            // console.log('ModelPanelComponent.down');
-            _this.down.next(_this);
-          });
-          mesh.on('playing', function (playing) {
-            // console.log('ModelPanelComponent.playing', playing);
-            _this.play.next({
-              itemId: _this.item.id,
-              playing: playing
-            });
-          });
-          mesh.on('currentTime', function (currentTime) {
-            // console.log('ModelPanelComponent.playing', playing);
-            _this.currentTime.next({
-              itemId: _this.item.id,
-              currentTime: currentTime
-            });
-          });
+
+          _this.addMeshListeners(mesh);
         } else if (_this.mesh) {
           dismount(_this.mesh, item);
         } // console.log('streamId', streamId, mesh);
@@ -26866,11 +27646,55 @@ ModelPictureComponent.meta = {
     });
   };
 
+  _proto.addMeshListeners = function addMeshListeners(mesh) {
+    mesh.on('down', this.onMeshDown);
+    mesh.on('playing', this.onMeshPlaying);
+    mesh.on('zoomed', this.onMeshZoomed);
+    mesh.on('currentTime', this.onMeshCurrentTime);
+  };
+
+  _proto.removeMeshListeners = function removeMeshListeners(mesh) {
+    mesh.off('down', this.onMeshDown);
+    mesh.off('playing', this.onMeshPlaying);
+    mesh.off('zoomed', this.onMeshZoomed);
+    mesh.off('currentTime', this.onMeshCurrentTime);
+  };
+
+  _proto.onMeshDown = function onMeshDown() {
+    // console.log('ModelPanelComponent.onMeshDown');
+    this.down.next(this);
+  };
+
+  _proto.onMeshPlaying = function onMeshPlaying(playing) {
+    // console.log('ModelPanelComponent.playing', playing);
+    this.play.next({
+      itemId: this.item.id,
+      playing: playing
+    });
+  };
+
+  _proto.onMeshZoomed = function onMeshZoomed(zoomed) {
+    // console.log('ModelPanelComponent.zoomed', zoomed);
+    this.zoom.next({
+      itemId: this.item.id,
+      zoomed: zoomed
+    });
+  };
+
+  _proto.onMeshCurrentTime = function onMeshCurrentTime(currentTime) {
+    // console.log('ModelPanelComponent.playing', playing);
+    this.currentTime.next({
+      itemId: this.item.id,
+      currentTime: currentTime
+    });
+  };
+
   _proto.onDestroy = function onDestroy() {
     // console.log('ModelPlaneComponent', this);
     _ModelEditableCompone.prototype.onDestroy.call(this);
 
     if (this.mesh) {
+      this.removeMeshListeners(this.mesh);
       this.mesh.dispose();
     }
   } // called by UpdateViewItemComponent
@@ -26890,21 +27714,19 @@ ModelPictureComponent.meta = {
       mesh.scale.fromArray(item.scale);
     }
 
+    mesh.updateFromItem(item);
     this.updateHelper();
   } // called by UpdateViewItemComponent
   ;
 
   _proto.onUpdateAsset = function onUpdateAsset(item, mesh) {
-    var _this2 = this;
-
     // console.log('ModelPlaneComponent.onUpdateAsset', item);
-    this.mesh.updateByItem(item);
+    mesh.updateByItem(item);
     MediaMesh.getStreamId$(item).pipe(operators.filter(function (streamId) {
       return streamId !== null;
     }), operators.take(1)).subscribe(function (streamId) {
       item.streamId = streamId;
-
-      _this2.mesh.load(function () {// console.log('ModelPlaneComponent.mesh.load.complete');
+      mesh.load(function () {// console.log('ModelPlaneComponent.mesh.load.complete');
       });
     });
   } // called by WorldComponent
@@ -26912,18 +27734,20 @@ ModelPictureComponent.meta = {
 
   _proto.onDragMove = function onDragMove(position, normal, spherical) {
     // console.log('ModelPlaneComponent.onDragMove', position, normal, spherical);
-    this.item.showPanel = false;
+    var item = this.item;
+    var mesh = this.mesh;
+    item.showPanel = false;
     this.editing = true;
 
     if (spherical) {
       position.normalize().multiplyScalar(20);
-      this.mesh.position.set(position.x, position.y, position.z);
-      this.mesh.lookAt(ModelPlaneComponent.ORIGIN); // cameraGroup?
+      mesh.position.set(position.x, position.y, position.z);
+      mesh.lookAt(ModelPlaneComponent.ORIGIN); // cameraGroup?
     } else {
-      this.mesh.position.set(0, 0, 0);
-      this.mesh.lookAt(normal);
-      this.mesh.position.set(position.x, position.y, position.z);
-      this.mesh.position.add(normal.multiplyScalar(0.01));
+      mesh.position.set(0, 0, 0);
+      mesh.lookAt(normal);
+      mesh.position.set(position.x, position.y, position.z);
+      mesh.position.add(normal.multiplyScalar(0.01));
     }
 
     this.updateHelper();
@@ -26932,9 +27756,12 @@ ModelPictureComponent.meta = {
 
   _proto.onDragEnd = function onDragEnd() {
     // console.log('ModelPlaneComponent.onDragEnd');
-    this.item.position = this.mesh.position.toArray();
-    this.item.rotation = this.mesh.rotation.toArray();
-    this.item.scale = this.mesh.scale.toArray();
+    var item = this.item;
+    var mesh = this.mesh;
+    item.position = mesh.position.toArray();
+    item.rotation = mesh.rotation.toArray();
+    item.scale = mesh.scale.toArray();
+    mesh.updateFromItem(item);
     this.editing = false;
   };
 
@@ -26947,7 +27774,7 @@ ModelPlaneComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play', 'currentTime'],
+  outputs: ['down', 'play', 'zoom', 'currentTime'],
   inputs: ['item', 'view']
 };var LOADING_BANNER = {
   title: LabelPipe.transform('loading')
@@ -27374,7 +28201,6 @@ ModelRoomComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['down', 'play'],
   inputs: ['view']
 };var ModelTextComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelTextComponent, _ModelComponent);

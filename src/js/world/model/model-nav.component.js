@@ -1,5 +1,6 @@
 // import * as THREE from 'three';
 import { environment } from '../../environment';
+import { Geometry } from '../geometry/geometry';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
@@ -14,12 +15,6 @@ export const NavModeType = {
 };
 
 export default class ModelNavComponent extends ModelEditableComponent {
-
-	static getNavGeometry() {
-		// const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
-		// const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
-		return ModelNavComponent.navGeometry || (ModelNavComponent.navGeometry = new THREE.SphereBufferGeometry(3, 12, 12));
-	}
 
 	static getLoader() {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
@@ -155,7 +150,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 
 		this.onCreateSprites(nav);
 
-		const geometry = ModelNavComponent.getNavGeometry();
+		const geometry = Geometry.sphereGeometry;
 		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
 			depthTest: false,
 			depthWrite: false,
