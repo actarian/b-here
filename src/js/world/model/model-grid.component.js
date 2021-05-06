@@ -234,7 +234,7 @@ export default class ModelGridComponent extends ModelComponent {
 		this.onGroundOut = this.onGroundOut.bind(this);
 		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		const innerTileSize = outerTileSize * 0.9;
-		const geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 20, 20);
+		const geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 8, 8); // 20, 20
 		geometry.rotateX(-Math.PI / 2);
 		// geometry.scale(-1, 1, 1);
 		const material = new THREE.MeshBasicMaterial({

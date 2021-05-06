@@ -31,7 +31,6 @@ export default class AgoraService extends Emittable {
 			throw ('AgoraService is a singleton');
 		}
 		super();
-		this.platform = DeviceService.platform;
 		this.onStreamPublished = this.onStreamPublished.bind(this);
 		this.onStreamUnpublished = this.onStreamUnpublished.bind(this);
 		this.onStreamAdded = this.onStreamAdded.bind(this);
@@ -522,6 +521,7 @@ export default class AgoraService extends Emittable {
 							devices.audios.push(x);
 						}
 					});
+					// console.log(inputDevices);
 					// console.log(devices);
 					devices.video = devices.videos[0] || null;
 					devices.audio = devices.audios[0] || null;
@@ -544,9 +544,6 @@ export default class AgoraService extends Emittable {
 			audio: Boolean(audio),
 			screen: false,
 		};
-		if (this.platform === DevicePlatform.IOS) {
-			options.video = { facingMode: 'user' };
-		}
 		Promise.all([
 			this.getVideoOptions(options, video),
 			this.getAudioOptions(options, audio)
@@ -587,11 +584,12 @@ export default class AgoraService extends Emittable {
 			}
 		};
 		*/
+
 		if (quality) {
 			local.setVideoProfile(quality.profile);
 			local.setVideoEncoderConfiguration(quality);
-
 		}
+
 		console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
 		local.init(() => {
 			StreamService.local = local;
@@ -962,6 +960,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.NavToGrid:
 					case MessageType.ShowPanel:
 					case MessageType.PlayMedia:
+					case MessageType.ZoomMedia:
 					case MessageType.CurrentTimeMedia:
 					case MessageType.PlayModel:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
@@ -1091,6 +1090,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ControlInfo:
 			case MessageType.ShowPanel:
 			case MessageType.PlayMedia:
+			case MessageType.ZoomMedia:
 			case MessageType.CurrentTimeMedia:
 			case MessageType.PlayModel:
 			case MessageType.NavToView:
@@ -1619,10 +1619,13 @@ export default class AgoraService extends Emittable {
 				resolve(devices_);
 			} else {
 				devices_ = AgoraService.devices_ = [];
-				var constraints = {
+				const constraints = {
 					audio: true,
 					video: true,
 				};
+				if (DeviceService.platform === DevicePlatform.IOS) {
+					constraints.video = { facingMode: 'user' };
+				}
 				if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 					navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
 						navigator.mediaDevices.enumerateDevices().then((devices) => {

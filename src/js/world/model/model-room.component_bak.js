@@ -88,7 +88,7 @@ export default class ModelRoomComponent extends ModelComponent {
 						previous.material.color.setHex(0x000000);
 					}
 					const parent = previous.parent;
-					const mesh = item.mesh = new MediaMesh(item, items, previous.geometry);
+					const mesh = item.mesh = new MediaMesh(item, items, previous.geometry, this.host);
 					mesh.depthTest = false;
 					mesh.renderOrder = 0;
 					mesh.name = previous.name;

@@ -191,13 +191,16 @@ window.bhere = Object.assign((window.bhere || {}), {
 	<div class="ui virtual-tour" [class]="uiClass" *if="state.status == 'connected' && isVirtualTourUser">
 		<!-- @@include ../components/world.html -->
 		<!-- @@include ../components/remote.html -->
-		<!-- @@include ../components/local.html -->
-		<!-- @@include ../components/chat.html -->
-		<!-- @@include ../components/service.html -->
-		<!-- @@include ../components/controls.html -->
-		<!-- @@include ../components/media.html -->
-		<!-- @@include ../components/ar-vr.html -->
-		<!-- @@include ../components/like.html -->
+		<div class="group--header">
+			<!-- @@include ../components/service.html -->
+			<!-- @@include ../components/local.html -->
+		</div>
+		<div class="group--footer">
+			<!-- @@include ../components/controls.html -->
+			<!-- @@include ../components/media.html -->
+			<!-- @@include ../components/ar-vr.html -->
+			<!-- @@include ../components/like.html -->
+		</div>
 		<!-- members -->
 		<div class="group--members" *if="state.mode == 'live-meeting'">
 			<div class="members">
@@ -210,6 +213,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</a>
 			</div>
 		</div>
+		<!-- @@include ../components/chat.html -->
 		<!-- @@include ../components/lock.html -->
 	</div>
 	<!-- Smart Device -->
@@ -235,27 +239,33 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</div>
 			</div>
 		</div>
-		<!-- local streams -->
-		<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
-			<div class="agora-stream" agora-stream [stream]="local" type="local" *if="local">
-				<div class="agora-stream__player"></div>
-				<div class="agora-stream__info">
-					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
-					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+		<div class="group--header">
+			<!-- local streams -->
+			<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
+				<div class="agora-stream" agora-stream [stream]="local" type="local" *if="local">
+					<div class="agora-stream__player"></div>
+					<div class="agora-stream__info">
+						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
+						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+					</div>
 				</div>
 			</div>
 		</div>
-		<!-- controls -->
-		<div class="group--controls" *if="state.live">
-			<button type="button" class="btn--call" (click)="disconnect()">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
-			</button>
-			<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
-			</button>
-			<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
-			</button>
+		<div class="group--footer">
+			<!-- controls -->
+			<div class="group--controls" *if="state.live">
+				<div class="group--actions">
+					<button type="button" class="btn--call" (click)="disconnect()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
+					</button>
+					<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
+					</button>
+					<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
+					</button>
+				</div>
+			</div>
 		</div>
 		<!-- members -->
 		<div class="group--members">
@@ -273,17 +283,28 @@ window.bhere = Object.assign((window.bhere || {}), {
 	<!-- Self Service Tour -->
 	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'self-service-tour'">
 		<!-- @@include ../components/world.html -->
-		<!-- @@include ../components/service.html -->
-		<!-- @@include ../components/media.html -->
-		<!-- @@include ../components/ar-vr.html -->
-		<!-- @@include ../components/like.html -->
+		<div class="group--header">
+			<!-- @@include ../components/service.html -->
+		</div>
+		<div class="group--footer">
+			<div class="group--spacer"></div>
+			<!-- @@include ../components/media.html -->
+			<!-- @@include ../components/ar-vr.html -->
+			<!-- @@include ../components/like.html -->
+		</div>
 	</div>
 	<!-- Embed -->
 	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'embed'">
 		<!-- @@include ../components/world.html -->
-		<!-- @@include ../components/service.html -->
-		<!-- @@include ../components/ar-vr.html -->
-		<!-- @@include ../components/like.html -->
+		<div class="group--header">
+			<!-- @@include ../components/service.html -->
+		</div>
+		<div class="group--footer">
+			<div class="group--spacer"></div>
+			<!-- @@include ../components/media.html -->
+			<!-- @@include ../components/ar-vr.html -->
+			<!-- @@include ../components/like.html -->
+		</div>
 	</div>
 	<!-- @@include ../components/logo.html -->
 	<!-- @@include ../components/credits.html -->

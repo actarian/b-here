@@ -12,7 +12,11 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 	}
 
 	onChanges() {
-		this.editing = this.item.selected;
+		const selected = this.item.selected;
+		this.editing = selected;
+		if (this.mesh) {
+			this.mesh.editing = selected;
+		}
 	}
 
 	onCreate(mount, dismount) {
@@ -20,6 +24,10 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		const view = this.view;
 		const items = view.items;
 		const geometry = this.getCurvedPanelGeometry(item);
+		this.onMeshDown = this.onMeshDown.bind(this);
+		this.onMeshPlaying = this.onMeshPlaying.bind(this);
+		this.onMeshZoomed = this.onMeshZoomed.bind(this);
+		this.onMeshCurrentTime = this.onMeshCurrentTime.bind(this);
 		let mesh;
 		let subscription;
 		MediaMesh.getStreamId$(item).pipe(
@@ -40,17 +48,9 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 				// console.log('ModelCurvedPanel', streamId, item.asset)
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, items, geometry);
+					mesh = new MediaMesh(item, items, geometry, this.host);
+					mesh.updateFromItem(item);
 					mesh.name = 'curved-plane';
-					if (item.position) {
-						mesh.position.fromArray(item.position);
-					}
-					if (item.rotation) {
-						mesh.rotation.fromArray(item.rotation);
-					}
-					if (item.scale) {
-						mesh.scale.fromArray(item.scale);
-					}
 					mesh.load(() => {
 						if (typeof mount === 'function') {
 							mount(mesh, item);
@@ -59,24 +59,47 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 							takeUntil(this.unsubscribe$)
 						).subscribe(() => { });
 					});
-					mesh.on('down', () => {
-						// console.log('ModelCurvedPanelComponent.down');
-						this.down.next(this);
-					});
-					mesh.on('playing', (playing) => {
-						// console.log('ModelCurvedPanelComponent.playing', playing);
-						this.play.next({ itemId: this.item.id, playing });
-					});
-					mesh.on('currentTime', (currentTime) => {
-						// console.log('ModelCurvedPanelComponent.playing', playing);
-						this.currentTime.next({ itemId: this.item.id, currentTime });
-					});
+					this.addMeshListeners(mesh);
 				} else if (this.mesh) {
 					dismount(this.mesh, item);
 				}
 				// console.log('streamId', streamId, mesh);
 			}
 		});
+	}
+
+	addMeshListeners(mesh) {
+		mesh.on('down', this.onMeshDown);
+		mesh.on('playing', this.onMeshPlaying);
+		mesh.on('zoomed', this.onMeshZoomed);
+		mesh.on('currentTime', this.onMeshCurrentTime);
+	}
+
+	removeMeshListeners(mesh) {
+		mesh.off('down', this.onMeshDown);
+		mesh.off('playing', this.onMeshPlaying);
+		mesh.off('zoomed', this.onMeshZoomed);
+		mesh.off('currentTime', this.onMeshCurrentTime);
+	}
+
+	onMeshDown() {
+		// console.log('ModelCurvedPanelComponent.onMeshDown');
+		this.down.next(this);
+	}
+
+	onMeshPlaying(playing) {
+		// console.log('ModelCurvedPanelComponent.playing', playing);
+		this.play.next({ itemId: this.item.id, playing });
+	}
+
+	onMeshZoomed(zoomed) {
+		// console.log('ModelCurvedPanelComponent.zoomed', zoomed);
+		this.zoom.next({ itemId: this.item.id, zoomed });
+	}
+
+	onMeshCurrentTime(currentTime) {
+		// console.log('ModelCurvedPanelComponent.playing', playing);
+		this.currentTime.next({ itemId: this.item.id, currentTime });
 	}
 
 	onDestroy() {
@@ -100,23 +123,24 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		}
 		// !!! deactivated
 		if (true && (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
-			this.mesh.geometry.dispose();
+			mesh.geometry.dispose();
 			const geometry = this.getCurvedPanelGeometry(item);
-			this.mesh.geometry = geometry;
+			mesh.geometry = geometry;
 		}
+		mesh.updateFromItem(item);
 		this.updateHelper();
 	}
 
 	// called by UpdateViewItemComponent
 	onUpdateAsset(item, mesh) {
 		// console.log('ModelCurvedPlaneComponent.onUpdateAsset', item);
-		this.mesh.updateByItem(item);
+		mesh.updateByItem(item);
 		MediaMesh.getStreamId$(item).pipe(
 			filter(streamId => streamId !== null),
 			take(1),
 		).subscribe((streamId) => {
 			item.streamId = streamId;
-			this.mesh.load(() => {
+			mesh.load(() => {
 				// console.log('ModelCurvedPlaneComponent.mesh.load.complete');
 			});
 		});
@@ -125,26 +149,31 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 	// called by WorldComponent
 	onDragMove(position, normal, spherical) {
 		// console.log('ModelCurvedPlaneComponent.onDragMove', position, normal, spherical);
-		this.item.showPanel = false;
+		const item = this.item;
+		const mesh = this.mesh;
+		item.showPanel = false;
 		this.editing = true;
-		this.mesh.position.set(position.x, position.y, position.z);
+		mesh.position.set(position.x, position.y, position.z);
 		if (spherical) {
 			position.normalize().multiplyScalar(20);
-			this.mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN); // cameraGroup?
+			mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN); // cameraGroup?
 		} else {
-			this.mesh.position.set(0, 0, 0);
-			this.mesh.lookAt(normal);
-			this.mesh.position.set(position.x, position.y, position.z);
-			this.mesh.position.add(normal.multiplyScalar(0.01));
+			mesh.position.set(0, 0, 0);
+			mesh.lookAt(normal);
+			mesh.position.set(position.x, position.y, position.z);
+			mesh.position.add(normal.multiplyScalar(0.01));
 		}
 		this.updateHelper();
 	}
 
 	// called by WorldComponent
 	onDragEnd() {
-		this.item.position = this.mesh.position.toArray();
-		this.item.rotation = this.mesh.rotation.toArray();
-		this.item.scale = this.mesh.scale.toArray();
+		const item = this.item;
+		const mesh = this.mesh;
+		item.position = mesh.position.toArray();
+		item.rotation = mesh.rotation.toArray();
+		item.scale = mesh.scale.toArray();
+		mesh.updateFromItem(item);
 		this.editing = false;
 	}
 
@@ -167,6 +196,6 @@ ModelCurvedPlaneComponent.textures = {};
 ModelCurvedPlaneComponent.meta = {
 	selector: '[model-curved-plane]',
 	hosts: { host: WorldComponent },
-	outputs: ['down', 'play', 'currentTime'],
+	outputs: ['down', 'play', 'zoom', 'currentTime'],
 	inputs: ['item', 'view'],
 };

@@ -84,7 +84,7 @@ export default class Panorama {
 	}
 
 	create() {
-		const geometry = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
+		const geometry = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 44, 30);
 		geometry.scale(-1, 1, 1);
 		geometry.rotateY(Math.PI);
 		const material = new THREE.ShaderMaterial({

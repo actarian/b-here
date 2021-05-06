@@ -95,8 +95,8 @@ window.labels = {
 						<div model-room [view]="view" *if="view.type.name === 'room-3d'"></div>
 						<div class="world__item" *for="let item of view.items; let index = index;">
 							<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
-							<div model-plane [item]="item" [view]="view" (down)="onObjectDown($event)" *if="item.type.name == 'plane'"></div>
-							<div model-curved-plane [item]="item" [view]="view" (down)="onObjectDown($event)" *if="item.type.name == 'curved-plane'"></div>
+							<div model-plane [item]="item" [view]="view" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" *if="item.type.name == 'plane'"></div>
+							<div model-curved-plane [item]="item" [view]="view" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" *if="item.type.name == 'curved-plane'"></div>
 							<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onObjectDown($event)" *if="item.type.name == 'model'">
 								<!-- <div class="banner loading" model-banner [item]="progress" *if="progress"></div> -->
 								<!-- <div class="progress" [innerHTML]="progress.title" *if="progress"></div> -->
@@ -128,13 +128,16 @@ window.labels = {
 				<div class="world__info" *if="error" [innerHTML]="error"></div>
 			</div>
 		</div>
-		<div class="group--ar-vr">
-			<button type="button" class="btn--ar" [href]="view?.ar" (click)="tryInAr()" *if="view?.ar">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
-			</button>
-			<button type="button" class="btn--vr" [class]="{ disabled: vrService.isDisabled() }" (click)="vrService.toggleVR()">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
-			</button>
+		<!-- footer -->
+		<div class="group--footer">
+			<div class="group--ar-vr">
+				<button type="button" class="btn--ar" [href]="view?.ar" (click)="tryInAr()" *if="view?.ar">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
+				</button>
+				<button type="button" class="btn--vr" [class]="{ disabled: vrService.isDisabled() }" (click)="vrService.toggleVR()">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
+				</button>
+			</div>
 		</div>
 		<div class="ui__settings" menu-builder [views]="views" *if="settings">
 			<div class="group--menu" *if="form">

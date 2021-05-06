@@ -373,7 +373,7 @@
 .btn--menu {
 	@extend %btn-circle;
 	position: absolute;
-	pointer-events: all;
+	pointer-events: auto;
 	right: 20px;
 	top: 50%;
 

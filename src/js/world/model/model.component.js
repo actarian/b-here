@@ -1,13 +1,9 @@
 import { Component, getContext } from 'rxcomp';
+import { Geometry } from '../geometry/geometry';
 // import * as THREE from 'three';
 import Interactive from '../interactive/interactive';
 // import Ease from '../ease/ease';
 import WorldComponent from '../world.component';
-
-const deg = THREE.Math.degToRad;
-
-const GEOMETRY = new THREE.BoxBufferGeometry(1, 1, 1);
-// const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
 export default class ModelComponent extends Component {
 
@@ -63,7 +59,7 @@ export default class ModelComponent extends Component {
 			transparent: true,
 			opacity: 0.9,
 		});
-		const mesh = new THREE.Mesh(GEOMETRY, material);
+		const mesh = new THREE.Mesh(Geometry.defaultGeometry, material);
 		if (typeof mounth === 'function') {
 			mounth(mesh);
 		}
@@ -152,8 +148,8 @@ export default class ModelComponent extends Component {
 		const position = this.position;
 		group.position.set(position.x, 0, 0);
 		// const tween = this.tween();
-		// group.rotation.x = deg(180) * tween;
-		// group.rotation.y = deg(360) * tween;
+		// group.rotation.x = THREE.Math.degToRad(180) * tween;
+		// group.rotation.y = THREE.Math.degToRad(360) * tween;
 		*/
 	}
 

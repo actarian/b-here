@@ -45,8 +45,6 @@ export class MenuButton extends InteractiveMesh {
 			return this.geometry_;
 		}
 		const geometry = new THREE.PlaneBufferGeometry(1, 1 / MenuButton.W * MenuButton.H, 2, 2);
-		// geometry.rotateX(-Math.PI);
-		// geometry.scale(-1, 1, 1);
 		this.geometry_ = geometry;
 		return geometry;
 	}

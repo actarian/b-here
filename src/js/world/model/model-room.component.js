@@ -151,6 +151,5 @@ export default class ModelRoomComponent extends ModelComponent {
 ModelRoomComponent.meta = {
 	selector: '[model-room]',
 	hosts: { host: WorldComponent },
-	outputs: ['down', 'play'],
 	inputs: ['view'],
 };

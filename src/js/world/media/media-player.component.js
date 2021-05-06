@@ -19,6 +19,7 @@ export default class MediaPlayerComponent extends Component {
 
 	media$() {
 		const { node } = getContext(this);
+		const page = document.querySelector('.page');
 		return MediaLoader.events$.pipe(
 			// filter(event => event.loader.item.id === this.media.item.id),
 			tap(event => {
@@ -26,6 +27,7 @@ export default class MediaPlayerComponent extends Component {
 					this.media = event.loader;
 					this.playing = true;
 					node.classList.add('active');
+					page.classList.add('media-player-active');
 					this.pushChanges();
 				} else if (this.media === event.loader) {
 					if (event instanceof MediaLoaderPauseEvent) {
@@ -39,6 +41,7 @@ export default class MediaPlayerComponent extends Component {
 					} else if (event instanceof MediaLoaderDisposeEvent) {
 						this.media = null;
 						node.classList.remove('active');
+						page.classList.remove('media-player-active');
 						this.pushChanges();
 					}
 				}

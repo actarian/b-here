@@ -6,7 +6,10 @@ import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
 import InteractiveMesh from '../interactive/interactive.mesh';
+import { Texture } from '../texture/texture';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent } from './media-loader';
+import MediaPlayMesh from './media-play-mesh';
+import MediaZoomMesh from './media-zoom-mesh';
 
 const VERTEX_SHADER = `
 varying vec2 vUvShader;
@@ -248,11 +251,11 @@ export default class MediaMesh extends InteractiveMesh {
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER,
 			uniforms: {
-				map: { type: "t", value: null },
+				map: { type: "t", value: Texture.defaultTexture },
 				mapResolution: { value: new THREE.Vector2() },
 				mapTween: { value: 1 },
 				color: { value: new THREE.Color('#FFFFFF') },
-				playMap: { type: "t", value: null },
+				playMap: { type: "t", value: Texture.defaultTexture },
 				playMapResolution: { value: new THREE.Vector2() },
 				playMapTween: { value: 0 },
 				playMapColor: { value: new THREE.Color('#000000') },
@@ -276,11 +279,11 @@ export default class MediaMesh extends InteractiveMesh {
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
 			uniforms: {
-				map: { type: "t", value: null },
+				map: { type: "t", value: Texture.defaultTexture },
 				mapResolution: { value: new THREE.Vector2() },
 				mapTween: { value: 1 },
 				color: { value: new THREE.Color('#FFFFFF') },
-				playMap: { type: "t", value: null },
+				playMap: { type: "t", value: Texture.defaultTexture },
 				playMapResolution: { value: new THREE.Vector2() },
 				playMapTween: { value: 0 },
 				playMapColor: { value: new THREE.Color('#000000') },
@@ -371,7 +374,7 @@ export default class MediaMesh extends InteractiveMesh {
 		if (item.asset && item.asset.chromaKeyColor) {
 			material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
 		} else if (item.asset) {
-			material = MediaMesh.getMaterial();
+			material = new THREE.MeshBasicMaterial({ color: 0x888888 }); // MediaMesh.getMaterial();
 		} else {
 			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
 		}
@@ -390,17 +393,41 @@ export default class MediaMesh extends InteractiveMesh {
 		return uniforms;
 	}
 
-	constructor(item, items, geometry) {
+	get editing() {
+		return this.editing_;
+	}
+	set editing(editing) {
+		if (this.editing_ !== editing) {
+			this.editing_ = editing;
+			if (this.zoomBtn && editing) {
+				this.zoomBtn.zoomed = false;
+			}
+		}
+	}
+
+	constructor(item, items, geometry, host) {
 		const material = MediaMesh.getMaterialByItem(item);
 		super(geometry, material);
 		// this.renderOrder = environment.renderOrder.plane;
 		this.item = item;
 		this.items = items;
+		this.host = host;
 		this.uniforms = MediaMesh.getUniformsByItem(item);
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
+		this.onOver = this.onOver.bind(this);
+		this.onOut = this.onOut.bind(this);
+		this.onToggle = this.onToggle.bind(this);
+		this.onZoomed = this.onZoomed.bind(this);
+		this.addZoomBtn();
+		this.addPlayBtn();
+		this.userData.render = (time, tick) => {
+			this.render(this, time, tick);
+		};
 	}
 
 	load(callback) {
+		this.remove(this.playBtn);
+		this.remove(this.zoomBtn);
 		if (!this.item.asset) {
 			this.onAppear();
 			if (typeof callback === 'function') {
@@ -444,13 +471,12 @@ export default class MediaMesh extends InteractiveMesh {
 				if (material.uniforms) {
 					material.uniforms.isVideo.value = true;
 				}
-				this.onOver = this.onOver.bind(this);
-				this.onOut = this.onOut.bind(this);
-				this.onToggle = this.onToggle.bind(this);
 				this.on('over', this.onOver);
 				this.on('out', this.onOut);
 				this.on('down', this.onToggle);
+				this.add(this.playBtn);
 			}
+			this.add(this.zoomBtn);
 			if (typeof callback === 'function') {
 				callback(this);
 			}
@@ -504,10 +530,16 @@ export default class MediaMesh extends InteractiveMesh {
 			map(event => {
 				if (event instanceof MediaLoaderPlayEvent) {
 					this.playing = true;
+					if (this.playBtn) {
+						this.playBtn.playing = true;
+					}
 					this.emit('playing', true);
 					this.onOut();
 				} else if (event instanceof MediaLoaderPauseEvent) {
 					this.playing = false;
+					if (this.playBtn) {
+						this.playBtn.playing = false;
+					}
 					this.emit('playing', false);
 					this.onOut();
 				} else if (event instanceof MediaLoaderTimeSetEvent) {
@@ -540,7 +572,7 @@ export default class MediaMesh extends InteractiveMesh {
 				ease: Power2.easeInOut,
 				onUpdate: () => {
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
 		}
@@ -556,7 +588,7 @@ export default class MediaMesh extends InteractiveMesh {
 				ease: Power2.easeInOut,
 				onUpdate: () => {
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
 		}
@@ -577,10 +609,14 @@ export default class MediaMesh extends InteractiveMesh {
 					material.uniforms.mapTween.value = uniforms.mapTween;
 					material.uniforms.playMapTween.value = uniforms.playMapTween;
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
 		}
+		if (this.playBtn) {
+			this.playBtn.onOver();
+		}
+		// this.zoomBtn.visible = true;
 	}
 
 	onOut() {
@@ -598,14 +634,21 @@ export default class MediaMesh extends InteractiveMesh {
 					material.uniforms.mapTween.value = uniforms.mapTween;
 					material.uniforms.playMapTween.value = uniforms.playMapTween;
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
 		}
+		if (this.playBtn) {
+			this.playBtn.onOut();
+		}
+		// this.zoomBtn.visible = false;
 	}
 
 	onToggle() {
 		this.playing = this.mediaLoader.toggle();
+		if (this.playBtn) {
+			this.playBtn.playing = this.playing;
+		}
 		this.emit('playing', this.playing);
 		this.onOut();
 	}
@@ -633,6 +676,15 @@ export default class MediaMesh extends InteractiveMesh {
 			this.playing = playing;
 			playing ? this.mediaLoader.play() : this.mediaLoader.pause();
 			this.onOut();
+			if (this.playBtn) {
+				this.playBtn.playing = playing;
+			}
+		}
+	}
+
+	setZoomedState(zoomed) {
+		if (this.zoomBtn) {
+			this.zoomBtn.zoomed = zoomed;
 		}
 	}
 
@@ -675,6 +727,69 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	dispose() {
+		this.removePlayBtn();
+		this.removeZoomBtn();
 		this.disposeMediaLoader();
 	}
+
+	addPlayBtn() {
+		const playBtn = this.playBtn = new MediaPlayMesh(this.host);
+		playBtn.on('over', this.onOver);
+		playBtn.on('out', this.onOut);
+		playBtn.on('down', this.onToggle);
+		playBtn.position.z = 0.01;
+	}
+
+	removePlayBtn() {
+		if (this.playBtn) {
+			this.playBtn.off('over', this.onOver);
+			this.playBtn.off('out', this.onOut);
+			this.playBtn.off('down', this.onToggle);
+			this.playBtn.dispose();
+			delete this.playBtn;
+		}
+	}
+
+	onZoomed(zoomed) {
+		this.emit('zoomed', zoomed);
+	}
+
+	addZoomBtn() {
+		const zoomBtn = this.zoomBtn = new MediaZoomMesh(this.host);
+		zoomBtn.on('zoomed', this.onZoomed);
+		zoomBtn.position.z = 0.01;
+	}
+
+	removeZoomBtn() {
+		if (this.zoomBtn) {
+			this.zoomBtn.off('zoomed', this.onZoomed);
+			this.zoomBtn.dispose();
+			delete this.zoomBtn;
+		}
+	}
+
+	updateFromItem(item) {
+		if (item.position) {
+			this.position.fromArray(item.position);
+		}
+		if (item.rotation) {
+			this.rotation.fromArray(item.rotation);
+		}
+		if (item.scale) {
+			this.scale.fromArray(item.scale);
+		}
+		if (this.playBtn) {
+			this.playBtn.update(this);
+		}
+		if (this.zoomBtn) {
+			this.zoomBtn.update(this);
+		}
+	}
+
+	render(time, tick) {
+		if (this.zoomBtn && !this.editing) {
+			this.zoomBtn.render(time, tick);
+		}
+	}
+
 }

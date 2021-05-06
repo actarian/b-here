@@ -21,6 +21,7 @@ import OrbitService, { OrbitMoveEvent } from './orbit/orbit.service';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
+import { TeleportElement } from './teleport/teleport.element';
 import VRService from './vr.service';
 import { Gamepad } from './webxr/gamepad';
 import { XRControllerModelFactory } from './webxr/xr-controller-model.factory';
@@ -204,7 +205,6 @@ export default class WorldComponent extends Component {
 		objects.add(panorama.mesh);
 
 		const indicator = this.indicator = new PointerElement();
-
 		const pointer = this.pointer = new PointerElement('#ff4332');
 
 		/*
@@ -353,6 +353,7 @@ export default class WorldComponent extends Component {
 
 	addControllers() {
 		const controllerGroup = this.controllerGroup = new THREE.Group();
+		const teleport = this.teleport = new TeleportElement();
 		this.controllers = [];
 		this.controllerModelFactory = new XRControllerModelFactory();
 		this.addController(0);
@@ -366,6 +367,10 @@ export default class WorldComponent extends Component {
 		const controllerGroup = this.controllerGroup;
 		const controller = renderer.xr.getController(index);
 		const controllerModelFactory = this.controllerModelFactory;
+		const teleport = this.teleport;
+		const scene = this.scene;
+		const camera = this.camera;
+		const cameraGroup = this.cameraGroup;
 		controller.name = `[controller${index + 1}]`;
 		controllerGroup.add(controller);
 		const setController = (controller) => {
@@ -378,6 +383,22 @@ export default class WorldComponent extends Component {
 		};
 		const onSelectEnd = (event) => {
 			controller.userData.isSelecting = false;
+		};
+		const onSqueezeStart = (event) => {
+			if (this.view && this.view.type.name === ViewType.Room3d.name) {
+				teleport.addToController(controller, scene);
+				// this.scene.remove(this.indicator.mesh);
+				this.indicator.mesh.visible = false;
+				controller.children[0].visible = false;
+			}
+		};
+		const onSqueezeEnd = (event) => {
+			// if (this.view && this.view.type.name === ViewType.Room3d.name) {
+			teleport.removeFromController(controller, scene, renderer, camera, cameraGroup);
+			// this.scene.add(this.indicator.mesh);
+			this.indicator.mesh.visible = true;
+			controller.children[0].visible = true;
+			// }
 		};
 		// const debugService = DebugService.getService();
 		// debugService.setMessage('DebugService 1001');
@@ -457,7 +478,9 @@ export default class WorldComponent extends Component {
 			if (!showPhone || event.data.handedness === 'right') {
 				const controllerGrip = renderer.xr.getControllerGrip(index);
 				controllerGrip.name = `[controller-grip${index + 1}]`;
-				controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
+				const controllerModel = controllerModelFactory.createControllerModel(controllerGrip);
+				controller.userData.model = controllerModel;
+				controllerGrip.add(controllerModel);
 				controllerGroup.add(controllerGrip);
 			}
 			const gamepad = new Gamepad(event.data.gamepad);
@@ -469,6 +492,9 @@ export default class WorldComponent extends Component {
 			// gamepad.on('up', onUp);
 			// gamepad.on('down', onDown);
 			controller.userData.gamepad = gamepad;
+			controller.userData.update = () => {
+				gamepad.update();
+			};
 		}
 		const onDisconnected = (event) => {
 			while (controller.children.length) {
@@ -479,19 +505,27 @@ export default class WorldComponent extends Component {
 				controllerGrip.remove(controllerGrip.children[0]);
 			}
 			controllerGroup.remove(controllerGrip);
+			controller.userData.update = () => { };
 			const gamepad = controller.userData.gamepad;
-			gamepad.off('press', onPress);
-			gamepad.off('release', onRelease);
-			gamepad.off('left', onLeft);
-			gamepad.off('right', onRight);
-			gamepad.off('axis', onAxis);
-			// gamepad.off('up', onUp);
-			// gamepad.off('down', onDown);
+			if (gamepad) {
+				gamepad.off('press', onPress);
+				gamepad.off('release', onRelease);
+				gamepad.off('left', onLeft);
+				gamepad.off('right', onRight);
+				gamepad.off('axis', onAxis);
+				// gamepad.off('up', onUp);
+				// gamepad.off('down', onDown);
+				delete controller.userData.gamepad;
+			}
+			teleport.removeFromController(controller, scene, renderer, camera, cameraGroup);
 		}
+		controller.userData.update = () => { };
 		controller.addEventListener('selectstart', onSelectStart);
 		controller.addEventListener('selectend', onSelectEnd);
 		controller.addEventListener('connected', onConnected);
 		controller.addEventListener('disconnected', onDisconnected);
+		controller.addEventListener('squeezestart', onSqueezeStart);
+		controller.addEventListener('squeezeend', onSqueezeEnd);
 		const controllers = this.controllers;
 		controllers.push(controller);
 	}
@@ -606,26 +640,25 @@ export default class WorldComponent extends Component {
 				// !!! || (StateService.state.remoteScreen !== null)
 				return;
 			}
+			if (isPresenting) {
+				gsap.ticker.tick();
+				this.controllers.forEach(controller => controller.userData.update());
+				this.teleport.update();
+			} else {
+				this.navWithKeys();
+			}
 			const time = performance.now();
 			const tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
-			this.raycasterXRHitTest();
 			this.scene.traverse((child) => {
 				if (typeof child.userData.render === 'function') {
 					child.userData.render(time, tick);
 				}
 			});
-			this.vrService.updateState(this);
 			Object.keys(this.avatars).forEach(key => {
 				this.avatars[key].render();
 			});
-			if (isPresenting) {
-				gsap.ticker.tick();
-				this.controllers.forEach(controller => {
-					controller.userData.gamepad.update();
-				});
-			} else {
-				this.navWithKeys();
-			}
+			this.vrService.updateState(this);
+			this.raycasterXRHitTest();
 			/*
 			const objects = this.objects;
 			for (let i = 0; i < objects.children.length; i++) {
@@ -755,7 +788,7 @@ export default class WorldComponent extends Component {
 			const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 			if (raycaster) {
 				const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
-				this.indicator.update();
+				this.indicator.update(this.renderer.xr.getCamera(this.camera));
 				/*
 				if (hit && hit !== this.panorama.mesh) {
 					// controllers.feedback();
@@ -1014,6 +1047,24 @@ export default class WorldComponent extends Component {
 		});
 	}
 
+	onZoomMedia(event) {
+		if (event.zoomed) {
+			this.view.items.forEach(item => {
+				if (item.mesh instanceof MediaMesh) {
+					console.log(item.id, event.itemId, item.id !== event.itemId);
+					if (item.id !== event.itemId) {
+						item.mesh.setZoomedState(false);
+					}
+				}
+			});
+		}
+		MessageService.send({
+			type: MessageType.ZoomMedia,
+			itemId: event.itemId,
+			zoomed: event.zoomed,
+		});
+	}
+
 	onCurrentTimeMedia(event) {
 		MessageService.send({
 			type: MessageType.CurrentTimeMedia,
@@ -1197,6 +1248,18 @@ export default class WorldComponent extends Component {
 					}
 					break;
 				}
+				case MessageType.ZoomMedia: {
+					this.view.items.forEach(item => {
+						if (item.mesh instanceof MediaMesh) {
+							if (item.id === message.itemId) {
+								item.mesh.setZoomedState(message.zoomed);
+							} else {
+								item.mesh.setZoomedState(false);
+							}
+						}
+					});
+					break;
+				}
 				case MessageType.CurrentTimeMedia: {
 					const item = this.view.items.find(item => item.id === message.itemId);
 					if (item && item.mesh instanceof MediaMesh) {
@@ -1237,7 +1300,7 @@ export default class WorldComponent extends Component {
 						this.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]);
 						// this.camera.updateProjectionMatrix();
 					}
-					this.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2]);
+					this.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2], this.camera);
 					break;
 			}
 		});
