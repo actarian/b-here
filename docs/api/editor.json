@@ -218,7 +218,9 @@
             "folder": "/uploads/",
             "file": "60370970657900_websolute.mp4",
             "id": 60372377512399,
-            "chromaKeyColor": null
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false
           },
           "id": 1009904475382800
         },
@@ -237,7 +239,8 @@
           ],
           "asset": null,
           "id": 263816172214199,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -254,7 +257,8 @@
           ],
           "asset": null,
           "id": 263824959721100,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -271,7 +275,8 @@
           ],
           "asset": null,
           "id": 263833008287300,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -288,7 +293,8 @@
           ],
           "asset": null,
           "id": 263842470462000,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -305,7 +311,8 @@
           ],
           "asset": null,
           "id": 263858797145599,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -322,7 +329,8 @@
           ],
           "asset": null,
           "id": 263865629315099,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -339,7 +347,8 @@
           ],
           "asset": null,
           "id": 313939089806200,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -356,7 +365,9 @@
           ],
           "asset": null,
           "link": null,
-          "id": 74510423643499
+          "id": 74510423643499,
+          "keepOrientation": null,
+          "important": null
         }
       ],
       "hidden": null
@@ -398,7 +409,8 @@
           ],
           "asset": null,
           "id": 1010606583968499,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -429,7 +441,10 @@
             "folder": "",
             "file": "publisherStream",
             "id": 1373945696693800,
-            "chromaKeyColor": null
+            "chromaKeyColor": null,
+            "index": 0,
+            "autoplay": false,
+            "loop": false
           },
           "id": 1012264477564600
         }
@@ -487,7 +502,10 @@
             "folder": "",
             "file": "publisherStream",
             "id": 595121345079100,
-            "chromaKeyColor": null
+            "chromaKeyColor": null,
+            "index": 0,
+            "autoplay": false,
+            "loop": false
           },
           "id": 595115093509400
         },
@@ -521,7 +539,9 @@
             "file": "nextAttendeeStream",
             "id": 595459761248000,
             "chromaKeyColor": null,
-            "index": 0
+            "index": 0,
+            "autoplay": false,
+            "loop": false
           },
           "id": 595393831847099
         },
@@ -548,14 +568,17 @@
           ],
           "asset": {
             "type": {
-              "id": 4,
-              "name": "publisher-stream"
+              "id": 6,
+              "name": "publisher-screen",
+              "file": "publisherScreen"
             },
             "folder": "",
-            "file": "publisherStream",
-            "id": 359661442470999,
+            "file": "publisherScreen",
+            "id": 618695429001900,
             "chromaKeyColor": null,
-            "index": 1
+            "autoplay": false,
+            "loop": false,
+            "index": 0
           },
           "id": 595187295984100
         },
@@ -582,43 +605,19 @@
           ],
           "asset": {
             "type": {
-              "id": 5,
-              "name": "next-attendee-stream"
+              "id": 8,
+              "name": "smart-device-stream",
+              "file": "smartDeviceStream"
             },
             "folder": "",
-            "file": "nextAttendeeStream",
-            "id": 595663310605300,
+            "file": "smartDeviceStream",
+            "id": 618712271377700,
             "chromaKeyColor": null,
-            "index": 2
+            "autoplay": false,
+            "loop": false,
+            "index": 0
           },
           "id": 595497438718400
-        },
-        {
-          "type": {
-            "id": 1,
-            "name": "nav"
-          },
-          "title": "Accedi",
-          "abstract": "connettiti con il tuo telefono..",
-          "viewId": 406765685595300,
-          "position": [
-            0.36739081467807216,
-            -0.15539955123244212,
-            -0.9169923493502756
-          ],
-          "asset": {
-            "type": {
-              "id": 1,
-              "name": "image"
-            },
-            "folder": "/uploads/",
-            "file": "186205893551300_qr-code.png",
-            "id": 186205918836200,
-            "chromaKeyColor": null
-          },
-          "link": null,
-          "id": 95244501881700,
-          "keepOrientation": null
         },
         {
           "type": {
@@ -636,7 +635,8 @@
           "asset": null,
           "link": null,
           "id": 97324753863099,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null
         }
       ],
       "hidden": null
@@ -6226,7 +6226,10 @@
               0,
               1,
               0
-            ]
+            ],
+            "index": 0,
+            "autoplay": false,
+            "loop": false
           },
           "id": 73038413974300
         },
@@ -6245,7 +6248,9 @@
           ],
           "asset": null,
           "link": null,
-          "id": 73118106836300
+          "id": 73118106836300,
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -6280,7 +6285,9 @@
               0,
               1,
               0
-            ]
+            ],
+            "autoplay": true,
+            "loop": false
           },
           "id": 187234390187800
         },
@@ -6313,7 +6320,9 @@
             "folder": "/uploads/",
             "file": "187313454768000_websolute.mp4",
             "id": 187313737140500,
-            "chromaKeyColor": null
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false
           },
           "id": 187314775158399
         }
@@ -6946,7 +6955,9 @@
           ],
           "asset": null,
           "link": null,
-          "id": 75333403238400
+          "id": 75333403238400,
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -6963,7 +6974,9 @@
           ],
           "asset": null,
           "link": null,
-          "id": 75350043651599
+          "id": 75350043651599,
+          "keepOrientation": null,
+          "important": null
         },
         {
           "type": {
@@ -6994,7 +7007,9 @@
             "folder": "/uploads/",
             "file": "75359447813500_websolute.mp4",
             "id": 75359754912099,
-            "chromaKeyColor": null
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false
           },
           "id": 75361030477800
         }
@@ -7500,7 +7515,9 @@
             "file": "smartDeviceStream",
             "id": 29476283755900,
             "chromaKeyColor": null,
-            "index": 0
+            "index": 0,
+            "autoplay": false,
+            "loop": false
           },
           "id": 29409055472800
         }
@@ -7613,6 +7630,191 @@
             "loop": false
           },
           "id": 27501600733699
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            0.8431654354192899,
+            0.4841819507706102,
+            -9.099272441663087
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            "XYZ"
+          ],
+          "scale": [
+            5,
+            3,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 4,
+              "name": "publisher-stream",
+              "file": "publisherStream"
+            },
+            "folder": "",
+            "file": "publisherStream",
+            "id": 618400198560100,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 618342563610900
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            15.44,
+            0.5079845424965415,
+            -2.9927074099326365
+          ],
+          "rotation": [
+            0,
+            -1.5707963267948966,
+            0,
+            "XYZ"
+          ],
+          "scale": [
+            6,
+            3,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 6,
+              "name": "publisher-screen",
+              "file": "publisherScreen"
+            },
+            "folder": "",
+            "file": "publisherScreen",
+            "id": 618474666797700,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 618418045267300
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            15.42,
+            0.51,
+            3.119999999999982
+          ],
+          "rotation": [
+            0,
+            -1.571,
+            0,
+            "XYZ"
+          ],
+          "scale": [
+            6,
+            3,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 7,
+              "name": "attendee-screen",
+              "file": "attendeeScreen"
+            },
+            "folder": "",
+            "file": "attendeeScreen",
+            "id": 618543419317200,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 618491978271600
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            0.7145243729820394,
+            0.34343825138948425,
+            9.097711301364258
+          ],
+          "rotation": [
+            -3.142,
+            0,
+            -3.141592653589793,
+            "XYZ"
+          ],
+          "scale": [
+            6,
+            3,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 8,
+              "name": "smart-device-stream",
+              "file": "smartDeviceStream"
+            },
+            "folder": "",
+            "file": "smartDeviceStream",
+            "id": 618595928594200,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 618557083978200
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            11.23970400563605,
+            0.39950620714621365,
+            8.877711301364263
+          ],
+          "rotation": [
+            -3.141592653589793,
+            0,
+            -3.141592653589793,
+            "XYZ"
+          ],
+          "scale": [
+            6,
+            3,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 5,
+              "name": "next-attendee-stream",
+              "file": "nextAttendeeStream"
+            },
+            "folder": "",
+            "file": "nextAttendeeStream",
+            "id": 618623138937800,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 618611803483100
         }
       ]
     }
@@ -8381,7 +8583,10 @@
       "folder": "",
       "file": "publisherStream",
       "id": 595121345079100,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "index": 0,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -8401,7 +8606,10 @@
       "folder": "",
       "file": "nextAttendeeStream",
       "id": 595459761248000,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "index": 0,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -8411,7 +8619,10 @@
       "folder": "",
       "file": "nextAttendeeStream",
       "id": 595663310605300,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "index": 1,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -8594,7 +8805,9 @@
       "folder": "/uploads/",
       "file": "60370970657900_websolute.mp4",
       "id": 60372377512399,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -8861,7 +9074,10 @@
         0,
         1,
         0
-      ]
+      ],
+      "index": 0,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -9041,7 +9257,10 @@
       },
       "folder": "/uploads/",
       "file": "75359447813500_websolute.mp4",
-      "id": 75359754912099
+      "id": 75359754912099,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -9255,7 +9474,9 @@
         0,
         1,
         0
-      ]
+      ],
+      "autoplay": true,
+      "loop": false
     },
     {
       "type": {
@@ -9264,7 +9485,10 @@
       },
       "folder": "/uploads/",
       "file": "187313454768000_websolute.mp4",
-      "id": 187313737140500
+      "id": 187313737140500,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -9310,7 +9534,10 @@
       "folder": "",
       "file": "publisherStream",
       "id": 1373945696693800,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "index": 0,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -9374,7 +9601,10 @@
       "folder": "",
       "file": "publisherStream",
       "id": 359661442470999,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "index": 1,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -9394,7 +9624,10 @@
       "folder": "",
       "file": "smartDeviceStream",
       "id": 29476283755900,
-      "chromaKeyColor": null
+      "chromaKeyColor": null,
+      "index": 0,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
@@ -9445,6 +9678,104 @@
       "chromaKeyColor": null,
       "autoplay": false,
       "loop": false
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream",
+        "file": "publisherStream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 618400198560100,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 6,
+        "name": "publisher-screen",
+        "file": "publisherScreen"
+      },
+      "folder": "",
+      "file": "publisherScreen",
+      "id": 618474666797700,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 7,
+        "name": "attendee-screen",
+        "file": "attendeeScreen"
+      },
+      "folder": "",
+      "file": "attendeeScreen",
+      "id": 618543419317200,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 8,
+        "name": "smart-device-stream",
+        "file": "smartDeviceStream"
+      },
+      "folder": "",
+      "file": "smartDeviceStream",
+      "id": 618595928594200,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 5,
+        "name": "next-attendee-stream",
+        "file": "nextAttendeeStream"
+      },
+      "folder": "",
+      "file": "nextAttendeeStream",
+      "id": 618623138937800,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 6,
+        "name": "publisher-screen",
+        "file": "publisherScreen"
+      },
+      "folder": "",
+      "file": "publisherScreen",
+      "id": 618695429001900,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
+    },
+    {
+      "type": {
+        "id": 8,
+        "name": "smart-device-stream",
+        "file": "smartDeviceStream"
+      },
+      "folder": "",
+      "file": "smartDeviceStream",
+      "id": 618712271377700,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false,
+      "index": 0
     }
   ],
   "users": [
