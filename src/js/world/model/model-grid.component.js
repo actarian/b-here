@@ -165,8 +165,8 @@ export default class ModelGridComponent extends ModelComponent {
 				vertexShader: VERTEX_SHADER,
 				fragmentShader: FRAGMENT_SHADER,
 				uniforms: {
-					textureA: { type: "t", value: map },
-					textureB: { type: "t", value: mapOver },
+					textureA: { type: 't', value: map },
+					textureB: { type: 't', value: mapOver },
 					tween: { value: 0 },
 					opacity: { value: 0 },
 				},
@@ -335,7 +335,6 @@ export default class ModelGridComponent extends ModelComponent {
 
 }
 
-ModelGridComponent.ORIGIN = new THREE.Vector3();
 ModelGridComponent.RADIUS = 101;
 ModelGridComponent.COLS = 11;
 ModelGridComponent.ROWS = 11;

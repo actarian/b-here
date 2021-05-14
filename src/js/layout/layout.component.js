@@ -78,8 +78,8 @@ export default class LayoutComponent extends Component {
 			hosted: true,
 			chat: false,
 			chatDirty: true,
-			name: "Jhon Appleseed",
-			uid: "7341614597544882"
+			name: 'Jhon Appleseed',
+			uid: '7341614597544882'
 		};
 		this.state.live = (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) ? false : true;
 		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;

@@ -1,6 +1,6 @@
 // import * as THREE from 'three';
 
-import { Geometry } from "../geometry/geometry";
+import { Geometry } from '../geometry/geometry';
 
 export default class FreezableMesh extends THREE.Mesh {
 

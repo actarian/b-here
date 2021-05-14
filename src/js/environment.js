@@ -73,7 +73,7 @@ const defaultOptions = {
 		menuBackOverForeground: '#ffffff',
 	},
 	editor: {
-		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
 		disabledViewItemTypes: ['texture'],
 	},
 	renderOrder: {

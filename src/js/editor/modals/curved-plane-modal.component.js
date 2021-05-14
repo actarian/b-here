@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
+import { Host } from '../../world/host/host';
 import EditorService from '../editor.service';
 export default class CurvedPlaneModalComponent extends Component {
 
@@ -36,7 +37,7 @@ export default class CurvedPlaneModalComponent extends Component {
 			if (spherical) {
 				position.normalize().multiplyScalar(20);
 				object.position.copy(position);
-				object.lookAt(CurvedPlaneModalComponent.ORIGIN); // cameraGroup?
+				object.lookAt(Host.origin);
 			} else {
 				object.lookAt(normal);
 				object.position.set(position.x, position.y, position.z);
@@ -86,8 +87,6 @@ export default class CurvedPlaneModalComponent extends Component {
 	}
 
 }
-
-CurvedPlaneModalComponent.ORIGIN = new THREE.Vector3();
 
 CurvedPlaneModalComponent.meta = {
 	selector: '[curved-plane-modal]'

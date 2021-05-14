@@ -5,6 +5,7 @@ import EditorComponent from './editor.component';
 import MenuBuilderComponent from './menu/menu-builder.component';
 import CurvedPlaneModalComponent from './modals/curved-plane-modal.component';
 import ItemModelModalComponent from './modals/item-model-modal.component';
+import MediaModalComponent from './modals/media-modal.component';
 import ModelModalComponent from './modals/model-modal.component';
 import NavModalComponent from './modals/nav-modal.component';
 import PanoramaGridModalComponent from './modals/panorama-grid-modal.component';
@@ -21,6 +22,7 @@ const factories = [
 	CurvedPlaneModalComponent,
 	EditorComponent,
 	ItemModelModalComponent,
+	MediaModalComponent,
 	MenuBuilderComponent,
 	ModelModalComponent,
 	NavModalComponent,

@@ -2,10 +2,10 @@
 import { Asset, AssetType } from '../../asset/asset';
 import StateService from '../../state/state.service';
 import { PanoramaGridView, ViewType } from '../../view/view';
+import { EnvMapLoader } from '../envmap/envmap.loader';
 import { Geometry } from '../geometry/geometry';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import { VideoTexture } from '../video-texture';
-import { PanoramaLoader } from './panorama-loader';
 
 const VERTEX_SHADER = `
 varying vec3 vNormal;
@@ -28,9 +28,8 @@ uniform bool uRgbe;
 uniform sampler2D uTexture;
 
 vec3 ACESFilmicToneMapping_( vec3 color ) {
-	return color;
-	// color *= 1.8;
-	// return saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );
+	color *= 1.8;
+	return saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );
 }
 
 vec4 getColor(vec2 p) {
@@ -65,7 +64,7 @@ vec4 Blur(vec2 st, vec4 color) {
 void main() {
 	vec4 color = texture2D(uTexture, vUv);
 	// color = Blur(vUv, color);
-	if (false && uRgbe) {
+	if (uRgbe) {
 		color = vec4(encodeColor(color) * uTween + rand(vUv) * 0.01, 1.0);
 	} else {
 		color = vec4(color.rgb * uTween + rand(vUv) * 0.01, 1.0);
@@ -78,7 +77,7 @@ export default class Panorama {
 
 	constructor() {
 		this.muted_ = false;
-		this.subscription = StateService.state$.subscribe(state => PanoramaLoader.muted = state.volumeMuted);
+		this.subscription = StateService.state$.subscribe(state => EnvMapLoader.muted = state.volumeMuted);
 		this.tween = 0;
 		this.create();
 	}
@@ -88,6 +87,7 @@ export default class Panorama {
 		geometry.scale(-1, 1, 1);
 		geometry.rotateY(Math.PI);
 		const material = new THREE.ShaderMaterial({
+			// depthTest: false,
 			depthWrite: false,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_SHADER,
@@ -101,22 +101,106 @@ export default class Panorama {
 				fragDepth: true,
 			},
 		});
+		/*
+		const material = new THREE.MeshBasicMaterial({
+			transparent: true,
+			opacity: 0,
+		});
+		*/
 		const mesh = this.mesh = new InteractiveMesh(geometry, material);
+		// mesh.renderOrder = environment.renderOrder.panorama;
 		mesh.name = '[panorama]';
 	}
+
+	/*
+	swap(view, renderer, callback, onexit) {
+		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
+		const material = this.mesh.material;
+		if (this.tween > 0) {
+			gsap.to(this, {
+				duration: 0.5,
+				tween: 0,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					material.uniforms.uTween.value = this.tween;
+					material.needsUpdate = true;
+				},
+				onComplete: () => {
+					if (typeof onexit === 'function') {
+						onexit(view);
+					}
+					this.load(item, renderer, (envMap, texture, rgbe) => {
+						gsap.to(this, {
+							duration: 0.5,
+							tween: 1,
+							ease: Power2.easeInOut,
+							onUpdate: () => {
+								material.uniforms.uTween.value = this.tween;
+								material.needsUpdate = true;
+							}
+						});
+						if (typeof callback === 'function') {
+							callback(envMap, texture, rgbe);
+						}
+					});
+				}
+			});
+		} else {
+			if (typeof onexit === 'function') {
+				onexit(view);
+			}
+			this.load(item, renderer, (envMap, texture, rgbe) => {
+				gsap.to(this, {
+					duration: 0.5,
+					tween: 1,
+					ease: Power2.easeInOut,
+					onUpdate: () => {
+						material.uniforms.uTween.value = this.tween;
+						material.needsUpdate = true;
+					}
+				});
+				if (typeof callback === 'function') {
+					callback(envMap, texture, rgbe);
+				}
+			});
+		}
+	}
+	*/
 
 	change(view, renderer, callback, onexit) {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
 		this.load(item, renderer, (texture, envMap, rgbe) => {
+			// setTimeout(() => {
 			if (typeof onexit === 'function') {
 				onexit(view);
 			}
 			material.uniforms.uTween.value = 1;
 			material.needsUpdate = true;
+			// setTimeout(function() {
 			if (typeof callback === 'function') {
 				callback(texture);
 			}
+			// }, 100); // !!! delay
+			/*
+			gsap.to(this, {
+				duration: 0.5,
+				tween: 1,
+				ease: Power2.easeInOut,
+				onUpdate: () => {
+					material.uniforms.uTween.value = this.tween;
+					material.needsUpdate = true;
+				},
+				onComplete: () => {
+					setTimeout(function () {
+						if (typeof callback === 'function') {
+							callback(envMap, texture, rgbe);
+						}
+					}, 100); // !!! delay
+				},
+			});
+			*/
+			// }, 100); // !!! delay
 		});
 	}
 
@@ -139,12 +223,13 @@ export default class Panorama {
 		if (asset.type.name === AssetType.Model.name) {
 			if (typeof callback === 'function') {
 				callback(null);
+				// console.log('Panorama', asset.type);
 			}
 			return;
 		}
 		this.currentAsset = asset.folder + asset.file;
 		const material = this.mesh.material;
-		PanoramaLoader.load(asset, renderer, (texture, rgbe) => {
+		EnvMapLoader.load(asset, renderer, (texture, envMap, rgbe, video, pmremGenerator) => {
 			if (asset.folder + asset.file !== this.currentAsset) {
 				texture.dispose();
 				return;
@@ -180,6 +265,7 @@ export default class Panorama {
 	}
 
 	setVideo(video) {
+		// console.log('Panorama.setVideo', video);
 		if (video) {
 			const onPlaying = () => {
 				const texture = new VideoTexture(video);
@@ -194,6 +280,7 @@ export default class Panorama {
 				material.uniforms.uResolution.value = new THREE.Vector2(texture.width, texture.height);
 				material.needsUpdate = true;
 			};
+			// video.addEventListener('canplay', onPlaying);
 			video.crossOrigin = 'anonymous';
 			video.oncanplay = () => {
 				onPlaying();

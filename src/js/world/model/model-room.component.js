@@ -42,6 +42,7 @@ export default class ModelRoomComponent extends ModelComponent {
 	}
 
 	onInit() {
+		console.log('ModelRoomComponent.onInit');
 		super.onInit();
 		this.isPresenting = false;
 		MenuService.active$.pipe(
@@ -87,6 +88,7 @@ export default class ModelRoomComponent extends ModelComponent {
 			if (typeof callback === 'function') {
 				callback(glb.scene, glb.animations);
 			}
+			// console.log('ModelRoomComponent.loadGlb');
 			LoaderService.setProgress(progressRef, 1);
 			// roughnessMipmapper.dispose();
 		}, (progressEvent) => {

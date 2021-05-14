@@ -3,6 +3,7 @@ import { getContext } from 'rxcomp';
 // import * as THREE from 'three';
 import DragService from '../../drag/drag.service';
 import { environment } from '../../environment';
+import { Host } from '../host/host';
 import InteractiveSprite from '../interactive/interactive.sprite';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -76,7 +77,7 @@ export default class ModelPanelComponent extends ModelComponent {
 					ease: Power2.easeInOut,
 					onUpdate: () => {
 						panel.position.set(position.x, position.y + (height + dy * 2) - dy * from.value, position.z);
-						panel.lookAt(ModelPanelComponent.ORIGIN);
+						panel.lookAt(Host.origin);
 						panel.material.opacity = from.value;
 						panel.material.needsUpdate = true;
 					}
@@ -182,7 +183,6 @@ export default class ModelPanelComponent extends ModelComponent {
 	}
 }
 
-ModelPanelComponent.ORIGIN = new THREE.Vector3();
 ModelPanelComponent.PANEL_RADIUS = 99;
 
 ModelPanelComponent.meta = {

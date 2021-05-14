@@ -2,6 +2,7 @@ import { takeUntil } from 'rxjs/operators';
 // import * as THREE from 'three';
 import { environment } from '../../environment';
 import DebugService from '../debug.service';
+import { Host } from '../host/host';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -133,7 +134,7 @@ export default class ModelDebugComponent extends ModelComponent {
 		// VR.body.position.add(lookDirection);
 		// console.log(position.x + '|' + position.y + '|' + position.z);
 		group.position.copy(position);
-		group.lookAt(ModelDebugComponent.ORIGIN);
+		group.lookAt(Host.origin);
 		// }
 	}
 
@@ -148,7 +149,7 @@ export default class ModelDebugComponent extends ModelComponent {
 				// ctx.fillRect(ModelDebugComponent.W - 10, ModelDebugComponent.H - 10, 10, 10);
 				ctx.font = `30px ${environment.fontFamily}`;
 				ctx.textBaseline = 'middle';
-				ctx.textAlign = "center";
+				ctx.textAlign = 'center';
 				ctx.fillStyle = '#FFFFFF';
 				ctx.strokeStyle = '#000000';
 				ctx.lineWidth = 5;
@@ -164,7 +165,6 @@ export default class ModelDebugComponent extends ModelComponent {
 
 }
 
-ModelDebugComponent.ORIGIN = new THREE.Vector3();
 ModelDebugComponent.W = 1024;
 ModelDebugComponent.H = 256;
 

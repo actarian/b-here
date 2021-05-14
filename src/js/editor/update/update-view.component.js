@@ -30,6 +30,7 @@ export default class UpdateViewComponent extends Component {
 				case ViewType.PanoramaGrid.name:
 				case ViewType.Room3d.name:
 				case ViewType.Model.name:
+				case ViewType.Media.name:
 					this.form.patch({
 						latitude: message.orientation.latitude,
 						longitude: message.orientation.longitude,
@@ -59,6 +60,9 @@ export default class UpdateViewComponent extends Component {
 
 	getAssetDidChange(changes) {
 		const view = this.view;
+		if (view.type.name === ViewType.PanoramaGrid.name) {
+			return false;
+		}
 		const assetDidChange = AssetService.assetDidChange(view.asset, changes.asset);
 		const usdzDidChange = AssetService.assetDidChange(view.ar ? view.ar.usdz : null, changes.usdz);
 		const gltfDidChange = AssetService.assetDidChange(view.ar ? view.ar.gltf : null, changes.gltf);
@@ -103,6 +107,9 @@ export default class UpdateViewComponent extends Component {
 				case ViewType.Model.name:
 					keys = ['id', 'type', 'name', 'hidden?', 'latitude', 'longitude', 'zoom', 'asset'];
 					break;
+				case ViewType.Media.name:
+					keys = ['id', 'type', 'name', 'hidden?', 'asset'];
+					break;
 				default:
 					keys = ['id', 'type', 'name'];
 			}
@@ -132,6 +139,7 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	onChanges(changes) {
+		// console.log('UpdateViewComponent.onChanges');
 		this.doUpdateForm();
 	}
 
@@ -159,10 +167,10 @@ export default class UpdateViewComponent extends Component {
 			).subscribe(response => {
 				// console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
 				this.update.next({ view });
-				setTimeout(() => {
+				this.setTimeout(() => {
 					this.busy = false;
 					this.pushChanges();
-				}, 300);
+				});
 			}, error => console.log('UpdateViewComponent.onSubmit.viewUpdate$.error', error));
 			// this.update.next({ view: new View(payload) });
 		} else {
@@ -186,6 +194,23 @@ export default class UpdateViewComponent extends Component {
 
 	getTitle(view) {
 		return LabelPipe.getKeys('editor', view.type.name);
+	}
+
+	clearTimeout() {
+		if (this.to) {
+			clearTimeout(this.to);
+		}
+	}
+
+	setTimeout(callback, msec = 300) {
+		this.clearTimeout();
+		if (typeof callback === 'function') {
+			this.to = setTimeout(callback, msec);
+		}
+	}
+
+	onDestroy() {
+		this.clearTimeout();
 	}
 }
 

@@ -64,7 +64,7 @@ export default class AsideComponent extends Component {
 	}
 
 	supportedViewType(viewTypeName) {
-		let supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
+		let supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name, ViewType.Media.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
 		// console.log('supportedViewType', viewType, supported);
 		return supported;
 	}
@@ -86,6 +86,9 @@ export default class AsideComponent extends Component {
 				break;
 			case ViewType.Model.name:
 				supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+				break;
+			case ViewType.Media.name:
+				supported = [].indexOf(viewItemTypeName) !== -1;
 				break;
 		}
 		// console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);

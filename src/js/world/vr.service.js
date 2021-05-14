@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from 'rxjs';
 // import * as THREE from 'three';
 
 export const XRStatus = {

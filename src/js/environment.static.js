@@ -46,6 +46,7 @@ export const environmentStatic = {
 	},
 	textures: {
 		envMap: 'textures/envMap/flower_road_1k.hdr',
+		grid: 'textures/grid/grid.jpg',
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
 	template: {
@@ -58,6 +59,7 @@ export const environmentStatic = {
 				'panorama-grid': '/panorama-grid-modal.html',
 				'room-3d': '/room-3d-modal.html',
 				'model': '/model-modal.html',
+				'media': '/media-modal.html',
 			},
 			viewItem: {
 				'nav': '/nav-modal.html',

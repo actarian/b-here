@@ -1,5 +1,5 @@
 // import * as THREE from 'three';
-import { environment } from "../../environment";
+import { environment } from '../../environment';
 
 const LINE_SEGMENTS = 10;
 

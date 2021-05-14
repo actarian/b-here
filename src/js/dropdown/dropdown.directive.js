@@ -1,6 +1,6 @@
-import { Directive, getContext } from "rxcomp";
-import { BehaviorSubject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { Directive, getContext } from 'rxcomp';
+import { BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 let DROPDOWN_ID = 1000000;
 

@@ -54,7 +54,8 @@ export default class ModelRoomComponent extends ModelComponent {
 			} else {
 				mesh = model;
 			}
-			const items = this.item.items;
+			const view = this.item;
+			const items = view.items;
 			mesh.scale.set(0.05, 0.05, 0.05);
 			// mesh.scale.set(10, 10, 10);
 			mesh.traverse((child) => {
@@ -88,7 +89,7 @@ export default class ModelRoomComponent extends ModelComponent {
 						previous.material.color.setHex(0x000000);
 					}
 					const parent = previous.parent;
-					const mesh = item.mesh = new MediaMesh(item, items, previous.geometry, this.host);
+					const mesh = item.mesh = new MediaMesh(item, view, previous.geometry, this.host);
 					mesh.depthTest = false;
 					mesh.renderOrder = 0;
 					mesh.name = previous.name;

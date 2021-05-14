@@ -5,11 +5,10 @@ import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
-// import DebugService from '../debug.service';
 // import * as THREE from 'three';
 import { RGBELoader } from '../loaders/RGBELoader';
 
-export class EnvMapLoader {
+export class PanoramaLoader {
 
 	static get video() {
 		return this.video_;
@@ -27,7 +26,6 @@ export class EnvMapLoader {
 		if (video) {
 			const video = this.video_ = document.createElement('video');
 			video.loop = true;
-			// video.muted = true;
 			video.playsInline = true;
 			video.crossOrigin = 'anonymous';
 			// document.querySelector('body').appendChild(video);
@@ -40,7 +38,7 @@ export class EnvMapLoader {
 
 	static set muted(muted) {
 		this.muted_ = muted;
-		// console.log('EnvMapLoader.muted', muted, this.video);
+		// console.log('PanoramaLoader.muted', muted, this.video);
 		if (this.video) {
 			this.video.muted = muted === true;
 		}
@@ -80,28 +78,20 @@ export class EnvMapLoader {
 	}
 
 	static loadBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new PMREMGenerator(renderer);
-		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
-		// console.log('loadBackground.progressRef');
 		const loader = new THREE.TextureLoader();
 		loader.setPath(folder).load(file, (texture) => {
-			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-			pmremGenerator.dispose();
 			if (typeof callback === 'function') {
-				callback(texture, envMap, false);
+				callback(texture);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		}, (request) => {
-			// console.log(request.loaded, request.total);
 			LoaderService.setProgress(progressRef, request.loaded, request.total);
 		});
 		return loader;
 	}
 
 	static loadBackgroundImageService(folder, file, renderer, callback) {
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
-		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		const image = new Image();
 		ImageService.events$(folder + file).pipe(
@@ -121,32 +111,24 @@ export class EnvMapLoader {
 		).subscribe(event => {
 			URL.revokeObjectURL(event.data);
 			const texture = new THREE.Texture(image);
-			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-			pmremGenerator.dispose();
 			if (typeof callback === 'function') {
-				callback(texture, envMap, false);
+				callback(texture);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		});
 	}
 
 	static loadRgbeBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new PMREMGenerator(renderer);
-		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		const loader = new RGBELoader();
-		loader.setDataType(THREE.UnsignedByteType)
-			// .setDataType(THREE.FloatType)
-			.setPath(folder).load(file, (texture) => {
-				const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-				pmremGenerator.dispose();
-				if (typeof callback === 'function') {
-					callback(texture, envMap, true);
-				}
-				LoaderService.setProgress(progressRef, 1);
-			}, (request) => {
-				LoaderService.setProgress(progressRef, request.loaded, request.total);
-			});
+		loader.setDataType(THREE.UnsignedByteType).setPath(folder).load(file, (texture) => {
+			if (typeof callback === 'function') {
+				callback(texture, true);
+			}
+			LoaderService.setProgress(progressRef, 1);
+		}, (request) => {
+			LoaderService.setProgress(progressRef, request.loaded, request.total);
+		});
 		return loader;
 	}
 
@@ -161,16 +143,8 @@ export class EnvMapLoader {
 			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
-			const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
-				generateMipmaps: true,
-				// minFilter: THREE.LinearMipmapLinearFilter,
-				minFilter: THREE.LinearFilter,
-				magFilter: THREE.LinearFilter,
-				mapping: THREE.UVMapping,
-				format: THREE.RGBFormat
-			}).fromEquirectangularTexture(renderer, texture);
 			if (typeof callback === 'function') {
-				callback(texture, cubeRenderTarget.texture, false);
+				callback(texture);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		};
@@ -180,12 +154,10 @@ export class EnvMapLoader {
 		};
 		if (Hls.isSupported()) {
 			var hls = new Hls();
-			// bind them together
 			hls.attachMedia(video);
 			hls.on(Hls.Events.MEDIA_ATTACHED, () => {
 				hls.loadSource(src);
 				hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-					// console.log('HlsDirective', data.levels);
 					video.play();
 				});
 			});
@@ -194,7 +166,6 @@ export class EnvMapLoader {
 
 	static loadVideoBackground(folder, file, renderer, callback) {
 		const progressRef = LoaderService.getRef();
-		// const debugService = DebugService.getService();
 		this.video = true;
 		const video = this.video;
 		const onPlaying = () => {
@@ -205,40 +176,29 @@ export class EnvMapLoader {
 			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
-			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
-				generateMipmaps: true,
-				// minFilter: THREE.LinearMipmapLinearFilter,
-				minFilter: THREE.LinearFilter,
-				magFilter: THREE.LinearFilter,
-				mapping: THREE.UVMapping,
-				format: THREE.RGBFormat
-			}).fromEquirectangularTexture(renderer, texture);
 			if (typeof callback === 'function') {
-				callback(texture, cubeRenderTarget.texture, false);
+				callback(texture);
 			}
-			console.log('loadVideoBackground.loaded');
+			// console.log('loadVideoBackground.loaded');
 			LoaderService.setProgress(progressRef, 1);
 		};
-		// video.addEventListener('playing', onPlaying);
 		video.oncanplay = () => {
-			// console.log('EnvMapLoader.loadVideoBackground.oncanplay');
+			// console.log('PanoramaLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
 		video.crossOrigin = 'anonymous';
 		video.src = folder + file;
 		video.load();
 		video.play().then(() => {
-			// console.log('EnvMapLoader.loadVideoBackground.play');
-			// debugService.setMessage(`play ${video.src}`);
+			// console.log('PanoramaLoader.loadVideoBackground.play');
 		}, error => {
-			console.log('EnvMapLoader.loadVideoBackground.play.error', error);
-			// debugService.setMessage(`play.error ${video.src}`);
+			console.log('PanoramaLoader.loadVideoBackground.play.error', error);
 		});
 	}
 
 	static loadPublisherStreamBackground(renderer, callback) {
 		const onPublisherStreamId = (publisherStreamId) => {
-			const video = document.querySelector(`#stream-${publisherStreamId} video`); // document.querySelector(`#stream-remote-${publisherStreamId} video`) || document.querySelector(`#stream-local-${publisherStreamId} video`);
+			const video = document.querySelector(`#stream-${publisherStreamId} video`);
 			if (!video) {
 				return;
 			}
@@ -249,16 +209,8 @@ export class EnvMapLoader {
 				texture.mapping = THREE.UVMapping;
 				texture.format = THREE.RGBFormat;
 				texture.needsUpdate = true;
-				const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
-					generateMipmaps: true,
-					// minFilter: THREE.LinearMipmapLinearFilter,
-					minFilter: THREE.LinearFilter,
-					magFilter: THREE.LinearFilter,
-					mapping: THREE.UVMapping,
-					format: THREE.RGBFormat
-				}).fromEquirectangularTexture(renderer, texture);
 				if (typeof callback === 'function') {
-					callback(texture, cubeRenderTarget.texture, false);
+					callback(texture);
 				}
 			};
 			video.crossOrigin = 'anonymous';

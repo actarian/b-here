@@ -263,8 +263,8 @@ export default class AgoraService extends Emittable {
 		client.on('mute-audio', this.onMuteAudio);
 		client.on('unmute-audio', this.onUnmuteAudio);
 		if (USE_VOLUME_INDICATOR) {
-			client.enableAudioVolumeIndicator(); // Triggers the "volume-indicator" callback event every two seconds.
-			client.on("volume-indicator", this.onVolumeIndicator);
+			client.enableAudioVolumeIndicator(); // Triggers the 'volume-indicator' callback event every two seconds.
+			client.on('volume-indicator', this.onVolumeIndicator);
 		}
 		client.on('peer-online', this.onPeerConnect);
 		// Occurs when the peer user leaves the channel; for example, the peer user calls Client.leave.

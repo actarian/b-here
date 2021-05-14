@@ -1,5 +1,5 @@
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { expand, filter, finalize, map, share, tap, withLatestFrom } from "rxjs/operators";
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { expand, filter, finalize, map, share, tap, withLatestFrom } from 'rxjs/operators';
 
 const BUFF_SIZE = 512;
 
@@ -34,7 +34,7 @@ export default class AudioStreamService {
 		if (!this.analyser_) {
 			try {
 				this.analyser_ = this.context.createAnalyser();
-			} catch(error) {
+			} catch (error) {
 				console.log('AudioStreamService.analyser', error);
 			};
 		}
@@ -197,7 +197,7 @@ export default class AudioStreamService {
 
 		// Now smooth this out with the averaging factor applied
 		// to the previous sample - take the max here because we
-		// want "fast attack, slow release."
+		// want 'fast attack, slow release.'
 		this.volume = Math.max(rms, this.volume * this.averaging);
 	}
 

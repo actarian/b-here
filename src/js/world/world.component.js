@@ -4,6 +4,7 @@ import { auditTime, filter, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { MessageType, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
+import LoaderService from '../loader/loader.service';
 import MessageService from '../message/message.service';
 import ModalService from '../modal/modal.service';
 import PrefetchService from '../prefetch/prefetch.service';
@@ -13,20 +14,23 @@ import { RoleType } from '../user/user';
 import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
+import { Host } from './host/host';
 import Interactive from './interactive/interactive';
 // import * as THREE from 'three';
 import { RGBELoader } from './loaders/RGBELoader';
 import MediaMesh from './media/media-mesh';
+import MediaPlayMesh from './media/media-play-mesh';
 import OrbitService, { OrbitMoveEvent } from './orbit/orbit.service';
 import Panorama from './panorama/panorama';
 import PhoneElement from './phone/phone.element';
 import PointerElement from './pointer/pointer.element';
 import { TeleportElement } from './teleport/teleport.element';
+import { Texture } from './texture/texture';
 import VRService from './vr.service';
 import { Gamepad } from './webxr/gamepad';
 import { XRControllerModelFactory } from './webxr/xr-controller-model.factory';
 
-const ORIGIN = new THREE.Vector3();
+const ZERO = new THREE.Vector3();
 const DOWN = new THREE.Vector3(0, -1, 0);
 const USE_SHADOW = false;
 const USE_PHONE = true;
@@ -101,8 +105,24 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	set menu(menu) {
+		if (this.menu_ !== menu) {
+			this.menu_ = menu;
+			this.scene.traverse(object => {
+				if (object instanceof MediaMesh || object instanceof MediaPlayMesh) {
+					object.freezed = (menu != null);
+				}
+			});
+		}
+	}
+	get menu() {
+		return this.menu_;
+	}
+
 	onInit() {
 		// console.log('WorldComponent.onInit');
+		Host.host = this;
+		this.defaultTexture = Texture.gridTexture;
 		this.index = 0;
 		this.error_ = null;
 		this.loading = null;
@@ -174,9 +194,13 @@ export default class WorldComponent extends Component {
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(container.offsetWidth, container.offsetHeight);
 		renderer.xr.enabled = true;
-		renderer.toneMapping = THREE.ACESFilmicToneMapping;
-		renderer.toneMappingExposure = 0.8;
 		renderer.outputEncoding = THREE.sRGBEncoding;
+		renderer.toneMapping = THREE.NoToneMapping; // default
+		// renderer.toneMapping = THREE.LinearToneMapping;
+		// renderer.toneMapping = THREE.ReinhardToneMapping;
+		// renderer.toneMapping = THREE.CineonToneMapping;
+		// renderer.toneMapping = THREE.ACESFilmicToneMapping;
+		renderer.toneMappingExposure = 1;
 		if (USE_SHADOW) {
 			renderer.shadowMap.enabled = true;
 			renderer.shadowMap.type = THREE.PCFShadowMap; // THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
@@ -231,25 +255,34 @@ export default class WorldComponent extends Component {
 		this.addControllers();
 		this.resize();
 
+		// show hide items
+		LoaderService.progress$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(progress => {
+			const complete = progress.count === 0;
+			const view = this.view_;
+			this.panorama.mesh.visible = complete;
+			if (view.items) {
+				view.items.forEach(item => {
+					if (item.mesh) {
+						item.mesh.visible = complete;
+					}
+				});
+			}
+			// console.log(view, complete, progress);
+		});
+
 		console.log('WorldComponent.createScene', this);
 	}
 
 	addEnvironment() {
-		const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-		pmremGenerator.compileEquirectangularShader();
 		const segments = environment.textures.envMap.split('/');
 		const filename = segments.pop();
-		const folder = segments.join('/');
-		const loader = new RGBELoader()
-			.setDataType(THREE.UnsignedByteType)
-			.setPath(environment.getPath(folder))
-			.load(filename, (texture) => {
-				const envMap = this.envMap = pmremGenerator.fromEquirectangular(texture).texture;
-				texture.dispose();
-				pmremGenerator.dispose();
-				this.scene.environment = envMap;
-				// this.scene.background = envMap;
-			});
+		const folder = segments.join('/') + '/';
+		const loader = filename.indexOf('.hdr') !== -1 ? new RGBELoader().setDataType(THREE.UnsignedByteType) : new THREE.TextureLoader();
+		loader.setPath(environment.getPath(folder)).load(filename, (texture) => {
+			this.setBackground(texture);
+		});
 	}
 
 	addOffCanvasScene(message) {
@@ -275,6 +308,23 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	setBackground(texture) {
+		let background = texture || this.defaultTexture;
+		background.mapping = THREE.EquirectangularReflectionMapping;
+		// background.encoding = THREE.LinearEncoding;
+		background.encoding = THREE.sRGBEncoding;
+		// background.encoding = THREE.GammaEncoding;
+		// background.encoding = THREE.RGBEEncoding;
+		// background.encoding = THREE.LogLuvEncoding;
+		// background.encoding = THREE.RGBM7Encoding;
+		// background.encoding = THREE.RGBM16Encoding;
+		// background.encoding = THREE.RGBDEncoding;
+		// background.encoding = THREE.BasicDepthPacking;
+		// background.encoding = THREE.RGBADepthPacking;
+		// this.scene.background = background;
+		this.scene.environment = background;
+	}
+
 	setView() {
 		if (!this.panorama) {
 			return;
@@ -295,7 +345,6 @@ export default class WorldComponent extends Component {
 			this.cameraGroup.rotation.set(0, 0, 0);
 			if (view.type.name === ViewType.Room3d.name) {
 				this.renderer.setClearColor(0x000000, 1);
-				// this.renderer.setClearColor(0x7dc1fc, 1); // !!!
 				this.objects.remove(this.panorama.mesh);
 			} else {
 				this.renderer.setClearColor(0x000000, 1);
@@ -305,16 +354,15 @@ export default class WorldComponent extends Component {
 			// this.waiting = null;
 			this.pushChanges();
 			PrefetchService.cancel();
-			this.panorama.change(view, this.renderer, (envMap, texture, rgbe) => {
-				// this.scene.background = envMap;
-				this.scene.environment = envMap || this.envMap;
+			this.panorama.change(view, this.renderer, (texture) => {
+				// console.log('panorama.change', texture);
+				this.setBackground(texture);
 				view.ready = true;
 				view.onUpdateAsset = () => {
 					this.onViewAssetDidChange();
 				};
 				// this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
 				this.pushChanges();
-				// this.render();
 			}, (view) => {
 				this.setViewOrientation(view);
 				PrefetchService.prefetch(view.prefetchAssets);
@@ -326,8 +374,8 @@ export default class WorldComponent extends Component {
 
 	onViewAssetDidChange() {
 		if (this.panorama) {
-			this.panorama.crossfade(this.view, this.renderer, (envMap, texture, rgbe) => {
-				this.scene.environment = envMap || this.envMap;
+			this.panorama.crossfade(this.view, this.renderer, (texture) => {
+				this.setBackground(texture);
 			});
 		}
 	}
@@ -576,7 +624,7 @@ export default class WorldComponent extends Component {
 		if (controller && target && this.renderer.xr.isPresenting) {
 			let position = new THREE.Vector3();
 			position = position.copy(target.position);
-			const distance = Math.max(1, Math.min(8, position.distanceTo(ORIGIN) + 0.02 * direction));
+			const distance = Math.max(1, Math.min(8, position.distanceTo(ZERO) + 0.02 * direction));
 			position.normalize();
 			position = position.multiplyScalar(distance);
 			// DebugService.getService().setMessage('onModelDistance ' + distance);
@@ -598,10 +646,6 @@ export default class WorldComponent extends Component {
 			this.tempTarget = null;
 			this.tempParent = null;
 		}
-	}
-
-	onTween() {
-		// this.render();
 	}
 
 	updateRaycasterXR(controller, raycaster) {
@@ -668,6 +712,9 @@ export default class WorldComponent extends Component {
 				}
 			}
 			*/
+			if (scene.background && scene.background.userData) {
+				scene.background.userData.render();
+			}
 			renderer.render(this.scene, this.camera);
 			if (this.state && !this.state.hosted) {
 				this.orbitService.render();
@@ -685,22 +732,22 @@ export default class WorldComponent extends Component {
 			const direction = this.direction || (this.direction = new THREE.Vector3());
 			const camera = this.camera;
 			const speed = 0.1;
-			if (this.keys.w) {
+			if (this.keys.w || this.keys.ArrowUp) {
 				camera.getWorldDirection(direction);
 				direction.multiplyScalar(speed);
 				velocity.copy(direction);
-			} else if (this.keys.s) {
+			} else if (this.keys.s || this.keys.ArrowDown) {
 				camera.getWorldDirection(direction);
 				direction.multiplyScalar(-speed);
 				velocity.copy(direction);
-			} else if (this.keys.d) {
+			} else if (this.keys.d || this.keys.ArrowRight) {
 				camera.getWorldDirection(direction);
 				direction.multiplyScalar(speed);
 				const axisY = this.axisY || (this.direction = new THREE.Vector3(0, 1, 0));
 				const angle = -Math.PI / 2;
 				direction.applyAxisAngle(axisY, angle);
 				velocity.copy(direction);
-			} else if (this.keys.a) {
+			} else if (this.keys.a || this.keys.ArrowLeft) {
 				camera.getWorldDirection(direction);
 				direction.multiplyScalar(-speed);
 				const axisY = this.axisY || (this.direction = new THREE.Vector3(0, 1, 0));
@@ -725,7 +772,7 @@ export default class WorldComponent extends Component {
 					// this.orbitService.events$.next(OrbitService.orbitMoveEvent);
 					// camera.updateProjectionMatrix();
 				}
-				velocity.lerp(ORIGIN, 0.1);
+				velocity.lerp(ZERO, 0.1);
 			} else {
 				velocity.set(0, 0, 0);
 			}
@@ -1098,9 +1145,8 @@ export default class WorldComponent extends Component {
 		this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
 			const tile = this.view.getTile(event.indices.x, event.indices.y);
 			if (tile) {
-				this.panorama.crossfade(tile, this.renderer, (envMap, texture, rgbe) => {
-					// this.scene.background = envMap;
-					this.scene.environment = envMap || this.envMap;
+				this.panorama.crossfade(tile, this.renderer, (texture) => {
+					this.setBackground(texture);
 					this.orbitService.walkComplete(headingLongitude, headingLatitude);
 					this.view.updateCurrentItems();
 					// this.loading = null;

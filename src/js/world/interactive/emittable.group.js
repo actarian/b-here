@@ -1,4 +1,4 @@
-import FreezableGroup from "./freezable.group";
+import FreezableGroup from './freezable.group';
 
 export default class EmittableGroup extends FreezableGroup {
 

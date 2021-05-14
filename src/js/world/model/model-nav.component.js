@@ -86,7 +86,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			ctx.textBaseline = 'middle';
 			ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
 			ctx.lineWidth = 6;
-			ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
+			ctx.lineJoin = 'round'; // Experiment with 'bevel' & 'round' for the effect you want!
 			ctx.miterLimit = 2;
 			ctx.strokeText(text, x, y);
 			ctx.fillStyle = 'white';
@@ -159,7 +159,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			color: 0x00ffff,
 		}));
 		sphere.name = `[nav] ${this.item.id}`;
-		sphere.lookAt(ModelNavComponent.ORIGIN);
+		// sphere.lookAt(Host.origin); ??
 		sphere.depthTest = false;
 		sphere.renderOrder = 0;
 		nav.add(sphere);
@@ -336,7 +336,6 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 }
 
-ModelNavComponent.ORIGIN = new THREE.Vector3();
 ModelNavComponent.RADIUS = 100;
 
 ModelNavComponent.meta = {

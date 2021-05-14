@@ -1,8 +1,8 @@
 /* global THREE */
 
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs';
 // import * as THREE from 'three';
-import StateService from "../state/state.service";
+import StateService from '../state/state.service';
 
 export const ViewType = {
 	WaitingRoom: { id: 1, name: 'waiting-room' },
@@ -10,6 +10,7 @@ export const ViewType = {
 	PanoramaGrid: { id: 3, name: 'panorama-grid' },
 	Room3d: { id: 4, name: 'room-3d' },
 	Model: { id: 5, name: 'model' },
+	Media: { id: 6, name: 'media' },
 };
 
 export const ViewItemType = {
@@ -122,6 +123,7 @@ export class PanoramaGridView extends View {
 			});
 			return {
 				id: tile.id,
+				type: Object.assign({}, ViewType.PanoramaGrid),
 				asset: tile.asset,
 				navs: tile.navs || [],
 				indices,
@@ -184,13 +186,19 @@ export class PanoramaGridView extends View {
 	}
 }
 
+export class Room3DView extends View {
+	constructor(options) {
+		super(options);
+	}
+}
+
 export class ModelView extends View {
 	constructor(options) {
 		super(options);
 	}
 }
 
-export class Room3DView extends View {
+export class MediaView extends View {
 	constructor(options) {
 		super(options);
 	}
@@ -268,6 +276,9 @@ export function mapView(view) {
 			break;
 		case ViewType.Model.name:
 			view = new ModelView(view);
+			break;
+		case ViewType.Media.name:
+			view = new MediaView(view);
 			break;
 		default:
 			view = new View(view);

@@ -230,6 +230,7 @@ export default class EditorComponent extends Component {
 							case ViewType.PanoramaGrid.name:
 							case ViewType.Model.name:
 							case ViewType.Room3d.name:
+							case ViewType.Media.name:
 								this.data.views.push(event.data);
 								this.views = this.data.views.slice();
 								ViewService.viewId = event.data.id;

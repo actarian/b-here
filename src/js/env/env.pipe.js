@@ -1,5 +1,5 @@
-import { Pipe } from "rxcomp";
-import { environment } from "../environment";
+import { Pipe } from 'rxcomp';
+import { environment } from '../environment';
 
 export default class EnvPipe extends Pipe {
 

@@ -292,7 +292,7 @@ VRDisplays[0]: VRDisplay {
 	depthFar: 10000
 	depthNear: 0.01
 	displayId: 1
-	displayName: "Oculus Quest"
+	displayName: 'Oculus Quest'
 	isConnected: true
 	isPresenting: false
 	stageParameters: VRStageParameters {

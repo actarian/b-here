@@ -8,6 +8,7 @@ import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
 import MessageService from '../../message/message.service';
 import StateService from '../../state/state.service';
+import { Host } from '../host/host';
 // import DebugService from '../debug.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -56,8 +57,8 @@ export class MenuButton extends InteractiveMesh {
 			vertexShader: ModelMenuComponent.VERTEX_SHADER,
 			fragmentShader: ModelMenuComponent.FRAGMENT_SHADER,
 			uniforms: {
-				textureA: { type: "t", value: null },
-				textureB: { type: "t", value: null },
+				textureA: { type: 't', value: null },
+				textureB: { type: 't', value: null },
 				resolutionA: { value: new THREE.Vector2() },
 				resolutionB: { value: new THREE.Vector2() },
 				tween: { value: 0 },
@@ -260,6 +261,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		return this.loading_;
 	}
 	set loading(loading) {
+		// console.log('loading', loading);
 		if (this.loading_ !== loading) {
 			this.loading_ = loading;
 			const { node } = getContext(this);
@@ -325,7 +327,6 @@ export default class ModelMenuComponent extends ModelComponent {
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.menu;
 		const menuGroup = this.menuGroup = new THREE.Group();
-		// menuGroup.lookAt(ModelMenuComponent.ORIGIN);
 		if (typeof mount === 'function') {
 			mount(menuGroup);
 		}
@@ -345,8 +346,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			position.y += this.host.cameraGroup.position.y;
 			group.position.copy(position);
 			group.scale.set(1, 1, 1);
-			group.lookAt(cameraGroup.position);
-			// group.lookAt(ModelMenuComponent.ORIGIN);
+			group.lookAt(Host.origin);
 		} else {
 			camera.getWorldDirection(position);
 			if (OrbitService.mode === OrbitMode.Model) {
@@ -357,7 +357,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			group.position.copy(position);
 			const s = 1 / camera.zoom;
 			group.scale.set(s, s, s);
-			group.lookAt(cameraGroup.position); // ModelMenuComponent.ORIGIN);
+			group.lookAt(Host.origin);
 		}
 	}
 
@@ -511,7 +511,6 @@ export default class ModelMenuComponent extends ModelComponent {
 	}
 }
 
-ModelMenuComponent.ORIGIN = new THREE.Vector3();
 ModelMenuComponent.VERTEX_SHADER = `
 varying vec2 vUv;
 void main() {

@@ -1,5 +1,5 @@
-import { fromEvent } from "rxjs";
-import { map, startWith, tap } from "rxjs/operators";
+import { fromEvent } from 'rxjs';
+import { map, startWith, tap } from 'rxjs/operators';
 
 export default class CssService {
 
