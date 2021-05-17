@@ -223,7 +223,7 @@ export default class WorldComponent extends Component {
 		objects.name = '[objects]';
 		scene.add(objects);
 
-		const panorama = this.panorama = new Panorama();
+		const panorama = this.panorama = new Panorama(renderer);
 		this.panoramaIntersectObjects = [panorama.mesh];
 		this.intersectObjects = this.panoramaIntersectObjects;
 		objects.add(panorama.mesh);
@@ -264,9 +264,7 @@ export default class WorldComponent extends Component {
 			this.panorama.mesh.visible = complete;
 			if (view.items) {
 				view.items.forEach(item => {
-					if (item.mesh) {
-						item.mesh.visible = complete;
-					}
+					item.visible = complete;
 				});
 			}
 			// console.log(view, complete, progress);
@@ -695,7 +693,7 @@ export default class WorldComponent extends Component {
 			const tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
 			this.scene.traverse((child) => {
 				if (typeof child.userData.render === 'function') {
-					child.userData.render(time, tick);
+					child.userData.render(time, tick, renderer, scene, camera);
 				}
 			});
 			Object.keys(this.avatars).forEach(key => {
@@ -708,13 +706,15 @@ export default class WorldComponent extends Component {
 			for (let i = 0; i < objects.children.length; i++) {
 				const x = objects.children[i];
 				if (typeof x.userData.render === 'function') {
-					x.userData.render(time, tick);
+					x.userData.render(time, tick, renderer, scene, camera);
 				}
 			}
 			*/
+			/*
 			if (scene.background && scene.background.userData) {
-				scene.background.userData.render();
+				scene.background.userData.render(time, tick, renderer, scene, camera);
 			}
+			*/
 			renderer.render(this.scene, this.camera);
 			if (this.state && !this.state.hosted) {
 				this.orbitService.render();

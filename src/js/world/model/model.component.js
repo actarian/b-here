@@ -75,6 +75,14 @@ export default class ModelComponent extends Component {
 		this.mesh = mesh;
 		if (item) {
 			item.mesh = mesh;
+			Object.defineProperty(item, 'visible', {
+				get: () => {
+					return mesh.visible;
+				},
+				set: (visible) => {
+					this.setVisible(visible);
+				}
+			});
 			item.onUpdate = () => {
 				this.onUpdate(item, mesh);
 			};
@@ -151,6 +159,12 @@ export default class ModelComponent extends Component {
 		// group.rotation.x = THREE.Math.degToRad(180) * tween;
 		// group.rotation.y = THREE.Math.degToRad(360) * tween;
 		*/
+	}
+
+	setVisible(visible) {
+		if (this.mesh) {
+			this.mesh.visible = visible;
+		}
 	}
 
 	getScroll(offset) {

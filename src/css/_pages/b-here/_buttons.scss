@@ -2,6 +2,7 @@
 .btn--mic,
 .btn--screen,
 .btn--chat,
+.btn--navinfo,
 .btn--call {
 	// @extend %btn-circle;
 	@extend %btn;
@@ -95,6 +96,23 @@
 			right: 10px;
 			border-radius: 3px;
 			background: $foreground-secondary;
+		}
+	}
+}
+
+.btn--navinfo {
+	margin: 5px;
+
+	svg {
+		width: 24px;
+		height: 24px;
+		opacity: 0.2;
+		transition: opacity ease-in-out 350ms;
+	}
+
+	&.active {
+		svg {
+			opacity: 1;
 		}
 	}
 }

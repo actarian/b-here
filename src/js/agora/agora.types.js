@@ -129,6 +129,7 @@ export const MessageType = {
 	ZoomMedia: 'zoomMedia',
 	CurrentTimeMedia: 'currentTimeMedia',
 	PlayModel: 'playModel',
+	NavInfo: 'navInfo',
 	NavToView: 'navToView',
 	NavToGrid: 'navToGrid',
 	VRStarted: 'vrStarted',

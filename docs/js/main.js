@@ -136,6 +136,7 @@ function _readOnlyError(name) {
     chat: false,
     ar: true,
     like: true,
+    hideNavInfo: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -208,6 +209,7 @@ function _readOnlyError(name) {
     chat: true,
     ar: true,
     like: true,
+    hideNavInfo: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -395,6 +397,7 @@ var defaultAppOptions = {
     chat: true,
     ar: true,
     like: true,
+    hideNavInfo: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -761,6 +764,7 @@ var MessageType = {
   ZoomMedia: 'zoomMedia',
   CurrentTimeMedia: 'currentTimeMedia',
   PlayModel: 'playModel',
+  NavInfo: 'navInfo',
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
   VRStarted: 'vrStarted',
@@ -2886,6 +2890,17 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
   };
 
+  _proto.toggleNavInfo = function toggleNavInfo() {
+    var showNavInfo = !StateService.state.showNavInfo;
+    StateService.patchState({
+      showNavInfo: showNavInfo
+    });
+    MessageService.send({
+      type: MessageType.NavInfo,
+      showNavInfo: showNavInfo
+    });
+  };
+
   _proto.dismissControl = function dismissControl() {
     var _this12 = this;
 
@@ -3162,6 +3177,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.ZoomMedia:
           case MessageType.CurrentTimeMedia:
           case MessageType.PlayModel:
+          case MessageType.NavInfo:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
             if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
               return;
@@ -3312,6 +3328,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.ZoomMedia:
       case MessageType.CurrentTimeMedia:
       case MessageType.PlayModel:
+      case MessageType.NavInfo:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
         if (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid || StateService.state.spying && StateService.state.spying !== StateService.state.uid) {
@@ -8052,6 +8069,12 @@ var VRService = /*#__PURE__*/function () {
 
           break;
 
+        case MessageType.NavInfo:
+          StateService.patchState({
+            showNavInfo: message.showNavInfo
+          });
+          break;
+
         case MessageType.AddLike:
           ViewService.setViewLike$(message).pipe(operators.first()).subscribe(function (view) {
             return _this6.showLove(view);
@@ -8341,6 +8364,16 @@ var VRService = /*#__PURE__*/function () {
       chatDirty: false
     });
     window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.toggleNavInfo = function toggleNavInfo() {
+    if (this.agora) {
+      this.agora.toggleNavInfo();
+    } else {
+      this.patchState({
+        showNavInfo: !this.state.showNavInfo
+      });
+    }
   };
 
   _proto.onChatClose = function onChatClose() {
@@ -13775,6 +13808,12 @@ LanguageComponent.meta = {
     window.dispatchEvent(new Event('resize'));
   };
 
+  _proto.toggleNavInfo = function toggleNavInfo() {
+    this.patchState({
+      showNavInfo: !this.state.showNavInfo
+    });
+  };
+
   _proto.onChatClose = function onChatClose() {
     this.patchState({
       chat: false
@@ -18072,27 +18111,7 @@ var OrbitService = /*#__PURE__*/function () {
 
   return OrbitService;
 }();
-OrbitService.orbitMoveEvent = orbitMoveEvent;// import * as THREE from 'three';
-function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
-  THREE.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-  this.format = format !== undefined ? format : THREE.RGBFormat;
-  this.minFilter = minFilter !== undefined ? minFilter : THREE.LinearFilter;
-  this.magFilter = magFilter !== undefined ? magFilter : THREE.LinearFilter;
-  this.mapping = THREE.UVMapping;
-  this.generateMipmaps = false;
-}
-
-VideoTexture.prototype = Object.assign(Object.create(THREE.Texture.prototype), {
-  constructor: VideoTexture,
-  isVideoTexture: true,
-  update: function update() {
-    var video = this.image;
-
-    if (video.readyState >= video.HAVE_CURRENT_DATA) {
-      this.needsUpdate = true;
-    }
-  }
-});var PanoramaLoader = /*#__PURE__*/function () {
+OrbitService.orbitMoveEvent = orbitMoveEvent;var PanoramaLoader = /*#__PURE__*/function () {
   function PanoramaLoader() {}
 
   PanoramaLoader.load = function load(asset, renderer, callback) {
@@ -18119,6 +18138,12 @@ VideoTexture.prototype = Object.assign(Object.create(THREE.Texture.prototype), {
     var progressRef = LoaderService.getRef();
     var loader = new THREE.TextureLoader();
     loader.setPath(folder).load(file, function (texture) {
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.mapping = THREE.UVMapping;
+      texture.format = THREE.RGBFormat;
+      texture.needsUpdate = true;
+
       if (typeof callback === 'function') {
         callback(texture);
       }
@@ -18147,11 +18172,16 @@ VideoTexture.prototype = Object.assign(Object.create(THREE.Texture.prototype), {
     }), operators.takeWhile(function (event) {
       return event.type !== ImageServiceEvent.Complete;
     }, true)).subscribe(function (event) {
-      URL.revokeObjectURL(event.data);
       var texture = new THREE.Texture(image);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.mapping = THREE.UVMapping;
+      texture.format = THREE.RGBFormat;
+      texture.needsUpdate = true;
 
       if (typeof callback === 'function') {
         callback(texture);
+        URL.revokeObjectURL(event.data);
       }
 
       LoaderService.setProgress(progressRef, 1);
@@ -18345,83 +18375,256 @@ VideoTexture.prototype = Object.assign(Object.create(THREE.Texture.prototype), {
 
   return PanoramaLoader;
 }();// import * as THREE from 'three';
-var VERTEX_SHADER$1 = "\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nvoid main() {\n\tvNormal = normal;\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-var FRAGMENT_SHADER$1 = "\nvarying vec3 vNormal;\nvarying vec2 vUv;\n\nuniform vec2 uResolution;\nuniform float uTween;\nuniform bool uRgbe;\nuniform sampler2D uTexture;\n\nvec3 ACESFilmicToneMapping_( vec3 color ) {\n\treturn color;\n\t// color *= 1.8;\n\t// return saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}\n\nvec4 getColor(vec2 p) {\n\treturn texture2D(uTexture, p);\n}\n\nvec3 encodeColor(vec4 color) {\n\treturn ACESFilmicToneMapping_(RGBEToLinear(color).rgb);\n}\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec4 Blur(vec2 st, vec4 color) {\n\tconst float directions = 16.0;\n\tconst float quality = 3.0;\n\tfloat size = 16.0;\n\tconst float PI2 = 6.28318530718;\n\tconst float qq = 1.0;\n\tconst float q = 1.0 / quality;\n\tvec2 radius = size / uResolution.xy;\n\tfor (float d = 0.0; d < PI2; d += PI2 / directions) {\n\t\tfor (float i = q; i <= qq; i += q) {\n\t\t\tvec2 dUv = vec2(cos(d), sin(d)) * radius * i;\n\t\t\tcolor += getColor(st + dUv);\n        }\n\t}\n\treturn color /= quality * directions - 15.0 + rand(st) * 4.0;\n}\n\nvoid main() {\n\tvec4 color = texture2D(uTexture, vUv);\n\t// color = Blur(vUv, color);\n\tif (false && uRgbe) {\n\t\tcolor = vec4(encodeColor(color) * uTween + rand(vUv) * 0.01, 1.0);\n\t} else {\n\t\tcolor = vec4(color.rgb * uTween + rand(vUv) * 0.01, 1.0);\n\t}\n\tgl_FragColor = color;\n}\n";
 
 var Panorama = /*#__PURE__*/function () {
-  function Panorama() {
+  function Panorama(renderer) {
     this.muted_ = false;
     this.subscription = StateService.state$.subscribe(function (state) {
       return PanoramaLoader.muted = state.volumeMuted;
     });
     this.tween = 0;
-    this.create();
+    this.create(renderer);
   }
 
   var _proto = Panorama.prototype;
 
-  _proto.create = function create() {
-    var geometry = Geometry.panoramaGeometry;
-    geometry.scale(-1, 1, 1);
-    geometry.rotateY(Math.PI);
-    var material = new THREE.ShaderMaterial({
-      depthWrite: false,
-      vertexShader: VERTEX_SHADER$1,
-      fragmentShader: FRAGMENT_SHADER$1,
-      uniforms: {
-        uTexture: {
-          type: 't',
-          value: null
-        },
-        uResolution: {
-          value: new THREE.Vector2()
-        },
-        uTween: {
-          value: 0
-        },
-        uRgbe: {
-          value: false
+  _proto.create = function create(renderer) {
+    var _this = this;
+
+    this.renderer = renderer;
+    this.onCubeMapDispose = this.onCubeMapDispose.bind(this);
+    var geometry = new THREE.BoxGeometry(202, 202, 202);
+    var material = this.getBlackMaterial();
+    var mesh = new InteractiveMesh(geometry, material);
+    mesh.userData = {
+      render: function render(time, tick, renderer, scene, camera) {
+        mesh.matrixWorld.copyPosition(camera.matrixWorld);
+        var cubeMap = _this.cubeMap;
+        var texture = _this.texture;
+
+        if (cubeMap && texture && texture.isVideoTexture) {
+          _this.updateCubeMapEquirectangularTexture(cubeMap, renderer, texture);
         }
-      },
-      extensions: {
-        fragDepth: true
+      }
+    };
+    mesh.name = '[panorama]';
+    this.mesh = mesh;
+  };
+
+  _proto.getBlackMaterial = function getBlackMaterial() {
+    return new THREE.MeshBasicMaterial({
+      name: 'PanoramaStandardMaterial',
+      color: 0x000000,
+      side: THREE.BackSide,
+      depthTest: false,
+      depthWrite: false,
+      fog: false
+    });
+  };
+
+  _proto.getShaderMaterial = function getShaderMaterial(texture) {
+    var material = new THREE.ShaderMaterial({
+      name: 'PanoramaCubeMaterial',
+      uniforms: this.cloneUniforms(THREE.ShaderLib.cube.uniforms),
+      vertexShader: THREE.ShaderLib.cube.vertexShader,
+      fragmentShader: THREE.ShaderLib.cube.fragmentShader,
+      side: THREE.BackSide,
+      depthTest: false,
+      depthWrite: false,
+      fog: false
+    });
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    var cubeMap = this.toCubeMap(texture, this.renderer);
+    material.map = cubeMap;
+    material.uniforms.envMap.value = cubeMap;
+    material.uniforms.flipEnvMap.value = cubeMap.isCubeTexture && cubeMap._needsFlipEnvMap ? -1 : 1;
+    material.needsUpdate = true;
+    this.mesh.geometry.deleteAttribute('normal');
+    this.mesh.geometry.deleteAttribute('uv');
+    Object.defineProperty(material, 'envMap', {
+      get: function get() {
+        return this.uniforms.envMap.value;
       }
     });
-    var mesh = this.mesh = new InteractiveMesh(geometry, material);
-    mesh.name = '[panorama]';
+    return material;
+  };
+
+  _proto.makeEnvMap = function makeEnvMap(texture) {
+    var material = this.mesh.material;
+
+    if (!material.uniforms) {
+      material.dispose();
+      material = this.getShaderMaterial(texture);
+      this.mesh.material = material;
+    } else {
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      var cubeMap = this.toCubeMap(texture, this.renderer);
+      material.map = cubeMap;
+      material.uniforms.envMap.value = cubeMap;
+      material.uniforms.flipEnvMap.value = cubeMap.isCubeTexture && cubeMap._needsFlipEnvMap ? -1 : 1;
+      material.needsUpdate = true;
+    } // console.log('Panorama.makeEnvMap', this.texture, this.cubeMap);
+
+  };
+
+  _proto.toCubeMap = function toCubeMap(texture, renderer) {
+    if (this.cubeMap) {
+      this.cubeMap.dispose();
+    }
+
+    var image = texture.image;
+    var height = image.height || image.videoHeight;
+    var cubeMap = new THREE.WebGLCubeRenderTarget(height / 2, {
+      generateMipmaps: true,
+      // minFilter: THREE.LinearMipmapLinearFilter,
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      // mapping: THREE.CubeReflectionMapping,
+      // mapping: THREE.EquirectangularReflectionMapping,
+      mapping: THREE.CubeUVReflectionMapping,
+      // mapping: THREE.UVMapping,
+      format: THREE.RGBFormat
+    });
+    cubeMap.addEventListener('dispose', this.onCubeMapDispose);
+    this.setCubeMapEquirectangularTexture(cubeMap, texture);
+    this.updateCubeMapEquirectangularTexture(cubeMap, renderer, texture);
+    this.cubeMap = cubeMap;
+    this.texture = texture;
+    return this.mapTextureMapping(cubeMap.texture, texture.mapping);
+  };
+
+  _proto.setCubeMapEquirectangularTexture = function setCubeMapEquirectangularTexture(cubeMap, texture) {
+    cubeMap.texture.type = texture.type;
+    cubeMap.texture.format = THREE.RGBFormat;
+    cubeMap.texture.encoding = THREE.sRGBEncoding;
+    cubeMap.texture.generateMipmaps = texture.generateMipmaps;
+    cubeMap.texture.minFilter = texture.minFilter;
+    cubeMap.texture.magFilter = texture.magFilter;
+    cubeMap.texture.needsUpdate = true;
+    var shader = {
+      uniforms: {
+        tEquirect: {
+          value: null
+        }
+      },
+      vertexShader:
+      /* glsl */
+      "\n\t\t\t\t\tvarying vec3 vWorldDirection;\n\t\t\t\t\tvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\t\t\t\t\t\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n\t\t\t\t\t}\n\t\t\t\t\tvoid main() {\n\t\t\t\t\t\tvWorldDirection = transformDirection( position, modelMatrix );\n\t\t\t\t\t\t#include <begin_vertex>\n\t\t\t\t\t\t#include <project_vertex>\n\t\t\t\t\t}\n\t\t\t\t",
+      fragmentShader:
+      /* glsl */
+      "\n\t\t\t\t\tuniform sampler2D tEquirect;\n\t\t\t\t\tvarying vec3 vWorldDirection;\n\t\t\t\t\t#include <common>\n\t\t\t\t\tvoid main() {\n\t\t\t\t\t\tvec3 direction = normalize( vWorldDirection );\n\t\t\t\t\t\tvec2 sampleUV = equirectUv( direction );\n\t\t\t\t\t\tgl_FragColor = texture2D( tEquirect, sampleUV );\n\t\t\t\t\t}\n\t\t\t\t"
+    };
+    var geometry = new THREE.BoxGeometry(5, 5, 5);
+    var material = new THREE.ShaderMaterial({
+      name: 'CubemapFromEquirect',
+      uniforms: this.cloneUniforms(shader.uniforms),
+      vertexShader: shader.vertexShader,
+      fragmentShader: shader.fragmentShader,
+      side: THREE.BackSide,
+      blending: THREE.NoBlending
+    });
+    material.uniforms.tEquirect.value = texture;
+    var mesh = new THREE.Mesh(geometry, material);
+    var camera = new THREE.CubeCamera(1, 10, cubeMap);
+    cubeMap.camera = camera;
+    cubeMap.mesh = mesh;
+    return cubeMap;
+  };
+
+  _proto.updateCubeMapEquirectangularTexture = function updateCubeMapEquirectangularTexture(cubeMap, renderer, texture) {
+    var previousMinFilter = texture.minFilter; // Avoid blurred poles
+
+    if (texture.minFilter === THREE.LinearMipmapLinearFilter) {
+      texture.minFilter = THREE.LinearFilter;
+    }
+
+    cubeMap.camera.update(renderer, cubeMap.mesh);
+    texture.minFilter = previousMinFilter; // console.log('updateCubeMapEquirectangularTexture');
+  };
+
+  _proto.cloneUniforms = function cloneUniforms(src) {
+    var dst = {};
+
+    for (var u in src) {
+      dst[u] = {};
+
+      for (var p in src[u]) {
+        var property = src[u][p];
+
+        if (property && (property.isColor || property.isMatrix3 || property.isMatrix4 || property.isVector2 || property.isVector3 || property.isVector4 || property.isTexture || property.isQuaternion)) {
+          dst[u][p] = property.clone();
+        } else if (Array.isArray(property)) {
+          dst[u][p] = property.slice();
+        } else {
+          dst[u][p] = property;
+        }
+      }
+    }
+
+    return dst;
+  };
+
+  _proto.mapTextureMapping = function mapTextureMapping(texture, mapping) {
+    if (mapping === THREE.EquirectangularReflectionMapping) {
+      texture.mapping = THREE.CubeReflectionMapping;
+    } else if (mapping === THREE.EquirectangularRefractionMapping) {
+      texture.mapping = THREE.CubeRefractionMapping;
+    }
+
+    return texture;
+  };
+
+  _proto.onCubeMapDispose = function onCubeMapDispose() {
+    var cubeMap = this.cubeMap;
+
+    if (cubeMap) {
+      // console.log('Panorama.onCubeMapDispose', cubeMap);
+      cubeMap.removeEventListener('dispose', this.onCubeMapDispose);
+      cubeMap.texture.dispose();
+      cubeMap.mesh.geometry.dispose();
+      cubeMap.mesh.material.dispose();
+
+      if (cubeMap !== undefined) {
+        this.cubeMap = null;
+      }
+    }
   };
 
   _proto.change = function change(view, renderer, callback, onexit) {
     var item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
     var material = this.mesh.material;
-    this.load(item, renderer, function (texture, envMap, rgbe) {
+    this.load(item, renderer, function (envMap) {
       if (typeof onexit === 'function') {
         onexit(view);
       }
 
-      material.uniforms.uTween.value = 1;
-      material.needsUpdate = true;
+      if (material.uniforms && material.uniforms.uTween) {
+        material.uniforms.uTween.value = 1;
+        material.needsUpdate = true;
+      }
 
       if (typeof callback === 'function') {
-        callback(texture);
+        callback(envMap);
       }
     });
   };
 
   _proto.crossfade = function crossfade(item, renderer, callback) {
     var material = this.mesh.material;
-    this.load(item, renderer, function (envMap, texture, rgbe) {
-      material.uniforms.uTween.value = 1;
-      material.needsUpdate = true;
+    this.load(item, renderer, function (envMap) {
+      if (material.uniforms && material.uniforms.uTween) {
+        material.uniforms.uTween.value = 1;
+        material.needsUpdate = true;
+      }
 
       if (typeof callback === 'function') {
-        callback(texture);
+        callback(envMap);
       }
     });
   };
 
   _proto.load = function load(item, renderer, callback) {
-    var _this = this;
+    var _this2 = this;
 
     var asset = item.type.name === ViewType.Media.name ? Asset.defaultMediaAsset : item.asset;
 
@@ -18438,73 +18641,26 @@ var Panorama = /*#__PURE__*/function () {
     }
 
     this.currentAsset = asset.folder + asset.file;
-    var material = this.mesh.material;
     PanoramaLoader.load(asset, renderer, function (texture, rgbe) {
-      if (asset.folder + asset.file !== _this.currentAsset) {
+      if (asset.folder + asset.file !== _this2.currentAsset) {
         texture.dispose();
         return;
       }
 
-      if (material.uniforms.uTexture.value) {
-        material.uniforms.uTexture.value.dispose();
-        material.uniforms.uTexture.value = null;
-      }
-
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.mapping = THREE.UVMapping;
-      texture.needsUpdate = true;
-      material.uniforms.uTexture.value = texture;
-      material.uniforms.uResolution.value = new THREE.Vector2(texture.width, texture.height);
-      material.uniforms.uTween.value = 0;
-      material.uniforms.uRgbe.value = rgbe;
-      material.needsUpdate = true;
+      var envMap = _this2.makeEnvMap(texture);
 
       if (typeof callback === 'function') {
-        callback(texture);
+        callback(envMap);
       }
     });
   };
 
-  _proto.loadVideo = function loadVideo(src) {
-    var video = document.createElement('video');
-    video.src = src;
-    video.volume = 0.8;
-    video.muted = true;
-    video.playsInline = true;
-    video.crossOrigin = 'anonymous';
-    video.play();
-    this.setVideo(video);
-  };
-
-  _proto.setVideo = function setVideo(video) {
-    var _this2 = this;
-
-    if (video) {
-      var onPlaying = function onPlaying() {
-        var texture = new VideoTexture(video);
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.mapping = THREE.UVMapping;
-        texture.format = THREE.RGBFormat;
-        texture.needsUpdate = true;
-        var material = _this2.mesh.material;
-        material.map = texture;
-        material.uniforms.uTexture.value = texture;
-        material.uniforms.uResolution.value = new THREE.Vector2(texture.width, texture.height);
-        material.needsUpdate = true;
-      };
-
-      video.crossOrigin = 'anonymous';
-
-      video.oncanplay = function () {
-        onPlaying();
-      };
-    }
-  };
-
   _proto.dispose = function dispose() {
     this.subscription.unsubscribe();
+
+    if (this.cubeMap) {
+      this.cubeMap.dispose();
+    }
   };
 
   return Panorama;
@@ -22855,7 +23011,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var objects = this.objects = new THREE.Group();
     objects.name = '[objects]';
     scene.add(objects);
-    var panorama = this.panorama = new Panorama();
+    var panorama = this.panorama = new Panorama(renderer);
     this.panoramaIntersectObjects = [panorama.mesh];
     this.intersectObjects = this.panoramaIntersectObjects;
     objects.add(panorama.mesh);
@@ -22888,9 +23044,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
       if (view.items) {
         view.items.forEach(function (item) {
-          if (item.mesh) {
-            item.mesh.visible = complete;
-          }
+          item.visible = complete;
         });
       } // console.log(view, complete, progress);
 
@@ -23381,7 +23535,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       var tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
       this.scene.traverse(function (child) {
         if (typeof child.userData.render === 'function') {
-          child.userData.render(time, tick);
+          child.userData.render(time, tick, renderer, scene, camera);
         }
       });
       Object.keys(this.avatars).forEach(function (key) {
@@ -23394,14 +23548,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       for (let i = 0; i < objects.children.length; i++) {
       	const x = objects.children[i];
       	if (typeof x.userData.render === 'function') {
-      		x.userData.render(time, tick);
+      		x.userData.render(time, tick, renderer, scene, camera);
       	}
       }
       */
 
+      /*
       if (scene.background && scene.background.userData) {
-        scene.background.userData.render();
+      	scene.background.userData.render(time, tick, renderer, scene, camera);
       }
+      */
 
       renderer.render(this.scene, this.camera);
 
@@ -24330,6 +24486,14 @@ WorldComponent.meta = {
 
     if (item) {
       item.mesh = mesh;
+      Object.defineProperty(item, 'visible', {
+        get: function get() {
+          return mesh.visible;
+        },
+        set: function set(visible) {
+          _this2.setVisible(visible);
+        }
+      });
 
       item.onUpdate = function () {
         _this2.onUpdate(item, mesh);
@@ -24417,6 +24581,12 @@ WorldComponent.meta = {
     // group.rotation.x = THREE.Math.degToRad(180) * tween;
     // group.rotation.y = THREE.Math.degToRad(360) * tween;
     */
+  };
+
+  _proto.setVisible = function setVisible(visible) {
+    if (this.mesh) {
+      this.mesh.visible = visible;
+    }
   };
 
   _proto.getScroll = function getScroll(offset) {
@@ -25212,8 +25382,8 @@ ModelDebugComponent.meta = {
   hosts: {
     host: WorldComponent
   }
-};var VERTEX_SHADER$2 = "\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
-var FRAGMENT_SHADER$2 = "\nvarying vec2 vUv;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform float opacity;\nuniform float tween;\n\nvoid main() {\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 colorB = texture2D(textureB, vUv);\n\tvec4 color = mix(colorA, colorB, tween);\n\tcolor.a = clamp(color.a * opacity, 0.0, 1.0);\n\tcolor.rgb /= color.a;\n\tgl_FragColor = color;\n}\n";
+};var VERTEX_SHADER$1 = "\nvarying vec2 vUv;\nvoid main() {\n\tvUv = uv;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n";
+var FRAGMENT_SHADER$1 = "\nvarying vec2 vUv;\nuniform sampler2D textureA;\nuniform sampler2D textureB;\nuniform float opacity;\nuniform float tween;\n\nvoid main() {\n\tvec4 colorA = texture2D(textureA, vUv);\n\tvec4 colorB = texture2D(textureB, vUv);\n\tvec4 color = mix(colorA, colorB, tween);\n\tcolor.a = clamp(color.a * opacity, 0.0, 1.0);\n\tcolor.rgb /= color.a;\n\tgl_FragColor = color;\n}\n";
 
 var ModelGridComponent = /*#__PURE__*/function (_ModelComponent) {
   _inheritsLoose(ModelGridComponent, _ModelComponent);
@@ -25286,8 +25456,8 @@ var ModelGridComponent = /*#__PURE__*/function (_ModelComponent) {
         depthTest: false,
         depthWrite: false,
         transparent: true,
-        vertexShader: VERTEX_SHADER$2,
-        fragmentShader: FRAGMENT_SHADER$2,
+        vertexShader: VERTEX_SHADER$1,
+        fragmentShader: FRAGMENT_SHADER$1,
         uniforms: {
           textureA: {
             type: 't',
@@ -27108,7 +27278,17 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   _inheritsLoose(ModelNavComponent, _ModelEditableCompone);
 
   function ModelNavComponent() {
-    return _ModelEditableCompone.apply(this, arguments) || this;
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _ModelEditableCompone.call.apply(_ModelEditableCompone, [this].concat(args)) || this;
+
+    _defineProperty(_assertThisInitialized(_this), "hidden_", false);
+
+    return _this;
   }
 
   ModelNavComponent.getLoader = function getLoader() {
@@ -27222,27 +27402,27 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
 
   var _proto = ModelNavComponent.prototype;
 
+  _proto.setVisible = function setVisible(visible) {
+    if (this.mesh) {
+      this.mesh.visible = visible && !this.hidden_;
+    }
+  };
+
   _proto.onInit = function onInit() {
     _ModelEditableCompone.prototype.onInit.call(this);
-    /*
-    this.debouncedOver$ = new ReplaySubject(1).pipe(
-    	auditTime(250),
-    	tap(event => this.over.next(event)),
-    	takeUntil(this.unsubscribe$),
-    );
-    this.debouncedOver$.subscribe();
-    */
-    // console.log('ModelNavComponent.onInit');
-
   };
 
   _proto.onChanges = function onChanges() {
     this.editing = this.item.selected;
+
+    if (environment.flags.hideNavInfo) {
+      this.hidden = !StateService.state.showNavInfo;
+    }
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
     var _THREE$Vector,
-        _this = this;
+        _this2 = this;
 
     // this.renderOrder = environment.renderOrder.nav;
     var mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
@@ -27258,7 +27438,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     nav.position.set(position.x, position.y, position.z);
     this.onCreateSprites(nav);
     var geometry = Geometry.sphereGeometry;
-    var sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
+    var sphere = this.sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
       depthTest: false,
       depthWrite: false,
       transparent: true,
@@ -27278,9 +27458,9 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       	this.over.next(this);
       }
       */
-      _this.over.next(_this);
+      _this2.over.next(_this2);
 
-      var icon = _this.icon;
+      var icon = _this2.icon;
       var from = {
         scale: icon.scale.x
       };
@@ -27303,9 +27483,9 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       });
     });
     sphere.on('out', function () {
-      _this.out.next(_this);
+      _this2.out.next(_this2);
 
-      var icon = _this.icon;
+      var icon = _this2.icon;
       var from = {
         scale: icon.scale.x
       };
@@ -27326,7 +27506,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       });
     });
     sphere.on('down', function () {
-      _this.down.next(_this);
+      _this2.down.next(_this2);
     });
     var from = {
       opacity: 0
@@ -27338,7 +27518,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       ease: Power2.easeInOut,
       overwrite: true,
       onUpdate: function onUpdate() {
-        _this.materials.forEach(function (material) {
+        _this2.materials.forEach(function (material) {
           material.opacity = from.opacity;
           material.needsUpdate = true;
         });
@@ -27466,6 +27646,29 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     this.item.position = new THREE.Vector3().copy(this.mesh.position).normalize().toArray();
     this.editing = false;
   };
+
+  _createClass(ModelNavComponent, [{
+    key: "hidden",
+    get: function get() {
+      return this.hidden_;
+    },
+    set: function set(hidden) {
+      if (this.hidden_ !== hidden) {
+        this.hidden_ = hidden;
+        var mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+
+        if (mode === NavModeType.Info && this.mesh) {
+          this.mesh.visible = !hidden;
+          this.sphere.freezed = hidden;
+
+          if (hidden) {
+            this.item.showPanel = false;
+          }
+        } // console.log(this.hidden, this.mesh);
+
+      }
+    }
+  }]);
 
   return ModelNavComponent;
 }(ModelEditableComponent);

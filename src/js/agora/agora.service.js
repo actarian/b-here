@@ -738,6 +738,15 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	toggleNavInfo() {
+		const showNavInfo = !StateService.state.showNavInfo;
+		StateService.patchState({ showNavInfo });
+		MessageService.send({
+			type: MessageType.NavInfo,
+			showNavInfo: showNavInfo,
+		});
+	}
+
 	dismissControl() {
 		return new Promise((resolve, _) => {
 			const controllingId = StateService.state.controlling;
@@ -963,6 +972,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.ZoomMedia:
 					case MessageType.CurrentTimeMedia:
 					case MessageType.PlayModel:
+					case MessageType.NavInfo:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
 							return;
@@ -1093,6 +1103,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ZoomMedia:
 			case MessageType.CurrentTimeMedia:
 			case MessageType.PlayModel:
+			case MessageType.NavInfo:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:
 				if ((StateService.state.controlling && StateService.state.controlling !== StateService.state.uid) || (StateService.state.spying && StateService.state.spying !== StateService.state.uid)) {

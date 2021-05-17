@@ -14,6 +14,7 @@ export const environmentServed = {
 		chat: false,
 		ar: true,
 		like: true,
+		hideNavInfo: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,

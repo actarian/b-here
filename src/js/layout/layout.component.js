@@ -187,6 +187,10 @@ export default class LayoutComponent extends Component {
 		window.dispatchEvent(new Event('resize'));
 	}
 
+	toggleNavInfo() {
+		this.patchState({ showNavInfo: !this.state.showNavInfo });
+	}
+
 	onChatClose() {
 		this.patchState({ chat: false });
 		window.dispatchEvent(new Event('resize'));

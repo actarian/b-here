@@ -104,6 +104,7 @@ const defaultAppOptions = {
 		chat: true,
 		ar: true,
 		like: true,
+		hideNavInfo: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,

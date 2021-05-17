@@ -81,6 +81,11 @@ export class PanoramaLoader {
 		const progressRef = LoaderService.getRef();
 		const loader = new THREE.TextureLoader();
 		loader.setPath(folder).load(file, (texture) => {
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
+			texture.format = THREE.RGBFormat;
+			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);
 			}
@@ -109,10 +114,15 @@ export class PanoramaLoader {
 			}),
 			takeWhile(event => event.type !== ImageServiceEvent.Complete, true),
 		).subscribe(event => {
-			URL.revokeObjectURL(event.data);
 			const texture = new THREE.Texture(image);
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
+			texture.format = THREE.RGBFormat;
+			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);
+				URL.revokeObjectURL(event.data);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		});
