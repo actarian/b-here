@@ -718,7 +718,7 @@ export default class MediaMesh extends InteractiveMesh {
 				this.material.map.dispose();
 			}
 			this.material.dispose();
-			this.material = null;
+			// this.material = null;
 		}
 	}
 

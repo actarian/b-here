@@ -3937,3 +3937,4 @@ function toTrianglesDrawMode(geometry, drawMode) {
 }
 
 export { GLTFLoader };
+

@@ -34616,10 +34616,10 @@ function formGroup(controls, validators) {
 }(this, (function (exports) { 'use strict';
 
 	/*!
-	 * EasePack 3.5.1
+	 * EasePack 3.6.1
 	 * https://greensock.com
 	 *
-	 * @license Copyright 2008-2020, GreenSock. All rights reserved.
+	 * @license Copyright 2008-2021, GreenSock. All rights reserved.
 	 * Subject to the terms at https://greensock.com/standard-license or for
 	 * Club GreenSock members, the agreement issued with that membership.
 	 * @author: Jack Doyle, jack@greensock.com
@@ -34812,7 +34812,7 @@ function formGroup(controls, validators) {
 
 	for (var p in EasePack) {
 	  EasePack[p].register = _initCore;
-	  EasePack[p].version = "3.5.1";
+	  EasePack[p].version = "3.6.1";
 	}
 
 	_getGSAP() && gsap.registerPlugin(SlowMo);
@@ -34848,10 +34848,10 @@ function formGroup(controls, validators) {
   }
 
   /*!
-   * GSAP 3.5.1
+   * GSAP 3.6.1
    * https://greensock.com
    *
-   * @license Copyright 2008-2020, GreenSock. All rights reserved.
+   * @license Copyright 2008-2021, GreenSock. All rights reserved.
    * Subject to the terms at https://greensock.com/standard-license or for
    * Club GreenSock members, the agreement issued with that membership.
    * @author: Jack Doyle, jack@greensock.com
@@ -34869,6 +34869,7 @@ function formGroup(controls, validators) {
     overwrite: false,
     delay: 0
   },
+      _suppressOverwrites,
       _bigNum = 1e8,
       _tinyNum = 1 / _bigNum,
       _2PI = Math.PI * 2,
@@ -34904,11 +34905,12 @@ function formGroup(controls, validators) {
       _isTypedArray = typeof ArrayBuffer === "function" && ArrayBuffer.isView || function () {},
       _isArray = Array.isArray,
       _strictNumExp = /(?:-?\.?\d|\.)+/gi,
-      _numExp = /[-+=.]*\d+[.e\-+]*\d*[e\-\+]*\d*/g,
+      _numExp = /[-+=.]*\d+[.e\-+]*\d*[e\-+]*\d*/g,
       _numWithUnitExp = /[-+=.]*\d+[.e-]*\d*[a-z%]*/g,
-      _complexStringNumExp = /[-+=.]*\d+(?:\.|e-|e)*\d*/gi,
-      _relExp = /[+-]=-?[\.\d]+/,
+      _complexStringNumExp = /[-+=.]*\d+\.?\d*(?:e-|e\+)?\d*/gi,
+      _relExp = /[+-]=-?[.\d]+/,
       _delimitedValueExp = /[#\-+.]*\b[a-z\d-=+%.]+/gi,
+      _unitExp = /[\d.+\-=]+(?:e[-+]\d*)*/i,
       _globalTimeline,
       _win,
       _coreInitted,
@@ -35052,7 +35054,7 @@ function formGroup(controls, validators) {
   },
       _mergeDeep = function _mergeDeep(base, toMerge) {
     for (var p in toMerge) {
-      base[p] = _isObject(toMerge[p]) ? _mergeDeep(base[p] || (base[p] = {}), toMerge[p]) : toMerge[p];
+      p !== "__proto__" && p !== "constructor" && p !== "prototype" && (base[p] = _isObject(toMerge[p]) ? _mergeDeep(base[p] || (base[p] = {}), toMerge[p]) : toMerge[p]);
     }
 
     return base;
@@ -35186,7 +35188,8 @@ function formGroup(controls, validators) {
     return animation._repeat ? _animationCycle(animation._tTime, animation = animation.duration() + animation._rDelay) * animation : 0;
   },
       _animationCycle = function _animationCycle(tTime, cycleDuration) {
-    return (tTime /= cycleDuration) && ~~tTime === tTime ? ~~tTime - 1 : ~~tTime;
+    var whole = Math.floor(tTime /= cycleDuration);
+    return tTime && whole === tTime ? whole - 1 : whole;
   },
       _parentToChildTotalTime = function _parentToChildTotalTime(parentTime, child) {
     return (parentTime - child._start) * child._ts + (child._ts >= 0 ? 0 : child._dirty ? child.totalDuration() : child._tDur);
@@ -35198,7 +35201,7 @@ function formGroup(controls, validators) {
     var parent = animation._dp;
 
     if (parent && parent.smoothChildTiming && animation._ts) {
-      animation._start = _round(animation._dp._time - (animation._ts > 0 ? totalTime / animation._ts : ((animation._dirty ? animation.totalDuration() : animation._tDur) - totalTime) / -animation._ts));
+      animation._start = _round(parent._time - (animation._ts > 0 ? totalTime / animation._ts : ((animation._dirty ? animation.totalDuration() : animation._tDur) - totalTime) / -animation._ts));
 
       _setEnd(animation);
 
@@ -35259,9 +35262,13 @@ function formGroup(controls, validators) {
       return 1;
     }
   },
+      _parentPlayheadIsBeforeStart = function _parentPlayheadIsBeforeStart(_ref) {
+    var parent = _ref.parent;
+    return parent && parent._ts && parent._initted && !parent._lock && (parent.rawTime() < 0 || _parentPlayheadIsBeforeStart(parent));
+  },
       _renderZeroDurationTween = function _renderZeroDurationTween(tween, totalTime, suppressEvents, force) {
     var prevRatio = tween.ratio,
-        ratio = totalTime < 0 || !totalTime && prevRatio && !tween._start && tween._zTime > _tinyNum && !tween._dp._lock || (tween._ts < 0 || tween._dp._ts < 0) && tween.data !== "isFromStart" && tween.data !== "isStart" ? 0 : 1,
+        ratio = totalTime < 0 || !totalTime && (!tween._start && _parentPlayheadIsBeforeStart(tween) || (tween._ts < 0 || tween._dp._ts < 0) && tween.data !== "isFromStart" && tween.data !== "isStart") ? 0 : 1,
         repeatDelay = tween._rDelay,
         tTime = 0,
         pt,
@@ -35272,6 +35279,7 @@ function formGroup(controls, validators) {
       tTime = _clamp(0, tween._tDur, totalTime);
       iteration = _animationCycle(tTime, repeatDelay);
       prevIteration = _animationCycle(tween._tTime, repeatDelay);
+      tween._yoyo && iteration & 1 && (ratio = 1 - ratio);
 
       if (iteration !== prevIteration) {
         prevRatio = 1 - ratio;
@@ -35291,7 +35299,6 @@ function formGroup(controls, validators) {
       tween._from && (ratio = 1 - ratio);
       tween._time = 0;
       tween._tTime = tTime;
-      suppressEvents || _callback(tween, "onStart");
       pt = tween._pt;
 
       while (pt) {
@@ -35393,7 +35400,13 @@ function formGroup(controls, validators) {
     return value < min ? min : value > max ? max : value;
   },
       getUnit = function getUnit(value) {
-    return (value = (value + "").substr((parseFloat(value) + "").length)) && isNaN(value) ? value : "";
+    if (typeof value !== "string") {
+      return "";
+    }
+
+    var v = _unitExp.exec(value);
+
+    return v ? value.substr(v.index + v[0].length) : "";
   },
       clamp = function clamp(min, max, value) {
     return _conditionalReturn(value, function (v) {
@@ -35506,7 +35519,8 @@ function formGroup(controls, validators) {
       _roundModifier = function _roundModifier(v) {
     var p = v < 1 ? Math.pow(10, (v + "").length - 2) : 1;
     return function (raw) {
-      return Math.floor(Math.round(parseFloat(raw) / v) * v * p) / p + (_isNumber(raw) ? 0 : getUnit(raw));
+      var n = Math.round(parseFloat(raw) / v) * v * p;
+      return (n - n % 1) / p + (_isNumber(raw) ? 0 : getUnit(raw));
     };
   },
       snap = function snap(snapTo, value) {
@@ -35561,7 +35575,7 @@ function formGroup(controls, validators) {
   },
       random = function random(min, max, roundingIncrement, returnFunction) {
     return _conditionalReturn(_isArray(min) ? !max : roundingIncrement === true ? !!(roundingIncrement = 0) : !returnFunction, function () {
-      return _isArray(min) ? min[~~(Math.random() * min.length)] : (roundingIncrement = roundingIncrement || 1e-5) && (returnFunction = roundingIncrement < 1 ? Math.pow(10, (roundingIncrement + "").length - 2) : 1) && Math.floor(Math.round((min + Math.random() * (max - min)) / roundingIncrement) * roundingIncrement * returnFunction) / returnFunction;
+      return _isArray(min) ? min[~~(Math.random() * min.length)] : (roundingIncrement = roundingIncrement || 1e-5) && (returnFunction = roundingIncrement < 1 ? Math.pow(10, (roundingIncrement + "").length - 2) : 1) && Math.floor(Math.round((min - roundingIncrement / 2 + Math.random() * (max - min + roundingIncrement * .99)) / roundingIncrement) * roundingIncrement * returnFunction) / returnFunction;
     });
   },
       pipe = function pipe() {
@@ -35721,6 +35735,7 @@ function formGroup(controls, validators) {
       _interrupt = function _interrupt(animation) {
     _removeFromParent(animation);
 
+    animation.scrollTrigger && animation.scrollTrigger.kill(false);
     animation.progress() < 1 && _callback(animation, "onInterrupt");
     return animation;
   },
@@ -35822,11 +35837,16 @@ function formGroup(controls, validators) {
       if (_colorLookup[v]) {
         a = _colorLookup[v];
       } else if (v.charAt(0) === "#") {
-        if (v.length === 4) {
+        if (v.length < 6) {
           r = v.charAt(1);
           g = v.charAt(2);
           b = v.charAt(3);
-          v = "#" + r + r + g + g + b + b;
+          v = "#" + r + r + g + g + b + b + (v.length === 5 ? v.charAt(4) + v.charAt(4) : "");
+        }
+
+        if (v.length === 9) {
+          a = parseInt(v.substr(1, 6), 16);
+          return [a >> 16, a >> 8 & _255, a & _255, parseInt(v.substr(7), 16) / 255];
         }
 
         v = parseInt(v.substr(1), 16);
@@ -35937,7 +35957,7 @@ function formGroup(controls, validators) {
     return result + shell[l];
   },
       _colorExp = function () {
-    var s = "(?:\\b(?:(?:rgb|rgba|hsl|hsla)\\(.+?\\))|\\B#(?:[0-9a-f]{3}){1,2}\\b",
+    var s = "(?:\\b(?:(?:rgb|rgba|hsl|hsla)\\(.+?\\))|\\B#(?:[0-9a-f]{3,4}){1,2}\\b",
         p;
 
     for (p in _colorLookup) {
@@ -36284,7 +36304,7 @@ function formGroup(controls, validators) {
       this.vars = vars;
       this._delay = +vars.delay || 0;
 
-      if (this._repeat = vars.repeat || 0) {
+      if (this._repeat = vars.repeat === Infinity ? -2 : vars.repeat || 0) {
         this._rDelay = vars.repeatDelay || 0;
         this._yoyo = !!vars.yoyo || !!vars.yoyoEase;
       }
@@ -36336,6 +36356,8 @@ function formGroup(controls, validators) {
 
       if (parent && parent.smoothChildTiming && this._ts) {
         _alignPlayhead(this, _totalTime);
+
+        !parent._dp || parent.parent || _postAddChecks(parent, this);
 
         while (parent.parent) {
           if (parent.parent._time !== parent._start + (parent._ts >= 0 ? parent._tTime / parent._ts : (parent.totalDuration() - parent._tTime) / -parent._ts)) {
@@ -36448,11 +36470,11 @@ function formGroup(controls, validators) {
 
     _proto.repeat = function repeat(value) {
       if (arguments.length) {
-        this._repeat = value;
+        this._repeat = value === Infinity ? -2 : value;
         return _onUpdateTotalDuration(this);
       }
 
-      return this._repeat;
+      return this._repeat === -2 ? Infinity : this._repeat;
     };
 
     _proto.repeatDelay = function repeatDelay(value) {
@@ -36510,7 +36532,7 @@ function formGroup(controls, validators) {
     };
 
     _proto.invalidate = function invalidate() {
-      this._initted = 0;
+      this._initted = this._act = 0;
       this._zTime = -_tinyNum;
       return this;
     };
@@ -36698,6 +36720,11 @@ function formGroup(controls, validators) {
         if (this._repeat) {
           yoyo = this._yoyo;
           cycleDuration = dur + this._rDelay;
+
+          if (this._repeat < -1 && totalTime < 0) {
+            return this.totalTime(cycleDuration * 100 + totalTime, suppressEvents, force);
+          }
+
           time = _round(tTime % cycleDuration);
 
           if (tTime === tDur) {
@@ -36732,7 +36759,7 @@ function formGroup(controls, validators) {
             !suppressEvents && this.parent && _callback(this, "onRepeat");
             this.vars.repeatRefresh && !isYoyo && (this.invalidate()._lock = 1);
 
-            if (prevTime !== this._time || prevPaused !== !this._ts) {
+            if (prevTime && prevTime !== this._time || prevPaused !== !this._ts || this.vars.onRepeat && !this.parent && !this._act) {
               return this;
             }
 
@@ -36743,7 +36770,6 @@ function formGroup(controls, validators) {
               this._lock = 2;
               prevTime = rewinding ? dur : -0.0001;
               this.render(prevTime, true);
-              this.vars.repeatRefresh && !isYoyo && this.invalidate();
             }
 
             this._lock = 0;
@@ -36772,6 +36798,7 @@ function formGroup(controls, validators) {
           this._onUpdate = this.vars.onUpdate;
           this._initted = 1;
           this._zTime = totalTime;
+          prevTime = 0;
         }
 
         !prevTime && time && !suppressEvents && _callback(this, "onStart");
@@ -36854,9 +36881,7 @@ function formGroup(controls, validators) {
     _proto2.add = function add(child, position) {
       var _this2 = this;
 
-      if (!_isNumber(position)) {
-        position = _parsePosition(this, position);
-      }
+      _isNumber(position) || (position = _parsePosition(this, position));
 
       if (!(child instanceof Animation)) {
         if (_isArray(child)) {
@@ -37034,9 +37059,11 @@ function formGroup(controls, validators) {
           startAt = _vars.startAt,
           _onStart = _vars.onStart,
           onStartParams = _vars.onStartParams,
-          tween = Tween.to(tl, _setDefaults(vars, {
-        ease: "none",
+          immediateRender = _vars.immediateRender,
+          tween = Tween.to(tl, _setDefaults({
+        ease: vars.ease || "none",
         lazy: false,
+        immediateRender: false,
         time: endTime,
         overwrite: "auto",
         duration: vars.duration || Math.abs((endTime - (startAt && "time" in startAt ? startAt.time : tl._time)) / tl.timeScale()) || _tinyNum,
@@ -37046,9 +37073,9 @@ function formGroup(controls, validators) {
           tween._dur !== duration && _setDuration(tween, duration, 0, 1).render(tween._time, true, true);
           _onStart && _onStart.apply(tween, onStartParams || []);
         }
-      }));
+      }, vars));
 
-      return tween;
+      return immediateRender ? tween.render(0) : tween;
     };
 
     _proto2.tweenFromTo = function tweenFromTo(fromPosition, toPosition, vars) {
@@ -37138,7 +37165,7 @@ function formGroup(controls, validators) {
         child = next;
       }
 
-      this._time = this._tTime = this._pTime = 0;
+      this._dp && (this._time = this._tTime = this._pTime = 0);
       includeLabels && (this.labels = {});
       return _uncache(this);
     };
@@ -37370,7 +37397,7 @@ function formGroup(controls, validators) {
         targets = tween._targets,
         parent = tween.parent,
         fullTargets = parent && parent.data === "nested" ? parent.parent._targets : targets,
-        autoOverwrite = tween._overwrite === "auto",
+        autoOverwrite = tween._overwrite === "auto" && !_suppressOverwrites,
         tl = tween.timeline,
         cleanVars,
         i,
@@ -37423,6 +37450,8 @@ function formGroup(controls, validators) {
             time && (tween._zTime = time);
             return;
           }
+        } else if (autoRevert === false) {
+          tween._startAt = 0;
         }
       } else if (runBackwards && dur) {
         if (prevStartAt) {
@@ -37578,7 +37607,8 @@ function formGroup(controls, validators) {
           defaults: defaults || {}
         });
         tl.kill();
-        tl.parent = _assertThisInitialized(_this3);
+        tl.parent = tl._dp = _assertThisInitialized(_this3);
+        tl._start = 0;
 
         if (keyframes) {
           _setDefaults(tl.vars.defaults, {
@@ -37634,7 +37664,7 @@ function formGroup(controls, validators) {
         _this3.timeline = 0;
       }
 
-      if (overwrite === true) {
+      if (overwrite === true && !_suppressOverwrites) {
         _overwritingTween = _assertThisInitialized(_this3);
 
         _globalTimeline.killTweensOf(parsedTargets);
@@ -37673,12 +37703,17 @@ function formGroup(controls, validators) {
 
       if (!dur) {
         _renderZeroDurationTween(this, totalTime, suppressEvents, force);
-      } else if (tTime !== this._tTime || !totalTime || force || this._startAt && this._zTime < 0 !== totalTime < 0) {
+      } else if (tTime !== this._tTime || !totalTime || force || !this._initted && this._tTime || this._startAt && this._zTime < 0 !== totalTime < 0) {
         time = tTime;
         timeline = this.timeline;
 
         if (this._repeat) {
           cycleDuration = dur + this._rDelay;
+
+          if (this._repeat < -1 && totalTime < 0) {
+            return this.totalTime(cycleDuration * 100 + totalTime, suppressEvents, force);
+          }
+
           time = _round(tTime % cycleDuration);
 
           if (tTime === tDur) {
@@ -37781,7 +37816,7 @@ function formGroup(controls, validators) {
     };
 
     _proto3.invalidate = function invalidate() {
-      this._pt = this._op = this._startAt = this._onUpdate = this._act = this._lazy = 0;
+      this._pt = this._op = this._startAt = this._onUpdate = this._lazy = this.ratio = 0;
       this._ptLookup = [];
       this.timeline && this.timeline.invalidate();
       return _Animation2.prototype.invalidate.call(this);
@@ -37793,11 +37828,8 @@ function formGroup(controls, validators) {
       }
 
       if (!targets && (!vars || vars === "all")) {
-        this._lazy = 0;
-
-        if (this.parent) {
-          return _interrupt(this);
-        }
+        this._lazy = this._pt = 0;
+        return this.parent ? _interrupt(this) : this;
       }
 
       if (this.timeline) {
@@ -38162,12 +38194,12 @@ function formGroup(controls, validators) {
     config: function config(value) {
       return _mergeDeep(_config, value || {});
     },
-    registerEffect: function registerEffect(_ref) {
-      var name = _ref.name,
-          effect = _ref.effect,
-          plugins = _ref.plugins,
-          defaults = _ref.defaults,
-          extendTimeline = _ref.extendTimeline;
+    registerEffect: function registerEffect(_ref2) {
+      var name = _ref2.name,
+          effect = _ref2.effect,
+          plugins = _ref2.plugins,
+          defaults = _ref2.defaults,
+          extendTimeline = _ref2.extendTimeline;
       (plugins || "").split(",").forEach(function (pluginName) {
         return pluginName && !_plugins[pluginName] && !_globals[pluginName] && _warn(name + " effect requires " + pluginName + " plugin.");
       });
@@ -38251,7 +38283,10 @@ function formGroup(controls, validators) {
       Timeline: Timeline,
       Animation: Animation,
       getCache: _getCache,
-      _removeLinkedListItem: _removeLinkedListItem
+      _removeLinkedListItem: _removeLinkedListItem,
+      suppressOverwrites: function suppressOverwrites(value) {
+        return _suppressOverwrites = value;
+      }
     }
   };
 
@@ -38352,7 +38387,7 @@ function formGroup(controls, validators) {
       }
     }
   }, _buildModifierPlugin("roundProps", _roundModifier), _buildModifierPlugin("modifiers"), _buildModifierPlugin("snap", snap)) || _gsap;
-  Tween.version = Timeline.version = gsap.version = "3.5.1";
+  Tween.version = Timeline.version = gsap.version = "3.6.1";
   _coreReady = 1;
 
   if (_windowExists()) {
@@ -38605,8 +38640,9 @@ function formGroup(controls, validators) {
     curUnit !== "px" && !toPixels && (curValue = _convertToUnit(target, property, value, "px"));
     isSVG = target.getCTM && _isSVG(target);
 
-    if (toPercent && (_transformProps[property] || ~property.indexOf("adius"))) {
-      return _round(curValue / (isSVG ? target.getBBox()[horizontal ? "width" : "height"] : target[measureProperty]) * amount);
+    if ((toPercent || curUnit === "%") && (_transformProps[property] || ~property.indexOf("adius"))) {
+      px = isSVG ? target.getBBox()[horizontal ? "width" : "height"] : target[measureProperty];
+      return _round(toPercent ? curValue / px * amount : curValue / 100 * px);
     }
 
     style[horizontal ? "width" : "height"] = amount + (toPixels ? curUnit : unit);
@@ -38664,7 +38700,7 @@ function formGroup(controls, validators) {
       }
     }
 
-    return unit && !~(value + "").indexOf(" ") ? _convertToUnit(target, property, value, unit) + unit : value;
+    return unit && !~(value + "").trim().indexOf(" ") ? _convertToUnit(target, property, value, unit) + unit : value;
   },
       _tweenComplexCSSString = function _tweenComplexCSSString(target, prop, start, end) {
     if (!start || start === "none") {
@@ -38757,7 +38793,7 @@ function formGroup(controls, validators) {
             p: chunk || matchIndex === 1 ? chunk : ",",
             s: startNum,
             c: relative ? relative * endNum : endNum - startNum,
-            m: color && color < 4 ? Math.round : 0
+            m: color && color < 4 || prop === "zIndex" ? Math.round : 0
           };
         }
       }
@@ -38767,10 +38803,7 @@ function formGroup(controls, validators) {
       pt.r = prop === "display" && end === "none" ? _renderNonTweeningValueOnlyAtEnd : _renderNonTweeningValue;
     }
 
-    if (_relExp.test(end)) {
-      pt.e = 0;
-    }
-
+    _relExp.test(end) && (pt.e = 0);
     this._pt = pt;
     return pt;
   },
@@ -39007,7 +39040,7 @@ function formGroup(controls, validators) {
     matrix = _getMatrix(target, cache.svg);
 
     if (cache.svg) {
-      t1 = !cache.uncache && target.getAttribute("data-svg-origin");
+      t1 = !cache.uncache && !uncache && target.getAttribute("data-svg-origin");
 
       _applySVGOrigin(target, t1 || origin, !!t1 || cache.originIsAbsolute, cache.smooth !== false, matrix);
     }
@@ -39028,7 +39061,7 @@ function formGroup(controls, validators) {
         scaleY = Math.sqrt(d * d + c * c);
         rotation = a || b ? _atan2(b, a) * _RAD2DEG : 0;
         skewX = c || d ? _atan2(c, d) * _RAD2DEG + rotation : 0;
-        skewX && (scaleY *= Math.cos(skewX * _DEG2RAD));
+        skewX && (scaleY *= Math.abs(Math.cos(skewX * _DEG2RAD)));
 
         if (cache.svg) {
           x -= xOrigin - (xOrigin * a + yOrigin * c);
@@ -39121,8 +39154,8 @@ function formGroup(controls, validators) {
       }
     }
 
-    cache.x = ((cache.xPercent = x && Math.round(target.offsetWidth / 2) === Math.round(-x) ? -50 : 0) ? 0 : x) + px;
-    cache.y = ((cache.yPercent = y && Math.round(target.offsetHeight / 2) === Math.round(-y) ? -50 : 0) ? 0 : y) + px;
+    cache.x = x - ((cache.xPercent = x && (cache.xPercent || (Math.round(target.offsetWidth / 2) === Math.round(-x) ? -50 : 0))) ? target.offsetWidth * cache.xPercent / 100 : 0) + px;
+    cache.y = y - ((cache.yPercent = y && (cache.yPercent || (Math.round(target.offsetHeight / 2) === Math.round(-y) ? -50 : 0))) ? target.offsetHeight * cache.yPercent / 100 : 0) + px;
     cache.z = z + px;
     cache.scaleX = _round(scaleX);
     cache.scaleY = _round(scaleY);
@@ -39314,10 +39347,7 @@ function formGroup(controls, validators) {
 
     temp = "matrix(" + a11 + "," + a21 + "," + a12 + "," + a22 + "," + tx + "," + ty + ")";
     target.setAttribute("transform", temp);
-
-    if (forceCSS) {
-      target.style[_transformProp] = temp;
-    }
+    forceCSS && (target.style[_transformProp] = temp);
   },
       _addRotationalPropTween = function _addRotationalPropTween(plugin, target, property, startNum, endValue, relative) {
     var cap = 360,
@@ -39354,10 +39384,17 @@ function formGroup(controls, validators) {
 
     return pt;
   },
+      _assign = function _assign(target, source) {
+    for (var p in source) {
+      target[p] = source[p];
+    }
+
+    return target;
+  },
       _addRawTransformPTs = function _addRawTransformPTs(plugin, transforms, target) {
-    var style = _tempDivStyler.style,
-        startCache = target._gsap,
+    var startCache = _assign({}, target._gsap),
         exclude = "perspective,force3D,transformOrigin,svgOrigin",
+        style = target.style,
         endCache,
         p,
         startValue,
@@ -39366,12 +39403,22 @@ function formGroup(controls, validators) {
         endNum,
         startUnit,
         endUnit;
-    style.cssText = getComputedStyle(target).cssText + ";position:absolute;display:block;";
-    style[_transformProp] = transforms;
 
-    _doc$1.body.appendChild(_tempDivStyler);
+    if (startCache.svg) {
+      startValue = target.getAttribute("transform");
+      target.setAttribute("transform", "");
+      style[_transformProp] = transforms;
+      endCache = _parseTransform(target, 1);
 
-    endCache = _parseTransform(_tempDivStyler, 1);
+      _removeProperty(target, _transformProp);
+
+      target.setAttribute("transform", startValue);
+    } else {
+      startValue = getComputedStyle(target)[_transformProp];
+      style[_transformProp] = transforms;
+      endCache = _parseTransform(target, 1);
+      style[_transformProp] = startValue;
+    }
 
     for (p in _transformProps) {
       startValue = startCache[p];
@@ -39382,14 +39429,14 @@ function formGroup(controls, validators) {
         endUnit = getUnit(endValue);
         startNum = startUnit !== endUnit ? _convertToUnit(target, p, startValue, endUnit) : parseFloat(startValue);
         endNum = parseFloat(endValue);
-        plugin._pt = new PropTween(plugin._pt, startCache, p, startNum, endNum - startNum, _renderCSSProp);
+        plugin._pt = new PropTween(plugin._pt, endCache, p, startNum, endNum - startNum, _renderCSSProp);
         plugin._pt.u = endUnit || 0;
 
         plugin._props.push(p);
       }
     }
 
-    _doc$1.body.removeChild(_tempDivStyler);
+    _assign(endCache, startCache);
   };
 
   _forEachName("padding,margin,Width,Radius", function (name, index) {
@@ -39430,6 +39477,7 @@ function formGroup(controls, validators) {
     init: function init(target, vars, tween, index, targets) {
       var props = this._props,
           style = target.style,
+          startAt = tween.vars.startAt,
           startValue,
           endValue,
           endNum,
@@ -39471,20 +39519,31 @@ function formGroup(controls, validators) {
         }
 
         if (specialProp) {
-          if (specialProp(this, target, p, endValue, tween)) {
-            hasPriority = 1;
-          }
+          specialProp(this, target, p, endValue, tween) && (hasPriority = 1);
         } else if (p.substr(0, 2) === "--") {
-          this.add(style, "setProperty", getComputedStyle(target).getPropertyValue(p) + "", endValue + "", index, targets, 0, 0, p);
+          startValue = (getComputedStyle(target).getPropertyValue(p) + "").trim();
+          endValue += "";
+          _colorExp.lastIndex = 0;
+
+          if (!_colorExp.test(startValue)) {
+            startUnit = getUnit(startValue);
+            endUnit = getUnit(endValue);
+          }
+
+          endUnit ? startUnit !== endUnit && (startValue = _convertToUnit(target, p, startValue, endUnit) + endUnit) : startUnit && (endValue += startUnit);
+          this.add(style, "setProperty", startValue, endValue, index, targets, 0, 0, p);
         } else if (type !== "undefined") {
-          startValue = _get(target, p);
+          if (startAt && p in startAt) {
+            startValue = typeof startAt[p] === "function" ? startAt[p].call(tween, index, target, targets) : startAt[p];
+            p in _config.units && !getUnit(startValue) && (startValue += _config.units[p]);
+            (startValue + "").charAt(1) === "=" && (startValue = _get(target, p));
+          } else {
+            startValue = _get(target, p);
+          }
+
           startNum = parseFloat(startValue);
           relative = type === "string" && endValue.charAt(1) === "=" ? +(endValue.charAt(0) + "1") : 0;
-
-          if (relative) {
-            endValue = endValue.substr(2);
-          }
-
+          relative && (endValue = endValue.substr(2));
           endNum = parseFloat(endValue);
 
           if (p in _propertyAliases) {
@@ -39507,7 +39566,7 @@ function formGroup(controls, validators) {
           if (isTransformRelated) {
             if (!transformPropTween) {
               cache = target._gsap;
-              cache.renderTransform || _parseTransform(target);
+              cache.renderTransform && !vars.parseTransform || _parseTransform(target, vars.parseTransform);
               smooth = vars.smoothOrigin !== false && cache.smooth;
               transformPropTween = this._pt = new PropTween(this._pt, style, _transformProp, 0, 1, cache.renderTransform, cache, 0, -1);
               transformPropTween.dep = 1;
@@ -39559,7 +39618,7 @@ function formGroup(controls, validators) {
             endNum || (endNum = 0);
             endUnit = getUnit(endValue) || (p in _config.units ? _config.units[p] : startUnit);
             startUnit !== endUnit && (startNum = _convertToUnit(target, p, startValue, endUnit));
-            this._pt = new PropTween(this._pt, isTransformRelated ? cache : style, p, startNum, relative ? relative * endNum : endNum - startNum, endUnit === "px" && vars.autoRound !== false && !isTransformRelated ? _renderRoundedCSSProp : _renderCSSProp);
+            this._pt = new PropTween(this._pt, isTransformRelated ? cache : style, p, startNum, relative ? relative * endNum : endNum - startNum, !isTransformRelated && (endUnit === "px" || p === "zIndex") && vars.autoRound !== false ? _renderRoundedCSSProp : _renderCSSProp);
             this._pt.u = endUnit || 0;
 
             if (startUnit !== endUnit) {

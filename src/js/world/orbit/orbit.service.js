@@ -187,7 +187,7 @@ export default class OrbitService {
 				target.y = this.position.y + radius * Math.cos(phi);
 				target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta);
 				// position = cameraGroup.worldToLocal(position);
-				// target = cameraGroup.worldToLocal(target);
+				target = cameraGroup.worldToLocal(target);
 				camera.target.copy(position);
 				camera.position.copy(target);
 				break;
@@ -206,6 +206,7 @@ export default class OrbitService {
 				target = cameraGroup.worldToLocal(target);
 				// camera.position.copy(position);
 				camera.target.copy(target);
+				camera.position.copy(position);
 		}
 		// console.log(camera.position.x, camera.position.y, camera.position.z);
 		// console.log(camera.target.x, camera.target.y, camera.target.z);
