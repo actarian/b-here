@@ -71,7 +71,7 @@ export default class MediaZoomMesh extends InteractiveMesh {
 				this.material.map.dispose();
 			}
 			this.material.dispose();
-			this.material = null;
+			// this.material = null;
 		}
 	}
 

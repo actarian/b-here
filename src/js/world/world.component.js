@@ -1098,7 +1098,7 @@ export default class WorldComponent extends Component {
 		if (event.zoomed) {
 			this.view.items.forEach(item => {
 				if (item.mesh instanceof MediaMesh) {
-					console.log(item.id, event.itemId, item.id !== event.itemId);
+					// console.log(item.id, event.itemId, item.id !== event.itemId);
 					if (item.id !== event.itemId) {
 						item.mesh.setZoomedState(false);
 					}

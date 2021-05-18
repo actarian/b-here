@@ -1,6 +1,7 @@
 // import * as THREE from 'three';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
+import { RoleType } from '../../user/user';
 import { Geometry } from '../geometry/geometry';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -129,15 +130,22 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	set hidden(hidden) {
 		if (this.hidden_ !== hidden) {
 			this.hidden_ = hidden;
-			const mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
-			if (mode === NavModeType.Info && this.mesh) {
-				this.mesh.visible = !hidden;
-				this.sphere.freezed = hidden;
-				if (hidden) {
-					this.item.showPanel = false;
-				}
-			}
-			// console.log(this.hidden, this.mesh);
+			this.updateVisibility(!hidden);
+		}
+	}
+
+	get isHidden() {
+		return environment.flags.hideNavInfo &&
+			!this.editor &&
+			(!StateService.state.showNavInfo && !(StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
+			this.mode === NavModeType.Info;
+	}
+
+	updateVisibility(visible) {
+		this.mesh.visible = visible;
+		this.sphere.freezed = !visible;
+		if (!visible) {
+			this.item.showPanel = false;
 		}
 	}
 
@@ -152,10 +160,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	onChanges() {
+		this.mode = ModelNavComponent.getNavMode(this.item, this.view);
 		this.editing = this.item.selected;
-		if (environment.flags.hideNavInfo) {
-			this.hidden = !StateService.state.showNavInfo;
-		}
+		this.hidden = this.isHidden;
 	}
 
 	onCreate(mount, dismount) {
@@ -362,5 +369,5 @@ ModelNavComponent.meta = {
 	selector: '[model-nav]',
 	hosts: { host: WorldComponent },
 	outputs: ['over', 'out', 'down'],
-	inputs: ['item', 'view'],
+	inputs: ['item', 'view', 'editor'],
 };

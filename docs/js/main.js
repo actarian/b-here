@@ -16597,8 +16597,7 @@ var RGBELoader = /*#__PURE__*/function (_DataTextureLoader) {
         this.material.map.dispose();
       }
 
-      this.material.dispose();
-      this.material = null;
+      this.material.dispose(); // this.material = null;
     }
   };
 
@@ -16741,8 +16740,7 @@ var RGBELoader = /*#__PURE__*/function (_DataTextureLoader) {
         this.material.map.dispose();
       }
 
-      this.material.dispose();
-      this.material = null;
+      this.material.dispose(); // this.material = null;
     }
   };
 
@@ -17521,8 +17519,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         this.material.map.dispose();
       }
 
-      this.material.dispose();
-      this.material = null;
+      this.material.dispose(); // this.material = null;
     }
   };
 
@@ -17964,8 +17961,8 @@ var OrbitService = /*#__PURE__*/function () {
         target.x = this.position.x + radius * Math.sin(phi) * Math.cos(theta);
         target.y = this.position.y + radius * Math.cos(phi);
         target.z = this.position.z + radius * Math.sin(phi) * Math.sin(theta); // position = cameraGroup.worldToLocal(position);
-        // target = cameraGroup.worldToLocal(target);
 
+        target = cameraGroup.worldToLocal(target);
         camera.target.copy(position);
         camera.position.copy(target);
         break;
@@ -17985,6 +17982,7 @@ var OrbitService = /*#__PURE__*/function () {
         target = cameraGroup.worldToLocal(target); // camera.position.copy(position);
 
         camera.target.copy(target);
+        camera.position.copy(position);
     } // console.log(camera.position.x, camera.position.y, camera.position.z);
     // console.log(camera.target.x, camera.target.y, camera.target.z);
     // console.log('phi', phi, 'theta', theta);
@@ -23964,8 +23962,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     if (event.zoomed) {
       this.view.items.forEach(function (item) {
         if (item.mesh instanceof MediaMesh) {
-          console.log(item.id, event.itemId, item.id !== event.itemId);
-
+          // console.log(item.id, event.itemId, item.id !== event.itemId);
           if (item.id !== event.itemId) {
             item.mesh.setZoomedState(false);
           }
@@ -27402,6 +27399,15 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
 
   var _proto = ModelNavComponent.prototype;
 
+  _proto.updateVisibility = function updateVisibility(visible) {
+    this.mesh.visible = visible;
+    this.sphere.freezed = !visible;
+
+    if (!visible) {
+      this.item.showPanel = false;
+    }
+  };
+
   _proto.setVisible = function setVisible(visible) {
     if (this.mesh) {
       this.mesh.visible = visible && !this.hidden_;
@@ -27413,11 +27419,9 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   };
 
   _proto.onChanges = function onChanges() {
+    this.mode = ModelNavComponent.getNavMode(this.item, this.view);
     this.editing = this.item.selected;
-
-    if (environment.flags.hideNavInfo) {
-      this.hidden = !StateService.state.showNavInfo;
-    }
+    this.hidden = this.isHidden;
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
@@ -27655,18 +27659,13 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     set: function set(hidden) {
       if (this.hidden_ !== hidden) {
         this.hidden_ = hidden;
-        var mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
-
-        if (mode === NavModeType.Info && this.mesh) {
-          this.mesh.visible = !hidden;
-          this.sphere.freezed = hidden;
-
-          if (hidden) {
-            this.item.showPanel = false;
-          }
-        } // console.log(this.hidden, this.mesh);
-
+        this.updateVisibility(!hidden);
       }
+    }
+  }, {
+    key: "isHidden",
+    get: function get() {
+      return environment.flags.hideNavInfo && !this.editor && !StateService.state.showNavInfo && !(StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed) && this.mode === NavModeType.Info;
     }
   }]);
 
@@ -27679,7 +27678,7 @@ ModelNavComponent.meta = {
     host: WorldComponent
   },
   outputs: ['over', 'out', 'down'],
-  inputs: ['item', 'view']
+  inputs: ['item', 'view', 'editor']
 };// import * as THREE from 'three';
 var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
   _inheritsLoose(FreezableSprite, _THREE$Sprite);
