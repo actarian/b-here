@@ -1,6 +1,6 @@
 // import * as THREE from 'three';
-import { Geometry } from "../geometry/geometry";
-import FreezableMesh from "./freezable.mesh";
+import { Geometry } from '../geometry/geometry';
+import FreezableMesh from './freezable.mesh';
 
 export default class EmittableMesh extends FreezableMesh {
 

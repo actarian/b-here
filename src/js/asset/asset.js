@@ -1,4 +1,4 @@
-import { environment } from "../environment";
+import { environment } from '../environment';
 
 export const EXT_IMAGE = [
 	'jpeg', 'jpg', 'png', 'hdr'
@@ -108,12 +108,15 @@ export function isAssetType(path, type) {
 }
 
 export class Asset {
+
 	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor', 'autoplay', 'loop'];
+
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
 		}
 	}
+
 	get payload() {
 		const payload = {};
 		Object.keys(this).forEach(key => {
@@ -123,6 +126,7 @@ export class Asset {
 		});
 		return payload;
 	}
+
 	static fromUrl(url) {
 		const segments = url.split('/');
 		const file = segments.pop();
@@ -133,6 +137,16 @@ export class Asset {
 			folder: folder,
 			file: file,
 		});
+	}
+
+	static get defaultMediaAsset() {
+		const asset = {
+			id: -1,
+			type: { id: AssetType.Image, name: 'image' },
+			folder: '/textures/grid/',
+			file: 'grid.jpg',
+		};
+		return asset;
 	}
 }
 

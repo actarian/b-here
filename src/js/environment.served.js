@@ -14,6 +14,7 @@ export const environmentServed = {
 		chat: false,
 		ar: true,
 		like: true,
+		hideNavInfo: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,
@@ -36,7 +37,7 @@ export const environmentServed = {
 		menuBackOverForeground: '#ffffff',
 	},
 	editor: {
-		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
 		disabledViewItemTypes: ['texture'],
 	},
 	assets: '/Modules/B-Here/Client/docs/',
@@ -46,6 +47,7 @@ export const environmentServed = {
 	},
 	textures: {
 		envMap: 'textures/envMap/flower_road_1k.hdr',
+		grid: 'textures/grid/grid.jpg',
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
 	template: {
@@ -58,6 +60,7 @@ export const environmentServed = {
 				'panorama-grid': '/template/modules/b-here/panorama-grid-modal.cshtml',
 				'room-3d': '/template/modules/b-here/room-3d-modal.cshtml',
 				'model': '/template/modules/b-here/model-modal.cshtml',
+				'media': '/template/modules/b-here/media-modal.cshtml',
 			},
 			viewItem: {
 				'nav': '/template/modules/b-here/nav-modal.cshtml',

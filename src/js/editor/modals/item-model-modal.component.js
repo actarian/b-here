@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
+import { Host } from '../../world/host/host';
 import EditorService from '../editor.service';
 export default class ItemModelModalComponent extends Component {
 
@@ -36,7 +37,7 @@ export default class ItemModelModalComponent extends Component {
 			if (spherical) {
 				position.normalize().multiplyScalar(4);
 				object.position.copy(position);
-				object.lookAt(ItemModelModalComponent.ORIGIN); // cameraGroup?
+				object.lookAt(Host.origin);
 			} else {
 				object.lookAt(normal);
 				object.position.set(position.x, position.y, position.z);
@@ -84,8 +85,6 @@ export default class ItemModelModalComponent extends Component {
 	}
 
 }
-
-ItemModelModalComponent.ORIGIN = new THREE.Vector3();
 
 ItemModelModalComponent.meta = {
 	selector: '[item-model-modal]'

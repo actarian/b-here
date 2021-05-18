@@ -1,4 +1,5 @@
 import { filter, take, takeUntil } from 'rxjs/operators';
+import { Host } from '../host/host';
 // import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
@@ -48,7 +49,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 				// console.log('ModelCurvedPanel', streamId, item.asset)
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, items, geometry, this.host);
+					mesh = new MediaMesh(item, view, geometry, this.host);
 					mesh.updateFromItem(item);
 					mesh.name = 'curved-plane';
 					mesh.load(() => {
@@ -112,16 +113,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
 		// console.log('ModelCurvedPlaneComponent.onUpdate', item);
-		if (item.position) {
-			mesh.position.fromArray(item.position);
-		}
-		if (item.rotation) {
-			mesh.rotation.fromArray(item.rotation);
-		}
-		if (item.scale) {
-			mesh.scale.fromArray(item.scale);
-		}
-		// !!! deactivated
+		// !!! true
 		if (true && (item.radius !== this.radius_ || item.height !== this.height_ || item.arc !== this.arc_)) {
 			mesh.geometry.dispose();
 			const geometry = this.getCurvedPanelGeometry(item);
@@ -156,7 +148,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		mesh.position.set(position.x, position.y, position.z);
 		if (spherical) {
 			position.normalize().multiplyScalar(20);
-			mesh.lookAt(ModelCurvedPlaneComponent.ORIGIN); // cameraGroup?
+			mesh.lookAt(Host.origin);
 		} else {
 			mesh.position.set(0, 0, 0);
 			mesh.lookAt(normal);
@@ -190,7 +182,6 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 
 }
 
-ModelCurvedPlaneComponent.ORIGIN = new THREE.Vector3();
 ModelCurvedPlaneComponent.textures = {};
 
 ModelCurvedPlaneComponent.meta = {

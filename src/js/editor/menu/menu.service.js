@@ -94,6 +94,9 @@ export default class MenuService {
 							case ViewType.Model.name:
 								name = 'Modelli 3D';
 								break;
+							case ViewType.Media.name:
+								name = 'Media';
+								break;
 						}
 						return { name, type: { name: 'menu-group' }, items: views.filter(x => x.type.name === typeName && (!x.hidden || editor)) };
 					});

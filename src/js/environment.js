@@ -73,7 +73,7 @@ const defaultOptions = {
 		menuBackOverForeground: '#ffffff',
 	},
 	editor: {
-		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
 		disabledViewItemTypes: ['texture'],
 	},
 	renderOrder: {
@@ -104,6 +104,7 @@ const defaultAppOptions = {
 		chat: true,
 		ar: true,
 		like: true,
+		hideNavInfo: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,

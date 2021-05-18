@@ -263,6 +263,9 @@ window.labels = Object.assign(window.labels, {});
 					<button type="button" class="btn--chat" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#chat"></use></svg>
 					</button>
+					<button type="button" class="btn--navinfo" [class]="{ active: state.showNavInfo }" (click)="toggleNavInfo()" *if="('hideNavInfo' | flag)">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navinfo"></use></svg>
+					</button>
 				</div>
 			</div>
 			<!-- media -->
@@ -287,7 +290,7 @@ window.labels = Object.assign(window.labels, {});
 				</button>
 			</div>
 			<!-- like -->
-			<div class="group--heart">
+			<div class="group--heart" *if="'like' | flag">
 				<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
 				<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
@@ -444,7 +447,7 @@ window.labels = Object.assign(window.labels, {});
 			</button>
 		</div>
 		<!-- like -->
-		<div class="group--heart">
+		<div class="group--heart" *if="'like' | flag">
 			<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
 			<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
@@ -479,7 +482,7 @@ window.labels = Object.assign(window.labels, {});
 			</button>
 		</div>
 		<!-- like -->
-		<div class="group--heart">
+		<div class="group--heart" *if="'like' | flag">
 			<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
 			<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>

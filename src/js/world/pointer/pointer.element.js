@@ -1,15 +1,14 @@
 // import * as THREE from 'three';
 import { environment } from '../../environment';
 import { Geometry } from '../geometry/geometry';
+import { Host } from '../host/host';
 import Interactive from '../interactive/interactive';
-
-const ORIGIN = new THREE.Vector3();
 
 export default class PointerElement {
 
 	constructor(color = '#ffffff') {
 		const position = this.position = new THREE.Vector3();
-		const targetPosition = this.targetPosition = new THREE.Vector3();
+		// const targetPosition = this.targetPosition = new THREE.Vector3();
 		const geometry = Geometry.planeGeometry; // new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
 		const texture = loader.load(environment.getPath('textures/ui/nav-point.png'));
@@ -36,10 +35,12 @@ export default class PointerElement {
 			position.sub(camera.position);
 			const s = position.length() / 80;
 			mesh.scale.set(s, s, s);
+			/*
 			const targetPosition = this.targetPosition;
 			targetPosition.set(0, 0, 0);
 			camera.localToWorld(targetPosition);
-			mesh.lookAt(targetPosition);
+			*/
+			mesh.lookAt(Host.origin);
 		}
 	}
 
@@ -51,9 +52,11 @@ export default class PointerElement {
 		position.sub(camera.position);
 		const s = position.length() / 80;
 		mesh.scale.set(s, s, s);
+		/*
 		const targetPosition = this.targetPosition;
 		targetPosition.set(0, 0, 0);
 		camera.localToWorld(targetPosition);
-		mesh.lookAt(targetPosition);
+		*/
+		mesh.lookAt(Host.origin);
 	}
 }

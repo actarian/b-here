@@ -339,13 +339,12 @@ export default class ModelModelComponent extends ModelEditableComponent {
 		// console.log('ModelModelComponent.onDragMove', position, normal, spherical);
 		if (spherical) {
 			position.normalize().multiplyScalar(4);
-			// normal = ModelModelComponent.ORIGIN; // cameraGroup?
 		}
 		this.editing = true;
 		const view = this.view;
 		if (view.type.name !== ViewType.Model.name) {
 			this.mesh.position.set(position.x, position.y, position.z);
-			// this.mesh.lookAt(ModelModelComponent.ORIGIN);
+			// this.mesh.lookAt(Host.origin);
 		}
 		this.updateHelper();
 	}
@@ -399,8 +398,6 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	}
 
 }
-
-ModelModelComponent.ORIGIN = new THREE.Vector3();
 
 ModelModelComponent.meta = {
 	selector: '[model-model]',

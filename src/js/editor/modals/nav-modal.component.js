@@ -5,7 +5,9 @@ import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
+import { Host } from '../../world/host/host';
 import EditorService from '../editor.service';
+
 export default class NavModalComponent extends Component {
 
 	get data() {
@@ -46,7 +48,7 @@ export default class NavModalComponent extends Component {
 				// position.normalize().multiplyScalar(4);
 				position.normalize();
 				object.position.copy(position);
-				object.lookAt(ItemModelModalComponent.ORIGIN); // cameraGroup?
+				object.lookAt(Host.origin);
 			} else {
 				object.lookAt(normal);
 				object.position.set(position.x, position.y, position.z);
@@ -79,7 +81,7 @@ export default class NavModalComponent extends Component {
 		this.controls = form.controls;
 		/*
 		this.controls.viewId.options = [{
-			name: "Name",
+			name: 'Name',
 			id: 2,
 		}];
 		*/

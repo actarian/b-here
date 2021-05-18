@@ -53,7 +53,7 @@
         "output": "docs/modals/"
       }]
     },
-    "three": {
+    "vendors": {
       "compile": [{
         "input": "node_modules/three/build/three.module.js",
         "output": {
@@ -62,11 +62,6 @@
         },
         "name": "THREE"
       }],
-      "bundle": [],
-      "copy": []
-    },
-    "vendors": {
-      "compile": [],
       "bundle": [
         {
           "input": [

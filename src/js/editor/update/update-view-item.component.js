@@ -219,13 +219,13 @@ export default class UpdateViewItemComponent extends Component {
 			EditorService.inferItemUpdate$(view, item).pipe(
 				first(),
 			).subscribe(response => {
-				// console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
+				console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
 				EditorService.inferItemUpdateResult$(view, item);
 				this.update.next({ view, item });
-				setTimeout(() => {
+				this.setTimeout(() => {
 					this.busy = false;
 					this.pushChanges();
-				}, 300);
+				});
 			}, error => console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.error', error));
 			// this.update.next({ view: this.view, item: new ViewItem(payload) });
 		} else {
@@ -253,6 +253,23 @@ export default class UpdateViewItemComponent extends Component {
 
 	getTitle(item) {
 		return LabelPipe.getKeys('editor', item.type.name);
+	}
+
+	clearTimeout() {
+		if (this.to) {
+			clearTimeout(this.to);
+		}
+	}
+
+	setTimeout(callback, msec = 300) {
+		this.clearTimeout();
+		if (typeof callback === 'function') {
+			this.to = setTimeout(callback, msec);
+		}
+	}
+
+	onDestroy() {
+		this.clearTimeout();
 	}
 }
 
@@ -285,13 +302,19 @@ UpdateViewItemComponent.meta = {
 				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
 				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
 			</div>
-			<div class="form-controls" *if="item.type.name == 'plane'">
+			<div class="form-controls" *if="item.type.name == 'plane' && view.type.name != 'media'">
 				<div control-vector [control]="controls.position" label="Position" [precision]="2"></div>
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
 				<div control-localized-asset [control]="controls.asset" label="Localized Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
+				<div control-checkbox [control]="controls.autoplay" label="Autoplay" *if="item.asset && item.asset.type.name === 'video'"></div>
+				<div control-checkbox [control]="controls.loop" label="Loop" *if="item.asset && item.asset.type.name === 'video'"></div>
+			</div>
+			<div class="form-controls" *if="item.type.name == 'plane' && view.type.name == 'media'">
+				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
+				<div control-localized-asset [control]="controls.asset" label="Localized Image or Video" accept="image/jpeg, video/mp4"></div>
 				<div control-checkbox [control]="controls.autoplay" label="Autoplay" *if="item.asset && item.asset.type.name === 'video'"></div>
 				<div control-checkbox [control]="controls.loop" label="Loop" *if="item.asset && item.asset.type.name === 'video'"></div>
 			</div>

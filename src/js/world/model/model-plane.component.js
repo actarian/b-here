@@ -1,5 +1,6 @@
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Geometry } from '../geometry/geometry';
+import { Host } from '../host/host';
 // import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
@@ -47,7 +48,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 				}
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, items, geometry, this.host);
+					mesh = new MediaMesh(item, view, geometry, this.host);
 					mesh.updateFromItem(item);
 					mesh.name = 'plane';
 					mesh.load(() => {
@@ -113,15 +114,6 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
 		// console.log('ModelPlaneComponent.onUpdate', item);
-		if (item.position) {
-			mesh.position.fromArray(item.position);
-		}
-		if (item.rotation) {
-			mesh.rotation.fromArray(item.rotation);
-		}
-		if (item.scale) {
-			mesh.scale.fromArray(item.scale);
-		}
 		mesh.updateFromItem(item);
 		this.updateHelper();
 	}
@@ -151,7 +143,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 		if (spherical) {
 			position.normalize().multiplyScalar(20);
 			mesh.position.set(position.x, position.y, position.z);
-			mesh.lookAt(ModelPlaneComponent.ORIGIN); // cameraGroup?
+			mesh.lookAt(Host.origin);
 		} else {
 			mesh.position.set(0, 0, 0);
 			mesh.lookAt(normal);
@@ -174,7 +166,6 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 	}
 }
 
-ModelPlaneComponent.ORIGIN = new THREE.Vector3();
 ModelPlaneComponent.textures = {};
 
 ModelPlaneComponent.meta = {

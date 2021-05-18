@@ -1,5 +1,6 @@
 // import * as THREE from 'three';
 import { environment } from '../../environment';
+import StateService from '../../state/state.service';
 import { Geometry } from '../geometry/geometry';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -86,7 +87,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			ctx.textBaseline = 'middle';
 			ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
 			ctx.lineWidth = 6;
-			ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
+			ctx.lineJoin = 'round'; // Experiment with 'bevel' & 'round' for the effect you want!
 			ctx.miterLimit = 2;
 			ctx.strokeText(text, x, y);
 			ctx.fillStyle = 'white';
@@ -121,21 +122,40 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return text && text.length > 0;
 	}
 
+	hidden_ = false;
+	get hidden() {
+		return this.hidden_;
+	}
+	set hidden(hidden) {
+		if (this.hidden_ !== hidden) {
+			this.hidden_ = hidden;
+			const mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+			if (mode === NavModeType.Info && this.mesh) {
+				this.mesh.visible = !hidden;
+				this.sphere.freezed = hidden;
+				if (hidden) {
+					this.item.showPanel = false;
+				}
+			}
+			// console.log(this.hidden, this.mesh);
+		}
+	}
+
+	setVisible(visible) {
+		if (this.mesh) {
+			this.mesh.visible = visible && !this.hidden_;
+		}
+	}
+
 	onInit() {
 		super.onInit();
-		/*
-		this.debouncedOver$ = new ReplaySubject(1).pipe(
-			auditTime(250),
-			tap(event => this.over.next(event)),
-			takeUntil(this.unsubscribe$),
-		);
-		this.debouncedOver$.subscribe();
-		*/
-		// console.log('ModelNavComponent.onInit');
 	}
 
 	onChanges() {
 		this.editing = this.item.selected;
+		if (environment.flags.hideNavInfo) {
+			this.hidden = !StateService.state.showNavInfo;
+		}
 	}
 
 	onCreate(mount, dismount) {
@@ -151,7 +171,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		this.onCreateSprites(nav);
 
 		const geometry = Geometry.sphereGeometry;
-		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
+		const sphere = this.sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
@@ -159,7 +179,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			color: 0x00ffff,
 		}));
 		sphere.name = `[nav] ${this.item.id}`;
-		sphere.lookAt(ModelNavComponent.ORIGIN);
+		// sphere.lookAt(Host.origin); ??
 		sphere.depthTest = false;
 		sphere.renderOrder = 0;
 		nav.add(sphere);
@@ -336,7 +356,6 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 }
 
-ModelNavComponent.ORIGIN = new THREE.Vector3();
 ModelNavComponent.RADIUS = 100;
 
 ModelNavComponent.meta = {

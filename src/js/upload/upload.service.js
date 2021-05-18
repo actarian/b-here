@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from 'rxcomp';
-import { BehaviorSubject, combineLatest, EMPTY, fromEvent, merge, of, ReplaySubject } from "rxjs";
-import { delayWhen, filter, first, map, switchMap, tap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, EMPTY, fromEvent, merge, of, ReplaySubject } from 'rxjs';
+import { delayWhen, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { Asset, assetTypeFromPath } from '../asset/asset';
 import { AssetService } from '../asset/asset.service';
 
@@ -201,10 +201,10 @@ export class UploadService {
 				const upload = uploads[0];
 				/*
 				id: 1601303293569
-				type: "image/jpeg"
-				file: "1601303293569_ambiente1_x0_y2.jpg"
-				originalFileName: "ambiente1_x0_y2.jpg"
-				url: "/uploads/1601303293569_ambiente1_x0_y2.jpg"
+				type: 'image/jpeg'
+				file: '1601303293569_ambiente1_x0_y2.jpg'
+				originalFileName: 'ambiente1_x0_y2.jpg'
+				url: '/uploads/1601303293569_ambiente1_x0_y2.jpg'
 				*/
 				const asset = Asset.fromUrl(upload.url);
 				return AssetService.assetCreate$(asset);

@@ -1,5 +1,5 @@
-import { Pipe } from "rxcomp";
-import { Utils } from "../utils/utils";
+import { Pipe } from 'rxcomp';
+import { Utils } from '../utils/utils';
 
 export default class LabelPipe extends Pipe {
 
@@ -9,7 +9,7 @@ export default class LabelPipe extends Pipe {
 	}
 
 	static getKeys(...keys) {
-		return LabelPipe.transform(keys.map(x => x.replace('-','_')).join('_'));
+		return LabelPipe.transform(keys.map(x => x.replace('-', '_')).join('_'));
 	}
 
 	static setLabels() {

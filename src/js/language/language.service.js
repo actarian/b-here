@@ -1,9 +1,9 @@
-import { from } from "rxjs";
-import { tap } from "rxjs/operators";
-import { environment } from "../environment";
-import LabelPipe from "../label/label.pipe";
-import LocationService from "../location/location.service";
-import { Utils } from "../utils/utils";
+import { from } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { environment } from '../environment';
+import LabelPipe from '../label/label.pipe';
+import LocationService from '../location/location.service';
+import { Utils } from '../utils/utils';
 
 export class LanguageService {
 

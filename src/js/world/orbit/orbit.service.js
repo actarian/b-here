@@ -4,6 +4,8 @@ import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
 import StateService from '../../state/state.service';
+import { ViewType } from '../../view/view';
+import ViewService from '../../view/view.service';
 
 export const OrbitMode = {
 	Panorama: 'panorama',
@@ -82,8 +84,12 @@ export default class OrbitService {
 		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid);
 	}
 
+	get isMediaView() {
+		return ViewService.view && ViewService.view.type.name === ViewType.Media.name;
+	}
+
 	get locked() {
-		return this.controlled || this.spying;
+		return this.controlled || this.spying || this.isMediaView;
 	}
 
 	constructor(camera) {

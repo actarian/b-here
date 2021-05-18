@@ -28,6 +28,14 @@ export default class ViewService {
 		return action ? action.viewId : null;
 	}
 
+	static view_ = null;
+	static get view() {
+		return this.view_;
+	}
+	static set view(view) {
+		this.view_ = view;
+	}
+
 	static data$() {
 		if (!this.data$_) {
 			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
@@ -72,6 +80,7 @@ export default class ViewService {
 				return hosted ? view : waitingRoom;
 			}),
 			tap(view => {
+				this.view = view;
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
 					const prefetchAssets = ViewService.getPrefetchAssets(view, data);
@@ -85,6 +94,7 @@ export default class ViewService {
 		const waitingRoom = this.getWaitingRoom(data);
 		return this.view$(data, true).pipe(
 			tap(view => {
+				this.view = view;
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
 				}

@@ -232,6 +232,7 @@ strong {
 .btn--mic,
 .btn--screen,
 .btn--chat,
+.btn--navinfo,
 .btn--call, .btn--edit, a,
 button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy,
 .agora-stream .btn--control {
@@ -260,6 +261,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--mic,
   .btn--screen,
   .btn--chat,
+  .btn--navinfo,
   .btn--call, .btn--edit, a,
   button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy,
   .agora-stream .btn--control, .btn--volume:active, .btn--fullscreen:active, .btn--view-mode:active, .btn--control:active, .btn--menu:active, .btn--ar:active,
@@ -277,6 +279,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--mic:active,
   .btn--screen:active,
   .btn--chat:active,
+  .btn--navinfo:active,
   .btn--call:active, .btn--edit:active, a:active,
   button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--fullscreen:focus, .btn--view-mode:focus, .btn--control:focus, .btn--menu:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--generate:focus,
@@ -293,6 +296,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--mic:focus,
   .btn--screen:focus,
   .btn--chat:focus,
+  .btn--navinfo:focus,
   .btn--call:focus, .btn--edit:focus, a:focus,
   button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--fullscreen:hover, .btn--view-mode:hover, .btn--control:hover, .btn--menu:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--generate:hover,
@@ -309,6 +313,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--mic:hover,
   .btn--screen:hover,
   .btn--chat:hover,
+  .btn--navinfo:hover,
   .btn--call:hover, .btn--edit:hover, a:hover,
   button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--fullscreen:visited, .btn--view-mode:visited, .btn--control:visited, .btn--menu:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--generate:visited,
@@ -325,6 +330,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--mic:visited,
   .btn--screen:visited,
   .btn--chat:visited,
+  .btn--navinfo:visited,
   .btn--call:visited, .btn--edit:visited, a:visited,
   button:visited, .btn--heart:visited, .btn--close:visited, .btn--logo:visited, .btn--credits:visited, .agora-stream .btn--spy:visited {
     color: inherit;
@@ -346,6 +352,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
 .btn--mic[disabled],
 .btn--screen[disabled],
 .btn--chat[disabled],
+.btn--navinfo[disabled],
 .btn--call[disabled], .btn--edit[disabled] {
   opacity: 0.5;
   pointer-events: none; }
@@ -4193,6 +4200,7 @@ body {
 .btn--mic,
 .btn--screen,
 .btn--chat,
+.btn--navinfo,
 .btn--call {
   width: 40px;
   height: 40px;
@@ -4205,6 +4213,7 @@ body {
   .btn--mic svg,
   .btn--screen svg,
   .btn--chat svg,
+  .btn--navinfo svg,
   .btn--call svg {
     width: 18px;
     height: 18px; }
@@ -4213,6 +4222,7 @@ body {
     .btn--mic,
     .btn--screen,
     .btn--chat,
+    .btn--navinfo,
     .btn--call {
       width: 40px;
       height: 40px;
@@ -4221,6 +4231,7 @@ body {
       .btn--mic svg,
       .btn--screen svg,
       .btn--chat svg,
+      .btn--navinfo svg,
       .btn--call svg {
         width: 18px;
         height: 18px; } }
@@ -4240,6 +4251,11 @@ body {
   .btn--chat:focus,
   .btn--chat:hover,
   .btn--chat:visited,
+  .btn--navinfo,
+  .btn--navinfo:active,
+  .btn--navinfo:focus,
+  .btn--navinfo:hover,
+  .btn--navinfo:visited,
   .btn--call,
   .btn--call:active,
   .btn--call:focus,
@@ -4263,6 +4279,11 @@ body {
     .btn--chat:focus svg,
     .btn--chat:hover svg,
     .btn--chat:visited svg,
+    .btn--navinfo svg,
+    .btn--navinfo:active svg,
+    .btn--navinfo:focus svg,
+    .btn--navinfo:hover svg,
+    .btn--navinfo:visited svg,
     .btn--call svg,
     .btn--call:active svg,
     .btn--call:focus svg,
@@ -4306,6 +4327,16 @@ body {
     right: 10px;
     border-radius: 3px;
     background: var(--foreground-secondary); }
+
+.btn--navinfo {
+  margin: 5px; }
+  .btn--navinfo svg {
+    width: 24px;
+    height: 24px;
+    opacity: 0.2;
+    transition: opacity ease-in-out 350ms; }
+  .btn--navinfo.active svg {
+    opacity: 1; }
 
 .btn--ar.disabled,
 .btn--vr.disabled {
@@ -4820,7 +4851,8 @@ body {
     margin-left: 10px; }
   @media (max-width: 767.98px) {
     .group--actions .btn--screen,
-    .group--actions .btn--chat {
+    .group--actions .btn--chat,
+    .group--actions .btn--navinfo {
       display: none; } }
 
 .group--spacer {
@@ -4916,7 +4948,7 @@ body {
   .group--heart .love {
     display: none;
     position: absolute;
-    left: 13px;
+    right: 25px;
     top: -50%;
     width: 12px;
     height: 12px;
@@ -5748,9 +5780,9 @@ model-viewer {
 
 @keyframes love-swing {
   0% {
-    margin-left: -20px; }
+    margin-right: 20px; }
   100% {
-    margin-left: 20px; } }
+    margin-right: -20px; } }
 
 @keyframes love-rise {
   0% {

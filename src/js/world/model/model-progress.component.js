@@ -4,7 +4,7 @@ import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
 import LoaderService from '../../loader/loader.service';
 import { ViewType } from '../../view/view';
-import { PANORAMA_RADIUS } from '../panorama/panorama';
+import { PANORAMA_RADIUS } from '../geometry/geometry';
 import VRService from '../vr.service';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -210,7 +210,7 @@ export default class ModelProgressComponent extends ModelComponent {
 			ctx.textBaseline = 'middle';
 			ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
 			ctx.lineWidth = L;
-			ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
+			ctx.lineJoin = 'round'; // Experiment with 'bevel' & 'round' for the effect you want!
 			ctx.miterLimit = 2;
 			ctx.strokeText(text, W / 2, H / 2);
 			ctx.fillStyle = 'white';

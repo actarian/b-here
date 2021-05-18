@@ -1,5 +1,5 @@
-import { fromEventPattern, of, throwError } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { fromEventPattern, of, throwError } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 export const HlsQuality = {
 	Min: 1,

@@ -354,6 +354,9 @@ export default class AgoraComponent extends Component {
 				case MessageType.NavToView:
 					this.onRemoteNavTo(message);
 					break;
+				case MessageType.NavInfo:
+					StateService.patchState({ showNavInfo: message.showNavInfo });
+					break;
 				case MessageType.AddLike:
 					ViewService.setViewLike$(message).pipe(
 						first(),
@@ -578,6 +581,14 @@ export default class AgoraComponent extends Component {
 	toggleChat() {
 		StateService.patchState({ chat: !this.state.chat, chatDirty: false });
 		window.dispatchEvent(new Event('resize'));
+	}
+
+	toggleNavInfo() {
+		if (this.agora) {
+			this.agora.toggleNavInfo();
+		} else {
+			this.patchState({ showNavInfo: !this.state.showNavInfo });
+		}
 	}
 
 	onChatClose() {

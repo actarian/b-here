@@ -5,6 +5,7 @@ import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
+import { Host } from '../host/host';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import { Texture } from '../texture/texture';
 import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent } from './media-loader';
@@ -191,10 +192,10 @@ void main() {
 
 	// main
 	vec4 mapRgba = texture2D(map, vUvShader);
-	mapRgba = mapTexelToLinear(mapRgba);
 	vec4 chromaKey = vec4(chromaKeyColor, 1.0);
     vec3 chromaKeyDiff = mapRgba.rgb - chromaKey.rgb;
     float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));
+	mapRgba = mapTexelToLinear(mapRgba);
 	/*
 	if (isVideo) {
 		vec4 playMapRgba = texture2D(playMap, vUvShader);
@@ -204,7 +205,8 @@ void main() {
 		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
 	}
 	*/
-	diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
+	// diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
+	diffuseColor = vec4(mapRgba.rgb, opacity * chromaKeyValue);
 
 	#include <alphamap_fragment>
 	#include <alphatest_fragment>
@@ -251,11 +253,11 @@ export default class MediaMesh extends InteractiveMesh {
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER,
 			uniforms: {
-				map: { type: "t", value: Texture.defaultTexture },
+				map: { type: 't', value: Texture.defaultTexture },
 				mapResolution: { value: new THREE.Vector2() },
 				mapTween: { value: 1 },
 				color: { value: new THREE.Color('#FFFFFF') },
-				playMap: { type: "t", value: Texture.defaultTexture },
+				playMap: { type: 't', value: Texture.defaultTexture },
 				playMapResolution: { value: new THREE.Vector2() },
 				playMapTween: { value: 0 },
 				playMapColor: { value: new THREE.Color('#000000') },
@@ -279,11 +281,12 @@ export default class MediaMesh extends InteractiveMesh {
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
 			uniforms: {
-				map: { type: "t", value: Texture.defaultTexture },
+				map: { type: 't', value: null }, // Texture.defaultTexture
 				mapResolution: { value: new THREE.Vector2() },
 				mapTween: { value: 1 },
 				color: { value: new THREE.Color('#FFFFFF') },
-				playMap: { type: "t", value: Texture.defaultTexture },
+				chromaKeyColor: { value: new THREE.Color(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2]) },
+				playMap: { type: 't', value: Texture.defaultTexture },
 				playMapResolution: { value: new THREE.Vector2() },
 				playMapTween: { value: 0 },
 				playMapColor: { value: new THREE.Color('#000000') },
@@ -294,6 +297,7 @@ export default class MediaMesh extends InteractiveMesh {
 				fragDepth: true,
 			},
 		});
+		material.map = true;
 		return material;
 	}
 
@@ -399,26 +403,29 @@ export default class MediaMesh extends InteractiveMesh {
 	set editing(editing) {
 		if (this.editing_ !== editing) {
 			this.editing_ = editing;
-			if (this.zoomBtn && editing) {
-				this.zoomBtn.zoomed = false;
-			}
+			// this.zoomed = editing ? false : (this.view.type.name === 'media' ? true : this.zoomed);
+			this.zoomed = this.view.type.name === 'media' ? true : (editing ? false : this.zoomed);
 		}
 	}
 
-	constructor(item, items, geometry, host) {
+	constructor(item, view, geometry, host) {
 		const material = MediaMesh.getMaterialByItem(item);
 		super(geometry, material);
 		// this.renderOrder = environment.renderOrder.plane;
 		this.item = item;
-		this.items = items;
+		this.view = view;
+		this.items = view.items;
 		this.host = host;
 		this.uniforms = MediaMesh.getUniformsByItem(item);
+		this.object = new THREE.Object3D();
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
 		this.onOver = this.onOver.bind(this);
 		this.onOut = this.onOut.bind(this);
 		this.onToggle = this.onToggle.bind(this);
 		this.onZoomed = this.onZoomed.bind(this);
-		this.addZoomBtn();
+		if (this.view.type.name !== 'media') {
+			this.addZoomBtn();
+		}
 		this.addPlayBtn();
 		this.userData.render = (time, tick) => {
 			this.render(this, time, tick);
@@ -427,7 +434,9 @@ export default class MediaMesh extends InteractiveMesh {
 
 	load(callback) {
 		this.remove(this.playBtn);
-		this.remove(this.zoomBtn);
+		if (this.zoomBtn) {
+			this.remove(this.zoomBtn);
+		}
 		if (!this.item.asset) {
 			this.onAppear();
 			if (typeof callback === 'function') {
@@ -437,18 +446,18 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		mediaLoader.load((map) => {
-			// console.log('MediaMesh.map', map);
-			if (map) {
-				material.map = map; // !!! Enables USE_MAP
+		mediaLoader.load((texture) => {
+			// console.log('MediaMesh.texture', texture);
+			if (texture) {
+				texture.encoding = THREE.sRGBEncoding;
+				material.map = texture; // !!! Enables USE_MAP
 				if (material.uniforms) {
-					material.uniforms.map.value = map;
-					// material.uniforms.mapResolution.value.x = map.image.width;
-					// material.uniforms.mapResolution.value.y = map.image.height;
-					material.uniforms.mapResolution.value = new THREE.Vector2(map.image.width || map.image.videoWidth, map.image.height || map.image.videoHeight);
-					material.needsUpdate = true;
+					material.uniforms.map.value = texture;
+					// material.uniforms.mapResolution.value.x = texture.image.width;
+					// material.uniforms.mapResolution.value.y = texture.image.height;
+					material.uniforms.mapResolution.value = new THREE.Vector2(texture.image.width || texture.image.videoWidth, texture.image.height || texture.image.videoHeight);
 					if (mediaLoader.isPlayableVideo) {
-						this.makePlayMap(map, (playMap) => {
+						this.makePlayMap(texture, (playMap) => {
 							// console.log('MediaMesh.playMap', playMap);
 							playMap.minFilter = THREE.LinearFilter;
 							playMap.magFilter = THREE.LinearFilter;
@@ -466,6 +475,7 @@ export default class MediaMesh extends InteractiveMesh {
 					}
 				}
 			}
+			material.needsUpdate = true;
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
 				if (material.uniforms) {
@@ -476,16 +486,18 @@ export default class MediaMesh extends InteractiveMesh {
 				this.on('down', this.onToggle);
 				this.add(this.playBtn);
 			}
-			this.add(this.zoomBtn);
+			if (this.zoomBtn) {
+				this.add(this.zoomBtn);
+			}
 			if (typeof callback === 'function') {
 				callback(this);
 			}
 		});
 	}
 
-	makePlayMap(map, callback) {
-		const aw = map.image.width || map.image.videoWidth;
-		const ah = map.image.height || map.image.videoHeight;
+	makePlayMap(texture, callback) {
+		const aw = texture.image.width || texture.image.videoWidth;
+		const ah = texture.image.height || texture.image.videoHeight;
 		const ar = aw / ah;
 		const scale = 0.32;
 		const canvas = document.createElement('canvas');
@@ -576,6 +588,7 @@ export default class MediaMesh extends InteractiveMesh {
 				},
 			});
 		}
+		this.zoomed = this.view.type.name === 'media' ? true : (this.editing ? false : this.zoomed);
 	}
 
 	onDisappear() {
@@ -616,7 +629,6 @@ export default class MediaMesh extends InteractiveMesh {
 		if (this.playBtn) {
 			this.playBtn.onOver();
 		}
-		// this.zoomBtn.visible = true;
 	}
 
 	onOut() {
@@ -641,7 +653,6 @@ export default class MediaMesh extends InteractiveMesh {
 		if (this.playBtn) {
 			this.playBtn.onOut();
 		}
-		// this.zoomBtn.visible = false;
 	}
 
 	onToggle() {
@@ -683,9 +694,7 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	setZoomedState(zoomed) {
-		if (this.zoomBtn) {
-			this.zoomBtn.zoomed = zoomed;
-		}
+		this.zoomed = zoomed;
 	}
 
 	setCurrentTime(currentTime) {
@@ -751,13 +760,13 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	onZoomed(zoomed) {
+		this.zoomed = zoomed;
 		this.emit('zoomed', zoomed);
 	}
 
 	addZoomBtn() {
 		const zoomBtn = this.zoomBtn = new MediaZoomMesh(this.host);
 		zoomBtn.on('zoomed', this.onZoomed);
-		zoomBtn.position.z = 0.01;
 	}
 
 	removeZoomBtn() {
@@ -781,14 +790,125 @@ export default class MediaMesh extends InteractiveMesh {
 		if (this.playBtn) {
 			this.playBtn.update(this);
 		}
+		/*
 		if (this.zoomBtn) {
 			this.zoomBtn.update(this);
 		}
+		*/
+		this.updateZoom();
 	}
 
+	// zoom
+
 	render(time, tick) {
+		/*
 		if (this.zoomBtn && !this.editing) {
 			this.zoomBtn.render(time, tick);
+		}
+		*/
+		if (!this.editing) {
+			const object = this.object;
+			/*
+			parent.position.lerp(object.position, 0.2);
+			parent.scale.lerp(object.scale, 0.2);
+			parent.quaternion.slerp(object.quaternion, 0.2);
+			*/
+			this.position.copy(object.position);
+			this.scale.copy(object.scale);
+			this.quaternion.copy(object.quaternion);
+		}
+	}
+
+	updateZoom() {
+		this.originalPosition = this.position.clone();
+		this.originalScale = this.scale.clone();
+		this.originalQuaternion = this.quaternion.clone();
+		this.object.position.copy(this.originalPosition);
+		this.object.scale.copy(this.originalScale);
+		this.object.quaternion.copy(this.originalQuaternion);
+		if (this.zoomBtn) {
+			const scale = this.zoomBtn.scale;
+			const position = this.zoomBtn.position;
+			const ratio = this.scale.x / this.scale.y;
+			const size = 0.1;
+			scale.set(size / ratio, size, 1);
+			position.x = 0.5 - size / ratio / 2;
+			position.y = 0.5 - size / 2;
+			position.z = 0.01;
+		}
+		// console.log('MediaMesh.updateZoom', parent.scale, scale, position);
+	}
+
+	updateObjectMatrix() {
+		const object = this.object;
+		const host = this.host;
+		if (this.zoomed) {
+			const cameraGroup = host.cameraGroup;
+			const originalScale = this.originalScale;
+			let camera = host.camera, scale;
+			const position = object.position;
+			const aspect = originalScale.x / originalScale.y;
+			const xr = host.renderer.xr;
+			if (xr.isPresenting) {
+				camera = xr.getCamera(camera);
+				camera.getWorldDirection(position);
+				scale = 0.3;
+				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+				const distance = this.getDistanceToCamera(camera, object.scale);
+				position.multiplyScalar(distance * 1);
+				position.add(cameraGroup.position);
+				position.y -= 0.2;
+				object.position.copy(position);
+				/*
+				position.multiplyScalar(distance * 0.75);
+				position.y -= 0.2;
+				cameraGroup.worldToLocal(position);
+				position.y += cameraGroup.position.y;
+				object.position.copy(position);
+				*/
+				object.lookAt(Host.origin);
+			} else {
+				camera.getWorldDirection(position);
+				scale = 0.1;
+				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+				const distance = this.getDistanceToCamera(camera, object.scale);
+				position.multiplyScalar(distance);
+				cameraGroup.localToWorld(position);
+				object.position.copy(position);
+				object.lookAt(Host.origin);
+			}
+		}
+		return object;
+	}
+
+	getDistanceToCamera(camera, size, fitOffset = 1) {
+		const factor = (2 * Math.atan(Math.PI * camera.fov / 360));
+		const heightDistance = size.y * camera.zoom / factor;
+		const widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
+		const distance = fitOffset * Math.max(heightDistance, widthDistance);
+		return distance;
+	}
+
+	zoomed_ = false;
+	get zoomed() {
+		return this.zoomed_;
+	}
+	set zoomed(zoomed) {
+		if (this.zoomed_ !== zoomed) {
+			this.zoomed_ = zoomed;
+			if (zoomed) {
+				// this.originalPosition = this.position.clone();
+				// this.originalQuaternion = this.rotation.clone();
+				// this.originalScale = this.scale.clone();
+			} else {
+				this.object.position.copy(this.originalPosition);
+				this.object.scale.copy(this.originalScale);
+				this.object.quaternion.copy(this.originalQuaternion);
+			}
+			this.updateObjectMatrix();
+			if (this.zoomBtn) {
+				this.zoomBtn.zoomed = zoomed;
+			}
 		}
 	}
 

@@ -345,7 +345,8 @@
 	@include media-down(xs) {
 
 		.btn--screen,
-		.btn--chat {
+		.btn--chat,
+		.btn--navinfo {
 			display: none;
 		}
 	}
@@ -479,7 +480,7 @@
 	.love {
 		display: none;
 		position: absolute;
-		left: 13px;
+		right: 25px;
 		top: -50%;
 		width: 12px;
 		height: 12px;

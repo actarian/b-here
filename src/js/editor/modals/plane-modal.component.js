@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
+import { Host } from '../../world/host/host';
 import EditorService from '../editor.service';
 export default class PlaneModalComponent extends Component {
 
@@ -36,7 +37,7 @@ export default class PlaneModalComponent extends Component {
 			if (spherical) {
 				position.normalize().multiplyScalar(20);
 				object.position.copy(position);
-				object.lookAt(PlaneModalComponent.ORIGIN); // cameraGroup?
+				object.lookAt(Host.origin);
 			} else {
 				object.lookAt(normal);
 				object.position.set(position.x, position.y, position.z);
@@ -83,8 +84,6 @@ export default class PlaneModalComponent extends Component {
 	}
 
 }
-
-PlaneModalComponent.ORIGIN = new THREE.Vector3();
 
 PlaneModalComponent.meta = {
 	selector: '[plane-modal]'

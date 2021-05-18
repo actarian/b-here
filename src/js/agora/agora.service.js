@@ -263,8 +263,8 @@ export default class AgoraService extends Emittable {
 		client.on('mute-audio', this.onMuteAudio);
 		client.on('unmute-audio', this.onUnmuteAudio);
 		if (USE_VOLUME_INDICATOR) {
-			client.enableAudioVolumeIndicator(); // Triggers the "volume-indicator" callback event every two seconds.
-			client.on("volume-indicator", this.onVolumeIndicator);
+			client.enableAudioVolumeIndicator(); // Triggers the 'volume-indicator' callback event every two seconds.
+			client.on('volume-indicator', this.onVolumeIndicator);
 		}
 		client.on('peer-online', this.onPeerConnect);
 		// Occurs when the peer user leaves the channel; for example, the peer user calls Client.leave.
@@ -738,6 +738,15 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	toggleNavInfo() {
+		const showNavInfo = !StateService.state.showNavInfo;
+		StateService.patchState({ showNavInfo });
+		MessageService.send({
+			type: MessageType.NavInfo,
+			showNavInfo: showNavInfo,
+		});
+	}
+
 	dismissControl() {
 		return new Promise((resolve, _) => {
 			const controllingId = StateService.state.controlling;
@@ -963,6 +972,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.ZoomMedia:
 					case MessageType.CurrentTimeMedia:
 					case MessageType.PlayModel:
+					case MessageType.NavInfo:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
 							return;
@@ -1093,6 +1103,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ZoomMedia:
 			case MessageType.CurrentTimeMedia:
 			case MessageType.PlayModel:
+			case MessageType.NavInfo:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:
 				if ((StateService.state.controlling && StateService.state.controlling !== StateService.state.uid) || (StateService.state.spying && StateService.state.spying !== StateService.state.uid)) {
