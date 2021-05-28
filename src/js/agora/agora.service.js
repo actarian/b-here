@@ -1673,6 +1673,9 @@ export default class AgoraService extends Emittable {
 				if (DeviceService.platform === DevicePlatform.IOS) {
 					constraints.video = { facingMode: 'user' };
 				}
+				if (DeviceService.platform === DevicePlatform.VRHeadset) {
+					constraints.video = false;
+				}
 				if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 					navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
 						navigator.mediaDevices.enumerateDevices().then((devices) => {

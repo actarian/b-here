@@ -26,9 +26,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 					<li class="checklist__item error" *if="errors.browser"><a class="btn--link" href="https://browsehappy.com/" target="_blank" rel="noopener" [innerHTML]="errors.browser"></a></li>
 					<li class="checklist__item check"><span>Https</span> <span agora-check [value]="checklist.https"></span></li>
 					<li class="checklist__item error" *if="errors.https"><a class="btn--link" (click)="openHttps()" [innerHTML]="errors.https"></a></li>
-					<li class="checklist__item check" *if="shouldCheckDevices"><span>Audio</span> <span agora-check [value]="checklist.audio"></span></li>
+					<li class="checklist__item check" *if="shouldCheckAudio"><span>Audio</span> <span agora-check [value]="checklist.audio"></span></li>
 					<li class="checklist__item error" *if="errors.audio"><span [innerHTML]="errors.audio"></span></li>
-					<li class="checklist__item check" *if="shouldCheckDevices"><span>Video</span> <span agora-check [value]="checklist.video"></span></li>
+					<li class="checklist__item check" *if="shouldCheckVideo"><span>Video</span> <span agora-check [value]="checklist.video"></span></li>
 					<li class="checklist__item error" *if="errors.video"><span [innerHTML]="errors.video"></span></li>
 					<li class="checklist__item check"><span>Realtime Communication</span> <span agora-check [value]="checklist.rtc"></span></li>
 					<li class="checklist__item error" *if="errors.rtc"><a class="btn--link" (click)="showFirewallConfiguration()" [innerHTML]="errors.rtc"></a></li>

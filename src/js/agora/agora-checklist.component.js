@@ -1,6 +1,6 @@
 import { Component } from 'rxcomp';
 import { first, takeUntil } from 'rxjs/operators';
-import { DeviceService } from '../device/device.service';
+import { DevicePlatform, DeviceService } from '../device/device.service';
 import { environment } from '../environment';
 import LabelPipe from '../label/label.pipe';
 import LocalStorageService from '../local-storage/local-storage.service';
@@ -15,12 +15,13 @@ const SHOW_ERROR = false;
 export default class AgoraChecklistComponent extends Component {
 
 	onInit() {
-		this.platform = DeviceService.platform; // !!!
+		this.platform = DeviceService.platform;
 		this.checklist = {};
 		this.errors = {};
 		this.state = {};
 		this.busy = true;
-		this.shouldCheckDevices = true;
+		this.shouldCheckAudio = true;
+		this.shouldCheckVideo = true;
 		LocalStorageService.set('checklist', false);
 		StateService.state$.pipe(
 			first(),
@@ -28,7 +29,12 @@ export default class AgoraChecklistComponent extends Component {
 			// console.log('AgoraChecklistComponent', state);
 			this.state = state;
 			if (state.role === RoleType.Viewer) {
-				this.shouldCheckDevices = false;
+				this.shouldCheckAudio = false;
+				this.shouldCheckVideo = false;
+			}
+			if (this.platform === DevicePlatform.VRHeadset) {
+				this.shouldCheckAudio = false;
+				this.shouldCheckVideo = false;
 			}
 			this.pushChanges();
 			setTimeout(() => {
@@ -75,11 +81,7 @@ export default class AgoraChecklistComponent extends Component {
 			}
 		} else if (https) {
 			setTimeout(() => {
-				if (this.shouldCheckDevices) {
-					this.checkAudio();
-				} else {
-					this.checkRtc();
-				}
+				this.checkAudio();
 			}, TIMEOUT);
 			this.pushChanges();
 		} else {
@@ -98,7 +100,7 @@ export default class AgoraChecklistComponent extends Component {
 			this.errors.audio = LabelPipe.transform('bhere_audio_error');
 		} else if (skip) {
 			this.checklist.audio = false;
-		} else {
+		} else if (this.shouldCheckAudio) {
 			AgoraService.getDevices().then((devices) => {
 				// console.log('checkAudio', devices);
 				const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
@@ -115,24 +117,8 @@ export default class AgoraChecklistComponent extends Component {
 					this.checkVideo();
 				}, TIMEOUT);
 			});
-			/*
-			AgoraRTC.getDevices((devices) => {
-				// console.log('checkAudio', devices);
-				const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
-				this.checklist.audio = audioinput != null;
-				this.pushChanges();
-				setTimeout(() => {
-					this.checkVideo();
-				}, TIMEOUT);
-			}, (error) => {
-				this.checklist.audio = false;
-				this.errors.audio = error;
-				this.pushChanges();
-				setTimeout(() => {
-					this.checkVideo();
-				}, TIMEOUT);
-			});
-			*/
+		} else {
+			this.checkVideo();
 		}
 	}
 
@@ -142,7 +128,7 @@ export default class AgoraChecklistComponent extends Component {
 			this.errors.video = LabelPipe.transform('bhere_video_error');
 		} else if (skip) {
 			this.checklist.video = false;
-		} else {
+		} else if (this.shouldCheckVideo) {
 			AgoraService.getDevices().then((devices) => {
 				// console.log('checkVideo', devices);
 				const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
@@ -159,24 +145,8 @@ export default class AgoraChecklistComponent extends Component {
 				}, TIMEOUT);
 				this.pushChanges();
 			});
-			/*
-			AgoraRTC.getDevices((devices) => {
-				// console.log('checkVideo', devices);
-				const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
-				this.checklist.video = videoinput != null;
-				setTimeout(() => {
-					this.checkRtc();
-				}, TIMEOUT);
-				this.pushChanges();
-			}, (error) => {
-				this.checklist.video = false;
-				this.errors.video = error;
-				setTimeout(() => {
-					this.checkRtc();
-				}, TIMEOUT);
-				this.pushChanges();
-			});
-			*/
+		} else {
+			this.checkRtc();
 		}
 	}
 

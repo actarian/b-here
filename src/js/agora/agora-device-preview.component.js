@@ -161,7 +161,6 @@ export default class AgoraDevicePreviewComponent extends Component {
 			});
 		}
 	}
-
 }
 
 AgoraDevicePreviewComponent.meta = {

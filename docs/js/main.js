@@ -4020,6 +4020,10 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           };
         }
 
+        if (DeviceService.platform === DevicePlatform.VRHeadset) {
+          constraints.video = false;
+        }
+
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
             navigator.mediaDevices.enumerateDevices().then(function (devices) {
@@ -4751,20 +4755,26 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    this.platform = DeviceService.platform; // !!!
-
+    this.platform = DeviceService.platform;
     this.checklist = {};
     this.errors = {};
     this.state = {};
     this.busy = true;
-    this.shouldCheckDevices = true;
+    this.shouldCheckAudio = true;
+    this.shouldCheckVideo = true;
     LocalStorageService.set('checklist', false);
     StateService.state$.pipe(operators.first()).subscribe(function (state) {
       // console.log('AgoraChecklistComponent', state);
       _this.state = state;
 
       if (state.role === RoleType.Viewer) {
-        _this.shouldCheckDevices = false;
+        _this.shouldCheckAudio = false;
+        _this.shouldCheckVideo = false;
+      }
+
+      if (_this.platform === DevicePlatform.VRHeadset) {
+        _this.shouldCheckAudio = false;
+        _this.shouldCheckVideo = false;
       }
 
       _this.pushChanges();
@@ -4809,11 +4819,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
       }
     } else if (https) {
       setTimeout(function () {
-        if (_this3.shouldCheckDevices) {
-          _this3.checkAudio();
-        } else {
-          _this3.checkRtc();
-        }
+        _this3.checkAudio();
       }, TIMEOUT);
       this.pushChanges();
     } else {
@@ -4831,7 +4837,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
 
     if (skip) {
       this.checklist.audio = false;
-    } else {
+    } else if (this.shouldCheckAudio) {
       AgoraService.getDevices().then(function (devices) {
         // console.log('checkAudio', devices);
         var audioinput = devices.find(function (x) {
@@ -4854,24 +4860,8 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
           _this4.checkVideo();
         }, TIMEOUT);
       });
-      /*
-      AgoraRTC.getDevices((devices) => {
-      	// console.log('checkAudio', devices);
-      	const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
-      	this.checklist.audio = audioinput != null;
-      	this.pushChanges();
-      	setTimeout(() => {
-      		this.checkVideo();
-      	}, TIMEOUT);
-      }, (error) => {
-      	this.checklist.audio = false;
-      	this.errors.audio = error;
-      	this.pushChanges();
-      	setTimeout(() => {
-      		this.checkVideo();
-      	}, TIMEOUT);
-      });
-      */
+    } else {
+      this.checkVideo();
     }
   };
 
@@ -4880,7 +4870,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
 
     if (skip) {
       this.checklist.video = false;
-    } else {
+    } else if (this.shouldCheckVideo) {
       AgoraService.getDevices().then(function (devices) {
         // console.log('checkVideo', devices);
         var videoinput = devices.find(function (x) {
@@ -4901,24 +4891,8 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
 
         _this5.pushChanges();
       });
-      /*
-      AgoraRTC.getDevices((devices) => {
-      	// console.log('checkVideo', devices);
-      	const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
-      	this.checklist.video = videoinput != null;
-      	setTimeout(() => {
-      		this.checkRtc();
-      	}, TIMEOUT);
-      	this.pushChanges();
-      }, (error) => {
-      	this.checklist.video = false;
-      	this.errors.video = error;
-      	setTimeout(() => {
-      		this.checkRtc();
-      	}, TIMEOUT);
-      	this.pushChanges();
-      });
-      */
+    } else {
+      this.checkRtc();
     }
   };
 
@@ -5573,6 +5547,8 @@ AgoraDevicePreviewComponent.meta = {
           _this.initForm(devices);
 
           _this.pushChanges();
+        }, function (error) {
+          console.log('AgoraDeviceComponent.devices$.error', error); // alert('AgoraDeviceComponent ' + error); // !!!
         });
       }
     }
