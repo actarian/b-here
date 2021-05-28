@@ -33,7 +33,7 @@ export default class AgoraChecklistComponent extends Component {
 				this.shouldCheckVideo = false;
 			}
 			if (this.platform === DevicePlatform.VRHeadset) {
-				this.shouldCheckAudio = false;
+				this.shouldCheckAudio = true;
 				this.shouldCheckVideo = false;
 			}
 			this.pushChanges();
