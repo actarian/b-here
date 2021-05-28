@@ -121,6 +121,7 @@ export const MessageType = {
 	RequestInfoDismiss: 'requestInfoDismiss',
 	RequestInfoDismissed: 'requestInfoDismissed',
 	RequestInfoRejected: 'requestInfoRejected',
+	RemoteSilencing: 'remoteSilencing',
 	SlideChange: 'slideChange',
 	ControlInfo: 'controlInfo',
 	AddLike: 'addLike',

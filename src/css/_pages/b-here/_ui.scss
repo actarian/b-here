@@ -268,7 +268,9 @@ $chat-width: 240px;
 
 	&.publisher {
 		.group--local {
-			.btn--control {
+
+			.btn--control,
+			.btn--silence {
 				margin-right: 20px;
 			}
 		}

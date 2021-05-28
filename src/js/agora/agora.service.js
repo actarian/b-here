@@ -738,6 +738,27 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	previousMuteAudio_ = false;
+	setAudio(audioMuted) {
+		const local = StreamService.local;
+		if (local && local.audio) {
+			if (audioMuted) {
+				this.previousMuteAudio_ = local.userMuteAudio;
+				if (!local.userMuteAudio) {
+					local.muteAudio();
+					StateService.patchState({ audioMuted: true });
+					this.broadcastEvent(new AgoraMuteAudioEvent({ streamId: local.getId() }));
+				}
+			} else {
+				if (local.userMuteAudio && !this.previousMuteAudio_) {
+					local.unmuteAudio();
+					StateService.patchState({ audioMuted: false });
+					this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: local.getId() }));
+				}
+			}
+		}
+	}
+
 	toggleNavInfo() {
 		const showNavInfo = !StateService.state.showNavInfo;
 		StateService.patchState({ showNavInfo });
@@ -780,6 +801,15 @@ export default class AgoraService extends Emittable {
 				}
 			});
 		});
+	}
+
+	toggleSilence() {
+		const silencing = !StateService.state.silencing;
+		this.sendMessage({
+			type: MessageType.RemoteSilencing,
+			silencing: silencing,
+		});
+		StateService.patchState({ silencing });
 	}
 
 	dismissSpy() {
@@ -1097,6 +1127,12 @@ export default class AgoraService extends Emittable {
 					this.broadcastMessage(message);
 				}
 				break;
+			case MessageType.RemoteSilencing:
+				// only streamers can be silenced
+				if (StateService.state.role === RoleType.Streamer) {
+					this.broadcastMessage(message);
+				}
+				break;
 			case MessageType.ControlInfo:
 			case MessageType.ShowPanel:
 			case MessageType.PlayMedia:
@@ -1219,7 +1255,7 @@ export default class AgoraService extends Emittable {
 			if (remote.clientInfo) {
 				// !!! remove screenRemote?
 				if (remote.clientInfo.role === RoleType.Publisher) {
-					StateService.patchState({ hosted: false, controlling: false, spying: false });
+					StateService.patchState({ hosted: false, controlling: false, spying: false, silencing: false });
 				} else {
 					if (StateService.state.controlling === remoteId) {
 						StateService.patchState({ controlling: false });
@@ -1636,6 +1672,9 @@ export default class AgoraService extends Emittable {
 				};
 				if (DeviceService.platform === DevicePlatform.IOS) {
 					constraints.video = { facingMode: 'user' };
+				}
+				if (DeviceService.platform === DevicePlatform.VRHeadset) {
+					constraints.video = false;
 				}
 				if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 					navigator.mediaDevices.getUserMedia(constraints).then((stream) => {

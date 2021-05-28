@@ -8,6 +8,7 @@ import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
+import VRService from '../world/vr.service';
 
 export default class LayoutComponent extends Component {
 
@@ -46,6 +47,14 @@ export default class LayoutComponent extends Component {
 		return (this.state.controlling && this.state.controlling === this.state.uid);
 	}
 
+	get silencing() {
+		return StateService.state.silencing;
+	}
+
+	get silenced() {
+		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
+	}
+
 	get spyed() {
 		return (this.state.spying && this.state.spying === this.state.uid);
 	}
@@ -75,6 +84,7 @@ export default class LayoutComponent extends Component {
 			membersCount: 3,
 			controlling: false,
 			spying: false,
+			silencing: false,
 			hosted: true,
 			chat: false,
 			chatDirty: true,
@@ -101,6 +111,7 @@ export default class LayoutComponent extends Component {
 		this.fullscreen$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();
+		const vrService = this.vrService = VRService.getService();
 		console.log('LayoutComponent', this);
 		// console.log(AgoraService.getUniqueUserId());
 	}
@@ -199,6 +210,10 @@ export default class LayoutComponent extends Component {
 	onToggleControl(remoteId) {
 		const controlling = this.state.controlling === remoteId ? null : remoteId;
 		this.patchState({ controlling, spying: false });
+	}
+
+	onToggleSilence() {
+		this.patchState({ silencing: !this.state.silencing });
 	}
 
 	onToggleSpy(remoteId) {

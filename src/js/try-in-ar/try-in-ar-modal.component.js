@@ -22,7 +22,7 @@ export default class TryInARModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
 

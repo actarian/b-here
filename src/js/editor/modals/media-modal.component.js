@@ -66,10 +66,9 @@ export default class MediaModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 MediaModalComponent.meta = {

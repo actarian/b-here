@@ -6,10 +6,10 @@
 			<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 			<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 			<div class="id" [innerHTML]="stream.clientInfo.name || streamId" *if="stream.clientInfo"></div>
-			<button type="button" class="btn--control" (click)="onToggleControl(streamId)" *if="state.role === 'publisher'">
+			<button type="button" class="btn--control" [title]="'title_control' | label" (click)="onToggleControl(streamId)" *if="state.role === 'publisher'">
 				<svg class="control" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
 			</button>
-			<button type="button" class="btn--spy" (click)="onToggleSpy(streamId)" *if="state.role === 'publisher'">
+			<button type="button" class="btn--spy" [title]="'title_spy' | label" (click)="onToggleSpy(streamId)" *if="state.role === 'publisher'">
 				<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 			</button>
 		</div>

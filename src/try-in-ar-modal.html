@@ -1,6 +1,6 @@
 <div class="try-in-ar-modal" try-in-ar-modal>
 	<div class="modal__header">
-		<button type="button" class="btn--close" (click)="close()">
+		<button type="button" class="btn--close" (click)="onClose()">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
 		</button>
 	</div>
@@ -11,7 +11,7 @@
 				<canvas class="qrcode"></canvas>
 			</div>
 			<div class="group--cta">
-				<button type="button" class="btn--accept" (click)="close()">
+				<button type="button" class="btn--accept" (click)="onClose()">
 					<span>Chiudi</span>
 				</button>
 			</div>

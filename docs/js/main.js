@@ -175,6 +175,7 @@ function _readOnlyError(name) {
   template: {
     tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
     modal: {
+      configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
       controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
       tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
       view: {
@@ -248,6 +249,7 @@ function _readOnlyError(name) {
   template: {
     tryInAr: '/try-in-ar.html?viewId=$viewId',
     modal: {
+      configureFirewall: '/configure-firewall-modal.html',
       controlRequest: '/control-request-modal.html',
       tryInAr: '/try-in-ar-modal.html',
       view: {
@@ -756,6 +758,7 @@ var MessageType = {
   RequestInfoDismiss: 'requestInfoDismiss',
   RequestInfoDismissed: 'requestInfoDismissed',
   RequestInfoRejected: 'requestInfoRejected',
+  RemoteSilencing: 'remoteSilencing',
   SlideChange: 'slideChange',
   ControlInfo: 'controlInfo',
   AddLike: 'addLike',
@@ -2080,6 +2083,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
 
     _this = _Emittable.call(this) || this;
+
+    _defineProperty(_assertThisInitialized(_this), "previousMuteAudio_", false);
+
     _this.onStreamPublished = _this.onStreamPublished.bind(_assertThisInitialized(_this));
     _this.onStreamUnpublished = _this.onStreamUnpublished.bind(_assertThisInitialized(_this));
     _this.onStreamAdded = _this.onStreamAdded.bind(_assertThisInitialized(_this));
@@ -2890,6 +2896,36 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
   };
 
+  _proto.setAudio = function setAudio(audioMuted) {
+    var local = StreamService.local;
+
+    if (local && local.audio) {
+      if (audioMuted) {
+        this.previousMuteAudio_ = local.userMuteAudio;
+
+        if (!local.userMuteAudio) {
+          local.muteAudio();
+          StateService.patchState({
+            audioMuted: true
+          });
+          this.broadcastEvent(new AgoraMuteAudioEvent({
+            streamId: local.getId()
+          }));
+        }
+      } else {
+        if (local.userMuteAudio && !this.previousMuteAudio_) {
+          local.unmuteAudio();
+          StateService.patchState({
+            audioMuted: false
+          });
+          this.broadcastEvent(new AgoraUnmuteAudioEvent({
+            streamId: local.getId()
+          }));
+        }
+      }
+    }
+  };
+
   _proto.toggleNavInfo = function toggleNavInfo() {
     var showNavInfo = !StateService.state.showNavInfo;
     StateService.patchState({
@@ -2944,6 +2980,17 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           });
         }
       });
+    });
+  };
+
+  _proto.toggleSilence = function toggleSilence() {
+    var silencing = !StateService.state.silencing;
+    this.sendMessage({
+      type: MessageType.RemoteSilencing,
+      silencing: silencing
+    });
+    StateService.patchState({
+      silencing: silencing
     });
   };
 
@@ -3322,6 +3369,14 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
         break;
 
+      case MessageType.RemoteSilencing:
+        // only streamers can be silenced
+        if (StateService.state.role === RoleType.Streamer) {
+          this.broadcastMessage(message);
+        }
+
+        break;
+
       case MessageType.ControlInfo:
       case MessageType.ShowPanel:
       case MessageType.PlayMedia:
@@ -3459,7 +3514,8 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           StateService.patchState({
             hosted: false,
             controlling: false,
-            spying: false
+            spying: false,
+            silencing: false
           });
         } else {
           if (StateService.state.controlling === remoteId) {
@@ -3962,6 +4018,10 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           constraints.video = {
             facingMode: 'user'
           };
+        }
+
+        if (DeviceService.platform === DevicePlatform.VRHeadset) {
+          constraints.video = false;
         }
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -4606,7 +4666,82 @@ LabelPipe.meta = {
   };
 
   return LocalStorageService;
-}();var TIMEOUT = 100;
+}();var ModalEvent = function ModalEvent(data) {
+  this.data = data;
+};
+var ModalResolveEvent = /*#__PURE__*/function (_ModalEvent) {
+  _inheritsLoose(ModalResolveEvent, _ModalEvent);
+
+  function ModalResolveEvent() {
+    return _ModalEvent.apply(this, arguments) || this;
+  }
+
+  return ModalResolveEvent;
+}(ModalEvent);
+var ModalRejectEvent = /*#__PURE__*/function (_ModalEvent2) {
+  _inheritsLoose(ModalRejectEvent, _ModalEvent2);
+
+  function ModalRejectEvent() {
+    return _ModalEvent2.apply(this, arguments) || this;
+  }
+
+  return ModalRejectEvent;
+}(ModalEvent);
+
+var ModalService = /*#__PURE__*/function () {
+  function ModalService() {}
+
+  ModalService.open$ = function open$(modal) {
+    var _this = this;
+
+    return this.getTemplate$(modal.src).pipe(operators.map(function (template) {
+      return {
+        node: _this.getNode(template),
+        data: modal.data,
+        modal: modal
+      };
+    }), operators.tap(function (node) {
+      _this.modal$.next(node);
+
+      _this.hasModal = true;
+    }), operators.switchMap(function (node) {
+      return _this.events$;
+    }), operators.tap(function (_) {
+      return _this.hasModal = false;
+    }));
+  };
+
+  ModalService.load$ = function load$(modal) {};
+
+  ModalService.getTemplate$ = function getTemplate$(url) {
+    return rxjs.from(fetch(url).then(function (response) {
+      return response.text();
+    }));
+  };
+
+  ModalService.getNode = function getNode(template) {
+    var div = document.createElement('div');
+    div.innerHTML = template;
+    var node = div.firstElementChild;
+    return node;
+  };
+
+  ModalService.reject = function reject(data) {
+    this.modal$.next(null);
+    this.events$.next(new ModalRejectEvent(data));
+  };
+
+  ModalService.resolve = function resolve(data) {
+    this.modal$.next(null);
+    this.events$.next(new ModalResolveEvent(data));
+  };
+
+  return ModalService;
+}();
+
+_defineProperty(ModalService, "hasModal", false);
+ModalService.modal$ = new rxjs.Subject();
+ModalService.events$ = new rxjs.Subject();var TIMEOUT = 100;
 
 var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraChecklistComponent, _Component);
@@ -4620,20 +4755,26 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    this.platform = DeviceService.platform; // !!!
-
+    this.platform = DeviceService.platform;
     this.checklist = {};
     this.errors = {};
     this.state = {};
     this.busy = true;
-    this.shouldCheckDevices = true;
+    this.shouldCheckAudio = true;
+    this.shouldCheckVideo = true;
     LocalStorageService.set('checklist', false);
     StateService.state$.pipe(operators.first()).subscribe(function (state) {
       // console.log('AgoraChecklistComponent', state);
       _this.state = state;
 
       if (state.role === RoleType.Viewer) {
-        _this.shouldCheckDevices = false;
+        _this.shouldCheckAudio = false;
+        _this.shouldCheckVideo = false;
+      }
+
+      if (_this.platform === DevicePlatform.VRHeadset) {
+        _this.shouldCheckAudio = false;
+        _this.shouldCheckVideo = false;
       }
 
       _this.pushChanges();
@@ -4678,11 +4819,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
       }
     } else if (https) {
       setTimeout(function () {
-        if (_this3.shouldCheckDevices) {
-          _this3.checkAudio();
-        } else {
-          _this3.checkRtc();
-        }
+        _this3.checkAudio();
       }, TIMEOUT);
       this.pushChanges();
     } else {
@@ -4700,7 +4837,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
 
     if (skip) {
       this.checklist.audio = false;
-    } else {
+    } else if (this.shouldCheckAudio) {
       AgoraService.getDevices().then(function (devices) {
         // console.log('checkAudio', devices);
         var audioinput = devices.find(function (x) {
@@ -4715,7 +4852,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
         }, TIMEOUT);
       }).catch(function (error) {
         _this4.checklist.audio = false;
-        _this4.errors.audio = error;
+        _this4.errors.audio = LabelPipe.transform('bhere_audio_error', error);
 
         _this4.pushChanges();
 
@@ -4723,24 +4860,8 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
           _this4.checkVideo();
         }, TIMEOUT);
       });
-      /*
-      AgoraRTC.getDevices((devices) => {
-      	// console.log('checkAudio', devices);
-      	const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
-      	this.checklist.audio = audioinput != null;
-      	this.pushChanges();
-      	setTimeout(() => {
-      		this.checkVideo();
-      	}, TIMEOUT);
-      }, (error) => {
-      	this.checklist.audio = false;
-      	this.errors.audio = error;
-      	this.pushChanges();
-      	setTimeout(() => {
-      		this.checkVideo();
-      	}, TIMEOUT);
-      });
-      */
+    } else {
+      this.checkVideo();
     }
   };
 
@@ -4749,7 +4870,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
 
     if (skip) {
       this.checklist.video = false;
-    } else {
+    } else if (this.shouldCheckVideo) {
       AgoraService.getDevices().then(function (devices) {
         // console.log('checkVideo', devices);
         var videoinput = devices.find(function (x) {
@@ -4763,31 +4884,15 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
         _this5.pushChanges();
       }).catch(function (error) {
         _this5.checklist.video = false;
-        _this5.errors.video = error;
+        _this5.errors.video = LabelPipe.transform('bhere_video_error', error);
         setTimeout(function () {
           _this5.checkRtc();
         }, TIMEOUT);
 
         _this5.pushChanges();
       });
-      /*
-      AgoraRTC.getDevices((devices) => {
-      	// console.log('checkVideo', devices);
-      	const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
-      	this.checklist.video = videoinput != null;
-      	setTimeout(() => {
-      		this.checkRtc();
-      	}, TIMEOUT);
-      	this.pushChanges();
-      }, (error) => {
-      	this.checklist.video = false;
-      	this.errors.video = error;
-      	setTimeout(() => {
-      		this.checkRtc();
-      	}, TIMEOUT);
-      	this.pushChanges();
-      });
-      */
+    } else {
+      this.checkRtc();
     }
   };
 
@@ -4807,7 +4912,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
         }, TIMEOUT);
       }).catch(function (error) {
         _this6.checklist.rtc = false;
-        _this6.errors.rtc = error;
+        _this6.errors.rtc = LabelPipe.transform('bhere_rtc_error', error);
 
         _this6.checkRtm(true);
 
@@ -4827,7 +4932,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
         _this7.checklist.rtm = true;
       }).catch(function (error) {
         _this7.checklist.rtm = false;
-        _this7.errors.rtm = error;
+        _this7.errors.rtm = LabelPipe.transform('bhere_rtm_error', error);
       }).finally(function () {
         _this7.onComplete();
       });
@@ -4863,11 +4968,34 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
     window.location.href = window.location.href.replace('http://', 'https://').replace(':5000', ':6443');
   };
 
+  _proto.showFirewallConfiguration = function showFirewallConfiguration() {
+    ModalService.open$({
+      src: environment.template.modal.configureFirewall
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+  };
+
   return AgoraChecklistComponent;
 }(rxcomp.Component);
 AgoraChecklistComponent.meta = {
   selector: '[agora-checklist]',
   outputs: ['checked']
+};var AgoraConfigureFirewallModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraConfigureFirewallModalComponent, _Component);
+
+  function AgoraConfigureFirewallModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AgoraConfigureFirewallModalComponent.prototype;
+
+  _proto.onClose = function onClose() {
+    ModalService.resolve();
+  };
+
+  return AgoraConfigureFirewallModalComponent;
+}(rxcomp.Component);
+AgoraConfigureFirewallModalComponent.meta = {
+  selector: '[agora-configure-firewall-modal]'
 };var AudioStreamService = /*#__PURE__*/function () {
   function AudioStreamService() {}
 
@@ -5419,6 +5547,8 @@ AgoraDevicePreviewComponent.meta = {
           _this.initForm(devices);
 
           _this.pushChanges();
+        }, function (error) {
+          console.log('AgoraDeviceComponent.devices$.error', error); // alert('AgoraDeviceComponent ' + error); // !!!
         });
       }
     }
@@ -6079,82 +6209,7 @@ var GtmService = /*#__PURE__*/function () {
   };
 
   return GtmService;
-}();var ModalEvent = function ModalEvent(data) {
-  this.data = data;
-};
-var ModalResolveEvent = /*#__PURE__*/function (_ModalEvent) {
-  _inheritsLoose(ModalResolveEvent, _ModalEvent);
-
-  function ModalResolveEvent() {
-    return _ModalEvent.apply(this, arguments) || this;
-  }
-
-  return ModalResolveEvent;
-}(ModalEvent);
-var ModalRejectEvent = /*#__PURE__*/function (_ModalEvent2) {
-  _inheritsLoose(ModalRejectEvent, _ModalEvent2);
-
-  function ModalRejectEvent() {
-    return _ModalEvent2.apply(this, arguments) || this;
-  }
-
-  return ModalRejectEvent;
-}(ModalEvent);
-
-var ModalService = /*#__PURE__*/function () {
-  function ModalService() {}
-
-  ModalService.open$ = function open$(modal) {
-    var _this = this;
-
-    return this.getTemplate$(modal.src).pipe(operators.map(function (template) {
-      return {
-        node: _this.getNode(template),
-        data: modal.data,
-        modal: modal
-      };
-    }), operators.tap(function (node) {
-      _this.modal$.next(node);
-
-      _this.hasModal = true;
-    }), operators.switchMap(function (node) {
-      return _this.events$;
-    }), operators.tap(function (_) {
-      return _this.hasModal = false;
-    }));
-  };
-
-  ModalService.load$ = function load$(modal) {};
-
-  ModalService.getTemplate$ = function getTemplate$(url) {
-    return rxjs.from(fetch(url).then(function (response) {
-      return response.text();
-    }));
-  };
-
-  ModalService.getNode = function getNode(template) {
-    var div = document.createElement('div');
-    div.innerHTML = template;
-    var node = div.firstElementChild;
-    return node;
-  };
-
-  ModalService.reject = function reject(data) {
-    this.modal$.next(null);
-    this.events$.next(new ModalRejectEvent(data));
-  };
-
-  ModalService.resolve = function resolve(data) {
-    this.modal$.next(null);
-    this.events$.next(new ModalResolveEvent(data));
-  };
-
-  return ModalService;
-}();
-
-_defineProperty(ModalService, "hasModal", false);
-ModalService.modal$ = new rxjs.Subject();
-ModalService.events$ = new rxjs.Subject();var ModalOutletComponent = /*#__PURE__*/function (_Component) {
+}();var ModalOutletComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModalOutletComponent, _Component);
 
   function ModalOutletComponent() {
@@ -6242,7 +6297,7 @@ ModalOutletComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -7901,6 +7956,7 @@ var VRService = /*#__PURE__*/function () {
       connected: false,
       controlling: false,
       spying: false,
+      silencing: false,
       hosted: hosted,
       live: live,
       navigable: navigable,
@@ -8061,6 +8117,15 @@ var VRService = /*#__PURE__*/function () {
           if (_this6.agora) {
             _this6.agora.sendControlRemoteRequestInfo(message.controllingId);
           }
+
+          break;
+
+        case MessageType.RemoteSilencing:
+          StateService.patchState({
+            silencing: message.silencing
+          });
+
+          _this6.setAudio(message.silencing);
 
           break;
 
@@ -8295,6 +8360,16 @@ var VRService = /*#__PURE__*/function () {
     }
   };
 
+  _proto.setAudio = function setAudio(audioMuted) {
+    if (this.agora) {
+      this.agora.setAudio(audioMuted);
+    } else {
+      this.patchState({
+        audioMuted: audioMuted
+      });
+    }
+  };
+
   _proto.toggleScreen = function toggleScreen() {
     if (this.agora) {
       this.agora.toggleScreen();
@@ -8398,6 +8473,16 @@ var VRService = /*#__PURE__*/function () {
     }
     */
 
+  };
+
+  _proto.onToggleSilence = function onToggleSilence() {
+    if (this.agora) {
+      this.agora.toggleSilence();
+    } else {
+      this.patchState({
+        silencing: !this.state.silencing
+      });
+    }
   };
 
   _proto.onToggleSpy = function onToggleSpy(remoteId) {
@@ -8510,6 +8595,16 @@ var VRService = /*#__PURE__*/function () {
     key: "controlling",
     get: function get() {
       return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
+    }
+  }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
     }
   }, {
     key: "spyed",
@@ -8679,7 +8774,7 @@ AssetPipe.meta = {
   */
   ;
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -9430,6 +9525,7 @@ AsideComponent.meta = {
       connected: true,
       controlling: false,
       spying: false,
+      silencing: false,
       hosted: true,
       live: false,
       navigable: true,
@@ -10551,7 +10647,7 @@ _defineProperty(Host, "origin_", new THREE.Vector3());var CurvedPlaneModalCompon
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -10656,7 +10752,7 @@ CurvedPlaneModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -10784,7 +10880,7 @@ ItemModelModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -10858,7 +10954,7 @@ MediaModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -10942,7 +11038,7 @@ ModelModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -11087,7 +11183,7 @@ NavModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -11231,7 +11327,7 @@ PanoramaGridModalComponent.meta = {
 
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -11320,7 +11416,7 @@ PanoramaModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -11397,7 +11493,7 @@ PlaneModalComponent.meta = {
     ModalService.reject();
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -11505,7 +11601,7 @@ RemoveModalComponent.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -13677,6 +13773,7 @@ LanguageComponent.meta = {
       membersCount: 3,
       controlling: false,
       spying: false,
+      silencing: false,
       hosted: true,
       chat: false,
       chatDirty: true,
@@ -13705,6 +13802,7 @@ LanguageComponent.meta = {
     this.showLanguages = false;
     StateService.patchState(this.state);
     this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    var vrService = this.vrService = VRService.getService();
     console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
   };
 
@@ -13829,6 +13927,12 @@ LanguageComponent.meta = {
     });
   };
 
+  _proto.onToggleSilence = function onToggleSilence() {
+    this.patchState({
+      silencing: !this.state.silencing
+    });
+  };
+
   _proto.onToggleSpy = function onToggleSpy(remoteId) {
     var spying = this.state.spying === remoteId ? null : remoteId;
     this.patchState({
@@ -13904,6 +14008,16 @@ LanguageComponent.meta = {
     key: "controlling",
     get: function get() {
       return this.state.controlling && this.state.controlling === this.state.uid;
+    }
+  }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
     }
   }, {
     key: "spyed",
@@ -14177,7 +14291,7 @@ LazyDirective.meta = {
     }
   };
 
-  _proto.close = function close() {
+  _proto.onClose = function onClose() {
     ModalService.reject();
   };
 
@@ -17835,6 +17949,16 @@ var OrbitService = /*#__PURE__*/function () {
     key: "controlling",
     get: function get() {
       return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
+    }
+  }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
     }
   }, {
     key: "spyed",
@@ -24350,6 +24474,16 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
     }
   }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
+    }
+  }, {
     key: "spyed",
     get: function get() {
       return StateService.state.spying && StateService.state.spying === StateService.state.uid;
@@ -26289,6 +26423,16 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     key: "controlling",
     get: function get() {
       return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
+    }
+  }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
     }
   }, {
     key: "spyed",
@@ -28769,6 +28913,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

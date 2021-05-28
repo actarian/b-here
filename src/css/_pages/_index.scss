@@ -101,7 +101,8 @@
 	}
 
 	.btn--spy,
-	.btn--control {
+	.btn--control,
+	.btn--silence {
 		@extend %btn-reset;
 		position: absolute;
 		display: flex;

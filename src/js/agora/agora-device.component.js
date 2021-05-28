@@ -33,6 +33,9 @@ export default class AgoraDeviceComponent extends Component {
 					this.devices = devices;
 					this.initForm(devices);
 					this.pushChanges();
+				}, error => {
+					console.log('AgoraDeviceComponent.devices$.error', error);
+					// alert('AgoraDeviceComponent ' + error); // !!!
 				});
 			}
 		}

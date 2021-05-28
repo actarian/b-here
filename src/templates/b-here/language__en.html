@@ -52,9 +52,98 @@ window.labels = {
 	bhere_checklist_busy: 'Checking system',
 	bhere_checklist_success: 'All checks completed',
 	bhere_checklist_error: 'Verification failed',
-	bhere_browser_error: 'click here to upgrade your browser',
-	bhere_https_error: 'click here to reload in https',
+	bhere_browser_error: '<b> The browser is not supported. </b> <br/> Get an updated version of your browser by clicking here.',
+	bhere_https_error: '<b> You are browsing an insecure version of the site. </b> <br/> Click here to load the secure version of the page.',
+	bhere_audio_error: '<b> The audio device cannot be accessed. </b> <br/> Please check that the microphone is connected, that you have authorized your browser to access it, and that the audio device is not currently being used by other applications.',
+	bhere_video_error: '<b> Unable to access the video device. </b> <br/> Check that the camera is connected, that you have authorized the browser to access it and that the video device is not currently being used by other applications.',
+	bhere_rtc_error: '<b> Unable to access voice and video services. </b> <br/> It could be caused by very strict rules of your Internet connection. We recommend that you verify that the destination ports are accessible from your network. Click here for more information. ',
+	bhere_rtm_error: '<b> Unable to access real-time messaging services. </b> <br/> It could be caused by very strict rules of your Internet connection. We recommend that you verify that the destination ports are accessible from your network. Click here for more information. ',
 	bhere_write_a_message: 'Write...',
+	bhere_configure_firewall: /* html */ `
+	<div class="title">Realtime Video & Audio</div>
+			<div class="abstract">
+				<p>Add the following destination domains and the corresponding ports to your firewall whitelist.</p>
+			</div>
+			<div class="subtitle">Domains</div>
+			<pre class="pre">
+				<code>
+<span>.agora</span><span>.io</span>
+<span>.edge</span><span>.agora</span><span>.io</span>
+<span>.sd-rtn</span><span>.com</span>
+<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+				</code>
+			</pre>
+			<div class="subtitle">Ports</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Port type</th>
+						<th>Destination ports</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>TCP</td>
+						<td>80, 443, 3433, 4700-5000, 5668, 5669, 6080, 6443, 8667, 9667, 30011-30013</td>
+						<td>Allow</td>
+					</tr>
+					<tr>
+						<td>UDP</td>
+						<td>3478, 4700-5000</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="title">Realtime Messaging</div>
+			<div class="abstract">
+				<p>Add the following destination domains and the corresponding ports to the firewall whitelist.</p>
+			</div>
+			<div class="subtitle">Domains</div>
+			<pre class="pre">
+				<code>
+<span>.edge</span><span>.agora</span><span>.io</span>
+<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+<span>web-1</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+<span>web-2</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+<span>ap-web-1</span><span>.agora</span><span>.io</span>
+<span>ap-web-2</span><span>.agora</span><span>.io</span>
+<span>webcollector-rtm</span><span>.agora</span><span>.io</span>
+<span>logservice-rtm</span><span>.agora</span><span>.io</span>
+<span>rtm</span><span>.statscollector</span><span>.sd-rtn</span><span>.com</span>
+<span>rtm</span><span>.logservice</span><span>.sd-rtn</span><span>.com</span>
+				</code>
+			</pre>
+			<div class="subtitle">Ports</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Port type</th>
+						<th>Destination ports</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>TCP</td>
+						<td>443, 6443, 9591, 9593, 9601</td>
+					</tr>
+				</tbody>
+			</table>`,
+	title_disconnect: 'Disconnect',
+	title_mute_camera: 'Mute camera',
+	title_mute_mic: 'Mute microphone',
+	title_share_screen: 'Share screen',
+	title_chat: 'Chat',
+	title_navinfo: 'Show info',
+	title_control: 'Remote control',
+	title_spy: 'Spy',
+	title_silence: 'Mute members',
+	title_view_mode: 'Change mode',
+	title_volume: 'Volume',
+	title_fullscreen: 'Fullscreen',
+	title_ar: 'Augmented reality',
+	title_vr: 'Enter VR',
+	title_close: 'Close',
+	title_play: 'Play',
+	title_pause: 'Pause',
 };
 
 </script>

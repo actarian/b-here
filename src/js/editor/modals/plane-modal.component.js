@@ -79,10 +79,9 @@ export default class PlaneModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 PlaneModalComponent.meta = {

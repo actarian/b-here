@@ -53,6 +53,7 @@ export const environmentServed = {
 	template: {
 		tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
 		modal: {
+			configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
 			controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
 			tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
 			view: {

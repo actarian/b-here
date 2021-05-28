@@ -1,23 +1,27 @@
 import { Component } from 'rxcomp';
-import { first } from 'rxjs/operators';
-import { DeviceService } from '../device/device.service';
+import { first, takeUntil } from 'rxjs/operators';
+import { DevicePlatform, DeviceService } from '../device/device.service';
+import { environment } from '../environment';
 import LabelPipe from '../label/label.pipe';
 import LocalStorageService from '../local-storage/local-storage.service';
+import ModalService from '../modal/modal.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 import AgoraService from './agora.service';
 
 const TIMEOUT = 100;
+const SHOW_ERROR = false;
 
 export default class AgoraChecklistComponent extends Component {
 
 	onInit() {
-		this.platform = DeviceService.platform; // !!!
+		this.platform = DeviceService.platform;
 		this.checklist = {};
 		this.errors = {};
 		this.state = {};
 		this.busy = true;
-		this.shouldCheckDevices = true;
+		this.shouldCheckAudio = true;
+		this.shouldCheckVideo = true;
 		LocalStorageService.set('checklist', false);
 		StateService.state$.pipe(
 			first(),
@@ -25,7 +29,12 @@ export default class AgoraChecklistComponent extends Component {
 			// console.log('AgoraChecklistComponent', state);
 			this.state = state;
 			if (state.role === RoleType.Viewer) {
-				this.shouldCheckDevices = false;
+				this.shouldCheckAudio = false;
+				this.shouldCheckVideo = false;
+			}
+			if (this.platform === DevicePlatform.VRHeadset) {
+				this.shouldCheckAudio = false;
+				this.shouldCheckVideo = false;
 			}
 			this.pushChanges();
 			setTimeout(() => {
@@ -37,7 +46,15 @@ export default class AgoraChecklistComponent extends Component {
 	checkBrowser() {
 		const browser = AgoraRTC.checkSystemRequirements();
 		this.checklist.browser = browser;
-		if (browser) {
+		if (SHOW_ERROR) {
+			this.checklist.browser = false;
+			this.errors.browser = LabelPipe.transform('bhere_browser_error');
+			this.checkHttps();
+			this.checkAudio();
+			this.checkVideo();
+			this.checkRtc();
+			this.checkRtm();
+		} else if (browser) {
 			setTimeout(() => {
 				this.checkHttps();
 			}, TIMEOUT);
@@ -55,17 +72,16 @@ export default class AgoraChecklistComponent extends Component {
 	checkHttps(skip) {
 		const https = window.location.protocol === 'https:';
 		this.checklist.https = https;
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.https = false;
+			this.errors.https = LabelPipe.transform('bhere_https_error');
+		} else if (skip) {
 			if (!https) {
 				this.errors.https = LabelPipe.transform('bhere_https_error');
 			}
 		} else if (https) {
 			setTimeout(() => {
-				if (this.shouldCheckDevices) {
-					this.checkAudio();
-				} else {
-					this.checkRtc();
-				}
+				this.checkAudio();
 			}, TIMEOUT);
 			this.pushChanges();
 		} else {
@@ -79,9 +95,12 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	checkAudio(skip) {
-		if (skip) {
+		if (SHOW_ERROR) {
 			this.checklist.audio = false;
-		} else {
+			this.errors.audio = LabelPipe.transform('bhere_audio_error');
+		} else if (skip) {
+			this.checklist.audio = false;
+		} else if (this.shouldCheckAudio) {
 			AgoraService.getDevices().then((devices) => {
 				// console.log('checkAudio', devices);
 				const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
@@ -92,37 +111,24 @@ export default class AgoraChecklistComponent extends Component {
 				}, TIMEOUT);
 			}).catch((error) => {
 				this.checklist.audio = false;
-				this.errors.audio = error;
+				this.errors.audio = LabelPipe.transform('bhere_audio_error', error);
 				this.pushChanges();
 				setTimeout(() => {
 					this.checkVideo();
 				}, TIMEOUT);
 			});
-			/*
-			AgoraRTC.getDevices((devices) => {
-				// console.log('checkAudio', devices);
-				const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
-				this.checklist.audio = audioinput != null;
-				this.pushChanges();
-				setTimeout(() => {
-					this.checkVideo();
-				}, TIMEOUT);
-			}, (error) => {
-				this.checklist.audio = false;
-				this.errors.audio = error;
-				this.pushChanges();
-				setTimeout(() => {
-					this.checkVideo();
-				}, TIMEOUT);
-			});
-			*/
+		} else {
+			this.checkVideo();
 		}
 	}
 
 	checkVideo(skip) {
-		if (skip) {
+		if (SHOW_ERROR) {
 			this.checklist.video = false;
-		} else {
+			this.errors.video = LabelPipe.transform('bhere_video_error');
+		} else if (skip) {
+			this.checklist.video = false;
+		} else if (this.shouldCheckVideo) {
 			AgoraService.getDevices().then((devices) => {
 				// console.log('checkVideo', devices);
 				const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
@@ -133,35 +139,22 @@ export default class AgoraChecklistComponent extends Component {
 				this.pushChanges();
 			}).catch((error) => {
 				this.checklist.video = false;
-				this.errors.video = error;
+				this.errors.video = LabelPipe.transform('bhere_video_error', error);
 				setTimeout(() => {
 					this.checkRtc();
 				}, TIMEOUT);
 				this.pushChanges();
 			});
-			/*
-			AgoraRTC.getDevices((devices) => {
-				// console.log('checkVideo', devices);
-				const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
-				this.checklist.video = videoinput != null;
-				setTimeout(() => {
-					this.checkRtc();
-				}, TIMEOUT);
-				this.pushChanges();
-			}, (error) => {
-				this.checklist.video = false;
-				this.errors.video = error;
-				setTimeout(() => {
-					this.checkRtc();
-				}, TIMEOUT);
-				this.pushChanges();
-			});
-			*/
+		} else {
+			this.checkRtc();
 		}
 	}
 
 	checkRtc(skip) {
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.rtc = false;
+			this.errors.rtc = LabelPipe.transform('bhere_rtc_error');
+		} else if (skip) {
 			this.checklist.rtc = false;
 		} else {
 			AgoraService.checkRtcConnection().then(uid => {
@@ -172,7 +165,7 @@ export default class AgoraChecklistComponent extends Component {
 				}, TIMEOUT);
 			}).catch((error) => {
 				this.checklist.rtc = false;
-				this.errors.rtc = error;
+				this.errors.rtc = LabelPipe.transform('bhere_rtc_error', error);
 				this.checkRtm(true);
 				this.pushChanges();
 			});
@@ -180,7 +173,10 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	checkRtm(skip, uid) {
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.rtm = false;
+			this.errors.rtm = LabelPipe.transform('bhere_rtm_error');
+		} else if (skip) {
 			this.checklist.rtm = false;
 			this.onComplete();
 		} else {
@@ -188,7 +184,7 @@ export default class AgoraChecklistComponent extends Component {
 				this.checklist.rtm = true;
 			}).catch((error) => {
 				this.checklist.rtm = false;
-				this.errors.rtm = error;
+				this.errors.rtm = LabelPipe.transform('bhere_rtm_error', error);
 			}).finally(() => {
 				this.onComplete();
 			});
@@ -218,6 +214,12 @@ export default class AgoraChecklistComponent extends Component {
 
 	openHttps() {
 		window.location.href = window.location.href.replace('http://', 'https://').replace(':5000', ':6443');
+	}
+
+	showFirewallConfiguration() {
+		ModalService.open$({ src: environment.template.modal.configureFirewall }).pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe();
 	}
 }
 

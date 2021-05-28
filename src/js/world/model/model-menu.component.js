@@ -8,6 +8,7 @@ import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
 import MessageService from '../../message/message.service';
 import StateService from '../../state/state.service';
+import { RoleType } from '../../user/user';
 import { Host } from '../host/host';
 // import DebugService from '../debug.service';
 import Interactive from '../interactive/interactive';
@@ -243,6 +244,14 @@ export default class ModelMenuComponent extends ModelComponent {
 
 	get controlling() {
 		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
+	}
+
+	get silencing() {
+		return StateService.state.silencing;
+	}
+
+	get silenced() {
+		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
 	}
 
 	get spyed() {

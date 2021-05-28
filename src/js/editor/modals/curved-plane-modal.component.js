@@ -82,10 +82,9 @@ export default class CurvedPlaneModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 CurvedPlaneModalComponent.meta = {

@@ -66,10 +66,9 @@ export default class Room3DModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 Room3DModalComponent.meta = {

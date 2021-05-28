@@ -27,7 +27,7 @@
 		</form>
 	</div>
 	<div class="group--close">
-		<button type="button" class="btn--close" (click)="onClose($event)">
+		<button type="button" class="btn--close" [title]="'title_close' | label" (click)="onClose($event)">
 			<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
 		</button>
 	</div>

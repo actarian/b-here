@@ -122,10 +122,9 @@ export default class NavModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 NavModalComponent.meta = {
