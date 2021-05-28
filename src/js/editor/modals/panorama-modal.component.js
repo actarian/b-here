@@ -131,10 +131,9 @@ export default class PanoramaModalComponent extends Component {
 			*/
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 PanoramaModalComponent.meta = {

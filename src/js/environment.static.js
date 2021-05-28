@@ -53,6 +53,7 @@ export const environmentStatic = {
 	template: {
 		tryInAr: '/try-in-ar.html?viewId=$viewId',
 		modal: {
+			configureFirewall: '/configure-firewall-modal.html',
 			controlRequest: '/control-request-modal.html',
 			tryInAr: '/try-in-ar-modal.html',
 			view: {

@@ -65,10 +65,9 @@ export default class PanoramaGridModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 PanoramaGridModalComponent.meta = {

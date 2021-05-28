@@ -4,6 +4,7 @@ import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
 import StateService from '../../state/state.service';
+import { RoleType } from '../../user/user';
 import { ViewType } from '../../view/view';
 import ViewService from '../../view/view.service';
 
@@ -74,6 +75,14 @@ export default class OrbitService {
 
 	get controlling() {
 		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
+	}
+
+	get silencing() {
+		return StateService.state.silencing;
+	}
+
+	get silenced() {
+		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
 	}
 
 	get spyed() {

@@ -1,9 +1,9 @@
 <!-- media -->
 <div class="group--media" media-player>
-	<button type="button" class="btn--play" (click)="onPlay()" *if="!playing">
+	<button type="button" class="btn--play" [title]="'title_play' | label" (click)="onPlay()" *if="!playing">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#play"></use></svg>
 	</button>
-	<button type="button" class="btn--pause" (click)="onPause()" *if="playing">
+	<button type="button" class="btn--pause" [title]="'title_pause' | label" (click)="onPause()" *if="playing">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pause"></use></svg>
 	</button>
 	<div class="track" (click)="onTrack($event)">

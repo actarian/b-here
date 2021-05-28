@@ -5,6 +5,7 @@ import AccessComponent from './access/access.component';
 import AgoraChatComponent from './agora/agora-chat.component';
 import AgoraCheckComponent from './agora/agora-check.component';
 import AgoraChecklistComponent from './agora/agora-checklist.component';
+import AgoraConfigureFirewallModalComponent from './agora/agora-configure-firewall-modal.component';
 import AgoraDevicePreviewComponent from './agora/agora-device-preview.component';
 import AgoraDeviceComponent from './agora/agora-device.component';
 import AgoraLinkComponent from './agora/agora-link.component';
@@ -89,6 +90,7 @@ AppModule.meta = {
 		AgoraCheckComponent,
 		AgoraChecklistComponent,
 		AgoraComponent,
+		AgoraConfigureFirewallModalComponent,
 		AgoraDeviceComponent,
 		AgoraDevicePreviewComponent,
 		AgoraLinkComponent,

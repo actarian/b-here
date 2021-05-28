@@ -29,9 +29,9 @@ window.labels = Object.assign(window.labels, {});
 					<li class="checklist__item check" *if="shouldCheckDevices"><span>Video</span> <span agora-check [value]="checklist.video"></span></li>
 					<li class="checklist__item error" *if="errors.video"><span [innerHTML]="errors.video"></span></li>
 					<li class="checklist__item check"><span>Realtime Communication</span> <span agora-check [value]="checklist.rtc"></span></li>
-					<li class="checklist__item error" *if="errors.rtc"><span [innerHTML]="errors.rtc"></span></li>
+					<li class="checklist__item error" *if="errors.rtc" (click)="showFirewallConfiguration()"><span [innerHTML]="errors.rtc"></span></li>
 					<li class="checklist__item check"><span>Realtime Messaging</span> <span agora-check [value]="checklist.rtm"></span></li>
-					<li class="checklist__item error" *if="errors.rtm"><span [innerHTML]="errors.rtm"></span></li>
+					<li class="checklist__item error" *if="errors.rtm" (click)="showFirewallConfiguration()"><span [innerHTML]="errors.rtm"></span></li>
 				</ul>
 				<button type="submit" class="btn--next" [class]="{ disabled: !checklist.success, ready: checklist.success }" (click)="onNext()">
 					<span [innerHTML]="'bhere_proceed' | label"></span>
@@ -179,10 +179,10 @@ window.labels = Object.assign(window.labels, {});
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id">name</div>
-					<button type="button" class="btn--control" (click)="onToggleControl(remote.id)" *if="state.role === 'publisher'">
+					<button type="button" class="btn--control" [title]="'title_control' | label" (click)="onToggleControl(remote.id)" *if="state.role === 'publisher'">
 						<svg class="control" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
 					</button>
-					<button type="button" class="btn--spy" (click)="onToggleSpy(remote.id)" *if="state.role === 'publisher'">
+					<button type="button" class="btn--spy" [title]="'title_spy' | label" (click)="onToggleSpy(remote.id)" *if="state.role === 'publisher'">
 						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 					</button>
 				</div>
@@ -208,26 +208,28 @@ window.labels = Object.assign(window.labels, {});
 				</div>
 			</div>
 		</div>
-		<!-- header -->
 		<div class="group--header">
 			<!-- service -->
 			<div class="group--service">
-				<button type="button" class="btn--view-mode" (click)="toggleMode($event)">
+				<button type="button" class="btn--view-mode" [title]="'title_view_mode' | label" (click)="toggleMode($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 				</button>
-				<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 				</button>
-				<button type="button" class="btn--fullscreen" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
+				<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
 				</button>
 			</div>
 			<!-- local streams -->
 			<div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
-				<button type="button" class="btn--control" [class]="{ active: state.controlling == state.uid }" (click)="onToggleControl(state.uid)" *if="state.role == 'publisher'">
+				<button type="button" class="btn--silence" [title]="'title_silence' | label" [class]="{ active: state.silencing }" (click)="onToggleSilence()" *if="state.role === 'publisher'">
+					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+				</button>
+				<button type="button" class="btn--control" [title]="'title_control' | label" [class]="{ active: state.controlling == state.uid }" (click)="onToggleControl(state.uid)" *if="state.role == 'publisher'">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
 				</button>
 				<div class="agora-stream" *if="!local"></div>
@@ -243,60 +245,11 @@ window.labels = Object.assign(window.labels, {});
 				</div>
 			</div>
 		</div>
-		<!-- footer -->
 		<div class="group--footer">
-			<!-- controls -->
-			<div class="group--controls" *if="state.live">
-				<div class="group--actions">
-					<button type="button" class="btn--call" (click)="disconnect()">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
-					</button>
-					<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
-					</button>
-					<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
-					</button>
-					<button type="button" class="btn--screen" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
-					</button>
-					<button type="button" class="btn--chat" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#chat"></use></svg>
-					</button>
-					<button type="button" class="btn--navinfo" [class]="{ active: state.showNavInfo }" (click)="toggleNavInfo()" *if="('hideNavInfo' | flag)">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navinfo"></use></svg>
-					</button>
-				</div>
-			</div>
-			<!-- media -->
-			<div class="group--media" media-player>
-				<button type="button" class="btn--play" (click)="play($event)" *if="!playing">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#play"></use></svg>
-				</button>
-				<button type="button" class="btn--pause" (click)="pause($event)" *if="playing">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pause"></use></svg>
-				</button>
-				<div class="track">
-					<div class="track__progress" [style]="{ transform: 'scale(' + this.progress + ', 1)'}"></div>
-				</div>
-			</div>
-			<!-- ar-vr -->
-			<div class="group--ar-vr">
-				<button type="button" class="btn--ar">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
-				</button>
-				<button type="button" class="btn--vr">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span>EnterVR</span>
-				</button>
-			</div>
-			<!-- like -->
-			<div class="group--heart" *if="'like' | flag">
-				<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-				<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
-					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-					<span class="badge" [innerHTML]="view?.likes"></span>
-				</button>
-			</div>
+			<!-- @@include ./templates/components/controls.html -->
+			<!-- @@include ./templates/components/media.html -->
+			<!-- @@include ./templates/components/ar-vr.html -->
+			<!-- @@include ./templates/components/like.html -->
 		</div>
 		<!-- members -->
 		<div class="group--members" *if="state.mode == 'live-meeting'">
@@ -310,50 +263,8 @@ window.labels = Object.assign(window.labels, {});
 				</a>
 			</div>
 		</div>
-		<!-- chat -->
-		<div class="group--chat" *if="state.chat" [agora-chat] [demo]="true" (close)="onChatClose()">
-			<div class="group--scrollview">
-				<!--
-				<div class="listing--messages">
-					<div class="listing__item message" [class]="{ me: message.me }" *for="let message of messages">
-						<div class="message__avatar"><span [innerHTML]="message.shortName"></span></div>
-						<div class="message__content" [innerHTML]="message.message"></div>
-					</div>
-				</div>
-				-->
-				<div class="group--virtual" *virtual="let item of groupedMessages" [mode]="4" [width]="350" [gutter]="0" [reverse]="true">
-					<!-- serve un nodo figlio -->
-					<div class="listing__item message" [class]="{ me: item.me, typing: item.typing }">
-						<div class="message__avatar" [title]="item.name"><span [innerHTML]="item.shortName"></span></div>
-						<div class="message__content">
-							<div [innerHTML]="item.message"></div>
-							<div class="typing-indicator">
-								<span></span>
-								<span></span>
-								<span></span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="group--message">
-				<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit($event)" name="form" role="form" novalidate autocomplete="off">
-					<div class="group--form group--form--addon" [class]="{ required: controls.message.validators.length, 'addon': controls.message.valid }">
-						<input type="text" class="control--text" [formControl]="controls.message" [placeholder]="'bhere_write_a_message' | label" />
-						<button type="submit" class="control--addon">
-							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#send"></use></svg>
-						</button>
-					</div>
-				</form>
-			</div>
-			<div class="group--close">
-				<button type="button" class="btn--close" (click)="onClose($event)">
-					<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
-				</button>
-			</div>
-		</div>
-		<!-- lock -->
-		<div class="ui__lock" [class]="{ spying: spying }" *if="locked || controlling"></div>
+		<!-- @@include ./templates/components/chat.html -->
+		<!-- @@include ./templates/components/lock.html -->
 	</div>
 	<!-- Smart Device -->
 	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
@@ -368,7 +279,7 @@ window.labels = Object.assign(window.labels, {});
 					<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 					<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 					<div class="id">name</div>
-					<button type="button" class="btn--spy" *if="state.role === 'publisher'" (click)="onToggleSpy(remote.id)">
+					<button type="button" class="btn--spy" [title]="'title_spy' | label" *if="state.role === 'publisher'" (click)="onToggleSpy(remote.id)">
 						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 					</button>
 				</div>
@@ -396,13 +307,13 @@ window.labels = Object.assign(window.labels, {});
 		<!-- controls -->
 		<div class="group--controls" *if="state.live">
 			<div class="group--actions">
-				<button type="button" class="btn--call" (click)="disconnect()">
+				<button type="button" class="btn--call" [title]="'title_disconnect' | label" (click)="disconnect()">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
 				</button>
-				<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
+				<button type="button" class="btn--cam" [title]="'title_mute_camera' | label" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
 				</button>
-				<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
+				<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 				</button>
 			</div>
@@ -428,32 +339,17 @@ window.labels = Object.assign(window.labels, {});
 		</div>
 		<!-- service -->
 		<div class="group--service">
-			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+			<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 			</button>
-			<button type="button" class="btn--fullscreen" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
+			<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
 			</button>
 		</div>
-		<!-- ar-vr -->
-		<div class="group--ar-vr">
-			<button type="button" class="btn--ar">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
-			</button>
-			<button type="button" class="btn--vr">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span>EnterVR</span>
-			</button>
-		</div>
-		<!-- like -->
-		<div class="group--heart" *if="'like' | flag">
-			<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-			<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-				<span class="badge" [innerHTML]="view?.likes"></span>
-			</button>
-		</div>
+		<!-- @@include ./templates/components/ar-vr.html -->
+		<!-- @@include ./templates/components/like.html -->
 	</div>
 	<!-- Embed -->
 	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'embed'">
@@ -463,32 +359,17 @@ window.labels = Object.assign(window.labels, {});
 		</div>
 		<!-- service -->
 		<div class="group--service">
-			<button type="button" class="btn--volume" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+			<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 			</button>
-			<button type="button" class="btn--fullscreen" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
+			<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 				<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
 			</button>
 		</div>
-		<!-- ar-vr -->
-		<div class="group--ar-vr">
-			<button type="button" class="btn--ar">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
-			</button>
-			<button type="button" class="btn--vr">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span>EnterVR</span>
-			</button>
-		</div>
-		<!-- like -->
-		<div class="group--heart" *if="'like' | flag">
-			<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-			<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-				<span class="badge" [innerHTML]="view?.likes"></span>
-			</button>
-		</div>
+		<!-- @@include ./templates/components/ar-vr.html -->
+		<!-- @@include ./templates/components/like.html -->
 	</div>
 	<a class="btn--logo" [href]="'index' | slug" *if="state.status != 'connected'">
 		<img [src]="'logo' | env" *if="'logo' | env" />

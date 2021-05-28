@@ -1,8 +1,9 @@
 <!-- like -->
-<div class="group--heart" *if="'like' | flag">
-	<svg class="love" [class]="{ active: view?.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-	<button type="button" class="btn--heart" [class]="{ active: view?.showLove }" (click)="addLike($event)">
+<div class="group--heart" *if="view && ('like' | flag)">
+	<svg class="love" [class]="{ active: view.showLove }" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
+	<button type="button" class="btn--heart" [class]="{ active: view.showLove }" (click)="addLike($event)">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#heart"></use></svg>
-		<span class="badge" [innerHTML]="view?.likes"></span>
+		<span class="badge" [innerHTML]="view.likes" *if="view.likes"></span>
 	</button>
 </div>
+<div class="group--spacer" *if="!view || !('like' | flag)"></div>

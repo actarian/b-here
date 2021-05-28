@@ -79,6 +79,14 @@ export default class WorldComponent extends Component {
 		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
 	}
 
+	get silencing() {
+		return StateService.state.silencing;
+	}
+
+	get silenced() {
+		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
+	}
+
 	get spyed() {
 		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
 	}

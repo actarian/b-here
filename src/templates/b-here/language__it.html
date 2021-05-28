@@ -51,9 +51,97 @@ window.labels = {
 	bhere_checklist_busy: 'Verifica sistema',
 	bhere_checklist_success: 'Verifica completata',
 	bhere_checklist_error: 'Verifica fallita',
-	bhere_browser_error: 'clicca qui per aggiornare il browser',
-	bhere_https_error: 'clicca qui per ricaricare la pagina in https',
+	bhere_browser_error: '<b>Il browser in uso non è supportato.</b><br/> Ottieni una versione aggiornata del browser cliccando qui.',
+	bhere_https_error: '<b>Stai navigando una versione del sito non sicura.</b><br/> Clicca qui per ricaricare la pagina.',
+	bhere_audio_error: '<b>Impossibile accedere al dispositivo audio.</b><br/> Verifica che il microfono sia connesso, di aver autorizzato il browser ad accedervi e che il dispositivo audio non sia al momento utilizzato da altre applicazioni.',
+	bhere_video_error: '<b>Impossibile accedere al dispositivo video.</b><br/> Verifica che la camera sia connessa, di aver autorizzato il browser ad accedervi e che il dispositivo video non sia al momento utilizzato da altre applicazioni.',
+	bhere_rtc_error: '<b>Impossibile accedere ai servizi audio e video.</b><br/> Potrebbe essere causato da regole molto stringenti della tua connessione ad Internet. <br/>Consigliamo di verificare che le porte di destinazione siano accessibili dalla rete in uso. Cicca qui per maggiori informazioni.',
+	bhere_rtm_error: '<b>Impossibile accedere ai servizi di messaggistica real-time.</b><br/> Potrebbe essere causato da regole molto stringenti della tua connessione ad Internet. <br/>Consigliamo di verificare che le porte di destinazione siano accessibili dalla rete in uso. Cicca qui per maggiori informazioni.',
 	bhere_write_a_message: 'Scrivi...',
+	bhere_configure_firewall: /* html */ `
+	<div class="title">Audio e Video Realtime</div>
+			<div class="abstract">
+				<p>Aggiungi i seguenti domini di destinazione e le porte corrispondenti alla whitelist del firewall.</p>
+			</div>
+			<div class="subtitle">Domini</div>
+			<pre class="pre">
+				<code>
+<span>.agora</span><span>.io</span>
+<span>.edge</span><span>.agora</span><span>.io</span>
+<span>.sd-rtn</span><span>.com</span>
+<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+				</code>
+			</pre>
+			<div class="subtitle">Porte</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tipologia</th>
+						<th>Porte di destinazione</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>TCP</td>
+						<td>80, 443, 3433, 4700-5000, 5668, 5669, 6080, 6443, 8667, 9667, 30011-30013</td>
+					</tr>
+					<tr>
+						<td>UDP</td>
+						<td>3478, 4700-5000</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="title">Messaggistica Realtime</div>
+			<div class="abstract">
+				<p>Aggiungi i seguenti domini di destinazione e le porte corrispondenti alla whitelist del firewall.</p>
+			</div>
+			<div class="subtitle">Domini</div>
+			<pre class="pre">
+				<code>
+<span>.edge</span><span>.agora</span><span>.io</span>
+<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+<span>web-1</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+<span>web-2</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+<span>ap-web-1</span><span>.agora</span><span>.io</span>
+<span>ap-web-2</span><span>.agora</span><span>.io</span>
+<span>webcollector-rtm</span><span>.agora</span><span>.io</span>
+<span>logservice-rtm</span><span>.agora</span><span>.io</span>
+<span>rtm</span><span>.statscollector</span><span>.sd-rtn</span><span>.com</span>
+<span>rtm</span><span>.logservice</span><span>.sd-rtn</span><span>.com</span>
+				</code>
+			</pre>
+			<div class="subtitle">Porte</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Tipologia</th>
+						<th>Porte di destinazione</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>TCP</td>
+						<td>443, 6443, 9591, 9593, 9601</td>
+					</tr>
+				</tbody>
+			</table>`,
+	title_disconnect: 'Disconnetti',
+	title_mute_camera: 'Silenzia camera',
+	title_mute_mic: 'Silenzia microfono',
+	title_share_screen: 'Condividi schermo',
+	title_chat: 'Chat',
+	title_navinfo: 'Mostra info',
+	title_control: 'Controllo remoto',
+	title_spy: 'Spia',
+	title_silence: 'Silenzia partecipanti',
+	title_view_mode: 'Cambia modalità',
+	title_volume: 'Volume',
+	title_fullscreen: 'Fullscreen',
+	title_ar: 'Realtà Aumentata',
+	title_vr: 'Entra in VR',
+	title_close: 'Chiudi',
+	title_play: 'Play',
+	title_pause: 'Pausa',
 };
 
 </script>

@@ -31,9 +31,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 					<li class="checklist__item check" *if="shouldCheckDevices"><span>Video</span> <span agora-check [value]="checklist.video"></span></li>
 					<li class="checklist__item error" *if="errors.video"><span [innerHTML]="errors.video"></span></li>
 					<li class="checklist__item check"><span>Realtime Communication</span> <span agora-check [value]="checklist.rtc"></span></li>
-					<li class="checklist__item error" *if="errors.rtc"><span [innerHTML]="errors.rtc"></span></li>
+					<li class="checklist__item error" *if="errors.rtc"><a class="btn--link" (click)="showFirewallConfiguration()" [innerHTML]="errors.rtc"></a></li>
 					<li class="checklist__item check"><span>Realtime Messaging</span> <span agora-check [value]="checklist.rtm"></span></li>
-					<li class="checklist__item error" *if="errors.rtm"><span [innerHTML]="errors.rtm"></span></li>
+					<li class="checklist__item error" *if="errors.rtm"><a class="btn--link" (click)="showFirewallConfiguration()" [innerHTML]="errors.rtm"></a></li>
 				</ul>
 				<button type="submit" class="btn--next" [class]="{ disabled: !checklist.success, ready: checklist.success }" (click)="onNext()">
 					<span [innerHTML]="'bhere_proceed' | label"></span>
@@ -255,13 +255,13 @@ window.bhere = Object.assign((window.bhere || {}), {
 			<!-- controls -->
 			<div class="group--controls" *if="state.live">
 				<div class="group--actions">
-					<button type="button" class="btn--call" (click)="disconnect()">
+					<button type="button" class="btn--call" [title]="'title_disconnect' | label" (click)="disconnect()">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
 					</button>
-					<button type="button" class="btn--cam" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
+					<button type="button" class="btn--cam" [title]="'title_mute_camera' | label" [class]="{ muted: state.cameraMuted, disabled: !local }" (click)="toggleCamera()">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam"></use></svg>
 					</button>
-					<button type="button" class="btn--mic" [class]="{ muted: state.audioMuted, disabled: !local }" (click)="toggleAudio()">
+					<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 					</button>
 				</div>

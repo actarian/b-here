@@ -30,10 +30,9 @@ export default class RemoveModalComponent extends Component {
 		ModalService.reject();
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 RemoveModalComponent.meta = {

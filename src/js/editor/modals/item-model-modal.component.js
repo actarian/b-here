@@ -80,10 +80,9 @@ export default class ItemModelModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 ItemModelModalComponent.meta = {

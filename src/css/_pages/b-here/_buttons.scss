@@ -101,7 +101,6 @@
 }
 
 .btn--navinfo {
-	margin: 5px;
 
 	svg {
 		width: 24px;
@@ -184,7 +183,6 @@
 	&:focus,
 	&:visited {
 		background: transparent;
-		// border-color: rgba(255, 255, 255, 0.2);
 		color: $foreground-negative;
 	}
 
@@ -222,7 +220,6 @@
 	&:focus,
 	&:visited {
 		background: transparent;
-		// border-color: rgba(255, 255, 255, 0.2);
 		color: $foreground-negative;
 	}
 
@@ -250,18 +247,6 @@
 		fill: currentColor;
 	}
 
-	/*
-	@extend %btn-circle;
-	margin-left: 10px;
-	border: 2px solid transparent;
-
-	svg {
-		width: 28px;
-		height: 28px;
-		fill: currentColor;
-	}
-	*/
-
 	&,
 	&:active,
 	&:hover,
@@ -272,17 +257,50 @@
 		color: $foreground-negative;
 	}
 
-	/*
+	&:hover {
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-secondary;
+		opacity: 1;
+	}
+
+	&.active {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			background: transparent;
+			border-color: $foreground-secondary;
+			color: $foreground-secondary;
+		}
+	}
+}
+
+.btn--silence {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out $fastest;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
 	&,
 	&:active,
-	&:focus,
 	&:hover,
+	&:focus,
 	&:visited {
-		border-color: $black-20;
-		background: $background-primary;
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
 		color: $foreground-negative;
 	}
-	*/
 
 	&:hover {
 		background: transparent;

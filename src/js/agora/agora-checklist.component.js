@@ -1,13 +1,16 @@
 import { Component } from 'rxcomp';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { DeviceService } from '../device/device.service';
+import { environment } from '../environment';
 import LabelPipe from '../label/label.pipe';
 import LocalStorageService from '../local-storage/local-storage.service';
+import ModalService from '../modal/modal.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 import AgoraService from './agora.service';
 
 const TIMEOUT = 100;
+const SHOW_ERROR = false;
 
 export default class AgoraChecklistComponent extends Component {
 
@@ -37,7 +40,15 @@ export default class AgoraChecklistComponent extends Component {
 	checkBrowser() {
 		const browser = AgoraRTC.checkSystemRequirements();
 		this.checklist.browser = browser;
-		if (browser) {
+		if (SHOW_ERROR) {
+			this.checklist.browser = false;
+			this.errors.browser = LabelPipe.transform('bhere_browser_error');
+			this.checkHttps();
+			this.checkAudio();
+			this.checkVideo();
+			this.checkRtc();
+			this.checkRtm();
+		} else if (browser) {
 			setTimeout(() => {
 				this.checkHttps();
 			}, TIMEOUT);
@@ -55,7 +66,10 @@ export default class AgoraChecklistComponent extends Component {
 	checkHttps(skip) {
 		const https = window.location.protocol === 'https:';
 		this.checklist.https = https;
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.https = false;
+			this.errors.https = LabelPipe.transform('bhere_https_error');
+		} else if (skip) {
 			if (!https) {
 				this.errors.https = LabelPipe.transform('bhere_https_error');
 			}
@@ -79,7 +93,10 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	checkAudio(skip) {
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.audio = false;
+			this.errors.audio = LabelPipe.transform('bhere_audio_error');
+		} else if (skip) {
 			this.checklist.audio = false;
 		} else {
 			AgoraService.getDevices().then((devices) => {
@@ -92,7 +109,7 @@ export default class AgoraChecklistComponent extends Component {
 				}, TIMEOUT);
 			}).catch((error) => {
 				this.checklist.audio = false;
-				this.errors.audio = error;
+				this.errors.audio = LabelPipe.transform('bhere_audio_error', error);
 				this.pushChanges();
 				setTimeout(() => {
 					this.checkVideo();
@@ -120,7 +137,10 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	checkVideo(skip) {
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.video = false;
+			this.errors.video = LabelPipe.transform('bhere_video_error');
+		} else if (skip) {
 			this.checklist.video = false;
 		} else {
 			AgoraService.getDevices().then((devices) => {
@@ -133,7 +153,7 @@ export default class AgoraChecklistComponent extends Component {
 				this.pushChanges();
 			}).catch((error) => {
 				this.checklist.video = false;
-				this.errors.video = error;
+				this.errors.video = LabelPipe.transform('bhere_video_error', error);
 				setTimeout(() => {
 					this.checkRtc();
 				}, TIMEOUT);
@@ -161,7 +181,10 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	checkRtc(skip) {
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.rtc = false;
+			this.errors.rtc = LabelPipe.transform('bhere_rtc_error');
+		} else if (skip) {
 			this.checklist.rtc = false;
 		} else {
 			AgoraService.checkRtcConnection().then(uid => {
@@ -172,7 +195,7 @@ export default class AgoraChecklistComponent extends Component {
 				}, TIMEOUT);
 			}).catch((error) => {
 				this.checklist.rtc = false;
-				this.errors.rtc = error;
+				this.errors.rtc = LabelPipe.transform('bhere_rtc_error', error);
 				this.checkRtm(true);
 				this.pushChanges();
 			});
@@ -180,7 +203,10 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	checkRtm(skip, uid) {
-		if (skip) {
+		if (SHOW_ERROR) {
+			this.checklist.rtm = false;
+			this.errors.rtm = LabelPipe.transform('bhere_rtm_error');
+		} else if (skip) {
 			this.checklist.rtm = false;
 			this.onComplete();
 		} else {
@@ -188,7 +214,7 @@ export default class AgoraChecklistComponent extends Component {
 				this.checklist.rtm = true;
 			}).catch((error) => {
 				this.checklist.rtm = false;
-				this.errors.rtm = error;
+				this.errors.rtm = LabelPipe.transform('bhere_rtm_error', error);
 			}).finally(() => {
 				this.onComplete();
 			});
@@ -218,6 +244,12 @@ export default class AgoraChecklistComponent extends Component {
 
 	openHttps() {
 		window.location.href = window.location.href.replace('http://', 'https://').replace(':5000', ':6443');
+	}
+
+	showFirewallConfiguration() {
+		ModalService.open$({ src: environment.template.modal.configureFirewall }).pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe();
 	}
 }
 

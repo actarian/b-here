@@ -68,6 +68,7 @@ export default class EditorComponent extends Component {
 			connected: true,
 			controlling: false,
 			spying: false,
+			silencing: false,
 			hosted: true,
 			live: false,
 			navigable: true,

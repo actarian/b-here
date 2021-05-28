@@ -1,6 +1,9 @@
 <!-- local streams -->
 <div class="group--local" [class]="{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }" *if="state.live">
-	<button type="button" class="btn--control" [class]="{ active: state.controlling == state.uid }" (click)="onToggleControl(state.uid)" *if="state.role == 'publisher'">
+	<button type="button" class="btn--silence" [title]="'title_silence' | label" [class]="{ active: state.silencing }" (click)="onToggleSilence()" *if="state.role === 'publisher'">
+		<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
+	</button>
+	<button type="button" class="btn--control" [title]="'title_control' | label" [class]="{ active: state.controlling == state.uid }" (click)="onToggleControl(state.uid)" *if="state.role == 'publisher'">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
 	</button>
 	<div class="agora-stream" *if="!local"></div>
