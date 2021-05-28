@@ -192,7 +192,7 @@ export default class AgoraComponent extends Component {
 		}
 		const mode = UserService.getMode(role);
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
-		const checklist = LocalStorageService.get('checklist') || (LocationService.get('skip-checklist') != null) || null;
+		const checklist = LocalStorageService.get('checklist') || null;
 		const hosted = role === RoleType.Publisher ? true : false;
 		const live = (role === RoleType.SelfService || role === RoleType.Embed || DEBUG) ? false : true;
 		const navigable = this.isNavigable;

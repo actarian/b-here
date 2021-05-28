@@ -4773,7 +4773,7 @@ var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
       }
 
       if (_this.platform === DevicePlatform.VRHeadset) {
-        _this.shouldCheckAudio = false;
+        _this.shouldCheckAudio = true;
         _this.shouldCheckVideo = false;
       }
 
@@ -7938,7 +7938,7 @@ var VRService = /*#__PURE__*/function () {
 
     var mode = UserService.getMode(role);
     var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null);
-    var checklist = LocalStorageService.get('checklist') || LocationService.get('skip-checklist') != null || null;
+    var checklist = LocalStorageService.get('checklist') || null;
     var hosted = role === RoleType.Publisher ? true : false;
     var live = role === RoleType.SelfService || role === RoleType.Embed || DEBUG ? false : true;
     var navigable = this.isNavigable;
