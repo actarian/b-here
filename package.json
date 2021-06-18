@@ -14,29 +14,32 @@
   "main": "server/main.js",
   "scripts": {
     "start": "node server/main.js",
-    "serve": "node server/main.js"
+    "serve": "node server/main.js",
+    "test": "node test/selenium-test.js",
+    "run": "gulp build --target vendors && gulp build && npm run serve"
   },
   "dependencies": {
     "agora-access-token": "2.0.4",
-    "agora-rtc-sdk": "3.3.1",
-    "agora-rtm-sdk": "1.4.1",
+    "agora-rtc-sdk": "3.5.2",
+    "agora-rtm-sdk": "1.4.2",
     "body-parser": "1.19.0",
     "connect-multiparty": "2.2.0",
     "events": "3.2.0",
-    "express-session": "1.17.1",
     "express": "4.17.1",
-    "gsap": "3.5.1",
+    "express-session": "1.17.1",
+    "gsap": "3.6.1",
     "hls.js": "0.14.12",
     "html2canvas": "1.0.0-rc.7",
     "https": "1.0.0",
     "mv": "2.1.1",
     "qrious": "4.0.2",
-    "rxcomp-form": "1.0.0-beta.18",
     "rxcomp": "1.0.0-beta.20",
+    "rxcomp-form": "1.0.0-beta.18",
     "rxjs": "6.6.2",
-    "three": "0.117.1"
+    "three": "0.128.0"
   },
   "devDependencies": {
-    "gulpfile-config": "1.0.0-alpha.14"
+    "gulpfile-config": "1.0.0-alpha.14",
+    "selenium-webdriver": "4.0.0-beta.1"
   }
 }

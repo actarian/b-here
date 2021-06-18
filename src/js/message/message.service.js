@@ -1,4 +1,4 @@
-import { ReplaySubject } from "rxjs";
+import { ReplaySubject } from 'rxjs';
 
 export default class MessageService {
 	static message$ = new ReplaySubject(1);
@@ -8,6 +8,7 @@ export default class MessageService {
 
 	static in$ = new ReplaySubject(1);
 	static in(message) {
+		// console.log('MessageService.in', message);
 		this.in$.next(message);
 	}
 	static send = MessageService.in;

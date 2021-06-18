@@ -1,75 +1,243 @@
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
+// import * as THREE from 'three';
 import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
+import { Host } from '../host/host';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent } from './media-loader';
+import { Texture } from '../texture/texture';
+import MediaLoader, { MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent } from './media-loader';
+import MediaPlayMesh from './media-play-mesh';
+import MediaZoomMesh from './media-zoom-mesh';
 
 const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
+varying vec2 vUvShader;
 
-varying vec2 vUv;
+#include <common>
+#include <uv_pars_vertex>
+#include <uv2_pars_vertex>
+#include <envmap_pars_vertex>
+#include <color_pars_vertex>
+#include <fog_pars_vertex>
+#include <morphtarget_pars_vertex>
+#include <skinning_pars_vertex>
+#include <logdepthbuf_pars_vertex>
+#include <clipping_planes_pars_vertex>
+
 void main() {
-	vUv = uv;
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+	vUvShader = uv;
+
+	#include <uv_vertex>
+	#include <uv2_vertex>
+	#include <color_vertex>
+	#include <skinbase_vertex>
+	#ifdef USE_ENVMAP
+	#include <beginnormal_vertex>
+	#include <morphnormal_vertex>
+	#include <skinnormal_vertex>
+	#include <defaultnormal_vertex>
+	#endif
+	#include <begin_vertex>
+	#include <morphtarget_vertex>
+	#include <skinning_vertex>
+	#include <project_vertex>
+	#include <logdepthbuf_vertex>
+	#include <worldpos_vertex>
+	#include <clipping_planes_vertex>
+	#include <envmap_vertex>
+	#include <fog_vertex>
 }
 `;
 
 const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
+#define USE_MAP
 
-varying vec2 vUv;
-uniform bool video;
+varying vec2 vUvShader;
+uniform vec3 diffuse;
 uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-uniform vec3 overlayColor;
+
+#ifndef FLAT_SHADED
+	varying vec3 vNormal;
+#endif
+
+#include <common>
+#include <dithering_pars_fragment>
+#include <color_pars_fragment>
+#include <uv_pars_fragment>
+#include <uv2_pars_fragment>
+#include <map_pars_fragment>
+#include <alphamap_pars_fragment>
+#include <aomap_pars_fragment>
+#include <lightmap_pars_fragment>
+#include <envmap_common_pars_fragment>
+#include <envmap_pars_fragment>
+#include <cube_uv_reflection_fragment>
+#include <fog_pars_fragment>
+#include <specularmap_pars_fragment>
+#include <logdepthbuf_pars_fragment>
+#include <clipping_planes_pars_fragment>
+
+// uniform sampler2D map;
+uniform sampler2D playMap;
+uniform vec2 mapResolution;
+uniform vec2 playMapResolution;
+uniform float mapTween;
+uniform float playMapTween;
+uniform vec3 playMapColor;
+uniform bool isVideo;
 
 void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
-	if (video) {
-		vec4 colorB = texture2D(textureB, vUv);
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
+	#include <clipping_planes_fragment>
+
+	vec4 diffuseColor = vec4(vec3(1.0), opacity);
+
+	#include <logdepthbuf_fragment>
+	#include <map_fragment>
+	#include <color_fragment>
+
+	// main
+	vec4 mapRgba = texture2D(map, vUvShader);
+	mapRgba = mapTexelToLinear(mapRgba);
+	if (isVideo) {
+		vec4 playMapRgba = texture2D(playMap, vUvShader);
+		playMapRgba = mapTexelToLinear(playMapRgba);
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity);
 	} else {
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity);
 	}
-	gl_FragColor = color;
+
+	#include <alphamap_fragment>
+	#include <alphatest_fragment>
+	#include <specularmap_fragment>
+
+	ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
+
+	// accumulation (baked indirect lighting only)
+	#ifdef USE_LIGHTMAP
+		vec4 lightMapRgba = texture2D(lightMap, vUv2);
+		reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;
+	#else
+		reflectedLight.indirectDiffuse += vec3(1.0);
+	#endif
+
+	// modulation
+	#include <aomap_fragment>
+
+	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
+
+	vec3 outgoingLight = reflectedLight.indirectDiffuse;
+
+	#include <envmap_fragment>
+
+	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+
+	#include <tonemapping_fragment>
+	#include <encodings_fragment>
+	#include <fog_fragment>
+	#include <premultiplied_alpha_fragment>
+	#include <dithering_fragment>
 }
 `;
 
 const FRAGMENT_CHROMA_KEY_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
+#define USE_MAP
 #define threshold 0.55
 #define padding 0.05
 
-varying vec2 vUv;
-uniform bool video;
+varying vec2 vUvShader;
+uniform vec3 diffuse;
 uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
+
+#ifndef FLAT_SHADED
+	varying vec3 vNormal;
+#endif
+
+#include <common>
+#include <dithering_pars_fragment>
+#include <color_pars_fragment>
+#include <uv_pars_fragment>
+#include <uv2_pars_fragment>
+#include <map_pars_fragment>
+#include <alphamap_pars_fragment>
+#include <aomap_pars_fragment>
+#include <lightmap_pars_fragment>
+#include <envmap_common_pars_fragment>
+#include <envmap_pars_fragment>
+#include <cube_uv_reflection_fragment>
+#include <fog_pars_fragment>
+#include <specularmap_pars_fragment>
+#include <logdepthbuf_pars_fragment>
+#include <clipping_planes_pars_fragment>
+
+// uniform sampler2D map;
+uniform sampler2D playMap;
+uniform vec2 mapResolution;
+uniform vec2 playMapResolution;
+uniform float mapTween;
+uniform float playMapTween;
+uniform vec3 playMapColor;
 uniform vec3 chromaKeyColor;
-uniform vec3 overlayColor;
+uniform bool isVideo;
 
 void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
+	#include <clipping_planes_fragment>
+
+	vec4 diffuseColor = vec4(vec3(1.0), opacity);
+
+	#include <logdepthbuf_fragment>
+	#include <map_fragment>
+	#include <color_fragment>
+
+	// main
+	vec4 mapRgba = texture2D(map, vUvShader);
 	vec4 chromaKey = vec4(chromaKeyColor, 1.0);
-    vec3 chromaKeyDiff = colorA.rgb - chromaKey.rgb;
+    vec3 chromaKeyDiff = mapRgba.rgb - chromaKey.rgb;
     float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));
-	color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity * chromaKeyValue);
-	gl_FragColor = color;
+	mapRgba = mapTexelToLinear(mapRgba);
+	/*
+	if (isVideo) {
+		vec4 playMapRgba = texture2D(playMap, vUvShader);
+		playMapRgba = mapTexelToLinear(playMapRgba);
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity * chromaKeyValue);
+	} else {
+		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
+	}
+	*/
+	// diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
+	diffuseColor = vec4(mapRgba.rgb, opacity * chromaKeyValue);
+
+	#include <alphamap_fragment>
+	#include <alphatest_fragment>
+	#include <specularmap_fragment>
+
+	ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
+
+	// accumulation (baked indirect lighting only)
+	#ifdef USE_LIGHTMAP
+		vec4 lightMapRgba = texture2D(lightMap, vUv2);
+		reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;
+	#else
+		reflectedLight.indirectDiffuse += vec3(1.0);
+	#endif
+
+	// modulation
+	#include <aomap_fragment>
+
+	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
+
+	vec3 outgoingLight = reflectedLight.indirectDiffuse;
+
+	#include <envmap_fragment>
+
+	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
+
+	#include <tonemapping_fragment>
+	#include <encodings_fragment>
+	#include <fog_fragment>
+	#include <premultiplied_alpha_fragment>
+	#include <dithering_fragment>
 }
 `;
 
@@ -77,62 +245,76 @@ export default class MediaMesh extends InteractiveMesh {
 
 	static getMaterial(useChromaKey) {
 		const material = new THREE.ShaderMaterial({
-			depthTest: false,
-			depthWrite: false,
+			depthTest: true, // !!!
+			depthWrite: true,
 			transparent: true,
+			// side: THREE.DoubleSide,
+			// blending: THREE.AdditiveBlending,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: useChromaKey ? FRAGMENT_CHROMA_KEY_SHADER : FRAGMENT_SHADER,
 			uniforms: {
-				video: { value: false },
-				textureA: { type: "t", value: null },
-				textureB: { type: "t", value: null },
-				resolutionA: { value: new THREE.Vector2() },
-				resolutionB: { value: new THREE.Vector2() },
-				overlayColor: { value: new THREE.Color('#000000') },
-				overlay: { value: 0 },
-				tween: { value: 1 },
+				map: { type: 't', value: Texture.defaultTexture },
+				mapResolution: { value: new THREE.Vector2() },
+				mapTween: { value: 1 },
+				color: { value: new THREE.Color('#FFFFFF') },
+				playMap: { type: 't', value: Texture.defaultTexture },
+				playMapResolution: { value: new THREE.Vector2() },
+				playMapTween: { value: 0 },
+				playMapColor: { value: new THREE.Color('#000000') },
 				opacity: { value: 0 },
+				isVideo: { value: false },
 			},
-			// side: THREE.DoubleSide
+			extensions: {
+				fragDepth: true,
+			},
 		});
 		return material;
 	}
 
 	static getChromaKeyMaterial(chromaKeyColor = [0.0, 1.0, 0.0]) {
 		const material = new THREE.ShaderMaterial({
-			depthTest: false,
-			depthWrite: false,
+			depthTest: true, // !!!
+			depthWrite: true,
 			transparent: true,
+			// side: THREE.DoubleSide,
+			// blending: THREE.AdditiveBlending,
 			vertexShader: VERTEX_SHADER,
 			fragmentShader: FRAGMENT_CHROMA_KEY_SHADER,
 			uniforms: {
-				video: { value: false },
-				textureA: { type: "t", value: null },
-				textureB: { type: "t", value: null },
-				resolutionA: { value: new THREE.Vector2() },
-				resolutionB: { value: new THREE.Vector2() },
-				chromaKeyColor: { value: new THREE.Vector3(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2]) },
-				overlayColor: { value: new THREE.Color('#000000') },
-				overlay: { value: 0 },
-				tween: { value: 1 },
+				map: { type: 't', value: null }, // Texture.defaultTexture
+				mapResolution: { value: new THREE.Vector2() },
+				mapTween: { value: 1 },
+				color: { value: new THREE.Color('#FFFFFF') },
+				chromaKeyColor: { value: new THREE.Color(chromaKeyColor[0], chromaKeyColor[1], chromaKeyColor[2]) },
+				playMap: { type: 't', value: Texture.defaultTexture },
+				playMapResolution: { value: new THREE.Vector2() },
+				playMapTween: { value: 0 },
+				playMapColor: { value: new THREE.Color('#000000') },
 				opacity: { value: 0 },
+				isVideo: { value: false },
 			},
-			side: THREE.DoubleSide
+			extensions: {
+				fragDepth: true,
+			},
 		});
+		material.map = true;
 		return material;
 	}
 
 	static isPublisherStream(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher;
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid === stream.getId();
 	}
 	static isAttendeeStream(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee;
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.uid === stream.getId();
+	}
+	static isSmartDeviceStream(stream) {
+		return stream.clientInfo && stream.clientInfo.role === RoleType.SmartDevice && stream.clientInfo.uid === stream.getId();
 	}
 	static isPublisherScreen(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid !== stream.getId();
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.screenUid === stream.getId();
 	}
 	static isAttendeeScreen(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.uid !== stream.getId();
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.screenUid === stream.getId();
 	}
 	static getTypeMatcher(assetType) {
 		let matcher;
@@ -142,6 +324,9 @@ export default class MediaMesh extends InteractiveMesh {
 				break;
 			case AssetType.AttendeeStream.name:
 				matcher = this.isAttendeeStream;
+				break;
+			case AssetType.SmartDeviceStream.name:
+				matcher = this.isSmartDeviceStream;
 				break;
 			case AssetType.PublisherScreen.name:
 				matcher = this.isPublisherScreen;
@@ -193,7 +378,7 @@ export default class MediaMesh extends InteractiveMesh {
 		if (item.asset && item.asset.chromaKeyColor) {
 			material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
 		} else if (item.asset) {
-			material = MediaMesh.getMaterial();
+			material = new THREE.MeshBasicMaterial({ color: 0x888888 }); // MediaMesh.getMaterial();
 		} else {
 			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
 		}
@@ -204,30 +389,54 @@ export default class MediaMesh extends InteractiveMesh {
 		let uniforms = null;
 		if (item.asset) {
 			uniforms = {
-				overlay: 0,
-				tween: 1,
+				mapTween: 1,
+				playMapTween: 0,
 				opacity: 0,
 			};
 		}
 		return uniforms;
 	}
 
-	constructor(item, items, geometry) {
+	get editing() {
+		return this.editing_;
+	}
+	set editing(editing) {
+		if (this.editing_ !== editing) {
+			this.editing_ = editing;
+			// this.zoomed = editing ? false : (this.view.type.name === 'media' ? true : this.zoomed);
+			this.zoomed = this.view.type.name === 'media' ? true : (editing ? false : this.zoomed);
+		}
+	}
+
+	constructor(item, view, geometry, host) {
 		const material = MediaMesh.getMaterialByItem(item);
 		super(geometry, material);
+		// this.renderOrder = environment.renderOrder.plane;
 		this.item = item;
-		this.items = items;
-		this.renderOrder = environment.renderOrder.plane;
+		this.view = view;
+		this.items = view.items;
+		this.host = host;
 		this.uniforms = MediaMesh.getUniformsByItem(item);
+		this.object = new THREE.Object3D();
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
-		/*
-		if (item.asset && !mediaLoader.isVideo) {
-			this.freeze();
+		this.onOver = this.onOver.bind(this);
+		this.onOut = this.onOut.bind(this);
+		this.onToggle = this.onToggle.bind(this);
+		this.onZoomed = this.onZoomed.bind(this);
+		if (this.view.type.name !== 'media') {
+			this.addZoomBtn();
 		}
-		*/
+		this.addPlayBtn();
+		this.userData.render = (time, tick) => {
+			this.render(this, time, tick);
+		};
 	}
 
 	load(callback) {
+		this.remove(this.playBtn);
+		if (this.zoomBtn) {
+			this.remove(this.zoomBtn);
+		}
 		if (!this.item.asset) {
 			this.onAppear();
 			if (typeof callback === 'function') {
@@ -237,41 +446,48 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		mediaLoader.load((textureA) => {
-			// console.log('MediaMesh.textureA', textureA);
-			if (textureA) {
-				material.uniforms.textureA.value = textureA;
-				// material.uniforms.resolutionA.value.x = textureA.image.width;
-				// material.uniforms.resolutionA.value.y = textureA.image.height;
-				material.uniforms.resolutionA.value = new THREE.Vector2(textureA.image.width || textureA.image.videoWidth, textureA.image.height || textureA.image.videoHeight);
-				material.needsUpdate = true;
-				if (mediaLoader.isPlayableVideo) {
-					this.createTextureB(textureA, (textureB) => {
-						// console.log('MediaMesh.textureB', textureB);
-						textureB.minFilter = THREE.LinearFilter;
-						textureB.magFilter = THREE.LinearFilter;
-						textureB.mapping = THREE.UVMapping;
-						// textureB.format = THREE.RGBFormat;
-						textureB.wrapS = THREE.RepeatWrapping;
-						textureB.wrapT = THREE.RepeatWrapping;
-						material.uniforms.textureB.value = textureB;
-						// material.uniforms.resolutionB.value.x = textureB.image.width;
-						// material.uniforms.resolutionB.value.y = textureB.image.height;
-						material.uniforms.resolutionB.value = new THREE.Vector2(textureB.image.width, textureB.image.height);
-						// console.log(material.uniforms.resolutionB.value, textureB);
-						material.needsUpdate = true;
-					});
+		mediaLoader.load((texture) => {
+			// console.log('MediaMesh.texture', texture);
+			if (texture) {
+				texture.encoding = THREE.sRGBEncoding;
+				material.map = texture; // !!! Enables USE_MAP
+				if (material.uniforms) {
+					material.uniforms.map.value = texture;
+					// material.uniforms.mapResolution.value.x = texture.image.width;
+					// material.uniforms.mapResolution.value.y = texture.image.height;
+					material.uniforms.mapResolution.value = new THREE.Vector2(texture.image.width || texture.image.videoWidth, texture.image.height || texture.image.videoHeight);
+					if (mediaLoader.isPlayableVideo) {
+						this.makePlayMap(texture, (playMap) => {
+							// console.log('MediaMesh.playMap', playMap);
+							playMap.minFilter = THREE.LinearFilter;
+							playMap.magFilter = THREE.LinearFilter;
+							playMap.mapping = THREE.UVMapping;
+							// playMap.format = THREE.RGBFormat;
+							playMap.wrapS = THREE.RepeatWrapping;
+							playMap.wrapT = THREE.RepeatWrapping;
+							material.uniforms.playMap.value = playMap;
+							// material.uniforms.playMapResolution.value.x = playMap.image.width;
+							// material.uniforms.playMapResolution.value.y = playMap.image.height;
+							material.uniforms.playMapResolution.value = new THREE.Vector2(playMap.image.width, playMap.image.height);
+							// console.log(material.uniforms.playMapResolution.value, playMap);
+							material.needsUpdate = true;
+						});
+					}
 				}
 			}
+			material.needsUpdate = true;
 			this.onAppear();
 			if (mediaLoader.isPlayableVideo) {
-				material.uniforms.video.value = true;
-				this.onOver = this.onOver.bind(this);
-				this.onOut = this.onOut.bind(this);
-				this.onToggle = this.onToggle.bind(this);
+				if (material.uniforms) {
+					material.uniforms.isVideo.value = true;
+				}
 				this.on('over', this.onOver);
 				this.on('out', this.onOut);
 				this.on('down', this.onToggle);
+				this.add(this.playBtn);
+			}
+			if (this.zoomBtn) {
+				this.add(this.zoomBtn);
 			}
 			if (typeof callback === 'function') {
 				callback(this);
@@ -279,9 +495,9 @@ export default class MediaMesh extends InteractiveMesh {
 		});
 	}
 
-	createTextureB(textureA, callback) {
-		const aw = textureA.image.width || textureA.image.videoWidth;
-		const ah = textureA.image.height || textureA.image.videoHeight;
+	makePlayMap(texture, callback) {
+		const aw = texture.image.width || texture.image.videoWidth;
+		const ah = texture.image.height || texture.image.videoHeight;
 		const ar = aw / ah;
 		const scale = 0.32;
 		const canvas = document.createElement('canvas');
@@ -306,9 +522,9 @@ export default class MediaMesh extends InteractiveMesh {
 				w = h * br;
 			}
 			ctx.drawImage(image, aw / 2 - w / 2, ah / 2 - h / 2, w, h);
-			const textureB = new THREE.CanvasTexture(canvas);
+			const playMap = new THREE.CanvasTexture(canvas);
 			if (typeof callback === 'function') {
-				callback(textureB);
+				callback(playMap);
 			}
 		}
 		image.crossOrigin = 'anonymous';
@@ -322,7 +538,26 @@ export default class MediaMesh extends InteractiveMesh {
 			this.freeze();
 		}
 		return MediaLoader.events$.pipe(
+			filter(event => (event.loader.item && event.loader.item.id === item.id)),
 			map(event => {
+				if (event instanceof MediaLoaderPlayEvent) {
+					this.playing = true;
+					if (this.playBtn) {
+						this.playBtn.playing = true;
+					}
+					this.emit('playing', true);
+					this.onOut();
+				} else if (event instanceof MediaLoaderPauseEvent) {
+					this.playing = false;
+					if (this.playBtn) {
+						this.playBtn.playing = false;
+					}
+					this.emit('playing', false);
+					this.onOut();
+				} else if (event instanceof MediaLoaderTimeSetEvent) {
+					this.emit('currentTime', event.loader.video.currentTime);
+				}
+				// console.log('MediaMesh', this.playing);
 				if (item.asset && item.asset.linkedPlayId) {
 					const eventItem = items.find(x => x.asset && event.src.indexOf(x.asset.file) !== -1 && event.id === item.asset.linkedPlayId);
 					if (eventItem) {
@@ -349,10 +584,11 @@ export default class MediaMesh extends InteractiveMesh {
 				ease: Power2.easeInOut,
 				onUpdate: () => {
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
 		}
+		this.zoomed = this.view.type.name === 'media' ? true : (this.editing ? false : this.zoomed);
 	}
 
 	onDisappear() {
@@ -365,7 +601,7 @@ export default class MediaMesh extends InteractiveMesh {
 				ease: Power2.easeInOut,
 				onUpdate: () => {
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
 		}
@@ -377,18 +613,21 @@ export default class MediaMesh extends InteractiveMesh {
 		if (material.uniforms) {
 			gsap.to(uniforms, {
 				duration: 0.4,
-				overlay: 1,
-				tween: this.playing ? 0 : 1,
+				mapTween: this.playing ? 0 : 1,
+				playMapTween: 1,
 				opacity: 1,
 				ease: Power2.easeInOut,
 				overwrite: true,
 				onUpdate: () => {
-					material.uniforms.overlay.value = uniforms.overlay;
-					material.uniforms.tween.value = uniforms.tween;
+					material.uniforms.mapTween.value = uniforms.mapTween;
+					material.uniforms.playMapTween.value = uniforms.playMapTween;
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
+		}
+		if (this.playBtn) {
+			this.playBtn.onOver();
 		}
 	}
 
@@ -398,39 +637,39 @@ export default class MediaMesh extends InteractiveMesh {
 		if (material.uniforms) {
 			gsap.to(uniforms, {
 				duration: 0.4,
-				overlay: 0,
-				tween: this.playing ? 0 : 1,
+				mapTween: this.playing ? 0 : 1,
+				playMapTween: 0,
 				opacity: 1,
 				ease: Power2.easeInOut,
 				overwrite: true,
 				onUpdate: () => {
-					material.uniforms.overlay.value = uniforms.overlay;
-					material.uniforms.tween.value = uniforms.tween;
+					material.uniforms.mapTween.value = uniforms.mapTween;
+					material.uniforms.playMapTween.value = uniforms.playMapTween;
 					material.uniforms.opacity.value = uniforms.opacity;
-					material.needsUpdate = true;
+					// material.needsUpdate = true;
 				},
 			});
+		}
+		if (this.playBtn) {
+			this.playBtn.onOut();
 		}
 	}
 
 	onToggle() {
 		this.playing = this.mediaLoader.toggle();
+		if (this.playBtn) {
+			this.playBtn.playing = this.playing;
+		}
 		this.emit('playing', this.playing);
 		this.onOut();
 	}
 
 	play() {
 		this.mediaLoader.play();
-		this.playing = true;
-		this.emit('playing', true);
-		this.onOut();
 	}
 
 	pause() {
 		this.mediaLoader.pause();
-		this.playing = false;
-		this.emit('playing', false);
-		this.onOut();
 	}
 
 	setPlayingState(playing) {
@@ -438,6 +677,20 @@ export default class MediaMesh extends InteractiveMesh {
 			this.playing = playing;
 			playing ? this.mediaLoader.play() : this.mediaLoader.pause();
 			this.onOut();
+			if (this.playBtn) {
+				this.playBtn.playing = playing;
+			}
+		}
+	}
+
+	setZoomedState(zoomed) {
+		this.zoomed = zoomed;
+	}
+
+	setCurrentTime(currentTime) {
+		// !!!
+		if (this.mediaLoader.video) {
+			this.mediaLoader.video.currentTime = currentTime;
 		}
 	}
 
@@ -455,7 +708,7 @@ export default class MediaMesh extends InteractiveMesh {
 				this.material.map.dispose();
 			}
 			this.material.dispose();
-			this.material = null;
+			// this.material = null;
 		}
 	}
 
@@ -473,86 +726,181 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	dispose() {
+		this.removePlayBtn();
+		this.removeZoomBtn();
 		this.disposeMediaLoader();
 	}
 
-}
-
-/*
-const FRAGMENT_SHADER_BAK = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-uniform bool video;
-uniform float opacity;
-uniform float overlay;
-uniform float tween;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-uniform vec2 resolutionA;
-uniform vec2 resolutionB;
-uniform vec3 overlayColor;
-
-mat3 rotate(float a) {
-	return mat3(
-		cos(a), sin(a), 0.0,
-		-sin(a), cos(a), 0.0,
-		0.0, 0.0, 1.0
-	);
-}
-
-mat3 translate(vec2 t) {
-	return mat3(
-		1.0, 0.0, 0.0,
-		0.0, 1.0, 0.0,
-		t.x, t.y, 1.0
-	);
-}
-
-mat3 scale(vec2 s) {
-	return mat3(
-		s.x, 0.0, 0.0,
-		0.0, s.y, 0.0,
-		0.0, 0.0, 1.0
-	);
-}
-
-vec2 getUV2(vec2 vUv, vec2 t, vec2 s, float a) {
-	mat3 transform = scale(s) * rotate(a);
-	return (vec3(vUv + t, 0.0) * transform).xy;
-}
-
-void main() {
-	vec4 color;
-	vec4 colorA = texture2D(textureA, vUv);
-	if (video) {
-		float rA = resolutionA.x / resolutionA.y;
-		float rB = resolutionB.x / resolutionB.y;
-		float aspect = 1.0 / rA * rB;
-		vec2 s = vec2(3.0 / aspect, 3.0);
-		vec2 t = vec2(
-			-(resolutionA.x - resolutionB.x / s.x) * 0.5 / resolutionA.x,
-			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
-		);
-		t = vec2(
-			-(resolutionA.x - resolutionB.x / s.y) * 0.5 / resolutionA.x,
-			-(resolutionA.y - resolutionB.y / s.y) * 0.5 / resolutionA.y
-		);
-		// float dx = (resolutionA.x - resolutionB.x) / resolutionA.x * 0.5;
-		// float dy = (resolutionA.y - resolutionB.y) / resolutionA.y * 0.5;
-		// t = vec2(-0.5 + dx, -0.5 - dy);
-		vec2 uv2 = clamp(
-			getUV2(vUv, t, s, 0.0),
-			vec2(0.0,0.0),
-			vec2(1.0,1.0)
-		);
-		vec4 colorB = texture2D(textureB, uv2);
-		colorB = texture2D(textureB, vUv);
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2) + (colorB.rgb * tween * colorB.a), opacity);
-	} else {
-		color = vec4(colorA.rgb + (overlayColor * overlay * 0.2), opacity);
+	addPlayBtn() {
+		const playBtn = this.playBtn = new MediaPlayMesh(this.host);
+		playBtn.on('over', this.onOver);
+		playBtn.on('out', this.onOut);
+		playBtn.on('down', this.onToggle);
+		playBtn.position.z = 0.01;
 	}
-	gl_FragColor = color;
+
+	removePlayBtn() {
+		if (this.playBtn) {
+			this.playBtn.off('over', this.onOver);
+			this.playBtn.off('out', this.onOut);
+			this.playBtn.off('down', this.onToggle);
+			this.playBtn.dispose();
+			delete this.playBtn;
+		}
+	}
+
+	onZoomed(zoomed) {
+		this.zoomed = zoomed;
+		this.emit('zoomed', zoomed);
+	}
+
+	addZoomBtn() {
+		const zoomBtn = this.zoomBtn = new MediaZoomMesh(this.host);
+		zoomBtn.on('zoomed', this.onZoomed);
+	}
+
+	removeZoomBtn() {
+		if (this.zoomBtn) {
+			this.zoomBtn.off('zoomed', this.onZoomed);
+			this.zoomBtn.dispose();
+			delete this.zoomBtn;
+		}
+	}
+
+	updateFromItem(item) {
+		// console.log('MediaMesh.updateFromItem', item);
+		if (item.position) {
+			this.position.fromArray(item.position);
+		}
+		if (item.rotation) {
+			this.rotation.fromArray(item.rotation);
+		}
+		if (item.scale) {
+			this.scale.fromArray(item.scale);
+		}
+		if (this.playBtn) {
+			this.playBtn.update(this);
+		}
+		/*
+		if (this.zoomBtn) {
+			this.zoomBtn.update(this);
+		}
+		*/
+		this.updateZoom();
+	}
+
+	updateZoom() {
+		this.originalPosition = this.position.clone();
+		this.originalScale = this.scale.clone();
+		this.originalQuaternion = this.quaternion.clone();
+		this.object.position.copy(this.originalPosition);
+		this.object.scale.copy(this.originalScale);
+		this.object.quaternion.copy(this.originalQuaternion);
+		if (this.zoomBtn) {
+			const scale = this.zoomBtn.scale;
+			const position = this.zoomBtn.position;
+			const ratio = this.scale.x / this.scale.y;
+			const size = 0.1;
+			scale.set(size / ratio, size, 1);
+			position.x = 0.5 - size / ratio / 2;
+			position.y = 0.5 - size / 2;
+			position.z = 0.01;
+		}
+		// console.log('MediaMesh.updateZoom', this.scale);
+	}
+
+	// zoom
+
+	render(time, tick) {
+		/*
+		if (this.zoomBtn && !this.editing) {
+			this.zoomBtn.render(time, tick);
+		}
+		*/
+		if (!this.editing) {
+			const object = this.object;
+			/*
+			parent.position.lerp(object.position, 0.2);
+			parent.scale.lerp(object.scale, 0.2);
+			parent.quaternion.slerp(object.quaternion, 0.2);
+			*/
+			this.position.copy(object.position);
+			this.scale.copy(object.scale);
+			this.quaternion.copy(object.quaternion);
+		}
+	}
+
+	updateObjectMatrix() {
+		const object = this.object;
+		const host = this.host;
+		if (this.zoomed) {
+			const cameraGroup = host.cameraGroup;
+			const originalScale = this.originalScale;
+			let camera = host.camera, scale;
+			const position = object.position;
+			const aspect = originalScale.x / originalScale.y;
+			const xr = host.renderer.xr;
+			if (xr.isPresenting) {
+				camera = xr.getCamera(camera);
+				camera.getWorldDirection(position);
+				scale = 0.3;
+				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+				const distance = this.getDistanceToCamera(camera, object.scale);
+				position.multiplyScalar(distance * 1);
+				position.add(cameraGroup.position);
+				position.y -= 0.2;
+				object.position.copy(position);
+				/*
+				position.multiplyScalar(distance * 0.75);
+				position.y -= 0.2;
+				cameraGroup.worldToLocal(position);
+				position.y += cameraGroup.position.y;
+				object.position.copy(position);
+				*/
+				object.lookAt(Host.origin);
+			} else {
+				camera.getWorldDirection(position);
+				scale = 0.1;
+				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+				const distance = this.getDistanceToCamera(camera, object.scale);
+				position.multiplyScalar(distance);
+				cameraGroup.localToWorld(position);
+				object.position.copy(position);
+				object.lookAt(Host.origin);
+			}
+		}
+		return object;
+	}
+
+	getDistanceToCamera(camera, size, fitOffset = 1) {
+		const factor = (2 * Math.atan(Math.PI * camera.fov / 360));
+		const heightDistance = size.y * camera.zoom / factor;
+		const widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
+		const distance = fitOffset * Math.max(heightDistance, widthDistance);
+		return distance;
+	}
+
+	zoomed_ = false;
+	get zoomed() {
+		return this.zoomed_;
+	}
+	set zoomed(zoomed) {
+		if (this.zoomed_ !== zoomed) {
+			this.zoomed_ = zoomed;
+			if (zoomed) {
+				// this.originalPosition = this.position.clone();
+				// this.originalQuaternion = this.rotation.clone();
+				// this.originalScale = this.scale.clone();
+			} else {
+				this.object.position.copy(this.originalPosition);
+				this.object.scale.copy(this.originalScale);
+				this.object.quaternion.copy(this.originalQuaternion);
+			}
+			this.updateObjectMatrix();
+			if (this.zoomBtn) {
+				this.zoomBtn.zoomed = zoomed;
+			}
+		}
+	}
+
 }
-`;
-*/

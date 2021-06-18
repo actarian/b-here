@@ -1,0 +1,62 @@
+<script>
+// window.antiforgery = '';
+window.labels = {
+	browse: 'Open',
+	close: 'Close',
+	error_email: 'invalid email',
+	error_match: 'fields doesn\'t match',
+	error_required: 'field is required',
+	error_credentials: 'invalid credentials',
+	error_pattern: 'field is not valid',
+	remove: 'Delete',
+	required: 'required',
+	select: 'Select',
+	select_file: 'Select a file...',
+	access_login: 'Login.',
+	access_username: 'Username',
+	access_password: 'Password',
+	access_or: 'or',
+	access_title: 'Access to the virtual tour',
+	access_tour: 'Access to the tour',
+	access_cta: 'Enter',
+	access_guided_tour: 'Request a guided tour',
+	access_fill_fields: 'Fill in the fields to access the tour.',
+	access_guided_tour_request: 'Fill in the fields and request the guided tour.',
+	access_has_meeting_id: 'do you already have a meeting id?',
+	access_guided_tour_cta: 'Access the guided tour',
+	access_first_name: 'Name',
+	access_last_name: 'Surname',
+	access_email: 'Email',
+	access_phone_number: 'Telephone',
+	access_website: 'Website',
+	access_role: 'Role',
+	access_privacy_disclaimer: 'I have read the <a href="/en/information_on_privacy" target="_blank" rel="noopener noreferrer"> information </a> and I consent to the processing of the data',
+	access_take_part: 'join the meeting',
+	access_send: 'Send',
+	access_sent: 'Sent!',
+	access_back: 'Back',
+	access_request_sent: 'Request sent!',
+	access_info_request: 'Your request has been sent. You will be contacted by one of our representatives for all the details.',
+};
+window.data = {
+	roles: [
+		{ id: 1, name: "Show room" },
+		{ id: 2, name: "Architetto" },
+		{ id: 3, name: "Interior designer" },
+		{ id: 4, name: "Privato" },
+		{ id: 5, name: "Altro" }
+	]
+};
+window.fields = [
+	{ type: 'text', name: 'firstName', label: 'access_first_name', required: true, test: 'Jhon' },
+	{ type: 'text', name: 'lastName', label: 'access_last_name', required: true, test: 'Appleseed' },
+	{ type: 'email', name: 'email', label: 'access_email', required: true, test: 'jhonappleseed@gmail.com' },
+	/*
+	{ type: 'text', name: 'phoneNumber', label: 'access_phone_number', required: true, test: '0721-411112' },
+	{ type: 'url', name: 'website', label: 'access_website', required: false, test: 'www.websolute.it' },
+	*/
+	{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: window.data.roles, test: window.data.roles[0].id },
+	{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
+];
+
+</script>

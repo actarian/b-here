@@ -1,5 +1,5 @@
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { expand, filter, finalize, map, share, tap, withLatestFrom } from "rxjs/operators";
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { expand, filter, finalize, map, share, tap, withLatestFrom } from 'rxjs/operators';
 
 const BUFF_SIZE = 512;
 
@@ -32,7 +32,11 @@ export default class AudioStreamService {
 
 	static get analyser() {
 		if (!this.analyser_) {
-			this.analyser_ = this.context.createAnalyser();
+			try {
+				this.analyser_ = this.context.createAnalyser();
+			} catch (error) {
+				console.log('AudioStreamService.analyser', error);
+			};
 		}
 		return this.analyser_;
 	}
@@ -83,31 +87,35 @@ export default class AudioStreamService {
 		const context = this.context;
 		if (context) {
 			const analyser = this.analyser;
-			// Connect the output of the analyser to the destination
-			// analyser.connect(context.destination); // no audio !
-			// console.log(analyser.fftSize); // 2048 by default
-			// console.log(analyser.frequencyBinCount); // will give us 1024 data points
-			analyser.fftSize = fftSize; // 64
-			// console.log(analyser.frequencyBinCount); // fftSize/2 = 32 data points
-			const source = this.addSource(streamOrElement);
-			// source.connect(context.destination); // no audio!
-			// Connect the output of the source to the input of the analyser
-			source.connect(analyser);
+			if (analyser) {
+				// Connect the output of the analyser to the destination
+				// analyser.connect(context.destination); // no audio !
+				// console.log(analyser.fftSize); // 2048 by default
+				// console.log(analyser.frequencyBinCount); // will give us 1024 data points
+				analyser.fftSize = fftSize; // 64
+				// console.log(analyser.frequencyBinCount); // fftSize/2 = 32 data points
+				const source = this.addSource(streamOrElement);
+				// source.connect(context.destination); // no audio!
+				// Connect the output of the source to the input of the analyser
+				source.connect(analyser);
+			}
 			const state$ = new BehaviorSubject(state);
 			return AudioStreamService.frame$.pipe(
 				withLatestFrom(state$),
 				map(([deltaTime, state]) => {
-					// Get the new frequency data
-					analyser.getByteFrequencyData(state);
-					/*
-					const max = state.reduce((p, c, i) => {
-						return Math.max(c, p);
-					}, 0);
-					if (max > 0) {
-						// console.log(max);
+					if (analyser) {
+						// Get the new frequency data
+						analyser.getByteFrequencyData(state);
+						/*
+						const max = state.reduce((p, c, i) => {
+							return Math.max(c, p);
+						}, 0);
+						if (max > 0) {
+							// console.log(max);
+						}
+						*/
+						// Update the visualisation
 					}
-					*/
-					// Update the visualisation
 					return state;
 				}),
 				tap((state) => state$.next(state)),
@@ -189,7 +197,7 @@ export default class AudioStreamService {
 
 		// Now smooth this out with the averaging factor applied
 		// to the previous sample - take the max here because we
-		// want "fast attack, slow release."
+		// want 'fast attack, slow release.'
 		this.volume = Math.max(rms, this.volume * this.averaging);
 	}
 
@@ -234,11 +242,13 @@ export default class AudioStreamService {
 	}
 
 	static dispose() {
-		const analyser = this.analyser;
 		Object.keys(this.sources_).forEach(key => {
 			this.removeSourceKey(key);
 		});
-		analyser.disconnect();
+		const analyser = this.analyser;
+		if (analyser) {
+			analyser.disconnect();
+		}
 		this.sources_ = {};
 		// this.context_.close().then(() => console.log('AudioStreamService.dispose'));
 		// this.context_ = null;

@@ -16,6 +16,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 			this.video_ = video;
 			if (this.change) {
 				this.change.next();
+				this.init();
 				this.initStream();
 			}
 		}
@@ -30,6 +31,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 			this.audio_ = audio;
 			if (this.change) {
 				this.change.next();
+				this.init();
 				this.initStream();
 			}
 		}
@@ -40,10 +42,18 @@ export default class AgoraDevicePreviewComponent extends Component {
 	}
 
 	onInit() {
+		this.init();
+	}
+
+	init() {
+		if (this.initialized_) {
+			return;
+		}
+		this.initialized_ = true;
 		this.platform = DeviceService.platform;
 		const { node } = getContext(this);
-		const preview = this.preview = node.querySelector('video');
 		this.onLoadedMetadata = this.onLoadedMetadata.bind(this);
+		const preview = this.preview = node.querySelector('video');
 		preview.addEventListener('loadedmetadata', this.onLoadedMetadata);
 		const audio = node.querySelector('.audio');
 		if (this.hasPreview) {
@@ -71,6 +81,8 @@ export default class AgoraDevicePreviewComponent extends Component {
 		}
 		// console.log(this.video_, this.audio_);
 		if (this.video_ || this.audio_) {
+			// const { node } = getContext(this);
+			// node.classList.remove('ready');
 			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 				const state = StateService.state;
 				const quality = getStreamQuality(state);
@@ -83,6 +95,9 @@ export default class AgoraDevicePreviewComponent extends Component {
 					} : false,
 					audio: this.audio_ ? { deviceId: this.audio_ } : false,
 				};
+				if (this.platform === DevicePlatform.IOS) {
+					options.video.facingMode = 'user';
+				}
 				// console.log('AgoraDevicePreviewComponent.initStream.getUserMedia', options);
 				navigator.mediaDevices.getUserMedia(options).then((stream) => {
 					if (this.hasPreview) {
@@ -117,6 +132,9 @@ export default class AgoraDevicePreviewComponent extends Component {
 	}
 
 	onLoadedMetadata(event) {
+		// console.log('AgoraDevicePreview.onLoadedMetadata', event);
+		const { node } = getContext(this);
+		node.classList.add('ready');
 		this.preview.play();
 		this.stream.next(this.loadingStream_);
 	}
@@ -143,7 +161,6 @@ export default class AgoraDevicePreviewComponent extends Component {
 			});
 		}
 	}
-
 }
 
 AgoraDevicePreviewComponent.meta = {

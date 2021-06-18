@@ -1,7 +1,7 @@
-import { environment } from "../environment";
+import { environment } from '../environment';
 
 export const EXT_IMAGE = [
-	'jpeg', 'jpg', 'png',
+	'jpeg', 'jpg', 'png', 'hdr'
 ];
 export const EXT_VIDEO = [
 	'mp4', 'webm',
@@ -18,6 +18,7 @@ export const AssetType = {
 	AttendeeStream: { id: 5, name: 'next-attendee-stream', file: 'nextAttendeeStream' }, // valore fisso di file a ‘nextAttendeeStream’ e folder string.empty
 	PublisherScreen: { id: 6, name: 'publisher-screen', file: 'publisherScreen' }, // valore fisso di file a ‘publisherScreen’ e folder string.empty
 	AttendeeScreen: { id: 7, name: 'attendee-screen', file: 'attendeeScreen' }, // valore fisso di file a ‘attendeeScreen’ e folder string.empty
+	SmartDeviceStream: { id: 8, name: 'smart-device-stream', file: 'smartDeviceStream' }, // valore fisso di file a smartDeviceStream e folder string.empty
 };
 
 export const AssetGroupType = {
@@ -34,11 +35,14 @@ if (environment.flags.editorAssetScreen) {
 	AssetGroupType.AttendeeScreen = { id: 6, name: 'AttendeeScreen', ids: [7] };
 }
 
+AssetGroupType.SmartDevice = { id: 7, name: 'Smart Device', ids: [8] };
+
 export const STREAM_TYPES = [
 	AssetType.PublisherStream.name,
 	AssetType.AttendeeStream.name,
 	AssetType.PublisherScreen.name,
 	AssetType.AttendeeScreen.name,
+	AssetType.SmartDeviceStream.name,
 ];
 
 export function assetIsStream(asset) {
@@ -78,14 +82,12 @@ export function assetPayloadFromGroupTypeId(groupTypeId) {
 	const groupType = assetGroupTypeById(groupTypeId);
 	const type = assetTypeById(groupType.ids[0]);
 	const file = type.file;
-	// const type = groupTypeId === AssetGroupType.Publisher.id ? AssetType.PublisherStream : AssetType.AttendeeStream;
-	// const file = groupTypeId === AssetGroupType.Publisher.id ? 'publisherStream' : 'nextAttendeeStream';
 	const asset = {
 		type: type,
 		folder: '',
 		file: file,
 	}
-	console.log('assetPayloadFromGroupTypeId', asset);
+	// console.log('assetPayloadFromGroupTypeId', asset);
 	return new Asset(asset);
 }
 
@@ -106,12 +108,15 @@ export function isAssetType(path, type) {
 }
 
 export class Asset {
-	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor'];
+
+	static allowedProps = ['id', 'type', 'folder', 'file', 'linkedPlayId', 'chromaKeyColor', 'autoplay', 'loop'];
+
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
 		}
 	}
+
 	get payload() {
 		const payload = {};
 		Object.keys(this).forEach(key => {
@@ -121,6 +126,7 @@ export class Asset {
 		});
 		return payload;
 	}
+
 	static fromUrl(url) {
 		const segments = url.split('/');
 		const file = segments.pop();
@@ -132,10 +138,20 @@ export class Asset {
 			file: file,
 		});
 	}
+
+	static get defaultMediaAsset() {
+		const asset = {
+			id: -1,
+			type: { id: AssetType.Image, name: 'image' },
+			folder: '/textures/grid/',
+			file: 'grid.jpg',
+		};
+		return asset;
+	}
 }
 
 export function mapAsset(asset) {
-	switch (asset.type) {
+	switch (asset.type.name) {
 		default:
 			asset = new Asset(asset);
 	}

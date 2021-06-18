@@ -1,6 +1,7 @@
-// import { auditTime, tap } from "rxjs/operators";
-// import AudioStreamService from "../../audio/audio-stream.service";
-import StreamService from "../../stream/stream.service";
+// import { auditTime, tap } from 'rxjs/operators';
+// import AudioStreamService from '../../audio/audio-stream.service';
+// import * as THREE from 'three';
+import StreamService from '../../stream/stream.service';
 
 export const W = 320;
 export const H = 240;
@@ -10,7 +11,7 @@ export default class AvatarElement {
 
 	static get headGeometry() {
 		if (!this.headGeometry_) {
-			this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 48, 48);
+			this.headGeometry_ = new THREE.SphereBufferGeometry(0.2, 36, 24);
 		}
 		return this.headGeometry_;
 	}

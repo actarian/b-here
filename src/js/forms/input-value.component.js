@@ -28,15 +28,22 @@ export default class InputValueComponent extends Component {
 		const { node } = getContext(this);
 		const input = this.input = node.querySelector('input');
 		// fromEvent(input, 'change')
-		merge(fromEvent(input, 'input')).pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidChange(event));
-		fromEvent(input, 'blur').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidBlur(event));
+		merge(
+			fromEvent(input, 'input')
+		).pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidChange(event));
+		merge(
+			fromEvent(input, 'blur'),
+			fromEvent(input, 'keydown').pipe(
+				filter(event => (event.key === 'Enter' || event.keyCode === 13)),
+			)
+		).pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidBlur(event));
 		// fromEvent(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
 	}
 
 	onInputDidChange(event) {
 		// const node = getContext(this).node;
 		// const value = node.value === '' ? null : node.value;
-		event.target.value = event.target.value.replace(/[^\d|\.]/g, '');
+		event.target.value = event.target.value.replace(/[^\d|\.|-]/g, '');
 		// console.log('InputValueComponent.onInputDidChange', event.target.value);
 		/*
 		const value = parseFloat(event.target.value);
@@ -70,7 +77,7 @@ export default class InputValueComponent extends Component {
 		return race(fromEvent(element, 'mousedown'), fromEvent(element, 'touchstart')).pipe(
 			tap(() => {
 				increment = this.increment;
-				m = 32;
+				m = 16;
 			}),
 			switchMap((e) => {
 				return interval(30).pipe(

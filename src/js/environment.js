@@ -53,13 +53,6 @@ export class Environment {
 
 	constructor(options) {
 		if (options) {
-			if (typeof options.url === 'object') {
-				const language = options.language || '';
-				const market = options.market || '';
-				Object.keys(options.url).forEach(key => {
-					options.url[key] = language + market + options.url[key];
-				});
-			}
 			Object.assign(this, options);
 		}
 	}
@@ -67,7 +60,8 @@ export class Environment {
 
 const defaultOptions = {
 	port: 5000,
-	fontFamily: 'GT Walsheim, sans-serif',
+	// fontFamily: 'GT Walsheim, sans-serif',
+	fontFamily: 'Work Sans, sans-serif',
 	colors: {
 		menuBackground: '#000000',
 		menuForeground: '#ffffff',
@@ -79,20 +73,21 @@ const defaultOptions = {
 		menuBackOverForeground: '#ffffff',
 	},
 	editor: {
-		disabledViewTypes: ['waiting-room', 'room-3d'],
+		disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
 		disabledViewItemTypes: ['texture'],
 	},
 	renderOrder: {
 		panorama: 0,
-		model: 10,
+		room: 10,
 		plane: 20,
 		tile: 30,
-		banner: 40,
-		nav: 50,
-		panel: 60,
-		menu: 70,
-		debug: 80,
-		pointer: 90,
+		model: 40,
+		banner: 50,
+		nav: 60,
+		panel: 70,
+		menu: 80,
+		debug: 90,
+		pointer: 100,
 	}
 };
 
@@ -105,13 +100,21 @@ const defaultAppOptions = {
 		selfService: true,
 		guidedTourRequest: true,
 		editor: true,
-		ar: true,
 		menu: true,
+		chat: true,
+		ar: true,
+		like: true,
+		hideNavInfo: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,
+		smartDevice: true,
 		maxQuality: false,
+		heroku: HEROKU,
 	},
+	url: {},
+	languages: ['it', 'en'],
+	defaultLanguage: 'it',
 };
 
 const environmentOptions = window.STATIC ? environmentStatic : environmentServed;

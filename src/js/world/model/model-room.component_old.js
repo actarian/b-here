@@ -1,7 +1,7 @@
-// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
+import { GLTFLoader } from '../loaders/GLTFLoader';
 import MediaLoader from '../media/media-loader';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
@@ -33,11 +33,7 @@ export default class ModelRoomComponent extends ModelComponent {
 
 	getLoader(path, file) {
 		let loader;
-		if (file.indexOf('.fbx') !== -1) {
-			loader = new THREE.FBXLoader();
-		} else {
-			loader = new THREE.GLTFLoader();
-		}
+		loader = new GLTFLoader();
 		loader.setPath(path);
 		return loader;
 	}

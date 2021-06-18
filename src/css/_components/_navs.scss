@@ -7,11 +7,11 @@
 	align-items: center;
 	cursor: pointer;
 	z-index: 1;
-	transition: ease-in-out 350ms;
+	transition: ease-in-out $fast;
 	transition-property: background-color, color, border, opacity;
 
 	svg {
-		transition: ease-in-out 350ms;
+		transition: ease-in-out $fast;
 		transition-property: fill, opacity;
 	}
 
@@ -91,7 +91,7 @@
 		&>span {
 			@extend %nav-item;
 			line-height: 1;
-			transition: ease-in-out all 350ms;
+			transition: ease-in-out all $fast;
 
 			.icon {
 				margin-right: 10px;

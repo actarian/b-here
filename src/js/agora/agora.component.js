@@ -1,8 +1,10 @@
 import { Component, getContext } from 'rxcomp';
+import { fromEvent } from 'rxjs';
 import { first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
+import LocalStorageService from '../local-storage/local-storage.service';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import ModalService from '../modal/modal.service';
@@ -13,16 +15,81 @@ import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView } from '../view/view';
 import ViewService from '../view/view.service';
+import MediaLoader from '../world/media/media-loader';
 import VRService from '../world/vr.service';
 import AgoraService from './agora.service';
-import { AgoraStatus, MessageType } from './agora.types';
+import { AgoraStatus, MessageType, UIMode } from './agora.types';
 
 export default class AgoraComponent extends Component {
+
+	get isVirtualTourUser() {
+		return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
+	}
+
+	get isEmbed() {
+		const isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
+		return isEmbed;
+	}
+
+	get isNavigable() {
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const navigable = embedViewId == null;
+		return navigable;
+	}
+
+	get uiClass() {
+		const uiClass = {};
+		uiClass[this.state.role] = true;
+		// uiClass[this.state.mode] = true;
+		uiClass.chat = this.state.chat;
+		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
+		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+		uiClass.locked = this.locked;
+		// uiClass.media = !uiClass.remotes && this.media;
+		return uiClass;
+	}
+
+	get controlled() {
+		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
+	}
+
+	get controlling() {
+		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
+	}
+
+	get silencing() {
+		return StateService.state.silencing;
+	}
+
+	get silenced() {
+		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
+	}
+
+	get spyed() {
+		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
+	}
+
+	get spying() {
+		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid);
+	}
+
+	get locked() {
+		return this.controlled || this.spying;
+	}
+
+	get remoteScreen() {
+		return this.remoteScreen_;
+	}
+	set remoteScreen(remoteScreen) {
+		if (this.remoteScreen_ !== remoteScreen) {
+			this.remoteScreen_ = remoteScreen;
+			window.dispatchEvent(new Event('resize'));
+		}
+	}
 
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
-		this.env = environment;
 		this.platform = DeviceService.platform;
 		this.state = {};
 		this.hosted = null;
@@ -32,6 +99,9 @@ export default class AgoraComponent extends Component {
 		this.form = null;
 		this.local = null;
 		this.screen = null;
+		this.remoteScreen_ = null;
+		// this.media = null;
+		this.hasScreenViewItem = false;
 		this.remotes = [];
 		const vrService = this.vrService = VRService.getService();
 		vrService.status$.pipe(
@@ -53,12 +123,20 @@ export default class AgoraComponent extends Component {
 	}
 
 	resolveUser() {
-		UserService.me$().pipe(
-			first(),
-		).subscribe(user => {
-			this.initWithUser(user);
-			// this.userGuard(user);
-		});
+		if (this.isEmbed) {
+			UserService.temporaryUser$(RoleType.Embed).pipe(
+				first(),
+			).subscribe(user => {
+				this.initWithUser(user);
+			});
+		} else {
+			UserService.me$().pipe(
+				first(),
+			).subscribe(user => {
+				this.initWithUser(user);
+				// this.userGuard(user);
+			});
+		}
 	}
 
 	userGuard(user) {
@@ -84,13 +162,18 @@ export default class AgoraComponent extends Component {
 	setNextStatus() {
 		let status = AgoraStatus.Idle;
 		const state = StateService.state;
-		if (!state.link) {
+		if (state.role === RoleType.SmartDevice) {
+			state.name = state.name || 'Smart Device';
+		}
+		if (!state.checklist) {
+			status = AgoraStatus.Checklist;
+		} else if (!state.link) {
 			status = AgoraStatus.Link;
 		} else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
 			status = AgoraStatus.Login;
 		} else if (!state.name) {
 			status = AgoraStatus.Name;
-		} else if (state.role !== RoleType.Viewer) {
+		} else if (state.role !== RoleType.Viewer && state.role !== RoleType.SmartDevice) {
 			status = AgoraStatus.Device;
 		} else {
 			status = AgoraStatus.ShouldConnect;
@@ -100,30 +183,37 @@ export default class AgoraComponent extends Component {
 	}
 
 	initWithUser(user) {
+		console.log('initWithUser', user);
 		const link = LocationService.get('link') || null;
 		const role = this.getLinkRole() || (user ? user.type : null);
 		user = user || { type: role };
 		if (role !== user.type) {
 			user = { type: role };
 		}
+		const mode = UserService.getMode(role);
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
+		const checklist = LocalStorageService.get('checklist') || null;
 		const hosted = role === RoleType.Publisher ? true : false;
-		const live = (DEBUG || role === RoleType.SelfService) ? false : true;
+		const live = (role === RoleType.SelfService || role === RoleType.Embed || DEBUG) ? false : true;
+		const navigable = this.isNavigable;
 		const state = {
 			user: user,
 			role: role,
+			mode: mode,
 			name: name,
+			checklist: checklist,
 			link: link,
 			channelName: environment.channelName,
 			uid: null,
-			status: 'idle',
+			status: AgoraStatus.Idle,
 			connecting: false,
 			connected: false,
-			locked: false,
-			control: false,
-			spyed: false,
+			controlling: false,
+			spying: false,
+			silencing: false,
 			hosted: hosted,
 			live: live,
+			navigable: navigable,
 			cameraMuted: false,
 			audioMuted: false,
 		};
@@ -136,18 +226,16 @@ export default class AgoraComponent extends Component {
 			this.pushChanges();
 			// console.log(state);
 		});
-		this.loadView();
+		this.initAgora();
 	}
 
-	loadView() {
-		this.initAgora();
-		ViewService.data$().pipe(
+	viewObserver$() {
+		return ViewService.data$().pipe(
 			switchMap(data => {
 				this.data = data;
 				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 				return ViewService.hostedView$(data);
 			}),
-			takeUntil(this.unsubscribe$),
 			/*
 			tap(view => {
 				this.view = null;
@@ -156,21 +244,41 @@ export default class AgoraComponent extends Component {
 			delay(1),
 			*/
 			tap(view => {
+				// console.log('AgoraComponent.viewObserver$', view);
+				// !!! move navToView to user action?
 				if (this.agora) {
-					this.agora.navToView(view.id);
+					this.agora.navToView(view.id, view.keepOrientation);
 				}
 				this.view = view;
+				this.hasScreenViewItem = view.items.find(x => MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x)) != null;
 				this.pushChanges();
 			}),
+		);
+	}
+
+	load(callback) {
+		this.viewObserver$().pipe(
+			takeUntil(this.unsubscribe$)
 		).subscribe(view => {
-			console.log('AgoraComponent.hostedView$', view);
+			console.log('AgoraComponent.viewObserver$', view);
+			if (typeof callback === 'function') {
+				callback();
+			}
+		});
+	}
+
+	loadAndConnect(preferences) {
+		this.load(() => {
+			this.connect(preferences);
 		});
 	}
 
 	initAgora() {
 		let agora = null;
-		if (DEBUG || this.state.role === RoleType.SelfService) {
-			StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
+		if (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) {
+			this.load(() => {
+				StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
+			});
 		} else {
 			agora = this.agora = AgoraService.getSingleton();
 			const role = this.getLinkRole();
@@ -188,16 +296,45 @@ export default class AgoraComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe(screen => {
 			// console.log('AgoraComponent.screen', screen);
+			if (this.screen === this.remoteScreen) {
+				this.remoteScreen = null;
+			}
 			this.screen = screen;
+			this.remoteScreen = screen || this.remoteScreen;
 			this.pushChanges();
 		});
 		StreamService.orderedRemotes$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(remotes => {
-			// console.log('AgoraComponent.remotes', remotes);
-			this.remotes = remotes;
+			this.remotes = [];
+			this.remoteScreen = this.screen;
+			remotes.forEach(x => {
+				if (x.clientInfo && x.clientInfo.screenUid === x.getId()) {
+					this.remoteScreen = x;
+				} else {
+					this.remotes.push(x);
+				}
+			});
+			// console.log('AgoraComponent.remotes', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
 			this.pushChanges();
 		});
+		/*
+		MediaLoader.events$.pipe(
+			tap(event => {
+				if (event instanceof MediaLoaderPlayEvent) {
+					this.media = event.loader;
+					// this.pushChanges();
+				} else if (event instanceof MediaLoaderDisposeEvent) {
+					if (this.media === event.loader) {
+						this.media = null;
+						// this.pushChanges();
+					}
+				}
+				// console.log('AgoraComponent.MediaLoader.events$', event);
+			}),
+			takeUntil(this.unsubscribe$)
+		).subscribe();
+		*/
 		MessageService.out$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
@@ -210,7 +347,7 @@ export default class AgoraComponent extends Component {
 						name: StateService.state.name,
 						uid: StateService.state.uid,
 						screenUid: StateService.state.screenUid,
-						control: StateService.state.control,
+						controllingId: StateService.state.controlling,
 					};
 					MessageService.sendBack(message);
 					break;
@@ -218,44 +355,31 @@ export default class AgoraComponent extends Component {
 					// console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
 					message.type = MessageType.RequestControlAccepted;
 					MessageService.sendBack(message);
-					StateService.patchState({ locked: true });
+					StateService.patchState({ controlling: message.controllingId });
 					if (this.agora) {
-						this.agora.sendControlRemoteRequestInfo(message.clientId);
-					}
-					// !!! control request permission not required
-					// this.onRemoteControlRequest(message);
-					break;
-				// !!! moved to WorldComponent
-				/*
-				case MessageType.RequestInfo:
-					if (StateService.state.role !== RoleType.Publisher) {
-						StateService.patchState({ spyed: true });
+						this.agora.sendControlRemoteRequestInfo(message.controllingId);
 					}
 					break;
-				case MessageType.RequestInfoResult:
-					console.log('AgoraComponent.RequestInfoResult', ViewService.viewId, message.viewId);
-					ViewService.viewId = message.viewId;
-					// console.log('AgoraComponent.RequestInfoResult', message.viewId);
+				case MessageType.RemoteSilencing:
+					StateService.patchState({ silencing: message.silencing });
+					this.setAudio(message.silencing);
 					break;
-				*/
 				case MessageType.NavToView:
-					if (message.viewId) {
-						if (ViewService.viewId !== message.viewId) {
-							ViewService.viewId = message.viewId;
-							if (message.gridIndex !== undefined) {
-								const view = this.data.views.find(x => x.id === message.viewId);
-								if (view instanceof PanoramaGridView) {
-									view.index = message.gridIndex;
-								}
-							}
-							// console.log('AgoraComponent.NavToView', message.viewId);
-						}
-					}
+					this.onRemoteNavTo(message);
+					break;
+				case MessageType.NavInfo:
+					this.hidePanels();
+					StateService.patchState({ showNavInfo: message.showNavInfo });
 					break;
 				case MessageType.AddLike:
 					ViewService.setViewLike$(message).pipe(
 						first(),
 					).subscribe(view => this.showLove(view));
+					break;
+				case MessageType.ChatMessage:
+					if (!StateService.state.chat) {
+						StateService.patchState({ chatDirty: true });
+					}
 					break;
 			}
 		});
@@ -266,37 +390,36 @@ export default class AgoraComponent extends Component {
 				agora.sendMessage(message);
 			}
 		});
+		this.fullscreen$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe();
 		if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
-			this.connect();
+			this.loadAndConnect();
 		}
+	}
+
+	onChecked(checklist) {
+		// console.log('AgoraComponent.onChecked', checklist);
+		StateService.patchState({ checklist: true });
+		this.setNextStatus();
 	}
 
 	onLink(link) {
 		const role = this.getLinkRole();
+		const mode = UserService.getMode(role);
 		const user = StateService.state.user;
 		if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
-			StateService.patchState({ link, role, status: AgoraStatus.Login });
+			StateService.patchState({ link, role, mode, status: AgoraStatus.Login });
 		} else if (StateService.state.name) {
-			if (role === RoleType.Viewer) {
-				StateService.patchState({ link, role });
-				this.connect();
+			if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
+				StateService.patchState({ link, role, mode });
+				this.loadAndConnect();
 			} else {
-				StateService.patchState({ link, role, status: AgoraStatus.Device });
+				StateService.patchState({ link, role, mode, status: AgoraStatus.Device });
 			}
 		} else {
-			StateService.patchState({ link, role, status: AgoraStatus.Name });
+			StateService.patchState({ link, role, mode, status: AgoraStatus.Name });
 		}
-		/*
-		if (StateService.state.name) {
-			if (StateService.state.role === RoleType.Viewer) {
-				this.connect();
-			} else {
-				StateService.patchState({ link, status: AgoraStatus.Device });
-			}
-		} else {
-			StateService.patchState({ link, status: AgoraStatus.Name });
-		}
-		*/
 	}
 
 	onLogin(user) {
@@ -309,16 +432,16 @@ export default class AgoraComponent extends Component {
 	}
 
 	onName(name) {
-		if (StateService.state.role === RoleType.Viewer) {
+		if (StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SmartDevice) {
 			StateService.patchState({ name });
-			this.connect();
+			this.loadAndConnect();
 		} else {
 			StateService.patchState({ name, status: AgoraStatus.Device });
 		}
 	}
 
 	onEnter(preferences) {
-		this.connect(preferences);
+		this.loadAndConnect(preferences);
 	}
 
 	connect(preferences) {
@@ -326,7 +449,17 @@ export default class AgoraComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe();
 		// console.log('AgoraComponent.connect', this.state.role);
-		if (this.state.role !== RoleType.SelfService) {
+		if (this.state.role === RoleType.SelfService) {
+			GtmService.push({
+				action: 'b-here-tour',
+				userType: this.state.role
+			});
+		} else if (this.state.role === RoleType.Embed) {
+			GtmService.push({
+				action: 'b-here-embed',
+				userType: this.state.role
+			});
+		} else {
 			const sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
 			const log = {
 				meetingId: this.state.link,
@@ -351,42 +484,38 @@ export default class AgoraComponent extends Component {
 		if (this.agora) {
 			this.agora.leaveChannel().then(() => {
 				// StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
-				window.location.href = window.location.href;
+				// window.location.href = window.location.href;
+				window.location.replace(window.location.href);
 			}, console.log);
 		} else {
 			this.patchState({ connecting: false, connected: false });
 		}
 	}
 
-	onNavTo(viewId) {
-		ViewService.viewId = viewId;
+	onNavTo(navItem) {
+		const viewId = navItem.viewId;
+		const view = this.data.views.find(x => x.id === viewId);
+		if (view) {
+			// console.log('AgoraComponent.onNavTo', navItem, view);
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
+		}
 	}
 
-	/*
-	onRemoteControlRequest(message) {
-		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(event => {
-			if (!DEBUG) {
-				if (event instanceof ModalResolveEvent) {
-					message.type = MessageType.RequestControlAccepted;
-					this.state.locked = true;
-				} else {
-					message.type = MessageType.RequestControlRejected;
-					this.state.locked = false;
-				}
-				MessageService.sendBack(message);
-				this.pushChanges();
-			} else {
-				if (event instanceof ModalResolveEvent) {
-					this.patchState({ control: true, spying: false });
-				} else {
-					this.patchState({ control: false, spying: false });
+	onRemoteNavTo(message) {
+		const viewId = message.viewId;
+		const gridIndex = message.gridIndex;
+		if (viewId && ViewService.viewId !== viewId) {
+			const view = this.data.views.find(x => x.id === viewId);
+			if (view) {
+				// console.log('AgoraComponent.onRemoteNavTo', message, view);
+				ViewService.action = { viewId, keepOrientation: message.keepOrientation };
+				if (gridIndex != null && view instanceof PanoramaGridView) {
+					view.index = gridIndex;
 				}
 			}
-		});
+			// console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
+		}
 	}
-	*/
 
 	// !!! why locally?
 	patchState(state) {
@@ -411,35 +540,116 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
+	setAudio(audioMuted) {
+		if (this.agora) {
+			this.agora.setAudio(audioMuted);
+		} else {
+			this.patchState({ audioMuted });
+		}
+	}
+
 	toggleScreen() {
 		if (this.agora) {
 			this.agora.toggleScreen();
 		} else {
 			this.patchState({ screen: !this.state.screen });
 		}
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	toggleVolume() {
 		const volumeMuted = !this.state.volumeMuted;
-		StateService.patchState({ volumeMuted })
+		StateService.patchState({ volumeMuted });
 	}
 
-	onToggleControl() {
+	toggleMode() {
+		const mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+		StateService.patchState({ mode });
+		window.dispatchEvent(new Event('resize'));
+	}
+
+	toggleFullScreen() {
+		const { node } = getContext(this);
+		const fullScreen = !this.state.fullScreen;
+		if (fullScreen) {
+			if (node.requestFullscreen) {
+				node.requestFullscreen();
+			} else if (node.webkitRequestFullscreen) {
+				node.webkitRequestFullscreen();
+			} else if (node.msRequestFullscreen) {
+				node.msRequestFullscreen();
+			}
+		} else {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen();
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen();
+			}
+		}
+		// StateService.patchState({ fullScreen });
+	}
+
+	fullscreen$() {
+		return fromEvent(document, 'fullscreenchange').pipe(
+			tap(_ => {
+				const fullScreen = document.fullscreenElement != null;
+				// console.log('fullscreen$', fullScreen);
+				StateService.patchState({ fullScreen });
+			}),
+		);
+	}
+
+	toggleChat() {
+		StateService.patchState({ chat: !this.state.chat, chatDirty: false });
+		window.dispatchEvent(new Event('resize'));
+	}
+
+	toggleNavInfo() {
+		this.hidePanels();
 		if (this.agora) {
-			this.agora.toggleControl();
-		} else if (this.state.control) {
-			this.patchState({ control: false });
+			this.agora.toggleNavInfo();
+		} else {
+			this.patchState({ showNavInfo: !this.state.showNavInfo });
+		}
+	}
+
+	hidePanels() {
+		this.view.items.forEach(item => item.showPanel = false);
+	}
+
+	onChatClose() {
+		this.patchState({ chat: false });
+		window.dispatchEvent(new Event('resize'));
+	}
+
+	onToggleControl(remoteId) {
+		if (this.agora) {
+			this.agora.toggleControl(remoteId);
+		} else {
+			const controlling = this.state.controlling === remoteId ? null : remoteId;
+			this.patchState({ controlling, spying: false });
 		}/* else {
 			this.onRemoteControlRequest({});
 		}
 		*/
 	}
 
+	onToggleSilence() {
+		if (this.agora) {
+			this.agora.toggleSilence();
+		} else {
+			this.patchState({ silencing: !this.state.silencing });
+		}
+	}
+
 	onToggleSpy(remoteId) {
 		if (this.agora) {
 			this.agora.toggleSpy(remoteId);
 		} else {
-			this.patchState({ spying: !this.state.spying, control: false });
+			const spying = this.state.spying === remoteId ? null : remoteId;
+			this.patchState({ spying, controlling: false });
 		}
 	}
 

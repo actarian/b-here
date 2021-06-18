@@ -1,9 +1,11 @@
 import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
+// import * as THREE from 'three';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
+import { Host } from '../../world/host/host';
 import EditorService from '../editor.service';
 
 export default class NavModalComponent extends Component {
@@ -30,20 +32,43 @@ export default class NavModalComponent extends Component {
 		let position = null;
 		const data = this.data;
 		if (data) {
-			position = data.position;
+			position = data.hit.position;
 		}
 		return position;
 	}
 
+	get object() {
+		const object = new THREE.Object3D();
+		const data = this.data;
+		if (data) {
+			const position = data.hit.position.clone();
+			const normal = data.hit.normal.clone();
+			const spherical = data.hit.spherical;
+			if (spherical) {
+				// position.normalize().multiplyScalar(4);
+				position.normalize();
+				object.position.copy(position);
+				object.lookAt(Host.origin);
+			} else {
+				object.lookAt(normal);
+				object.position.set(position.x, position.y, position.z);
+				object.position.add(normal.multiplyScalar(0.01));
+			}
+		}
+		return object;
+	}
+
 	onInit() {
+		const object = this.object;
 		this.error = null;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Nav,
 			title: null,
 			abstract: null,
 			viewId: new FormControl(null, RequiredValidator()),
-			// keepOrientation: false,
-			position: this.position.toArray(),
+			keepOrientation: false,
+			important: false,
+			position: object.position.toArray(),
 			asset: null,
 			link: new FormGroup({
 				title: new FormControl(null),
@@ -56,7 +81,7 @@ export default class NavModalComponent extends Component {
 		this.controls = form.controls;
 		/*
 		this.controls.viewId.options = [{
-			name: "Name",
+			name: 'Name',
 			id: 2,
 		}];
 		*/
@@ -84,7 +109,7 @@ export default class NavModalComponent extends Component {
 			EditorService.inferItemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('NavModalComponent.onSubmit.success', response);
+				// console.log('NavModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => {
 				console.log('NavModalComponent.onSubmit.error', error);
@@ -97,10 +122,9 @@ export default class NavModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 NavModalComponent.meta = {

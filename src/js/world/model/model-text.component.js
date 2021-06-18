@@ -1,3 +1,4 @@
+// import * as THREE from 'three';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 

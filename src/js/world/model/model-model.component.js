@@ -1,20 +1,20 @@
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { takeUntil } from 'rxjs/operators';
+import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
 import { ViewType } from '../../view/view';
+import EmittableMesh from '../interactive/emittable.mesh';
+import FreezableMesh from '../interactive/freezable.mesh';
+import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
+// import * as THREE from 'three';
+import { DRACOLoader } from '../loaders/DRACOLoader';
+import { GLTFLoader } from '../loaders/GLTFLoader';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
 
 export default class ModelModelComponent extends ModelEditableComponent {
-
-	/*
-	static getInteractiveGeometry() {
-		return ModelModelComponent.interactiveGeometry || (ModelModelComponent.interactiveGeometry = new THREE.SphereBufferGeometry(1, 8, 8));
-	}
-	*/
 
 	get freezed() {
 		return this.freezed_;
@@ -25,7 +25,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 			const mesh = this.mesh;
 			if (mesh) {
 				mesh.traverse((child) => {
-					if (child instanceof InteractiveMesh) {
+					if (child.isInteractiveMesh) {
 						child.freezed = freezed;
 					}
 				});
@@ -35,22 +35,10 @@ export default class ModelModelComponent extends ModelEditableComponent {
 
 	onInit() {
 		super.onInit();
-		this.progress = null;
 		this.isPresenting = false;
-		/*
-		if (this.view.type.name === ViewType.Model.name) {
-			const vrService = this.vrService = VRService.getService();
-			vrService.session$.pipe(
-				takeUntil(this.unsubscribe$),
-			).subscribe((session) => {
-				this.onUpdateVRSession(session);
-			});
-		}
-		*/
 		MenuService.active$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(active => this.freezed = active);
-		// console.log('ModelModelComponent.onInit');
 	}
 
 	onChanges() {
@@ -58,50 +46,44 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	}
 
 	onCreate(mount, dismount) {
-		// this.renderOrder = environment.renderOrder.model;
-		this.loadGltfModel(environment.getPath(this.item.asset.folder), this.item.asset.file, (mesh) => {
-			this.onGltfModelLoaded(mesh, mount, dismount);
+		this.loadGlb(environment.getPath(this.item.asset.folder), this.item.asset.file, (mesh, animations) => {
+			this.onGlbLoaded(mesh, animations, mount, dismount);
 		});
 	}
 
-	loadGltfModel(path, file, callback) {
+	loadGlb(path, file, callback) {
 		const renderer = this.host.renderer;
 		// const roughnessMipmapper = new RoughnessMipmapper(renderer); // optional
 		const progressRef = LoaderService.getRef();
 		// console.log('progressRef');
-		const loader = new THREE.GLTFLoader().setPath(path);
-		loader.load(file, (gltf) => {
+		const loader = new GLTFLoader().setPath(path);
+		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
+		const decoderPath = `${environment.assets}js/draco/`;
+		// console.log(decoderPath);
+		const dracoLoader = new DRACOLoader();
+		dracoLoader.setDecoderPath(decoderPath);
+		loader.setDRACOLoader(dracoLoader);
+		loader.load(file, (glb) => {
 			/*
-			gltf.scene.traverse((child) => {
+			glb.scene.traverse((child) => {
 				if (child.isMesh) {
 					// roughnessMipmapper.generateMipmaps(child.material);
 				}
 			});
 			*/
 			if (typeof callback === 'function') {
-				callback(gltf.scene);
+				callback(glb.scene, glb.animations);
 			}
 			LoaderService.setProgress(progressRef, 1);
-			// this.progress = null;
-			// this.pushChanges();
 			// roughnessMipmapper.dispose();
 		}, (progressEvent) => {
-			/*
-			let value = this.progress ? this.progress.value : 0;
-			if (progressEvent.lengthComputable) {
-				value = Math.round(progressEvent.loaded / progressEvent.total * 100);
-			} else {
-				value = Math.floor(Math.min(100, value + 0.1));
-			}
-			this.progress = { value, title: `${value}%` };
-			// console.log('progressEvent', progressEvent.loaded, progressEvent.total);
-			this.pushChanges();
-			*/
 			LoaderService.setProgress(progressRef, progressEvent.loaded, progressEvent.total);
 		});
 	}
 
-	onGltfModelLoaded(mesh, mount, dismount) {
+	onGlbLoaded(mesh, animations, mount, dismount) {
+		// animations
+		this.parseAnimations(mesh, animations);
 		// scale
 		const box = new THREE.Box3().setFromObject(mesh);
 		const size = box.max.clone().sub(box.min);
@@ -190,20 +172,96 @@ export default class ModelModelComponent extends ModelEditableComponent {
 			mount(dummy, this.item);
 			this.freezed = MenuService.active;
 		}
-		/*
-		this.progress = null;
-		this.pushChanges();
-		*/
 	}
 
-	/*
-	onUpdateVRSession(session) {
-		const mesh = this.mesh;
-		if (session && mesh) {
-			mesh.position.z = -2;
+	parseAnimations(mesh, animations) {
+		// animations
+		// console.log('ModelModelComponent.onGlbLoaded', 'animations', animations);
+		const actionIndex = this.actionIndex = -1;
+		const actions = this.actions = [];
+		if (animations && animations.length) {
+			const clock = this.clock = new THREE.Clock();
+			const mixer = this.mixer = new THREE.AnimationMixer(mesh);
+			mixer.timeScale = 1;
+			animations.forEach(animation => {
+				const action = mixer.clipAction(animation);
+				action.enabled = true;
+				action.setEffectiveTimeScale(1);
+				action.setEffectiveWeight(1);
+				// action.setLoop(THREE.LoopPingPong);
+				action.setLoop(THREE.LoopRepeat);
+				// action.clampWhenFinished = true; // pause on last frame
+				actions.push(action);
+			});
 		}
 	}
-	*/
+
+	onClipToggle() {
+		let actionIndex;
+		const actions = this.actions;
+		if (actions.length === 1) {
+			actionIndex = this.actionIndex === -1 ? 0 : -1;
+			this.setSingleAction(actionIndex);
+		} else if (actions.length > 1) {
+			actionIndex = this.actionIndex + 1;
+			if (actionIndex === actions.length) {
+				actionIndex = -1;
+			}
+			this.setMultiAction(actionIndex);
+		}
+		this.play.next({ itemId: this.item.id, actionIndex });
+	}
+
+	setSingleAction(actionIndex) {
+		if (this.actionIndex !== actionIndex) {
+			this.actionIndex = actionIndex;
+			const action = this.actions[0];
+			if (actionIndex === 0) {
+				if (action.paused || action.timeScale === 0) {
+					action.paused = false;
+				} else {
+					action.play();
+				}
+			} else if (actionIndex === -1) {
+				action.halt(0.3);
+			}
+		}
+	}
+
+	setMultiAction(actionIndex) {
+		if (this.actionIndex !== actionIndex) {
+			const actions = this.actions;
+			const previousClip = this.actionIndex > -1 ? actions[this.actionIndex] : null;
+			this.actionIndex = actionIndex;
+			if (previousClip) {
+				previousClip.halt(0.3);
+			}
+			// console.log('setMultiAction', actionIndex, actions.length);
+			if (actionIndex > -1) {
+				const action = actions[actionIndex];
+				if (action.paused) {
+					action.paused = false;
+				}
+				if (action.timeScale === 0) {
+					action.timeScale = 1;
+				}
+				action.play();
+			}
+		}
+	}
+
+	onMessage(message) {
+		switch (message.type) {
+			case MessageType.PlayModel:
+				const actions = this.actions;
+				if (actions.length === 1) {
+					this.setSingleAction(message.actionIndex);
+				} else if (actions.length > 1) {
+					this.setMultiAction(message.actionIndex);
+				}
+				break;
+		}
+	}
 
 	render(time, tick) {
 		const view = this.view;
@@ -236,6 +294,12 @@ export default class ModelModelComponent extends ModelEditableComponent {
 				}
 			}
 		}
+		const mixer = this.mixer;
+		const clock = this.clock;
+		if (mixer) {
+			const delta = clock.getDelta();
+			mixer.update(delta);
+		}
 	}
 
 	// called by UpdateViewItemComponent
@@ -259,8 +323,8 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	// called by UpdateViewItemComponent
 	onUpdateAsset(item, mesh) {
 		// console.log('ModelModelComponent.onUpdateAsset', item);
-		this.loadGltfModel(environment.getPath(item.asset.folder), item.asset.file, (mesh) => {
-			this.onGltfModelLoaded(mesh, (mesh, item) => this.onMount(mesh, item), (mesh, item) => this.onDismount(mesh, item));
+		this.loadGlb(environment.getPath(item.asset.folder), item.asset.file, (mesh, animations) => {
+			this.onGlbLoaded(mesh, animations, (mesh, item) => this.onMount(mesh, item), (mesh, item) => this.onDismount(mesh, item));
 		});
 		/*
 		this.mesh.updateByItem(item);
@@ -271,13 +335,16 @@ export default class ModelModelComponent extends ModelEditableComponent {
 	}
 
 	// called by WorldComponent
-	onDragMove(position) {
-		// console.log('ModelModelComponent.onDragMove', position);
+	onDragMove(position, normal, spherical) {
+		// console.log('ModelModelComponent.onDragMove', position, normal, spherical);
+		if (spherical) {
+			position.normalize().multiplyScalar(4);
+		}
 		this.editing = true;
 		const view = this.view;
 		if (view.type.name !== ViewType.Model.name) {
-			this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(4);
-			// this.mesh.lookAt(ModelModelComponent.ORIGIN);
+			this.mesh.position.set(position.x, position.y, position.z);
+			// this.mesh.lookAt(Host.origin);
 		}
 		this.updateHelper();
 	}
@@ -294,39 +361,47 @@ export default class ModelModelComponent extends ModelEditableComponent {
 		this.editing = false;
 	}
 
+	static getInteractiveDescriptors() {
+		let descriptors = ModelModelComponent.interactiveDescriptors;
+		if (!descriptors) {
+			const freezableDescriptors = Object.getOwnPropertyDescriptors(FreezableMesh.prototype);
+			const emittableDescriptors = Object.getOwnPropertyDescriptors(EmittableMesh.prototype);
+			const interactiveDescriptors = Object.getOwnPropertyDescriptors(InteractiveMesh.prototype);
+			descriptors = Object.assign({}, freezableDescriptors, emittableDescriptors, interactiveDescriptors);
+			ModelModelComponent.interactiveDescriptors = descriptors;
+		}
+		return descriptors;
+	}
+
 	makeInteractive(mesh) {
-		let newChild = null;
+		const interactiveDescriptors = ModelModelComponent.getInteractiveDescriptors();
 		mesh.traverse((child) => {
-			if (newChild === null && child.isMesh && !(child instanceof InteractiveMesh)) {
-				// roughnessMipmapper.generateMipmaps(child.material);
-				const parent = child.parent;
-				newChild = new InteractiveMesh(child.geometry, child.material);
-				// newChild.depthTest = true;
-				// newChild.renderOrder = 0;
-				newChild.name = child.name;
-				newChild.position.copy(child.position);
-				newChild.rotation.copy(child.rotation);
-				newChild.scale.copy(child.scale);
-				newChild.on('down', () => {
-					// console.log('ModelModelComponent.down');
+			if (child.isMesh) {
+				Object.keys(interactiveDescriptors).forEach(key => {
+					if (key !== 'constructor') {
+						Object.defineProperty(child, key, interactiveDescriptors[key]);
+					}
+				});
+				child.freezed = false;
+				child.events = {};
+				child.depthTest = true;
+				child.over_ = false;
+				child.down_ = false;
+				Interactive.items.push(child);
+				child.on('down', () => {
+					// console.log('ModelModelComponent.down', child);
+					this.onClipToggle();
 					this.down.next(this);
 				});
-				parent.remove(child);
-				parent.add(newChild);
 			}
 		});
-		if (newChild !== null) {
-			this.makeInteractive(mesh);
-		}
 	}
 
 }
 
-ModelModelComponent.ORIGIN = new THREE.Vector3();
-
 ModelModelComponent.meta = {
 	selector: '[model-model]',
 	hosts: { host: WorldComponent },
-	outputs: ['down'],
+	outputs: ['down', 'play'],
 	inputs: ['item', 'view'],
 };

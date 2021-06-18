@@ -1,0 +1,9 @@
+<!-- ar-vr -->
+<div class="group--ar-vr">
+	<button type="button" class="btn--ar" [title]="'title_ar' | label" [href]="view?.ar" (click)="tryInAr()" *if="view?.ar">
+		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#ar"></use></svg> <span>Try in AR</span>
+	</button>
+	<button type="button" class="btn--vr" [title]="'title_vr' | label" [class]="{ disabled: vrService.isDisabled() }" (click)="vrService.toggleVR()">
+		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#vr"></use></svg> <span [innerHTML]="vrService.getLabel()"></span>
+	</button>
+</div>

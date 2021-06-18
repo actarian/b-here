@@ -8,7 +8,7 @@
 	font: inherit;
 	cursor: pointer;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	// transition: ease-in-out 350ms;
+	// transition: ease-in-out $fastest;
 	// transition-property: background-color, color, border, opacity;
 
 	&,
@@ -24,7 +24,7 @@
 
 %btn {
 	@extend %btn-reset;
-	// transition: ease-in-out 350ms;
+	// transition: ease-in-out $fastest;
 	// transition-property: background-color, color, border, opacity;
 
 	&[disabled] {
@@ -41,7 +41,7 @@
 	justify-content: center;
 	align-items: center;
 	border-radius: 25px;
-	transition: all ease-in-out 350ms;
+	transition: all ease-in-out $fastest;
 
 	svg {
 		width: 24px;
@@ -79,9 +79,9 @@
 	align-items: center;
 	border-radius: 25px;
 	padding: 0 25px;
-	font-weight: 600;
+	font-weight: $font-semibold;
 	font-size: 16px;
-	transition: all ease-in-out 350ms;
+	transition: all ease-in-out $fastest;
 
 	@include media-down(sm) {
 		min-height: 40px;
@@ -101,17 +101,27 @@
 		display: block;
 	}
 
+	svg {
+		fill: currentColor;
+	}
+
 	&,
 	&:active,
 	&:focus,
-	&:hover,
 	&:visited {
 		background: $background-primary;
 		color: $foreground-negative;
+	}
 
-		svg {
-			fill: currentColor;
-		}
+	&:hover {
+		background: $background-primary-darker;
+		color: $foreground-negative;
+	}
+
+	&:active:hover {
+		background: $background-primary-darkest;
+		color: $foreground-negative;
+		transition: none;
 	}
 
 	&.disabled {

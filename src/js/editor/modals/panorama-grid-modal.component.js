@@ -24,7 +24,7 @@ export default class PanoramaGridModalComponent extends Component {
 	onSubmit() {
 		if (this.form.valid) {
 			this.form.submitted = true;
-			console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
+			// console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
 			const assets = this.form.value.assets;
 			const tiles = PanoramaGridView.mapTiles(assets.map(asset => ({
 				asset,
@@ -35,7 +35,7 @@ export default class PanoramaGridModalComponent extends Component {
 				const bi = b.indices.x * 10000 + b.indices.y;
 				return ai - bi;
 			});
-			console.log('PanoramaGridModalComponent.onSubmit', tiles);
+			// console.log('PanoramaGridModalComponent.onSubmit', tiles);
 			const asset = tiles[0].asset;
 			const view = {
 				type: this.form.value.type,
@@ -53,7 +53,7 @@ export default class PanoramaGridModalComponent extends Component {
 			EditorService.viewCreate$(view).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('PanoramaGridModalComponent.onSubmit.success', response);
+				// console.log('PanoramaGridModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => {
 				console.log('PanoramaGridModalComponent.onSubmit.error', error);
@@ -65,10 +65,9 @@ export default class PanoramaGridModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 PanoramaGridModalComponent.meta = {

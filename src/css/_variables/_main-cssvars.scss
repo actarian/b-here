@@ -5,6 +5,7 @@ body {
 	--font-secondary: #{$font-secondary};
 	--font-size: #{$font-size};
 	--line-height: #{$line-height};
+	--font-thin: #{$font-thin};
 	--font-extralight: #{$font-extralight};
 	--font-light: #{$font-light};
 	--font-regular: #{$font-regular};
@@ -25,13 +26,19 @@ body {
 	--background-primary: #{$background-primary};
 	--background-secondary: #{$background-secondary};
 	--background-tertiary: #{$background-tertiary};
+	--background-primary-darker: #{$background-primary-darker};
+	--background-primary-darkest: #{$background-primary-darkest};
 	--background-primary-disabled: #{$background-primary-disabled};
+	--background-primary-dimmed: #{$background-primary-dimmed};
 	--foreground: #{$foreground};
 	--foreground-negative: #{$foreground-negative};
 	--foreground-primary: #{$foreground-primary};
 	--foreground-secondary: #{$foreground-secondary};
 	--foreground-tertiary: #{$foreground-tertiary};
+	--foreground-primary-darker: #{$foreground-primary-darker};
+	--foreground-primary-darkest: #{$foreground-primary-darkest};
 	--foreground-primary-disabled: #{$foreground-primary-disabled};
+	--foreground-primary-dimmed: #{$foreground-primary-dimmed};
 	--border: #{$border};
 	--shadow: #{$shadow};
 	--black-10: #{$black-10};
@@ -43,6 +50,9 @@ body {
 	--black-70: #{$black-70};
 	--black-80: #{$black-80};
 	--black-90: #{$black-90};
+	--fastest: #{$fastest};
+	--fast: #{$fast};
+	--slow: #{$slow};
 }
 
 @import 'cssvars';

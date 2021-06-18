@@ -1,14 +1,9 @@
 import { Component, getContext } from 'rxcomp';
+import { Geometry } from '../geometry/geometry';
+// import * as THREE from 'three';
 import Interactive from '../interactive/interactive';
-import InteractiveMesh from '../interactive/interactive.mesh';
-import InteractiveSprite from '../interactive/interactive.sprite';
 // import Ease from '../ease/ease';
 import WorldComponent from '../world.component';
-
-const deg = THREE.Math.degToRad;
-
-const GEOMETRY = new THREE.BoxBufferGeometry(1, 1, 1);
-// const GEOMETRY = new THREE.IcosahedronBufferGeometry(0.5, 1);
 
 export default class ModelComponent extends Component {
 
@@ -39,6 +34,7 @@ export default class ModelComponent extends Component {
 	}
 
 	onDestroy() {
+		// console.log('ModelComponent', this);
 		const group = this.group;
 		this.getContainer().remove(group);
 		delete group.userData.render;
@@ -63,7 +59,7 @@ export default class ModelComponent extends Component {
 			transparent: true,
 			opacity: 0.9,
 		});
-		const mesh = new THREE.Mesh(GEOMETRY, material);
+		const mesh = new THREE.Mesh(Geometry.defaultGeometry, material);
 		if (typeof mounth === 'function') {
 			mounth(mesh);
 		}
@@ -79,11 +75,22 @@ export default class ModelComponent extends Component {
 		this.mesh = mesh;
 		if (item) {
 			item.mesh = mesh;
+			Object.defineProperty(item, 'visible', {
+				get: () => {
+					return mesh.visible;
+				},
+				set: (visible) => {
+					this.setVisible(visible);
+				}
+			});
 			item.onUpdate = () => {
 				this.onUpdate(item, mesh);
 			};
 			item.onUpdateAsset = () => {
 				this.onUpdateAsset(item, mesh);
+			};
+			item.onMessage = (message) => {
+				this.onMessage(message);
 			};
 		}
 		this.group.add(mesh);
@@ -110,12 +117,13 @@ export default class ModelComponent extends Component {
 			delete item.mesh;
 			delete item.onUpdate;
 			delete item.onUpdateAsset;
+			delete item.onMessage;
 		}
 	}
 
 	disposeObject(object) {
 		object.traverse(child => {
-			if (child instanceof InteractiveMesh || child instanceof InteractiveSprite) {
+			if (child.isInteractiveMesh || child.isInteractiveSprite) {
 				Interactive.dispose(child);
 			}
 			if (child.isMesh) {
@@ -148,9 +156,15 @@ export default class ModelComponent extends Component {
 		const position = this.position;
 		group.position.set(position.x, 0, 0);
 		// const tween = this.tween();
-		// group.rotation.x = deg(180) * tween;
-		// group.rotation.y = deg(360) * tween;
+		// group.rotation.x = THREE.Math.degToRad(180) * tween;
+		// group.rotation.y = THREE.Math.degToRad(360) * tween;
 		*/
+	}
+
+	setVisible(visible) {
+		if (this.mesh) {
+			this.mesh.visible = visible;
+		}
 	}
 
 	getScroll(offset) {
@@ -172,6 +186,9 @@ export default class ModelComponent extends Component {
 
 	// called by UpdateViewItemComponent
 	onUpdateAsset(item, mesh) { }
+
+	// called by remote events
+	onMessage(message) { }
 
 }
 

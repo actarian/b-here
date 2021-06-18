@@ -37,11 +37,11 @@ export default class PanoramaModalComponent extends Component {
 				},
 				zoom: 75
 			};
-			console.log('PanoramaModalComponent.onSubmit.view', view);
+			// console.log('PanoramaModalComponent.onSubmit.view', view);
 			return EditorService.viewCreate$(view).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('PanoramaModalComponent.onSubmit.success', response);
+				// console.log('PanoramaModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => {
 				console.log('PanoramaModalComponent.onSubmit.error', error);
@@ -50,7 +50,7 @@ export default class PanoramaModalComponent extends Component {
 			});
 			/*
 			const asset = Asset.fromUrl(this.form.value.upload);
-			console.log('PanoramaModalComponent.onSubmit.asset', asset);
+			// console.log('PanoramaModalComponent.onSubmit.asset', asset);
 			AssetService.assetCreate$(asset).pipe(
 				first(),
 				switchMap(response => {
@@ -64,13 +64,13 @@ export default class PanoramaModalComponent extends Component {
 						},
 						zoom: 75
 					};
-					console.log('PanoramaModalComponent.onSubmit.view', view);
+					// console.log('PanoramaModalComponent.onSubmit.view', view);
 					return EditorService.viewCreate$(view).pipe(
 						first(),
 					);
 				})
 			).subscribe(response => {
-				console.log('PanoramaModalComponent.onSubmit.success', response);
+				// console.log('PanoramaModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => {
 				console.log('PanoramaModalComponent.onSubmit.error', error);
@@ -126,15 +126,14 @@ export default class PanoramaModalComponent extends Component {
 		}).pipe(
 			first(),
 		).subscribe(data => {
-			console.log('EditorService.viewCreate$', data);
+			// console.log('EditorService.viewCreate$', data);
 		});
 			*/
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 PanoramaModalComponent.meta = {

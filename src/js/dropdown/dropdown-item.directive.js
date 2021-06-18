@@ -1,6 +1,6 @@
-import { Directive, getContext } from "rxcomp";
-import { takeUntil } from "rxjs/operators";
-import DropdownDirective from "./dropdown.directive";
+import { Directive, getContext } from 'rxcomp';
+import { takeUntil } from 'rxjs/operators';
+import DropdownDirective from './dropdown.directive';
 
 export default class DropdownItemDirective extends Directive {
 

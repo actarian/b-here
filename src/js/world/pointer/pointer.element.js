@@ -1,12 +1,15 @@
+// import * as THREE from 'three';
 import { environment } from '../../environment';
+import { Geometry } from '../geometry/geometry';
+import { Host } from '../host/host';
 import Interactive from '../interactive/interactive';
-
-const ORIGIN = new THREE.Vector3();
 
 export default class PointerElement {
 
 	constructor(color = '#ffffff') {
-		const geometry = new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
+		const position = this.position = new THREE.Vector3();
+		// const targetPosition = this.targetPosition = new THREE.Vector3();
+		const geometry = Geometry.planeGeometry; // new THREE.PlaneBufferGeometry(1.2, 1.2, 2, 2);
 		const loader = new THREE.TextureLoader();
 		const texture = loader.load(environment.getPath('textures/ui/nav-point.png'));
 		const material = new THREE.MeshBasicMaterial({
@@ -22,23 +25,38 @@ export default class PointerElement {
 		mesh.position.set(-100000, -100000, -100000);
 	}
 
-	update() {
+	update(camera) {
 		if (Interactive.lastIntersectedObject) {
+			const position = this.position;
+			position.copy(Interactive.lastIntersectedObject.intersection.point);
+			position.multiplyScalar(0.99);
 			const mesh = this.mesh;
-			const position = Interactive.lastIntersectedObject.intersection.point.multiplyScalar(0.99);
 			mesh.position.set(position.x, position.y, position.z);
-			const s = mesh.position.length() / 80;
+			position.sub(camera.position);
+			const s = position.length() / 80;
 			mesh.scale.set(s, s, s);
-			mesh.lookAt(ORIGIN);
+			/*
+			const targetPosition = this.targetPosition;
+			targetPosition.set(0, 0, 0);
+			camera.localToWorld(targetPosition);
+			*/
+			mesh.lookAt(Host.origin);
 		}
 	}
 
-	setPosition(x, y, z) {
+	setPosition(x, y, z, camera) {
+		const position = this.position;
+		position.set(x, y, z).multiplyScalar(80);
 		const mesh = this.mesh;
-		mesh.position.set(x, y, z).multiplyScalar(80);
-		const s = mesh.position.length() / 80;
+		mesh.position.copy(position);
+		position.sub(camera.position);
+		const s = position.length() / 80;
 		mesh.scale.set(s, s, s);
-		mesh.lookAt(ORIGIN);
-		// console.log('PointerElement.setPosition', x, y, z);
+		/*
+		const targetPosition = this.targetPosition;
+		targetPosition.set(0, 0, 0);
+		camera.localToWorld(targetPosition);
+		*/
+		mesh.lookAt(Host.origin);
 	}
 }

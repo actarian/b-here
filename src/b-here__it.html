@@ -1,0 +1,16 @@
+<!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
+<!-- @@block = main-->
+<!-- @@include ./templates/shared/css-vars.html -->
+<!-- @@include ./templates/it.html -->
+<!-- @@include ./templates/b-here/language__it.html -->
+<script>
+// console.log('bhere', window.bhere, window.location.pathname);
+if (window.location.pathname.indexOf('embed') !== -1) {
+	const flags = window.bhere.flags || {};
+	flags.like = false;
+	window.bhere.flags = flags;
+}
+
+</script>
+<!-- @@include ./templates/b-here/b-here.html -->
+<!-- @@close-->

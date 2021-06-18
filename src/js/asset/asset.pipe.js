@@ -3,7 +3,7 @@ import { environment } from '../environment';
 import { AssetType } from './asset';
 
 export const MIME_IMAGE = [
-	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp',
+	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'
 ];
 export const MIME_AUDIO = [
 	'aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba',
@@ -50,6 +50,7 @@ export default class AssetPipe extends Pipe {
 				case AssetType.AttendeeStream.name:
 				case AssetType.PublisherScreen.name:
 				case AssetType.AttendeeScreen.name:
+				case AssetType.SmartDeviceStream.name:
 					asset = environment.getPath(asset.file);
 					break;
 				default:

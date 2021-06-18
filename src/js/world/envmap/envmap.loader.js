@@ -1,14 +1,13 @@
-/* global THREE, RGBELoader */
-
 import { fromEvent } from 'rxjs';
 import { filter, first, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { AssetType } from '../../asset/asset';
-// import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
 // import DebugService from '../debug.service';
+// import * as THREE from 'three';
+import { RGBELoader } from '../loaders/RGBELoader';
 
 export class EnvMapLoader {
 
@@ -62,26 +61,26 @@ export class EnvMapLoader {
 		this.texture_ = texture;
 	}
 
-	static load(item, renderer, callback) {
+	static load(asset, renderer, callback) {
 		this.video = null;
-		if (!item.asset) {
+		if (!asset) {
 			return;
 		}
-		if (item.asset.type.name === AssetType.PublisherStream.name) {
+		if (asset.type.name === AssetType.PublisherStream.name) {
 			return this.loadPublisherStreamBackground(renderer, callback);
-		} else if (item.asset.file.indexOf('.mp4') !== -1 || item.asset.file.indexOf('.webm') !== -1) {
-			return this.loadVideoBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
-		} else if (item.asset.file.indexOf('.m3u8') !== -1) {
-			return this.loadHlslVideoBackground(item.asset.file, renderer, callback);
-		} else if (item.asset.file.indexOf('.hdr') !== -1) {
-			return this.loadRgbeBackground(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
+		} else if (asset.file.indexOf('.mp4') !== -1 || asset.file.indexOf('.webm') !== -1) {
+			return this.loadVideoBackground(environment.getPath(asset.folder), asset.file, renderer, callback);
+		} else if (asset.file.indexOf('.m3u8') !== -1) {
+			return this.loadHlslVideoBackground(asset.file, renderer, callback);
+		} else if (asset.file.indexOf('.hdr') !== -1) {
+			return this.loadRgbeBackground(environment.getPath(asset.folder), asset.file, renderer, callback);
 		} else {
-			return this.loadBackgroundImageService(environment.getPath(item.asset.folder), item.asset.file, renderer, callback);
+			return this.loadBackgroundImageService(environment.getPath(asset.folder), asset.file, renderer, callback);
 		}
 	}
 
 	static loadBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
+		const pmremGenerator = new PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		// console.log('loadBackground.progressRef');
@@ -90,11 +89,11 @@ export class EnvMapLoader {
 			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
 			pmremGenerator.dispose();
 			if (typeof callback === 'function') {
-				callback(envMap, texture, false);
+				callback(texture, envMap, false);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		}, (request) => {
-			console.log(request.loaded, request.total);
+			// console.log(request.loaded, request.total);
 			LoaderService.setProgress(progressRef, request.loaded, request.total);
 		});
 		return loader;
@@ -125,27 +124,24 @@ export class EnvMapLoader {
 			const envMap = pmremGenerator.fromEquirectangular(texture).texture;
 			pmremGenerator.dispose();
 			if (typeof callback === 'function') {
-				callback(envMap, texture, false);
+				callback(texture, envMap, false);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		});
 	}
 
 	static loadRgbeBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
+		const pmremGenerator = new PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
-		const loader = new THREE.RGBELoader();
-		loader
-			.setDataType(THREE.UnsignedByteType)
+		const loader = new RGBELoader();
+		loader.setDataType(THREE.UnsignedByteType)
 			// .setDataType(THREE.FloatType)
-			.setPath(folder)
-			.load(file, (texture) => {
+			.setPath(folder).load(file, (texture) => {
 				const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-				// texture.dispose();
 				pmremGenerator.dispose();
 				if (typeof callback === 'function') {
-					callback(envMap, texture, true);
+					callback(texture, envMap, true);
 				}
 				LoaderService.setProgress(progressRef, 1);
 			}, (request) => {
@@ -165,7 +161,6 @@ export class EnvMapLoader {
 			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
-			// const envMap = new THREE.VideoTexture(video);
 			const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 				generateMipmaps: true,
 				// minFilter: THREE.LinearMipmapLinearFilter,
@@ -174,9 +169,8 @@ export class EnvMapLoader {
 				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
-			// texture.dispose();
 			if (typeof callback === 'function') {
-				callback(cubeRenderTarget.texture, texture, false);
+				callback(texture, cubeRenderTarget.texture, false);
 			}
 			LoaderService.setProgress(progressRef, 1);
 		};
@@ -211,7 +205,6 @@ export class EnvMapLoader {
 			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
 			texture.needsUpdate = true;
-			// const envMap = new THREE.VideoTexture(video);
 			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 				generateMipmaps: true,
 				// minFilter: THREE.LinearMipmapLinearFilter,
@@ -220,10 +213,10 @@ export class EnvMapLoader {
 				mapping: THREE.UVMapping,
 				format: THREE.RGBFormat
 			}).fromEquirectangularTexture(renderer, texture);
-			// texture.dispose();
 			if (typeof callback === 'function') {
-				callback(cubeRenderTarget.texture, texture, false);
+				callback(texture, cubeRenderTarget.texture, false);
 			}
+			console.log('loadVideoBackground.loaded');
 			LoaderService.setProgress(progressRef, 1);
 		};
 		// video.addEventListener('playing', onPlaying);
@@ -231,6 +224,7 @@ export class EnvMapLoader {
 			// console.log('EnvMapLoader.loadVideoBackground.oncanplay');
 			onPlaying();
 		};
+		video.crossOrigin = 'anonymous';
 		video.src = folder + file;
 		video.load();
 		video.play().then(() => {
@@ -244,9 +238,7 @@ export class EnvMapLoader {
 
 	static loadPublisherStreamBackground(renderer, callback) {
 		const onPublisherStreamId = (publisherStreamId) => {
-			// const target = StateService.state.role === RoleType.Publisher ? '.video--local' : '.video--remote';
-			const target = `#stream-${publisherStreamId}`;
-			const video = document.querySelector(`${target} video`);
+			const video = document.querySelector(`#stream-${publisherStreamId} video`); // document.querySelector(`#stream-remote-${publisherStreamId} video`) || document.querySelector(`#stream-local-${publisherStreamId} video`);
 			if (!video) {
 				return;
 			}
@@ -265,9 +257,8 @@ export class EnvMapLoader {
 					mapping: THREE.UVMapping,
 					format: THREE.RGBFormat
 				}).fromEquirectangularTexture(renderer, texture);
-				// texture.dispose();
 				if (typeof callback === 'function') {
-					callback(cubeRenderTarget.texture, texture, false);
+					callback(texture, cubeRenderTarget.texture, false);
 				}
 			};
 			video.crossOrigin = 'anonymous';
@@ -283,5 +274,4 @@ export class EnvMapLoader {
 			first(),
 		).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
 	}
-
 }

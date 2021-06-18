@@ -1,3 +1,6 @@
+$remote-width: 120px;
+$remote-height: 90px;
+$chat-width: 240px;
 
 .ui {
 	position: relative;
@@ -9,24 +12,290 @@
 	height: 100%;
 	@include unselectable();
 
-	&.publisher,
-	&.attendee,
-	&.streamer,
-	&.viewer {
+	.group--remote-screen {
+		@extend %live-meeting-remote;
+		background: none;
+
+		.agora-stream {
+			max-width: 100%;
+
+			.agora-stream__player {
+				padding-top: 0;
+
+				&>div {
+					position: relative !important;
+					display: flex;
+
+					&>video {
+						position: relative !important;
+						object-fit: contain !important;
+					}
+				}
+			}
+		}
+
 		@include media-up(sm) {
 			@media (orientation: landscape) {
-				width: calc(100% - 120px);
-				margin-left: 120px;
+				max-height: calc(100vh - 180px);
 
-				.group--remote {
-					left: -120px;
+				.agora-stream {
+					max-height: calc(100vh - 180px);
+
+					.agora-stream__player {
+						max-height: calc(100vh - 180px);
+
+						&>div {
+							height: calc(100vh - 180px) !important;
+						}
+					}
 				}
 			}
 
 			@media (orientation: portrait) {
-				height: calc(100% - 90px);
-				margin-bottom: 90px;
+				max-height: calc(100vh - 270px);
+
+				.agora-stream {
+					max-height: calc(100vh - 270px);
+
+					.agora-stream__player {
+						max-height: calc(100vh - 270px);
+
+						&>div {
+							height: calc(100vh - 270px) !important;
+						}
+					}
+				}
 			}
+		}
+
+		@include media-down(xs) {}
+	}
+
+	&.virtual-tour {
+
+		&:not(.remotes) {
+
+			.group--remote {
+
+				.agora-stream {
+					@include ratio(120px, 4 / 3);
+					background: black;
+					flex-shrink: 0;
+
+					&__info {
+						// &.talking {
+						// 	border-color: #00ff00;
+						// }
+
+						&.spyed {
+							border-color: $background-primary;
+
+							.spy {
+								fill: $foreground-primary;
+							}
+						}
+
+						&.controlling {
+							border-color: $background-secondary;
+
+							.control {
+								fill: $foreground-secondary;
+							}
+						}
+					}
+				}
+
+				@include media-up(sm) {
+					position: absolute;
+					display: flex;
+					background: $background-negative;
+
+					@media (orientation: landscape) {
+						flex-direction: column;
+						justify-content: flex-start;
+						top: 0;
+						left: -$remote-width;
+						width: $remote-width;
+						height: 100%;
+						flex: 1 1 $remote-width;
+
+						.group--members {
+							width: $remote-width;
+							bottom: 0;
+							left: 0;
+						}
+					}
+
+					@media (orientation: portrait) {
+						flex-direction: row;
+						justify-content: flex-start;
+						bottom: -$remote-height;
+						left: 0;
+						width: 100%;
+						height: $remote-height;
+						flex: 1 1 100%;
+
+						.group--members {
+							right: 0;
+							height: 100%;
+						}
+					}
+				}
+
+				@include media-down(xs) {
+					position: absolute;
+					top: 0;
+					left: 0;
+
+					.group--members {
+						display: none;
+					}
+				}
+			}
+
+			@include media-up(sm) {
+				@media (orientation: landscape) {
+					width: calc(100% - #{$remote-width});
+					margin-left: $remote-width;
+
+					.group--members {
+						left: -$remote-width;
+					}
+				}
+
+				@media (orientation: portrait) {
+					height: calc(100% - #{$remote-height});
+					margin-bottom: $remote-height;
+				}
+			}
+		}
+
+		&:not(.remotes):not(.remoteScreen) {
+			.group--remote-screen {
+				position: absolute;
+				left: 200vw;
+			}
+		}
+
+		&.chat {
+			.group--chat {
+				top: 0;
+				right: -$chat-width;
+				width: $chat-width;
+				height: 100%;
+				flex: 1 1 $chat-width;
+			}
+
+			&:not(.remotes) {
+				@include media-up(sm) {
+					@media (orientation: landscape) {
+						width: calc(100% - #{$remote-width} - #{$chat-width});
+						margin-left: $remote-width;
+						margin-right: $chat-width;
+
+						.group--members {
+							left: 0; // -$remote-width;
+						}
+
+						.group--chat {
+							right: -$chat-width;
+						}
+					}
+
+					@media (orientation: portrait) {
+						height: calc(100% - #{$remote-height});
+						margin-bottom: $remote-height;
+
+						.group--chat {
+							display: none;
+						}
+					}
+				}
+			}
+
+			&.remotes {
+
+				@media (max-width: 767px) {
+					.group--chat {
+						width: 240px;
+						right: -240px;
+						display: none;
+					}
+				}
+
+				@media (min-width: 768px) {
+					width: calc(100% - #{$chat-width});
+					margin-left: 0;
+					margin-right: $chat-width;
+
+					.group--chat {
+						right: -$chat-width;
+					}
+				}
+			}
+		}
+	}
+
+	&.remotes {
+
+		.world,
+		.btn--volume,
+		.btn--control,
+		.group--ar-vr,
+		.group--heart {
+			display: none;
+		}
+
+		&.remoteScreen {
+			.group--remote {
+				display: none;
+			}
+		}
+
+		.group--remote {
+			@extend %live-meeting-remote;
+		}
+
+		.group--members {
+			width: $remote-width;
+			height: $remote-height;
+			bottom: 0;
+			right: 0;
+		}
+	}
+
+	&.remoteScreen {
+
+		.world,
+		.btn--volume,
+		.btn--control,
+		.group--ar-vr,
+		.group--heart {
+			display: none;
+		}
+	}
+
+	&.media {
+		.group--ar-vr {
+			display: none;
+		}
+	}
+
+	&.smart-device {
+		.group--local {
+			display: none;
+		}
+	}
+
+	&.self-service {
+		.btn--view-mode {
+			display: none;
+		}
+	}
+
+	&.embed {
+		.group--remote {
+			display: none;
 		}
 	}
 
@@ -38,8 +307,10 @@
 
 	&.publisher {
 		.group--local {
-			.agora-stream {
-				margin-left: 20px;
+
+			.btn--control,
+			.btn--silence {
+				margin-right: 20px;
 			}
 		}
 	}
@@ -63,6 +334,13 @@
 	}
 }
 
+.ui--info-centered {
+	.picture {
+		display: flex;
+		justify-content: center;
+	}
+}
+
 .ui__body {
 	position: absolute;
 	width: 100%;
@@ -74,15 +352,13 @@
 	position: absolute;
 	width: 100%;
 	height: calc(100% - 2px);
-    top: 0;
-    left: 0;
-	border: 2px solid $foreground-secondary;
+	top: 0;
+	left: 0;
+	border: 1px solid $foreground-secondary;
+	pointer-events: none;
 	z-index: 2;
 
-	&.control {
-		pointer-events: none;
+	&.spying {
+		border-color: $foreground-primary;
 	}
-
-	// !!!
-	pointer-events: none;
 }

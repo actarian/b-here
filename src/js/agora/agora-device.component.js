@@ -2,14 +2,13 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
-import LabelPipe from '../label/label.pipe';
 import StateService from '../state/state.service';
 import AgoraService from './agora.service';
 
 export default class AgoraDeviceComponent extends Component {
 
 	get hasPreview() {
-		return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset;
+		return this.platform !== DevicePlatform.IOS && this.platform !== DevicePlatform.VRHeadset; // && this.form && this.form.value.video;
 	}
 
 	onInit() {
@@ -34,6 +33,9 @@ export default class AgoraDeviceComponent extends Component {
 					this.devices = devices;
 					this.initForm(devices);
 					this.pushChanges();
+				}, error => {
+					console.log('AgoraDeviceComponent.devices$.error', error);
+					// alert('AgoraDeviceComponent ' + error); // !!!
 				});
 			}
 		}
@@ -57,7 +59,7 @@ export default class AgoraDeviceComponent extends Component {
 		});
 		if (videoOptions.length > 0) {
 			videoOptions.unshift({
-				id: null, name: LabelPipe.transform('bhere_select_video')
+				id: null, name: 'bhere_select_video', // LabelPipe.transform('bhere_select_video')
 			});
 		}
 		controls.video.options = videoOptions;
@@ -69,7 +71,7 @@ export default class AgoraDeviceComponent extends Component {
 		});
 		if (audioOptions.length > 0) {
 			audioOptions.unshift({
-				id: null, name: LabelPipe.transform('bhere_select_audio')
+				id: null, name: 'bhere_select_audio', // LabelPipe.transform('bhere_select_audio')
 			});
 		}
 		controls.audio.options = audioOptions;

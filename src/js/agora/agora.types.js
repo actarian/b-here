@@ -90,11 +90,12 @@ export const StreamQualities = [{
 export function getStreamQuality(state) {
 	const lowestQuality = StreamQualities[StreamQualities.length - 1];
 	const highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-	return state.role === RoleType.Publisher ? highestQuality : lowestQuality;
+	return (state.role === RoleType.Publisher || state.role === RoleType.SmartDevice) ? highestQuality : lowestQuality;
 }
 
 export const AgoraStatus = {
 	Idle: 'idle',
+	Checklist: 'checklist',
 	Link: 'link',
 	Login: 'login',
 	Name: 'name',
@@ -120,18 +121,36 @@ export const MessageType = {
 	RequestInfoDismiss: 'requestInfoDismiss',
 	RequestInfoDismissed: 'requestInfoDismissed',
 	RequestInfoRejected: 'requestInfoRejected',
+	RemoteSilencing: 'remoteSilencing',
 	SlideChange: 'slideChange',
 	ControlInfo: 'controlInfo',
 	AddLike: 'addLike',
 	ShowPanel: 'showPanel',
 	PlayMedia: 'playMedia',
+	ZoomMedia: 'zoomMedia',
+	CurrentTimeMedia: 'currentTimeMedia',
+	PlayModel: 'playModel',
+	NavInfo: 'navInfo',
 	NavToView: 'navToView',
 	NavToGrid: 'navToGrid',
 	VRStarted: 'vrStarted',
 	VREnded: 'vrEnded',
 	VRState: 'vrState',
 	MenuToggle: 'menuToggle',
+	ChatMessage: 'chatMessage',
+	ChatTypingBegin: 'chatTypingBegin',
+	ChatTypingEnd: 'chatTypingEnd',
+	SelectItem: 'selectItem',
 };
+
+export const UIMode = {
+	VirtualTour: 'virtual-tour',
+	LiveMeeting: 'live-meeting',
+	SelfServiceTour: 'self-service-tour',
+	Embed: 'embed',
+	None: 'none',
+};
+
 export class AgoraEvent {
 	constructor(options) {
 		Object.assign(this, options);

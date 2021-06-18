@@ -1,10 +1,10 @@
+// import * as THREE from 'three';
 import { environment } from '../../environment';
-import { PANORAMA_RADIUS } from '../panorama/panorama';
+import { PANORAMA_RADIUS } from '../geometry/geometry';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
 const PANEL_RADIUS = PANORAMA_RADIUS - 0.01;
-const ORIGIN = new THREE.Vector3();
 
 export default class ModelBannerComponent extends ModelComponent {
 
@@ -26,11 +26,11 @@ export default class ModelBannerComponent extends ModelComponent {
 	/*
 	onInit() {
 		super.onInit();
-		console.log('ModelBannerComponent.onInit', this.item);
+		// console.log('ModelBannerComponent.onInit', this.item);
 	}
 
 	onView() {
-		console.log('ModelBannerComponent.onView', this.item);
+		// console.log('ModelBannerComponent.onView', this.item);
 		if (this.viewed) {
 			return;
 		}
@@ -193,7 +193,7 @@ export default class ModelBannerComponent extends ModelComponent {
 			ctx.textBaseline = 'middle';
 			ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
 			ctx.lineWidth = L;
-			ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
+			ctx.lineJoin = 'round'; // Experiment with 'bevel' & 'round' for the effect you want!
 			ctx.miterLimit = 2;
 			ctx.strokeText(text, W / 2, H / 2);
 			ctx.fillStyle = 'white';
@@ -244,8 +244,6 @@ export default class ModelBannerComponent extends ModelComponent {
 	}
 	*/
 }
-
-ModelBannerComponent.ORIGIN = new THREE.Vector3();
 
 ModelBannerComponent.meta = {
 	selector: '[model-banner]',

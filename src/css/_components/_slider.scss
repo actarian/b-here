@@ -77,7 +77,7 @@
 
 	.btn--prev,
 	.btn--next {
-		pointer-events: all;
+		pointer-events: auto;
 		// mix-blend-mode: difference;
 
 		&.disabled {

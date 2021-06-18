@@ -23,6 +23,7 @@ const MIME_CONTENT_TYPES = {
 	"tif": "image/tiff", // Tagged Image File Format (TIFF)
 	"tiff": "image/tiff", // Tagged Image File Format (TIFF)
 	"webp": "image/webp", // WEBP image
+	"hdr": "image/vnd.radiance", // HDR image
 	"otf": "font/otf", // OpenType font
 	"ttf": "font/ttf", // TrueType Font
 	"woff": "font/woff", // Web Open Font Format (WOFF)
@@ -31,13 +32,13 @@ const MIME_CONTENT_TYPES = {
 	"mid": "audio/midi audio/x-midi", // Musical Instrument Digital Interface (MIDI)
 	"midi": "audio/midi audio/x-midi", // Musical Instrument Digital Interface (MIDI)
 	"mp3": "audio/mpeg", // MP3 audio
-	"mp4": "audio/mp4", // MP4 video
 	"oga": "audio/ogg", // OGG audio
 	"opus": "audio/opus", // Opus audio
 	"wav": "audio/wav", // Waveform Audio Format
 	"weba": "audio/webm", // WEBM audio
 	"avi": "video/x-msvideo", // AVI: Audio Video Interleave
 	"mpeg": "video/mpeg", // MPEG Video
+	"mp4": "video/mp4", // MP4 video
 	"ogv": "video/ogg", // OGG video
 	"ts": "video/mp2t", // MPEG transport stream
 	"webm": "video/webm", // WEBM video
@@ -85,12 +86,13 @@ const MIME_CONTENT_TYPES = {
 	"gltf": "application/octet-stream", // Gltf
 	"fbx": "application/octet-stream", // Fbx
 	"usdz": "application/octet-stream", // Usdz
+	"wasm": "application/wasm", // Wasm
 };
 const MIME_TEXT = [
 	'css', 'csv', 'htm', 'html', 'ics', 'js', 'mjs', 'txt', 'xml',
 ];
 const MIME_IMAGE = [
-	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp',
+	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'
 ];
 const MIME_FONTS = [
 	'otf', 'ttf', 'woff', 'woff2',
@@ -103,7 +105,7 @@ const MIME_VIDEO = [
 ];
 const MIME_APPLICATION = [
 	'abw', 'arc', 'azw', 'bin', 'bz', 'bz2', 'csh', 'doc', 'docx', 'eot', 'epub', 'gz', 'jar', 'json', 'jsonld', 'map', 'mpkg', 'odp', 'ods', 'odt', 'ogx', 'pdf', 'php', 'ppt', 'pptx', 'rar', 'rtf', 'sh', 'swf', 'tar', 'vsd', 'webmanifest', 'xhtml', 'xls', 'xlsx', 'xul', 'zip', '7z',
-	'glb', 'gltf', 'fbx', 'usdz',
+	'glb', 'gltf', 'fbx', 'usdz', 'wasm',
 ];
 const MIME_TYPES = [
 	...MIME_TEXT,
@@ -134,16 +136,81 @@ function staticMiddleware(vars) {
 			const extension = matches[4];
 			const file = path.join(matches[2] + '.' + extension);
 			const filePath = path.join(__dirname, '../', vars.root, file);
-			fs.readFile(filePath, {}, (error, data) => {
+
+			fs.stat(filePath, (error, stats) => {
 				if (error) {
 					console.log('NodeJs.staticMiddleware.notFound', file);
 					return next();
 				}
-				console.log('NodeJs.staticMiddleware.serving', file);
-				response.set('Content-Length', data.length);
-				response.set('Content-Type', MIME_CONTENT_TYPES[extension]);
-				// response.set('Cache-Control', 'max-age=31536000');
-				response.send(data);
+
+				const lastModified = stats.mtime.toUTCString();
+				response.setHeader('Last-Modified', lastModified);
+				// nginx style treat last-modified as a tag since browsers echo it back
+				if (request.headers['if-modified-since'] === lastModified && !request.headers.range) {
+					response.writeHead(304);
+					return response.end();
+				}
+
+				// console.log('NodeJs.staticMiddleware.serving', file);
+				const mimeType = MIME_CONTENT_TYPES[extension];
+
+				if (request.method === 'HEAD') {
+					response.status(200);
+					response.setHeader('Accept-Ranges', 'bytes');
+					response.setHeader('Content-Length', stats.size);
+					return response.end();
+				}
+
+				const contentLength = stats.size;
+
+				if (request.headers.range) {
+					const range = request.headers.range;
+					let start, end;
+					const prefix = 'bytes=';
+					if (range.startsWith(prefix)) {
+						const ranges = range.substring(prefix.length).split('-').map(x => x.trim());
+						if (ranges.length === 2) {
+							start = ranges[0] !== '' ? parseInt(ranges[0]) : start;
+							end = ranges[1] !== '' ? parseInt(ranges[1]) : end;
+						}
+					}
+					let chunkLength;
+					if (start !== undefined && end !== undefined) {
+						chunkLength = (end + 1) - start;
+					} else if (start !== undefined) {
+						chunkLength = contentLength - start;
+					} else if (end !== undefined) {
+						chunkLength = (end + 1);
+					} else {
+						chunkLength = contentLength;
+					}
+					end = end || contentLength - 1;
+					// console.log(filePath, 'start', start, 'end', end, 'chunkLength', chunkLength, 'contentLength', contentLength);
+					response.setHeader('Cache-Control', 'private, max-age=0, must-revalidate');
+					response.setHeader('Content-Range', `bytes ${start || 0}-${end}/${contentLength}`);
+					response.setHeader('Accept-Ranges', 'bytes');
+					response.setHeader('Content-Length', chunkLength);
+					response.setHeader('Content-Type', mimeType);
+					response.status((start === 0 && end === contentLength) ? 200 : 206);
+					// read file sync so we don't hold open the file creating a race with
+					// the builder (Windows does not allow us to delete while the file is open).
+					// const buffer = fs.readFileSync(filePath);
+					// return response.end(buffer.slice(start, chunkLength));
+					return fs.createReadStream(filePath, { start, chunkLength }).pipe(response);
+					// return response.end(buffer.slice(start, end));
+				} else {
+					response.setHeader('Cache-Control', 'private, max-age=0, must-revalidate');
+					response.setHeader('Content-Length', contentLength);
+					response.setHeader('Content-Type', mimeType);
+					if (MIME_VIDEO.indexOf(extension) !== -1) {
+						response.set('Accept-Ranges', 'bytes');
+					}
+					response.writeHead(200);
+					// read file sync so we don't hold open the file creating a race with
+					// the builder (Windows does not allow us to delete while the file is open).
+					const buffer = fs.readFileSync(filePath);
+					return response.end(buffer);
+				}
 			});
 		} else {
 			// console.log('NodeJs.staticMiddleware.unmatch', file);

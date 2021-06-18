@@ -28,7 +28,7 @@ export default class ControlModelComponent extends ControlAssetComponent {
 			}),
 			takeUntil(this.unsubscribe$),
 		).subscribe(assets => {
-			console.log('ControlModelComponent.change$', assets);
+			// console.log('ControlModelComponent.change$', assets);
 			this.control.value = assets[0];
 		});
 	}

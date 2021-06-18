@@ -24,7 +24,7 @@ export default class UpdateViewTileComponent extends Component {
 			}
 			this.pushChanges();
 		});
-		console.log('UpdateViewTileComponent.onInit', this.view, this.tile);
+		// console.log('UpdateViewTileComponent.onInit', this.view, this.tile);
 	}
 
 	onSubmit() {
@@ -38,10 +38,10 @@ export default class UpdateViewTileComponent extends Component {
 			EditorService.tileUpdate$...
 			*/
 			this.update.next({ view, tile });
-			setTimeout(() => {
+			this.setTimeout(() => {
 				this.busy = false;
 				this.pushChanges();
-			}, 300);
+			});
 		} else {
 			this.form.touched = true;
 		}
@@ -59,6 +59,23 @@ export default class UpdateViewTileComponent extends Component {
 
 	onSelect(event) {
 		this.select.next({ view: this.view, tile: this.tile.selected ? null : this.tile });
+	}
+
+	clearTimeout() {
+		if (this.to) {
+			clearTimeout(this.to);
+		}
+	}
+
+	setTimeout(callback, msec = 300) {
+		this.clearTimeout();
+		if (typeof callback === 'function') {
+			this.to = setTimeout(callback, msec);
+		}
+	}
+
+	onDestroy() {
+		this.clearTimeout();
 	}
 }
 

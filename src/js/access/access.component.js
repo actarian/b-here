@@ -9,7 +9,6 @@ import { UserService } from '../user/user.service';
 export default class AccessComponent extends Component {
 
 	onInit() {
-		this.env = environment;
 		this.state = {
 			status: 'access',
 		};
@@ -17,7 +16,7 @@ export default class AccessComponent extends Component {
 		StateService.state$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(state => {
-			console.log('AccessComponent.state', state);
+			// console.log('AccessComponent.state', state);
 			this.state = state;
 			this.pushChanges();
 		});
@@ -98,7 +97,7 @@ export default class AccessComponent extends Component {
 		const controls = this.controls = form.controls;
 		/*
 		const options = data.roles.slice();
-		options.unshift({ id: null, name: LabelPipe.transform('select') });
+		options.unshift({ id: null, name: 'select', // LabelPipe.transform('select') });
 		controls.role.options = options;
 		*/
 
@@ -175,7 +174,7 @@ export default class AccessComponent extends Component {
 			UserService.resolve$(payload, status).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('AccessComponent.onSubmit', response);
+				// console.log('AccessComponent.onSubmit', response);
 				switch (status) {
 					case 'guided-tour':
 						this.state.status = 'guided-tour-success';

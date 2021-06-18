@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { of } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
-import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId } from '../../asset/asset';
+import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId, AssetType } from '../../asset/asset';
 import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
@@ -20,6 +20,8 @@ export default class UpdateViewItemComponent extends Component {
 		const item = this.item;
 		this.originalItem = Object.assign({}, item);
 		item.hasChromaKeyColor = (item.asset && item.asset.chromaKeyColor) ? true : false;
+		item.autoplay = (item.asset && item.asset.type.name === AssetType.Video.name) ? item.asset.autoplay : undefined;
+		item.loop = (item.asset && item.asset.type.name === AssetType.Video.name) ? item.asset.loop : undefined;
 		item.assetType = assetGroupTypeFromItem(item).id;
 		this.doUpdateForm();
 		form.changes$.subscribe((changes) => {
@@ -29,26 +31,27 @@ export default class UpdateViewItemComponent extends Component {
 		});
 	}
 
-	getAssetDidChange(changes) {
-		const item = this.item;
-		// console.log('UpdateViewItemComponent.getAssetDidChange', item, changes);
-		const itemHasChromaKeyColor = item.hasChromaKeyColor === true;
-		const changesHasChromaKeyColor = changes.hasChromaKeyColor === true;
-		if (AssetService.assetDidChange(item.asset, changes.asset) ||
-			itemHasChromaKeyColor !== changesHasChromaKeyColor) {
-			return true;
-		} else {
-			return false;
-		}
+	getKeysDidChange(item, changes) {
+		const keys = ['hasChromaKeyColor', 'autoplay', 'loop'];
+		return keys.reduce((p, c) => {
+			return p || (changes[c] !== item[c]);
+		}, false);
+	}
+
+	getAssetDidChange(item, changes) {
+		// console.log('UpdateViewItemComponent.getAssetDidChange', item.asset, changes.asset);
+		return AssetService.assetDidChange(item.asset, changes.asset);
 	}
 
 	doUpdateItem(changes) {
 		const item = this.item;
-		const assetDidChange = this.getAssetDidChange(changes);
+		const assetDidChange = this.getAssetDidChange(item, changes) || this.getKeysDidChange(item, changes);
 		// console.log('doUpdateItem.assetDidChange', assetDidChange);
 		Object.assign(item, changes);
 		if (item.asset) {
 			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0, 1.0, 0.0] : null;
+			item.asset.autoplay = item.autoplay;
+			item.asset.loop = item.loop;
 		}
 		if (assetDidChange) {
 			const asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : of(null);
@@ -78,16 +81,16 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
-					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'position', 'asset?', 'link?'];
+					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'important?', 'position', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'assetType?', 'asset?', 'hasChromaKeyColor?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'assetType?', 'asset?', 'hasChromaKeyColor?', 'autoplay?', 'loop?'];
 					break;
 				case ViewItemType.CurvedPlane.name:
-					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'assetType?', 'asset?', 'hasChromaKeyColor?'];
+					keys = ['id', 'type', 'position', 'rotation', 'scale', 'radius', 'height', 'arc', 'assetType?', 'asset?', 'hasChromaKeyColor?', 'autoplay?', 'loop?'];
 					break;
 				case ViewItemType.Texture.name:
-					keys = ['id', 'type', 'assetType?', 'asset?', 'hasChromaKeyColor?']; // asset, key no id!!
+					keys = ['id', 'type', 'assetType?', 'asset?', 'hasChromaKeyColor?', 'autoplay?', 'loop?']; // asset, key no id!!
 					break;
 				case ViewItemType.Model.name:
 					if (this.view.type.name === ViewType.Model) {
@@ -147,6 +150,12 @@ export default class UpdateViewItemComponent extends Component {
 						break;
 					case 'hasChromaKeyColor':
 						this.controls[key].value = (item.asset && item.asset.chromaKeyColor) ? true : false;
+						break;
+					case 'autoplay':
+						this.controls[key].value = (item.asset && item.asset.autoplay) ? true : false;
+						break;
+					case 'loop':
+						this.controls[key].value = (item.asset && item.asset.loop) ? true : false;
 						break;
 					case 'assetType':
 						this.controls[key].value = assetGroupTypeFromItem(item).id;
@@ -210,13 +219,13 @@ export default class UpdateViewItemComponent extends Component {
 			EditorService.inferItemUpdate$(view, item).pipe(
 				first(),
 			).subscribe(response => {
-				// console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
+				console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
 				EditorService.inferItemUpdateResult$(view, item);
 				this.update.next({ view, item });
-				setTimeout(() => {
+				this.setTimeout(() => {
 					this.busy = false;
 					this.pushChanges();
-				}, 300);
+				});
 			}, error => console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.error', error));
 			// this.update.next({ view: this.view, item: new ViewItem(payload) });
 		} else {
@@ -245,6 +254,23 @@ export default class UpdateViewItemComponent extends Component {
 	getTitle(item) {
 		return LabelPipe.getKeys('editor', item.type.name);
 	}
+
+	clearTimeout() {
+		if (this.to) {
+			clearTimeout(this.to);
+		}
+	}
+
+	setTimeout(callback, msec = 300) {
+		this.clearTimeout();
+		if (typeof callback === 'function') {
+			this.to = setTimeout(callback, msec);
+		}
+	}
+
+	onDestroy() {
+		this.clearTimeout();
+	}
 }
 
 UpdateViewItemComponent.meta = {
@@ -269,22 +295,31 @@ UpdateViewItemComponent.meta = {
 				<div control-text [control]="controls.title" label="Title"></div>
 				<div control-textarea [control]="controls.abstract" label="Abstract"></div>
 				<div control-custom-select [control]="controls.viewId" label="NavToView"></div>
-				<!-- <div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div> -->
+				<div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div>
+				<div control-checkbox [control]="controls.important" label="Important"></div>
 				<div control-vector [control]="controls.position" label="Position" [precision]="3"></div>
 				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
 				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
 				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
 			</div>
-			<div class="form-controls" *if="item.type.name == 'plane'">
-				<div control-vector [control]="controls.position" label="Position" [precision]="1"></div>
+			<div class="form-controls" *if="item.type.name == 'plane' && view.type.name != 'media'">
+				<div control-vector [control]="controls.position" label="Position" [precision]="2"></div>
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
 				<div control-localized-asset [control]="controls.asset" label="Localized Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
+				<div control-checkbox [control]="controls.autoplay" label="Autoplay" *if="item.asset && item.asset.type.name === 'video'"></div>
+				<div control-checkbox [control]="controls.loop" label="Loop" *if="item.asset && item.asset.type.name === 'video'"></div>
+			</div>
+			<div class="form-controls" *if="item.type.name == 'plane' && view.type.name == 'media'">
+				<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
+				<div control-localized-asset [control]="controls.asset" label="Localized Image or Video" accept="image/jpeg, video/mp4"></div>
+				<div control-checkbox [control]="controls.autoplay" label="Autoplay" *if="item.asset && item.asset.type.name === 'video'"></div>
+				<div control-checkbox [control]="controls.loop" label="Loop" *if="item.asset && item.asset.type.name === 'video'"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'curved-plane'">
-				<div control-vector [control]="controls.position" label="Position" [precision]="1"></div>
+				<div control-vector [control]="controls.position" label="Position" [precision]="2"></div>
 				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
 				<!-- <div control-vector [control]="controls.scale" label="Scale" [precision]="2" [disabled]="true"></div> -->
 				<div control-number [control]="controls.radius" label="Radius" [precision]="2"></div>
@@ -293,16 +328,20 @@ UpdateViewItemComponent.meta = {
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
 				<div control-localized-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
-			</div>
-			<div class="form-controls" *if="item.type.name == 'model'">
-				<div control-vector [control]="controls.position" label="Position" [precision]="1" *if="view.type.name !== 'model'"></div>
-				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360" *if="view.type.name !== 'model'"></div>
-				<div control-model [control]="controls.asset" label="Model (.glb)" accept=".glb"></div>
+				<div control-checkbox [control]="controls.autoplay" label="Autoplay" *if="item.asset && item.asset.type.name === 'video'"></div>
+				<div control-checkbox [control]="controls.loop" label="Loop" *if="item.asset && item.asset.type.name === 'video'"></div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'texture'">
 				<div control-custom-select [control]="controls.assetType" label="Asset" (change)="onAssetTypeDidChange($event)"></div>
 				<div control-localized-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4" *if="controls.assetType.value == 1"></div>
 				<div control-checkbox [control]="controls.hasChromaKeyColor" label="Use Green Screen" *if="item.asset"></div>
+				<div control-checkbox [control]="controls.autoplay" label="Autoplay" *if="item.asset && item.asset.type.name === 'video'"></div>
+				<div control-checkbox [control]="controls.loop" label="Loop" *if="item.asset && item.asset.type.name === 'video'"></div>
+			</div>
+			<div class="form-controls" *if="item.type.name == 'model'">
+				<div control-vector [control]="controls.position" label="Position" [precision]="2" *if="view.type.name !== 'model'"></div>
+				<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360" *if="view.type.name !== 'model'"></div>
+				<div control-model [control]="controls.asset" label="Model (.glb)" accept=".glb"></div>
 			</div>
 			<div class="group--cta">
 				<button type="submit" class="btn--update" [class]="{ busy: busy }">

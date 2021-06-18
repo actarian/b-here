@@ -1,9 +1,10 @@
 import { Component, getContext } from 'rxcomp';
 import { Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { AgoraStatus } from '../agora/agora.types';
+import { AgoraStatus, MessageType, UIMode } from '../agora/agora.types';
 import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
+import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService, { StreamServiceMode } from '../stream/stream.service';
@@ -20,7 +21,6 @@ export default class EditorComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
-		this.flags = environment.flags;
 		this.aside = false;
 		this.settings = false;
 		this.state = {};
@@ -59,17 +59,19 @@ export default class EditorComponent extends Component {
 			user: user,
 			role: role,
 			name: name,
+			mode: UIMode.VirtualTour,
 			link: null,
 			channelName: environment.channelName,
 			uid: null,
 			status: AgoraStatus.Connected,
 			connecting: false,
 			connected: true,
-			locked: false,
-			control: false,
-			spyed: false,
+			controlling: false,
+			spying: false,
+			silencing: false,
 			hosted: true,
 			live: false,
+			navigable: true,
 			cameraMuted: false,
 			audioMuted: false,
 		};
@@ -81,59 +83,22 @@ export default class EditorComponent extends Component {
 			this.hosted = state.hosted;
 			this.pushChanges();
 		});
-		this.loadView();
+		this.viewObserver$().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(view => {
+			// console.log('EditorComponent.viewObserver$', view);
+		});
 		StreamService.mode = StreamServiceMode.Editor;
 		// this.getUserMedia();
 	}
 
-	/*
-	getUserMedia() {
-		if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-			const body = document.querySelector('body');
-			const media = document.createElement('div');
-			const video = document.createElement('video');
-			media.setAttribute('id', 'stream-editor');
-			media.setAttribute('style', 'position:absolute; top: 5000px; line-height: 0;');
-			media.appendChild(video);
-			body.appendChild(media);
-			navigator.mediaDevices.getUserMedia({
-				video: { width: 800, height: 450 },
-			}).then((stream) => {
-				// console.log(stream);
-				if ('srcObject' in video) {
-					video.srcObject = stream;
-				} else {
-					video.src = window.URL.createObjectURL(stream);
-				}
-				video.play();
-				const fakePublisherStream = {
-					getId: () => 'editor',
-					clientInfo: {
-						role: RoleType.Publisher,
-					}
-				};
-				const fakeAttendeeStream = {
-					getId: () => 'editor',
-					clientInfo: {
-						role: RoleType.Attendee,
-					}
-				};
-				StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
-			}).catch((error) => {
-				console.log('EditorComponent.getUserMedia.error', error.name, error.message);
-			});
-		}
-	}
-	*/
-
-	loadView() {
-		EditorService.data$().pipe(
+	viewObserver$() {
+		return EditorService.data$().pipe(
 			switchMap(data => {
 				this.data = data;
 				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
 				return ViewService.editorView$(data);
 			}),
-			takeUntil(this.unsubscribe$),
 			tap(view => {
 				this.view = null;
 				this.pushChanges();
@@ -143,28 +108,16 @@ export default class EditorComponent extends Component {
 				this.view = view;
 				this.pushChanges();
 			}),
-		).subscribe(view => {
-			// console.log('EditorComponent.view$', view);
-		});
+		);
 	}
 
-	onNavTo(viewId) {
+	onNavTo(navItem) {
+		// console.log('EditorComponent.onNavTo', navItem);
+		const viewId = navItem.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
-			ViewService.viewId = viewId;
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
 		}
-	}
-
-	onRemoteControlRequest(message) {
-		ModalService.open$({ src: environment.template.modal.controlRequest, data: null }).pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(event => {
-			if (event instanceof ModalResolveEvent) {
-				this.patchState({ control: true, spying: false });
-			} else {
-				this.patchState({ control: false, spying: false });
-			}
-		});
 	}
 
 	patchState(state) {
@@ -180,13 +133,6 @@ export default class EditorComponent extends Component {
 			// this.pushChanges();
 		});
 	}
-
-	/*
-	onPrevent(event) {
-		event.preventDefault();
-		event.stopImmediatePropagation();
-	}
-	*/
 
 	replaceUrl() {
 		if ('history' in window) {
@@ -228,7 +174,7 @@ export default class EditorComponent extends Component {
 		if (typeof callback === 'function') {
 			this.viewHitSubscription = this.viewHit.pipe(
 				first(),
-			).subscribe(position => callback(position))
+			).subscribe(event => callback(event))
 		}
 	}
 
@@ -278,15 +224,18 @@ export default class EditorComponent extends Component {
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				console.log('EditorComponent.onOpenModal.resolve', event);
-				switch(modal.type) {
+				switch (modal.type) {
 					case 'view':
 						switch (modal.value) {
 							case ViewType.Panorama.name:
 							case ViewType.PanoramaGrid.name:
 							case ViewType.Model.name:
+							case ViewType.Room3d.name:
+							case ViewType.Media.name:
 								this.data.views.push(event.data);
+								this.views = this.data.views.slice();
 								ViewService.viewId = event.data.id;
-								this.pushChanges(); // !!!
+								this.pushChanges();
 								break;
 							default:
 						}
@@ -327,8 +276,8 @@ export default class EditorComponent extends Component {
 				case ViewItemType.Nav.name:
 				case ViewItemType.Plane.name:
 				case ViewItemType.CurvedPlane.name:
-					this.onViewHitted((position) => {
-						this.onOpenModal(event, { view: this.view, position });
+					this.onViewHitted((hit) => {
+						this.onOpenModal(event, { view: this.view, hit });
 					});
 					ToastService.open$({ message: 'Click a point on the view' });
 					break;
@@ -337,8 +286,8 @@ export default class EditorComponent extends Component {
 						if (this.view.type.name === ViewType.Model.name) {
 							return;
 						}
-						this.onViewHitted((position) => {
-							this.onOpenModal(event, { view: this.view, position });
+						this.onViewHitted((hit) => {
+							this.onOpenModal(event, { view: this.view, hit });
 						});
 						ToastService.open$({ message: 'Click a point on the view' });
 					} else {
@@ -351,20 +300,26 @@ export default class EditorComponent extends Component {
 		} else if (event.view && (event.item || event.item === null)) {
 			event.view.selected = false;
 			event.view.items.forEach(item => item.selected = item === event.item);
+			MessageService.send({
+				type: MessageType.SelectItem,
+			});
 			this.pushChanges();
 		} else if (event.view && (event.tile || event.tile === null)) {
 			event.view.selected = false;
 			event.view.tiles.forEach(tile => tile.selected = tile === event.tile);
+			MessageService.send({
+				type: MessageType.SelectItem,
+			});
 			/*
 			// if tile selected
 			// send ChangeTile message to world component
-			this.orbit.walk(event.position, (headingLongitude, headingLatitude) => {
+			this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
 				const item = this.view.getTile(event.indices.x, event.indices.y);
 				if (item) {
 					this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
 						// this.scene.background = envMap;
 						this.scene.environment = envMap;
-						this.orbit.walkComplete(headingLongitude, headingLatitude);
+						this.orbitService.walkComplete(headingLongitude, headingLatitude);
 						// this.render();
 						// this.pushChanges();
 					});
@@ -379,6 +334,9 @@ export default class EditorComponent extends Component {
 			if (currentTile) {
 				this.view.tiles.forEach(tile => tile.selected = tile === currentTile);
 			}
+			MessageService.send({
+				type: MessageType.SelectItem,
+			});
 			this.pushChanges();
 		}
 	}
@@ -408,7 +366,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onAsideDelete(event) {
-		console.log('onAsideDelete', event);
+		// console.log('onAsideDelete', event);
 		if (event.item && event.view) {
 			EditorService.inferItemDelete$(event.view, event.item).pipe(
 				first(),
@@ -422,17 +380,18 @@ export default class EditorComponent extends Component {
 				first(),
 			).subscribe(response => {
 				// console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-				const index = this.data.views.indexOf(event.view);
+				const views = this.data.views;
+				const index = views.indexOf(event.view);
 				if (index !== -1) {
-					this.data.views.splice(index, 1);
+					views.splice(index, 1);
 				}
-				this.views = this.data.views.slice();
+				this.data.views = views;
+				this.views = views.slice();
 				ViewService.viewId = this.views[0].id;
 				// this.pushChanges();
 			}, error => console.log('EditorComponent.onAsideDelete.viewDelete$.error', error));
 		}
 	}
-
 }
 
 EditorComponent.meta = {

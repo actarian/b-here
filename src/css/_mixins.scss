@@ -8,7 +8,7 @@
 
 @mixin animation-delay($item, $count) {
 	$delay: 40ms;
-	$duration: 350ms;
+	$duration: $fast;
 
 	@for $i from 1 through $count {
 		#{$item}:nth-of-type(#{$i}) {

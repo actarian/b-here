@@ -25,6 +25,7 @@
 	<meta name="theme-color" content="#ffffff">
 	-->
 	<!-- <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;700;900" rel="stylesheet"> -->
+	<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800" rel="stylesheet">
 	<!-- &display=swap -->
 	<link rel="stylesheet" href="<!--@@var=baseHref-->css/vendors.min.css" />
 	<link rel="stylesheet" href="<!--@@var=baseHref-->css/main.min.css" />
@@ -33,20 +34,8 @@
 
 <body>
 	<script>
-		window.STATIC = true;
-		window.bhere = {
-			// appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-			/*
-			flags: {
-				production: false,
-				useToken: false,
-				selfService: false,
-				guidedTourRequest: false,
-			},
-			*/
-			// language: '/it',
-			// market: '/it',
-		};
+	window.STATIC = true;
+
 	</script>
 	<!-- @@include ./shared/svg.html -->
 	<div class="app hidden" app-component>
@@ -56,7 +45,7 @@
 		<!-- @@include ./shared/toast-outlet.html -->
 		<!-- @@include ./shared/modal-outlet.html -->
 	</div>
-	<script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CArray.prototype.find%2CArray.from%2Cfetch%2CObject.assign%2CURLSearchParams"></script>
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CString.prototype.includes%2CObject.values%2CArray.prototype.fill%2CArray.prototype.find%2CArray.from%2Cfetch%2CObject.assign%2CURLSearchParams%2CElement.prototype.classList%2CNode.prototype.contains%2CNodeList.prototype.forEach%2CCustomEvent%2CAudioContext"></script>
 	<script src="<!--@@var=baseHref-->js/vendors.min.js"></script>
 	<script src="<!--@@var=baseHref-->js/main.js"></script>
 	<!-- @@placeholder= js -->

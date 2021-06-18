@@ -11,10 +11,9 @@ export default class ModalComponent extends Component {
 		}
 	}
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 ModalComponent.meta = {

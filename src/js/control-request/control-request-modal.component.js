@@ -26,10 +26,9 @@ export default class ControlRequestModalComponent extends Component {
 	}
 	*/
 
-	close() {
+	onClose() {
 		ModalService.reject();
 	}
-
 }
 
 ControlRequestModalComponent.meta = {

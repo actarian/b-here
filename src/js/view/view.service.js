@@ -1,24 +1,44 @@
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
+import { AssetType } from '../asset/asset';
 import { environment } from '../environment';
 import HttpService from '../http/http.service';
+import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
-import { mapView } from '../view/view';
+import { mapView, ViewItemType } from '../view/view';
 
 export default class ViewService {
 
-	static viewId$_ = new BehaviorSubject(null);
+	// action: { viewId:number, keepOrientation:boolean };
+	static action$_ = new BehaviorSubject(null);
+	static set action(action) {
+		this.action$_.next(action);
+	}
+	static get action() {
+		return this.action$_.getValue();
+	}
+
+	// static viewId$_ = new BehaviorSubject(null);
 	static set viewId(viewId) {
-		this.viewId$_.next(viewId);
+		this.action$_.next({ viewId, keepOrientation: false });
 	}
 	static get viewId() {
-		return this.viewId$_.getValue();
+		const action = this.action$_.getValue();
+		return action ? action.viewId : null;
+	}
+
+	static view_ = null;
+	static get view() {
+		return this.view_;
+	}
+	static set view(view) {
+		this.view_ = view;
 	}
 
 	static data$() {
 		if (!this.data$_) {
-			const dataUrl = environment.flags.production ? '/api/view' : './api/data.json';
+			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
 			this.data$_ = HttpService.get$(dataUrl).pipe(
 				map(data => {
 					data.views = data.views.map(view => mapView(view));
@@ -33,12 +53,19 @@ export default class ViewService {
 
 	static view$(data, editor) {
 		const views = editor ? data.views : data.views.filter(x => x.type.name !== 'waiting-room');
-		const initialViewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : (views.length ? views[0].id : null);
-		this.viewId$_.next(initialViewId);
-		return this.viewId$_.pipe(
-			distinctUntilChanged(),
-			map(viewId => {
-				const view = data.views.find(view => view.id === viewId);
+		const viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
+		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const firstViewId = views.length ? views[0].id : null;
+		const initialViewId = embedViewId || viewId || firstViewId;
+		this.action$_.next({ viewId: initialViewId });
+		return this.action$_.pipe(
+			distinctUntilChanged((a, b) => a.viewId === b.viewId),
+			map(action => {
+				const view = data.views.find(view => view.id === action.viewId);
+				if (view) {
+					view.keepOrientation = action.keepOrientation || false;
+				}
+				// console.log('ViewService.view$', action.viewId, action.keepOrientation);
 				return view || this.getWaitingRoom(data);
 			}),
 		);
@@ -53,8 +80,11 @@ export default class ViewService {
 				return hosted ? view : waitingRoom;
 			}),
 			tap(view => {
+				this.view = view;
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
+					const prefetchAssets = ViewService.getPrefetchAssets(view, data);
+					view.prefetchAssets = prefetchAssets;
 				}
 			}),
 		);
@@ -64,6 +94,7 @@ export default class ViewService {
 		const waitingRoom = this.getWaitingRoom(data);
 		return this.view$(data, true).pipe(
 			tap(view => {
+				this.view = view;
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
 				}
@@ -129,4 +160,17 @@ export default class ViewService {
 		};
 	}
 
+	static getPrefetchAssets(view, data) {
+		const assets = view.items
+			// filter nav items
+			.filter(x => x.type.name === ViewItemType.Nav.name && x.viewId != null)
+			// map to view
+			.map(x => data.views.find(v => v.id === x.viewId))
+			// filter view with image
+			.filter(v => v && v.asset && v.asset.type.name === AssetType.Image.name)
+			// map to asset
+			.map(v => environment.getPath(v.asset.folder + v.asset.file));
+		// console.log('ViewService.getPrefetchAssets', assets);
+		return assets;
+	}
 }

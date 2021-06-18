@@ -1,6 +1,8 @@
 /* global THREE */
 
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs';
+// import * as THREE from 'three';
+import StateService from '../state/state.service';
 
 export const ViewType = {
 	WaitingRoom: { id: 1, name: 'waiting-room' },
@@ -8,6 +10,7 @@ export const ViewType = {
 	PanoramaGrid: { id: 3, name: 'panorama-grid' },
 	Room3d: { id: 4, name: 'room-3d' },
 	Model: { id: 5, name: 'model' },
+	Media: { id: 6, name: 'media' },
 };
 
 export const ViewItemType = {
@@ -26,7 +29,7 @@ export class View {
 			Object.assign(this, options);
 			this.updateIndices(options.items);
 		}
-		this.items = (this.items || []).map(item => mapViewItem(item));
+		this.items = (this.items || []).filter(item => filterViewItem(item)).map(item => mapViewItem(item));
 		if (this.tiles) {
 			this.tiles = this.tiles.map(tile => mapViewTile(tile));
 		}
@@ -59,24 +62,28 @@ export class View {
 		if (items) {
 			let publisherStreamIndex = 0;
 			let attendeeStreamIndex = 0;
+			let smartDeviceStream = 0;
 			let publisherScreenIndex = 0;
 			let attendeeScreenIndex = 0;
 			items.forEach((item, index) => {
 				item.index = index;
 				if (item.asset) {
-					switch(item.asset.file) {
+					switch (item.asset.file) {
 						case 'publisherStream':
 							item.asset.index = publisherStreamIndex++;
-						break;
+							break;
 						case 'nextAttendeeStream':
 							item.asset.index = attendeeStreamIndex++;
-						break;
+							break;
+						case 'smartDeviceStream':
+							item.asset.index = smartDeviceStream++;
+							break;
 						case 'publisherScreen':
 							item.asset.index = publisherScreenIndex++;
-						break;
+							break;
 						case 'attendeeScreen':
 							item.asset.index = attendeeScreenIndex++;
-						break;
+							break;
 					}
 				}
 				/*
@@ -116,6 +123,7 @@ export class PanoramaGridView extends View {
 			});
 			return {
 				id: tile.id,
+				type: Object.assign({}, ViewType.PanoramaGrid),
 				asset: tile.asset,
 				navs: tile.navs || [],
 				indices,
@@ -178,14 +186,26 @@ export class PanoramaGridView extends View {
 	}
 }
 
+export class Room3DView extends View {
+	constructor(options) {
+		super(options);
+	}
+}
+
 export class ModelView extends View {
 	constructor(options) {
 		super(options);
 	}
 }
 
+export class MediaView extends View {
+	constructor(options) {
+		super(options);
+	}
+}
+
 export class ViewItem {
-	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'important', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -251,13 +271,31 @@ export function mapView(view) {
 		case ViewType.PanoramaGrid.name:
 			view = new PanoramaGridView(view);
 			break;
+		case ViewType.Room3d.name:
+			view = new Room3DView(view);
+			break;
 		case ViewType.Model.name:
 			view = new ModelView(view);
+			break;
+		case ViewType.Media.name:
+			view = new MediaView(view);
 			break;
 		default:
 			view = new View(view);
 	}
 	return view;
+}
+
+export function filterViewItem(item) {
+	let flag;
+	switch (item.type.name) {
+		case ViewItemType.Nav.name:
+			flag = item.viewId == null || isNavMove(item) || StateService.state.navigable;
+			break;
+		default:
+			flag = true;
+	}
+	return flag;
 }
 
 export function mapViewItem(item) {
@@ -273,4 +311,12 @@ export function mapViewItem(item) {
 
 export function mapViewTile(tile) {
 	return new ViewTile(tile);
+}
+
+export function isNavMove(item) {
+	return !isValidText(item.title) && !isValidText(item.abstract);
+}
+
+export function isValidText(text) {
+	return text && text.length > 0;
 }

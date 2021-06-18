@@ -3,6 +3,7 @@
 @import './b-here/groups';
 @import './b-here/ui';
 @import './b-here/world';
+@import './b-here/chat';
 @import './b-here/modals';
 @import './b-here/animations';
 
@@ -10,6 +11,7 @@
 	@include aspect-clip(4, 3);
 	width: auto;
 	border-radius: 6px 6px 0 0;
+	display: none;
 
 	&>.video {
 		top: -1px;
@@ -38,6 +40,10 @@
 			transform: scale(1, 0);
 		}
 	}
+
+	&.ready {
+		display: flex;
+	}
 }
 
 .agora-stream {
@@ -49,6 +55,7 @@
 		position: relative;
 		overflow: hidden;
 		background-color: black;
+		border: 1px solid #333; // !!!
 
 		&>video {
 			position: absolute;
@@ -93,7 +100,9 @@
 		fill: $foreground-negative;
 	}
 
-	.btn--spy {
+	.btn--spy,
+	.btn--control,
+	.btn--silence {
 		@extend %btn-reset;
 		position: absolute;
 		display: flex;
@@ -101,12 +110,29 @@
 		align-items: center;
 		width: 32px;
 		height: 23px;
-		top: 0;
-		right: 0;
 		cursor: pointer;
 	}
 
+	.btn--spy {
+		top: 0;
+		right: 0;
+	}
+
 	.spy {
+		width: 18px;
+		height: 18px;
+		fill: $foreground-negative;
+		stroke: black;
+		stroke-width: 1px;
+	}
+
+	.btn--control {
+		top: 0;
+		left: 0;
+		opacity: 1;
+	}
+
+	.control {
 		width: 18px;
 		height: 18px;
 		fill: $foreground-negative;
@@ -131,22 +157,6 @@
 		// display: none; // !!!
 	}
 
-	&__info {
-		/*
-		// [class]="{ spyed: state.spying == streamId, talking: stream.clientInfo && stream.clientInfo.peekAudioLevel > .3 }"
-		&.talking {
-			border-color: #00ff00;
-		}
-		*/
-		&.spyed {
-			border-color: $background-secondary;
-
-			.spy {
-				fill: $foreground-secondary;
-			}
-		}
-	}
-
 	&.video--muted {
 		.cam-muted {
 			display: block;
@@ -161,7 +171,7 @@
 }
 
 .title {
-	font-weight: 800;
+	font-weight: $font-extrabold;
 	font-size: 80px;
 	line-height: 1;
 }
@@ -169,4 +179,51 @@
 .abstract {
 	font-size: 40px;
 	line-height: 1;
+}
+
+.group--language {
+	position: absolute;
+	top: 25px;
+	right: 25px;
+	color: $foreground-negative;
+}
+
+.btn--language {
+	display: flex;
+	align-items: center;
+	padding: 6px 15px;
+	border-radius: 20px;
+
+	font-size: 16px;
+	line-height: 1;
+	background: rgba(255, 255, 255, 0.1);
+	color: var(--foreground-negative);
+
+	svg {
+		width: 8px;
+		height: 5px;
+		margin-left: 7px;
+		fill: currentColor;
+	}
+}
+
+.nav--language {
+	@extend %nav-vertical;
+	align-items: flex-start;
+	margin-top: 5px;
+	padding: 4px 0;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+
+	&>li {
+		@extend %nav-item;
+		padding: 4px 15px;
+		width: 100%;
+		line-height: 1;
+		font-size: 15px;
+	}
+
+	&>li+li {
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+	}
 }

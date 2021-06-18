@@ -85,7 +85,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 		let index = items.controls.indexOf(control);
 		items.controls.splice(index, 1);
 		if (index > 0) {
-			index --;
+			index--;
 		} else {
 			index = length - 1;
 		}
@@ -98,7 +98,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 		let index = items.controls.indexOf(control);
 		items.controls.splice(index, 1);
 		if (index < length - 1) {
-			index ++;
+			index++;
 		} else {
 			index = 0;
 		}
@@ -106,7 +106,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 	}
 
 	setView(view) {
-		console.log('ControlMenuComponent.setView', view.id);
+		// console.log('ControlMenuComponent.setView', view.id);
 		const payload = Object.assign({}, this.control.value);
 		payload.viewId = view.id;
 		if (view.id) {
@@ -127,7 +127,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 	}
 
 	onTextDidChange(event) {
-		console.log('ControlMenuComponent.onTextDidChange', this.controls.name.value);
+		// console.log('ControlMenuComponent.onTextDidChange', this.controls.name.value);
 		MenuService.updateMenuItem$(this.control.value).pipe(
 			first()
 		).subscribe();

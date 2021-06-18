@@ -1,12 +1,11 @@
 import { takeUntil } from 'rxjs/operators';
+// import * as THREE from 'three';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
 
 const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
 varying vec2 vUv;
 void main() {
 	vUv = uv;
@@ -15,8 +14,6 @@ void main() {
 `;
 
 const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
 varying vec2 vUv;
 uniform sampler2D textureA;
 uniform sampler2D textureB;
@@ -168,10 +165,13 @@ export default class ModelGridComponent extends ModelComponent {
 				vertexShader: VERTEX_SHADER,
 				fragmentShader: FRAGMENT_SHADER,
 				uniforms: {
-					textureA: { type: "t", value: map },
-					textureB: { type: "t", value: mapOver },
+					textureA: { type: 't', value: map },
+					textureB: { type: 't', value: mapOver },
 					tween: { value: 0 },
 					opacity: { value: 0 },
+				},
+				extensions: {
+					fragDepth: true,
 				},
 				// side: THREE.DoubleSide
 			});
@@ -234,7 +234,7 @@ export default class ModelGridComponent extends ModelComponent {
 		this.onGroundOut = this.onGroundOut.bind(this);
 		const outerTileSize = ModelGridComponent.RADIUS / 10; // assume room is 20m x 20m
 		const innerTileSize = outerTileSize * 0.9;
-		const geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 20, 20);
+		const geometry = new THREE.PlaneBufferGeometry(ModelGridComponent.RADIUS, ModelGridComponent.RADIUS, 8, 8); // 20, 20
 		geometry.rotateX(-Math.PI / 2);
 		// geometry.scale(-1, 1, 1);
 		const material = new THREE.MeshBasicMaterial({
@@ -335,7 +335,6 @@ export default class ModelGridComponent extends ModelComponent {
 
 }
 
-ModelGridComponent.ORIGIN = new THREE.Vector3();
 ModelGridComponent.RADIUS = 101;
 ModelGridComponent.COLS = 11;
 ModelGridComponent.ROWS = 11;

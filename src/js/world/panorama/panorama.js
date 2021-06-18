@@ -1,286 +1,280 @@
+// import * as THREE from 'three';
+import { Asset, AssetType } from '../../asset/asset';
 import StateService from '../../state/state.service';
-import { PanoramaGridView } from '../../view/view';
-import { EnvMapLoader } from '../envmap/envmap.loader';
+import { PanoramaGridView, ViewType } from '../../view/view';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import { VideoTexture } from '../video-texture';
-
-export const PANORAMA_RADIUS = 101;
-
-const VERTEX_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-void main() {
-	vUv = uv;
-	// gl_PointSize = 8.0;
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const FRAGMENT_SHADER = `
-#extension GL_EXT_frag_depth : enable
-
-varying vec2 vUv;
-uniform vec2 resolution;
-uniform float tween;
-uniform bool rgbe;
-uniform sampler2D texture;
-
-vec3 ACESFilmicToneMapping_( vec3 color ) {
-	color *= 1.8;
-	return saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );
-}
-
-vec4 getColor(vec2 p) {
-	return texture2D(texture, p);
-}
-
-vec3 encodeColor(vec4 color) {
-	return ACESFilmicToneMapping_(RGBEToLinear(color).rgb);
-}
-
-float rand(vec2 co){
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
-vec4 Blur(vec2 st, vec4 color) {
-	const float directions = 16.0;
-	const float quality = 3.0;
-	float size = 16.0;
-	const float PI2 = 6.28318530718;
-	const float qq = 1.0;
-	const float q = 1.0 / quality;
-	vec2 radius = size / resolution.xy;
-	for (float d = 0.0; d < PI2; d += PI2 / directions) {
-		for (float i = q; i <= qq; i += q) {
-			vec2 dUv = vec2(cos(d), sin(d)) * radius * i;
-			color += getColor(st + dUv);
-        }
-	}
-	return color /= quality * directions - 15.0 + rand(st) * 4.0;
-}
-
-void main() {
-	vec4 color = texture2D(texture, vUv);
-	// color = Blur(vUv, color);
-	if (rgbe) {
-		color = vec4(encodeColor(color) * tween + rand(vUv) * 0.01, 1.0);
-	} else {
-		color = vec4(color.rgb * tween + rand(vUv) * 0.01, 1.0);
-	}
-	gl_FragColor = color;
-}
-`;
+import { PanoramaLoader } from './panorama-loader';
 
 export default class Panorama {
 
-	constructor() {
+	constructor(renderer) {
 		this.muted_ = false;
-		this.subscription = StateService.state$.subscribe(state => EnvMapLoader.muted = state.volumeMuted);
+		this.subscription = StateService.state$.subscribe(state => PanoramaLoader.muted = state.volumeMuted);
 		this.tween = 0;
-		this.create();
+		this.create(renderer);
 	}
 
-	create() {
-		const geometry = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 60, 40);
-		geometry.scale(-1, 1, 1);
-		geometry.rotateY(Math.PI);
-		const material = new THREE.ShaderMaterial({
-			// depthTest: false,
+	create(renderer) {
+		this.renderer = renderer;
+		this.onCubeMapDispose = this.onCubeMapDispose.bind(this);
+		const geometry = new THREE.BoxGeometry(202, 202, 202);
+		const material = this.getBlackMaterial();
+		const mesh = new InteractiveMesh(geometry, material);
+		mesh.userData = {
+			render: (time, tick, renderer, scene, camera) => {
+				mesh.matrixWorld.copyPosition(camera.matrixWorld);
+				const cubeMap = this.cubeMap;
+				const texture = this.texture;
+				if (cubeMap && texture && texture.isVideoTexture) {
+					this.updateCubeMapEquirectangularTexture(cubeMap, renderer, texture);
+				}
+			},
+		};
+		mesh.name = '[panorama]';
+		this.mesh = mesh;
+	}
+
+	getBlackMaterial() {
+		return new THREE.MeshBasicMaterial({
+			name: 'PanoramaStandardMaterial',
+			color: 0x000000,
+			side: THREE.BackSide,
+			depthTest: false,
 			depthWrite: false,
-			vertexShader: VERTEX_SHADER,
-			fragmentShader: FRAGMENT_SHADER,
-			uniforms: {
-				texture: { type: "t", value: null },
-				resolution: { value: new THREE.Vector2() },
-				tween: { value: 0 },
-				rgbe: { value: false },
+			fog: false,
+		});
+	}
+
+	getShaderMaterial(texture) {
+		const material = new THREE.ShaderMaterial({
+			name: 'PanoramaCubeMaterial',
+			uniforms: this.cloneUniforms(THREE.ShaderLib.cube.uniforms),
+			vertexShader: THREE.ShaderLib.cube.vertexShader,
+			fragmentShader: THREE.ShaderLib.cube.fragmentShader,
+			side: THREE.BackSide,
+			depthTest: false,
+			depthWrite: false,
+			fog: false,
+		});
+		texture.mapping = THREE.EquirectangularReflectionMapping;
+		const cubeMap = this.toCubeMap(texture, this.renderer);
+		material.map = cubeMap;
+		material.uniforms.envMap.value = cubeMap;
+		material.uniforms.flipEnvMap.value = cubeMap.isCubeTexture && cubeMap._needsFlipEnvMap ? -1 : 1;
+		material.needsUpdate = true;
+		this.mesh.geometry.deleteAttribute('normal');
+		this.mesh.geometry.deleteAttribute('uv');
+		Object.defineProperty(material, 'envMap', {
+			get: function() {
+				return this.uniforms.envMap.value;
 			},
 		});
-		/*
-		const material = new THREE.MeshBasicMaterial({
-			transparent: true,
-			opacity: 0,
-		});
-		*/
-		const mesh = this.mesh = new InteractiveMesh(geometry, material);
-		// mesh.renderOrder = environment.renderOrder.panorama;
-		mesh.name = '[panorama]';
+		return material;
 	}
 
-	/*
-	swap(view, renderer, callback, onexit) {
-		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
-		const material = this.mesh.material;
-		if (this.tween > 0) {
-			gsap.to(this, {
-				duration: 0.5,
-				tween: 0,
-				ease: Power2.easeInOut,
-				onUpdate: () => {
-					material.uniforms.tween.value = this.tween;
-					material.needsUpdate = true;
-				},
-				onComplete: () => {
-					if (typeof onexit === 'function') {
-						onexit(view);
-					}
-					this.load(item, renderer, (envMap, texture, rgbe) => {
-						gsap.to(this, {
-							duration: 0.5,
-							tween: 1,
-							ease: Power2.easeInOut,
-							onUpdate: () => {
-								material.uniforms.tween.value = this.tween;
-								material.needsUpdate = true;
-							}
-						});
-						if (typeof callback === 'function') {
-							callback(envMap, texture, rgbe);
-						}
-					});
-				}
-			});
+	makeEnvMap(texture) {
+		let material = this.mesh.material;
+		if (!material.uniforms) {
+			material.dispose();
+			material = this.getShaderMaterial(texture);
+			this.mesh.material = material;
 		} else {
-			if (typeof onexit === 'function') {
-				onexit(view);
-			}
-			this.load(item, renderer, (envMap, texture, rgbe) => {
-				gsap.to(this, {
-					duration: 0.5,
-					tween: 1,
-					ease: Power2.easeInOut,
-					onUpdate: () => {
-						material.uniforms.tween.value = this.tween;
-						material.needsUpdate = true;
+			texture.mapping = THREE.EquirectangularReflectionMapping;
+			const cubeMap = this.toCubeMap(texture, this.renderer);
+			material.map = cubeMap;
+			material.uniforms.envMap.value = cubeMap;
+			material.uniforms.flipEnvMap.value = cubeMap.isCubeTexture && cubeMap._needsFlipEnvMap ? -1 : 1;
+			material.needsUpdate = true;
+		}
+		// console.log('Panorama.makeEnvMap', this.texture, this.cubeMap);
+	}
+
+	toCubeMap(texture, renderer) {
+		if (this.cubeMap) {
+			this.cubeMap.dispose();
+		}
+		const image = texture.image;
+		const height = image.height || image.videoHeight;
+		const cubeMap = new THREE.WebGLCubeRenderTarget(height / 2, {
+			generateMipmaps: true,
+			// minFilter: THREE.LinearMipmapLinearFilter,
+			minFilter: THREE.LinearFilter,
+			magFilter: THREE.LinearFilter,
+			// mapping: THREE.CubeReflectionMapping,
+			// mapping: THREE.EquirectangularReflectionMapping,
+			mapping: THREE.CubeUVReflectionMapping,
+			// mapping: THREE.UVMapping,
+			format: THREE.RGBFormat,
+		});
+		cubeMap.addEventListener('dispose', this.onCubeMapDispose);
+		this.setCubeMapEquirectangularTexture(cubeMap, texture);
+		this.updateCubeMapEquirectangularTexture(cubeMap, renderer, texture);
+		this.cubeMap = cubeMap;
+		this.texture = texture;
+		return this.mapTextureMapping(cubeMap.texture, texture.mapping);
+	}
+
+	setCubeMapEquirectangularTexture(cubeMap, texture) {
+		cubeMap.texture.type = texture.type;
+		cubeMap.texture.format = THREE.RGBFormat;
+		cubeMap.texture.encoding = THREE.sRGBEncoding;
+		cubeMap.texture.generateMipmaps = texture.generateMipmaps;
+		cubeMap.texture.minFilter = texture.minFilter;
+		cubeMap.texture.magFilter = texture.magFilter;
+		cubeMap.texture.needsUpdate = true;
+		const shader = {
+			uniforms: {
+				tEquirect: { value: null },
+			},
+			vertexShader: /* glsl */ `
+					varying vec3 vWorldDirection;
+					vec3 transformDirection( in vec3 dir, in mat4 matrix ) {
+						return normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );
 					}
-				});
-				if (typeof callback === 'function') {
-					callback(envMap, texture, rgbe);
+					void main() {
+						vWorldDirection = transformDirection( position, modelMatrix );
+						#include <begin_vertex>
+						#include <project_vertex>
+					}
+				`,
+			fragmentShader: /* glsl */ `
+					uniform sampler2D tEquirect;
+					varying vec3 vWorldDirection;
+					#include <common>
+					void main() {
+						vec3 direction = normalize( vWorldDirection );
+						vec2 sampleUV = equirectUv( direction );
+						gl_FragColor = texture2D( tEquirect, sampleUV );
+					}
+				`,
+		};
+		const geometry = new THREE.BoxGeometry(5, 5, 5);
+		const material = new THREE.ShaderMaterial({
+			name: 'CubemapFromEquirect',
+			uniforms: this.cloneUniforms(shader.uniforms),
+			vertexShader: shader.vertexShader,
+			fragmentShader: shader.fragmentShader,
+			side: THREE.BackSide,
+			blending: THREE.NoBlending,
+		});
+		material.uniforms.tEquirect.value = texture;
+		const mesh = new THREE.Mesh(geometry, material);
+		const camera = new THREE.CubeCamera(1, 10, cubeMap);
+		cubeMap.camera = camera;
+		cubeMap.mesh = mesh;
+		return cubeMap;
+	}
+
+	updateCubeMapEquirectangularTexture(cubeMap, renderer, texture) {
+		const previousMinFilter = texture.minFilter;
+		// Avoid blurred poles
+		if (texture.minFilter === THREE.LinearMipmapLinearFilter) {
+			texture.minFilter = THREE.LinearFilter;
+		}
+		cubeMap.camera.update(renderer, cubeMap.mesh);
+		texture.minFilter = previousMinFilter;
+		// console.log('updateCubeMapEquirectangularTexture');
+	}
+
+	cloneUniforms(src) {
+		const dst = {};
+		for (const u in src) {
+			dst[u] = {};
+			for (const p in src[u]) {
+				const property = src[u][p];
+				if (property && (property.isColor || property.isMatrix3 || property.isMatrix4 || property.isVector2 || property.isVector3 || property.isVector4 || property.isTexture || property.isQuaternion)) {
+					dst[u][p] = property.clone();
+				} else if (Array.isArray(property)) {
+					dst[u][p] = property.slice();
+				} else {
+					dst[u][p] = property;
 				}
-			});
+			}
+		}
+		return dst;
+	}
+
+	mapTextureMapping(texture, mapping) {
+		if (mapping === THREE.EquirectangularReflectionMapping) {
+			texture.mapping = THREE.CubeReflectionMapping;
+		} else if (mapping === THREE.EquirectangularRefractionMapping) {
+			texture.mapping = THREE.CubeRefractionMapping;
+		}
+		return texture;
+	}
+
+	onCubeMapDispose() {
+		const cubeMap = this.cubeMap;
+		if (cubeMap) {
+			// console.log('Panorama.onCubeMapDispose', cubeMap);
+			cubeMap.removeEventListener('dispose', this.onCubeMapDispose);
+			cubeMap.texture.dispose();
+			cubeMap.mesh.geometry.dispose();
+			cubeMap.mesh.material.dispose();
+			if (cubeMap !== undefined) {
+				this.cubeMap = null;
+			}
 		}
 	}
-	*/
 
 	change(view, renderer, callback, onexit) {
 		const item = view instanceof PanoramaGridView ? view.tiles[view.index_] : view;
 		const material = this.mesh.material;
-		// setTimeout(() => {
-			this.load(item, renderer, (envMap, texture, rgbe) => {
-				// setTimeout(() => {
-					if (typeof onexit === 'function') {
-						onexit(view);
-					}
-					material.uniforms.tween.value = 1;
-					material.needsUpdate = true;
-					setTimeout(function () {
-						if (typeof callback === 'function') {
-							callback(envMap, texture, rgbe);
-						}
-					}, 100); // !!! delay
-					/*
-					gsap.to(this, {
-						duration: 0.5,
-						tween: 1,
-						ease: Power2.easeInOut,
-						onUpdate: () => {
-							material.uniforms.tween.value = this.tween;
-							material.needsUpdate = true;
-						},
-						onComplete: () => {
-							setTimeout(function () {
-								if (typeof callback === 'function') {
-									callback(envMap, texture, rgbe);
-								}
-							}, 100); // !!! delay
-						},
-					});
-					*/
-				// }, 100); // !!! delay
-			});
-		// }, 300); // !!! delay
+		this.load(item, renderer, (envMap) => {
+			if (typeof onexit === 'function') {
+				onexit(view);
+			}
+			if (material.uniforms && material.uniforms.uTween) {
+				material.uniforms.uTween.value = 1;
+				material.needsUpdate = true;
+			}
+			if (typeof callback === 'function') {
+				callback(envMap);
+			}
+		});
 	}
 
 	crossfade(item, renderer, callback) {
 		const material = this.mesh.material;
-		this.load(item, renderer, (envMap, texture, rgbe) => {
-			material.uniforms.tween.value = 1;
-			material.needsUpdate = true;
+		this.load(item, renderer, (envMap) => {
+			if (material.uniforms && material.uniforms.uTween) {
+				material.uniforms.uTween.value = 1;
+				material.needsUpdate = true;
+			}
 			if (typeof callback === 'function') {
-				callback(envMap, texture, rgbe);
+				callback(envMap);
 			}
 		});
 	}
 
 	load(item, renderer, callback) {
-		if (!item.asset) {
+		const asset = item.type.name === ViewType.Media.name ? Asset.defaultMediaAsset : item.asset;
+		if (!asset) {
 			return;
 		}
-		this.currentAsset = item.asset.folder + item.asset.file;
-		const material = this.mesh.material;
-		EnvMapLoader.load(item, renderer, (envMap, texture, rgbe, video, pmremGenerator) => {
-			if (item.asset.folder + item.asset.file !== this.currentAsset) {
+		if (asset.type.name === AssetType.Model.name) {
+			if (typeof callback === 'function') {
+				callback(null);
+			}
+			return;
+		}
+		this.currentAsset = asset.folder + asset.file;
+		PanoramaLoader.load(asset, renderer, (texture, rgbe) => {
+			if (asset.folder + asset.file !== this.currentAsset) {
 				texture.dispose();
 				return;
 			}
-			if (material.uniforms.texture.value) {
-				material.uniforms.texture.value.dispose();
-				material.uniforms.texture.value = null;
-			}
-			texture.minFilter = THREE.LinearFilter;
-			texture.magFilter = THREE.LinearFilter;
-			texture.mapping = THREE.UVMapping;
-			texture.needsUpdate = true;
-			// material.map = texture;
-			material.uniforms.texture.value = texture;
-			material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
-			material.uniforms.tween.value = 0;
-			material.uniforms.rgbe.value = rgbe;
-			material.needsUpdate = true;
+			const envMap = this.makeEnvMap(texture);
 			if (typeof callback === 'function') {
-				callback(envMap, texture, rgbe);
+				callback(envMap);
 			}
 		});
 	}
 
-	loadVideo(src) {
-		const video = document.createElement('video');
-		video.src = src;
-		video.volume = 0.8;
-		video.muted = true;
-		video.playsInline = true;
-		video.crossOrigin = 'anonymous';
-		video.play();
-		this.setVideo(video);
-	}
-
-	setVideo(video) {
-		// console.log('Panorama.setVideo', video);
-		if (video) {
-			const onPlaying = () => {
-				const texture = new VideoTexture(video);
-				texture.minFilter = THREE.LinearFilter;
-				texture.magFilter = THREE.LinearFilter;
-				texture.mapping = THREE.UVMapping;
-				texture.format = THREE.RGBFormat;
-				texture.needsUpdate = true;
-				const material = this.mesh.material;
-				material.map = texture;
-				material.uniforms.texture.value = texture;
-				material.uniforms.resolution.value = new THREE.Vector2(texture.width, texture.height);
-				material.needsUpdate = true;
-			};
-			// video.addEventListener('canplay', onPlaying);
-			video.crossOrigin = 'anonymous';
-			video.oncanplay = () => {
-				onPlaying();
-			};
-		}
-	}
-
 	dispose() {
 		this.subscription.unsubscribe();
+		if (this.cubeMap) {
+			this.cubeMap.dispose();
+		}
 	}
-
 }

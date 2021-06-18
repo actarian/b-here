@@ -1,3 +1,6 @@
+// import * as THREE from 'three';
+
+import { Geometry } from '../geometry/geometry';
 
 export default class FreezableMesh extends THREE.Mesh {
 
@@ -12,7 +15,7 @@ export default class FreezableMesh extends THREE.Mesh {
 	}
 
 	constructor(geometry, material) {
-		geometry = geometry || new THREE.BoxBufferGeometry(5, 5, 5);
+		geometry = geometry || Geometry.defaultGeometry;
 		material = material || new THREE.MeshBasicMaterial({
 			color: 0xff00ff,
 			// opacity: 1,

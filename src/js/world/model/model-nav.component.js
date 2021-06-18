@@ -1,4 +1,8 @@
+// import * as THREE from 'three';
 import { environment } from '../../environment';
+import StateService from '../../state/state.service';
+import { RoleType } from '../../user/user';
+import { Geometry } from '../geometry/geometry';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
@@ -14,12 +18,6 @@ export const NavModeType = {
 
 export default class ModelNavComponent extends ModelEditableComponent {
 
-	static getNavGeometry() {
-		// const geometry = new THREE.PlaneBufferGeometry(3, 2, 2, 2);
-		// const geometry = new THREE.SphereBufferGeometry(3, 12, 12);
-		return ModelNavComponent.navGeometry || (ModelNavComponent.navGeometry = new THREE.SphereBufferGeometry(3, 12, 12));
-	}
-
 	static getLoader() {
 		return ModelNavComponent.loader || (ModelNavComponent.loader = new THREE.TextureLoader());
 	}
@@ -28,26 +26,38 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return ModelNavComponent.texturePoint || (ModelNavComponent.texturePoint = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point.png')));
 	}
 
+	static getTexturePointImportant() {
+		return ModelNavComponent.texturePointImportant || (ModelNavComponent.texturePointImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-point-important.png')));
+	}
+
 	static getTextureMove() {
 		return ModelNavComponent.textureMove || (ModelNavComponent.textureMove = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-more.png')));
+	}
+
+	static getTextureMoveImportant() {
+		return ModelNavComponent.textureMoveImportant || (ModelNavComponent.textureMoveImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-more-important.png')));
 	}
 
 	static getTextureInfo() {
 		return ModelNavComponent.textureInfo || (ModelNavComponent.textureInfo = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info.png')));
 	}
 
-	static getTexture(mode) {
+	static getTextureInfoImportant() {
+		return ModelNavComponent.textureInfoImportant || (ModelNavComponent.textureInfoImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info-important.png')));
+	}
+
+	static getTexture(mode, important) {
 		let texture;
 		switch (mode) {
 			case NavModeType.Move:
-				texture = this.getTextureMove();
+				texture = important ? this.getTextureMoveImportant() : this.getTextureMove();
 				break;
 			case NavModeType.Info:
-				texture = this.getTextureInfo();
+				texture = important ? this.getTextureInfoImportant() : this.getTextureInfo();
 				break;
 			case NavModeType.Point:
 			case NavModeType.Title:
-				texture = this.getTexturePoint();
+				texture = important ? this.getTexturePointImportant() : this.getTexturePoint();
 				break;
 			default:
 				break;
@@ -66,19 +76,19 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			const ctx = canvas.getContext('2d');
 			ctx.imageSmoothingEnabled = true;
 			ctx.imageSmoothingQuality = 'high';
-			ctx.font = `28px ${environment.fontFamily}`;
+			ctx.font = `24px ${environment.fontFamily}`;
 			const metrics = ctx.measureText(text);
 			let w = metrics.width + 8;
 			w = Math.pow(2, Math.ceil(Math.log(w) / Math.log(2)));
 			const x = w / 2;
 			const y = 16;
 			canvas.width = w;
-			ctx.font = `28px ${environment.fontFamily}`;
+			ctx.font = `24px ${environment.fontFamily}`;
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
 			ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
 			ctx.lineWidth = 6;
-			ctx.lineJoin = 'round'; // Experiment with "bevel" & "round" for the effect you want!
+			ctx.lineJoin = 'round'; // Experiment with 'bevel' & 'round' for the effect you want!
 			ctx.miterLimit = 2;
 			ctx.strokeText(text, x, y);
 			ctx.fillStyle = 'white';
@@ -113,21 +123,46 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return text && text.length > 0;
 	}
 
+	hidden_ = false;
+	get hidden() {
+		return this.hidden_;
+	}
+	set hidden(hidden) {
+		if (this.hidden_ !== hidden) {
+			this.hidden_ = hidden;
+			this.updateVisibility(!hidden);
+		}
+	}
+
+	get isHidden() {
+		return environment.flags.hideNavInfo &&
+			!this.editor &&
+			(!StateService.state.showNavInfo && !(StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
+			this.mode === NavModeType.Info;
+	}
+
+	updateVisibility(visible) {
+		this.mesh.visible = visible;
+		this.sphere.freezed = !visible;
+		if (!visible) {
+			this.item.showPanel = false;
+		}
+	}
+
+	setVisible(visible) {
+		if (this.mesh) {
+			this.mesh.visible = visible && !this.hidden_;
+		}
+	}
+
 	onInit() {
 		super.onInit();
-		/*
-		this.debouncedOver$ = new ReplaySubject(1).pipe(
-			auditTime(250),
-			tap(event => this.over.next(event)),
-			takeUntil(this.unsubscribe$),
-		);
-		this.debouncedOver$.subscribe();
-		*/
-		// console.log('ModelNavComponent.onInit');
 	}
 
 	onChanges() {
+		this.mode = ModelNavComponent.getNavMode(this.item, this.view);
 		this.editing = this.item.selected;
+		this.hidden = this.isHidden;
 	}
 
 	onCreate(mount, dismount) {
@@ -142,8 +177,8 @@ export default class ModelNavComponent extends ModelEditableComponent {
 
 		this.onCreateSprites(nav);
 
-		const geometry = ModelNavComponent.getNavGeometry();
-		const sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
+		const geometry = Geometry.sphereGeometry;
+		const sphere = this.sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
@@ -151,7 +186,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			color: 0x00ffff,
 		}));
 		sphere.name = `[nav] ${this.item.id}`;
-		sphere.lookAt(ModelNavComponent.ORIGIN);
+		// sphere.lookAt(Host.origin); ??
 		sphere.depthTest = false;
 		sphere.renderOrder = 0;
 		nav.add(sphere);
@@ -232,7 +267,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		if (mode === NavModeType.None) {
 			return;
 		}
-		const map = ModelNavComponent.getTexture(mode);
+		const map = ModelNavComponent.getTexture(mode, this.item.important);
 		map.disposable = false;
 		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.SpriteMaterial({
@@ -309,10 +344,15 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	// called by WorldComponent
-	onDragMove(position) {
+	onDragMove(position, normal, spherical) {
+		// console.log('ModelNavComponent.onDragMove', position, normal, spherical);
+		if (spherical) {
+			position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
+			// normal = cameraGroup?
+		}
 		this.editing = true;
 		this.item.showPanel = false;
-		this.mesh.position.set(position.x, position.y, position.z).multiplyScalar(ModelNavComponent.RADIUS);
+		this.mesh.position.set(position.x, position.y, position.z);
 		this.updateHelper();
 	}
 
@@ -323,12 +363,11 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 }
 
-ModelNavComponent.ORIGIN = new THREE.Vector3();
 ModelNavComponent.RADIUS = 100;
 
 ModelNavComponent.meta = {
 	selector: '[model-nav]',
 	hosts: { host: WorldComponent },
 	outputs: ['over', 'out', 'down'],
-	inputs: ['item', 'view'],
+	inputs: ['item', 'view', 'editor'],
 };

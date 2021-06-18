@@ -2,26 +2,21 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
-import { environment, HEROKU } from '../environment';
+import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 
 export default class AgoraLinkComponent extends Component {
 
-	get heroku() {
-		return HEROKU;
-	}
-
 	onInit() {
-		this.flags = environment.flags;
-		this.editorLink = environment.url.editor;
 		this.state = {};
 		const form = this.form = new FormGroup({
 			link: new FormControl(null, [Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), Validators.RequiredValidator()]),
 			linkAttendee: null,
 			linkStreamer: null,
 			linkViewer: null,
+			linkSmartDevice: null,
 			// link: new FormControl(null),
 		});
 		const controls = this.controls = form.controls;
@@ -48,6 +43,7 @@ export default class AgoraLinkComponent extends Component {
 			linkAttendee: this.getRoleMeetingId(timestamp, RoleType.Attendee),
 			linkStreamer: this.getRoleMeetingId(timestamp, RoleType.Streamer),
 			linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer),
+			linkSmartDevice: this.getRoleMeetingId(timestamp, RoleType.SmartDevice),
 		});
 	}
 
@@ -70,6 +66,7 @@ export default class AgoraLinkComponent extends Component {
 					linkAttendee: this.setRoleMeetingId(value, RoleType.Attendee),
 					linkStreamer: this.setRoleMeetingId(value, RoleType.Streamer),
 					linkViewer: this.setRoleMeetingId(value, RoleType.Viewer),
+					linkSmartDevice: this.setRoleMeetingId(value, RoleType.SmartDevice),
 				});
 			} else {
 				this.form.get('linkAttendee').reset();
@@ -94,13 +91,13 @@ export default class AgoraLinkComponent extends Component {
 		}, -1);
 	}
 
-	onCopyToClipBoard(meetingId) {
+	onCopyToClipBoard(meetingId, asAccessCode = false) {
 		const input = document.createElement('input');
 		input.style.position = 'absolute';
 		input.style.top = '1000vh';
 		// input.style.visibility = 'hidden';
 		document.querySelector('body').appendChild(input);
-		input.value = this.getUrl(meetingId, true);
+		input.value = asAccessCode ? this.getAccessCodeUrl(meetingId, true) : this.getUrl(meetingId, true);
 		input.focus();
 		input.select();
 		input.setSelectionRange(0, 99999);
@@ -129,6 +126,13 @@ export default class AgoraLinkComponent extends Component {
 		const role = LocationService.get('role') || null;
 		const name = LocationService.get('name') || null;
 		const url = `${window.location.origin}${window.location.pathname}?link=${meetingId}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
+		return url;
+	}
+
+	getAccessCodeUrl(meetingId, shareable = false) {
+		const role = LocationService.get('role') || null;
+		const name = LocationService.get('name') || null;
+		const url = `${window.location.origin}${environment.url.accessCode}?link=${meetingId}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
 		return url;
 	}
 

@@ -1,4 +1,5 @@
-import StreamService from "../../stream/stream.service";
+// import * as THREE from 'three';
+import StreamService from '../../stream/stream.service';
 
 export const W = 12;
 export const H = 27;
@@ -54,7 +55,7 @@ export class PhoneStreamElement {
 	}
 
 	addStreamTexture(streamId, callback) {
-		const target = `#stream-${streamId}`;
+		const target = `#stream-${streamId}`; // `#stream-remote-${streamId}`;
 		const video = document.querySelector(`${target} video`);
 		if (!video) {
 			return;
