@@ -4491,7 +4491,8 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    opacity: 0; }
+    opacity: 0;
+    visibility: hidden; }
     .btn--menu > .spinner:before, .btn--menu > .spinner:after {
       content: '';
       position: absolute;
@@ -4520,7 +4521,8 @@ body {
     stroke: rgba(0, 0, 0, 0.5);
     stroke-width: 2px;
     stroke-linecap: round;
-    opacity: 0; }
+    opacity: 0;
+    visibility: hidden; }
     .btn--menu > .progress > circle {
       stroke-dasharray: 144.51;
       stroke-dashoffset: 144.51; }
@@ -4541,11 +4543,14 @@ body {
     pointer-events: none; }
     .btn--menu.loading > .spinner {
       opacity: 1;
+      visibility: visible;
       animation: spinner 2s infinite ease; }
     .btn--menu.loading > .bullets {
-      opacity: 0; }
+      opacity: 0;
+      visibility: hidden; }
     .btn--menu.loading > .progress {
-      opacity: 1; }
+      opacity: 1;
+      visibility: visible; }
 
 @keyframes spinner {
   0% {
