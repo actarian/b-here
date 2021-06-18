@@ -121,6 +121,7 @@ export default class MediaZoomMesh extends InteractiveMesh {
 	}
 
 	onToggle() {
+		// console.log('MediaZoomMesh.onToggle', !this.zoomed);
 		// this.zoomed = !this.zoomed;
 		this.emit('zoomed', !this.zoomed);
 	}
@@ -139,93 +140,4 @@ export default class MediaZoomMesh extends InteractiveMesh {
 		this.off('out', this.onOut);
 		this.off('down', this.onToggle);
 	}
-
-	/*
-	render__(time, tick) {
-		const parent = this.parent;
-		if (!parent) {
-			return;
-		}
-		// const object = this.updateObjectMatrix();
-		const object = this.object;
-		// parent.position.lerp(object.position, 0.2);
-		// parent.scale.lerp(object.scale, 0.2);
-		// parent.quaternion.slerp(object.quaternion, 0.2);
-		parent.position.copy(object.position);
-		parent.scale.copy(object.scale);
-		parent.quaternion.copy(object.quaternion);
-	}
-	*/
-
-	/*
-	update__(parent) {
-		this.originalPosition = parent.position.clone();
-		this.originalScale = parent.scale.clone();
-		this.originalQuaternion = parent.quaternion.clone();
-		this.object.position.copy(this.originalPosition);
-		this.object.scale.copy(this.originalScale);
-		this.object.quaternion.copy(this.originalQuaternion);
-		const scale = this.scale;
-		const position = this.position;
-		const parentRatio = parent.scale.x / parent.scale.y;
-		const size = 0.1;
-		scale.set(size / parentRatio, size, 1);
-		position.x = 0.5 - size / parentRatio / 2;
-		position.y = 0.5 - size / 2;
-		position.z = 0.01;
-		// console.log('MediaZoomMesh.setParentScale', parent.scale, scale, position);
-	}
-	*/
-
-	/*
-	updateObjectMatrix__() {
-		const object = this.object;
-		const host = this.host;
-		if (this.zoomed) {
-			const cameraGroup = host.cameraGroup;
-			const originalScale = this.originalScale;
-			let camera = host.camera, scale;
-			const position = object.position;
-			const aspect = originalScale.x / originalScale.y;
-			const xr = host.renderer.xr;
-			if (xr.isPresenting) {
-				camera = xr.getCamera(camera);
-				camera.getWorldDirection(position);
-				scale = 0.3;
-				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-				const distance = this.getDistanceToCamera(camera, object.scale);
-				position.multiplyScalar(distance * 1);
-				position.add(cameraGroup.position);
-				position.y -= 0.2;
-				object.position.copy(position);
-				// position.multiplyScalar(distance * 0.75);
-				// position.y -= 0.2;
-				// cameraGroup.worldToLocal(position);
-				// position.y += cameraGroup.position.y;
-				// object.position.copy(position);
-				object.lookAt(Host.origin);
-			} else {
-				camera.getWorldDirection(position);
-				scale = 0.1;
-				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-				const distance = this.getDistanceToCamera(camera, object.scale);
-				position.multiplyScalar(distance);
-				cameraGroup.localToWorld(position);
-				object.position.copy(position);
-				object.lookAt(Host.origin);
-			}
-		}
-		return object;
-	}
-	*/
-
-	/*
-	getDistanceToCamera__(camera, size, fitOffset = 1) {
-		const factor = (2 * Math.atan(Math.PI * camera.fov / 360));
-		const heightDistance = size.y * camera.zoom / factor;
-		const widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
-		const distance = fitOffset * Math.max(heightDistance, widthDistance);
-		return distance;
-	}
-	*/
 }

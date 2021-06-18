@@ -296,9 +296,20 @@ export default class ModelMenuComponent extends ModelComponent {
 			}
 		});
 		*/
+		const { node } = getContext(this);
+		this.progressIndicator = node.querySelector('.progress circle');
 		LoaderService.progress$.pipe(
 			takeUntil(this.unsubscribe$)
-		).subscribe(progress => this.loading = progress.count > 0);
+		).subscribe(progress => {
+			this.loading = progress.count > 0;
+			let strokeDashoffset = 144.51;
+			if (progress.count) {
+				strokeDashoffset = 144.51 * (1 - progress.value);
+			}
+			gsap.set(this.progressIndicator, {
+				'strokeDashoffset': strokeDashoffset,
+			});
+		});
 		MessageService.in$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {

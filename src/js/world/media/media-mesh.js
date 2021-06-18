@@ -538,7 +538,7 @@ export default class MediaMesh extends InteractiveMesh {
 			this.freeze();
 		}
 		return MediaLoader.events$.pipe(
-			filter(event => event.loader.item.id === item.id),
+			filter(event => (event.loader.item && event.loader.item.id === item.id)),
 			map(event => {
 				if (event instanceof MediaLoaderPlayEvent) {
 					this.playing = true;
@@ -666,20 +666,10 @@ export default class MediaMesh extends InteractiveMesh {
 
 	play() {
 		this.mediaLoader.play();
-		/*
-		this.playing = true;
-		this.emit('playing', true);
-		this.onOut();
-		*/
 	}
 
 	pause() {
 		this.mediaLoader.pause();
-		/*
-		this.playing = false;
-		this.emit('playing', false);
-		this.onOut();
-		*/
 	}
 
 	setPlayingState(playing) {
@@ -778,6 +768,7 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	updateFromItem(item) {
+		// console.log('MediaMesh.updateFromItem', item);
 		if (item.position) {
 			this.position.fromArray(item.position);
 		}
@@ -796,6 +787,26 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		*/
 		this.updateZoom();
+	}
+
+	updateZoom() {
+		this.originalPosition = this.position.clone();
+		this.originalScale = this.scale.clone();
+		this.originalQuaternion = this.quaternion.clone();
+		this.object.position.copy(this.originalPosition);
+		this.object.scale.copy(this.originalScale);
+		this.object.quaternion.copy(this.originalQuaternion);
+		if (this.zoomBtn) {
+			const scale = this.zoomBtn.scale;
+			const position = this.zoomBtn.position;
+			const ratio = this.scale.x / this.scale.y;
+			const size = 0.1;
+			scale.set(size / ratio, size, 1);
+			position.x = 0.5 - size / ratio / 2;
+			position.y = 0.5 - size / 2;
+			position.z = 0.01;
+		}
+		// console.log('MediaMesh.updateZoom', this.scale);
 	}
 
 	// zoom
@@ -817,26 +828,6 @@ export default class MediaMesh extends InteractiveMesh {
 			this.scale.copy(object.scale);
 			this.quaternion.copy(object.quaternion);
 		}
-	}
-
-	updateZoom() {
-		this.originalPosition = this.position.clone();
-		this.originalScale = this.scale.clone();
-		this.originalQuaternion = this.quaternion.clone();
-		this.object.position.copy(this.originalPosition);
-		this.object.scale.copy(this.originalScale);
-		this.object.quaternion.copy(this.originalQuaternion);
-		if (this.zoomBtn) {
-			const scale = this.zoomBtn.scale;
-			const position = this.zoomBtn.position;
-			const ratio = this.scale.x / this.scale.y;
-			const size = 0.1;
-			scale.set(size / ratio, size, 1);
-			position.x = 0.5 - size / ratio / 2;
-			position.y = 0.5 - size / 2;
-			position.z = 0.01;
-		}
-		// console.log('MediaMesh.updateZoom', parent.scale, scale, position);
 	}
 
 	updateObjectMatrix() {

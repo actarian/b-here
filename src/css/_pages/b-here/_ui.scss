@@ -17,11 +17,14 @@ $chat-width: 240px;
 		background: none;
 
 		.agora-stream {
+			max-width: 100%;
+
 			.agora-stream__player {
 				padding-top: 0;
 
 				&>div {
 					position: relative !important;
+					display: flex;
 
 					&>video {
 						position: relative !important;
@@ -30,6 +33,42 @@ $chat-width: 240px;
 				}
 			}
 		}
+
+		@include media-up(sm) {
+			@media (orientation: landscape) {
+				max-height: calc(100vh - 180px);
+
+				.agora-stream {
+					max-height: calc(100vh - 180px);
+
+					.agora-stream__player {
+						max-height: calc(100vh - 180px);
+
+						&>div {
+							height: calc(100vh - 180px) !important;
+						}
+					}
+				}
+			}
+
+			@media (orientation: portrait) {
+				max-height: calc(100vh - 270px);
+
+				.agora-stream {
+					max-height: calc(100vh - 270px);
+
+					.agora-stream__player {
+						max-height: calc(100vh - 270px);
+
+						&>div {
+							height: calc(100vh - 270px) !important;
+						}
+					}
+				}
+			}
+		}
+
+		@include media-down(xs) {}
 	}
 
 	&.virtual-tour {
