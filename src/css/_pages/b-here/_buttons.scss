@@ -420,6 +420,7 @@
 		top: 0;
 		left: 0;
 		opacity: 0;
+		visibility: hidden;
 
 		&:before,
 		&:after {
@@ -460,6 +461,7 @@
 		stroke-width: 2px;
 		stroke-linecap: round;
 		opacity: 0;
+		visibility: hidden;
 
 		&>circle {
 			stroke-dasharray: 144.51;
@@ -504,15 +506,18 @@
 
 		&>.spinner {
 			opacity: 1;
+			visibility: visible;
 			animation: spinner 2s infinite ease;
 		}
 
 		&>.bullets {
 			opacity: 0;
+			visibility: hidden;
 		}
 
 		&>.progress {
 			opacity: 1;
+			visibility: visible;
 		}
 	}
 }
