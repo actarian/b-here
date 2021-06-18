@@ -75,7 +75,7 @@ window.labels = {
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
 			<div class="btn--menu" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
-				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+				<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 			</div>
 			<div class="headline" *if="view">
 				<div class="headline__id" [innerHTML]="view.id"></div>

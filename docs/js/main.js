@@ -2836,6 +2836,11 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
         _this11.unobserveMemberCount();
 
         var channel = _this11.channel;
+
+        if (!channel) {
+          return resolve();
+        }
+
         var messageClient = _this11.messageClient;
         channel.leave().then(function () {
           _this11.channel = null;
@@ -8135,6 +8140,8 @@ var VRService = /*#__PURE__*/function () {
           break;
 
         case MessageType.NavInfo:
+          _this6.hidePanels();
+
           StateService.patchState({
             showNavInfo: message.showNavInfo
           });
@@ -8285,7 +8292,8 @@ var VRService = /*#__PURE__*/function () {
     if (this.agora) {
       this.agora.leaveChannel().then(function () {
         // StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
-        window.location.href = window.location.href;
+        // window.location.href = window.location.href;
+        window.location.replace(window.location.href);
       }, console.log);
     } else {
       this.patchState({
@@ -8442,6 +8450,8 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.toggleNavInfo = function toggleNavInfo() {
+    this.hidePanels();
+
     if (this.agora) {
       this.agora.toggleNavInfo();
     } else {
@@ -8449,6 +8459,12 @@ var VRService = /*#__PURE__*/function () {
         showNavInfo: !this.state.showNavInfo
       });
     }
+  };
+
+  _proto.hidePanels = function hidePanels() {
+    this.view.items.forEach(function (item) {
+      return item.showPanel = false;
+    });
   };
 
   _proto.onChatClose = function onChatClose() {
@@ -15987,7 +16003,7 @@ function interactiveHittest(raycaster, down, event) {
   }
 
   var items = this.items.filter(function (x) {
-    return !x.freezed;
+    return x.parent && !x.freezed;
   });
   var intersections = raycaster.intersectObjects(items);
   var key, hit;
@@ -16904,6 +16920,7 @@ var RGBELoader = /*#__PURE__*/function (_DataTextureLoader) {
   };
 
   _proto.onToggle = function onToggle() {
+    // console.log('MediaZoomMesh.onToggle', !this.zoomed);
     // this.zoomed = !this.zoomed;
     this.emit('zoomed', !this.zoomed);
   };
@@ -16921,96 +16938,7 @@ var RGBELoader = /*#__PURE__*/function (_DataTextureLoader) {
     this.off('over', this.onOver);
     this.off('out', this.onOut);
     this.off('down', this.onToggle);
-  }
-  /*
-  render__(time, tick) {
-  	const parent = this.parent;
-  	if (!parent) {
-  		return;
-  	}
-  	// const object = this.updateObjectMatrix();
-  	const object = this.object;
-  	// parent.position.lerp(object.position, 0.2);
-  	// parent.scale.lerp(object.scale, 0.2);
-  	// parent.quaternion.slerp(object.quaternion, 0.2);
-  	parent.position.copy(object.position);
-  	parent.scale.copy(object.scale);
-  	parent.quaternion.copy(object.quaternion);
-  }
-  */
-
-  /*
-  update__(parent) {
-  	this.originalPosition = parent.position.clone();
-  	this.originalScale = parent.scale.clone();
-  	this.originalQuaternion = parent.quaternion.clone();
-  	this.object.position.copy(this.originalPosition);
-  	this.object.scale.copy(this.originalScale);
-  	this.object.quaternion.copy(this.originalQuaternion);
-  	const scale = this.scale;
-  	const position = this.position;
-  	const parentRatio = parent.scale.x / parent.scale.y;
-  	const size = 0.1;
-  	scale.set(size / parentRatio, size, 1);
-  	position.x = 0.5 - size / parentRatio / 2;
-  	position.y = 0.5 - size / 2;
-  	position.z = 0.01;
-  	// console.log('MediaZoomMesh.setParentScale', parent.scale, scale, position);
-  }
-  */
-
-  /*
-  updateObjectMatrix__() {
-  	const object = this.object;
-  	const host = this.host;
-  	if (this.zoomed) {
-  		const cameraGroup = host.cameraGroup;
-  		const originalScale = this.originalScale;
-  		let camera = host.camera, scale;
-  		const position = object.position;
-  		const aspect = originalScale.x / originalScale.y;
-  		const xr = host.renderer.xr;
-  		if (xr.isPresenting) {
-  			camera = xr.getCamera(camera);
-  			camera.getWorldDirection(position);
-  			scale = 0.3;
-  			object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-  			const distance = this.getDistanceToCamera(camera, object.scale);
-  			position.multiplyScalar(distance * 1);
-  			position.add(cameraGroup.position);
-  			position.y -= 0.2;
-  			object.position.copy(position);
-  			// position.multiplyScalar(distance * 0.75);
-  			// position.y -= 0.2;
-  			// cameraGroup.worldToLocal(position);
-  			// position.y += cameraGroup.position.y;
-  			// object.position.copy(position);
-  			object.lookAt(Host.origin);
-  		} else {
-  			camera.getWorldDirection(position);
-  			scale = 0.1;
-  			object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-  			const distance = this.getDistanceToCamera(camera, object.scale);
-  			position.multiplyScalar(distance);
-  			cameraGroup.localToWorld(position);
-  			object.position.copy(position);
-  			object.lookAt(Host.origin);
-  		}
-  	}
-  	return object;
-  }
-  */
-
-  /*
-  getDistanceToCamera__(camera, size, fitOffset = 1) {
-  	const factor = (2 * Math.atan(Math.PI * camera.fov / 360));
-  	const heightDistance = size.y * camera.zoom / factor;
-  	const widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
-  	const distance = fitOffset * Math.max(heightDistance, widthDistance);
-  	return distance;
-  }
-  */
-  ;
+  };
 
   return MediaZoomMesh;
 }(InteractiveMesh);var VERTEX_SHADER = "\nvarying vec2 vUvShader;\n\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\n\nvoid main() {\n\tvUvShader = uv;\n\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <skinbase_vertex>\n\t#ifdef USE_ENVMAP\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <worldpos_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <envmap_vertex>\n\t#include <fog_vertex>\n}\n";
@@ -17437,7 +17365,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
 
     return MediaLoader.events$.pipe(operators.filter(function (event) {
-      return event.loader.item.id === item.id;
+      return event.loader.item && event.loader.item.id === item.id;
     }), operators.map(function (event) {
       if (event instanceof MediaLoaderPlayEvent) {
         _this4.playing = true;
@@ -17580,20 +17508,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
   _proto.play = function play() {
     this.mediaLoader.play();
-    /*
-    this.playing = true;
-    this.emit('playing', true);
-    this.onOut();
-    */
   };
 
   _proto.pause = function pause() {
     this.mediaLoader.pause();
-    /*
-    this.playing = false;
-    this.emit('playing', false);
-    this.onOut();
-    */
   };
 
   _proto.setPlayingState = function setPlayingState(playing) {
@@ -17695,6 +17613,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   _proto.updateFromItem = function updateFromItem(item) {
+    // console.log('MediaMesh.updateFromItem', item);
     if (item.position) {
       this.position.fromArray(item.position);
     }
@@ -17718,6 +17637,27 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
 
     this.updateZoom();
+  };
+
+  _proto.updateZoom = function updateZoom() {
+    this.originalPosition = this.position.clone();
+    this.originalScale = this.scale.clone();
+    this.originalQuaternion = this.quaternion.clone();
+    this.object.position.copy(this.originalPosition);
+    this.object.scale.copy(this.originalScale);
+    this.object.quaternion.copy(this.originalQuaternion);
+
+    if (this.zoomBtn) {
+      var scale = this.zoomBtn.scale;
+      var position = this.zoomBtn.position;
+      var ratio = this.scale.x / this.scale.y;
+      var size = 0.1;
+      scale.set(size / ratio, size, 1);
+      position.x = 0.5 - size / ratio / 2;
+      position.y = 0.5 - size / 2;
+      position.z = 0.01;
+    } // console.log('MediaMesh.updateZoom', this.scale);
+
   } // zoom
   ;
 
@@ -17739,27 +17679,6 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       this.scale.copy(object.scale);
       this.quaternion.copy(object.quaternion);
     }
-  };
-
-  _proto.updateZoom = function updateZoom() {
-    this.originalPosition = this.position.clone();
-    this.originalScale = this.scale.clone();
-    this.originalQuaternion = this.quaternion.clone();
-    this.object.position.copy(this.originalPosition);
-    this.object.scale.copy(this.originalScale);
-    this.object.quaternion.copy(this.originalQuaternion);
-
-    if (this.zoomBtn) {
-      var scale = this.zoomBtn.scale;
-      var position = this.zoomBtn.position;
-      var ratio = this.scale.x / this.scale.y;
-      var size = 0.1;
-      scale.set(size / ratio, size, 1);
-      position.x = 0.5 - size / ratio / 2;
-      position.y = 0.5 - size / 2;
-      position.z = 0.01;
-    } // console.log('MediaMesh.updateZoom', parent.scale, scale, position);
-
   };
 
   _proto.updateObjectMatrix = function updateObjectMatrix() {
@@ -18237,6 +18156,7 @@ OrbitService.orbitMoveEvent = orbitMoveEvent;var PanoramaLoader = /*#__PURE__*/f
   function PanoramaLoader() {}
 
   PanoramaLoader.load = function load(asset, renderer, callback) {
+    MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
     this.video = null;
 
     if (!asset) {
@@ -18360,14 +18280,55 @@ OrbitService.orbitMoveEvent = orbitMoveEvent;var PanoramaLoader = /*#__PURE__*/f
         });
       });
     }
+  } // !!! implementing medialoader interface
+  // static get progress
+  // static set progress
+  // static play
+  // static pause
+  ;
+
+  PanoramaLoader.play = function play(silent) {
+    var _this = this;
+
+    // console.log('PanoramaLoader.play');
+    var video = this.video;
+
+    if (video) {
+      video.muted = this.muted_;
+      video.play().then(function () {
+        // console.log('PanoramaLoader.play.success', this.video.src);
+        if (!silent) {
+          MediaLoader.events$.next(new MediaLoaderPlayEvent(_this));
+        }
+      }, function (error) {
+        console.log('PanoramaLoader.play.error', video.src, error);
+      });
+    }
+  };
+
+  PanoramaLoader.pause = function pause(silent) {
+    // console.log('PanoramaLoader.pause');
+    var video = this.video;
+
+    if (video) {
+      video.muted = true;
+      video.pause();
+
+      if (!silent) {
+        MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+      }
+    }
   };
 
   PanoramaLoader.loadVideoBackground = function loadVideoBackground(folder, file, renderer, callback) {
+    var _this2 = this;
+
     var progressRef = LoaderService.getRef();
     this.video = true;
     var video = this.video;
 
-    var onPlaying = function onPlaying() {
+    var onCanPlay = function onCanPlay() {
+      // console.log('PanoramaLoader', 'onPlaying');
       video.oncanplay = null;
       var texture = new THREE.VideoTexture(video);
       texture.minFilter = THREE.LinearFilter;
@@ -18382,24 +18343,29 @@ OrbitService.orbitMoveEvent = orbitMoveEvent;var PanoramaLoader = /*#__PURE__*/f
 
 
       LoaderService.setProgress(progressRef, 1);
+
+      {
+        _this2.play();
+      }
     };
 
-    video.oncanplay = function () {
-      // console.log('PanoramaLoader.loadVideoBackground.oncanplay');
-      onPlaying();
+    var onTimeUpdate = function onTimeUpdate() {
+      MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(_this2));
     };
 
+    var onEnded = function onEnded() {
+    };
+
+    video.oncanplay = onCanPlay;
+    video.ontimeupdate = onTimeUpdate;
+    video.onended = onEnded;
     video.crossOrigin = 'anonymous';
     video.src = folder + file;
     video.load();
-    video.play().then(function () {// console.log('PanoramaLoader.loadVideoBackground.play');
-    }, function (error) {
-      console.log('PanoramaLoader.loadVideoBackground.play.error', error);
-    });
   };
 
   PanoramaLoader.loadPublisherStreamBackground = function loadPublisherStreamBackground(renderer, callback) {
-    var _this = this;
+    var _this3 = this;
 
     var onPublisherStreamId = function onPublisherStreamId(publisherStreamId) {
       var video = document.querySelector("#stream-" + publisherStreamId + " video");
@@ -18409,7 +18375,7 @@ OrbitService.orbitMoveEvent = orbitMoveEvent;var PanoramaLoader = /*#__PURE__*/f
       }
 
       var onPlaying = function onPlaying() {
-        var texture = _this.texture = new THREE.VideoTexture(video);
+        var texture = _this3.texture = new THREE.VideoTexture(video);
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
         texture.mapping = THREE.UVMapping;
@@ -18492,6 +18458,30 @@ OrbitService.orbitMoveEvent = orbitMoveEvent;var PanoramaLoader = /*#__PURE__*/f
       }
 
       this.texture_ = texture;
+    }
+  }, {
+    key: "progress",
+    get: function get() {
+      var video = this.video;
+
+      if (video) {
+        return video.currentTime / video.duration;
+      } else {
+        return 0;
+      }
+    },
+    set: function set(progress) {
+      var video = this.video;
+
+      if (video) {
+        var currentTime = video.duration * progress;
+
+        if (video.seekable.length > progress && video.currentTime !== currentTime) {
+          // console.log('PanoramaLoader', 'progress', progress, 'currentTime', currentTime, 'duration', this.video.duration, 'seekable', this.video.seekable);
+          video.currentTime = currentTime;
+          MediaLoader.events$.next(new MediaLoaderTimeSetEvent(this));
+        }
+      }
     }
   }]);
 
@@ -23165,8 +23155,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
     LoaderService.progress$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (progress) {
       var complete = progress.count === 0;
-      var view = _this2.view_;
-      _this2.panorama.mesh.visible = complete;
+      var view = _this2.view_; // this.panorama.mesh.visible = complete;
 
       if (view.items) {
         view.items.forEach(function (item) {
@@ -26163,8 +26152,21 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     });
     */
 
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    this.progressIndicator = node.querySelector('.progress circle');
     LoaderService.progress$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (progress) {
-      return _this4.loading = progress.count > 0;
+      _this4.loading = progress.count > 0;
+      var strokeDashoffset = 144.51;
+
+      if (progress.count) {
+        strokeDashoffset = 144.51 * (1 - progress.value);
+      }
+
+      gsap.set(_this4.progressIndicator, {
+        'strokeDashoffset': strokeDashoffset
+      });
     });
     MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       // DebugService.getService().setMessage('ModelMenuComponent.MessageService ' + message.type);
@@ -26459,8 +26461,8 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
       if (this.loading_ !== loading) {
         this.loading_ = loading;
 
-        var _getContext = rxcomp.getContext(this),
-            node = _getContext.node;
+        var _getContext2 = rxcomp.getContext(this),
+            node = _getContext2.node;
 
         var btn = node.querySelector('.btn--menu');
         btn.classList.toggle('loading', loading);

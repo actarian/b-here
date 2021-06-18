@@ -4485,14 +4485,49 @@ body {
   pointer-events: auto;
   right: 20px;
   top: 50%; }
-  .btn--menu svg {
+  .btn--menu > .spinner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0; }
+    .btn--menu > .spinner:before, .btn--menu > .spinner:after {
+      content: '';
+      position: absolute;
+      border-radius: 3.5px;
+      top: 50%;
+      left: 50%;
+      margin-top: -3.5px;
+      margin-left: -3.5px;
+      width: 7px;
+      height: 7px;
+      background: #111;
+      line-height: 0;
+      font-size: 0; }
+    .btn--menu > .spinner:before {
+      transform: rotate(10deg) translateX(12px); }
+    .btn--menu > .spinner:after {
+      transform: rotate(10deg) translateX(-12px); }
+  .btn--menu > .bullets {
     width: 28px;
     height: 28px;
     transition: opacity ease-in-out 250ms; }
+  .btn--menu > .progress {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    stroke: rgba(0, 0, 0, 0.5);
+    stroke-width: 2px;
+    stroke-linecap: round;
+    opacity: 0; }
+    .btn--menu > .progress > circle {
+      stroke-dasharray: 144.51;
+      stroke-dashoffset: 144.51; }
   .btn--menu, .btn--menu:active, .btn--menu:focus, .btn--menu:hover, .btn--menu:visited {
     background: var(--background);
     color: var(--foreground); }
-    .btn--menu svg, .btn--menu:active svg, .btn--menu:focus svg, .btn--menu:hover svg, .btn--menu:visited svg {
+    .btn--menu > .bullets, .btn--menu:active > .bullets, .btn--menu:focus > .bullets, .btn--menu:hover > .bullets, .btn--menu:visited > .bullets {
       fill: currentColor; }
   .btn--menu:hover {
     background: var(--background-negative);
@@ -4503,23 +4538,14 @@ body {
     background: var(--black-80);
     color: var(--foreground-negative); }
   .btn--menu.loading {
-    pointer-events: none;
-    animation: spinner 2s infinite ease; }
-    .btn--menu.loading svg {
+    pointer-events: none; }
+    .btn--menu.loading > .spinner {
+      opacity: 1;
+      animation: spinner 2s infinite ease; }
+    .btn--menu.loading > .bullets {
       opacity: 0; }
-    .btn--menu.loading:before, .btn--menu.loading:after {
-      content: '';
-      position: absolute;
-      border-radius: 3.5px;
-      width: 7px;
-      height: 7px;
-      background: #111;
-      line-height: 0;
-      font-size: 0; }
-    .btn--menu.loading:before {
-      transform: rotate(10deg) translateX(12px); }
-    .btn--menu.loading:after {
-      transform: rotate(10deg) translateX(-12px); }
+    .btn--menu.loading > .progress {
+      opacity: 1; }
 
 @keyframes spinner {
   0% {
@@ -5272,13 +5298,36 @@ body {
           user-select: none; }
   .ui .group--remote-screen {
     background: none; }
-    .ui .group--remote-screen .agora-stream .agora-stream__player {
-      padding-top: 0; }
-      .ui .group--remote-screen .agora-stream .agora-stream__player > div {
-        position: relative !important; }
-        .ui .group--remote-screen .agora-stream .agora-stream__player > div > video {
+    .ui .group--remote-screen .agora-stream {
+      max-width: 100%; }
+      .ui .group--remote-screen .agora-stream .agora-stream__player {
+        padding-top: 0; }
+        .ui .group--remote-screen .agora-stream .agora-stream__player > div {
           position: relative !important;
-          object-fit: contain !important; }
+          display: flex; }
+          .ui .group--remote-screen .agora-stream .agora-stream__player > div > video {
+            position: relative !important;
+            object-fit: contain !important; }
+
+@media (min-width: 768px) and (orientation: landscape) {
+  .ui .group--remote-screen {
+    max-height: calc(100vh - 180px); }
+    .ui .group--remote-screen .agora-stream {
+      max-height: calc(100vh - 180px); }
+      .ui .group--remote-screen .agora-stream .agora-stream__player {
+        max-height: calc(100vh - 180px); }
+        .ui .group--remote-screen .agora-stream .agora-stream__player > div {
+          height: calc(100vh - 180px) !important; } }
+
+@media (min-width: 768px) and (orientation: portrait) {
+  .ui .group--remote-screen {
+    max-height: calc(100vh - 270px); }
+    .ui .group--remote-screen .agora-stream {
+      max-height: calc(100vh - 270px); }
+      .ui .group--remote-screen .agora-stream .agora-stream__player {
+        max-height: calc(100vh - 270px); }
+        .ui .group--remote-screen .agora-stream .agora-stream__player > div {
+          height: calc(100vh - 270px) !important; } }
   .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
     width: 120px;
     height: 90px;
@@ -6121,7 +6170,7 @@ model-viewer {
     width: 20px;
     margin-right: 15px;
     border-radius: 0; }
-    .ui__navbar .btn--menu > svg {
+    .ui__navbar .btn--menu > .bullets {
       width: 20px;
       height: 20px; }
     .ui__navbar .btn--menu, .ui__navbar .btn--menu:link, .ui__navbar .btn--menu:active, .ui__navbar .btn--menu:visited {

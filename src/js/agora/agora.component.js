@@ -368,6 +368,7 @@ export default class AgoraComponent extends Component {
 					this.onRemoteNavTo(message);
 					break;
 				case MessageType.NavInfo:
+					this.hidePanels();
 					StateService.patchState({ showNavInfo: message.showNavInfo });
 					break;
 				case MessageType.AddLike:
@@ -483,7 +484,8 @@ export default class AgoraComponent extends Component {
 		if (this.agora) {
 			this.agora.leaveChannel().then(() => {
 				// StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
-				window.location.href = window.location.href;
+				// window.location.href = window.location.href;
+				window.location.replace(window.location.href);
 			}, console.log);
 		} else {
 			this.patchState({ connecting: false, connected: false });
@@ -605,11 +607,16 @@ export default class AgoraComponent extends Component {
 	}
 
 	toggleNavInfo() {
+		this.hidePanels();
 		if (this.agora) {
 			this.agora.toggleNavInfo();
 		} else {
 			this.patchState({ showNavInfo: !this.state.showNavInfo });
 		}
+	}
+
+	hidePanels() {
+		this.view.items.forEach(item => item.showPanel = false);
 	}
 
 	onChatClose() {

@@ -16,7 +16,7 @@ export function interactiveHittest(raycaster, down = false, event = defaultEvent
 		this.lock = false;
 		dirty = true;
 	}
-	const items = this.items.filter(x => !x.freezed);
+	const items = this.items.filter(x => x.parent && !x.freezed);
 	const intersections = raycaster.intersectObjects(items);
 	let key, hit;
 	const hash = {};

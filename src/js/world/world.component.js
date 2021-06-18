@@ -274,7 +274,7 @@ export default class WorldComponent extends Component {
 		).subscribe(progress => {
 			const complete = progress.count === 0;
 			const view = this.view_;
-			this.panorama.mesh.visible = complete;
+			// this.panorama.mesh.visible = complete;
 			if (view.items) {
 				view.items.forEach(item => {
 					item.visible = complete;

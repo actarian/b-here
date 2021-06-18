@@ -7,6 +7,7 @@ import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
 // import * as THREE from 'three';
 import { RGBELoader } from '../loaders/RGBELoader';
+import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent, MediaLoaderTimeUpdateEvent } from '../media/media-loader';
 
 export class PanoramaLoader {
 
@@ -60,6 +61,7 @@ export class PanoramaLoader {
 	}
 
 	static load(asset, renderer, callback) {
+		MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
 		this.video = null;
 		if (!asset) {
 			return;
@@ -174,11 +176,66 @@ export class PanoramaLoader {
 		}
 	}
 
+	// !!! implementing medialoader interface
+	// static get progress
+	// static set progress
+	// static play
+	// static pause
+
+	static get progress() {
+		const video = this.video;
+		if (video) {
+			return video.currentTime / video.duration;
+		} else {
+			return 0;
+		}
+	}
+	static set progress(progress) {
+		const video = this.video;
+		if (video) {
+			const currentTime = video.duration * progress;
+			if (video.seekable.length > progress && video.currentTime !== currentTime) {
+				// console.log('PanoramaLoader', 'progress', progress, 'currentTime', currentTime, 'duration', this.video.duration, 'seekable', this.video.seekable);
+				video.currentTime = currentTime;
+				MediaLoader.events$.next(new MediaLoaderTimeSetEvent(this));
+			}
+		}
+	}
+	static play(silent) {
+		// console.log('PanoramaLoader.play');
+		const video = this.video;
+		if (video) {
+			video.muted = this.muted_;
+			video.play().then(() => {
+				// console.log('PanoramaLoader.play.success', this.video.src);
+				if (!silent) {
+					MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
+				}
+			}, error => {
+				console.log('PanoramaLoader.play.error', video.src, error);
+			});
+		}
+	}
+	static pause(silent) {
+		// console.log('PanoramaLoader.pause');
+		const video = this.video;
+		if (video) {
+			video.muted = true;
+			video.pause();
+			if (!silent) {
+				MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+			}
+		}
+	}
+
 	static loadVideoBackground(folder, file, renderer, callback) {
 		const progressRef = LoaderService.getRef();
 		this.video = true;
 		const video = this.video;
-		const onPlaying = () => {
+		const loop = true;
+		const autoplay = true;
+		const onCanPlay = () => {
+			// console.log('PanoramaLoader', 'onPlaying');
 			video.oncanplay = null;
 			const texture = new THREE.VideoTexture(video);
 			texture.minFilter = THREE.LinearFilter;
@@ -191,19 +248,26 @@ export class PanoramaLoader {
 			}
 			// console.log('loadVideoBackground.loaded');
 			LoaderService.setProgress(progressRef, 1);
+			if (autoplay) {
+				this.play();
+			} else {
+				video.pause();
+			}
+		}
+		const onTimeUpdate = () => {
+			MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(this));
 		};
-		video.oncanplay = () => {
-			// console.log('PanoramaLoader.loadVideoBackground.oncanplay');
-			onPlaying();
+		const onEnded = () => {
+			if (!loop) {
+				MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+			}
 		};
+		video.oncanplay = onCanPlay;
+		video.ontimeupdate = onTimeUpdate;
+		video.onended = onEnded;
 		video.crossOrigin = 'anonymous';
 		video.src = folder + file;
 		video.load();
-		video.play().then(() => {
-			// console.log('PanoramaLoader.loadVideoBackground.play');
-		}, error => {
-			console.log('PanoramaLoader.loadVideoBackground.play.error', error);
-		});
 	}
 
 	static loadPublisherStreamBackground(renderer, callback) {

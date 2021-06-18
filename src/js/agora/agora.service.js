@@ -692,6 +692,9 @@ export default class AgoraService extends Emittable {
 			if (USE_RTM) {
 				this.unobserveMemberCount();
 				const channel = this.channel;
+				if (!channel) {
+					return resolve();
+				}
 				const messageClient = this.messageClient;
 				channel.leave().then(() => {
 					this.channel = null;
