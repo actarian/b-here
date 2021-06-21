@@ -9,7 +9,7 @@ export class Texture {
 	}
 
 	static get gridTexture() {
-		return Texture.gridTexture_ || (Texture.gridTexture_ = new THREE.TextureLoader().load(environment.textures.grid));
+		return Texture.gridTexture_ || (Texture.gridTexture_ = new THREE.TextureLoader().load(environment.getPath(environment.textures.grid)));
 	}
 
 }
