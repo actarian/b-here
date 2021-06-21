@@ -16645,7 +16645,7 @@ var RGBELoader = /*#__PURE__*/function (_DataTextureLoader) {
   }, {
     key: "gridTexture",
     get: function get() {
-      return Texture.gridTexture_ || (Texture.gridTexture_ = new THREE.TextureLoader().load(environment.textures.grid));
+      return Texture.gridTexture_ || (Texture.gridTexture_ = new THREE.TextureLoader().load(environment.getPath(environment.textures.grid)));
     }
   }]);
 
