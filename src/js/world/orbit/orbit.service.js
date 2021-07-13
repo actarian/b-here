@@ -37,7 +37,7 @@ export default class OrbitService {
 		const clampedDolly = THREE.Math.clamp(dolly, DOLLY_MIN, DOLLY_MAX);
 		if (this.dolly_ !== clampedDolly) {
 			this.dolly_ = clampedDolly;
-			this.update();
+			this.markAsDirty();
 		}
 	}
 	getDollyValue() {
@@ -51,7 +51,7 @@ export default class OrbitService {
 		const clampedDolly = THREE.Math.clamp(zoom, DOLLY_MIN, DOLLY_MAX);
 		if (this.zoom_ !== clampedDolly) {
 			this.zoom_ = clampedDolly;
-			this.update();
+			this.markAsDirty();
 		}
 	}
 	getZoomValue() {
@@ -65,7 +65,7 @@ export default class OrbitService {
 		if (this.mode_ !== mode) {
 			this.mode_ = mode;
 			OrbitService.mode = mode;
-			this.update();
+			this.markAsDirty();
 		}
 	}
 
@@ -124,7 +124,7 @@ export default class OrbitService {
 	setOrientation(orientation) {
 		if (orientation) {
 			this.setLongitudeLatitude(orientation.longitude, orientation.latitude);
-			this.update();
+			this.markAsDirty();
 		}
 	}
 
@@ -174,9 +174,117 @@ export default class OrbitService {
 			}),
 			filter(event => event instanceof DragMoveEvent),
 			startWith({ latitude: this.latitude, longitude: this.longitude }),
-			tap(event => this.update()),
+			tap(event => this.markAsDirty()),
 			switchMap(event => this.events$),
 		);
+	}
+
+	walk(position, callback) {
+		let radius;
+		switch (this.mode_) {
+			case OrbitMode.Model:
+				radius = 3;
+				break;
+			default:
+				radius = this.radius;
+		}
+		const heading = new THREE.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
+		const headingTheta = Math.atan2(heading.y, heading.x);
+		let headingLongitude = THREE.MathUtils.radToDeg(headingTheta);
+		headingLongitude = (headingLongitude < 0 ? 360 + headingLongitude : headingLongitude) % 360;
+		const headingLatitude = 0;
+		const latitude = this.latitude;
+		const longitude = this.longitude;
+		let differenceLongitude = (headingLongitude - longitude);
+		differenceLongitude = Math.abs(differenceLongitude) > 180 ? (differenceLongitude - 360 * (differenceLongitude / Math.abs(differenceLongitude))) : differenceLongitude;
+		let differenceLatitude = (headingLatitude - latitude);
+		differenceLatitude = Math.abs(differenceLatitude) > 90 ? (differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude))) : differenceLatitude;
+		// console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
+		const from = { tween: 0 };
+		gsap.to(from, {
+			duration: 0.7,
+			tween: 1,
+			delay: 0,
+			ease: Power2.easeInOut,
+			onUpdate: () => {
+				this.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
+				this.position.set(position.x * from.tween, 0, position.y * from.tween);
+				this.markAsDirty();
+			},
+			onComplete: () => {
+				// this.walkComplete(headingLongitude, headingLatitude);
+				if (typeof callback === 'function') {
+					callback(headingLongitude, headingLatitude);
+				}
+			}
+		});
+	}
+
+	walkComplete(headingLongitude, headingLatitude) {
+		this.setLongitudeLatitude(headingLongitude, headingLatitude);
+		this.position.set(0, 0, 0);
+		this.markAsDirty();
+	}
+
+	lookAt(object) {
+		// console.log('OrbitService.lookAt', object);
+		if (object) {
+			let position = object.position.clone();
+			const camera = this.camera;
+			const cameraGroup = camera.parent;
+			position = cameraGroup.worldToLocal(position);
+			let radius;
+			switch (this.mode_) {
+				case OrbitMode.Model:
+					radius = 3;
+					break;
+				default:
+					radius = this.radius;
+			}
+			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
+			const theta = Math.atan2(heading.y, heading.x);
+			const phi = Math.acos(heading.z / radius);
+			let longitude = THREE.MathUtils.radToDeg(theta);
+			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
+			latitude = Math.max(-80, Math.min(80, latitude));
+			this.setLongitudeLatitude(longitude, latitude);
+			this.markAsDirty();
+		}
+	}
+
+	setVRCamera(camera) {
+		if (camera) {
+			const radius = this.radius;
+			const position = new THREE.Vector3(0, 0, -radius);
+			const quaternion = new THREE.Quaternion(camera[3], camera[4], camera[5], camera[6]);
+			position.applyQuaternion(quaternion);
+			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
+			const theta = Math.atan2(heading.y, heading.x);
+			const phi = Math.acos(heading.z / radius);
+			let longitude = THREE.MathUtils.radToDeg(theta);
+			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
+			latitude = Math.max(-80, Math.min(80, latitude));
+			this.setLongitudeLatitude(longitude, latitude);
+			this.markAsDirty();
+		}
+	}
+
+	render() {
+		// slowly rotate scene when not hosted
+		if (!StateService.state.hosted) {
+			this.longitude += 0.025;
+			this.isDirty = true;
+		}
+		if (this.isDirty) {
+			this.isDirty = false;
+			this.update();
+		}
+	}
+
+	markAsDirty() {
+		this.isDirty = true;
 	}
 
 	update() {
@@ -227,103 +335,6 @@ export default class OrbitService {
 		camera.lookAt(camera.target);
 		camera.updateProjectionMatrix();
 		this.events$.next(orbitMoveEvent);
-	}
-
-	render() {
-		this.longitude += 0.025;
-		this.update();
-	}
-
-	walk(position, callback) {
-		let radius;
-		switch (this.mode_) {
-			case OrbitMode.Model:
-				radius = 3;
-				break;
-			default:
-				radius = this.radius;
-		}
-		const heading = new THREE.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
-		const headingTheta = Math.atan2(heading.y, heading.x);
-		let headingLongitude = THREE.MathUtils.radToDeg(headingTheta);
-		headingLongitude = (headingLongitude < 0 ? 360 + headingLongitude : headingLongitude) % 360;
-		const headingLatitude = 0;
-		const latitude = this.latitude;
-		const longitude = this.longitude;
-		let differenceLongitude = (headingLongitude - longitude);
-		differenceLongitude = Math.abs(differenceLongitude) > 180 ? (differenceLongitude - 360 * (differenceLongitude / Math.abs(differenceLongitude))) : differenceLongitude;
-		let differenceLatitude = (headingLatitude - latitude);
-		differenceLatitude = Math.abs(differenceLatitude) > 90 ? (differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude))) : differenceLatitude;
-		// console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
-		const from = { tween: 0 };
-		gsap.to(from, {
-			duration: 0.7,
-			tween: 1,
-			delay: 0,
-			ease: Power2.easeInOut,
-			onUpdate: () => {
-				this.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
-				this.position.set(position.x * from.tween, 0, position.y * from.tween);
-				this.update();
-			},
-			onComplete: () => {
-				// this.walkComplete(headingLongitude, headingLatitude);
-				if (typeof callback === 'function') {
-					callback(headingLongitude, headingLatitude);
-				}
-			}
-		});
-	}
-
-	walkComplete(headingLongitude, headingLatitude) {
-		this.setLongitudeLatitude(headingLongitude, headingLatitude);
-		this.position.set(0, 0, 0);
-		this.update();
-	}
-
-	lookAt(object) {
-		// console.log('OrbitService.lookAt', object);
-		if (object) {
-			let position = object.position.clone();
-			const camera = this.camera;
-			const cameraGroup = camera.parent;
-			position = cameraGroup.worldToLocal(position);
-			let radius;
-			switch (this.mode_) {
-				case OrbitMode.Model:
-					radius = 3;
-					break;
-				default:
-					radius = this.radius;
-			}
-			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
-			const theta = Math.atan2(heading.y, heading.x);
-			const phi = Math.acos(heading.z / radius);
-			let longitude = THREE.MathUtils.radToDeg(theta);
-			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
-			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
-			latitude = Math.max(-80, Math.min(80, latitude));
-			this.setLongitudeLatitude(longitude, latitude);
-			this.update();
-		}
-	}
-
-	setVRCamera(camera) {
-		if (camera) {
-			const radius = this.radius;
-			const position = new THREE.Vector3(0, 0, -radius);
-			const quaternion = new THREE.Quaternion(camera[3], camera[4], camera[5], camera[6]);
-			position.applyQuaternion(quaternion);
-			const heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
-			const theta = Math.atan2(heading.y, heading.x);
-			const phi = Math.acos(heading.z / radius);
-			let longitude = THREE.MathUtils.radToDeg(theta);
-			longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
-			let latitude = 90 - THREE.MathUtils.radToDeg(phi);
-			latitude = Math.max(-80, Math.min(80, latitude));
-			this.setLongitudeLatitude(longitude, latitude);
-			this.update();
-		}
 	}
 
 }

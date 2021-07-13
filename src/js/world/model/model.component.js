@@ -81,7 +81,8 @@ export default class ModelComponent extends Component {
 				},
 				set: (visible) => {
 					this.setVisible(visible);
-				}
+				},
+				configurable: true
 			});
 			item.onUpdate = () => {
 				this.onUpdate(item, mesh);

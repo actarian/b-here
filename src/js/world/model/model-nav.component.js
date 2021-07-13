@@ -62,6 +62,8 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			default:
 				break;
 		}
+		texture.disposable = false;
+		texture.encoding = THREE.sRGBEncoding;
 		return texture;
 	}
 
@@ -135,10 +137,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	get isHidden() {
-		return environment.flags.hideNavInfo &&
-			!this.editor &&
-			(!StateService.state.showNavInfo && !(StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
-			this.mode === NavModeType.Info;
+		return StateService.state.zoomedId != null || (environment.flags.hideNavInfo && !this.editor &&
+			(!StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
+			this.mode === NavModeType.Info);
 	}
 
 	updateVisibility(visible) {
@@ -188,7 +189,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		sphere.name = `[nav] ${this.item.id}`;
 		// sphere.lookAt(Host.origin); ??
 		sphere.depthTest = false;
-		sphere.renderOrder = 0;
+		// sphere.renderOrder = 0;
 		nav.add(sphere);
 		sphere.on('over', () => {
 			// console.log('ModelNavComponent.over');
@@ -268,19 +269,18 @@ export default class ModelNavComponent extends ModelEditableComponent {
 			return;
 		}
 		const map = ModelNavComponent.getTexture(mode, this.item.important);
-		map.disposable = false;
-		map.encoding = THREE.sRGBEncoding;
 		const material = new THREE.SpriteMaterial({
+			map: map,
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
-			map: map,
 			sizeAttenuation: false,
 			opacity: opacity,
 			// color: 0xff0000,
 		});
 		const materials = [material];
 		const icon = this.icon = new THREE.Sprite(material);
+		icon.renderOrder = environment.renderOrder.nav;
 		icon.scale.set(0.03, 0.03, 0.03);
 		mesh.add(icon);
 		let titleMaterial;

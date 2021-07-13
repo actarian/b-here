@@ -83,7 +83,9 @@ export default class AgoraComponent extends Component {
 	set remoteScreen(remoteScreen) {
 		if (this.remoteScreen_ !== remoteScreen) {
 			this.remoteScreen_ = remoteScreen;
-			window.dispatchEvent(new Event('resize'));
+			setTimeout(() => {
+				window.dispatchEvent(new Event('resize'));
+			}, 1);
 		}
 	}
 

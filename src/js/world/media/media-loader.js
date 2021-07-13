@@ -3,6 +3,7 @@ import { ReplaySubject } from 'rxjs';
 import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
+import { RoleType } from '../../user/user';
 
 export class MediaLoaderEvent {
 	constructor(loader) {
@@ -43,6 +44,30 @@ export default class MediaLoader {
 		return assetIsStream(item.asset);
 	}
 
+	static isMutedStream(item) {
+		let isMutedStream = false;
+		switch (item.asset.type.name) {
+			case AssetType.PublisherStream.name:
+				isMutedStream = StateService.state.role === RoleType.Publisher;
+				break;
+			case AssetType.AttendeeStream.name:
+				isMutedStream = StateService.state.role === RoleType.Attendee;
+				break;
+			case AssetType.PublisherScreen.name:
+				isMutedStream = true;
+				break;
+			case AssetType.AttendeeScreen.name:
+				isMutedStream = true;
+				break;
+			case AssetType.SmartDeviceStream.name:
+				isMutedStream = StateService.state.role === RoleType.SmartDevice;
+				break;
+			default:
+		}
+		// console.log('isMutedStream', isMutedStream, item.asset.type.name, AssetType.PublisherStream.name, StateService.state.role, RoleType.Publisher);
+		return isMutedStream;
+	}
+
 	static isPublisherStream(item) {
 		return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
 	}
@@ -69,6 +94,10 @@ export default class MediaLoader {
 
 	get isStream() {
 		return MediaLoader.isStream(this.item);
+	}
+
+	get isMutedStream() {
+		return MediaLoader.isMutedStream(this.item);
 	}
 
 	get isPublisherStream() {
@@ -142,9 +171,10 @@ export default class MediaLoader {
 					callback(texture, this);
 				}
 			};
+			const isMutedStream = this.isMutedStream;
 			video.crossOrigin = 'anonymous';
-			video.volume = 1;
-			video.muted = false;
+			video.volume = isMutedStream ? 0 : 1;
+			video.muted = isMutedStream;
 			if (video.readyState >= video.HAVE_FUTURE_DATA) {
 				onCanPlay();
 			} else {

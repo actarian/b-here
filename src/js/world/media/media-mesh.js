@@ -311,6 +311,7 @@ export default class MediaMesh extends InteractiveMesh {
 		return stream.clientInfo && stream.clientInfo.role === RoleType.SmartDevice && stream.clientInfo.uid === stream.getId();
 	}
 	static isPublisherScreen(stream) {
+		// console.log(stream.clientInfo, stream.clientInfo ? [stream.clientInfo.role, stream.clientInfo.screenUid, stream.getId()] : null);
 		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.screenUid === stream.getId();
 	}
 	static isAttendeeScreen(stream) {
@@ -346,13 +347,16 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const assetType = item.asset.type;
 		const file = item.asset.file;
+		// console.log(item.asset, assetIsStream(item.asset));
 		if (assetIsStream(item.asset)) {
+			// console.log('MediaMesh.getStreamId$', item.asset.type.name);
 			return StreamService.streams$.pipe(
 				map((streams) => {
 					let stream;
 					let i = 0;
 					const matchType = this.getTypeMatcher(assetType);
 					streams.forEach(x => {
+						// console.log('MediaMesh.getStreamId$', x.clientInfo, x.clientInfo ? [x.clientInfo.screenUid, x.getId()] : null);
 						if (matchType(x)) {
 							if (i === item.asset.index) {
 								stream = x;
@@ -360,10 +364,11 @@ export default class MediaMesh extends InteractiveMesh {
 							i++;
 						}
 					});
-					// console.log('MediaMesh.getStreamId$', assetType.name, stream, streams);
 					if (stream) {
+						// console.log('MediaMesh.getStreamId$', assetType.name, stream.clientInfo.role, stream.getId());
 						return stream.getId();
 					} else {
+						// console.log('MediaMesh.getStreamId$.notfound', assetType.name);
 						return null;
 					}
 				}),
@@ -418,6 +423,8 @@ export default class MediaMesh extends InteractiveMesh {
 		this.host = host;
 		this.uniforms = MediaMesh.getUniformsByItem(item);
 		this.object = new THREE.Object3D();
+		this.tempPosition = new THREE.Vector3();
+		this.tempRotation = new THREE.Vector3();
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
 		this.onOver = this.onOver.bind(this);
 		this.onOut = this.onOut.bind(this);
@@ -824,6 +831,9 @@ export default class MediaMesh extends InteractiveMesh {
 			parent.scale.lerp(object.scale, 0.2);
 			parent.quaternion.slerp(object.quaternion, 0.2);
 			*/
+			if (this.zoomed && !this.host.renderer.xr.isPresenting) {
+				this.updateObjectMatrix();
+			}
 			this.position.copy(object.position);
 			this.scale.copy(object.scale);
 			this.quaternion.copy(object.quaternion);
@@ -834,50 +844,42 @@ export default class MediaMesh extends InteractiveMesh {
 		const object = this.object;
 		const host = this.host;
 		if (this.zoomed) {
-			const cameraGroup = host.cameraGroup;
+			// const cameraGroup = host.cameraGroup;
 			const originalScale = this.originalScale;
-			let camera = host.camera, scale;
-			const position = object.position;
-			const aspect = originalScale.x / originalScale.y;
+			let camera = host.camera, fov = camera.fov, aspect = camera.aspect, scale;
+			const position = this.tempPosition;
+			const rotation = this.tempRotation;
+			// const aspect = originalScale.x / originalScale.y;
+			scale = 0.01; // 0.01;
 			const xr = host.renderer.xr;
 			if (xr.isPresenting) {
 				camera = xr.getCamera(camera);
-				camera.getWorldDirection(position);
-				scale = 0.3;
-				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-				const distance = this.getDistanceToCamera(camera, object.scale);
-				position.multiplyScalar(distance * 1);
-				position.add(cameraGroup.position);
-				position.y -= 0.2;
-				object.position.copy(position);
-				/*
-				position.multiplyScalar(distance * 0.75);
-				position.y -= 0.2;
-				cameraGroup.worldToLocal(position);
-				position.y += cameraGroup.position.y;
-				object.position.copy(position);
-				*/
-				object.lookAt(Host.origin);
-			} else {
-				camera.getWorldDirection(position);
-				scale = 0.1;
-				object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-				const distance = this.getDistanceToCamera(camera, object.scale);
-				position.multiplyScalar(distance);
-				cameraGroup.localToWorld(position);
-				object.position.copy(position);
-				object.lookAt(Host.origin);
+				const mat = camera.projectionMatrix.elements;
+				const a = mat[0];
+				const b = mat[5];
+				// const c = mat[10];
+				// const d = mat[14];
+				aspect = b / a;
+				// const k = (c - 1) / (c + 1);
+				// const clip_min = (d * (1 - k)) / (2 * k);
+				// const clip_max = k * clip_min;
+				const RAD2DEG = 180 / 3.14159265358979323846;
+				fov = RAD2DEG * (2 * Math.atan(1 / b));
+				scale = 1;
+			}
+			object.scale.copy(originalScale).multiplyScalar(scale);
+			const distance = Host.getDistanceToCamera(camera, fov, aspect, object.scale);
+			camera.getWorldDirection(rotation);
+			rotation.multiplyScalar(distance);
+			position.set(0, 0, 0);
+			camera.localToWorld(position);
+			position.add(rotation);
+			object.position.copy(position);
+			object.lookAt(Host.origin);
+			if (xr.isPresenting) {
+				object.position.y -= object.scale.y / 2;
 			}
 		}
-		return object;
-	}
-
-	getDistanceToCamera(camera, size, fitOffset = 1) {
-		const factor = (2 * Math.atan(Math.PI * camera.fov / 360));
-		const heightDistance = size.y * camera.zoom / factor;
-		const widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
-		const distance = fitOffset * Math.max(heightDistance, widthDistance);
-		return distance;
 	}
 
 	zoomed_ = false;
@@ -888,14 +890,19 @@ export default class MediaMesh extends InteractiveMesh {
 		if (this.zoomed_ !== zoomed) {
 			this.zoomed_ = zoomed;
 			if (zoomed) {
+				this.renderOrder = environment.renderOrder.panel + 5;
+				this.material.depthTest = false;
 				// this.originalPosition = this.position.clone();
 				// this.originalQuaternion = this.rotation.clone();
 				// this.originalScale = this.scale.clone();
 			} else {
+				this.renderOrder = 0;
+				this.material.depthTest = true;
 				this.object.position.copy(this.originalPosition);
 				this.object.scale.copy(this.originalScale);
 				this.object.quaternion.copy(this.originalQuaternion);
 			}
+			this.material.needsUpdate = true;
 			this.updateObjectMatrix();
 			if (this.zoomBtn) {
 				this.zoomBtn.zoomed = zoomed;
