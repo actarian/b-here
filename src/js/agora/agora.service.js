@@ -590,7 +590,7 @@ export default class AgoraService extends Emittable {
 			local.setVideoEncoderConfiguration(quality);
 		}
 
-		console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
+		// console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
 		local.init(() => {
 			StreamService.local = local;
 			setTimeout(() => {
@@ -799,7 +799,7 @@ export default class AgoraService extends Emittable {
 			this.dismissControl().then((dismissedControllingId) => {
 				if (dismissedControllingId !== controllingId) {
 					this.requestControl(controllingId).then((controllingId) => {
-						console.log('AgoraService.toggleControl', controllingId);
+						// console.log('AgoraService.toggleControl', controllingId);
 					});
 				}
 			});
@@ -1472,6 +1472,7 @@ export default class AgoraService extends Emittable {
 		stream.init(() => {
 			StreamService.screen = stream;
 			stream.on('stopScreenSharing', onStopScreenSharing);
+			stream.muteAudio();
 			setTimeout(() => {
 				this.publishScreenStream();
 			}, 1);

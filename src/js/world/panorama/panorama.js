@@ -68,6 +68,7 @@ export default class Panorama {
 			get: function() {
 				return this.uniforms.envMap.value;
 			},
+			configurable: true
 		});
 		return material;
 	}

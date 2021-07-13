@@ -17,4 +17,12 @@ export class Host {
 		return this.origin_;
 	}
 
+	static getDistanceToCamera(camera, fov, aspect, size, fitOffset = 0.88) {
+		const factor = (2 * Math.atan(Math.PI * fov / 360));
+		const heightDistance = size.y * camera.zoom / factor;
+		const widthDistance = size.x * camera.zoom / factor / aspect;
+		const distance = fitOffset * Math.max(heightDistance, widthDistance);
+		return distance;
+	}
+
 }
