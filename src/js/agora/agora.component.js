@@ -83,7 +83,9 @@ export default class AgoraComponent extends Component {
 	set remoteScreen(remoteScreen) {
 		if (this.remoteScreen_ !== remoteScreen) {
 			this.remoteScreen_ = remoteScreen;
-			window.dispatchEvent(new Event('resize'));
+			setTimeout(() => {
+				window.dispatchEvent(new Event('resize'));
+			}, 1);
 		}
 	}
 
@@ -216,6 +218,7 @@ export default class AgoraComponent extends Component {
 			navigable: navigable,
 			cameraMuted: false,
 			audioMuted: false,
+			showNavInfo: true,
 		};
 		StateService.state = state;
 		StateService.state$.pipe(

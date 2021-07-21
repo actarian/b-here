@@ -74,6 +74,7 @@ export default class EditorComponent extends Component {
 			navigable: true,
 			cameraMuted: false,
 			audioMuted: false,
+			showNavInfo: true,
 		};
 		StateService.state = state;
 		StateService.state$.pipe(

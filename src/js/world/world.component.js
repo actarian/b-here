@@ -278,7 +278,7 @@ export default class WorldComponent extends Component {
 			// console.log(view, complete, progress);
 		});
 
-		console.log('WorldComponent.createScene', this);
+		// console.log('WorldComponent.createScene', this);
 	}
 
 	addEnvironment() {
@@ -684,7 +684,8 @@ export default class WorldComponent extends Component {
 		try {
 			const renderer = this.renderer,
 				scene = this.scene,
-				camera = this.camera;
+				camera = this.camera,
+				avatars = this.avatars;
 			const isPresenting = renderer.xr.isPresenting;
 			if (!isPresenting && (StateService.state.mode === UIMode.LiveMeeting)) {
 				// !!! || (StateService.state.remoteScreen !== null)
@@ -697,36 +698,21 @@ export default class WorldComponent extends Component {
 			} else {
 				this.navWithKeys();
 			}
+			this.orbitService.render();
 			const time = performance.now();
 			const tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
-			this.scene.traverse((child) => {
-				if (typeof child.userData.render === 'function') {
-					child.userData.render(time, tick, renderer, scene, camera);
+			scene.traverse((child) => {
+				const render = child.userData.render;
+				if (typeof render === 'function') {
+					render(time, tick, renderer, scene, camera);
 				}
 			});
-			Object.keys(this.avatars).forEach(key => {
-				this.avatars[key].render();
+			Object.keys(avatars).forEach(key => {
+				avatars[key].render();
 			});
 			this.vrService.updateState(this);
 			this.raycasterXRHitTest();
-			/*
-			const objects = this.objects;
-			for (let i = 0; i < objects.children.length; i++) {
-				const x = objects.children[i];
-				if (typeof x.userData.render === 'function') {
-					x.userData.render(time, tick, renderer, scene, camera);
-				}
-			}
-			*/
-			/*
-			if (scene.background && scene.background.userData) {
-				scene.background.userData.render(time, tick, renderer, scene, camera);
-			}
-			*/
-			renderer.render(this.scene, this.camera);
-			if (this.state && !this.state.hosted) {
-				this.orbitService.render();
-			}
+			renderer.render(scene, camera);
 		} catch (error) {
 			this.error = error;
 			// throw (error);
@@ -776,7 +762,7 @@ export default class WorldComponent extends Component {
 					// console.log(manhattanLength, intersects);
 					this.cameraGroup.position.add(velocity);
 					this.cameraGroup.position.y = 0;
-					this.orbitService.update();
+					this.orbitService.markAsDirty();
 					// this.orbitService.events$.next(OrbitService.orbitMoveEvent);
 					// camera.updateProjectionMatrix();
 				}
@@ -1014,6 +1000,7 @@ export default class WorldComponent extends Component {
 		this.cameraGroup.rotation.y = 0;
 		this.cameraGroup.position.y = 0;
 		this.scene.remove(this.indicator.mesh);
+		this.orbitService.markAsDirty();
 		MessageService.send({
 			type: MessageType.VREnded,
 		});
@@ -1113,6 +1100,8 @@ export default class WorldComponent extends Component {
 				}
 			});
 		}
+		this.view.items.forEach(item => item.showPanel = false);
+		StateService.patchState({ zoomedId: event.zoomed ? event.itemId : null });
 		MessageService.send({
 			type: MessageType.ZoomMedia,
 			itemId: event.itemId,
@@ -1342,7 +1331,7 @@ export default class WorldComponent extends Component {
 					break;
 				case MessageType.VRState:
 					this.updateOffCanvasScene(message);
-					if (StateService.state.spying === message.clientId) {
+					if (StateService.state.spying === message.clientId || StateService.state.controlling === message.clientId) {
 						this.orbitService.setVRCamera(message.camera);
 					}
 					break;

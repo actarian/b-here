@@ -42,7 +42,7 @@ export default class ModelRoomComponent extends ModelComponent {
 	}
 
 	onInit() {
-		console.log('ModelRoomComponent.onInit');
+		// console.log('ModelRoomComponent.onInit');
 		super.onInit();
 		this.isPresenting = false;
 		MenuService.active$.pipe(

@@ -220,14 +220,16 @@ export default class StreamService {
 								getId: () => 'editor-screen',
 								clientInfo: {
 									role: RoleType.Publisher,
-									uid: 'editor-screen_',
+									uid: 'editor',
+									screenUid: 'editor-screen',
 								}
 							};
 							const fakeAttendeeScreen = {
 								getId: () => 'editor-screen',
 								clientInfo: {
 									role: RoleType.Attendee,
-									uid: 'editor-screen_',
+									uid: 'editor',
+									screenUid: 'editor-screen',
 								}
 							};
 							this.editorScreens$.next([fakePublisherScreen, fakeAttendeeScreen]);

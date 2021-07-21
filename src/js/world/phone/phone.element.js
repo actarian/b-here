@@ -66,6 +66,7 @@ export class PhoneStreamElement {
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
 			texture.format = THREE.RGBFormat;
+			texture.encoding = THREE.sRGBEncoding;
 			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);
@@ -83,10 +84,10 @@ export class PhoneStreamElement {
 
 	constructor() {
 		const geometry = PhoneStreamElement.geometry;
-		const material = new THREE.MeshStandardMaterial({
+		const material = new THREE.MeshBasicMaterial({
 			// depthTest: false,
 			color: 0xffffff,
-			side: THREE.DoubleSide,
+			// side: THREE.DoubleSide,
 		});
 		const plane = this.plane = new THREE.Mesh(geometry, material);
 	}
@@ -126,11 +127,12 @@ export default class PhoneElement {
 		const geometry = new THREE.BoxBufferGeometry(0.01 * W, 0.01 * H, 0.01 * D, 2, 2, 1);
 		const material = new THREE.MeshStandardMaterial({
 			// depthTest: false,
-			color: 0x202020,
+			color: 0x000000,
+			transparent: true,
+			opacity: 0.6,
 		});
 		const phone = new THREE.Mesh(geometry, material);
 		phone.rotation.set(-Math.PI / 4, 0, 0);
 		return phone;
 	}
-
 }

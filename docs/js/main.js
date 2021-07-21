@@ -1847,7 +1847,8 @@ var StreamService = /*#__PURE__*/function () {
               },
               clientInfo: {
                 role: RoleType.Publisher,
-                uid: 'editor-screen_'
+                uid: 'editor',
+                screenUid: 'editor-screen'
               }
             };
             var fakeAttendeeScreen = {
@@ -1856,7 +1857,8 @@ var StreamService = /*#__PURE__*/function () {
               },
               clientInfo: {
                 role: RoleType.Attendee,
-                uid: 'editor-screen_'
+                uid: 'editor',
+                screenUid: 'editor-screen'
               }
             };
 
@@ -2717,9 +2719,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     if (quality) {
       local.setVideoProfile(quality.profile);
       local.setVideoEncoderConfiguration(quality);
-    }
+    } // console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
 
-    console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
+
     local.init(function () {
       StreamService.local = local;
       setTimeout(function () {
@@ -2980,8 +2982,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     this.dismissSpy().then(function () {
       _this14.dismissControl().then(function (dismissedControllingId) {
         if (dismissedControllingId !== controllingId) {
-          _this14.requestControl(controllingId).then(function (controllingId) {
-            console.log('AgoraService.toggleControl', controllingId);
+          _this14.requestControl(controllingId).then(function (controllingId) {// console.log('AgoraService.toggleControl', controllingId);
           });
         }
       });
@@ -3788,6 +3789,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     stream.init(function () {
       StreamService.screen = stream;
       stream.on('stopScreenSharing', onStopScreenSharing);
+      stream.muteAudio();
       setTimeout(function () {
         _this28.publishScreenStream();
       }, 1);
@@ -7345,6 +7347,35 @@ var MediaLoader = /*#__PURE__*/function () {
     return assetIsStream(item.asset);
   };
 
+  MediaLoader.isMutedStream = function isMutedStream(item) {
+    var isMutedStream = false;
+
+    switch (item.asset.type.name) {
+      case AssetType.PublisherStream.name:
+        isMutedStream = StateService.state.role === RoleType.Publisher;
+        break;
+
+      case AssetType.AttendeeStream.name:
+        isMutedStream = StateService.state.role === RoleType.Attendee;
+        break;
+
+      case AssetType.PublisherScreen.name:
+        isMutedStream = true;
+        break;
+
+      case AssetType.AttendeeScreen.name:
+        isMutedStream = true;
+        break;
+
+      case AssetType.SmartDeviceStream.name:
+        isMutedStream = StateService.state.role === RoleType.SmartDevice;
+        break;
+    } // console.log('isMutedStream', isMutedStream, item.asset.type.name, AssetType.PublisherStream.name, StateService.state.role, RoleType.Publisher);
+
+
+    return isMutedStream;
+  };
+
   MediaLoader.isPublisherStream = function isPublisherStream(item) {
     return item.asset && item.asset.type.name === AssetType.PublisherStream.name;
   };
@@ -7374,6 +7405,11 @@ var MediaLoader = /*#__PURE__*/function () {
     key: "isStream",
     get: function get() {
       return MediaLoader.isStream(this.item);
+    }
+  }, {
+    key: "isMutedStream",
+    get: function get() {
+      return MediaLoader.isMutedStream(this.item);
     }
   }, {
     key: "isPublisherStream",
@@ -7467,9 +7503,10 @@ var MediaLoader = /*#__PURE__*/function () {
         }
       };
 
+      var isMutedStream = this.isMutedStream;
       video.crossOrigin = 'anonymous';
-      video.volume = 1;
-      video.muted = false;
+      video.volume = isMutedStream ? 0 : 1;
+      video.muted = isMutedStream;
 
       if (video.readyState >= video.HAVE_FUTURE_DATA) {
         onCanPlay();
@@ -7966,7 +8003,8 @@ var VRService = /*#__PURE__*/function () {
       live: live,
       navigable: navigable,
       cameraMuted: false,
-      audioMuted: false
+      audioMuted: false,
+      showNavInfo: true
     };
     StateService.state = state;
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
@@ -8645,7 +8683,9 @@ var VRService = /*#__PURE__*/function () {
     set: function set(remoteScreen) {
       if (this.remoteScreen_ !== remoteScreen) {
         this.remoteScreen_ = remoteScreen;
-        window.dispatchEvent(new Event('resize'));
+        setTimeout(function () {
+          window.dispatchEvent(new Event('resize'));
+        }, 1);
       }
     }
   }]);
@@ -9546,7 +9586,8 @@ AsideComponent.meta = {
       live: false,
       navigable: true,
       cameraMuted: false,
-      audioMuted: false
+      audioMuted: false,
+      showNavInfo: true
     };
     StateService.state = state;
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
@@ -10597,6 +10638,18 @@ MenuBuilderComponent.meta = {
 var ORIGIN = new THREE.Vector3();
 var Host = /*#__PURE__*/function () {
   function Host() {}
+
+  Host.getDistanceToCamera = function getDistanceToCamera(camera, fov, aspect, size, fitOffset) {
+    if (fitOffset === void 0) {
+      fitOffset = 0.88;
+    }
+
+    var factor = 2 * Math.atan(Math.PI * fov / 360);
+    var heightDistance = size.y * camera.zoom / factor;
+    var widthDistance = size.x * camera.zoom / factor / aspect;
+    var distance = fitOffset * Math.max(heightDistance, widthDistance);
+    return distance;
+  };
 
   _createClass(Host, null, [{
     key: "origin",
@@ -13794,7 +13847,8 @@ LanguageComponent.meta = {
       chat: false,
       chatDirty: true,
       name: 'Jhon Appleseed',
-      uid: '7341614597544882'
+      uid: '7341614597544882',
+      showNavInfo: true
     };
     this.state.live = this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG ? false : true;
     var embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
@@ -17072,6 +17126,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   MediaMesh.isPublisherScreen = function isPublisherScreen(stream) {
+    // console.log(stream.clientInfo, stream.clientInfo ? [stream.clientInfo.role, stream.clientInfo.screenUid, stream.getId()] : null);
     return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.screenUid === stream.getId();
   };
 
@@ -17121,9 +17176,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     }
 
     var assetType = item.asset.type;
-    var file = item.asset.file;
+    var file = item.asset.file; // console.log(item.asset, assetIsStream(item.asset));
 
     if (assetIsStream(item.asset)) {
+      // console.log('MediaMesh.getStreamId$', item.asset.type.name);
       return StreamService.streams$.pipe(operators.map(function (streams) {
         var stream;
         var i = 0;
@@ -17131,6 +17187,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         var matchType = _this2.getTypeMatcher(assetType);
 
         streams.forEach(function (x) {
+          // console.log('MediaMesh.getStreamId$', x.clientInfo, x.clientInfo ? [x.clientInfo.screenUid, x.getId()] : null);
           if (matchType(x)) {
             if (i === item.asset.index) {
               stream = x;
@@ -17138,11 +17195,13 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
             i++;
           }
-        }); // console.log('MediaMesh.getStreamId$', assetType.name, stream, streams);
+        });
 
         if (stream) {
+          // console.log('MediaMesh.getStreamId$', assetType.name, stream.clientInfo.role, stream.getId());
           return stream.getId();
         } else {
+          // console.log('MediaMesh.getStreamId$.notfound', assetType.name);
           return null;
         }
       }));
@@ -17211,6 +17270,8 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     _this.host = host;
     _this.uniforms = MediaMesh.getUniformsByItem(item);
     _this.object = new THREE.Object3D();
+    _this.tempPosition = new THREE.Vector3();
+    _this.tempRotation = new THREE.Vector3();
     var mediaLoader = _this.mediaLoader = new MediaLoader(item);
     _this.onOver = _this.onOver.bind(_assertThisInitialized(_this));
     _this.onOut = _this.onOut.bind(_assertThisInitialized(_this));
@@ -17675,6 +17736,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       parent.quaternion.slerp(object.quaternion, 0.2);
       */
 
+      if (this.zoomed && !this.host.renderer.xr.isPresenting) {
+        this.updateObjectMatrix();
+      }
+
       this.position.copy(object.position);
       this.scale.copy(object.scale);
       this.quaternion.copy(object.quaternion);
@@ -17686,61 +17751,49 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     var host = this.host;
 
     if (this.zoomed) {
-      var cameraGroup = host.cameraGroup;
+      // const cameraGroup = host.cameraGroup;
       var originalScale = this.originalScale;
       var camera = host.camera,
+          fov = camera.fov,
+          aspect = camera.aspect,
           scale;
-      var position = object.position;
-      var aspect = originalScale.x / originalScale.y;
+      var position = this.tempPosition;
+      var rotation = this.tempRotation; // const aspect = originalScale.x / originalScale.y;
+
+      scale = 0.01; // 0.01;
+
       var xr = host.renderer.xr;
 
       if (xr.isPresenting) {
         camera = xr.getCamera(camera);
-        camera.getWorldDirection(position);
-        scale = 0.3;
-        object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
-        var distance = this.getDistanceToCamera(camera, object.scale);
-        position.multiplyScalar(distance * 1);
-        position.add(cameraGroup.position);
-        position.y -= 0.2;
-        object.position.copy(position);
-        /*
-        position.multiplyScalar(distance * 0.75);
-        position.y -= 0.2;
-        cameraGroup.worldToLocal(position);
-        position.y += cameraGroup.position.y;
-        object.position.copy(position);
-        */
+        var mat = camera.projectionMatrix.elements;
+        var a = mat[0];
+        var b = mat[5]; // const c = mat[10];
+        // const d = mat[14];
 
-        object.lookAt(Host.origin);
-      } else {
-        camera.getWorldDirection(position);
-        scale = 0.1;
-        object.scale.set(scale * originalScale.x, scale * originalScale.y, scale * originalScale.z);
+        aspect = b / a; // const k = (c - 1) / (c + 1);
+        // const clip_min = (d * (1 - k)) / (2 * k);
+        // const clip_max = k * clip_min;
 
-        var _distance = this.getDistanceToCamera(camera, object.scale);
+        var RAD2DEG = 180 / 3.14159265358979323846;
+        fov = RAD2DEG * (2 * Math.atan(1 / b));
+        scale = 1;
+      }
 
-        position.multiplyScalar(_distance);
-        cameraGroup.localToWorld(position);
-        object.position.copy(position);
-        object.lookAt(Host.origin);
+      object.scale.copy(originalScale).multiplyScalar(scale);
+      var distance = Host.getDistanceToCamera(camera, fov, aspect, object.scale);
+      camera.getWorldDirection(rotation);
+      rotation.multiplyScalar(distance);
+      position.set(0, 0, 0);
+      camera.localToWorld(position);
+      position.add(rotation);
+      object.position.copy(position);
+      object.lookAt(Host.origin);
+
+      if (xr.isPresenting) {
+        object.position.y -= object.scale.y / 2;
       }
     }
-
-    return object;
-  };
-
-  _proto.getDistanceToCamera = function getDistanceToCamera(camera, size, fitOffset) {
-    if (fitOffset === void 0) {
-      fitOffset = 1;
-    }
-
-    var factor = 2 * Math.atan(Math.PI * camera.fov / 360);
-    var heightDistance = size.y * camera.zoom / factor;
-    var widthDistance = size.x * camera.zoom / factor / camera.aspect; // heightDistance / camera.aspect;
-
-    var distance = fitOffset * Math.max(heightDistance, widthDistance);
-    return distance;
   };
 
   _createClass(MediaMesh, [{
@@ -17752,12 +17805,20 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       if (this.zoomed_ !== zoomed) {
         this.zoomed_ = zoomed;
 
-        if (zoomed) ; else {
+        if (zoomed) {
+          this.renderOrder = environment.renderOrder.panel + 5;
+          this.material.depthTest = false; // this.originalPosition = this.position.clone();
+          // this.originalQuaternion = this.rotation.clone();
+          // this.originalScale = this.scale.clone();
+        } else {
+          this.renderOrder = 0;
+          this.material.depthTest = true;
           this.object.position.copy(this.originalPosition);
           this.object.scale.copy(this.originalScale);
           this.object.quaternion.copy(this.originalQuaternion);
         }
 
+        this.material.needsUpdate = true;
         this.updateObjectMatrix();
 
         if (this.zoomBtn) {
@@ -17831,7 +17892,7 @@ var OrbitService = /*#__PURE__*/function () {
 
       if (this.dolly_ !== clampedDolly) {
         this.dolly_ = clampedDolly;
-        this.update();
+        this.markAsDirty();
       }
     }
   }, {
@@ -17844,7 +17905,7 @@ var OrbitService = /*#__PURE__*/function () {
 
       if (this.zoom_ !== clampedDolly) {
         this.zoom_ = clampedDolly;
-        this.update();
+        this.markAsDirty();
       }
     }
   }, {
@@ -17856,7 +17917,7 @@ var OrbitService = /*#__PURE__*/function () {
       if (this.mode_ !== mode) {
         this.mode_ = mode;
         OrbitService.mode = mode;
-        this.update();
+        this.markAsDirty();
       }
     }
   }, {
@@ -17924,7 +17985,7 @@ var OrbitService = /*#__PURE__*/function () {
   _proto.setOrientation = function setOrientation(orientation) {
     if (orientation) {
       this.setLongitudeLatitude(orientation.longitude, orientation.latitude);
-      this.update();
+      this.markAsDirty();
     }
   };
 
@@ -17979,10 +18040,131 @@ var OrbitService = /*#__PURE__*/function () {
       latitude: this.latitude,
       longitude: this.longitude
     }), operators.tap(function (event) {
-      return _this.update();
+      return _this.markAsDirty();
     }), operators.switchMap(function (event) {
       return _this.events$;
     }));
+  };
+
+  _proto.walk = function walk(position, callback) {
+    var _this2 = this;
+
+    var radius;
+
+    switch (this.mode_) {
+      case OrbitMode.Model:
+        radius = 3;
+        break;
+
+      default:
+        radius = this.radius;
+    }
+
+    var heading = new THREE.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
+    var headingTheta = Math.atan2(heading.y, heading.x);
+    var headingLongitude = THREE.MathUtils.radToDeg(headingTheta);
+    headingLongitude = (headingLongitude < 0 ? 360 + headingLongitude : headingLongitude) % 360;
+    var headingLatitude = 0;
+    var latitude = this.latitude;
+    var longitude = this.longitude;
+    var differenceLongitude = headingLongitude - longitude;
+    differenceLongitude = Math.abs(differenceLongitude) > 180 ? differenceLongitude - 360 * (differenceLongitude / Math.abs(differenceLongitude)) : differenceLongitude;
+    var differenceLatitude = headingLatitude - latitude;
+    differenceLatitude = Math.abs(differenceLatitude) > 90 ? differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude)) : differenceLatitude; // console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
+
+    var from = {
+      tween: 0
+    };
+    gsap.to(from, {
+      duration: 0.7,
+      tween: 1,
+      delay: 0,
+      ease: Power2.easeInOut,
+      onUpdate: function onUpdate() {
+        _this2.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
+
+        _this2.position.set(position.x * from.tween, 0, position.y * from.tween);
+
+        _this2.markAsDirty();
+      },
+      onComplete: function onComplete() {
+        // this.walkComplete(headingLongitude, headingLatitude);
+        if (typeof callback === 'function') {
+          callback(headingLongitude, headingLatitude);
+        }
+      }
+    });
+  };
+
+  _proto.walkComplete = function walkComplete(headingLongitude, headingLatitude) {
+    this.setLongitudeLatitude(headingLongitude, headingLatitude);
+    this.position.set(0, 0, 0);
+    this.markAsDirty();
+  };
+
+  _proto.lookAt = function lookAt(object) {
+    // console.log('OrbitService.lookAt', object);
+    if (object) {
+      var position = object.position.clone();
+      var camera = this.camera;
+      var cameraGroup = camera.parent;
+      position = cameraGroup.worldToLocal(position);
+      var radius;
+
+      switch (this.mode_) {
+        case OrbitMode.Model:
+          radius = 3;
+          break;
+
+        default:
+          radius = this.radius;
+      }
+
+      var heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
+      var theta = Math.atan2(heading.y, heading.x);
+      var phi = Math.acos(heading.z / radius);
+      var longitude = THREE.MathUtils.radToDeg(theta);
+      longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+      var latitude = 90 - THREE.MathUtils.radToDeg(phi);
+      latitude = Math.max(-80, Math.min(80, latitude));
+      this.setLongitudeLatitude(longitude, latitude);
+      this.markAsDirty();
+    }
+  };
+
+  _proto.setVRCamera = function setVRCamera(camera) {
+    if (camera) {
+      var radius = this.radius;
+      var position = new THREE.Vector3(0, 0, -radius);
+      var quaternion = new THREE.Quaternion(camera[3], camera[4], camera[5], camera[6]);
+      position.applyQuaternion(quaternion);
+      var heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
+      var theta = Math.atan2(heading.y, heading.x);
+      var phi = Math.acos(heading.z / radius);
+      var longitude = THREE.MathUtils.radToDeg(theta);
+      longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
+      var latitude = 90 - THREE.MathUtils.radToDeg(phi);
+      latitude = Math.max(-80, Math.min(80, latitude));
+      this.setLongitudeLatitude(longitude, latitude);
+      this.markAsDirty();
+    }
+  };
+
+  _proto.render = function render() {
+    // slowly rotate scene when not hosted
+    if (!StateService.state.hosted) {
+      this.longitude += 0.025;
+      this.isDirty = true;
+    }
+
+    if (this.isDirty) {
+      this.isDirty = false;
+      this.update();
+    }
+  };
+
+  _proto.markAsDirty = function markAsDirty() {
+    this.isDirty = true;
   };
 
   _proto.update = function update() {
@@ -18039,115 +18221,6 @@ var OrbitService = /*#__PURE__*/function () {
     camera.lookAt(camera.target);
     camera.updateProjectionMatrix();
     this.events$.next(orbitMoveEvent);
-  };
-
-  _proto.render = function render() {
-    this.longitude += 0.025;
-    this.update();
-  };
-
-  _proto.walk = function walk(position, callback) {
-    var _this2 = this;
-
-    var radius;
-
-    switch (this.mode_) {
-      case OrbitMode.Model:
-        radius = 3;
-        break;
-
-      default:
-        radius = this.radius;
-    }
-
-    var heading = new THREE.Vector2(position.x, position.y).normalize().multiplyScalar(radius);
-    var headingTheta = Math.atan2(heading.y, heading.x);
-    var headingLongitude = THREE.MathUtils.radToDeg(headingTheta);
-    headingLongitude = (headingLongitude < 0 ? 360 + headingLongitude : headingLongitude) % 360;
-    var headingLatitude = 0;
-    var latitude = this.latitude;
-    var longitude = this.longitude;
-    var differenceLongitude = headingLongitude - longitude;
-    differenceLongitude = Math.abs(differenceLongitude) > 180 ? differenceLongitude - 360 * (differenceLongitude / Math.abs(differenceLongitude)) : differenceLongitude;
-    var differenceLatitude = headingLatitude - latitude;
-    differenceLatitude = Math.abs(differenceLatitude) > 90 ? differenceLatitude - 90 * (differenceLatitude / Math.abs(differenceLatitude)) : differenceLatitude; // console.log('headingTheta', headingTheta, 'headingLongitude', headingLongitude, 'differenceLongitude', differenceLongitude);
-
-    var from = {
-      tween: 0
-    };
-    gsap.to(from, {
-      duration: 0.7,
-      tween: 1,
-      delay: 0,
-      ease: Power2.easeInOut,
-      onUpdate: function onUpdate() {
-        _this2.setLongitudeLatitude(longitude + differenceLongitude * from.tween, latitude + differenceLatitude * from.tween);
-
-        _this2.position.set(position.x * from.tween, 0, position.y * from.tween);
-
-        _this2.update();
-      },
-      onComplete: function onComplete() {
-        // this.walkComplete(headingLongitude, headingLatitude);
-        if (typeof callback === 'function') {
-          callback(headingLongitude, headingLatitude);
-        }
-      }
-    });
-  };
-
-  _proto.walkComplete = function walkComplete(headingLongitude, headingLatitude) {
-    this.setLongitudeLatitude(headingLongitude, headingLatitude);
-    this.position.set(0, 0, 0);
-    this.update();
-  };
-
-  _proto.lookAt = function lookAt(object) {
-    // console.log('OrbitService.lookAt', object);
-    if (object) {
-      var position = object.position.clone();
-      var camera = this.camera;
-      var cameraGroup = camera.parent;
-      position = cameraGroup.worldToLocal(position);
-      var radius;
-
-      switch (this.mode_) {
-        case OrbitMode.Model:
-          radius = 3;
-          break;
-
-        default:
-          radius = this.radius;
-      }
-
-      var heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
-      var theta = Math.atan2(heading.y, heading.x);
-      var phi = Math.acos(heading.z / radius);
-      var longitude = THREE.MathUtils.radToDeg(theta);
-      longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
-      var latitude = 90 - THREE.MathUtils.radToDeg(phi);
-      latitude = Math.max(-80, Math.min(80, latitude));
-      this.setLongitudeLatitude(longitude, latitude);
-      this.update();
-    }
-  };
-
-  _proto.setVRCamera = function setVRCamera(camera) {
-    if (camera) {
-      var radius = this.radius;
-      var position = new THREE.Vector3(0, 0, -radius);
-      var quaternion = new THREE.Quaternion(camera[3], camera[4], camera[5], camera[6]);
-      position.applyQuaternion(quaternion);
-      var heading = new THREE.Vector3(position.x, position.z, position.y).normalize().multiplyScalar(radius);
-      var theta = Math.atan2(heading.y, heading.x);
-      var phi = Math.acos(heading.z / radius);
-      var longitude = THREE.MathUtils.radToDeg(theta);
-      longitude = (longitude < 0 ? 360 + longitude : longitude) % 360;
-      var latitude = 90 - THREE.MathUtils.radToDeg(phi);
-      latitude = Math.max(-80, Math.min(80, latitude));
-      this.setLongitudeLatitude(longitude, latitude);
-      this.update();
-    }
   };
 
   return OrbitService;
@@ -18556,7 +18629,8 @@ var Panorama = /*#__PURE__*/function () {
     Object.defineProperty(material, 'envMap', {
       get: function get() {
         return this.uniforms.envMap.value;
-      }
+      },
+      configurable: true
     });
     return material;
   };
@@ -18850,6 +18924,7 @@ var PhoneStreamElement = /*#__PURE__*/function () {
       texture.magFilter = THREE.LinearFilter;
       texture.mapping = THREE.UVMapping;
       texture.format = THREE.RGBFormat;
+      texture.encoding = THREE.sRGBEncoding;
       texture.needsUpdate = true;
 
       if (typeof callback === 'function') {
@@ -18878,10 +18953,10 @@ var PhoneStreamElement = /*#__PURE__*/function () {
 
   function PhoneStreamElement() {
     var geometry = PhoneStreamElement.geometry;
-    var material = new THREE.MeshStandardMaterial({
+    var material = new THREE.MeshBasicMaterial({
       // depthTest: false,
-      color: 0xffffff,
-      side: THREE.DoubleSide
+      color: 0xffffff // side: THREE.DoubleSide,
+
     });
     var plane = this.plane = new THREE.Mesh(geometry, material);
   }
@@ -18936,7 +19011,9 @@ var PhoneElement = /*#__PURE__*/function () {
     var geometry = new THREE.BoxBufferGeometry(0.01 * W$1, 0.01 * H$1, 0.01 * D, 2, 2, 1);
     var material = new THREE.MeshStandardMaterial({
       // depthTest: false,
-      color: 0x202020
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.6
     });
     var phone = new THREE.Mesh(geometry, material);
     phone.rotation.set(-Math.PI / 4, 0, 0);
@@ -23159,8 +23236,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         });
       } // console.log(view, complete, progress);
 
-    });
-    console.log('WorldComponent.createScene', this);
+    }); // console.log('WorldComponent.createScene', this);
   };
 
   _proto.addEnvironment = function addEnvironment() {
@@ -23619,12 +23695,11 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.render = function render(delta) {
-    var _this7 = this;
-
     try {
       var renderer = this.renderer,
           scene = this.scene,
-          camera = this.camera;
+          camera = this.camera,
+          avatars = this.avatars;
       var isPresenting = renderer.xr.isPresenting;
 
       if (!isPresenting && StateService.state.mode === UIMode.LiveMeeting) {
@@ -23642,39 +23717,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         this.navWithKeys();
       }
 
+      this.orbitService.render();
       var time = performance.now();
       var tick = this.tick_ ? ++this.tick_ : this.tick_ = 1;
-      this.scene.traverse(function (child) {
-        if (typeof child.userData.render === 'function') {
-          child.userData.render(time, tick, renderer, scene, camera);
+      scene.traverse(function (child) {
+        var render = child.userData.render;
+
+        if (typeof render === 'function') {
+          render(time, tick, renderer, scene, camera);
         }
       });
-      Object.keys(this.avatars).forEach(function (key) {
-        _this7.avatars[key].render();
+      Object.keys(avatars).forEach(function (key) {
+        avatars[key].render();
       });
       this.vrService.updateState(this);
       this.raycasterXRHitTest();
-      /*
-      const objects = this.objects;
-      for (let i = 0; i < objects.children.length; i++) {
-      	const x = objects.children[i];
-      	if (typeof x.userData.render === 'function') {
-      		x.userData.render(time, tick, renderer, scene, camera);
-      	}
-      }
-      */
-
-      /*
-      if (scene.background && scene.background.userData) {
-      	scene.background.userData.render(time, tick, renderer, scene, camera);
-      }
-      */
-
-      renderer.render(this.scene, this.camera);
-
-      if (this.state && !this.state.hosted) {
-        this.orbitService.render();
-      }
+      renderer.render(scene, camera);
     } catch (error) {
       this.error = error; // throw (error);
     }
@@ -23730,7 +23788,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           // console.log(manhattanLength, intersects);
           this.cameraGroup.position.add(velocity);
           this.cameraGroup.position.y = 0;
-          this.orbitService.update(); // this.orbitService.events$.next(OrbitService.orbitMoveEvent);
+          this.orbitService.markAsDirty(); // this.orbitService.events$.next(OrbitService.orbitMoveEvent);
           // camera.updateProjectionMatrix();
         }
 
@@ -23974,6 +24032,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.cameraGroup.rotation.y = 0;
     this.cameraGroup.position.y = 0;
     this.scene.remove(this.indicator.mesh);
+    this.orbitService.markAsDirty();
     MessageService.send({
       type: MessageType.VREnded
     });
@@ -24083,6 +24142,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       });
     }
 
+    this.view.items.forEach(function (item) {
+      return item.showPanel = false;
+    });
+    StateService.patchState({
+      zoomedId: event.zoomed ? event.itemId : null
+    });
     MessageService.send({
       type: MessageType.ZoomMedia,
       itemId: event.itemId,
@@ -24117,25 +24182,25 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onGridMove = function onGridMove(event) {
-    var _this8 = this;
+    var _this7 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
     this.view.items = []; // this.loading = LOADING_BANNER;
 
     this.pushChanges();
     this.orbitService.walk(event.position, function (headingLongitude, headingLatitude) {
-      var tile = _this8.view.getTile(event.indices.x, event.indices.y);
+      var tile = _this7.view.getTile(event.indices.x, event.indices.y);
 
       if (tile) {
-        _this8.panorama.crossfade(tile, _this8.renderer, function (texture) {
-          _this8.setBackground(texture);
+        _this7.panorama.crossfade(tile, _this7.renderer, function (texture) {
+          _this7.setBackground(texture);
 
-          _this8.orbitService.walkComplete(headingLongitude, headingLatitude);
+          _this7.orbitService.walkComplete(headingLongitude, headingLatitude);
 
-          _this8.view.updateCurrentItems(); // this.loading = null;
+          _this7.view.updateCurrentItems(); // this.loading = null;
 
 
-          _this8.pushChanges(); // this.render();
+          _this7.pushChanges(); // this.render();
           // this.pushChanges();
 
         });
@@ -24158,20 +24223,20 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.control$ = function control$() {
-    var _this9 = this;
+    var _this8 = this;
 
     return this.controlEvent$.pipe(operators.filter(function () {
-      return _this9.controlling || _this9.spyed || _this9.editor;
+      return _this8.controlling || _this8.spyed || _this8.editor;
     }), operators.auditTime(40), operators.tap(function (control) {
-      control.orientation.latitude = _this9.orbitService.latitude;
-      control.orientation.longitude = _this9.orbitService.longitude;
-      control.zoom = _this9.orbitService.zoom;
+      control.orientation.latitude = _this8.orbitService.latitude;
+      control.orientation.longitude = _this8.orbitService.longitude;
+      control.zoom = _this8.orbitService.zoom;
       control.cameraGroup = {
-        position: _this9.cameraGroup.position.toArray(),
-        rotation: _this9.cameraGroup.rotation.toArray()
+        position: _this8.cameraGroup.position.toArray(),
+        rotation: _this8.cameraGroup.rotation.toArray()
       };
 
-      var intersections = _this9.raycaster.intersectObjects(_this9.intersectObjects);
+      var intersections = _this8.raycaster.intersectObjects(_this8.intersectObjects);
 
       var point = intersections.length ? intersections[0].point.normalize() : null;
 
@@ -24186,22 +24251,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addListeners = function addListeners() {
-    var _this10 = this;
+    var _this9 = this;
 
     this.controlEvent$ = new rxjs.ReplaySubject(1);
     this.control$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     var vrService = this.vrService = VRService.getService();
     vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-      _this10.renderer.xr.setSession(session);
+      _this9.renderer.xr.setSession(session);
 
       if (session) {
-        _this10.onVRStarted();
+        _this9.onVRStarted();
       } else {
-        _this10.onVREnded();
+        _this9.onVREnded();
       }
     });
     vrService.state$.pipe(operators.takeUntil(this.unsubscribe$), operators.auditTime(Math.floor(1000 / 15))).subscribe(function (state) {
-      _this10.onVRStateDidChange(state);
+      _this9.onVRStateDidChange(state);
     });
     var orbit$ = this.orbitService.observe$(this.container).pipe(operators.shareReplay(1));
     /*
@@ -24215,22 +24280,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }), operators.auditTime(Math.floor(1000 / 15)));
     orientation$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       // this.render();
-      _this10.onOrientationDidChange();
+      _this9.onOrientationDidChange();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.RequestInfo:
           message.type = MessageType.RequestInfoResult;
-          message.viewId = _this10.view.id;
-          message.orientation = _this10.orbitService.getOrientation();
-          message.zoom = _this10.orbitService.zoom;
+          message.viewId = _this9.view.id;
+          message.orientation = _this9.orbitService.getOrientation();
+          message.zoom = _this9.orbitService.zoom;
           message.cameraGroup = {
-            position: _this10.cameraGroup.position.toArray(),
-            rotation: _this10.cameraGroup.rotation.toArray()
+            position: _this9.cameraGroup.position.toArray(),
+            rotation: _this9.cameraGroup.rotation.toArray()
           };
 
-          if (_this10.view instanceof PanoramaGridView) {
-            message.gridIndex = _this10.view.index;
+          if (_this9.view instanceof PanoramaGridView) {
+            message.gridIndex = _this9.view.index;
           } // console.log('WorldComponent', 'MessageType.RequestInfo', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
 
 
@@ -24248,47 +24313,47 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           // console.log('WorldComponent', 'MessageType.RequestInfoResult', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
           if (ViewService.viewId !== message.viewId) {
             ViewService.viewId = message.viewId;
-            _this10.requestInfoResult = message;
+            _this9.requestInfoResult = message;
           } else {
-            if (!_this10.renderer.xr.isPresenting) {
-              _this10.orbitService.setOrientation(message.orientation);
+            if (!_this9.renderer.xr.isPresenting) {
+              _this9.orbitService.setOrientation(message.orientation);
 
-              _this10.orbitService.zoom = message.zoom;
+              _this9.orbitService.zoom = message.zoom;
 
-              _this10.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+              _this9.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
 
-              _this10.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
+              _this9.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
 
             }
 
-            if (_this10.view instanceof PanoramaGridView && message.gridIndex) {
-              _this10.view.index = message.gridIndex;
+            if (_this9.view instanceof PanoramaGridView && message.gridIndex) {
+              _this9.view.index = message.gridIndex;
             }
 
-            if (!_this10.view || !_this10.view.ready) {
-              _this10.requestInfoResult = message;
+            if (!_this9.view || !_this9.view.ready) {
+              _this9.requestInfoResult = message;
             }
           }
 
           break;
 
         case MessageType.ShowPanel:
-          if (_this10.menu) {
-            _this10.menu.removeMenu();
+          if (_this9.menu) {
+            _this9.menu.removeMenu();
           }
 
-          _this10.view.items.forEach(function (item) {
+          _this9.view.items.forEach(function (item) {
             return item.showPanel = item.id === message.itemId;
           });
 
-          _this10.pushChanges();
+          _this9.pushChanges();
 
           break;
 
         case MessageType.PlayMedia:
           {
             // !!! uniformare a PlayModel
-            var item = _this10.view.items.find(function (item) {
+            var item = _this9.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
@@ -24301,7 +24366,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.ZoomMedia:
           {
-            _this10.view.items.forEach(function (item) {
+            _this9.view.items.forEach(function (item) {
               if (item.mesh instanceof MediaMesh) {
                 if (item.id === message.itemId) {
                   item.mesh.setZoomedState(message.zoomed);
@@ -24316,7 +24381,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.CurrentTimeMedia:
           {
-            var _item = _this10.view.items.find(function (item) {
+            var _item = _this9.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
@@ -24329,7 +24394,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.PlayModel:
           {
-            var _item2 = _this10.view.items.find(function (item) {
+            var _item2 = _this9.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
@@ -24342,44 +24407,44 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.NavToGrid:
           // console.log('WorldComponent.NavToGrid', this.view.id, message);
-          if (_this10.view.id === message.viewId) {
-            _this10.view.index = message.gridIndex;
+          if (_this9.view.id === message.viewId) {
+            _this9.view.index = message.gridIndex;
           }
 
           break;
 
         case MessageType.VRStarted:
-          _this10.addOffCanvasScene(message);
+          _this9.addOffCanvasScene(message);
 
           break;
 
         case MessageType.VREnded:
-          _this10.removeOffCanvasScene(message);
+          _this9.removeOffCanvasScene(message);
 
           break;
 
         case MessageType.VRState:
-          _this10.updateOffCanvasScene(message);
+          _this9.updateOffCanvasScene(message);
 
-          if (StateService.state.spying === message.clientId) {
-            _this10.orbitService.setVRCamera(message.camera);
+          if (StateService.state.spying === message.clientId || StateService.state.controlling === message.clientId) {
+            _this9.orbitService.setVRCamera(message.camera);
           }
 
           break;
 
         case MessageType.ControlInfo:
-          if (!_this10.renderer.xr.isPresenting) {
-            _this10.orbitService.setOrientation(message.orientation);
+          if (!_this9.renderer.xr.isPresenting) {
+            _this9.orbitService.setOrientation(message.orientation);
 
-            _this10.orbitService.zoom = message.zoom;
+            _this9.orbitService.zoom = message.zoom;
 
-            _this10.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+            _this9.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
 
-            _this10.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
+            _this9.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
 
           }
 
-          _this10.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2], _this10.camera);
+          _this9.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2], _this9.camera);
 
           break;
       }
@@ -24387,14 +24452,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.SelectItem:
-          _this10.checkSelectedItem();
+          _this9.checkSelectedItem();
 
           break;
       }
     });
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this10.state = state;
-      _this10.showPointer = _this10.locked; // console.log(state);
+      _this9.state = state;
+      _this9.showPointer = _this9.locked; // console.log(state);
       // this.pushChanges();
     });
     this.resize = this.resize.bind(this);
@@ -24612,7 +24677,8 @@ WorldComponent.meta = {
         },
         set: function set(visible) {
           _this2.setVisible(visible);
-        }
+        },
+        configurable: true
       });
 
       item.onUpdate = function () {
@@ -27480,6 +27546,8 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         break;
     }
 
+    texture.disposable = false;
+    texture.encoding = THREE.sRGBEncoding;
     return texture;
   };
 
@@ -27597,8 +27665,8 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     }));
     sphere.name = "[nav] " + this.item.id; // sphere.lookAt(Host.origin); ??
 
-    sphere.depthTest = false;
-    sphere.renderOrder = 0;
+    sphere.depthTest = false; // sphere.renderOrder = 0;
+
     nav.add(sphere);
     sphere.on('over', function () {
       // console.log('ModelNavComponent.over');
@@ -27694,19 +27762,18 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     }
 
     var map = ModelNavComponent.getTexture(mode, this.item.important);
-    map.disposable = false;
-    map.encoding = THREE.sRGBEncoding;
     var material = new THREE.SpriteMaterial({
+      map: map,
       depthTest: false,
       depthWrite: false,
       transparent: true,
-      map: map,
       sizeAttenuation: false,
       opacity: opacity // color: 0xff0000,
 
     });
     var materials = [material];
     var icon = this.icon = new THREE.Sprite(material);
+    icon.renderOrder = environment.renderOrder.nav;
     icon.scale.set(0.03, 0.03, 0.03);
     mesh.add(icon);
     var titleMaterial;
@@ -27811,7 +27878,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   }, {
     key: "isHidden",
     get: function get() {
-      return environment.flags.hideNavInfo && !this.editor && !StateService.state.showNavInfo && !(StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed) && this.mode === NavModeType.Info;
+      return StateService.state.zoomedId != null || environment.flags.hideNavInfo && !this.editor && !StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed) && this.mode === NavModeType.Info;
     }
   }]);
 
@@ -28286,6 +28353,7 @@ ModelPictureComponent.meta = {
     var mesh;
     var subscription;
     MediaMesh.getStreamId$(item).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (streamId) {
+      // console.log('ModelPlaneComponent.onCreate.streamId', streamId);
       if (_this.streamId !== streamId) {
         _this.streamId = streamId; // !!! called by ModelComponent
 
@@ -28712,8 +28780,7 @@ ModelProgressComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    console.log('ModelRoomComponent.onInit');
-
+    // console.log('ModelRoomComponent.onInit');
     _ModelComponent.prototype.onInit.call(this);
 
     this.isPresenting = false;

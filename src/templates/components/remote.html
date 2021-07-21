@@ -27,7 +27,8 @@
 	</div>
 </div>
 <!-- remote screen -->
-<div class="group--remote-screen" *if="remoteScreen && !hasScreenViewItem">
+<!-- <div class="group--remote-screen" *if="remoteScreen && !hasScreenViewItem"> -->
+<div class="group--remote-screen" *if="remoteScreen">
 	<div class="agora-stream" agora-stream [stream]="remoteScreen" type="remote">
 		<div class="agora-stream__player"></div>
 		<div class="agora-stream__info">

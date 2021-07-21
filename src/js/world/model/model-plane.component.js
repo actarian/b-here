@@ -34,6 +34,7 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 		MediaMesh.getStreamId$(item).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((streamId) => {
+			// console.log('ModelPlaneComponent.onCreate.streamId', streamId);
 			if (this.streamId !== streamId) {
 				this.streamId = streamId;
 				// !!! called by ModelComponent
