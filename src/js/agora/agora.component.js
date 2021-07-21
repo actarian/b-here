@@ -218,6 +218,7 @@ export default class AgoraComponent extends Component {
 			navigable: navigable,
 			cameraMuted: false,
 			audioMuted: false,
+			showNavInfo: true,
 		};
 		StateService.state = state;
 		StateService.state$.pipe(

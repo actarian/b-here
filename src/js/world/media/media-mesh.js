@@ -909,5 +909,4 @@ export default class MediaMesh extends InteractiveMesh {
 			}
 		}
 	}
-
 }
