@@ -135,5 +135,4 @@ export default class PhoneElement {
 		phone.rotation.set(-Math.PI / 4, 0, 0);
 		return phone;
 	}
-
 }

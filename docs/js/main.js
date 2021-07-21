@@ -8003,7 +8003,8 @@ var VRService = /*#__PURE__*/function () {
       live: live,
       navigable: navigable,
       cameraMuted: false,
-      audioMuted: false
+      audioMuted: false,
+      showNavInfo: true
     };
     StateService.state = state;
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
@@ -9585,7 +9586,8 @@ AsideComponent.meta = {
       live: false,
       navigable: true,
       cameraMuted: false,
-      audioMuted: false
+      audioMuted: false,
+      showNavInfo: true
     };
     StateService.state = state;
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
@@ -13845,7 +13847,8 @@ LanguageComponent.meta = {
       chat: false,
       chatDirty: true,
       name: 'Jhon Appleseed',
-      uid: '7341614597544882'
+      uid: '7341614597544882',
+      showNavInfo: true
     };
     this.state.live = this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG ? false : true;
     var embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
