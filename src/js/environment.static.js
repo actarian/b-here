@@ -13,7 +13,7 @@ export const environmentStatic = {
 		menu: true,
 		chat: true,
 		ar: true,
-		like: true,
+		like: false,
 		hideNavInfo: true,
 		attendee: true,
 		streamer: true,
