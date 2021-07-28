@@ -6,7 +6,7 @@ export const environmentServed = {
 		production: true,
 		useProxy: false,
 		useToken: true,
-		selfService: true,
+		selfService: false,
 		guidedTourRequest: true,
 		editor: false,
 		editorAssetScreen: true,
