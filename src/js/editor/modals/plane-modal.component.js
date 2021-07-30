@@ -7,6 +7,7 @@ import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
 import { Host } from '../../world/host/host';
 import EditorService from '../editor.service';
+
 export default class PlaneModalComponent extends Component {
 
 	get data() {

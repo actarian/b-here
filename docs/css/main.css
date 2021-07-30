@@ -217,7 +217,7 @@ strong {
 .h6 {
   font-size: 1.5rem; }
 
-.btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu, .btn--ar,
+.btn--back, .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu, .btn--ar,
 .btn--vr, .btn--generate,
 .btn--next,
 .btn--connect,
@@ -247,7 +247,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   font: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
-  .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu, .btn--ar,
+  .btn--back, .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu, .btn--ar,
   .btn--vr, .btn--generate,
   .btn--next,
   .btn--connect,
@@ -266,7 +266,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--call, .btn--edit, a,
   button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy,
   .agora-stream .btn--control,
-  .agora-stream .btn--silence, .btn--volume:active, .btn--fullscreen:active, .btn--view-mode:active, .btn--control:active, .btn--silence:active, .btn--menu:active, .btn--ar:active,
+  .agora-stream .btn--silence, .btn--back:active, .btn--volume:active, .btn--fullscreen:active, .btn--view-mode:active, .btn--control:active, .btn--silence:active, .btn--menu:active, .btn--ar:active,
   .btn--vr:active, .btn--generate:active,
   .btn--next:active,
   .btn--connect:active,
@@ -283,7 +283,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--chat:active,
   .btn--navinfo:active,
   .btn--call:active, .btn--edit:active, a:active,
-  button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--volume:focus, .btn--fullscreen:focus, .btn--view-mode:focus, .btn--control:focus, .btn--silence:focus, .btn--menu:focus, .btn--ar:focus,
+  button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--back:focus, .btn--volume:focus, .btn--fullscreen:focus, .btn--view-mode:focus, .btn--control:focus, .btn--silence:focus, .btn--menu:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--generate:focus,
   .btn--next:focus,
   .btn--connect:focus,
@@ -300,7 +300,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--chat:focus,
   .btn--navinfo:focus,
   .btn--call:focus, .btn--edit:focus, a:focus,
-  button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--volume:hover, .btn--fullscreen:hover, .btn--view-mode:hover, .btn--control:hover, .btn--silence:hover, .btn--menu:hover, .btn--ar:hover,
+  button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--back:hover, .btn--volume:hover, .btn--fullscreen:hover, .btn--view-mode:hover, .btn--control:hover, .btn--silence:hover, .btn--menu:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--generate:hover,
   .btn--next:hover,
   .btn--connect:hover,
@@ -317,7 +317,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--chat:hover,
   .btn--navinfo:hover,
   .btn--call:hover, .btn--edit:hover, a:hover,
-  button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--volume:visited, .btn--fullscreen:visited, .btn--view-mode:visited, .btn--control:visited, .btn--silence:visited, .btn--menu:visited, .btn--ar:visited,
+  button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--back:visited, .btn--volume:visited, .btn--fullscreen:visited, .btn--view-mode:visited, .btn--control:visited, .btn--silence:visited, .btn--menu:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--generate:visited,
   .btn--next:visited,
   .btn--connect:visited,
@@ -339,7 +339,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
     text-decoration: none;
     outline: none; }
 
-.btn--volume[disabled], .btn--fullscreen[disabled], .btn--view-mode[disabled], .btn--control[disabled], .btn--silence[disabled], .btn--menu[disabled], .btn--ar[disabled],
+.btn--back[disabled], .btn--volume[disabled], .btn--fullscreen[disabled], .btn--view-mode[disabled], .btn--control[disabled], .btn--silence[disabled], .btn--menu[disabled], .btn--ar[disabled],
 .btn--vr[disabled], .btn--generate[disabled],
 .btn--next[disabled],
 .btn--connect[disabled],
@@ -359,7 +359,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   opacity: 0.5;
   pointer-events: none; }
 
-.btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu {
+.btn--back, .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu {
   width: 50px;
   height: 50px;
   display: flex;
@@ -367,19 +367,19 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   align-items: center;
   border-radius: 25px;
   transition: all ease-in-out 150ms; }
-  .btn--volume svg, .btn--fullscreen svg, .btn--view-mode svg, .btn--control svg, .btn--silence svg, .btn--menu svg {
+  .btn--back svg, .btn--volume svg, .btn--fullscreen svg, .btn--view-mode svg, .btn--control svg, .btn--silence svg, .btn--menu svg {
     width: 24px;
     height: 24px;
     fill: currentColor; }
   @media (max-width: 1023.98px) {
-    .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu {
+    .btn--back, .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu {
       width: 40px;
       height: 40px;
       border-radius: 20px; }
-      .btn--volume svg, .btn--fullscreen svg, .btn--view-mode svg, .btn--control svg, .btn--silence svg, .btn--menu svg {
+      .btn--back svg, .btn--volume svg, .btn--fullscreen svg, .btn--view-mode svg, .btn--control svg, .btn--silence svg, .btn--menu svg {
         width: 20px;
         height: 20px; } }
-  .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu, .btn--volume:active, .btn--fullscreen:active, .btn--view-mode:active, .btn--control:active, .btn--silence:active, .btn--menu:active, .btn--volume:focus, .btn--fullscreen:focus, .btn--view-mode:focus, .btn--control:focus, .btn--silence:focus, .btn--menu:focus, .btn--volume:hover, .btn--fullscreen:hover, .btn--view-mode:hover, .btn--control:hover, .btn--silence:hover, .btn--menu:hover, .btn--volume:visited, .btn--fullscreen:visited, .btn--view-mode:visited, .btn--control:visited, .btn--silence:visited, .btn--menu:visited {
+  .btn--back, .btn--volume, .btn--fullscreen, .btn--view-mode, .btn--control, .btn--silence, .btn--menu, .btn--back:active, .btn--volume:active, .btn--fullscreen:active, .btn--view-mode:active, .btn--control:active, .btn--silence:active, .btn--menu:active, .btn--back:focus, .btn--volume:focus, .btn--fullscreen:focus, .btn--view-mode:focus, .btn--control:focus, .btn--silence:focus, .btn--menu:focus, .btn--back:hover, .btn--volume:hover, .btn--fullscreen:hover, .btn--view-mode:hover, .btn--control:hover, .btn--silence:hover, .btn--menu:hover, .btn--back:visited, .btn--volume:visited, .btn--fullscreen:visited, .btn--view-mode:visited, .btn--control:visited, .btn--silence:visited, .btn--menu:visited {
     background: var(--background);
     color: var(--foreground); }
 
@@ -4343,6 +4343,23 @@ body {
 .btn--vr.disabled {
   display: none; }
 
+.btn--back {
+  width: 40px;
+  height: 40px;
+  border: 2px solid transparent;
+  opacity: 0.4;
+  transition: opacity ease-in-out 150ms; }
+  .btn--back > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor; }
+  .btn--back, .btn--back:active, .btn--back:hover, .btn--back:focus, .btn--back:visited {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--foreground-negative); }
+  .btn--back:hover {
+    opacity: 1; }
+
 .btn--volume {
   width: 40px;
   height: 40px;
@@ -4827,6 +4844,8 @@ body {
   .group--service > button + button {
     margin-left: 10px; }
   @media (max-width: 767.98px) {
+    .group--service .btn--back {
+      display: none; }
     .group--service .btn--view-mode {
       display: none; }
     .group--service .btn--volume {
@@ -5434,6 +5453,7 @@ body {
       .ui.virtual-tour.chat.remotes .group--chat {
         right: -240px; } }
   .ui.remotes .world,
+  .ui.remotes .btn--back,
   .ui.remotes .btn--volume,
   .ui.remotes .btn--control,
   .ui.remotes .group--ar-vr,
@@ -5447,6 +5467,7 @@ body {
     bottom: 0;
     right: 0; }
   .ui.remoteScreen .world,
+  .ui.remoteScreen .btn--back,
   .ui.remoteScreen .btn--volume,
   .ui.remoteScreen .btn--control,
   .ui.remoteScreen .group--ar-vr,

@@ -260,6 +260,10 @@
 
 	@include media-down(xs) {
 
+		.btn--back {
+			display: none;
+		}
+
 		.btn--view-mode {
 			display: none;
 		}

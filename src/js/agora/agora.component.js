@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
-import { first, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
@@ -13,7 +13,7 @@ import StreamService from '../stream/stream.service';
 import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
-import { PanoramaGridView } from '../view/view';
+import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import MediaLoader from '../world/media/media-loader';
 import VRService from '../world/vr.service';
@@ -35,6 +35,10 @@ export default class AgoraComponent extends Component {
 		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
 		const navigable = embedViewId == null;
 		return navigable;
+	}
+
+	get isBackButtonVisible() {
+		return this.view && this.view.type.name === ViewType.Media.name;
 	}
 
 	get uiClass() {
@@ -98,6 +102,7 @@ export default class AgoraComponent extends Component {
 		this.data = null;
 		this.views = null;
 		this.view = null;
+		this.previousView = null;
 		this.form = null;
 		this.local = null;
 		this.screen = null;
@@ -246,15 +251,17 @@ export default class AgoraComponent extends Component {
 			}),
 			delay(1),
 			*/
-			tap(view => {
+			map((view) => {
 				// console.log('AgoraComponent.viewObserver$', view);
 				// !!! move navToView to user action?
 				if (this.agora) {
-					this.agora.navToView(view.id, view.keepOrientation);
+					this.agora.navToView(view.id, view.keepOrientation, view.useLastOrientation);
 				}
+				this.previousView = this.view;
 				this.view = view;
 				this.hasScreenViewItem = view.items.find(x => MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x)) != null;
 				this.pushChanges();
+				return view;
 			}),
 		);
 	}
@@ -500,7 +507,7 @@ export default class AgoraComponent extends Component {
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
 			// console.log('AgoraComponent.onNavTo', navItem, view);
-			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation, useLastOrientation: navItem.useLastOrientation };
 		}
 	}
 
@@ -511,7 +518,7 @@ export default class AgoraComponent extends Component {
 			const view = this.data.views.find(x => x.id === viewId);
 			if (view) {
 				// console.log('AgoraComponent.onRemoteNavTo', message, view);
-				ViewService.action = { viewId, keepOrientation: message.keepOrientation };
+				ViewService.action = { viewId, keepOrientation: message.keepOrientation, useLastOrientation: message.useLastOrientation };
 				if (gridIndex != null && view instanceof PanoramaGridView) {
 					view.index = gridIndex;
 				}
@@ -615,6 +622,13 @@ export default class AgoraComponent extends Component {
 			this.agora.toggleNavInfo();
 		} else {
 			this.patchState({ showNavInfo: !this.state.showNavInfo });
+		}
+	}
+
+	onBack() {
+		// console.log('AgoraCompoent.onBack');
+		if (this.previousView && this.view && this.previousView.id !== this.view.id) {
+			ViewService.action = { viewId: this.previousView.id, useLastOrientation: true };
 		}
 	}
 

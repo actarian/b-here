@@ -964,12 +964,13 @@ export default class AgoraService extends Emittable {
 		return `${StateService.state.uid}-${Date.now().toString()}`;
 	}
 
-	navToView(viewId, keepOrientation = false) {
+	navToView(viewId, keepOrientation = false, useLastOrientation = false) {
 		if (StateService.state.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
 			this.sendMessage({
 				type: MessageType.NavToView,
 				viewId: viewId,
 				keepOrientation: keepOrientation,
+				useLastOrientation: useLastOrientation,
 			});
 		}
 	}

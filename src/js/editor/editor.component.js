@@ -117,7 +117,7 @@ export default class EditorComponent extends Component {
 		const viewId = navItem.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
-			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation, useLastOrientation: navItem.useLastOrientation };
 		}
 	}
 

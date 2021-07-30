@@ -10,7 +10,7 @@ import { mapView, ViewItemType } from '../view/view';
 
 export default class ViewService {
 
-	// action: { viewId:number, keepOrientation:boolean };
+	// action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
 	static action$_ = new BehaviorSubject(null);
 	static set action(action) {
 		this.action$_.next(action);
@@ -21,7 +21,7 @@ export default class ViewService {
 
 	// static viewId$_ = new BehaviorSubject(null);
 	static set viewId(viewId) {
-		this.action$_.next({ viewId, keepOrientation: false });
+		this.action$_.next({ viewId, keepOrientation: false, useLastOrientation: false });
 	}
 	static get viewId() {
 		const action = this.action$_.getValue();
@@ -64,8 +64,9 @@ export default class ViewService {
 				const view = data.views.find(view => view.id === action.viewId);
 				if (view) {
 					view.keepOrientation = action.keepOrientation || false;
+					view.useLastOrientation = action.useLastOrientation || false;
 				}
-				// console.log('ViewService.view$', action.viewId, action.keepOrientation);
+				// console.log('ViewService.view$', action.viewId, action.keepOrientation, action.useLastOrientation);
 				return view || this.getWaitingRoom(data);
 			}),
 		);
@@ -78,6 +79,9 @@ export default class ViewService {
 				const view = datas[0];
 				const hosted = datas[1];
 				return hosted ? view : waitingRoom;
+			}),
+			distinctUntilChanged((a, b) => {
+				return a.id === b.id;
 			}),
 			tap(view => {
 				this.view = view;

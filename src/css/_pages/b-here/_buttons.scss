@@ -125,6 +125,35 @@
 	}
 }
 
+.btn--back {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out $fastest;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-negative;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
 .btn--volume {
 	@extend %btn-circle;
 	width: 40px;

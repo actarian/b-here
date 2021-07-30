@@ -334,6 +334,10 @@ export default class OrbitService {
 		}
 		camera.lookAt(camera.target);
 		camera.updateProjectionMatrix();
+		if (ViewService.view) {
+			ViewService.view.lastOrientation.longitude = this.longitude;
+			ViewService.view.lastOrientation.latitude = this.latitude;
+		}
 		this.events$.next(orbitMoveEvent);
 	}
 
