@@ -74,7 +74,9 @@
             "folder": "/uploads/",
             "file": "72215273818700_websolute.mp4",
             "id": 72216205127100,
-            "chromaKeyColor": null
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false
           },
           "id": 72217467098600
         },
@@ -94,7 +96,11 @@
           "asset": null,
           "link": null,
           "id": 72357530741700,
-          "keepOrientation": null
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
         },
         {
           "type": {
@@ -111,7 +117,12 @@
           ],
           "asset": null,
           "link": null,
-          "id": 72632730454199
+          "id": 72632730454199,
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
         },
         {
           "type": {
@@ -128,7 +139,12 @@
           ],
           "asset": null,
           "link": null,
-          "id": 72692314300200
+          "id": 72692314300200,
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
         },
         {
           "type": {
@@ -145,7 +161,12 @@
           ],
           "asset": null,
           "link": null,
-          "id": 72790693297300
+          "id": 72790693297300,
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
         },
         {
           "type": {
@@ -162,7 +183,47 @@
           ],
           "asset": null,
           "link": null,
-          "id": 74466184779700
+          "id": 74466184779700,
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 55709698289900,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            -94.77840967865883,
+            -31.60085895658661,
+            4.2940391230438095
+          ],
+          "rotation": [
+            -1.7058527575435485,
+            1.2462142706410675,
+            1.7131957534456923,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            10,
+            1
+          ],
+          "asset": null,
+          "link": {
+            "title": "Websolute",
+            "href": "https://www.websolute.com",
+            "target": "_blank"
+          },
+          "id": 27525466689600
         }
       ],
       "hidden": null
@@ -8826,7 +8887,10 @@
       },
       "folder": "/uploads/",
       "file": "72215273818700_websolute.mp4",
-      "id": 72216205127100
+      "id": 72216205127100,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
     },
     {
       "type": {
