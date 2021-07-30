@@ -203,6 +203,10 @@ export default class LayoutComponent extends Component {
 		this.patchState({ showNavInfo: !this.state.showNavInfo });
 	}
 
+	onBack() {
+		console.log('LayoutComponent.onBack');
+	}
+
 	onChatClose() {
 		this.patchState({ chat: false });
 		window.dispatchEvent(new Event('resize'));

@@ -81,7 +81,7 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
-					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'important?', 'position', 'asset?', 'link?'];
+					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
 					break;
 				case ViewItemType.Plane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'assetType?', 'asset?', 'hasChromaKeyColor?', 'autoplay?', 'loop?'];
@@ -297,7 +297,12 @@ UpdateViewItemComponent.meta = {
 				<div control-custom-select [control]="controls.viewId" label="NavToView"></div>
 				<div control-checkbox [control]="controls.keepOrientation" label="Keep Orientation"></div>
 				<div control-checkbox [control]="controls.important" label="Important"></div>
+				<div control-checkbox [control]="controls.transparent" label="Transparent"></div>
 				<div control-vector [control]="controls.position" label="Position" [precision]="3"></div>
+				<div *if="controls.transparent.value == true">
+					<div control-vector [control]="controls.rotation" label="Rotation" [precision]="3" [increment]="Math.PI / 360"></div>
+					<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
+				</div>
 				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
 				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
 				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
