@@ -7878,6 +7878,454 @@
           "id": 618611803483100
         }
       ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Factory Tour",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "9317371290500_1_warehouse_shipping.jpg",
+        "id": 9317390258800
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 9324512563999,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9598552426500,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            97.63139138188134,
+            -10.595159467226283,
+            18.864093211759506
+          ],
+          "rotation": [
+            -2.6298434222986704,
+            -1.3527129187401843,
+            -2.640014018555916,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            3,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9360688560900
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9637939309100,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            97.2709423178246,
+            -13.606287520625015,
+            18.79448643907362
+          ],
+          "rotation": [
+            -2.514972381817592,
+            -1.3366356237014825,
+            -2.528057484317919,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            3,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9406363081200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9543101635600,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.19717554353231,
+            -3.274231079876403,
+            18.617038596626173
+          ],
+          "rotation": [
+            -2.9675002285654073,
+            -1.3806244250536737,
+            -2.9705774310150206,
+            "XYZ"
+          ],
+          "scale": [
+            8,
+            8,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9446719277999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9324512563999,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.14707138904745,
+            4.156652373376068,
+            18.70493568019226
+          ],
+          "rotation": [
+            2.9229237077158507,
+            -1.3779917990676636,
+            2.926850960798855,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            5,
+            1
+          ],
+          "asset": null,
+          "link": {
+            "title": "Pdf",
+            "href": "https://www.websolute.com/downloads/2542/233/2021%2001%2013%20WEBSOLUTE%20CS_%20Mutina_vittoria%20DDA%20OF%20THE%20YEAR.pdf",
+            "target": "_blank"
+          },
+          "id": 10018840200700
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 6,
+        "name": "media"
+      },
+      "name": "Factory Tour Video",
+      "asset": {
+        "type": {
+          "id": 2,
+          "name": "video"
+        },
+        "folder": "/uploads/",
+        "file": "9540974469699_Video websolute - now next.mp4",
+        "id": 9540997052300
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 9543101635600,
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            20,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            -1.5707963267948966,
+            0
+          ],
+          "scale": [
+            12,
+            5.5,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 2,
+              "name": "video"
+            },
+            "folder": "/uploads/",
+            "file": "9540974469699_Video websolute - now next.mp4",
+            "id": 9540997052300,
+            "chromaKeyColor": null,
+            "autoplay": true,
+            "loop": true
+          },
+          "id": 9543112597300
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Factory Tour 2",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "9586797968500_2_turning_1.jpg",
+        "id": 9586816956700
+      },
+      "orientation": {
+        "latitude": -5.7,
+        "longitude": 0.6000000000000001
+      },
+      "zoom": 49.3022,
+      "id": 9598552426500,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9637939309100,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.35012954264923,
+            -11.01236128391094,
+            14.352000484139374
+          ],
+          "rotation": [
+            -2.4871080433109753,
+            -1.3888937533293422,
+            -2.4951250924105404,
+            "XYZ"
+          ],
+          "scale": [
+            17,
+            2.5,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9834850387700
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9324512563999,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.01930065884434,
+            -13.267513991404861,
+            14.703393174330584
+          ],
+          "rotation": [
+            -2.4074842056903574,
+            -1.37143370667033,
+            -2.417423674419265,
+            "XYZ"
+          ],
+          "scale": [
+            17,
+            2.5,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9867772242500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9543101635600,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.79897877852383,
+            -5.010766504918166,
+            14.616908406157098
+          ],
+          "rotation": [
+            -2.811340903525947,
+            -1.4156555495907264,
+            -2.815029765632836,
+            "XYZ"
+          ],
+          "scale": [
+            7,
+            7,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9899858788500
+        }
+      ],
+      "hidden": null,
+      "ar": null
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "panorama"
+      },
+      "name": "Factory Tour 3",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "9662954127500_3_Drilling_1.jpg",
+        "id": 9615608609100
+      },
+      "orientation": {
+        "latitude": -4.900000000000002,
+        "longitude": 11.899999999999977
+      },
+      "zoom": 75,
+      "id": 9637939309100,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9324512563999,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.7717432748447,
+            -13.613187400063548,
+            7.669671391847434
+          ],
+          "rotation": [
+            -2.0838692935116243,
+            -1.4139027736543244,
+            -2.0891713685651996,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            3,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9699398092600
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9598552426500,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            98.3271915487041,
+            -16.403110586921873,
+            7.918419363589099
+          ],
+          "rotation": [
+            -2.0205399366193575,
+            -1.3876301081956384,
+            -2.0271790225196638,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            3,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9726592699200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": null,
+          "abstract": null,
+          "viewId": 9543101635600,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": true,
+          "position": [
+            99.51332484017551,
+            -5.9255784641764855,
+            7.873099714762745
+          ],
+          "rotation": [
+            -2.4964066230880158,
+            -1.4720977525946033,
+            -2.4987490648153488,
+            "XYZ"
+          ],
+          "scale": [
+            8,
+            8,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 9747255280000
+        }
+      ],
+      "hidden": null,
+      "ar": null
     }
   ],
   "menu": [
@@ -7929,6 +8377,13 @@
       "viewId": 27478390045700,
       "name": "Virtual Room",
       "order": 40
+    },
+    {
+      "id": 9492011233800,
+      "parentId": 74540000298999,
+      "viewId": 9324512563999,
+      "name": "Factory Tour",
+      "order": 50
     },
     {
       "id": 74581921776600,
@@ -9840,6 +10295,45 @@
       "autoplay": false,
       "loop": false,
       "index": 0
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "9317371290500_1_warehouse_shipping.jpg",
+      "id": 9317390258800
+    },
+    {
+      "type": {
+        "id": 2,
+        "name": "video"
+      },
+      "folder": "/uploads/",
+      "file": "9540974469699_Video websolute - now next.mp4",
+      "id": 9540997052300,
+      "chromaKeyColor": null,
+      "autoplay": true,
+      "loop": true
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "9586797968500_2_turning_1.jpg",
+      "id": 9586816956700
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "9662954127500_3_Drilling_1.jpg",
+      "id": 9615608609100
     }
   ],
   "users": [
