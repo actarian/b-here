@@ -292,8 +292,8 @@ export default class AgoraComponent extends Component {
 
 	setNavmap(view) {
 		const navmaps = this.navmaps;
-		const navmap = (navmaps || []).find(x => x.items.find(i => i.viewId === view.id) != null) || null;
-		console.log('AgoraComponent.setNavmap', navmap);
+		const navmap = (navmaps || []).find(x => (x.items || []).find(i => i.viewId === view.id) != null) || null;
+		// console.log('AgoraComponent.setNavmap', navmap);
 		this.navmap = navmap;
 	}
 
