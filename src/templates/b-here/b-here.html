@@ -215,6 +215,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 		</div>
 		<!-- @@include ../components/chat.html -->
 		<!-- @@include ../components/lock.html -->
+		<!-- @@include ../components/navmap.html -->
 	</div>
 	<!-- Smart Device -->
 	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
@@ -292,6 +293,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 			<!-- @@include ../components/ar-vr.html -->
 			<!-- @@include ../components/like.html -->
 		</div>
+		<!-- @@include ../components/navmap.html -->
 	</div>
 	<!-- Embed -->
 	<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'embed'">

@@ -16,7 +16,7 @@ const RoleType = {
 };
 
 let db = {
-	views: [], menu: [], assets: [], users: [
+	views: [], menu: [], navmaps: [], assets: [], users: [
 		{
 			id: '1601892639985',
 			username: 'publisher',
@@ -275,6 +275,52 @@ const ROUTES = [{
 }, {
 	path: '/api/menu/:menuId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.menu);
+	}
+}, {
+	path: '/api/navmap', method: 'GET', callback: function(request, response, params) {
+		sendOk(response, { navmaps: db.navmaps });
+	}
+}, {
+	path: '/api/navmap/:navmapId', method: 'GET', callback: function(request, response, params) {
+		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+		if (navmap) {
+			sendOk(response, navmap);
+		}
+	}
+}, {
+	path: '/api/navmap', method: 'POST', callback: function(request, response, params) {
+		doCreate(request, response, params, db.navmaps);
+	}
+}, {
+	path: '/api/navmap/:navmapId', method: 'PUT', callback: function(request, response, params) {
+		doUpdate(request, response, params, db.navmaps);
+	}
+}, {
+	path: '/api/navmap/:navmapId', method: 'DELETE', callback: function(request, response, params) {
+		doDelete(request, response, { id: params.navmapId }, db.navmaps);
+	}
+}, {
+	path: '/api/navmap/:navmapId/item', method: 'POST', callback: function(request, response, params) {
+		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+		if (navmap) {
+			navmap.items = navmap.items || [];
+			doCreate(request, response, params, navmap.items);
+		}
+	}
+}, {
+	path: '/api/navmap/:navmapId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
+		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+		if (navmap) {
+			navmap.items = navmap.items || [];
+			doUpdate(request, response, params, navmap.items);
+		}
+	}
+}, {
+	path: '/api/navmap/:navmapId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
+		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+		if (navmap) {
+			doDelete(request, response, { id: params.itemId }, navmap.items);
+		}
 	}
 }, {
 	path: '/api/user/me', method: 'GET', callback: function(request, response, params) {

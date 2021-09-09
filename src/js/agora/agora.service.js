@@ -12,7 +12,7 @@ import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import { RoleType } from '../user/user';
-import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, getStreamQuality, MessageType, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
+import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, getStreamQuality, MessageType, UIMode, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
 
 export default class AgoraService extends Emittable {
 
@@ -762,6 +762,15 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	toggleMode() {
+		const mode = StateService.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+		StateService.patchState({ mode });
+		MessageService.send({
+			type: MessageType.Mode,
+			mode: mode,
+		});
+	}
+
 	toggleNavInfo() {
 		const showNavInfo = !StateService.state.showNavInfo;
 		StateService.patchState({ showNavInfo });
@@ -1006,6 +1015,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.ZoomMedia:
 					case MessageType.CurrentTimeMedia:
 					case MessageType.PlayModel:
+					case MessageType.Mode:
 					case MessageType.NavInfo:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
@@ -1143,6 +1153,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.ZoomMedia:
 			case MessageType.CurrentTimeMedia:
 			case MessageType.PlayModel:
+			case MessageType.Mode:
 			case MessageType.NavInfo:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:

@@ -275,6 +275,10 @@
 		.btn--fullscreen {
 			display: none;
 		}
+
+		.btn--navmap {
+			display: none;
+		}
 	}
 }
 
@@ -325,6 +329,57 @@
 
 	&>div {
 		pointer-events: auto;
+	}
+}
+
+.group--navmap {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	max-width: 80%;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(30px);
+	transform: translateX(-50%) translateY(-50%);
+	@include unselectable();
+
+	.navmap__item {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 16px;
+		height: 16px;
+		margin-left: -8px;
+		margin-top: -8px;
+		cursor: pointer;
+		@include unselectable();
+
+		.title {
+			position: absolute;
+			display: block;
+			bottom: 15px;
+			left: 50%;
+			margin: 0;
+			padding: 2px 7px;
+			font-size: 13px;
+			font-weight: 400;
+			line-height: 1;
+			white-space: nowrap;
+			border-radius: 2px;
+			opacity: 0;
+			transform: translateX(-50%);
+			pointer-events: none;
+			background: black;
+			color: white;
+			transition: all ease-in-out $fast;
+		}
+
+		&:hover {
+			.title {
+				opacity: 1;
+				transform: translateX(-50%) translateY(-5px);
+			}
+		}
 	}
 }
 

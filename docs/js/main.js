@@ -192,6 +192,8 @@ function _readOnlyError(name) {
         'texture': '/template/modules/b-here/texture-modal.cshtml',
         'model': '/template/modules/b-here/item-model-modal.cshtml'
       },
+      navmap: '/template/modules/b-here/navmap-modal.cshtml',
+      navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
       remove: '/template/modules/b-here/remove-modal.cshtml'
     }
   }
@@ -266,6 +268,8 @@ function _readOnlyError(name) {
         'texture': '/texture-modal.html',
         'model': '/item-model-modal.html'
       },
+      navmap: '/navmap-modal.html',
+      navmapItem: '/navmap-item-modal.html',
       remove: '/remove-modal.html'
     }
   }
@@ -767,6 +771,7 @@ var MessageType = {
   ZoomMedia: 'zoomMedia',
   CurrentTimeMedia: 'currentTimeMedia',
   PlayModel: 'playModel',
+  Mode: 'mode',
   NavInfo: 'navInfo',
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
@@ -2933,6 +2938,17 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
   };
 
+  _proto.toggleMode = function toggleMode() {
+    var mode = StateService.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+    StateService.patchState({
+      mode: mode
+    });
+    MessageService.send({
+      type: MessageType.Mode,
+      mode: mode
+    });
+  };
+
   _proto.toggleNavInfo = function toggleNavInfo() {
     var showNavInfo = !StateService.state.showNavInfo;
     StateService.patchState({
@@ -3235,6 +3251,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.ZoomMedia:
           case MessageType.CurrentTimeMedia:
           case MessageType.PlayModel:
+          case MessageType.Mode:
           case MessageType.NavInfo:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
             if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
@@ -3394,6 +3411,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.ZoomMedia:
       case MessageType.CurrentTimeMedia:
       case MessageType.PlayModel:
+      case MessageType.Mode:
       case MessageType.NavInfo:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
@@ -6207,129 +6225,6 @@ AgoraStreamComponent.meta = {
   selector: '[agora-stream]',
   outputs: ['toggleControl', 'toggleSpy'],
   inputs: ['stream']
-};function push_(event) {
-  var dataLayer = window.dataLayer || [];
-  dataLayer.push(event);
-  console.log('GtmService.dataLayer', event);
-}
-
-var GtmService = /*#__PURE__*/function () {
-  function GtmService() {}
-
-  GtmService.push = function push(event) {
-    return push_(event);
-  };
-
-  return GtmService;
-}();var ModalOutletComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ModalOutletComponent, _Component);
-
-  function ModalOutletComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ModalOutletComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    this.modalNode = node.querySelector('.modal-outlet__modal');
-    ModalService.modal$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (modal) {
-      _this.modal = modal;
-    });
-  };
-
-  _proto.reject = function reject(event) {
-    ModalService.reject();
-  };
-
-  _createClass(ModalOutletComponent, [{
-    key: "modal",
-    get: function get() {
-      return this.modal_;
-    },
-    set: function set(modal) {
-      // console.log('ModalOutletComponent set modal', modal, this);
-      var _getContext2 = rxcomp.getContext(this),
-          module = _getContext2.module;
-
-      if (this.modal_ && this.modal_.node) {
-        module.remove(this.modal_.node, this);
-        this.modalNode.removeChild(this.modal_.node);
-      }
-
-      if (modal && modal.node) {
-        this.modal_ = modal;
-        this.modalNode.appendChild(modal.node);
-        var instances = module.compile(modal.node);
-      }
-
-      this.modal_ = modal;
-      this.pushChanges();
-    }
-  }]);
-
-  return ModalOutletComponent;
-}(rxcomp.Component);
-ModalOutletComponent.meta = {
-  selector: '[modal-outlet]',
-  template:
-  /* html */
-  "\n\t<div class=\"modal-outlet__container\" [class]=\"{ active: modal }\">\n\t\t<div class=\"modal-outlet__background\" (click)=\"reject($event)\"></div>\n\t\t<div class=\"modal-outlet__modal\"></div>\n\t</div>\n\t"
-};var TryInARModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(TryInARModalComponent, _Component);
-
-  function TryInARModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = TryInARModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    _Component.prototype.onInit.call(this);
-
-    var _getContext = rxcomp.getContext(this),
-        parentInstance = _getContext.parentInstance,
-        node = _getContext.node;
-
-    if (parentInstance instanceof ModalOutletComponent) {
-      var data = this.data = parentInstance.modal.data; // console.log('data', data);
-
-      if (data && data.ar) {
-        var url = TryInARModalComponent.getUrl(data);
-        var qrcode = new QRious({
-          element: node.querySelector('.qrcode'),
-          value: url,
-          size: 256
-        });
-      }
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  TryInARModalComponent.getUrl = function getUrl(data) {
-    var url = environment.getAbsoluteUrl(environment.template.tryInAr, {
-      viewId: data.id
-    });
-    console.log('TryInARModalComponent.getUrl', url);
-    return url;
-  };
-
-  TryInARModalComponent.openInAR = function openInAR(data) {
-    var url = this.getUrl(data);
-    window.open(url, '_blank');
-  };
-
-  return TryInARModalComponent;
-}(rxcomp.Component);
-TryInARModalComponent.meta = {
-  selector: '[try-in-ar-modal]'
 };var ViewType = {
   WaitingRoom: {
     id: 1,
@@ -6378,7 +6273,7 @@ var ViewItemType = {
     name: 'texture'
   }
 };
-var View = /*#__PURE__*/function () {
+var View$1 = /*#__PURE__*/function () {
   // 'liked'
   function View(options) {
     if (options) {
@@ -6493,7 +6388,7 @@ var View = /*#__PURE__*/function () {
   return View;
 }();
 
-_defineProperty(View, "allowedProps", ['id', 'type', 'name', 'hidden', 'likes', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes']);
+_defineProperty(View$1, "allowedProps", ['id', 'type', 'name', 'hidden', 'likes', 'asset', 'items', 'orientation', 'zoom', 'ar', 'tiles', 'invertAxes', 'flipAxes']);
 
 var PanoramaView = /*#__PURE__*/function (_View) {
   _inheritsLoose(PanoramaView, _View);
@@ -6503,7 +6398,7 @@ var PanoramaView = /*#__PURE__*/function (_View) {
   }
 
   return PanoramaView;
-}(View);
+}(View$1);
 var PanoramaGridView = /*#__PURE__*/function (_View2) {
   _inheritsLoose(PanoramaGridView, _View2);
 
@@ -6628,7 +6523,7 @@ var PanoramaGridView = /*#__PURE__*/function (_View2) {
   };
 
   return PanoramaGridView;
-}(View);
+}(View$1);
 var Room3DView = /*#__PURE__*/function (_View3) {
   _inheritsLoose(Room3DView, _View3);
 
@@ -6637,7 +6532,7 @@ var Room3DView = /*#__PURE__*/function (_View3) {
   }
 
   return Room3DView;
-}(View);
+}(View$1);
 var ModelView = /*#__PURE__*/function (_View4) {
   _inheritsLoose(ModelView, _View4);
 
@@ -6646,7 +6541,7 @@ var ModelView = /*#__PURE__*/function (_View4) {
   }
 
   return ModelView;
-}(View);
+}(View$1);
 var MediaView = /*#__PURE__*/function (_View5) {
   _inheritsLoose(MediaView, _View5);
 
@@ -6655,7 +6550,7 @@ var MediaView = /*#__PURE__*/function (_View5) {
   }
 
   return MediaView;
-}(View);
+}(View$1);
 var ViewItem = /*#__PURE__*/function () {
   function ViewItem(options) {
     if (options) {
@@ -6766,7 +6661,7 @@ function mapView(view) {
       break;
 
     default:
-      view = new View(view);
+      view = new View$1(view);
   }
 
   return view;
@@ -6805,7 +6700,233 @@ function isNavMove(item) {
 }
 function isValidText(text) {
   return text && text.length > 0;
-}var EXT_IMAGE = ['jpeg', 'jpg', 'png', 'hdr'];
+}var Navmap = /*#__PURE__*/function () {
+  function Navmap(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+
+    this.items = (this.items || []).map(function (item) {
+      return mapViewItem(item);
+    });
+    this.originalItems = this.items.slice();
+  }
+
+  _createClass(Navmap, [{
+    key: "payload",
+    get: function get() {
+      var _this = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (View.allowedProps.indexOf(key) !== -1) {
+          switch (key) {
+            case 'items':
+              payload[key] = _this[key].map(function (item) {
+                return mapViewItem(item).payload;
+              });
+              break;
+
+            default:
+              payload[key] = _this[key];
+          }
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return Navmap;
+}();
+
+_defineProperty(Navmap, "allowedProps", ['id', 'name', 'asset', 'items']);
+
+function mapNavmap(map) {
+  map = new Navmap(map);
+  return map;
+}var NavmapService = /*#__PURE__*/function () {
+  function NavmapService() {}
+
+  NavmapService.navmapGet$ = function navmapGet$() {
+    return HttpService.get$("/api/navmap").pipe(operators.map(function (data) {
+      data.navmaps.map(function (navmap) {
+        return mapNavmap(navmap);
+      });
+      return data.navmaps;
+    }));
+  };
+
+  NavmapService.navmapCreate$ = function navmapCreate$(navmap) {
+    return HttpService.post$("/api/navmap", navmap).pipe(operators.map(function (navmap) {
+      return mapNavmap(navmap);
+    }));
+  };
+
+  NavmapService.navmapUpdate$ = function navmapUpdate$(navmap) {
+    return HttpService.put$("/api/navmap/" + navmap.id, navmap).pipe(operators.map(function (x) {
+      return mapNavmap(x);
+    }));
+  };
+
+  NavmapService.navmapDelete$ = function navmapDelete$(navmap) {
+    return HttpService.delete$("/api/navmap/" + navmap.id);
+  };
+
+  NavmapService.itemCreate$ = function itemCreate$(navmap, item) {
+    return HttpService.post$("/api/navmap/" + navmap.id + "/item", item).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  NavmapService.itemUpdate$ = function itemUpdate$(navmap, item) {
+    item = mapViewItem(item); // !!! ??
+
+    return HttpService.put$("/api/navmap/" + navmap.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  NavmapService.itemDelete$ = function itemDelete$(navmap, item) {
+    return HttpService.delete$("/api/navmap/" + navmap.id + "/item/" + item.id);
+  };
+
+  _createClass(NavmapService, null, [{
+    key: "active",
+    set: function set(active) {
+      this.active$.next(active);
+    },
+    get: function get() {
+      return this.active$.getValue();
+    }
+  }]);
+
+  return NavmapService;
+}();
+
+_defineProperty(NavmapService, "active$", new rxjs.BehaviorSubject(false));function push_(event) {
+  var dataLayer = window.dataLayer || [];
+  dataLayer.push(event);
+  console.log('GtmService.dataLayer', event);
+}
+
+var GtmService = /*#__PURE__*/function () {
+  function GtmService() {}
+
+  GtmService.push = function push(event) {
+    return push_(event);
+  };
+
+  return GtmService;
+}();var ModalOutletComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ModalOutletComponent, _Component);
+
+  function ModalOutletComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ModalOutletComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    this.modalNode = node.querySelector('.modal-outlet__modal');
+    ModalService.modal$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (modal) {
+      _this.modal = modal;
+    });
+  };
+
+  _proto.reject = function reject(event) {
+    ModalService.reject();
+  };
+
+  _createClass(ModalOutletComponent, [{
+    key: "modal",
+    get: function get() {
+      return this.modal_;
+    },
+    set: function set(modal) {
+      // console.log('ModalOutletComponent set modal', modal, this);
+      var _getContext2 = rxcomp.getContext(this),
+          module = _getContext2.module;
+
+      if (this.modal_ && this.modal_.node) {
+        module.remove(this.modal_.node, this);
+        this.modalNode.removeChild(this.modal_.node);
+      }
+
+      if (modal && modal.node) {
+        this.modal_ = modal;
+        this.modalNode.appendChild(modal.node);
+        var instances = module.compile(modal.node);
+      }
+
+      this.modal_ = modal;
+      this.pushChanges();
+    }
+  }]);
+
+  return ModalOutletComponent;
+}(rxcomp.Component);
+ModalOutletComponent.meta = {
+  selector: '[modal-outlet]',
+  template:
+  /* html */
+  "\n\t<div class=\"modal-outlet__container\" [class]=\"{ active: modal }\">\n\t\t<div class=\"modal-outlet__background\" (click)=\"reject($event)\"></div>\n\t\t<div class=\"modal-outlet__modal\"></div>\n\t</div>\n\t"
+};var TryInARModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(TryInARModalComponent, _Component);
+
+  function TryInARModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = TryInARModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    _Component.prototype.onInit.call(this);
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance,
+        node = _getContext.node;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      var data = this.data = parentInstance.modal.data; // console.log('data', data);
+
+      if (data && data.ar) {
+        var url = TryInARModalComponent.getUrl(data);
+        var qrcode = new QRious({
+          element: node.querySelector('.qrcode'),
+          value: url,
+          size: 256
+        });
+      }
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  TryInARModalComponent.getUrl = function getUrl(data) {
+    var url = environment.getAbsoluteUrl(environment.template.tryInAr, {
+      viewId: data.id
+    });
+    console.log('TryInARModalComponent.getUrl', url);
+    return url;
+  };
+
+  TryInARModalComponent.openInAR = function openInAR(data) {
+    var url = this.getUrl(data);
+    window.open(url, '_blank');
+  };
+
+  return TryInARModalComponent;
+}(rxcomp.Component);
+TryInARModalComponent.meta = {
+  selector: '[try-in-ar-modal]'
+};var EXT_IMAGE = ['jpeg', 'jpg', 'png', 'hdr'];
 var EXT_VIDEO = ['mp4', 'webm'];
 var EXT_MODEL = ['fbx', 'gltf', 'glb', 'usdz'];
 var AssetType = {
@@ -7882,7 +8003,9 @@ var VRService = /*#__PURE__*/function () {
     this.form = null;
     this.local = null;
     this.screen = null;
-    this.remoteScreen_ = null; // this.media = null;
+    this.remoteScreen_ = null;
+    this.navmaps = [];
+    this.navmap = null; // this.media = null;
 
     this.hasScreenViewItem = false;
     this.remotes = [];
@@ -8057,6 +8180,9 @@ var VRService = /*#__PURE__*/function () {
 
       _this4.previousView = _this4.view;
       _this4.view = view;
+
+      _this4.setNavmap(view);
+
       _this4.hasScreenViewItem = view.items.find(function (x) {
         return MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x);
       }) != null;
@@ -8068,6 +8194,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.load = function load(callback) {
+    this.loadNavmaps();
     this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {
       console.log('AgoraComponent.viewObserver$', view);
 
@@ -8077,16 +8204,48 @@ var VRService = /*#__PURE__*/function () {
     });
   };
 
-  _proto.loadAndConnect = function loadAndConnect(preferences) {
+  _proto.loadNavmaps = function loadNavmaps() {
     var _this5 = this;
 
+    NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
+      _this5.navmaps = navmaps;
+    });
+  };
+
+  _proto.setNavmap = function setNavmap(view) {
+    var navmaps = this.navmaps;
+    var navmap = (navmaps || []).find(function (x) {
+      return x.items.find(function (i) {
+        return i.viewId === view.id;
+      }) != null;
+    }) || null;
+    console.log('AgoraComponent.setNavmap', navmap);
+    this.navmap = navmap;
+  };
+
+  _proto.toggleNavmap = function toggleNavmap() {
+    StateService.patchState({
+      showNavmap: !StateService.state.showNavmap
+    });
+  };
+
+  _proto.onNavmapItem = function onNavmapItem(navItem) {
+    StateService.patchState({
+      showNavmap: false
+    });
+    this.onNavTo(navItem);
+  };
+
+  _proto.loadAndConnect = function loadAndConnect(preferences) {
+    var _this6 = this;
+
     this.load(function () {
-      _this5.connect(preferences);
+      _this6.connect(preferences);
     });
   };
 
   _proto.initAgora = function initAgora() {
-    var _this6 = this;
+    var _this7 = this;
 
     var agora = null;
 
@@ -8105,33 +8264,33 @@ var VRService = /*#__PURE__*/function () {
 
     StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
       // console.log('AgoraComponent.local', local);
-      _this6.local = local;
+      _this7.local = local;
 
-      _this6.pushChanges();
+      _this7.pushChanges();
     });
     StreamService.screen$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (screen) {
       // console.log('AgoraComponent.screen', screen);
-      if (_this6.screen === _this6.remoteScreen) {
-        _this6.remoteScreen = null;
+      if (_this7.screen === _this7.remoteScreen) {
+        _this7.remoteScreen = null;
       }
 
-      _this6.screen = screen;
-      _this6.remoteScreen = screen || _this6.remoteScreen;
+      _this7.screen = screen;
+      _this7.remoteScreen = screen || _this7.remoteScreen;
 
-      _this6.pushChanges();
+      _this7.pushChanges();
     });
     StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
-      _this6.remotes = [];
-      _this6.remoteScreen = _this6.screen;
+      _this7.remotes = [];
+      _this7.remoteScreen = _this7.screen;
       remotes.forEach(function (x) {
         if (x.clientInfo && x.clientInfo.screenUid === x.getId()) {
-          _this6.remoteScreen = x;
+          _this7.remoteScreen = x;
         } else {
-          _this6.remotes.push(x);
+          _this7.remotes.push(x);
         }
       }); // console.log('AgoraComponent.remotes', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
 
-      _this6.pushChanges();
+      _this7.pushChanges();
     });
     /*
     MediaLoader.events$.pipe(
@@ -8174,8 +8333,8 @@ var VRService = /*#__PURE__*/function () {
             controlling: message.controllingId
           });
 
-          if (_this6.agora) {
-            _this6.agora.sendControlRemoteRequestInfo(message.controllingId);
+          if (_this7.agora) {
+            _this7.agora.sendControlRemoteRequestInfo(message.controllingId);
           }
 
           break;
@@ -8185,17 +8344,24 @@ var VRService = /*#__PURE__*/function () {
             silencing: message.silencing
           });
 
-          _this6.setAudio(message.silencing);
+          _this7.setAudio(message.silencing);
 
           break;
 
         case MessageType.NavToView:
-          _this6.onRemoteNavTo(message);
+          _this7.onRemoteNavTo(message);
 
           break;
 
+        case MessageType.Mode:
+          StateService.patchState({
+            mode: message.mode
+          });
+          window.dispatchEvent(new Event('resize'));
+          break;
+
         case MessageType.NavInfo:
-          _this6.hidePanels();
+          _this7.hidePanels();
 
           StateService.patchState({
             showNavInfo: message.showNavInfo
@@ -8204,7 +8370,7 @@ var VRService = /*#__PURE__*/function () {
 
         case MessageType.AddLike:
           ViewService.setViewLike$(message).pipe(operators.first()).subscribe(function (view) {
-            return _this6.showLove(view);
+            return _this7.showLove(view);
           });
           break;
 
@@ -8455,10 +8621,15 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.toggleMode = function toggleMode() {
-    var mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
-    StateService.patchState({
-      mode: mode
-    });
+    if (this.agora && StateService.state.role === RoleType.Publisher) {
+      this.agora.toggleMode();
+    } else {
+      var mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+      StateService.patchState({
+        mode: mode
+      }); // this.patchState({ mode });
+    }
+
     window.dispatchEvent(new Event('resize'));
   };
 
@@ -8581,27 +8752,27 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.addLike = function addLike() {
-    var _this7 = this;
+    var _this8 = this;
 
     ViewService.viewLike$(this.view).pipe(operators.first()).subscribe(function (view) {
       if (view) {
-        _this7.view.liked = true; // view.liked;
+        _this8.view.liked = true; // view.liked;
 
-        _this7.showLove(view); // this.view.likes = view.likes;
+        _this8.showLove(view); // this.view.likes = view.likes;
         // this.pushChanges();
 
 
         MessageService.send({
           type: MessageType.AddLike,
-          viewId: _this7.view.id,
-          likes: _this7.view.likes
+          viewId: _this8.view.id,
+          likes: _this8.view.likes
         });
       }
     });
   };
 
   _proto.showLove = function showLove(view) {
-    var _this8 = this;
+    var _this9 = this;
 
     if (view && this.view.id === view.id) {
       var skipTimeout = this.view.showLove;
@@ -8611,9 +8782,9 @@ var VRService = /*#__PURE__*/function () {
 
       if (!skipTimeout) {
         setTimeout(function () {
-          _this8.view.showLove = false;
+          _this9.view.showLove = false;
 
-          _this8.pushChanges();
+          _this9.pushChanges();
         }, 3100);
       }
     }
@@ -8783,7 +8954,11 @@ var AssetPipe = /*#__PURE__*/function (_Pipe) {
     }
 
     if (asset) {
-      // console.log(asset.type.name, AssetType.Image.name);
+      if (typeof asset === 'string') {
+        return environment.getPath(asset);
+      } // console.log(asset.type.name, AssetType.Image.name);
+
+
       switch (asset.type.name) {
         case AssetType.Image.name:
         case AssetType.Video.name:
@@ -9549,7 +9724,20 @@ AsideComponent.meta = {
   };
 
   return EditorService;
-}();var EditorComponent = /*#__PURE__*/function (_Component) {
+}();var SETTINGS = {
+  menu: [{
+    id: 'menu',
+    title: 'editor_menu',
+    active: true
+  }, {
+    id: 'navmaps',
+    title: 'editor_navmaps',
+    active: true
+  }],
+  current: 'menu'
+};
+
+var EditorComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(EditorComponent, _Component);
 
   function EditorComponent() {
@@ -9707,8 +9895,19 @@ AsideComponent.meta = {
   };
 
   _proto.onToggleSettings = function onToggleSettings() {
-    this.settings = !this.settings;
+    var settings = Object.assign({}, SETTINGS);
+    settings.menu = settings.menu.filter(function (x) {
+      return x.active;
+    });
+    this.settings = this.settings ? false : settings;
     this.pushChanges();
+  };
+
+  _proto.onSelectSetting = function onSelectSetting(item) {
+    if (this.settings) {
+      this.settings.current = item.id;
+      this.pushChanges();
+    }
   } // editor
   ;
 
@@ -21420,7 +21619,189 @@ ModelNavComponent.meta = {
 }(rxcomp.Component);
 NavModalComponent.meta = {
   selector: '[nav-modal]'
-};var PanoramaGridModalComponent = /*#__PURE__*/function (_Component) {
+};var NavmapItemModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(NavmapItemModalComponent, _Component);
+
+  function NavmapItemModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = NavmapItemModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var position = this.position;
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Nav,
+      title: null,
+      abstract: null,
+      viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      keepOrientation: false,
+      important: false,
+      transparent: false,
+      position: new rxcompForm.FormControl(position, rxcompForm.RequiredValidator()),
+      asset: null
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('NavmapItemModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+      _this.controls.viewId.options = options;
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var item = Object.assign({}, this.form.value);
+      item.viewId = parseInt(item.viewId); // console.log('NavmapItemModalComponent.onSubmit', this.navmap, item);
+
+      NavmapService.itemCreate$(this.navmap, item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('NavmapItemModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('NavmapItemModalComponent.onSubmit.error', error);
+        _this2.error = error;
+        _this2.form.submitted = false; // this.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(NavmapItemModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "navmap",
+    get: function get() {
+      var navmap = null;
+      var data = this.data;
+
+      if (data) {
+        navmap = data.navmap;
+      }
+
+      return navmap;
+    }
+  }, {
+    key: "position",
+    get: function get() {
+      var position = [0, 0, 0];
+      var data = this.data;
+
+      if (data) {
+        position = [data.hit.x, data.hit.y, 0];
+      }
+
+      return position;
+    }
+  }]);
+
+  return NavmapItemModalComponent;
+}(rxcomp.Component);
+NavmapItemModalComponent.meta = {
+  selector: '[navmap-item-modal]'
+};var NavmapModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(NavmapModalComponent, _Component);
+
+  function NavmapModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = NavmapModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('NavmapModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var navmap = {
+        name: values.name,
+        asset: values.asset
+      }; // console.log('NavmapModalComponent.onSubmit.navmap', navmap);
+
+      return NavmapService.navmapCreate$(navmap).pipe(operators.first()).subscribe(function (response) {
+        // console.log('NavmapModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('NavmapModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return NavmapModalComponent;
+}(rxcomp.Component);
+NavmapModalComponent.meta = {
+  selector: '[navmap-modal]'
+};
+/*
+{
+	"id": 1,
+	"name": "Mappa",
+	"asset": {
+		"type": "image",
+		"folder": "folder/",
+		"file": "map.png"
+	},
+	"items": [{
+		"id": 110,
+		"type": "nav",
+		"title": "Barilla Experience",
+		"abstract": "Abstract",
+		"position": [0.9491595148619703,-0.3147945860255039,0],
+		"viewId": 23
+	}],
+}
+*/var PanoramaGridModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(PanoramaGridModalComponent, _Component);
 
   function PanoramaGridModalComponent() {
@@ -21918,6 +22299,291 @@ RemoveModalComponent.meta = {
 }(rxcomp.Component);
 Room3DModalComponent.meta = {
   selector: '[room-3d-modal]'
+};var NavmapBuilderComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(NavmapBuilderComponent, _Component);
+
+  function NavmapBuilderComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = NavmapBuilderComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.navmap = null;
+    this.navmaps = [];
+    NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
+      _this.navmaps = navmaps;
+      console.log(navmaps);
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onBack = function onBack(event) {
+    this.navmap = null;
+    this.pushChanges();
+  };
+
+  _proto.onAdd = function onAdd() {
+    var _this2 = this;
+
+    ModalService.open$({
+      src: environment.template.modal.navmap
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        _this2.navmaps.push(event.data);
+
+        _this2.navmap = event.data;
+
+        _this2.pushChanges();
+      }
+    });
+  };
+
+  _proto.onSet = function onSet(item) {
+    this.navmap = this.navmaps.find(function (x) {
+      return x.id === item.id;
+    });
+    this.pushChanges();
+  };
+
+  _proto.onAddItem = function onAddItem(navmap, hit) {
+    var _this3 = this;
+
+    ModalService.open$({
+      src: environment.template.modal.navmapItem,
+      data: {
+        navmap: navmap,
+        hit: hit
+      }
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        var items = navmap.items || [];
+        items.push(event.data);
+        Object.assign(navmap, {
+          items: items
+        });
+
+        _this3.pushChanges();
+      }
+    });
+  };
+
+  return NavmapBuilderComponent;
+}(rxcomp.Component);
+NavmapBuilderComponent.meta = {
+  selector: '[navmap-builder]',
+  inputs: ['views']
+};var NavmapModes = {
+  Idle: 'idle',
+  Insert: 'insert',
+  Remove: 'remove',
+  Move: 'move'
+};
+var ControlEvent = function ControlEvent(element, event) {
+  var rect = element.getBoundingClientRect();
+  this.x = (event.clientX - rect.x) / rect.width;
+  this.y = (event.clientY - rect.y) / rect.height; // console.log(this);
+};
+var ControlDownEvent = /*#__PURE__*/function (_ControlEvent) {
+  _inheritsLoose(ControlDownEvent, _ControlEvent);
+
+  function ControlDownEvent() {
+    return _ControlEvent.apply(this, arguments) || this;
+  }
+
+  return ControlDownEvent;
+}(ControlEvent);
+var ControlMoveEvent = /*#__PURE__*/function (_ControlEvent2) {
+  _inheritsLoose(ControlMoveEvent, _ControlEvent2);
+
+  function ControlMoveEvent() {
+    return _ControlEvent2.apply(this, arguments) || this;
+  }
+
+  return ControlMoveEvent;
+}(ControlEvent);
+var ControlUpEvent = /*#__PURE__*/function (_ControlEvent3) {
+  _inheritsLoose(ControlUpEvent, _ControlEvent3);
+
+  function ControlUpEvent() {
+    return _ControlEvent3.apply(this, arguments) || this;
+  }
+
+  return ControlUpEvent;
+}(ControlEvent);
+
+var NavmapEditComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(NavmapEditComponent, _Component);
+
+  function NavmapEditComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = NavmapEditComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.mode = NavmapModes.Idle;
+    this.error = null;
+    var navmap = this.navmap;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(navmap.name, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(navmap.asset, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('NavmapEditComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+    this.insert$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      // console.log('NavmapEditComponent.insert', event);
+      var hit = event;
+      ModalService.open$({
+        src: environment.template.modal.navmapItem,
+        data: {
+          navmap: navmap,
+          hit: hit
+        }
+      }).pipe(operators.first()).subscribe(function (event) {
+        if (event instanceof ModalResolveEvent) {
+          var items = navmap.items || [];
+          items.push(event.data);
+          Object.assign(navmap, {
+            items: items
+          });
+
+          _this.pushChanges();
+        }
+      });
+    });
+  };
+
+  _proto.insert$ = function insert$() {
+    var _this2 = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var image = node.querySelector('.navmap-control__image');
+    return rxjs.fromEvent(image, 'pointerdown').pipe(operators.filter(function (x) {
+      return _this2.mode === NavmapModes.Insert;
+    }), operators.map(function (event) {
+      return new ControlDownEvent(image, event);
+    }));
+  };
+
+  _proto.onToggleMode = function onToggleMode(mode) {
+    this.mode = this.mode === mode ? NavmapModes.Idle : mode;
+    this.pushChanges();
+  };
+
+  _proto.onMoveItem = function onMoveItem(event, item) {
+    var _this3 = this;
+
+    var navmap = this.navmap;
+
+    switch (this.mode) {
+      case NavmapModes.Move:
+        var _getContext2 = rxcomp.getContext(this),
+            node = _getContext2.node;
+
+        var image = node.querySelector('.navmap-control__image');
+        var position = item.position.slice();
+        var down = new ControlDownEvent(image, event);
+        var move$ = rxjs.fromEvent(image, 'mousemove').pipe(operators.map(function (event) {
+          return new ControlMoveEvent(image, event);
+        }), operators.tap(function (event) {
+          var diff = {
+            x: event.x - down.x,
+            y: event.y - down.y
+          };
+          item.position = [Math.max(0, Math.min(1, position[0] + diff.x)), Math.max(0, Math.min(1, position[1] + diff.y)), 0];
+
+          _this3.pushChanges();
+        }));
+        var up$ = rxjs.fromEvent(image, 'mouseup').pipe(operators.map(function (event) {
+          return new ControlUpEvent(image, event);
+        }), operators.tap(function (event) {
+          var diff = {
+            x: event.x - down.x,
+            y: event.y - down.y
+          };
+          item.position = [Math.max(0, Math.min(1, position[0] + diff.x)), Math.max(0, Math.min(1, position[1] + diff.y)), 0]; // console.log('NavmapEditComponent.onNavmapItem.Update', navmap, item);
+
+          NavmapService.itemUpdate$(navmap, item).pipe(operators.first()).subscribe(function (item_) {
+            Object.assign(item, item_); // console.log('NavmapEditComponent.onNavmapItem.Update');
+
+            _this3.pushChanges();
+          });
+        }));
+        move$.pipe(operators.takeUntil(up$)).subscribe();
+        break;
+    }
+  };
+
+  _proto.onRemoveItem = function onRemoveItem(item) {
+    var _this4 = this;
+
+    var navmap = this.navmap;
+
+    switch (this.mode) {
+      case NavmapModes.Remove:
+        NavmapService.itemDelete$(navmap, item).pipe(operators.first()).subscribe(function (_) {
+          // console.log('NavmapEditComponent.onNavmapItem.Remove');
+          var items = navmap.items || [];
+          var index = items.indexOf(item);
+
+          if (index !== -1) {
+            items.splice(index, 1);
+          }
+
+          Object.assign(navmap, {
+            items: items
+          });
+
+          _this4.pushChanges();
+        });
+        break;
+    }
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this5 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var payload = Object.assign({
+        items: []
+      }, this.navmap, {
+        name: values.name
+      }); // console.log('NavmapEditComponent.onSubmit.navmap', payload);
+
+      return NavmapService.navmapUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
+        // console.log('NavmapEditComponent.onSubmit.success', response);
+        Object.assign(_this5.navmap, response);
+
+        _this5.pushChanges();
+      }, function (error) {
+        // console.log('NavmapEditComponent.onSubmit.error', error);
+        _this5.error = error;
+
+        _this5.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  return NavmapEditComponent;
+}(rxcomp.Component);
+NavmapEditComponent.meta = {
+  selector: '[navmap-edit]',
+  inputs: ['navmap']
 };var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewItemComponent, _Component);
 
@@ -22595,7 +23261,7 @@ UpdateViewTileComponent.meta = {
         usdz: usdz,
         gltf: gltf
       } : null;
-      var view = new View(payload);
+      var view = new View$1(payload);
       EditorService.viewUpdate$(view).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
         _this2.update.next({
@@ -22693,7 +23359,7 @@ UpdateViewComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'room-3d'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && ('ar' | flag)\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
-};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, MediaModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, Room3DModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
+};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, NavmapBuilderComponent, NavmapEditComponent, NavmapModalComponent, NavmapItemModalComponent, MediaModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, Room3DModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
   _inheritsLoose(EditorModule, _Module);

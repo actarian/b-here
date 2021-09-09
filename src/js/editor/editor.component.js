@@ -16,6 +16,19 @@ import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
 
+export const SETTINGS = {
+	menu: [{
+		id: 'menu',
+		title: 'editor_menu',
+		active: true,
+	}, {
+		id: 'navmaps',
+		title: 'editor_navmaps',
+		active: true,
+	}],
+	current: 'menu',
+};
+
 export default class EditorComponent extends Component {
 
 	onInit() {
@@ -156,8 +169,17 @@ export default class EditorComponent extends Component {
 	}
 
 	onToggleSettings() {
-		this.settings = !this.settings;
+		const settings = Object.assign({}, SETTINGS);
+		settings.menu = settings.menu.filter(x => x.active);
+		this.settings = this.settings ? false : settings;
 		this.pushChanges();
+	}
+
+	onSelectSetting(item) {
+		if (this.settings) {
+			this.settings.current = item.id;
+			this.pushChanges();
+		}
 	}
 
 	// editor

@@ -229,6 +229,45 @@
 	}
 }
 
+.btn--navmap {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out $fastest;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		border-color: transparent;
+		color: $foreground-negative;
+	}
+
+	&.disabled {
+		display: none;
+		pointer-events: none;
+	}
+
+	&.active {
+		border-color: rgba(255, 255, 255, 0.2);
+		opacity: 1;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
 .btn--view-mode {
 	@extend %btn-circle;
 	width: 40px;
