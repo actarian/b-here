@@ -8215,7 +8215,7 @@ var VRService = /*#__PURE__*/function () {
   _proto.setNavmap = function setNavmap(view) {
     var navmaps = this.navmaps;
     var navmap = (navmaps || []).find(function (x) {
-      return x.items.find(function (i) {
+      return (x.items || []).find(function (i) {
         return i.viewId === view.id;
       }) != null;
     }) || null;

@@ -8540,6 +8540,137 @@
       "order": 60
     }
   ],
+  "navmaps": [
+    {
+      "name": "Mappa",
+      "asset": {
+        "type": {
+          "id": 1,
+          "name": "image"
+        },
+        "folder": "/uploads/",
+        "file": "28945246563900_map.png",
+        "id": 28945258655499
+      },
+      "id": 28948739150999,
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Showroom",
+          "abstract": null,
+          "viewId": 498478142881399,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            0.6131249745686849,
+            0.3541666666666667,
+            0
+          ],
+          "asset": null,
+          "id": 29133230347999
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Muse Museum",
+          "abstract": null,
+          "viewId": 73199489651400,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            0.6122917175292969,
+            0.6308333079020182,
+            0
+          ],
+          "asset": null,
+          "id": 29158678045400
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "House tour",
+          "abstract": null,
+          "viewId": 72392536339999,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            0.34937502543131504,
+            0.6766666412353516,
+            0
+          ],
+          "asset": null,
+          "id": 29193241779500
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Video VR",
+          "abstract": null,
+          "viewId": 72757242951600,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            0.2354166666666667,
+            0.3283333460489909,
+            0
+          ],
+          "asset": null,
+          "id": 29216067706200
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Gallery",
+          "abstract": null,
+          "viewId": 338065166299600,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            0.2991666793823242,
+            0.3149999618530273,
+            0
+          ],
+          "asset": null,
+          "id": 29237497168100
+        },
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Welcome Room",
+          "abstract": null,
+          "viewId": 55709698289900,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            0.5081250508626302,
+            0.5025000254313151,
+            0
+          ],
+          "asset": null,
+          "id": 29380159188100
+        }
+      ]
+    }
+  ],
   "assets": [
     {
       "type": {
@@ -10334,6 +10465,15 @@
       "folder": "/uploads/",
       "file": "9662954127500_3_Drilling_1.jpg",
       "id": 9615608609100
+    },
+    {
+      "type": {
+        "id": 1,
+        "name": "image"
+      },
+      "folder": "/uploads/",
+      "file": "28945246563900_map.png",
+      "id": 28945258655499
     }
   ],
   "users": [
