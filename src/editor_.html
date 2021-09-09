@@ -74,8 +74,9 @@ window.labels = {
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
-			<div class="btn--menu" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
-				<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+			<div class="btn--settings" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
+				<svg class="settings" width="24" height="24" viewBox="0 0 24 24" *if="!settings"><use xlink:href="#settings"></use></svg>
+				<svg class="settings" width="24" height="24" viewBox="0 0 24 24" *if="settings"><use xlink:href="#settings-full"></use></svg>
 			</div>
 			<div class="headline" *if="view">
 				<div class="headline__id" [innerHTML]="view.id"></div>
@@ -144,7 +145,7 @@ window.labels = {
 				</button>
 			</div>
 		</div>
-		<div class="ui__settings" menu-builder [views]="views" *if="settings">
+		<div class="ui__settings" menu-builder [views]="views" *if="false">
 			<div class="group--menu" *if="form">
 				<div class="group--left">
 					<div class="headline">
@@ -177,6 +178,45 @@ window.labels = {
 					</div>
 				</div>
 				-->
+			</div>
+		</div>
+		<div class="ui__settings" *if="settings">
+			<div class="group--nav">
+				<ul class="nav--menu">
+					<li class="nav__item" *for="let item of settings.menu" [class]="{ active: settings.current === item.id }" (click)="onSelectSetting(item)"><span class="title" [innerHTML]="item.title"></span></li>
+				</ul>
+			</div>
+			<div class="group--content" menu-builder [views]="views" *if="settings.current === 'menu'">
+				<div class="group--head">
+					<div class="title">Menu</div>
+				</div>
+				<div class="group--main">
+					<div class="nav--tree" *if="form">
+						<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+							<div *for="let control of controls.items.controls">
+								<div control-menu [control]="control" (remove)="onRemoveControl($event)" (link)="onLinkControl($event)" (up)="onUpControl($event)" (down)="onDownControl($event)"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="group--foot">
+					<button type="button" class="btn--mode" (click)="onAddItem($event)">add</button>
+					<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1">save</button>
+				</div>
+			</div>
+			<div class="group--content" *if="settings.current === 'maps'">
+				<div class="group--head">
+					<div class="title">Maps</div>
+				</div>
+				<div class="group--main">
+
+				</div>
+				<div class="group--foot">
+					<!--
+					<button type="button" class="btn--mode" (click)="onAddItem($event)">add</button>
+					<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1">save</button>
+					-->
+				</div>
 			</div>
 		</div>
 	</div>

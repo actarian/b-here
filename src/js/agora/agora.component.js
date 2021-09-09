@@ -2,6 +2,7 @@ import { Component, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
+import NavmapService from '../editor/navmap/navmap.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
 import LocalStorageService from '../local-storage/local-storage.service';
@@ -107,6 +108,8 @@ export default class AgoraComponent extends Component {
 		this.local = null;
 		this.screen = null;
 		this.remoteScreen_ = null;
+		this.navmaps = [];
+		this.navmap = null;
 		// this.media = null;
 		this.hasScreenViewItem = false;
 		this.remotes = [];
@@ -259,6 +262,7 @@ export default class AgoraComponent extends Component {
 				}
 				this.previousView = this.view;
 				this.view = view;
+				this.setNavmap(view);
 				this.hasScreenViewItem = view.items.find(x => MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x)) != null;
 				this.pushChanges();
 				return view;
@@ -267,6 +271,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	load(callback) {
+		this.loadNavmaps();
 		this.viewObserver$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(view => {
@@ -275,6 +280,30 @@ export default class AgoraComponent extends Component {
 				callback();
 			}
 		});
+	}
+
+	loadNavmaps() {
+		NavmapService.navmapGet$().pipe(
+			first(),
+		).subscribe(navmaps => {
+			this.navmaps = navmaps;
+		});
+	}
+
+	setNavmap(view) {
+		const navmaps = this.navmaps;
+		const navmap = (navmaps || []).find(x => x.items.find(i => i.viewId === view.id) != null) || null;
+		console.log('AgoraComponent.setNavmap', navmap);
+		this.navmap = navmap;
+	}
+
+	toggleNavmap() {
+		StateService.patchState({ showNavmap: !StateService.state.showNavmap });
+	}
+
+	onNavmapItem(navItem) {
+		StateService.patchState({ showNavmap: false });
+		this.onNavTo(navItem);
 	}
 
 	loadAndConnect(preferences) {
@@ -376,6 +405,10 @@ export default class AgoraComponent extends Component {
 					break;
 				case MessageType.NavToView:
 					this.onRemoteNavTo(message);
+					break;
+				case MessageType.Mode:
+					StateService.patchState({ mode: message.mode });
+					window.dispatchEvent(new Event('resize'));
 					break;
 				case MessageType.NavInfo:
 					this.hidePanels();
@@ -573,8 +606,13 @@ export default class AgoraComponent extends Component {
 	}
 
 	toggleMode() {
-		const mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
-		StateService.patchState({ mode });
+		if (this.agora && StateService.state.role === RoleType.Publisher) {
+			this.agora.toggleMode();
+		} else {
+			const mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+			StateService.patchState({ mode });
+			// this.patchState({ mode });
+		}
 		window.dispatchEvent(new Event('resize'));
 	}
 

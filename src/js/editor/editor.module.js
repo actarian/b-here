@@ -8,11 +8,15 @@ import ItemModelModalComponent from './modals/item-model-modal.component';
 import MediaModalComponent from './modals/media-modal.component';
 import ModelModalComponent from './modals/model-modal.component';
 import NavModalComponent from './modals/nav-modal.component';
+import NavmapItemModalComponent from './modals/navmap-item-modal.component';
+import NavmapModalComponent from './modals/navmap-modal.component';
 import PanoramaGridModalComponent from './modals/panorama-grid-modal.component';
 import PanoramaModalComponent from './modals/panorama-modal.component';
 import PlaneModalComponent from './modals/plane-modal.component';
 import RemoveModalComponent from './modals/remove-modal.component';
 import Room3DModalComponent from './modals/room-3d-modal.component';
+import NavmapBuilderComponent from './navmap/navmap-builder.component';
+import NavmapEditComponent from './navmap/navmap-edit.component';
 import UpdateViewItemComponent from './update/update-view-item.component';
 import UpdateViewTileComponent from './update/update-view-tile.component';
 import UpdateViewComponent from './update/update-view.component';
@@ -22,6 +26,10 @@ const factories = [
 	CurvedPlaneModalComponent,
 	EditorComponent,
 	ItemModelModalComponent,
+	NavmapBuilderComponent,
+	NavmapEditComponent,
+	NavmapModalComponent,
+	NavmapItemModalComponent,
 	MediaModalComponent,
 	MenuBuilderComponent,
 	ModelModalComponent,

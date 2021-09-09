@@ -130,6 +130,7 @@ export const MessageType = {
 	ZoomMedia: 'zoomMedia',
 	CurrentTimeMedia: 'currentTimeMedia',
 	PlayModel: 'playModel',
+	Mode: 'mode',
 	NavInfo: 'navInfo',
 	NavToView: 'navToView',
 	NavToGrid: 'navToGrid',
