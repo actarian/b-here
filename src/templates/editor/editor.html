@@ -16,8 +16,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
 			<div class="btn--settings" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
-				<svg class="settings" width="24" height="24" viewBox="0 0 24 24" *if="!settings"><use xlink:href="#settings"></use></svg>
-				<svg class="settings" width="24" height="24" viewBox="0 0 24 24" *if="settings"><use xlink:href="#settings-full"></use></svg>
+				<svg class="settings" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#settings-full"></use></svg>
 			</div>
 			<div class="headline" *if="view">
 				<div class="headline__id" [innerHTML]="view.id"></div>
@@ -86,42 +85,6 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</button>
 			</div>
 		</div>
-		<!-- !!! old settings -->
-		<div class="ui__settings" menu-builder [views]="views" *if="false">
-			<div class="group--menu" *if="form">
-				<div class="group--left">
-					<div class="headline">
-						<div class="title" [innerHTML]="'editor_menu' | label"></div>
-					</div>
-					<div class="nav--tree">
-						<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
-							<div *for="let control of controls.items.controls">
-								<div control-menu [control]="control" (remove)="onRemoveControl($event)" (link)="onLinkControl($event)" (up)="onUpControl($event)" (down)="onDownControl($event)"></div>
-							</div>
-						</form>
-					</div>
-					<div class="group--cta">
-						<button type="button" class="btn--mode" (click)="onAddItem($event)" [innerHTML]="'editor_add' | label"></button>
-						<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1" [innerHTML]="'editor_save' | label"></button>
-					</div>
-				</div>
-				<!--
-				<div class="group--right">
-					<div class="headline">
-						<div class="title" [innerHTML]="'editor_views' | label"></div>
-					</div>
-					<div class="nav--views">
-						<div class="nav__item" *for="let item of views">
-							<div class="icon">
-								<svg-icon [name]="item.type.name"></svg-icon>
-							</div>
-							<div class="title" [innerHTML]="item.name"></div>
-						</div>
-					</div>
-				</div>
-				-->
-			</div>
-		</div>
 		<div class="ui__settings" *if="settings">
 			<!-- settings navs -->
 			<div class="group--nav">
@@ -170,7 +133,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 						</div>
 					</div>
 					<!-- navmap edit -->
-					<div class="navmap" navmap-edit [navmap]="navmap" *if="navmap">
+					<div class="navmap" navmap-edit [navmap]="navmap" (delete)="onDelete($event)" *if="navmap">
 						<form class="form" [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
 							<div class="title"><span [innerHTML]="navmap.name"></span> <span [innerHTML]="navmap.id"></span></div>
 							<div class="form-controls">
@@ -181,7 +144,10 @@ window.bhere = Object.assign((window.bhere || {}), {
 							</div>
 							<div class="group--cta">
 								<button type="submit" class="btn--accept">
-									<span>Save</span>
+									<span [innerHTML]="'editor_save' | label"></span>
+								</button>
+								<button type="button" class="btn--remove" (click)="onRemove($event)">
+									<span [innerHTML]="'editor_remove' | label"></span>
 								</button>
 							</div>
 							<div class="navmap-control" [class]="mode">
@@ -194,8 +160,8 @@ window.bhere = Object.assign((window.bhere || {}), {
 								</div>
 								<ul class="navmap-control__toolbar">
 									<li class="nav__item"><span [class]="{ active: mode === 'insert' }" (click)="onToggleMode('insert')"><svg class="pencil" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pencil"></use></svg></span></li>
-									<li class="nav__item"><span [class]="{ active: mode === 'remove' }" (click)="onToggleMode('remove')"><svg class="erase" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#erase"></use></svg></span></li>
 									<li class="nav__item"><span [class]="{ active: mode === 'move' }" (click)="onToggleMode('move')"><svg class="move" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#move"></use></svg></span></li>
+									<li class="nav__item"><span [class]="{ active: mode === 'remove' }" (click)="onToggleMode('remove')"><svg class="erase" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#erase"></use></svg></span></li>
 								</ul>
 							</div>
 						</form>

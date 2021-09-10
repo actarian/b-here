@@ -31,7 +31,9 @@ function resize(src, blob, size) {
 		canvas.width = width;
 		canvas.height = height;
 		ctx.drawImage(img, 0, 0, width, height);
-		canvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 }).then(function(resizedBlob) {
+		// const options = { type: 'image/jpeg', quality: 0.9 };
+		// canvas.convertToBlob(options).then(function(resizedBlob) {
+		canvas.convertToBlob().then(function(resizedBlob) {
 			sendMessage(ImageServiceWorkerEvent.Complete, src, resizedBlob);
 		});
 	});

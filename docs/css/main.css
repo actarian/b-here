@@ -6821,6 +6821,10 @@ update-view-tile {
   font-size: 19px;
   margin-bottom: 20px; }
 
+.modal-outlet .description {
+  font-size: 15px;
+  margin-bottom: 20px; }
+
 .ui__settings {
   position: absolute;
   display: flex;
@@ -6969,19 +6973,6 @@ update-view-tile {
     .nav--views::-webkit-scrollbar-track:hover {
       background-color: transparent; }
 
-[control-menu] .group--form {
-  align-items: center;
-  padding: 0;
-  margin-bottom: 5px;
-  border-bottom: 1px solid var(--background-tertiary); }
-  [control-menu] .group--form > .control--text {
-    background: var(--background-tertiary);
-    line-height: 1;
-    padding: 5px; }
-
-[control-menu] .group--items {
-  padding-left: 10px; }
-
 .group--menu {
   display: flex;
   min-width: 50vw;
@@ -7084,9 +7075,13 @@ update-view-tile {
 .nav--tree .control-menu__link,
 .nav--views .control-menu__link {
   position: relative;
-  margin: 0 4px 0 0;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  margin: 0;
+  border-radius: 12px;
   background: var(--background);
-  color: var(--foreground-primary); }
+  color: var(--foreground); }
   .nav--tree .control-menu__link .dropdown,
   .nav--views .control-menu__link .dropdown {
     left: 0;
@@ -7094,15 +7089,15 @@ update-view-tile {
   .nav--tree .control-menu__link:hover, .nav--tree .control-menu__link.active,
   .nav--views .control-menu__link:hover,
   .nav--views .control-menu__link.active {
-    background: var(--background-primary);
-    color: var(--foreground-negative); }
+    background: var(--background-tertiary);
+    color: var(--foreground); }
 
 .nav--tree .control-menu__up,
 .nav--tree .control-menu__down,
 .nav--views .control-menu__up,
 .nav--views .control-menu__down {
   background: var(--background);
-  color: var(--foreground-primary); }
+  color: var(--foreground); }
   .nav--tree .control-menu__up:hover, .nav--tree .control-menu__up.active,
   .nav--tree .control-menu__down:hover,
   .nav--tree .control-menu__down.active,
@@ -7116,9 +7111,21 @@ update-view-tile {
 .nav--tree {
   display: flex;
   flex-direction: column;
-  padding: 20px 20px;
+  padding: 30px 20px 50px 20px;
   border-radius: 8px;
   background: white; }
+
+[control-menu] .group--form {
+  align-items: center;
+  margin-bottom: 0;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--background-tertiary); }
+  [control-menu] .group--form > .control--text {
+    line-height: 1;
+    padding: 5px; }
+
+[control-menu] .group--items {
+  padding-left: 10px; }
 
 .listing--navmaps {
   flex: 1 1 100%;
@@ -7127,7 +7134,14 @@ update-view-tile {
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
-  margin: 15px 0; }
+  margin: 0 0 15px 0; }
+  .listing--navmaps .abstract {
+    display: block;
+    width: 100%;
+    margin: 0 0 0 6px;
+    padding: 20px 15px;
+    border-radius: 8px;
+    background: #fff; }
   @media (min-width: 1024px) {
     .listing--navmaps {
       margin-left: -6px;
@@ -7148,16 +7162,17 @@ update-view-tile {
       margin-right: 0px; } }
 
 .card--navmap {
-  background: white;
-  border-radius: 8px;
   cursor: pointer;
   transition: ease-in-out all 250ms; }
   .card--navmap:hover {
     box-shadow: 0 20px 20px -10px rgba(0, 0, 0, 0.2); }
   .card--navmap .card__content {
     padding: 8px 15px;
-    border-top: 1px solid #eee; }
+    border-radius: 0 0 8px 8px;
+    border-top: 1px solid #eee;
+    background: white; }
   .card--navmap .card__picture {
+    border-radius: 8px 8px 0 0;
     background: #b9c3ca; }
   .card--navmap .card__name {
     font-size: 16px;

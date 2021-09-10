@@ -153,7 +153,7 @@ export default class NavmapEditComponent extends Component {
 			const values = this.form.value;
 			const payload = Object.assign({ items: [] }, this.navmap, { name: values.name });
 			// console.log('NavmapEditComponent.onSubmit.navmap', payload);
-			return NavmapService.navmapUpdate$(payload).pipe(
+			NavmapService.navmapUpdate$(payload).pipe(
 				first(),
 			).subscribe(response => {
 				// console.log('NavmapEditComponent.onSubmit.success', response);
@@ -168,9 +168,25 @@ export default class NavmapEditComponent extends Component {
 			this.form.touched = true;
 		}
 	}
+
+	onRemove() {
+		const navmap = this.navmap;
+		ModalService.open$({ src: environment.template.modal.remove, data: { item: navmap } }).pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				NavmapService.navmapDelete$(navmap).pipe(
+					first(),
+				).subscribe(response => {
+					this.delete.next(navmap);
+				})
+			}
+		});
+	}
 }
 
 NavmapEditComponent.meta = {
 	selector: '[navmap-edit]',
+	outputs: ['delete'],
 	inputs: ['navmap']
 };

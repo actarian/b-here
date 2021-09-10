@@ -109,9 +109,13 @@
 
 	.control-menu__link {
 		position: relative;
-		margin: 0 4px 0 0;
+		width: 24px;
+		height: 24px;
+		padding: 4px;
+		margin: 0;
+		border-radius: 12px;
 		background: $background;
-		color: $foreground-primary;
+		color: $foreground;
 
 		.dropdown {
 			left: 0;
@@ -120,15 +124,15 @@
 
 		&:hover,
 		&.active {
-			background: $background-primary;
-			color: $foreground-negative;
+			background: $background-tertiary;
+			color: $foreground;
 		}
 	}
 
 	.control-menu__up,
 	.control-menu__down {
 		background: $background;
-		color: $foreground-primary;
+		color: $foreground;
 
 		&:hover,
 		&.active {
@@ -141,7 +145,26 @@
 .nav--tree {
 	display: flex;
 	flex-direction: column;
-	padding: 20px 20px;
+	padding: 30px 20px 50px 20px;
 	border-radius: 8px;
 	background: white;
+}
+
+[control-menu] {
+	.group--form {
+		align-items: center;
+		margin-bottom: 0;
+		padding: 3px 0;
+		border-bottom: 1px solid $background-tertiary;
+
+		&>.control--text {
+			// background: $background-tertiary;
+			line-height: 1;
+			padding: 5px;
+		}
+	}
+
+	.group--items {
+		padding-left: 10px;
+	}
 }

@@ -5,7 +5,16 @@
 	flex-wrap: wrap;
 	justify-content: flex-start;
 	width: 100%;
-	margin: 15px 0;
+	margin: 0 0 15px 0;
+
+	.abstract {
+		display: block;
+		width: 100%;
+		margin: 0 0 0 6px;
+		padding: 20px 15px;
+		border-radius: 8px;
+		background: #fff;
+	}
 
 	@include media-up(md) {
 		$gutter: 12px;
@@ -26,8 +35,6 @@
 }
 
 .card--navmap {
-	background: white;
-	border-radius: 8px;
 	cursor: pointer;
 	transition: ease-in-out all $fast;
 
@@ -37,10 +44,13 @@
 
 	.card__content {
 		padding: 8px 15px;
+		border-radius: 0 0 8px 8px;
 		border-top: 1px solid #eee;
+		background: white;
 	}
 
 	.card__picture {
+		border-radius: 8px 8px 0 0;
 		background: #b9c3ca;
 	}
 
