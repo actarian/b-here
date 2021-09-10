@@ -8218,8 +8218,8 @@ var VRService = /*#__PURE__*/function () {
       return (x.items || []).find(function (i) {
         return i.viewId === view.id;
       }) != null;
-    }) || null;
-    console.log('AgoraComponent.setNavmap', navmap);
+    }) || null; // console.log('AgoraComponent.setNavmap', navmap);
+
     this.navmap = navmap;
   };
 
@@ -22319,7 +22319,6 @@ Room3DModalComponent.meta = {
     this.navmaps = [];
     NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
       _this.navmaps = navmaps;
-      console.log(navmaps);
 
       _this.pushChanges();
     });
@@ -22373,6 +22372,17 @@ Room3DModalComponent.meta = {
         _this3.pushChanges();
       }
     });
+  };
+
+  _proto.onDelete = function onDelete(navmap) {
+    var index = this.navmaps.indexOf(navmap);
+
+    if (index !== -1) {
+      this.navmaps.splice(index, 1);
+    }
+
+    this.navmap = null;
+    this.pushChanges();
   };
 
   return NavmapBuilderComponent;
@@ -22567,7 +22577,7 @@ var NavmapEditComponent = /*#__PURE__*/function (_Component) {
         name: values.name
       }); // console.log('NavmapEditComponent.onSubmit.navmap', payload);
 
-      return NavmapService.navmapUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
+      NavmapService.navmapUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
         // console.log('NavmapEditComponent.onSubmit.success', response);
         Object.assign(_this5.navmap, response);
 
@@ -22583,10 +22593,29 @@ var NavmapEditComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
+  _proto.onRemove = function onRemove() {
+    var _this6 = this;
+
+    var navmap = this.navmap;
+    ModalService.open$({
+      src: environment.template.modal.remove,
+      data: {
+        item: navmap
+      }
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        NavmapService.navmapDelete$(navmap).pipe(operators.first()).subscribe(function (response) {
+          _this6.delete.next(navmap);
+        });
+      }
+    });
+  };
+
   return NavmapEditComponent;
 }(rxcomp.Component);
 NavmapEditComponent.meta = {
   selector: '[navmap-edit]',
+  outputs: ['delete'],
   inputs: ['navmap']
 };var UpdateViewItemComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewItemComponent, _Component);

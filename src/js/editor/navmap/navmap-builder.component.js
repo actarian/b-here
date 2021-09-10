@@ -13,7 +13,6 @@ export default class NavmapBuilderComponent extends Component {
 			first(),
 		).subscribe(navmaps => {
 			this.navmaps = navmaps;
-			console.log(navmaps);
 			this.pushChanges();
 		});
 	}
@@ -51,6 +50,15 @@ export default class NavmapBuilderComponent extends Component {
 				this.pushChanges();
 			}
 		});
+	}
+
+	onDelete(navmap) {
+		const index = this.navmaps.indexOf(navmap);
+		if (index !== -1) {
+			this.navmaps.splice(index, 1);
+		}
+		this.navmap = null;
+		this.pushChanges();
 	}
 
 }
