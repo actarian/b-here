@@ -11,6 +11,7 @@ export const environmentStatic = {
 		editor: true,
 		editorAssetScreen: true,
 		menu: true,
+		navmaps: true,
 		chat: true,
 		ar: true,
 		like: true,

@@ -133,6 +133,7 @@ function _readOnlyError(name) {
     editor: false,
     editorAssetScreen: false,
     menu: true,
+    navmaps: false,
     chat: false,
     ar: true,
     like: true,
@@ -209,6 +210,7 @@ function _readOnlyError(name) {
     editor: true,
     editorAssetScreen: true,
     menu: true,
+    navmaps: true,
     chat: true,
     ar: true,
     like: true,
@@ -400,6 +402,7 @@ var defaultAppOptions = {
     guidedTourRequest: true,
     editor: true,
     menu: true,
+    navmaps: true,
     chat: true,
     ar: true,
     like: true,
@@ -9734,7 +9737,8 @@ AsideComponent.meta = {
     title: 'editor_navmaps',
     active: true
   }],
-  current: 'menu'
+  current: null,
+  active: false
 };
 
 var EditorComponent = /*#__PURE__*/function (_Component) {
@@ -9753,8 +9757,8 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
         node = _getContext.node;
 
     node.classList.remove('hidden');
+    this.settings = this.getSettings();
     this.aside = false;
-    this.settings = false;
     this.state = {};
     this.data = null;
     this.views = null;
@@ -9894,20 +9898,24 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     window.dispatchEvent(new Event('resize'));
   };
 
-  _proto.onToggleSettings = function onToggleSettings() {
+  _proto.getSettings = function getSettings() {
     var settings = Object.assign({}, SETTINGS);
     settings.menu = settings.menu.filter(function (x) {
-      return x.active;
+      return environment.flags[x.id];
     });
-    this.settings = this.settings ? false : settings;
+    settings.current = settings.menu.length ? settings.menu[0].id : null;
+    return settings;
+  };
+
+  _proto.onToggleSettings = function onToggleSettings() {
+    var settings = this.settings;
+    settings.active = !settings.active;
     this.pushChanges();
   };
 
   _proto.onSelectSetting = function onSelectSetting(item) {
-    if (this.settings) {
-      this.settings.current = item.id;
-      this.pushChanges();
-    }
+    this.settings.current = item.id;
+    this.pushChanges();
   } // editor
   ;
 

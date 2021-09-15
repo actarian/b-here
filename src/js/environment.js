@@ -101,6 +101,7 @@ const defaultAppOptions = {
 		guidedTourRequest: true,
 		editor: true,
 		menu: true,
+		navmaps: true,
 		chat: true,
 		ar: true,
 		like: true,

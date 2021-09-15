@@ -26,7 +26,8 @@ export const SETTINGS = {
 		title: 'editor_navmaps',
 		active: true,
 	}],
-	current: 'menu',
+	current: null,
+	active: false,
 };
 
 export default class EditorComponent extends Component {
@@ -34,8 +35,8 @@ export default class EditorComponent extends Component {
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
+		this.settings = this.getSettings();
 		this.aside = false;
-		this.settings = false;
 		this.state = {};
 		this.data = null;
 		this.views = null;
@@ -168,18 +169,22 @@ export default class EditorComponent extends Component {
 		window.dispatchEvent(new Event('resize'));
 	}
 
-	onToggleSettings() {
+	getSettings() {
 		const settings = Object.assign({}, SETTINGS);
-		settings.menu = settings.menu.filter(x => x.active);
-		this.settings = this.settings ? false : settings;
+		settings.menu = settings.menu.filter(x => environment.flags[x.id]);
+		settings.current = settings.menu.length ? settings.menu[0].id : null;
+		return settings;
+	}
+
+	onToggleSettings() {
+		const settings = this.settings;
+		settings.active = !settings.active;
 		this.pushChanges();
 	}
 
 	onSelectSetting(item) {
-		if (this.settings) {
-			this.settings.current = item.id;
-			this.pushChanges();
-		}
+		this.settings.current = item.id;
+		this.pushChanges();
 	}
 
 	// editor

@@ -11,6 +11,7 @@ export const environmentServed = {
 		editor: false,
 		editorAssetScreen: false,
 		menu: true,
+		navmaps: false,
 		chat: false,
 		ar: true,
 		like: true,
