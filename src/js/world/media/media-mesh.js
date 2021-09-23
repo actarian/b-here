@@ -430,9 +430,7 @@ export default class MediaMesh extends InteractiveMesh {
 		this.onOut = this.onOut.bind(this);
 		this.onToggle = this.onToggle.bind(this);
 		this.onZoomed = this.onZoomed.bind(this);
-		if (this.view.type.name !== 'media') {
-			this.addZoomBtn();
-		}
+		this.addZoomBtn();
 		this.addPlayBtn();
 		this.userData.render = (time, tick) => {
 			this.render(this, time, tick);
@@ -701,14 +699,6 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 	}
 
-	updateByItem(item) {
-		this.disposeMaterial();
-		this.disposeMediaLoader();
-		this.material = MediaMesh.getMaterialByItem(item);
-		this.uniforms = MediaMesh.getUniformsByItem(item);
-		this.mediaLoader = new MediaLoader(item);
-	}
-
 	disposeMaterial() {
 		if (this.material) {
 			if (this.material.map && this.material.map.disposable !== false) {
@@ -762,16 +752,30 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	addZoomBtn() {
-		const zoomBtn = this.zoomBtn = new MediaZoomMesh(this.host);
-		zoomBtn.on('zoomed', this.onZoomed);
+		this.removeZoomBtn();
+		if (this.view.type.name !== 'media' && (!this.item.asset || !this.item.asset.chromaKeyColor)) {
+			const zoomBtn = this.zoomBtn = new MediaZoomMesh(this.host);
+			zoomBtn.on('zoomed', this.onZoomed);
+		}
 	}
 
 	removeZoomBtn() {
 		if (this.zoomBtn) {
+			this.remove(this.zoomBtn);
 			this.zoomBtn.off('zoomed', this.onZoomed);
 			this.zoomBtn.dispose();
+			this.zoomBtn = null;
 			delete this.zoomBtn;
 		}
+	}
+
+	updateByItem(item) {
+		this.disposeMaterial();
+		this.disposeMediaLoader();
+		this.material = MediaMesh.getMaterialByItem(item);
+		this.uniforms = MediaMesh.getUniformsByItem(item);
+		this.addZoomBtn();
+		this.mediaLoader = new MediaLoader(item);
 	}
 
 	updateFromItem(item) {

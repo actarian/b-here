@@ -26,6 +26,7 @@ export default class UpdateViewComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
 			switch (this.view.type.name) {
+				case ViewType.WaitingRoom.name:
 				case ViewType.Panorama.name:
 				case ViewType.PanoramaGrid.name:
 				case ViewType.Room3d.name:
