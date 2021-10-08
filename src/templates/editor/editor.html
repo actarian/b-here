@@ -60,7 +60,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 					</div>
 					-->
 				</div>
-				<div class="banner progress" model-progress [view]="view"></div>
+				<div class="progress-indicator" model-progress [view]="view">
+					<div class="inner"></div>
+				</div>
 				<div model-menu [views]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<div class="spinner"></div>

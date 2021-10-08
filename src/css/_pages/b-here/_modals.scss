@@ -194,11 +194,47 @@ model-viewer {
 	}
 }
 
+/*
 .progress {
 	color: $foreground-negative;
 	font-weight: $font-extrabold;
 	font-size: 70px;
 	text-shadow: 0 10px 10px $black-50;
+}
+*/
+
+.progress-indicator {
+	z-index: 100;
+	position: absolute;
+	left: 0;
+	top: 5000px;
+	font-size: 0;
+	line-height: 0;
+
+	$size: 4px;
+
+	.embed.ui & {
+		width: 300px;
+		height: 3 * $size;
+		padding: $size;
+		border-radius: 2 * $size;
+		background: rgba(255, 255, 255, 0.3);
+
+		.inner {
+			width: 0;
+			height: $size;
+			border-radius: $size;
+			background: black;
+			transition: width ease-out 250ms;
+		}
+
+		&.active {
+			top: 50%;
+			left: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			backdrop-filter: blur(20px);
+		}
+	}
 }
 
 .canvas--debug {

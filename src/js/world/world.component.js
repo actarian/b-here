@@ -103,6 +103,10 @@ export default class WorldComponent extends Component {
 		return this.locked || this.renderer.xr.isPresenting;
 	}
 
+	get showMenu() {
+		return StateService.state.hosted && StateService.state.navigable && (StateService.state.mode !== 'embed' || environment.flags.menuEmbed);
+	}
+
 	get showPointer() {
 		return this.pointer.mesh.parent != null;
 	}

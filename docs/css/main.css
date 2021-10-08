@@ -4542,7 +4542,13 @@ body {
   position: absolute;
   pointer-events: auto;
   right: 20px;
-  top: 50%; }
+  top: 50%;
+  margin-top: -25px; }
+  .btn--menu > .menu-light {
+    display: none;
+    width: 28px;
+    height: 28px;
+    transition: opacity ease-in-out 250ms; }
   .btn--menu > .spinner {
     position: absolute;
     width: 100%;
@@ -4609,6 +4615,32 @@ body {
     .btn--menu.loading > .progress {
       opacity: 1;
       visibility: visible; }
+  .embed.ui .btn--menu {
+    top: 50px;
+    width: 40px;
+    height: 40px;
+    opacity: 0.4;
+    transition: opacity ease-in-out 150ms; }
+    .embed.ui .btn--menu > svg {
+      fill: currentColor; }
+    .embed.ui .btn--menu > .menu-light {
+      display: block; }
+    .embed.ui .btn--menu > .spinner,
+    .embed.ui .btn--menu > .bullets,
+    .embed.ui .btn--menu > .progress {
+      display: none; }
+    .embed.ui .btn--menu, .embed.ui .btn--menu:active, .embed.ui .btn--menu:focus, .embed.ui .btn--menu:visited {
+      opacity: 0.4;
+      background: transparent;
+      color: var(--foreground-negative); }
+    .embed.ui .btn--menu:hover {
+      opacity: 1;
+      background: transparent;
+      color: var(--foreground-negative); }
+    .embed.ui .btn--menu.loading {
+      opacity: 0; }
+    .embed.ui .btn--menu:not(.loading) {
+      transition: all ease-in-out 250ms; }
 
 @keyframes spinner {
   0% {
@@ -6002,11 +6034,39 @@ model-viewer {
     color: var(--foreground-negative);
     white-space: nowrap; }
 
+/*
 .progress {
-  color: var(--foreground-negative);
-  font-weight: var(--font-extrabold);
-  font-size: 70px;
-  text-shadow: 0 10px 10px var(--black-50); }
+	color: $foreground-negative;
+	font-weight: $font-extrabold;
+	font-size: 70px;
+	text-shadow: 0 10px 10px $black-50;
+}
+*/
+.progress-indicator {
+  z-index: 100;
+  position: absolute;
+  left: 0;
+  top: 5000px;
+  font-size: 0;
+  line-height: 0; }
+  .embed.ui .progress-indicator {
+    width: 300px;
+    height: 12px;
+    padding: 4px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.3); }
+    .embed.ui .progress-indicator .inner {
+      width: 0;
+      height: 4px;
+      border-radius: 4px;
+      background: black;
+      transition: width ease-out 250ms; }
+    .embed.ui .progress-indicator.active {
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      -webkit-backdrop-filter: blur(20px);
+              backdrop-filter: blur(20px); }
 
 .canvas--debug {
   position: absolute;
