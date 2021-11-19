@@ -202,7 +202,7 @@
           "important": false,
           "transparent": true,
           "position": [
-            -94.77840967865883,
+            -94.78440967865886,
             -31.60085895658661,
             4.2940391230438095
           ],
@@ -213,8 +213,8 @@
             "XYZ"
           ],
           "scale": [
-            20,
-            10,
+            12,
+            6,
             1
           ],
           "asset": null,
@@ -5826,7 +5826,12 @@
           ],
           "asset": null,
           "link": null,
-          "id": 137955632109500
+          "id": 137955632109500,
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
         },
         {
           "type": {
@@ -5843,7 +5848,12 @@
           ],
           "asset": null,
           "link": null,
-          "id": 138040422618299
+          "id": 138040422618299,
+          "keepOrientation": null,
+          "important": null,
+          "transparent": null,
+          "rotation": null,
+          "scale": null
         }
       ]
     },
@@ -8326,6 +8336,28 @@
       ],
       "hidden": null,
       "ar": null
+    },
+    {
+      "type": {
+        "id": 4,
+        "name": "room-3d"
+      },
+      "name": "Frau Nav",
+      "asset": {
+        "type": {
+          "id": 3,
+          "name": "model"
+        },
+        "folder": "/uploads/",
+        "file": "192705194113600_frau-map-export.glb",
+        "id": 192707576180100
+      },
+      "orientation": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "zoom": 75,
+      "id": 192717361099600
     }
   ],
   "menu": [
@@ -8384,6 +8416,13 @@
       "viewId": 9324512563999,
       "name": "Factory Tour",
       "order": 50
+    },
+    {
+      "id": 192868530940700,
+      "parentId": 74540000298999,
+      "viewId": 192717361099600,
+      "name": "Frau Room",
+      "order": 60
     },
     {
       "id": 74581921776600,
@@ -10474,6 +10513,15 @@
       "folder": "/uploads/",
       "file": "28945246563900_map.png",
       "id": 28945258655499
+    },
+    {
+      "type": {
+        "id": 3,
+        "name": "model"
+      },
+      "folder": "/uploads/",
+      "file": "192705194113600_frau-map-export.glb",
+      "id": 192707576180100
     }
   ],
   "users": [
