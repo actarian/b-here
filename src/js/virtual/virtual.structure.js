@@ -61,6 +61,7 @@ export default class VirtualStructure extends Structure {
 	}
 
 	update$() {
+		this.updateView(true);
 		return merge(this.scroll$(), this.resize$(), this.items$.pipe(
 			distinctUntilChanged(),
 		)).pipe(
@@ -74,7 +75,6 @@ export default class VirtualStructure extends Structure {
 	updateForward() {
 		const options = this.options;
 		const items = this.items$.getValue();
-		// console.log('VirtualStructure', 'items.length', items.length);
 		const total = items.length;
 		this.container.position = 'relative';
 		let highestHeight = 0;
@@ -96,7 +96,7 @@ export default class VirtualStructure extends Structure {
 				height = this.getHeight(width, item);
 			}
 			top = options.cols[col];
-			if (this.intersect(top + options.top, top + height + options.top, options.top, options.top + options.containerHeight)) {
+			if (this.intersect(top + options.top, top + height + options.top, 0, options.containerHeight)) {
 				if (!rect) {
 					left = this.getLeft(col, width, gutter);
 				}
@@ -145,6 +145,7 @@ export default class VirtualStructure extends Structure {
 		} else {
 			this.container.style.height = `${highestHeight}px`;
 		}
+		// console.log('VirtualStructure.updateForward', 'items.length', items.length, highestHeight, visibleItems);
 		return visibleItems;
 	}
 
@@ -421,13 +422,14 @@ export default class VirtualStructure extends Structure {
 	}
 
 	intersect(top1, bottom1, top2, bottom2) {
+		// console.log(top2, '<', bottom1, bottom2, '>', top1);
 		return top2 < bottom1 && bottom2 > top1;
 	}
 
 	resize$() {
 		return fromEvent(window, 'resize').pipe(
+			startWith(_ => null),
 			auditTime(100),
-			startWith(null),
 			tap(() => this.updateView(true))
 		);
 	}
@@ -436,9 +438,11 @@ export default class VirtualStructure extends Structure {
 		const { node } = getContext(this);
 		// console.log(node.parentNode, getComputedStyle(node.parentNode).overflowY, node.parentNode.style.overflowY);
 		if (node.parentNode && getComputedStyle(node.parentNode).overflowY === 'auto') {
-			return fromEvent(node.parentNode, 'scroll').pipe(tap(() => {
-				this.updateView();
-			}));
+			return fromEvent(node.parentNode, 'scroll').pipe(
+				tap(() => {
+					this.updateView();
+				}),
+			);
 		} else {
 			return fromEvent(window, 'scroll').pipe(tap(() => this.updateView()));
 		}
@@ -449,7 +453,8 @@ export default class VirtualStructure extends Structure {
 		const options = this.options;
 		options.top = rect.top;
 		options.containerWidth = rect.width;
-		options.containerHeight = rect.height; // window.innerHeight;
+		// options.containerHeight = rect.height;
+		options.containerHeight = this.container.parentNode.offsetHeight;
 		options.cols = this.getCols();
 		if (reset) {
 			this.cachedRects = {};

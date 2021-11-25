@@ -111,6 +111,7 @@ const defaultAppOptions = {
 		viewer: true,
 		smartDevice: true,
 		maxQuality: false,
+		selfServiceProposition: true,
 		heroku: HEROKU,
 	},
 	url: {},

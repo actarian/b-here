@@ -369,6 +369,11 @@ const ROUTES = [{
 		sendOk(response, user);
 	}
 }, {
+	path: '/api/user/self-service-support-request', method: 'POST', callback: function(request, response, params) {
+		const body = request.body;
+		sendOk(response, body);
+	}
+}, {
 	path: '/api/user/log', method: 'POST', callback: function(request, response, params) {
 		// do nothing
 		/*

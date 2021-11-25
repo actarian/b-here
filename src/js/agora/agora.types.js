@@ -109,6 +109,9 @@ export const AgoraStatus = {
 export const MessageType = {
 	AgoraEvent: 'agoraEvent',
 	Ping: 'ping',
+	ChannelMembers: 'channelMembers',
+	SupportRequestAccepted: 'supportRequestAccepted',
+	SupportRequestRejected: 'supportRequestRejected',
 	RequestControl: 'requestControl',
 	RequestControlAccepted: 'requestControlAccepted',
 	RequestControlRejected: 'requestControlRejected',

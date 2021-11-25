@@ -7,6 +7,8 @@ import StateService from '../state/state.service';
 import AgoraService from './agora.service';
 import { MessageType } from './agora.types';
 
+const USE_RANDOM_MESSAGE = false;
+
 export class ChatMessage {
 
 	constructor(message, clientId, name) {
@@ -53,6 +55,9 @@ export class ChatMessage {
 export default class AgoraChatComponent extends Component {
 
 	onInit() {
+		this.rows = 1;
+		this.showEmoji = false;
+		this.demo = window.location.pathname.indexOf('b-here-layout.html') !== -1;
 		const form = this.form = new FormGroup({
 			message: null,
 		});
@@ -107,7 +112,9 @@ export default class AgoraChatComponent extends Component {
 						break;
 				}
 			});
-			AgoraChatComponent.randomMessage(this, messages);
+			if (USE_RANDOM_MESSAGE) {
+				AgoraChatComponent.randomMessage(this, messages);
+			}
 			// !!! only for demo
 		} else {
 			const agora = this.agora = AgoraService.getSingleton();
@@ -139,12 +146,47 @@ export default class AgoraChatComponent extends Component {
 	}
 
 	onSubmit() {
-		const message = this.createMessage(this.form.value.message);
+		const secureMessage = this.secureText(this.form.value.message);
+		// console.log('secureMessage', secureMessage);
+		const message = this.createMessage(secureMessage);
 		this.sendMessage(message);
 		this.form.get('message').value = null;
-		if (this.demo) {
+		if (this.demo && USE_RANDOM_MESSAGE) {
 			this.randomMessage();
 		}
+	}
+
+	onKeyDown(event) {
+		// console.log('onKeyDown', event);
+		if (event.key === 'Enter') {
+			if (event.shiftKey) {
+				this.rows = Math.min(4, this.rows + 1);
+				this.pushChanges();
+			} else {
+				event.preventDefault();
+				this.onSubmit();
+				this.rows = 1;
+			}
+			const { node } = getContext(this);
+			const textareaNode = node.querySelector('textarea');
+			textareaNode.setAttribute('rows', this.rows);
+		}
+	}
+
+	onToggleEmoji() {
+		this.showEmoji = !this.showEmoji;
+		this.pushChanges();
+	}
+
+	onSelectEmoji(emoji) {
+		this.showEmoji = false;
+		this.form.get('message').value = (this.form.get('message').value || '') + emoji.char;
+		// this.pushChanges();
+	}
+
+	secureText(unsecureText) {
+		let newDocument = new DOMParser().parseFromString(unsecureText, 'text/html');
+		return newDocument.body.textContent || '';
 	}
 
 	createMessage(text) {
@@ -279,7 +321,6 @@ export default class AgoraChatComponent extends Component {
 AgoraChatComponent.meta = {
 	selector: '[agora-chat]',
 	outputs: ['close'],
-	inputs: ['demo'],
 };
 
 AgoraChatComponent.getFakeList = () => {

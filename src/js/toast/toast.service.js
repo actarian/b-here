@@ -14,7 +14,7 @@ export default class ToastService {
 		this.toast$.next(toast);
 		setTimeout(() => {
 			this.resolve(toast);
-		}, toast.duration || 3000);
+		}, toast.duration || 4000);
 		return this.events$;
 		/*
 		return of(toast).pipe(

@@ -5,12 +5,15 @@ import { DevicePlatform, DeviceService } from '../device/device.service';
 import NavmapService from '../editor/navmap/navmap.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
-import LocalStorageService from '../local-storage/local-storage.service';
+import LabelPipe from '../label/label.pipe';
 import LocationService from '../location/location.service';
+import { MeetingId } from '../meeting/meeting-id';
+import { MeetingUrl } from '../meeting/meeting-url';
 import MessageService from '../message/message.service';
-import ModalService from '../modal/modal.service';
+import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
+import ToastService from '../toast/toast.service';
 import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
@@ -18,13 +21,21 @@ import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import MediaLoader from '../world/media/media-loader';
 import VRService from '../world/vr.service';
+import { AgoraChecklistService } from './agora-checklist.service';
 import AgoraService from './agora.service';
 import { AgoraStatus, MessageType, UIMode } from './agora.types';
 
 export default class AgoraComponent extends Component {
 
+	get meetingUrl() {
+		if (!this.meetingUrl_) {
+			this.meetingUrl_ = new MeetingUrl();
+		}
+		return this.meetingUrl_;
+	}
+
 	get isVirtualTourUser() {
-		return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
+		return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(StateService.state.role) !== -1;
 	}
 
 	get isEmbed() {
@@ -33,13 +44,21 @@ export default class AgoraComponent extends Component {
 	}
 
 	get isNavigable() {
-		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const embedViewId = this.meetingUrl.embedViewId;
 		const navigable = embedViewId == null;
 		return navigable;
 	}
 
 	get isBackButtonVisible() {
 		return this.view && this.view.type.name === ViewType.Media.name;
+	}
+
+	get isSelfServiceProposition() {
+		return StateService.state.role === RoleType.SelfService && environment.flags.selfServiceProposition;
+	}
+
+	get isSelfServiceSupport() {
+		return StateService.state.role === RoleType.Publisher && environment.flags.selfServiceProposition && this.meetingUrl.support;
 	}
 
 	get uiClass() {
@@ -94,6 +113,10 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
+	getName(user) {
+		return StateService.state.name || MeetingUrl.getName(user);
+	}
+
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
@@ -122,6 +145,13 @@ export default class AgoraComponent extends Component {
 
 	getLinkRole() {
 		let linkRole = null;
+		/*
+		const meetingUrl = this.meetingUrl;
+		const meetingId = meetingUrl.meetingId;
+		if (meetingId) {
+			linkRole = meetingId.role;
+		}
+		*/
 		const match = (LocationService.get('link') || '').match(/\d{9}-(\d{4})-\d{13}/);
 		if (match) {
 			const index = parseInt(match[1]);
@@ -193,7 +223,9 @@ export default class AgoraComponent extends Component {
 	}
 
 	initWithUser(user) {
-		console.log('initWithUser', user);
+		// console.log('initWithUser', user);
+		// const meetingUrl = this.meetingUrl;
+		// const link = meetingUrl.link;
 		const link = LocationService.get('link') || null;
 		const role = this.getLinkRole() || (user ? user.type : null);
 		user = user || { type: role };
@@ -202,7 +234,8 @@ export default class AgoraComponent extends Component {
 		}
 		const mode = UserService.getMode(role);
 		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
-		const checklist = LocalStorageService.get('checklist') || null;
+		// const name = meetingUrl.name || this.getName(user);
+		const checklist = null;
 		const hosted = role === RoleType.Publisher ? true : false;
 		const live = (role === RoleType.SelfService || role === RoleType.Embed || DEBUG) ? false : true;
 		const navigable = this.isNavigable;
@@ -278,6 +311,7 @@ export default class AgoraComponent extends Component {
 			console.log('AgoraComponent.viewObserver$', view);
 			if (typeof callback === 'function') {
 				callback();
+				callback = null;
 			}
 		});
 	}
@@ -318,11 +352,17 @@ export default class AgoraComponent extends Component {
 			this.load(() => {
 				StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
 			});
+			this.checkSelfServiceProposition();
 		} else {
-			agora = this.agora = AgoraService.getSingleton();
-			const role = this.getLinkRole();
-			const status = this.setNextStatus();
-			// console.log('initAgora', status, role);
+			AgoraChecklistService.isChecked$().pipe(
+				first(),
+			).subscribe(checked => {
+				StateService.patchState({ checklist: checked });
+				agora = this.agora = AgoraService.getSingleton();
+				const role = this.getLinkRole();
+				const status = this.setNextStatus();
+				// console.log('initAgora', status, role);
+			});
 		}
 		StreamService.local$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -379,7 +419,14 @@ export default class AgoraComponent extends Component {
 		).subscribe(message => {
 			// console.log('AgoraComponent.message', message);
 			switch (message.type) {
+				case MessageType.ChannelMembers:
+					if (this.isSelfServiceSupport) {
+						const members = message.members;
+						console.log('AgoraComponent.MessageService.out$.ChannelMembers', members);
+					}
+					break;
 				case MessageType.RequestPeerInfo:
+					console.log('AgoraComponent.MessageService.out$.RequestPeerInfo', message);
 					message.type = MessageType.RequestPeerInfoResult;
 					message.clientInfo = {
 						role: StateService.state.role,
@@ -389,6 +436,21 @@ export default class AgoraComponent extends Component {
 						controllingId: StateService.state.controlling,
 					};
 					MessageService.sendBack(message);
+					if (this.isSelfServiceSupport) {
+						this.meetingUrl.support = false; // !!! spostare su ChannelMembers
+						ToastService.open$({ message: LabelPipe.transform('bhere_support_request_sent') });
+					}
+					break;
+				case MessageType.RequestPeerInfoResult:
+					if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
+						this.openSupportRequestDialog(message.clientInfo);
+					}
+					break;
+				case MessageType.SupportRequestAccepted:
+					ToastService.open$({ message: LabelPipe.transform('bhere_support_request_accepted') });
+					break;
+				case MessageType.SupportRequestRejected:
+					ToastService.open$({ message: LabelPipe.transform('bhere_support_request_rejected') });
 					break;
 				case MessageType.RequestControl:
 					// console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
@@ -429,14 +491,14 @@ export default class AgoraComponent extends Component {
 		MessageService.in$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(message => {
-			if (agora) {
-				agora.sendMessage(message);
+			if (this.agora) {
+				this.agora.sendMessage(message);
 			}
 		});
 		this.fullscreen$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();
-		if (agora && StateService.state.status === AgoraStatus.ShouldConnect) {
+		if (this.agora && StateService.state.status === AgoraStatus.ShouldConnect) {
 			this.loadAndConnect();
 		}
 	}
@@ -466,7 +528,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onLogin(user) {
-		const name = StateService.state.name || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
+		const name = this.getName(user);
 		if (name) {
 			StateService.patchState({ user, name, status: AgoraStatus.Device });
 		} else {
@@ -488,6 +550,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	connect(preferences) {
+		console.log('AgoraComponent.connect', preferences);
 		this.agora.connect$(preferences).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();
@@ -685,10 +748,7 @@ export default class AgoraComponent extends Component {
 		} else {
 			const controlling = this.state.controlling === remoteId ? null : remoteId;
 			this.patchState({ controlling, spying: false });
-		}/* else {
-			this.onRemoteControlRequest({});
 		}
-		*/
 	}
 
 	onToggleSilence() {
@@ -751,6 +811,58 @@ export default class AgoraComponent extends Component {
 				// this.pushChanges();
 			});
 		}
+	}
+
+	checkSelfServiceProposition() {
+		// self service proposition
+		const isSelfServiceProposition = this.isSelfServiceProposition;
+		// console.log('AgoraComponent.initAgora', isSelfServiceProposition);
+		if (isSelfServiceProposition) {
+			AgoraChecklistService.check$().pipe(
+				first(),
+			).subscribe(event => {
+				const meetingId = new MeetingId();
+				const meetingIdRoles = meetingId.toRoles();
+				const meetingUrl = new MeetingUrl({ link: meetingIdRoles.id, support: true });
+				const href = meetingUrl.toGuidedTourUrl();
+				console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
+				UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(
+					first(),
+				).subscribe(_ => {
+					const name = this.getName(StateService.state.user);
+					StateService.patchState({ checklist: true, link: meetingIdRoles.idSelfService, name });
+					this.agora = AgoraService.getSingleton();
+					this.connect();
+				});
+			}, error => {
+				console.log('AgoraComponent.initAgora.isSelfServiceProposition.error', error, name);
+				/*
+				UserService.selfServiceTourSupportFailedRequest$(StateService.state.user).pipe(
+					first(),
+				).subscribe();
+				*/
+			});
+		}
+	}
+
+	openSupportRequestDialog(clientInfo) {
+		ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				MessageService.send({ type: MessageType.SupportRequestAccepted });
+				const name = StateService.state.name;
+				const meetingId = new MeetingId(StateService.state.link);
+				meetingId.role = RoleType.Streamer;
+				const meetingUrl = new MeetingUrl({ link: meetingId.toString(), name });
+				const href = meetingUrl.toGuidedTourUrl();
+				setTimeout(() => {
+					window.location.href = href;
+				}, 1000);
+			} else {
+				MessageService.send({ type: MessageType.SupportRequestRejected });
+			}
+		});
 	}
 
 	/*
