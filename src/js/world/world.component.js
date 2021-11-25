@@ -103,6 +103,10 @@ export default class WorldComponent extends Component {
 		return this.locked || this.renderer.xr.isPresenting;
 	}
 
+	get showMenu() {
+		return StateService.state.hosted && StateService.state.navigable && (StateService.state.mode !== 'embed' || environment.flags.menuEmbed);
+	}
+
 	get showPointer() {
 		return this.pointer.mesh.parent != null;
 	}
@@ -337,6 +341,9 @@ export default class WorldComponent extends Component {
 	}
 
 	setView() {
+		if (!this.renderer) {
+			return;
+		}
 		if (!this.panorama) {
 			return;
 		}
@@ -357,9 +364,13 @@ export default class WorldComponent extends Component {
 			if (view.type.name === ViewType.Room3d.name) {
 				this.renderer.setClearColor(0x000000, 1);
 				this.objects.remove(this.panorama.mesh);
+				this.ambient.visible = false;
+				this.direct.visible = false;
 			} else {
 				this.renderer.setClearColor(0x000000, 1);
 				this.objects.add(this.panorama.mesh);
+				this.ambient.visible = true;
+				this.direct.visible = true;
 			}
 			// this.loading = LOADING_BANNER;
 			// this.waiting = null;
@@ -373,7 +384,11 @@ export default class WorldComponent extends Component {
 					this.onViewAssetDidChange();
 				};
 				// this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
-				this.pushChanges();
+				const context = getContext(this);
+				console.log('WorldCompoent.setView.context', context);
+				if (context) {
+					this.pushChanges();
+				}
 			}, (view) => {
 				this.setViewOrientation(view);
 				PrefetchService.prefetch(view.prefetchAssets);

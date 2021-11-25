@@ -55,20 +55,9 @@ export default class AgoraService extends Emittable {
 		});
 	}
 
-	/*
-	getInitialStatus(role, link, name) {
-		if (!link) {
-			return AgoraStatus.Link;
-		}
-		if (!name) {
-			return AgoraStatus.Name;
-		}
-		if (role !== RoleType.Viewer && role !== RoleType.SmartDevice) {
-			return AgoraStatus.Device;
-		}
-		return AgoraStatus.ShouldConnect;
+	get isAudienceRole() {
+		return StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SelfService;
 	}
-	*/
 
 	addStreamDevice(src) {
 		this.removeStreamDevice();
@@ -242,7 +231,7 @@ export default class AgoraService extends Emittable {
 				this.client = null;
 			});
 		}
-		if (StateService.state.role === RoleType.Viewer) {
+		if (this.isAudienceRole) {
 			client.setClientRole('audience', function(error) {
 				if (!error) {
 					clientInit();
@@ -331,7 +320,7 @@ export default class AgoraService extends Emittable {
 					// console.log('AgoraService.rtmToken$', token);
 					this.joinMessageChannel(token.token, uid).then((success) => {
 						// console.log('joinMessageChannel.success', success);
-						if (StateService.state.role !== RoleType.Viewer) {
+						if (!this.isAudienceRole) {
 							this.autoDetectDevice().then(devices => {
 								this.createMediaStream(uid, devices.video, devices.audio);
 							});
@@ -342,7 +331,7 @@ export default class AgoraService extends Emittable {
 					});
 				});
 			} else {
-				if (StateService.state.role !== RoleType.Viewer) {
+				if (!this.isAudienceRole) {
 					this.autoDetectDevice().then(devices => {
 						this.createMediaStream(uid, devices.video, devices.audio);
 					});
@@ -373,6 +362,11 @@ export default class AgoraService extends Emittable {
 				this.emit('channel', channel);
 				// console.log('AgoraService.joinMessageChannel.success');
 				resolve(uid);
+				channel.getMembers().then(members => {
+					members = members.filter(x => x !== uid.toString());
+					const message = { type: MessageType.ChannelMembers, members };
+					this.broadcastMessage(message);
+				});
 			}).catch(reject);
 		});
 	}
@@ -872,6 +866,7 @@ export default class AgoraService extends Emittable {
 					// !!! RequestPeerInfoResult Publisher
 					if (message.clientInfo.role === RoleType.Publisher) {
 						const state = { hosted: true };
+						// !!! verify self-service support modality
 						if (message.clientInfo.controllingId) {
 							state.controlling = message.clientInfo.controllingId;
 							this.sendControlRemoteRequestInfo(message.clientInfo.controllingId);
@@ -1270,7 +1265,11 @@ export default class AgoraService extends Emittable {
 			if (remote.clientInfo) {
 				// !!! remove screenRemote?
 				if (remote.clientInfo.role === RoleType.Publisher) {
-					StateService.patchState({ hosted: false, controlling: false, spying: false, silencing: false });
+					if (StateService.state.role === RoleType.SelfService) {
+						StateService.patchState({ hosted: true, controlling: false, spying: false, silencing: false });
+					} else {
+						StateService.patchState({ hosted: false, controlling: false, spying: false, silencing: false });
+					}
 				} else {
 					if (StateService.state.controlling === remoteId) {
 						StateService.patchState({ controlling: false });

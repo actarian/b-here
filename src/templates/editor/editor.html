@@ -15,7 +15,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
-			<div class="btn--settings" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
+			<div class="btn--settings" [class]="{ active: settings.active }" (click)="onToggleSettings($event)" *if="settings.menu.length > 0">
 				<svg class="settings" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#settings-full"></use></svg>
 			</div>
 			<div class="headline" *if="view">
@@ -60,7 +60,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 					</div>
 					-->
 				</div>
-				<div class="banner progress" model-progress [view]="view"></div>
+				<div class="progress-indicator" model-progress [view]="view">
+					<div class="inner"></div>
+				</div>
 				<div model-menu [views]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<div class="spinner"></div>
@@ -85,7 +87,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</button>
 			</div>
 		</div>
-		<div class="ui__settings" *if="settings">
+		<div class="ui__settings" *if="settings.active">
 			<!-- settings navs -->
 			<div class="group--nav">
 				<ul class="nav--menu">

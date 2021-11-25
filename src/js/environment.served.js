@@ -11,6 +11,8 @@ export const environmentServed = {
 		editor: false,
 		editorAssetScreen: false,
 		menu: true,
+		menuEmbed: false,
+		navmaps: false,
 		chat: false,
 		ar: true,
 		like: true,
@@ -20,6 +22,7 @@ export const environmentServed = {
 		viewer: true,
 		smartDevice: true,
 		maxQuality: false,
+		selfServiceProposition: false,
 	},
 	logo: null,
 	background: {
@@ -55,6 +58,7 @@ export const environmentServed = {
 		modal: {
 			configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
 			controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
+			supportRequest: '/template/modules/b-here/support-request-modal.cshtml',
 			tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
 			view: {
 				'panorama': '/template/modules/b-here/panorama-modal.cshtml',
@@ -73,6 +77,9 @@ export const environmentServed = {
 			navmap: '/template/modules/b-here/navmap-modal.cshtml',
 			navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
 			remove: '/template/modules/b-here/remove-modal.cshtml',
+		},
+		email: {
+			supportRequest: '/template/modules/b-here/email/support-request.cshtml',
 		}
 	},
 };

@@ -1,0 +1,4212 @@
+[
+  {
+    "char": "😁",
+    "code": "U+1F601",
+    "description": "GRINNING FACE WITH SMILING EYES"
+  },
+  {
+    "char": "😂",
+    "code": "U+1F602",
+    "description": "FACE WITH TEARS OF JOY"
+  },
+  {
+    "char": "😃",
+    "code": "U+1F603",
+    "description": "SMILING FACE WITH OPEN MOUTH"
+  },
+  {
+    "char": "😄",
+    "code": "U+1F604",
+    "description": "SMILING FACE WITH OPEN MOUTH AND SMILING EYES"
+  },
+  {
+    "char": "😅",
+    "code": "U+1F605",
+    "description": "SMILING FACE WITH OPEN MOUTH AND COLD SWEAT"
+  },
+  {
+    "char": "😆",
+    "code": "U+1F606",
+    "description": "SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES"
+  },
+  {
+    "char": "😉",
+    "code": "U+1F609",
+    "description": "WINKING FACE"
+  },
+  {
+    "char": "😊",
+    "code": "U+1F60A",
+    "description": "SMILING FACE WITH SMILING EYES"
+  },
+  {
+    "char": "😋",
+    "code": "U+1F60B",
+    "description": "FACE SAVOURING DELICIOUS FOOD"
+  },
+  {
+    "char": "😌",
+    "code": "U+1F60C",
+    "description": "RELIEVED FACE"
+  },
+  {
+    "char": "😍",
+    "code": "U+1F60D",
+    "description": "SMILING FACE WITH HEART-SHAPED EYES"
+  },
+  {
+    "char": "😏",
+    "code": "U+1F60F",
+    "description": "SMIRKING FACE"
+  },
+  {
+    "char": "😒",
+    "code": "U+1F612",
+    "description": "UNAMUSED FACE"
+  },
+  {
+    "char": "😓",
+    "code": "U+1F613",
+    "description": "FACE WITH COLD SWEAT"
+  },
+  {
+    "char": "😔",
+    "code": "U+1F614",
+    "description": "PENSIVE FACE"
+  },
+  {
+    "char": "😖",
+    "code": "U+1F616",
+    "description": "CONFOUNDED FACE"
+  },
+  {
+    "char": "😘",
+    "code": "U+1F618",
+    "description": "FACE THROWING A KISS"
+  },
+  {
+    "char": "😚",
+    "code": "U+1F61A",
+    "description": "KISSING FACE WITH CLOSED EYES"
+  },
+  {
+    "char": "😜",
+    "code": "U+1F61C",
+    "description": "FACE WITH STUCK-OUT TONGUE AND WINKING EYE"
+  },
+  {
+    "char": "😝",
+    "code": "U+1F61D",
+    "description": "FACE WITH STUCK-OUT TONGUE AND TIGHTLY-CLOSED EYES"
+  },
+  {
+    "char": "😞",
+    "code": "U+1F61E",
+    "description": "DISAPPOINTED FACE"
+  },
+  {
+    "char": "😠",
+    "code": "U+1F620",
+    "description": "ANGRY FACE"
+  },
+  {
+    "char": "😡",
+    "code": "U+1F621",
+    "description": "POUTING FACE"
+  },
+  {
+    "char": "😢",
+    "code": "U+1F622",
+    "description": "CRYING FACE"
+  },
+  {
+    "char": "😣",
+    "code": "U+1F623",
+    "description": "PERSEVERING FACE"
+  },
+  {
+    "char": "😤",
+    "code": "U+1F624",
+    "description": "FACE WITH LOOK OF TRIUMPH"
+  },
+  {
+    "char": "😥",
+    "code": "U+1F625",
+    "description": "DISAPPOINTED BUT RELIEVED FACE"
+  },
+  {
+    "char": "😨",
+    "code": "U+1F628",
+    "description": "FEARFUL FACE"
+  },
+  {
+    "char": "😩",
+    "code": "U+1F629",
+    "description": "WEARY FACE"
+  },
+  {
+    "char": "😪",
+    "code": "U+1F62A",
+    "description": "SLEEPY FACE"
+  },
+  {
+    "char": "😫",
+    "code": "U+1F62B",
+    "description": "TIRED FACE"
+  },
+  {
+    "char": "😭",
+    "code": "U+1F62D",
+    "description": "LOUDLY CRYING FACE"
+  },
+  {
+    "char": "😰",
+    "code": "U+1F630",
+    "description": "FACE WITH OPEN MOUTH AND COLD SWEAT"
+  },
+  {
+    "char": "😱",
+    "code": "U+1F631",
+    "description": "FACE SCREAMING IN FEAR"
+  },
+  {
+    "char": "😲",
+    "code": "U+1F632",
+    "description": "ASTONISHED FACE"
+  },
+  {
+    "char": "😳",
+    "code": "U+1F633",
+    "description": "FLUSHED FACE"
+  },
+  {
+    "char": "😵",
+    "code": "U+1F635",
+    "description": "DIZZY FACE"
+  },
+  {
+    "char": "😷",
+    "code": "U+1F637",
+    "description": "FACE WITH MEDICAL MASK"
+  },
+  {
+    "char": "😸",
+    "code": "U+1F638",
+    "description": "GRINNING CAT FACE WITH SMILING EYES"
+  },
+  {
+    "char": "😹",
+    "code": "U+1F639",
+    "description": "CAT FACE WITH TEARS OF JOY"
+  },
+  {
+    "char": "😺",
+    "code": "U+1F63A",
+    "description": "SMILING CAT FACE WITH OPEN MOUTH"
+  },
+  {
+    "char": "😻",
+    "code": "U+1F63B",
+    "description": "SMILING CAT FACE WITH HEART-SHAPED EYES"
+  },
+  {
+    "char": "😼",
+    "code": "U+1F63C",
+    "description": "CAT FACE WITH WRY SMILE"
+  },
+  {
+    "char": "😽",
+    "code": "U+1F63D",
+    "description": "KISSING CAT FACE WITH CLOSED EYES"
+  },
+  {
+    "char": "😾",
+    "code": "U+1F63E",
+    "description": "POUTING CAT FACE"
+  },
+  {
+    "char": "😿",
+    "code": "U+1F63F",
+    "description": "CRYING CAT FACE"
+  },
+  {
+    "char": "🙀",
+    "code": "U+1F640",
+    "description": "WEARY CAT FACE"
+  },
+  {
+    "char": "🙅",
+    "code": "U+1F645",
+    "description": "FACE WITH NO GOOD GESTURE"
+  },
+  {
+    "char": "🙆",
+    "code": "U+1F646",
+    "description": "FACE WITH OK GESTURE"
+  },
+  {
+    "char": "🙇",
+    "code": "U+1F647",
+    "description": "PERSON BOWING DEEPLY"
+  },
+  {
+    "char": "🙈",
+    "code": "U+1F648",
+    "description": "SEE-NO-EVIL MONKEY"
+  },
+  {
+    "char": "🙉",
+    "code": "U+1F649",
+    "description": "HEAR-NO-EVIL MONKEY"
+  },
+  {
+    "char": "🙊",
+    "code": "U+1F64A",
+    "description": "SPEAK-NO-EVIL MONKEY"
+  },
+  {
+    "char": "🙋",
+    "code": "U+1F64B",
+    "description": "HAPPY PERSON RAISING ONE HAND"
+  },
+  {
+    "char": "🙌",
+    "code": "U+1F64C",
+    "description": "PERSON RAISING BOTH HANDS IN CELEBRATION"
+  },
+  {
+    "char": "🙍",
+    "code": "U+1F64D",
+    "description": "PERSON FROWNING"
+  },
+  {
+    "char": "🙎",
+    "code": "U+1F64E",
+    "description": "PERSON WITH POUTING FACE"
+  },
+  {
+    "char": "🙏",
+    "code": "U+1F64F",
+    "description": "PERSON WITH FOLDED HANDS"
+  },
+  {
+    "char": "✂",
+    "code": "U+2702",
+    "description": "BLACK SCISSORS"
+  },
+  {
+    "char": "✅",
+    "code": "U+2705",
+    "description": "WHITE HEAVY CHECK MARK"
+  },
+  {
+    "char": "✈",
+    "code": "U+2708",
+    "description": "AIRPLANE"
+  },
+  {
+    "char": "✉",
+    "code": "U+2709",
+    "description": "ENVELOPE"
+  },
+  {
+    "char": "✊",
+    "code": "U+270A",
+    "description": "RAISED FIST"
+  },
+  {
+    "char": "✋",
+    "code": "U+270B",
+    "description": "RAISED HAND"
+  },
+  {
+    "char": "✌",
+    "code": "U+270C",
+    "description": "VICTORY HAND"
+  },
+  {
+    "char": "✏",
+    "code": "U+270F",
+    "description": "PENCIL"
+  },
+  {
+    "char": "✒",
+    "code": "U+2712",
+    "description": "BLACK NIB"
+  },
+  {
+    "char": "✔",
+    "code": "U+2714",
+    "description": "HEAVY CHECK MARK"
+  },
+  {
+    "char": "✖",
+    "code": "U+2716",
+    "description": "HEAVY MULTIPLICATION X"
+  },
+  {
+    "char": "✨",
+    "code": "U+2728",
+    "description": "SPARKLES"
+  },
+  {
+    "char": "✳",
+    "code": "U+2733",
+    "description": "EIGHT SPOKED ASTERISK"
+  },
+  {
+    "char": "✴",
+    "code": "U+2734",
+    "description": "EIGHT POINTED BLACK STAR"
+  },
+  {
+    "char": "❄",
+    "code": "U+2744",
+    "description": "SNOWFLAKE"
+  },
+  {
+    "char": "❇",
+    "code": "U+2747",
+    "description": "SPARKLE"
+  },
+  {
+    "char": "❌",
+    "code": "U+274C",
+    "description": "CROSS MARK"
+  },
+  {
+    "char": "❎",
+    "code": "U+274E",
+    "description": "NEGATIVE SQUARED CROSS MARK"
+  },
+  {
+    "char": "❓",
+    "code": "U+2753",
+    "description": "BLACK QUESTION MARK ORNAMENT"
+  },
+  {
+    "char": "❔",
+    "code": "U+2754",
+    "description": "WHITE QUESTION MARK ORNAMENT"
+  },
+  {
+    "char": "❕",
+    "code": "U+2755",
+    "description": "WHITE EXCLAMATION MARK ORNAMENT"
+  },
+  {
+    "char": "❗",
+    "code": "U+2757",
+    "description": "HEAVY EXCLAMATION MARK SYMBOL"
+  },
+  {
+    "char": "❤",
+    "code": "U+2764",
+    "description": "HEAVY BLACK HEART"
+  },
+  {
+    "char": "➕",
+    "code": "U+2795",
+    "description": "HEAVY PLUS SIGN"
+  },
+  {
+    "char": "➖",
+    "code": "U+2796",
+    "description": "HEAVY MINUS SIGN"
+  },
+  {
+    "char": "➗",
+    "code": "U+2797",
+    "description": "HEAVY DIVISION SIGN"
+  },
+  {
+    "char": "➡",
+    "code": "U+27A1",
+    "description": "BLACK RIGHTWARDS ARROW"
+  },
+  {
+    "char": "➰",
+    "code": "U+27B0",
+    "description": "CURLY LOOP"
+  },
+  {
+    "char": "🚀",
+    "code": "U+1F680",
+    "description": "ROCKET"
+  },
+  {
+    "char": "🚃",
+    "code": "U+1F683",
+    "description": "RAILWAY CAR"
+  },
+  {
+    "char": "🚄",
+    "code": "U+1F684",
+    "description": "HIGH-SPEED TRAIN"
+  },
+  {
+    "char": "🚅",
+    "code": "U+1F685",
+    "description": "HIGH-SPEED TRAIN WITH BULLET NOSE"
+  },
+  {
+    "char": "🚇",
+    "code": "U+1F687",
+    "description": "METRO"
+  },
+  {
+    "char": "🚉",
+    "code": "U+1F689",
+    "description": "STATION"
+  },
+  {
+    "char": "🚌",
+    "code": "U+1F68C",
+    "description": "BUS"
+  },
+  {
+    "char": "🚏",
+    "code": "U+1F68F",
+    "description": "BUS STOP"
+  },
+  {
+    "char": "🚑",
+    "code": "U+1F691",
+    "description": "AMBULANCE"
+  },
+  {
+    "char": "🚒",
+    "code": "U+1F692",
+    "description": "FIRE ENGINE"
+  },
+  {
+    "char": "🚓",
+    "code": "U+1F693",
+    "description": "POLICE CAR"
+  },
+  {
+    "char": "🚕",
+    "code": "U+1F695",
+    "description": "TAXI"
+  },
+  {
+    "char": "🚗",
+    "code": "U+1F697",
+    "description": "AUTOMOBILE"
+  },
+  {
+    "char": "🚙",
+    "code": "U+1F699",
+    "description": "RECREATIONAL VEHICLE"
+  },
+  {
+    "char": "🚚",
+    "code": "U+1F69A",
+    "description": "DELIVERY TRUCK"
+  },
+  {
+    "char": "🚢",
+    "code": "U+1F6A2",
+    "description": "SHIP"
+  },
+  {
+    "char": "🚤",
+    "code": "U+1F6A4",
+    "description": "SPEEDBOAT"
+  },
+  {
+    "char": "🚥",
+    "code": "U+1F6A5",
+    "description": "HORIZONTAL TRAFFIC LIGHT"
+  },
+  {
+    "char": "🚧",
+    "code": "U+1F6A7",
+    "description": "CONSTRUCTION SIGN"
+  },
+  {
+    "char": "🚨",
+    "code": "U+1F6A8",
+    "description": "POLICE CARS REVOLVING LIGHT"
+  },
+  {
+    "char": "🚩",
+    "code": "U+1F6A9",
+    "description": "TRIANGULAR FLAG ON POST"
+  },
+  {
+    "char": "🚪",
+    "code": "U+1F6AA",
+    "description": "DOOR"
+  },
+  {
+    "char": "🚫",
+    "code": "U+1F6AB",
+    "description": "NO ENTRY SIGN"
+  },
+  {
+    "char": "🚬",
+    "code": "U+1F6AC",
+    "description": "SMOKING SYMBOL"
+  },
+  {
+    "char": "🚭",
+    "code": "U+1F6AD",
+    "description": "NO SMOKING SYMBOL"
+  },
+  {
+    "char": "🚲",
+    "code": "U+1F6B2",
+    "description": "BICYCLE"
+  },
+  {
+    "char": "🚶",
+    "code": "U+1F6B6",
+    "description": "PEDESTRIAN"
+  },
+  {
+    "char": "🚹",
+    "code": "U+1F6B9",
+    "description": "MENS SYMBOL"
+  },
+  {
+    "char": "🚺",
+    "code": "U+1F6BA",
+    "description": "WOMENS SYMBOL"
+  },
+  {
+    "char": "🚻",
+    "code": "U+1F6BB",
+    "description": "RESTROOM"
+  },
+  {
+    "char": "🚼",
+    "code": "U+1F6BC",
+    "description": "BABY SYMBOL"
+  },
+  {
+    "char": "🚽",
+    "code": "U+1F6BD",
+    "description": "TOILET"
+  },
+  {
+    "char": "🚾",
+    "code": "U+1F6BE",
+    "description": "WATER CLOSET"
+  },
+  {
+    "char": "🛀",
+    "code": "U+1F6C0",
+    "description": "BATH"
+  },
+  {
+    "char": "Ⓜ",
+    "code": "U+24C2",
+    "description": "CIRCLED LATIN CAPITAL LETTER M"
+  },
+  {
+    "char": "🅰",
+    "code": "U+1F170",
+    "description": "NEGATIVE SQUARED LATIN CAPITAL LETTER A"
+  },
+  {
+    "char": "🅱",
+    "code": "U+1F171",
+    "description": "NEGATIVE SQUARED LATIN CAPITAL LETTER B"
+  },
+  {
+    "char": "🅾",
+    "code": "U+1F17E",
+    "description": "NEGATIVE SQUARED LATIN CAPITAL LETTER O"
+  },
+  {
+    "char": "🅿",
+    "code": "U+1F17F",
+    "description": "NEGATIVE SQUARED LATIN CAPITAL LETTER P"
+  },
+  {
+    "char": "🆎",
+    "code": "U+1F18E",
+    "description": "NEGATIVE SQUARED AB"
+  },
+  {
+    "char": "🆑",
+    "code": "U+1F191",
+    "description": "SQUARED CL"
+  },
+  {
+    "char": "🆒",
+    "code": "U+1F192",
+    "description": "SQUARED COOL"
+  },
+  {
+    "char": "🆓",
+    "code": "U+1F193",
+    "description": "SQUARED FREE"
+  },
+  {
+    "char": "🆔",
+    "code": "U+1F194",
+    "description": "SQUARED ID"
+  },
+  {
+    "char": "🆕",
+    "code": "U+1F195",
+    "description": "SQUARED NEW"
+  },
+  {
+    "char": "🆖",
+    "code": "U+1F196",
+    "description": "SQUARED NG"
+  },
+  {
+    "char": "🆗",
+    "code": "U+1F197",
+    "description": "SQUARED OK"
+  },
+  {
+    "char": "🆘",
+    "code": "U+1F198",
+    "description": "SQUARED SOS"
+  },
+  {
+    "char": "🆙",
+    "code": "U+1F199",
+    "description": "SQUARED UP WITH EXCLAMATION MARK"
+  },
+  {
+    "char": "🆚",
+    "code": "U+1F19A",
+    "description": "SQUARED VS"
+  },
+  {
+    "char": "🇩🇪",
+    "code": "U+1F1E9 U+1F1EA",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER D + REGIONAL INDICATOR SYMBOL LETTER E"
+  },
+  {
+    "char": "🇬🇧",
+    "code": "U+1F1EC U+1F1E7",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER G + REGIONAL INDICATOR SYMBOL LETTER B"
+  },
+  {
+    "char": "🇨🇳",
+    "code": "U+1F1E8 U+1F1F3",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER C + REGIONAL INDICATOR SYMBOL LETTER N"
+  },
+  {
+    "char": "🇯🇵",
+    "code": "U+1F1EF U+1F1F5",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER J + REGIONAL INDICATOR SYMBOL LETTER P"
+  },
+  {
+    "char": "🇫🇷",
+    "code": "U+1F1EB U+1F1F7",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER F + REGIONAL INDICATOR SYMBOL LETTER R"
+  },
+  {
+    "char": "🇰🇷",
+    "code": "U+1F1F0 U+1F1F7",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER K + REGIONAL INDICATOR SYMBOL LETTER R"
+  },
+  {
+    "char": "🇪🇸",
+    "code": "U+1F1EA U+1F1F8",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER E + REGIONAL INDICATOR SYMBOL LETTER S"
+  },
+  {
+    "char": "🇮🇹",
+    "code": "U+1F1EE U+1F1F9",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER I + REGIONAL INDICATOR SYMBOL LETTER T"
+  },
+  {
+    "char": "🇷🇺",
+    "code": "U+1F1F7 U+1F1FA",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER R + REGIONAL INDICATOR SYMBOL LETTER U"
+  },
+  {
+    "char": "🇺🇸",
+    "code": "U+1F1FA U+1F1F8",
+    "description": "REGIONAL INDICATOR SYMBOL LETTER U + REGIONAL INDICATOR SYMBOL LETTER S"
+  },
+  {
+    "char": "🈁",
+    "code": "U+1F201",
+    "description": "SQUARED KATAKANA KOKO"
+  },
+  {
+    "char": "🈂",
+    "code": "U+1F202",
+    "description": "SQUARED KATAKANA SA"
+  },
+  {
+    "char": "🈚",
+    "code": "U+1F21A",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-7121"
+  },
+  {
+    "char": "🈯",
+    "code": "U+1F22F",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-6307"
+  },
+  {
+    "char": "🈲",
+    "code": "U+1F232",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-7981"
+  },
+  {
+    "char": "🈳",
+    "code": "U+1F233",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-7A7A"
+  },
+  {
+    "char": "🈴",
+    "code": "U+1F234",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-5408"
+  },
+  {
+    "char": "🈵",
+    "code": "U+1F235",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-6E80"
+  },
+  {
+    "char": "🈶",
+    "code": "U+1F236",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-6709"
+  },
+  {
+    "char": "🈷",
+    "code": "U+1F237",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-6708"
+  },
+  {
+    "char": "🈸",
+    "code": "U+1F238",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-7533"
+  },
+  {
+    "char": "🈹",
+    "code": "U+1F239",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-5272"
+  },
+  {
+    "char": "🈺",
+    "code": "U+1F23A",
+    "description": "SQUARED CJK UNIFIED IDEOGRAPH-55B6"
+  },
+  {
+    "char": "🉐",
+    "code": "U+1F250",
+    "description": "CIRCLED IDEOGRAPH ADVANTAGE"
+  },
+  {
+    "char": "🉑",
+    "code": "U+1F251",
+    "description": "CIRCLED IDEOGRAPH ACCEPT"
+  },
+  {
+    "char": "©",
+    "code": "U+00A9",
+    "description": "COPYRIGHT SIGN"
+  },
+  {
+    "char": "®",
+    "code": "U+00AE",
+    "description": "REGISTERED SIGN"
+  },
+  {
+    "char": "‼",
+    "code": "U+203C",
+    "description": "DOUBLE EXCLAMATION MARK"
+  },
+  {
+    "char": "⁉",
+    "code": "U+2049",
+    "description": "EXCLAMATION QUESTION MARK"
+  },
+  {
+    "char": "#⃣",
+    "code": "U+0023 U+20E3",
+    "description": "NUMBER SIGN + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "8⃣",
+    "code": "U+0038 U+20E3",
+    "description": "DIGIT EIGHT + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "9⃣",
+    "code": "U+0039 U+20E3",
+    "description": "DIGIT NINE + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "7⃣",
+    "code": "U+0037 U+20E3",
+    "description": "DIGIT SEVEN + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "0⃣",
+    "code": "U+0030 U+20E3",
+    "description": "DIGIT ZERO + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "6⃣",
+    "code": "U+0036 U+20E3",
+    "description": "DIGIT SIX + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "5⃣",
+    "code": "U+0035 U+20E3",
+    "description": "DIGIT FIVE + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "4⃣",
+    "code": "U+0034 U+20E3",
+    "description": "DIGIT FOUR + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "3⃣",
+    "code": "U+0033 U+20E3",
+    "description": "DIGIT THREE + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "2⃣",
+    "code": "U+0032 U+20E3",
+    "description": "DIGIT TWO + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "1⃣",
+    "code": "U+0031 U+20E3",
+    "description": "DIGIT ONE + COMBINING ENCLOSING KEYCAP"
+  },
+  {
+    "char": "™",
+    "code": "U+2122",
+    "description": "TRADE MARK SIGN"
+  },
+  {
+    "char": "ℹ",
+    "code": "U+2139",
+    "description": "INFORMATION SOURCE"
+  },
+  {
+    "char": "↔",
+    "code": "U+2194",
+    "description": "LEFT RIGHT ARROW"
+  },
+  {
+    "char": "↕",
+    "code": "U+2195",
+    "description": "UP DOWN ARROW"
+  },
+  {
+    "char": "↖",
+    "code": "U+2196",
+    "description": "NORTH WEST ARROW"
+  },
+  {
+    "char": "↗",
+    "code": "U+2197",
+    "description": "NORTH EAST ARROW"
+  },
+  {
+    "char": "↘",
+    "code": "U+2198",
+    "description": "SOUTH EAST ARROW"
+  },
+  {
+    "char": "↙",
+    "code": "U+2199",
+    "description": "SOUTH WEST ARROW"
+  },
+  {
+    "char": "↩",
+    "code": "U+21A9",
+    "description": "LEFTWARDS ARROW WITH HOOK"
+  },
+  {
+    "char": "↪",
+    "code": "U+21AA",
+    "description": "RIGHTWARDS ARROW WITH HOOK"
+  },
+  {
+    "char": "⌚",
+    "code": "U+231A",
+    "description": "WATCH"
+  },
+  {
+    "char": "⌛",
+    "code": "U+231B",
+    "description": "HOURGLASS"
+  },
+  {
+    "char": "⏩",
+    "code": "U+23E9",
+    "description": "BLACK RIGHT-POINTING DOUBLE TRIANGLE"
+  },
+  {
+    "char": "⏪",
+    "code": "U+23EA",
+    "description": "BLACK LEFT-POINTING DOUBLE TRIANGLE"
+  },
+  {
+    "char": "⏫",
+    "code": "U+23EB",
+    "description": "BLACK UP-POINTING DOUBLE TRIANGLE"
+  },
+  {
+    "char": "⏬",
+    "code": "U+23EC",
+    "description": "BLACK DOWN-POINTING DOUBLE TRIANGLE"
+  },
+  {
+    "char": "⏰",
+    "code": "U+23F0",
+    "description": "ALARM CLOCK"
+  },
+  {
+    "char": "⏳",
+    "code": "U+23F3",
+    "description": "HOURGLASS WITH FLOWING SAND"
+  },
+  {
+    "char": "▪",
+    "code": "U+25AA",
+    "description": "BLACK SMALL SQUARE"
+  },
+  {
+    "char": "▫",
+    "code": "U+25AB",
+    "description": "WHITE SMALL SQUARE"
+  },
+  {
+    "char": "▶",
+    "code": "U+25B6",
+    "description": "BLACK RIGHT-POINTING TRIANGLE"
+  },
+  {
+    "char": "◀",
+    "code": "U+25C0",
+    "description": "BLACK LEFT-POINTING TRIANGLE"
+  },
+  {
+    "char": "◻",
+    "code": "U+25FB",
+    "description": "WHITE MEDIUM SQUARE"
+  },
+  {
+    "char": "◼",
+    "code": "U+25FC",
+    "description": "BLACK MEDIUM SQUARE"
+  },
+  {
+    "char": "◽",
+    "code": "U+25FD",
+    "description": "WHITE MEDIUM SMALL SQUARE"
+  },
+  {
+    "char": "◾",
+    "code": "U+25FE",
+    "description": "BLACK MEDIUM SMALL SQUARE"
+  },
+  {
+    "char": "☀",
+    "code": "U+2600",
+    "description": "BLACK SUN WITH RAYS"
+  },
+  {
+    "char": "☁",
+    "code": "U+2601",
+    "description": "CLOUD"
+  },
+  {
+    "char": "☎",
+    "code": "U+260E",
+    "description": "BLACK TELEPHONE"
+  },
+  {
+    "char": "☑",
+    "code": "U+2611",
+    "description": "BALLOT BOX WITH CHECK"
+  },
+  {
+    "char": "☔",
+    "code": "U+2614",
+    "description": "UMBRELLA WITH RAIN DROPS"
+  },
+  {
+    "char": "☕",
+    "code": "U+2615",
+    "description": "HOT BEVERAGE"
+  },
+  {
+    "char": "☝",
+    "code": "U+261D",
+    "description": "WHITE UP POINTING INDEX"
+  },
+  {
+    "char": "☺",
+    "code": "U+263A",
+    "description": "WHITE SMILING FACE"
+  },
+  {
+    "char": "♈",
+    "code": "U+2648",
+    "description": "ARIES"
+  },
+  {
+    "char": "♉",
+    "code": "U+2649",
+    "description": "TAURUS"
+  },
+  {
+    "char": "♊",
+    "code": "U+264A",
+    "description": "GEMINI"
+  },
+  {
+    "char": "♋",
+    "code": "U+264B",
+    "description": "CANCER"
+  },
+  {
+    "char": "♌",
+    "code": "U+264C",
+    "description": "LEO"
+  },
+  {
+    "char": "♍",
+    "code": "U+264D",
+    "description": "VIRGO"
+  },
+  {
+    "char": "♎",
+    "code": "U+264E",
+    "description": "LIBRA"
+  },
+  {
+    "char": "♏",
+    "code": "U+264F",
+    "description": "SCORPIUS"
+  },
+  {
+    "char": "♐",
+    "code": "U+2650",
+    "description": "SAGITTARIUS"
+  },
+  {
+    "char": "♑",
+    "code": "U+2651",
+    "description": "CAPRICORN"
+  },
+  {
+    "char": "♒",
+    "code": "U+2652",
+    "description": "AQUARIUS"
+  },
+  {
+    "char": "♓",
+    "code": "U+2653",
+    "description": "PISCES"
+  },
+  {
+    "char": "♠",
+    "code": "U+2660",
+    "description": "BLACK SPADE SUIT"
+  },
+  {
+    "char": "♣",
+    "code": "U+2663",
+    "description": "BLACK CLUB SUIT"
+  },
+  {
+    "char": "♥",
+    "code": "U+2665",
+    "description": "BLACK HEART SUIT"
+  },
+  {
+    "char": "♦",
+    "code": "U+2666",
+    "description": "BLACK DIAMOND SUIT"
+  },
+  {
+    "char": "♨",
+    "code": "U+2668",
+    "description": "HOT SPRINGS"
+  },
+  {
+    "char": "♻",
+    "code": "U+267B",
+    "description": "BLACK UNIVERSAL RECYCLING SYMBOL"
+  },
+  {
+    "char": "♿",
+    "code": "U+267F",
+    "description": "WHEELCHAIR SYMBOL"
+  },
+  {
+    "char": "⚓",
+    "code": "U+2693",
+    "description": "ANCHOR"
+  },
+  {
+    "char": "⚠",
+    "code": "U+26A0",
+    "description": "WARNING SIGN"
+  },
+  {
+    "char": "⚡",
+    "code": "U+26A1",
+    "description": "HIGH VOLTAGE SIGN"
+  },
+  {
+    "char": "⚪",
+    "code": "U+26AA",
+    "description": "MEDIUM WHITE CIRCLE"
+  },
+  {
+    "char": "⚫",
+    "code": "U+26AB",
+    "description": "MEDIUM BLACK CIRCLE"
+  },
+  {
+    "char": "⚽",
+    "code": "U+26BD",
+    "description": "SOCCER BALL"
+  },
+  {
+    "char": "⚾",
+    "code": "U+26BE",
+    "description": "BASEBALL"
+  },
+  {
+    "char": "⛄",
+    "code": "U+26C4",
+    "description": "SNOWMAN WITHOUT SNOW"
+  },
+  {
+    "char": "⛅",
+    "code": "U+26C5",
+    "description": "SUN BEHIND CLOUD"
+  },
+  {
+    "char": "⛎",
+    "code": "U+26CE",
+    "description": "OPHIUCHUS"
+  },
+  {
+    "char": "⛔",
+    "code": "U+26D4",
+    "description": "NO ENTRY"
+  },
+  {
+    "char": "⛪",
+    "code": "U+26EA",
+    "description": "CHURCH"
+  },
+  {
+    "char": "⛲",
+    "code": "U+26F2",
+    "description": "FOUNTAIN"
+  },
+  {
+    "char": "⛳",
+    "code": "U+26F3",
+    "description": "FLAG IN HOLE"
+  },
+  {
+    "char": "⛵",
+    "code": "U+26F5",
+    "description": "SAILBOAT"
+  },
+  {
+    "char": "⛺",
+    "code": "U+26FA",
+    "description": "TENT"
+  },
+  {
+    "char": "⛽",
+    "code": "U+26FD",
+    "description": "FUEL PUMP"
+  },
+  {
+    "char": "⤴",
+    "code": "U+2934",
+    "description": "ARROW POINTING RIGHTWARDS THEN CURVING UPWARDS"
+  },
+  {
+    "char": "⤵",
+    "code": "U+2935",
+    "description": "ARROW POINTING RIGHTWARDS THEN CURVING DOWNWARDS"
+  },
+  {
+    "char": "⬅",
+    "code": "U+2B05",
+    "description": "LEFTWARDS BLACK ARROW"
+  },
+  {
+    "char": "⬆",
+    "code": "U+2B06",
+    "description": "UPWARDS BLACK ARROW"
+  },
+  {
+    "char": "⬇",
+    "code": "U+2B07",
+    "description": "DOWNWARDS BLACK ARROW"
+  },
+  {
+    "char": "⬛",
+    "code": "U+2B1B",
+    "description": "BLACK LARGE SQUARE"
+  },
+  {
+    "char": "⬜",
+    "code": "U+2B1C",
+    "description": "WHITE LARGE SQUARE"
+  },
+  {
+    "char": "⭐",
+    "code": "U+2B50",
+    "description": "WHITE MEDIUM STAR"
+  },
+  {
+    "char": "⭕",
+    "code": "U+2B55",
+    "description": "HEAVY LARGE CIRCLE"
+  },
+  {
+    "char": "〰",
+    "code": "U+3030",
+    "description": "WAVY DASH"
+  },
+  {
+    "char": "〽",
+    "code": "U+303D",
+    "description": "PART ALTERNATION MARK"
+  },
+  {
+    "char": "㊗",
+    "code": "U+3297",
+    "description": "CIRCLED IDEOGRAPH CONGRATULATION"
+  },
+  {
+    "char": "㊙",
+    "code": "U+3299",
+    "description": "CIRCLED IDEOGRAPH SECRET"
+  },
+  {
+    "char": "🀄",
+    "code": "U+1F004",
+    "description": "MAHJONG TILE RED DRAGON"
+  },
+  {
+    "char": "🃏",
+    "code": "U+1F0CF",
+    "description": "PLAYING CARD BLACK JOKER"
+  },
+  {
+    "char": "🌀",
+    "code": "U+1F300",
+    "description": "CYCLONE"
+  },
+  {
+    "char": "🌁",
+    "code": "U+1F301",
+    "description": "FOGGY"
+  },
+  {
+    "char": "🌂",
+    "code": "U+1F302",
+    "description": "CLOSED UMBRELLA"
+  },
+  {
+    "char": "🌃",
+    "code": "U+1F303",
+    "description": "NIGHT WITH STARS"
+  },
+  {
+    "char": "🌄",
+    "code": "U+1F304",
+    "description": "SUNRISE OVER MOUNTAINS"
+  },
+  {
+    "char": "🌅",
+    "code": "U+1F305",
+    "description": "SUNRISE"
+  },
+  {
+    "char": "🌆",
+    "code": "U+1F306",
+    "description": "CITYSCAPE AT DUSK"
+  },
+  {
+    "char": "🌇",
+    "code": "U+1F307",
+    "description": "SUNSET OVER BUILDINGS"
+  },
+  {
+    "char": "🌈",
+    "code": "U+1F308",
+    "description": "RAINBOW"
+  },
+  {
+    "char": "🌉",
+    "code": "U+1F309",
+    "description": "BRIDGE AT NIGHT"
+  },
+  {
+    "char": "🌊",
+    "code": "U+1F30A",
+    "description": "WATER WAVE"
+  },
+  {
+    "char": "🌋",
+    "code": "U+1F30B",
+    "description": "VOLCANO"
+  },
+  {
+    "char": "🌌",
+    "code": "U+1F30C",
+    "description": "MILKY WAY"
+  },
+  {
+    "char": "🌏",
+    "code": "U+1F30F",
+    "description": "EARTH GLOBE ASIA-AUSTRALIA"
+  },
+  {
+    "char": "🌑",
+    "code": "U+1F311",
+    "description": "NEW MOON SYMBOL"
+  },
+  {
+    "char": "🌓",
+    "code": "U+1F313",
+    "description": "FIRST QUARTER MOON SYMBOL"
+  },
+  {
+    "char": "🌔",
+    "code": "U+1F314",
+    "description": "WAXING GIBBOUS MOON SYMBOL"
+  },
+  {
+    "char": "🌕",
+    "code": "U+1F315",
+    "description": "FULL MOON SYMBOL"
+  },
+  {
+    "char": "🌙",
+    "code": "U+1F319",
+    "description": "CRESCENT MOON"
+  },
+  {
+    "char": "🌛",
+    "code": "U+1F31B",
+    "description": "FIRST QUARTER MOON WITH FACE"
+  },
+  {
+    "char": "🌟",
+    "code": "U+1F31F",
+    "description": "GLOWING STAR"
+  },
+  {
+    "char": "🌠",
+    "code": "U+1F320",
+    "description": "SHOOTING STAR"
+  },
+  {
+    "char": "🌰",
+    "code": "U+1F330",
+    "description": "CHESTNUT"
+  },
+  {
+    "char": "🌱",
+    "code": "U+1F331",
+    "description": "SEEDLING"
+  },
+  {
+    "char": "🌴",
+    "code": "U+1F334",
+    "description": "PALM TREE"
+  },
+  {
+    "char": "🌵",
+    "code": "U+1F335",
+    "description": "CACTUS"
+  },
+  {
+    "char": "🌷",
+    "code": "U+1F337",
+    "description": "TULIP"
+  },
+  {
+    "char": "🌸",
+    "code": "U+1F338",
+    "description": "CHERRY BLOSSOM"
+  },
+  {
+    "char": "🌹",
+    "code": "U+1F339",
+    "description": "ROSE"
+  },
+  {
+    "char": "🌺",
+    "code": "U+1F33A",
+    "description": "HIBISCUS"
+  },
+  {
+    "char": "🌻",
+    "code": "U+1F33B",
+    "description": "SUNFLOWER"
+  },
+  {
+    "char": "🌼",
+    "code": "U+1F33C",
+    "description": "BLOSSOM"
+  },
+  {
+    "char": "🌽",
+    "code": "U+1F33D",
+    "description": "EAR OF MAIZE"
+  },
+  {
+    "char": "🌾",
+    "code": "U+1F33E",
+    "description": "EAR OF RICE"
+  },
+  {
+    "char": "🌿",
+    "code": "U+1F33F",
+    "description": "HERB"
+  },
+  {
+    "char": "🍀",
+    "code": "U+1F340",
+    "description": "FOUR LEAF CLOVER"
+  },
+  {
+    "char": "🍁",
+    "code": "U+1F341",
+    "description": "MAPLE LEAF"
+  },
+  {
+    "char": "🍂",
+    "code": "U+1F342",
+    "description": "FALLEN LEAF"
+  },
+  {
+    "char": "🍃",
+    "code": "U+1F343",
+    "description": "LEAF FLUTTERING IN WIND"
+  },
+  {
+    "char": "🍄",
+    "code": "U+1F344",
+    "description": "MUSHROOM"
+  },
+  {
+    "char": "🍅",
+    "code": "U+1F345",
+    "description": "TOMATO"
+  },
+  {
+    "char": "🍆",
+    "code": "U+1F346",
+    "description": "AUBERGINE"
+  },
+  {
+    "char": "🍇",
+    "code": "U+1F347",
+    "description": "GRAPES"
+  },
+  {
+    "char": "🍈",
+    "code": "U+1F348",
+    "description": "MELON"
+  },
+  {
+    "char": "🍉",
+    "code": "U+1F349",
+    "description": "WATERMELON"
+  },
+  {
+    "char": "🍊",
+    "code": "U+1F34A",
+    "description": "TANGERINE"
+  },
+  {
+    "char": "🍌",
+    "code": "U+1F34C",
+    "description": "BANANA"
+  },
+  {
+    "char": "🍍",
+    "code": "U+1F34D",
+    "description": "PINEAPPLE"
+  },
+  {
+    "char": "🍎",
+    "code": "U+1F34E",
+    "description": "RED APPLE"
+  },
+  {
+    "char": "🍏",
+    "code": "U+1F34F",
+    "description": "GREEN APPLE"
+  },
+  {
+    "char": "🍑",
+    "code": "U+1F351",
+    "description": "PEACH"
+  },
+  {
+    "char": "🍒",
+    "code": "U+1F352",
+    "description": "CHERRIES"
+  },
+  {
+    "char": "🍓",
+    "code": "U+1F353",
+    "description": "STRAWBERRY"
+  },
+  {
+    "char": "🍔",
+    "code": "U+1F354",
+    "description": "HAMBURGER"
+  },
+  {
+    "char": "🍕",
+    "code": "U+1F355",
+    "description": "SLICE OF PIZZA"
+  },
+  {
+    "char": "🍖",
+    "code": "U+1F356",
+    "description": "MEAT ON BONE"
+  },
+  {
+    "char": "🍗",
+    "code": "U+1F357",
+    "description": "POULTRY LEG"
+  },
+  {
+    "char": "🍘",
+    "code": "U+1F358",
+    "description": "RICE CRACKER"
+  },
+  {
+    "char": "🍙",
+    "code": "U+1F359",
+    "description": "RICE BALL"
+  },
+  {
+    "char": "🍚",
+    "code": "U+1F35A",
+    "description": "COOKED RICE"
+  },
+  {
+    "char": "🍛",
+    "code": "U+1F35B",
+    "description": "CURRY AND RICE"
+  },
+  {
+    "char": "🍜",
+    "code": "U+1F35C",
+    "description": "STEAMING BOWL"
+  },
+  {
+    "char": "🍝",
+    "code": "U+1F35D",
+    "description": "SPAGHETTI"
+  },
+  {
+    "char": "🍞",
+    "code": "U+1F35E",
+    "description": "BREAD"
+  },
+  {
+    "char": "🍟",
+    "code": "U+1F35F",
+    "description": "FRENCH FRIES"
+  },
+  {
+    "char": "🍠",
+    "code": "U+1F360",
+    "description": "ROASTED SWEET POTATO"
+  },
+  {
+    "char": "🍡",
+    "code": "U+1F361",
+    "description": "DANGO"
+  },
+  {
+    "char": "🍢",
+    "code": "U+1F362",
+    "description": "ODEN"
+  },
+  {
+    "char": "🍣",
+    "code": "U+1F363",
+    "description": "SUSHI"
+  },
+  {
+    "char": "🍤",
+    "code": "U+1F364",
+    "description": "FRIED SHRIMP"
+  },
+  {
+    "char": "🍥",
+    "code": "U+1F365",
+    "description": "FISH CAKE WITH SWIRL DESIGN"
+  },
+  {
+    "char": "🍦",
+    "code": "U+1F366",
+    "description": "SOFT ICE CREAM"
+  },
+  {
+    "char": "🍧",
+    "code": "U+1F367",
+    "description": "SHAVED ICE"
+  },
+  {
+    "char": "🍨",
+    "code": "U+1F368",
+    "description": "ICE CREAM"
+  },
+  {
+    "char": "🍩",
+    "code": "U+1F369",
+    "description": "DOUGHNUT"
+  },
+  {
+    "char": "🍪",
+    "code": "U+1F36A",
+    "description": "COOKIE"
+  },
+  {
+    "char": "🍫",
+    "code": "U+1F36B",
+    "description": "CHOCOLATE BAR"
+  },
+  {
+    "char": "🍬",
+    "code": "U+1F36C",
+    "description": "CANDY"
+  },
+  {
+    "char": "🍭",
+    "code": "U+1F36D",
+    "description": "LOLLIPOP"
+  },
+  {
+    "char": "🍮",
+    "code": "U+1F36E",
+    "description": "CUSTARD"
+  },
+  {
+    "char": "🍯",
+    "code": "U+1F36F",
+    "description": "HONEY POT"
+  },
+  {
+    "char": "🍰",
+    "code": "U+1F370",
+    "description": "SHORTCAKE"
+  },
+  {
+    "char": "🍱",
+    "code": "U+1F371",
+    "description": "BENTO BOX"
+  },
+  {
+    "char": "🍲",
+    "code": "U+1F372",
+    "description": "POT OF FOOD"
+  },
+  {
+    "char": "🍳",
+    "code": "U+1F373",
+    "description": "COOKING"
+  },
+  {
+    "char": "🍴",
+    "code": "U+1F374",
+    "description": "FORK AND KNIFE"
+  },
+  {
+    "char": "🍵",
+    "code": "U+1F375",
+    "description": "TEACUP WITHOUT HANDLE"
+  },
+  {
+    "char": "🍶",
+    "code": "U+1F376",
+    "description": "SAKE BOTTLE AND CUP"
+  },
+  {
+    "char": "🍷",
+    "code": "U+1F377",
+    "description": "WINE GLASS"
+  },
+  {
+    "char": "🍸",
+    "code": "U+1F378",
+    "description": "COCKTAIL GLASS"
+  },
+  {
+    "char": "🍹",
+    "code": "U+1F379",
+    "description": "TROPICAL DRINK"
+  },
+  {
+    "char": "🍺",
+    "code": "U+1F37A",
+    "description": "BEER MUG"
+  },
+  {
+    "char": "🍻",
+    "code": "U+1F37B",
+    "description": "CLINKING BEER MUGS"
+  },
+  {
+    "char": "🎀",
+    "code": "U+1F380",
+    "description": "RIBBON"
+  },
+  {
+    "char": "🎁",
+    "code": "U+1F381",
+    "description": "WRAPPED PRESENT"
+  },
+  {
+    "char": "🎂",
+    "code": "U+1F382",
+    "description": "BIRTHDAY CAKE"
+  },
+  {
+    "char": "🎃",
+    "code": "U+1F383",
+    "description": "JACK-O-LANTERN"
+  },
+  {
+    "char": "🎄",
+    "code": "U+1F384",
+    "description": "CHRISTMAS TREE"
+  },
+  {
+    "char": "🎅",
+    "code": "U+1F385",
+    "description": "FATHER CHRISTMAS"
+  },
+  {
+    "char": "🎆",
+    "code": "U+1F386",
+    "description": "FIREWORKS"
+  },
+  {
+    "char": "🎇",
+    "code": "U+1F387",
+    "description": "FIREWORK SPARKLER"
+  },
+  {
+    "char": "🎈",
+    "code": "U+1F388",
+    "description": "BALLOON"
+  },
+  {
+    "char": "🎉",
+    "code": "U+1F389",
+    "description": "PARTY POPPER"
+  },
+  {
+    "char": "🎊",
+    "code": "U+1F38A",
+    "description": "CONFETTI BALL"
+  },
+  {
+    "char": "🎋",
+    "code": "U+1F38B",
+    "description": "TANABATA TREE"
+  },
+  {
+    "char": "🎌",
+    "code": "U+1F38C",
+    "description": "CROSSED FLAGS"
+  },
+  {
+    "char": "🎍",
+    "code": "U+1F38D",
+    "description": "PINE DECORATION"
+  },
+  {
+    "char": "🎎",
+    "code": "U+1F38E",
+    "description": "JAPANESE DOLLS"
+  },
+  {
+    "char": "🎏",
+    "code": "U+1F38F",
+    "description": "CARP STREAMER"
+  },
+  {
+    "char": "🎐",
+    "code": "U+1F390",
+    "description": "WIND CHIME"
+  },
+  {
+    "char": "🎑",
+    "code": "U+1F391",
+    "description": "MOON VIEWING CEREMONY"
+  },
+  {
+    "char": "🎒",
+    "code": "U+1F392",
+    "description": "SCHOOL SATCHEL"
+  },
+  {
+    "char": "🎓",
+    "code": "U+1F393",
+    "description": "GRADUATION CAP"
+  },
+  {
+    "char": "🎠",
+    "code": "U+1F3A0",
+    "description": "CAROUSEL HORSE"
+  },
+  {
+    "char": "🎡",
+    "code": "U+1F3A1",
+    "description": "FERRIS WHEEL"
+  },
+  {
+    "char": "🎢",
+    "code": "U+1F3A2",
+    "description": "ROLLER COASTER"
+  },
+  {
+    "char": "🎣",
+    "code": "U+1F3A3",
+    "description": "FISHING POLE AND FISH"
+  },
+  {
+    "char": "🎤",
+    "code": "U+1F3A4",
+    "description": "MICROPHONE"
+  },
+  {
+    "char": "🎥",
+    "code": "U+1F3A5",
+    "description": "MOVIE CAMERA"
+  },
+  {
+    "char": "🎦",
+    "code": "U+1F3A6",
+    "description": "CINEMA"
+  },
+  {
+    "char": "🎧",
+    "code": "U+1F3A7",
+    "description": "HEADPHONE"
+  },
+  {
+    "char": "🎨",
+    "code": "U+1F3A8",
+    "description": "ARTIST PALETTE"
+  },
+  {
+    "char": "🎩",
+    "code": "U+1F3A9",
+    "description": "TOP HAT"
+  },
+  {
+    "char": "🎪",
+    "code": "U+1F3AA",
+    "description": "CIRCUS TENT"
+  },
+  {
+    "char": "🎫",
+    "code": "U+1F3AB",
+    "description": "TICKET"
+  },
+  {
+    "char": "🎬",
+    "code": "U+1F3AC",
+    "description": "CLAPPER BOARD"
+  },
+  {
+    "char": "🎭",
+    "code": "U+1F3AD",
+    "description": "PERFORMING ARTS"
+  },
+  {
+    "char": "🎮",
+    "code": "U+1F3AE",
+    "description": "VIDEO GAME"
+  },
+  {
+    "char": "🎯",
+    "code": "U+1F3AF",
+    "description": "DIRECT HIT"
+  },
+  {
+    "char": "🎰",
+    "code": "U+1F3B0",
+    "description": "SLOT MACHINE"
+  },
+  {
+    "char": "🎱",
+    "code": "U+1F3B1",
+    "description": "BILLIARDS"
+  },
+  {
+    "char": "🎲",
+    "code": "U+1F3B2",
+    "description": "GAME DIE"
+  },
+  {
+    "char": "🎳",
+    "code": "U+1F3B3",
+    "description": "BOWLING"
+  },
+  {
+    "char": "🎴",
+    "code": "U+1F3B4",
+    "description": "FLOWER PLAYING CARDS"
+  },
+  {
+    "char": "🎵",
+    "code": "U+1F3B5",
+    "description": "MUSICAL NOTE"
+  },
+  {
+    "char": "🎶",
+    "code": "U+1F3B6",
+    "description": "MULTIPLE MUSICAL NOTES"
+  },
+  {
+    "char": "🎷",
+    "code": "U+1F3B7",
+    "description": "SAXOPHONE"
+  },
+  {
+    "char": "🎸",
+    "code": "U+1F3B8",
+    "description": "GUITAR"
+  },
+  {
+    "char": "🎹",
+    "code": "U+1F3B9",
+    "description": "MUSICAL KEYBOARD"
+  },
+  {
+    "char": "🎺",
+    "code": "U+1F3BA",
+    "description": "TRUMPET"
+  },
+  {
+    "char": "🎻",
+    "code": "U+1F3BB",
+    "description": "VIOLIN"
+  },
+  {
+    "char": "🎼",
+    "code": "U+1F3BC",
+    "description": "MUSICAL SCORE"
+  },
+  {
+    "char": "🎽",
+    "code": "U+1F3BD",
+    "description": "RUNNING SHIRT WITH SASH"
+  },
+  {
+    "char": "🎾",
+    "code": "U+1F3BE",
+    "description": "TENNIS RACQUET AND BALL"
+  },
+  {
+    "char": "🎿",
+    "code": "U+1F3BF",
+    "description": "SKI AND SKI BOOT"
+  },
+  {
+    "char": "🏀",
+    "code": "U+1F3C0",
+    "description": "BASKETBALL AND HOOP"
+  },
+  {
+    "char": "🏁",
+    "code": "U+1F3C1",
+    "description": "CHEQUERED FLAG"
+  },
+  {
+    "char": "🏂",
+    "code": "U+1F3C2",
+    "description": "SNOWBOARDER"
+  },
+  {
+    "char": "🏃",
+    "code": "U+1F3C3",
+    "description": "RUNNER"
+  },
+  {
+    "char": "🏄",
+    "code": "U+1F3C4",
+    "description": "SURFER"
+  },
+  {
+    "char": "🏆",
+    "code": "U+1F3C6",
+    "description": "TROPHY"
+  },
+  {
+    "char": "🏈",
+    "code": "U+1F3C8",
+    "description": "AMERICAN FOOTBALL"
+  },
+  {
+    "char": "🏊",
+    "code": "U+1F3CA",
+    "description": "SWIMMER"
+  },
+  {
+    "char": "🏠",
+    "code": "U+1F3E0",
+    "description": "HOUSE BUILDING"
+  },
+  {
+    "char": "🏡",
+    "code": "U+1F3E1",
+    "description": "HOUSE WITH GARDEN"
+  },
+  {
+    "char": "🏢",
+    "code": "U+1F3E2",
+    "description": "OFFICE BUILDING"
+  },
+  {
+    "char": "🏣",
+    "code": "U+1F3E3",
+    "description": "JAPANESE POST OFFICE"
+  },
+  {
+    "char": "🏥",
+    "code": "U+1F3E5",
+    "description": "HOSPITAL"
+  },
+  {
+    "char": "🏦",
+    "code": "U+1F3E6",
+    "description": "BANK"
+  },
+  {
+    "char": "🏧",
+    "code": "U+1F3E7",
+    "description": "AUTOMATED TELLER MACHINE"
+  },
+  {
+    "char": "🏨",
+    "code": "U+1F3E8",
+    "description": "HOTEL"
+  },
+  {
+    "char": "🏩",
+    "code": "U+1F3E9",
+    "description": "LOVE HOTEL"
+  },
+  {
+    "char": "🏪",
+    "code": "U+1F3EA",
+    "description": "CONVENIENCE STORE"
+  },
+  {
+    "char": "🏫",
+    "code": "U+1F3EB",
+    "description": "SCHOOL"
+  },
+  {
+    "char": "🏬",
+    "code": "U+1F3EC",
+    "description": "DEPARTMENT STORE"
+  },
+  {
+    "char": "🏭",
+    "code": "U+1F3ED",
+    "description": "FACTORY"
+  },
+  {
+    "char": "🏮",
+    "code": "U+1F3EE",
+    "description": "IZAKAYA LANTERN"
+  },
+  {
+    "char": "🏯",
+    "code": "U+1F3EF",
+    "description": "JAPANESE CASTLE"
+  },
+  {
+    "char": "🏰",
+    "code": "U+1F3F0",
+    "description": "EUROPEAN CASTLE"
+  },
+  {
+    "char": "🐌",
+    "code": "U+1F40C",
+    "description": "SNAIL"
+  },
+  {
+    "char": "🐍",
+    "code": "U+1F40D",
+    "description": "SNAKE"
+  },
+  {
+    "char": "🐎",
+    "code": "U+1F40E",
+    "description": "HORSE"
+  },
+  {
+    "char": "🐑",
+    "code": "U+1F411",
+    "description": "SHEEP"
+  },
+  {
+    "char": "🐒",
+    "code": "U+1F412",
+    "description": "MONKEY"
+  },
+  {
+    "char": "🐔",
+    "code": "U+1F414",
+    "description": "CHICKEN"
+  },
+  {
+    "char": "🐗",
+    "code": "U+1F417",
+    "description": "BOAR"
+  },
+  {
+    "char": "🐘",
+    "code": "U+1F418",
+    "description": "ELEPHANT"
+  },
+  {
+    "char": "🐙",
+    "code": "U+1F419",
+    "description": "OCTOPUS"
+  },
+  {
+    "char": "🐚",
+    "code": "U+1F41A",
+    "description": "SPIRAL SHELL"
+  },
+  {
+    "char": "🐛",
+    "code": "U+1F41B",
+    "description": "BUG"
+  },
+  {
+    "char": "🐜",
+    "code": "U+1F41C",
+    "description": "ANT"
+  },
+  {
+    "char": "🐝",
+    "code": "U+1F41D",
+    "description": "HONEYBEE"
+  },
+  {
+    "char": "🐞",
+    "code": "U+1F41E",
+    "description": "LADY BEETLE"
+  },
+  {
+    "char": "🐟",
+    "code": "U+1F41F",
+    "description": "FISH"
+  },
+  {
+    "char": "🐠",
+    "code": "U+1F420",
+    "description": "TROPICAL FISH"
+  },
+  {
+    "char": "🐡",
+    "code": "U+1F421",
+    "description": "BLOWFISH"
+  },
+  {
+    "char": "🐢",
+    "code": "U+1F422",
+    "description": "TURTLE"
+  },
+  {
+    "char": "🐣",
+    "code": "U+1F423",
+    "description": "HATCHING CHICK"
+  },
+  {
+    "char": "🐤",
+    "code": "U+1F424",
+    "description": "BABY CHICK"
+  },
+  {
+    "char": "🐥",
+    "code": "U+1F425",
+    "description": "FRONT-FACING BABY CHICK"
+  },
+  {
+    "char": "🐦",
+    "code": "U+1F426",
+    "description": "BIRD"
+  },
+  {
+    "char": "🐧",
+    "code": "U+1F427",
+    "description": "PENGUIN"
+  },
+  {
+    "char": "🐨",
+    "code": "U+1F428",
+    "description": "KOALA"
+  },
+  {
+    "char": "🐩",
+    "code": "U+1F429",
+    "description": "POODLE"
+  },
+  {
+    "char": "🐫",
+    "code": "U+1F42B",
+    "description": "BACTRIAN CAMEL"
+  },
+  {
+    "char": "🐬",
+    "code": "U+1F42C",
+    "description": "DOLPHIN"
+  },
+  {
+    "char": "🐭",
+    "code": "U+1F42D",
+    "description": "MOUSE FACE"
+  },
+  {
+    "char": "🐮",
+    "code": "U+1F42E",
+    "description": "COW FACE"
+  },
+  {
+    "char": "🐯",
+    "code": "U+1F42F",
+    "description": "TIGER FACE"
+  },
+  {
+    "char": "🐰",
+    "code": "U+1F430",
+    "description": "RABBIT FACE"
+  },
+  {
+    "char": "🐱",
+    "code": "U+1F431",
+    "description": "CAT FACE"
+  },
+  {
+    "char": "🐲",
+    "code": "U+1F432",
+    "description": "DRAGON FACE"
+  },
+  {
+    "char": "🐳",
+    "code": "U+1F433",
+    "description": "SPOUTING WHALE"
+  },
+  {
+    "char": "🐴",
+    "code": "U+1F434",
+    "description": "HORSE FACE"
+  },
+  {
+    "char": "🐵",
+    "code": "U+1F435",
+    "description": "MONKEY FACE"
+  },
+  {
+    "char": "🐶",
+    "code": "U+1F436",
+    "description": "DOG FACE"
+  },
+  {
+    "char": "🐷",
+    "code": "U+1F437",
+    "description": "PIG FACE"
+  },
+  {
+    "char": "🐸",
+    "code": "U+1F438",
+    "description": "FROG FACE"
+  },
+  {
+    "char": "🐹",
+    "code": "U+1F439",
+    "description": "HAMSTER FACE"
+  },
+  {
+    "char": "🐺",
+    "code": "U+1F43A",
+    "description": "WOLF FACE"
+  },
+  {
+    "char": "🐻",
+    "code": "U+1F43B",
+    "description": "BEAR FACE"
+  },
+  {
+    "char": "🐼",
+    "code": "U+1F43C",
+    "description": "PANDA FACE"
+  },
+  {
+    "char": "🐽",
+    "code": "U+1F43D",
+    "description": "PIG NOSE"
+  },
+  {
+    "char": "🐾",
+    "code": "U+1F43E",
+    "description": "PAW PRINTS"
+  },
+  {
+    "char": "👀",
+    "code": "U+1F440",
+    "description": "EYES"
+  },
+  {
+    "char": "👂",
+    "code": "U+1F442",
+    "description": "EAR"
+  },
+  {
+    "char": "👃",
+    "code": "U+1F443",
+    "description": "NOSE"
+  },
+  {
+    "char": "👄",
+    "code": "U+1F444",
+    "description": "MOUTH"
+  },
+  {
+    "char": "👅",
+    "code": "U+1F445",
+    "description": "TONGUE"
+  },
+  {
+    "char": "👆",
+    "code": "U+1F446",
+    "description": "WHITE UP POINTING BACKHAND INDEX"
+  },
+  {
+    "char": "👇",
+    "code": "U+1F447",
+    "description": "WHITE DOWN POINTING BACKHAND INDEX"
+  },
+  {
+    "char": "👈",
+    "code": "U+1F448",
+    "description": "WHITE LEFT POINTING BACKHAND INDEX"
+  },
+  {
+    "char": "👉",
+    "code": "U+1F449",
+    "description": "WHITE RIGHT POINTING BACKHAND INDEX"
+  },
+  {
+    "char": "👊",
+    "code": "U+1F44A",
+    "description": "FISTED HAND SIGN"
+  },
+  {
+    "char": "👋",
+    "code": "U+1F44B",
+    "description": "WAVING HAND SIGN"
+  },
+  {
+    "char": "👌",
+    "code": "U+1F44C",
+    "description": "OK HAND SIGN"
+  },
+  {
+    "char": "👍",
+    "code": "U+1F44D",
+    "description": "THUMBS UP SIGN"
+  },
+  {
+    "char": "👎",
+    "code": "U+1F44E",
+    "description": "THUMBS DOWN SIGN"
+  },
+  {
+    "char": "👏",
+    "code": "U+1F44F",
+    "description": "CLAPPING HANDS SIGN"
+  },
+  {
+    "char": "👐",
+    "code": "U+1F450",
+    "description": "OPEN HANDS SIGN"
+  },
+  {
+    "char": "👑",
+    "code": "U+1F451",
+    "description": "CROWN"
+  },
+  {
+    "char": "👒",
+    "code": "U+1F452",
+    "description": "WOMANS HAT"
+  },
+  {
+    "char": "👓",
+    "code": "U+1F453",
+    "description": "EYEGLASSES"
+  },
+  {
+    "char": "👔",
+    "code": "U+1F454",
+    "description": "NECKTIE"
+  },
+  {
+    "char": "👕",
+    "code": "U+1F455",
+    "description": "T-SHIRT"
+  },
+  {
+    "char": "👖",
+    "code": "U+1F456",
+    "description": "JEANS"
+  },
+  {
+    "char": "👗",
+    "code": "U+1F457",
+    "description": "DRESS"
+  },
+  {
+    "char": "👘",
+    "code": "U+1F458",
+    "description": "KIMONO"
+  },
+  {
+    "char": "👙",
+    "code": "U+1F459",
+    "description": "BIKINI"
+  },
+  {
+    "char": "👚",
+    "code": "U+1F45A",
+    "description": "WOMANS CLOTHES"
+  },
+  {
+    "char": "👛",
+    "code": "U+1F45B",
+    "description": "PURSE"
+  },
+  {
+    "char": "👜",
+    "code": "U+1F45C",
+    "description": "HANDBAG"
+  },
+  {
+    "char": "👝",
+    "code": "U+1F45D",
+    "description": "POUCH"
+  },
+  {
+    "char": "👞",
+    "code": "U+1F45E",
+    "description": "MANS SHOE"
+  },
+  {
+    "char": "👟",
+    "code": "U+1F45F",
+    "description": "ATHLETIC SHOE"
+  },
+  {
+    "char": "👠",
+    "code": "U+1F460",
+    "description": "HIGH-HEELED SHOE"
+  },
+  {
+    "char": "👡",
+    "code": "U+1F461",
+    "description": "WOMANS SANDAL"
+  },
+  {
+    "char": "👢",
+    "code": "U+1F462",
+    "description": "WOMANS BOOTS"
+  },
+  {
+    "char": "👣",
+    "code": "U+1F463",
+    "description": "FOOTPRINTS"
+  },
+  {
+    "char": "👤",
+    "code": "U+1F464",
+    "description": "BUST IN SILHOUETTE"
+  },
+  {
+    "char": "👦",
+    "code": "U+1F466",
+    "description": "BOY"
+  },
+  {
+    "char": "👧",
+    "code": "U+1F467",
+    "description": "GIRL"
+  },
+  {
+    "char": "👨",
+    "code": "U+1F468",
+    "description": "MAN"
+  },
+  {
+    "char": "👩",
+    "code": "U+1F469",
+    "description": "WOMAN"
+  },
+  {
+    "char": "👪",
+    "code": "U+1F46A",
+    "description": "FAMILY"
+  },
+  {
+    "char": "👫",
+    "code": "U+1F46B",
+    "description": "MAN AND WOMAN HOLDING HANDS"
+  },
+  {
+    "char": "👮",
+    "code": "U+1F46E",
+    "description": "POLICE OFFICER"
+  },
+  {
+    "char": "👯",
+    "code": "U+1F46F",
+    "description": "WOMAN WITH BUNNY EARS"
+  },
+  {
+    "char": "👰",
+    "code": "U+1F470",
+    "description": "BRIDE WITH VEIL"
+  },
+  {
+    "char": "👱",
+    "code": "U+1F471",
+    "description": "PERSON WITH BLOND HAIR"
+  },
+  {
+    "char": "👲",
+    "code": "U+1F472",
+    "description": "MAN WITH GUA PI MAO"
+  },
+  {
+    "char": "👳",
+    "code": "U+1F473",
+    "description": "MAN WITH TURBAN"
+  },
+  {
+    "char": "👴",
+    "code": "U+1F474",
+    "description": "OLDER MAN"
+  },
+  {
+    "char": "👵",
+    "code": "U+1F475",
+    "description": "OLDER WOMAN"
+  },
+  {
+    "char": "👶",
+    "code": "U+1F476",
+    "description": "BABY"
+  },
+  {
+    "char": "👷",
+    "code": "U+1F477",
+    "description": "CONSTRUCTION WORKER"
+  },
+  {
+    "char": "👸",
+    "code": "U+1F478",
+    "description": "PRINCESS"
+  },
+  {
+    "char": "👹",
+    "code": "U+1F479",
+    "description": "JAPANESE OGRE"
+  },
+  {
+    "char": "👺",
+    "code": "U+1F47A",
+    "description": "JAPANESE GOBLIN"
+  },
+  {
+    "char": "👻",
+    "code": "U+1F47B",
+    "description": "GHOST"
+  },
+  {
+    "char": "👼",
+    "code": "U+1F47C",
+    "description": "BABY ANGEL"
+  },
+  {
+    "char": "👽",
+    "code": "U+1F47D",
+    "description": "EXTRATERRESTRIAL ALIEN"
+  },
+  {
+    "char": "👾",
+    "code": "U+1F47E",
+    "description": "ALIEN MONSTER"
+  },
+  {
+    "char": "👿",
+    "code": "U+1F47F",
+    "description": "IMP"
+  },
+  {
+    "char": "💀",
+    "code": "U+1F480",
+    "description": "SKULL"
+  },
+  {
+    "char": "💁",
+    "code": "U+1F481",
+    "description": "INFORMATION DESK PERSON"
+  },
+  {
+    "char": "💂",
+    "code": "U+1F482",
+    "description": "GUARDSMAN"
+  },
+  {
+    "char": "💃",
+    "code": "U+1F483",
+    "description": "DANCER"
+  },
+  {
+    "char": "💄",
+    "code": "U+1F484",
+    "description": "LIPSTICK"
+  },
+  {
+    "char": "💅",
+    "code": "U+1F485",
+    "description": "NAIL POLISH"
+  },
+  {
+    "char": "💆",
+    "code": "U+1F486",
+    "description": "FACE MASSAGE"
+  },
+  {
+    "char": "💇",
+    "code": "U+1F487",
+    "description": "HAIRCUT"
+  },
+  {
+    "char": "💈",
+    "code": "U+1F488",
+    "description": "BARBER POLE"
+  },
+  {
+    "char": "💉",
+    "code": "U+1F489",
+    "description": "SYRINGE"
+  },
+  {
+    "char": "💊",
+    "code": "U+1F48A",
+    "description": "PILL"
+  },
+  {
+    "char": "💋",
+    "code": "U+1F48B",
+    "description": "KISS MARK"
+  },
+  {
+    "char": "💌",
+    "code": "U+1F48C",
+    "description": "LOVE LETTER"
+  },
+  {
+    "char": "💍",
+    "code": "U+1F48D",
+    "description": "RING"
+  },
+  {
+    "char": "💎",
+    "code": "U+1F48E",
+    "description": "GEM STONE"
+  },
+  {
+    "char": "💏",
+    "code": "U+1F48F",
+    "description": "KISS"
+  },
+  {
+    "char": "💐",
+    "code": "U+1F490",
+    "description": "BOUQUET"
+  },
+  {
+    "char": "💑",
+    "code": "U+1F491",
+    "description": "COUPLE WITH HEART"
+  },
+  {
+    "char": "💒",
+    "code": "U+1F492",
+    "description": "WEDDING"
+  },
+  {
+    "char": "💓",
+    "code": "U+1F493",
+    "description": "BEATING HEART"
+  },
+  {
+    "char": "💔",
+    "code": "U+1F494",
+    "description": "BROKEN HEART"
+  },
+  {
+    "char": "💕",
+    "code": "U+1F495",
+    "description": "TWO HEARTS"
+  },
+  {
+    "char": "💖",
+    "code": "U+1F496",
+    "description": "SPARKLING HEART"
+  },
+  {
+    "char": "💗",
+    "code": "U+1F497",
+    "description": "GROWING HEART"
+  },
+  {
+    "char": "💘",
+    "code": "U+1F498",
+    "description": "HEART WITH ARROW"
+  },
+  {
+    "char": "💙",
+    "code": "U+1F499",
+    "description": "BLUE HEART"
+  },
+  {
+    "char": "💚",
+    "code": "U+1F49A",
+    "description": "GREEN HEART"
+  },
+  {
+    "char": "💛",
+    "code": "U+1F49B",
+    "description": "YELLOW HEART"
+  },
+  {
+    "char": "💜",
+    "code": "U+1F49C",
+    "description": "PURPLE HEART"
+  },
+  {
+    "char": "💝",
+    "code": "U+1F49D",
+    "description": "HEART WITH RIBBON"
+  },
+  {
+    "char": "💞",
+    "code": "U+1F49E",
+    "description": "REVOLVING HEARTS"
+  },
+  {
+    "char": "💟",
+    "code": "U+1F49F",
+    "description": "HEART DECORATION"
+  },
+  {
+    "char": "💠",
+    "code": "U+1F4A0",
+    "description": "DIAMOND SHAPE WITH A DOT INSIDE"
+  },
+  {
+    "char": "💡",
+    "code": "U+1F4A1",
+    "description": "ELECTRIC LIGHT BULB"
+  },
+  {
+    "char": "💢",
+    "code": "U+1F4A2",
+    "description": "ANGER SYMBOL"
+  },
+  {
+    "char": "💣",
+    "code": "U+1F4A3",
+    "description": "BOMB"
+  },
+  {
+    "char": "💤",
+    "code": "U+1F4A4",
+    "description": "SLEEPING SYMBOL"
+  },
+  {
+    "char": "💥",
+    "code": "U+1F4A5",
+    "description": "COLLISION SYMBOL"
+  },
+  {
+    "char": "💦",
+    "code": "U+1F4A6",
+    "description": "SPLASHING SWEAT SYMBOL"
+  },
+  {
+    "char": "💧",
+    "code": "U+1F4A7",
+    "description": "DROPLET"
+  },
+  {
+    "char": "💨",
+    "code": "U+1F4A8",
+    "description": "DASH SYMBOL"
+  },
+  {
+    "char": "💩",
+    "code": "U+1F4A9",
+    "description": "PILE OF POO"
+  },
+  {
+    "char": "💪",
+    "code": "U+1F4AA",
+    "description": "FLEXED BICEPS"
+  },
+  {
+    "char": "💫",
+    "code": "U+1F4AB",
+    "description": "DIZZY SYMBOL"
+  },
+  {
+    "char": "💬",
+    "code": "U+1F4AC",
+    "description": "SPEECH BALLOON"
+  },
+  {
+    "char": "💮",
+    "code": "U+1F4AE",
+    "description": "WHITE FLOWER"
+  },
+  {
+    "char": "💯",
+    "code": "U+1F4AF",
+    "description": "HUNDRED POINTS SYMBOL"
+  },
+  {
+    "char": "💰",
+    "code": "U+1F4B0",
+    "description": "MONEY BAG"
+  },
+  {
+    "char": "💱",
+    "code": "U+1F4B1",
+    "description": "CURRENCY EXCHANGE"
+  },
+  {
+    "char": "💲",
+    "code": "U+1F4B2",
+    "description": "HEAVY DOLLAR SIGN"
+  },
+  {
+    "char": "💳",
+    "code": "U+1F4B3",
+    "description": "CREDIT CARD"
+  },
+  {
+    "char": "💴",
+    "code": "U+1F4B4",
+    "description": "BANKNOTE WITH YEN SIGN"
+  },
+  {
+    "char": "💵",
+    "code": "U+1F4B5",
+    "description": "BANKNOTE WITH DOLLAR SIGN"
+  },
+  {
+    "char": "💸",
+    "code": "U+1F4B8",
+    "description": "MONEY WITH WINGS"
+  },
+  {
+    "char": "💹",
+    "code": "U+1F4B9",
+    "description": "CHART WITH UPWARDS TREND AND YEN SIGN"
+  },
+  {
+    "char": "💺",
+    "code": "U+1F4BA",
+    "description": "SEAT"
+  },
+  {
+    "char": "💻",
+    "code": "U+1F4BB",
+    "description": "PERSONAL COMPUTER"
+  },
+  {
+    "char": "💼",
+    "code": "U+1F4BC",
+    "description": "BRIEFCASE"
+  },
+  {
+    "char": "💽",
+    "code": "U+1F4BD",
+    "description": "MINIDISC"
+  },
+  {
+    "char": "💾",
+    "code": "U+1F4BE",
+    "description": "FLOPPY DISK"
+  },
+  {
+    "char": "💿",
+    "code": "U+1F4BF",
+    "description": "OPTICAL DISC"
+  },
+  {
+    "char": "📀",
+    "code": "U+1F4C0",
+    "description": "DVD"
+  },
+  {
+    "char": "📁",
+    "code": "U+1F4C1",
+    "description": "FILE FOLDER"
+  },
+  {
+    "char": "📂",
+    "code": "U+1F4C2",
+    "description": "OPEN FILE FOLDER"
+  },
+  {
+    "char": "📃",
+    "code": "U+1F4C3",
+    "description": "PAGE WITH CURL"
+  },
+  {
+    "char": "📄",
+    "code": "U+1F4C4",
+    "description": "PAGE FACING UP"
+  },
+  {
+    "char": "📅",
+    "code": "U+1F4C5",
+    "description": "CALENDAR"
+  },
+  {
+    "char": "📆",
+    "code": "U+1F4C6",
+    "description": "TEAR-OFF CALENDAR"
+  },
+  {
+    "char": "📇",
+    "code": "U+1F4C7",
+    "description": "CARD INDEX"
+  },
+  {
+    "char": "📈",
+    "code": "U+1F4C8",
+    "description": "CHART WITH UPWARDS TREND"
+  },
+  {
+    "char": "📉",
+    "code": "U+1F4C9",
+    "description": "CHART WITH DOWNWARDS TREND"
+  },
+  {
+    "char": "📊",
+    "code": "U+1F4CA",
+    "description": "BAR CHART"
+  },
+  {
+    "char": "📋",
+    "code": "U+1F4CB",
+    "description": "CLIPBOARD"
+  },
+  {
+    "char": "📌",
+    "code": "U+1F4CC",
+    "description": "PUSHPIN"
+  },
+  {
+    "char": "📍",
+    "code": "U+1F4CD",
+    "description": "ROUND PUSHPIN"
+  },
+  {
+    "char": "📎",
+    "code": "U+1F4CE",
+    "description": "PAPERCLIP"
+  },
+  {
+    "char": "📏",
+    "code": "U+1F4CF",
+    "description": "STRAIGHT RULER"
+  },
+  {
+    "char": "📐",
+    "code": "U+1F4D0",
+    "description": "TRIANGULAR RULER"
+  },
+  {
+    "char": "📑",
+    "code": "U+1F4D1",
+    "description": "BOOKMARK TABS"
+  },
+  {
+    "char": "📒",
+    "code": "U+1F4D2",
+    "description": "LEDGER"
+  },
+  {
+    "char": "📓",
+    "code": "U+1F4D3",
+    "description": "NOTEBOOK"
+  },
+  {
+    "char": "📔",
+    "code": "U+1F4D4",
+    "description": "NOTEBOOK WITH DECORATIVE COVER"
+  },
+  {
+    "char": "📕",
+    "code": "U+1F4D5",
+    "description": "CLOSED BOOK"
+  },
+  {
+    "char": "📖",
+    "code": "U+1F4D6",
+    "description": "OPEN BOOK"
+  },
+  {
+    "char": "📗",
+    "code": "U+1F4D7",
+    "description": "GREEN BOOK"
+  },
+  {
+    "char": "📘",
+    "code": "U+1F4D8",
+    "description": "BLUE BOOK"
+  },
+  {
+    "char": "📙",
+    "code": "U+1F4D9",
+    "description": "ORANGE BOOK"
+  },
+  {
+    "char": "📚",
+    "code": "U+1F4DA",
+    "description": "BOOKS"
+  },
+  {
+    "char": "📛",
+    "code": "U+1F4DB",
+    "description": "NAME BADGE"
+  },
+  {
+    "char": "📜",
+    "code": "U+1F4DC",
+    "description": "SCROLL"
+  },
+  {
+    "char": "📝",
+    "code": "U+1F4DD",
+    "description": "MEMO"
+  },
+  {
+    "char": "📞",
+    "code": "U+1F4DE",
+    "description": "TELEPHONE RECEIVER"
+  },
+  {
+    "char": "📟",
+    "code": "U+1F4DF",
+    "description": "PAGER"
+  },
+  {
+    "char": "📠",
+    "code": "U+1F4E0",
+    "description": "FAX MACHINE"
+  },
+  {
+    "char": "📡",
+    "code": "U+1F4E1",
+    "description": "SATELLITE ANTENNA"
+  },
+  {
+    "char": "📢",
+    "code": "U+1F4E2",
+    "description": "PUBLIC ADDRESS LOUDSPEAKER"
+  },
+  {
+    "char": "📣",
+    "code": "U+1F4E3",
+    "description": "CHEERING MEGAPHONE"
+  },
+  {
+    "char": "📤",
+    "code": "U+1F4E4",
+    "description": "OUTBOX TRAY"
+  },
+  {
+    "char": "📥",
+    "code": "U+1F4E5",
+    "description": "INBOX TRAY"
+  },
+  {
+    "char": "📦",
+    "code": "U+1F4E6",
+    "description": "PACKAGE"
+  },
+  {
+    "char": "📧",
+    "code": "U+1F4E7",
+    "description": "E-MAIL SYMBOL"
+  },
+  {
+    "char": "📨",
+    "code": "U+1F4E8",
+    "description": "INCOMING ENVELOPE"
+  },
+  {
+    "char": "📩",
+    "code": "U+1F4E9",
+    "description": "ENVELOPE WITH DOWNWARDS ARROW ABOVE"
+  },
+  {
+    "char": "📪",
+    "code": "U+1F4EA",
+    "description": "CLOSED MAILBOX WITH LOWERED FLAG"
+  },
+  {
+    "char": "📫",
+    "code": "U+1F4EB",
+    "description": "CLOSED MAILBOX WITH RAISED FLAG"
+  },
+  {
+    "char": "📮",
+    "code": "U+1F4EE",
+    "description": "POSTBOX"
+  },
+  {
+    "char": "📰",
+    "code": "U+1F4F0",
+    "description": "NEWSPAPER"
+  },
+  {
+    "char": "📱",
+    "code": "U+1F4F1",
+    "description": "MOBILE PHONE"
+  },
+  {
+    "char": "📲",
+    "code": "U+1F4F2",
+    "description": "MOBILE PHONE WITH RIGHTWARDS ARROW AT LEFT"
+  },
+  {
+    "char": "📳",
+    "code": "U+1F4F3",
+    "description": "VIBRATION MODE"
+  },
+  {
+    "char": "📴",
+    "code": "U+1F4F4",
+    "description": "MOBILE PHONE OFF"
+  },
+  {
+    "char": "📶",
+    "code": "U+1F4F6",
+    "description": "ANTENNA WITH BARS"
+  },
+  {
+    "char": "📷",
+    "code": "U+1F4F7",
+    "description": "CAMERA"
+  },
+  {
+    "char": "📹",
+    "code": "U+1F4F9",
+    "description": "VIDEO CAMERA"
+  },
+  {
+    "char": "📺",
+    "code": "U+1F4FA",
+    "description": "TELEVISION"
+  },
+  {
+    "char": "📻",
+    "code": "U+1F4FB",
+    "description": "RADIO"
+  },
+  {
+    "char": "📼",
+    "code": "U+1F4FC",
+    "description": "VIDEOCASSETTE"
+  },
+  {
+    "char": "🔃",
+    "code": "U+1F503",
+    "description": "CLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS"
+  },
+  {
+    "char": "🔊",
+    "code": "U+1F50A",
+    "description": "SPEAKER WITH THREE SOUND WAVES"
+  },
+  {
+    "char": "🔋",
+    "code": "U+1F50B",
+    "description": "BATTERY"
+  },
+  {
+    "char": "🔌",
+    "code": "U+1F50C",
+    "description": "ELECTRIC PLUG"
+  },
+  {
+    "char": "🔍",
+    "code": "U+1F50D",
+    "description": "LEFT-POINTING MAGNIFYING GLASS"
+  },
+  {
+    "char": "🔎",
+    "code": "U+1F50E",
+    "description": "RIGHT-POINTING MAGNIFYING GLASS"
+  },
+  {
+    "char": "🔏",
+    "code": "U+1F50F",
+    "description": "LOCK WITH INK PEN"
+  },
+  {
+    "char": "🔐",
+    "code": "U+1F510",
+    "description": "CLOSED LOCK WITH KEY"
+  },
+  {
+    "char": "🔑",
+    "code": "U+1F511",
+    "description": "KEY"
+  },
+  {
+    "char": "🔒",
+    "code": "U+1F512",
+    "description": "LOCK"
+  },
+  {
+    "char": "🔓",
+    "code": "U+1F513",
+    "description": "OPEN LOCK"
+  },
+  {
+    "char": "🔔",
+    "code": "U+1F514",
+    "description": "BELL"
+  },
+  {
+    "char": "🔖",
+    "code": "U+1F516",
+    "description": "BOOKMARK"
+  },
+  {
+    "char": "🔗",
+    "code": "U+1F517",
+    "description": "LINK SYMBOL"
+  },
+  {
+    "char": "🔘",
+    "code": "U+1F518",
+    "description": "RADIO BUTTON"
+  },
+  {
+    "char": "🔙",
+    "code": "U+1F519",
+    "description": "BACK WITH LEFTWARDS ARROW ABOVE"
+  },
+  {
+    "char": "🔚",
+    "code": "U+1F51A",
+    "description": "END WITH LEFTWARDS ARROW ABOVE"
+  },
+  {
+    "char": "🔛",
+    "code": "U+1F51B",
+    "description": "ON WITH EXCLAMATION MARK WITH LEFT RIGHT ARROW ABOVE"
+  },
+  {
+    "char": "🔜",
+    "code": "U+1F51C",
+    "description": "SOON WITH RIGHTWARDS ARROW ABOVE"
+  },
+  {
+    "char": "🔝",
+    "code": "U+1F51D",
+    "description": "TOP WITH UPWARDS ARROW ABOVE"
+  },
+  {
+    "char": "🔞",
+    "code": "U+1F51E",
+    "description": "NO ONE UNDER EIGHTEEN SYMBOL"
+  },
+  {
+    "char": "🔟",
+    "code": "U+1F51F",
+    "description": "KEYCAP TEN"
+  },
+  {
+    "char": "🔠",
+    "code": "U+1F520",
+    "description": "INPUT SYMBOL FOR LATIN CAPITAL LETTERS"
+  },
+  {
+    "char": "🔡",
+    "code": "U+1F521",
+    "description": "INPUT SYMBOL FOR LATIN SMALL LETTERS"
+  },
+  {
+    "char": "🔢",
+    "code": "U+1F522",
+    "description": "INPUT SYMBOL FOR NUMBERS"
+  },
+  {
+    "char": "🔣",
+    "code": "U+1F523",
+    "description": "INPUT SYMBOL FOR SYMBOLS"
+  },
+  {
+    "char": "🔤",
+    "code": "U+1F524",
+    "description": "INPUT SYMBOL FOR LATIN LETTERS"
+  },
+  {
+    "char": "🔥",
+    "code": "U+1F525",
+    "description": "FIRE"
+  },
+  {
+    "char": "🔦",
+    "code": "U+1F526",
+    "description": "ELECTRIC TORCH"
+  },
+  {
+    "char": "🔧",
+    "code": "U+1F527",
+    "description": "WRENCH"
+  },
+  {
+    "char": "🔨",
+    "code": "U+1F528",
+    "description": "HAMMER"
+  },
+  {
+    "char": "🔩",
+    "code": "U+1F529",
+    "description": "NUT AND BOLT"
+  },
+  {
+    "char": "🔪",
+    "code": "U+1F52A",
+    "description": "HOCHO"
+  },
+  {
+    "char": "🔫",
+    "code": "U+1F52B",
+    "description": "PISTOL"
+  },
+  {
+    "char": "🔮",
+    "code": "U+1F52E",
+    "description": "CRYSTAL BALL"
+  },
+  {
+    "char": "🔯",
+    "code": "U+1F52F",
+    "description": "SIX POINTED STAR WITH MIDDLE DOT"
+  },
+  {
+    "char": "🔰",
+    "code": "U+1F530",
+    "description": "JAPANESE SYMBOL FOR BEGINNER"
+  },
+  {
+    "char": "🔱",
+    "code": "U+1F531",
+    "description": "TRIDENT EMBLEM"
+  },
+  {
+    "char": "🔲",
+    "code": "U+1F532",
+    "description": "BLACK SQUARE BUTTON"
+  },
+  {
+    "char": "🔳",
+    "code": "U+1F533",
+    "description": "WHITE SQUARE BUTTON"
+  },
+  {
+    "char": "🔴",
+    "code": "U+1F534",
+    "description": "LARGE RED CIRCLE"
+  },
+  {
+    "char": "🔵",
+    "code": "U+1F535",
+    "description": "LARGE BLUE CIRCLE"
+  },
+  {
+    "char": "🔶",
+    "code": "U+1F536",
+    "description": "LARGE ORANGE DIAMOND"
+  },
+  {
+    "char": "🔷",
+    "code": "U+1F537",
+    "description": "LARGE BLUE DIAMOND"
+  },
+  {
+    "char": "🔸",
+    "code": "U+1F538",
+    "description": "SMALL ORANGE DIAMOND"
+  },
+  {
+    "char": "🔹",
+    "code": "U+1F539",
+    "description": "SMALL BLUE DIAMOND"
+  },
+  {
+    "char": "🔺",
+    "code": "U+1F53A",
+    "description": "UP-POINTING RED TRIANGLE"
+  },
+  {
+    "char": "🔻",
+    "code": "U+1F53B",
+    "description": "DOWN-POINTING RED TRIANGLE"
+  },
+  {
+    "char": "🔼",
+    "code": "U+1F53C",
+    "description": "UP-POINTING SMALL RED TRIANGLE"
+  },
+  {
+    "char": "🔽",
+    "code": "U+1F53D",
+    "description": "DOWN-POINTING SMALL RED TRIANGLE"
+  },
+  {
+    "char": "🕐",
+    "code": "U+1F550",
+    "description": "CLOCK FACE ONE OCLOCK"
+  },
+  {
+    "char": "🕑",
+    "code": "U+1F551",
+    "description": "CLOCK FACE TWO OCLOCK"
+  },
+  {
+    "char": "🕒",
+    "code": "U+1F552",
+    "description": "CLOCK FACE THREE OCLOCK"
+  },
+  {
+    "char": "🕓",
+    "code": "U+1F553",
+    "description": "CLOCK FACE FOUR OCLOCK"
+  },
+  {
+    "char": "🕔",
+    "code": "U+1F554",
+    "description": "CLOCK FACE FIVE OCLOCK"
+  },
+  {
+    "char": "🕕",
+    "code": "U+1F555",
+    "description": "CLOCK FACE SIX OCLOCK"
+  },
+  {
+    "char": "🕖",
+    "code": "U+1F556",
+    "description": "CLOCK FACE SEVEN OCLOCK"
+  },
+  {
+    "char": "🕗",
+    "code": "U+1F557",
+    "description": "CLOCK FACE EIGHT OCLOCK"
+  },
+  {
+    "char": "🕘",
+    "code": "U+1F558",
+    "description": "CLOCK FACE NINE OCLOCK"
+  },
+  {
+    "char": "🕙",
+    "code": "U+1F559",
+    "description": "CLOCK FACE TEN OCLOCK"
+  },
+  {
+    "char": "🕚",
+    "code": "U+1F55A",
+    "description": "CLOCK FACE ELEVEN OCLOCK"
+  },
+  {
+    "char": "🕛",
+    "code": "U+1F55B",
+    "description": "CLOCK FACE TWELVE OCLOCK"
+  },
+  {
+    "char": "🗻",
+    "code": "U+1F5FB",
+    "description": "MOUNT FUJI"
+  },
+  {
+    "char": "🗼",
+    "code": "U+1F5FC",
+    "description": "TOKYO TOWER"
+  },
+  {
+    "char": "🗽",
+    "code": "U+1F5FD",
+    "description": "STATUE OF LIBERTY"
+  },
+  {
+    "char": "🗾",
+    "code": "U+1F5FE",
+    "description": "SILHOUETTE OF JAPAN"
+  },
+  {
+    "char": "🗿",
+    "code": "U+1F5FF",
+    "description": "MOYAI"
+  },
+  {
+    "char": "😀",
+    "code": "U+1F600",
+    "description": "GRINNING FACE"
+  },
+  {
+    "char": "😇",
+    "code": "U+1F607",
+    "description": "SMILING FACE WITH HALO"
+  },
+  {
+    "char": "😈",
+    "code": "U+1F608",
+    "description": "SMILING FACE WITH HORNS"
+  },
+  {
+    "char": "😎",
+    "code": "U+1F60E",
+    "description": "SMILING FACE WITH SUNGLASSES"
+  },
+  {
+    "char": "😐",
+    "code": "U+1F610",
+    "description": "NEUTRAL FACE"
+  },
+  {
+    "char": "😑",
+    "code": "U+1F611",
+    "description": "EXPRESSIONLESS FACE"
+  },
+  {
+    "char": "😕",
+    "code": "U+1F615",
+    "description": "CONFUSED FACE"
+  },
+  {
+    "char": "😗",
+    "code": "U+1F617",
+    "description": "KISSING FACE"
+  },
+  {
+    "char": "😙",
+    "code": "U+1F619",
+    "description": "KISSING FACE WITH SMILING EYES"
+  },
+  {
+    "char": "😛",
+    "code": "U+1F61B",
+    "description": "FACE WITH STUCK-OUT TONGUE"
+  },
+  {
+    "char": "😟",
+    "code": "U+1F61F",
+    "description": "WORRIED FACE"
+  },
+  {
+    "char": "😦",
+    "code": "U+1F626",
+    "description": "FROWNING FACE WITH OPEN MOUTH"
+  },
+  {
+    "char": "😧",
+    "code": "U+1F627",
+    "description": "ANGUISHED FACE"
+  },
+  {
+    "char": "😬",
+    "code": "U+1F62C",
+    "description": "GRIMACING FACE"
+  },
+  {
+    "char": "😮",
+    "code": "U+1F62E",
+    "description": "FACE WITH OPEN MOUTH"
+  },
+  {
+    "char": "😯",
+    "code": "U+1F62F",
+    "description": "HUSHED FACE"
+  },
+  {
+    "char": "😴",
+    "code": "U+1F634",
+    "description": "SLEEPING FACE"
+  },
+  {
+    "char": "😶",
+    "code": "U+1F636",
+    "description": "FACE WITHOUT MOUTH"
+  },
+  {
+    "char": "🚁",
+    "code": "U+1F681",
+    "description": "HELICOPTER"
+  },
+  {
+    "char": "🚂",
+    "code": "U+1F682",
+    "description": "STEAM LOCOMOTIVE"
+  },
+  {
+    "char": "🚆",
+    "code": "U+1F686",
+    "description": "TRAIN"
+  },
+  {
+    "char": "🚈",
+    "code": "U+1F688",
+    "description": "LIGHT RAIL"
+  },
+  {
+    "char": "🚊",
+    "code": "U+1F68A",
+    "description": "TRAM"
+  },
+  {
+    "char": "🚍",
+    "code": "U+1F68D",
+    "description": "ONCOMING BUS"
+  },
+  {
+    "char": "🚎",
+    "code": "U+1F68E",
+    "description": "TROLLEYBUS"
+  },
+  {
+    "char": "🚐",
+    "code": "U+1F690",
+    "description": "MINIBUS"
+  },
+  {
+    "char": "🚔",
+    "code": "U+1F694",
+    "description": "ONCOMING POLICE CAR"
+  },
+  {
+    "char": "🚖",
+    "code": "U+1F696",
+    "description": "ONCOMING TAXI"
+  },
+  {
+    "char": "🚘",
+    "code": "U+1F698",
+    "description": "ONCOMING AUTOMOBILE"
+  },
+  {
+    "char": "🚛",
+    "code": "U+1F69B",
+    "description": "ARTICULATED LORRY"
+  },
+  {
+    "char": "🚜",
+    "code": "U+1F69C",
+    "description": "TRACTOR"
+  },
+  {
+    "char": "🚝",
+    "code": "U+1F69D",
+    "description": "MONORAIL"
+  },
+  {
+    "char": "🚞",
+    "code": "U+1F69E",
+    "description": "MOUNTAIN RAILWAY"
+  },
+  {
+    "char": "🚟",
+    "code": "U+1F69F",
+    "description": "SUSPENSION RAILWAY"
+  },
+  {
+    "char": "🚠",
+    "code": "U+1F6A0",
+    "description": "MOUNTAIN CABLEWAY"
+  },
+  {
+    "char": "🚡",
+    "code": "U+1F6A1",
+    "description": "AERIAL TRAMWAY"
+  },
+  {
+    "char": "🚣",
+    "code": "U+1F6A3",
+    "description": "ROWBOAT"
+  },
+  {
+    "char": "🚦",
+    "code": "U+1F6A6",
+    "description": "VERTICAL TRAFFIC LIGHT"
+  },
+  {
+    "char": "🚮",
+    "code": "U+1F6AE",
+    "description": "PUT LITTER IN ITS PLACE SYMBOL"
+  },
+  {
+    "char": "🚯",
+    "code": "U+1F6AF",
+    "description": "DO NOT LITTER SYMBOL"
+  },
+  {
+    "char": "🚰",
+    "code": "U+1F6B0",
+    "description": "POTABLE WATER SYMBOL"
+  },
+  {
+    "char": "🚱",
+    "code": "U+1F6B1",
+    "description": "NON-POTABLE WATER SYMBOL"
+  },
+  {
+    "char": "🚳",
+    "code": "U+1F6B3",
+    "description": "NO BICYCLES"
+  },
+  {
+    "char": "🚴",
+    "code": "U+1F6B4",
+    "description": "BICYCLIST"
+  },
+  {
+    "char": "🚵",
+    "code": "U+1F6B5",
+    "description": "MOUNTAIN BICYCLIST"
+  },
+  {
+    "char": "🚷",
+    "code": "U+1F6B7",
+    "description": "NO PEDESTRIANS"
+  },
+  {
+    "char": "🚸",
+    "code": "U+1F6B8",
+    "description": "CHILDREN CROSSING"
+  },
+  {
+    "char": "🚿",
+    "code": "U+1F6BF",
+    "description": "SHOWER"
+  },
+  {
+    "char": "🛁",
+    "code": "U+1F6C1",
+    "description": "BATHTUB"
+  },
+  {
+    "char": "🛂",
+    "code": "U+1F6C2",
+    "description": "PASSPORT CONTROL"
+  },
+  {
+    "char": "🛃",
+    "code": "U+1F6C3",
+    "description": "CUSTOMS"
+  },
+  {
+    "char": "🛄",
+    "code": "U+1F6C4",
+    "description": "BAGGAGE CLAIM"
+  },
+  {
+    "char": "🛅",
+    "code": "U+1F6C5",
+    "description": "LEFT LUGGAGE"
+  },
+  {
+    "char": "🌍",
+    "code": "U+1F30D",
+    "description": "EARTH GLOBE EUROPE-AFRICA"
+  },
+  {
+    "char": "🌎",
+    "code": "U+1F30E",
+    "description": "EARTH GLOBE AMERICAS"
+  },
+  {
+    "char": "🌐",
+    "code": "U+1F310",
+    "description": "GLOBE WITH MERIDIANS"
+  },
+  {
+    "char": "🌒",
+    "code": "U+1F312",
+    "description": "WAXING CRESCENT MOON SYMBOL"
+  },
+  {
+    "char": "🌖",
+    "code": "U+1F316",
+    "description": "WANING GIBBOUS MOON SYMBOL"
+  },
+  {
+    "char": "🌗",
+    "code": "U+1F317",
+    "description": "LAST QUARTER MOON SYMBOL"
+  },
+  {
+    "char": "🌘",
+    "code": "U+1F318",
+    "description": "WANING CRESCENT MOON SYMBOL"
+  },
+  {
+    "char": "🌚",
+    "code": "U+1F31A",
+    "description": "NEW MOON WITH FACE"
+  },
+  {
+    "char": "🌜",
+    "code": "U+1F31C",
+    "description": "LAST QUARTER MOON WITH FACE"
+  },
+  {
+    "char": "🌝",
+    "code": "U+1F31D",
+    "description": "FULL MOON WITH FACE"
+  },
+  {
+    "char": "🌞",
+    "code": "U+1F31E",
+    "description": "SUN WITH FACE"
+  },
+  {
+    "char": "🌲",
+    "code": "U+1F332",
+    "description": "EVERGREEN TREE"
+  },
+  {
+    "char": "🌳",
+    "code": "U+1F333",
+    "description": "DECIDUOUS TREE"
+  },
+  {
+    "char": "🍋",
+    "code": "U+1F34B",
+    "description": "LEMON"
+  },
+  {
+    "char": "🍐",
+    "code": "U+1F350",
+    "description": "PEAR"
+  },
+  {
+    "char": "🍼",
+    "code": "U+1F37C",
+    "description": "BABY BOTTLE"
+  },
+  {
+    "char": "🏇",
+    "code": "U+1F3C7",
+    "description": "HORSE RACING"
+  },
+  {
+    "char": "🏉",
+    "code": "U+1F3C9",
+    "description": "RUGBY FOOTBALL"
+  },
+  {
+    "char": "🏤",
+    "code": "U+1F3E4",
+    "description": "EUROPEAN POST OFFICE"
+  },
+  {
+    "char": "🐀",
+    "code": "U+1F400",
+    "description": "RAT"
+  },
+  {
+    "char": "🐁",
+    "code": "U+1F401",
+    "description": "MOUSE"
+  },
+  {
+    "char": "🐂",
+    "code": "U+1F402",
+    "description": "OX"
+  },
+  {
+    "char": "🐃",
+    "code": "U+1F403",
+    "description": "WATER BUFFALO"
+  },
+  {
+    "char": "🐄",
+    "code": "U+1F404",
+    "description": "COW"
+  },
+  {
+    "char": "🐅",
+    "code": "U+1F405",
+    "description": "TIGER"
+  },
+  {
+    "char": "🐆",
+    "code": "U+1F406",
+    "description": "LEOPARD"
+  },
+  {
+    "char": "🐇",
+    "code": "U+1F407",
+    "description": "RABBIT"
+  },
+  {
+    "char": "🐈",
+    "code": "U+1F408",
+    "description": "CAT"
+  },
+  {
+    "char": "🐉",
+    "code": "U+1F409",
+    "description": "DRAGON"
+  },
+  {
+    "char": "🐊",
+    "code": "U+1F40A",
+    "description": "CROCODILE"
+  },
+  {
+    "char": "🐋",
+    "code": "U+1F40B",
+    "description": "WHALE"
+  },
+  {
+    "char": "🐏",
+    "code": "U+1F40F",
+    "description": "RAM"
+  },
+  {
+    "char": "🐐",
+    "code": "U+1F410",
+    "description": "GOAT"
+  },
+  {
+    "char": "🐓",
+    "code": "U+1F413",
+    "description": "ROOSTER"
+  },
+  {
+    "char": "🐕",
+    "code": "U+1F415",
+    "description": "DOG"
+  },
+  {
+    "char": "🐖",
+    "code": "U+1F416",
+    "description": "PIG"
+  },
+  {
+    "char": "🐪",
+    "code": "U+1F42A",
+    "description": "DROMEDARY CAMEL"
+  },
+  {
+    "char": "👥",
+    "code": "U+1F465",
+    "description": "BUSTS IN SILHOUETTE"
+  },
+  {
+    "char": "👬",
+    "code": "U+1F46C",
+    "description": "TWO MEN HOLDING HANDS"
+  },
+  {
+    "char": "👭",
+    "code": "U+1F46D",
+    "description": "TWO WOMEN HOLDING HANDS"
+  },
+  {
+    "char": "💭",
+    "code": "U+1F4AD",
+    "description": "THOUGHT BALLOON"
+  },
+  {
+    "char": "💶",
+    "code": "U+1F4B6",
+    "description": "BANKNOTE WITH EURO SIGN"
+  },
+  {
+    "char": "💷",
+    "code": "U+1F4B7",
+    "description": "BANKNOTE WITH POUND SIGN"
+  },
+  {
+    "char": "📬",
+    "code": "U+1F4EC",
+    "description": "OPEN MAILBOX WITH RAISED FLAG"
+  },
+  {
+    "char": "📭",
+    "code": "U+1F4ED",
+    "description": "OPEN MAILBOX WITH LOWERED FLAG"
+  },
+  {
+    "char": "📯",
+    "code": "U+1F4EF",
+    "description": "POSTAL HORN"
+  },
+  {
+    "char": "📵",
+    "code": "U+1F4F5",
+    "description": "NO MOBILE PHONES"
+  },
+  {
+    "char": "🔀",
+    "code": "U+1F500",
+    "description": "TWISTED RIGHTWARDS ARROWS"
+  },
+  {
+    "char": "🔁",
+    "code": "U+1F501",
+    "description": "CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS"
+  },
+  {
+    "char": "🔂",
+    "code": "U+1F502",
+    "description": "CLOCKWISE RIGHTWARDS AND LEFTWARDS OPEN CIRCLE ARROWS WITH CIRCLED ONE OVERLAY"
+  },
+  {
+    "char": "🔄",
+    "code": "U+1F504",
+    "description": "ANTICLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS"
+  },
+  {
+    "char": "🔅",
+    "code": "U+1F505",
+    "description": "LOW BRIGHTNESS SYMBOL"
+  },
+  {
+    "char": "🔆",
+    "code": "U+1F506",
+    "description": "HIGH BRIGHTNESS SYMBOL"
+  },
+  {
+    "char": "🔇",
+    "code": "U+1F507",
+    "description": "SPEAKER WITH CANCELLATION STROKE"
+  },
+  {
+    "char": "🔉",
+    "code": "U+1F509",
+    "description": "SPEAKER WITH ONE SOUND WAVE"
+  },
+  {
+    "char": "🔕",
+    "code": "U+1F515",
+    "description": "BELL WITH CANCELLATION STROKE"
+  },
+  {
+    "char": "🔬",
+    "code": "U+1F52C",
+    "description": "MICROSCOPE"
+  },
+  {
+    "char": "🔭",
+    "code": "U+1F52D",
+    "description": "TELESCOPE"
+  },
+  {
+    "char": "🕜",
+    "code": "U+1F55C",
+    "description": "CLOCK FACE ONE-THIRTY"
+  },
+  {
+    "char": "🕝",
+    "code": "U+1F55D",
+    "description": "CLOCK FACE TWO-THIRTY"
+  },
+  {
+    "char": "🕞",
+    "code": "U+1F55E",
+    "description": "CLOCK FACE THREE-THIRTY"
+  },
+  {
+    "char": "🕟",
+    "code": "U+1F55F",
+    "description": "CLOCK FACE FOUR-THIRTY"
+  },
+  {
+    "char": "🕠",
+    "code": "U+1F560",
+    "description": "CLOCK FACE FIVE-THIRTY"
+  },
+  {
+    "char": "🕡",
+    "code": "U+1F561",
+    "description": "CLOCK FACE SIX-THIRTY"
+  },
+  {
+    "char": "🕢",
+    "code": "U+1F562",
+    "description": "CLOCK FACE SEVEN-THIRTY"
+  },
+  {
+    "char": "🕣",
+    "code": "U+1F563",
+    "description": "CLOCK FACE EIGHT-THIRTY"
+  },
+  {
+    "char": "🕤",
+    "code": "U+1F564",
+    "description": "CLOCK FACE NINE-THIRTY"
+  },
+  {
+    "char": "🕥",
+    "code": "U+1F565",
+    "description": "CLOCK FACE TEN-THIRTY"
+  },
+  {
+    "char": "🕦",
+    "code": "U+1F566",
+    "description": "CLOCK FACE ELEVEN-THIRTY"
+  },
+  {
+    "char": "🕧",
+    "code": "U+1F567",
+    "description": "CLOCK FACE TWELVE-THIRTY"
+  }
+]
