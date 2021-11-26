@@ -12,6 +12,7 @@
 	width: auto;
 	border-radius: 6px 6px 0 0;
 	display: none;
+	background: $background-negative;
 
 	&>.video {
 		top: -1px;
@@ -19,7 +20,7 @@
 		width: calc(100% + 2px);
 		height: calc(100% + 2px);
 		border: none;
-		background: $background-primary-disabled;
+		opacity: 0;
 	}
 
 	&>.audio {
@@ -28,6 +29,7 @@
 		left: 22px;
 		right: 16px;
 		height: 30px;
+		opacity: 0;
 
 		&>.bar {
 			position: absolute;
@@ -43,6 +45,14 @@
 
 	&.ready {
 		display: flex;
+	}
+
+	&.loaded {
+
+		&>.video,
+		&>.audio {
+			opacity: 1;
+		}
 	}
 }
 

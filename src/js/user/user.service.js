@@ -70,10 +70,12 @@ export class UserService {
 							html = html.replace('{{href}}', link);
 							const parser = new DOMParser();
 							const newDocument = parser.parseFromString(html, 'text/html');
-							// const newWindow = window.open(window.location.origin + environment.template.email.supportRequest, '_blank');
-							const newWindow = window.open();
-							newWindow.document.head.innerHTML = newDocument.querySelector('head').innerHTML;
-							newWindow.document.body.innerHTML = newDocument.querySelector('body').innerHTML;
+							setTimeout(() => {
+								// const newWindow = window.open(window.location.origin + environment.template.email.supportRequest, '_blank');
+								const newWindow = window.open();
+								newWindow.document.head.innerHTML = newDocument.querySelector('head').innerHTML;
+								newWindow.document.body.innerHTML = newDocument.querySelector('body').innerHTML;
+							}, 3000);
 						});
 				}
 			}),

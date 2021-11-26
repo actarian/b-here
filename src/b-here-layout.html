@@ -145,7 +145,7 @@ window.labels = Object.assign(window.labels, {});
 		<div class="group--info" *if="form">
 			<form class="form" [formGroup]="form" (submit)="isValid() && onEnter($event)" name="form" role="form" novalidate autocomplete="off">
 				<!-- PREVIEW -->
-				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="this.hasPreview">
+				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="hasPreview">
 					<video class="video" muted></video>
 					<div class="audio"></div>
 				</div>

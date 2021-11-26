@@ -141,9 +141,10 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	get isHidden() {
-		return StateService.state.zoomedId != null || (environment.flags.hideNavInfo && !this.editor &&
-			(!StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
-			this.mode === NavModeType.Info);
+		return StateService.state.zoomedId != null ||
+			(environment.flags.hideNavInfo && !this.editor &&
+				(!StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
+				this.mode === NavModeType.Info);
 	}
 
 	shouldShowPanel() {

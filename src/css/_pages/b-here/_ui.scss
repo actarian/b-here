@@ -324,6 +324,12 @@ $chat-width: 240px;
 			}
 		}
 	}
+
+	&.locked {
+		.btn--view-mode {
+			pointer-events: none;
+		}
+	}
 }
 
 .ui--info {

@@ -143,14 +143,45 @@ function _readOnlyError(name) {
     streamer: true,
     viewer: true,
     smartDevice: true,
-    maxQuality: false,
-    selfServiceProposition: false
+    selfServiceProposition: false // maxQuality: false,
+
+  },
+  profiles: {
+    // streamer: "480p_1", // 640 x 480 x 15
+    streamer: "480p_2",
+    // 640 x 480 x 30
+    // streamer: "480p_3", // 480 x 480 x 15
+    // streamer: "480p_4", // 640 x 480 x 30
+    // streamer: "480p_6", // 480 x 480 x 30
+    // streamer: "480p_8", // 848, 480 x 15
+    // streamer: "480p_9", // 848, 480 x 30
+    // streamer: "480p_10", // 640 x 480 x 10
+    // streamer: "720p_1", // 1280 x 720 x 15
+    // streamer: "720p_2", // 1280 x 720 x 30
+    // streamer: "720p_3", // 1280 x 720 x 30
+    // streamer: "720p_5", // 960 x 720 x 15
+    // streamer: "720p_6", // 960 x 720 x 30
+    // streamer: "1080p_1", // 1920 x 1080 x 15
+    // streamer: "1080p_2", // 1920 x 1080 x 30
+    // streamer: "1080p_3", // 1920 x 1080 x 30
+    // streamer: "1080p_5", // 1920 x 1080 x 60
+    // publisher: "720p_2", // 1920 x 1080 x 30
+    publisher: "1080p_2",
+    // 1920 x 1080 x 30
+    // screen: "480p_1", // 640 × 480 x 5
+    // screen: "480p_2", // 640 × 480 x 30
+    // screen: "720p_1", // 1280 × 720 x 5
+    screen: "720p_2" // 1280 × 720 x 30
+    // screen: "1080p_1", // 1920 × 1080 x 5
+    // screen: "1080p_2", // 1920 × 1080 30
+
   },
   logo: null,
   background: {
     // image: '/Modules/B-Here/Client/docs/img/background.jpg',
     video: '/Modules/B-Here/Client/docs/img/background.mp4'
   },
+  selfServiceAudio: '/Modules/B-Here/Client/docs/audio/self-service.mp3',
   colors: {
     menuBackground: '#000000',
     menuForeground: '#ffffff',
@@ -226,14 +257,45 @@ function _readOnlyError(name) {
     streamer: true,
     viewer: true,
     smartDevice: true,
-    maxQuality: false,
-    selfServiceProposition: true
+    selfServiceProposition: true // maxQuality: false,
+
+  },
+  profiles: {
+    // streamer: "480p_1", // 640 x 480 x 15
+    streamer: "480p_2",
+    // 640 x 480 x 30
+    // streamer: "480p_3", // 480 x 480 x 15
+    // streamer: "480p_4", // 640 x 480 x 30
+    // streamer: "480p_6", // 480 x 480 x 30
+    // streamer: "480p_8", // 848, 480 x 15
+    // streamer: "480p_9", // 848, 480 x 30
+    // streamer: "480p_10", // 640 x 480 x 10
+    // streamer: "720p_1", // 1280 x 720 x 15
+    // streamer: "720p_2", // 1280 x 720 x 30
+    // streamer: "720p_3", // 1280 x 720 x 30
+    // streamer: "720p_5", // 960 x 720 x 15
+    // streamer: "720p_6", // 960 x 720 x 30
+    // streamer: "1080p_1", // 1920 x 1080 x 15
+    // streamer: "1080p_2", // 1920 x 1080 x 30
+    // streamer: "1080p_3", // 1920 x 1080 x 30
+    // streamer: "1080p_5", // 1920 x 1080 x 60
+    // publisher: "720p_2", // 1920 x 1080 x 30
+    publisher: "1080p_2",
+    // 1920 x 1080 x 30
+    // screen: "480p_1", // 640 × 480 x 5
+    // screen: "480p_2", // 640 × 480 x 30
+    // screen: "720p_1", // 1280 × 720 x 5
+    // screen: "720p_2", // 1280 × 720 x 30
+    // screen: "1080p_1", // 1920 × 1080 x 5
+    screen: "1080p_2" // 1920 × 1080 30
+
   },
   logo: null,
   background: {
     // image: '/b-here/img/background.jpg',
     video: '/b-here/img/background.mp4'
   },
+  selfServiceAudio: '/b-here/audio/self-service.mp3',
   colors: {
     menuBackground: '#000000',
     menuForeground: '#ffffff',
@@ -423,8 +485,8 @@ var defaultAppOptions = {
     streamer: true,
     viewer: true,
     smartDevice: true,
-    maxQuality: false,
     selfServiceProposition: true,
+    // maxQuality: false,
     heroku: HEROKU
   },
   url: {},
@@ -986,92 +1048,148 @@ function patchFields(fields, form) {
   }, {});
   form.patch(testValues);
 }var USE_AUTODETECT = false;
-var StreamQualities = [{
-  // id: 1,
-  // name: '4K 2160p 3840x2160',
-  profile: '4K',
-  resolution: {
-    width: 3840,
-    height: 2160
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 8910,
-    max: 13500
-  }
+var VIDEO_PROFILES = [
+/*
+['120p_1', 160, 120, 15, 65, false]],
+['120p_3', 120, 120, 15, 50, false]],
+['180p_1', 320, 180, 15, 140, false]],
+['180p_3', 180, 180, 15, 100, false]],
+['180p_4', 240, 180, 15, 120, false]],
+['240p_1', 320, 240, 15, 200, false]],
+['240p_3', 240, 240, 15, 140, false]],
+['240p_4', 424, 240, 15, 220, false]],
+['360p_1', 640, 360, 15, 400, false]],
+['360p_3', 360, 360, 15, 260, false]],
+['360p_4', 640, 360, 30, 600, false]],
+['360p_6', 360, 360, 30, 400, false]],
+['360p_7', 480, 360, 15, 320, false]],
+['360p_8', 480, 360, 30, 490, false]],
+['360p_9', 640, 360, 15, 800, false]],
+['360p_10', 640, 360, 24, 800, false]],
+['360p_11', 640, 360, 24, 1000, false]],
+*/
+['480p_1', 640, 480, 15, 500, true], ['480p_2', 640, 480, 30, 1000, true], ['480p_3', 480, 480, 15, 400, true], ['480p_4', 640, 480, 30, 750, true], ['480p_6', 480, 480, 30, 600, true], ['480p_8', 848, 480, 15, 610, true], ['480p_9', 848, 480, 30, 930, true], ['480p_10', 640, 480, 10, 400, true], ['720p_1', 1280, 720, 15, 1130, true], ['720p_2', 1280, 720, 30, 2000, true], ['720p_3', 1280, 720, 30, 1710, true], ['720p_5', 960, 720, 15, 910, true], ['720p_6', 960, 720, 30, 1380, true], ['1080p_1', 1920, 1080, 15, 2080, false], ['1080p_2', 1920, 1080, 30, 3000, false], ['1080p_3', 1920, 1080, 30, 3150, false], ['1080p_5', 1920, 1080, 60, 4780, false]];
+var StreamQualities = VIDEO_PROFILES.map(function (a) {
+  return {
+    profile: a[0],
+    resolution: {
+      width: a[1],
+      height: a[2]
+    },
+    frameRate: {
+      min: a[3],
+      max: a[3]
+    },
+    bitrate: {
+      min: a[4],
+      max: a[4]
+    },
+    compatible: a[5]
+  };
+});
+/*
+export const StreamQualities = [{
+	// id: 1,
+	// name: '4K 2160p 3840x2160',
+	profile: '4K',
+	resolution: {
+		width: 3840,
+		height: 2160
+	},
+	frameRate: {
+		min: 15,
+		max: 30
+	},
+	bitrate: {
+		min: 8910,
+		max: 13500
+	}
 }, {
-  // id: 2,
-  // name: 'HD 1440p 2560×1440',
-  profile: '1440p',
-  resolution: {
-    width: 2560,
-    height: 1440
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 4850,
-    max: 7350
-  }
+	// id: 2,
+	// name: 'HD 1440p 2560×1440',
+	profile: '1440p',
+	resolution: {
+		width: 2560,
+		height: 1440
+	},
+	frameRate: {
+		min: 15,
+		max: 30
+	},
+	bitrate: {
+		min: 4850,
+		max: 7350
+	}
 }, {
-  // id: 3,
-  // name: 'HD 1080p 1920x1080',
-  profile: '1080p',
-  resolution: {
-    width: 1920,
-    height: 1080
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 2080,
-    max: 4780
-  }
+	// id: 3,
+	// name: 'HD 1080p 1920x1080',
+	profile: '1080p',
+	resolution: {
+		width: 1920,
+		height: 1080
+	},
+	frameRate: {
+		min: 15,
+		max: 30
+	},
+	bitrate: {
+		min: 2080,
+		max: 4780
+	}
 }, {
-  // id: 4,
-  // name: 'LOW 720p 1280x720',
-  profile: '720p_3',
-  resolution: {
-    width: 1280,
-    height: 720
-  },
-  frameRate: {
-    min: 15,
-    max: 30
-  },
-  bitrate: {
-    min: 1130,
-    max: 1710
-  }
+	// id: 4,
+	// name: 'LOW 720p 1280x720',
+	profile: '720p_3',
+	resolution: {
+		width: 1280,
+		height: 720
+	},
+	frameRate: {
+		min: 15,
+		max: 30
+	},
+	bitrate: {
+		min: 1130,
+		max: 1710
+	}
 }, {
-  // id: 5,
-  // name: 'LOWEST 240p 320x240',
-  profile: '240p_1',
-  resolution: {
-    width: 320,
-    height: 240
-  },
-  frameRate: {
-    min: 15,
-    max: 15
-  },
-  bitrate: {
-    min: 140,
-    max: 200
-  }
+	// id: 5,
+	// name: 'LOWEST 240p 320x240',
+	profile: '240p_1',
+	resolution: {
+		width: 320,
+		height: 240
+	},
+	frameRate: {
+		min: 15,
+		max: 15
+	},
+	bitrate: {
+		min: 140,
+		max: 200
+	}
 }];
+*/
+
 function getStreamQuality(state) {
-  var lowestQuality = StreamQualities[StreamQualities.length - 1];
-  var highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
-  return state.role === RoleType.Publisher || state.role === RoleType.SmartDevice ? highestQuality : lowestQuality;
+  if (state.role === RoleType.Publisher || state.role === RoleType.SmartDevice) {
+    return StreamQualities.find(function (x) {
+      return x.profile === environment.profiles.publisher;
+    });
+  } else {
+    return StreamQualities.find(function (x) {
+      return x.profile === environment.profiles.streamer;
+    });
+  }
 }
+/*
+export function getStreamQuality(state) {
+	const lowestQuality = StreamQualities[StreamQualities.length - 1];
+	const highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
+	return (state.role === RoleType.Publisher || state.role === RoleType.SmartDevice) ? highestQuality : lowestQuality;
+}
+*/
+
 var AgoraStatus = {
   Idle: 'idle',
   Checklist: 'checklist',
@@ -1088,6 +1206,7 @@ var MessageType = {
   AgoraEvent: 'agoraEvent',
   Ping: 'ping',
   ChannelMembers: 'channelMembers',
+  SupportRequest: 'supportRequest',
   SupportRequestAccepted: 'supportRequestAccepted',
   SupportRequestRejected: 'supportRequestRejected',
   RequestControl: 'requestControl',
@@ -1425,11 +1544,13 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
           html = html.replace('{{username}}', MeetingUrl.getName(user));
           html = html.replace('{{href}}', link);
           var parser = new DOMParser();
-          var newDocument = parser.parseFromString(html, 'text/html'); // const newWindow = window.open(window.location.origin + environment.template.email.supportRequest, '_blank');
-
-          var newWindow = window.open();
-          newWindow.document.head.innerHTML = newDocument.querySelector('head').innerHTML;
-          newWindow.document.body.innerHTML = newDocument.querySelector('body').innerHTML;
+          var newDocument = parser.parseFromString(html, 'text/html');
+          setTimeout(function () {
+            // const newWindow = window.open(window.location.origin + environment.template.email.supportRequest, '_blank');
+            var newWindow = window.open();
+            newWindow.document.head.innerHTML = newDocument.querySelector('head').innerHTML;
+            newWindow.document.body.innerHTML = newDocument.querySelector('body').innerHTML;
+          }, 3000);
         });
       }
     }));
@@ -3075,45 +3196,19 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
 
       _this6.createLocalStreamWithOptions(options, quality);
     });
-  };
+  } // If you prefer video smoothness to sharpness, use setVideoProfile
+  // to set the video resolution and Agora self-adapts the video bitrate according to the network condition.
+  // If you prefer video sharpness to smoothness, use setVideoEncoderConfiguration,
+  // and set min in bitrate as 0.4 - 0.5 times the bitrate value in the video profile table.
+  ;
 
   _proto.createLocalStreamWithOptions = function createLocalStreamWithOptions(options, quality) {
     var _this7 = this;
 
-    /*
-    const getUserMedia = navigator.mediaDevices.getUserMedia;
-    navigator.mediaDevices.getUserMedia = function(options) {
-    	if (options.video) {
-    		options.video.width = { ideal: 4096 };
-    		options.video.height = { ideal: 2160 };
-    		// console.log('getUserMedia', options.video.width.ideal, options.video.height.ideal);
-    	}
-    	// console.log('getUserMedia', options);
-    	return getUserMedia.call(navigator.mediaDevices, options);
-    }
-    */
     var local = AgoraRTC.createStream(options);
-    /*
-    // force video quality
-    quality = {
-    	resolution: {
-    		width: 1920,
-    		height: 1080
-    	},
-    	frameRate: {
-    		min: 30,
-    		max: 30
-    	},
-    	bitrate: {
-    		min: 2000,
-    		max: 4000
-    	}
-    };
-    */
 
     if (quality) {
-      local.setVideoProfile(quality.profile);
-      local.setVideoEncoderConfiguration(quality);
+      local.setVideoProfile(quality.profile); // local.setVideoEncoderConfiguration(quality);
     } // console.log('AgoraService.createLocalStreamWithOptions', options, quality, local.attributes);
 
 
@@ -3468,10 +3563,11 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           if (message.clientInfo.role === RoleType.Publisher) {
             var state = {
               hosted: true
-            }; // !!! verify self-service support modality
+            };
 
             if (message.clientInfo.controllingId) {
               state.controlling = message.clientInfo.controllingId;
+              state.mode = message.clientInfo.mode;
 
               _this18.sendControlRemoteRequestInfo(message.clientInfo.controllingId);
             }
@@ -4181,7 +4277,9 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       streamID: screenUid,
       audio: false,
       video: false,
-      screen: true
+      screen: true // extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg', // Google Chrome:
+      // mediaSource:  'screen', // Firefox: 'screen', 'application', 'window' (select one)
+
     };
     /*
     // Set relevant properties according to the browser.
@@ -4193,15 +4291,18 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     }
     */
 
-    var quality = Object.assign({}, StateService.state.quality);
     var stream = AgoraRTC.createStream(options);
-
+    /*
+    const quality = Object.assign({}, StateService.state.quality);
+    console.log('AgoraService.createScreenStream', quality);
     if (quality) {
-      stream.setScreenProfile('720p_1'); // stream.setVideoProfile(quality.profile);
-      // stream.setVideoEncoderConfiguration(quality);
+    	// stream.setVideoProfile(quality.profile);
+    	// stream.setVideoEncoderConfiguration(quality);
     }
+    */
 
-    console.log('AgoraService.createScreenStream', screenUid, options, quality);
+    stream.setScreenProfile(environment.profiles.screen);
+    console.log('AgoraService.createScreenStream', options);
 
     var onStopScreenSharing = function onStopScreenSharing() {
       _this28.unpublishScreenStream();
@@ -5947,9 +6048,12 @@ operators.filter(function (frame) {
     } // console.log(this.video_, this.audio_);
 
 
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
     if (this.video_ || this.audio_) {
-      // const { node } = getContext(this);
-      // node.classList.remove('ready');
+      node.classList.add('ready');
+
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         var state = StateService.state;
         var quality = getStreamQuality(state);
@@ -6000,6 +6104,8 @@ operators.filter(function (frame) {
         });
       }
     } else {
+      node.classList.remove('ready');
+
       if (this.hasPreview) {
         if ('srcObject' in preview) {
           preview.srcObject = null;
@@ -6016,10 +6122,10 @@ operators.filter(function (frame) {
 
   _proto.onLoadedMetadata = function onLoadedMetadata(event) {
     // console.log('AgoraDevicePreview.onLoadedMetadata', event);
-    var _getContext2 = rxcomp.getContext(this),
-        node = _getContext2.node;
+    var _getContext3 = rxcomp.getContext(this),
+        node = _getContext3.node;
 
-    node.classList.add('ready');
+    node.classList.add('loaded');
     this.preview.play();
     this.stream.next(this.loadingStream_);
   };
@@ -7270,7 +7376,23 @@ var GtmService = /*#__PURE__*/function () {
   };
 
   return GtmService;
-}();var ToastEvent = function ToastEvent(toast) {
+}();var ToastType = {
+  Info: 'info',
+  Alert: 'alert',
+  Dialog: 'dialog'
+};
+var ToastPosition = {
+  Centered: 'centered',
+  TopLeft: 'top-left',
+  Top: 'top',
+  TopRight: 'top-right',
+  Right: 'right',
+  BottomRight: 'bottom-right',
+  Bottom: 'bottom',
+  BottomLeft: 'bottom-left',
+  Left: 'left'
+};
+var ToastEvent = function ToastEvent(toast) {
   this.toast = toast;
 };
 var ToastResolveEvent = /*#__PURE__*/function (_ToastEvent) {
@@ -7282,6 +7404,15 @@ var ToastResolveEvent = /*#__PURE__*/function (_ToastEvent) {
 
   return ToastResolveEvent;
 }(ToastEvent);
+var ToastRejectEvent = /*#__PURE__*/function (_ToastEvent2) {
+  _inheritsLoose(ToastRejectEvent, _ToastEvent2);
+
+  function ToastRejectEvent() {
+    return _ToastEvent2.apply(this, arguments) || this;
+  }
+
+  return ToastRejectEvent;
+}(ToastEvent);
 
 var ToastService = /*#__PURE__*/function () {
   function ToastService() {}
@@ -7290,10 +7421,28 @@ var ToastService = /*#__PURE__*/function () {
     var _this = this;
 
     toast.id = new Date().getTime();
+    toast.type = toast.type || ToastType.Info;
+    toast.position = toast.position || ToastPosition.Centered;
+
+    switch (toast.type) {
+      case ToastType.Alert:
+        toast.acceptMessage = toast.acceptMessage || "Ok";
+        break;
+
+      case ToastType.Dialog:
+        toast.acceptMessage = toast.acceptMessage || "Accept";
+        toast.rejectMessage = toast.rejectMessage || "Reject";
+        break;
+    }
+
     this.toast$.next(toast);
-    setTimeout(function () {
-      _this.resolve(toast);
-    }, toast.duration || 4000);
+
+    if (toast.type === ToastType.Info) {
+      setTimeout(function () {
+        _this.resolve(toast);
+      }, toast.duration || 4000);
+    }
+
     return this.events$;
     /*
     return of(toast).pipe(
@@ -7306,6 +7455,11 @@ var ToastService = /*#__PURE__*/function () {
   ToastService.resolve = function resolve(toast) {
     this.toast$.next(null);
     this.events$.next(new ToastResolveEvent(toast));
+  };
+
+  ToastService.reject = function reject(toast) {
+    this.toast$.next(null);
+    this.events$.next(new ToastRejectEvent(toast));
   };
 
   return ToastService;
@@ -7908,7 +8062,7 @@ _defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));
 _defineProperty(ViewService, "view_", null);var MediaLoaderEvent = function MediaLoaderEvent(loader) {
   this.loader = loader;
 };
-var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
+var MediaLoaderPlayEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent) {
   _inheritsLoose(MediaLoaderPlayEvent, _MediaLoaderEvent);
 
   function MediaLoaderPlayEvent() {
@@ -7917,7 +8071,7 @@ var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
 
   return MediaLoaderPlayEvent;
 }(MediaLoaderEvent);
-var MediaLoaderPauseEvent = /*#__PURE__*/function (_MediaLoaderEvent2) {
+var MediaLoaderPauseEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent2) {
   _inheritsLoose(MediaLoaderPauseEvent, _MediaLoaderEvent2);
 
   function MediaLoaderPauseEvent() {
@@ -7926,7 +8080,7 @@ var MediaLoaderPauseEvent = /*#__PURE__*/function (_MediaLoaderEvent2) {
 
   return MediaLoaderPauseEvent;
 }(MediaLoaderEvent);
-var MediaLoaderDisposeEvent = /*#__PURE__*/function (_MediaLoaderEvent3) {
+var MediaLoaderDisposeEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent3) {
   _inheritsLoose(MediaLoaderDisposeEvent, _MediaLoaderEvent3);
 
   function MediaLoaderDisposeEvent() {
@@ -8185,7 +8339,7 @@ var MediaLoader = /*#__PURE__*/function () {
 
       var onEnded = function onEnded() {
         if (!loop) {
-          MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
+          MediaLoader.events$.next(new MediaLoaderPauseEvent$1(_this2));
         }
       };
 
@@ -8225,7 +8379,7 @@ var MediaLoader = /*#__PURE__*/function () {
       this.video.play().then(function () {
         // console.log('MediaLoader.play.success', this.item.asset.file);
         if (!silent) {
-          MediaLoader.events$.next(new MediaLoaderPlayEvent(_this3));
+          MediaLoader.events$.next(new MediaLoaderPlayEvent$1(_this3));
         }
       }, function (error) {
         console.log('MediaLoader.play.error', _this3.item.asset.file, error);
@@ -8240,7 +8394,7 @@ var MediaLoader = /*#__PURE__*/function () {
       this.video.pause();
 
       if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+        MediaLoader.events$.next(new MediaLoaderPauseEvent$1(this));
       }
     }
   };
@@ -8266,7 +8420,7 @@ var MediaLoader = /*#__PURE__*/function () {
     if (this.isVideo && this.video) {
       this.video.ontimeupdate = null;
       this.video.onended = null;
-      MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
+      MediaLoader.events$.next(new MediaLoaderDisposeEvent$1(this));
     }
 
     delete this.video;
@@ -8768,6 +8922,7 @@ var VRService = /*#__PURE__*/function () {
         });
       });
       this.checkSelfServiceProposition();
+      this.checkSelfServiceAudio();
     } else {
       AgoraChecklistService.isChecked$().pipe(operators.first()).subscribe(function (checked) {
         StateService.patchState({
@@ -8835,8 +8990,31 @@ var VRService = /*#__PURE__*/function () {
       switch (message.type) {
         case MessageType.ChannelMembers:
           if (_this7.isSelfServiceSupport) {
-            var members = message.members;
-            console.log('AgoraComponent.MessageService.out$.ChannelMembers', members);
+            var members = message.members; // console.log('AgoraComponent.MessageService.out$.ChannelMembers', members, members.length);
+
+            if (members.length > 0) {
+              ToastService.open$({
+                message: LabelPipe.transform('bhere_support_request_sent'),
+                type: ToastType.Alert,
+                position: ToastPosition.BottomRight
+              });
+              MessageService.send({
+                type: MessageType.SupportRequest
+              });
+            } else {
+              ToastService.open$({
+                message: LabelPipe.transform('bhere_support_request_leaved'),
+                type: ToastType.Alert,
+                position: ToastPosition.BottomRight
+              });
+            }
+          }
+
+          break;
+
+        case MessageType.SupportRequest:
+          if (_this7.isSelfServiceProposition) {
+            _this7.openSupportRequestDialog(message.clientInfo);
           }
 
           break;
@@ -8849,36 +9027,43 @@ var VRService = /*#__PURE__*/function () {
             name: StateService.state.name,
             uid: StateService.state.uid,
             screenUid: StateService.state.screenUid,
-            controllingId: StateService.state.controlling
+            controllingId: StateService.state.controlling,
+            mode: StateService.state.mode
           };
           MessageService.sendBack(message);
-
-          if (_this7.isSelfServiceSupport) {
-            _this7.meetingUrl.support = false; // !!! spostare su ChannelMembers
-
-            ToastService.open$({
-              message: LabelPipe.transform('bhere_support_request_sent')
-            });
+          /*
+          if (this.isSelfServiceSupport) {
+          	this.meetingUrl.support = false; // !!! spostare su ChannelMembers
+          	ToastService.open$({
+          		message: LabelPipe.transform('bhere_support_request_sent'),
+          		type: ToastType.Alert, position: ToastPosition.BottomRight
+          	});
           }
+          */
 
           break;
 
+        /*
         case MessageType.RequestPeerInfoResult:
-          if (_this7.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
-            _this7.openSupportRequestDialog(message.clientInfo);
-          }
-
-          break;
+        if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
+        	this.openSupportRequestDialog(message.clientInfo);
+        }
+        break;
+        */
 
         case MessageType.SupportRequestAccepted:
           ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_accepted')
+            message: LabelPipe.transform('bhere_support_request_accepted'),
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
           });
           break;
 
         case MessageType.SupportRequestRejected:
           ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_rejected')
+            message: LabelPipe.transform('bhere_support_request_rejected'),
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
           });
           break;
 
@@ -9176,6 +9361,11 @@ var VRService = /*#__PURE__*/function () {
     StateService.patchState({
       volumeMuted: volumeMuted
     });
+    var selfServiceAudio = this.selfServiceAudio;
+
+    if (selfServiceAudio) {
+      selfServiceAudio.volume = volumeMuted ? 0 : 0.5;
+    }
   };
 
   _proto.toggleMode = function toggleMode() {
@@ -9394,12 +9584,39 @@ var VRService = /*#__PURE__*/function () {
     }
   };
 
+  _proto.checkSelfServiceAudio = function checkSelfServiceAudio() {
+    if (StateService.state.role === RoleType.SelfService && environment.selfServiceAudio) {
+      var selfServiceAudio = document.createElement('audio');
+      selfServiceAudio.setAttribute('playsinline', 'true');
+      selfServiceAudio.setAttribute('autoplay', 'true');
+      selfServiceAudio.setAttribute('loop', 'true');
+      selfServiceAudio.volume = 0.5;
+      selfServiceAudio.src = environment.selfServiceAudio;
+
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node;
+
+      node.parentNode.appendChild(selfServiceAudio);
+      this.selfServiceAudio = selfServiceAudio;
+      MediaLoader.events$.pipe(operators.tap(function (event) {
+        if (event instanceof MediaLoaderPlayEvent) {
+          selfServiceAudio.pause(); // selfServiceAudio.volume = 0;
+        } else if (event instanceof MediaLoaderPauseEvent || event instanceof MediaLoaderDisposeEvent) {
+          selfServiceAudio.play(); // selfServiceAudio.volume = 0.5;
+        }
+      }));
+    }
+  };
+
   _proto.openSupportRequestDialog = function openSupportRequestDialog(clientInfo) {
-    ModalService.open$({
-      src: environment.template.modal.supportRequest,
-      data: clientInfo
+    ToastService.open$({
+      message: LabelPipe.transform('bhere_support_request_dialog'),
+      acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
+      rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
+      type: ToastType.Dialog,
+      position: ToastPosition.BottomRight
     }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      if (event instanceof ModalResolveEvent) {
+      if (event instanceof ToastResolveEvent) {
         MessageService.send({
           type: MessageType.SupportRequestAccepted
         });
@@ -9420,6 +9637,25 @@ var VRService = /*#__PURE__*/function () {
         });
       }
     });
+    /*
+    ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
+    	takeUntil(this.unsubscribe$)
+    ).subscribe(event => {
+    	if (event instanceof ModalResolveEvent) {
+    		MessageService.send({ type: MessageType.SupportRequestAccepted });
+    		const name = StateService.state.name;
+    		const meetingId = new MeetingId(StateService.state.link);
+    		meetingId.role = RoleType.Streamer;
+    		const meetingUrl = new MeetingUrl({ link: meetingId.toString(), name });
+    		const href = meetingUrl.toGuidedTourUrl();
+    		setTimeout(() => {
+    			window.location.href = href;
+    		}, 1000);
+    	} else {
+    		MessageService.send({ type: MessageType.SupportRequestRejected });
+    	}
+    });
+    */
   }
   /*
   onPrevent(event) {
@@ -9897,10 +10133,10 @@ DropdownItemDirective.meta = {
     var _this = this;
 
     this.toast = null;
-    this.lastMessage = '';
+    this.lastToast = null;
     ToastService.toast$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (toast) {
       if (toast) {
-        _this.lastMessage = toast.message;
+        _this.lastToast = toast;
       }
 
       _this.toast = toast;
@@ -9909,13 +10145,40 @@ DropdownItemDirective.meta = {
     }); // console.log('ToastOutletComponent.onInit');
   };
 
+  _proto.getClass = function getClass() {
+    var classList = {};
+
+    if (this.toast) {
+      classList.active = true;
+    }
+
+    if (this.lastToast) {
+      classList[this.lastToast.type] = true;
+      classList[this.lastToast.position] = true;
+    }
+
+    return classList;
+  };
+
+  _proto.onClose = function onClose() {
+    ToastService.reject(this.toast);
+  };
+
+  _proto.onAccept = function onAccept() {
+    ToastService.resolve(this.toast);
+  };
+
+  _proto.onReject = function onReject() {
+    ToastService.reject(this.toast);
+  };
+
   return ToastOutletComponent;
 }(rxcomp.Component);
 ToastOutletComponent.meta = {
   selector: '[toast-outlet]',
   template:
   /* html */
-  "\n\t<div class=\"toast-outlet__container\" [class]=\"{ active: toast }\">\n\t\t<div class=\"toast-outlet__toast\" [innerHTML]=\"lastMessage\"></div>\n\t</div>\n\t"
+  "\n\t<div class=\"toast-outlet__container\" [class]=\"getClass()\">\n\t\t<div class=\"toast-outlet__toast\" *if=\"lastToast\">\n\t\t\t<span class=\"toast-outlet__message\" [innerHTML]=\"lastToast.message\"></span>\n\t\t\t<div class=\"group--cta\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.acceptMessage\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\" *if=\"lastToast.type == 'dialog'\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.rejectMessage\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
 };var AsideComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AsideComponent, _Component);
 
@@ -13795,7 +14058,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return MediaLoader.events$.pipe(operators.filter(function (event) {
       return event.loader.item && event.loader.item.id === item.id;
     }), operators.map(function (event) {
-      if (event instanceof MediaLoaderPlayEvent) {
+      if (event instanceof MediaLoaderPlayEvent$1) {
         _this4.playing = true;
 
         if (_this4.playBtn) {
@@ -13805,7 +14068,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         _this4.emit('playing', true);
 
         _this4.onOut();
-      } else if (event instanceof MediaLoaderPauseEvent) {
+      } else if (event instanceof MediaLoaderPauseEvent$1) {
         _this4.playing = false;
 
         if (_this4.playBtn) {
@@ -13827,9 +14090,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
         if (eventItem) {
           // console.log('MediaLoader.events$.eventItem', event, eventItem);
-          if (event instanceof MediaLoaderPlayEvent) {
+          if (event instanceof MediaLoaderPlayEvent$1) {
             _this4.play();
-          } else if (event instanceof MediaLoaderPauseEvent) {
+          } else if (event instanceof MediaLoaderPauseEvent$1) {
             _this4.pause();
           }
         }
@@ -14849,7 +15112,7 @@ var ImageService = /*#__PURE__*/function () {
   function PanoramaLoader() {}
 
   PanoramaLoader.load = function load(asset, renderer, callback) {
-    MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
+    MediaLoader.events$.next(new MediaLoaderDisposeEvent$1(this));
     this.video = null;
 
     if (!asset) {
@@ -14991,7 +15254,7 @@ var ImageService = /*#__PURE__*/function () {
       video.play().then(function () {
         // console.log('PanoramaLoader.play.success', this.video.src);
         if (!silent) {
-          MediaLoader.events$.next(new MediaLoaderPlayEvent(_this));
+          MediaLoader.events$.next(new MediaLoaderPlayEvent$1(_this));
         }
       }, function (error) {
         console.log('PanoramaLoader.play.error', video.src, error);
@@ -15008,7 +15271,7 @@ var ImageService = /*#__PURE__*/function () {
       video.pause();
 
       if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
+        MediaLoader.events$.next(new MediaLoaderPauseEvent$1(this));
       }
     }
   };
@@ -21018,6 +21281,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
               }
             });
 
+            StateService.patchState({
+              zoomedId: message.itemId
+            });
             break;
           }
 
@@ -25326,6 +25592,8 @@ LanguageComponent.meta = {
   var _proto = LayoutComponent.prototype;
 
   _proto.onInit = function onInit() {
+    var _this = this;
+
     var meetingUrl = this.meetingUrl;
     var embedViewId = meetingUrl.embedViewId;
     this.state = {
@@ -25366,15 +25634,61 @@ LanguageComponent.meta = {
     this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     var vrService = this.vrService = VRService.getService();
     console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
+
+    setTimeout(function () {
+      var type = ToastType.Dialog;
+
+      switch (type) {
+        case ToastType.Info:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_sent')
+          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
+            if (event instanceof ToastResolveEvent) {
+              console.log('ToastResolveEvent', event);
+            }
+          });
+          break;
+
+        case ToastType.Alert:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_sent'),
+            type: type,
+            position: ToastPosition.BottomRight
+          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
+            if (event instanceof ToastResolveEvent) {
+              console.log('ToastResolveEvent', event);
+            } else if (event instanceof ToastRejectEvent) {
+              console.log('ToastRejectEvent', event);
+            }
+          });
+          break;
+
+        case ToastType.Dialog:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_dialog'),
+            acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
+            rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
+            type: type,
+            position: ToastPosition.BottomRight
+          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
+            if (event instanceof ToastResolveEvent) {
+              console.log('ToastResolveEvent', event);
+            } else if (event instanceof ToastRejectEvent) {
+              console.log('ToastRejectEvent', event);
+            }
+          });
+          break;
+      }
+    }, 3000);
   };
 
   _proto.setLanguage = function setLanguage(language) {
-    var _this = this;
+    var _this2 = this;
 
     this.languageService.setLanguage$(language).pipe(first()).subscribe(function (_) {
-      _this.showLanguages = false;
+      _this2.showLanguages = false;
 
-      _this.pushChanges();
+      _this2.pushChanges();
     });
   };
 
@@ -25449,12 +25763,12 @@ LanguageComponent.meta = {
   };
 
   _proto.fullscreen$ = function fullscreen$() {
-    var _this2 = this;
+    var _this3 = this;
 
     return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
       var fullScreen = document.fullscreenElement != null; // console.log('fullscreen$', fullScreen);
 
-      _this2.patchState({
+      _this3.patchState({
         fullScreen: fullScreen
       });
     }));
@@ -25514,7 +25828,7 @@ LanguageComponent.meta = {
   };
 
   _proto.showLove = function showLove(view) {
-    var _this3 = this;
+    var _this4 = this;
 
     if (view && this.view.id === view.id) {
       var skipTimeout = this.view.showLove;
@@ -25524,9 +25838,9 @@ LanguageComponent.meta = {
 
       if (!skipTimeout) {
         setTimeout(function () {
-          _this3.view.showLove = false;
+          _this4.view.showLove = false;
 
-          _this3.pushChanges();
+          _this4.pushChanges();
         }, 3100);
       }
     }
@@ -26843,7 +27157,7 @@ VirtualStructure.meta = {
     var page = document.querySelector('.page');
     return MediaLoader.events$.pipe( // filter(event => event.loader.item.id === this.media.item.id),
     operators.tap(function (event) {
-      if (event instanceof MediaLoaderPlayEvent) {
+      if (event instanceof MediaLoaderPlayEvent$1) {
         _this.media = event.loader;
         _this.playing = true;
         node.classList.add('active');
@@ -26851,7 +27165,7 @@ VirtualStructure.meta = {
 
         _this.pushChanges();
       } else if (_this.media === event.loader) {
-        if (event instanceof MediaLoaderPauseEvent) {
+        if (event instanceof MediaLoaderPauseEvent$1) {
           _this.playing = false;
 
           _this.pushChanges();
@@ -26861,7 +27175,7 @@ VirtualStructure.meta = {
 
             _this.pushChanges();
           }
-        } else if (event instanceof MediaLoaderDisposeEvent) {
+        } else if (event instanceof MediaLoaderDisposeEvent$1) {
           _this.media = null;
           node.classList.remove('active');
           page.classList.remove('media-player-active');
