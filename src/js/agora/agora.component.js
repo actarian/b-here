@@ -19,7 +19,7 @@ import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
-import MediaLoader from '../world/media/media-loader';
+import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent } from '../world/media/media-loader';
 import VRService from '../world/vr.service';
 import { AgoraChecklistService } from './agora-checklist.service';
 import AgoraService from './agora.service';
