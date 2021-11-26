@@ -10,10 +10,10 @@ import LocationService from '../location/location.service';
 import { MeetingId } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
 import MessageService from '../message/message.service';
-import ModalService, { ModalResolveEvent } from '../modal/modal.service';
+import ModalService from '../modal/modal.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
-import ToastService from '../toast/toast.service';
+import ToastService, { ToastPosition, ToastResolveEvent, ToastType } from '../toast/toast.service';
 import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
@@ -353,6 +353,7 @@ export default class AgoraComponent extends Component {
 				StateService.patchState({ status: AgoraStatus.Connected, hosted: true });
 			});
 			this.checkSelfServiceProposition();
+			this.checkSelfServiceAudio();
 		} else {
 			AgoraChecklistService.isChecked$().pipe(
 				first(),
@@ -422,7 +423,24 @@ export default class AgoraComponent extends Component {
 				case MessageType.ChannelMembers:
 					if (this.isSelfServiceSupport) {
 						const members = message.members;
-						console.log('AgoraComponent.MessageService.out$.ChannelMembers', members);
+						// console.log('AgoraComponent.MessageService.out$.ChannelMembers', members, members.length);
+						if (members.length > 0) {
+							ToastService.open$({
+								message: LabelPipe.transform('bhere_support_request_sent'),
+								type: ToastType.Alert, position: ToastPosition.BottomRight
+							});
+							MessageService.send({ type: MessageType.SupportRequest });
+						} else {
+							ToastService.open$({
+								message: LabelPipe.transform('bhere_support_request_leaved'),
+								type: ToastType.Alert, position: ToastPosition.BottomRight
+							});
+						}
+					}
+					break;
+				case MessageType.SupportRequest:
+					if (this.isSelfServiceProposition) {
+						this.openSupportRequestDialog(message.clientInfo);
 					}
 					break;
 				case MessageType.RequestPeerInfo:
@@ -434,23 +452,37 @@ export default class AgoraComponent extends Component {
 						uid: StateService.state.uid,
 						screenUid: StateService.state.screenUid,
 						controllingId: StateService.state.controlling,
+						mode: StateService.state.mode,
 					};
 					MessageService.sendBack(message);
+					/*
 					if (this.isSelfServiceSupport) {
 						this.meetingUrl.support = false; // !!! spostare su ChannelMembers
-						ToastService.open$({ message: LabelPipe.transform('bhere_support_request_sent') });
+						ToastService.open$({
+							message: LabelPipe.transform('bhere_support_request_sent'),
+							type: ToastType.Alert, position: ToastPosition.BottomRight
+						});
 					}
+					*/
 					break;
-				case MessageType.RequestPeerInfoResult:
-					if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
-						this.openSupportRequestDialog(message.clientInfo);
-					}
-					break;
+				/*
+			case MessageType.RequestPeerInfoResult:
+				if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
+					this.openSupportRequestDialog(message.clientInfo);
+				}
+				break;
+				*/
 				case MessageType.SupportRequestAccepted:
-					ToastService.open$({ message: LabelPipe.transform('bhere_support_request_accepted') });
+					ToastService.open$({
+						message: LabelPipe.transform('bhere_support_request_accepted'),
+						type: ToastType.Alert, position: ToastPosition.BottomRight
+					});
 					break;
 				case MessageType.SupportRequestRejected:
-					ToastService.open$({ message: LabelPipe.transform('bhere_support_request_rejected') });
+					ToastService.open$({
+						message: LabelPipe.transform('bhere_support_request_rejected'),
+						type: ToastType.Alert, position: ToastPosition.BottomRight
+					});
 					break;
 				case MessageType.RequestControl:
 					// console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
@@ -666,6 +698,10 @@ export default class AgoraComponent extends Component {
 	toggleVolume() {
 		const volumeMuted = !this.state.volumeMuted;
 		StateService.patchState({ volumeMuted });
+		const selfServiceAudio = this.selfServiceAudio;
+		if (selfServiceAudio) {
+			selfServiceAudio.volume = volumeMuted ? 0 : 0.5;
+		}
 	}
 
 	toggleMode() {
@@ -845,7 +881,55 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
+	checkSelfServiceAudio() {
+		if (StateService.state.role === RoleType.SelfService && environment.selfServiceAudio) {
+			const selfServiceAudio = document.createElement('audio');
+			selfServiceAudio.setAttribute('playsinline', 'true');
+			selfServiceAudio.setAttribute('autoplay', 'true');
+			selfServiceAudio.setAttribute('loop', 'true');
+			selfServiceAudio.volume = 0.5;
+			selfServiceAudio.src = environment.selfServiceAudio;
+			const { node } = getContext(this);
+			node.parentNode.appendChild(selfServiceAudio);
+			this.selfServiceAudio = selfServiceAudio;
+			MediaLoader.events$.pipe(
+				tap(event => {
+					if (event instanceof MediaLoaderPlayEvent) {
+						selfServiceAudio.pause();
+						// selfServiceAudio.volume = 0;
+					} else if (event instanceof MediaLoaderPauseEvent || event instanceof MediaLoaderDisposeEvent) {
+						selfServiceAudio.play();
+						// selfServiceAudio.volume = 0.5;
+					}
+				}),
+			);
+		}
+	}
+
 	openSupportRequestDialog(clientInfo) {
+		ToastService.open$({
+			message: LabelPipe.transform('bhere_support_request_dialog'),
+			acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
+			rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
+			type: ToastType.Dialog, position: ToastPosition.BottomRight
+		}).pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(event => {
+			if (event instanceof ToastResolveEvent) {
+				MessageService.send({ type: MessageType.SupportRequestAccepted });
+				const name = StateService.state.name;
+				const meetingId = new MeetingId(StateService.state.link);
+				meetingId.role = RoleType.Streamer;
+				const meetingUrl = new MeetingUrl({ link: meetingId.toString(), name });
+				const href = meetingUrl.toGuidedTourUrl();
+				setTimeout(() => {
+					window.location.href = href;
+				}, 1000);
+			} else {
+				MessageService.send({ type: MessageType.SupportRequestRejected });
+			}
+		});
+		/*
 		ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
@@ -863,6 +947,7 @@ export default class AgoraComponent extends Component {
 				MessageService.send({ type: MessageType.SupportRequestRejected });
 			}
 		});
+		*/
 	}
 
 	/*

@@ -5,6 +5,65 @@ export const USE_AUTODETECT = false;
 export const USE_VOLUME_INDICATOR = false;
 export const USE_RTM = true;
 
+export const VIDEO_PROFILES = [
+	/*
+	['120p_1', 160, 120, 15, 65, false]],
+	['120p_3', 120, 120, 15, 50, false]],
+	['180p_1', 320, 180, 15, 140, false]],
+	['180p_3', 180, 180, 15, 100, false]],
+	['180p_4', 240, 180, 15, 120, false]],
+	['240p_1', 320, 240, 15, 200, false]],
+	['240p_3', 240, 240, 15, 140, false]],
+	['240p_4', 424, 240, 15, 220, false]],
+	['360p_1', 640, 360, 15, 400, false]],
+	['360p_3', 360, 360, 15, 260, false]],
+	['360p_4', 640, 360, 30, 600, false]],
+	['360p_6', 360, 360, 30, 400, false]],
+	['360p_7', 480, 360, 15, 320, false]],
+	['360p_8', 480, 360, 30, 490, false]],
+	['360p_9', 640, 360, 15, 800, false]],
+	['360p_10', 640, 360, 24, 800, false]],
+	['360p_11', 640, 360, 24, 1000, false]],
+	*/
+	['480p_1', 640, 480, 15, 500, true],
+	['480p_2', 640, 480, 30, 1000, true],
+	['480p_3', 480, 480, 15, 400, true],
+	['480p_4', 640, 480, 30, 750, true],
+	['480p_6', 480, 480, 30, 600, true],
+	['480p_8', 848, 480, 15, 610, true],
+	['480p_9', 848, 480, 30, 930, true],
+	['480p_10', 640, 480, 10, 400, true],
+	['720p_1', 1280, 720, 15, 1130, true],
+	['720p_2', 1280, 720, 30, 2000, true],
+	['720p_3', 1280, 720, 30, 1710, true],
+	['720p_5', 960, 720, 15, 910, true],
+	['720p_6', 960, 720, 30, 1380, true],
+	['1080p_1', 1920, 1080, 15, 2080, false],
+	['1080p_2', 1920, 1080, 30, 3000, false],
+	['1080p_3', 1920, 1080, 30, 3150, false],
+	['1080p_5', 1920, 1080, 60, 4780, false],
+];
+
+export const StreamQualities = VIDEO_PROFILES.map(a => {
+	return {
+		profile: a[0],
+		resolution: {
+			width: a[1],
+			height: a[2],
+		},
+		frameRate: {
+			min: a[3],
+			max: a[3],
+		},
+		bitrate: {
+			min: a[4],
+			max: a[4],
+		},
+		compatible: a[5],
+	};
+});
+
+/*
 export const StreamQualities = [{
 	// id: 1,
 	// name: '4K 2160p 3840x2160',
@@ -86,12 +145,23 @@ export const StreamQualities = [{
 		max: 200
 	}
 }];
+*/
 
+export function getStreamQuality(state) {
+	if ((state.role === RoleType.Publisher || state.role === RoleType.SmartDevice)) {
+		return StreamQualities.find(x => x.profile === environment.profiles.publisher);
+	} else {
+		return StreamQualities.find(x => x.profile === environment.profiles.streamer);
+	}
+}
+
+/*
 export function getStreamQuality(state) {
 	const lowestQuality = StreamQualities[StreamQualities.length - 1];
 	const highestQuality = environment.flags.maxQuality ? StreamQualities[0] : StreamQualities[StreamQualities.length - 2];
 	return (state.role === RoleType.Publisher || state.role === RoleType.SmartDevice) ? highestQuality : lowestQuality;
 }
+*/
 
 export const AgoraStatus = {
 	Idle: 'idle',
@@ -110,6 +180,7 @@ export const MessageType = {
 	AgoraEvent: 'agoraEvent',
 	Ping: 'ping',
 	ChannelMembers: 'channelMembers',
+	SupportRequest: 'supportRequest',
 	SupportRequestAccepted: 'supportRequestAccepted',
 	SupportRequestRejected: 'supportRequestRejected',
 	RequestControl: 'requestControl',
