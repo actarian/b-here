@@ -8062,7 +8062,7 @@ _defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));
 _defineProperty(ViewService, "view_", null);var MediaLoaderEvent = function MediaLoaderEvent(loader) {
   this.loader = loader;
 };
-var MediaLoaderPlayEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent) {
+var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
   _inheritsLoose(MediaLoaderPlayEvent, _MediaLoaderEvent);
 
   function MediaLoaderPlayEvent() {
@@ -8071,7 +8071,7 @@ var MediaLoaderPlayEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent) {
 
   return MediaLoaderPlayEvent;
 }(MediaLoaderEvent);
-var MediaLoaderPauseEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent2) {
+var MediaLoaderPauseEvent = /*#__PURE__*/function (_MediaLoaderEvent2) {
   _inheritsLoose(MediaLoaderPauseEvent, _MediaLoaderEvent2);
 
   function MediaLoaderPauseEvent() {
@@ -8080,7 +8080,7 @@ var MediaLoaderPauseEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent2) {
 
   return MediaLoaderPauseEvent;
 }(MediaLoaderEvent);
-var MediaLoaderDisposeEvent$1 = /*#__PURE__*/function (_MediaLoaderEvent3) {
+var MediaLoaderDisposeEvent = /*#__PURE__*/function (_MediaLoaderEvent3) {
   _inheritsLoose(MediaLoaderDisposeEvent, _MediaLoaderEvent3);
 
   function MediaLoaderDisposeEvent() {
@@ -8339,7 +8339,7 @@ var MediaLoader = /*#__PURE__*/function () {
 
       var onEnded = function onEnded() {
         if (!loop) {
-          MediaLoader.events$.next(new MediaLoaderPauseEvent$1(_this2));
+          MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
         }
       };
 
@@ -8379,7 +8379,7 @@ var MediaLoader = /*#__PURE__*/function () {
       this.video.play().then(function () {
         // console.log('MediaLoader.play.success', this.item.asset.file);
         if (!silent) {
-          MediaLoader.events$.next(new MediaLoaderPlayEvent$1(_this3));
+          MediaLoader.events$.next(new MediaLoaderPlayEvent(_this3));
         }
       }, function (error) {
         console.log('MediaLoader.play.error', _this3.item.asset.file, error);
@@ -8394,7 +8394,7 @@ var MediaLoader = /*#__PURE__*/function () {
       this.video.pause();
 
       if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent$1(this));
+        MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
       }
     }
   };
@@ -8420,7 +8420,7 @@ var MediaLoader = /*#__PURE__*/function () {
     if (this.isVideo && this.video) {
       this.video.ontimeupdate = null;
       this.video.onended = null;
-      MediaLoader.events$.next(new MediaLoaderDisposeEvent$1(this));
+      MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
     }
 
     delete this.video;
@@ -9599,12 +9599,13 @@ var VRService = /*#__PURE__*/function () {
       node.parentNode.appendChild(selfServiceAudio);
       this.selfServiceAudio = selfServiceAudio;
       MediaLoader.events$.pipe(operators.tap(function (event) {
+        // console.log('AgoraComponent.checkSelfServiceAudio MediaLoader.event$', event);
         if (event instanceof MediaLoaderPlayEvent) {
           selfServiceAudio.pause(); // selfServiceAudio.volume = 0;
         } else if (event instanceof MediaLoaderPauseEvent || event instanceof MediaLoaderDisposeEvent) {
           selfServiceAudio.play(); // selfServiceAudio.volume = 0.5;
         }
-      }));
+      }), operators.takeUntil(this.unsubscribe$)).subscribe();
     }
   };
 
@@ -14058,7 +14059,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     return MediaLoader.events$.pipe(operators.filter(function (event) {
       return event.loader.item && event.loader.item.id === item.id;
     }), operators.map(function (event) {
-      if (event instanceof MediaLoaderPlayEvent$1) {
+      if (event instanceof MediaLoaderPlayEvent) {
         _this4.playing = true;
 
         if (_this4.playBtn) {
@@ -14068,7 +14069,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
         _this4.emit('playing', true);
 
         _this4.onOut();
-      } else if (event instanceof MediaLoaderPauseEvent$1) {
+      } else if (event instanceof MediaLoaderPauseEvent) {
         _this4.playing = false;
 
         if (_this4.playBtn) {
@@ -14090,9 +14091,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
         if (eventItem) {
           // console.log('MediaLoader.events$.eventItem', event, eventItem);
-          if (event instanceof MediaLoaderPlayEvent$1) {
+          if (event instanceof MediaLoaderPlayEvent) {
             _this4.play();
-          } else if (event instanceof MediaLoaderPauseEvent$1) {
+          } else if (event instanceof MediaLoaderPauseEvent) {
             _this4.pause();
           }
         }
@@ -15112,7 +15113,7 @@ var ImageService = /*#__PURE__*/function () {
   function PanoramaLoader() {}
 
   PanoramaLoader.load = function load(asset, renderer, callback) {
-    MediaLoader.events$.next(new MediaLoaderDisposeEvent$1(this));
+    MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
     this.video = null;
 
     if (!asset) {
@@ -15254,7 +15255,7 @@ var ImageService = /*#__PURE__*/function () {
       video.play().then(function () {
         // console.log('PanoramaLoader.play.success', this.video.src);
         if (!silent) {
-          MediaLoader.events$.next(new MediaLoaderPlayEvent$1(_this));
+          MediaLoader.events$.next(new MediaLoaderPlayEvent(_this));
         }
       }, function (error) {
         console.log('PanoramaLoader.play.error', video.src, error);
@@ -15271,7 +15272,7 @@ var ImageService = /*#__PURE__*/function () {
       video.pause();
 
       if (!silent) {
-        MediaLoader.events$.next(new MediaLoaderPauseEvent$1(this));
+        MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
       }
     }
   };
@@ -27153,7 +27154,7 @@ VirtualStructure.meta = {
     var page = document.querySelector('.page');
     return MediaLoader.events$.pipe( // filter(event => event.loader.item.id === this.media.item.id),
     operators.tap(function (event) {
-      if (event instanceof MediaLoaderPlayEvent$1) {
+      if (event instanceof MediaLoaderPlayEvent) {
         _this.media = event.loader;
         _this.playing = true;
         node.classList.add('active');
@@ -27161,7 +27162,7 @@ VirtualStructure.meta = {
 
         _this.pushChanges();
       } else if (_this.media === event.loader) {
-        if (event instanceof MediaLoaderPauseEvent$1) {
+        if (event instanceof MediaLoaderPauseEvent) {
           _this.playing = false;
 
           _this.pushChanges();
@@ -27171,7 +27172,7 @@ VirtualStructure.meta = {
 
             _this.pushChanges();
           }
-        } else if (event instanceof MediaLoaderDisposeEvent$1) {
+        } else if (event instanceof MediaLoaderDisposeEvent) {
           _this.media = null;
           node.classList.remove('active');
           page.classList.remove('media-player-active');

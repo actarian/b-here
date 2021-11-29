@@ -894,6 +894,7 @@ export default class AgoraComponent extends Component {
 			this.selfServiceAudio = selfServiceAudio;
 			MediaLoader.events$.pipe(
 				tap(event => {
+					// console.log('AgoraComponent.checkSelfServiceAudio MediaLoader.event$', event);
 					if (event instanceof MediaLoaderPlayEvent) {
 						selfServiceAudio.pause();
 						// selfServiceAudio.volume = 0;
@@ -902,7 +903,8 @@ export default class AgoraComponent extends Component {
 						// selfServiceAudio.volume = 0.5;
 					}
 				}),
-			);
+				takeUntil(this.unsubscribe$),
+			).subscribe();
 		}
 	}
 
