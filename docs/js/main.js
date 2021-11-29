@@ -9599,12 +9599,13 @@ var VRService = /*#__PURE__*/function () {
       node.parentNode.appendChild(selfServiceAudio);
       this.selfServiceAudio = selfServiceAudio;
       MediaLoader.events$.pipe(operators.tap(function (event) {
+        // console.log('AgoraComponent.checkSelfServiceAudio MediaLoader.event$', event);
         if (event instanceof MediaLoaderPlayEvent) {
           selfServiceAudio.pause(); // selfServiceAudio.volume = 0;
         } else if (event instanceof MediaLoaderPauseEvent || event instanceof MediaLoaderDisposeEvent) {
           selfServiceAudio.play(); // selfServiceAudio.volume = 0.5;
         }
-      }));
+      }), operators.takeUntil(this.unsubscribe$)).subscribe();
     }
   };
 
