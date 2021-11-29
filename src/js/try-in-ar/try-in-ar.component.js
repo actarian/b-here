@@ -2,7 +2,7 @@ import { Component, getContext } from 'rxcomp';
 import { first } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { environment } from '../environment';
-import LocationService from '../location/location.service';
+import { MeetingUrl } from '../meeting/meeting-url';
 import ViewService from '../view/view.service';
 
 export default class TryInARComponent extends Component {
@@ -53,9 +53,10 @@ export default class TryInARComponent extends Component {
 	}
 
 	getViewId() {
-		let viewId = LocationService.get('viewId') || null;
-		if (viewId) {
-			viewId = parseInt(viewId);
+		const meetingUrl = new MeetingUrl();
+		let viewId = null;
+		if (meetingUrl.viewId) {
+			viewId = parseInt(meetingUrl.viewId);
 		}
 		return viewId;
 	}

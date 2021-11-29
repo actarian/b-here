@@ -11,14 +11,59 @@
 	height: 100%;
 }
 
-.group--scrollview {
+.group--scrollview,
+.group--emoji {
 	display: block;
 	padding: 40px 0 20px 0;
 	overflow-x: hidden;
 	overflow-y: auto;
-	height: calc(100% - 90px);
-	flex: 0 0 calc(100% - 90px);
 	@include scrollbar();
+
+	&.rows--1 {
+		height: calc(100% - 90px);
+		flex: 0 0 calc(100% - 90px);
+	}
+
+	&.rows--2 {
+		height: calc(100% - 106px);
+		flex: 0 0 calc(100% - 106px);
+	}
+
+	&.rows--3 {
+		height: calc(100% - 122px);
+		flex: 0 0 calc(100% - 122px);
+	}
+
+	&.rows--4 {
+		height: calc(100% - 138px);
+		flex: 0 0 calc(100% - 138px);
+	}
+}
+
+.group--emoji {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding: 40px 4px 20px 4px;
+	background: $background-negative;
+	background: #222;
+	color: $foreground-negative;
+
+	.btn--emoji {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		width: 50px;
+		height: 30px;
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 3px;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
+	}
 }
 
 .group--virtual {
@@ -28,6 +73,7 @@
 	height: 100%;
 }
 
+/*
 .listing--messages {
 	display: flex;
 	flex-direction: column;
@@ -37,6 +83,7 @@
 		display: flex;
 	}
 }
+*/
 
 $message-radius: 10px;
 $message-padding: 10px;
@@ -70,6 +117,14 @@ $message-padding: 10px;
 		max-width: calc(100% - 55px);
 		border-radius: 0 $message-radius $message-radius $message-radius;
 		color: $foreground-negative;
+		user-select: text;
+		-webkit-touch-callout: default;
+		word-break: break-word;
+
+		a {
+			text-decoration: underline;
+			word-break: break-word;
+		}
 	}
 
 	&.me {
@@ -116,7 +171,6 @@ $message-padding: 10px;
 }
 
 .group--message {
-	flex: 0 0 90px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -129,30 +183,51 @@ $message-padding: 10px;
 	}
 
 	.group--form {
-		margin: 0;
-		padding: 0;
-		border: none;
-		background: rgba(0, 0, 0, 0.2);
-		padding: 10px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		margin: 0;
+		padding: 10px 10px;
+		border: none;
 		border-radius: 30px;
+		background: rgba(0, 0, 0, 0.2);
+	}
+
+	.control--pre {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0;
+		margin: 0;
+		width: 32px;
+		height: 32px;
+		border-radius: 16px;
+		cursor: pointer;
+
+		svg {
+			width: 18px;
+			height: 18px;
+			fill: $foreground-primary-dimmed;
+		}
 	}
 
 	.control--text {
 		margin: 0;
 		padding: 0 8px;
-		font-size: 20px;
+		font-size: 14px;
 		font-weight: $font-regular;
-		line-height: 1.2;
+		line-height: 16px;
 		color: $foreground-negative;
+		resize: none;
+		@include scrollbar();
 
+		::placeholder,
 		::-webkit-input-placeholder,
 		::-moz-placeholder,
 		:-ms-input-placeholder,
 		:-moz-placeholder {
-			font-size: 20px;
+			font-size: 14px;
+			line-height: 16px;
 			color: $foreground-primary-dimmed;
 		}
 	}
@@ -175,10 +250,30 @@ $message-padding: 10px;
 			fill: $foreground-primary-dimmed;
 		}
 	}
+
+	&.rows--1 {
+		height: 90px;
+		flex: 0 0 90px;
+	}
+
+	&.rows--2 {
+		height: 106px;
+		flex: 0 0 106px;
+	}
+
+	&.rows--3 {
+		height: 122px;
+		flex: 0 0 122px;
+	}
+
+	&.rows--4 {
+		height: 138px;
+		flex: 0 0 138px;
+	}
 }
 
 .group--close {
-	position: absolute;
+	position: fixed;
 	top: 10px;
 	right: 10px;
 

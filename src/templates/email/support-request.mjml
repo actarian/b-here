@@ -1,0 +1,90 @@
+<mjml owa="desktop">
+  <mj-head>
+    <mj-title>B-Here - Websolute Spa</mj-title>
+    <mj-preview>B-Here - Websolute Spa</mj-preview>
+    <mj-font name="Work Sans" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800" />
+    <mj-style>
+      /*
+	@font-face {
+		font-family: 'Work Sans';
+		src: url('https://b-here.wslabs.it/Modules/B-Here/Client/docs/fonts/work-sans/Work Sans-Book.otf') format('opentype'),
+		url('https://b-here.wslabs.it/Modules/B-Here/Client/docs/fonts/work-sans/Work Sans-Book.woff') format('woff'),
+		url('https://b-here.wslabs.it/Modules/B-Here/Client/docs/fonts/Work Sans-Book.ttf') format('truetype'),
+		url('https://b-here.wslabs.it/Modules/B-Here/Client/docs/fonts/Work Sans-Book.svg#Work Sans-Book') format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
+	*/
+      p {
+        margin: 0 0 5px 0;
+      }
+    </mj-style>
+    <mj-attributes>
+      <mj-text padding="20px 0 5px 0" />
+      <mj-all font-family="Work Sans" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+
+    <!-- Header -->
+    <mj-section padding="5px 10px 5px 10px" border-bottom="1px solid #d8dfe4">
+      <mj-column>
+        <mj-image width="67.5px" height="25px" href="https://b-here.wslabs.it" src="https://b-here.wslabs.it/Modules/B-Here/Client/docs/img/email/logo-b-here.png"></mj-image>
+      </mj-column>
+    </mj-section>
+
+    <!-- Body -->
+
+    <!-- Simple Body -->
+    <mj-section padding="20px 10px 20px 10px">
+      <mj-column width="100%">
+        <!-- Title -->
+        <mj-text align="center" color="#101010" font-family="Work Sans, serif" font-size="36px" line-height="46px" letter-spacing="-2px" text-transform="uppercase">
+          Accesso Self Service
+        </mj-text>
+        <!-- Abstract -->
+        <mj-text align="center" color="#6d7b84" font-family="Work Sans, sans-serif" font-size="19px" line-height="26px" text-transform="uppercase">
+          {{username}}<br>ha eseguito l'accesso self service
+        </mj-text>
+        <!-- Text -->
+        <mj-text align="center" font-size="15px" color="#6d7b84" line-height="22px">
+          Per accedere al tour dell'utente e proporre il supporto clicca sul pulsante.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- End Simple Body -->
+
+    <!-- Cta Primary -->
+    <mj-section padding="20px 10px 30px 10px">
+      <mj-column>
+        <mj-button href="{{href}}" align="center" padding="15px 0 15px 0" inner-padding="15px 25px" font-size="15px" font-weight="bold" background-color="#0099FF" color="#ffffff" border="1px solid #A19C96" border-radius="0" text-transform="uppercase">
+          Accedi
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Body -->
+
+    <!-- Footer Colophon -->
+    <mj-section padding="20px 10px 20px 10px">
+      <mj-column>
+        <mj-text padding="6px 0 0 0" align="center" font-size="15px" line-height="20px" font-family="Work Sans, serif" color="#6d7b84">
+          Websolute S.p.A.<br>
+          Strada della Campanara, 15 61122 Pesaro (PU)
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer Privacy -->
+    <mj-section padding="20px 10px 80px 10px" border-top="1px solid #d8dfe4">
+      <mj-column>
+        <mj-text padding="6px 0 0 0" align="left" font-size="12px" line-height="16px" font-family="Work Sans, serif" color="#d8dfe4">
+          <p>
+            This message and its attachments contain information for the named person’s use only. This e-mail is confidential and is legally protected by the law 2016/679 “GDPR”. Reading, copying or any other unauthorised use or any other action deriving from the knowledge of this information are strictly forbidden. If you receive this correspondence in error you are kindly requested to notify the sender immediately to the above mentioned numbers and to delete the message. I confirm herewith the free subscription to the Mailing list of B-Here by Websolute Spa and I authorize the personal data treatment in accordance with EU law nr. n. 2016/679. To cancel to the Mailing list please send an e-mail to the address b-here@websolute.it writing “Cancellation Mailing list”.
+          </p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

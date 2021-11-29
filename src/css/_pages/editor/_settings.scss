@@ -1,0 +1,131 @@
+.ui__settings {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	top: 50px;
+	width: 100%;
+	height: calc(100% - 50px);
+	background: $background-tertiary;
+
+	&>.group--nav {
+		flex-basis: 210px;
+		height: 100%;
+		background: $background;
+		overflow-x: hidden;
+		overflow-y: auto;
+		@include scrollbar();
+	}
+
+	&>.group--content {
+		flex-basis: calc(100% - 210px);
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: stretch;
+		height: 100%;
+
+		&>.group--head {
+			flex-basis: 56px;
+			display: flex;
+			align-items: center;
+			padding: 0 20px;
+
+			.title {
+				color: $foreground;
+				font-size: 18px;
+				font-weight: $font-extrabold;
+				line-height: 1;
+			}
+		}
+
+		&>.group--main {
+			flex-basis: calc(100% - 144px);
+			padding: 0 20px;
+			overflow-x: hidden;
+			overflow-y: auto;
+			@include scrollbar();
+
+			.abstract {
+				font-size: 13px;
+				text-align: center;
+				color: $foreground-tertiary;
+			}
+		}
+
+		&>.group--foot {
+			flex-basis: 80px;
+			display: flex;
+			justify-content: center;
+			width: 100%;
+			padding: 15px 20px;
+
+			button {
+				flex: 1 1 auto;
+			}
+
+			&>button+button {
+				margin-left: 5px;
+			}
+		}
+	}
+}
+
+.nav--menu {
+	@extend %nav-vertical;
+	justify-content: flex-start;
+	align-items: flex-start;
+
+	&>.nav__item {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		padding: 20px 15px 20px 25px;
+		background: $background;
+		border-top: 1px solid $background-tertiary;
+		cursor: pointer;
+		transition: all ease-in-out $fastest;
+
+		&:last-child {
+			border-bottom: 1px solid $background-tertiary;
+		}
+
+		&:hover,
+		&.active {
+			background: $background-tertiary;
+		}
+
+		&>.title {
+			color: $foreground;
+			font-size: 14px;
+			font-weight: $font-extrabold;
+			line-height: 1;
+		}
+
+		&>.icon {
+			flex: 0 1 24px;
+			height: 24px;
+			margin-right: 5px;
+		}
+
+		svg {
+			width: 24px;
+			height: 24px;
+			color: currentColor;
+		}
+	}
+}
+
+.nav--views {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: calc(100% - 40px);
+	padding-right: 10px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	@include scrollbar();
+}
+
+@import "./menu";
+@import "./navmaps";

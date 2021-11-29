@@ -5,12 +5,13 @@ import { environment } from '../environment';
 import HttpService from '../http/http.service';
 import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
+import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
 import { mapView, ViewItemType } from '../view/view';
 
 export default class ViewService {
 
-	// action: { viewId:number, keepOrientation:boolean };
+	// action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
 	static action$_ = new BehaviorSubject(null);
 	static set action(action) {
 		this.action$_.next(action);
@@ -21,7 +22,7 @@ export default class ViewService {
 
 	// static viewId$_ = new BehaviorSubject(null);
 	static set viewId(viewId) {
-		this.action$_.next({ viewId, keepOrientation: false });
+		this.action$_.next({ viewId, keepOrientation: false, useLastOrientation: false });
 	}
 	static get viewId() {
 		const action = this.action$_.getValue();
@@ -53,8 +54,9 @@ export default class ViewService {
 
 	static view$(data, editor) {
 		const views = editor ? data.views : data.views.filter(x => x.type.name !== 'waiting-room');
-		const viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
-		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const meetingUrl = new MeetingUrl();
+		const viewId = meetingUrl.viewId;
+		const embedViewId = meetingUrl.embedViewId;
 		const firstViewId = views.length ? views[0].id : null;
 		const initialViewId = embedViewId || viewId || firstViewId;
 		this.action$_.next({ viewId: initialViewId });
@@ -64,8 +66,9 @@ export default class ViewService {
 				const view = data.views.find(view => view.id === action.viewId);
 				if (view) {
 					view.keepOrientation = action.keepOrientation || false;
+					view.useLastOrientation = action.useLastOrientation || false;
 				}
-				// console.log('ViewService.view$', action.viewId, action.keepOrientation);
+				// console.log('ViewService.view$', action.viewId, action.keepOrientation, action.useLastOrientation);
 				return view || this.getWaitingRoom(data);
 			}),
 		);
@@ -78,6 +81,9 @@ export default class ViewService {
 				const view = datas[0];
 				const hosted = datas[1];
 				return hosted ? view : waitingRoom;
+			}),
+			distinctUntilChanged((a, b) => {
+				return a.id === b.id;
 			}),
 			tap(view => {
 				this.view = view;

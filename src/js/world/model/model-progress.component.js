@@ -1,3 +1,4 @@
+import { getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 // import * as THREE from 'three';
 import { environment } from '../../environment';
@@ -55,10 +56,22 @@ export default class ModelProgressComponent extends ModelComponent {
 			takeUntil(this.unsubscribe$),
 		).subscribe((session) => this.visible = session != null); // loose
 		// this.progress = LoaderService.progress;
+		/*
+		const { node } = getContext(this);
+		const inner = node.querySelector('.inner');
+		LoaderService.progress$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(progress => {
+			progress.count > 0 ? node.classList.add('active') : node.classList.remove('active');
+			inner.style.width = `${progress.count}%`;
+		});
+		*/
 	}
 
 	onCreate(mount, dismount) {
 		// console.log('ModelProgressComponent.onCreate');
+		const { node } = getContext(this);
+		const inner = node.querySelector('.inner');
 		this.getCanvasTexture().then(result => {
 			const mesh = this.createMesh(result);
 			if (typeof mount === 'function') {
@@ -67,6 +80,8 @@ export default class ModelProgressComponent extends ModelComponent {
 			LoaderService.progress$.pipe(
 				takeUntil(this.unsubscribe$)
 			).subscribe(progress => {
+				progress.count > 0 ? node.classList.add('active') : node.classList.remove('active');
+				inner.style.width = `${progress.value * 100}%`;
 				if (progress.count) {
 					this.title = progress.value === 0 ? LOADING_BANNER.title : progress.title;
 				} else {

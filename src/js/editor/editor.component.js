@@ -16,13 +16,27 @@ import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
 
+export const SETTINGS = {
+	menu: [{
+		id: 'menu',
+		title: 'editor_menu',
+		active: true,
+	}, {
+		id: 'navmaps',
+		title: 'editor_navmaps',
+		active: true,
+	}],
+	current: null,
+	active: false,
+};
+
 export default class EditorComponent extends Component {
 
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
+		this.settings = this.getSettings();
 		this.aside = false;
-		this.settings = false;
 		this.state = {};
 		this.data = null;
 		this.views = null;
@@ -117,7 +131,7 @@ export default class EditorComponent extends Component {
 		const viewId = navItem.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
-			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation };
+			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation, useLastOrientation: navItem.useLastOrientation };
 		}
 	}
 
@@ -155,8 +169,21 @@ export default class EditorComponent extends Component {
 		window.dispatchEvent(new Event('resize'));
 	}
 
+	getSettings() {
+		const settings = Object.assign({}, SETTINGS);
+		settings.menu = settings.menu.filter(x => environment.flags[x.id]);
+		settings.current = settings.menu.length ? settings.menu[0].id : null;
+		return settings;
+	}
+
 	onToggleSettings() {
-		this.settings = !this.settings;
+		const settings = this.settings;
+		settings.active = !settings.active;
+		this.pushChanges();
+	}
+
+	onSelectSetting(item) {
+		this.settings.current = item.id;
 		this.pushChanges();
 	}
 

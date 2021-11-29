@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
 import LabelPipe from '../label/label.pipe';
-import LocationService from '../location/location.service';
+import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
 import { UserService } from '../user/user.service';
 
@@ -73,21 +73,8 @@ export default class AgoraLoginComponent extends Component {
 	}
 
 	onNext(user) {
-		this.replaceUrl(user);
+		MeetingUrl.replaceWithUser(user);
 		this.login.next(user);
-	}
-
-	replaceUrl(user) {
-		if ('history' in window) {
-			const role = LocationService.get('role') || null;
-			const link = LocationService.get('link') || null;
-			const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
-			const url = `${window.location.origin}${window.location.pathname}?link=${link}`
-				+ (name ? `&name=${name}` : '')
-				+ (role ? `&role=${role}` : '');
-			// console.log('AgoraLoginComponent.url', url);
-			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
-		}
 	}
 }
 

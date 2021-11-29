@@ -2,6 +2,7 @@ import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
 import AccessCodeComponent from './access/access-code.component';
 import AccessComponent from './access/access.component';
+import AgoraChatEmojiComponent from './agora/agora-chat-emoji.component';
 import AgoraChatComponent from './agora/agora-chat.component';
 import AgoraCheckComponent from './agora/agora-check.component';
 import AgoraChecklistComponent from './agora/agora-checklist.component';
@@ -48,9 +49,11 @@ import LabelPipe from './label/label.pipe';
 import LanguageComponent from './language/language.component';
 import LayoutComponent from './layout/layout.component';
 import LazyDirective from './lazy/lazy.directive';
+import MessagePipe from './message/message.pipe';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
 import SlugPipe from './slug/slug.pipe';
+import SupportRequestModalComponent from './support-request/support-request-modal.component';
 import SvgIconStructure from './svg/svg-icon.structure';
 import TitleDirective from './title/title.directive';
 import TryInARModalComponent from './try-in-ar/try-in-ar-modal.component';
@@ -87,6 +90,7 @@ AppModule.meta = {
 		AccessCodeComponent,
 		AccessComponent,
 		AgoraChatComponent,
+		AgoraChatEmojiComponent,
 		AgoraCheckComponent,
 		AgoraChecklistComponent,
 		AgoraComponent,
@@ -130,6 +134,7 @@ AppModule.meta = {
 		LayoutComponent,
 		LazyDirective,
 		MediaPlayerComponent,
+		MessagePipe,
 		ModalComponent,
 		ModalOutletComponent,
 		ModelBannerComponent,
@@ -147,6 +152,7 @@ AppModule.meta = {
 		ModelRoomComponent,
 		ModelTextComponent,
 		SlugPipe,
+		SupportRequestModalComponent,
 		SvgIconStructure,
 		TestComponent,
 		TitleDirective,

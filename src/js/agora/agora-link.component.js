@@ -2,22 +2,21 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { takeUntil } from 'rxjs/operators';
-import { environment } from '../environment';
-import LocationService from '../location/location.service';
+import { MeetingId, MEETING_ID_VALIDATOR } from '../meeting/meeting-id';
+import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
-import { RoleType } from '../user/user';
 
 export default class AgoraLinkComponent extends Component {
 
 	onInit() {
 		this.state = {};
 		const form = this.form = new FormGroup({
-			link: new FormControl(null, [Validators.PatternValidator(/^\d{9}-\d{4}-\d{13}$/), Validators.RequiredValidator()]),
-			linkAttendee: null,
-			linkStreamer: null,
-			linkViewer: null,
-			linkSmartDevice: null,
-			// link: new FormControl(null),
+			id: new FormControl(null, [Validators.PatternValidator(MEETING_ID_VALIDATOR), Validators.RequiredValidator()]),
+			idAttendee: null,
+			idStreamer: null,
+			idViewer: null,
+			idSmartDevice: null,
+			// id: new FormControl(null),
 		});
 		const controls = this.controls = form.controls;
 		form.changes$.pipe(
@@ -36,117 +35,45 @@ export default class AgoraLinkComponent extends Component {
 	}
 
 	onGenerateMeetingId($event) {
-		// const timestamp = (performance.now() * 10000000000000).toString();
-		const timestamp = new Date().valueOf().toString();
-		this.form.patch({
-			link: this.getRoleMeetingId(timestamp, RoleType.Publisher),
-			linkAttendee: this.getRoleMeetingId(timestamp, RoleType.Attendee),
-			linkStreamer: this.getRoleMeetingId(timestamp, RoleType.Streamer),
-			linkViewer: this.getRoleMeetingId(timestamp, RoleType.Viewer),
-			linkSmartDevice: this.getRoleMeetingId(timestamp, RoleType.SmartDevice),
-		});
-	}
-
-	replaceRoleMeetingId(meetingId, role) {
-		const components = meetingId.split('-');
-		components[1] = this.padded(this.getRoleIndex(role), 4);
-		return components.join('-');
+		const meetingId = new MeetingId();
+		const meetingIdRoles = meetingId.toRoles();
+		this.form.patch(meetingIdRoles);
 	}
 
 	onInputDidChange($event) {
-		// console.log('onInputDidChange', this.form.get('link').value, this.form.get('link').valid);
+		// console.log('onInputDidChange', this.form.get('id').value, this.form.get('id').valid);
 		if (this.state.role !== 'publisher') {
 			return;
 		}
 		setTimeout(() => {
-			if (this.form.get('link').valid) {
-				const value = this.form.get('link').value;
-				this.form.patch({
-					link: this.setRoleMeetingId(value, RoleType.Publisher),
-					linkAttendee: this.setRoleMeetingId(value, RoleType.Attendee),
-					linkStreamer: this.setRoleMeetingId(value, RoleType.Streamer),
-					linkViewer: this.setRoleMeetingId(value, RoleType.Viewer),
-					linkSmartDevice: this.setRoleMeetingId(value, RoleType.SmartDevice),
-				});
+			if (this.form.get('id').valid) {
+				const value = this.form.get('id').value;
+				const meetingId = new MeetingId(value);
+				const meetingIdRoles = meetingId.toRoles();
+				this.form.patch(meetingIdRoles);
 			} else {
-				this.form.get('linkAttendee').reset();
-				this.form.get('linkStreamer').reset();
-				this.form.get('linkViewer').reset();
+				this.form.get('idAttendee').reset();
+				this.form.get('idStreamer').reset();
+				this.form.get('idViewer').reset();
+				this.form.get('idSmartDevice').reset();
 			}
 		}, 1);
 	}
 
-	setRoleMeetingId(meetingId, role) {
-		const meetingIdSegments = meetingId.split('-');
-		return `${meetingIdSegments[0]}-${this.padded(this.getRoleIndex(role), 4)}-${meetingIdSegments[2]}`;
+	onCopyToClipBoard(id, asAccessCode = false) {
+		const meetingUrl = new MeetingUrl({ link: id });
+		meetingUrl.copyToClipBoard(asAccessCode);
 	}
 
-	getRoleMeetingId(timestamp, role) {
-		return `${this.padded(this.state.user.id, 9)}-${this.padded(this.getRoleIndex(role), 4)}-${timestamp}`;
-	}
-
-	getRoleIndex(role) {
-		return Object.keys(RoleType).reduce((p, c, i) => {
-			return RoleType[c] === role ? i : p;
-		}, -1);
-	}
-
-	onCopyToClipBoard(meetingId, asAccessCode = false) {
-		const input = document.createElement('input');
-		input.style.position = 'absolute';
-		input.style.top = '1000vh';
-		// input.style.visibility = 'hidden';
-		document.querySelector('body').appendChild(input);
-		input.value = asAccessCode ? this.getAccessCodeUrl(meetingId, true) : this.getUrl(meetingId, true);
-		input.focus();
-		input.select();
-		input.setSelectionRange(0, 99999);
-		document.execCommand('copy');
-		input.parentNode.removeChild(input);
-		alert(`link copiato!\n ${input.value}`);
+	onNext(event) {
+		let meetingId = this.controls.id.value;
+		MeetingUrl.replaceWithLink(meetingId);
+		this.link.next(meetingId);
 	}
 
 	isValid() {
 		const isValid = this.form.valid;
 		return isValid;
-	}
-
-	onNext(event) {
-		let meetingId = this.controls.link.value;
-		/*
-		if (this.state.role === RoleType.Publisher) {
-			meetingId = this.replaceRoleMeetingId(meetingId, RoleType.Publisher);
-		}
-		*/
-		this.replaceUrl(meetingId);
-		this.link.next(meetingId);
-	}
-
-	getUrl(meetingId, shareable = false) {
-		const role = LocationService.get('role') || null;
-		const name = LocationService.get('name') || null;
-		const url = `${window.location.origin}${window.location.pathname}?link=${meetingId}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
-		return url;
-	}
-
-	getAccessCodeUrl(meetingId, shareable = false) {
-		const role = LocationService.get('role') || null;
-		const name = LocationService.get('name') || null;
-		const url = `${window.location.origin}${environment.url.accessCode}?link=${meetingId}` + (name ? `&name=${name}` : '') + ((role && !shareable) ? `&role=${role}` : '');
-		return url;
-	}
-
-	replaceUrl(meetingId) {
-		if ('history' in window) {
-			const url = this.getUrl(meetingId);
-			// console.log('AgoraLinkComponent.url', url);
-			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
-		}
-	}
-
-	padded(num, size) {
-		const s = '000000000' + num;
-		return s.substr(s.length - size);
 	}
 }
 

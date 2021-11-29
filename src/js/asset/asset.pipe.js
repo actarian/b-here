@@ -35,6 +35,9 @@ export default class AssetPipe extends Pipe {
 			asset = asset.type.name === type ? asset : null;
 		}
 		if (asset) {
+			if (typeof asset === 'string') {
+				return environment.getPath(asset);
+			}
 			// console.log(asset.type.name, AssetType.Image.name);
 			switch (asset.type.name) {
 				case AssetType.Image.name:

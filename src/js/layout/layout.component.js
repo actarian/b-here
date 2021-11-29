@@ -3,14 +3,24 @@ import { fromEvent } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
 import { AgoraStatus, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
+import LabelPipe from '../label/label.pipe';
 import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
+import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
+import ToastService, { ToastPosition, ToastRejectEvent, ToastResolveEvent, ToastType } from '../toast/toast.service';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import VRService from '../world/vr.service';
 
 export default class LayoutComponent extends Component {
+
+	get meetingUrl() {
+		if (!this.meetingUrl_) {
+			this.meetingUrl_ = new MeetingUrl();
+		}
+		return this.meetingUrl_;
+	}
 
 	get isVirtualTourUser() {
 		return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
@@ -22,7 +32,7 @@ export default class LayoutComponent extends Component {
 	}
 
 	get isNavigable() {
-		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+		const embedViewId = this.meetingUrl.embedViewId;
 		const navigable = embedViewId == null;
 		return navigable;
 	}
@@ -78,6 +88,8 @@ export default class LayoutComponent extends Component {
 	}
 
 	onInit() {
+		const meetingUrl = this.meetingUrl;
+		const embedViewId = meetingUrl.embedViewId;
 		this.state = {
 			status: LocationService.get('status') || AgoraStatus.Connected,
 			role: LocationService.get('role') || RoleType.Publisher, // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
@@ -93,7 +105,6 @@ export default class LayoutComponent extends Component {
 			showNavInfo: true,
 		};
 		this.state.live = (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) ? false : true;
-		const embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
 		this.state.navigable = embedViewId == null;
 		this.state.mode = UserService.getMode(this.state.role);
 		this.view = {
@@ -115,6 +126,54 @@ export default class LayoutComponent extends Component {
 		const vrService = this.vrService = VRService.getService();
 		console.log('LayoutComponent', this);
 		// console.log(AgoraService.getUniqueUserId());
+
+		setTimeout(() => {
+			const type = ToastType.Dialog;
+			const position = ToastPosition.BottomRight;
+			switch (type) {
+				case ToastType.Info:
+					ToastService.open$({
+						message: LabelPipe.transform('bhere_support_request_sent')
+					}).pipe(
+						takeUntil(this.unsubscribe$),
+					).subscribe(event => {
+						if (event instanceof ToastResolveEvent) {
+							console.log('ToastResolveEvent', event);
+						}
+					});
+					break;
+				case ToastType.Alert:
+					ToastService.open$({
+						message: LabelPipe.transform('bhere_support_request_sent'),
+						type: type, position: ToastPosition.BottomRight
+					}).pipe(
+						takeUntil(this.unsubscribe$),
+					).subscribe(event => {
+						if (event instanceof ToastResolveEvent) {
+							console.log('ToastResolveEvent', event);
+						} else if (event instanceof ToastRejectEvent) {
+							console.log('ToastRejectEvent', event);
+						}
+					});
+					break;
+				case ToastType.Dialog:
+					ToastService.open$({
+						message: LabelPipe.transform('bhere_support_request_dialog'),
+						acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
+						rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
+						type: type, position: ToastPosition.BottomRight
+					}).pipe(
+						takeUntil(this.unsubscribe$),
+					).subscribe(event => {
+						if (event instanceof ToastResolveEvent) {
+							console.log('ToastResolveEvent', event);
+						} else if (event instanceof ToastRejectEvent) {
+							console.log('ToastRejectEvent', event);
+						}
+					});
+					break;
+			}
+		}, 3000);
 	}
 
 	setLanguage(language) {
@@ -201,6 +260,10 @@ export default class LayoutComponent extends Component {
 
 	toggleNavInfo() {
 		this.patchState({ showNavInfo: !this.state.showNavInfo });
+	}
+
+	onBack() {
+		console.log('LayoutComponent.onBack');
 	}
 
 	onChatClose() {

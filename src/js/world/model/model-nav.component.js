@@ -3,6 +3,7 @@ import { environment } from '../../environment';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
 import { Geometry } from '../geometry/geometry';
+import { Host } from '../host/host';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
@@ -14,6 +15,7 @@ export const NavModeType = {
 	Info: 'info',
 	Point: 'point',
 	Title: 'title',
+	Transparent: 'transparent',
 };
 
 export default class ModelNavComponent extends ModelEditableComponent {
@@ -102,7 +104,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 
 	static getNavMode(item, view) {
 		let mode = NavModeType.None;
-		if (item.viewId !== view.id) {
+		if (item.transparent) {
+			mode = NavModeType.Transparent;
+		} else if (item.viewId !== view.id) {
 			mode = NavModeType.Move;
 			if (this.isValidText(item.title)) {
 				mode = NavModeType.Title;
@@ -137,9 +141,14 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	get isHidden() {
-		return StateService.state.zoomedId != null || (environment.flags.hideNavInfo && !this.editor &&
-			(!StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
-			this.mode === NavModeType.Info);
+		return StateService.state.zoomedId != null ||
+			(environment.flags.hideNavInfo && !this.editor &&
+				(!StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
+				this.mode === NavModeType.Info);
+	}
+
+	shouldShowPanel() {
+		return (!this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title && (this.mode !== NavModeType.Transparent || ModelNavComponent.isValidText(this.item.title)));
 	}
 
 	updateVisibility(visible) {
@@ -161,149 +170,270 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	onChanges() {
-		this.mode = ModelNavComponent.getNavMode(this.item, this.view);
-		this.editing = this.item.selected;
+		const item = this.item;
+		this.mode = ModelNavComponent.getNavMode(item, this.view);
+		this.editing = item.selected;
 		this.hidden = this.isHidden;
 	}
 
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.nav;
-		const mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+		const item = this.item;
+
+		const mode = this.mode = ModelNavComponent.getNavMode(item, this.view);
 		if (mode === NavModeType.None) {
 			return;
 		}
+
 		const nav = new THREE.Group();
-		const position = new THREE.Vector3().set(...this.item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
-		nav.position.set(position.x, position.y, position.z);
 
-		this.onCreateSprites(nav);
+		if (mode === NavModeType.Transparent) {
 
-		const geometry = Geometry.sphereGeometry;
-		const sphere = this.sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
-			depthTest: false,
-			depthWrite: false,
-			transparent: true,
-			opacity: 0.0,
-			color: 0x00ffff,
-		}));
-		sphere.name = `[nav] ${this.item.id}`;
-		// sphere.lookAt(Host.origin); ??
-		sphere.depthTest = false;
-		// sphere.renderOrder = 0;
-		nav.add(sphere);
-		sphere.on('over', () => {
-			// console.log('ModelNavComponent.over');
-			/*
-			if ((mode !== NavModeType.Move && mode !== NavModeType.Title) && !this.editing) {
+			const opacityIdle = this.editor ? 0.1 : 0.0;
+			const opacityOver = 0.2;
+			const opacityDown = 0.3;
+
+			nav.position.fromArray(item.position);
+			nav.rotation.fromArray(item.rotation);
+			nav.scale.fromArray(item.scale);
+
+			const geometry = Geometry.planeGeometry;
+			const plane = this.plane = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+				opacity: opacityIdle,
+				color: new THREE.Color(environment.colors.menuOverBackground),
+			}));
+			plane.name = `[nav] ${item.id}`;
+			plane.depthTest = false;
+			nav.add(plane);
+
+			plane.on('over', () => {
+				plane.material.opacity = opacityOver;
 				this.over.next(this);
-			}
-			*/
-			this.over.next(this);
-			const icon = this.icon;
-			const from = { scale: icon.scale.x };
-			gsap.to(from, {
-				duration: 0.35,
-				scale: 0.04,
-				delay: 0,
-				ease: Power2.easeOut,
-				overwrite: true,
-				onUpdate: () => {
-					icon.scale.set(from.scale, from.scale, from.scale);
-				},
-				onComplete: () => {
-					/*
-					if (!this.editing) {
-						this.over.next(this);
+				/*
+				const from = { scale: plane.material.opacity };
+				gsap.to(from, {
+					opacity: 0.8,
+					duration: 0.35,
+					delay: 0,
+					ease: Power2.easeOut,
+					overwrite: true,
+					onUpdate: () => {
+						plane.material.opacity = from.opacity;
+						plane.material.needsUpdate = true;
+					},
+					onComplete: () => {
 					}
-					*/
+				});
+				*/
+			});
+
+			plane.on('out', () => {
+				plane.material.opacity = opacityIdle;
+				this.out.next(this);
+				/*
+				const from = { pow: plane.material.opacity };
+				gsap.to(from, {
+					opacity: 0.2,
+					duration: 0.35,
+					delay: 0,
+					ease: Power2.easeOut,
+					overwrite: true,
+					onUpdate: () => {
+						plane.material.opacity = from.opacity;
+						plane.material.needsUpdate = true;
+					},
+					onComplete: () => {
+					}
+				});
+				*/
+			});
+
+			plane.on('down', () => {
+				plane.material.opacity = opacityDown;
+				this.down.next(this);
+
+				// opening nav link
+				if (!this.editor && !this.shouldShowPanel() && this.item.link && this.item.link.href) {
+					this.shouldNavToLink = this.item.link.href;
 				}
 			});
-		});
-		sphere.on('out', () => {
-			this.out.next(this);
-			const icon = this.icon;
-			const from = { scale: icon.scale.x };
+
+			plane.on('up', () => {
+				plane.material.opacity = opacityIdle;
+
+				// opening nav link
+				if (this.shouldNavToLink != null) {
+					const link = this.shouldNavToLink;
+					this.shouldNavToLink = null;
+					window.open(link, '_blank');
+				}
+			});
+
+			/*
+			const from = { opacity: 0 };
 			gsap.to(from, {
-				duration: 0.35,
-				scale: 0.03,
-				delay: 0,
-				ease: Power2.easeOut,
+				opacity: 1.0,
+				duration: 0.7,
+				delay: 0.5 + 0.1 * item.index,
+				ease: Power2.easeInOut,
 				overwrite: true,
 				onUpdate: () => {
-					icon.scale.set(from.scale, from.scale, from.scale);
-				},
-				onComplete: () => {
-					/*
-					this.out.next(this);
-					*/
+					plane.material.opacity = from.opacity;
+					plane.material.needsUpdate = true;
 				}
 			});
-		});
-		sphere.on('down', () => {
-			this.down.next(this);
-		});
-		const from = { opacity: 0 };
-		gsap.to(from, {
-			duration: 0.7,
-			opacity: 1,
-			delay: 0.5 + 0.1 * this.item.index,
-			ease: Power2.easeInOut,
-			overwrite: true,
-			onUpdate: () => {
-				this.materials.forEach(material => {
-					material.opacity = from.opacity;
-					material.needsUpdate = true;
-				});
+			*/
+
+		} else {
+
+			// !! fixing normalized positions;
+			const position = new THREE.Vector3(item.position[0], item.position[1], item.position[2]);
+			const normalizedPosition = new THREE.Vector3(item.position[0], item.position[1], item.position[2]).normalize();
+			if (position.distanceToSquared(normalizedPosition) < 0.0001) {
+				position.multiplyScalar(ModelNavComponent.RADIUS);
 			}
-		});
+			// console.log('!!! fixing normalized positions', 'position', position, 'normalizedPosition', normalizedPosition, 'distanceToSquared', position.distanceToSquared(normalizedPosition));
+
+			nav.position.copy(position);
+
+			this.onCreateSprites(nav);
+
+			const geometry = Geometry.sphereGeometry;
+			const sphere = this.sphere = new InteractiveMesh(geometry, new THREE.MeshBasicMaterial({
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+				opacity: 0.0,
+				color: 0x00ffff,
+			}));
+			sphere.name = `[nav] ${item.id}`;
+			// sphere.lookAt(Host.origin); ??
+			sphere.depthTest = false;
+			// sphere.renderOrder = 0;
+			nav.add(sphere);
+			sphere.on('over', () => {
+				// console.log('ModelNavComponent.over');
+				/*
+				if ((mode !== NavModeType.Move && mode !== NavModeType.Title) && !this.editing) {
+					this.over.next(this);
+				}
+				*/
+				this.over.next(this);
+				const icon = this.icon;
+				const from = { scale: icon.scale.x };
+				gsap.to(from, {
+					duration: 0.35,
+					scale: 0.04,
+					delay: 0,
+					ease: Power2.easeOut,
+					overwrite: true,
+					onUpdate: () => {
+						icon.scale.set(from.scale, from.scale, from.scale);
+					},
+					onComplete: () => {
+						/*
+						if (!this.editing) {
+							this.over.next(this);
+						}
+						*/
+					}
+				});
+			});
+			sphere.on('out', () => {
+				this.out.next(this);
+				const icon = this.icon;
+				const from = { scale: icon.scale.x };
+				gsap.to(from, {
+					duration: 0.35,
+					scale: 0.03,
+					delay: 0,
+					ease: Power2.easeOut,
+					overwrite: true,
+					onUpdate: () => {
+						icon.scale.set(from.scale, from.scale, from.scale);
+					},
+					onComplete: () => {
+						/*
+						this.out.next(this);
+						*/
+					}
+				});
+			});
+			sphere.on('down', () => {
+				this.down.next(this);
+			});
+			const from = { opacity: 0 };
+			gsap.to(from, {
+				duration: 0.7,
+				opacity: 1,
+				delay: 0.5 + 0.1 * item.index,
+				ease: Power2.easeInOut,
+				overwrite: true,
+				onUpdate: () => {
+					this.materials.forEach(material => {
+						material.opacity = from.opacity;
+						material.needsUpdate = true;
+					});
+				}
+			});
+		}
 		if (typeof mount === 'function') {
-			mount(nav, this.item);
+			mount(nav, item);
 		}
 	}
 
 	onCreateSprites(mesh, opacity = 0) {
 		this.onRemoveSprite(this.icon);
 		this.onRemoveSprite(this.title);
-		const mode = this.mode = ModelNavComponent.getNavMode(this.item, this.view);
+		const item = this.item;
+		const mode = this.mode = ModelNavComponent.getNavMode(item, this.view);
 		if (mode === NavModeType.None) {
 			return;
 		}
-		const map = ModelNavComponent.getTexture(mode, this.item.important);
-		const material = new THREE.SpriteMaterial({
-			map: map,
-			depthTest: false,
-			depthWrite: false,
-			transparent: true,
-			sizeAttenuation: false,
-			opacity: opacity,
-			// color: 0xff0000,
-		});
-		const materials = [material];
-		const icon = this.icon = new THREE.Sprite(material);
-		icon.renderOrder = environment.renderOrder.nav;
-		icon.scale.set(0.03, 0.03, 0.03);
-		mesh.add(icon);
-		let titleMaterial;
-		const titleTexture = ModelNavComponent.getTitleTexture(this.item, mode);
-		if (titleTexture) {
-			titleMaterial = new THREE.SpriteMaterial({
+		if (mode === NavModeType.Transparent) {
+
+			this.materials = [];
+		} else {
+			const map = ModelNavComponent.getTexture(mode, item.important);
+			const material = new THREE.SpriteMaterial({
+				map: map,
 				depthTest: false,
 				depthWrite: false,
 				transparent: true,
-				map: titleTexture,
 				sizeAttenuation: false,
 				opacity: opacity,
 				// color: 0xff0000,
 			});
-			// console.log(titleTexture);
-			const image = titleTexture.image;
-			const title = this.title = new THREE.Sprite(titleMaterial);
-			title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
-			title.position.set(0, -3.5, 0);
-			mesh.add(title);
-			materials.push(titleMaterial);
+			const materials = [material];
+			const icon = this.icon = new THREE.Sprite(material);
+			icon.renderOrder = environment.renderOrder.nav;
+			icon.scale.set(0.03, 0.03, 0.03);
+			mesh.add(icon);
+			let titleMaterial;
+			const titleTexture = ModelNavComponent.getTitleTexture(item, mode);
+			if (titleTexture) {
+				titleMaterial = new THREE.SpriteMaterial({
+					depthTest: false,
+					depthWrite: false,
+					transparent: true,
+					map: titleTexture,
+					sizeAttenuation: false,
+					opacity: opacity,
+					// color: 0xff0000,
+				});
+				// console.log(titleTexture);
+				const image = titleTexture.image;
+				const title = this.title = new THREE.Sprite(titleMaterial);
+				title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
+				title.position.set(0, -3.5, 0);
+				mesh.add(title);
+				materials.push(titleMaterial);
+			}
+			this.materials = materials;
 		}
-		this.materials = materials;
 	}
 
 	onRemoveSprite(sprite) {
@@ -323,16 +453,27 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		super.onDestroy();
 	}
 
-	shouldShowPanel() {
-		return (!this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title);
-	}
-
 	// called by UpdateViewItemComponent
 	onUpdate(item, mesh) {
 		this.item = item;
-		this.onCreateSprites(this.mesh, 1);
-		const position = new THREE.Vector3().set(...item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
-		mesh.position.set(position.x, position.y, position.z);
+		this.onCreateSprites(mesh, 1);
+		if (this.mode === NavModeType.Transparent) {
+			if (item.position) {
+				mesh.position.fromArray(item.position);
+			}
+			if (item.rotation) {
+				mesh.rotation.fromArray(item.rotation);
+			}
+			if (item.scale) {
+				mesh.scale.fromArray(item.scale);
+			}
+		} else {
+			// const position = new THREE.Vector3().set(...item.position).normalize().multiplyScalar(ModelNavComponent.RADIUS);
+			// mesh.position.set(position.x, position.y, position.z);
+			mesh.position.fromArray(item.position);
+			mesh.rotation.set(0, 0, 0);
+			mesh.scale.set(1, 1, 1);
+		}
 		// console.log('onUpdate', item, mesh.position);
 		this.updateHelper();
 		/*
@@ -346,19 +487,44 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	// called by WorldComponent
 	onDragMove(position, normal, spherical) {
 		// console.log('ModelNavComponent.onDragMove', position, normal, spherical);
-		if (spherical) {
-			position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
-			// normal = cameraGroup?
-		}
+		const item = this.item;
+		const mesh = this.mesh;
 		this.editing = true;
-		this.item.showPanel = false;
-		this.mesh.position.set(position.x, position.y, position.z);
+		item.showPanel = false;
+		if (this.mode === NavModeType.Transparent) {
+			if (spherical) {
+				position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
+				mesh.position.set(position.x, position.y, position.z);
+				mesh.lookAt(Host.origin);
+			} else {
+				mesh.position.set(0, 0, 0);
+				mesh.lookAt(normal);
+				mesh.position.set(position.x, position.y, position.z);
+				mesh.position.add(normal.multiplyScalar(0.01));
+			}
+		} else {
+			if (spherical) {
+				position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
+				mesh.position.set(position.x, position.y, position.z);
+			} else {
+				mesh.position.set(position.x, position.y, position.z);
+				mesh.position.add(normal.multiplyScalar(0.01));
+			}
+		}
 		this.updateHelper();
 	}
 
 	// called by WorldComponent
 	onDragEnd() {
-		this.item.position = new THREE.Vector3().copy(this.mesh.position).normalize().toArray();
+		const item = this.item;
+		const mesh = this.mesh;
+		if (this.mode === NavModeType.Transparent) {
+			item.position = mesh.position.toArray();
+			item.rotation = mesh.rotation.toArray();
+			item.scale = mesh.scale.toArray();
+		} else {
+			item.position = mesh.position.toArray(); // new THREE.Vector3().copy(mesh.position).normalize().toArray();
+		}
 		this.editing = false;
 	}
 }

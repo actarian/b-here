@@ -1,0 +1,174 @@
+.listing--navmaps {
+	flex: 1 1 100%;
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	width: 100%;
+	margin: 0 0 15px 0;
+
+	.abstract {
+		display: block;
+		width: 100%;
+		margin: 0 0 0 6px;
+		padding: 20px 15px;
+		border-radius: 8px;
+		background: #fff;
+	}
+
+	@include media-up(md) {
+		$gutter: 12px;
+		margin-left: - $gutter / 2;
+		margin-right: - $gutter / 2;
+		align-items: stretch;
+
+		&>.listing__item {
+			@include as-col(3, 12, $gutter);
+		}
+	}
+
+	@include media-down(sm) {
+		&>.listing__item {
+			@include as-col(12, 12, 0px);
+		}
+	}
+}
+
+.card--navmap {
+	cursor: pointer;
+	transition: ease-in-out all $fast;
+
+	&:hover {
+		box-shadow: 0 20px 20px -10px rgba(0, 0, 0, 0.2);
+	}
+
+	.card__content {
+		padding: 8px 15px;
+		border-radius: 0 0 8px 8px;
+		border-top: 1px solid #eee;
+		background: white;
+	}
+
+	.card__picture {
+		border-radius: 8px 8px 0 0;
+		background: #b9c3ca;
+	}
+
+	.card__name {
+		font-size: 16px;
+		font-weight: 900;
+	}
+
+}
+
+.navmap {
+	.form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.form-controls {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 20px;
+			border-radius: 8px;
+			background: $background;
+		}
+	}
+}
+
+.navmap-control {
+
+	&__image {
+		position: relative;
+		max-width: 960px;
+		margin: 0 auto;
+		border-radius: 8px 8px 0 0;
+		background: #b9c3ca;
+		@include unselectable();
+		cursor: pointer;
+	}
+
+	&__toolbar {
+		@extend %nav;
+		justify-content: center;
+		padding: 0 6px;
+		border-radius: 0 0 8px 8px;
+		background: $background;
+
+		&>.nav__item {
+			flex: 0 0 auto;
+
+			&>a,
+			&>span,
+			&>button {
+				padding: 8px 5px;
+				cursor: pointer;
+
+				&,
+				&:link,
+				&:active,
+				&:focus,
+				&:visited {
+					color: $foreground;
+				}
+
+				&:hover,
+				&.active {
+					color: $foreground-primary;
+				}
+			}
+
+			svg {
+				width: 24px;
+				height: 24px;
+				fill: currentColor;
+			}
+		}
+
+		&>.nav__item+.nav__item {
+			margin-left: 5px;
+		}
+	}
+
+	.navmap__item {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 16px;
+		height: 16px;
+		margin-left: -8px;
+		margin-top: -8px;
+
+		.title {
+			position: absolute;
+			display: block;
+			bottom: 15px;
+			left: 50%;
+			margin: 0;
+			padding: 2px 7px;
+			font-size: 13px;
+			font-weight: 400;
+			line-height: 1;
+			white-space: nowrap;
+			border-radius: 2px;
+			opacity: 0;
+			transform: translateX(-50%);
+			pointer-events: none;
+			background: black;
+			color: white;
+			transition: all ease-in-out $fast;
+		}
+	}
+
+	&.idle {
+		.navmap__item {
+			&:hover {
+				.title {
+					opacity: 1;
+					transform: translateX(-50%) translateY(-5px);
+				}
+			}
+		}
+	}
+}

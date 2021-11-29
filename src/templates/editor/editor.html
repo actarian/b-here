@@ -1,81 +1,22 @@
-<!-- @@master = ./templates/layout.html { "baseHref": "/b-here/" } -->
-<!-- @@block = main-->
 <script>
-// window.antiforgery = '';
-window.labels = {
-	browse: 'Apri',
-	close: 'Chiudi',
-	cancel: 'Annulla',
-	drag_and_drop_images: 'trascina qui le immagini',
-	error_email: 'email non valida',
-	error_match: 'i campi non corrispondono',
-	error_required: 'campo obbligatorio',
-	loading: 'caricamento',
-	remove: 'Rimuovi',
-	required: 'Richiesto',
-	select: 'Seleziona',
-	select_file: 'Seleziona un file...',
-	update: 'Salva',
-	upload: 'Carica',
-	waiting_host: 'attendere',
-	editor_properties: 'Properties',
-	editor_views: 'Views',
-	editor_view_items: 'View Items',
-	editor_items: 'Items',
-	editor_no_items: 'This view has no items',
-	editor_add_item: 'Add item',
-	editor_add: 'Add',
-	editor_save: 'Save',
-	editor_image: 'Image',
-	editor_video: 'Video',
-	editor_model: 'Model',
-	editor_publisher_stream: 'Publisher Stream',
-	editor_next_attendee_stream: 'Next Attendee Stream',
-	editor_waiting_room: 'Waiting Room',
-	editor_panorama: 'Panorama',
-	editor_panorama_grid: 'Panorama Grid',
-	editor_room_3d: 'Room 3D',
-	editor_media: 'Media',
-	editor_nav: 'Nav Tooltip',
-	editor_gltf: 'Gltf Model',
-	editor_plane: 'Plane',
-	editor_curved_plane: 'Curved Plane',
-	editor_texture: 'Texture',
-	editor_id: 'Id',
-	editor_name: 'Name',
-	editor_hide: 'Hide from menu',
-	editor_latitude: 'Latitude',
-	editor_longitude: 'Longitude',
-	editor_zoom: 'Zoom',
-	editor_ar_ios: 'AR IOS (.usdz)',
-	editor_ar_android: 'AR Android (.glb)',
-	editor_title: 'Title',
-	editor_abstract: 'Abstract',
-	editor_nav_to_view: 'NavToView',
-	editor_link_title: 'Link Title',
-	editor_link_url: 'Link Url',
-	editor_position: 'Position',
-	editor_rotation: 'Rotation',
-	editor_scale: 'Scale',
-	editor_radius: 'Radius',
-	editor_height: 'Height',
-	editor_arc: 'Arc',
-	editor_asset: 'Asset',
-	editor_image_or_video: 'Image or Video',
-	editor_use_green_screen: 'Use Green Screen',
-	editor_are_you_sure: 'are you sure?',
-	editor_remove: 'Remove',
-	editor_cancel: 'Cancel',
-	editor_create: 'Create',
-	editor_click_a_point: 'Click a point on the view',
-};
+window.bhere = Object.assign((window.bhere || {}), {
+	alternates: [{
+		href: '/it/editor',
+		lang: 'it',
+		title: 'Italiano',
+	}, {
+		href: '/en/editor',
+		lang: 'en',
+		title: 'English',
+	}],
+});
 
 </script>
 <div class="page" editor-component>
 	<div class="ui" [class]="{ open: aside }" *if="views">
 		<div class="ui__navbar">
-			<div class="btn--menu" [class]="{ active: settings }" (click)="onToggleSettings($event)" *if="'menu' | flag">
-				<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+			<div class="btn--settings" [class]="{ active: settings.active }" (click)="onToggleSettings($event)" *if="settings.menu.length > 0">
+				<svg class="settings" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#settings-full"></use></svg>
 			</div>
 			<div class="headline" *if="view">
 				<div class="headline__id" [innerHTML]="view.id"></div>
@@ -119,7 +60,9 @@ window.labels = {
 					</div>
 					-->
 				</div>
-				<div class="banner progress" model-progress [view]="view"></div>
+				<div class="progress-indicator" model-progress [view]="view">
+					<div class="inner"></div>
+				</div>
 				<div model-menu [views]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 					<div class="btn--menu" (click)="onToggle($event)">
 						<div class="spinner"></div>
@@ -144,77 +87,130 @@ window.labels = {
 				</button>
 			</div>
 		</div>
-		<div class="ui__settings" menu-builder [views]="views" *if="settings">
-			<div class="group--menu" *if="form">
-				<div class="group--left">
-					<div class="headline">
-						<div class="title">Menu</div>
-					</div>
-					<div class="nav--tree">
+		<div class="ui__settings" *if="settings.active">
+			<!-- settings navs -->
+			<div class="group--nav">
+				<ul class="nav--menu">
+					<li class="nav__item" *for="let item of settings.menu" [class]="{ active: settings.current === item.id }" (click)="onSelectSetting(item)"><span class="title" [innerHTML]="item.title | label"></span></li>
+				</ul>
+			</div>
+			<!-- menu -->
+			<div class="group--content" menu-builder [views]="views" *if="settings.current === 'menu'">
+				<div class="group--head">
+					<div class="title" [innerHTML]="'editor_menu' | label"></div>
+				</div>
+				<div class="group--main">
+					<div class="nav--tree" *if="form">
 						<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+							<div class="abstract" *if="controls.items.controls.length == 0" [innerHTML]="'editor_add_item' | label"></div>
 							<div *for="let control of controls.items.controls">
 								<div control-menu [control]="control" (remove)="onRemoveControl($event)" (link)="onLinkControl($event)" (up)="onUpControl($event)" (down)="onDownControl($event)"></div>
 							</div>
 						</form>
 					</div>
-					<div class="group--cta">
-						<button type="button" class="btn--mode" (click)="onAddItem($event)">add</button>
-						<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1">save</button>
-					</div>
 				</div>
-				<!--
-				<div class="group--right">
-					<div class="headline">
-						<div class="title">Views</div>
-					</div>
-					<div class="nav--views">
-						<div class="nav__item" *for="let item of views">
-							<div class="icon">
-								<svg-icon [name]="item.type.name"></svg-icon>
+				<div class="group--foot">
+					<button type="button" class="btn--mode" (click)="onAddItem($event)" [innerHTML]="'editor_add' | label"></button>
+					<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1" [innerHTML]="'editor_save' | label"></button>
+				</div>
+			</div>
+			<!-- navmaps -->
+			<div class="group--content" navmap-builder [views]="views" *if="settings.current === 'navmaps'">
+				<div class="group--head">
+					<div class="title" [innerHTML]="'editor_navmaps' | label"></div>
+				</div>
+				<div class="group--main">
+					<!-- listing navmaps -->
+					<div class="listing--navmaps" *if="!navmap">
+						<div class="abstract" *if="navmaps.length == 0" [innerHTML]="'editor_add_item' | label"></div>
+						<div class="listing__item" *for="let item of navmaps">
+							<div class="card--navmap" (click)="onSet(item)">
+								<div class="card__picture">
+									<img [src]="item.asset | asset" *if="item.asset" />
+								</div>
+								<div class="card__content">
+									<div class="card__name" [innerHTML]="item.name"></div>
+								</div>
 							</div>
-							<div class="title" [innerHTML]="item.name"></div>
 						</div>
 					</div>
+					<!-- navmap edit -->
+					<div class="navmap" navmap-edit [navmap]="navmap" (delete)="onDelete($event)" *if="navmap">
+						<form class="form" [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+							<div class="title"><span [innerHTML]="navmap.name"></span> <span [innerHTML]="navmap.id"></span></div>
+							<div class="form-controls">
+								<div control-text [control]="controls.name" label="Name"></div>
+								<!--
+								<div control-asset [control]="controls.asset" label="Image" accept="image/png"></div>
+								-->
+							</div>
+							<div class="group--cta">
+								<button type="submit" class="btn--accept">
+									<span [innerHTML]="'editor_save' | label"></span>
+								</button>
+								<button type="button" class="btn--remove" (click)="onRemove($event)">
+									<span [innerHTML]="'editor_remove' | label"></span>
+								</button>
+							</div>
+							<div class="navmap-control" [class]="mode">
+								<div class="navmap-control__image">
+									<img draggable="false" [src]="navmap.asset | asset" *if="navmap.asset" />
+									<div class="navmap__item" [style]="{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }" (mousedown)="onMoveItem($event, item)" (click)="onRemoveItem(item)" *for="let item of navmap.items">
+										<img draggable="false" [src]="'textures/ui/nav-point.png' | asset" />
+										<div class="title" [innerHTML]="item.title"></div>
+									</div>
+								</div>
+								<ul class="navmap-control__toolbar">
+									<li class="nav__item"><span [class]="{ active: mode === 'insert' }" (click)="onToggleMode('insert')"><svg class="pencil" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#pencil"></use></svg></span></li>
+									<li class="nav__item"><span [class]="{ active: mode === 'move' }" (click)="onToggleMode('move')"><svg class="move" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#move"></use></svg></span></li>
+									<li class="nav__item"><span [class]="{ active: mode === 'remove' }" (click)="onToggleMode('remove')"><svg class="erase" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#erase"></use></svg></span></li>
+								</ul>
+							</div>
+						</form>
+					</div>
 				</div>
-				-->
+				<div class="group--foot">
+					<button type="button" class="btn--mode" (click)="onAdd($event)" [innerHTML]="'editor_add' | label" *if="!navmap"></button>
+					<button type="button" class="btn--mode" (click)="onBack($event)" [innerHTML]="'editor_back' | label" *if="navmap"></button>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view && aside">
 		<div class="headline">
 			<ul class="nav--tab">
-				<li [class]="{ active: mode === 1 }" (click)="setMode(1)">Properties</li>
-				<li [class]="{ active: mode === 2 }" (click)="setMode(2)">Views</li>
-				<li [class]="{ active: mode === 3 }" (click)="setMode(3)">View Items</li>
+				<li [class]="{ active: mode === 1 }" (click)="setMode(1)" [innerHTML]="'editor_properties' | label"></li>
+				<li [class]="{ active: mode === 2 }" (click)="setMode(2)" [innerHTML]="'editor_views' | label"></li>
+				<li [class]="{ active: mode === 3 }" (click)="setMode(3)" [innerHTML]="'editor_view_items' | label"></li>
 			</ul>
 			<!--
-			<div class="btn--mode" [class]="{ active: mode === 1 }" (click)="setMode(1)">Properties</div>
-			<div class="btn--mode" [class]="{ active: mode === 2 }" (click)="setMode(2)">Views</div>
-			<div class="btn--mode" [class]="{ active: mode === 3 }" (click)="setMode(3)">View Items</div>
+			<div class="btn--mode" [class]="{ active: mode === 1 }" (click)="setMode(1)" [innerHTML]="'editor_properties' | label"></div>
+			<div class="btn--mode" [class]="{ active: mode === 2 }" (click)="setMode(2)" [innerHTML]="'editor_views' | label"></div>
+			<div class="btn--mode" [class]="{ active: mode === 3 }" (click)="setMode(3)" [innerHTML]="'editor_view_items' | label"></div>
 			-->
 		</div>
 		<div class="scrollable">
 			<ul class="nav--editor" *if="mode === 1">
 				<li>
-					<div class="title">Properties</div>
+					<div class="title" [innerHTML]="'editor_properties' | label"></div>
 					<update-view [view]="view" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)"></update-view>
 				</li>
 				<li *if="view.type.name != 'panorama-grid'">
-					<div class="title">Items</div>
+					<div class="title" [innerHTML]="'editor_items' | label"></div>
 					<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)" *for="let item of view.items"></update-view-item>
-					<div class="abstract" *if="view.items.length == 0">This view has no items.</div>
-					<div class="btn--mode" (click)="setMode(3)">Add Item</div>
+					<div class="abstract" *if="view.items.length == 0" [innerHTML]="'editor_no_items' | label"></div>
+					<div class="btn--mode" (click)="setMode(3)" [innerHTML]="'editor_add_item' | label"></div>
 				</li>
 				<li *if="view.type.name == 'panorama-grid'">
-					<div class="title">Tiles</div>
+					<div class="title" [innerHTML]="'editor_tiles' | label"></div>
 					<div *for="let tile of view.tiles">
 						<div *if="tile.selected">
 							<update-view-tile [view]="view" [tile]="tile" (update)="onUpdate($event)" (delete)="onDelete($event)"></update-view-tile>
 							<ul class="nav--editor">
 								<li>
 									<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)" *for="let item of tile.navs"></update-view-item>
-									<div class="abstract" *if="tile.navs.length == 0">This tile has no navs.</div>
-									<div class="btn--mode" (click)="onSelect({ type:'viewItem', value: 'nav', tile: tile })">Add Nav with tooltip</div>
+									<div class="abstract" *if="tile.navs.length == 0" [innerHTML]="'editor_no_navs' | label"></div>
+									<div class="btn--mode" (click)="onSelect({ type:'viewItem', value: 'nav', tile: tile })" [innerHTML]="'editor_add_nav' | label"></div>
 								</li>
 								<!--
 								<li>
@@ -222,16 +218,17 @@ window.labels = {
 										<div class="icon">
 											<svg-icon name="nav"></svg-icon>
 										</div>
-										<div class="title">Add Nav with tooltip</div>
+										<div class="title" [innerHTML]="'editor_add_nav' | label"></div>
 									</div>
 								</li>
 								-->
 							</ul>
 						</div>
 					</div>
-					<div class="abstract" *if="view.tiles.length == 0">This view has no tiles.</div>
+					<div class="abstract" *if="view.tiles.length == 0" [innerHTML]="'editor_no_tiles' | label"></div>
 					<!-- <div class="btn--mode" (click)="setMode(3)">Add Tile</div> -->
 				</li>
+				<!--
 				<li *if="false">
 					<div class="title">Icons</div>
 					<ul class="nav--editor">
@@ -579,10 +576,11 @@ window.labels = {
 						</li>
 					</ul>
 				</li>
+				-->
 			</ul>
 			<ul class="nav--editor" *if="mode === 2">
 				<li>
-					<div class="title">Views</div>
+					<div class="title" [innerHTML]="'editor_views' | label"></div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewTypes">
 							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'view', value: item.type.name })">
@@ -597,7 +595,7 @@ window.labels = {
 			</ul>
 			<ul class="nav--editor" *if="mode === 3">
 				<li>
-					<div class="title">View Items</div>
+					<div class="title" [innerHTML]="'editor_view_items' | label"></div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewItemTypes">
 							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'viewItem', value: item.type.name })">
@@ -608,12 +606,9 @@ window.labels = {
 							</div>
 						</li>
 					</ul>
-					<div class="abstract" *if="supportedViewItemTypes.length == 0">
-						No view items for this type of view.
-					</div>
+					<div class="abstract" *if="supportedViewItemTypes.length == 0" [innerHTML]="'editor_type_no_items' | label"></div>
 				</li>
 			</ul>
 		</div>
 	</div>
 </div>
-<!-- @@close-->

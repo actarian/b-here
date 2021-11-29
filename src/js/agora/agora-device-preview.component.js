@@ -80,9 +80,9 @@ export default class AgoraDevicePreviewComponent extends Component {
 			return;
 		}
 		// console.log(this.video_, this.audio_);
+		const { node } = getContext(this);
 		if (this.video_ || this.audio_) {
-			// const { node } = getContext(this);
-			// node.classList.remove('ready');
+			node.classList.add('ready');
 			if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 				const state = StateService.state;
 				const quality = getStreamQuality(state);
@@ -119,6 +119,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 				});
 			}
 		} else {
+			node.classList.remove('ready');
 			if (this.hasPreview) {
 				if ('srcObject' in preview) {
 					preview.srcObject = null;
@@ -134,7 +135,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 	onLoadedMetadata(event) {
 		// console.log('AgoraDevicePreview.onLoadedMetadata', event);
 		const { node } = getContext(this);
-		node.classList.add('ready');
+		node.classList.add('loaded');
 		this.preview.play();
 		this.stream.next(this.loadingStream_);
 	}

@@ -1,7 +1,9 @@
 import { BehaviorSubject, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { UIMode } from '../agora/agora.types';
+import { environment } from '../environment';
 import HttpService from '../http/http.service';
+import { MeetingUrl } from '../meeting/meeting-url';
 import { RoleType, User } from './user';
 
 export class UserService {
@@ -53,6 +55,30 @@ export class UserService {
 		return HttpService.post$('/api/user/self-service-tour', payload).pipe(
 			map((user) => this.mapUser(user)),
 			tap((user) => this.setUser(user)),
+		);
+	}
+
+	static selfServiceSupportRequest$(user, meetingId, link) {
+		const payload = { user, meetingId, link };
+		return HttpService.post$('/api/user/self-service-support-request', payload).pipe(
+			tap(_ => {
+				if (!environment.flags.production) {
+					fetch(environment.template.email.supportRequest)
+						.then(response => response.text())
+						.then(html => {
+							html = html.replace('{{username}}', MeetingUrl.getName(user));
+							html = html.replace('{{href}}', link);
+							const parser = new DOMParser();
+							const newDocument = parser.parseFromString(html, 'text/html');
+							setTimeout(() => {
+								// const newWindow = window.open(window.location.origin + environment.template.email.supportRequest, '_blank');
+								const newWindow = window.open();
+								newWindow.document.head.innerHTML = newDocument.querySelector('head').innerHTML;
+								newWindow.document.body.innerHTML = newDocument.querySelector('body').innerHTML;
+							}, 3000);
+						});
+				}
+			}),
 		);
 	}
 

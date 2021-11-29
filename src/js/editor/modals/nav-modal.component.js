@@ -6,6 +6,7 @@ import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
 import { Host } from '../../world/host/host';
+import ModelNavComponent from '../../world/model/model-nav.component';
 import EditorService from '../editor.service';
 
 export default class NavModalComponent extends Component {
@@ -45,8 +46,7 @@ export default class NavModalComponent extends Component {
 			const normal = data.hit.normal.clone();
 			const spherical = data.hit.spherical;
 			if (spherical) {
-				// position.normalize().multiplyScalar(4);
-				position.normalize();
+				position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
 				object.position.copy(position);
 				object.lookAt(Host.origin);
 			} else {
@@ -68,7 +68,12 @@ export default class NavModalComponent extends Component {
 			viewId: new FormControl(null, RequiredValidator()),
 			keepOrientation: false,
 			important: false,
-			position: object.position.toArray(),
+			transparent: false,
+			//
+			position: new FormControl(object.position.toArray(), RequiredValidator()),
+			rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
+			scale: new FormControl([20, 5, 1], RequiredValidator()),
+			//
 			asset: null,
 			link: new FormGroup({
 				title: new FormControl(null),

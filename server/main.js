@@ -2,17 +2,11 @@ const https = require('https');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
-const bodyParser = require('body-parser');
 const path = require('path');
 const { staticMiddleware } = require('./static/static.js');
-const { apiMiddleware, useApi, uuid, setSessionUser, RoleType } = require('./api/api.js');
+const { apiMiddleware, uuid, setSessionUser, RoleType } = require('./api/api.js');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart({ uploadDir: path.join(__dirname, '../docs/temp/') });
-// const serveStatic = require('serve-static');
-// const { upload } = require('./upload/upload.js');
-// const uploader = upload(path.join(__dirname, '../docs/temp/'));
-// const { spaMiddleware } = require('./spa/spa.js');
-// const router = express.Router();
 const BASE_HREF = '/b-here/';
 const ASSETS = `assets/`;
 const ROOT = `../docs/`;
@@ -44,9 +38,9 @@ app.use(session({
 	resave: true
 }));
 app.disable('x-powered-by');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.raw());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.raw());
 app.use('*', staticMiddleware_);
 app.use('*', apiMiddleware_);
 
@@ -147,7 +141,13 @@ app.get('/en/embed', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/b-here__en.html'));
 });
 app.get('/editor', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/editor.html'));
+	response.sendFile(path.join(__dirname, '../docs/editor_it.html'));
+});
+app.get('/it/editor', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/editor_it.html'));
+});
+app.get('/en/editor', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/editor_en.html'));
 });
 
 app.listen(Vars.port, () => {

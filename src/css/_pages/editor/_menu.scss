@@ -1,0 +1,170 @@
+.group--menu {
+	display: flex;
+	min-width: 50vw;
+	background: $background;
+	border-radius: 10px;
+
+	.group--cta {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+
+		button {
+			flex: 1 1 auto;
+		}
+
+		&>button+button {
+			margin-left: 5px;
+		}
+	}
+}
+
+.group--left,
+.group--right {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto; // 50%;
+	height: 50vh;
+	padding: 20px;
+
+	&>.headline {
+		display: flex;
+		align-items: center;
+		height: 40px;
+
+		&>.title {
+			font-size: 13px;
+			font-weight: $font-semibold;
+		}
+	}
+
+	&>.nav--tree {
+		height: calc(100% - 80px);
+	}
+
+	&>.group--cta {
+		height: 40px;
+	}
+}
+
+.group--right {
+	border-left: 1px solid $background-tertiary;
+}
+
+.nav--tree,
+.nav--views {
+
+	.nav__item {
+		display: flex;
+		align-items: center;
+		min-height: 24px;
+		border: 1px solid transparent;
+		transition: all ease-in-out $fastest;
+		cursor: pointer;
+
+		&:hover {
+			// background-color: $background-tertiary;
+			border-color: $background-tertiary;
+		}
+
+		&>.title {
+			font-size: 11px;
+			font-weight: $font-semibold;
+		}
+
+		&>.icon {
+			flex: 0 1 24px;
+			height: 24px;
+			margin-right: 5px;
+		}
+
+		svg {
+			width: 24px;
+			height: 24px;
+			color: currentColor;
+		}
+	}
+
+	.control-menu__link,
+	.control-menu__add,
+	.control-menu__remove,
+	.control-menu__up,
+	.control-menu__down {
+		width: 16px;
+		height: 16px;
+		border-radius: 8px;
+		background: $background-primary;
+		color: $foreground-negative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-left: 4px;
+
+		svg {
+			width: 9px;
+			height: 9px;
+			fill: currentColor;
+		}
+	}
+
+	.control-menu__link {
+		position: relative;
+		width: 24px;
+		height: 24px;
+		padding: 4px;
+		margin: 0;
+		border-radius: 12px;
+		background: $background;
+		color: $foreground;
+
+		.dropdown {
+			left: 0;
+			top: 23px;
+		}
+
+		&:hover,
+		&.active {
+			background: $background-tertiary;
+			color: $foreground;
+		}
+	}
+
+	.control-menu__up,
+	.control-menu__down {
+		background: $background;
+		color: $foreground;
+
+		&:hover,
+		&.active {
+			background: $background-primary;
+			color: $foreground-negative;
+		}
+	}
+}
+
+.nav--tree {
+	display: flex;
+	flex-direction: column;
+	padding: 30px 20px 50px 20px;
+	border-radius: 8px;
+	background: white;
+}
+
+[control-menu] {
+	.group--form {
+		align-items: center;
+		margin-bottom: 0;
+		padding: 3px 0;
+		border-bottom: 1px solid $background-tertiary;
+
+		&>.control--text {
+			// background: $background-tertiary;
+			line-height: 1;
+			padding: 5px;
+		}
+	}
+
+	.group--items {
+		padding-left: 10px;
+	}
+}

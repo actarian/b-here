@@ -125,6 +125,35 @@
 	}
 }
 
+.btn--back {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out $fastest;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		border-color: rgba(255, 255, 255, 0.2);
+		color: $foreground-negative;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
 .btn--volume {
 	@extend %btn-circle;
 	width: 40px;
@@ -193,6 +222,45 @@
 
 	&.muted {
 		border-color: transparent;
+	}
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.btn--navmap {
+	@extend %btn-circle;
+	width: 40px;
+	height: 40px;
+	border: 2px solid transparent;
+	opacity: 0.4;
+	transition: opacity ease-in-out $fastest;
+
+	&>svg {
+		width: 18px;
+		height: 18px;
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		background: transparent;
+		border-color: transparent;
+		color: $foreground-negative;
+	}
+
+	&.disabled {
+		display: none;
+		pointer-events: none;
+	}
+
+	&.active {
+		border-color: rgba(255, 255, 255, 0.2);
+		opacity: 1;
 	}
 
 	&:hover {
@@ -412,6 +480,14 @@
 	pointer-events: auto;
 	right: 20px;
 	top: 50%;
+	margin-top: -25px;
+
+	&>.menu-light {
+		display: none;
+		width: 28px;
+		height: 28px;
+		transition: opacity ease-in-out 250ms;
+	}
 
 	&>.spinner {
 		position: absolute;
@@ -520,6 +596,52 @@
 			visibility: visible;
 		}
 	}
+
+	.embed.ui & {
+		top: 50px;
+		width: 40px;
+		height: 40px;
+		opacity: 0.4;
+		transition: opacity ease-in-out $fastest;
+
+		&>svg {
+			fill: currentColor;
+		}
+
+		&>.menu-light {
+			display: block;
+		}
+
+		&>.spinner,
+		&>.bullets,
+		&>.progress {
+			display: none;
+		}
+
+		&,
+		&:active,
+		&:focus,
+		&:visited {
+			opacity: 0.4;
+			background: transparent;
+			color: $foreground-negative;
+		}
+
+		&:hover {
+			opacity: 1;
+			background: transparent;
+			color: $foreground-negative;
+		}
+
+		&.loading {
+			opacity: 0;
+		}
+
+		&:not(.loading) {
+			transition: all ease-in-out 250ms;
+		}
+	}
+
 }
 
 @keyframes spinner {
@@ -570,6 +692,7 @@
 	svg {
 		width: 16px;
 		height: 16px;
+		fill: currentColor;
 	}
 }
 

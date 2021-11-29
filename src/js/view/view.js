@@ -34,6 +34,7 @@ export class View {
 			this.tiles = this.tiles.map(tile => mapViewTile(tile));
 		}
 		this.originalItems = this.items.slice();
+		this.lastOrientation = { latitude: 0, longitude: 0 };
 	}
 	get payload() {
 		const payload = {};
@@ -205,7 +206,7 @@ export class MediaView extends View {
 }
 
 export class ViewItem {
-	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'important', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
