@@ -355,7 +355,7 @@ function _readOnlyError(name) {
   Utils.merge = function merge(target, source) {
     var _this = this;
 
-    if (typeof source === 'object') {
+    if (source && typeof source === 'object') {
       Object.keys(source).forEach(function (key) {
         var value = source[key];
 
@@ -8872,9 +8872,11 @@ var VRService = /*#__PURE__*/function () {
   _proto.loadNavmaps = function loadNavmaps() {
     var _this5 = this;
 
-    NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
-      _this5.navmaps = navmaps;
-    });
+    if (environment.flags.navmaps) {
+      NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
+        _this5.navmaps = navmaps;
+      });
+    }
   };
 
   _proto.setNavmap = function setNavmap(view) {

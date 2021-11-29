@@ -2,7 +2,7 @@
 export class Utils {
 
 	static merge(target, source) {
-		if (typeof source === 'object') {
+		if (source && typeof source === 'object') {
 			Object.keys(source).forEach(key => {
 				const value = source[key];
 				if (typeof value === 'object' && !Array.isArray(value)) {

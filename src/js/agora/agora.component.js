@@ -317,11 +317,13 @@ export default class AgoraComponent extends Component {
 	}
 
 	loadNavmaps() {
-		NavmapService.navmapGet$().pipe(
-			first(),
-		).subscribe(navmaps => {
-			this.navmaps = navmaps;
-		});
+		if (environment.flags.navmaps) {
+			NavmapService.navmapGet$().pipe(
+				first(),
+			).subscribe(navmaps => {
+				this.navmaps = navmaps;
+			});
+		}
 	}
 
 	setNavmap(view) {
