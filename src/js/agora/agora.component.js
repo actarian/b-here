@@ -308,7 +308,7 @@ export default class AgoraComponent extends Component {
 		this.viewObserver$().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe(view => {
-			console.log('AgoraComponent.viewObserver$', view);
+			// console.log('AgoraComponent.viewObserver$', view);
 			if (typeof callback === 'function') {
 				callback();
 				callback = null;
@@ -317,11 +317,13 @@ export default class AgoraComponent extends Component {
 	}
 
 	loadNavmaps() {
-		NavmapService.navmapGet$().pipe(
-			first(),
-		).subscribe(navmaps => {
-			this.navmaps = navmaps;
-		});
+		if (environment.flags.navmaps) {
+			NavmapService.navmapGet$().pipe(
+				first(),
+			).subscribe(navmaps => {
+				this.navmaps = navmaps;
+			});
+		}
 	}
 
 	setNavmap(view) {
@@ -582,7 +584,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	connect(preferences) {
-		console.log('AgoraComponent.connect', preferences);
+		// console.log('AgoraComponent.connect', preferences);
 		this.agora.connect$(preferences).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();

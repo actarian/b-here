@@ -22,7 +22,21 @@ export const environmentStatic = {
 		viewer: true,
 		smartDevice: true,
 		selfServiceProposition: true,
+		navInfoAnimated: false,
+		navInfoImportantAnimated: false,
+		navMoveAnimated: true,
+		navMoveImportantAnimated: true,
+		navPointAnimated: false,
+		navPointImportantAnimated: false,
+		navTitleAnimated: false,
+		navTitleImportantAnimated: false,
+		navTransparentAnimated: true,
+		navTransparentImportantAnimated: true,
 		// maxQuality: false,
+	},
+	navs: {
+		iconMinScale: 1,
+		iconMaxScale: 1.4,
 	},
 	profiles: {
 		// streamer: "480p_1", // 640 x 480 x 15
