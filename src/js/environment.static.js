@@ -21,8 +21,22 @@ export const environmentStatic = {
 		streamer: true,
 		viewer: true,
 		smartDevice: true,
-		selfServiceProposition: true,
+		selfServiceProposition: false,
+		navInfoAnimated: false,
+		navInfoImportantAnimated: false,
+		navMoveAnimated: true,
+		navMoveImportantAnimated: true,
+		navPointAnimated: false,
+		navPointImportantAnimated: false,
+		navTitleAnimated: false,
+		navTitleImportantAnimated: false,
+		navTransparentAnimated: true,
+		navTransparentImportantAnimated: true,
 		// maxQuality: false,
+	},
+	navs: {
+		iconMinScale: 1,
+		iconMaxScale: 1.4,
 	},
 	profiles: {
 		// streamer: "480p_1", // 640 x 480 x 15
@@ -58,7 +72,7 @@ export const environmentStatic = {
 		// image: '/b-here/img/background.jpg',
 		video: '/b-here/img/background.mp4',
 	},
-	selfServiceAudio: '/b-here/audio/self-service.mp3',
+	selfServiceAudio: null, // '/b-here/audio/self-service.mp3',
 	colors: {
 		menuBackground: '#000000',
 		menuForeground: '#ffffff',

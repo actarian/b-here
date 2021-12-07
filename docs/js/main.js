@@ -143,8 +143,22 @@ function _readOnlyError(name) {
     streamer: true,
     viewer: true,
     smartDevice: true,
-    selfServiceProposition: false // maxQuality: false,
+    selfServiceProposition: false,
+    navInfoAnimated: false,
+    navInfoImportantAnimated: false,
+    navMoveAnimated: false,
+    navMoveImportantAnimated: false,
+    navPointAnimated: false,
+    navPointImportantAnimated: false,
+    navTitleAnimated: false,
+    navTitleImportantAnimated: false,
+    navTransparentAnimated: false,
+    navTransparentImportantAnimated: false // maxQuality: false,
 
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
   },
   profiles: {
     // streamer: "480p_1", // 640 x 480 x 15
@@ -181,7 +195,8 @@ function _readOnlyError(name) {
     // image: '/Modules/B-Here/Client/docs/img/background.jpg',
     video: '/Modules/B-Here/Client/docs/img/background.mp4'
   },
-  selfServiceAudio: '/Modules/B-Here/Client/docs/audio/self-service.mp3',
+  selfServiceAudio: null,
+  // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
   colors: {
     menuBackground: '#000000',
     menuForeground: '#ffffff',
@@ -257,8 +272,22 @@ function _readOnlyError(name) {
     streamer: true,
     viewer: true,
     smartDevice: true,
-    selfServiceProposition: true // maxQuality: false,
+    selfServiceProposition: false,
+    navInfoAnimated: false,
+    navInfoImportantAnimated: false,
+    navMoveAnimated: true,
+    navMoveImportantAnimated: true,
+    navPointAnimated: false,
+    navPointImportantAnimated: false,
+    navTitleAnimated: false,
+    navTitleImportantAnimated: false,
+    navTransparentAnimated: true,
+    navTransparentImportantAnimated: true // maxQuality: false,
 
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
   },
   profiles: {
     // streamer: "480p_1", // 640 x 480 x 15
@@ -295,7 +324,8 @@ function _readOnlyError(name) {
     // image: '/b-here/img/background.jpg',
     video: '/b-here/img/background.mp4'
   },
-  selfServiceAudio: '/b-here/audio/self-service.mp3',
+  selfServiceAudio: null,
+  // '/b-here/audio/self-service.mp3',
   colors: {
     menuBackground: '#000000',
     menuForeground: '#ffffff',
@@ -488,6 +518,10 @@ var defaultAppOptions = {
     selfServiceProposition: true,
     // maxQuality: false,
     heroku: HEROKU
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
   },
   url: {},
   languages: ['it', 'en'],
@@ -8860,8 +8894,7 @@ var VRService = /*#__PURE__*/function () {
   _proto.load = function load(callback) {
     this.loadNavmaps();
     this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {
-      console.log('AgoraComponent.viewObserver$', view);
-
+      // console.log('AgoraComponent.viewObserver$', view);
       if (typeof callback === 'function') {
         callback();
         callback = null;
@@ -9222,7 +9255,7 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.connect = function connect(preferences) {
-    console.log('AgoraComponent.connect', preferences);
+    // console.log('AgoraComponent.connect', preferences);
     this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('AgoraComponent.connect', this.state.role);
 
     if (this.state.role === RoleType.SelfService) {
@@ -20237,8 +20270,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         }; // this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
 
 
-        var context = rxcomp.getContext(_this4);
-        console.log('WorldCompoent.setView.context', context);
+        var context = rxcomp.getContext(_this4); // console.log('WorldCompoent.setView.context', context);
 
         if (context) {
           _this4.pushChanges();
@@ -20979,6 +21011,11 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     this.view.items.forEach(function (item) {
       return item.showPanel = false;
     });
+
+    if (nav.item.to) {
+      clearTimeout(nav.item.to);
+    }
+
     nav.item.showPanel = nav.shouldShowPanel();
     this.pushChanges();
     MessageService.send({
@@ -20988,8 +21025,15 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onNavOut = function onNavOut(nav) {
+    var _this7 = this;
+
     // console.log('WorldComponent.onNavOut', nav);
     // nav.item.showPanel = false;
+    nav.item.to = setTimeout(function () {
+      nav.item.showPanel = false;
+
+      _this7.pushChanges();
+    }, 4000);
     this.pushChanges();
   };
 
@@ -21086,25 +21130,25 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.onGridMove = function onGridMove(event) {
-    var _this7 = this;
+    var _this8 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
     this.view.items = []; // this.loading = LOADING_BANNER;
 
     this.pushChanges();
     this.orbitService.walk(event.position, function (headingLongitude, headingLatitude) {
-      var tile = _this7.view.getTile(event.indices.x, event.indices.y);
+      var tile = _this8.view.getTile(event.indices.x, event.indices.y);
 
       if (tile) {
-        _this7.panorama.crossfade(tile, _this7.renderer, function (texture) {
-          _this7.setBackground(texture);
+        _this8.panorama.crossfade(tile, _this8.renderer, function (texture) {
+          _this8.setBackground(texture);
 
-          _this7.orbitService.walkComplete(headingLongitude, headingLatitude);
+          _this8.orbitService.walkComplete(headingLongitude, headingLatitude);
 
-          _this7.view.updateCurrentItems(); // this.loading = null;
+          _this8.view.updateCurrentItems(); // this.loading = null;
 
 
-          _this7.pushChanges(); // this.render();
+          _this8.pushChanges(); // this.render();
           // this.pushChanges();
 
         });
@@ -21127,20 +21171,20 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.control$ = function control$() {
-    var _this8 = this;
+    var _this9 = this;
 
     return this.controlEvent$.pipe(operators.filter(function () {
-      return _this8.controlling || _this8.spyed || _this8.editor;
+      return _this9.controlling || _this9.spyed || _this9.editor;
     }), operators.auditTime(40), operators.tap(function (control) {
-      control.orientation.latitude = _this8.orbitService.latitude;
-      control.orientation.longitude = _this8.orbitService.longitude;
-      control.zoom = _this8.orbitService.zoom;
+      control.orientation.latitude = _this9.orbitService.latitude;
+      control.orientation.longitude = _this9.orbitService.longitude;
+      control.zoom = _this9.orbitService.zoom;
       control.cameraGroup = {
-        position: _this8.cameraGroup.position.toArray(),
-        rotation: _this8.cameraGroup.rotation.toArray()
+        position: _this9.cameraGroup.position.toArray(),
+        rotation: _this9.cameraGroup.rotation.toArray()
       };
 
-      var intersections = _this8.raycaster.intersectObjects(_this8.intersectObjects);
+      var intersections = _this9.raycaster.intersectObjects(_this9.intersectObjects);
 
       var point = intersections.length ? intersections[0].point.normalize() : null;
 
@@ -21155,22 +21199,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
   };
 
   _proto.addListeners = function addListeners() {
-    var _this9 = this;
+    var _this10 = this;
 
     this.controlEvent$ = new rxjs.ReplaySubject(1);
     this.control$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
     var vrService = this.vrService = VRService.getService();
     vrService.session$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (session) {
-      _this9.renderer.xr.setSession(session);
+      _this10.renderer.xr.setSession(session);
 
       if (session) {
-        _this9.onVRStarted();
+        _this10.onVRStarted();
       } else {
-        _this9.onVREnded();
+        _this10.onVREnded();
       }
     });
     vrService.state$.pipe(operators.takeUntil(this.unsubscribe$), operators.auditTime(Math.floor(1000 / 15))).subscribe(function (state) {
-      _this9.onVRStateDidChange(state);
+      _this10.onVRStateDidChange(state);
     });
     var orbit$ = this.orbitService.observe$(this.container).pipe(operators.shareReplay(1));
     /*
@@ -21184,22 +21228,22 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }), operators.auditTime(Math.floor(1000 / 15)));
     orientation$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       // this.render();
-      _this9.onOrientationDidChange();
+      _this10.onOrientationDidChange();
     });
     MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.RequestInfo:
           message.type = MessageType.RequestInfoResult;
-          message.viewId = _this9.view.id;
-          message.orientation = _this9.orbitService.getOrientation();
-          message.zoom = _this9.orbitService.zoom;
+          message.viewId = _this10.view.id;
+          message.orientation = _this10.orbitService.getOrientation();
+          message.zoom = _this10.orbitService.zoom;
           message.cameraGroup = {
-            position: _this9.cameraGroup.position.toArray(),
-            rotation: _this9.cameraGroup.rotation.toArray()
+            position: _this10.cameraGroup.position.toArray(),
+            rotation: _this10.cameraGroup.rotation.toArray()
           };
 
-          if (_this9.view instanceof PanoramaGridView) {
-            message.gridIndex = _this9.view.index;
+          if (_this10.view instanceof PanoramaGridView) {
+            message.gridIndex = _this10.view.index;
           } // console.log('WorldComponent', 'MessageType.RequestInfo', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
 
 
@@ -21217,47 +21261,47 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           // console.log('WorldComponent', 'MessageType.RequestInfoResult', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
           if (ViewService.viewId !== message.viewId) {
             ViewService.viewId = message.viewId;
-            _this9.requestInfoResult = message;
+            _this10.requestInfoResult = message;
           } else {
-            if (!_this9.renderer.xr.isPresenting) {
-              _this9.orbitService.setOrientation(message.orientation);
+            if (!_this10.renderer.xr.isPresenting) {
+              _this10.orbitService.setOrientation(message.orientation);
 
-              _this9.orbitService.zoom = message.zoom;
+              _this10.orbitService.zoom = message.zoom;
 
-              _this9.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+              _this10.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
 
-              _this9.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
+              _this10.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
 
             }
 
-            if (_this9.view instanceof PanoramaGridView && message.gridIndex) {
-              _this9.view.index = message.gridIndex;
+            if (_this10.view instanceof PanoramaGridView && message.gridIndex) {
+              _this10.view.index = message.gridIndex;
             }
 
-            if (!_this9.view || !_this9.view.ready) {
-              _this9.requestInfoResult = message;
+            if (!_this10.view || !_this10.view.ready) {
+              _this10.requestInfoResult = message;
             }
           }
 
           break;
 
         case MessageType.ShowPanel:
-          if (_this9.menu) {
-            _this9.menu.removeMenu();
+          if (_this10.menu) {
+            _this10.menu.removeMenu();
           }
 
-          _this9.view.items.forEach(function (item) {
+          _this10.view.items.forEach(function (item) {
             return item.showPanel = item.id === message.itemId;
           });
 
-          _this9.pushChanges();
+          _this10.pushChanges();
 
           break;
 
         case MessageType.PlayMedia:
           {
             // !!! uniformare a PlayModel
-            var item = _this9.view.items.find(function (item) {
+            var item = _this10.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
@@ -21270,7 +21314,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.ZoomMedia:
           {
-            _this9.view.items.forEach(function (item) {
+            _this10.view.items.forEach(function (item) {
               if (item.mesh instanceof MediaMesh) {
                 if (item.id === message.itemId) {
                   item.mesh.setZoomedState(message.zoomed);
@@ -21288,7 +21332,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.CurrentTimeMedia:
           {
-            var _item = _this9.view.items.find(function (item) {
+            var _item = _this10.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
@@ -21301,7 +21345,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.PlayModel:
           {
-            var _item2 = _this9.view.items.find(function (item) {
+            var _item2 = _this10.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
@@ -21314,44 +21358,44 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.NavToGrid:
           // console.log('WorldComponent.NavToGrid', this.view.id, message);
-          if (_this9.view.id === message.viewId) {
-            _this9.view.index = message.gridIndex;
+          if (_this10.view.id === message.viewId) {
+            _this10.view.index = message.gridIndex;
           }
 
           break;
 
         case MessageType.VRStarted:
-          _this9.addOffCanvasScene(message);
+          _this10.addOffCanvasScene(message);
 
           break;
 
         case MessageType.VREnded:
-          _this9.removeOffCanvasScene(message);
+          _this10.removeOffCanvasScene(message);
 
           break;
 
         case MessageType.VRState:
-          _this9.updateOffCanvasScene(message);
+          _this10.updateOffCanvasScene(message);
 
           if (StateService.state.spying === message.clientId || StateService.state.controlling === message.clientId) {
-            _this9.orbitService.setVRCamera(message.camera);
+            _this10.orbitService.setVRCamera(message.camera);
           }
 
           break;
 
         case MessageType.ControlInfo:
-          if (!_this9.renderer.xr.isPresenting) {
-            _this9.orbitService.setOrientation(message.orientation);
+          if (!_this10.renderer.xr.isPresenting) {
+            _this10.orbitService.setOrientation(message.orientation);
 
-            _this9.orbitService.zoom = message.zoom;
+            _this10.orbitService.zoom = message.zoom;
 
-            _this9.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
+            _this10.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
 
-            _this9.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
+            _this10.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]); // this.camera.updateProjectionMatrix();
 
           }
 
-          _this9.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2], _this9.camera);
+          _this10.pointer.setPosition(message.pointer[0], message.pointer[1], message.pointer[2], _this10.camera);
 
           break;
       }
@@ -21359,14 +21403,14 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
       switch (message.type) {
         case MessageType.SelectItem:
-          _this9.checkSelectedItem();
+          _this10.checkSelectedItem();
 
           break;
       }
     });
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this9.state = state;
-      _this9.showPointer = _this9.locked; // console.log(state);
+      _this10.state = state;
+      _this10.showPointer = _this10.locked; // console.log(state);
       // this.pushChanges();
     });
     this.resize = this.resize.bind(this);
@@ -21968,6 +22012,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       return;
     }
 
+    var isAnimated = this.isAnimated;
     var nav = new THREE.Group();
 
     if (mode === NavModeType.Transparent) {
@@ -21988,52 +22033,42 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       plane.name = "[nav] " + item.id;
       plane.depthTest = false;
       nav.add(plane);
+
+      if (isAnimated) {
+        var from = {
+          pow: 0
+        };
+        gsap.to(from, {
+          pow: 1,
+          duration: 0.6,
+          delay: 0.5 + 0.1 * item.index,
+          ease: Power2.easeOut,
+          repeat: -1,
+          yoyo: true,
+          onUpdate: function onUpdate() {
+            plane.material.opacity = from.pow * opacityDown;
+          }
+        });
+      }
+
       plane.on('over', function () {
-        plane.material.opacity = opacityOver;
+        if (!isAnimated) {
+          plane.material.opacity = opacityOver;
+        }
 
         _this2.over.next(_this2);
-        /*
-        const from = { scale: plane.material.opacity };
-        gsap.to(from, {
-        	opacity: 0.8,
-        	duration: 0.35,
-        	delay: 0,
-        	ease: Power2.easeOut,
-        	overwrite: true,
-        	onUpdate: () => {
-        		plane.material.opacity = from.opacity;
-        		plane.material.needsUpdate = true;
-        	},
-        	onComplete: () => {
-        	}
-        });
-        */
-
       });
       plane.on('out', function () {
-        plane.material.opacity = opacityIdle;
+        if (!isAnimated) {
+          plane.material.opacity = opacityIdle;
+        }
 
         _this2.out.next(_this2);
-        /*
-        const from = { pow: plane.material.opacity };
-        gsap.to(from, {
-        	opacity: 0.2,
-        	duration: 0.35,
-        	delay: 0,
-        	ease: Power2.easeOut,
-        	overwrite: true,
-        	onUpdate: () => {
-        		plane.material.opacity = from.opacity;
-        		plane.material.needsUpdate = true;
-        	},
-        	onComplete: () => {
-        	}
-        });
-        */
-
       });
       plane.on('down', function () {
-        plane.material.opacity = opacityDown;
+        if (!isAnimated) {
+          plane.material.opacity = opacityDown;
+        }
 
         _this2.down.next(_this2); // opening nav link
 
@@ -22043,7 +22078,10 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         }
       });
       plane.on('up', function () {
-        plane.material.opacity = opacityIdle; // opening nav link
+        if (!isAnimated) {
+          plane.material.opacity = opacityIdle;
+        } // opening nav link
+
 
         if (_this2.shouldNavToLink != null) {
           var link = _this2.shouldNavToLink;
@@ -22051,20 +22089,6 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
           window.open(link, '_blank');
         }
       });
-      /*
-      const from = { opacity: 0 };
-      gsap.to(from, {
-      	opacity: 1.0,
-      	duration: 0.7,
-      	delay: 0.5 + 0.1 * item.index,
-      	ease: Power2.easeInOut,
-      	overwrite: true,
-      	onUpdate: () => {
-      		plane.material.opacity = from.opacity;
-      		plane.material.needsUpdate = true;
-      	}
-      });
-      */
     } else {
       // !! fixing normalized positions;
       var position = new THREE.Vector3(item.position[0], item.position[1], item.position[2]);
@@ -22090,79 +22114,82 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
       sphere.depthTest = false; // sphere.renderOrder = 0;
 
       nav.add(sphere);
-      sphere.on('over', function () {
-        // console.log('ModelNavComponent.over');
-
-        /*
-        if ((mode !== NavModeType.Move && mode !== NavModeType.Title) && !this.editing) {
-        	this.over.next(this);
-        }
-        */
-        _this2.over.next(_this2);
-
-        var icon = _this2.icon;
-        var from = {
-          scale: icon.scale.x
-        };
-        gsap.to(from, {
-          duration: 0.35,
-          scale: 0.04,
-          delay: 0,
-          ease: Power2.easeOut,
-          overwrite: true,
-          onUpdate: function onUpdate() {
-            icon.scale.set(from.scale, from.scale, from.scale);
-          },
-          onComplete: function onComplete() {
-            /*
-            if (!this.editing) {
-            	this.over.next(this);
-            }
-            */
-          }
-        });
-      });
-      sphere.on('out', function () {
-        _this2.out.next(_this2);
-
-        var icon = _this2.icon;
-        var from = {
-          scale: icon.scale.x
-        };
-        gsap.to(from, {
-          duration: 0.35,
-          scale: 0.03,
-          delay: 0,
-          ease: Power2.easeOut,
-          overwrite: true,
-          onUpdate: function onUpdate() {
-            icon.scale.set(from.scale, from.scale, from.scale);
-          },
-          onComplete: function onComplete() {
-            /*
-            this.out.next(this);
-            */
-          }
-        });
-      });
-      sphere.on('down', function () {
-        _this2.down.next(_this2);
-      });
-      var from = {
-        opacity: 0
+      var _from = {
+        pow: 0
       };
-      gsap.to(from, {
+      gsap.to(_from, {
+        pow: 1,
         duration: 0.7,
-        opacity: 1,
         delay: 0.5 + 0.1 * item.index,
         ease: Power2.easeInOut,
         overwrite: true,
         onUpdate: function onUpdate() {
           _this2.materials.forEach(function (material) {
-            material.opacity = from.opacity;
-            material.needsUpdate = true;
+            material.opacity = _from.pow; // material.needsUpdate = true;
+          });
+        },
+        onComplete: function onComplete() {
+          if (isAnimated) {
+            var icon = _this2.icon;
+            _from.pow = 0;
+            gsap.to(_from, {
+              pow: 1,
+              duration: 0.6,
+              delay: 0.5 + 0.1 * item.index,
+              ease: Power2.easeOut,
+              repeat: -1,
+              yoyo: true,
+              onUpdate: function onUpdate() {
+                var scale = _this2.iconMinScale + _from.pow * (_this2.iconMaxScale - _this2.iconMinScale);
+                icon.scale.set(scale, scale, scale);
+                icon.material.opacity = _from.pow;
+              }
+            });
+          }
+        }
+      });
+      sphere.on('over', function () {
+        _this2.over.next(_this2);
+
+        if (!isAnimated) {
+          var icon = _this2.icon;
+          var _from2 = {
+            scale: icon.scale.x
+          };
+          gsap.to(_from2, {
+            duration: 0.35,
+            scale: _this2.iconMaxScale,
+            delay: 0,
+            ease: Power2.easeOut,
+            overwrite: true,
+            onUpdate: function onUpdate() {
+              icon.scale.set(_from2.scale, _from2.scale, _from2.scale);
+            }
           });
         }
+      });
+      sphere.on('out', function () {
+        _this2.out.next(_this2);
+
+        if (!isAnimated) {
+          var icon = _this2.icon;
+          var _from3 = {
+            scale: icon.scale.x
+          };
+          gsap.to(_from3, {
+            duration: 0.35,
+            scale: _this2.iconMinScale,
+            delay: 0,
+            ease: Power2.easeOut,
+            overwrite: true,
+            onUpdate: function onUpdate() {
+              icon.scale.set(_from3.scale, _from3.scale, _from3.scale);
+            }
+          });
+        }
+      });
+      sphere.on('down', function () {
+        _this2.down.next(_this2);
       });
     }
 
@@ -22199,9 +22226,10 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
 
       });
       var materials = [material];
+      var scale = this.iconMinScale;
       var icon = this.icon = new THREE.Sprite(material);
       icon.renderOrder = environment.renderOrder.nav;
-      icon.scale.set(0.03, 0.03, 0.03);
+      icon.scale.set(scale, scale, scale);
       mesh.add(icon);
       var titleMaterial;
       var titleTexture = ModelNavComponent.getTitleTexture(item, mode);
@@ -22219,7 +22247,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
 
         var image = titleTexture.image;
         var title = this.title = new THREE.Sprite(titleMaterial);
-        title.scale.set(0.03 * image.width / image.height, 0.03, 0.03);
+        title.scale.set(scale * image.width / image.height, scale, scale);
         title.position.set(0, -3.5, 0);
         mesh.add(title);
         materials.push(titleMaterial);
@@ -22347,6 +22375,47 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     key: "isHidden",
     get: function get() {
       return StateService.state.zoomedId != null || environment.flags.hideNavInfo && !this.editor && !StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed) && this.mode === NavModeType.Info;
+    }
+  }, {
+    key: "isAnimated",
+    get: function get() {
+      var isAnimated = false;
+      var mode = this.mode;
+      var important = this.item.important;
+
+      switch (mode) {
+        case NavModeType.Info:
+          isAnimated = important ? environment.flags.navInfoImportantAnimated : environment.flags.navInfoAnimated;
+          break;
+
+        case NavModeType.Move:
+          isAnimated = important ? environment.flags.navMoveImportantAnimated : environment.flags.navMoveAnimated;
+          break;
+
+        case NavModeType.Point:
+          isAnimated = important ? environment.flags.navPointImportantAnimated : environment.flags.navPointAnimated;
+          break;
+
+        case NavModeType.Title:
+          isAnimated = important ? environment.flags.navTitleImportantAnimated : environment.flags.navTitleAnimated;
+          break;
+
+        case NavModeType.Transparent:
+          isAnimated = important ? environment.flags.navTransparentImportantAnimated : environment.flags.navTransparentAnimated;
+          break;
+      }
+
+      return isAnimated;
+    }
+  }, {
+    key: "iconMinScale",
+    get: function get() {
+      return (environment.navs.iconMinScale || 1) * 0.03;
+    }
+  }, {
+    key: "iconMaxScale",
+    get: function get() {
+      return (environment.navs.iconMaxScale || 1.5) * 0.03;
     }
   }]);
 

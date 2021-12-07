@@ -380,7 +380,7 @@ export default class WorldComponent extends Component {
 				};
 				// this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
 				const context = getContext(this);
-				console.log('WorldCompoent.setView.context', context);
+				// console.log('WorldCompoent.setView.context', context);
 				if (context) {
 					this.pushChanges();
 				}
@@ -1055,6 +1055,9 @@ export default class WorldComponent extends Component {
 			// this.menu.removeMenu();
 		}
 		this.view.items.forEach(item => item.showPanel = false);
+		if (nav.item.to) {
+			clearTimeout(nav.item.to);
+		}
 		nav.item.showPanel = nav.shouldShowPanel();
 		this.pushChanges();
 		MessageService.send({
@@ -1066,6 +1069,10 @@ export default class WorldComponent extends Component {
 	onNavOut(nav) {
 		// console.log('WorldComponent.onNavOut', nav);
 		// nav.item.showPanel = false;
+		nav.item.to = setTimeout(() => {
+			nav.item.showPanel = false;
+			this.pushChanges();
+		}, 4000);
 		this.pushChanges();
 	}
 
