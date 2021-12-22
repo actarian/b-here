@@ -3322,8 +3322,14 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
     StreamService.peers = [];
     return new Promise(function (resolve, reject) {
       _this9.leaveMessageChannel().then(function () {
-        return Promise.all([_this9.leaveClient(), _this9.leaveScreenClient()]);
-      }, reject);
+        Promise.all([_this9.leaveClient(), _this9.leaveScreenClient()]).then(function () {
+          resolve();
+        }).catch(function (error) {
+          reject(error);
+        });
+      }).catch(function (error) {
+        reject(error);
+      });
     });
   };
 
@@ -3638,6 +3644,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
   _proto.sendRemoteControlDismiss = function sendRemoteControlDismiss(controllingId) {
     var _this20 = this;
 
+    // !!! can't dismiss if room is empty
     return new Promise(function (resolve, _) {
       _this20.sendMessage({
         type: MessageType.RequestControlDismiss,
@@ -9291,7 +9298,8 @@ var VRService = /*#__PURE__*/function () {
       this.agora.leaveChannel().then(function () {
         // StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
         // window.location.href = window.location.href;
-        window.location.replace(window.location.href);
+        // window.location.replace(window.location.href);
+        window.location.reload();
       }, console.log);
     } else {
       this.patchState({
@@ -9453,8 +9461,15 @@ var VRService = /*#__PURE__*/function () {
 
   _proto.toggleChat = function toggleChat() {
     StateService.patchState({
-      chat: !this.state.chat,
+      chat: !StateService.state.chat,
       chatDirty: false
+    });
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.onChatClose = function onChatClose() {
+    StateService.patchState({
+      chat: false
     });
     window.dispatchEvent(new Event('resize'));
   };
@@ -9485,13 +9500,6 @@ var VRService = /*#__PURE__*/function () {
     this.view.items.forEach(function (item) {
       return item.showPanel = false;
     });
-  };
-
-  _proto.onChatClose = function onChatClose() {
-    this.patchState({
-      chat: false
-    });
-    window.dispatchEvent(new Event('resize'));
   };
 
   _proto.onToggleControl = function onToggleControl(remoteId) {
@@ -21328,7 +21336,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
             });
 
             StateService.patchState({
-              zoomedId: message.itemId
+              zoomedId: message.zoomed ? message.itemId : null
             });
             break;
           }
@@ -21979,10 +21987,15 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   };
 
   _proto.updateVisibility = function updateVisibility(visible) {
-    this.mesh.visible = visible;
-    this.sphere.freezed = !visible;
+    if (this.mesh) {
+      this.mesh.visible = visible;
+    }
 
-    if (!visible) {
+    if (this.sphere) {
+      this.sphere.freezed = !visible;
+    }
+
+    if (!visible && this.item) {
       this.item.showPanel = false;
     }
   };
@@ -28895,7 +28908,12 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
     }
   };
 
-  _proto3.onToggle = function onToggle() {
+  _proto3.onToggle = function onToggle(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+
     if (this.locked) {
       return;
     }

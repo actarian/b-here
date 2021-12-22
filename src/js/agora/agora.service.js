@@ -627,8 +627,14 @@ export default class AgoraService extends Emittable {
 		StreamService.peers = [];
 		return new Promise((resolve, reject) => {
 			this.leaveMessageChannel().then(() => {
-				return Promise.all([this.leaveClient(), this.leaveScreenClient()]);
-			}, reject);
+				Promise.all([this.leaveClient(), this.leaveScreenClient()]).then(() => {
+					resolve();
+				}).catch(error => {
+					reject(error);
+				});
+			}).catch(error => {
+				reject(error);
+			});
 		});
 	}
 
@@ -872,6 +878,7 @@ export default class AgoraService extends Emittable {
 	}
 
 	sendRemoteControlDismiss(controllingId) {
+		// !!! can't dismiss if room is empty
 		return new Promise((resolve, _) => {
 			this.sendMessage({
 				type: MessageType.RequestControlDismiss,

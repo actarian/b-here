@@ -184,9 +184,13 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	updateVisibility(visible) {
-		this.mesh.visible = visible;
-		this.sphere.freezed = !visible;
-		if (!visible) {
+		if (this.mesh) {
+			this.mesh.visible = visible;
+		}
+		if (this.sphere) {
+			this.sphere.freezed = !visible;
+		}
+		if (!visible && this.item) {
 			this.item.showPanel = false;
 		}
 	}
