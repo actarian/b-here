@@ -517,7 +517,11 @@ export default class ModelMenuComponent extends ModelComponent {
 		}
 	}
 
-	onToggle() {
+	onToggle(event) {
+		if (event) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
 		if (this.locked) {
 			return;
 		}

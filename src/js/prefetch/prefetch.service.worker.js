@@ -55,7 +55,7 @@ function onMessage(event) {
 		delete controllers[id];
 		// console.log('PrefetchServiceWorker.onMessage.Complete', assets);
 		sendMessage(PrefetchServiceWorkerEvent.Complete, assets);
-	}, function(error) {
+	}).catch(function(error) {
 		console.log('PrefetchServiceWorker.onMessage.error', error);
 	});
 }

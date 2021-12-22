@@ -625,7 +625,8 @@ export default class AgoraComponent extends Component {
 			this.agora.leaveChannel().then(() => {
 				// StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
 				// window.location.href = window.location.href;
-				window.location.replace(window.location.href);
+				// window.location.replace(window.location.href);
+				window.location.reload();
 			}, console.log);
 		} else {
 			this.patchState({ connecting: false, connected: false });
@@ -751,7 +752,12 @@ export default class AgoraComponent extends Component {
 	}
 
 	toggleChat() {
-		StateService.patchState({ chat: !this.state.chat, chatDirty: false });
+		StateService.patchState({ chat: !StateService.state.chat, chatDirty: false });
+		window.dispatchEvent(new Event('resize'));
+	}
+
+	onChatClose() {
+		StateService.patchState({ chat: false });
 		window.dispatchEvent(new Event('resize'));
 	}
 
@@ -773,11 +779,6 @@ export default class AgoraComponent extends Component {
 
 	hidePanels() {
 		this.view.items.forEach(item => item.showPanel = false);
-	}
-
-	onChatClose() {
-		this.patchState({ chat: false });
-		window.dispatchEvent(new Event('resize'));
 	}
 
 	onToggleControl(remoteId) {
