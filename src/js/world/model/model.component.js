@@ -94,7 +94,9 @@ export default class ModelComponent extends Component {
 				this.onMessage(message);
 			};
 		}
-		this.group.add(mesh);
+		if (this.group) {
+			this.group.add(mesh);
+		}
 		// this.host.render(); !!!
 		/*
 		const node = this.node;

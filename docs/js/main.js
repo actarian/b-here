@@ -21658,7 +21658,9 @@ WorldComponent.meta = {
       };
     }
 
-    this.group.add(mesh); // this.host.render(); !!!
+    if (this.group) {
+      this.group.add(mesh);
+    } // this.host.render(); !!!
 
     /*
     const node = this.node;
@@ -21669,6 +21671,7 @@ WorldComponent.meta = {
     });
     */
     // console.log('Model.loaded', mesh);
+
   };
 
   _proto.onDismount = function onDismount(mesh, item) {
