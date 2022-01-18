@@ -271,6 +271,7 @@ export default class AgoraComponent extends Component {
 			this.hosted = state.hosted;
 			this.pushChanges();
 			// console.log(state);
+			this.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
 		});
 		this.initAgora();
 	}
@@ -650,7 +651,10 @@ export default class AgoraComponent extends Component {
 		ModalService.open$({ iframe: item.link.href }).pipe(
 			first(),
 		).subscribe(event => {
-			// this.pushChanges();
+			MessageService.send({
+				type: MessageType.NavLinkClose,
+				itemId: item.id,
+			});
 		});
 	}
 

@@ -1345,6 +1345,12 @@ export default class WorldComponent extends Component {
 						this.navLink.next(item);
 					}
 					break;
+				case MessageType.NavLinkClose:
+					const closeItem = this.view.items.find(item => item.id === message.itemId);
+					if (closeItem) {
+						ModalService.resolve();
+					}
+					break;
 				case MessageType.PlayMedia: {
 					// !!! uniformare a PlayModel
 					const item = this.view.items.find(item => item.id === message.itemId);

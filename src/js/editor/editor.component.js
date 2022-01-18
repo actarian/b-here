@@ -140,7 +140,10 @@ export default class EditorComponent extends Component {
 		ModalService.open$({ iframe: item.link.href }).pipe(
 			first(),
 		).subscribe(event => {
-			// this.pushChanges();
+			MessageService.send({
+				type: MessageType.NavLinkClose,
+				itemId: item.id,
+			});
 		});
 	}
 
