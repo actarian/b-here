@@ -1,6 +1,6 @@
 import { getContext } from 'rxcomp';
 import { of } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, tap } from 'rxjs/operators';
 // import * as THREE from 'three';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
@@ -384,9 +384,16 @@ export default class ModelMenuComponent extends ModelComponent {
 	items$(item = null) {
 		if (item) {
 			return of(item.items);
+		} else if (this.rootItems) {
+			return of(this.rootItems);
 		} else {
 			return MenuService.getModelMenu$(this.views, this.editor).pipe(
 				first(),
+				tap(items => {
+					if (!this.editor) {
+						this.rootItems = items;
+					}
+				}),
 			);
 		}
 	}

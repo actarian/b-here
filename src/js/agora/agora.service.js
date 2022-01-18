@@ -993,6 +993,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.Mode:
 					case MessageType.NavInfo:
 					case MessageType.NavLink:
+					case MessageType.NavLinkClose:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
 							return;
@@ -1134,6 +1135,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:
 			case MessageType.NavLink:
+			case MessageType.NavLinkClose:
 				if ((StateService.state.controlling && StateService.state.controlling !== StateService.state.uid) || (StateService.state.spying && StateService.state.spying !== StateService.state.uid)) {
 					this.broadcastMessage(message);
 				}

@@ -3703,6 +3703,13 @@ test-component .btn--mode {
   display: flex;
   justify-content: flex-end; }
 
+body.locked .modal-outlet {
+  pointer-events: none; }
+  body.locked .modal-outlet .modal-outlet__modal > * {
+    pointer-events: none; }
+  body.locked .modal-outlet iframe {
+    pointer-events: auto; }
+
 @keyframes scale-up-center {
   0% {
     transform: scale(0.75); }

@@ -1279,6 +1279,7 @@ var MessageType = {
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
   NavLink: 'navLink',
+  NavLinkClose: 'navLinkClose',
   VRStarted: 'vrStarted',
   VREnded: 'vrEnded',
   VRState: 'vrState',
@@ -3792,6 +3793,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.Mode:
           case MessageType.NavInfo:
           case MessageType.NavLink:
+          case MessageType.NavLinkClose:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
             if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
               return;
@@ -3955,6 +3957,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.NavToView:
       case MessageType.NavToGrid:
       case MessageType.NavLink:
+      case MessageType.NavLinkClose:
         if (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid || StateService.state.spying && StateService.state.spying !== StateService.state.uid) {
           this.broadcastMessage(message);
         }
@@ -9094,6 +9097,8 @@ var VRService = /*#__PURE__*/function () {
 
       _this3.pushChanges(); // console.log(state);
 
+
+      _this3.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
     });
     this.initAgora();
   };
@@ -9570,7 +9575,11 @@ var VRService = /*#__PURE__*/function () {
     // console.log('AgoraComponent.onNavLink', item);
     ModalService.open$({
       iframe: item.link.href
-    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
+    }).pipe(operators.first()).subscribe(function (event) {
+      MessageService.send({
+        type: MessageType.NavLinkClose,
+        itemId: item.id
+      });
     });
   };
 
@@ -11039,7 +11048,11 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     // console.log('EditorComponent.onNavLink', item);
     ModalService.open$({
       iframe: item.link.href
-    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
+    }).pipe(operators.first()).subscribe(function (event) {
+      MessageService.send({
+        type: MessageType.NavLinkClose,
+        itemId: item.id
+      });
     });
   };
 
@@ -21668,6 +21681,17 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
           break;
 
+        case MessageType.NavLinkClose:
+          var closeItem = _this10.view.items.find(function (item) {
+            return item.id === message.itemId;
+          });
+
+          if (closeItem) {
+            ModalService.resolve();
+          }
+
+          break;
+
         case MessageType.PlayMedia:
           {
             // !!! uniformare a PlayModel
@@ -29232,19 +29256,27 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto3.items$ = function items$(item) {
+    var _this5 = this;
+
     if (item === void 0) {
       item = null;
     }
 
     if (item) {
       return rxjs.of(item.items);
+    } else if (this.rootItems) {
+      return rxjs.of(this.rootItems);
     } else {
-      return MenuService.getModelMenu$(this.views, this.editor).pipe(operators.first());
+      return MenuService.getModelMenu$(this.views, this.editor).pipe(operators.first(), operators.tap(function (items) {
+        if (!_this5.editor) {
+          _this5.rootItems = items;
+        }
+      }));
     }
   };
 
   _proto3.addMenu = function addMenu(item) {
-    var _this5 = this;
+    var _this6 = this;
 
     if (item === void 0) {
       item = null;
@@ -29274,7 +29306,7 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
           backItem: item
         };
         items.push(back);
-        var buttons = _this5.buttons = items.map(function (x, i, a) {
+        var buttons = _this6.buttons = items.map(function (x, i, a) {
           x.backItem = item;
           return x.type.name === 'back' ? new BackButton(x, i, a.length) : new MenuButton(x, i, a.length);
         });
@@ -29282,9 +29314,9 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
           button.depthTest = false;
           button.on('over', button.onOver);
           button.on('out', button.onOut);
-          button.on('down', _this5.onDown);
+          button.on('down', _this6.onDown);
 
-          _this5.menuGroup.add(button);
+          _this6.menuGroup.add(button);
           /*
           var box = new THREE.BoxHelper(button, 0xffff00);
           this.host.scene.add(box);
@@ -29318,17 +29350,17 @@ var ModelMenuComponent = /*#__PURE__*/function (_ModelComponent) {
   };
 
   _proto3.removeButtons = function removeButtons() {
-    var _this6 = this;
+    var _this7 = this;
 
     var buttons = this.buttons;
 
     if (buttons) {
       buttons.forEach(function (button) {
-        _this6.menuGroup.remove(button);
+        _this7.menuGroup.remove(button);
 
         button.off('over', button.onOver);
         button.off('out', button.onOut);
-        button.off('down', _this6.onDown);
+        button.off('down', _this7.onDown);
         button.dispose();
       });
     }
