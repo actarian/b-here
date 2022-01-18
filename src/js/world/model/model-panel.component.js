@@ -48,7 +48,7 @@ export default class ModelPanelComponent extends ModelComponent {
 					});
 					// console.log('ModelPanelComponent.down.link', link);
 					if (link) {
-						this.down.next(link);
+						this.down.next(this.item);
 						const rect = node.getBoundingClientRect();
 						const event = new MouseEvent('mouseup', {
 							button: 0,

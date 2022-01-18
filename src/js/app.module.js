@@ -21,6 +21,7 @@ import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
 import { EditorModule } from './editor/editor.module';
+import IframeModalComponent from './editor/modals/iframe-modal.component';
 import EnvPipe from './env/env.pipe';
 import FlagPipe from './flag/flag.pipe';
 import ControlAssetComponent from './forms/control-asset.component';
@@ -127,6 +128,7 @@ AppModule.meta = {
 		FlagPipe,
 		HlsDirective,
 		HtmlPipe,
+		IframeModalComponent,
 		IdDirective,
 		InputValueComponent,
 		LabelPipe,

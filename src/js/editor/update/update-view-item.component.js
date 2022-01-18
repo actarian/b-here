@@ -1,13 +1,14 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { of } from 'rxjs';
-import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
 import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId, AssetType } from '../../asset/asset';
 import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
 import LabelPipe from '../../label/label.pipe';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType, ViewType } from '../../view/view';
+import { WebhookService } from '../../webhook/webhook.service';
 import EditorService from '../editor.service';
 
 export default class UpdateViewItemComponent extends Component {
@@ -15,6 +16,7 @@ export default class UpdateViewItemComponent extends Component {
 	onInit() {
 		this.busy = false;
 		this.active = false;
+		this.useHooks = WebhookService.enabled;
 		const form = this.form = new FormGroup();
 		this.controls = form.controls;
 		const item = this.item;
@@ -81,7 +83,11 @@ export default class UpdateViewItemComponent extends Component {
 			let keys;
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
-					keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+					if (this.useHooks) {
+						keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'hook?', 'hookExtra?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+					} else {
+						keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+					}
 					break;
 				case ViewItemType.Plane.name:
 					keys = ['id', 'type', 'position', 'rotation', 'scale', 'assetType?', 'asset?', 'hasChromaKeyColor?', 'autoplay?', 'loop?'];
@@ -117,6 +123,16 @@ export default class UpdateViewItemComponent extends Component {
 							control.value = control.value || null;
 							this.pushChanges();
 						});
+						break;
+					case 'hook':
+						control = new FormControl(value, optional ? undefined : RequiredValidator());
+						if (WebhookService.enabled) {
+							const options = environment.webhook.methods.map(x => ({ id: x, name: x }));
+							options.unshift({ id: null, name: 'select' });
+							control.options = options;
+						}
+						control.value = control.value || null;
+						this.pushChanges();
 						break;
 					case 'assetType':
 						control = new FormControl(value, optional ? undefined : RequiredValidator());
@@ -214,6 +230,9 @@ export default class UpdateViewItemComponent extends Component {
 			this.pushChanges();
 			const changes = this.form.value;
 			const payload = Object.assign({}, changes);
+			if (this.item.type.name === ViewItemType.Nav.name) {
+				payload.viewId = payload.viewId || this.view.id;
+			}
 			const view = this.view;
 			const item = new ViewItem(payload);
 			EditorService.inferItemUpdate$(view, item).pipe(
@@ -235,7 +254,7 @@ export default class UpdateViewItemComponent extends Component {
 
 	onRemove(event) {
 		ModalService.open$({ src: environment.template.modal.remove, data: { item: this.item } }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				this.delete.next({ view: this.view, item: this.item });
@@ -306,6 +325,10 @@ UpdateViewItemComponent.meta = {
 				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
 				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
 				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
+				<div *if="useHooks">
+					<div control-custom-select [control]="controls.hook" label="Hook"></div>
+					<div control-text [control]="controls.hookExtra" label="Hook Extra"></div>
+				</div>
 			</div>
 			<div class="form-controls" *if="item.type.name == 'plane' && view.type.name != 'media'">
 				<div control-vector [control]="controls.position" label="Position" [precision]="2"></div>

@@ -17,6 +17,7 @@ export const environmentServed = {
 		ar: true,
 		like: true,
 		hideNavInfo: true,
+		useIframe: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,

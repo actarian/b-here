@@ -172,7 +172,7 @@ export default class NavmapEditComponent extends Component {
 	onRemove() {
 		const navmap = this.navmap;
 		ModalService.open$({ src: environment.template.modal.remove, data: { item: navmap } }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				NavmapService.navmapDelete$(navmap).pipe(

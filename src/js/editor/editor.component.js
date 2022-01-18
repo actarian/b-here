@@ -126,13 +126,22 @@ export default class EditorComponent extends Component {
 		);
 	}
 
-	onNavTo(navItem) {
-		// console.log('EditorComponent.onNavTo', navItem);
-		const viewId = navItem.viewId;
+	onNavTo(item) {
+		// console.log('EditorComponent.onNavTo', item);
+		const viewId = item.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
-			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation, useLastOrientation: navItem.useLastOrientation };
+			ViewService.action = { viewId, keepOrientation: item.keepOrientation, useLastOrientation: item.useLastOrientation };
 		}
+	}
+
+	onNavLink(item) {
+		// console.log('EditorComponent.onNavLink', item);
+		ModalService.open$({ iframe: item.link.href }).pipe(
+			first(),
+		).subscribe(event => {
+			// this.pushChanges();
+		});
 	}
 
 	patchState(state) {
@@ -143,7 +152,7 @@ export default class EditorComponent extends Component {
 
 	tryInAr() {
 		ModalService.open$({ src: environment.template.modal.tryInAr, data: this.view }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(event => {
 			// this.pushChanges();
 		});

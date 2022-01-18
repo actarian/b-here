@@ -1093,6 +1093,45 @@ export default class WorldComponent extends Component {
 		}
 	}
 
+	onNavLink(item) {
+		// console.log('WorldComponent.onNavLink', item.link.href);
+		if (this.locked) {
+			return;
+		}
+		if (environment.flags.useIframe) {
+			MessageService.send({
+				type: MessageType.NavLink,
+				itemId: item.id,
+			});
+			this.navLink.next(item);
+		} else {
+			window.open(item.link.href, '_blank');
+		}
+	}
+
+	onPanelDown(item) {
+		// console.log('WorldComponent.onPanelDown', item.link.href);
+		if (this.locked) {
+			return;
+		}
+		if (environment.flags.useIframe) {
+			MessageService.send({
+				type: MessageType.NavLink,
+				itemId: item.id,
+			});
+			this.navLink.next(item);
+		} else {
+			window.open(item.link.href, '_blank');
+			/*
+			const href = event.getAttribute('href');
+			const target = event.getAttribute('target') || '_self';
+			if (href) {
+				window.open(href, '_blank');
+			}
+			*/
+		}
+	}
+
 	onObjectDown(event) {
 		// console.log('WorldComponent.onObjectDown', this.keys);
 		if (this.lockedOrXR) {
@@ -1149,15 +1188,6 @@ export default class WorldComponent extends Component {
 			itemId: event.itemId,
 			actionIndex: event.actionIndex,
 		});
-	}
-
-	onPanelDown(event) {
-		// console.log('WorldComponent.onPanelDown', href, target);
-		const href = event.getAttribute('href');
-		const target = event.getAttribute('target') || '_self';
-		if (href) {
-			window.open(href, '_blank');
-		}
 	}
 
 	onGridMove(event) {
@@ -1309,6 +1339,12 @@ export default class WorldComponent extends Component {
 					this.view.items.forEach(item => item.showPanel = (item.id === message.itemId));
 					this.pushChanges();
 					break;
+				case MessageType.NavLink:
+					const item = this.view.items.find(item => item.id === message.itemId);
+					if (item) {
+						this.navLink.next(item);
+					}
+					break;
 				case MessageType.PlayMedia: {
 					// !!! uniformare a PlayModel
 					const item = this.view.items.find(item => item.id === message.itemId);
@@ -1418,5 +1454,5 @@ export default class WorldComponent extends Component {
 WorldComponent.meta = {
 	selector: '[world]',
 	inputs: ['view', 'views', 'editor'],
-	outputs: ['navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
+	outputs: ['navTo', 'navLink', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
 };

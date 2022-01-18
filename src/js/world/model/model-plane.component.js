@@ -49,10 +49,11 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 				}
 				if (streamId || !item.asset) {
 					item.streamId = streamId;
-					mesh = new MediaMesh(item, view, geometry, this.host);
+					mesh = this.disposableMesh = new MediaMesh(item, view, geometry, this.host);
 					mesh.updateFromItem(item);
 					mesh.name = 'plane';
 					mesh.load(() => {
+						this.disposableMesh = null;
 						if (typeof mount === 'function') {
 							mount(mesh, item);
 						}
@@ -104,8 +105,12 @@ export default class ModelPlaneComponent extends ModelEditableComponent {
 	}
 
 	onDestroy() {
-		// console.log('ModelPlaneComponent', this);
+		// console.log('ModelPlaneComponent.onDestroy');
 		super.onDestroy();
+		if (this.disposableMesh) {
+			this.removeMeshListeners(this.disposableMesh);
+			this.disposableMesh.dispose();
+		}
 		if (this.mesh) {
 			this.removeMeshListeners(this.mesh);
 			this.mesh.dispose();

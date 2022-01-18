@@ -1,4 +1,4 @@
-export default class LocalStorageService {
+export class LocalStorageService {
 
 	static delete(name) {
 		if (this.isLocalStorageSupported()) {

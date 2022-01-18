@@ -208,6 +208,7 @@ export const MessageType = {
 	NavInfo: 'navInfo',
 	NavToView: 'navToView',
 	NavToGrid: 'navToGrid',
+	NavLink: 'navLink',
 	VRStarted: 'vrStarted',
 	VREnded: 'vrEnded',
 	VRState: 'vrState',

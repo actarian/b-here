@@ -6,10 +6,10 @@ import { DevicePlatform, DeviceService } from '../device/device.service';
 import Emittable from '../emittable/emittable';
 import { DEBUG, environment } from '../environment';
 import HttpService from '../http/http.service';
-import SessionStorageService from '../local-storage/session-storage.service';
 // import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import StateService from '../state/state.service';
+import SessionStorageService from '../storage/session-storage.service';
 import StreamService from '../stream/stream.service';
 import { RoleType } from '../user/user';
 import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, getStreamQuality, MessageType, UIMode, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR } from './agora.types';
@@ -992,6 +992,7 @@ export default class AgoraService extends Emittable {
 					case MessageType.PlayModel:
 					case MessageType.Mode:
 					case MessageType.NavInfo:
+					case MessageType.NavLink:
 						// console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
 						if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
 							return;
@@ -1132,6 +1133,7 @@ export default class AgoraService extends Emittable {
 			case MessageType.NavInfo:
 			case MessageType.NavToView:
 			case MessageType.NavToGrid:
+			case MessageType.NavLink:
 				if ((StateService.state.controlling && StateService.state.controlling !== StateService.state.uid) || (StateService.state.spying && StateService.state.spying !== StateService.state.uid)) {
 					this.broadcastMessage(message);
 				}

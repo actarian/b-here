@@ -1,6 +1,6 @@
 /**
  * @license b-here v1.0.0
- * (c) 2021 Luca Zampetti <lzampetti@gmail.com>
+ * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 

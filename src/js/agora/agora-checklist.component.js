@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-import { takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { DeviceService } from '../device/device.service';
 import { environment } from '../environment';
 import ModalService from '../modal/modal.service';
@@ -57,7 +57,7 @@ export default class AgoraChecklistComponent extends Component {
 
 	showFirewallConfiguration() {
 		ModalService.open$({ src: environment.template.modal.configureFirewall }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe();
 	}
 }
