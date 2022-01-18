@@ -2,6 +2,7 @@
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
+import { WishlistService } from '../../wishlist/wishlist.service';
 import { Geometry } from '../geometry/geometry';
 import { Host } from '../host/host';
 import Interactive from '../interactive/interactive';
@@ -16,6 +17,7 @@ export const NavModeType = {
 	Point: 'point',
 	Title: 'title',
 	Transparent: 'transparent',
+	Wishlist: 'wishlist',
 };
 
 export default class ModelNavComponent extends ModelEditableComponent {
@@ -48,18 +50,29 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return ModelNavComponent.textureInfoImportant || (ModelNavComponent.textureInfoImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info-important.png')));
 	}
 
-	static getTexture(mode, important) {
+	static getTextureWishlist() {
+		return ModelNavComponent.textureWishlist || (ModelNavComponent.textureWishlist = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-wishlist-off.png')));
+	}
+
+	static getTextureWishlistAdded() {
+		return ModelNavComponent.textureWishlistAdded || (ModelNavComponent.textureWishlistAdded = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-wishlist-on.png')));
+	}
+
+	static getTexture(mode, item) {
 		let texture;
 		switch (mode) {
 			case NavModeType.Move:
-				texture = important ? this.getTextureMoveImportant() : this.getTextureMove();
+				texture = item.important ? this.getTextureMoveImportant() : this.getTextureMove();
 				break;
 			case NavModeType.Info:
-				texture = important ? this.getTextureInfoImportant() : this.getTextureInfo();
+				texture = item.important ? this.getTextureInfoImportant() : this.getTextureInfo();
 				break;
 			case NavModeType.Point:
 			case NavModeType.Title:
-				texture = important ? this.getTexturePointImportant() : this.getTexturePoint();
+				texture = item.important ? this.getTexturePointImportant() : this.getTexturePoint();
+				break;
+			case NavModeType.Wishlist:
+				texture = item.added ? this.getTextureWishlistAdded() : this.getTextureWishlist();
 				break;
 			default:
 				break;
@@ -104,7 +117,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 
 	static getNavMode(item, view) {
 		let mode = NavModeType.None;
-		if (item.transparent) {
+		if (item.hook && item.hook === 'ToggleWishlist') {
+			mode = NavModeType.Wishlist;
+		} else if (item.transparent) {
 			mode = NavModeType.Transparent;
 		} else if (item.viewId !== view.id) {
 			mode = NavModeType.Move;
@@ -180,7 +195,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	shouldShowPanel() {
-		return (!this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title && (this.mode !== NavModeType.Transparent || ModelNavComponent.isValidText(this.item.title)));
+		return (!this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title && this.mode !== NavModeType.Wishlist && (this.mode !== NavModeType.Transparent || ModelNavComponent.isValidText(this.item.title)));
 	}
 
 	updateVisibility(visible) {
@@ -206,25 +221,30 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	onChanges() {
+		const view = this.view;
 		const item = this.item;
-		this.mode = ModelNavComponent.getNavMode(item, this.view);
+		const mode = this.mode = ModelNavComponent.getNavMode(item, this.view);
+		if (mode === NavModeType.Wishlist) {
+			item.added = WishlistService.has({ viewId: view.id, itemId: item.id });
+			this.onCreateSprites(this.mesh, 1);
+		}
 		this.editing = item.selected;
 		this.hidden = this.isHidden;
 	}
 
 	onCreate(mount, dismount) {
 		// this.renderOrder = environment.renderOrder.nav;
+		const view = this.view;
 		const item = this.item;
-
 		const mode = this.mode = ModelNavComponent.getNavMode(item, this.view);
 		if (mode === NavModeType.None) {
 			return;
 		}
-
+		if (mode === NavModeType.Wishlist) {
+			item.added = WishlistService.has({ viewId: view.id, itemId: item.id });
+		}
 		const isAnimated = this.isAnimated;
-
 		const nav = new THREE.Group();
-
 		if (mode === NavModeType.Transparent) {
 
 			const opacityIdle = this.editor ? 0.1 : 0.0;
@@ -293,9 +313,12 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				}
 				// opening nav link
 				if (this.shouldNavToLink != null) {
+					/*
 					const link = this.shouldNavToLink;
-					this.shouldNavToLink = null;
 					window.open(link, '_blank');
+					*/
+					this.shouldNavToLink = null;
+					this.link.next(this.item);
 				}
 			});
 
@@ -414,7 +437,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		if (mode === NavModeType.Transparent) {
 			this.materials = [];
 		} else {
-			const map = ModelNavComponent.getTexture(mode, item.important);
+			const map = ModelNavComponent.getTexture(mode, item);
 			const material = new THREE.SpriteMaterial({
 				map: map,
 				depthTest: false,
@@ -552,6 +575,6 @@ ModelNavComponent.RADIUS = 100;
 ModelNavComponent.meta = {
 	selector: '[model-nav]',
 	hosts: { host: WorldComponent },
-	outputs: ['over', 'out', 'down'],
+	outputs: ['over', 'out', 'down', 'link'],
 	inputs: ['item', 'view', 'editor'],
 };

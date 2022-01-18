@@ -181,7 +181,7 @@ export default class UpdateViewComponent extends Component {
 
 	onRemove(event) {
 		ModalService.open$({ src: environment.template.modal.remove, data: { item: this.item } }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				this.delete.next({ view: this.view });

@@ -2,8 +2,8 @@ import { from, merge, of, Subject, throwError } from 'rxjs';
 import { catchError, delay, first, map, switchMap, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import LabelPipe from '../label/label.pipe';
-import LocalStorageService from '../local-storage/local-storage.service';
 import StateService from '../state/state.service';
+import { LocalStorageService } from '../storage/local-storage.service';
 import { RoleType } from '../user/user';
 import AgoraService from './agora.service';
 

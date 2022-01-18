@@ -425,20 +425,23 @@ export default class MediaMesh extends InteractiveMesh {
 		this.object = new THREE.Object3D();
 		this.tempPosition = new THREE.Vector3();
 		this.tempRotation = new THREE.Vector3();
+		item.silent = this.isAutoplayLoop; // !!!
 		const mediaLoader = this.mediaLoader = new MediaLoader(item);
 		this.onOver = this.onOver.bind(this);
 		this.onOut = this.onOut.bind(this);
 		this.onToggle = this.onToggle.bind(this);
 		this.onZoomed = this.onZoomed.bind(this);
-		this.addZoomBtn();
 		this.addPlayBtn();
+		this.addZoomBtn();
 		this.userData.render = (time, tick) => {
 			this.render(this, time, tick);
 		};
 	}
 
 	load(callback) {
-		this.remove(this.playBtn);
+		if (this.playBtn) {
+			this.remove(this.playBtn);
+		}
 		if (this.zoomBtn) {
 			this.remove(this.zoomBtn);
 		}
@@ -451,8 +454,12 @@ export default class MediaMesh extends InteractiveMesh {
 		}
 		const material = this.material;
 		const mediaLoader = this.mediaLoader;
-		mediaLoader.load((texture) => {
+		const onMediaLoaderLoaded = (texture) => {
 			// console.log('MediaMesh.texture', texture);
+			const loader = this.mediaLoader;
+			if (!loader) {
+				return;
+			}
 			if (texture) {
 				texture.encoding = THREE.sRGBEncoding;
 				material.map = texture; // !!! Enables USE_MAP
@@ -461,7 +468,7 @@ export default class MediaMesh extends InteractiveMesh {
 					// material.uniforms.mapResolution.value.x = texture.image.width;
 					// material.uniforms.mapResolution.value.y = texture.image.height;
 					material.uniforms.mapResolution.value = new THREE.Vector2(texture.image.width || texture.image.videoWidth, texture.image.height || texture.image.videoHeight);
-					if (mediaLoader.isPlayableVideo) {
+					if (loader.isPlayableVideo) {
 						this.makePlayMap(texture, (playMap) => {
 							// console.log('MediaMesh.playMap', playMap);
 							playMap.minFilter = THREE.LinearFilter;
@@ -482,7 +489,7 @@ export default class MediaMesh extends InteractiveMesh {
 			}
 			material.needsUpdate = true;
 			this.onAppear();
-			if (mediaLoader.isPlayableVideo) {
+			if (loader.isPlayableVideo && this.playBtn) {
 				if (material.uniforms) {
 					material.uniforms.isVideo.value = true;
 				}
@@ -497,7 +504,13 @@ export default class MediaMesh extends InteractiveMesh {
 			if (typeof callback === 'function') {
 				callback(this);
 			}
-		});
+		};
+		/*
+		setTimeout(() => {
+			mediaLoader.load(onMediaLoaderLoaded);
+		}, 5000);
+		*/
+		mediaLoader.load(onMediaLoaderLoaded);
 	}
 
 	makePlayMap(texture, callback) {
@@ -547,10 +560,12 @@ export default class MediaMesh extends InteractiveMesh {
 			map(event => {
 				if (event instanceof MediaLoaderPlayEvent) {
 					this.playing = true;
-					if (this.playBtn) {
-						this.playBtn.playing = true;
+					if (!this.isAutoplayLoop) {
+						if (this.playBtn) {
+							this.playBtn.playing = true;
+						}
+						this.emit('playing', true);
 					}
-					this.emit('playing', true);
 					this.onOut();
 				} else if (event instanceof MediaLoaderPauseEvent) {
 					this.playing = false;
@@ -723,21 +738,32 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	dispose() {
+		// console.log('MediaMesh.dispose');
 		this.removePlayBtn();
 		this.removeZoomBtn();
 		this.disposeMediaLoader();
 	}
 
+	get isAutoplayLoop() {
+		const isAutoplayLoop = this.view.type.name !== 'media' && this.item.asset && this.item.asset.autoplay && this.item.asset.loop;
+		// console.log('MediaMesh', isAutoplayLoop);
+		return isAutoplayLoop;
+	}
+
 	addPlayBtn() {
-		const playBtn = this.playBtn = new MediaPlayMesh(this.host);
-		playBtn.on('over', this.onOver);
-		playBtn.on('out', this.onOut);
-		playBtn.on('down', this.onToggle);
-		playBtn.position.z = 0.01;
+		this.removePlayBtn();
+		if (!this.isAutoplayLoop) {
+			const playBtn = this.playBtn = new MediaPlayMesh(this.host);
+			playBtn.on('over', this.onOver);
+			playBtn.on('out', this.onOut);
+			playBtn.on('down', this.onToggle);
+			playBtn.position.z = 0.01;
+		}
 	}
 
 	removePlayBtn() {
 		if (this.playBtn) {
+			this.remove(this.playBtn);
 			this.playBtn.off('over', this.onOver);
 			this.playBtn.off('out', this.onOut);
 			this.playBtn.off('down', this.onToggle);
@@ -774,7 +800,9 @@ export default class MediaMesh extends InteractiveMesh {
 		this.disposeMediaLoader();
 		this.material = MediaMesh.getMaterialByItem(item);
 		this.uniforms = MediaMesh.getUniformsByItem(item);
+		this.addPlayBtn();
 		this.addZoomBtn();
+		item.silent = this.isAutoplayLoop; // !!!
 		this.mediaLoader = new MediaLoader(item);
 	}
 
@@ -895,7 +923,7 @@ export default class MediaMesh extends InteractiveMesh {
 			this.zoomed_ = zoomed;
 			if (zoomed) {
 				this.renderOrder = environment.renderOrder.panel + 5;
-				this.material.depthTest = false;
+				this.material.depthTest = true; // !!! false
 				// this.originalPosition = this.position.clone();
 				// this.originalQuaternion = this.rotation.clone();
 				// this.originalScale = this.scale.clone();

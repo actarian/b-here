@@ -1,4 +1,4 @@
-import { from, Subject } from 'rxjs';
+import { from, of, Subject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 export class ModalEvent {
@@ -17,7 +17,20 @@ export default class ModalService {
 	static hasModal = false;
 
 	static open$(modal) {
-		return this.getTemplate$(modal.src).pipe(
+		return (
+			modal.iframe ?
+				of(/*html*/`<div class="iframe-modal" iframe-modal>
+					<div class="modal__header">
+					<button type="button" class="btn--close" (click)="onClose()">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+					</button>
+				</div>
+				<div class="modal__content">
+					<iframe src="${modal.iframe}"></iframe>
+				</div>
+			</div>`) :
+				this.getTemplate$(modal.src)
+		).pipe(
 			map(template => {
 				return { node: this.getNode(template), data: modal.data, modal: modal };
 			}),

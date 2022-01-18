@@ -158,6 +158,9 @@ export default class MediaLoader {
 				return;
 			}
 			const onCanPlay = () => {
+				if (this.disposed) {
+					return;
+				}
 				video.removeEventListener('canplay', onCanPlay);
 				texture = this.texture = new THREE.VideoTexture(video);
 				texture.minFilter = THREE.LinearFilter;
@@ -192,6 +195,9 @@ export default class MediaLoader {
 			video.playsInline = true;
 			video.loop = loop;
 			const onCanPlay = () => {
+				if (this.disposed) {
+					return;
+				}
 				// console.log('MediaLoader', 'onCanPlay');
 				video.oncanplay = null;
 				texture = new THREE.VideoTexture(video);
@@ -206,15 +212,21 @@ export default class MediaLoader {
 					callback(texture, this);
 				}
 				if (autoplay) {
-					this.play();
+					this.play(item.silent);
 				} else {
 					video.pause();
 				}
 			};
 			const onTimeUpdate = () => {
+				if (this.disposed) {
+					return;
+				}
 				MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(this));
 			};
 			const onEnded = () => {
+				if (this.disposed) {
+					return;
+				}
 				if (!loop) {
 					MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
 				}
@@ -225,7 +237,10 @@ export default class MediaLoader {
 			video.src = MediaLoader.getPath(item);
 			video.load(); // must call after setting/changing source
 		} else if (item.asset) {
-			MediaLoader.loadTexture(item, texture => {
+			MediaLoader.loadTexture(item, (texture) => {
+				if (this.disposed) {
+					return;
+				}
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
@@ -301,6 +316,7 @@ export default class MediaLoader {
 	}
 
 	dispose() {
+		// console.log('MediaLoader.dispose');
 		this.subscription.unsubscribe();
 		this.pause(true);
 		if (this.isVideo && this.video) {
@@ -308,6 +324,7 @@ export default class MediaLoader {
 			this.video.onended = null;
 			MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
 		}
+		this.disposed = true;
 		delete this.video;
 	}
 

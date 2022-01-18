@@ -1,6 +1,6 @@
 /**
  * @license b-here v1.0.0
- * (c) 2021 Luca Zampetti <lzampetti@gmail.com>
+ * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
@@ -139,6 +139,7 @@ function _readOnlyError(name) {
     ar: true,
     like: true,
     hideNavInfo: true,
+    useIframe: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -253,6 +254,15 @@ function _readOnlyError(name) {
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
+
+  /*
+  webhook: {
+  	uris: ['internal'],
+  	methods: [
+  		'ToggleWishlist',
+  	],
+  },
+  */
   flags: {
     production: false,
     useProxy: true,
@@ -268,6 +278,7 @@ function _readOnlyError(name) {
     ar: true,
     like: true,
     hideNavInfo: true,
+    useIframe: true,
     attendee: true,
     streamer: true,
     viewer: true,
@@ -1267,6 +1278,7 @@ var MessageType = {
   NavInfo: 'navInfo',
   NavToView: 'navToView',
   NavToGrid: 'navToGrid',
+  NavLink: 'navLink',
   VRStarted: 'vrStarted',
   VREnded: 'vrEnded',
   VRState: 'vrState',
@@ -3779,6 +3791,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
           case MessageType.PlayModel:
           case MessageType.Mode:
           case MessageType.NavInfo:
+          case MessageType.NavLink:
             // console.log('AgoraService.sendMessage', StateService.state.uid, StateService.state.controlling, StateService.state.spying, StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid);
             if (StateService.state.controlling !== StateService.state.uid && StateService.state.spying !== StateService.state.uid) {
               return;
@@ -3941,6 +3954,7 @@ _defineProperty(StreamService, "streams$", rxjs.combineLatest([StreamService.loc
       case MessageType.NavInfo:
       case MessageType.NavToView:
       case MessageType.NavToGrid:
+      case MessageType.NavLink:
         if (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid || StateService.state.spying && StateService.state.spying !== StateService.state.uid) {
           this.broadcastMessage(message);
         }
@@ -5175,7 +5189,9 @@ var ModalService = /*#__PURE__*/function () {
   ModalService.open$ = function open$(modal) {
     var _this = this;
 
-    return this.getTemplate$(modal.src).pipe(operators.map(function (template) {
+    return (modal.iframe ? rxjs.of(
+    /*html*/
+    "<div class=\"iframe-modal\" iframe-modal>\n\t\t\t\t\t<div class=\"modal__header\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal__content\">\n\t\t\t\t\t<iframe src=\"" + modal.iframe + "\"></iframe>\n\t\t\t\t</div>\n\t\t\t</div>") : this.getTemplate$(modal.src)).pipe(operators.map(function (template) {
       return {
         node: _this.getNode(template),
         data: modal.data,
@@ -5697,7 +5713,7 @@ var AgoraChecklistService = /*#__PURE__*/function () {
   _proto.showFirewallConfiguration = function showFirewallConfiguration() {
     ModalService.open$({
       src: environment.template.modal.configureFirewall
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    }).pipe(operators.first()).subscribe();
   };
 
   return AgoraChecklistComponent;
@@ -7185,7 +7201,7 @@ var ViewItem = /*#__PURE__*/function () {
   return ViewItem;
 }();
 
-_defineProperty(ViewItem, "allowedProps", ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc']);
+_defineProperty(ViewItem, "allowedProps", ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'hook', 'hookExtra', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc']);
 
 var NavViewItem = /*#__PURE__*/function (_ViewItem) {
   _inheritsLoose(NavViewItem, _ViewItem);
@@ -8099,7 +8115,209 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
 
 _defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));
 
-_defineProperty(ViewService, "view_", null);var MediaLoaderEvent = function MediaLoaderEvent(loader) {
+_defineProperty(ViewService, "view_", null);var UID = 0;
+var WebhookEvent = /*#__PURE__*/function () {
+  function WebhookEvent(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  var _proto = WebhookEvent.prototype;
+
+  _proto.toJson = function toJson() {
+    return JSON.stringify(this);
+  };
+
+  WebhookEvent.newEvent = function newEvent(action, data, extra) {
+    console.log('WebhookEvent.newEvent', action, data, extra);
+    var event = new WebhookEvent();
+    event.action = action;
+    event.data = data;
+    event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra; // ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
+
+    event.meetingId = StateService.state.link;
+    event.userSessionId = StateService.state.uid;
+    event.userRole = StateService.state.role;
+    event.fullName = StateService.state.name;
+    var timestamp = new Date().getTime();
+    event.timestamp = timestamp;
+    event.id = timestamp + "-" + ++UID;
+    return event;
+  };
+
+  WebhookEvent.parseEvent = function parseEvent(event) {
+    if (event && 'data' in event) {
+      var message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+      if ('action' in message) {
+        return new WebhookEvent(message);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  };
+
+  return WebhookEvent;
+}();
+var WebhookService = /*#__PURE__*/function () {
+  function WebhookService() {}
+
+  WebhookService.internal$_ = function internal$_(event) {
+    var _this = this;
+
+    return rxjs.of(event).pipe(operators.tap(function (event) {
+      console.log('WebhookService.internal$_.postMessage', event);
+
+      if (window.parent) {
+        window.parent.postMessage(event.action, event.toJson());
+      }
+    }), operators.switchMap(function (event) {
+      return _this.event$_.pipe(operators.filter(function (event) {
+        return event.id === event.id;
+      }), operators.first());
+    }), operators.map(function (response) {
+      console.log('WebhookService.internal$_.handleResponse_', event, response);
+      return _this.handleResponse_(event, response);
+    }), operators.catchError(function (error) {
+      return _this.handleError_(event, error);
+    }));
+  };
+
+  WebhookService.send$_ = function send$_(uri, event) {
+    var _this2 = this;
+
+    HttpService.post$(uri, event).pipe(operators.map(function (response) {
+      return _this2.handleResponse_(event, response);
+    }), operators.catchError(function (error) {
+      return _this2.handleError_(event, error);
+    }));
+  };
+
+  WebhookService.send$ = function send$(action, payload, extra) {
+    var _this3 = this;
+
+    console.log('WebhookService.send$', action, payload, extra);
+
+    if (this.enabled) {
+      var event = WebhookEvent.newEvent(action, payload, extra);
+      var uris = environment.webhook.uris;
+      var observables = uris.map(function (x) {
+        return x === 'internal' ? _this3.internal$_(event) : _this3.send$_(x, event);
+      });
+      return rxjs.forkJoin(observables);
+    } else {
+      return rxjs.of(rxjs.EMPTY);
+    }
+  };
+
+  WebhookService.handleResponse_ = function handleResponse_(event, remoteResponse) {
+    console.log('WebhookService.handleResponse_', remoteResponse);
+    var response = Object.assign({}, event);
+    response.remoteStatus = 1;
+    response.remoteResponse = remoteResponse;
+    return response;
+  };
+
+  WebhookService.handleError_ = function handleError_(event, error) {
+    var response = Object.assign({}, event);
+    response.remoteStatus = 0;
+    response.remoteError = error;
+    return rxjs.of(response);
+  };
+
+  _createClass(WebhookService, null, [{
+    key: "enabled",
+    get: function get() {
+      return environment.webhook && environment.webhook.uris && environment.webhook.uris.length > 0;
+    }
+  }]);
+
+  return WebhookService;
+}();
+
+_defineProperty(WebhookService, "event$_", rxjs.fromEvent(window, 'message').pipe(operators.map(function (event) {
+  var parsedEvent = WebhookEvent.parseEvent(event);
+  return parsedEvent;
+}), operators.filter(function (x) {
+  return x !== null;
+}), operators.shareReplay(1)));var items$_ = null;
+var WishlistService = /*#__PURE__*/function () {
+  function WishlistService() {}
+
+  WishlistService.getItems = function getItems() {
+    return this.items$.getValue();
+  };
+
+  WishlistService.indexOf = function indexOf(item) {
+    var items = this.getItems();
+    return items.reduce(function (p, c, i) {
+      return p === -1 && c.viewId === item.viewId && c.itemId === item.itemId ? i : p;
+    }, -1);
+  };
+
+  WishlistService.has = function has(item) {
+    return this.indexOf(item) !== -1;
+  };
+
+  WishlistService.add$ = function add$(item) {
+    var items = this.getItems();
+
+    if (!this.has(item)) {
+      items.push(item);
+      LocalStorageService.set('wishlist', items);
+      this.items$.next(items);
+    }
+
+    return this.items$;
+  };
+
+  WishlistService.remove$ = function remove$(item) {
+    var items = this.getItems();
+    var index = this.indexOf(item);
+
+    if (index !== -1) {
+      items.splice(index, 1);
+      LocalStorageService.set('wishlist', items);
+      this.items$.next(items);
+    }
+
+    return this.items$;
+  };
+
+  WishlistService.toggle$ = function toggle$(item) {
+    var items = this.getItems();
+    var index = this.indexOf(item);
+
+    if (index !== -1) {
+      items.splice(index, 1);
+      LocalStorageService.set('wishlist', items);
+      this.items$.next(items);
+    } else {
+      items.push(item);
+      LocalStorageService.set('wishlist', items);
+      this.items$.next(items);
+    }
+
+    return this.items$;
+  };
+
+  _createClass(WishlistService, null, [{
+    key: "items$",
+    get: function get() {
+      if (!items$_) {
+        var items = LocalStorageService.get('wishlist') || [];
+        items$_ = new rxjs.BehaviorSubject(items);
+      }
+
+      return items$_;
+    }
+  }]);
+
+  return WishlistService;
+}();var MediaLoaderEvent = function MediaLoaderEvent(loader) {
   this.loader = loader;
 };
 var MediaLoaderPlayEvent = /*#__PURE__*/function (_MediaLoaderEvent) {
@@ -8311,6 +8529,10 @@ var MediaLoader = /*#__PURE__*/function () {
       }
 
       var onCanPlay = function onCanPlay() {
+        if (_this2.disposed) {
+          return;
+        }
+
         video.removeEventListener('canplay', onCanPlay);
         texture = _this2.texture = new THREE.VideoTexture(video);
         texture.minFilter = THREE.LinearFilter;
@@ -8351,7 +8573,11 @@ var MediaLoader = /*#__PURE__*/function () {
       _video.loop = loop;
 
       var _onCanPlay = function _onCanPlay() {
-        // console.log('MediaLoader', 'onCanPlay');
+        if (_this2.disposed) {
+          return;
+        } // console.log('MediaLoader', 'onCanPlay');
+
+
         _video.oncanplay = null;
         texture = new THREE.VideoTexture(_video);
         texture.minFilter = THREE.LinearFilter;
@@ -8367,17 +8593,25 @@ var MediaLoader = /*#__PURE__*/function () {
         }
 
         if (autoplay) {
-          _this2.play();
+          _this2.play(item.silent);
         } else {
           _video.pause();
         }
       };
 
       var onTimeUpdate = function onTimeUpdate() {
+        if (_this2.disposed) {
+          return;
+        }
+
         MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(_this2));
       };
 
       var onEnded = function onEnded() {
+        if (_this2.disposed) {
+          return;
+        }
+
         if (!loop) {
           MediaLoader.events$.next(new MediaLoaderPauseEvent(_this2));
         }
@@ -8392,6 +8626,10 @@ var MediaLoader = /*#__PURE__*/function () {
 
     } else if (item.asset) {
       MediaLoader.loadTexture(item, function (texture) {
+        if (_this2.disposed) {
+          return;
+        }
+
         texture.minFilter = THREE.LinearFilter;
         texture.magFilter = THREE.LinearFilter;
         texture.mapping = THREE.UVMapping; // texture.format = THREE.RGBFormat;
@@ -8454,6 +8692,7 @@ var MediaLoader = /*#__PURE__*/function () {
   };
 
   _proto.dispose = function dispose() {
+    // console.log('MediaLoader.dispose');
     this.subscription.unsubscribe();
     this.pause(true);
 
@@ -8463,6 +8702,7 @@ var MediaLoader = /*#__PURE__*/function () {
       MediaLoader.events$.next(new MediaLoaderDisposeEvent(this));
     }
 
+    this.disposed = true;
     delete this.video;
   };
 
@@ -8935,11 +9175,11 @@ var VRService = /*#__PURE__*/function () {
     });
   };
 
-  _proto.onNavmapItem = function onNavmapItem(navItem) {
+  _proto.onNavmapItem = function onNavmapItem(item) {
     StateService.patchState({
       showNavmap: false
     });
-    this.onNavTo(navItem);
+    this.onNavTo(item);
   };
 
   _proto.loadAndConnect = function loadAndConnect(preferences) {
@@ -9309,20 +9549,29 @@ var VRService = /*#__PURE__*/function () {
     }
   };
 
-  _proto.onNavTo = function onNavTo(navItem) {
-    var viewId = navItem.viewId;
+  _proto.onNavTo = function onNavTo(item) {
+    var viewId = item.viewId;
     var view = this.data.views.find(function (x) {
       return x.id === viewId;
     });
 
     if (view) {
-      // console.log('AgoraComponent.onNavTo', navItem, view);
+      // console.log('AgoraComponent.onNavTo', item, view);
       ViewService.action = {
         viewId: viewId,
-        keepOrientation: navItem.keepOrientation,
-        useLastOrientation: navItem.useLastOrientation
+        keepOrientation: item.keepOrientation,
+        useLastOrientation: item.useLastOrientation
       };
+      this.onHandleHook(view, item);
     }
+  };
+
+  _proto.onNavLink = function onNavLink(item) {
+    // console.log('AgoraComponent.onNavLink', item);
+    ModalService.open$({
+      iframe: item.link.href
+    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
+    });
   };
 
   _proto.onRemoteNavTo = function onRemoteNavTo(message) {
@@ -9347,6 +9596,28 @@ var VRService = /*#__PURE__*/function () {
         }
       } // console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
 
+    }
+  };
+
+  _proto.onHandleHook = function onHandleHook(view, item) {
+    var _this8 = this;
+
+    switch (item.hook) {
+      case 'ToggleWishlist':
+        var payload = {
+          viewId: view.id,
+          itemId: item.id
+        };
+        WishlistService.toggle$(payload).pipe(operators.switchMap(function (items) {
+          payload.added = WishlistService.has(payload);
+          return WebhookService.send$(item.hook, payload, item.extra);
+        }), operators.first()).subscribe(function (response) {
+          console.log('AgoraComponent.onHandleHook', response);
+          item.added = payload.added;
+
+          _this8.pushChanges();
+        });
+        break;
     }
   } // !!! why locally?
   ;
@@ -9537,27 +9808,27 @@ var VRService = /*#__PURE__*/function () {
   };
 
   _proto.addLike = function addLike() {
-    var _this8 = this;
+    var _this9 = this;
 
     ViewService.viewLike$(this.view).pipe(operators.first()).subscribe(function (view) {
       if (view) {
-        _this8.view.liked = true; // view.liked;
+        _this9.view.liked = true; // view.liked;
 
-        _this8.showLove(view); // this.view.likes = view.likes;
+        _this9.showLove(view); // this.view.likes = view.likes;
         // this.pushChanges();
 
 
         MessageService.send({
           type: MessageType.AddLike,
-          viewId: _this8.view.id,
-          likes: _this8.view.likes
+          viewId: _this9.view.id,
+          likes: _this9.view.likes
         });
       }
     });
   };
 
   _proto.showLove = function showLove(view) {
-    var _this9 = this;
+    var _this10 = this;
 
     if (view && this.view.id === view.id) {
       var skipTimeout = this.view.showLove;
@@ -9567,9 +9838,9 @@ var VRService = /*#__PURE__*/function () {
 
       if (!skipTimeout) {
         setTimeout(function () {
-          _this9.view.showLove = false;
+          _this10.view.showLove = false;
 
-          _this9.pushChanges();
+          _this10.pushChanges();
         }, 3100);
       }
     }
@@ -9582,13 +9853,13 @@ var VRService = /*#__PURE__*/function () {
       ModalService.open$({
         src: environment.template.modal.tryInAr,
         data: this.view
-      }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
+      }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
       });
     }
   };
 
   _proto.checkSelfServiceProposition = function checkSelfServiceProposition() {
-    var _this10 = this;
+    var _this11 = this;
 
     // self service proposition
     var isSelfServiceProposition = this.isSelfServiceProposition; // console.log('AgoraComponent.initAgora', isSelfServiceProposition);
@@ -9604,16 +9875,16 @@ var VRService = /*#__PURE__*/function () {
         var href = meetingUrl.toGuidedTourUrl();
         console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
         UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(operators.first()).subscribe(function (_) {
-          var name = _this10.getName(StateService.state.user);
+          var name = _this11.getName(StateService.state.user);
 
           StateService.patchState({
             checklist: true,
             link: meetingIdRoles.idSelfService,
             name: name
           });
-          _this10.agora = AgoraService.getSingleton();
+          _this11.agora = AgoraService.getSingleton();
 
-          _this10.connect();
+          _this11.connect();
         });
       }, function (error) {
         console.log('AgoraComponent.initAgora.isSelfServiceProposition.error', error, name);
@@ -9682,7 +9953,7 @@ var VRService = /*#__PURE__*/function () {
     });
     /*
     ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
-    	takeUntil(this.unsubscribe$)
+    	first(),
     ).subscribe(event => {
     	if (event instanceof ModalResolveEvent) {
     		MessageService.send({ type: MessageType.SupportRequestAccepted });
@@ -10748,9 +11019,9 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     }));
   };
 
-  _proto.onNavTo = function onNavTo(navItem) {
-    // console.log('EditorComponent.onNavTo', navItem);
-    var viewId = navItem.viewId;
+  _proto.onNavTo = function onNavTo(item) {
+    // console.log('EditorComponent.onNavTo', item);
+    var viewId = item.viewId;
     var view = this.data.views.find(function (x) {
       return x.id === viewId;
     });
@@ -10758,10 +11029,18 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     if (view) {
       ViewService.action = {
         viewId: viewId,
-        keepOrientation: navItem.keepOrientation,
-        useLastOrientation: navItem.useLastOrientation
+        keepOrientation: item.keepOrientation,
+        useLastOrientation: item.useLastOrientation
       };
     }
+  };
+
+  _proto.onNavLink = function onNavLink(item) {
+    // console.log('EditorComponent.onNavLink', item);
+    ModalService.open$({
+      iframe: item.link.href
+    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
+    });
   };
 
   _proto.patchState = function patchState(state) {
@@ -10773,7 +11052,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     ModalService.open$({
       src: environment.template.modal.tryInAr,
       data: this.view
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// this.pushChanges();
+    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
     });
   };
 
@@ -12608,7 +12887,7 @@ _defineProperty(LoaderService, "progress$", new rxjs.ReplaySubject(1).pipe(opera
   progress.title = Math.round(progress.value * 100) + "%";
   LoaderService.progress = progress;
   return progress;
-})));var UID = 0;
+})));var UID$1 = 0;
 var PrefetchServiceEvent = {
   Progress: 'progress',
   Complete: 'complete'
@@ -12635,9 +12914,9 @@ var PrefetchService = /*#__PURE__*/function () {
 
     var worker = this.worker();
     worker.postMessage({
-      id: UID
+      id: UID$1
     });
-    var id = ++UID;
+    var id = ++UID$1;
     worker.postMessage({
       id: id,
       assets: assets
@@ -12678,7 +12957,7 @@ var PrefetchService = /*#__PURE__*/function () {
 
     var worker = this.worker();
     worker.postMessage({
-      id: UID
+      id: UID$1
     });
     return worker;
   };
@@ -13947,15 +14226,17 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     _this.object = new THREE.Object3D();
     _this.tempPosition = new THREE.Vector3();
     _this.tempRotation = new THREE.Vector3();
+    item.silent = _this.isAutoplayLoop; // !!!
+
     var mediaLoader = _this.mediaLoader = new MediaLoader(item);
     _this.onOver = _this.onOver.bind(_assertThisInitialized(_this));
     _this.onOut = _this.onOut.bind(_assertThisInitialized(_this));
     _this.onToggle = _this.onToggle.bind(_assertThisInitialized(_this));
     _this.onZoomed = _this.onZoomed.bind(_assertThisInitialized(_this));
 
-    _this.addZoomBtn();
-
     _this.addPlayBtn();
+
+    _this.addZoomBtn();
 
     _this.userData.render = function (time, tick) {
       _this.render(_assertThisInitialized(_this), time, tick);
@@ -13969,7 +14250,9 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   _proto.load = function load(callback) {
     var _this3 = this;
 
-    this.remove(this.playBtn);
+    if (this.playBtn) {
+      this.remove(this.playBtn);
+    }
 
     if (this.zoomBtn) {
       this.remove(this.zoomBtn);
@@ -13987,8 +14270,15 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
     var material = this.material;
     var mediaLoader = this.mediaLoader;
-    mediaLoader.load(function (texture) {
+
+    var onMediaLoaderLoaded = function onMediaLoaderLoaded(texture) {
       // console.log('MediaMesh.texture', texture);
+      var loader = _this3.mediaLoader;
+
+      if (!loader) {
+        return;
+      }
+
       if (texture) {
         texture.encoding = THREE.sRGBEncoding;
         material.map = texture; // !!! Enables USE_MAP
@@ -13999,7 +14289,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
           material.uniforms.mapResolution.value = new THREE.Vector2(texture.image.width || texture.image.videoWidth, texture.image.height || texture.image.videoHeight);
 
-          if (mediaLoader.isPlayableVideo) {
+          if (loader.isPlayableVideo) {
             _this3.makePlayMap(texture, function (playMap) {
               // console.log('MediaMesh.playMap', playMap);
               playMap.minFilter = THREE.LinearFilter;
@@ -14023,7 +14313,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
       _this3.onAppear();
 
-      if (mediaLoader.isPlayableVideo) {
+      if (loader.isPlayableVideo && _this3.playBtn) {
         if (material.uniforms) {
           material.uniforms.isVideo.value = true;
         }
@@ -14044,7 +14334,15 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       if (typeof callback === 'function') {
         callback(_this3);
       }
-    });
+    };
+    /*
+    setTimeout(() => {
+    	mediaLoader.load(onMediaLoaderLoaded);
+    }, 5000);
+    */
+
+
+    mediaLoader.load(onMediaLoaderLoaded);
   };
 
   _proto.makePlayMap = function makePlayMap(texture, callback) {
@@ -14104,11 +14402,13 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       if (event instanceof MediaLoaderPlayEvent) {
         _this4.playing = true;
 
-        if (_this4.playBtn) {
-          _this4.playBtn.playing = true;
-        }
+        if (!_this4.isAutoplayLoop) {
+          if (_this4.playBtn) {
+            _this4.playBtn.playing = true;
+          }
 
-        _this4.emit('playing', true);
+          _this4.emit('playing', true);
+        }
 
         _this4.onOut();
       } else if (event instanceof MediaLoaderPauseEvent) {
@@ -14297,21 +14597,27 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   _proto.dispose = function dispose() {
+    // console.log('MediaMesh.dispose');
     this.removePlayBtn();
     this.removeZoomBtn();
     this.disposeMediaLoader();
   };
 
   _proto.addPlayBtn = function addPlayBtn() {
-    var playBtn = this.playBtn = new MediaPlayMesh(this.host);
-    playBtn.on('over', this.onOver);
-    playBtn.on('out', this.onOut);
-    playBtn.on('down', this.onToggle);
-    playBtn.position.z = 0.01;
+    this.removePlayBtn();
+
+    if (!this.isAutoplayLoop) {
+      var playBtn = this.playBtn = new MediaPlayMesh(this.host);
+      playBtn.on('over', this.onOver);
+      playBtn.on('out', this.onOut);
+      playBtn.on('down', this.onToggle);
+      playBtn.position.z = 0.01;
+    }
   };
 
   _proto.removePlayBtn = function removePlayBtn() {
     if (this.playBtn) {
+      this.remove(this.playBtn);
       this.playBtn.off('over', this.onOver);
       this.playBtn.off('out', this.onOut);
       this.playBtn.off('down', this.onToggle);
@@ -14349,7 +14655,10 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
     this.disposeMediaLoader();
     this.material = MediaMesh.getMaterialByItem(item);
     this.uniforms = MediaMesh.getUniformsByItem(item);
+    this.addPlayBtn();
     this.addZoomBtn();
+    item.silent = this.isAutoplayLoop; // !!!
+
     this.mediaLoader = new MediaLoader(item);
   };
 
@@ -14477,6 +14786,13 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
   };
 
   _createClass(MediaMesh, [{
+    key: "isAutoplayLoop",
+    get: function get() {
+      var isAutoplayLoop = this.view.type.name !== 'media' && this.item.asset && this.item.asset.autoplay && this.item.asset.loop; // console.log('MediaMesh', isAutoplayLoop);
+
+      return isAutoplayLoop;
+    }
+  }, {
     key: "zoomed",
     get: function get() {
       return this.zoomed_;
@@ -14487,7 +14803,8 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
 
         if (zoomed) {
           this.renderOrder = environment.renderOrder.panel + 5;
-          this.material.depthTest = false; // this.originalPosition = this.position.clone();
+          this.material.depthTest = true; // !!! false
+          // this.originalPosition = this.position.clone();
           // this.originalQuaternion = this.rotation.clone();
           // this.originalScale = this.scale.clone();
         } else {
@@ -15075,7 +15392,7 @@ var OrbitService = /*#__PURE__*/function () {
 
   return OrbitService;
 }();
-OrbitService.orbitMoveEvent = orbitMoveEvent;var UID$1 = 0;
+OrbitService.orbitMoveEvent = orbitMoveEvent;var UID$2 = 0;
 var ImageServiceEvent = {
   Progress: 'progress',
   Complete: 'complete'
@@ -15100,7 +15417,7 @@ var ImageService = /*#__PURE__*/function () {
       });
     }
 
-    var id = ++UID$1;
+    var id = ++UID$2;
     var worker = this.worker();
     worker.postMessage({
       src: src,
@@ -21066,6 +21383,47 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     }
   };
 
+  _proto.onNavLink = function onNavLink(item) {
+    // console.log('WorldComponent.onNavLink', item.link.href);
+    if (this.locked) {
+      return;
+    }
+
+    if (environment.flags.useIframe) {
+      MessageService.send({
+        type: MessageType.NavLink,
+        itemId: item.id
+      });
+      this.navLink.next(item);
+    } else {
+      window.open(item.link.href, '_blank');
+    }
+  };
+
+  _proto.onPanelDown = function onPanelDown(item) {
+    // console.log('WorldComponent.onPanelDown', item.link.href);
+    if (this.locked) {
+      return;
+    }
+
+    if (environment.flags.useIframe) {
+      MessageService.send({
+        type: MessageType.NavLink,
+        itemId: item.id
+      });
+      this.navLink.next(item);
+    } else {
+      window.open(item.link.href, '_blank');
+      /*
+      const href = event.getAttribute('href');
+      const target = event.getAttribute('target') || '_self';
+      if (href) {
+      	window.open(href, '_blank');
+      }
+      */
+    }
+  };
+
   _proto.onObjectDown = function onObjectDown(event) {
     // console.log('WorldComponent.onObjectDown', this.keys);
     if (this.lockedOrXR) {
@@ -21128,16 +21486,6 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       itemId: event.itemId,
       actionIndex: event.actionIndex
     });
-  };
-
-  _proto.onPanelDown = function onPanelDown(event) {
-    // console.log('WorldComponent.onPanelDown', href, target);
-    var href = event.getAttribute('href');
-    var target = event.getAttribute('target') || '_self';
-
-    if (href) {
-      window.open(href, '_blank');
-    }
   };
 
   _proto.onGridMove = function onGridMove(event) {
@@ -21309,15 +21657,26 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
           break;
 
+        case MessageType.NavLink:
+          var item = _this10.view.items.find(function (item) {
+            return item.id === message.itemId;
+          });
+
+          if (item) {
+            _this10.navLink.next(item);
+          }
+
+          break;
+
         case MessageType.PlayMedia:
           {
             // !!! uniformare a PlayModel
-            var item = _this10.view.items.find(function (item) {
+            var _item = _this10.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
-            if (item && item.mesh instanceof MediaMesh) {
-              item.mesh.setPlayingState(message.playing);
+            if (_item && _item.mesh instanceof MediaMesh) {
+              _item.mesh.setPlayingState(message.playing);
             }
 
             break;
@@ -21343,12 +21702,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.CurrentTimeMedia:
           {
-            var _item = _this10.view.items.find(function (item) {
+            var _item2 = _this10.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
-            if (_item && _item.mesh instanceof MediaMesh) {
-              _item.mesh.setCurrentTime(message.currentTime);
+            if (_item2 && _item2.mesh instanceof MediaMesh) {
+              _item2.mesh.setCurrentTime(message.currentTime);
             }
 
             break;
@@ -21356,12 +21715,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         case MessageType.PlayModel:
           {
-            var _item2 = _this10.view.items.find(function (item) {
+            var _item3 = _this10.view.items.find(function (item) {
               return item.id === message.itemId;
             });
 
-            if (_item2) {
-              _item2.onMessage(message);
+            if (_item3) {
+              _item3.onMessage(message);
             }
 
             break;
@@ -21552,7 +21911,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views', 'editor'],
-  outputs: ['navTo', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
+  outputs: ['navTo', 'navLink', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
 };var ModelComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModelComponent, _Component);
 
@@ -21661,7 +22020,9 @@ WorldComponent.meta = {
       };
     }
 
-    this.group.add(mesh); // this.host.render(); !!!
+    if (this.group) {
+      this.group.add(mesh);
+    } // this.host.render(); !!!
 
     /*
     const node = this.node;
@@ -21672,6 +22033,7 @@ WorldComponent.meta = {
     });
     */
     // console.log('Model.loaded', mesh);
+
   };
 
   _proto.onDismount = function onDismount(mesh, item) {
@@ -21847,7 +22209,8 @@ ModelEditableComponent.meta = {
   Info: 'info',
   Point: 'point',
   Title: 'title',
-  Transparent: 'transparent'
+  Transparent: 'transparent',
+  Wishlist: 'wishlist'
 };
 
 var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
@@ -21895,21 +22258,33 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     return ModelNavComponent.textureInfoImportant || (ModelNavComponent.textureInfoImportant = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-info-important.png')));
   };
 
-  ModelNavComponent.getTexture = function getTexture(mode, important) {
+  ModelNavComponent.getTextureWishlist = function getTextureWishlist() {
+    return ModelNavComponent.textureWishlist || (ModelNavComponent.textureWishlist = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-wishlist-off.png')));
+  };
+
+  ModelNavComponent.getTextureWishlistAdded = function getTextureWishlistAdded() {
+    return ModelNavComponent.textureWishlistAdded || (ModelNavComponent.textureWishlistAdded = ModelNavComponent.getLoader().load(environment.getPath('textures/ui/nav-wishlist-on.png')));
+  };
+
+  ModelNavComponent.getTexture = function getTexture(mode, item) {
     var texture;
 
     switch (mode) {
       case NavModeType.Move:
-        texture = important ? this.getTextureMoveImportant() : this.getTextureMove();
+        texture = item.important ? this.getTextureMoveImportant() : this.getTextureMove();
         break;
 
       case NavModeType.Info:
-        texture = important ? this.getTextureInfoImportant() : this.getTextureInfo();
+        texture = item.important ? this.getTextureInfoImportant() : this.getTextureInfo();
         break;
 
       case NavModeType.Point:
       case NavModeType.Title:
-        texture = important ? this.getTexturePointImportant() : this.getTexturePoint();
+        texture = item.important ? this.getTexturePointImportant() : this.getTexturePoint();
+        break;
+
+      case NavModeType.Wishlist:
+        texture = item.added ? this.getTextureWishlistAdded() : this.getTextureWishlist();
         break;
     }
 
@@ -21957,7 +22332,9 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   ModelNavComponent.getNavMode = function getNavMode(item, view) {
     var mode = NavModeType.None;
 
-    if (item.transparent) {
+    if (item.hook && item.hook === 'ToggleWishlist') {
+      mode = NavModeType.Wishlist;
+    } else if (item.transparent) {
       mode = NavModeType.Transparent;
     } else if (item.viewId !== view.id) {
       mode = NavModeType.Move;
@@ -21983,7 +22360,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   var _proto = ModelNavComponent.prototype;
 
   _proto.shouldShowPanel = function shouldShowPanel() {
-    return !this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title && (this.mode !== NavModeType.Transparent || ModelNavComponent.isValidText(this.item.title));
+    return !this.editing && this.mode !== NavModeType.Move && this.mode !== NavModeType.Title && this.mode !== NavModeType.Wishlist && (this.mode !== NavModeType.Transparent || ModelNavComponent.isValidText(this.item.title));
   };
 
   _proto.updateVisibility = function updateVisibility(visible) {
@@ -22011,8 +22388,18 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   };
 
   _proto.onChanges = function onChanges() {
+    var view = this.view;
     var item = this.item;
-    this.mode = ModelNavComponent.getNavMode(item, this.view);
+    var mode = this.mode = ModelNavComponent.getNavMode(item, this.view);
+
+    if (mode === NavModeType.Wishlist) {
+      item.added = WishlistService.has({
+        viewId: view.id,
+        itemId: item.id
+      });
+      this.onCreateSprites(this.mesh, 1);
+    }
+
     this.editing = item.selected;
     this.hidden = this.isHidden;
   };
@@ -22021,11 +22408,19 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     var _this2 = this;
 
     // this.renderOrder = environment.renderOrder.nav;
+    var view = this.view;
     var item = this.item;
     var mode = this.mode = ModelNavComponent.getNavMode(item, this.view);
 
     if (mode === NavModeType.None) {
       return;
+    }
+
+    if (mode === NavModeType.Wishlist) {
+      item.added = WishlistService.has({
+        viewId: view.id,
+        itemId: item.id
+      });
     }
 
     var isAnimated = this.isAnimated;
@@ -22100,9 +22495,13 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
 
 
         if (_this2.shouldNavToLink != null) {
-          var link = _this2.shouldNavToLink;
-          _this2.shouldNavToLink = null;
+          /*
+          const link = this.shouldNavToLink;
           window.open(link, '_blank');
+          */
+          _this2.shouldNavToLink = null;
+
+          _this2.link.next(_this2.item);
         }
       });
     } else {
@@ -22231,7 +22630,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     if (mode === NavModeType.Transparent) {
       this.materials = [];
     } else {
-      var map = ModelNavComponent.getTexture(mode, item.important);
+      var map = ModelNavComponent.getTexture(mode, item);
       var material = new THREE.SpriteMaterial({
         map: map,
         depthTest: false,
@@ -22443,7 +22842,7 @@ ModelNavComponent.meta = {
   hosts: {
     host: WorldComponent
   },
-  outputs: ['over', 'out', 'down'],
+  outputs: ['over', 'out', 'down', 'link'],
   inputs: ['item', 'view', 'editor']
 };var NavModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(NavModalComponent, _Component);
@@ -22459,11 +22858,15 @@ ModelNavComponent.meta = {
 
     var object = this.object;
     this.error = null;
+    this.useHooks = WebhookService.enabled;
     var form = this.form = new rxcompForm.FormGroup({
       type: ViewItemType.Nav,
       title: null,
       abstract: null,
-      viewId: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      viewId: null,
+      // new FormControl(null, RequiredValidator()),
+      hook: null,
+      hookExtra: null,
       keepOrientation: false,
       important: false,
       transparent: false,
@@ -22483,12 +22886,29 @@ ModelNavComponent.meta = {
 
     });
     this.controls = form.controls;
+
+    if (WebhookService.enabled) {
+      var options = environment.webhook.methods.map(function (x) {
+        return {
+          id: x,
+          name: x
+        };
+      });
+      options.unshift({
+        id: null,
+        name: 'select'
+      });
+      this.controls.hook.options = options;
+    } // !!! mode validator
+    // form.addValidators(NavModalValidator(form, this.view));
+
     /*
     this.controls.viewId.options = [{
     	name: 'Name',
     	id: 2,
     }];
     */
+
 
     form.changes$.subscribe(function (changes) {
       // console.log('NavModalComponent.form.changes$', changes, form.valid, form);
@@ -22507,7 +22927,7 @@ ModelNavComponent.meta = {
     if (this.form.valid) {
       this.form.submitted = true;
       var item = Object.assign({}, this.form.value);
-      item.viewId = parseInt(item.viewId);
+      item.viewId = item.viewId ? parseInt(item.viewId) : this.view.id;
 
       if (item.link && (!item.link.title || !item.link.href)) {
         item.link = null;
@@ -23578,7 +23998,7 @@ var NavmapEditComponent = /*#__PURE__*/function (_Component) {
       data: {
         item: navmap
       }
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         NavmapService.navmapDelete$(navmap).pipe(operators.first()).subscribe(function (response) {
           _this6.delete.next(navmap);
@@ -23607,6 +24027,7 @@ NavmapEditComponent.meta = {
 
     this.busy = false;
     this.active = false;
+    this.useHooks = WebhookService.enabled;
     var form = this.form = new rxcompForm.FormGroup();
     this.controls = form.controls;
     var item = this.item;
@@ -23683,7 +24104,12 @@ NavmapEditComponent.meta = {
 
       switch (item.type.name) {
         case ViewItemType.Nav.name:
-          keys = ['id', 'type', 'title?', 'abstract?', 'viewId', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+          if (this.useHooks) {
+            keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'hook?', 'hookExtra?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+          } else {
+            keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+          }
+
           break;
 
         case ViewItemType.Plane.name:
@@ -23727,6 +24153,29 @@ NavmapEditComponent.meta = {
 
               _this3.pushChanges();
             });
+            break;
+
+          case 'hook':
+            control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
+
+            if (WebhookService.enabled) {
+              var options = environment.webhook.methods.map(function (x) {
+                return {
+                  id: x,
+                  name: x
+                };
+              });
+              options.unshift({
+                id: null,
+                name: 'select'
+              });
+              control.options = options;
+            }
+
+            control.value = control.value || null;
+
+            _this3.pushChanges();
+
             break;
 
           case 'assetType':
@@ -23841,6 +24290,11 @@ NavmapEditComponent.meta = {
       this.pushChanges();
       var changes = this.form.value;
       var payload = Object.assign({}, changes);
+
+      if (this.item.type.name === ViewItemType.Nav.name) {
+        payload.viewId = payload.viewId || this.view.id;
+      }
+
       var view = this.view;
       var item = new ViewItem(payload);
       EditorService.inferItemUpdate$(view, item).pipe(operators.first()).subscribe(function (response) {
@@ -23873,7 +24327,7 @@ NavmapEditComponent.meta = {
       data: {
         item: this.item
       }
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         _this6.delete.next({
           view: _this6.view,
@@ -23948,7 +24402,7 @@ UpdateViewItemComponent.meta = {
   inputs: ['view', 'item'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.important\" label=\"Important\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.transparent\" label=\"Transparent\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div *if=\"controls.transparent.value == true\">\n\t\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane' && view.type.name != 'media'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane' && view.type.name == 'media'\">\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
+  "\n\t\t<div class=\"group--headline\" [class]=\"{ active: item.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"item.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(item)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"item.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'nav'\">\n\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.important\" label=\"Important\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.transparent\" label=\"Transparent\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\"></div>\n\t\t\t\t<div *if=\"controls.transparent.value == true\">\n\t\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg, image/png\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t\t<div *if=\"useHooks\">\n\t\t\t\t\t<div control-custom-select [control]=\"controls.hook\" label=\"Hook\"></div>\n\t\t\t\t\t<div control-text [control]=\"controls.hookExtra\" label=\"Hook Extra\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane' && view.type.name != 'media'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'plane' && view.type.name == 'media'\">\n\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Localized Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'curved-plane'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\"></div>\n\t\t\t\t<!-- <div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\"></div>\n\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\"></div>\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'texture'\">\n\t\t\t\t<div control-custom-select [control]=\"controls.assetType\" label=\"Asset\" (change)=\"onAssetTypeDidChange($event)\"></div>\n\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\" *if=\"controls.assetType.value == 1\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.hasChromaKeyColor\" label=\"Use Green Screen\" *if=\"item.asset\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.autoplay\" label=\"Autoplay\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t\t<div control-checkbox [control]=\"controls.loop\" label=\"Loop\" *if=\"item.asset && item.asset.type.name === 'video'\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"item.type.name == 'model'\">\n\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" *if=\"view.type.name !== 'model'\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
 };var UpdateViewTileComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UpdateViewTileComponent, _Component);
 
@@ -24017,7 +24471,7 @@ UpdateViewItemComponent.meta = {
       data: {
         tile: this.tile
       }
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         _this3.delete.next({
           view: _this3.view,
@@ -24299,7 +24753,7 @@ UpdateViewTileComponent.meta = {
       data: {
         item: this.item
       }
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+    }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         _this3.delete.next({
           view: _this3.view
@@ -24384,6 +24838,23 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
+};var IframeModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(IframeModalComponent, _Component);
+
+  function IframeModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = IframeModalComponent.prototype;
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return IframeModalComponent;
+}(rxcomp.Component);
+IframeModalComponent.meta = {
+  selector: '[iframe-modal]'
 };var EnvPipe = /*#__PURE__*/function (_Pipe) {
   _inheritsLoose(EnvPipe, _Pipe);
 
@@ -27646,10 +28117,12 @@ ModelBannerComponent.meta = {
 
         if (streamId || !item.asset) {
           item.streamId = streamId;
-          mesh = new MediaMesh(item, view, geometry, _this.host);
+          mesh = _this.disposableMesh = new MediaMesh(item, view, geometry, _this.host);
           mesh.updateFromItem(item);
           mesh.name = 'curved-plane';
           mesh.load(function () {
+            _this.disposableMesh = null;
+
             if (typeof mount === 'function') {
               mount(mesh, item);
             }
@@ -27710,9 +28183,16 @@ ModelBannerComponent.meta = {
   };
 
   _proto.onDestroy = function onDestroy() {
+    // console.log('ModelCurvedPlaneComponent.onDestroy');
     _ModelEditableCompone.prototype.onDestroy.call(this);
 
+    if (this.disposableMesh) {
+      this.removeMeshListeners(this.disposableMesh);
+      this.disposableMesh.dispose();
+    }
+
     if (this.mesh) {
+      this.removeMeshListeners(this.mesh);
       this.mesh.dispose();
     }
   } // called by UpdateViewItemComponent
@@ -30147,7 +30627,7 @@ var FreezableSprite = /*#__PURE__*/function (_THREE$Sprite) {
           }); // console.log('ModelPanelComponent.down.link', link);
 
           if (link) {
-            _this.down.next(link);
+            _this.down.next(_this.item);
 
             var rect = node.getBoundingClientRect();
 
@@ -30402,10 +30882,12 @@ ModelPictureComponent.meta = {
 
         if (streamId || !item.asset) {
           item.streamId = streamId;
-          mesh = new MediaMesh(item, view, geometry, _this.host);
+          mesh = _this.disposableMesh = new MediaMesh(item, view, geometry, _this.host);
           mesh.updateFromItem(item);
           mesh.name = 'plane';
           mesh.load(function () {
+            _this.disposableMesh = null;
+
             if (typeof mount === 'function') {
               mount(mesh, item);
             }
@@ -30466,8 +30948,13 @@ ModelPictureComponent.meta = {
   };
 
   _proto.onDestroy = function onDestroy() {
-    // console.log('ModelPlaneComponent', this);
+    // console.log('ModelPlaneComponent.onDestroy');
     _ModelEditableCompone.prototype.onDestroy.call(this);
+
+    if (this.disposableMesh) {
+      this.removeMeshListeners(this.disposableMesh);
+      this.disposableMesh.dispose();
+    }
 
     if (this.mesh) {
       this.removeMeshListeners(this.mesh);
@@ -31028,6 +31515,6 @@ ModelTextComponent.meta = {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

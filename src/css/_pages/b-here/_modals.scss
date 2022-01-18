@@ -332,3 +332,31 @@ model-viewer {
 	width: 100%;
 	height: 100%;
 }
+
+.iframe-modal {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: calc(100vw - 170px);
+	height: calc(100vh - 170px);
+	border-radius: 10px;
+	overflow: hidden;
+	background: white;
+
+	.modal__header {
+		position: absolute;
+		width: 100%;
+		z-index: 1;
+	}
+
+	.modal__content {
+		flex: 1 0 auto;
+	}
+
+	iframe {
+		width: 100%;
+		height: 100%;
+		outline: 0;
+		border: 0;
+	}
+}

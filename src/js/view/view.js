@@ -206,7 +206,7 @@ export class MediaView extends View {
 }
 
 export class ViewItem {
-	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'hook', 'hookExtra', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);

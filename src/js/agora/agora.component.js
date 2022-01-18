@@ -19,6 +19,8 @@ import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
+import { WebhookService } from '../webhook/webhook.service';
+import { WishlistService } from '../wishlist/wishlist.service';
 import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent } from '../world/media/media-loader';
 import VRService from '../world/vr.service';
 import { AgoraChecklistService } from './agora-checklist.service';
@@ -337,9 +339,9 @@ export default class AgoraComponent extends Component {
 		StateService.patchState({ showNavmap: !StateService.state.showNavmap });
 	}
 
-	onNavmapItem(navItem) {
+	onNavmapItem(item) {
 		StateService.patchState({ showNavmap: false });
-		this.onNavTo(navItem);
+		this.onNavTo(item);
 	}
 
 	loadAndConnect(preferences) {
@@ -633,13 +635,23 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	onNavTo(navItem) {
-		const viewId = navItem.viewId;
+	onNavTo(item) {
+		const viewId = item.viewId;
 		const view = this.data.views.find(x => x.id === viewId);
 		if (view) {
-			// console.log('AgoraComponent.onNavTo', navItem, view);
-			ViewService.action = { viewId, keepOrientation: navItem.keepOrientation, useLastOrientation: navItem.useLastOrientation };
+			// console.log('AgoraComponent.onNavTo', item, view);
+			ViewService.action = { viewId, keepOrientation: item.keepOrientation, useLastOrientation: item.useLastOrientation };
+			this.onHandleHook(view, item);
 		}
+	}
+
+	onNavLink(item) {
+		// console.log('AgoraComponent.onNavLink', item);
+		ModalService.open$({ iframe: item.link.href }).pipe(
+			first(),
+		).subscribe(event => {
+			// this.pushChanges();
+		});
 	}
 
 	onRemoteNavTo(message) {
@@ -655,6 +667,25 @@ export default class AgoraComponent extends Component {
 				}
 			}
 			// console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
+		}
+	}
+
+	onHandleHook(view, item) {
+		switch (item.hook) {
+			case 'ToggleWishlist':
+				const payload = { viewId: view.id, itemId: item.id };
+				WishlistService.toggle$(payload).pipe(
+					switchMap(items => {
+						payload.added = WishlistService.has(payload);
+						return WebhookService.send$(item.hook, payload, item.extra);
+					}),
+					first(),
+				).subscribe(response => {
+					console.log('AgoraComponent.onHandleHook', response);
+					item.added = payload.added;
+					this.pushChanges();
+				});
+				break;
 		}
 	}
 
@@ -845,7 +876,7 @@ export default class AgoraComponent extends Component {
 			TryInARModalComponent.openInAR(this.view);
 		} else {
 			ModalService.open$({ src: environment.template.modal.tryInAr, data: this.view }).pipe(
-				takeUntil(this.unsubscribe$)
+				first(),
 			).subscribe(event => {
 				// this.pushChanges();
 			});
@@ -936,7 +967,7 @@ export default class AgoraComponent extends Component {
 		});
 		/*
 		ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
-			takeUntil(this.unsubscribe$)
+			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				MessageService.send({ type: MessageType.SupportRequestAccepted });

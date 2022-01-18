@@ -2,6 +2,14 @@
 export const environmentStatic = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
+	/*
+	webhook: {
+		uris: ['internal'],
+		methods: [
+			'ToggleWishlist',
+		],
+	},
+	*/
 	flags: {
 		production: false,
 		useProxy: true,
@@ -17,6 +25,7 @@ export const environmentStatic = {
 		ar: true,
 		like: true,
 		hideNavInfo: true,
+		useIframe: true,
 		attendee: true,
 		streamer: true,
 		viewer: true,

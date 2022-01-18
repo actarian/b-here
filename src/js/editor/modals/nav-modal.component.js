@@ -1,10 +1,12 @@
 import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
+import { environment } from '../../environment';
 // import * as THREE from 'three';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
+import { WebhookService } from '../../webhook/webhook.service';
 import { Host } from '../../world/host/host';
 import ModelNavComponent from '../../world/model/model-nav.component';
 import EditorService from '../editor.service';
@@ -61,11 +63,14 @@ export default class NavModalComponent extends Component {
 	onInit() {
 		const object = this.object;
 		this.error = null;
+		this.useHooks = WebhookService.enabled;
 		const form = this.form = new FormGroup({
 			type: ViewItemType.Nav,
 			title: null,
 			abstract: null,
-			viewId: new FormControl(null, RequiredValidator()),
+			viewId: null, // new FormControl(null, RequiredValidator()),
+			hook: null,
+			hookExtra: null,
 			keepOrientation: false,
 			important: false,
 			transparent: false,
@@ -84,6 +89,13 @@ export default class NavModalComponent extends Component {
 			// items: new FormArray([null, null, null], RequiredValidator()),
 		});
 		this.controls = form.controls;
+		if (WebhookService.enabled) {
+			const options = environment.webhook.methods.map(x => ({ id: x, name: x }));
+			options.unshift({ id: null, name: 'select' });
+			this.controls.hook.options = options;
+		}
+		// !!! mode validator
+		// form.addValidators(NavModalValidator(form, this.view));
 		/*
 		this.controls.viewId.options = [{
 			name: 'Name',
@@ -106,7 +118,7 @@ export default class NavModalComponent extends Component {
 		if (this.form.valid) {
 			this.form.submitted = true;
 			const item = Object.assign({}, this.form.value);
-			item.viewId = parseInt(item.viewId);
+			item.viewId = item.viewId ? parseInt(item.viewId) : this.view.id;
 			if (item.link && (!item.link.title || !item.link.href)) {
 				item.link = null;
 			}
