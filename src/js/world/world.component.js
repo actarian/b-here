@@ -344,6 +344,9 @@ export default class WorldComponent extends Component {
 		}
 		const view = this.view_;
 		if (view) {
+			if (StateService.state.zoomedId != null) {
+				StateService.patchState({ zoomedId: null });		
+			}
 			if (this.views) {
 				this.views.forEach(view => delete view.onUpdateAsset);
 			}
