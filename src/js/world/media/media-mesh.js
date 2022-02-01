@@ -842,7 +842,7 @@ export default class MediaMesh extends InteractiveMesh {
 			const size = 0.1;
 			scale.set(size / ratio, size, 1);
 			position.x = 0.5 - size / ratio / 2;
-			position.y = 0.5 - size / 2;
+			position.y = size / 2 - 0.5;
 			position.z = 0.01;
 		}
 		// console.log('MediaMesh.updateZoom', this.scale);
