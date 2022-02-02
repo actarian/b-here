@@ -2,14 +2,17 @@
 export const environmentStatic = {
 	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 	channelName: 'BHere',
-	/*
 	webhook: {
-		uris: ['internal'],
-		methods: [
-			'ToggleWishlist',
+		uris: [
+			'internal',
+			'https://webhook.site/a3c12115-35f8-44ec-a95f-7251a56ee2d9',
 		],
+		methods: {
+			nav: [
+				'ToggleWishlist',
+			],
+		},
 	},
-	*/
 	flags: {
 		production: false,
 		useProxy: true,
