@@ -337,8 +337,9 @@ model-viewer {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: calc(100vw - 170px);
-	height: calc(100vh - 170px);
+	width: calc(100vw - 240px);
+	height: calc(100vh - 180px);
+	max-width: 1200px;
 	border-radius: 10px;
 	overflow: hidden;
 	background: white;
