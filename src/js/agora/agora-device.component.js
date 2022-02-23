@@ -111,4 +111,37 @@ export default class AgoraDeviceComponent extends Component {
 AgoraDeviceComponent.meta = {
 	selector: '[agora-device]',
 	outputs: ['enter'],
+	template: /* html */`
+		<div class="group--info" *if="!isHttps">
+			<div class="group--info__content stagger--childs">
+				<div class="title" [innerHTML]="'bhere_invalid_protocol' | label"></div>
+				<div class="info" [innerHTML]="'bhere_reload_in_https' | label"></div>
+				<button type="button" class="btn--connect" (click)="openHttps($event)">
+					<span [innerHTML]="'bhere_reload' | label"></span>
+				</button>
+			</div>
+		</div>
+		<div class="group--info" *if="form">
+			<form class="form" [formGroup]="form" (submit)="isValid() && onEnter($event)" name="form" role="form" novalidate autocomplete="off">
+				<!-- PREVIEW -->
+				<div class="agora-device-preview" agora-device-preview [video]="controls.video.value" [audio]="controls.audio.value" (stream)="onStream($event)" (change)="onStreamDidChange($event)" *if="this.hasPreview">
+					<video class="video" muted></video>
+					<div class="audio"></div>
+				</div>
+				<div class="group--info__content stagger--childs">
+					<!-- VIDEO -->
+					<div control-custom-select [control]="controls.video" label="Video" *if="devices.videos.length"></div>
+					<!-- AUDIO -->
+					<div control-custom-select [control]="controls.audio" label="Audio" *if="devices.audios.length"></div>
+					<div class="info" *if="!isValid()" [innerHTML]="'bhere_select_video_audio' | label"></div>
+					<div class="info" *if="isValid()" [innerHTML]="'bhere_video_audio_connected' | label"></div>
+					<button type="submit" class="btn--connect" [class]="{ disabled: !isValid() }">
+						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#call"></use></svg>
+						<span *if="!state.connecting" [innerHTML]="'bhere_enter' | label"></span>
+						<span *if="state.connecting" [innerHTML]="'bhere_connecting' | label"></span>
+					</button>
+				</div>
+			</form>
+		</div>
+	`
 };

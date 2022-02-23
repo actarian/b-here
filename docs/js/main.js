@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.html2canvas));}(this,(function(rxcomp, rxcompForm, rxjs, operators, html2canvas){'use strict';html2canvas=html2canvas&&Object.prototype.hasOwnProperty.call(html2canvas,'default')?html2canvas['default']:html2canvas;function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.html2canvas));}(this,(function(rxcomp, rxcompForm, rxjs, operators, html2canvas){'use strict';var rxcomp__default='default'in rxcomp?rxcomp['default']:rxcomp;var rxjs__default='default'in rxjs?rxjs['default']:rxjs;var operators__default='default'in operators?operators['default']:operators;html2canvas=html2canvas&&Object.prototype.hasOwnProperty.call(html2canvas,'default')?html2canvas['default']:html2canvas;function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
     var value = info.value;
@@ -121,7 +121,2929 @@ function _assertThisInitialized(self) {
 
 function _readOnlyError(name) {
   throw new Error("\"" + name + "\" is read-only");
-}var environmentServed = {
+}function createCommonjsModule(fn, basedir, module) {
+	return module = {
+	  path: basedir,
+	  exports: {},
+	  require: function (path, base) {
+      return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+    }
+	}, fn(module, module.exports), module.exports;
+}
+
+function getCjsExportFromNamespace (n) {
+	return n && n['default'] || n;
+}
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+}/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+/* global Reflect, Promise */
+var _extendStatics = function extendStatics(d, b) {
+  _extendStatics = Object.setPrototypeOf || {
+    __proto__: []
+  } instanceof Array && function (d, b) {
+    d.__proto__ = b;
+  } || function (d, b) {
+    for (var p in b) {
+      if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+    }
+  };
+
+  return _extendStatics(d, b);
+};
+
+function __extends(d, b) {
+  _extendStatics(d, b);
+
+  function __() {
+    this.constructor = d;
+  }
+
+  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var _assign = function __assign() {
+  _assign = Object.assign || function __assign(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return _assign.apply(this, arguments);
+};
+function __rest(s, e) {
+  var t = {};
+
+  for (var p in s) {
+    if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
+  }
+
+  if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+    if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
+  }
+  return t;
+}
+function __decorate(decorators, target, key, desc) {
+  var c = arguments.length,
+      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+      d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
+    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  }
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+function __param(paramIndex, decorator) {
+  return function (target, key) {
+    decorator(target, key, paramIndex);
+  };
+}
+function __metadata(metadataKey, metadataValue) {
+  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+}
+function __awaiter(thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+}
+function __generator(thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+}
+var __createBinding = Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function get() {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+};
+function __exportStar(m, o) {
+  for (var p in m) {
+    if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
+  }
+}
+function __values(o) {
+  var s = typeof Symbol === "function" && Symbol.iterator,
+      m = s && o[s],
+      i = 0;
+  if (m) return m.call(o);
+  if (o && typeof o.length === "number") return {
+    next: function next() {
+      if (o && i >= o.length) o = void 0;
+      return {
+        value: o && o[i++],
+        done: !o
+      };
+    }
+  };
+  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+function __read(o, n) {
+  var m = typeof Symbol === "function" && o[Symbol.iterator];
+  if (!m) return o;
+  var i = m.call(o),
+      r,
+      ar = [],
+      e;
+
+  try {
+    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+      ar.push(r.value);
+    }
+  } catch (error) {
+    e = {
+      error: error
+    };
+  } finally {
+    try {
+      if (r && !r.done && (m = i["return"])) m.call(i);
+    } finally {
+      if (e) throw e.error;
+    }
+  }
+
+  return ar;
+}
+function __spread() {
+  for (var ar = [], i = 0; i < arguments.length; i++) {
+    ar = ar.concat(__read(arguments[i]));
+  }
+
+  return ar;
+}
+function __spreadArrays() {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+}
+function __await(v) {
+  return this instanceof __await ? (this.v = v, this) : new __await(v);
+}
+function __asyncGenerator(thisArg, _arguments, generator) {
+  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+  var g = generator.apply(thisArg, _arguments || []),
+      i,
+      q = [];
+  return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
+    return this;
+  }, i;
+
+  function verb(n) {
+    if (g[n]) i[n] = function (v) {
+      return new Promise(function (a, b) {
+        q.push([n, v, a, b]) > 1 || resume(n, v);
+      });
+    };
+  }
+
+  function resume(n, v) {
+    try {
+      step(g[n](v));
+    } catch (e) {
+      settle(q[0][3], e);
+    }
+  }
+
+  function step(r) {
+    r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
+  }
+
+  function fulfill(value) {
+    resume("next", value);
+  }
+
+  function reject(value) {
+    resume("throw", value);
+  }
+
+  function settle(f, v) {
+    if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]);
+  }
+}
+function __asyncDelegator(o) {
+  var i, p;
+  return i = {}, verb("next"), verb("throw", function (e) {
+    throw e;
+  }), verb("return"), i[Symbol.iterator] = function () {
+    return this;
+  }, i;
+
+  function verb(n, f) {
+    i[n] = o[n] ? function (v) {
+      return (p = !p) ? {
+        value: __await(o[n](v)),
+        done: n === "return"
+      } : f ? f(v) : v;
+    } : f;
+  }
+}
+function __asyncValues(o) {
+  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+  var m = o[Symbol.asyncIterator],
+      i;
+  return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
+    return this;
+  }, i);
+
+  function verb(n) {
+    i[n] = o[n] && function (v) {
+      return new Promise(function (resolve, reject) {
+        v = o[n](v), settle(resolve, reject, v.done, v.value);
+      });
+    };
+  }
+
+  function settle(resolve, reject, d, v) {
+    Promise.resolve(v).then(function (v) {
+      resolve({
+        value: v,
+        done: d
+      });
+    }, reject);
+  }
+}
+function __makeTemplateObject(cooked, raw) {
+  if (Object.defineProperty) {
+    Object.defineProperty(cooked, "raw", {
+      value: raw
+    });
+  } else {
+    cooked.raw = raw;
+  }
+
+  return cooked;
+}
+
+var __setModuleDefault = Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+};
+
+function __importStar(mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+}
+function __importDefault(mod) {
+  return mod && mod.__esModule ? mod : {
+    default: mod
+  };
+}
+function __classPrivateFieldGet(receiver, privateMap) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to get private field on non-instance");
+  }
+
+  return privateMap.get(receiver);
+}
+function __classPrivateFieldSet(receiver, privateMap, value) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to set private field on non-instance");
+  }
+
+  privateMap.set(receiver, value);
+  return value;
+}var tslib_es6=/*#__PURE__*/Object.freeze({__proto__:null,__extends: __extends,get __assign(){return _assign},__rest: __rest,__decorate: __decorate,__param: __param,__metadata: __metadata,__awaiter: __awaiter,__generator: __generator,__createBinding: __createBinding,__exportStar: __exportStar,__values: __values,__read: __read,__spread: __spread,__spreadArrays: __spreadArrays,__await: __await,__asyncGenerator: __asyncGenerator,__asyncDelegator: __asyncDelegator,__asyncValues: __asyncValues,__makeTemplateObject: __makeTemplateObject,__importStar: __importStar,__importDefault: __importDefault,__classPrivateFieldGet: __classPrivateFieldGet,__classPrivateFieldSet: __classPrivateFieldSet});var tslib_1 = getCjsExportFromNamespace(tslib_es6);var view = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.LeaveTransition = exports.EnterTransition = exports.OnceTransition = exports.Transition = void 0;
+
+  var Transition =
+  /** @class */
+  function () {
+    function Transition(callback, path) {
+      this.callback = callback;
+      this.path = path || '**';
+    }
+
+    Transition.prototype.matcher = function (path) {
+      return this.path === '**' ? true : this.path === path;
+    };
+
+    return Transition;
+  }();
+
+  exports.Transition = Transition;
+
+  var OnceTransition =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(OnceTransition, _super);
+
+    function OnceTransition() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return OnceTransition;
+  }(Transition);
+
+  exports.OnceTransition = OnceTransition;
+
+  var EnterTransition =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(EnterTransition, _super);
+
+    function EnterTransition() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return EnterTransition;
+  }(Transition);
+
+  exports.EnterTransition = EnterTransition;
+
+  var LeaveTransition =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(LeaveTransition, _super);
+
+    function LeaveTransition() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return LeaveTransition;
+  }(Transition);
+
+  exports.LeaveTransition = LeaveTransition;
+
+  var View =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(View, _super);
+
+    function View() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    Object.defineProperty(View, "transitions", {
+      get: function get() {
+        var transitions;
+
+        if (this.transitions_) {
+          transitions = this.transitions_;
+        } else {
+          transitions = this.transitions_ = [];
+          var source_1 = this.meta.transitions || {};
+          Object.keys(source_1).forEach(function (key) {
+            var matches = /^(once|from|enter|to|leave):\s?(.+)?\s?$/.exec(key); // return /([^\s]+)\s?=>\s?([^\s]+)/.test(key);
+
+            if (matches != null && matches.length > 1) {
+              switch (matches[1]) {
+                case 'once':
+                  transitions.push(new OnceTransition(source_1[key], matches[2]));
+                  break;
+
+                case 'to':
+                case 'from':
+                case 'enter':
+                  transitions.push(new EnterTransition(source_1[key], matches[2]));
+                  break;
+
+                case 'to':
+                case 'leave':
+                  transitions.push(new LeaveTransition(source_1[key], matches[2]));
+                  break;
+              }
+            }
+          });
+        }
+
+        return transitions;
+      },
+      enumerable: false,
+      configurable: true
+    });
+    return View;
+  }(rxcomp__default.Component);
+
+  exports.default = View;
+});var routeSnapshot = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.RouteSnapshot = void 0;
+
+  var RouteSnapshot =
+  /** @class */
+  function () {
+    function RouteSnapshot(options) {
+      this.pathMatch = 'prefix';
+      this.relative = true;
+      this.data$ = new rxjs__default.ReplaySubject(1);
+      this.params$ = new rxjs__default.ReplaySubject(1);
+      this.queryParams$ = new rxjs__default.ReplaySubject(1);
+      this.canDeactivate = [];
+      this.canLoad = [];
+      this.canActivate = [];
+      this.canActivateChild = [];
+
+      if (options) {
+        Object.assign(this, options);
+      }
+
+      this.data$.next(this.data);
+      this.params$.next(this.params);
+      this.queryParams$.next(this.queryParams);
+    }
+
+    RouteSnapshot.prototype.next = function (snapshot) {
+      this.childRoute = snapshot.childRoute;
+
+      if (snapshot.childRoute) {
+        snapshot.childRoute.parent = this;
+      }
+
+      var data = this.data = Object.assign({}, snapshot.data);
+      this.data$.next(data);
+      var params = this.params = Object.assign({}, snapshot.params);
+      this.params$.next(params);
+      var queryParams = this.queryParams = Object.assign({}, snapshot.queryParams);
+      this.queryParams$.next(queryParams);
+    };
+
+    return RouteSnapshot;
+  }();
+
+  exports.RouteSnapshot = RouteSnapshot;
+});var location_strategy = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.decodeParam = exports.encodeParam = exports.LocationStrategyHash = exports.LocationStrategyPath = exports.LocationStrategy = void 0;
+
+  var LocationStrategy =
+  /** @class */
+  function () {
+    function LocationStrategy() {}
+
+    LocationStrategy.prototype.serializeLink = function (routerLink) {
+      var _this = this;
+
+      var url = (Array.isArray(routerLink) ? routerLink : [routerLink]).map(function (x) {
+        return typeof x === 'string' ? x : _this.encodeParams(x);
+      }).join('/');
+      return this.serializeUrl(url);
+    };
+
+    LocationStrategy.prototype.serializeUrl = function (url) {
+      return url;
+    };
+
+    LocationStrategy.prototype.serialize = function (routePath) {
+      return "" + routePath.prefix + routePath.path + routePath.search + routePath.hash;
+    };
+
+    LocationStrategy.prototype.resolve = function (url, target) {
+      var e_1, _a;
+
+      if (target === void 0) {
+        target = {};
+      }
+
+      var prefix = '';
+      var path = '';
+      var query = '';
+      var search = '';
+      var hash = '';
+      var segments;
+      var params;
+      var regExp = /^([^\?|\#]*)?(\?[^\#]*)?(\#[^\#]*?)?$/gm;
+      var matches = url.matchAll(regExp);
+
+      try {
+        for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
+          var match = matches_1_1.value;
+          var g1 = match[1];
+          var g2 = match[2];
+          var g3 = match[3];
+
+          if (g1) {
+            path = g1;
+          }
+
+          if (g2) {
+            query = g2;
+          }
+
+          if (g3) {
+            hash = g3;
+          }
+        }
+      } catch (e_1_1) {
+        e_1 = {
+          error: e_1_1
+        };
+      } finally {
+        try {
+          if (matches_1_1 && !matches_1_1.done && (_a = matches_1.return)) _a.call(matches_1);
+        } finally {
+          if (e_1) throw e_1.error;
+        }
+      }
+
+      prefix = prefix;
+      path = path;
+      query = query;
+      hash = hash.substring(1, hash.length);
+      search = query.substring(1, query.length);
+      segments = path.split('/').filter(function (x) {
+        return x !== '';
+      });
+      params = {};
+      target.prefix = prefix;
+      target.path = path;
+      target.query = query;
+      target.hash = hash;
+      target.search = search;
+      target.segments = segments;
+      target.params = params; // console.log('resolvePath_', url, prefix, path, query, search, hash, segments, params);
+
+      return target;
+    };
+
+    LocationStrategy.prototype.resolveParams = function (path, routeSegments) {
+      var _this = this;
+
+      var segments = path.split('/').filter(function (x) {
+        return x !== '';
+      });
+      var params = {};
+      routeSegments.forEach(function (segment, index) {
+        // console.log('segment.params', segment.params);
+        var keys = Object.keys(segment.params);
+
+        if (keys.length) {
+          params[keys[0]] = _this.decodeParams(segments[index]);
+        }
+      });
+      return params;
+    };
+
+    LocationStrategy.prototype.encodeParams = function (value) {
+      var encoded;
+
+      if (typeof value === 'object') {
+        encoded = rxcomp__default.Serializer.encode(value, [rxcomp__default.encodeJson, rxcomp__default.encodeBase64, encodeParam]);
+      } else if (typeof value === 'number') {
+        encoded = value.toString();
+      }
+
+      return encoded;
+    };
+
+    LocationStrategy.prototype.decodeParams = function (value) {
+      var decoded = value;
+
+      if (value.indexOf(';') === 0) {
+        try {
+          decoded = rxcomp__default.Serializer.decode(value, [decodeParam, rxcomp__default.decodeBase64, rxcomp__default.decodeJson]);
+        } catch (error) {
+          decoded = value;
+        }
+      } else if (Number(value).toString() === value) {
+        decoded = Number(value);
+      }
+
+      return decoded;
+    };
+
+    LocationStrategy.prototype.encodeSegment = function (value) {
+      return this.encodeString(value).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%26/gi, '&');
+    };
+
+    LocationStrategy.prototype.decodeSegment = function (value) {
+      return this.decodeString(value.replace(/%28/g, '(').replace(/%29/g, ')').replace(/\&/gi, '%26'));
+    };
+
+    LocationStrategy.prototype.encodeString = function (value) {
+      return encodeURIComponent(value).replace(/%40/g, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',');
+    };
+
+    LocationStrategy.prototype.decodeString = function (value) {
+      return decodeURIComponent(value.replace(/\@/g, '%40').replace(/\:/gi, '%3A').replace(/\$/g, '%24').replace(/\,/gi, '%2C'));
+    };
+
+    LocationStrategy.prototype.getPath = function (url) {
+      return url;
+    };
+
+    LocationStrategy.prototype.getUrl = function (url, params) {
+      return "" + url + (params ? '?' + params.toString() : '');
+    };
+
+    LocationStrategy.prototype.pushState = function (url, snapshot, popped) {
+      if (LocationStrategy.historySupported()) {
+        // url = this.getUrl(url, params);
+        // !!!
+        // const state = params ? params.toString() : '';
+        // console.log(state);
+        // if (popped) {
+        // history.replaceState(undefined, title, url);
+        // } else {
+        if (!popped) {
+          try {
+            var state = this.snapshotToState(snapshot); // console.log('LocationStrategy.snapshotToState state', state);
+            // console.log(state);
+
+            var title = document.title; // you can pass null as string cause title is a DOMString!
+
+            history.pushState(state, title, url);
+          } catch (error) {
+            console.log('LocationStrategy.pushState.error', error);
+          }
+        }
+      } else if (this.historyRequired()) {
+        throw new Error('LocationStrategyError: history not supported!');
+      } else {
+        location.hash = url;
+      }
+    };
+
+    LocationStrategy.prototype.snapshotToState = function (snapshot, pool) {
+      if (pool === void 0) {
+        pool = [];
+      }
+
+      var state = undefined;
+
+      if (snapshot) {
+        if (pool.indexOf(snapshot) !== -1) {
+          state = snapshot.path;
+        } else {
+          pool.push(snapshot);
+          state = {};
+          state.path = snapshot.path;
+          state.initialUrl = snapshot.initialUrl;
+          state.urlAfterRedirects = snapshot.urlAfterRedirects;
+          state.extractedUrl = snapshot.extractedUrl;
+          state.remainUrl = snapshot.remainUrl;
+          state.childRoute = this.snapshotToState(snapshot.childRoute, pool);
+          state.previousRoute = this.snapshotToState(snapshot.previousRoute, pool);
+          state.data = snapshot.data;
+          state.params = snapshot.params;
+          state.queryParams = snapshot.queryParams;
+        }
+      }
+
+      return state;
+    };
+
+    LocationStrategy.prototype.stateToSnapshot = function (routes, state, pool) {
+      if (pool === void 0) {
+        pool = [];
+      }
+
+      var snapshot;
+
+      if (state) {
+        var route = routes.find(function (r) {
+          return r.path = state.path;
+        });
+
+        if (route) {
+          if (typeof state === 'string') {
+            snapshot = pool.find(function (x) {
+              return x.path === state;
+            });
+          } else {
+            snapshot = new routeSnapshot.RouteSnapshot(tslib_1.__assign(tslib_1.__assign({}, route), {
+              initialUrl: state.initialUrl,
+              urlAfterRedirects: state.urlAfterRedirects,
+              extractedUrl: state.extractedUrl,
+              remainUrl: state.remainUrl,
+              redirectTo: '',
+              data: state.data,
+              params: state.params,
+              queryParams: state.queryParams
+            }));
+            pool.push(snapshot);
+            snapshot.childRoute = this.stateToSnapshot(routes, state.childRoute, pool);
+            snapshot.previousRoute = this.stateToSnapshot(routes, state.previousRoute, pool);
+          }
+
+          route.snapshot = snapshot;
+        }
+      }
+
+      return snapshot;
+    };
+
+    LocationStrategy.prototype.historyRequired = function () {
+      return true;
+    };
+
+    LocationStrategy.historySupported = function () {
+      return typeof rxcomp__default.WINDOW.history !== 'undefined' && typeof rxcomp__default.WINDOW.history.pushState === 'function'; // return isPlatformBrowser && typeof history !== 'undefined' && typeof history.pushState === 'function';
+    };
+
+    return LocationStrategy;
+  }();
+
+  exports.LocationStrategy = LocationStrategy;
+
+  var LocationStrategyPath =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(LocationStrategyPath, _super);
+
+    function LocationStrategyPath() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return LocationStrategyPath;
+  }(LocationStrategy);
+
+  exports.LocationStrategyPath = LocationStrategyPath;
+
+  var LocationStrategyHash =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(LocationStrategyHash, _super);
+
+    function LocationStrategyHash() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    LocationStrategyHash.prototype.serializeLink = function (routerLink) {
+      var _this = this;
+
+      var url = (Array.isArray(routerLink) ? routerLink : [routerLink]).map(function (x) {
+        return typeof x === 'string' ? x : _this.encodeParams(x);
+      }).join('/');
+      return this.serializeUrl(url);
+    };
+
+    LocationStrategyHash.prototype.serializeUrl = function (url) {
+      var path = this.resolve(url, {});
+      return this.serialize(path);
+    };
+
+    LocationStrategyHash.prototype.serialize = function (routePath) {
+      return "" + routePath.prefix + routePath.search + routePath.hash + routePath.path;
+    };
+
+    LocationStrategyHash.prototype.resolve = function (url, target) {
+      var e_2, _a;
+
+      if (target === void 0) {
+        target = {};
+      }
+
+      var prefix = '';
+      var path = '';
+      var query = '';
+      var search = '';
+      var hash = '#';
+      var segments;
+      var params;
+      var regExp = /^([^\?|\#]*)?(\?[^\#]*)?(\#.*)$/gm;
+      var matches = url.matchAll(regExp);
+
+      try {
+        for (var matches_2 = tslib_1.__values(matches), matches_2_1 = matches_2.next(); !matches_2_1.done; matches_2_1 = matches_2.next()) {
+          var match = matches_2_1.value;
+          var g1 = match[1];
+          var g2 = match[2];
+          var g3 = match[3];
+
+          if (g1) {
+            prefix = g1;
+          }
+
+          if (g2) {
+            query = g2;
+          }
+
+          if (g3) {
+            path = g3;
+          }
+        }
+      } catch (e_2_1) {
+        e_2 = {
+          error: e_2_1
+        };
+      } finally {
+        try {
+          if (matches_2_1 && !matches_2_1.done && (_a = matches_2.return)) _a.call(matches_2);
+        } finally {
+          if (e_2) throw e_2.error;
+        }
+      }
+
+      prefix = prefix;
+      path = path.substring(1, path.length);
+      hash = hash;
+      search = query.substring(1, query.length);
+      segments = path.split('/').filter(function (x) {
+        return x !== '';
+      });
+      params = {};
+      target.prefix = prefix;
+      target.path = path;
+      target.query = query;
+      target.hash = hash;
+      target.search = search;
+      target.segments = segments;
+      target.params = params; // console.log('resolvePath_', url, prefix, path, query, search, hash, segments, params);
+
+      return target;
+    };
+
+    LocationStrategyHash.prototype.getPath = function (url) {
+      if (url.indexOf("/#") === -1) {
+        return "/#" + url;
+      } else {
+        return url;
+      }
+    };
+
+    LocationStrategyHash.prototype.getUrl = function (url, params) {
+      return "" + (params ? '?' + params.toString() : '') + this.getPath(url);
+    };
+
+    LocationStrategyHash.prototype.historyRequired = function () {
+      return false;
+    };
+
+    return LocationStrategyHash;
+  }(LocationStrategy);
+
+  exports.LocationStrategyHash = LocationStrategyHash;
+
+  function encodeParam(value) {
+    return ";" + value;
+  }
+
+  exports.encodeParam = encodeParam;
+
+  function decodeParam(value) {
+    return value.substring(1, value.length);
+  }
+
+  exports.decodeParam = decodeParam;
+});var observable = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.isPromise = exports.asObservable = void 0;
+
+  function asObservable(args, callback) {
+    return rxjs__default.Observable.create(function (observer) {
+      var subscription;
+
+      try {
+        var result = callback.apply(void 0, tslib_1.__spread(args));
+
+        if (rxjs__default.isObservable(result)) {
+          subscription = result.subscribe(function (result) {
+            observer.next(result);
+            observer.complete();
+          });
+        } else if (isPromise(result)) {
+          result.then(function (result) {
+            observer.next(result);
+            observer.complete();
+          });
+        } else if (typeof result === 'function') {
+          observer.next(result());
+          observer.complete();
+        } else {
+          observer.next(result);
+          observer.complete();
+        }
+      } catch (error) {
+        observer.error(error);
+      }
+
+      return function () {
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+      };
+    });
+  }
+
+  exports.asObservable = asObservable;
+
+  function isPromise(object) {
+    return object instanceof Promise || typeof object === 'object' && 'then' in object && typeof object['then'] === 'function';
+  }
+
+  exports.isPromise = isPromise;
+});var routeActivators = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.mapCanActivateChild$_ = exports.mapCanActivate$_ = exports.mapCanLoad$_ = exports.mapCanDeactivate$_ = void 0;
+
+  function mapCanDeactivate$_(activator) {
+    return function canDeactivate$(component, currentRoute) {
+      return makeObserver$_(function () {
+        return activator.canDeactivate(component, currentRoute);
+      });
+    };
+  }
+
+  exports.mapCanDeactivate$_ = mapCanDeactivate$_;
+
+  function mapCanLoad$_(activator) {
+    return function canLoad$$(route, segments) {
+      return makeObserver$_(function () {
+        return activator.canLoad(route, segments);
+      });
+    };
+  }
+
+  exports.mapCanLoad$_ = mapCanLoad$_;
+
+  function mapCanActivate$_(activator) {
+    return function canActivate$(route) {
+      return makeObserver$_(function () {
+        return activator.canActivate(route);
+      });
+    };
+  }
+
+  exports.mapCanActivate$_ = mapCanActivate$_;
+
+  function mapCanActivateChild$_(activator) {
+    return function canActivateChild$(childRoute) {
+      return makeObserver$_(function () {
+        return activator.canActivateChild(childRoute);
+      });
+    };
+  }
+
+  exports.mapCanActivateChild$_ = mapCanActivateChild$_;
+
+  function makeObserver$_(callback) {
+    return rxjs__default.Observable.create(function (observer) {
+      var subscription;
+
+      try {
+        var result = callback();
+
+        if (rxjs__default.isObservable(result)) {
+          subscription = result.subscribe(function (result) {
+            observer.next(result);
+            observer.complete();
+          });
+        } else if (observable.isPromise(result)) {
+          result.then(function (result) {
+            observer.next(result);
+            observer.complete();
+          });
+        } else if (typeof result === 'boolean' || Array.isArray(result)) {
+          observer.next(result);
+          observer.complete();
+        } else {
+          observer.error(new Error('invalid value'));
+        }
+      } catch (error) {
+        observer.error(error);
+      }
+
+      return function () {
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+      };
+    });
+  }
+});var routeSegment = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.RouteSegment = void 0;
+
+  var RouteSegment =
+  /** @class */
+  function () {
+    function RouteSegment(path, params) {
+      if (params === void 0) {
+        params = {};
+      }
+
+      this.path = path;
+      this.params = params;
+    }
+
+    return RouteSegment;
+  }();
+
+  exports.RouteSegment = RouteSegment;
+});var route = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.Route = void 0;
+
+  var Route =
+  /** @class */
+  function () {
+    function Route(options) {
+      var e_1, _a;
+
+      var _this = this;
+
+      this.pathMatch = 'prefix';
+      this.relative = true;
+      this.canDeactivate = [];
+      this.canLoad = [];
+      this.canActivate = [];
+      this.canActivateChild = [];
+
+      if (options) {
+        Object.assign(this, options);
+        this.canDeactivate = options.canDeactivate ? options.canDeactivate.map(function (x) {
+          return routeActivators.mapCanDeactivate$_(x);
+        }) : [];
+        this.canLoad = options.canLoad ? options.canLoad.map(function (x) {
+          return routeActivators.mapCanLoad$_(x);
+        }) : [];
+        this.canActivate = options.canActivate ? options.canActivate.map(function (x) {
+          return routeActivators.mapCanActivate$_(x);
+        }) : [];
+        this.canActivateChild = options.canActivateChild ? options.canActivateChild.map(function (x) {
+          return routeActivators.mapCanActivateChild$_(x);
+        }) : [];
+      }
+
+      if (this.children) {
+        this.children = this.children.map(function (iRoute) {
+          var route = new Route(iRoute);
+          route.parent = _this;
+          return route;
+        });
+      }
+
+      var segments = [];
+
+      if (this.path === '**') {
+        segments.push(new routeSegment.RouteSegment(this.path));
+        this.matcher = new RegExp('^.*$');
+      } else {
+        var matchers = ["^(../|./|//|/)?"];
+        var regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
+        var matches = this.path.matchAll(regExp);
+
+        try {
+          for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
+            var match = matches_1_1.value;
+            var g1 = match[1];
+            var g2 = match[2];
+            var g3 = match[3];
+
+            if (g1) {
+              this.relative = !(g1 === '//' || g1 === '/');
+            } else if (g2) {
+              matchers.push(g2);
+              segments.push(new routeSegment.RouteSegment(g2));
+            } else if (g3) {
+              matchers.push('(\/[^\/]+)');
+              var param = {};
+              param[g3] = null;
+              segments.push(new routeSegment.RouteSegment('', param));
+            }
+          }
+        } catch (e_1_1) {
+          e_1 = {
+            error: e_1_1
+          };
+        } finally {
+          try {
+            if (matches_1_1 && !matches_1_1.done && (_a = matches_1.return)) _a.call(matches_1);
+          } finally {
+            if (e_1) throw e_1.error;
+          }
+        }
+
+        if (this.pathMatch === 'full') {
+          matchers.push('$');
+        }
+
+        var regexp = matchers.join('');
+        this.matcher = new RegExp(regexp);
+      }
+
+      this.segments = segments;
+    }
+
+    return Route;
+  }();
+
+  exports.Route = Route;
+});var routePath = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.RoutePath = void 0;
+
+  var RoutePath =
+  /** @class */
+  function () {
+    function RoutePath(url, routeSegments, snapshot, locationStrategy) {
+      if (url === void 0) {
+        url = '';
+      }
+
+      if (routeSegments === void 0) {
+        routeSegments = [];
+      }
+
+      this.prefix = '';
+      this.path = '';
+      this.query = '';
+      this.search = '';
+      this.hash = '';
+      this.locationStrategy = locationStrategy || new location_strategy.LocationStrategy();
+      this.url = url;
+      this.routeSegments = routeSegments;
+      this.route = snapshot;
+    }
+
+    Object.defineProperty(RoutePath.prototype, "url", {
+      get: function get() {
+        return this.url_;
+      },
+      set: function set(url) {
+        if (this.url_ !== url) {
+          this.locationStrategy.resolve(url, this);
+          this.url_ = this.locationStrategy.serialize(this);
+        }
+      },
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(RoutePath.prototype, "routeSegments", {
+      get: function get() {
+        return this.routeSegments_;
+      },
+      set: function set(routeSegments) {
+        if (this.routeSegments_ !== routeSegments) {
+          this.routeSegments_ = routeSegments;
+          this.params = this.locationStrategy.resolveParams(this.path, routeSegments);
+        }
+      },
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(RoutePath.prototype, "remainUrl", {
+      get: function get() {
+        return this.query + this.hash;
+      },
+      enumerable: false,
+      configurable: true
+    });
+    return RoutePath;
+  }();
+
+  exports.RoutePath = RoutePath;
+});var routerEvents = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.NavigationError = exports.NavigationCancel = exports.NavigationEnd = exports.RouteConfigLoadEnd = exports.RouteConfigLoadStart = exports.ChildActivationEnd = exports.ActivationEnd = exports.ResolveEnd = exports.ResolveStart = exports.GuardsCheckEnd = exports.ActivationStart = exports.ChildActivationStart = exports.GuardsCheckStart = exports.RoutesRecognized = exports.NavigationStart = exports.RouterEvent = void 0;
+
+  var RouterEvent =
+  /** @class */
+  function () {
+    function RouterEvent(options) {
+      if (options) {
+        Object.assign(this, options);
+      }
+
+      if (this.routerLink) {
+        this.url = Array.isArray(this.routerLink) ? this.routerLink.join('') : this.routerLink;
+      }
+    }
+
+    return RouterEvent;
+  }();
+
+  exports.RouterEvent = RouterEvent; // An event triggered when navigation starts.
+
+  var NavigationStart =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(NavigationStart, _super);
+
+    function NavigationStart() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return NavigationStart;
+  }(RouterEvent);
+
+  exports.NavigationStart = NavigationStart; // An event triggered when the Router parses the URL and the routes are recognized.
+
+  var RoutesRecognized =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RoutesRecognized, _super);
+
+    function RoutesRecognized() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return RoutesRecognized;
+  }(RouterEvent);
+
+  exports.RoutesRecognized = RoutesRecognized; // An event triggered at the start of the Guard phase of routing.
+
+  var GuardsCheckStart =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(GuardsCheckStart, _super);
+
+    function GuardsCheckStart() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return GuardsCheckStart;
+  }(RouterEvent);
+
+  exports.GuardsCheckStart = GuardsCheckStart; // An event triggered at the start of the child-activation part of the Resolve phase of routing.
+
+  var ChildActivationStart =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(ChildActivationStart, _super);
+
+    function ChildActivationStart() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return ChildActivationStart;
+  }(RouterEvent);
+
+  exports.ChildActivationStart = ChildActivationStart; // An event triggered at the start of the activation part of the Resolve phase of routing.
+
+  var ActivationStart =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(ActivationStart, _super);
+
+    function ActivationStart() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return ActivationStart;
+  }(RouterEvent);
+
+  exports.ActivationStart = ActivationStart; // An event triggered at the end of the Guard phase of routing.
+
+  var GuardsCheckEnd =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(GuardsCheckEnd, _super);
+
+    function GuardsCheckEnd() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return GuardsCheckEnd;
+  }(RouterEvent);
+
+  exports.GuardsCheckEnd = GuardsCheckEnd; // An event triggered at the the start of the Resolve phase of routing.
+
+  var ResolveStart =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(ResolveStart, _super);
+
+    function ResolveStart() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return ResolveStart;
+  }(RouterEvent);
+
+  exports.ResolveStart = ResolveStart; // An event triggered at the end of the Resolve phase of routing.
+
+  var ResolveEnd =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(ResolveEnd, _super);
+
+    function ResolveEnd() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return ResolveEnd;
+  }(RouterEvent);
+
+  exports.ResolveEnd = ResolveEnd; // An event triggered at the end of the activation part of the Resolve phase of routing.
+
+  var ActivationEnd =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(ActivationEnd, _super);
+
+    function ActivationEnd() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return ActivationEnd;
+  }(RouterEvent);
+
+  exports.ActivationEnd = ActivationEnd; // An event triggered at the end of the child-activation part of the Resolve phase of routing.
+
+  var ChildActivationEnd =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(ChildActivationEnd, _super);
+
+    function ChildActivationEnd() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return ChildActivationEnd;
+  }(RouterEvent);
+
+  exports.ChildActivationEnd = ChildActivationEnd; // An event triggered before the Router lazy loads a route configuration.
+
+  var RouteConfigLoadStart =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RouteConfigLoadStart, _super);
+
+    function RouteConfigLoadStart() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return RouteConfigLoadStart;
+  }(RouterEvent);
+
+  exports.RouteConfigLoadStart = RouteConfigLoadStart; // An event triggered after a route has been lazy loaded.
+
+  var RouteConfigLoadEnd =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RouteConfigLoadEnd, _super);
+
+    function RouteConfigLoadEnd() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return RouteConfigLoadEnd;
+  }(RouterEvent);
+
+  exports.RouteConfigLoadEnd = RouteConfigLoadEnd; // An event triggered when navigation ends successfully.
+
+  var NavigationEnd =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(NavigationEnd, _super);
+
+    function NavigationEnd() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return NavigationEnd;
+  }(RouterEvent);
+
+  exports.NavigationEnd = NavigationEnd; // An event triggered when navigation is canceled. This is due to a Route Guard returning false during navigation.
+
+  var NavigationCancel =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(NavigationCancel, _super);
+
+    function NavigationCancel() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return NavigationCancel;
+  }(RouterEvent);
+
+  exports.NavigationCancel = NavigationCancel; // An event triggered when navigation fails due to an unexpected error.
+
+  var NavigationError =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(NavigationError, _super);
+
+    function NavigationError() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    return NavigationError;
+  }(RouterEvent);
+
+  exports.NavigationError = NavigationError;
+  /*
+  NavigationStart {id: 1, url: '/test-a', navigationTrigger: 'imperative', restoredState: null, constructor: Object}
+  RoutesRecognized {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
+  GuardsCheckStart {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
+  ChildActivationStart {snapshot: ActivatedRouteSnapshot, constructor: Object}
+  ActivationStart {snapshot: ActivatedRouteSnapshot, constructor: Object}
+  GuardsCheckEnd {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, shouldActivate: true…}
+  ResolveStart {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
+  ResolveEnd {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
+  ActivationEnd {snapshot: ActivatedRouteSnapshot, constructor: Object}
+  ChildActivationEnd {snapshot: ActivatedRouteSnapshot, constructor: Object}
+  NavigationEnd {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', constructor: Object}
+  Scroll {routerEvent: NavigationEnd, position: null, anchor: null, constructor: Object}
+  */
+});var router_service = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var RouterService =
+  /** @class */
+  function () {
+    function RouterService() {}
+
+    Object.defineProperty(RouterService, "flatRoutes", {
+      get: function get() {
+        return getFlatRoutes_(this.routes);
+      },
+      enumerable: false,
+      configurable: true
+    });
+
+    RouterService.setRoutes = function (routes) {
+      this.routes = routes.map(function (x) {
+        return new route.Route(x);
+      }); // this.observe$ = makeObserve$_(this.routes, this.route$, this.events$, this.locationStrategy);
+
+      this.observe$ = this.makeObserve$();
+      return this;
+    };
+
+    RouterService.makeObserve$ = function () {
+      var routes = this.routes;
+      var route$ = this.route$;
+      var events$ = this.events$;
+      var locationStrategy = this.locationStrategy;
+      var currentRoute;
+      var currentEvent; // console.log('RouterService.WINDOW', WINDOW!!);
+
+      var stateEvents$ = rxcomp__default.isPlatformServer ? rxjs__default.EMPTY : rxjs__default.fromEvent(rxcomp__default.WINDOW, 'popstate').pipe(operators__default.map(function (event) {
+        currentEvent = event;
+        var routerLink = "" + document.location.pathname + document.location.search + document.location.hash;
+        /*
+        // !!! state to snapshot
+        const flatRoutes = getFlatRoutes_(routes);
+        flatRoutes.forEach(r => r.snapshot = undefined);
+        const snapshot: RouteSnapshot = locationStrategy.stateToSnapshot(flatRoutes, event.state) as RouteSnapshot;
+        // console.log('LocationStrategy.stateToSnapshot snapshot', snapshot);
+        // console.log('RouterService PopStateEvent', 'snapshot', snapshot, 'routes', flatRoutes.map(route => route.snapshot));
+        return new NavigationEnd({ route: snapshot, routerLink, url: routerLink, trigger: 'popstate' });
+        */
+
+        return new routerEvents.NavigationStart({
+          routerLink: routerLink,
+          trigger: 'popstate'
+        });
+      }), operators__default.shareReplay(1));
+      return rxjs__default.merge(stateEvents$, events$).pipe(operators__default.switchMap(function (event) {
+        currentEvent = event;
+
+        if (event instanceof routerEvents.GuardsCheckStart) {
+          return makeCanDeactivateResponse$_(events$, event, currentRoute).pipe(operators__default.switchMap(function (nextEvent) {
+            if (nextEvent instanceof routerEvents.NavigationCancel) {
+              return rxjs__default.of(nextEvent);
+            } else {
+              return makeCanLoadResponse$_(events$, event).pipe(operators__default.switchMap(function (nextEvent) {
+                if (nextEvent instanceof routerEvents.NavigationCancel) {
+                  return rxjs__default.of(nextEvent);
+                } else {
+                  return makeCanActivateChildResponse$_(events$, event);
+                }
+              }));
+            }
+          }));
+        } else if (event instanceof routerEvents.ChildActivationStart) {
+          return makeCanActivateResponse$_(events$, event);
+        } else {
+          return rxjs__default.of(event);
+        }
+      }), operators__default.tap(function (event) {
+        var _a, _b, _c;
+
+        currentEvent = event; // console.log('RouterEvent', event);
+
+        if (event instanceof routerEvents.NavigationStart) {
+          // console.log('NavigationStart', event.routerLink);
+          var routerLink = event.routerLink; // console.log('routerLink', routerLink);
+
+          var snapshot = void 0;
+          var initialUrl = void 0;
+          var routePath = RouterService.getPath(routerLink); // console.log(routePath, routePath.url);
+
+          initialUrl = routePath.url; // console.log('initialUrl', initialUrl);
+
+          var isRelative = initialUrl.indexOf('/') !== 0;
+
+          if (isRelative && currentRoute && ((_a = currentRoute.children) === null || _a === void 0 ? void 0 : _a.length)) {
+            snapshot = resolveRoutes_(routes, currentRoute.children, initialUrl, currentRoute);
+
+            if (snapshot) {
+              currentRoute.childRoute = snapshot;
+              snapshot.parent = currentRoute;
+              snapshot = currentRoute;
+            } // console.log('relative', currentRoute, snapshot, initialUrl);
+
+          } else {
+            snapshot = resolveRoutes_(routes, routes, initialUrl, currentRoute); // console.log('absolute');
+          }
+
+          if (snapshot) {
+            // console.log('RouterService.makeObserve$_', 'NavigationStart', snapshot);
+            currentRoute = snapshot;
+            events$.next(new routerEvents.RoutesRecognized(tslib_1.__assign(tslib_1.__assign({}, event), {
+              route: snapshot
+            })));
+          } else {
+            events$.next(new routerEvents.NavigationError(tslib_1.__assign(tslib_1.__assign({}, event), {
+              error: new Error('unknown route')
+            })));
+          }
+        } else if (event instanceof routerEvents.RoutesRecognized) {
+          // console.log('RoutesRecognized', event.route.component, event.route.initialUrl, event.route.extractedUrl, event.route.urlAfterRedirects);
+          events$.next(new routerEvents.GuardsCheckStart(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.GuardsCheckStart) {
+          // console.log('GuardsCheckStart', event);
+          events$.next(new routerEvents.ChildActivationStart(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.ChildActivationStart) {
+          // console.log('ChildActivationStart', event);
+          events$.next(new routerEvents.ActivationStart(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.ActivationStart) {
+          // console.log('ActivationStart', event);
+          events$.next(new routerEvents.GuardsCheckEnd(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.GuardsCheckEnd) {
+          // console.log('GuardsCheckEnd', event);
+          events$.next(new routerEvents.ResolveStart(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.ResolveStart) {
+          // console.log('ResolveStart', event);
+          events$.next(new routerEvents.ResolveEnd(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.ResolveEnd) {
+          // console.log('ResolveEnd', event);
+          events$.next(new routerEvents.ActivationEnd(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.ActivationEnd) {
+          // console.log('ActivationEnd', event);
+          events$.next(new routerEvents.ChildActivationEnd(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.ChildActivationEnd) {
+          // console.log('ChildActivationEnd', event);
+          events$.next(new routerEvents.RouteConfigLoadStart(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.RouteConfigLoadStart) {
+          // console.log('RouteConfigLoadStart', event);
+          events$.next(new routerEvents.RouteConfigLoadEnd(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.RouteConfigLoadEnd) {
+          // console.log('RouteConfigLoadEnd', event);
+          events$.next(new routerEvents.NavigationEnd(tslib_1.__assign({}, event)));
+        } else if (event instanceof routerEvents.NavigationEnd) {
+          // console.log('NavigationEnd', event);
+          var segments = [];
+          var source = event.route;
+
+          while (source != null) {
+            // console.log(source.params, source.data);
+            if ((_b = source.extractedUrl) === null || _b === void 0 ? void 0 : _b.length) {
+              segments.push(source.extractedUrl);
+            }
+
+            if (source.childRoute) {
+              source = source.childRoute;
+            } else {
+              if ((_c = source.remainUrl) === null || _c === void 0 ? void 0 : _c.length) {
+                segments[segments.length - 1] = segments[segments.length - 1] + source.remainUrl;
+              }
+
+              source = undefined;
+            }
+          }
+
+          var extractedUrl = segments.join('/').replace(/\/\//g, '/'); // console.log('NavigationEnd', event.route.extractedUrl, event.route);
+
+          clearRoutes_(routes, event.route);
+          locationStrategy.pushState(extractedUrl, event.route, event.trigger === 'popstate'); // pushState_(locationStrategy, extractedUrl, undefined, event.trigger === 'popstate');
+
+          route$.next(event.route);
+        } else if (event instanceof routerEvents.NavigationCancel) {
+          // console.log('NavigationCancel', event.reason, event.redirectTo);
+          if (event.redirectTo) {
+            // const routePath: RoutePath = RouterService.getPath(event.redirectTo);
+            events$.next(new routerEvents.NavigationStart({
+              routerLink: event.redirectTo,
+              trigger: 'imperative'
+            }));
+          }
+        } else if (event instanceof routerEvents.NavigationError) {
+          console.warn('RouterService NavigationError', event.error);
+        }
+      }), operators__default.catchError(function (error) {
+        return rxjs__default.of(new routerEvents.NavigationError(tslib_1.__assign(tslib_1.__assign({}, currentEvent || {}), {
+          error: error
+        })));
+      }), operators__default.shareReplay(1));
+    };
+
+    RouterService.setRouterLink = function (routerLink, extras) {
+      // console.log('RouterService.setRouterLink', routerLink);
+
+
+      this.events$.next(new routerEvents.NavigationStart({
+        routerLink: routerLink,
+        trigger: 'imperative'
+      }));
+    };
+
+    RouterService.navigate = function (routerLink, extras) {
+      // navigate(['/heroes', { id: heroId }]);
+      // console.log('RouterService.navigate', routerLink);
+
+
+      this.events$.next(new routerEvents.NavigationStart({
+        routerLink: routerLink,
+        trigger: 'imperative'
+      }));
+    };
+
+    RouterService.findRoute = function (routerLink) {
+      var initialUrl = this.locationStrategy.serializeLink(routerLink);
+      return this.findRouteByUrl(initialUrl);
+    };
+
+    RouterService.findRouteByUrl = function (initialUrl) {
+      var e_1, _a;
+
+      var routes = getFlatRoutes_(this.routes);
+      var resolvedRoute = null;
+      var lastMatcbesLength = Number.NEGATIVE_INFINITY;
+
+      try {
+        for (var routes_1 = tslib_1.__values(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
+          var route = routes_1_1.value;
+          var matches = initialUrl.match(route.matcher);
+
+          if (matches && (!resolvedRoute || matches[0].length > lastMatcbesLength)) {
+            lastMatcbesLength = matches[0].length;
+            resolvedRoute = route;
+          }
+        }
+      } catch (e_1_1) {
+        e_1 = {
+          error: e_1_1
+        };
+      } finally {
+        try {
+          if (routes_1_1 && !routes_1_1.done && (_a = routes_1.return)) _a.call(routes_1);
+        } finally {
+          if (e_1) throw e_1.error;
+        }
+      }
+
+      var urlAfterRedirects = initialUrl;
+
+      if (resolvedRoute && resolvedRoute.redirectTo) {
+        // const routePath: RoutePath = RouterService.getPath(resolvedRoute.redirectTo);
+        // urlAfterRedirects = routePath.url;
+        urlAfterRedirects = resolvedRoute.redirectTo;
+        resolvedRoute = this.findRouteByUrl(urlAfterRedirects);
+      } // console.log('RouterService.findRouteByUrl', resolvedRoute);
+
+
+      return resolvedRoute;
+    };
+
+    RouterService.getPath = function (routerLink) {
+      var _this = this;
+
+      if (routerLink === void 0) {
+        routerLink = [];
+      }
+
+      var lastPath = (Array.isArray(routerLink) ? routerLink : [routerLink]).map(function (x) {
+        return typeof x === 'string' ? x : _this.locationStrategy.encodeParams(x);
+      }).join('/');
+      var segments = [];
+      var routes = [];
+      var route = this.findRouteByUrl(lastPath);
+
+      if (route) {
+        var r = route === null || route === void 0 ? void 0 : route.parent;
+
+        while (r) {
+          segments.unshift.apply(segments, r.segments);
+          routes.unshift(r instanceof routeSnapshot.RouteSnapshot ? r : r.snapshot || r);
+          r = r.parent;
+        }
+
+        segments.push.apply(segments, (route === null || route === void 0 ? void 0 : route.segments) || []);
+        routes.push({
+          path: lastPath
+        });
+      }
+
+      var initialUrl = routes.map(function (r) {
+        return r instanceof routeSnapshot.RouteSnapshot ? r.extractedUrl : r.path;
+      }).join('/');
+      initialUrl = this.locationStrategy.getPath(initialUrl); // console.log('RouterService.getPath', initialUrl);
+
+      var routePath$1 = new routePath.RoutePath(initialUrl, segments, route || undefined, this.locationStrategy);
+      return routePath$1;
+    };
+
+    Object.defineProperty(RouterService, "locationStrategy", {
+      get: function get() {
+        if (this.locationStrategy_) {
+          return this.locationStrategy_;
+        } else {
+          return this.locationStrategy_ = new location_strategy.LocationStrategyPath();
+        }
+      },
+      enumerable: false,
+      configurable: true
+    });
+
+    RouterService.useLocationStrategy = function (locationStrategyFactory) {
+      this.locationStrategy_ = new locationStrategyFactory();
+    };
+
+    RouterService.routes = [];
+    RouterService.route$ = new rxjs__default.ReplaySubject(1);
+    RouterService.events$ = new rxjs__default.ReplaySubject(1);
+    return RouterService;
+  }();
+
+  exports.default = RouterService;
+
+  function getFlatRoutes_(routes) {
+    var reduceRoutes = function reduceRoutes(routes) {
+      return routes.reduce(function (p, c) {
+        p.push(c);
+        p.push.apply(p, reduceRoutes(c.children || []));
+        return p;
+      }, []);
+    };
+
+    return reduceRoutes(routes);
+  }
+
+  function getFlatSnapshots_(currentSnapshot) {
+    var snapshots = [currentSnapshot];
+    var childRoute = currentSnapshot.childRoute;
+
+    while (childRoute) {
+      snapshots.push(childRoute);
+      childRoute = childRoute.childRoute;
+    }
+
+    return snapshots;
+  }
+
+  function clearRoutes_(routes, currentSnapshot) {
+    var snapshots = getFlatSnapshots_(currentSnapshot);
+    var flatRoutes = getFlatRoutes_(routes);
+    flatRoutes.forEach(function (route) {
+      if (route.snapshot && snapshots.indexOf(route.snapshot) === -1) {
+        route.snapshot = undefined;
+      }
+      /* else {
+        console.log(route);
+      }*/
+
+    });
+  }
+
+  function resolveRoutes_(routes, childRoutes, initialUrl, previousRoute) {
+    var e_2, _a;
+
+    var resolvedSnapshot;
+
+    try {
+      for (var childRoutes_1 = tslib_1.__values(childRoutes), childRoutes_1_1 = childRoutes_1.next(); !childRoutes_1_1.done; childRoutes_1_1 = childRoutes_1.next()) {
+        var route = childRoutes_1_1.value;
+        var snapshot = resolveRoute_(routes, route, initialUrl, previousRoute);
+
+        if (snapshot) {
+          if (resolvedSnapshot) {
+            /*
+            if (snapshot.remainUrl.length < resolvedSnapshot.remainUrl.length) {
+                // console.log('RouterService.resolveRoutes_', snapshot.remainUrl.length, '<', resolvedSnapshot.remainUrl.length, snapshot.path, snapshot.remainUrl);
+            }
+            */
+            resolvedSnapshot = snapshot.remainUrl.length < resolvedSnapshot.remainUrl.length ? snapshot : resolvedSnapshot;
+          } else {
+            resolvedSnapshot = snapshot;
+          }
+        }
+      }
+    } catch (e_2_1) {
+      e_2 = {
+        error: e_2_1
+      };
+    } finally {
+      try {
+        if (childRoutes_1_1 && !childRoutes_1_1.done && (_a = childRoutes_1.return)) _a.call(childRoutes_1);
+      } finally {
+        if (e_2) throw e_2.error;
+      }
+    }
+
+    return resolvedSnapshot; // return childRoutes.reduce<RouteSnapshot | undefined>((p, route) => p || resolveRoute_(routes, route, initialUrl), undefined);
+  }
+
+  function resolveRoute_(routes, route, initialUrl, previousRoute) {
+    var _a; // console.log('resolveRoute_', initialUrl);
+
+
+    var urlAfterRedirects;
+    var extractedUrl = '';
+    var remainUrl = initialUrl;
+    var match = initialUrl.match(route.matcher); // console.log('RouterService.resolveRoute_', route.matcher, match?.length, initialUrl, '=>', route.path);
+
+    if (!match) {
+      // console.log('RouterService.resolveRoute_', initialUrl, '=>', route.path);
+      return undefined;
+    }
+
+    if (route.redirectTo) {
+      // console.log('RouterService.resolveRoute_', 'match', initialUrl, '=>', route.redirectTo, match);
+      var routePath_1 = RouterService.getPath(route.redirectTo);
+      return resolveRoutes_(routes, routes, routePath_1.url, previousRoute);
+    }
+    /* else {
+      // console.log('RouterService.resolveRoute_', 'match', initialUrl, '=>', route.path, match);
+    }*/
+
+
+    extractedUrl = match[0];
+    remainUrl = initialUrl.substring(match[0].length, initialUrl.length);
+    var routePath$1 = new routePath.RoutePath(extractedUrl, route.segments, undefined, RouterService.locationStrategy);
+    var params = routePath$1.params;
+    var snapshot = new routeSnapshot.RouteSnapshot(tslib_1.__assign(tslib_1.__assign({}, route), {
+      initialUrl: initialUrl,
+      urlAfterRedirects: urlAfterRedirects,
+      extractedUrl: extractedUrl,
+      remainUrl: remainUrl,
+      params: params
+    }));
+    snapshot.previousRoute = previousRoute;
+    route.snapshot = snapshot;
+
+    if (snapshot && snapshot.remainUrl.length && ((_a = route.children) === null || _a === void 0 ? void 0 : _a.length)) {
+      var childSnapshot = resolveRoutes_(routes, route.children, snapshot.remainUrl, previousRoute);
+      snapshot.childRoute = childSnapshot;
+
+      if (childSnapshot) {
+        childSnapshot.parent = snapshot;
+        snapshot.remainUrl = childSnapshot.remainUrl;
+      }
+    } // console.log('RouterService.resolveRoute_', snapshot.path, snapshot.extractedUrl, snapshot.remainUrl);
+
+
+    return snapshot;
+  }
+
+  function makeActivatorResponse$_(event, activators) {
+    // console.log('makeActivatorResponse$_', event);
+    return rxjs__default.combineLatest.apply(void 0, tslib_1.__spread(activators)).pipe(operators__default.map(function (values) {
+      var canActivate = values.reduce(function (p, c) {
+        return p === true ? c === true ? true : c : p;
+      }, true);
+
+      if (canActivate === true) {
+        return event;
+      } else {
+        var cancelEvent = tslib_1.__assign(tslib_1.__assign({}, event), {
+          reason: 'An activation guard has dismissed navigation to the route.'
+        });
+
+        if (canActivate !== false) {
+          var routePath = RouterService.getPath(canActivate);
+          cancelEvent.redirectTo = [routePath.url];
+        }
+
+        return new routerEvents.NavigationCancel(cancelEvent);
+      }
+    }));
+  }
+
+  function makeCanDeactivateResponse$_(events$, event, currentRoute) {
+    // console.log('makeCanDeactivateResponse$_', event);
+    if (event.route.canDeactivate && event.route.canDeactivate.length) {
+      var route = event.route;
+      var instance_1 = rxcomp__default.getContextByNode(event.route.element).instance;
+      return makeActivatorResponse$_(event, route.canDeactivate.map(function (x) {
+        return x(instance_1, currentRoute);
+      }));
+    } else {
+      return rxjs__default.of(event);
+    }
+  }
+
+  function makeCanLoadResponse$_(events$, event) {
+    // console.log('makeCanLoadResponse$_', event);
+    if (event.route.canLoad && event.route.canLoad.length) {
+      var route_2 = event.route;
+      return makeActivatorResponse$_(event, route_2.canLoad.map(function (x) {
+        return x(route_2, route_2.segments);
+      }));
+    } else {
+      return rxjs__default.of(event);
+    }
+  }
+
+  function makeCanActivateChildResponse$_(events$, event) {
+    // console.log('makeCanActivateChildResponse$_', event, event.route.childRoute);
+    var reduceChildRouteActivators_ = function reduceChildRouteActivators_(route, activators) {
+      // console.log('reduceChildRouteActivators_', route.canActivateChild, route.childRoute);
+      while (route != null && route.canActivateChild && route.canActivateChild.length && route.childRoute) {
+        var routeActivators = route.canActivateChild.map(function (x) {
+          return x(route.childRoute);
+        });
+        Array.prototype.push.apply(activators, routeActivators);
+        route = route.childRoute;
+      }
+
+      return activators;
+    };
+
+    var activators = reduceChildRouteActivators_(event.route, []); // console.log('makeCanActivateChildResponse$_', activators);
+
+    if (activators.length) {
+      return makeActivatorResponse$_(event, activators);
+    } else {
+      return rxjs__default.of(event);
+    }
+  }
+
+  function makeCanActivateResponse$_(events$, event) {
+    // console.log('makeCanActivateResponse$_', event);
+    if (event.route.canActivate && event.route.canActivate.length) {
+      var route_3 = event.route;
+      return makeActivatorResponse$_(event, route_3.canActivate.map(function (x) {
+        return x(route_3);
+      }));
+    } else {
+      return rxjs__default.of(event);
+    }
+  }
+});var routerLink_directive = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var router_service_1 = tslib_1.__importDefault(router_service);
+
+  var RouterLinkDirective =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RouterLinkDirective, _super);
+
+    function RouterLinkDirective() {
+      return _super !== null && _super.apply(this, arguments) || this;
+    }
+
+    Object.defineProperty(RouterLinkDirective.prototype, "routerLink", {
+      get: function get() {
+        return this.routerLink_;
+      },
+      set: function set(routerLink) {
+        this.routerLink_ = Array.isArray(routerLink) ? routerLink : [routerLink];
+        this.segments = this.getSegments(this.routerLink_);
+      },
+      enumerable: false,
+      configurable: true
+    });
+
+    RouterLinkDirective.prototype.getSegments = function (routerLink) {
+      // console.log('RouterLinkDirective.getSegments', routerLink);
+      var segments = [];
+      routerLink.forEach(function (item) {
+        var e_1, _a;
+
+        if (typeof item === 'string') {
+          var regExp = /([^:]+)|\:([^\/]+)/g;
+          var matches = item.matchAll(regExp);
+          var components = [];
+
+          try {
+            for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
+              var match = matches_1_1.value;
+              var g1 = match[1];
+              var g2 = match[2];
+
+              if (g1) {
+                components.push(g1);
+              } else if (g2) {
+                var param = {};
+                param[g2] = null;
+                components.push(param);
+              }
+            }
+          } catch (e_1_1) {
+            e_1 = {
+              error: e_1_1
+            };
+          } finally {
+            try {
+              if (matches_1_1 && !matches_1_1.done && (_a = matches_1.return)) _a.call(matches_1);
+            } finally {
+              if (e_1) throw e_1.error;
+            }
+          }
+        } else {
+          segments.push(new routeSegment.RouteSegment('', {}));
+        }
+      });
+      return segments;
+    };
+
+    RouterLinkDirective.prototype.onInit = function () {
+      // const { node, module } = getContext(this);
+      // console.log('RouterLinkDirective.onInit', this.routerLink, node, module);
+      this.routerLink$().pipe(operators__default.takeUntil(this.unsubscribe$)).subscribe();
+    };
+
+    RouterLinkDirective.prototype.routerLink$ = function () {
+      var _this = this;
+
+      var node = rxcomp__default.getContext(this).node;
+      return rxjs__default.fromEvent(node, 'click').pipe(operators__default.map(function (event) {
+        // console.log('RouterLinkDirective', event, this.routerLink);
+        // !!! skipLocationChange
+        var navigationExtras = {
+          skipLocationChange: _this.skipLocationChange,
+          replaceUrl: _this.replaceUrl,
+          state: _this.state
+        };
+        router_service_1.default.setRouterLink(_this.routerLink, navigationExtras);
+        event.preventDefault();
+        return false;
+      }));
+    };
+
+    RouterLinkDirective.prototype.onChanges = function () {
+      var node = rxcomp__default.getContext(this).node;
+      var routePath = router_service_1.default.getPath(this.routerLink_); // console.log('RouterLinkDirective.routePath', routePath);
+
+      node.setAttribute('href', routePath.url);
+    };
+
+    RouterLinkDirective.meta = {
+      selector: '[routerLink]',
+      inputs: ['routerLink']
+    };
+    return RouterLinkDirective;
+  }(rxcomp__default.Directive);
+
+  exports.default = RouterLinkDirective;
+  /*
+  get urlTree(): UrlTree {
+      return RouterService.createUrlTree(this.routerLink, {
+          relativeTo: this.route,
+          queryParams: this.queryParams,
+          fragment: this.fragment,
+          preserveQueryParams: this.preserve,
+          queryParamsHandling: this.queryParamsHandling,
+          preserveFragment: this.preserveFragment,
+      });
+  }
+  */
+});var routerLinkActive_directive = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var router_link_directive_1 = tslib_1.__importDefault(routerLink_directive);
+
+  var router_service_1 = tslib_1.__importDefault(router_service);
+
+  var RouterLinkActiveDirective =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RouterLinkActiveDirective, _super);
+
+    function RouterLinkActiveDirective() {
+      var _this = _super !== null && _super.apply(this, arguments) || this;
+
+      _this.keys = [];
+      return _this;
+    }
+
+    RouterLinkActiveDirective.prototype.onChanges = function () {
+      // console.log('RouterLinkActive.onChanges');
+      var node = rxcomp__default.getContext(this).node;
+      node.classList.remove.apply(node.classList, this.keys);
+      var keys = [];
+      var active = this.isActive();
+
+      if (active) {
+        var object = this.routerLinkActive;
+
+        if (typeof object === 'object') {
+          for (var key in object) {
+            if (object[key]) {
+              keys.push(key);
+            }
+          }
+        } else if (typeof object === 'string') {
+          keys = object.split(' ').filter(function (x) {
+            return x.length;
+          });
+        }
+      }
+
+      node.classList.add.apply(node.classList, keys);
+      this.keys = keys; // console.log('RouterLinkActive.onChanges', active, keys);
+    };
+
+    RouterLinkActiveDirective.prototype.isActive = function () {
+      var _a;
+
+      var path = router_service_1.default.getPath(this.host.routerLink);
+      var isActive = ((_a = path.route) === null || _a === void 0 ? void 0 : _a.snapshot) != null; // console.log('RouterLinkActive.isActive', isActive, path.route);
+
+      return isActive;
+    };
+
+    RouterLinkActiveDirective.meta = {
+      selector: '[routerLinkActive],[[routerLinkActive]]',
+      hosts: {
+        host: router_link_directive_1.default
+      },
+      inputs: ['routerLinkActive']
+    };
+    return RouterLinkActiveDirective;
+  }(rxcomp__default.Directive);
+
+  exports.default = RouterLinkActiveDirective;
+});var transition = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.transitionOnced = exports.transitionOnce = exports.transition$ = void 0; // !!! change boolean to void
+
+  function transition$(callback) {
+    return rxjs__default.Observable.create(function (observer) {
+      // let subscription: Subscription;
+      try {
+        if (rxcomp__default.isPlatformBrowser) {
+          callback(function (result) {
+            observer.next(result);
+            observer.complete();
+          });
+        } else {
+          observer.next(true);
+          observer.complete();
+        }
+      } catch (error) {
+        observer.error(error);
+      }
+      /*
+      return () => {
+          if (subscription) {
+              subscription.unsubscribe();
+          }
+      }
+      */
+
+    });
+  }
+
+  exports.transition$ = transition$; // !!! should make transition specific?
+
+  function transitionOnce() {
+    sessionStorageSet_('rxcomp_transition_once_', true);
+  }
+
+  exports.transitionOnce = transitionOnce;
+
+  function transitionOnced() {
+    return sessionStorageGet_('rxcomp_transition_once_');
+  }
+
+  exports.transitionOnced = transitionOnced;
+  var MEMORY = {};
+
+  function sessionStorageGet_(key) {
+    var value;
+
+    try {
+      var storage = rxcomp__default.WINDOW.sessionStorage;
+      value = storage.getItem(key) || null;
+    } catch (error) {
+      value = MEMORY[key];
+    }
+
+    return value;
+  }
+
+  function sessionStorageSet_(key, value) {
+    try {
+      var storage = rxcomp__default.WINDOW.sessionStorage;
+      storage.setItem(key, value);
+    } catch (error) {
+      MEMORY[key] = value;
+    }
+  }
+});var routerOutlet_structure = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var view_1 = tslib_1.__importStar(view);
+
+  var router_service_1 = tslib_1.__importDefault(router_service);
+
+  var RouterOutletStructure =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RouterOutletStructure, _super);
+
+    function RouterOutletStructure() {
+      var _this = _super !== null && _super.apply(this, arguments) || this;
+
+      _this.route$_ = new rxjs__default.ReplaySubject(1);
+      return _this;
+    }
+
+    Object.defineProperty(RouterOutletStructure.prototype, "route", {
+      get: function get() {
+        return this.route_;
+      },
+      enumerable: false,
+      configurable: true
+    });
+
+    RouterOutletStructure.prototype.onInit = function () {
+      var _this = this;
+
+      var _a;
+
+      this.route$().pipe(operators__default.switchMap(function (snapshot) {
+        return _this.factory$(snapshot);
+      }), operators__default.takeUntil(this.unsubscribe$)).subscribe(function () {// console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
+      });
+
+      if (this.host) {
+        this.route$_.next((_a = this.host.route) === null || _a === void 0 ? void 0 : _a.childRoute);
+      }
+    };
+
+    RouterOutletStructure.prototype.onChanges = function () {
+      var _a;
+
+      if (this.host) {
+        this.route$_.next((_a = this.host.route) === null || _a === void 0 ? void 0 : _a.childRoute);
+      }
+    };
+
+    RouterOutletStructure.prototype.route$ = function () {
+      var _this = this;
+
+      var source = this.host ? this.route$_ : router_service_1.default.route$;
+      return source.pipe(operators__default.filter(function (snapshot) {
+        _this.route_ = snapshot; // !!!
+
+        if (_this.snapshot_ && snapshot && _this.snapshot_.component === snapshot.component) {
+          _this.snapshot_.next(snapshot);
+
+          return false;
+        } else {
+          _this.snapshot_ = snapshot;
+          return true;
+        }
+      }));
+    };
+
+    RouterOutletStructure.prototype.factory$ = function (snapshot) {
+      var _this = this;
+
+      var _a = rxcomp__default.getContext(this),
+          module = _a.module,
+          node = _a.node;
+
+      var factory = snapshot === null || snapshot === void 0 ? void 0 : snapshot.component;
+
+      if (this.factory_ !== factory) {
+        this.factory_ = factory;
+        return this.onLeave$_(snapshot, this.element, this.instance).pipe(operators__default.tap(function () {
+          if (_this.element) {
+            _this.element.parentNode.removeChild(_this.element);
+
+            module.remove(_this.element, _this);
+            _this.element = undefined;
+            _this.instance = undefined;
+          }
+        }), operators__default.switchMap(function () {
+          if (snapshot && factory && factory.meta.template) {
+            var element_1 = document.createElement('div');
+            element_1.innerHTML = factory.meta.template;
+
+            if (element_1.children.length === 1) {
+              element_1 = element_1.firstElementChild;
+            }
+
+            node.appendChild(element_1);
+            var instance_1 = module.makeInstance(element_1, factory, factory.meta.selector, _this, undefined, {
+              route: snapshot
+            });
+            module.compile(element_1, instance_1);
+            _this.instance = instance_1;
+            _this.element = element_1;
+            snapshot.element = element_1;
+            return _this.onOnce$_(snapshot, element_1, instance_1).pipe(operators__default.switchMap(function () {
+              return _this.onEnter$_(snapshot, element_1, instance_1);
+            }));
+          } else {
+            return rxjs__default.of(void 0);
+          }
+        }));
+      } else {
+        return rxjs__default.of(void 0);
+      }
+    };
+    /*
+    private onEnter$__(element?: IElement, instance?: Component): Observable<boolean> {
+        if (instance instanceof View && element) {
+            return asObservable([element], instance.onEnter);
+        } else {
+            return of(true);
+        }
+    }
+    private onLeave$__(element?: IElement, instance?: Component): Observable<boolean> {
+        if (instance instanceof View && element) {
+            return asObservable([element], instance.onLeave);
+        } else {
+            return of(true);
+        }
+    }
+    */
+
+
+    RouterOutletStructure.prototype.onOnce$_ = function (snapshot, element, instance) {
+      if (!transition.transitionOnced() && instance instanceof view_1.default && element) {
+        transition.transitionOnce();
+        var factory = instance.constructor;
+        var transition$1 = factory.transitions.find(function (x) {
+          var _a;
+
+          return x instanceof view_1.OnceTransition && x.matcher((_a = snapshot.previousRoute) === null || _a === void 0 ? void 0 : _a.path);
+        });
+        return transition$1 ? observable.asObservable([element, snapshot.previousRoute], transition$1.callback.bind(instance)) : rxjs__default.of(void 0);
+      } else {
+        return rxjs__default.of(void 0);
+      }
+    };
+
+    RouterOutletStructure.prototype.onEnter$_ = function (snapshot, element, instance) {
+      if (instance instanceof view_1.default && element) {
+        var factory = instance.constructor;
+        var transition = factory.transitions.find(function (x) {
+          var _a;
+
+          return x instanceof view_1.EnterTransition && x.matcher((_a = snapshot.previousRoute) === null || _a === void 0 ? void 0 : _a.path);
+        });
+        return transition ? observable.asObservable([element, snapshot.previousRoute], transition.callback.bind(instance)) : rxjs__default.of(void 0);
+      } else {
+        return rxjs__default.of(void 0);
+      }
+    };
+
+    RouterOutletStructure.prototype.onLeave$_ = function (snapshot, element, instance) {
+      if (instance instanceof view_1.default && element) {
+        var factory = instance.constructor;
+        var transition = factory.transitions.find(function (x) {
+          return x instanceof view_1.LeaveTransition && x.matcher(snapshot === null || snapshot === void 0 ? void 0 : snapshot.path);
+        });
+        return transition ? observable.asObservable([element, snapshot], transition.callback.bind(instance)) : rxjs__default.of(void 0);
+      } else {
+        return rxjs__default.of(void 0);
+      }
+    };
+
+    RouterOutletStructure.meta = {
+      selector: 'router-outlet,[router-outlet]',
+      hosts: {
+        host: RouterOutletStructure
+      }
+    };
+    return RouterOutletStructure;
+  }(rxcomp__default.Structure);
+
+  exports.default = RouterOutletStructure;
+});var router_module = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var router_link_active_directive_1 = tslib_1.__importDefault(routerLinkActive_directive);
+
+  var router_link_directive_1 = tslib_1.__importDefault(routerLink_directive);
+
+  var router_outlet_structure_1 = tslib_1.__importDefault(routerOutlet_structure);
+
+  var router_service_1 = tslib_1.__importDefault(router_service);
+
+  var factories = [router_outlet_structure_1.default, router_link_directive_1.default, router_link_active_directive_1.default];
+  var pipes = [];
+  /**
+   *  RouterModule Class.
+   * @example
+   * export default class AppModule extends Module {}
+   *
+   * AppModule.meta = {
+   *  imports: [
+   *   CoreModule,
+   *   RouterModule.forRoot([
+   *    { path: '', redirectTo: '/index', pathMatch: 'full' },
+   *    { path: 'index', component: IndexComponent, data: { title: 'Index' } }
+   *   ])
+   *  ],
+   *  declarations: [
+   *   IndexComponent
+   *  ],
+   *  bootstrap: AppComponent,
+   * };
+   * @extends Module
+   */
+
+  var RouterModule =
+  /** @class */
+  function (_super) {
+    tslib_1.__extends(RouterModule, _super);
+
+    function RouterModule() {
+      var _this = _super.call(this) || this; // console.log('RouterModule');
+
+
+      router_service_1.default.observe$.pipe(operators__default.tap(function (event) {
+        var _a;
+
+        if (event instanceof routerEvents.NavigationEnd || event instanceof routerEvents.NavigationCancel || event instanceof routerEvents.NavigationError) {
+          if ((_a = _this.instances) === null || _a === void 0 ? void 0 : _a.length) {
+            var root = _this.instances[0];
+            root.pushChanges();
+          }
+        }
+      }), operators__default.takeUntil(_this.unsubscribe$)).subscribe();
+      router_service_1.default.navigate("" + (location.pathname === '' ? '/' : location.pathname) + location.search + location.hash);
+      return _this;
+    }
+
+    RouterModule.forRoot = function (routes) {
+      router_service_1.default.setRoutes(routes);
+      return this;
+    };
+
+    RouterModule.useStrategy = function (locationStrategyType) {
+      router_service_1.default.useLocationStrategy(locationStrategyType);
+      return this;
+    };
+
+    RouterModule.meta = {
+      declarations: tslib_1.__spread(factories, pipes),
+      exports: tslib_1.__spread(factories, pipes)
+    };
+    return RouterModule;
+  }(rxcomp__default.Module);
+
+  exports.default = RouterModule;
+});var router_types = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.RouteLocationStrategy = void 0;
+  var RouteLocationStrategy;
+
+  (function (RouteLocationStrategy) {
+    RouteLocationStrategy["Path"] = "path";
+    RouteLocationStrategy["Hash"] = "hash";
+  })(RouteLocationStrategy = exports.RouteLocationStrategy || (exports.RouteLocationStrategy = {}));
+});var rxcompRouter = createCommonjsModule(function (module, exports) {
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(exports, "View", {
+    enumerable: true,
+    get: function get() {
+      return view.default;
+    }
+  });
+  Object.defineProperty(exports, "EnterTransition", {
+    enumerable: true,
+    get: function get() {
+      return view.EnterTransition;
+    }
+  });
+  Object.defineProperty(exports, "LeaveTransition", {
+    enumerable: true,
+    get: function get() {
+      return view.LeaveTransition;
+    }
+  });
+  Object.defineProperty(exports, "Transition", {
+    enumerable: true,
+    get: function get() {
+      return view.Transition;
+    }
+  });
+  Object.defineProperty(exports, "LocationStrategy", {
+    enumerable: true,
+    get: function get() {
+      return location_strategy.LocationStrategy;
+    }
+  });
+  Object.defineProperty(exports, "LocationStrategyHash", {
+    enumerable: true,
+    get: function get() {
+      return location_strategy.LocationStrategyHash;
+    }
+  });
+  Object.defineProperty(exports, "LocationStrategyPath", {
+    enumerable: true,
+    get: function get() {
+      return location_strategy.LocationStrategyPath;
+    }
+  });
+  Object.defineProperty(exports, "asObservable", {
+    enumerable: true,
+    get: function get() {
+      return observable.asObservable;
+    }
+  });
+  Object.defineProperty(exports, "isPromise", {
+    enumerable: true,
+    get: function get() {
+      return observable.isPromise;
+    }
+  });
+  Object.defineProperty(exports, "Route", {
+    enumerable: true,
+    get: function get() {
+      return route.Route;
+    }
+  });
+  Object.defineProperty(exports, "RoutePath", {
+    enumerable: true,
+    get: function get() {
+      return routePath.RoutePath;
+    }
+  });
+  Object.defineProperty(exports, "RouteSegment", {
+    enumerable: true,
+    get: function get() {
+      return routeSegment.RouteSegment;
+    }
+  });
+  Object.defineProperty(exports, "RouteSnapshot", {
+    enumerable: true,
+    get: function get() {
+      return routeSnapshot.RouteSnapshot;
+    }
+  });
+  Object.defineProperty(exports, "RouterModule", {
+    enumerable: true,
+    get: function get() {
+      return router_module.default;
+    }
+  });
+  Object.defineProperty(exports, "RouteLocationStrategy", {
+    enumerable: true,
+    get: function get() {
+      return router_types.RouteLocationStrategy;
+    }
+  });
+  Object.defineProperty(exports, "ActivationEnd", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.ActivationEnd;
+    }
+  });
+  Object.defineProperty(exports, "ActivationStart", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.ActivationStart;
+    }
+  });
+  Object.defineProperty(exports, "ChildActivationEnd", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.ChildActivationEnd;
+    }
+  });
+  Object.defineProperty(exports, "ChildActivationStart", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.ChildActivationStart;
+    }
+  });
+  Object.defineProperty(exports, "GuardsCheckEnd", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.GuardsCheckEnd;
+    }
+  });
+  Object.defineProperty(exports, "GuardsCheckStart", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.GuardsCheckStart;
+    }
+  });
+  Object.defineProperty(exports, "NavigationCancel", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.NavigationCancel;
+    }
+  });
+  Object.defineProperty(exports, "NavigationEnd", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.NavigationEnd;
+    }
+  });
+  Object.defineProperty(exports, "NavigationError", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.NavigationError;
+    }
+  });
+  Object.defineProperty(exports, "NavigationStart", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.NavigationStart;
+    }
+  });
+  Object.defineProperty(exports, "ResolveEnd", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.ResolveEnd;
+    }
+  });
+  Object.defineProperty(exports, "ResolveStart", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.ResolveStart;
+    }
+  });
+  Object.defineProperty(exports, "RouteConfigLoadEnd", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.RouteConfigLoadEnd;
+    }
+  });
+  Object.defineProperty(exports, "RouteConfigLoadStart", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.RouteConfigLoadStart;
+    }
+  });
+  Object.defineProperty(exports, "RouterEvent", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.RouterEvent;
+    }
+  });
+  Object.defineProperty(exports, "RoutesRecognized", {
+    enumerable: true,
+    get: function get() {
+      return routerEvents.RoutesRecognized;
+    }
+  });
+  Object.defineProperty(exports, "RouterLinkActiveDirective", {
+    enumerable: true,
+    get: function get() {
+      return routerLinkActive_directive.default;
+    }
+  });
+  Object.defineProperty(exports, "RouterLinkDirective", {
+    enumerable: true,
+    get: function get() {
+      return routerLink_directive.default;
+    }
+  });
+  Object.defineProperty(exports, "RouterOutletStructure", {
+    enumerable: true,
+    get: function get() {
+      return routerOutlet_structure.default;
+    }
+  });
+  Object.defineProperty(exports, "RouterService", {
+    enumerable: true,
+    get: function get() {
+      return router_service.default;
+    }
+  });
+  Object.defineProperty(exports, "transition$", {
+    enumerable: true,
+    get: function get() {
+      return transition.transition$;
+    }
+  });
+  Object.defineProperty(exports, "transitionOnce", {
+    enumerable: true,
+    get: function get() {
+      return transition.transitionOnce;
+    }
+  });
+  Object.defineProperty(exports, "transitionOnced", {
+    enumerable: true,
+    get: function get() {
+      return transition.transitionOnced;
+    }
+  });
+});var environmentServed = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
@@ -1750,7 +4672,17 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 
   _proto.onGuidedTourAccess = function onGuidedTourAccess() {
     UserService.logout$().pipe(operators.first()).subscribe(function () {
+      rxcompRouter.RouterService.setRouterLink('/tour-guidato'); // RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
+
+      /*
+      static navigate(routerLink: RouterLink, extras: INavigationExtras = { skipLocationChange: false }): void {
+      	// navigate(['items'], { relativeTo: this.route });
+      	// navigate(['/heroes', { id: heroId }]);
+      	// console.log('RouterService.navigate', routerLink);
+      	this.events$.next(new NavigationStart({ routerLink, trigger: 'imperative' }));
+      }
       window.location.href = environment.url.guidedTour;
+      */
     });
   };
 
@@ -1953,7 +4885,10 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   return AccessComponent;
 }(rxcomp.Component);
 AccessComponent.meta = {
-  selector: '[access-component]'
+  selector: '[access-component]',
+  template:
+  /*html*/
+  "\n\t\t<div class=\"page\">\n\t\t\t<!-- background -->\n\t\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t\t</div>\n\t\t\t<!-- access -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'access'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_title' | label\"></div>\n\t\t\t\t\t\t<div *if=\"'selfService' | flag\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onSelfServiceTourRequest($event)\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_tour' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_or' | label\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div *if=\"'guidedTourRequest' | flag\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onGuidedTourRequest($event)\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_guided_tour' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_has_meeting_id' | label\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onGuidedTourAccess($event)\">\n\t\t\t\t\t\t\t<span [innerHTML]=\"'access_guided_tour_cta' | label\"></span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<button type=\"button\" class=\"btn--absolute\" (click)=\"onLogin($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'access_cta' | label\"></span> <svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<!-- guided-tour -->\n\t\t\t<div class=\"ui ui--info\" *if=\"state.status == 'self-service-tour' || state.status == 'guided-tour'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t\t<div class=\"title\" *if=\"state.status == 'self-service-tour'\" [innerHTML]=\"'access_fill_fields' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"title\" *if=\"state.status == 'guided-tour'\" [innerHTML]=\"'access_guided_tour_request' | label\"></div>\n\t\t\t\t\t\t\t<!-- controls -->\n\t\t\t\t\t\t\t<div controls [formGroup]=\"form\" [fields]=\"fields\"></div>\n\t\t\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'access_take_part' | label\"></div>\n\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t\t\t<span *if=\"!form.submitted\" [innerHTML]=\"'access_send' | label\"></span>\n\t\t\t\t\t\t\t\t<span *if=\"form.submitted\" [innerHTML]=\"'access_sent' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- guided-tour success -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'guided-tour-success'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_request_sent' | label\"></div>\n\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_info_request' | label\"></div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- login -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_login' | label\"></div>\n\t\t\t\t\t\t\t<input name=\"checkField\" [formControl]=\"controls.checkField\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t\t\t\t\t\t<div control-text [control]=\"controls.username\" [label]=\"'access_username' | label\"></div>\n\t\t\t\t\t\t\t<div control-password [control]=\"controls.password\" [label]=\"'access_password' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'access_cta' | label\"></div>\n\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_cta' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"btn--logo\" (click)=\"onBack($event)\">\n\t\t\t\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t\t\t\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</div>\n\t\t\t<!-- credits -->\n\t\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t\t<!-- language -->\n\t\t\t<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n\t\t</div>\n\t"
 };var EmojiService = /*#__PURE__*/function () {
   function EmojiService() {}
 
@@ -5002,7 +7937,10 @@ var AgoraChatComponent = /*#__PURE__*/function (_Component) {
 }(rxcomp.Component);
 AgoraChatComponent.meta = {
   selector: '[agora-chat]',
-  outputs: ['close']
+  outputs: ['close'],
+  template:
+  /* html */
+  "\n\t<div class=\"group--scrollview\" [class]=\"'rows--' + rows\">\n\t\t<div class=\"group--virtual\" *virtual=\"let item of groupedMessages\" [mode]=\"4\" [width]=\"350\" [gutter]=\"0\" [reverse]=\"true\">\n\t\t\t<!-- serve un nodo figlio -->\n\t\t\t<div class=\"listing__item message\" [class]=\"{ me: item.me, typing: item.typing }\">\n\t\t\t\t<div class=\"message__avatar\" [title]=\"item.name\"><span [innerHTML]=\"item.shortName\"></span></div>\n\t\t\t\t<div class=\"message__content\">\n\t\t\t\t\t<div [innerHTML]=\"item.message | message\"></div>\n\t\t\t\t\t<div class=\"typing-indicator\">\n\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t<span></span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--message\" [class]=\"'rows--' + rows\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.message.validators.length, 'addon': controls.message.valid }\">\n\t\t\t\t<!-- <input type=\"text\" class=\"control--text\" [formControl]=\"controls.message\" [placeholder]=\"'bhere_write_a_message' | label\" /> -->\n\t\t\t\t<button type=\"button\" class=\"control--pre\" (click)=\"onToggleEmoji()\">\n\t\t\t\t\t<svg class=\"emoji\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#emoji\"></use></svg>\n\t\t\t\t</button>\n\t\t\t\t<textarea class=\"control--text\" [formControl]=\"controls.message\" [placeholder]=\"'bhere_write_a_message' | label\" rows=\"1\" (keydown)=\"onKeyDown($event)\"></textarea>\n\t\t\t\t<button type=\"submit\" class=\"control--addon\">\n\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#send\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<div class=\"group--close\">\n\t\t<button type=\"button\" class=\"btn--close\" [title]=\"'title_close' | label\" (click)=\"onClose($event)\">\n\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t</button>\n\t</div>\n\t<div class=\"group--emoji\" [class]=\"'rows--' + rows\" agora-chat-emoji (emoji)=\"onSelectEmoji($event)\" (close)=\"onToggleEmoji()\" *if=\"showEmoji\">\n\t\t<div class=\"group--virtual\" *virtual=\"let item of items\" [mode]=\"1\" [width]=\"40\" [gutter]=\"10\" [reverse]=\"true\">\n\t\t\t<!-- serve un nodo figlio -->\n\t\t\t<div class=\"listing__item emoji\">\n\t\t\t\t<button type=\"button\" class=\"btn--emoji\" (click)=\"onSelect(item)\"><span [innerHTML]=\"item.char\"></span></button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"group--close\">\n\t\t\t<button type=\"button\" class=\"btn--close\" [title]=\"'title_close' | label\" (click)=\"onClose($event)\">\n\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
 };
 
 AgoraChatComponent.getFakeList = function () {
@@ -5724,7 +8662,10 @@ var AgoraChecklistService = /*#__PURE__*/function () {
 }(rxcomp.Component);
 AgoraChecklistComponent.meta = {
   selector: '[agora-checklist]',
-  outputs: ['checked']
+  outputs: ['checked'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--info\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"title\" *if=\"busy\" [innerHTML]=\"'bhere_checklist_busy' | label\"></div>\n\t\t\t\t<div class=\"title\" *if=\"checklist.success\" [innerHTML]=\"'bhere_checklist_success' | label\"></div>\n\t\t\t\t<div class=\"title\" *if=\"checklist.error\" [innerHTML]=\"'bhere_checklist_error' | label\"></div>\n\t\t\t\t<ul class=\"group--checklist stagger--childs\">\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Browser</span> <span agora-check [value]=\"checklist.browser\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.browser\"><a class=\"btn--link\" href=\"https://browsehappy.com/\" target=\"_blank\" rel=\"noopener\" [innerHTML]=\"errors.browser\"></a></li>\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Https</span> <span agora-check [value]=\"checklist.https\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.https\"><a class=\"btn--link\" (click)=\"openHttps()\" [innerHTML]=\"errors.https\"></a></li>\n\t\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckAudio\"><span>Audio</span> <span agora-check [value]=\"checklist.audio\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.audio\"><span [innerHTML]=\"errors.audio\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckVideo\"><span>Video</span> <span agora-check [value]=\"checklist.video\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.video\"><span [innerHTML]=\"errors.video\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Communication</span> <span agora-check [value]=\"checklist.rtc\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtc\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtc\"></a></li>\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Messaging</span> <span agora-check [value]=\"checklist.rtm\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtm\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtm\"></a></li>\n\t\t\t\t</ul>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !checklist.success, ready: checklist.success }\" (click)=\"onNext()\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<a [href]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t</a>\n\t"
 };var AgoraConfigureFirewallModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraConfigureFirewallModalComponent, _Component);
 
@@ -6393,7 +9334,10 @@ AgoraDevicePreviewComponent.meta = {
 }(rxcomp.Component);
 AgoraDeviceComponent.meta = {
   selector: '[agora-device]',
-  outputs: ['enter']
+  outputs: ['enter'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--info\" *if=\"!isHttps\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_invalid_protocol' | label\"></div>\n\t\t\t\t<div class=\"info\" [innerHTML]=\"'bhere_reload_in_https' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--connect\" (click)=\"openHttps($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_reload' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"group--info\" *if=\"form\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onEnter($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<!-- PREVIEW -->\n\t\t\t\t<div class=\"agora-device-preview\" agora-device-preview [video]=\"controls.video.value\" [audio]=\"controls.audio.value\" (stream)=\"onStream($event)\" (change)=\"onStreamDidChange($event)\" *if=\"this.hasPreview\">\n\t\t\t\t\t<video class=\"video\" muted></video>\n\t\t\t\t\t<div class=\"audio\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<!-- VIDEO -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.video\" label=\"Video\" *if=\"devices.videos.length\"></div>\n\t\t\t\t\t<!-- AUDIO -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.audio\" label=\"Audio\" *if=\"devices.audios.length\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"!isValid()\" [innerHTML]=\"'bhere_select_video_audio' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_video_audio_connected' | label\"></div>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--connect\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t\t\t\t\t<span *if=\"!state.connecting\" [innerHTML]=\"'bhere_enter' | label\"></span>\n\t\t\t\t\t\t<span *if=\"state.connecting\" [innerHTML]=\"'bhere_connecting' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t"
 };var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLinkComponent, _Component);
 
@@ -6488,7 +9432,10 @@ AgoraDeviceComponent.meta = {
 }(rxcomp.Component);
 AgoraLinkComponent.meta = {
   selector: '[agora-link]',
-  outputs: ['link']
+  outputs: ['link'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--info\" *if=\"form\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<a [href]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t</a>\n\t"
 };var AgoraLoginComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLoginComponent, _Component);
 
@@ -6573,7 +9520,10 @@ AgoraLinkComponent.meta = {
 }(rxcomp.Component);
 AgoraLoginComponent.meta = {
   selector: '[agora-login]',
-  outputs: ['login']
+  outputs: ['login'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--info\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_login' | label\"></div>\n\t\t\t\t\t<input name=\"checkField\" [formControl]=\"controls.checkField\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t\t\t\t<div control-text [control]=\"controls.username\" [label]=\"'bhere_username' | label\"></div>\n\t\t\t\t\t<div control-password [control]=\"controls.password\" [label]=\"'bhere_password' | label\"></div>\n\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_cta' | label\"></div>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_cta' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t"
 };var AgoraNameComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraNameComponent, _Component);
 
@@ -6620,7 +9570,10 @@ AgoraLoginComponent.meta = {
 }(rxcomp.Component);
 AgoraNameComponent.meta = {
   selector: '[agora-name]',
-  outputs: ['name']
+  outputs: ['name'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--info\" *if=\"form\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<!-- NAME -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.name.validators.length }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_fill_fullname' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.name\" [placeholder]=\"'bhere_name_and_surname' | label\" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"info\" *if=\"!controls.name.valid\" [innerHTML]=\"'bhere_fill_name_and_surname' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\">prosegui come <span [innerHTML]=\"controls.name.value\"></span></div>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t"
 };var AgoraStreamComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraStreamComponent, _Component);
 
@@ -8926,6 +11879,8 @@ var VRService = /*#__PURE__*/function () {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    console.log('onInit');
+
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;
 
@@ -10097,8 +13052,74 @@ var VRService = /*#__PURE__*/function () {
   return AgoraComponent;
 }(rxcomp.Component);
 AgoraComponent.meta = {
-  selector: '[agora-component]'
-};var AppComponent = /*#__PURE__*/function (_Component) {
+  selector: '[agora-component]',
+  template:
+  /* html */
+  "\n\t<div class=\"page\">\n\t\t<!-- background -->\n\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t</div>\n\t\t<!-- Status Checklist -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'checklist'\" [agora-checklist] (checked)=\"onChecked($event)\"></div>\n\t\t<!-- Status Link -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'link'\" [agora-link] (link)=\"onLink($event)\"></div>\n\t\t<!-- Status Login -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\" [agora-login] (login)=\"onLogin($event)\"></div>\n\t\t<!-- Status Name -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')\" [agora-name] (name)=\"onName($event)\"></div>\n\t\t<!-- Status Device -->\n\t\t<div class=\"ui ui--info\" *if=\"state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')\" [agora-device] (enter)=\"onEnter($event)\"></div>\n\t\t" + CHUNK_VIRTUAL_TOUR + "\n\t\t" + CHUNK_SMART_DEVICE + "\n\t\t" + CHUNK_SELF_SERVICE_TOUR + "\n\t\t" + CHUNK_EMBED + "\n\t\t" + CHUNK_LOGO + "\n\t\t" + CHUNK_CREDITS + "\n\t\t" + CHUNK_LANGUAGE + "\n\t</div>\n\t"
+};
+var CHUNK_VIRTUAL_TOUR =
+/* html */
+"\n<!-- Virtual Tour -->\n<div class=\"ui virtual-tour\" [class]=\"uiClass\" *if=\"state.status == 'connected' && isVirtualTourUser\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t" + CHUNK_REMOTE + "\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t\t" + CHUNK_LOCAL + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS + "\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_MEMBERS + "\n\t" + CHUNK_CHAT + "\n\t" + CHUNK_LOCK + "\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+var CHUNK_SMART_DEVICE =
+/* html */
+"\n<!-- Smart Device -->\n<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t<div class=\"ui__body\"></div>\n\t<!-- remote sidebar -->\n\t<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t\t<div class=\"agora-stream\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<!-- remote screen -->\n\t<div class=\"group--remote-screen\" *if=\"remoteScreen && !hasScreenViewItem\">\n\t\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_LOCAL_SMART_DEVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS_SMART_DEVICE + "\n\t</div>\n\t" + CHUNK_MEMBERS_SMART_DEVICE + "\n</div>\n";
+var CHUNK_SELF_SERVICE_TOUR =
+/* html */
+"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+var CHUNK_EMBED =
+/* html */
+"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";
+var CHUNK_REMOTE =
+/* html */
+"\n<!-- remote sidebar -->\n<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t<div class=\"agora-stream\" (toggleControl)=\"onToggleControl($event)\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\" [class]=\"{ spyed: state.spying == streamId, controlling: state.controlling == streamId }\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" (click)=\"onToggleControl(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"control\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" (click)=\"onToggleSpy(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--members\" *if=\"state.mode == 'virtual-tour'\">\n\t\t<div class=\"members\">\n\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t</div>\n\t\t<div class=\"credits\">\n\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n</div>\n<!-- remote screen -->\n<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t</div>\n\t</div>\n</div>\n";
+var CHUNK_SERVICE =
+/* html */
+"\n<!-- service -->\n<div class=\"group--service\">\n\t<button type=\"button\" class=\"btn--back\" [title]=\"'title_back' | label\" (click)=\"onBack($event)\" *if=\"isBackButtonVisible\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--view-mode\" [title]=\"'title_view_mode' | label\" (click)=\"toggleMode($event)\" *if=\"state.mode != 'embed'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'virtual-tour'\"><use xlink:href=\"#live-meeting\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'live-meeting'\"><use xlink:href=\"#virtual-tour\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--navmap\" [title]=\"'title_navmap' | label\" [class]=\"{ active: state.showNavmap }\" (click)=\"toggleNavmap($event)\" *if=\"navmap && state.mode != 'live-meeting'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navmap\"></use></svg>\n\t</button>\n</div>\n";
+var CHUNK_LOCAL =
+/* html */
+"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<button type=\"button\" class=\"btn--silence\" [title]=\"'title_silence' | label\" [class]=\"{ active: state.silencing }\" (click)=\"onToggleSilence()\" *if=\"state.role === 'publisher'\">\n\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" [class]=\"{ active: state.controlling == state.uid }\" (click)=\"onToggleControl(state.uid)\" *if=\"state.role == 'publisher'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t</button>\n\t<div class=\"agora-stream\" *if=\"!local\"></div>\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n\t<div class=\"agora-stream agora-stream--screen\" agora-stream [stream]=\"screen\" type=\"local\" *if=\"screen && hasScreenViewItem\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t</div>\n</div>\n";
+var CHUNK_LOCAL_SMART_DEVICE =
+/* html */
+"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n</div>\n";
+var CHUNK_CONTROLS =
+/* html */
+"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--screen\" [title]=\"'title_share_screen' | label\" [class]=\"{ active: screen }\" (click)=\"toggleScreen()\" *if=\"state.role == 'publisher' || state.role == 'attendee' || controlling\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#screen\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--chat\" [title]=\"'title_chat' | label\" [class]=\"{ active: state.chatDirty }\" (click)=\"toggleChat()\" *if=\"('chat' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#chat\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--navinfo\" [title]=\"'title_navinfo' | label\" [class]=\"{ active: state.showNavInfo }\" (click)=\"toggleNavInfo()\" *if=\"('hideNavInfo' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navinfo\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
+var CHUNK_CONTROLS_SMART_DEVICE =
+/* html */
+"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
+var CHUNK_MEMBERS =
+/* html */
+"\n<!-- members -->\n<div class=\"group--members\" *if=\"state.mode == 'live-meeting'\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
+var CHUNK_MEMBERS_SMART_DEVICE =
+/* html */
+"\n<!-- members -->\n<div class=\"group--members\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
+var CHUNK_MEDIA =
+/* html */
+"\n<!-- media -->\n<div class=\"group--media\" media-player>\n\t<button type=\"button\" class=\"btn--play\" [title]=\"'title_play' | label\" (click)=\"onPlay()\" *if=\"!playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#play\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--pause\" [title]=\"'title_pause' | label\" (click)=\"onPause()\" *if=\"playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pause\"></use></svg>\n\t</button>\n\t<div class=\"track\" (click)=\"onTrack($event)\">\n\t\t<div class=\"track__progress\" [style]=\"{ transform: 'scale(' + this.progress + ', 1)'}\"></div>\n\t</div>\n</div>\n";
+var CHUNK_AR_VR =
+/* html */
+"\n<!-- ar-vr -->\n<div class=\"group--ar-vr\">\n\t<button type=\"button\" class=\"btn--ar\" [title]=\"'title_ar' | label\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t</button>\n\t<button type=\"button\" class=\"btn--vr\" [title]=\"'title_vr' | label\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t</button>\n</div>\n";
+var CHUNK_LIKE =
+/* html */
+"\n<!-- like -->\n<div class=\"group--heart\" *if=\"view && ('like' | flag)\">\n\t<svg class=\"love\" [class]=\"{ active: view.showLove }\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t<button type=\"button\" class=\"btn--heart\" [class]=\"{ active: view.showLove }\" (click)=\"addLike($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t\t<span class=\"badge\" [innerHTML]=\"view.likes\" *if=\"view.likes\"></span>\n\t</button>\n</div>\n<div class=\"group--spacer\" *if=\"!view || !('like' | flag)\"></div>\n";
+var CHUNK_CHAT =
+/* html */
+"\n<!-- chat -->\n<div class=\"group--chat\" *if=\"state.chat\" agora-chat (close)=\"onChatClose()\"></div>\n";
+var CHUNK_LOCK =
+/* html */
+"\n<!-- lock -->\n<div class=\"ui__lock\" [class]=\"{ spying: spying }\" *if=\"locked || controlling\"></div>\n";
+var CHUNK_NAVMAP =
+/* html */
+"\n<!-- navmap -->\n<div class=\"group--navmap\" *if=\"navmap && state.showNavmap && state.mode != 'live-meeting'\">\n\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (click)=\"onNavmapItem(item)\" *for=\"let item of navmap.items\">\n\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t</div>\n</div>\n";
+var CHUNK_LOGO =
+/* html */
+"\n<!-- logo -->\n<a class=\"btn--logo\" [href]=\"'index' | slug\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+var CHUNK_CREDITS =
+/* html */
+"\n<!-- credits -->\n<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+var CHUNK_LANGUAGE =
+/* html */
+"\n<!-- language -->\n<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n";var AppComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AppComponent, _Component);
 
   function AppComponent() {
@@ -10117,7 +13138,10 @@ AgoraComponent.meta = {
   return AppComponent;
 }(rxcomp.Component);
 AppComponent.meta = {
-  selector: '[app-component]'
+  selector: '[app-component]',
+  template:
+  /* html */
+  "\n\t\t<!-- header -->\n\t\t<router-outlet></router-outlet>\n\t\t<!-- footer -->\n\t\t<div class=\"toast-outlet\" toast-outlet></div>\n\t\t<div class=\"modal-outlet\" modal-outlet></div>\n\t"
 };var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'];
 var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
 var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
@@ -14718,7 +17742,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var size = 0.1;
       scale.set(size / ratio, size, 1);
       position.x = 0.5 - size / ratio / 2;
-      position.y = 0.5 - size / 2;
+      position.y = size / 2 - 0.5;
       position.z = 0.01;
     } // console.log('MediaMesh.updateZoom', this.scale);
 
@@ -20563,6 +23587,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var view = this.view_;
 
     if (view) {
+      if (StateService.state.zoomedId != null) {
+        StateService.patchState({
+          zoomedId: null
+        });
+      }
+
       if (this.views) {
         this.views.forEach(function (view) {
           return delete view.onUpdateAsset;
@@ -21932,7 +24962,10 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 WorldComponent.meta = {
   selector: '[world]',
   inputs: ['view', 'views', 'editor'],
-  outputs: ['navTo', 'navLink', 'viewHit', 'dragEnd', 'resizeEnd', 'select']
+  outputs: ['navTo', 'navLink', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"world__view\" *if=\"view\">\n\t\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t\t<div *if=\"view.ready\">\n\t\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t\t<div class=\"world__item\" *for=\"let item of view.items; let index = index;\">\n\t\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" (link)=\"onNavLink($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onModelDown($event)\" (play)=\"onPlayModel($event)\" *if=\"item.type.name == 'model'\">\n\t\t\t\t\t\t<!-- <div class=\"banner loading\" model-banner [item]=\"progress\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t<!-- <div class=\"progress\" [innerHTML]=\"progress.title\" *if=\"progress\"></div> -->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<div class=\"banner loading\" model-banner [item]=\"loading\" *if=\"loading\">\n\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"banner waiting\" model-banner [item]=\"waiting\" *if=\"waiting\">\n\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t</div>\n\t\t\t-->\n\t\t</div>\n\t\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t\t<div class=\"inner\"></div>\n\t\t</div>\n\t\t<div model-menu [views]=\"views\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\" *if=\"showMenu\">\n\t\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t\t<svg class=\"menu-light\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu-light\"></use></svg>\n\t\t\t\t<div class=\"spinner\"></div>\n\t\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t\t</svg>\n\t\t\t</div>\n\t\t</div>\n\t\t<div model-debug *if=\"debugging\"></div>\n\t\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t"
 };var ModelComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModelComponent, _Component);
 
@@ -31543,7 +34576,79 @@ ModelTextComponent.meta = {
   return AppModule;
 }(rxcomp.Module);
 AppModule.meta = {
-  imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
+  imports: [rxcomp.CoreModule, rxcompRouter.RouterModule.forRoot([{
+    path: '',
+    redirectTo: '/accesso',
+    pathMatch: 'full'
+  }, {
+    path: 'it/',
+    redirectTo: '/accesso',
+    pathMatch: 'full'
+  }, {
+    path: 'tour-guidato',
+    redirectTo: '/it/tour-guidato',
+    pathMatch: 'full'
+  }, {
+    path: 'tour-self-service',
+    redirectTo: '/it/tour-self-service',
+    pathMatch: 'full'
+  }, {
+    path: 'embed',
+    redirectTo: '/it/embed',
+    pathMatch: 'full'
+  }, {
+    path: 'codice-di-accesso',
+    redirectTo: '/it/codice-di-accesso',
+    pathMatch: 'full'
+  }, {
+    path: 'editor',
+    redirectTo: '/it/editor',
+    pathMatch: 'full'
+  }, {
+    path: 'en/',
+    redirectTo: '/en/access',
+    pathMatch: 'full'
+  }, {
+    path: 'accesso',
+    component: AccessComponent
+  }, {
+    path: 'en/access',
+    component: AccessComponent
+  }, {
+    path: 'it/tour-guidato',
+    component: AgoraComponent
+  }, {
+    path: 'it/tour-self-service',
+    component: AgoraComponent
+  }, {
+    path: 'it/embed',
+    component: AgoraComponent
+  }, {
+    path: 'it/codice-di-accesso',
+    component: AgoraComponent
+  }, {
+    path: 'it/editor',
+    component: AgoraComponent
+  }, {
+    path: '**',
+    redirectTo: '/accesso'
+  }
+  /*
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: IndexComponent, data: { title: 'Dashboard' } },
+  {
+  	path: 'detail/:detailId', component: DetailComponent, data: { title: 'Detail' },
+  	children: [
+  	{ path: 'media', component: SubComponent, data: { title: 'Media' } },
+  	{ path: 'files', component: SubComponent, data: { title: 'Files' } }
+  	], canActivateChild: [customActivator],
+  },
+  { path: 'data/:data', component: DataComponent, data: { title: 'Data' } },
+  { path: 'contacts', component: ContactsComponent, data: { title: 'Contacts' }, canActivate: [customActivator] },
+  { path: '**', component: NotFoundComponent },
+  */
+  // { path: '**', component: AccessComponent },
+  ]).useStrategy(rxcompRouter.LocationStrategyHash), rxcompForm.FormModule, EditorModule],
   declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

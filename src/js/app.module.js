@@ -1,5 +1,6 @@
 import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
+import { LocationStrategyHash, RouterModule } from 'rxcomp-router';
 import AccessCodeComponent from './access/access-code.component';
 import AccessComponent from './access/access.component';
 import AgoraChatEmojiComponent from './agora/agora-chat-emoji.component';
@@ -84,6 +85,39 @@ export class AppModule extends Module { }
 AppModule.meta = {
 	imports: [
 		CoreModule,
+		RouterModule.forRoot([
+			{ path: '', redirectTo: '/accesso', pathMatch: 'full' },
+			{ path: 'it/', redirectTo: '/accesso', pathMatch: 'full' },
+			{ path: 'tour-guidato', redirectTo: '/it/tour-guidato', pathMatch: 'full' },
+			{ path: 'tour-self-service', redirectTo: '/it/tour-self-service', pathMatch: 'full' },
+			{ path: 'embed', redirectTo: '/it/embed', pathMatch: 'full' },
+			{ path: 'codice-di-accesso', redirectTo: '/it/codice-di-accesso', pathMatch: 'full' },
+			{ path: 'editor', redirectTo: '/it/editor', pathMatch: 'full' },
+			{ path: 'en/', redirectTo: '/en/access', pathMatch: 'full' },
+			{ path: 'accesso', component: AccessComponent },
+			{ path: 'en/access', component: AccessComponent },
+			{ path: 'it/tour-guidato', component: AgoraComponent },
+			{ path: 'it/tour-self-service', component: AgoraComponent },
+			{ path: 'it/embed', component: AgoraComponent },
+			{ path: 'it/codice-di-accesso', component: AgoraComponent },
+			{ path: 'it/editor', component: AgoraComponent },
+			{ path: '**', redirectTo: '/accesso' },
+			/*
+			{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+			{ path: 'dashboard', component: IndexComponent, data: { title: 'Dashboard' } },
+			{
+				path: 'detail/:detailId', component: DetailComponent, data: { title: 'Detail' },
+				children: [
+				{ path: 'media', component: SubComponent, data: { title: 'Media' } },
+				{ path: 'files', component: SubComponent, data: { title: 'Files' } }
+				], canActivateChild: [customActivator],
+			},
+			{ path: 'data/:data', component: DataComponent, data: { title: 'Data' } },
+			{ path: 'contacts', component: ContactsComponent, data: { title: 'Contacts' }, canActivate: [customActivator] },
+			{ path: '**', component: NotFoundComponent },
+			*/
+			// { path: '**', component: AccessComponent },
+		]).useStrategy(LocationStrategyHash),
 		FormModule,
 		EditorModule,
 	],

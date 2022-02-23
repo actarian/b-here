@@ -1,6 +1,7 @@
 import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
+import { RouterService } from 'rxcomp-router';
 import { first, takeUntil } from 'rxjs/operators';
 import { environment, STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
@@ -43,7 +44,17 @@ export default class AccessComponent extends Component {
 		UserService.logout$().pipe(
 			first(),
 		).subscribe(() => {
+			RouterService.setRouterLink('/tour-guidato');
+			// RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
+			/*
+			static navigate(routerLink: RouterLink, extras: INavigationExtras = { skipLocationChange: false }): void {
+				// navigate(['items'], { relativeTo: this.route });
+				// navigate(['/heroes', { id: heroId }]);
+				// console.log('RouterService.navigate', routerLink);
+				this.events$.next(new NavigationStart({ routerLink, trigger: 'imperative' }));
+			}
 			window.location.href = environment.url.guidedTour;
+			*/
 		});
 	}
 
@@ -202,9 +213,121 @@ export default class AccessComponent extends Component {
 		const isValid = this.form.valid;
 		return isValid;
 	}
-
 }
 
 AccessComponent.meta = {
 	selector: '[access-component]',
+	template: /*html*/ `
+		<div class="page">
+			<!-- background -->
+			<div class="background" [class]="{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }" *if="state.status != 'connected'">
+				<img [src]="'background.image' | env" *if="'background.image' | env" />
+				<video [src]="'background.video' | env" *if="'background.video' | env" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
+			</div>
+			<!-- access -->
+			<div class="ui ui--info ui--info-centered" *if="state.status == 'access'">
+				<div class="group--info">
+					<div class="group--info__content stagger--childs">
+						<div class="title" [innerHTML]="'access_title' | label"></div>
+						<div *if="'selfService' | flag">
+							<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
+								<span [innerHTML]="'access_tour' | label"></span>
+							</button>
+							<div class="info" [innerHTML]="'access_or' | label"></div>
+						</div>
+						<div *if="'guidedTourRequest' | flag">
+							<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
+								<span [innerHTML]="'access_guided_tour' | label"></span>
+							</button>
+							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+						</div>
+						<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
+							<span [innerHTML]="'access_guided_tour_cta' | label"></span>
+						</button>
+					</div>
+				</div>
+				<button type="button" class="btn--absolute" (click)="onLogin($event)">
+					<span [innerHTML]="'access_cta' | label"></span> <svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg>
+				</button>
+			</div>
+			<!-- guided-tour -->
+			<div class="ui ui--info" *if="state.status == 'self-service-tour' || state.status == 'guided-tour'">
+				<div class="group--info">
+					<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+						<div class="group--info__content stagger--childs">
+							<div class="title" *if="state.status == 'self-service-tour'" [innerHTML]="'access_fill_fields' | label"></div>
+							<div class="title" *if="state.status == 'guided-tour'" [innerHTML]="'access_guided_tour_request' | label"></div>
+							<!-- controls -->
+							<div controls [formGroup]="form" [fields]="fields"></div>
+							<div class="group--error" *if="error">
+								<span class="status-code" [innerHTML]="error.statusCode"></span>
+								<span class="status-message" [innerHTML]="error.statusMessage"></span>
+								<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
+							</div>
+							<div class="info" *if="isValid()" [innerHTML]="'access_take_part' | label"></div>
+							<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+								<span *if="!form.submitted" [innerHTML]="'access_send' | label"></span>
+								<span *if="form.submitted" [innerHTML]="'access_sent' | label"></span>
+							</button>
+							<button type="button" class="btn--mode" (click)="onBack($event)">
+								<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+								<span [innerHTML]="'access_back' | label"></span>
+							</button>
+							<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- guided-tour success -->
+			<div class="ui ui--info ui--info-centered" *if="state.status == 'guided-tour-success'">
+				<div class="group--info">
+					<div class="group--info__content stagger--childs">
+						<div class="title" [innerHTML]="'access_request_sent' | label"></div>
+						<div class="info" [innerHTML]="'access_info_request' | label"></div>
+						<button type="button" class="btn--mode" (click)="onBack($event)">
+							<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+							<span [innerHTML]="'access_back' | label"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<!-- login -->
+			<div class="ui ui--info ui--info-centered" *if="state.status == 'login'">
+				<div class="group--info">
+					<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+						<div class="group--info__content stagger--childs">
+							<div class="title" [innerHTML]="'access_login' | label"></div>
+							<input name="checkField" [formControl]="controls.checkField" value="" type="text" style="display:none !important;" />
+							<div control-text [control]="controls.username" [label]="'access_username' | label"></div>
+							<div control-password [control]="controls.password" [label]="'access_password' | label"></div>
+							<div class="group--error" *if="error">
+								<span class="status-code" [innerHTML]="error.statusCode"></span>
+								<span class="status-message" [innerHTML]="error.statusMessage"></span>
+								<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
+							</div>
+							<div class="info" *if="isValid()" [innerHTML]="'access_cta' | label"></div>
+							<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+								<span [innerHTML]="'access_cta' | label"></span>
+							</button>
+							<button type="button" class="btn--mode" (click)="onBack($event)">
+								<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+								<span [innerHTML]="'access_back' | label"></span>
+							</button>
+							<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="btn--logo" (click)="onBack($event)">
+				<img [src]="'logo' | env" *if="'logo' | env" />
+				<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
+			</div>
+			<!-- credits -->
+				<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
+				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+			</a>
+			<!-- language -->
+			<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+		</div>
+	`
 };

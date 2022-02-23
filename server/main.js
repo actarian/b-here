@@ -80,9 +80,14 @@ app.options('/api/upload', function(request, response) {
 	response.status(200).send();
 });
 
+app.get('*', function(request, response) {
+	response.sendFile(path.join(__dirname, '../docs/index__it.html'));
+});
+/*
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access__it.html'));
 });
+*/
 app.get('/it/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access__it.html'));
 });

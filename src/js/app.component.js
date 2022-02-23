@@ -9,4 +9,11 @@ export default class AppComponent extends Component {
 
 AppComponent.meta = {
 	selector: '[app-component]',
+	template: /* html */ `
+		<!-- header -->
+		<router-outlet></router-outlet>
+		<!-- footer -->
+		<div class="toast-outlet" toast-outlet></div>
+		<div class="modal-outlet" modal-outlet></div>
+	`
 };
