@@ -16,15 +16,15 @@ export default class AgoraChecklistComponent extends Component {
 		this.busy = true;
 		this.shouldCheckAudio = false;
 		this.shouldCheckVideo = false;
-
 		AgoraChecklistService.checkEvent$().pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
+			console.log('AgoraChecklistService', event, event.errors);
 			this.shouldCheckAudio = event.shouldCheckAudio;
 			this.shouldCheckVideo = event.shouldCheckVideo;
 			this.checklist = event.checklist;
 			this.errors = event.errors;
-			console.log(JSON.stringify(event.errors));
+			// console.log(JSON.stringify(event.errors));
 			const success = Object.keys(event.checklist).reduce((p, c) => {
 				return p && event.checklist[c];
 			}, true);
@@ -38,9 +38,10 @@ export default class AgoraChecklistComponent extends Component {
 			} else {
 				this.pushChanges();
 			}
-			console.log(event);
-		}, event => {
-			this.errors = event.errors;
+			// console.log(event);
+		}, error => {
+			// console.log('AgoraChecklistService.error', error);
+			this.errors = error.errors;
 			this.checklist.error = true;
 			this.busy = false;
 			this.pushChanges();

@@ -32,12 +32,12 @@ export class AgoraChecklistService {
 					errors: {},
 				};
 				if (state.role === RoleType.Viewer) {
-					event.checklist.shouldCheckAudio = false;
-					event.checklist.shouldCheckVideo = false;
+					event.shouldCheckAudio = false;
+					event.shouldCheckVideo = false;
 				}
 				if (DeviceService.platform === DevicePlatform.VRHeadset) {
-					event.checklist.shouldCheckAudio = true;
-					event.checklist.shouldCheckVideo = false;
+					event.shouldCheckAudio = true;
+					event.shouldCheckVideo = false;
 				}
 				event.key = `checklist${event.shouldCheckAudio ? '_audio' : ''}${event.shouldCheckVideo ? '_video' : ''}`;
 				return event;
@@ -103,7 +103,7 @@ export class AgoraChecklistService {
 							return this.checkRtmEvent$(event);
 						}),
 						tap(event => {
-							console.log('AgoraChecklistService', event);
+							// console.log('AgoraChecklistService', event);
 							LocalStorageService.set(event.key, true);
 						}),
 					);
@@ -132,7 +132,7 @@ export class AgoraChecklistService {
 						switchMap(event => this.checkRtcEvent$(event)),
 						switchMap(event => this.checkRtmEvent$(event)),
 						tap(event => {
-							console.log('AgoraChecklistService', event);
+							// console.log('AgoraChecklistService', event);
 							LocalStorageService.set(event.key, true);
 						}),
 					)
@@ -168,6 +168,12 @@ export class AgoraChecklistService {
 					);
 				}
 			}),
+			catchError(error => {
+				console.log('checkBrowserEvent$.error', error);
+				event.checklist.browser = false;
+				event.errors.browser = LabelPipe.transform('bhere_browser_error');
+				return throwError(event);
+			}),
 		)
 	}
 
@@ -194,6 +200,12 @@ export class AgoraChecklistService {
 					}
 				}
 			}),
+			catchError(error => {
+				console.log('checkHttpsEvent$.error', error);
+				event.checklist.https = false;
+				event.errors.https = LabelPipe.transform('bhere_https_error');
+				return throwError(event);
+			}),
 		)
 	}
 
@@ -210,6 +222,7 @@ export class AgoraChecklistService {
 	}
 
 	static checkAudioEvent$(event) {
+		// console.log('checkAudioEvent$', event);
 		if (event.shouldCheckAudio) {
 			return this.checkAudio$().pipe(
 				switchMap(audio => {
@@ -218,12 +231,19 @@ export class AgoraChecklistService {
 						return of(event).pipe(delay(TIMEOUT));
 					} else {
 						event.errors.audio = LabelPipe.transform('bhere_audio_error');
+						// console.log('checkAudioEvent$.error', event);
 						if (FORCE_ERROR) {
 							return of(event);
 						} else {
 							return throwError(event);
 						}
 					}
+				}),
+				catchError(error => {
+					console.log('checkAudioEvent$.error', error);
+					event.checklist.audio = false;
+					event.errors.audio = LabelPipe.transform('bhere_audio_error');
+					return throwError(event);
 				}),
 			)
 		} else {
@@ -259,6 +279,12 @@ export class AgoraChecklistService {
 						}
 					}
 				}),
+				catchError(error => {
+					console.log('checkVideoEvent$.error', error);
+					event.checklist.video = false;
+					event.errors.video = LabelPipe.transform('bhere_video_error');
+					return throwError(event);
+				}),
 			);
 		} else {
 			return of(event);
@@ -290,6 +316,12 @@ export class AgoraChecklistService {
 					}
 				}
 			}),
+			catchError(error => {
+				console.log('checkRtcEvent$.error', error);
+				event.checklist.rtc = false;
+				event.errors.rtc = LabelPipe.transform('bhere_rtc_error');
+				return throwError(event);
+			}),
 		)
 	}
 
@@ -310,6 +342,12 @@ export class AgoraChecklistService {
 					event.errors.rtm = LabelPipe.transform('bhere_rtm_error');
 					return throwError(event);
 				}
+			}),
+			catchError(error => {
+				console.log('checkRtmEvent$.error', error);
+				event.checklist.rtm = false;
+				event.errors.rtm = LabelPipe.transform('bhere_rtm_error');
+				return throwError(event);
 			}),
 		)
 	}
