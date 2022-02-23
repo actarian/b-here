@@ -675,12 +675,13 @@
 
 	.btn--generate,
 	.btn--next,
-	.btn--connect {
+	.btn--connect,
+	.btn--secondary {
 		margin: 0 auto;
-	}
 
-	.btn--generate {
-		margin-bottom: 20px;
+		&:not(:last-child) {
+			margin-bottom: 20px;
+		}
 	}
 
 	.btn--mode {

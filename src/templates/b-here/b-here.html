@@ -104,6 +104,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 						<span [innerHTML]="'bhere_take_part' | label"></span>
 					</button>
+					<a [href]="'selfServiceTour' | slug" class="btn--secondary" *if="state.role === 'publisher'">
+						<span [innerHTML]="'bhere_self_service' | label"></span>
+					</a>
 				</div>
 			</form>
 		</div>

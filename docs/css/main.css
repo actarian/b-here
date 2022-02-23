@@ -189,7 +189,7 @@ strong {
 .btn--resume,
 .btn--remove,
 .btn--update,
-.btn--mode, .btn, .btn--cam,
+.btn--mode, .btn--secondary, .btn, .btn--cam,
 .btn--mic,
 .btn--screen,
 .btn--chat,
@@ -219,7 +219,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume,
   .btn--remove,
   .btn--update,
-  .btn--mode, .btn, .btn--cam,
+  .btn--mode, .btn--secondary, .btn, .btn--cam,
   .btn--mic,
   .btn--screen,
   .btn--chat,
@@ -238,7 +238,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:active,
   .btn--remove:active,
   .btn--update:active,
-  .btn--mode:active, .btn:active, .btn--cam:active,
+  .btn--mode:active, .btn--secondary:active, .btn:active, .btn--cam:active,
   .btn--mic:active,
   .btn--screen:active,
   .btn--chat:active,
@@ -255,7 +255,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:focus,
   .btn--remove:focus,
   .btn--update:focus,
-  .btn--mode:focus, .btn:focus, .btn--cam:focus,
+  .btn--mode:focus, .btn--secondary:focus, .btn:focus, .btn--cam:focus,
   .btn--mic:focus,
   .btn--screen:focus,
   .btn--chat:focus,
@@ -272,7 +272,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:hover,
   .btn--remove:hover,
   .btn--update:hover,
-  .btn--mode:hover, .btn:hover, .btn--cam:hover,
+  .btn--mode:hover, .btn--secondary:hover, .btn:hover, .btn--cam:hover,
   .btn--mic:hover,
   .btn--screen:hover,
   .btn--chat:hover,
@@ -289,7 +289,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:visited,
   .btn--remove:visited,
   .btn--update:visited,
-  .btn--mode:visited, .btn:visited, .btn--cam:visited,
+  .btn--mode:visited, .btn--secondary:visited, .btn:visited, .btn--cam:visited,
   .btn--mic:visited,
   .btn--screen:visited,
   .btn--chat:visited,
@@ -311,7 +311,7 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
 .btn--resume[disabled],
 .btn--remove[disabled],
 .btn--update[disabled],
-.btn--mode[disabled], .btn[disabled], .btn--cam[disabled],
+.btn--mode[disabled], .btn--secondary[disabled], .btn[disabled], .btn--cam[disabled],
 .btn--mic[disabled],
 .btn--screen[disabled],
 .btn--chat[disabled],
@@ -525,6 +525,44 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .disabled.btn--update:visited,
   .disabled.btn--mode:visited {
     background: var(--background-primary-disabled);
+    pointer-events: none; }
+
+.btn--secondary {
+  min-height: 40px;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 0 15px;
+  font-weight: var(--font-semibold);
+  font-size: 14px;
+  transition: all ease-in-out 150ms;
+  border: 2px solid transparent; }
+  .btn--secondary svg {
+    width: 24px;
+    height: 24px;
+    margin-left: -10px;
+    margin-right: 10px; }
+  .btn--secondary span {
+    display: block; }
+  .btn--secondary svg {
+    fill: currentColor; }
+  .btn--secondary, .btn--secondary:active, .btn--secondary:focus, .btn--secondary:visited {
+    background: var(--foreground-negative);
+    color: var(--background-primary);
+    border-color: var(--background-primary-dimmed); }
+  .btn--secondary:hover {
+    background: var(--foreground-negative);
+    color: var(--background-primary-darker);
+    border-color: var(--background-primary-darker); }
+  .btn--secondary:active:hover {
+    background: var(--foreground-negative);
+    color: var(--background-primary-darkest);
+    border-color: var(--background-primary-darkest);
+    transition: none; }
+  .disabled.btn--secondary, .disabled.btn--secondary:active, .disabled.btn--secondary:focus, .disabled.btn--secondary:hover, .disabled.btn--secondary:visited {
+    border-color: var(--background-primary-disabled);
     pointer-events: none; }
 
 .busy {
@@ -5293,10 +5331,14 @@ body {
       color: var(--foreground-tertiary); }
   .group--info .btn--generate,
   .group--info .btn--next,
-  .group--info .btn--connect {
+  .group--info .btn--connect,
+  .group--info .btn--secondary {
     margin: 0 auto; }
-  .group--info .btn--generate {
-    margin-bottom: 20px; }
+    .group--info .btn--generate:not(:last-child),
+    .group--info .btn--next:not(:last-child),
+    .group--info .btn--connect:not(:last-child),
+    .group--info .btn--secondary:not(:last-child) {
+      margin-bottom: 20px; }
   .group--info .btn--mode {
     margin: 10px 0 0 0; }
   @media (min-width: 768px) {

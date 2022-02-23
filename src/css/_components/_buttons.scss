@@ -137,6 +137,70 @@
 	}
 }
 
+%btn-secondary {
+	@extend %btn;
+	min-height: 40px;
+	line-height: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	padding: 0 15px;
+	font-weight: $font-semibold;
+	font-size: 14px;
+	transition: all ease-in-out $fastest;
+	border: 2px solid transparent;
+
+	svg {
+		width: 24px;
+		height: 24px;
+		margin-left: -10px;
+		margin-right: 10px;
+	}
+
+	span {
+		display: block;
+	}
+
+	svg {
+		fill: currentColor;
+	}
+
+	&,
+	&:active,
+	&:focus,
+	&:visited {
+		background: $foreground-negative;
+		color: $background-primary;
+		border-color: $background-primary-dimmed;
+	}
+
+	&:hover {
+		background: $foreground-negative;
+		color: $background-primary-darker;
+		border-color: $background-primary-darker;
+	}
+
+	&:active:hover {
+		background: $foreground-negative;
+		color: $background-primary-darkest;
+		border-color: $background-primary-darkest;
+		transition: none;
+	}
+
+	&.disabled {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			border-color: $background-primary-disabled;
+			pointer-events: none;
+		}
+	}
+}
+
 a,
 button {
 	@extend %btn-reset;

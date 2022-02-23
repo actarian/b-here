@@ -661,6 +661,10 @@
 	@extend %btn-rect;
 }
 
+.btn--secondary {
+	@extend %btn-secondary;
+}
+
 .btn--absolute {
 	height: auto;
 	min-height: auto;
