@@ -1,30 +1,14 @@
 %live-meeting-remote {
+	flex: 0 0 auto;
 	position: absolute;
 	background: $background-negative;
-	flex: 0 0 auto;
+	width: 100%;
 	left: 0;
-
-	/*
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-items: flex-start;
-	width: 100%;
-	top: 0;
-	*/
-
-	width: 100%;
-	top: 90px;
-
 	top: 50%;
 	transform: translateY(-50%);
-
 	display: grid;
 	grid-template-rows: 1fr;
 	grid-gap: 1px;
-	// height: calc(100% - #{$remote-height});
-	// flex: 0 0 calc(100% - #{$remote-height});
 	align-items: center;
 
 	.agora-stream {
@@ -145,88 +129,50 @@
 	}
 
 	&.group--remote--9 {
+		&>.agora-stream {
+			display: none;
+		}
+
 		@media screen and (max-width: 519px) {
 			grid-template-columns: repeat(auto-fit, minmax(calc(50% - 1px), 1fr));
+
+			@for $i from 1 through 8 {
+				&>.agora-stream:nth-child(#{$i}) {
+					display: block;
+				}
+			}
 		}
 
 		@media screen and (min-width: 520px) {
 			grid-template-columns: repeat(auto-fit, minmax(calc(33.3333% - 1px), 1fr));
+
+			@for $i from 1 through 9 {
+				&>.agora-stream:nth-child(#{$i}) {
+					display: block;
+				}
+			}
 		}
 
 		@media screen and (min-width: 1190px) {
 			grid-template-columns: repeat(auto-fit, minmax(calc(25% - 1px), 1fr));
+
+			@for $i from 1 through 12 {
+				&>.agora-stream:nth-child(#{$i}) {
+					display: block;
+				}
+			}
 		}
 
 		@media screen and (min-width: 1920px) {
 			grid-template-columns: repeat(auto-fit, minmax(calc(20% - 1px), 1fr));
-		}
-	}
 
-	/*
-	@media screen and (min-width: 1024px) {
-		.agora-stream {
-			flex: 0 1 25%;
-			width: 25%;
-
-			&:nth-child(1),
-			&:nth-child(2),
-			&:nth-child(3) {
-				flex: 0 1 33.3333%;
-				width: 33.3333%;
+			@for $i from 1 through 15 {
+				&>.agora-stream:nth-child(#{$i}) {
+					display: block;
+				}
 			}
 		}
 	}
-
-	@media screen and (min-width: 1440px) {
-		.agora-stream {
-			flex: 0 1 33.3333%;
-			width: 33.3333%;
-
-			&:nth-child(1),
-			&:nth-child(2),
-			&:nth-child(3) {
-				flex: 0 1 50%;
-				width: 50%;
-			}
-		}
-	}
-
-	@media screen and (min-width: 1600px) {
-		.agora-stream {
-			flex: 0 1 20%;
-			width: 20%;
-
-			&:nth-child(1),
-			&:nth-child(2),
-			&:nth-child(3),
-			&:nth-child(4) {
-				flex: 0 1 25%;
-				width: 25%;
-			}
-		}
-	}
-
-	@media screen and (max-width: 1023px) {
-		.agora-stream {
-			flex: 0 1 33.3333%;
-			width: 33.3333%;
-		}
-	}
-
-	@media screen and (max-width: 767px) {
-		.agora-stream {
-			flex: 0 1 50%;
-			width: 50%;
-		}
-	}
-
-	@media screen and (max-width: 374px) {
-		.agora-stream {
-			flex: 0 1 100%;
-			width: 100%;
-		}
-	}
-	*/
 }
 
 .group--header {
@@ -243,6 +189,10 @@
 	&>div {
 		pointer-events: auto;
 	}
+
+	@include media-down(xs) {
+		flex-direction: row-reverse;
+	}
 }
 
 .group--service {
@@ -250,23 +200,32 @@
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	// flex-basis: 30%;
-	margin-left: 15px;
-	// margin-top: 25px;
 
-	&>button+button {
-		margin-left: 10px;
+	@include media-up(sm) {
+		margin-left: 15px;
+
+		&>button+button {
+			margin-left: 10px;
+		}
 	}
 
 	@include media-down(xs) {
+		margin-right: 15px;
+		filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 1));
+
+		&>button {
+			margin-left: 10px;
+		}
 
 		.btn--back {
 			display: none;
 		}
 
+		/*
 		.btn--view-mode {
 			display: none;
 		}
+		*/
 
 		.btn--volume {
 			display: none;
@@ -286,24 +245,14 @@
 	position: relative;
 	display: flex;
 	align-items: center;
-	// flex-basis: 30%;
-	// top: 0;
-	// right: 0;
 	z-index: 1;
 
 	.agora-stream {
 		@include ratio(120px, 4 / 3);
 		background: black;
-		// margin-left: 15px;
 	}
 
 	.agora-stream--screen {
-
-		/*
-		position: absolute;
-		top: 90px;
-		right: 0;
-		*/
 		.agora-stream__player {
 			border-left: 0;
 		}
@@ -394,7 +343,6 @@
 	align-items: center;
 	border-radius: 20px;
 	background: rgba(0, 0, 0, 0.5);
-	// box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 	overflow: hidden;
 
 	&>button+button {
@@ -404,7 +352,6 @@
 	@include media-down(xs) {
 
 		.btn--screen,
-		.btn--chat,
 		.btn--navinfo {
 			display: none;
 		}
@@ -425,15 +372,8 @@
 	justify-content: flex-start;
 	align-items: center;
 	flex-grow: 1;
-	/*
-	left: 50%;
-	transform: translateX(-50%);
-	width: calc(100vw - 690px);
-	bottom: 25px;
-	*/
 	border-radius: 20px;
 	background: rgba(0, 0, 0, 0.5);
-	// box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 	overflow: hidden;
 	height: 40px;
 

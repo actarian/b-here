@@ -33,6 +33,7 @@ export const environmentServed = {
 		navTitleImportantAnimated: false,
 		navTransparentAnimated: false,
 		navTransparentImportantAnimated: false,
+		useTextureEnvironment: true,
 		// maxQuality: false,
 	},
 	navs: {
@@ -94,7 +95,7 @@ export const environmentServed = {
 		prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js',
 	},
 	textures: {
-		envMap: 'textures/envMap/flower_road_1k.hdr',
+		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',

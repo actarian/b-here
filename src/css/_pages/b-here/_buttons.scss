@@ -481,8 +481,10 @@
 	right: 20px;
 	top: 50%;
 	margin-top: -25px;
+	transition: all ease-in-out 250ms;
 
 	&>.menu-light {
+		position: relative;
 		display: none;
 		width: 28px;
 		height: 28px;
@@ -524,6 +526,7 @@
 	}
 
 	&>.bullets {
+		position: relative;
 		width: 28px;
 		height: 28px;
 		transition: opacity ease-in-out 250ms;
@@ -545,13 +548,30 @@
 		}
 	}
 
+	&:before {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 50px;
+		height: 50px;
+		border-radius: 25px;
+		background: transparent;
+		transition: all ease-in-out 250ms;
+	}
+
 	&,
 	&:active,
 	&:focus,
 	&:hover,
 	&:visited {
-		background: $background;
+		background: transparent;
 		color: $foreground;
+
+		&:before {
+			background: $background;
+		}
 
 		&>.bullets {
 			fill: currentColor;
@@ -559,7 +579,10 @@
 	}
 
 	&:hover {
-		background: $background-negative;
+		&:before {
+			background: $background-negative;
+		}
+
 		color: $foreground-negative;
 		opacity: 0.8;
 	}
@@ -571,8 +594,11 @@
 		&:focus,
 		&:hover,
 		&:visited {
+			&:before {
+				background: $black-80;
+			}
+
 			border-color: transparent;
-			background: $black-80;
 			color: $foreground-negative;
 		}
 	}
@@ -622,14 +648,20 @@
 		&:active,
 		&:focus,
 		&:visited {
+			&:before {
+				background: transparent;
+			}
+
 			opacity: 0.4;
-			background: transparent;
 			color: $foreground-negative;
 		}
 
 		&:hover {
+			&:before {
+				background: transparent;
+			}
+
 			opacity: 1;
-			background: transparent;
 			color: $foreground-negative;
 		}
 

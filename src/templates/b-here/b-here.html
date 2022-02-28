@@ -224,7 +224,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
 		<div class="ui__body"></div>
 		<!-- remote sidebar -->
-		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+		<div class="group--remote" [class]="remoteClass" *if="state.live">
 			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" type="remote" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
 				<div class="agora-stream__info">

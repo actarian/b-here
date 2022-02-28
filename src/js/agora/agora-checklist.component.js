@@ -25,9 +25,7 @@ export default class AgoraChecklistComponent extends Component {
 			this.checklist = event.checklist;
 			this.errors = event.errors;
 			// console.log(JSON.stringify(event.errors));
-			const success = Object.keys(event.checklist).reduce((p, c) => {
-				return p && event.checklist[c];
-			}, true);
+			const success = AgoraChecklistService.isChecked(event);
 			if (success) {
 				this.checklist.success = success;
 				this.busy = false;

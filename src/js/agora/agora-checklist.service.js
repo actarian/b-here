@@ -54,14 +54,24 @@ export class AgoraChecklistService {
 		);
 	}
 
+	static isChecked(event) {
+		const isChecked = Object.keys(event.checklist).reduce((p, c, i) => {
+			const checked = p && event.checklist[c];
+			switch (c) {
+				case 'audio':
+					return checked || !event.shouldCheckAudio;
+				case 'video':
+					return checked || !event.shouldCheckVideo;
+				default:
+					return checked;
+			}
+		}, true);
+		return isChecked;
+	}
+
 	static isChecked$() {
 		return this.checklist$().pipe(
-			map(event => {
-				const checklist = Object.keys(event.checklist).reduce((p, c, i) => {
-					return p && event.checklist[c];
-				}, true);
-				return checklist;
-			}),
+			map(event => this.isChecked(event)),
 		);
 	}
 

@@ -22,6 +22,7 @@ import ViewService from '../view/view.service';
 import { WebhookService } from '../webhook/webhook.service';
 import { WishlistService } from '../wishlist/wishlist.service';
 import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent } from '../world/media/media-loader';
+import ModelNavComponent from '../world/model/model-nav.component';
 import VRService from '../world/vr.service';
 import { AgoraChecklistService } from './agora-checklist.service';
 import AgoraService from './agora.service';
@@ -63,6 +64,10 @@ export default class AgoraComponent extends Component {
 		return StateService.state.role === RoleType.Publisher && environment.flags.selfServiceProposition && this.meetingUrl.support;
 	}
 
+	get showNavInfoToggler() {
+		return environment.flags.hideNavInfo && this.state.mode !== UIMode.LiveMeeting && this.view && ModelNavComponent.hasNavInfo(this.view);
+	}
+
 	get uiClass() {
 		const uiClass = {};
 		uiClass[this.state.role] = true;
@@ -73,6 +78,10 @@ export default class AgoraComponent extends Component {
 		uiClass.locked = this.locked;
 		// uiClass.media = !uiClass.remotes && this.media;
 		return uiClass;
+	}
+
+	get remoteClass() {
+		return `group--remote--${Math.min(9, this.remotes.length)}`;
 	}
 
 	get controlled() {
