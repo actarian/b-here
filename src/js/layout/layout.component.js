@@ -37,6 +37,10 @@ export default class LayoutComponent extends Component {
 		return navigable;
 	}
 
+	get showNavInfoToggler() {
+		return environment.flags.hideNavInfo && this.state.mode !== UIMode.LiveMeeting;
+	}
+
 	get uiClass() {
 		const uiClass = {};
 		uiClass[this.state.role] = true;
@@ -47,6 +51,10 @@ export default class LayoutComponent extends Component {
 		uiClass.media = !uiClass.remotes && this.media;
 		uiClass.locked = this.locked;
 		return uiClass;
+	}
+
+	get remoteClass() {
+		return `group--remote--${Math.min(9, this.remotes.length)}`;
 	}
 
 	get controlled() {

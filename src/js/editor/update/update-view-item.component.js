@@ -33,10 +33,13 @@ export default class UpdateViewItemComponent extends Component {
 		});
 	}
 
-	getKeysDidChange(item, changes) {
-		const keys = ['hasChromaKeyColor', 'autoplay', 'loop'];
-		return keys.reduce((p, c) => {
-			return p || (changes[c] !== item[c]);
+	getFlagsDidChange(item, changes) {
+		const flags = ['hasChromaKeyColor', 'autoplay', 'loop'];
+		return flags.reduce((p, c) => {
+			const a = changes[c] || false;
+			const b = item[c] || false;
+			// console.log(c, a, b);
+			return p || (a !== b);
 		}, false);
 	}
 
@@ -47,15 +50,16 @@ export default class UpdateViewItemComponent extends Component {
 
 	doUpdateItem(changes) {
 		const item = this.item;
-		const assetDidChange = this.getAssetDidChange(item, changes) || this.getKeysDidChange(item, changes);
-		// console.log('doUpdateItem.assetDidChange', assetDidChange);
+		const assetDidChange = this.getAssetDidChange(item, changes);
+		const flagsDidChange = this.getFlagsDidChange(item, changes);
+		// console.log('UpdateViewItemCompoent.doUpdateItem', 'assetDidChange', assetDidChange, 'flagsDidChange', flagsDidChange);
 		Object.assign(item, changes);
 		if (item.asset) {
 			item.asset.chromaKeyColor = item.hasChromaKeyColor ? [0.0, 1.0, 0.0] : null;
 			item.asset.autoplay = item.autoplay;
 			item.asset.loop = item.loop;
 		}
-		if (assetDidChange) {
+		if (assetDidChange || flagsDidChange) {
 			const asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : of(null);
 			asset$.pipe(
 				switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
@@ -238,7 +242,7 @@ export default class UpdateViewItemComponent extends Component {
 			EditorService.inferItemUpdate$(view, item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
+				// console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
 				EditorService.inferItemUpdateResult$(view, item);
 				this.update.next({ view, item });
 				this.setTimeout(() => {

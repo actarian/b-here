@@ -140,6 +140,12 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		return mode;
 	}
 
+	static hasNavInfo(view) {
+		const item = view.items.find(x => this.getNavMode(x, view) === NavModeType.Info);
+		// console.log('ModelNavComponent.hasNavInfo', item);
+		return item != null;
+	}
+
 	static isValidText(text) {
 		return text && text.length > 0;
 	}

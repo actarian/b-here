@@ -57,6 +57,9 @@ window.labels = Object.assign(window.labels, {});
 						</div>
 					</div>
 					<div class="stagger--childs" *if="state.role === 'publisher'">
+						<!-- PATH -->
+						<div control-custom-select [control]="controls.path" label="Path" *if="('usePaths' | flag) && paths.length"></div>
+						<!--IDS -->
 						<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
 							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_insert_meeting_id' | label"></span></label>
 							<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" (change)="onInputDidChange($event)" />
@@ -102,13 +105,13 @@ window.labels = Object.assign(window.labels, {});
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 						<span [innerHTML]="'bhere_take_part' | label"></span>
 					</button>
+					<a [href]="selfServiceTourUrl" class="btn--secondary" *if="state.role === 'publisher'">
+						<span [innerHTML]="'bhere_self_service' | label"></span>
+					</a>
 				</div>
 			</form>
 		</div>
 		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-		</a>
-		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && state.role == 'publisher'">
 			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 		</a>
 	</div>
@@ -172,7 +175,7 @@ window.labels = Object.assign(window.labels, {});
 			<div class="world"></div>
 		</div>
 		<!-- remote sidebar -->
-		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+		<div class="group--remote" [class]="remoteClass" *if="state.live">
 			<div class="agora-stream" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
 				<div class="agora-stream__info" [class]="{ spyed: state.spying == remote.id, controlling: state.controlling == remote.id }">
@@ -211,7 +214,10 @@ window.labels = Object.assign(window.labels, {});
 		<div class="group--header">
 			<!-- service -->
 			<div class="group--service">
-				<button type="button" class="btn--view-mode" [title]="'title_view_mode' | label" (click)="toggleMode($event)">
+				<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
+				</button>
+				<button type="button" class="btn--view-mode" [title]="'title_view_mode' | label" (click)="toggleMode($event)" *if="state.mode != 'embed'">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 				</button>
@@ -222,6 +228,9 @@ window.labels = Object.assign(window.labels, {});
 				<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+				</button>
+				<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
 				</button>
 			</div>
 			<!-- local streams -->
@@ -272,7 +281,7 @@ window.labels = Object.assign(window.labels, {});
 		<div class="ui__body">
 		</div>
 		<!-- remote sidebar -->
-		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+		<div class="group--remote" [class]="remoteClass" *if="state.live">
 			<div class="agora-stream" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
 				<div class="agora-stream__info">
@@ -315,6 +324,15 @@ window.labels = Object.assign(window.labels, {});
 				</button>
 				<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
+				</button>
+				<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
+				</button>
+				<button type="button" class="btn--chat" [title]="'title_chat' | label" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#chat"></use></svg>
+				</button>
+				<button type="button" class="btn--navinfo" [title]="'title_navinfo' | label" [class]="{ active: state.showNavInfo }" (click)="toggleNavInfo()" *if="showNavInfoToggler">
+					<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navinfo"></use></svg>
 				</button>
 			</div>
 		</div>

@@ -33,6 +33,8 @@ export const environmentServed = {
 		navTitleImportantAnimated: false,
 		navTransparentAnimated: false,
 		navTransparentImportantAnimated: false,
+		useTextureEnvironment: true,
+		usePaths: false,
 		// maxQuality: false,
 	},
 	navs: {
@@ -94,7 +96,7 @@ export const environmentServed = {
 		prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js',
 	},
 	textures: {
-		envMap: 'textures/envMap/flower_road_1k.hdr',
+		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
@@ -121,6 +123,8 @@ export const environmentServed = {
 			},
 			navmap: '/template/modules/b-here/navmap-modal.cshtml',
 			navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
+			pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
+			pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
 			remove: '/template/modules/b-here/remove-modal.cshtml',
 		},
 		email: {

@@ -16,7 +16,7 @@
 		<button type="button" class="btn--chat" [title]="'title_chat' | label" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#chat"></use></svg>
 		</button>
-		<button type="button" class="btn--navinfo" [title]="'title_navinfo' | label" [class]="{ active: state.showNavInfo }" (click)="toggleNavInfo()" *if="('hideNavInfo' | flag)">
+		<button type="button" class="btn--navinfo" [title]="'title_navinfo' | label" [class]="{ active: state.showNavInfo }" (click)="toggleNavInfo()" *if="showNavInfoToggler">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navinfo"></use></svg>
 		</button>
 	</div>

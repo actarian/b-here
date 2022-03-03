@@ -12,6 +12,8 @@ import NavmapItemModalComponent from './modals/navmap-item-modal.component';
 import NavmapModalComponent from './modals/navmap-modal.component';
 import PanoramaGridModalComponent from './modals/panorama-grid-modal.component';
 import PanoramaModalComponent from './modals/panorama-modal.component';
+import PathAddModalComponent from './modals/path-add-modal.component';
+import PathEditModalComponent from './modals/path-edit-modal.component';
 import PlaneModalComponent from './modals/plane-modal.component';
 import RemoveModalComponent from './modals/remove-modal.component';
 import Room3DModalComponent from './modals/room-3d-modal.component';
@@ -36,6 +38,8 @@ const factories = [
 	NavModalComponent,
 	PanoramaModalComponent,
 	PanoramaGridModalComponent,
+	PathAddModalComponent,
+	PathEditModalComponent,
 	PlaneModalComponent,
 	RemoveModalComponent,
 	Room3DModalComponent,

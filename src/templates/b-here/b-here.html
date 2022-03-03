@@ -59,6 +59,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 						</div>
 					</div>
 					<div class="stagger--childs" *if="state.role === 'publisher'">
+						<!-- PATH -->
+						<div control-custom-select [control]="controls.path" [label]="'bhere_path' | label" *if="('usePaths' | flag) && paths.length"></div>
+						<!--IDS -->
 						<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
 							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_insert_meeting_id' | label"></span></label>
 							<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" (change)="onInputDidChange($event)" />
@@ -104,6 +107,9 @@ window.bhere = Object.assign((window.bhere || {}), {
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 						<span [innerHTML]="'bhere_take_part' | label"></span>
 					</button>
+					<a [href]="selfServiceTourUrl" class="btn--secondary" *if="state.role === 'publisher'">
+						<span [innerHTML]="'bhere_self_service' | label"></span>
+					</a>
 				</div>
 			</form>
 		</div>
@@ -221,7 +227,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 	<div class="ui remotes" [class]="uiClass" *if="state.status == 'connected' && state.role == 'smart-device'">
 		<div class="ui__body"></div>
 		<!-- remote sidebar -->
-		<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+		<div class="group--remote" [class]="remoteClass" *if="state.live">
 			<div class="agora-stream" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" type="remote" *for="let remote of remotes">
 				<div class="agora-stream__player"></div>
 				<div class="agora-stream__info">

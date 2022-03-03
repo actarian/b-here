@@ -154,7 +154,9 @@ function _readOnlyError(name) {
     navTitleAnimated: false,
     navTitleImportantAnimated: false,
     navTransparentAnimated: false,
-    navTransparentImportantAnimated: false // maxQuality: false,
+    navTransparentImportantAnimated: false,
+    useTextureEnvironment: true,
+    usePaths: false // maxQuality: false,
 
   },
   navs: {
@@ -218,7 +220,7 @@ function _readOnlyError(name) {
     prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js'
   },
   textures: {
-    envMap: 'textures/envMap/flower_road_1k.hdr',
+    envMap: 'textures/envMap/studio_small_03_2k.hdr',
     grid: 'textures/grid/grid.jpg'
   },
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
@@ -245,6 +247,8 @@ function _readOnlyError(name) {
       },
       navmap: '/template/modules/b-here/navmap-modal.cshtml',
       navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
+      pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
+      pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
       remove: '/template/modules/b-here/remove-modal.cshtml'
     },
     email: {
@@ -293,7 +297,9 @@ function _readOnlyError(name) {
     navTitleAnimated: false,
     navTitleImportantAnimated: false,
     navTransparentAnimated: true,
-    navTransparentImportantAnimated: true // maxQuality: false,
+    navTransparentImportantAnimated: true,
+    useTextureEnvironment: true,
+    usePaths: true // maxQuality: false,
 
   },
   navs: {
@@ -356,7 +362,7 @@ function _readOnlyError(name) {
     prefetch: './js/workers/prefetch.service.worker.js'
   },
   textures: {
-    envMap: 'textures/envMap/flower_road_1k.hdr',
+    envMap: 'textures/envMap/studio_small_03_2k.hdr',
     grid: 'textures/grid/grid.jpg'
   },
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-demo/docs/',
@@ -383,6 +389,8 @@ function _readOnlyError(name) {
       },
       navmap: '/navmap-modal.html',
       navmapItem: '/navmap-item-modal.html',
+      pathAdd: '/path-add-modal.html',
+      pathEdit: '/path-edit-modal.html',
       remove: '/remove-modal.html'
     },
     email: {
@@ -670,7 +678,7 @@ var User = function User(options) {
   if (options) {
     Object.assign(this, options);
   }
-};var MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}$/;
+};var MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
 var MeetingId = /*#__PURE__*/function () {
   _createClass(MeetingId, [{
     key: "roleIndex",
@@ -690,7 +698,8 @@ var MeetingId = /*#__PURE__*/function () {
   function MeetingId(options) {
     this.userId = StateService.state.user ? StateService.state.user.id : 0;
     this.role = StateService.state.role || RoleType.Viewer;
-    this.timestamp = new Date().valueOf().toString(); // this.timestamp = (performance.now() * 10000000000000).toString();
+    this.timestamp = new Date().valueOf().toString();
+    this.pathId = null; // this.timestamp = (performance.now() * 10000000000000).toString();
 
     if (typeof options === 'string') {
       if (options.match(MEETING_ID_VALIDATOR)) {
@@ -721,30 +730,35 @@ var MeetingId = /*#__PURE__*/function () {
       if (options.timestamp) {
         this.timestamp = options.timestamp;
       }
+
+      if (options.pathId) {
+        this.pathId = options.pathId;
+      }
     }
   }
 
   var _proto = MeetingId.prototype;
 
   _proto.toString = function toString() {
-    return MeetingId.compose(this.userId, this.roleIndex, this.timestamp);
+    return MeetingId.compose(this.userId, this.roleIndex, this.timestamp, this.pathId);
   };
 
   _proto.toRoles = function toRoles() {
     var userId = this.userId;
     var timestamp = this.timestamp;
+    var pathId = this.pathId;
     return {
-      id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp),
-      idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp),
-      idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp),
-      idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp),
-      idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp),
-      idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp)
+      id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp, pathId),
+      idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp, pathId),
+      idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp, pathId),
+      idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp, pathId),
+      idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp, pathId),
+      idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp, pathId)
     };
   };
 
-  MeetingId.compose = function compose(userId, roleIndex, timestamp) {
-    return MeetingId.padded(userId, 9) + "-" + MeetingId.padded(roleIndex, 4) + "-" + timestamp;
+  MeetingId.compose = function compose(userId, roleIndex, timestamp, pathId) {
+    return MeetingId.padded(userId, 9) + "-" + MeetingId.padded(roleIndex, 4) + "-" + timestamp + (pathId ? "-" + pathId : '');
   };
 
   MeetingId.decompose = function decompose(meetingId) {
@@ -752,7 +766,8 @@ var MeetingId = /*#__PURE__*/function () {
     return {
       userId: parseInt(components[0]),
       roleIndex: parseInt(components[1]),
-      timestamp: parseInt(components[2])
+      timestamp: parseInt(components[2]),
+      pathId: components[3] ? parseInt(components[3]) : null
     };
   };
 
@@ -5400,13 +5415,13 @@ var AgoraChecklistService = /*#__PURE__*/function () {
       };
 
       if (state.role === RoleType.Viewer) {
-        event.checklist.shouldCheckAudio = false;
-        event.checklist.shouldCheckVideo = false;
+        event.shouldCheckAudio = false;
+        event.shouldCheckVideo = false;
       }
 
       if (DeviceService.platform === DevicePlatform.VRHeadset) {
-        event.checklist.shouldCheckAudio = true;
-        event.checklist.shouldCheckVideo = false;
+        event.shouldCheckAudio = true;
+        event.shouldCheckVideo = false;
       }
 
       event.key = "checklist" + (event.shouldCheckAudio ? '_audio' : '') + (event.shouldCheckVideo ? '_video' : '');
@@ -5424,17 +5439,34 @@ var AgoraChecklistService = /*#__PURE__*/function () {
     }));
   };
 
+  AgoraChecklistService.isChecked = function isChecked(event) {
+    var isChecked = Object.keys(event.checklist).reduce(function (p, c, i) {
+      var checked = p && event.checklist[c];
+
+      switch (c) {
+        case 'audio':
+          return checked || !event.shouldCheckAudio;
+
+        case 'video':
+          return checked || !event.shouldCheckVideo;
+
+        default:
+          return checked;
+      }
+    }, true);
+    return isChecked;
+  };
+
   AgoraChecklistService.isChecked$ = function isChecked$() {
+    var _this = this;
+
     return this.checklist$().pipe(operators.map(function (event) {
-      var checklist = Object.keys(event.checklist).reduce(function (p, c, i) {
-        return p && event.checklist[c];
-      }, true);
-      return checklist;
+      return _this.isChecked(event);
     }));
   };
 
   AgoraChecklistService.checkEvent$ = function checkEvent$() {
-    var _this = this;
+    var _this2 = this;
 
     return this.checklist$().pipe(operators.switchMap(function (event) {
       var checklist = Object.keys(event.checklist).reduce(function (p, c, i) {
@@ -5448,24 +5480,24 @@ var AgoraChecklistService = /*#__PURE__*/function () {
         var event$ = new rxjs.Subject();
         var check$ = rxjs.of(event).pipe(operators.delay(1000), operators.switchMap(function (event) {
           event$.next(event);
-          return _this.checkBrowserEvent$(event);
+          return _this2.checkBrowserEvent$(event);
         }), operators.switchMap(function (event) {
           event$.next(event);
-          return _this.checkHttpsEvent$(event);
+          return _this2.checkHttpsEvent$(event);
         }), operators.switchMap(function (event) {
           event$.next(event);
-          return _this.checkAudioEvent$(event);
+          return _this2.checkAudioEvent$(event);
         }), operators.switchMap(function (event) {
           event$.next(event);
-          return _this.checkVideoEvent$(event);
+          return _this2.checkVideoEvent$(event);
         }), operators.switchMap(function (event) {
           event$.next(event);
-          return _this.checkRtcEvent$(event);
+          return _this2.checkRtcEvent$(event);
         }), operators.switchMap(function (event) {
           event$.next(event);
-          return _this.checkRtmEvent$(event);
+          return _this2.checkRtmEvent$(event);
         }), operators.tap(function (event) {
-          console.log('AgoraChecklistService', event);
+          // console.log('AgoraChecklistService', event);
           LocalStorageService.set(event.key, true);
         }));
         return rxjs.merge(event$, check$);
@@ -5474,7 +5506,7 @@ var AgoraChecklistService = /*#__PURE__*/function () {
   };
 
   AgoraChecklistService.check$ = function check$() {
-    var _this2 = this;
+    var _this3 = this;
 
     return this.checklist$().pipe(operators.switchMap(function (event) {
       var checklist = Object.keys(event.checklist).reduce(function (p, c, i) {
@@ -5486,19 +5518,19 @@ var AgoraChecklistService = /*#__PURE__*/function () {
       } else {
         LocalStorageService.set(event.key, false);
         return rxjs.of(event).pipe(operators.delay(1000), operators.switchMap(function (event) {
-          return _this2.checkBrowserEvent$(event);
+          return _this3.checkBrowserEvent$(event);
         }), operators.switchMap(function (event) {
-          return _this2.checkHttpsEvent$(event);
+          return _this3.checkHttpsEvent$(event);
         }), operators.switchMap(function (event) {
-          return _this2.checkAudioEvent$(event);
+          return _this3.checkAudioEvent$(event);
         }), operators.switchMap(function (event) {
-          return _this2.checkVideoEvent$(event);
+          return _this3.checkVideoEvent$(event);
         }), operators.switchMap(function (event) {
-          return _this2.checkRtcEvent$(event);
+          return _this3.checkRtcEvent$(event);
         }), operators.switchMap(function (event) {
-          return _this2.checkRtmEvent$(event);
+          return _this3.checkRtmEvent$(event);
         }), operators.tap(function (event) {
-          console.log('AgoraChecklistService', event);
+          // console.log('AgoraChecklistService', event);
           LocalStorageService.set(event.key, true);
         }));
       }
@@ -5512,7 +5544,7 @@ var AgoraChecklistService = /*#__PURE__*/function () {
   };
 
   AgoraChecklistService.checkBrowserEvent$ = function checkBrowserEvent$(event) {
-    var _this3 = this;
+    var _this4 = this;
 
     return this.checkBrowser$().pipe(operators.switchMap(function (browser) {
       event.checklist.browser = browser;
@@ -5521,12 +5553,17 @@ var AgoraChecklistService = /*#__PURE__*/function () {
         return rxjs.of(event).pipe(operators.delay(TIMEOUT));
       } else {
         event.errors.browser = LabelPipe.transform('bhere_browser_error');
-        return _this3.checkHttpsEvent$(event).pipe(operators.switchMap(function (event) {
+        return _this4.checkHttpsEvent$(event).pipe(operators.switchMap(function (event) {
           {
             return rxjs.throwError(event);
           }
         }));
       }
+    }), operators.catchError(function (error) {
+      console.log('checkBrowserEvent$.error', error);
+      event.checklist.browser = false;
+      event.errors.browser = LabelPipe.transform('bhere_browser_error');
+      return rxjs.throwError(event);
     }));
   };
 
@@ -5549,6 +5586,11 @@ var AgoraChecklistService = /*#__PURE__*/function () {
           return rxjs.throwError(event);
         }
       }
+    }), operators.catchError(function (error) {
+      console.log('checkHttpsEvent$.error', error);
+      event.checklist.https = false;
+      event.errors.https = LabelPipe.transform('bhere_https_error');
+      return rxjs.throwError(event);
     }));
   };
 
@@ -5563,6 +5605,7 @@ var AgoraChecklistService = /*#__PURE__*/function () {
   };
 
   AgoraChecklistService.checkAudioEvent$ = function checkAudioEvent$(event) {
+    // console.log('checkAudioEvent$', event);
     if (event.shouldCheckAudio) {
       return this.checkAudio$().pipe(operators.switchMap(function (audio) {
         event.checklist.audio = audio;
@@ -5570,12 +5613,17 @@ var AgoraChecklistService = /*#__PURE__*/function () {
         if (audio) {
           return rxjs.of(event).pipe(operators.delay(TIMEOUT));
         } else {
-          event.errors.audio = LabelPipe.transform('bhere_audio_error');
+          event.errors.audio = LabelPipe.transform('bhere_audio_error'); // console.log('checkAudioEvent$.error', event);
 
           {
             return rxjs.throwError(event);
           }
         }
+      }), operators.catchError(function (error) {
+        console.log('checkAudioEvent$.error', error);
+        event.checklist.audio = false;
+        event.errors.audio = LabelPipe.transform('bhere_audio_error');
+        return rxjs.throwError(event);
       }));
     } else {
       return rxjs.of(event);
@@ -5606,6 +5654,11 @@ var AgoraChecklistService = /*#__PURE__*/function () {
             return rxjs.throwError(event);
           }
         }
+      }), operators.catchError(function (error) {
+        console.log('checkVideoEvent$.error', error);
+        event.checklist.video = false;
+        event.errors.video = LabelPipe.transform('bhere_video_error');
+        return rxjs.throwError(event);
       }));
     } else {
       return rxjs.of(event);
@@ -5631,6 +5684,11 @@ var AgoraChecklistService = /*#__PURE__*/function () {
           return rxjs.throwError(event);
         }
       }
+    }), operators.catchError(function (error) {
+      console.log('checkRtcEvent$.error', error);
+      event.checklist.rtc = false;
+      event.errors.rtc = LabelPipe.transform('bhere_rtc_error');
+      return rxjs.throwError(event);
     }));
   };
 
@@ -5649,6 +5707,11 @@ var AgoraChecklistService = /*#__PURE__*/function () {
         event.errors.rtm = LabelPipe.transform('bhere_rtm_error');
         return rxjs.throwError(event);
       }
+    }), operators.catchError(function (error) {
+      console.log('checkRtmEvent$.error', error);
+      event.checklist.rtm = false;
+      event.errors.rtm = LabelPipe.transform('bhere_rtm_error');
+      return rxjs.throwError(event);
     }));
   };
 
@@ -5673,14 +5736,13 @@ var AgoraChecklistService = /*#__PURE__*/function () {
     this.shouldCheckAudio = false;
     this.shouldCheckVideo = false;
     AgoraChecklistService.checkEvent$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      console.log('AgoraChecklistService', event, event.errors);
       _this.shouldCheckAudio = event.shouldCheckAudio;
       _this.shouldCheckVideo = event.shouldCheckVideo;
       _this.checklist = event.checklist;
-      _this.errors = event.errors;
-      console.log(JSON.stringify(event.errors));
-      var success = Object.keys(event.checklist).reduce(function (p, c) {
-        return p && event.checklist[c];
-      }, true);
+      _this.errors = event.errors; // console.log(JSON.stringify(event.errors));
+
+      var success = AgoraChecklistService.isChecked(event);
 
       if (success) {
         _this.checklist.success = success;
@@ -5693,11 +5755,11 @@ var AgoraChecklistService = /*#__PURE__*/function () {
         }
       } else {
         _this.pushChanges();
-      }
+      } // console.log(event);
 
-      console.log(event);
-    }, function (event) {
-      _this.errors = event.errors;
+    }, function (error) {
+      // console.log('AgoraChecklistService.error', error);
+      _this.errors = error.errors;
       _this.checklist.error = true;
       _this.busy = false;
 
@@ -6393,6 +6455,206 @@ AgoraDevicePreviewComponent.meta = {
 AgoraDeviceComponent.meta = {
   selector: '[agora-device]',
   outputs: ['enter']
+};var Path = /*#__PURE__*/function () {
+  function Path(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+
+    this.items = this.items || [];
+    this.originalItems = this.items.slice();
+  }
+
+  _createClass(Path, [{
+    key: "payload",
+    get: function get() {
+      var _this = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (View.allowedProps.indexOf(key) !== -1) {
+          switch (key) {
+            default:
+              payload[key] = _this[key];
+          }
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return Path;
+}();
+
+_defineProperty(Path, "allowedProps", ['id', 'name', 'items']);
+
+function mapPath(map) {
+  map = new Path(map);
+  return map;
+}var DEFAULT_PATH = {
+  id: null,
+  name: "Principale",
+  items: []
+};
+
+var PathService = /*#__PURE__*/function () {
+  function PathService() {}
+
+  PathService.getCurrentPath$ = function getCurrentPath$(pathId) {
+    var _this = this;
+
+    if (pathId === void 0) {
+      pathId = null;
+    }
+
+    return this.pathGet$().pipe(operators.switchMap(function (paths) {
+      _this.paths = paths;
+      var path = DEFAULT_PATH;
+
+      if (pathId) {
+        var selectedPath = paths.find(function (x) {
+          return x.id === pathId;
+        });
+
+        if (selectedPath) {
+          path = selectedPath;
+        }
+      }
+
+      _this.path = path;
+      return _this.path$;
+    }));
+  };
+
+  PathService.pathGet$ = function pathGet$() {
+    return HttpService.get$("/api/path").pipe(operators.map(function (data) {
+      data.paths = data.paths.map(function (path) {
+        return mapPath(path);
+      });
+      data.paths.unshift(DEFAULT_PATH);
+      return data.paths;
+    }));
+  };
+
+  PathService.addPath = function addPath(path) {
+    var paths = this.paths.slice();
+    paths.push(path);
+    this.paths = paths;
+    this.path = path;
+  };
+
+  PathService.editPath = function editPath(path) {
+    // console.log('PathService.editPath', path);
+    var paths = this.paths.slice();
+    var index = paths.reduce(function (p, c, i) {
+      return c.id === path.id ? i : p;
+    }, -1); // console.log('PathService.editPath', paths, index);
+
+    if (index > 0) {
+      var currentPath = this.path;
+
+      if (currentPath.id === path.id) {
+        currentPath = path;
+      } // console.log('PathService.editPath', currentPath);
+
+
+      paths.splice(index, 1, path);
+      this.paths = paths;
+      this.path = currentPath;
+    }
+  };
+
+  PathService.deletePath = function deletePath(path) {
+    var paths = this.paths.slice();
+    var index = paths.indexOf(path);
+
+    if (index > 0) {
+      paths.splice(index, 1);
+      this.paths = paths;
+      var currentPath = this.path;
+
+      if (currentPath.id === path.id) {
+        currentPath = paths[0];
+      }
+
+      this.path = currentPath;
+    }
+  };
+
+  PathService.pathCreate$ = function pathCreate$(path) {
+    return HttpService.post$("/api/path", path).pipe(operators.map(function (path) {
+      return mapPath(path);
+    }));
+  };
+
+  PathService.pathUpdate$ = function pathUpdate$(path) {
+    return HttpService.put$("/api/path/" + path.id, path).pipe(operators.map(function (x) {
+      return mapPath(x);
+    }));
+  };
+
+  PathService.pathDelete$ = function pathDelete$(path) {
+    return HttpService.delete$("/api/path/" + path.id);
+  }
+  /*
+  static itemCreate$(path, item) {
+  	return HttpService.post$(`/api/path/${path.id}/item`, item).pipe(
+  		map(item => mapViewItem(item)),
+  	);
+  }
+  
+  static itemUpdate$(path, item) {
+  	item = mapViewItem(item); // !!! ??
+  	return HttpService.put$(`/api/path/${path.id}/item/${item.id}`, item.payload).pipe(
+  		map(item => mapViewItem(item)),
+  	);
+  }
+  
+  static itemDelete$(path, item) {
+  	return HttpService.delete$(`/api/path/${path.id}/item/${item.id}`);
+  }
+  */
+  ;
+
+  _createClass(PathService, null, [{
+    key: "paths",
+    set: function set(paths) {
+      this.paths$.next(paths);
+    },
+    get: function get() {
+      return this.paths$.getValue();
+    }
+  }, {
+    key: "path",
+    set: function set(path) {
+      this.path$.next(path);
+    },
+    get: function get() {
+      return this.path$.getValue();
+    }
+  }]);
+
+  return PathService;
+}();
+
+_defineProperty(PathService, "paths$", new rxjs.BehaviorSubject([DEFAULT_PATH]));
+
+_defineProperty(PathService, "path$", new rxjs.BehaviorSubject(DEFAULT_PATH));var SlugPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(SlugPipe, _Pipe);
+
+  function SlugPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  SlugPipe.transform = function transform(key) {
+    var url = environment.url;
+    return url[key] || "#" + key;
+  };
+
+  return SlugPipe;
+}(rxcomp.Pipe);
+SlugPipe.meta = {
+  name: 'slug'
 };var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLinkComponent, _Component);
 
@@ -6406,7 +6668,33 @@ AgoraDeviceComponent.meta = {
     var _this = this;
 
     this.state = {};
+    this.paths = [];
+    this.pathId = null;
+    this.form = null;
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      // console.log('AgoraLinkComponent.state', state);
+      _this.state = state;
+
+      _this.pushChanges();
+    });
+
+    if (environment.flags.usePaths) {
+      PathService.getCurrentPath$().pipe(operators.first(), operators.tap(), operators.takeUntil(this.unsubscribe$)).subscribe(function (path) {
+        _this.paths = PathService.paths;
+        _this.pathId = path.id || '';
+
+        _this.onLoad();
+      });
+    } else {
+      this.onLoad();
+    }
+  };
+
+  _proto.onLoad = function onLoad() {
+    var _this2 = this;
+
     var form = this.form = new rxcompForm.FormGroup({
+      path: this.pathId,
       id: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(MEETING_ID_VALIDATOR), rxcompForm.Validators.RequiredValidator()]),
       idAttendee: null,
       idStreamer: null,
@@ -6415,26 +6703,48 @@ AgoraDeviceComponent.meta = {
 
     });
     var controls = this.controls = form.controls;
+    var pathOptions = this.paths.map(function (x) {
+      return {
+        id: x.id || '',
+        name: x.name
+      };
+    });
+
+    if (pathOptions.length > 0) {
+      pathOptions.unshift({
+        id: null,
+        name: 'bhere_select_path' // LabelPipe.transform('bhere_select_path')
+
+      });
+    }
+
+    controls.path.options = pathOptions;
     form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
       // console.log('AgoraLinkComponent.changes$', form.value);
-      _this.pushChanges();
-    });
-    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      // console.log('AgoraLinkComponent.state', state);
-      _this.state = state;
+      // console.log(changes.path, changes.id);
+      if (_this2.pathId !== changes.path && changes.id !== null) {
+        _this2.pathId = changes.path;
 
-      _this.pushChanges();
+        _this2.onGenerateMeetingId();
+      }
+
+      _this2.pushChanges();
     });
   };
 
   _proto.onGenerateMeetingId = function onGenerateMeetingId($event) {
-    var meetingId = new MeetingId();
+    var pathId = this.pathId ? String(this.pathId) : null;
+    pathId = pathId && pathId.length ? pathId : null; // console.log('onGenerateMeetingId', this.pathId, pathId);
+
+    var meetingId = new MeetingId({
+      pathId: pathId
+    });
     var meetingIdRoles = meetingId.toRoles();
     this.form.patch(meetingIdRoles);
   };
 
   _proto.onInputDidChange = function onInputDidChange($event) {
-    var _this2 = this;
+    var _this3 = this;
 
     // console.log('onInputDidChange', this.form.get('id').value, this.form.get('id').valid);
     if (this.state.role !== 'publisher') {
@@ -6442,21 +6752,21 @@ AgoraDeviceComponent.meta = {
     }
 
     setTimeout(function () {
-      if (_this2.form.get('id').valid) {
-        var value = _this2.form.get('id').value;
+      if (_this3.form.get('id').valid) {
+        var value = _this3.form.get('id').value;
 
         var meetingId = new MeetingId(value);
         var meetingIdRoles = meetingId.toRoles();
 
-        _this2.form.patch(meetingIdRoles);
+        _this3.form.patch(meetingIdRoles);
       } else {
-        _this2.form.get('idAttendee').reset();
+        _this3.form.get('idAttendee').reset();
 
-        _this2.form.get('idStreamer').reset();
+        _this3.form.get('idStreamer').reset();
 
-        _this2.form.get('idViewer').reset();
+        _this3.form.get('idViewer').reset();
 
-        _this2.form.get('idSmartDevice').reset();
+        _this3.form.get('idSmartDevice').reset();
       }
     }, 1);
   };
@@ -6482,6 +6792,14 @@ AgoraDeviceComponent.meta = {
     var isValid = this.form.valid;
     return isValid;
   };
+
+  _createClass(AgoraLinkComponent, [{
+    key: "selfServiceTourUrl",
+    get: function get() {
+      var pathId = this.form.get('path').value;
+      return "" + SlugPipe.transform('selfServiceTour') + (pathId ? "?pathId=" + pathId : '');
+    }
+  }]);
 
   return AgoraLinkComponent;
 }(rxcomp.Component);
@@ -6993,6 +7311,13 @@ var View$1 = /*#__PURE__*/function () {
         }
       });
       return payload;
+    }
+  }, {
+    key: "pathItems",
+    get: function get() {
+      return this.items.filter(function (x) {
+        return x.path;
+      });
     }
   }, {
     key: "shortType",
@@ -7911,16 +8236,62 @@ _defineProperty(LanguageService, "languages", LanguageService.getDefaultLanguage
 
 _defineProperty(LanguageService, "defaultLanguage", LanguageService.getDefaultLanguage());
 
-_defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLanguage);var ViewService = /*#__PURE__*/function () {
+_defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLanguage);var DEFAULT_WAITING_ROOM = {
+  id: 'waiting-room',
+  type: {
+    id: 1,
+    name: 'waiting-room'
+  },
+  name: 'Waiting Room',
+  likes: 0,
+  liked: false,
+  asset: {
+    type: {
+      id: 1,
+      name: 'image'
+    },
+    folder: '/textures/waiting-room/',
+    file: 'waiting-room.jpg'
+  },
+  items: [],
+  orientation: {
+    latitude: 0,
+    longitude: 0
+  }
+};
+
+var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
+  ViewService.getDataView = function getDataView(viewId) {
+    return this.dataViews.find(function (x) {
+      return x.id === viewId;
+    });
+  }
+  /*
+  static view_ = null;
+  static get view() {
+  	return this.view_;
+  }
+  static set view(view) {
+  	this.view_ = view;
+  }
+  */
+  ;
+
   ViewService.data$ = function data$() {
+    var _this = this;
+
     if (!this.data$_) {
       var dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
       this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(function (data) {
         data.views = data.views.map(function (view) {
           return mapView(view);
         });
+        _this.data = data;
+        var views = data.views; // const views = data.views.filter(x => x.type.name !== 'waiting-room');
+
+        _this.views = views;
         return data;
       }), // tap(data => console.log('ViewService.data$', data)),
       operators.shareReplay(1));
@@ -7929,16 +8300,16 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     return this.data$_;
   };
 
-  ViewService.view$ = function view$(data, editor) {
-    var _this = this;
+  ViewService.view$ = function view$() {
+    var _this2 = this;
 
-    var views = editor ? data.views : data.views.filter(function (x) {
-      return x.type.name !== 'waiting-room';
-    });
+    var views = this.views;
+    var editor = this.editor;
     var meetingUrl = new MeetingUrl();
     var viewId = meetingUrl.viewId;
     var embedViewId = meetingUrl.embedViewId;
-    var firstViewId = views.length ? views[0].id : null;
+    var validViews = editor ? views : this.validViews;
+    var firstViewId = validViews.length ? validViews[0].id : null;
     var initialViewId = embedViewId || viewId || firstViewId;
     this.action$_.next({
       viewId: initialViewId
@@ -7946,9 +8317,30 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     return this.action$_.pipe(operators.distinctUntilChanged(function (a, b) {
       return a.viewId === b.viewId;
     }), operators.map(function (action) {
-      var view = data.views.find(function (view) {
+      // const view = data.views.find(view => view.id === action.viewId);
+      // console.log('ViewService.view$', 'path', path);
+      // filter path
+      var view = views.find(function (view) {
         return view.id === action.viewId;
       });
+      /*
+      if (path && !editor) {
+      	if (path.items.indexOf(view.id) === -1) {
+      		const newView = Object.assign({}, view);
+      		newView.items = view.items.filter(x => {
+      			if (x.type.name === ViewItemType.Nav.name) {
+      				return path.items.indexOf(x.viewId) === -1;
+      			} else {
+      				return true;
+      			}
+      		});
+      		view = mapView(newView);
+      	} else {
+      		view = null;
+      	}
+      }
+      console.log('ViewService.view$', view, path);
+      */
 
       if (view) {
         view.keepOrientation = action.keepOrientation || false;
@@ -7956,41 +8348,68 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
       } // console.log('ViewService.view$', action.viewId, action.keepOrientation, action.useLastOrientation);
 
 
-      return view || _this.getWaitingRoom(data);
+      return view || _this2.getWaitingRoom();
     }));
   };
 
-  ViewService.hostedView$ = function hostedView$(data) {
-    var _this2 = this;
+  ViewService.setDataAndPath = function setDataAndPath(data, path) {
+    this.data = data;
+    data.views.forEach(function (view) {
+      view.path = !path || path.items.indexOf(view.id) === -1;
+      view.items.forEach(function (item) {
+        var valid = true;
 
-    var waitingRoom = this.getWaitingRoom(data);
-    return rxjs.combineLatest([this.view$(data), this.hosted$()]).pipe(operators.map(function (datas) {
+        if (path) {
+          if (item.type.name === ViewItemType.Nav.name) {
+            valid = path.items.indexOf(item.viewId) === -1;
+          }
+
+          item.path = valid;
+        }
+      });
+    });
+    this.views = data.views;
+    this.path = path;
+  };
+
+  ViewService.hostedView$ = function hostedView$(data, path) {
+    var _this3 = this;
+
+    this.setDataAndPath(data, path);
+    this.editor = false;
+    var waitingRoom = this.getWaitingRoom();
+    return rxjs.combineLatest([this.view$(), this.hosted$()]).pipe(operators.map(function (datas) {
       var view = datas[0];
       var hosted = datas[1];
       return hosted ? view : waitingRoom;
     }), operators.distinctUntilChanged(function (a, b) {
       return a.id === b.id;
     }), operators.tap(function (view) {
-      _this2.view = view;
+      _this3.view = view;
 
       if (view.id !== waitingRoom.id) {
         LocationService.set('viewId', view.id);
-        var prefetchAssets = ViewService.getPrefetchAssets(view, data);
+        var prefetchAssets = ViewService.getPrefetchAssets(view);
         view.prefetchAssets = prefetchAssets;
       }
     }));
   };
 
-  ViewService.editorView$ = function editorView$(data) {
-    var _this3 = this;
+  ViewService.editorView$ = function editorView$(data, path) {
+    var _this4 = this;
 
-    var waitingRoom = this.getWaitingRoom(data);
-    return this.view$(data, true).pipe(operators.tap(function (view) {
-      _this3.view = view;
+    this.setDataAndPath(data, path);
+    this.editor = true;
+    var waitingRoom = this.getWaitingRoom();
+    return this.view$().pipe(operators.map(function (view) {
+      // console.log('ViewService.editorView$.view', view.updateIndices);
+      _this4.view = view;
 
       if (view.id !== waitingRoom.id) {
         LocationService.set('viewId', view.id);
       }
+
+      return view;
     }));
   };
 
@@ -8001,8 +8420,10 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
   };
 
   ViewService.viewById$ = function viewById$(viewId) {
+    var _this5 = this;
+
     return this.data$().pipe(operators.map(function (data) {
-      return data.views.find(function (x) {
+      return _this5.views.find(function (x) {
         return x.id === viewId;
       });
     }));
@@ -8032,41 +8453,20 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     }));
   };
 
-  ViewService.getWaitingRoom = function getWaitingRoom(data) {
-    return data && data.views.find(function (x) {
-      return x.type.name === 'waiting-room';
-    }) || {
-      id: 'waiting-room',
-      type: {
-        id: 1,
-        name: 'waiting-room'
-      },
-      name: 'Waiting Room',
-      likes: 0,
-      liked: false,
-      asset: {
-        type: {
-          id: 1,
-          name: 'image'
-        },
-        folder: '/textures/waiting-room/',
-        file: 'waiting-room.jpg'
-      },
-      items: [],
-      orientation: {
-        latitude: 0,
-        longitude: 0
-      }
-    };
+  ViewService.getWaitingRoom = function getWaitingRoom() {
+    return this.dataViews.find(function (x) {
+      return x.type.name === ViewType.WaitingRoom.name;
+    }) || DEFAULT_WAITING_ROOM;
   };
 
-  ViewService.getPrefetchAssets = function getPrefetchAssets(view, data) {
+  ViewService.getPrefetchAssets = function getPrefetchAssets(view) {
+    var views = this.views;
     var assets = view.items // filter nav items
     .filter(function (x) {
       return x.type.name === ViewItemType.Nav.name && x.viewId != null;
     }) // map to view
     .map(function (x) {
-      return data.views.find(function (v) {
+      return views.find(function (v) {
         return v.id === x.viewId;
       });
     }) // filter view with image
@@ -8080,9 +8480,68 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     return assets;
   };
 
+  ViewService.addView = function addView(view) {
+    var data = this.data;
+    var views = data.views.slice();
+    views.push(view);
+    data.views = views;
+    this.views = views;
+    this.viewId = view.id;
+  };
+
+  ViewService.deleteView = function deleteView(view) {
+    var data = this.data;
+    var views = data.views.slice();
+    var index = views.reduce(function (p, c, i) {
+      return c.id === view.id ? i : p;
+    }, -1);
+
+    if (index > 0) {
+      views.splice(index, 1);
+      data.paths = views;
+    }
+
+    ViewService.viewId = this.dataViews[0].id; // this.pushChanges();
+  };
+
   _createClass(ViewService, null, [{
+    key: "views",
+    set: function set(views) {
+      this.views$_.next(views);
+    },
+    get: function get() {
+      return this.views$_.getValue();
+    }
+  }, {
+    key: "view",
+    set: function set(view) {
+      this.view$_.next(view);
+    },
+    get: function get() {
+      return this.view$_.getValue();
+    }
+  }, {
+    key: "dataViews",
+    get: function get() {
+      return this.data ? this.data.views : [];
+    }
+  }, {
+    key: "validViews",
+    get: function get() {
+      return this.data ? this.data.views.filter(function (x) {
+        return x.type.name !== ViewType.WaitingRoom.name;
+      }) : [];
+    }
+  }, {
+    key: "pathViews",
+    get: function get() {
+      return this.validViews.filter(function (x) {
+        return x.path;
+      });
+    } // action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
+
+  }, {
     key: "action",
-    // action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
     set: function set(action) {
       this.action$_.next(action);
     },
@@ -8103,22 +8562,16 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
       var action = this.action$_.getValue();
       return action ? action.viewId : null;
     }
-  }, {
-    key: "view",
-    get: function get() {
-      return this.view_;
-    },
-    set: function set(view) {
-      this.view_ = view;
-    }
   }]);
 
   return ViewService;
 }();
 
-_defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));
+_defineProperty(ViewService, "views$_", new rxjs.BehaviorSubject([]));
 
-_defineProperty(ViewService, "view_", null);var UID = 0;
+_defineProperty(ViewService, "view$_", new rxjs.BehaviorSubject(null));
+
+_defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));var UID = 0;
 var WebhookEvent = /*#__PURE__*/function () {
   function WebhookEvent(options) {
     if (options) {
@@ -8733,3343 +9186,37 @@ var MediaLoader = /*#__PURE__*/function () {
 
   return MediaLoader;
 }();
-MediaLoader.events$ = new rxjs.ReplaySubject(1);var XRStatus = {
-  Waiting: 'waiting',
-  Enabled: 'enabled',
-  Ended: 'ended',
-  Started: 'started',
-  Disabled: 'disabled',
-  NeedsHttps: 'needs-https',
-  Unavailable: 'unavailable'
-};
+MediaLoader.events$ = new rxjs.ReplaySubject(1);// import * as THREE from 'three';
+var PANORAMA_RADIUS = 101;
+var Geometry = /*#__PURE__*/function () {
+  function Geometry() {}
 
-var VRService = /*#__PURE__*/function () {
-  VRService.getService = function getService() {
-    if (!this.service_) {
-      this.service_ = new VRService();
-    }
-
-    return this.service_;
-  };
-
-  _createClass(VRService, [{
-    key: "status",
+  _createClass(Geometry, null, [{
+    key: "defaultGeometry",
     get: function get() {
-      return this.status$.getValue();
+      return Geometry.defaultGeometry_ || (Geometry.defaultGeometry_ = new THREE.BoxBufferGeometry(1, 1, 1));
     }
   }, {
-    key: "state",
+    key: "planeGeometry",
     get: function get() {
-      return this.state$.getValue();
+      return Geometry.planeGeometry_ || (Geometry.planeGeometry_ = new THREE.PlaneBufferGeometry(1, 1, 2, 2));
+    }
+  }, {
+    key: "sphereGeometry",
+    get: function get() {
+      return Geometry.sphereGeometry_ || (Geometry.sphereGeometry_ = new THREE.SphereBufferGeometry(3, 12, 12));
+    }
+  }, {
+    key: "panoramaGeometry",
+    get: function get() {
+      return Geometry.panoramaGeometry_ || (Geometry.panoramaGeometry_ = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 36, 36)); // 101, 44, 30
+      // return Geometry.panoramaGeometry_ || (Geometry.panoramaGeometry_ = new THREE.IcosahedronBufferGeometry(PANORAMA_RADIUS, 4)); // 101, 44, 30
+      // return Geometry.panoramaGeometry_ || (Geometry.panoramaGeometry_ = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 40, 40)); // 101, 44, 30
     }
   }]);
 
-  function VRService() {
-    var _this = this;
-
-    if (VRService.service_) {
-      throw 'VRService is a singleton class!';
-    }
-
-    var state = this.state_ = {
-      camera: {
-        position: new THREE.Vector3(),
-        quaternion: new THREE.Quaternion(),
-        scale: new THREE.Vector3(),
-        array: new Array(3 + 4 + 3).fill(0)
-      }
-    };
-    this.onSessionStarted = this.onSessionStarted.bind(this);
-    this.onSessionEnded = this.onSessionEnded.bind(this);
-    this.status$ = new rxjs.BehaviorSubject(XRStatus.Waiting);
-    this.session$ = new rxjs.Subject();
-    this.state$ = new rxjs.BehaviorSubject(state);
-    this.currentSession = null;
-
-    if ('xr' in navigator) {
-      navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
-        if (supported) {
-          _this.status$.next(XRStatus.Enabled);
-        } else {
-          _this.status$.next(XRStatus.Disabled);
-        }
-      });
-    } else {
-      if (window.isSecureContext === false) {
-        this.status$.next(XRStatus.NeedsHttps);
-      } else {
-        this.status$.next(XRStatus.Unavailable); // 'https://immersiveweb.dev/';
-      }
-    }
-  }
-
-  var _proto = VRService.prototype;
-
-  _proto.onSessionStarted = function onSessionStarted(session) {
-    session.addEventListener('end', this.onSessionEnded);
-    this.currentSession = session;
-    this.session$.next(session);
-    this.status$.next(XRStatus.Started);
-  };
-
-  _proto.onSessionEnded = function onSessionEnded()
-  /*event*/
-  {
-    this.currentSession.removeEventListener('end', this.onSessionEnded);
-    this.currentSession = null;
-    this.session$.next(null);
-    this.status$.next(XRStatus.Ended);
-  };
-
-  _proto.toggleVR = function toggleVR(event) {
-    if (this.currentSession === null) {
-      // WebXR's requestReferenceSpace only works if the corresponding feature
-      // was requested at session creation time. For simplicity, just ask for
-      // the interesting ones as optional features, but be aware that the
-      // requestReferenceSpace call will fail if it turns out to be unavailable.
-      // ('local' is always available for immersive sessions and doesn't need to
-      // be requested separately.)
-      var sessionInit = {
-        optionalFeatures: ['local-floor', 'bounded-floor']
-      };
-      navigator.xr.requestSession('immersive-vr', sessionInit).then(this.onSessionStarted);
-    } else {
-      this.currentSession.end();
-    }
-  };
-
-  _proto.isDisabled = function isDisabled() {
-    var status = this.status$.getValue();
-
-    switch (status) {
-      case XRStatus.Waiting:
-      case XRStatus.Disabled:
-      case XRStatus.NeedsHttps:
-      case XRStatus.Unavailable:
-        return true;
-
-      default:
-        return false;
-    }
-  };
-
-  _proto.getLabel = function getLabel() {
-    var label;
-    var status = this.status$.getValue();
-
-    switch (status) {
-      case XRStatus.Waiting:
-        label = 'Waiting VR';
-        break;
-
-      case XRStatus.Enabled:
-      case XRStatus.Ended:
-        label = 'Enter VR';
-        break;
-
-      case XRStatus.Started:
-        label = 'Exit VR';
-        break;
-
-      case XRStatus.Disabled:
-        label = 'VR Disabled';
-        break;
-
-      case XRStatus.NeedsHttps:
-        label = 'VR Needs Https';
-        break;
-
-      case XRStatus.Unavailable:
-        label = 'VR Unavailable';
-        break;
-    }
-
-    return label;
-  };
-
-  _proto.updateState = function updateState(world) {
-    if (this.status === XRStatus.Started) {
-      var renderer = world.renderer,
-          scene = world.scene,
-          camera = world.camera,
-          state = this.state_;
-      camera.matrixWorld.decompose(state.camera.position, state.camera.quaternion, state.camera.scale);
-      state.camera.array[0] = state.camera.position.x;
-      state.camera.array[1] = state.camera.position.y;
-      state.camera.array[2] = state.camera.position.z;
-      state.camera.array[3] = state.camera.quaternion.x;
-      state.camera.array[4] = state.camera.quaternion.y;
-      state.camera.array[5] = state.camera.quaternion.z;
-      state.camera.array[6] = state.camera.quaternion.w;
-      state.camera.array[7] = state.camera.scale.x;
-      state.camera.array[8] = state.camera.scale.y;
-      state.camera.array[9] = state.camera.scale.z;
-      this.state$.next(state);
-    }
-  };
-
-  return VRService;
-}();var AgoraComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AgoraComponent, _Component);
-
-  function AgoraComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AgoraComponent.prototype;
-
-  _proto.getName = function getName(user) {
-    return StateService.state.name || MeetingUrl.getName(user);
-  };
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.classList.remove('hidden');
-    this.platform = DeviceService.platform;
-    this.state = {};
-    this.hosted = null;
-    this.data = null;
-    this.views = null;
-    this.view = null;
-    this.previousView = null;
-    this.form = null;
-    this.local = null;
-    this.screen = null;
-    this.remoteScreen_ = null;
-    this.navmaps = [];
-    this.navmap = null; // this.media = null;
-
-    this.hasScreenViewItem = false;
-    this.remotes = [];
-    var vrService = this.vrService = VRService.getService();
-    vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
-      return _this.pushChanges();
-    });
-    this.resolveUser();
-  };
-
-  _proto.getLinkRole = function getLinkRole() {
-    var linkRole = null;
-    /*
-    const meetingUrl = this.meetingUrl;
-    const meetingId = meetingUrl.meetingId;
-    if (meetingId) {
-    	linkRole = meetingId.role;
-    }
-    */
-
-    var match = (LocationService.get('link') || '').match(/\d{9}-(\d{4})-\d{13}/);
-
-    if (match) {
-      var index = parseInt(match[1]);
-      linkRole = Object.keys(RoleType).reduce(function (p, c, i) {
-        return i === index ? RoleType[c] : p;
-      }, null);
-    }
-
-    return linkRole;
-  };
-
-  _proto.resolveUser = function resolveUser() {
-    var _this2 = this;
-
-    if (this.isEmbed) {
-      UserService.temporaryUser$(RoleType.Embed).pipe(operators.first()).subscribe(function (user) {
-        _this2.initWithUser(user);
-      });
-    } else {
-      UserService.me$().pipe(operators.first()).subscribe(function (user) {
-        _this2.initWithUser(user); // this.userGuard(user);
-
-      });
-    }
-  };
-
-  _proto.userGuard = function userGuard(user) {
-    var linkRole = this.getLinkRole();
-
-    if (user && (!linkRole || user.type === linkRole)) {
-      this.initWithUser(user);
-    } else {
-      this.initWithUser({
-        type: linkRole
-      });
-    }
-  };
-
-  _proto.userGuardRedirect = function userGuardRedirect(user) {
-    var linkRole = this.getLinkRole();
-
-    if (user && (!linkRole || linkRole === user.type)) {
-      this.initWithUser(user);
-    } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-      window.location.href = environment.url.access;
-    } else {
-      this.initWithUser({
-        type: linkRole
-      });
-    }
-  };
-
-  _proto.setNextStatus = function setNextStatus() {
-    var status = AgoraStatus.Idle;
-    var state = StateService.state;
-
-    if (state.role === RoleType.SmartDevice) {
-      state.name = state.name || 'Smart Device';
-    }
-
-    if (!state.checklist) {
-      status = AgoraStatus.Checklist;
-    } else if (!state.link) {
-      status = AgoraStatus.Link;
-    } else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
-      status = AgoraStatus.Login;
-    } else if (!state.name) {
-      status = AgoraStatus.Name;
-    } else if (state.role !== RoleType.Viewer && state.role !== RoleType.SmartDevice) {
-      status = AgoraStatus.Device;
-    } else {
-      status = AgoraStatus.ShouldConnect;
-    }
-
-    StateService.patchState({
-      status: status
-    });
-    return status;
-  };
-
-  _proto.initWithUser = function initWithUser(user) {
-    var _this3 = this;
-
-    // console.log('initWithUser', user);
-    // const meetingUrl = this.meetingUrl;
-    // const link = meetingUrl.link;
-    var link = LocationService.get('link') || null;
-    var role = this.getLinkRole() || (user ? user.type : null);
-    user = user || {
-      type: role
-    };
-
-    if (role !== user.type) {
-      user = {
-        type: role
-      };
-    }
-
-    var mode = UserService.getMode(role);
-    var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null); // const name = meetingUrl.name || this.getName(user);
-
-    var checklist = null;
-    var hosted = role === RoleType.Publisher ? true : false;
-    var live = role === RoleType.SelfService || role === RoleType.Embed || DEBUG ? false : true;
-    var navigable = this.isNavigable;
-    var state = {
-      user: user,
-      role: role,
-      mode: mode,
-      name: name,
-      checklist: checklist,
-      link: link,
-      channelName: environment.channelName,
-      uid: null,
-      status: AgoraStatus.Idle,
-      connecting: false,
-      connected: false,
-      controlling: false,
-      spying: false,
-      silencing: false,
-      hosted: hosted,
-      live: live,
-      navigable: navigable,
-      cameraMuted: false,
-      audioMuted: false,
-      showNavInfo: true
-    };
-    StateService.state = state;
-    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this3.state = state;
-      _this3.hosted = state.hosted;
-
-      _this3.pushChanges(); // console.log(state);
-
-
-      _this3.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
-    });
-    this.initAgora();
-  };
-
-  _proto.viewObserver$ = function viewObserver$() {
-    var _this4 = this;
-
-    return ViewService.data$().pipe(operators.switchMap(function (data) {
-      _this4.data = data;
-      _this4.views = data.views.filter(function (x) {
-        return x.type.name !== 'waiting-room';
-      });
-      return ViewService.hostedView$(data);
-    }),
-    /*
-    tap(view => {
-    	this.view = null;
-    	this.pushChanges();
-    }),
-    delay(1),
-    */
-    operators.map(function (view) {
-      // console.log('AgoraComponent.viewObserver$', view);
-      // !!! move navToView to user action?
-      if (_this4.agora) {
-        _this4.agora.navToView(view.id, view.keepOrientation, view.useLastOrientation);
-      }
-
-      _this4.previousView = _this4.view;
-      _this4.view = view;
-
-      _this4.setNavmap(view);
-
-      _this4.hasScreenViewItem = view.items.find(function (x) {
-        return MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x);
-      }) != null;
-
-      _this4.pushChanges();
-
-      return view;
-    }));
-  };
-
-  _proto.load = function load(callback) {
-    this.loadNavmaps();
-    this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {
-      // console.log('AgoraComponent.viewObserver$', view);
-      if (typeof callback === 'function') {
-        callback();
-        callback = null;
-      }
-    });
-  };
-
-  _proto.loadNavmaps = function loadNavmaps() {
-    var _this5 = this;
-
-    if (environment.flags.navmaps) {
-      NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
-        _this5.navmaps = navmaps;
-      });
-    }
-  };
-
-  _proto.setNavmap = function setNavmap(view) {
-    var navmaps = this.navmaps;
-    var navmap = (navmaps || []).find(function (x) {
-      return (x.items || []).find(function (i) {
-        return i.viewId === view.id;
-      }) != null;
-    }) || null; // console.log('AgoraComponent.setNavmap', navmap);
-
-    this.navmap = navmap;
-  };
-
-  _proto.toggleNavmap = function toggleNavmap() {
-    StateService.patchState({
-      showNavmap: !StateService.state.showNavmap
-    });
-  };
-
-  _proto.onNavmapItem = function onNavmapItem(item) {
-    StateService.patchState({
-      showNavmap: false
-    });
-    this.onNavTo(item);
-  };
-
-  _proto.loadAndConnect = function loadAndConnect(preferences) {
-    var _this6 = this;
-
-    this.load(function () {
-      _this6.connect(preferences);
-    });
-  };
-
-  _proto.initAgora = function initAgora() {
-    var _this7 = this;
-
-    var agora = null;
-
-    if (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) {
-      this.load(function () {
-        StateService.patchState({
-          status: AgoraStatus.Connected,
-          hosted: true
-        });
-      });
-      this.checkSelfServiceProposition();
-      this.checkSelfServiceAudio();
-    } else {
-      AgoraChecklistService.isChecked$().pipe(operators.first()).subscribe(function (checked) {
-        StateService.patchState({
-          checklist: checked
-        });
-        agora = _this7.agora = AgoraService.getSingleton();
-
-        var role = _this7.getLinkRole();
-
-        var status = _this7.setNextStatus(); // console.log('initAgora', status, role);
-
-      });
-    }
-
-    StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
-      // console.log('AgoraComponent.local', local);
-      _this7.local = local;
-
-      _this7.pushChanges();
-    });
-    StreamService.screen$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (screen) {
-      // console.log('AgoraComponent.screen', screen);
-      if (_this7.screen === _this7.remoteScreen) {
-        _this7.remoteScreen = null;
-      }
-
-      _this7.screen = screen;
-      _this7.remoteScreen = screen || _this7.remoteScreen;
-
-      _this7.pushChanges();
-    });
-    StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
-      _this7.remotes = [];
-      _this7.remoteScreen = _this7.screen;
-      remotes.forEach(function (x) {
-        if (x.clientInfo && x.clientInfo.screenUid === x.getId()) {
-          _this7.remoteScreen = x;
-        } else {
-          _this7.remotes.push(x);
-        }
-      }); // console.log('AgoraComponent.remotes', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
-
-      _this7.pushChanges();
-    });
-    /*
-    MediaLoader.events$.pipe(
-    	tap(event => {
-    		if (event instanceof MediaLoaderPlayEvent) {
-    			this.media = event.loader;
-    			// this.pushChanges();
-    		} else if (event instanceof MediaLoaderDisposeEvent) {
-    			if (this.media === event.loader) {
-    				this.media = null;
-    				// this.pushChanges();
-    			}
-    		}
-    		// console.log('AgoraComponent.MediaLoader.events$', event);
-    	}),
-    	takeUntil(this.unsubscribe$)
-    ).subscribe();
-    */
-
-    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-      // console.log('AgoraComponent.message', message);
-      switch (message.type) {
-        case MessageType.ChannelMembers:
-          if (_this7.isSelfServiceSupport) {
-            var members = message.members; // console.log('AgoraComponent.MessageService.out$.ChannelMembers', members, members.length);
-
-            if (members.length > 0) {
-              ToastService.open$({
-                message: LabelPipe.transform('bhere_support_request_sent'),
-                type: ToastType.Alert,
-                position: ToastPosition.BottomRight
-              });
-              MessageService.send({
-                type: MessageType.SupportRequest
-              });
-            } else {
-              ToastService.open$({
-                message: LabelPipe.transform('bhere_support_request_leaved'),
-                type: ToastType.Alert,
-                position: ToastPosition.BottomRight
-              });
-            }
-          }
-
-          break;
-
-        case MessageType.SupportRequest:
-          if (_this7.isSelfServiceProposition) {
-            _this7.openSupportRequestDialog(message.clientInfo);
-          }
-
-          break;
-
-        case MessageType.RequestPeerInfo:
-          console.log('AgoraComponent.MessageService.out$.RequestPeerInfo', message);
-          message.type = MessageType.RequestPeerInfoResult;
-          message.clientInfo = {
-            role: StateService.state.role,
-            name: StateService.state.name,
-            uid: StateService.state.uid,
-            screenUid: StateService.state.screenUid,
-            controllingId: StateService.state.controlling,
-            mode: StateService.state.mode
-          };
-          MessageService.sendBack(message);
-          /*
-          if (this.isSelfServiceSupport) {
-          	this.meetingUrl.support = false; // !!! spostare su ChannelMembers
-          	ToastService.open$({
-          		message: LabelPipe.transform('bhere_support_request_sent'),
-          		type: ToastType.Alert, position: ToastPosition.BottomRight
-          	});
-          }
-          */
-
-          break;
-
-        /*
-        case MessageType.RequestPeerInfoResult:
-        if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
-        	this.openSupportRequestDialog(message.clientInfo);
-        }
-        break;
-        */
-
-        case MessageType.SupportRequestAccepted:
-          ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_accepted'),
-            type: ToastType.Alert,
-            position: ToastPosition.BottomRight
-          });
-          break;
-
-        case MessageType.SupportRequestRejected:
-          ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_rejected'),
-            type: ToastType.Alert,
-            position: ToastPosition.BottomRight
-          });
-          break;
-
-        case MessageType.RequestControl:
-          // console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
-          message.type = MessageType.RequestControlAccepted;
-          MessageService.sendBack(message);
-          StateService.patchState({
-            controlling: message.controllingId
-          });
-
-          if (_this7.agora) {
-            _this7.agora.sendControlRemoteRequestInfo(message.controllingId);
-          }
-
-          break;
-
-        case MessageType.RemoteSilencing:
-          StateService.patchState({
-            silencing: message.silencing
-          });
-
-          _this7.setAudio(message.silencing);
-
-          break;
-
-        case MessageType.NavToView:
-          _this7.onRemoteNavTo(message);
-
-          break;
-
-        case MessageType.Mode:
-          StateService.patchState({
-            mode: message.mode
-          });
-          window.dispatchEvent(new Event('resize'));
-          break;
-
-        case MessageType.NavInfo:
-          _this7.hidePanels();
-
-          StateService.patchState({
-            showNavInfo: message.showNavInfo
-          });
-          break;
-
-        case MessageType.AddLike:
-          ViewService.setViewLike$(message).pipe(operators.first()).subscribe(function (view) {
-            return _this7.showLove(view);
-          });
-          break;
-
-        case MessageType.ChatMessage:
-          if (!StateService.state.chat) {
-            StateService.patchState({
-              chatDirty: true
-            });
-          }
-
-          break;
-      }
-    });
-    MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
-      if (_this7.agora) {
-        _this7.agora.sendMessage(message);
-      }
-    });
-    this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
-
-    if (this.agora && StateService.state.status === AgoraStatus.ShouldConnect) {
-      this.loadAndConnect();
-    }
-  };
-
-  _proto.onChecked = function onChecked(checklist) {
-    // console.log('AgoraComponent.onChecked', checklist);
-    StateService.patchState({
-      checklist: true
-    });
-    this.setNextStatus();
-  };
-
-  _proto.onLink = function onLink(link) {
-    var role = this.getLinkRole();
-    var mode = UserService.getMode(role);
-    var user = StateService.state.user;
-
-    if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
-      StateService.patchState({
-        link: link,
-        role: role,
-        mode: mode,
-        status: AgoraStatus.Login
-      });
-    } else if (StateService.state.name) {
-      if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
-        StateService.patchState({
-          link: link,
-          role: role,
-          mode: mode
-        });
-        this.loadAndConnect();
-      } else {
-        StateService.patchState({
-          link: link,
-          role: role,
-          mode: mode,
-          status: AgoraStatus.Device
-        });
-      }
-    } else {
-      StateService.patchState({
-        link: link,
-        role: role,
-        mode: mode,
-        status: AgoraStatus.Name
-      });
-    }
-  };
-
-  _proto.onLogin = function onLogin(user) {
-    var name = this.getName(user);
-
-    if (name) {
-      StateService.patchState({
-        user: user,
-        name: name,
-        status: AgoraStatus.Device
-      });
-    } else {
-      StateService.patchState({
-        user: user,
-        status: AgoraStatus.Name
-      });
-    }
-  };
-
-  _proto.onName = function onName(name) {
-    if (StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SmartDevice) {
-      StateService.patchState({
-        name: name
-      });
-      this.loadAndConnect();
-    } else {
-      StateService.patchState({
-        name: name,
-        status: AgoraStatus.Device
-      });
-    }
-  };
-
-  _proto.onEnter = function onEnter(preferences) {
-    this.loadAndConnect(preferences);
-  };
-
-  _proto.connect = function connect(preferences) {
-    // console.log('AgoraComponent.connect', preferences);
-    this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('AgoraComponent.connect', this.state.role);
-
-    if (this.state.role === RoleType.SelfService) {
-      GtmService.push({
-        action: 'b-here-tour',
-        userType: this.state.role
-      });
-    } else if (this.state.role === RoleType.Embed) {
-      GtmService.push({
-        action: 'b-here-embed',
-        userType: this.state.role
-      });
-    } else {
-      var sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
-      var log = {
-        meetingId: this.state.link,
-        sharedMeetingId: sharedMeetingId,
-        fullName: this.state.name,
-        userType: this.state.role
-      }; // console.log('AgoraComponent.connect', log);
-
-      UserService.log$(log).pipe(operators.first()).subscribe();
-      GtmService.push({
-        action: 'b-here-meeting',
-        meetingId: this.state.link,
-        sharedMeetingId: sharedMeetingId,
-        userType: this.state.role
-      });
-    }
-  };
-
-  _proto.disconnect = function disconnect() {
-    if (this.agora) {
-      this.agora.leaveChannel().then(function () {
-        // StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
-        // window.location.href = window.location.href;
-        // window.location.replace(window.location.href);
-        window.location.reload();
-      }, console.log);
-    } else {
-      this.patchState({
-        connecting: false,
-        connected: false
-      });
-    }
-  };
-
-  _proto.onNavTo = function onNavTo(item) {
-    var viewId = item.viewId;
-    var view = this.data.views.find(function (x) {
-      return x.id === viewId;
-    });
-
-    if (view) {
-      // console.log('AgoraComponent.onNavTo', item, view);
-      ViewService.action = {
-        viewId: viewId,
-        keepOrientation: item.keepOrientation,
-        useLastOrientation: item.useLastOrientation
-      };
-      this.onHandleHook(view, item);
-    }
-  };
-
-  _proto.onNavLink = function onNavLink(item) {
-    // console.log('AgoraComponent.onNavLink', item);
-    ModalService.open$({
-      iframe: item.link.href
-    }).pipe(operators.first()).subscribe(function (event) {
-      MessageService.send({
-        type: MessageType.NavLinkClose,
-        itemId: item.id
-      });
-    });
-  };
-
-  _proto.onRemoteNavTo = function onRemoteNavTo(message) {
-    var viewId = message.viewId;
-    var gridIndex = message.gridIndex;
-
-    if (viewId && ViewService.viewId !== viewId) {
-      var view = this.data.views.find(function (x) {
-        return x.id === viewId;
-      });
-
-      if (view) {
-        // console.log('AgoraComponent.onRemoteNavTo', message, view);
-        ViewService.action = {
-          viewId: viewId,
-          keepOrientation: message.keepOrientation,
-          useLastOrientation: message.useLastOrientation
-        };
-
-        if (gridIndex != null && view instanceof PanoramaGridView) {
-          view.index = gridIndex;
-        }
-      } // console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
-
-    }
-  };
-
-  _proto.onHandleHook = function onHandleHook(view, item) {
-    var _this8 = this;
-
-    switch (item.hook) {
-      case 'ToggleWishlist':
-        var payload = {
-          viewId: view.id,
-          itemId: item.id
-        };
-        WishlistService.toggle$(payload).pipe(operators.switchMap(function (items) {
-          payload.added = WishlistService.has(payload);
-          return WebhookService.send$(item.hook, payload, item.extra);
-        }), operators.first()).subscribe(function (response) {
-          console.log('AgoraComponent.onHandleHook', response);
-          item.added = payload.added;
-
-          _this8.pushChanges();
-        });
-        break;
-    }
-  } // !!! why locally?
-  ;
-
-  _proto.patchState = function patchState(state) {
-    this.state = Object.assign({}, this.state, state);
-    this.pushChanges(); // console.log(this.state);
-  };
-
-  _proto.toggleCamera = function toggleCamera() {
-    if (this.agora) {
-      this.agora.toggleCamera();
-    } else {
-      this.patchState({
-        cameraMuted: !this.state.cameraMuted
-      });
-    }
-  };
-
-  _proto.toggleAudio = function toggleAudio() {
-    if (this.agora) {
-      this.agora.toggleAudio();
-    } else {
-      this.patchState({
-        audioMuted: !this.state.audioMuted
-      });
-    }
-  };
-
-  _proto.setAudio = function setAudio(audioMuted) {
-    if (this.agora) {
-      this.agora.setAudio(audioMuted);
-    } else {
-      this.patchState({
-        audioMuted: audioMuted
-      });
-    }
-  };
-
-  _proto.toggleScreen = function toggleScreen() {
-    if (this.agora) {
-      this.agora.toggleScreen();
-    } else {
-      this.patchState({
-        screen: !this.state.screen
-      });
-    }
-
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.toggleVolume = function toggleVolume() {
-    var volumeMuted = !this.state.volumeMuted;
-    StateService.patchState({
-      volumeMuted: volumeMuted
-    });
-    var selfServiceAudio = this.selfServiceAudio;
-
-    if (selfServiceAudio) {
-      selfServiceAudio.volume = volumeMuted ? 0 : 0.5;
-    }
-  };
-
-  _proto.toggleMode = function toggleMode() {
-    if (this.agora && StateService.state.role === RoleType.Publisher) {
-      this.agora.toggleMode();
-    } else {
-      var mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
-      StateService.patchState({
-        mode: mode
-      }); // this.patchState({ mode });
-    }
-
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.toggleFullScreen = function toggleFullScreen() {
-    var _getContext2 = rxcomp.getContext(this),
-        node = _getContext2.node;
-
-    var fullScreen = !this.state.fullScreen;
-
-    if (fullScreen) {
-      if (node.requestFullscreen) {
-        node.requestFullscreen();
-      } else if (node.webkitRequestFullscreen) {
-        node.webkitRequestFullscreen();
-      } else if (node.msRequestFullscreen) {
-        node.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    } // StateService.patchState({ fullScreen });
-
-  };
-
-  _proto.fullscreen$ = function fullscreen$() {
-    return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
-      var fullScreen = document.fullscreenElement != null; // console.log('fullscreen$', fullScreen);
-
-      StateService.patchState({
-        fullScreen: fullScreen
-      });
-    }));
-  };
-
-  _proto.toggleChat = function toggleChat() {
-    StateService.patchState({
-      chat: !StateService.state.chat,
-      chatDirty: false
-    });
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.onChatClose = function onChatClose() {
-    StateService.patchState({
-      chat: false
-    });
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.toggleNavInfo = function toggleNavInfo() {
-    this.hidePanels();
-
-    if (this.agora) {
-      this.agora.toggleNavInfo();
-    } else {
-      this.patchState({
-        showNavInfo: !this.state.showNavInfo
-      });
-    }
-  };
-
-  _proto.onBack = function onBack() {
-    // console.log('AgoraCompoent.onBack');
-    if (this.previousView && this.view && this.previousView.id !== this.view.id) {
-      ViewService.action = {
-        viewId: this.previousView.id,
-        useLastOrientation: true
-      };
-    }
-  };
-
-  _proto.hidePanels = function hidePanels() {
-    this.view.items.forEach(function (item) {
-      return item.showPanel = false;
-    });
-  };
-
-  _proto.onToggleControl = function onToggleControl(remoteId) {
-    if (this.agora) {
-      this.agora.toggleControl(remoteId);
-    } else {
-      var controlling = this.state.controlling === remoteId ? null : remoteId;
-      this.patchState({
-        controlling: controlling,
-        spying: false
-      });
-    }
-  };
-
-  _proto.onToggleSilence = function onToggleSilence() {
-    if (this.agora) {
-      this.agora.toggleSilence();
-    } else {
-      this.patchState({
-        silencing: !this.state.silencing
-      });
-    }
-  };
-
-  _proto.onToggleSpy = function onToggleSpy(remoteId) {
-    if (this.agora) {
-      this.agora.toggleSpy(remoteId);
-    } else {
-      var spying = this.state.spying === remoteId ? null : remoteId;
-      this.patchState({
-        spying: spying,
-        controlling: false
-      });
-    }
-  };
-
-  _proto.addLike = function addLike() {
-    var _this9 = this;
-
-    ViewService.viewLike$(this.view).pipe(operators.first()).subscribe(function (view) {
-      if (view) {
-        _this9.view.liked = true; // view.liked;
-
-        _this9.showLove(view); // this.view.likes = view.likes;
-        // this.pushChanges();
-
-
-        MessageService.send({
-          type: MessageType.AddLike,
-          viewId: _this9.view.id,
-          likes: _this9.view.likes
-        });
-      }
-    });
-  };
-
-  _proto.showLove = function showLove(view) {
-    var _this10 = this;
-
-    if (view && this.view.id === view.id) {
-      var skipTimeout = this.view.showLove;
-      this.view.likes = view.likes;
-      this.view.showLove = true;
-      this.pushChanges();
-
-      if (!skipTimeout) {
-        setTimeout(function () {
-          _this10.view.showLove = false;
-
-          _this10.pushChanges();
-        }, 3100);
-      }
-    }
-  };
-
-  _proto.tryInAr = function tryInAr() {
-    if (this.platform === DevicePlatform.IOS || this.platform === DevicePlatform.Android) {
-      TryInARModalComponent.openInAR(this.view);
-    } else {
-      ModalService.open$({
-        src: environment.template.modal.tryInAr,
-        data: this.view
-      }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
-      });
-    }
-  };
-
-  _proto.checkSelfServiceProposition = function checkSelfServiceProposition() {
-    var _this11 = this;
-
-    // self service proposition
-    var isSelfServiceProposition = this.isSelfServiceProposition; // console.log('AgoraComponent.initAgora', isSelfServiceProposition);
-
-    if (isSelfServiceProposition) {
-      AgoraChecklistService.check$().pipe(operators.first()).subscribe(function (event) {
-        var meetingId = new MeetingId();
-        var meetingIdRoles = meetingId.toRoles();
-        var meetingUrl = new MeetingUrl({
-          link: meetingIdRoles.id,
-          support: true
-        });
-        var href = meetingUrl.toGuidedTourUrl();
-        console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
-        UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(operators.first()).subscribe(function (_) {
-          var name = _this11.getName(StateService.state.user);
-
-          StateService.patchState({
-            checklist: true,
-            link: meetingIdRoles.idSelfService,
-            name: name
-          });
-          _this11.agora = AgoraService.getSingleton();
-
-          _this11.connect();
-        });
-      }, function (error) {
-        console.log('AgoraComponent.initAgora.isSelfServiceProposition.error', error, name);
-        /*
-        UserService.selfServiceTourSupportFailedRequest$(StateService.state.user).pipe(
-        	first(),
-        ).subscribe();
-        */
-      });
-    }
-  };
-
-  _proto.checkSelfServiceAudio = function checkSelfServiceAudio() {
-    if (StateService.state.role === RoleType.SelfService && environment.selfServiceAudio) {
-      var selfServiceAudio = document.createElement('audio');
-      selfServiceAudio.setAttribute('playsinline', 'true');
-      selfServiceAudio.setAttribute('autoplay', 'true');
-      selfServiceAudio.setAttribute('loop', 'true');
-      selfServiceAudio.volume = 0.5;
-      selfServiceAudio.src = environment.selfServiceAudio;
-
-      var _getContext3 = rxcomp.getContext(this),
-          node = _getContext3.node;
-
-      node.parentNode.appendChild(selfServiceAudio);
-      this.selfServiceAudio = selfServiceAudio;
-      MediaLoader.events$.pipe(operators.tap(function (event) {
-        // console.log('AgoraComponent.checkSelfServiceAudio MediaLoader.event$', event);
-        if (event instanceof MediaLoaderPlayEvent) {
-          selfServiceAudio.pause(); // selfServiceAudio.volume = 0;
-        } else if (event instanceof MediaLoaderPauseEvent || event instanceof MediaLoaderDisposeEvent) {
-          selfServiceAudio.play(); // selfServiceAudio.volume = 0.5;
-        }
-      }), operators.takeUntil(this.unsubscribe$)).subscribe();
-    }
-  };
-
-  _proto.openSupportRequestDialog = function openSupportRequestDialog(clientInfo) {
-    ToastService.open$({
-      message: LabelPipe.transform('bhere_support_request_dialog'),
-      acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
-      rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
-      type: ToastType.Dialog,
-      position: ToastPosition.BottomRight
-    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      if (event instanceof ToastResolveEvent) {
-        MessageService.send({
-          type: MessageType.SupportRequestAccepted
-        });
-        var _name = StateService.state.name;
-        var meetingId = new MeetingId(StateService.state.link);
-        meetingId.role = RoleType.Streamer;
-        var meetingUrl = new MeetingUrl({
-          link: meetingId.toString(),
-          name: _name
-        });
-        var href = meetingUrl.toGuidedTourUrl();
-        setTimeout(function () {
-          window.location.href = href;
-        }, 1000);
-      } else {
-        MessageService.send({
-          type: MessageType.SupportRequestRejected
-        });
-      }
-    });
-    /*
-    ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
-    	first(),
-    ).subscribe(event => {
-    	if (event instanceof ModalResolveEvent) {
-    		MessageService.send({ type: MessageType.SupportRequestAccepted });
-    		const name = StateService.state.name;
-    		const meetingId = new MeetingId(StateService.state.link);
-    		meetingId.role = RoleType.Streamer;
-    		const meetingUrl = new MeetingUrl({ link: meetingId.toString(), name });
-    		const href = meetingUrl.toGuidedTourUrl();
-    		setTimeout(() => {
-    			window.location.href = href;
-    		}, 1000);
-    	} else {
-    		MessageService.send({ type: MessageType.SupportRequestRejected });
-    	}
-    });
-    */
-  }
-  /*
-  onPrevent(event) {
-  	event.preventDefault();
-  	event.stopImmediatePropagation();
-  }
-  */
-  ;
-
-  _createClass(AgoraComponent, [{
-    key: "meetingUrl",
-    get: function get() {
-      if (!this.meetingUrl_) {
-        this.meetingUrl_ = new MeetingUrl();
-      }
-
-      return this.meetingUrl_;
-    }
-  }, {
-    key: "isVirtualTourUser",
-    get: function get() {
-      return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(StateService.state.role) !== -1;
-    }
-  }, {
-    key: "isEmbed",
-    get: function get() {
-      var isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
-      return isEmbed;
-    }
-  }, {
-    key: "isNavigable",
-    get: function get() {
-      var embedViewId = this.meetingUrl.embedViewId;
-      var navigable = embedViewId == null;
-      return navigable;
-    }
-  }, {
-    key: "isBackButtonVisible",
-    get: function get() {
-      return this.view && this.view.type.name === ViewType.Media.name;
-    }
-  }, {
-    key: "isSelfServiceProposition",
-    get: function get() {
-      return StateService.state.role === RoleType.SelfService && environment.flags.selfServiceProposition;
-    }
-  }, {
-    key: "isSelfServiceSupport",
-    get: function get() {
-      return StateService.state.role === RoleType.Publisher && environment.flags.selfServiceProposition && this.meetingUrl.support;
-    }
-  }, {
-    key: "uiClass",
-    get: function get() {
-      var uiClass = {};
-      uiClass[this.state.role] = true; // uiClass[this.state.mode] = true;
-
-      uiClass.chat = this.state.chat;
-      uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
-      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
-      uiClass.locked = this.locked; // uiClass.media = !uiClass.remotes && this.media;
-
-      return uiClass;
-    }
-  }, {
-    key: "controlled",
-    get: function get() {
-      return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-    }
-  }, {
-    key: "controlling",
-    get: function get() {
-      return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-    }
-  }, {
-    key: "silencing",
-    get: function get() {
-      return StateService.state.silencing;
-    }
-  }, {
-    key: "silenced",
-    get: function get() {
-      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-    }
-  }, {
-    key: "spyed",
-    get: function get() {
-      return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-    }
-  }, {
-    key: "spying",
-    get: function get() {
-      return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
-    }
-  }, {
-    key: "locked",
-    get: function get() {
-      return this.controlled || this.spying;
-    }
-  }, {
-    key: "remoteScreen",
-    get: function get() {
-      return this.remoteScreen_;
-    },
-    set: function set(remoteScreen) {
-      if (this.remoteScreen_ !== remoteScreen) {
-        this.remoteScreen_ = remoteScreen;
-        setTimeout(function () {
-          window.dispatchEvent(new Event('resize'));
-        }, 1);
-      }
-    }
-  }]);
-
-  return AgoraComponent;
-}(rxcomp.Component);
-AgoraComponent.meta = {
-  selector: '[agora-component]'
-};var AppComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AppComponent, _Component);
-
-  function AppComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AppComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.classList.remove('hidden');
-  };
-
-  return AppComponent;
-}(rxcomp.Component);
-AppComponent.meta = {
-  selector: '[app-component]'
-};var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'];
-var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
-var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
-var MIME_STREAM = ['publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen'];
-function isImage(path) {
-  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
-}
-function isVideo(path) {
-  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/i").test(path);
-}
-function isModel(path) {
-  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/i").test(path);
-}
-function isStream(path) {
-  return MIME_STREAM.indexOf(path) !== -1;
-}
-
-var AssetPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(AssetPipe, _Pipe);
-
-  function AssetPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  AssetPipe.transform = function transform(asset, type) {
-    if (type === void 0) {
-      type = null;
-    }
-
-    if (type != null) {
-      // keep loose equality
-      asset = asset.type.name === type ? asset : null;
-    }
-
-    if (asset) {
-      if (typeof asset === 'string') {
-        return environment.getPath(asset);
-      } // console.log(asset.type.name, AssetType.Image.name);
-
-
-      switch (asset.type.name) {
-        case AssetType.Image.name:
-        case AssetType.Video.name:
-          asset = asset.folder + asset.file;
-          asset = environment.getPath(asset);
-          break;
-
-        case AssetType.Model.name:
-          asset = asset.folder + asset.file;
-          asset = environment.getPath(asset);
-          break;
-
-        case AssetType.PublisherStream.name:
-        case AssetType.AttendeeStream.name:
-        case AssetType.PublisherScreen.name:
-        case AssetType.AttendeeScreen.name:
-        case AssetType.SmartDeviceStream.name:
-          asset = environment.getPath(asset.file);
-          break;
-
-        default:
-          if (isImage(asset.file) || isVideo(asset.file)) {
-            asset = asset.folder + asset.file;
-            asset = environment.getPath(asset);
-          } else if (isModel(asset.file)) {
-            asset = asset.folder + asset.file;
-            asset = environment.getPath(asset);
-          } else if (isStream(asset.file)) {
-            asset = asset.file;
-          }
-
-      }
-
-      asset = asset;
-    } else {
-      asset = null;
-    } // console.log('AssetPipe.transform', asset);
-
-
-    return asset;
-  };
-
-  return AssetPipe;
-}(rxcomp.Pipe);
-AssetPipe.meta = {
-  name: 'asset'
-};var ControlRequestModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ControlRequestModalComponent, _Component);
-
-  function ControlRequestModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlRequestModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    _Component.prototype.onInit.call(this);
-
-    var _getContext = rxcomp.getContext(this),
-        parentInstance = _getContext.parentInstance;
-
-    if (parentInstance instanceof ModalOutletComponent) {
-      this.data = parentInstance.modal.data;
-    }
-  };
-
-  _proto.onAccept = function onAccept(user) {
-    ModalService.resolve();
-  };
-
-  _proto.onReject = function onReject(user) {
-    ModalService.reject();
-  }
-  /*
-  onDestroy() {
-  	// console.log('ControlRequestModalComponent.onDestroy');
-  }
-  */
-  ;
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return ControlRequestModalComponent;
-}(rxcomp.Component);
-ControlRequestModalComponent.meta = {
-  selector: '[control-request-modal]'
-};var DropDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(DropDirective, _Directive);
-
-  function DropDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = DropDirective.prototype;
-
-  _proto.onInit = function onInit() {
-    var _getContext = rxcomp.getContext(this),
-        module = _getContext.module,
-        node = _getContext.node,
-        parentInstance = _getContext.parentInstance,
-        selector = _getContext.selector;
-
-    var event = 'drop';
-    var event$ = rxjs.fromEvent(node, event).pipe(operators.shareReplay(1));
-    var expression = node.getAttribute("(" + event + ")");
-
-    if (expression) {
-      var outputFunction = module.makeFunction(expression, ['$event']);
-      event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        module.resolve(outputFunction, parentInstance, event);
-      });
-      rxjs.fromEvent(node, 'dragover').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        return event.preventDefault();
-      });
-    } else {
-      parentInstance[event + "$"] = event$;
-    } // console.log('DropDirective.onInit', 'selector', selector, 'event', event);
-
-  };
-
-  return DropDirective;
-}(rxcomp.Directive);
-DropDirective.meta = {
-  selector: "[(drop)]"
-};var DROPDOWN_ID = 1000000;
-
-var DropdownDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(DropdownDirective, _Directive);
-
-  function DropdownDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = DropdownDirective.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    var trigger = node.getAttribute('dropdown-trigger');
-    this.trigger = trigger ? node.querySelector(trigger) : node;
-    this.opened = null;
-    this.onClick = this.onClick.bind(this);
-    this.onDocumentClick = this.onDocumentClick.bind(this);
-    this.openDropdown = this.openDropdown.bind(this);
-    this.closeDropdown = this.closeDropdown.bind(this);
-    this.addListeners();
-    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
-      // console.log('DropdownDirective', id, this['dropdown-item']);
-      if (_this.id === id) {
-        node.classList.add('dropped');
-      } else {
-        node.classList.remove('dropped');
-      }
-    });
-  };
-
-  _proto.onClick = function onClick(event) {
-    var _getContext2 = rxcomp.getContext(this),
-        node = _getContext2.node;
-
-    if (this.opened === null) {
-      this.openDropdown();
-    } else {
-      var dropdownItemNode = node.querySelector('[dropdown-item]'); // console.log('dropdownItemNode', dropdownItemNode);
-
-      if (!dropdownItemNode) {
-        // if (this.trigger !== node) {
-        this.closeDropdown();
-      }
-    }
-  };
-
-  _proto.onDocumentClick = function onDocumentClick(event) {
-    var _getContext3 = rxcomp.getContext(this),
-        node = _getContext3.node;
-
-    var clickedInside = node === event.target || node.contains(event.target);
-
-    if (!clickedInside) {
-      this.closeDropdown();
-    }
-  };
-
-  _proto.openDropdown = function openDropdown() {
-    if (this.opened === null) {
-      this.opened = true;
-      this.addDocumentListeners();
-      DropdownDirective.dropdown$.next(this.id);
-      this.dropped.next(this.id);
-    }
-  };
-
-  _proto.closeDropdown = function closeDropdown() {
-    if (this.opened !== null) {
-      this.removeDocumentListeners();
-      this.opened = null;
-
-      if (DropdownDirective.dropdown$.getValue() === this.id) {
-        DropdownDirective.dropdown$.next(null);
-        this.dropped.next(null);
-      }
-    }
-  };
-
-  _proto.addListeners = function addListeners() {
-    this.trigger.addEventListener('click', this.onClick);
-  };
-
-  _proto.addDocumentListeners = function addDocumentListeners() {
-    document.addEventListener('click', this.onDocumentClick);
-  };
-
-  _proto.removeListeners = function removeListeners() {
-    this.trigger.removeEventListener('click', this.onClick);
-  };
-
-  _proto.removeDocumentListeners = function removeDocumentListeners() {
-    document.removeEventListener('click', this.onDocumentClick);
-  };
-
-  _proto.onDestroy = function onDestroy() {
-    this.removeListeners();
-    this.removeDocumentListeners();
-  };
-
-  DropdownDirective.nextId = function nextId() {
-    return DROPDOWN_ID++;
-  };
-
-  _createClass(DropdownDirective, [{
-    key: "id",
-    get: function get() {
-      return this.dropdown || this.id_ || (this.id_ = DropdownDirective.nextId());
-    }
-  }]);
-
-  return DropdownDirective;
-}(rxcomp.Directive);
-DropdownDirective.meta = {
-  selector: '[dropdown]',
-  inputs: ['dropdown', 'dropdown-trigger'],
-  outputs: ['dropped']
-};
-DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(DropdownItemDirective, _Directive);
-
-  function DropdownItemDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = DropdownItemDirective.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.classList.add('dropdown-item');
-    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
-      // console.log('DropdownItemDirective', id, this['dropdown-item']);
-      if (_this.id === id) {
-        node.classList.add('dropped');
-      } else {
-        node.classList.remove('dropped');
-      }
-    });
-  };
-
-  _createClass(DropdownItemDirective, [{
-    key: "id",
-    get: function get() {
-      return this['dropdown-item'];
-    }
-  }]);
-
-  return DropdownItemDirective;
-}(rxcomp.Directive);
-DropdownItemDirective.meta = {
-  selector: '[dropdown-item], [[dropdown-item]]',
-  inputs: ['dropdown-item']
-};var ToastOutletComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ToastOutletComponent, _Component);
-
-  function ToastOutletComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ToastOutletComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.toast = null;
-    this.lastToast = null;
-    ToastService.toast$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (toast) {
-      if (toast) {
-        _this.lastToast = toast;
-      }
-
-      _this.toast = toast;
-
-      _this.pushChanges();
-    }); // console.log('ToastOutletComponent.onInit');
-  };
-
-  _proto.getClass = function getClass() {
-    var classList = {};
-
-    if (this.toast) {
-      classList.active = true;
-    }
-
-    if (this.lastToast) {
-      classList[this.lastToast.type] = true;
-      classList[this.lastToast.position] = true;
-    }
-
-    return classList;
-  };
-
-  _proto.onClose = function onClose() {
-    ToastService.reject(this.toast);
-  };
-
-  _proto.onAccept = function onAccept() {
-    ToastService.resolve(this.toast);
-  };
-
-  _proto.onReject = function onReject() {
-    ToastService.reject(this.toast);
-  };
-
-  return ToastOutletComponent;
-}(rxcomp.Component);
-ToastOutletComponent.meta = {
-  selector: '[toast-outlet]',
-  template:
-  /* html */
-  "\n\t<div class=\"toast-outlet__container\" [class]=\"getClass()\">\n\t\t<div class=\"toast-outlet__toast\" *if=\"lastToast\">\n\t\t\t<span class=\"toast-outlet__message\" [innerHTML]=\"lastToast.message\"></span>\n\t\t\t<div class=\"group--cta\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.acceptMessage\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\" *if=\"lastToast.type == 'dialog'\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.rejectMessage\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
-};var AsideComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AsideComponent, _Component);
-
-  function AsideComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AsideComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    this.mode = 1;
-    this.viewTypes = Object.keys(ViewType).map(function (key) {
-      var type = ViewType[key];
-      return {
-        type: type,
-        name: LabelPipe.getKeys('editor', type.name),
-        disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1
-      };
-    });
-    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
-      var type = ViewItemType[key];
-      return {
-        type: type,
-        name: LabelPipe.getKeys('editor', type.name),
-        disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1
-      };
-    });
-    this.setSupportedViewTypes();
-    this.setSupportedViewItemTypes();
-  };
-
-  _proto.onChanges = function onChanges() {
-    this.setSupportedViewTypes();
-    this.setSupportedViewItemTypes();
-  };
-
-  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
-    var _this = this;
-
-    this.supportedViewTypes = this.viewTypes.filter(function (x) {
-      return _this.supportedViewType(x.type.name);
-    }).sort(function (a, b) {
-      if (a.disabled === b.disabled) {
-        return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
-      } else {
-        return a.disabled ? 1 : -1;
-      }
-    });
-  };
-
-  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
-    var _this2 = this;
-
-    if (this.view) {
-      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
-        return _this2.supportedViewItemType(_this2.view.type.name, x.type.name);
-      }).sort(function (a, b) {
-        if (a.disabled === b.disabled) {
-          return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
-        } else {
-          return a.disabled ? 1 : -1;
-        }
-      });
-    } else {
-      this.supportedViewItemTypes = [];
-    }
-  };
-
-  _proto.setMode = function setMode(mode) {
-    if (this.mode !== mode) {
-      this.mode = mode;
-      this.pushChanges();
-    }
-  };
-
-  _proto.supportedViewType = function supportedViewType(viewTypeName) {
-    var supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name, ViewType.Media.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
-    // console.log('supportedViewType', viewType, supported);
-
-    return supported;
-  };
-
-  _proto.supportedViewItemType = function supportedViewItemType(viewTypeName, viewItemTypeName) {
-    var supported;
-
-    switch (viewTypeName) {
-      case ViewType.WaitingRoom.name:
-        supported = false;
-        break;
-
-      case ViewType.Panorama.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.PanoramaGrid.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.Room3d.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.Model.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.Media.name:
-        supported = [].indexOf(viewItemTypeName) !== -1;
-        break;
-    } // console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
-
-
-    return supported;
-  };
-
-  _proto.onSelect = function onSelect(event) {
-    this.select.next(event);
-  };
-
-  _proto.onUpdate = function onUpdate(event) {
-    this.update.next(event);
-  };
-
-  _proto.onDelete = function onDelete(event) {
-    this.delete.next(event);
-  };
-
-  return AsideComponent;
-}(rxcomp.Component);
-AsideComponent.meta = {
-  selector: '[aside]',
-  outputs: ['select', 'update', 'delete'],
-  inputs: ['view']
-};var AssetService = /*#__PURE__*/function () {
-  function AssetService() {}
-
-  AssetService.assetCreate$ = function assetCreate$(asset) {
-    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  AssetService.assetUpdate$ = function assetUpdate$(asset) {
-    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  AssetService.assetDelete$ = function assetDelete$(asset) {
-    if (asset && asset.id) {
-      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
-        return null;
-      }));
-    } else {
-      return rxjs.of(null);
-    }
-  };
-
-  AssetService.localizedAssetCreate$ = function localizedAssetCreate$(lg, asset) {
-    return HttpService.post$("/api/" + lg + "/asset", asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  AssetService.localizedAssetUpdate$ = function localizedAssetUpdate$(lg, asset) {
-    return HttpService.put$("/api/" + lg + "/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
-      return mapAsset(asset);
-    }));
-  };
-
-  AssetService.upload$ = function upload$(files) {
-    var formData = new FormData();
-    files.forEach(function (file) {
-      return formData.append('file', file, file.name);
-    });
-    var xhr = new XMLHttpRequest();
-    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
-      switch (event.type) {
-        case 'readystatechange':
-          if (xhr.readyState === 4) {
-            return JSON.parse(xhr.responseText);
-          } else {
-            return null;
-          }
-
-        default:
-          return null;
-      }
-    }), operators.filter(function (event) {
-      return event !== null;
-    }));
-    xhr.open('POST', "/api/upload/", true);
-    xhr.send(formData);
-    return events$;
-  };
-
-  AssetService.createOrUpdateAsset$ = function createOrUpdateAsset$(uploads, control) {
-    var upload = uploads[0];
-    var asset = Asset.fromUrl(upload.url);
-
-    if (control.value && control.value.id) {
-      // !!! must check for id
-      asset.id = control.value.id;
-      return AssetService.assetUpdate$(asset);
-    } else {
-      return AssetService.assetCreate$(asset);
-    }
-  };
-
-  AssetService.createOrUpdateLocalizedAsset$ = function createOrUpdateLocalizedAsset$(uploads, control, lg) {
-    var upload = uploads[0];
-    var asset = Asset.fromUrl(upload.url);
-
-    if (control.value && control.value.id) {
-      // !!! must check for id
-      asset.id = control.value.id;
-      return AssetService.localizedAssetUpdate$(lg, asset);
-    } else {
-      return AssetService.localizedAssetCreate$(lg, asset);
-    }
-  };
-
-  AssetService.assetDidChange = function assetDidChange(previous, current) {
-    var previousId = null;
-    var previousFile = null;
-    var currentId = null;
-    var currentFile = null;
-
-    if (previous) {
-      previousId = previous.id;
-      previousFile = previous.file;
-    }
-
-    if (current) {
-      currentId = current.id;
-      currentFile = current.file;
-    }
-
-    return previousId !== currentId || previousFile !== currentFile;
-  };
-
-  return AssetService;
-}();var EditorService = /*#__PURE__*/function () {
-  function EditorService() {}
-
-  EditorService.data$ = function data$() {
-    if (!this.data$_) {
-      this.data$_ = HttpService.get$("/api/view").pipe(operators.map(function (data) {
-        data.views = data.views.map(function (view) {
-          return mapView(view);
-        });
-        return data;
-      }), operators.shareReplay(1));
-    }
-
-    return this.data$_;
-  };
-
-  EditorService.viewIdOptions$ = function viewIdOptions$() {
-    return this.data$().pipe(operators.map(function (data) {
-      var options = data.views.map(function (view) {
-        return {
-          id: view.id,
-          name: view.name
-        };
-      });
-      options.unshift({
-        id: null,
-        name: 'select'
-      }); // LabelPipe.transform('select')
-
-      return options;
-    }));
-  };
-
-  EditorService.viewCreate$ = function viewCreate$(view) {
-    return HttpService.post$("/api/view", view).pipe(operators.map(function (view) {
-      return mapView(view);
-    }));
-  };
-
-  EditorService.viewUpdate$ = function viewUpdate$(view) {
-    return HttpService.put$("/api/view/" + view.id, view.payload).pipe(operators.map(function (view) {
-      return mapView(view);
-    }));
-  };
-
-  EditorService.viewDelete$ = function viewDelete$(view) {
-    return HttpService.delete$("/api/view/" + view.id);
-  };
-
-  EditorService.getTile = function getTile(view) {
-    var tile;
-
-    if (view.type.name === ViewType.PanoramaGrid.name) {
-      tile = view.tiles[view.index];
-    }
-
-    return tile;
-  };
-
-  EditorService.inferItemCreate$ = function inferItemCreate$(view, item) {
-    var tile = this.getTile(view);
-
-    if (tile) {
-      return this.tileItemCreate$(view, tile, item);
-    } else {
-      return this.itemCreate$(view, item);
-    }
-  };
-
-  EditorService.inferItemUpdate$ = function inferItemUpdate$(view, item) {
-    var tile = this.getTile(view);
-
-    if (tile) {
-      return this.tileItemUpdate$(view, tile, item);
-    } else {
-      return this.itemUpdate$(view, item);
-    }
-  };
-
-  EditorService.inferItemDelete$ = function inferItemDelete$(view, item) {
-    var tile = this.getTile(view);
-
-    if (tile) {
-      return this.tileItemDelete$(view, tile, item);
-    } else {
-      return this.itemDelete$(view, item);
-    }
-  };
-
-  EditorService.inferItemUpdateResult$ = function inferItemUpdateResult$(view, item) {
-    var tile = this.getTile(view);
-    var currentItem;
-
-    if (tile) {
-      currentItem = tile.navs.find(function (i) {
-        return i.id === item.id;
-      });
-    } else {
-      currentItem = view.items.find(function (i) {
-        return i.id === item.id;
-      });
-    }
-
-    if (currentItem) {
-      Object.assign(currentItem, item);
-    }
-  };
-
-  EditorService.inferItemDeleteResult$ = function inferItemDeleteResult$(view, item) {
-    var tile = this.getTile(view);
-    var items;
-
-    if (tile) {
-      items = tile.navs;
-    } else {
-      items = view.items;
-    }
-
-    if (items) {
-      var index = items.indexOf(item);
-
-      if (index !== -1) {
-        items.splice(index, 1);
-      }
-
-      if (tile) {
-        view.updateCurrentItems();
-      }
-    }
-  };
-
-  EditorService.itemCreate$ = function itemCreate$(view, item) {
-    return HttpService.post$("/api/view/" + view.id + "/item", item).pipe(operators.map(function (item) {
-      return mapViewItem(item);
-    }));
-  };
-
-  EditorService.itemUpdate$ = function itemUpdate$(view, item) {
-    return HttpService.put$("/api/view/" + view.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
-      return mapViewItem(item);
-    }));
-  };
-
-  EditorService.itemDelete$ = function itemDelete$(view, item) {
-    return HttpService.delete$("/api/view/" + view.id + "/item/" + item.id);
-  };
-
-  EditorService.tileItemCreate$ = function tileItemCreate$(view, tile, item) {
-    return HttpService.post$("/api/view/" + view.id + "/tile/" + tile.id + "/item", item).pipe(operators.map(function (item) {
-      return mapViewItem(item);
-    }));
-  };
-
-  EditorService.tileItemUpdate$ = function tileItemUpdate$(view, tile, item) {
-    return HttpService.put$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
-      return mapViewItem(item);
-    }));
-  };
-
-  EditorService.tileItemDelete$ = function tileItemDelete$(view, tile, item) {
-    return HttpService.delete$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id);
-  };
-
-  return EditorService;
-}();var SETTINGS = {
-  menu: [{
-    id: 'menu',
-    title: 'editor_menu',
-    active: true
-  }, {
-    id: 'navmaps',
-    title: 'editor_navmaps',
-    active: true
-  }],
-  current: null,
-  active: false
-};
-
-var EditorComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(EditorComponent, _Component);
-
-  function EditorComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = EditorComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.classList.remove('hidden');
-    this.settings = this.getSettings();
-    this.aside = false;
-    this.state = {};
-    this.data = null;
-    this.views = null;
-    this.view = null;
-    this.form = null;
-    this.local = null;
-    this.remotes = [];
-    this.viewHit = new rxjs.Subject();
-    var vrService = this.vrService = VRService.getService();
-    vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
-      return _this.pushChanges();
-    });
-    this.resolveUser();
-  };
-
-  _proto.resolveUser = function resolveUser() {
-    var _this2 = this;
-
-    UserService.me$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (user) {
-      if (user && user.type === RoleType.Publisher) {
-        _this2.user = user;
-
-        _this2.initState();
-      } else {
-        window.location.href = environment.url.access;
-      }
-    });
-  };
-
-  _proto.initState = function initState() {
-    var _this3 = this;
-
-    var user = this.user;
-    var role = user.type;
-    var name = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
-    var state = {
-      user: user,
-      role: role,
-      name: name,
-      mode: UIMode.VirtualTour,
-      link: null,
-      channelName: environment.channelName,
-      uid: null,
-      status: AgoraStatus.Connected,
-      connecting: false,
-      connected: true,
-      controlling: false,
-      spying: false,
-      silencing: false,
-      hosted: true,
-      live: false,
-      navigable: true,
-      cameraMuted: false,
-      audioMuted: false,
-      showNavInfo: true
-    };
-    StateService.state = state;
-    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      _this3.state = state;
-      _this3.hosted = state.hosted;
-
-      _this3.pushChanges();
-    });
-    this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {// console.log('EditorComponent.viewObserver$', view);
-    });
-    StreamService.mode = StreamServiceMode.Editor; // this.getUserMedia();
-  };
-
-  _proto.viewObserver$ = function viewObserver$() {
-    var _this4 = this;
-
-    return EditorService.data$().pipe(operators.switchMap(function (data) {
-      _this4.data = data;
-      _this4.views = data.views.filter(function (x) {
-        return x.type.name !== 'waiting-room';
-      });
-      return ViewService.editorView$(data);
-    }), operators.tap(function (view) {
-      _this4.view = null;
-
-      _this4.pushChanges();
-    }), operators.delay(1), operators.tap(function (view) {
-      _this4.view = view;
-
-      _this4.pushChanges();
-    }));
-  };
-
-  _proto.onNavTo = function onNavTo(item) {
-    // console.log('EditorComponent.onNavTo', item);
-    var viewId = item.viewId;
-    var view = this.data.views.find(function (x) {
-      return x.id === viewId;
-    });
-
-    if (view) {
-      ViewService.action = {
-        viewId: viewId,
-        keepOrientation: item.keepOrientation,
-        useLastOrientation: item.useLastOrientation
-      };
-    }
-  };
-
-  _proto.onNavLink = function onNavLink(item) {
-    // console.log('EditorComponent.onNavLink', item);
-    ModalService.open$({
-      iframe: item.link.href
-    }).pipe(operators.first()).subscribe(function (event) {
-      MessageService.send({
-        type: MessageType.NavLinkClose,
-        itemId: item.id
-      });
-    });
-  };
-
-  _proto.patchState = function patchState(state) {
-    this.state = Object.assign({}, this.state, state);
-    this.pushChanges(); // console.log(this.state);
-  };
-
-  _proto.tryInAr = function tryInAr() {
-    ModalService.open$({
-      src: environment.template.modal.tryInAr,
-      data: this.view
-    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
-    });
-  };
-
-  _proto.replaceUrl = function replaceUrl() {
-    if ('history' in window) {
-      var params = new URLSearchParams(window.location.search);
-      var debug = params.get('debug') || null;
-      var editor = params.get('editor') || null;
-      var role = params.get('role') || null;
-      var link = params.get('link') || null;
-      var name = params.get('name') || null;
-      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + (name ? "&name=" + name : '') + (role ? "&role=" + role : '') + (debug ? "&debug" : '') + (editor ? "&editor" : ''); // console.log('AgoraNameComponent.url', url);
-
-      window.history.replaceState({
-        'pageTitle': window.pageTitle
-      }, '', url);
-    }
-  };
-
-  _proto.onToggleAside = function onToggleAside() {
-    this.aside = !this.aside;
-    this.pushChanges();
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.getSettings = function getSettings() {
-    var settings = Object.assign({}, SETTINGS);
-    settings.menu = settings.menu.filter(function (x) {
-      return environment.flags[x.id];
-    });
-    settings.current = settings.menu.length ? settings.menu[0].id : null;
-    return settings;
-  };
-
-  _proto.onToggleSettings = function onToggleSettings() {
-    var settings = this.settings;
-    settings.active = !settings.active;
-    this.pushChanges();
-  };
-
-  _proto.onSelectSetting = function onSelectSetting(item) {
-    this.settings.current = item.id;
-    this.pushChanges();
-  } // editor
-  ;
-
-  _proto.onViewHit = function onViewHit(event) {
-    // console.log('onViewHit');
-    this.viewHit.next(event);
-  };
-
-  _proto.onViewHitted = function onViewHitted(callback) {
-    if (this.viewHitSubscription) {
-      this.viewHitSubscription.unsubscribe();
-      this.viewHitSubscription = null;
-    }
-
-    if (typeof callback === 'function') {
-      this.viewHitSubscription = this.viewHit.pipe(operators.first()).subscribe(function (event) {
-        return callback(event);
-      });
-    }
-  };
-
-  _proto.onDragEnd = function onDragEnd(event) {
-    var _this5 = this;
-
-    EditorService.inferItemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
-      // console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
-      _this5.pushChanges();
-    }, function (error) {
-      return console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error);
-    });
-  };
-
-  _proto.onResizeEnd = function onResizeEnd(event) {
-    console.log('EditorComponent.onResizeEnd');
-    /*
-    EditorService.inferItemUpdate$(this.view, event.item).pipe(
-    	first(),
-    ).subscribe(response => {
-    	// console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
-    	this.pushChanges();
-    }, error => console.log('EditorComponent.onResizeEnd.inferItemUpdate$.error', error));
-    */
-  };
-
-  _proto.onWorldSelect = function onWorldSelect(event) {
-    // console.log('EditorComponent.onWorldSelect', this.view);
-    if (this.view) {
-      var selectedItem;
-      this.view.items.forEach(function (item) {
-        return item.showPanel = false;
-      });
-      this.view.items.forEach(function (item) {
-        item.selected = item === event.item;
-        selectedItem = item.selected ? item : selectedItem;
-      });
-      this.view.selected = !selectedItem;
-      this.pushChanges();
-
-      if (selectedItem) {
-        this.aside = true;
-        this.pushChanges();
-        window.dispatchEvent(new Event('resize'));
-      }
-    }
-  };
-
-  _proto.onOpenModal = function onOpenModal(modal, data) {
-    var _this6 = this;
-
-    ModalService.open$({
-      src: environment.template.modal[modal.type][modal.value],
-      data: data
-    }).pipe(operators.first()).subscribe(function (event) {
-      if (event instanceof ModalResolveEvent) {
-        console.log('EditorComponent.onOpenModal.resolve', event);
-
-        switch (modal.type) {
-          case 'view':
-            switch (modal.value) {
-              case ViewType.Panorama.name:
-              case ViewType.PanoramaGrid.name:
-              case ViewType.Model.name:
-              case ViewType.Room3d.name:
-              case ViewType.Media.name:
-                _this6.data.views.push(event.data);
-
-                _this6.views = _this6.data.views.slice();
-                ViewService.viewId = event.data.id;
-
-                _this6.pushChanges();
-
-                break;
-            }
-
-            break;
-
-          case 'viewItem':
-            switch (modal.value) {
-              case ViewItemType.Nav.name:
-              case ViewItemType.Plane.name:
-              case ViewItemType.CurvedPlane.name:
-              case ViewItemType.Model.name:
-                var tile = EditorService.getTile(_this6.view);
-
-                if (tile) {
-                  var navs = tile.navs || [];
-                  navs.push(event.data);
-                  Object.assign(tile, {
-                    navs: navs
-                  });
-
-                  _this6.view.updateCurrentItems();
-                } else {
-                  var items = _this6.view.items || [];
-                  items.push(event.data);
-                  Object.assign(_this6.view, {
-                    items: items
-                  });
-                }
-
-                _this6.pushChanges();
-
-                break;
-            }
-
-            break;
-        }
-      }
-
-      _this6.pushChanges();
-    });
-  };
-
-  _proto.onAsideSelect = function onAsideSelect(event) {
-    var _this7 = this;
-
-    // console.log('onAsideSelect', event);
-    if (event.value) {
-      switch (event.value) {
-        case ViewItemType.Nav.name:
-        case ViewItemType.Plane.name:
-        case ViewItemType.CurvedPlane.name:
-          this.onViewHitted(function (hit) {
-            _this7.onOpenModal(event, {
-              view: _this7.view,
-              hit: hit
-            });
-          });
-          ToastService.open$({
-            message: 'Click a point on the view'
-          });
-          break;
-
-        case ViewItemType.Model.name:
-          if (event.type === 'viewItem') {
-            if (this.view.type.name === ViewType.Model.name) {
-              return;
-            }
-
-            this.onViewHitted(function (hit) {
-              _this7.onOpenModal(event, {
-                view: _this7.view,
-                hit: hit
-              });
-            });
-            ToastService.open$({
-              message: 'Click a point on the view'
-            });
-          } else {
-            this.onOpenModal(event, {
-              view: this.view
-            });
-          }
-
-          break;
-
-        default:
-          this.onOpenModal(event, {
-            view: this.view
-          });
-      }
-    } else if (event.view && (event.item || event.item === null)) {
-      event.view.selected = false;
-      event.view.items.forEach(function (item) {
-        return item.selected = item === event.item;
-      });
-      MessageService.send({
-        type: MessageType.SelectItem
-      });
-      this.pushChanges();
-    } else if (event.view && (event.tile || event.tile === null)) {
-      event.view.selected = false;
-      event.view.tiles.forEach(function (tile) {
-        return tile.selected = tile === event.tile;
-      });
-      MessageService.send({
-        type: MessageType.SelectItem
-      });
-      /*
-      // if tile selected
-      // send ChangeTile message to world component
-      this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
-      	const item = this.view.getTile(event.indices.x, event.indices.y);
-      	if (item) {
-      		this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
-      			// this.scene.background = envMap;
-      			this.scene.environment = envMap;
-      			this.orbitService.walkComplete(headingLongitude, headingLatitude);
-      			// this.render();
-      			// this.pushChanges();
-      		});
-      	}
-      });
-      */
-
-      this.pushChanges();
-    } else if (event.view || event.view === null) {
-      this.view.selected = this.view === event.view;
-      this.view.items.forEach(function (item) {
-        return item.selected = false;
-      });
-      var currentTile = EditorService.getTile(this.view);
-
-      if (currentTile) {
-        this.view.tiles.forEach(function (tile) {
-          return tile.selected = tile === currentTile;
-        });
-      }
-
-      MessageService.send({
-        type: MessageType.SelectItem
-      });
-      this.pushChanges();
-    }
-  };
-
-  _proto.onAsideUpdate = function onAsideUpdate(event) {
-    // console.log('onAsideUpdate', event);
-    if (event.item && event.view) {
-      this.pushChanges();
-    } else if (event.tile && event.view) ; else if (event.view) {
-      if (ViewService.viewId !== event.view.id) {
-        ViewService.viewId = event.view.id;
-      } else {
-        var assetDidChange = AssetService.assetDidChange(this.view.asset, event.view.asset);
-        Object.assign(this.view, event.view);
-
-        if (assetDidChange) {
-          if (typeof this.view.onUpdateAsset === 'function') {
-            this.view.onUpdateAsset();
-          }
-        }
-
-        this.pushChanges();
-      }
-    }
-  };
-
-  _proto.onAsideDelete = function onAsideDelete(event) {
-    var _this8 = this;
-
-    // console.log('onAsideDelete', event);
-    if (event.item && event.view) {
-      EditorService.inferItemDelete$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
-        // console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
-        EditorService.inferItemDeleteResult$(event.view, event.item);
-
-        _this8.pushChanges();
-      }, function (error) {
-        return console.log('EditorComponent.onAsideDelete.inferItemDelete$.error', error);
-      });
-    } else if (event.view) {
-      EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
-        // console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-        var views = _this8.data.views;
-        var index = views.indexOf(event.view);
-
-        if (index !== -1) {
-          views.splice(index, 1);
-        }
-
-        _this8.data.views = views;
-        _this8.views = views.slice();
-        ViewService.viewId = _this8.views[0].id; // this.pushChanges();
-      }, function (error) {
-        return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
-      });
-    }
-  };
-
-  return EditorComponent;
-}(rxcomp.Component);
-EditorComponent.meta = {
-  selector: '[editor-component]'
-};var MENU_UID = 0;
-
-var MenuService = /*#__PURE__*/function () {
-  function MenuService() {}
-
-  MenuService.menu$ = function menu$() {
-    var _this = this;
-
-    return this.getMenu$().pipe(operators.switchMap(function (menu) {
-      _this.menu$_.next(menu);
-
-      return _this.menu$_;
-    }));
-  };
-
-  MenuService.getMenu$ = function getMenu$() {
-    return HttpService.get$("/api/menu").pipe(operators.map(function (data) {
-      data.menu.sort(function (a, b) {
-        return a.order - b.order;
-      });
-      return data.menu;
-    }));
-  };
-
-  MenuService.updateMenu$ = function updateMenu$(menu) {
-    return HttpService.put$("/api/menu", menu);
-  };
-
-  MenuService.createMenuItem$ = function createMenuItem$(parentId, order) {
-    if (parentId === void 0) {
-      parentId = null;
-    }
-
-    if (order === void 0) {
-      order = 0;
-    }
-
-    var payload = {
-      parentId: parentId,
-      viewId: null,
-      order: order * 10,
-      name: 'Folder ' + ++MENU_UID
-    };
-    return HttpService.post$("/api/menu", payload);
-  };
-
-  MenuService.updateMenuItem$ = function updateMenuItem$(item) {
-    return HttpService.put$("/api/menu/" + item.id, item);
-  };
-
-  MenuService.deleteMenuItem$ = function deleteMenuItem$(item) {
-    return HttpService.delete$("/api/menu/" + item.id);
-  };
-
-  MenuService.getModelMenu$ = function getModelMenu$(views, editor) {
-    var _this2 = this;
-
-    if (editor === void 0) {
-      editor = false;
-    }
-
-    return this.menu$().pipe(operators.map(function (menu) {
-      if (menu && menu.length) {
-        return _this2.mapMenuItems(menu);
-      } else {
-        // console.log('MenuService.getModelMenu$.Views', views);
-        var keys = {};
-        views.forEach(function (item) {
-          if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || editor)) {
-            var group = keys[item.type.name];
-
-            if (!group) {
-              group = keys[item.type.name] = [];
-            }
-
-            group.push(item);
-          }
-        });
-
-        var _menu = Object.keys(keys).map(function (typeName) {
-          var name = 'Button';
-
-          switch (typeName) {
-            case ViewType.WaitingRoom.name:
-              name = 'Waiting Room';
-              break;
-
-            case ViewType.Panorama.name:
-              name = 'Experience';
-              break;
-
-            case ViewType.PanoramaGrid.name:
-              name = 'Virtual Tour';
-              break;
-
-            case ViewType.Room3d.name:
-              name = 'Stanze 3D';
-              break;
-
-            case ViewType.Model.name:
-              name = 'Modelli 3D';
-              break;
-
-            case ViewType.Media.name:
-              name = 'Media';
-              break;
-          }
-
-          return {
-            name: name,
-            type: {
-              name: 'menu-group'
-            },
-            items: views.filter(function (x) {
-              return x.type.name === typeName && (!x.hidden || editor);
-            })
-          };
-        });
-
-        return _menu;
-      }
-    }));
-  };
-
-  MenuService.mapMenuItem = function mapMenuItem(item, items) {
-    if (item.viewId) {
-      return {
-        id: item.viewId,
-        name: item.name,
-        type: {
-          name: 'panorama'
-        }
-      };
-    } else {
-      return {
-        name: item.name,
-        type: {
-          name: 'menu-group'
-        },
-        items: this.mapMenuItems(items, item.id)
-      };
-    }
-  };
-
-  MenuService.mapMenuItems = function mapMenuItems(items, parentId) {
-    var _this3 = this;
-
-    if (parentId === void 0) {
-      parentId = null;
-    }
-
-    return items.filter(function (item) {
-      return (item.parentId || null) === parentId;
-    }).map(function (item) {
-      return _this3.mapMenuItem(item, items);
-    });
-  };
-
-  _createClass(MenuService, null, [{
-    key: "active",
-    set: function set(active) {
-      this.active$.next(active);
-    },
-    get: function get() {
-      return this.active$.getValue();
-    }
-  }]);
-
-  return MenuService;
-}();
-
-_defineProperty(MenuService, "active$", new rxjs.BehaviorSubject(false));
-
-_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var DropService = /*#__PURE__*/function () {
-  function DropService() {}
-
-  DropService.drop$ = function drop$(input) {
-    if (rxcomp.isPlatformBrowser && input) {
-      var body = document.querySelector('body');
-      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
-        // console.log('DropService.drop$', event);
-        event.preventDefault();
-
-        if (event.target === input) {
-          input.files = event.dataTransfer.files;
-        }
-
-        return;
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  DropService.change$ = function change$(input) {
-    if (rxcomp.isPlatformBrowser && input) {
-      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
-        return input.files && input.files.length;
-      }), operators.map(function (event) {
-        return Array.from(input.files);
-      }));
-    } else {
-      return rxjs.EMPTY;
-    }
-  };
-
-  DropService.asset$ = function asset$(input, previews) {
-    var _this = this;
-
-    if (previews === void 0) {
-      previews = [];
-    }
-
-    return this.change$(input).pipe(operators.switchMap(function (files) {
-      previews.length = files.length;
-      previews.fill(null); // output.previews = files.map(() => null);
-
-      var uploads$ = files.map(function (file, i) {
-        return _this.read$(file, i, previews).pipe(operators.map(function () {
-          return file;
-        }), operators.switchMap(function (file) {
-          return AssetService.upload$([file]);
-        }), operators.switchMap(function (uploads) {
-          var upload = uploads[0];
-          var asset = Asset.fromUrl(upload.url);
-          return AssetService.assetCreate$(asset);
-        }));
-      });
-      return rxjs.combineLatest(uploads$);
-    }));
-  };
-
-  DropService.read$ = function read$(file, i, previews) {
-    var _this2 = this;
-
-    if (previews === void 0) {
-      previews = [];
-    }
-
-    var reader = new FileReader();
-    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
-      var blob = event.target.result;
-      return _this2.resize$(blob);
-    }), operators.tap(function (resized) {
-      previews[i] = resized;
-    }));
-    reader.readAsDataURL(file);
-    return reader$;
-  };
-
-  DropService.resize$ = function resize$(blob) {
-    return rxjs.from(this.resize_(blob));
-  };
-
-  DropService.resize_ = function resize_(blob) {
-    return new Promise(function (resolve, reject) {
-      var img = document.createElement('img');
-
-      img.onload = function () {
-        var MAX_WIDTH = 320;
-        var MAX_HEIGHT = 240;
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        var width = img.width;
-        var height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        resolve(dataUrl);
-      };
-
-      img.onerror = function () {
-        reject(blob);
-      };
-
-      img.src = blob;
-    });
-  };
-
-  return DropService;
-}();var ControlComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ControlComponent, _Component);
-
-  function ControlComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlComponent.prototype;
-
-  _proto.onChanges = function onChanges() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node; // console.log(this, node, this.control);
-
-
-    var control = this.control;
-    var flags = control.flags;
-    Object.keys(flags).forEach(function (key) {
-      flags[key] ? node.classList.add(key) : node.classList.remove(key);
-    });
-  };
-
-  return ControlComponent;
-}(rxcomp.Component);
-ControlComponent.meta = {
-  selector: '[control]',
-  inputs: ['control']
-};var ControlAssetComponent = /*#__PURE__*/function (_ControlComponent) {
-  _inheritsLoose(ControlAssetComponent, _ControlComponent);
-
-  function ControlAssetComponent() {
-    return _ControlComponent.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlAssetComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.label = this.label || 'label';
-    this.disabled = this.disabled || false;
-    this.accept = this.accept || 'image/png, image/jpeg';
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    var input = node.querySelector('input');
-    input.setAttribute('accept', this.accept);
-    DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
-    DropService.change$(input).pipe(operators.switchMap(function (files) {
-      var uploads$ = files.map(function (file, i) {
-        return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
-          return AssetService.createOrUpdateAsset$(uploads, _this.control);
-        }));
-      });
-      return rxjs.combineLatest(uploads$);
-    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
-      // console.log('ControlAssetComponent.change$', assets);
-      _this.control.value = assets[0];
-    });
-  };
-
-  return ControlAssetComponent;
-}(ControlComponent);
-ControlAssetComponent.meta = {
-  selector: '[control-asset]',
-  inputs: ['control', 'label', 'disabled', 'accept'],
-  template:
-  /* html */
-  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
-};var ControlMenuComponent = /*#__PURE__*/function (_ControlAssetComponen) {
-  _inheritsLoose(ControlMenuComponent, _ControlAssetComponen);
-
-  function ControlMenuComponent() {
-    return _ControlAssetComponen.apply(this, arguments) || this;
-  }
-
-  ControlMenuComponent.itemToFormGroup = function itemToFormGroup(item) {
-    return new rxcompForm.FormGroup({
-      id: item.id,
-      parentId: item.parentId,
-      viewId: item.viewId,
-      name: item.name,
-      items: new rxcompForm.FormArray()
-    });
-  }
-  /*
-  static newFormGroup(parentId = null) {
-  	return new FormGroup({
-  		id: null,
-  		parentId: parentId,
-  		viewId: null,
-  		name: 'Folder ' + (++MENU_UID),
-  		items: new FormArray(),
-  	});
-  }
-  */
-  ;
-
-  var _proto = ControlMenuComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.dropdownId = DropdownDirective.nextId();
-    this.controls = this.control.controls;
-    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
-      _this.controls.viewId.options = options;
-    });
-  };
-
-  _proto.onAddItem = function onAddItem() {
-    var _this2 = this;
-
-    MenuService.createMenuItem$(this.controls.id.value, this.controls.items.length).pipe(operators.first()).subscribe(function (item) {
-      _this2.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
-    }); // this.controls.items.push(ControlMenuComponent.newFormGroup(this.controls.id.value));
-  };
-
-  _proto.onRemoveItem = function onRemoveItem() {
-    this.remove.next(this.control);
-  };
-
-  _proto.onRemoveControl = function onRemoveControl(control) {
-    var _this3 = this;
-
-    MenuService.deleteMenuItem$(control.value).pipe(operators.first()).subscribe(function () {
-      _this3.controls.items.remove(control);
-    }); // this.controls.items.remove(control);
-  };
-
-  _proto.onLinkItem = function onLinkItem() {
-    this.link.next(this.control);
-  };
-
-  _proto.onLinkControl = function onLinkControl(control) {
-    this.link.next(control);
-  };
-
-  _proto.onItemUp = function onItemUp() {
-    this.up.next(this.control);
-  };
-
-  _proto.onItemDown = function onItemDown() {
-    this.down.next(this.control);
-  };
-
-  _proto.onUpControl = function onUpControl(control) {
-    var items = this.controls.items;
-    var length = items.controls.length;
-    var index = items.controls.indexOf(control);
-    items.controls.splice(index, 1);
-
-    if (index > 0) {
-      index--;
-    } else {
-      index = length - 1;
-    }
-
-    items.insert(control, index);
-  };
-
-  _proto.onDownControl = function onDownControl(control) {
-    var items = this.controls.items;
-    var length = items.controls.length;
-    var index = items.controls.indexOf(control);
-    items.controls.splice(index, 1);
-
-    if (index < length - 1) {
-      index++;
-    } else {
-      index = 0;
-    }
-
-    items.insert(control, index);
-  };
-
-  _proto.setView = function setView(view) {
-    var _this4 = this;
-
-    // console.log('ControlMenuComponent.setView', view.id);
-    var payload = Object.assign({}, this.control.value);
-    payload.viewId = view.id;
-
-    if (view.id) {
-      payload.name = view.name;
-    }
-
-    MenuService.updateMenuItem$(payload).pipe(operators.first()).subscribe(function () {
-      _this4.controls.viewId.value = view.id;
-
-      if (view.id) {
-        _this4.controls.name.value = view.name; // clear sub items
-
-        _this4.controls.items.controls = [];
-
-        _this4.controls.items.switchSubjects_();
-      } // this.change.next(value);
-
-    });
-  };
-
-  _proto.onTextDidChange = function onTextDidChange(event) {
-    // console.log('ControlMenuComponent.onTextDidChange', this.controls.name.value);
-    MenuService.updateMenuItem$(this.control.value).pipe(operators.first()).subscribe();
-  };
-
-  _proto.hasOption = function hasOption(item) {
-    return this.controls.viewId.value === item.id;
-  };
-
-  _proto.onDropped = function onDropped(id) {// console.log('ControlMenuComponent.onDropped', id);
-  };
-
-  return ControlMenuComponent;
-}(ControlAssetComponent);
-ControlMenuComponent.meta = {
-  selector: '[control-menu]',
-  outputs: ['remove', 'link', 'up', 'down'],
-  inputs: ['control'],
-  template:
-  /* html */
-  "\n\t\t<div class=\"group--form\">\n\t\t\t<button type=\"button\" class=\"control-menu__link\" [class]=\"{ active: control.controls.viewId.value }\" (click)=\"onLinkItem($event)\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#link\"></use></svg>\n\t\t\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t\t\t<div class=\"category\">View</div>\n\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t<li (click)=\"setView(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.controls.viewId.options\">\n\t\t\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</button>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control.controls.name\" placeholder=\"Name\" (change)=\"onTextDidChange($event)\" />\n\t\t\t<!--\n\t\t\t<button type=\"button\" class=\"control-menu__add\" (click)=\"onAddItem($event)\">\n\t\t\t\t<span [innerHTML]=\"control.controls.viewId.value\"></span>\n\t\t\t</button>\n\t\t\t-->\n\t\t\t<!--\n\t\t\t<select class=\"control--select\" [formControl]=\"control.controls.viewId\">\n\t\t\t\t<option [value]=\"item.id\" *for=\"let item of control.controls.viewId.options\" [innerHTML]=\"item.name\"></option>\n\t\t\t</select>\n\t\t\t-->\n\t\t\t<button type=\"button\" class=\"control-menu__up\" (click)=\"onItemUp($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#up\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__down\" (click)=\"onItemDown($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#down\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__add\" (click)=\"onAddItem($event)\" *if=\"!control.controls.viewId.value\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#add\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__remove\" (click)=\"onRemoveItem($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#remove\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"group--items\">\n\t\t\t<div control-menu *for=\"let sub of control.controls.items.controls\" [control]=\"sub\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t</div>\n\t"
-};var MenuBuilderComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(MenuBuilderComponent, _Component);
-
-  function MenuBuilderComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = MenuBuilderComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.changes = 0;
-    this.form = null;
-    MenuService.getMenu$().pipe(operators.first()).subscribe(function (menu) {
-      return _this.initForm(menu);
-    });
-  };
-
-  _proto.initForm = function initForm(menu) {
-    var _this2 = this;
-
-    if (menu === void 0) {
-      menu = [];
-    }
-
-    var items = this.menuToControls(menu); // console.log('MenuBuilderComponent', items);
-
-    var form = this.form = new rxcompForm.FormGroup({
-      items: items
-    });
-    var controls = this.controls = form.controls;
-    form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
-      // console.log('MenuBuilderComponent', changes);
-      _this2.changes++;
-
-      _this2.pushChanges();
-    });
-  };
-
-  _proto.onLinkControl = function onLinkControl(control) {};
-
-  _proto.onUpControl = function onUpControl(control) {
-    var items = this.controls.items;
-    var length = items.controls.length;
-    var index = items.controls.indexOf(control);
-    items.controls.splice(index, 1);
-
-    if (index > 0) {
-      index--;
-    } else {
-      index = length - 1;
-    }
-
-    items.insert(control, index);
-  };
-
-  _proto.onDownControl = function onDownControl(control) {
-    var items = this.controls.items;
-    var length = items.controls.length;
-    var index = items.controls.indexOf(control);
-    items.controls.splice(index, 1);
-
-    if (index < length - 1) {
-      index++;
-    } else {
-      index = 0;
-    }
-
-    items.insert(control, index);
-  };
-
-  _proto.onAddItem = function onAddItem() {
-    var _this3 = this;
-
-    MenuService.createMenuItem$(null, this.controls.items.length).pipe(operators.first()).subscribe(function (item) {
-      _this3.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
-    }); // this.controls.items.push(ControlMenuComponent.newFormGroup());
-  };
-
-  _proto.onRemoveControl = function onRemoveControl(control) {
-    var _this4 = this;
-
-    MenuService.deleteMenuItem$(control.value).pipe(operators.first()).subscribe(function () {
-      _this4.controls.items.remove(control);
-    }); // this.controls.items.remove(control);
-  };
-
-  _proto.isValid = function isValid() {
-    var isValid = this.form.valid;
-    return isValid;
-  };
-
-  _proto.onSubmit = function onSubmit(event) {
-    if (this.form.valid) {
-      var changes = this.form.value;
-      var menu = this.controlsToMenu(changes);
-      MenuService.updateMenu$(menu);
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.menuToControls = function menuToControls(menu, parentId) {
-    var _this5 = this;
-
-    if (parentId === void 0) {
-      parentId = null;
-    }
-
-    var items = new rxcompForm.FormArray(menu.filter(function (x) {
-      return (x.parentId || null) === parentId;
-    }).map(function (x) {
-      var subitems = _this5.menuToControls(menu, x.id);
-
-      return new rxcompForm.FormGroup({
-        id: x.id,
-        parentId: x.parentId,
-        viewId: x.viewId,
-        name: x.name,
-        items: subitems
-      });
-    }));
-    return items;
-  };
-
-  _proto.controlsToMenu = function controlsToMenu(changes) {
-    var menu = [];
-
-    var pushItem = function pushItem(items) {
-      if (items) {
-        items.forEach(function (item, i) {
-          var menuItem = Object.assign({}, item);
-          menuItem.order = i * 10;
-          delete menuItem.items;
-          menu.push(menuItem);
-          pushItem(item.items);
-        });
-      }
-    };
-
-    pushItem(changes.items);
-    return menu;
-  };
-
-  return MenuBuilderComponent;
-}(rxcomp.Component);
-MenuBuilderComponent.meta = {
-  selector: '[menu-builder]',
-  inputs: ['views']
-};// import * as THREE from 'three';
+  return Geometry;
+}();// import * as THREE from 'three';
 var ORIGIN = new THREE.Vector3();
 var Host = /*#__PURE__*/function () {
   function Host() {}
@@ -12105,398 +9252,7 @@ var Host = /*#__PURE__*/function () {
   return Host;
 }();
 
-_defineProperty(Host, "origin_", new THREE.Vector3());var CurvedPlaneModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(CurvedPlaneModalComponent, _Component);
-
-  function CurvedPlaneModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = CurvedPlaneModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var object = this.object;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewItemType.CurvedPlane,
-      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
-      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
-      radius: new rxcompForm.FormControl(35, rxcompForm.RequiredValidator()),
-      height: new rxcompForm.FormControl(20, rxcompForm.RequiredValidator()),
-      arc: new rxcompForm.FormControl(90, rxcompForm.RequiredValidator()),
-      asset: null
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('CurvedPlaneModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    if (this.form.valid) {
-      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
-      // console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
-
-      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        // console.log('CurvedPlaneModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        return console.log('CurvedPlaneModalComponent.onSubmit.error', error);
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(CurvedPlaneModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "view",
-    get: function get() {
-      var view = null;
-      var data = this.data;
-
-      if (data) {
-        view = data.view;
-      }
-
-      return view;
-    }
-  }, {
-    key: "object",
-    get: function get() {
-      var object = new THREE.Object3D();
-      var data = this.data;
-
-      if (data) {
-        var position = data.hit.position.clone();
-        var normal = data.hit.normal.clone();
-        var spherical = data.hit.spherical;
-
-        if (spherical) {
-          position.normalize().multiplyScalar(20);
-          object.position.copy(position);
-          object.lookAt(Host.origin);
-        } else {
-          object.lookAt(normal);
-          object.position.set(position.x, position.y, position.z);
-          object.position.add(normal.multiplyScalar(0.01));
-        }
-      }
-
-      return object;
-    }
-  }]);
-
-  return CurvedPlaneModalComponent;
-}(rxcomp.Component);
-CurvedPlaneModalComponent.meta = {
-  selector: '[curved-plane-modal]'
-};var ItemModelModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ItemModelModalComponent, _Component);
-
-  function ItemModelModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ItemModelModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var object = this.object;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewItemType.Model,
-      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl([0, 0, 0], rxcompForm.RequiredValidator()),
-      // [0, -Math.PI / 2, 0],
-      // rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('ItemModelModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    if (this.form.valid) {
-      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
-      // console.log('ItemModelModalComponent.onSubmit', this.view, item);
-
-      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        // console.log('ItemModelModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        return console.log('ItemModelModalComponent.onSubmit.error', error);
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(ItemModelModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "view",
-    get: function get() {
-      var view = null;
-      var data = this.data;
-
-      if (data) {
-        view = data.view;
-      }
-
-      return view;
-    }
-  }, {
-    key: "object",
-    get: function get() {
-      var object = new THREE.Object3D();
-      var data = this.data;
-
-      if (data) {
-        var position = data.hit.position.clone();
-        var normal = data.hit.normal.clone();
-        var spherical = data.hit.spherical;
-
-        if (spherical) {
-          position.normalize().multiplyScalar(4);
-          object.position.copy(position);
-          object.lookAt(Host.origin);
-        } else {
-          object.lookAt(normal);
-          object.position.set(position.x, position.y, position.z);
-          object.position.add(normal.multiplyScalar(0.01));
-        }
-      }
-
-      return object;
-    }
-  }]);
-
-  return ItemModelModalComponent;
-}(rxcomp.Component);
-ItemModelModalComponent.meta = {
-  selector: '[item-model-modal]'
-};var MediaModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(MediaModalComponent, _Component);
-
-  function MediaModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = MediaModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Media,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('MediaModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var view = {
-        type: values.type,
-        name: values.name,
-        asset: values.asset,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      }; // console.log('MediaModalComponent.onSubmit.view', view);
-
-      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
-        var item = {
-          type: ViewItemType.Plane,
-          position: [20, 0, 0],
-          rotation: [0, -Math.PI / 2, 0],
-          scale: [12, 6.75, 1],
-          asset: values.asset
-        };
-        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
-          view.items = [item];
-          return view;
-        }));
-      }), operators.first()).subscribe(function (response) {
-        // console.log('MediaModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('MediaModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return MediaModalComponent;
-}(rxcomp.Component);
-MediaModalComponent.meta = {
-  selector: '[media-modal]'
-};var ModelModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ModelModalComponent, _Component);
-
-  function ModelModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ModelModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Model,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      model: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('ModelModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var view = {
-        type: values.type,
-        name: values.name,
-        asset: values.asset,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      }; // console.log('ModelModalComponent.onSubmit.view', view);
-
-      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
-        var item = {
-          type: ViewItemType.Model,
-          asset: values.model
-        };
-        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
-          view.items = [item];
-          return view;
-        }));
-      }), operators.first()).subscribe(function (response) {
-        // console.log('ModelModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('ModelModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return ModelModalComponent;
-}(rxcomp.Component);
-ModelModalComponent.meta = {
-  selector: '[model-modal]'
-};// import * as THREE from 'three';
-var PANORAMA_RADIUS = 101;
-var Geometry = /*#__PURE__*/function () {
-  function Geometry() {}
-
-  _createClass(Geometry, null, [{
-    key: "defaultGeometry",
-    get: function get() {
-      return Geometry.defaultGeometry_ || (Geometry.defaultGeometry_ = new THREE.BoxBufferGeometry(1, 1, 1));
-    }
-  }, {
-    key: "planeGeometry",
-    get: function get() {
-      return Geometry.planeGeometry_ || (Geometry.planeGeometry_ = new THREE.PlaneBufferGeometry(1, 1, 2, 2));
-    }
-  }, {
-    key: "sphereGeometry",
-    get: function get() {
-      return Geometry.sphereGeometry_ || (Geometry.sphereGeometry_ = new THREE.SphereBufferGeometry(3, 12, 12));
-    }
-  }, {
-    key: "panoramaGeometry",
-    get: function get() {
-      return Geometry.panoramaGeometry_ || (Geometry.panoramaGeometry_ = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 36, 36)); // 101, 44, 30
-      // return Geometry.panoramaGeometry_ || (Geometry.panoramaGeometry_ = new THREE.IcosahedronBufferGeometry(PANORAMA_RADIUS, 4)); // 101, 44, 30
-      // return Geometry.panoramaGeometry_ || (Geometry.panoramaGeometry_ = new THREE.SphereBufferGeometry(PANORAMA_RADIUS, 40, 40)); // 101, 44, 30
-    }
-  }]);
-
-  return Geometry;
-}();// import DebugService from '../debug.service';
+_defineProperty(Host, "origin_", new THREE.Vector3());// import DebugService from '../debug.service';
 
 var Interactive = function Interactive() {};
 Interactive.items = [];
@@ -14717,7 +11473,7 @@ var MediaMesh = /*#__PURE__*/function (_InteractiveMesh) {
       var size = 0.1;
       scale.set(size / ratio, size, 1);
       position.x = 0.5 - size / ratio / 2;
-      position.y = 0.5 - size / 2;
+      position.y = size / 2 - 0.5;
       position.z = 0.01;
     } // console.log('MediaMesh.updateZoom', this.scale);
 
@@ -16461,6 +13217,182 @@ var TeleportElement = /*#__PURE__*/function () {
   ;
 
   return TeleportElement;
+}();var XRStatus = {
+  Waiting: 'waiting',
+  Enabled: 'enabled',
+  Ended: 'ended',
+  Started: 'started',
+  Disabled: 'disabled',
+  NeedsHttps: 'needs-https',
+  Unavailable: 'unavailable'
+};
+
+var VRService = /*#__PURE__*/function () {
+  VRService.getService = function getService() {
+    if (!this.service_) {
+      this.service_ = new VRService();
+    }
+
+    return this.service_;
+  };
+
+  _createClass(VRService, [{
+    key: "status",
+    get: function get() {
+      return this.status$.getValue();
+    }
+  }, {
+    key: "state",
+    get: function get() {
+      return this.state$.getValue();
+    }
+  }]);
+
+  function VRService() {
+    var _this = this;
+
+    if (VRService.service_) {
+      throw 'VRService is a singleton class!';
+    }
+
+    var state = this.state_ = {
+      camera: {
+        position: new THREE.Vector3(),
+        quaternion: new THREE.Quaternion(),
+        scale: new THREE.Vector3(),
+        array: new Array(3 + 4 + 3).fill(0)
+      }
+    };
+    this.onSessionStarted = this.onSessionStarted.bind(this);
+    this.onSessionEnded = this.onSessionEnded.bind(this);
+    this.status$ = new rxjs.BehaviorSubject(XRStatus.Waiting);
+    this.session$ = new rxjs.Subject();
+    this.state$ = new rxjs.BehaviorSubject(state);
+    this.currentSession = null;
+
+    if ('xr' in navigator) {
+      navigator.xr.isSessionSupported('immersive-vr').then(function (supported) {
+        if (supported) {
+          _this.status$.next(XRStatus.Enabled);
+        } else {
+          _this.status$.next(XRStatus.Disabled);
+        }
+      });
+    } else {
+      if (window.isSecureContext === false) {
+        this.status$.next(XRStatus.NeedsHttps);
+      } else {
+        this.status$.next(XRStatus.Unavailable); // 'https://immersiveweb.dev/';
+      }
+    }
+  }
+
+  var _proto = VRService.prototype;
+
+  _proto.onSessionStarted = function onSessionStarted(session) {
+    session.addEventListener('end', this.onSessionEnded);
+    this.currentSession = session;
+    this.session$.next(session);
+    this.status$.next(XRStatus.Started);
+  };
+
+  _proto.onSessionEnded = function onSessionEnded()
+  /*event*/
+  {
+    this.currentSession.removeEventListener('end', this.onSessionEnded);
+    this.currentSession = null;
+    this.session$.next(null);
+    this.status$.next(XRStatus.Ended);
+  };
+
+  _proto.toggleVR = function toggleVR(event) {
+    if (this.currentSession === null) {
+      // WebXR's requestReferenceSpace only works if the corresponding feature
+      // was requested at session creation time. For simplicity, just ask for
+      // the interesting ones as optional features, but be aware that the
+      // requestReferenceSpace call will fail if it turns out to be unavailable.
+      // ('local' is always available for immersive sessions and doesn't need to
+      // be requested separately.)
+      var sessionInit = {
+        optionalFeatures: ['local-floor', 'bounded-floor']
+      };
+      navigator.xr.requestSession('immersive-vr', sessionInit).then(this.onSessionStarted);
+    } else {
+      this.currentSession.end();
+    }
+  };
+
+  _proto.isDisabled = function isDisabled() {
+    var status = this.status$.getValue();
+
+    switch (status) {
+      case XRStatus.Waiting:
+      case XRStatus.Disabled:
+      case XRStatus.NeedsHttps:
+      case XRStatus.Unavailable:
+        return true;
+
+      default:
+        return false;
+    }
+  };
+
+  _proto.getLabel = function getLabel() {
+    var label;
+    var status = this.status$.getValue();
+
+    switch (status) {
+      case XRStatus.Waiting:
+        label = 'Waiting VR';
+        break;
+
+      case XRStatus.Enabled:
+      case XRStatus.Ended:
+        label = 'Enter VR';
+        break;
+
+      case XRStatus.Started:
+        label = 'Exit VR';
+        break;
+
+      case XRStatus.Disabled:
+        label = 'VR Disabled';
+        break;
+
+      case XRStatus.NeedsHttps:
+        label = 'VR Needs Https';
+        break;
+
+      case XRStatus.Unavailable:
+        label = 'VR Unavailable';
+        break;
+    }
+
+    return label;
+  };
+
+  _proto.updateState = function updateState(world) {
+    if (this.status === XRStatus.Started) {
+      var renderer = world.renderer,
+          scene = world.scene,
+          camera = world.camera,
+          state = this.state_;
+      camera.matrixWorld.decompose(state.camera.position, state.camera.quaternion, state.camera.scale);
+      state.camera.array[0] = state.camera.position.x;
+      state.camera.array[1] = state.camera.position.y;
+      state.camera.array[2] = state.camera.position.z;
+      state.camera.array[3] = state.camera.quaternion.x;
+      state.camera.array[4] = state.camera.quaternion.y;
+      state.camera.array[5] = state.camera.quaternion.z;
+      state.camera.array[6] = state.camera.quaternion.w;
+      state.camera.array[7] = state.camera.scale.x;
+      state.camera.array[8] = state.camera.scale.y;
+      state.camera.array[9] = state.camera.scale.z;
+      this.state$.next(state);
+    }
+  };
+
+  return VRService;
 }();var Emittable$1 = /*#__PURE__*/function () {
   function Emittable() {
     this.events = {};
@@ -20451,7 +17383,11 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var raycaster = this.raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(this.mouse, camera);
     var scene = this.scene = new THREE.Scene();
-    scene.add(cameraGroup); // this.addEnvironment();
+    scene.add(cameraGroup);
+
+    if (environment.flags.useTextureEnvironment) {
+      this.addEnvironment();
+    }
 
     var objects = this.objects = new THREE.Group();
     objects.name = '[objects]';
@@ -20505,9 +17441,17 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var segments = environment.textures.envMap.split('/');
     var filename = segments.pop();
     var folder = segments.join('/') + '/';
-    var loader = filename.indexOf('.hdr') !== -1 ? new RGBELoader().setDataType(THREE.UnsignedByteType) : new THREE.TextureLoader();
+    var isHdr = filename.indexOf('.hdr') !== -1; // const loader = isHdr ? new RGBELoader().setDataType(THREE.UnsignedByteType) : new THREE.TextureLoader();
+
+    var loader = isHdr ? new RGBELoader() : new THREE.TextureLoader();
     loader.setPath(environment.getPath(folder)).load(filename, function (texture) {
-      _this3.setBackground(texture);
+      if (isHdr && texture) {
+        texture.mapping = THREE.EquirectangularReflectionMapping; // this.scene.background = texture;
+
+        _this3.scene.environment = texture;
+      } else {
+        _this3.setBackground(texture);
+      }
     });
   };
 
@@ -20566,6 +17510,12 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var view = this.view_;
 
     if (view) {
+      if (StateService.state.zoomedId != null) {
+        StateService.patchState({
+          zoomedId: null
+        });
+      }
+
       if (this.views) {
         this.views.forEach(function (view) {
           return delete view.onUpdateAsset;
@@ -20602,7 +17552,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
       PrefetchService.cancel();
       this.panorama.change(view, this.renderer, function (texture) {
         // console.log('panorama.change', texture);
-        _this4.setBackground(texture);
+        if (!environment.flags.useTextureEnvironment) {
+          _this4.setBackground(texture);
+        }
 
         view.ready = true;
 
@@ -20630,7 +17582,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
     if (this.panorama) {
       this.panorama.crossfade(this.view, this.renderer, function (texture) {
-        _this5.setBackground(texture);
+        if (!environment.flags.useTextureEnvironment) {
+          _this5.setBackground(texture);
+        }
       });
     }
   };
@@ -21513,7 +18467,9 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
       if (tile) {
         _this8.panorama.crossfade(tile, _this8.renderer, function (texture) {
-          _this8.setBackground(texture);
+          if (!environment.flags.useTextureEnvironment) {
+            _this8.setBackground(texture);
+          }
 
           _this8.orbitService.walkComplete(headingLongitude, headingLatitude);
 
@@ -22377,6 +19333,16 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
     return mode;
   };
 
+  ModelNavComponent.hasNavInfo = function hasNavInfo(view) {
+    var _this2 = this;
+
+    var item = view.items.find(function (x) {
+      return _this2.getNavMode(x, view) === NavModeType.Info;
+    }); // console.log('ModelNavComponent.hasNavInfo', item);
+
+    return item != null;
+  };
+
   ModelNavComponent.isValidText = function isValidText(text) {
     return text && text.length > 0;
   };
@@ -22429,7 +19395,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
   };
 
   _proto.onCreate = function onCreate(mount, dismount) {
-    var _this2 = this;
+    var _this3 = this;
 
     // this.renderOrder = environment.renderOrder.nav;
     var view = this.view;
@@ -22491,25 +19457,25 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
           plane.material.opacity = opacityOver;
         }
 
-        _this2.over.next(_this2);
+        _this3.over.next(_this3);
       });
       plane.on('out', function () {
         if (!isAnimated) {
           plane.material.opacity = opacityIdle;
         }
 
-        _this2.out.next(_this2);
+        _this3.out.next(_this3);
       });
       plane.on('down', function () {
         if (!isAnimated) {
           plane.material.opacity = opacityDown;
         }
 
-        _this2.down.next(_this2); // opening nav link
+        _this3.down.next(_this3); // opening nav link
 
 
-        if (!_this2.editor && !_this2.shouldShowPanel() && _this2.item.link && _this2.item.link.href) {
-          _this2.shouldNavToLink = _this2.item.link.href;
+        if (!_this3.editor && !_this3.shouldShowPanel() && _this3.item.link && _this3.item.link.href) {
+          _this3.shouldNavToLink = _this3.item.link.href;
         }
       });
       plane.on('up', function () {
@@ -22518,14 +19484,14 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         } // opening nav link
 
 
-        if (_this2.shouldNavToLink != null) {
+        if (_this3.shouldNavToLink != null) {
           /*
           const link = this.shouldNavToLink;
           window.open(link, '_blank');
           */
-          _this2.shouldNavToLink = null;
+          _this3.shouldNavToLink = null;
 
-          _this2.link.next(_this2.item);
+          _this3.link.next(_this3.item);
         }
       });
     } else {
@@ -22563,13 +19529,13 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         ease: Power2.easeInOut,
         overwrite: true,
         onUpdate: function onUpdate() {
-          _this2.materials.forEach(function (material) {
+          _this3.materials.forEach(function (material) {
             material.opacity = _from.pow; // material.needsUpdate = true;
           });
         },
         onComplete: function onComplete() {
           if (isAnimated) {
-            var icon = _this2.icon;
+            var icon = _this3.icon;
             _from.pow = 0;
             gsap.to(_from, {
               pow: 1,
@@ -22579,7 +19545,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
               repeat: -1,
               yoyo: true,
               onUpdate: function onUpdate() {
-                var scale = _this2.iconMinScale + _from.pow * (_this2.iconMaxScale - _this2.iconMinScale);
+                var scale = _this3.iconMinScale + _from.pow * (_this3.iconMaxScale - _this3.iconMinScale);
                 icon.scale.set(scale, scale, scale);
                 icon.material.opacity = _from.pow;
               }
@@ -22588,16 +19554,16 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         }
       });
       sphere.on('over', function () {
-        _this2.over.next(_this2);
+        _this3.over.next(_this3);
 
         if (!isAnimated) {
-          var icon = _this2.icon;
+          var icon = _this3.icon;
           var _from2 = {
             scale: icon.scale.x
           };
           gsap.to(_from2, {
             duration: 0.35,
-            scale: _this2.iconMaxScale,
+            scale: _this3.iconMaxScale,
             delay: 0,
             ease: Power2.easeOut,
             overwrite: true,
@@ -22608,16 +19574,16 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         }
       });
       sphere.on('out', function () {
-        _this2.out.next(_this2);
+        _this3.out.next(_this3);
 
         if (!isAnimated) {
-          var icon = _this2.icon;
+          var icon = _this3.icon;
           var _from3 = {
             scale: icon.scale.x
           };
           gsap.to(_from3, {
             duration: 0.35,
-            scale: _this2.iconMinScale,
+            scale: _this3.iconMinScale,
             delay: 0,
             ease: Power2.easeOut,
             overwrite: true,
@@ -22628,7 +19594,7 @@ var ModelNavComponent = /*#__PURE__*/function (_ModelEditableCompone) {
         }
       });
       sphere.on('down', function () {
-        _this2.down.next(_this2);
+        _this3.down.next(_this3);
       });
     }
 
@@ -22868,6 +19834,3642 @@ ModelNavComponent.meta = {
   },
   outputs: ['over', 'out', 'down', 'link'],
   inputs: ['item', 'view', 'editor']
+};var AgoraComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraComponent, _Component);
+
+  function AgoraComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AgoraComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.remove('hidden');
+    this.platform = DeviceService.platform;
+    this.state = {};
+    this.hosted = null;
+    this.view = null;
+    this.previousView = null;
+    this.form = null;
+    this.local = null;
+    this.screen = null;
+    this.remoteScreen_ = null;
+    this.navmaps = [];
+    this.navmap = null; // this.media = null;
+
+    this.hasScreenViewItem = false;
+    this.remotes = [];
+    var vrService = this.vrService = VRService.getService();
+    vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+      return _this.pushChanges();
+    });
+    this.resolveUser();
+  };
+
+  _proto.getName = function getName(user) {
+    return StateService.state.name || MeetingUrl.getName(user);
+  };
+
+  _proto.getLinkRole = function getLinkRole() {
+    var linkRole = null; // console.log('getLinkRole', window.location, environment.url.selfServiceTour);
+
+    if (window.location.pathname === environment.url.selfServiceTour) {
+      linkRole = RoleType.SelfService;
+      return linkRole;
+    }
+    /*
+    const meetingUrl = this.meetingUrl;
+    const meetingId = meetingUrl.meetingId;
+    if (meetingId) {
+    	linkRole = meetingId.role;
+    }
+    */
+
+
+    var match = (LocationService.get('link') || '').match(/\d{9}-(\d{4})-\d{13}/);
+
+    if (match) {
+      var index = parseInt(match[1]);
+      linkRole = Object.keys(RoleType).reduce(function (p, c, i) {
+        return i === index ? RoleType[c] : p;
+      }, null);
+    }
+
+    return linkRole;
+  };
+
+  _proto.resolveUser = function resolveUser() {
+    var _this2 = this;
+
+    if (this.isEmbed) {
+      UserService.temporaryUser$(RoleType.Embed).pipe(operators.first()).subscribe(function (user) {
+        _this2.initWithUser(user);
+      });
+    } else {
+      UserService.me$().pipe(operators.first()).subscribe(function (user) {
+        _this2.initWithUser(user); // this.userGuard(user);
+
+      });
+    }
+  };
+
+  _proto.userGuard = function userGuard(user) {
+    var linkRole = this.getLinkRole();
+
+    if (user && (!linkRole || user.type === linkRole)) {
+      this.initWithUser(user);
+    } else {
+      this.initWithUser({
+        type: linkRole
+      });
+    }
+  };
+
+  _proto.userGuardRedirect = function userGuardRedirect(user) {
+    var linkRole = this.getLinkRole();
+
+    if (user && (!linkRole || linkRole === user.type)) {
+      this.initWithUser(user);
+    } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
+      window.location.href = environment.url.access;
+    } else {
+      this.initWithUser({
+        type: linkRole
+      });
+    }
+  };
+
+  _proto.setNextStatus = function setNextStatus() {
+    var status = AgoraStatus.Idle;
+    var state = StateService.state;
+
+    if (state.role === RoleType.SmartDevice) {
+      state.name = state.name || 'Smart Device';
+    }
+
+    if (!state.checklist) {
+      status = AgoraStatus.Checklist;
+    } else if (!state.link) {
+      status = AgoraStatus.Link;
+    } else if (!state.user.id && (state.role === RoleType.Publisher || state.role === RoleType.Attendee)) {
+      status = AgoraStatus.Login;
+    } else if (!state.name) {
+      status = AgoraStatus.Name;
+    } else if (state.role !== RoleType.Viewer && state.role !== RoleType.SmartDevice) {
+      status = AgoraStatus.Device;
+    } else {
+      status = AgoraStatus.ShouldConnect;
+    }
+
+    StateService.patchState({
+      status: status
+    });
+    return status;
+  };
+
+  _proto.getPathId = function getPathId() {
+    var pathId = LocationService.get('pathId') || null;
+
+    if (pathId) {
+      console.log('AgoraComponent.getPathId', pathId);
+      return parseInt(pathId);
+    }
+
+    var link = LocationService.get('link') || null;
+
+    if (link) {
+      var meetingId = new MeetingId(link);
+      pathId = meetingId.pathId;
+    }
+
+    console.log('AgoraComponent.getPathId', pathId);
+    return pathId;
+  };
+
+  _proto.initWithUser = function initWithUser(user) {
+    var _this3 = this;
+
+    // console.log('initWithUser', user);
+    // const meetingUrl = this.meetingUrl;
+    // const link = meetingUrl.link;
+    var link = LocationService.get('link') || null;
+    var pathId = this.getPathId();
+    var role = this.getLinkRole() || (user ? user.type : null);
+
+    switch (role) {
+      case RoleType.SelfService:
+        if (!user || user.type !== RoleType.SelfService && user.type !== RoleType.Publisher) {
+          window.location.href = environment.url.access;
+          return;
+        } else {
+          // forcing role type to RoleType.SelfService
+          user = Object.assign({}, user, {
+            type: RoleType.SelfService
+          });
+        }
+
+        break;
+
+      default:
+        user = user || {
+          type: role
+        };
+
+        if (role !== user.type) {
+          user = {
+            type: role
+          };
+        }
+
+    } // console.log('initWithUser', role, user);
+
+
+    var mode = UserService.getMode(role);
+    var name = LocationService.get('name') || (user.firstName && user.lastName ? user.firstName + " " + user.lastName : null); // const name = meetingUrl.name || this.getName(user);
+
+    var checklist = null;
+    var hosted = role === RoleType.Publisher ? true : false;
+    var live = role === RoleType.SelfService || role === RoleType.Embed || DEBUG ? false : true;
+    var navigable = this.isNavigable;
+    var state = {
+      user: user,
+      role: role,
+      mode: mode,
+      name: name,
+      checklist: checklist,
+      pathId: pathId,
+      link: link,
+      channelName: environment.channelName,
+      uid: null,
+      status: AgoraStatus.Idle,
+      connecting: false,
+      connected: false,
+      controlling: false,
+      spying: false,
+      silencing: false,
+      hosted: hosted,
+      live: live,
+      navigable: navigable,
+      cameraMuted: false,
+      audioMuted: false,
+      showNavInfo: true
+    };
+    StateService.state = state;
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this3.state = state;
+      _this3.hosted = state.hosted;
+
+      _this3.pushChanges(); // console.log(state);
+
+
+      _this3.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
+    });
+    this.initAgora();
+  };
+
+  _proto.viewObserver$ = function viewObserver$() {
+    var _this4 = this;
+
+    return ViewService.data$().pipe(operators.switchMap(function (data) {
+      console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
+      return PathService.getCurrentPath$(StateService.state.pathId).pipe(operators.switchMap(function (path) {
+        return ViewService.hostedView$(data, path);
+      }));
+    }),
+    /*
+    tap(view => {
+    	this.view = null;
+    	this.pushChanges();
+    }),
+    delay(1),
+    */
+    operators.map(function (view) {
+      // console.log('AgoraComponent.viewObserver$', view);
+      // !!! move navToView to user action?
+      if (_this4.agora) {
+        _this4.agora.navToView(view.id, view.keepOrientation, view.useLastOrientation);
+      }
+
+      _this4.previousView = _this4.view;
+      _this4.view = view;
+
+      _this4.setNavmap(view);
+
+      _this4.hasScreenViewItem = view.items.find(function (x) {
+        return MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x);
+      }) != null;
+
+      _this4.pushChanges();
+
+      return view;
+    }));
+  };
+
+  _proto.load = function load(callback) {
+    this.loadNavmaps();
+    this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {
+      // console.log('AgoraComponent.viewObserver$', view);
+      if (typeof callback === 'function') {
+        callback();
+        callback = null;
+      }
+    });
+  };
+
+  _proto.loadNavmaps = function loadNavmaps() {
+    var _this5 = this;
+
+    if (environment.flags.navmaps) {
+      NavmapService.navmapGet$().pipe(operators.first()).subscribe(function (navmaps) {
+        _this5.navmaps = navmaps;
+      });
+    }
+  };
+
+  _proto.setNavmap = function setNavmap(view) {
+    var navmaps = this.navmaps;
+    var navmap = (navmaps || []).find(function (x) {
+      return (x.items || []).find(function (i) {
+        return i.viewId === view.id;
+      }) != null;
+    }) || null; // console.log('AgoraComponent.setNavmap', navmap);
+
+    this.navmap = navmap;
+  };
+
+  _proto.toggleNavmap = function toggleNavmap() {
+    StateService.patchState({
+      showNavmap: !StateService.state.showNavmap
+    });
+  };
+
+  _proto.onNavmapItem = function onNavmapItem(item) {
+    StateService.patchState({
+      showNavmap: false
+    });
+    this.onNavTo(item);
+  };
+
+  _proto.loadAndConnect = function loadAndConnect(preferences) {
+    var _this6 = this;
+
+    this.load(function () {
+      _this6.connect(preferences);
+    });
+  };
+
+  _proto.initAgora = function initAgora() {
+    var _this7 = this;
+
+    var agora = null;
+
+    if (this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG) {
+      this.load(function () {
+        StateService.patchState({
+          status: AgoraStatus.Connected,
+          hosted: true
+        });
+      });
+      this.checkSelfServiceProposition();
+      this.checkSelfServiceAudio();
+    } else {
+      AgoraChecklistService.isChecked$().pipe(operators.first()).subscribe(function (checked) {
+        StateService.patchState({
+          checklist: checked
+        });
+        agora = _this7.agora = AgoraService.getSingleton();
+
+        var role = _this7.getLinkRole();
+
+        var status = _this7.setNextStatus(); // console.log('initAgora', status, role);
+
+      });
+    }
+
+    StreamService.local$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (local) {
+      // console.log('AgoraComponent.local', local);
+      _this7.local = local;
+
+      _this7.pushChanges();
+    });
+    StreamService.screen$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (screen) {
+      // console.log('AgoraComponent.screen', screen);
+      if (_this7.screen === _this7.remoteScreen) {
+        _this7.remoteScreen = null;
+      }
+
+      _this7.screen = screen;
+      _this7.remoteScreen = screen || _this7.remoteScreen;
+
+      _this7.pushChanges();
+    });
+    StreamService.orderedRemotes$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (remotes) {
+      _this7.remotes = [];
+      _this7.remoteScreen = _this7.screen;
+      remotes.forEach(function (x) {
+        if (x.clientInfo && x.clientInfo.screenUid === x.getId()) {
+          _this7.remoteScreen = x;
+        } else {
+          _this7.remotes.push(x);
+        }
+      }); // console.log('AgoraComponent.remotes', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
+
+      _this7.pushChanges();
+    });
+    /*
+    MediaLoader.events$.pipe(
+    	tap(event => {
+    		if (event instanceof MediaLoaderPlayEvent) {
+    			this.media = event.loader;
+    			// this.pushChanges();
+    		} else if (event instanceof MediaLoaderDisposeEvent) {
+    			if (this.media === event.loader) {
+    				this.media = null;
+    				// this.pushChanges();
+    			}
+    		}
+    		// console.log('AgoraComponent.MediaLoader.events$', event);
+    	}),
+    	takeUntil(this.unsubscribe$)
+    ).subscribe();
+    */
+
+    MessageService.out$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      // console.log('AgoraComponent.message', message);
+      switch (message.type) {
+        case MessageType.ChannelMembers:
+          if (_this7.isSelfServiceSupport) {
+            var members = message.members; // console.log('AgoraComponent.MessageService.out$.ChannelMembers', members, members.length);
+
+            if (members.length > 0) {
+              ToastService.open$({
+                message: LabelPipe.transform('bhere_support_request_sent'),
+                type: ToastType.Alert,
+                position: ToastPosition.BottomRight
+              });
+              MessageService.send({
+                type: MessageType.SupportRequest
+              });
+            } else {
+              ToastService.open$({
+                message: LabelPipe.transform('bhere_support_request_leaved'),
+                type: ToastType.Alert,
+                position: ToastPosition.BottomRight
+              });
+            }
+          }
+
+          break;
+
+        case MessageType.SupportRequest:
+          if (_this7.isSelfServiceProposition) {
+            _this7.openSupportRequestDialog(message.clientInfo);
+          }
+
+          break;
+
+        case MessageType.RequestPeerInfo:
+          // console.log('AgoraComponent.MessageService.out$.RequestPeerInfo', message);
+          message.type = MessageType.RequestPeerInfoResult;
+          message.clientInfo = {
+            role: StateService.state.role,
+            name: StateService.state.name,
+            uid: StateService.state.uid,
+            screenUid: StateService.state.screenUid,
+            controllingId: StateService.state.controlling,
+            mode: StateService.state.mode
+          };
+          MessageService.sendBack(message);
+          /*
+          if (this.isSelfServiceSupport) {
+          	this.meetingUrl.support = false; // !!! spostare su ChannelMembers
+          	ToastService.open$({
+          		message: LabelPipe.transform('bhere_support_request_sent'),
+          		type: ToastType.Alert, position: ToastPosition.BottomRight
+          	});
+          }
+          */
+
+          break;
+
+        /*
+        case MessageType.RequestPeerInfoResult:
+        if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
+        	this.openSupportRequestDialog(message.clientInfo);
+        }
+        break;
+        */
+
+        case MessageType.SupportRequestAccepted:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_accepted'),
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
+          });
+          break;
+
+        case MessageType.SupportRequestRejected:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_rejected'),
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
+          });
+          break;
+
+        case MessageType.RequestControl:
+          // console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
+          message.type = MessageType.RequestControlAccepted;
+          MessageService.sendBack(message);
+          StateService.patchState({
+            controlling: message.controllingId
+          });
+
+          if (_this7.agora) {
+            _this7.agora.sendControlRemoteRequestInfo(message.controllingId);
+          }
+
+          break;
+
+        case MessageType.RemoteSilencing:
+          StateService.patchState({
+            silencing: message.silencing
+          });
+
+          _this7.setAudio(message.silencing);
+
+          break;
+
+        case MessageType.NavToView:
+          _this7.onRemoteNavTo(message);
+
+          break;
+
+        case MessageType.Mode:
+          StateService.patchState({
+            mode: message.mode
+          });
+          window.dispatchEvent(new Event('resize'));
+          break;
+
+        case MessageType.NavInfo:
+          _this7.hidePanels();
+
+          StateService.patchState({
+            showNavInfo: message.showNavInfo
+          });
+          break;
+
+        case MessageType.AddLike:
+          ViewService.setViewLike$(message).pipe(operators.first()).subscribe(function (view) {
+            return _this7.showLove(view);
+          });
+          break;
+
+        case MessageType.ChatMessage:
+          if (!StateService.state.chat) {
+            StateService.patchState({
+              chatDirty: true
+            });
+          }
+
+          break;
+      }
+    });
+    MessageService.in$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (message) {
+      if (_this7.agora) {
+        _this7.agora.sendMessage(message);
+      }
+    });
+    this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+
+    if (this.agora && StateService.state.status === AgoraStatus.ShouldConnect) {
+      this.loadAndConnect();
+    }
+  };
+
+  _proto.onChecked = function onChecked(checklist) {
+    // console.log('AgoraComponent.onChecked', checklist);
+    StateService.patchState({
+      checklist: true
+    });
+    this.setNextStatus();
+  };
+
+  _proto.onLink = function onLink(link) {
+    var meetingId = new MeetingId(link);
+    var pathId = meetingId.pathId;
+    var role = this.getLinkRole();
+    var mode = UserService.getMode(role);
+    var user = StateService.state.user;
+
+    if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
+      StateService.patchState({
+        link: link,
+        pathId: pathId,
+        role: role,
+        mode: mode,
+        status: AgoraStatus.Login
+      });
+    } else if (StateService.state.name) {
+      if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
+        StateService.patchState({
+          link: link,
+          pathId: pathId,
+          role: role,
+          mode: mode
+        });
+        this.loadAndConnect();
+      } else {
+        StateService.patchState({
+          link: link,
+          pathId: pathId,
+          role: role,
+          mode: mode,
+          status: AgoraStatus.Device
+        });
+      }
+    } else {
+      StateService.patchState({
+        link: link,
+        pathId: pathId,
+        role: role,
+        mode: mode,
+        status: AgoraStatus.Name
+      });
+    }
+  };
+
+  _proto.onLogin = function onLogin(user) {
+    var name = this.getName(user);
+
+    if (name) {
+      StateService.patchState({
+        user: user,
+        name: name,
+        status: AgoraStatus.Device
+      });
+    } else {
+      StateService.patchState({
+        user: user,
+        status: AgoraStatus.Name
+      });
+    }
+  };
+
+  _proto.onName = function onName(name) {
+    if (StateService.state.role === RoleType.Viewer || StateService.state.role === RoleType.SmartDevice) {
+      StateService.patchState({
+        name: name
+      });
+      this.loadAndConnect();
+    } else {
+      StateService.patchState({
+        name: name,
+        status: AgoraStatus.Device
+      });
+    }
+  };
+
+  _proto.onEnter = function onEnter(preferences) {
+    this.loadAndConnect(preferences);
+  };
+
+  _proto.connect = function connect(preferences) {
+    // console.log('AgoraComponent.connect', preferences);
+    this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('AgoraComponent.connect', this.state.role);
+
+    if (this.state.role === RoleType.SelfService) {
+      GtmService.push({
+        action: 'b-here-tour',
+        userType: this.state.role
+      });
+    } else if (this.state.role === RoleType.Embed) {
+      GtmService.push({
+        action: 'b-here-embed',
+        userType: this.state.role
+      });
+    } else {
+      var sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
+      var log = {
+        meetingId: this.state.link,
+        sharedMeetingId: sharedMeetingId,
+        fullName: this.state.name,
+        userType: this.state.role
+      }; // console.log('AgoraComponent.connect', log);
+
+      UserService.log$(log).pipe(operators.first()).subscribe();
+      GtmService.push({
+        action: 'b-here-meeting',
+        meetingId: this.state.link,
+        sharedMeetingId: sharedMeetingId,
+        userType: this.state.role
+      });
+    }
+  };
+
+  _proto.disconnect = function disconnect() {
+    if (this.agora) {
+      this.agora.leaveChannel().then(function () {
+        // StateService.patchState({ status: AgoraStatus.Disconnected, connected: false });
+        // window.location.href = window.location.href;
+        // window.location.replace(window.location.href);
+        window.location.reload();
+      }, console.log);
+    } else {
+      this.patchState({
+        connecting: false,
+        connected: false
+      });
+    }
+  };
+
+  _proto.onNavTo = function onNavTo(item) {
+    var viewId = item.viewId;
+    var view = this.pathViews.find(function (x) {
+      return x.id === viewId;
+    });
+
+    if (view) {
+      // console.log('AgoraComponent.onNavTo', item, view);
+      ViewService.action = {
+        viewId: viewId,
+        keepOrientation: item.keepOrientation,
+        useLastOrientation: item.useLastOrientation
+      };
+      this.onHandleHook(view, item);
+    }
+  };
+
+  _proto.onNavLink = function onNavLink(item) {
+    // console.log('AgoraComponent.onNavLink', item);
+    ModalService.open$({
+      iframe: item.link.href
+    }).pipe(operators.first()).subscribe(function (event) {
+      MessageService.send({
+        type: MessageType.NavLinkClose,
+        itemId: item.id
+      });
+    });
+  };
+
+  _proto.onRemoteNavTo = function onRemoteNavTo(message) {
+    var viewId = message.viewId;
+    var gridIndex = message.gridIndex;
+
+    if (viewId && ViewService.viewId !== viewId) {
+      var view = this.pathViews.find(function (x) {
+        return x.id === viewId;
+      });
+
+      if (view) {
+        // console.log('AgoraComponent.onRemoteNavTo', message, view);
+        ViewService.action = {
+          viewId: viewId,
+          keepOrientation: message.keepOrientation,
+          useLastOrientation: message.useLastOrientation
+        };
+
+        if (gridIndex != null && view instanceof PanoramaGridView) {
+          view.index = gridIndex;
+        }
+      } // console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
+
+    }
+  };
+
+  _proto.onHandleHook = function onHandleHook(view, item) {
+    var _this8 = this;
+
+    switch (item.hook) {
+      case 'ToggleWishlist':
+        var payload = {
+          viewId: view.id,
+          itemId: item.id
+        };
+        WishlistService.toggle$(payload).pipe(operators.switchMap(function (items) {
+          payload.added = WishlistService.has(payload);
+          return WebhookService.send$(item.hook, payload, item.extra);
+        }), operators.first()).subscribe(function (response) {
+          console.log('AgoraComponent.onHandleHook', response);
+          item.added = payload.added;
+
+          _this8.pushChanges();
+        });
+        break;
+    }
+  } // !!! why locally?
+  ;
+
+  _proto.patchState = function patchState(state) {
+    this.state = Object.assign({}, this.state, state);
+    this.pushChanges(); // console.log(this.state);
+  };
+
+  _proto.toggleCamera = function toggleCamera() {
+    if (this.agora) {
+      this.agora.toggleCamera();
+    } else {
+      this.patchState({
+        cameraMuted: !this.state.cameraMuted
+      });
+    }
+  };
+
+  _proto.toggleAudio = function toggleAudio() {
+    if (this.agora) {
+      this.agora.toggleAudio();
+    } else {
+      this.patchState({
+        audioMuted: !this.state.audioMuted
+      });
+    }
+  };
+
+  _proto.setAudio = function setAudio(audioMuted) {
+    if (this.agora) {
+      this.agora.setAudio(audioMuted);
+    } else {
+      this.patchState({
+        audioMuted: audioMuted
+      });
+    }
+  };
+
+  _proto.toggleScreen = function toggleScreen() {
+    if (this.agora) {
+      this.agora.toggleScreen();
+    } else {
+      this.patchState({
+        screen: !this.state.screen
+      });
+    }
+
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.toggleVolume = function toggleVolume() {
+    var volumeMuted = !this.state.volumeMuted;
+    StateService.patchState({
+      volumeMuted: volumeMuted
+    });
+    var selfServiceAudio = this.selfServiceAudio;
+
+    if (selfServiceAudio) {
+      selfServiceAudio.volume = volumeMuted ? 0 : 0.5;
+    }
+  };
+
+  _proto.toggleMode = function toggleMode() {
+    if (this.agora && StateService.state.role === RoleType.Publisher) {
+      this.agora.toggleMode();
+    } else {
+      var mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+      StateService.patchState({
+        mode: mode
+      }); // this.patchState({ mode });
+    }
+
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.toggleFullScreen = function toggleFullScreen() {
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    var fullScreen = !this.state.fullScreen;
+
+    if (fullScreen) {
+      if (node.requestFullscreen) {
+        node.requestFullscreen();
+      } else if (node.webkitRequestFullscreen) {
+        node.webkitRequestFullscreen();
+      } else if (node.msRequestFullscreen) {
+        node.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    } // StateService.patchState({ fullScreen });
+
+  };
+
+  _proto.fullscreen$ = function fullscreen$() {
+    return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
+      var fullScreen = document.fullscreenElement != null; // console.log('fullscreen$', fullScreen);
+
+      StateService.patchState({
+        fullScreen: fullScreen
+      });
+    }));
+  };
+
+  _proto.toggleChat = function toggleChat() {
+    StateService.patchState({
+      chat: !StateService.state.chat,
+      chatDirty: false
+    });
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.onChatClose = function onChatClose() {
+    StateService.patchState({
+      chat: false
+    });
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.toggleNavInfo = function toggleNavInfo() {
+    this.hidePanels();
+
+    if (this.agora) {
+      this.agora.toggleNavInfo();
+    } else {
+      this.patchState({
+        showNavInfo: !this.state.showNavInfo
+      });
+    }
+  };
+
+  _proto.onBack = function onBack() {
+    // console.log('AgoraCompoent.onBack');
+    if (this.previousView && this.view && this.previousView.id !== this.view.id) {
+      ViewService.action = {
+        viewId: this.previousView.id,
+        useLastOrientation: true
+      };
+    }
+  };
+
+  _proto.hidePanels = function hidePanels() {
+    this.view.items.forEach(function (item) {
+      return item.showPanel = false;
+    });
+  };
+
+  _proto.onToggleControl = function onToggleControl(remoteId) {
+    if (this.agora) {
+      this.agora.toggleControl(remoteId);
+    } else {
+      var controlling = this.state.controlling === remoteId ? null : remoteId;
+      this.patchState({
+        controlling: controlling,
+        spying: false
+      });
+    }
+  };
+
+  _proto.onToggleSilence = function onToggleSilence() {
+    if (this.agora) {
+      this.agora.toggleSilence();
+    } else {
+      this.patchState({
+        silencing: !this.state.silencing
+      });
+    }
+  };
+
+  _proto.onToggleSpy = function onToggleSpy(remoteId) {
+    if (this.agora) {
+      this.agora.toggleSpy(remoteId);
+    } else {
+      var spying = this.state.spying === remoteId ? null : remoteId;
+      this.patchState({
+        spying: spying,
+        controlling: false
+      });
+    }
+  };
+
+  _proto.addLike = function addLike() {
+    var _this9 = this;
+
+    ViewService.viewLike$(this.view).pipe(operators.first()).subscribe(function (view) {
+      if (view) {
+        _this9.view.liked = true; // view.liked;
+
+        _this9.showLove(view); // this.view.likes = view.likes;
+        // this.pushChanges();
+
+
+        MessageService.send({
+          type: MessageType.AddLike,
+          viewId: _this9.view.id,
+          likes: _this9.view.likes
+        });
+      }
+    });
+  };
+
+  _proto.showLove = function showLove(view) {
+    var _this10 = this;
+
+    if (view && this.view.id === view.id) {
+      var skipTimeout = this.view.showLove;
+      this.view.likes = view.likes;
+      this.view.showLove = true;
+      this.pushChanges();
+
+      if (!skipTimeout) {
+        setTimeout(function () {
+          _this10.view.showLove = false;
+
+          _this10.pushChanges();
+        }, 3100);
+      }
+    }
+  };
+
+  _proto.tryInAr = function tryInAr() {
+    if (this.platform === DevicePlatform.IOS || this.platform === DevicePlatform.Android) {
+      TryInARModalComponent.openInAR(this.view);
+    } else {
+      ModalService.open$({
+        src: environment.template.modal.tryInAr,
+        data: this.view
+      }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
+      });
+    }
+  };
+
+  _proto.checkSelfServiceProposition = function checkSelfServiceProposition() {
+    var _this11 = this;
+
+    // self service proposition
+    var isSelfServiceProposition = this.isSelfServiceProposition; // console.log('AgoraComponent.initAgora', isSelfServiceProposition);
+
+    if (isSelfServiceProposition) {
+      AgoraChecklistService.check$().pipe(operators.first()).subscribe(function (event) {
+        var meetingId = new MeetingId({
+          pathId: StateService.state.pathId
+        });
+        var meetingIdRoles = meetingId.toRoles();
+        var meetingUrl = new MeetingUrl({
+          link: meetingIdRoles.id,
+          support: true
+        });
+        var href = meetingUrl.toGuidedTourUrl(); // console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
+
+        UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(operators.first()).subscribe(function (_) {
+          var name = _this11.getName(StateService.state.user);
+
+          StateService.patchState({
+            checklist: true,
+            link: meetingIdRoles.idSelfService,
+            name: name
+          });
+          _this11.agora = AgoraService.getSingleton();
+
+          _this11.connect();
+        });
+      }, function (error) {
+        console.log('AgoraComponent.initAgora.isSelfServiceProposition.error', error, name);
+        /*
+        UserService.selfServiceTourSupportFailedRequest$(StateService.state.user).pipe(
+        	first(),
+        ).subscribe();
+        */
+      });
+    }
+  };
+
+  _proto.checkSelfServiceAudio = function checkSelfServiceAudio() {
+    if (StateService.state.role === RoleType.SelfService && environment.selfServiceAudio) {
+      var selfServiceAudio = document.createElement('audio');
+      selfServiceAudio.setAttribute('playsinline', 'true');
+      selfServiceAudio.setAttribute('autoplay', 'true');
+      selfServiceAudio.setAttribute('loop', 'true');
+      selfServiceAudio.volume = 0.5;
+      selfServiceAudio.src = environment.selfServiceAudio;
+
+      var _getContext3 = rxcomp.getContext(this),
+          node = _getContext3.node;
+
+      node.parentNode.appendChild(selfServiceAudio);
+      this.selfServiceAudio = selfServiceAudio;
+      MediaLoader.events$.pipe(operators.tap(function (event) {
+        // console.log('AgoraComponent.checkSelfServiceAudio MediaLoader.event$', event);
+        if (event instanceof MediaLoaderPlayEvent) {
+          selfServiceAudio.pause(); // selfServiceAudio.volume = 0;
+        } else if (event instanceof MediaLoaderPauseEvent || event instanceof MediaLoaderDisposeEvent) {
+          selfServiceAudio.play(); // selfServiceAudio.volume = 0.5;
+        }
+      }), operators.takeUntil(this.unsubscribe$)).subscribe();
+    }
+  };
+
+  _proto.openSupportRequestDialog = function openSupportRequestDialog(clientInfo) {
+    ToastService.open$({
+      message: LabelPipe.transform('bhere_support_request_dialog'),
+      acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
+      rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
+      type: ToastType.Dialog,
+      position: ToastPosition.BottomRight
+    }).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      if (event instanceof ToastResolveEvent) {
+        MessageService.send({
+          type: MessageType.SupportRequestAccepted
+        });
+        var _name = StateService.state.name;
+        var meetingId = new MeetingId(StateService.state.link);
+        meetingId.role = RoleType.Streamer;
+        var meetingUrl = new MeetingUrl({
+          link: meetingId.toString(),
+          name: _name
+        });
+        var href = meetingUrl.toGuidedTourUrl();
+        setTimeout(function () {
+          window.location.href = href;
+        }, 1000);
+      } else {
+        MessageService.send({
+          type: MessageType.SupportRequestRejected
+        });
+      }
+    });
+    /*
+    ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
+    	first(),
+    ).subscribe(event => {
+    	if (event instanceof ModalResolveEvent) {
+    		MessageService.send({ type: MessageType.SupportRequestAccepted });
+    		const name = StateService.state.name;
+    		const meetingId = new MeetingId(StateService.state.link);
+    		meetingId.role = RoleType.Streamer;
+    		const meetingUrl = new MeetingUrl({ link: meetingId.toString(), name });
+    		const href = meetingUrl.toGuidedTourUrl();
+    		setTimeout(() => {
+    			window.location.href = href;
+    		}, 1000);
+    	} else {
+    		MessageService.send({ type: MessageType.SupportRequestRejected });
+    	}
+    });
+    */
+  }
+  /*
+  onPrevent(event) {
+  	event.preventDefault();
+  	event.stopImmediatePropagation();
+  }
+  */
+  ;
+
+  _createClass(AgoraComponent, [{
+    key: "meetingUrl",
+    get: function get() {
+      if (!this.meetingUrl_) {
+        this.meetingUrl_ = new MeetingUrl();
+      }
+
+      return this.meetingUrl_;
+    }
+  }, {
+    key: "isVirtualTourUser",
+    get: function get() {
+      return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(StateService.state.role) !== -1;
+    }
+  }, {
+    key: "isEmbed",
+    get: function get() {
+      var isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
+      return isEmbed;
+    }
+  }, {
+    key: "isNavigable",
+    get: function get() {
+      var embedViewId = this.meetingUrl.embedViewId;
+      var navigable = embedViewId == null;
+      return navigable;
+    }
+  }, {
+    key: "isBackButtonVisible",
+    get: function get() {
+      return this.view && this.view.type.name === ViewType.Media.name;
+    }
+  }, {
+    key: "isSelfServiceProposition",
+    get: function get() {
+      return StateService.state.role === RoleType.SelfService && environment.flags.selfServiceProposition;
+    }
+  }, {
+    key: "isSelfServiceSupport",
+    get: function get() {
+      return StateService.state.role === RoleType.Publisher && environment.flags.selfServiceProposition && this.meetingUrl.support;
+    }
+  }, {
+    key: "showNavInfoToggler",
+    get: function get() {
+      return environment.flags.hideNavInfo && this.state.mode !== UIMode.LiveMeeting && this.view && ModelNavComponent.hasNavInfo(this.view);
+    }
+  }, {
+    key: "uiClass",
+    get: function get() {
+      var uiClass = {};
+      uiClass[this.state.role] = true; // uiClass[this.state.mode] = true;
+
+      uiClass.chat = this.state.chat;
+      uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
+      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+      uiClass.locked = this.locked; // uiClass.media = !uiClass.remotes && this.media;
+
+      return uiClass;
+    }
+  }, {
+    key: "remoteClass",
+    get: function get() {
+      return "group--remote--" + Math.min(9, this.remotes.length);
+    }
+  }, {
+    key: "controlled",
+    get: function get() {
+      return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
+    }
+  }, {
+    key: "controlling",
+    get: function get() {
+      return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
+    }
+  }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
+    }
+  }, {
+    key: "spyed",
+    get: function get() {
+      return StateService.state.spying && StateService.state.spying === StateService.state.uid;
+    }
+  }, {
+    key: "spying",
+    get: function get() {
+      return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
+    }
+  }, {
+    key: "locked",
+    get: function get() {
+      return this.controlled || this.spying;
+    }
+  }, {
+    key: "remoteScreen",
+    get: function get() {
+      return this.remoteScreen_;
+    },
+    set: function set(remoteScreen) {
+      if (this.remoteScreen_ !== remoteScreen) {
+        this.remoteScreen_ = remoteScreen;
+        setTimeout(function () {
+          window.dispatchEvent(new Event('resize'));
+        }, 1);
+      }
+    }
+  }, {
+    key: "pathViews",
+    get: function get() {
+      return ViewService.pathViews;
+    }
+  }]);
+
+  return AgoraComponent;
+}(rxcomp.Component);
+AgoraComponent.meta = {
+  selector: '[agora-component]'
+};var AppComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AppComponent, _Component);
+
+  function AppComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AppComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.remove('hidden');
+  };
+
+  return AppComponent;
+}(rxcomp.Component);
+AppComponent.meta = {
+  selector: '[app-component]'
+};var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'];
+var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
+var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
+var MIME_STREAM = ['publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen'];
+function isImage(path) {
+  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
+}
+function isVideo(path) {
+  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/i").test(path);
+}
+function isModel(path) {
+  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/i").test(path);
+}
+function isStream(path) {
+  return MIME_STREAM.indexOf(path) !== -1;
+}
+
+var AssetPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(AssetPipe, _Pipe);
+
+  function AssetPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  AssetPipe.transform = function transform(asset, type) {
+    if (type === void 0) {
+      type = null;
+    }
+
+    if (type != null) {
+      // keep loose equality
+      asset = asset.type.name === type ? asset : null;
+    }
+
+    if (asset) {
+      if (typeof asset === 'string') {
+        return environment.getPath(asset);
+      } // console.log(asset.type.name, AssetType.Image.name);
+
+
+      switch (asset.type.name) {
+        case AssetType.Image.name:
+        case AssetType.Video.name:
+          asset = asset.folder + asset.file;
+          asset = environment.getPath(asset);
+          break;
+
+        case AssetType.Model.name:
+          asset = asset.folder + asset.file;
+          asset = environment.getPath(asset);
+          break;
+
+        case AssetType.PublisherStream.name:
+        case AssetType.AttendeeStream.name:
+        case AssetType.PublisherScreen.name:
+        case AssetType.AttendeeScreen.name:
+        case AssetType.SmartDeviceStream.name:
+          asset = environment.getPath(asset.file);
+          break;
+
+        default:
+          if (isImage(asset.file) || isVideo(asset.file)) {
+            asset = asset.folder + asset.file;
+            asset = environment.getPath(asset);
+          } else if (isModel(asset.file)) {
+            asset = asset.folder + asset.file;
+            asset = environment.getPath(asset);
+          } else if (isStream(asset.file)) {
+            asset = asset.file;
+          }
+
+      }
+
+      asset = asset;
+    } else {
+      asset = null;
+    } // console.log('AssetPipe.transform', asset);
+
+
+    return asset;
+  };
+
+  return AssetPipe;
+}(rxcomp.Pipe);
+AssetPipe.meta = {
+  name: 'asset'
+};var ControlRequestModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlRequestModalComponent, _Component);
+
+  function ControlRequestModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlRequestModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    _Component.prototype.onInit.call(this);
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      this.data = parentInstance.modal.data;
+    }
+  };
+
+  _proto.onAccept = function onAccept(user) {
+    ModalService.resolve();
+  };
+
+  _proto.onReject = function onReject(user) {
+    ModalService.reject();
+  }
+  /*
+  onDestroy() {
+  	// console.log('ControlRequestModalComponent.onDestroy');
+  }
+  */
+  ;
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return ControlRequestModalComponent;
+}(rxcomp.Component);
+ControlRequestModalComponent.meta = {
+  selector: '[control-request-modal]'
+};var DropDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DropDirective, _Directive);
+
+  function DropDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DropDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _getContext = rxcomp.getContext(this),
+        module = _getContext.module,
+        node = _getContext.node,
+        parentInstance = _getContext.parentInstance,
+        selector = _getContext.selector;
+
+    var event = 'drop';
+    var event$ = rxjs.fromEvent(node, event).pipe(operators.shareReplay(1));
+    var expression = node.getAttribute("(" + event + ")");
+
+    if (expression) {
+      var outputFunction = module.makeFunction(expression, ['$event']);
+      event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        module.resolve(outputFunction, parentInstance, event);
+      });
+      rxjs.fromEvent(node, 'dragover').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return event.preventDefault();
+      });
+    } else {
+      parentInstance[event + "$"] = event$;
+    } // console.log('DropDirective.onInit', 'selector', selector, 'event', event);
+
+  };
+
+  return DropDirective;
+}(rxcomp.Directive);
+DropDirective.meta = {
+  selector: "[(drop)]"
+};var DROPDOWN_ID = 1000000;
+
+var DropdownDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DropdownDirective, _Directive);
+
+  function DropdownDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DropdownDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var trigger = node.getAttribute('dropdown-trigger');
+    this.trigger = trigger ? node.querySelector(trigger) : node;
+    this.opened = null;
+    this.onClick = this.onClick.bind(this);
+    this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.openDropdown = this.openDropdown.bind(this);
+    this.closeDropdown = this.closeDropdown.bind(this);
+    this.addListeners();
+    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
+      // console.log('DropdownDirective', id, this['dropdown-item']);
+      if (_this.id === id) {
+        node.classList.add('dropped');
+      } else {
+        node.classList.remove('dropped');
+      }
+    });
+  };
+
+  _proto.onClick = function onClick(event) {
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    if (this.opened === null) {
+      this.openDropdown();
+    } else {
+      var dropdownItemNode = node.querySelector('[dropdown-item]'); // console.log('dropdownItemNode', dropdownItemNode);
+
+      if (!dropdownItemNode) {
+        // if (this.trigger !== node) {
+        this.closeDropdown();
+      }
+    }
+  };
+
+  _proto.onDocumentClick = function onDocumentClick(event) {
+    var _getContext3 = rxcomp.getContext(this),
+        node = _getContext3.node;
+
+    var clickedInside = node === event.target || node.contains(event.target);
+
+    if (!clickedInside) {
+      this.closeDropdown();
+    }
+  };
+
+  _proto.openDropdown = function openDropdown() {
+    if (this.opened === null) {
+      this.opened = true;
+      this.addDocumentListeners();
+      DropdownDirective.dropdown$.next(this.id);
+      this.dropped.next(this.id);
+    }
+  };
+
+  _proto.closeDropdown = function closeDropdown() {
+    if (this.opened !== null) {
+      this.removeDocumentListeners();
+      this.opened = null;
+
+      if (DropdownDirective.dropdown$.getValue() === this.id) {
+        DropdownDirective.dropdown$.next(null);
+        this.dropped.next(null);
+      }
+    }
+  };
+
+  _proto.addListeners = function addListeners() {
+    this.trigger.addEventListener('click', this.onClick);
+  };
+
+  _proto.addDocumentListeners = function addDocumentListeners() {
+    document.addEventListener('click', this.onDocumentClick);
+  };
+
+  _proto.removeListeners = function removeListeners() {
+    this.trigger.removeEventListener('click', this.onClick);
+  };
+
+  _proto.removeDocumentListeners = function removeDocumentListeners() {
+    document.removeEventListener('click', this.onDocumentClick);
+  };
+
+  _proto.onDestroy = function onDestroy() {
+    this.removeListeners();
+    this.removeDocumentListeners();
+  };
+
+  DropdownDirective.nextId = function nextId() {
+    return DROPDOWN_ID++;
+  };
+
+  _createClass(DropdownDirective, [{
+    key: "id",
+    get: function get() {
+      return this.dropdown || this.id_ || (this.id_ = DropdownDirective.nextId());
+    }
+  }]);
+
+  return DropdownDirective;
+}(rxcomp.Directive);
+DropdownDirective.meta = {
+  selector: '[dropdown]',
+  inputs: ['dropdown', 'dropdown-trigger'],
+  outputs: ['dropped']
+};
+DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DropdownItemDirective, _Directive);
+
+  function DropdownItemDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DropdownItemDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.add('dropdown-item');
+    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
+      // console.log('DropdownItemDirective', id, this['dropdown-item']);
+      if (_this.id === id) {
+        node.classList.add('dropped');
+      } else {
+        node.classList.remove('dropped');
+      }
+    });
+  };
+
+  _createClass(DropdownItemDirective, [{
+    key: "id",
+    get: function get() {
+      return this['dropdown-item'];
+    }
+  }]);
+
+  return DropdownItemDirective;
+}(rxcomp.Directive);
+DropdownItemDirective.meta = {
+  selector: '[dropdown-item], [[dropdown-item]]',
+  inputs: ['dropdown-item']
+};var ToastOutletComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ToastOutletComponent, _Component);
+
+  function ToastOutletComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ToastOutletComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.toast = null;
+    this.lastToast = null;
+    ToastService.toast$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (toast) {
+      if (toast) {
+        _this.lastToast = toast;
+      }
+
+      _this.toast = toast;
+
+      _this.pushChanges();
+    }); // console.log('ToastOutletComponent.onInit');
+  };
+
+  _proto.getClass = function getClass() {
+    var classList = {};
+
+    if (this.toast) {
+      classList.active = true;
+    }
+
+    if (this.lastToast) {
+      classList[this.lastToast.type] = true;
+      classList[this.lastToast.position] = true;
+    }
+
+    return classList;
+  };
+
+  _proto.onClose = function onClose() {
+    ToastService.reject(this.toast);
+  };
+
+  _proto.onAccept = function onAccept() {
+    ToastService.resolve(this.toast);
+  };
+
+  _proto.onReject = function onReject() {
+    ToastService.reject(this.toast);
+  };
+
+  return ToastOutletComponent;
+}(rxcomp.Component);
+ToastOutletComponent.meta = {
+  selector: '[toast-outlet]',
+  template:
+  /* html */
+  "\n\t<div class=\"toast-outlet__container\" [class]=\"getClass()\">\n\t\t<div class=\"toast-outlet__toast\" *if=\"lastToast\">\n\t\t\t<span class=\"toast-outlet__message\" [innerHTML]=\"lastToast.message\"></span>\n\t\t\t<div class=\"group--cta\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.acceptMessage\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\" *if=\"lastToast.type == 'dialog'\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.rejectMessage\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
+};var AsideComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AsideComponent, _Component);
+
+  function AsideComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AsideComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.mode = 1;
+    this.viewTypes = Object.keys(ViewType).map(function (key) {
+      var type = ViewType[key];
+      return {
+        type: type,
+        name: LabelPipe.getKeys('editor', type.name),
+        disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1
+      };
+    });
+    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
+      var type = ViewItemType[key];
+      return {
+        type: type,
+        name: LabelPipe.getKeys('editor', type.name),
+        disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1
+      };
+    });
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
+    var _this = this;
+
+    this.supportedViewTypes = this.viewTypes.filter(function (x) {
+      return _this.supportedViewType(x.type.name);
+    }).sort(function (a, b) {
+      if (a.disabled === b.disabled) {
+        return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
+      } else {
+        return a.disabled ? 1 : -1;
+      }
+    });
+  };
+
+  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
+    var _this2 = this;
+
+    if (this.view) {
+      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
+        return _this2.supportedViewItemType(_this2.view.type.name, x.type.name);
+      }).sort(function (a, b) {
+        if (a.disabled === b.disabled) {
+          return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
+        } else {
+          return a.disabled ? 1 : -1;
+        }
+      });
+    } else {
+      this.supportedViewItemTypes = [];
+    }
+  };
+
+  _proto.setMode = function setMode(mode) {
+    if (this.mode !== mode) {
+      this.mode = mode;
+      this.pushChanges();
+    }
+  };
+
+  _proto.supportedViewType = function supportedViewType(viewTypeName) {
+    var supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name, ViewType.Media.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
+    // console.log('supportedViewType', viewType, supported);
+
+    return supported;
+  };
+
+  _proto.supportedViewItemType = function supportedViewItemType(viewTypeName, viewItemTypeName) {
+    var supported;
+
+    switch (viewTypeName) {
+      case ViewType.WaitingRoom.name:
+        supported = false;
+        break;
+
+      case ViewType.Panorama.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.PanoramaGrid.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.Room3d.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.Model.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.Media.name:
+        supported = [].indexOf(viewItemTypeName) !== -1;
+        break;
+    } // console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
+
+
+    return supported;
+  };
+
+  _proto.onSelect = function onSelect(event) {
+    this.select.next(event);
+  };
+
+  _proto.onUpdate = function onUpdate(event) {
+    this.update.next(event);
+  };
+
+  _proto.onDelete = function onDelete(event) {
+    this.delete.next(event);
+  };
+
+  return AsideComponent;
+}(rxcomp.Component);
+AsideComponent.meta = {
+  selector: '[aside]',
+  outputs: ['select', 'update', 'delete'],
+  inputs: ['view']
+};var AssetService = /*#__PURE__*/function () {
+  function AssetService() {}
+
+  AssetService.assetCreate$ = function assetCreate$(asset) {
+    return HttpService.post$("/api/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetUpdate$ = function assetUpdate$(asset) {
+    return HttpService.put$("/api/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.assetDelete$ = function assetDelete$(asset) {
+    if (asset && asset.id) {
+      return HttpService.delete$("/api/asset/" + asset.id).pipe(operators.map(function () {
+        return null;
+      }));
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  AssetService.localizedAssetCreate$ = function localizedAssetCreate$(lg, asset) {
+    return HttpService.post$("/api/" + lg + "/asset", asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.localizedAssetUpdate$ = function localizedAssetUpdate$(lg, asset) {
+    return HttpService.put$("/api/" + lg + "/asset/" + asset.id, asset).pipe(operators.map(function (asset) {
+      return mapAsset(asset);
+    }));
+  };
+
+  AssetService.upload$ = function upload$(files) {
+    var formData = new FormData();
+    files.forEach(function (file) {
+      return formData.append('file', file, file.name);
+    });
+    var xhr = new XMLHttpRequest();
+    var events$ = rxjs.merge(rxjs.fromEvent(xhr.upload, 'loadstart'), rxjs.fromEvent(xhr.upload, 'progress'), rxjs.fromEvent(xhr.upload, 'load'), rxjs.fromEvent(xhr, 'readystatechange')).pipe(operators.map(function (event) {
+      switch (event.type) {
+        case 'readystatechange':
+          if (xhr.readyState === 4) {
+            return JSON.parse(xhr.responseText);
+          } else {
+            return null;
+          }
+
+        default:
+          return null;
+      }
+    }), operators.filter(function (event) {
+      return event !== null;
+    }));
+    xhr.open('POST', "/api/upload/", true);
+    xhr.send(formData);
+    return events$;
+  };
+
+  AssetService.createOrUpdateAsset$ = function createOrUpdateAsset$(uploads, control) {
+    var upload = uploads[0];
+    var asset = Asset.fromUrl(upload.url);
+
+    if (control.value && control.value.id) {
+      // !!! must check for id
+      asset.id = control.value.id;
+      return AssetService.assetUpdate$(asset);
+    } else {
+      return AssetService.assetCreate$(asset);
+    }
+  };
+
+  AssetService.createOrUpdateLocalizedAsset$ = function createOrUpdateLocalizedAsset$(uploads, control, lg) {
+    var upload = uploads[0];
+    var asset = Asset.fromUrl(upload.url);
+
+    if (control.value && control.value.id) {
+      // !!! must check for id
+      asset.id = control.value.id;
+      return AssetService.localizedAssetUpdate$(lg, asset);
+    } else {
+      return AssetService.localizedAssetCreate$(lg, asset);
+    }
+  };
+
+  AssetService.assetDidChange = function assetDidChange(previous, current) {
+    var previousId = null;
+    var previousFile = null;
+    var currentId = null;
+    var currentFile = null;
+
+    if (previous) {
+      previousId = previous.id;
+      previousFile = previous.file;
+    }
+
+    if (current) {
+      currentId = current.id;
+      currentFile = current.file;
+    }
+
+    return previousId !== currentId || previousFile !== currentFile;
+  };
+
+  return AssetService;
+}();var EditorService = /*#__PURE__*/function () {
+  function EditorService() {}
+
+  EditorService.data$ = function data$() {
+    if (!this.data$_) {
+      this.data$_ = HttpService.get$("/api/view").pipe(operators.map(function (data) {
+        data.views = data.views.map(function (view) {
+          return mapView(view);
+        });
+        return data;
+      }), operators.shareReplay(1));
+    }
+
+    return this.data$_;
+  };
+
+  EditorService.viewIdOptions$ = function viewIdOptions$() {
+    return this.data$().pipe(operators.map(function (data) {
+      var options = data.views.map(function (view) {
+        return {
+          id: view.id,
+          name: view.name
+        };
+      });
+      options.unshift({
+        id: null,
+        name: 'select'
+      }); // LabelPipe.transform('select')
+
+      return options;
+    }));
+  };
+
+  EditorService.viewCreate$ = function viewCreate$(view) {
+    return HttpService.post$("/api/view", view).pipe(operators.map(function (view) {
+      return mapView(view);
+    }));
+  };
+
+  EditorService.viewUpdate$ = function viewUpdate$(view) {
+    return HttpService.put$("/api/view/" + view.id, view.payload).pipe(operators.map(function (view) {
+      return mapView(view);
+    }));
+  };
+
+  EditorService.viewDelete$ = function viewDelete$(view) {
+    return HttpService.delete$("/api/view/" + view.id);
+  };
+
+  EditorService.getTile = function getTile(view) {
+    var tile;
+
+    if (view.type.name === ViewType.PanoramaGrid.name) {
+      tile = view.tiles[view.index];
+    }
+
+    return tile;
+  };
+
+  EditorService.inferItemCreate$ = function inferItemCreate$(view, item) {
+    var tile = this.getTile(view);
+
+    if (tile) {
+      return this.tileItemCreate$(view, tile, item);
+    } else {
+      return this.itemCreate$(view, item);
+    }
+  };
+
+  EditorService.inferItemUpdate$ = function inferItemUpdate$(view, item) {
+    var tile = this.getTile(view);
+
+    if (tile) {
+      return this.tileItemUpdate$(view, tile, item);
+    } else {
+      return this.itemUpdate$(view, item);
+    }
+  };
+
+  EditorService.inferItemDelete$ = function inferItemDelete$(view, item) {
+    var tile = this.getTile(view);
+
+    if (tile) {
+      return this.tileItemDelete$(view, tile, item);
+    } else {
+      return this.itemDelete$(view, item);
+    }
+  };
+
+  EditorService.inferItemUpdateResult$ = function inferItemUpdateResult$(view, item) {
+    var tile = this.getTile(view);
+    var currentItem;
+
+    if (tile) {
+      currentItem = tile.navs.find(function (i) {
+        return i.id === item.id;
+      });
+    } else {
+      currentItem = view.items.find(function (i) {
+        return i.id === item.id;
+      });
+    }
+
+    if (currentItem) {
+      Object.assign(currentItem, item);
+    }
+  };
+
+  EditorService.inferItemDeleteResult$ = function inferItemDeleteResult$(view, item) {
+    var tile = this.getTile(view);
+    var items;
+
+    if (tile) {
+      items = tile.navs;
+    } else {
+      items = view.items;
+    }
+
+    if (items) {
+      var index = items.indexOf(item);
+
+      if (index !== -1) {
+        items.splice(index, 1);
+      }
+
+      if (tile) {
+        view.updateCurrentItems();
+      }
+    }
+  };
+
+  EditorService.itemCreate$ = function itemCreate$(view, item) {
+    return HttpService.post$("/api/view/" + view.id + "/item", item).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.itemUpdate$ = function itemUpdate$(view, item) {
+    return HttpService.put$("/api/view/" + view.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.itemDelete$ = function itemDelete$(view, item) {
+    return HttpService.delete$("/api/view/" + view.id + "/item/" + item.id);
+  };
+
+  EditorService.tileItemCreate$ = function tileItemCreate$(view, tile, item) {
+    return HttpService.post$("/api/view/" + view.id + "/tile/" + tile.id + "/item", item).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.tileItemUpdate$ = function tileItemUpdate$(view, tile, item) {
+    return HttpService.put$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id, item.payload).pipe(operators.map(function (item) {
+      return mapViewItem(item);
+    }));
+  };
+
+  EditorService.tileItemDelete$ = function tileItemDelete$(view, tile, item) {
+    return HttpService.delete$("/api/view/" + view.id + "/tile/" + tile.id + "/item/" + item.id);
+  };
+
+  return EditorService;
+}();var SETTINGS = {
+  menu: [{
+    id: 'menu',
+    title: 'editor_menu',
+    active: true
+  }, {
+    id: 'navmaps',
+    title: 'editor_navmaps',
+    active: true
+  }],
+  current: null,
+  active: false
+};
+
+var EditorComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(EditorComponent, _Component);
+
+  function EditorComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = EditorComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.remove('hidden');
+    this.settings = this.getSettings();
+    this.aside = false;
+    this.state = {};
+    this.view = null;
+    this.paths = null;
+    this.path = null;
+    this.form = null;
+    this.local = null;
+    this.remotes = [];
+    this.viewHit = new rxjs.Subject();
+    var vrService = this.vrService = VRService.getService();
+    vrService.status$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (status) {
+      return _this.pushChanges();
+    });
+    this.resolveUser();
+  };
+
+  _proto.resolveUser = function resolveUser() {
+    var _this2 = this;
+
+    UserService.me$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (user) {
+      if (user && user.type === RoleType.Publisher) {
+        _this2.user = user;
+
+        _this2.initState();
+      } else {
+        window.location.href = environment.url.access;
+      }
+    });
+  };
+
+  _proto.initState = function initState() {
+    var _this3 = this;
+
+    var user = this.user;
+    var role = user.type;
+    var name = user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
+    var state = {
+      user: user,
+      role: role,
+      name: name,
+      mode: UIMode.VirtualTour,
+      link: null,
+      channelName: environment.channelName,
+      uid: null,
+      status: AgoraStatus.Connected,
+      connecting: false,
+      connected: true,
+      controlling: false,
+      spying: false,
+      silencing: false,
+      hosted: true,
+      live: false,
+      navigable: true,
+      cameraMuted: false,
+      audioMuted: false,
+      showNavInfo: true
+    };
+    StateService.state = state;
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      _this3.state = state;
+      _this3.hosted = state.hosted;
+
+      _this3.pushChanges();
+    });
+    this.viewObserver$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (view) {// console.log('EditorComponent.viewObserver$', view);
+    });
+    StreamService.mode = StreamServiceMode.Editor; // this.getUserMedia();
+  };
+
+  _proto.viewObserver$ = function viewObserver$() {
+    var _this4 = this;
+
+    return EditorService.data$().pipe(operators.switchMap(function (data) {
+      // console.log('viewObserver$', data);
+      return PathService.getCurrentPath$().pipe(operators.switchMap(function (path) {
+        _this4.paths = PathService.paths;
+        _this4.path = path;
+        return ViewService.editorView$(data, path);
+      }));
+    }), operators.tap(function (view) {
+      _this4.view = null;
+
+      _this4.pushChanges();
+    }), operators.delay(1), operators.tap(function (view) {
+      _this4.view = view; // console.log('viewObserver$', view);
+
+      _this4.pushChanges();
+    }));
+  };
+
+  _proto.onAddPath = function onAddPath() {
+    // console.log('EditorComponent.onAddPath');
+    ModalService.open$({
+      src: environment.template.modal.pathAdd
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.addPath(event.data);
+      }
+    });
+  };
+
+  _proto.onEditPath = function onEditPath(item) {
+    // console.log('EditorComponent.onEditPath', item);
+    ModalService.open$({
+      src: environment.template.modal.pathEdit,
+      data: {
+        item: item,
+        views: ViewService.validViews
+      }
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.editPath(event.data);
+      }
+    });
+  };
+
+  _proto.onDeletePath = function onDeletePath(item) {
+    // console.log('EditorComponent.onDeletePath', item);
+    ModalService.open$({
+      src: environment.template.modal.remove,
+      data: {
+        item: item
+      }
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.pathDelete$(item).pipe(operators.first()).subscribe(function (_) {
+          PathService.deletePath(item);
+        });
+      }
+    });
+  };
+
+  _proto.onSelectPath = function onSelectPath(item) {
+    // console.log('EditorComponent.onSelectPath', item);
+    PathService.path = item;
+  };
+
+  _proto.isPathSelected = function isPathSelected(item) {
+    // console.log('EditorComponent.isPathSelected', item);
+    return PathService.path.id === item.id;
+  };
+
+  _proto.onNavTo = function onNavTo(item) {
+    // console.log('EditorComponent.onNavTo', item);
+    var viewId = item.viewId;
+    var view = ViewService.pathViews.find(function (x) {
+      return x.id === viewId;
+    });
+
+    if (view) {
+      ViewService.action = {
+        viewId: viewId,
+        keepOrientation: item.keepOrientation,
+        useLastOrientation: item.useLastOrientation
+      };
+    }
+  };
+
+  _proto.onNavLink = function onNavLink(item) {
+    // console.log('EditorComponent.onNavLink', item);
+    ModalService.open$({
+      iframe: item.link.href
+    }).pipe(operators.first()).subscribe(function (event) {
+      MessageService.send({
+        type: MessageType.NavLinkClose,
+        itemId: item.id
+      });
+    });
+  };
+
+  _proto.patchState = function patchState(state) {
+    this.state = Object.assign({}, this.state, state);
+    this.pushChanges(); // console.log(this.state);
+  };
+
+  _proto.tryInAr = function tryInAr() {
+    ModalService.open$({
+      src: environment.template.modal.tryInAr,
+      data: this.view
+    }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
+    });
+  };
+
+  _proto.replaceUrl = function replaceUrl() {
+    if ('history' in window) {
+      var params = new URLSearchParams(window.location.search);
+      var debug = params.get('debug') || null;
+      var editor = params.get('editor') || null;
+      var role = params.get('role') || null;
+      var link = params.get('link') || null;
+      var name = params.get('name') || null;
+      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + (name ? "&name=" + name : '') + (role ? "&role=" + role : '') + (debug ? "&debug" : '') + (editor ? "&editor" : ''); // console.log('AgoraNameComponent.url', url);
+
+      window.history.replaceState({
+        'pageTitle': window.pageTitle
+      }, '', url);
+    }
+  };
+
+  _proto.onToggleAside = function onToggleAside() {
+    this.aside = !this.aside;
+    this.pushChanges();
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.getSettings = function getSettings() {
+    var settings = Object.assign({}, SETTINGS);
+    settings.menu = settings.menu.filter(function (x) {
+      return environment.flags[x.id];
+    });
+    settings.current = settings.menu.length ? settings.menu[0].id : null;
+    return settings;
+  };
+
+  _proto.onToggleSettings = function onToggleSettings() {
+    var settings = this.settings;
+    settings.active = !settings.active;
+    this.pushChanges();
+  };
+
+  _proto.onSelectSetting = function onSelectSetting(item) {
+    this.settings.current = item.id;
+    this.pushChanges();
+  } // editor
+  ;
+
+  _proto.onViewHit = function onViewHit(event) {
+    // console.log('onViewHit');
+    this.viewHit.next(event);
+  };
+
+  _proto.onViewHitted = function onViewHitted(callback) {
+    if (this.viewHitSubscription) {
+      this.viewHitSubscription.unsubscribe();
+      this.viewHitSubscription = null;
+    }
+
+    if (typeof callback === 'function') {
+      this.viewHitSubscription = this.viewHit.pipe(operators.first()).subscribe(function (event) {
+        return callback(event);
+      });
+    }
+  };
+
+  _proto.onDragEnd = function onDragEnd(event) {
+    var _this5 = this;
+
+    EditorService.inferItemUpdate$(this.view, event.item).pipe(operators.first()).subscribe(function (response) {
+      // console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
+      _this5.pushChanges();
+    }, function (error) {
+      return console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error);
+    });
+  };
+
+  _proto.onResizeEnd = function onResizeEnd(event) {// console.log('EditorComponent.onResizeEnd');
+
+    /*
+    EditorService.inferItemUpdate$(this.view, event.item).pipe(
+    	first(),
+    ).subscribe(response => {
+    	// console.log('EditorComponent.onResizeEnd.inferItemUpdate$.success', response);
+    	this.pushChanges();
+    }, error => console.log('EditorComponent.onResizeEnd.inferItemUpdate$.error', error));
+    */
+  };
+
+  _proto.onWorldSelect = function onWorldSelect(event) {
+    // console.log('EditorComponent.onWorldSelect', this.view);
+    if (this.view) {
+      var selectedItem;
+      this.view.items.forEach(function (item) {
+        return item.showPanel = false;
+      });
+      this.view.items.forEach(function (item) {
+        item.selected = item === event.item;
+        selectedItem = item.selected ? item : selectedItem;
+      });
+      this.view.selected = !selectedItem;
+      this.pushChanges();
+
+      if (selectedItem) {
+        this.aside = true;
+        this.pushChanges();
+        window.dispatchEvent(new Event('resize'));
+      }
+    }
+  };
+
+  _proto.onOpenModal = function onOpenModal(modal, data) {
+    var _this6 = this;
+
+    ModalService.open$({
+      src: environment.template.modal[modal.type][modal.value],
+      data: data
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        // console.log('EditorComponent.onOpenModal.resolve', event);
+        switch (modal.type) {
+          case 'view':
+            switch (modal.value) {
+              case ViewType.Panorama.name:
+              case ViewType.PanoramaGrid.name:
+              case ViewType.Model.name:
+              case ViewType.Room3d.name:
+              case ViewType.Media.name:
+                ViewService.addView(event.data);
+                break;
+            }
+
+            break;
+
+          case 'viewItem':
+            switch (modal.value) {
+              case ViewItemType.Nav.name:
+              case ViewItemType.Plane.name:
+              case ViewItemType.CurvedPlane.name:
+              case ViewItemType.Model.name:
+                var tile = EditorService.getTile(_this6.view);
+
+                if (tile) {
+                  var navs = tile.navs || [];
+                  navs.push(event.data);
+                  Object.assign(tile, {
+                    navs: navs
+                  });
+
+                  _this6.view.updateCurrentItems();
+                } else {
+                  var items = _this6.view.items || [];
+                  items.push(event.data);
+                  Object.assign(_this6.view, {
+                    items: items
+                  });
+                }
+
+                _this6.pushChanges();
+
+                break;
+            }
+
+            break;
+        }
+      }
+
+      _this6.pushChanges();
+    });
+  };
+
+  _proto.onAsideSelect = function onAsideSelect(event) {
+    var _this7 = this;
+
+    // console.log('onAsideSelect', event);
+    if (event.value) {
+      switch (event.value) {
+        case ViewItemType.Nav.name:
+        case ViewItemType.Plane.name:
+        case ViewItemType.CurvedPlane.name:
+          this.onViewHitted(function (hit) {
+            _this7.onOpenModal(event, {
+              view: _this7.view,
+              hit: hit
+            });
+          });
+          ToastService.open$({
+            message: 'Click a point on the view'
+          });
+          break;
+
+        case ViewItemType.Model.name:
+          if (event.type === 'viewItem') {
+            if (this.view.type.name === ViewType.Model.name) {
+              return;
+            }
+
+            this.onViewHitted(function (hit) {
+              _this7.onOpenModal(event, {
+                view: _this7.view,
+                hit: hit
+              });
+            });
+            ToastService.open$({
+              message: 'Click a point on the view'
+            });
+          } else {
+            this.onOpenModal(event, {
+              view: this.view
+            });
+          }
+
+          break;
+
+        default:
+          this.onOpenModal(event, {
+            view: this.view
+          });
+      }
+    } else if (event.view && (event.item || event.item === null)) {
+      event.view.selected = false;
+      event.view.items.forEach(function (item) {
+        return item.selected = item === event.item;
+      });
+      MessageService.send({
+        type: MessageType.SelectItem
+      });
+      this.pushChanges();
+    } else if (event.view && (event.tile || event.tile === null)) {
+      event.view.selected = false;
+      event.view.tiles.forEach(function (tile) {
+        return tile.selected = tile === event.tile;
+      });
+      MessageService.send({
+        type: MessageType.SelectItem
+      });
+      /*
+      // if tile selected
+      // send ChangeTile message to world component
+      this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
+      	const item = this.view.getTile(event.indices.x, event.indices.y);
+      	if (item) {
+      		this.panorama.crossfade(item, this.renderer, (envMap, texture, rgbe) => {
+      			// this.scene.background = envMap;
+      			this.scene.environment = envMap;
+      			this.orbitService.walkComplete(headingLongitude, headingLatitude);
+      			// this.render();
+      			// this.pushChanges();
+      		});
+      	}
+      });
+      */
+
+      this.pushChanges();
+    } else if (event.view || event.view === null) {
+      this.view.selected = this.view === event.view;
+      this.view.items.forEach(function (item) {
+        return item.selected = false;
+      });
+      var currentTile = EditorService.getTile(this.view);
+
+      if (currentTile) {
+        this.view.tiles.forEach(function (tile) {
+          return tile.selected = tile === currentTile;
+        });
+      }
+
+      MessageService.send({
+        type: MessageType.SelectItem
+      });
+      this.pushChanges();
+    }
+  };
+
+  _proto.onAsideUpdate = function onAsideUpdate(event) {
+    // console.log('onAsideUpdate', event);
+    if (event.item && event.view) {
+      this.pushChanges();
+    } else if (event.tile && event.view) ; else if (event.view) {
+      if (ViewService.viewId !== event.view.id) {
+        ViewService.viewId = event.view.id;
+      } else {
+        var assetDidChange = AssetService.assetDidChange(this.view.asset, event.view.asset);
+        Object.assign(this.view, event.view);
+
+        if (assetDidChange) {
+          if (typeof this.view.onUpdateAsset === 'function') {
+            this.view.onUpdateAsset();
+          }
+        }
+
+        this.pushChanges();
+      }
+    }
+  };
+
+  _proto.onAsideDelete = function onAsideDelete(event) {
+    var _this8 = this;
+
+    // console.log('onAsideDelete', event);
+    if (event.item && event.view) {
+      EditorService.inferItemDelete$(event.view, event.item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('EditorComponent.onAsideDelete.inferItemDelete$.success', response);
+        EditorService.inferItemDeleteResult$(event.view, event.item);
+
+        _this8.pushChanges();
+      }, function (error) {
+        return console.log('EditorComponent.onAsideDelete.inferItemDelete$.error', error);
+      });
+    } else if (event.view) {
+      EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
+        // console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
+        ViewService.deleteView(event.view);
+      }, function (error) {
+        return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
+      });
+    }
+  };
+
+  _createClass(EditorComponent, [{
+    key: "dataViews",
+    get: function get() {
+      return ViewService.dataViews;
+    }
+  }, {
+    key: "pathViews",
+    get: function get() {
+      return ViewService.pathViews;
+    }
+  }]);
+
+  return EditorComponent;
+}(rxcomp.Component);
+EditorComponent.meta = {
+  selector: '[editor-component]'
+};var MENU_UID = 0;
+
+var MenuService = /*#__PURE__*/function () {
+  function MenuService() {}
+
+  MenuService.menu$ = function menu$() {
+    var _this = this;
+
+    return this.getMenu$().pipe(operators.switchMap(function (menu) {
+      _this.menu$_.next(menu);
+
+      return _this.menu$_;
+    }));
+  };
+
+  MenuService.getMenu$ = function getMenu$() {
+    return HttpService.get$("/api/menu").pipe(operators.map(function (data) {
+      data.menu.sort(function (a, b) {
+        return a.order - b.order;
+      });
+      return data.menu;
+    }));
+  };
+
+  MenuService.updateMenu$ = function updateMenu$(menu) {
+    return HttpService.put$("/api/menu", menu);
+  };
+
+  MenuService.createMenuItem$ = function createMenuItem$(parentId, order) {
+    if (parentId === void 0) {
+      parentId = null;
+    }
+
+    if (order === void 0) {
+      order = 0;
+    }
+
+    var payload = {
+      parentId: parentId,
+      viewId: null,
+      order: order * 10,
+      name: 'Folder ' + ++MENU_UID
+    };
+    return HttpService.post$("/api/menu", payload);
+  };
+
+  MenuService.updateMenuItem$ = function updateMenuItem$(item) {
+    return HttpService.put$("/api/menu/" + item.id, item);
+  };
+
+  MenuService.deleteMenuItem$ = function deleteMenuItem$(item) {
+    return HttpService.delete$("/api/menu/" + item.id);
+  };
+
+  MenuService.getModelMenu$ = function getModelMenu$(views, editor) {
+    var _this2 = this;
+
+    if (editor === void 0) {
+      editor = false;
+    }
+
+    return this.menu$().pipe(operators.map(function (menu) {
+      if (menu && menu.length) {
+        return _this2.mapMenuItems(menu);
+      } else {
+        // console.log('MenuService.getModelMenu$.Views', views);
+        var keys = {};
+        views.forEach(function (item) {
+          if (item.type.name !== ViewType.WaitingRoom.name && (!item.hidden || editor)) {
+            var group = keys[item.type.name];
+
+            if (!group) {
+              group = keys[item.type.name] = [];
+            }
+
+            group.push(item);
+          }
+        });
+
+        var _menu = Object.keys(keys).map(function (typeName) {
+          var name = 'Button';
+
+          switch (typeName) {
+            case ViewType.WaitingRoom.name:
+              name = 'Waiting Room';
+              break;
+
+            case ViewType.Panorama.name:
+              name = 'Experience';
+              break;
+
+            case ViewType.PanoramaGrid.name:
+              name = 'Virtual Tour';
+              break;
+
+            case ViewType.Room3d.name:
+              name = 'Stanze 3D';
+              break;
+
+            case ViewType.Model.name:
+              name = 'Modelli 3D';
+              break;
+
+            case ViewType.Media.name:
+              name = 'Media';
+              break;
+          }
+
+          return {
+            name: name,
+            type: {
+              name: 'menu-group'
+            },
+            items: views.filter(function (x) {
+              return x.type.name === typeName && (!x.hidden || editor);
+            })
+          };
+        });
+
+        return _menu;
+      }
+    }));
+  };
+
+  MenuService.mapMenuItem = function mapMenuItem(item, items) {
+    if (item.viewId) {
+      return {
+        id: item.viewId,
+        name: item.name,
+        type: {
+          name: 'panorama'
+        }
+      };
+    } else {
+      return {
+        name: item.name,
+        type: {
+          name: 'menu-group'
+        },
+        items: this.mapMenuItems(items, item.id)
+      };
+    }
+  };
+
+  MenuService.mapMenuItems = function mapMenuItems(items, parentId) {
+    var _this3 = this;
+
+    if (parentId === void 0) {
+      parentId = null;
+    }
+
+    return items.filter(function (item) {
+      return (item.parentId || null) === parentId;
+    }).map(function (item) {
+      return _this3.mapMenuItem(item, items);
+    });
+  };
+
+  _createClass(MenuService, null, [{
+    key: "active",
+    set: function set(active) {
+      this.active$.next(active);
+    },
+    get: function get() {
+      return this.active$.getValue();
+    }
+  }]);
+
+  return MenuService;
+}();
+
+_defineProperty(MenuService, "active$", new rxjs.BehaviorSubject(false));
+
+_defineProperty(MenuService, "menu$_", new rxjs.BehaviorSubject([]));var DropService = /*#__PURE__*/function () {
+  function DropService() {}
+
+  DropService.drop$ = function drop$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      var body = document.querySelector('body');
+      return rxjs.merge(rxjs.fromEvent(body, 'drop'), rxjs.fromEvent(body, 'dragover')).pipe(operators.map(function (event) {
+        // console.log('DropService.drop$', event);
+        event.preventDefault();
+
+        if (event.target === input) {
+          input.files = event.dataTransfer.files;
+        }
+
+        return;
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  DropService.change$ = function change$(input) {
+    if (rxcomp.isPlatformBrowser && input) {
+      return rxjs.fromEvent(input, 'change').pipe(operators.filter(function (event) {
+        return input.files && input.files.length;
+      }), operators.map(function (event) {
+        return Array.from(input.files);
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  DropService.asset$ = function asset$(input, previews) {
+    var _this = this;
+
+    if (previews === void 0) {
+      previews = [];
+    }
+
+    return this.change$(input).pipe(operators.switchMap(function (files) {
+      previews.length = files.length;
+      previews.fill(null); // output.previews = files.map(() => null);
+
+      var uploads$ = files.map(function (file, i) {
+        return _this.read$(file, i, previews).pipe(operators.map(function () {
+          return file;
+        }), operators.switchMap(function (file) {
+          return AssetService.upload$([file]);
+        }), operators.switchMap(function (uploads) {
+          var upload = uploads[0];
+          var asset = Asset.fromUrl(upload.url);
+          return AssetService.assetCreate$(asset);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }));
+  };
+
+  DropService.read$ = function read$(file, i, previews) {
+    var _this2 = this;
+
+    if (previews === void 0) {
+      previews = [];
+    }
+
+    var reader = new FileReader();
+    var reader$ = rxjs.fromEvent(reader, 'load').pipe(operators.switchMap(function (event) {
+      var blob = event.target.result;
+      return _this2.resize$(blob);
+    }), operators.tap(function (resized) {
+      previews[i] = resized;
+    }));
+    reader.readAsDataURL(file);
+    return reader$;
+  };
+
+  DropService.resize$ = function resize$(blob) {
+    return rxjs.from(this.resize_(blob));
+  };
+
+  DropService.resize_ = function resize_(blob) {
+    return new Promise(function (resolve, reject) {
+      var img = document.createElement('img');
+
+      img.onload = function () {
+        var MAX_WIDTH = 320;
+        var MAX_HEIGHT = 240;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var width = img.width;
+        var height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(dataUrl);
+      };
+
+      img.onerror = function () {
+        reject(blob);
+      };
+
+      img.src = blob;
+    });
+  };
+
+  return DropService;
+}();var ControlComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlComponent, _Component);
+
+  function ControlComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlComponent.prototype;
+
+  _proto.onChanges = function onChanges() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // console.log(this, node, this.control);
+
+
+    var control = this.control;
+    var flags = control.flags;
+    Object.keys(flags).forEach(function (key) {
+      flags[key] ? node.classList.add(key) : node.classList.remove(key);
+    });
+  };
+
+  return ControlComponent;
+}(rxcomp.Component);
+ControlComponent.meta = {
+  selector: '[control]',
+  inputs: ['control']
+};var ControlAssetComponent = /*#__PURE__*/function (_ControlComponent) {
+  _inheritsLoose(ControlAssetComponent, _ControlComponent);
+
+  function ControlAssetComponent() {
+    return _ControlComponent.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlAssetComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.label = this.label || 'label';
+    this.disabled = this.disabled || false;
+    this.accept = this.accept || 'image/png, image/jpeg';
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var input = node.querySelector('input');
+    input.setAttribute('accept', this.accept);
+    DropService.drop$(input).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    DropService.change$(input).pipe(operators.switchMap(function (files) {
+      var uploads$ = files.map(function (file, i) {
+        return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
+          return AssetService.createOrUpdateAsset$(uploads, _this.control);
+        }));
+      });
+      return rxjs.combineLatest(uploads$);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (assets) {
+      // console.log('ControlAssetComponent.change$', assets);
+      _this.control.value = assets[0];
+    });
+  };
+
+  return ControlAssetComponent;
+}(ControlComponent);
+ControlAssetComponent.meta = {
+  selector: '[control-asset]',
+  inputs: ['control', 'label', 'disabled', 'accept'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\" [class]=\"{ required: control.validators.length, disabled: disabled }\">\n\t\t\t<div class=\"control--head\">\n\t\t\t\t<label [innerHTML]=\"label\"></label>\n\t\t\t\t<span class=\"required__badge\" [innerHTML]=\"'required' | label\"></span>\n\t\t\t</div>\n\t\t\t<div class=\"group--picture\">\n\t\t\t\t<div class=\"group--picture__info\">\n\t\t\t\t\t<span [innerHTML]=\"'browse' | label\"></span>\n\t\t\t\t</div>\n\t\t\t\t<img [lazy]=\"control.value | asset\" [size]=\"{ width: 320, height: 240 }\" *if=\"control.value && control.value.type.name === 'image'\" />\n\t\t\t\t<video [src]=\"control.value | asset\" *if=\"control.value && control.value.type.name === 'video'\"></video>\n\t\t\t\t<input type=\"file\">\n\t\t\t</div>\n\t\t\t<div class=\"file-name\" *if=\"control.value\" [innerHTML]=\"control.value.file\"></div>\n\t\t</div>\n\t\t<errors-component [control]=\"control\"></errors-component>\n\t"
+};var ControlMenuComponent = /*#__PURE__*/function (_ControlAssetComponen) {
+  _inheritsLoose(ControlMenuComponent, _ControlAssetComponen);
+
+  function ControlMenuComponent() {
+    return _ControlAssetComponen.apply(this, arguments) || this;
+  }
+
+  ControlMenuComponent.itemToFormGroup = function itemToFormGroup(item) {
+    return new rxcompForm.FormGroup({
+      id: item.id,
+      parentId: item.parentId,
+      viewId: item.viewId,
+      name: item.name,
+      items: new rxcompForm.FormArray()
+    });
+  }
+  /*
+  static newFormGroup(parentId = null) {
+  	return new FormGroup({
+  		id: null,
+  		parentId: parentId,
+  		viewId: null,
+  		name: 'Folder ' + (++MENU_UID),
+  		items: new FormArray(),
+  	});
+  }
+  */
+  ;
+
+  var _proto = ControlMenuComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.dropdownId = DropdownDirective.nextId();
+    this.controls = this.control.controls;
+    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+      _this.controls.viewId.options = options;
+    });
+  };
+
+  _proto.onAddItem = function onAddItem() {
+    var _this2 = this;
+
+    MenuService.createMenuItem$(this.controls.id.value, this.controls.items.length).pipe(operators.first()).subscribe(function (item) {
+      _this2.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
+    }); // this.controls.items.push(ControlMenuComponent.newFormGroup(this.controls.id.value));
+  };
+
+  _proto.onRemoveItem = function onRemoveItem() {
+    this.remove.next(this.control);
+  };
+
+  _proto.onRemoveControl = function onRemoveControl(control) {
+    var _this3 = this;
+
+    MenuService.deleteMenuItem$(control.value).pipe(operators.first()).subscribe(function () {
+      _this3.controls.items.remove(control);
+    }); // this.controls.items.remove(control);
+  };
+
+  _proto.onLinkItem = function onLinkItem() {
+    this.link.next(this.control);
+  };
+
+  _proto.onLinkControl = function onLinkControl(control) {
+    this.link.next(control);
+  };
+
+  _proto.onItemUp = function onItemUp() {
+    this.up.next(this.control);
+  };
+
+  _proto.onItemDown = function onItemDown() {
+    this.down.next(this.control);
+  };
+
+  _proto.onUpControl = function onUpControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index > 0) {
+      index--;
+    } else {
+      index = length - 1;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.onDownControl = function onDownControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index < length - 1) {
+      index++;
+    } else {
+      index = 0;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.setView = function setView(view) {
+    var _this4 = this;
+
+    // console.log('ControlMenuComponent.setView', view.id);
+    var payload = Object.assign({}, this.control.value);
+    payload.viewId = view.id;
+
+    if (view.id) {
+      payload.name = view.name;
+    }
+
+    MenuService.updateMenuItem$(payload).pipe(operators.first()).subscribe(function () {
+      _this4.controls.viewId.value = view.id;
+
+      if (view.id) {
+        _this4.controls.name.value = view.name; // clear sub items
+
+        _this4.controls.items.controls = [];
+
+        _this4.controls.items.switchSubjects_();
+      } // this.change.next(value);
+
+    });
+  };
+
+  _proto.onTextDidChange = function onTextDidChange(event) {
+    // console.log('ControlMenuComponent.onTextDidChange', this.controls.name.value);
+    MenuService.updateMenuItem$(this.control.value).pipe(operators.first()).subscribe();
+  };
+
+  _proto.hasOption = function hasOption(item) {
+    return this.controls.viewId.value === item.id;
+  };
+
+  _proto.onDropped = function onDropped(id) {// console.log('ControlMenuComponent.onDropped', id);
+  };
+
+  return ControlMenuComponent;
+}(ControlAssetComponent);
+ControlMenuComponent.meta = {
+  selector: '[control-menu]',
+  outputs: ['remove', 'link', 'up', 'down'],
+  inputs: ['control'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"group--form\">\n\t\t\t<button type=\"button\" class=\"control-menu__link\" [class]=\"{ active: control.controls.viewId.value }\" (click)=\"onLinkItem($event)\" [dropdown]=\"dropdownId\" (dropped)=\"onDropped($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#link\"></use></svg>\n\t\t\t\t<div class=\"dropdown\" [dropdown-item]=\"dropdownId\">\n\t\t\t\t\t<div class=\"category\">View</div>\n\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t<li (click)=\"setView(item)\" [class]=\"{ empty: item.id == null }\" *for=\"let item of control.controls.viewId.options\">\n\t\t\t\t\t\t\t<span [class]=\"{ active: hasOption(item) }\" [innerHTML]=\"item.name\"></span>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</button>\n\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"control.controls.name\" placeholder=\"Name\" (change)=\"onTextDidChange($event)\" />\n\t\t\t<!--\n\t\t\t<button type=\"button\" class=\"control-menu__add\" (click)=\"onAddItem($event)\">\n\t\t\t\t<span [innerHTML]=\"control.controls.viewId.value\"></span>\n\t\t\t</button>\n\t\t\t-->\n\t\t\t<!--\n\t\t\t<select class=\"control--select\" [formControl]=\"control.controls.viewId\">\n\t\t\t\t<option [value]=\"item.id\" *for=\"let item of control.controls.viewId.options\" [innerHTML]=\"item.name\"></option>\n\t\t\t</select>\n\t\t\t-->\n\t\t\t<button type=\"button\" class=\"control-menu__up\" (click)=\"onItemUp($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#up\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__down\" (click)=\"onItemDown($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#down\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__add\" (click)=\"onAddItem($event)\" *if=\"!control.controls.viewId.value\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#add\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"control-menu__remove\" (click)=\"onRemoveItem($event)\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#remove\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"group--items\">\n\t\t\t<div control-menu *for=\"let sub of control.controls.items.controls\" [control]=\"sub\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t</div>\n\t"
+};var MenuBuilderComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(MenuBuilderComponent, _Component);
+
+  function MenuBuilderComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = MenuBuilderComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.changes = 0;
+    this.form = null;
+    MenuService.getMenu$().pipe(operators.first()).subscribe(function (menu) {
+      return _this.initForm(menu);
+    });
+  };
+
+  _proto.initForm = function initForm(menu) {
+    var _this2 = this;
+
+    if (menu === void 0) {
+      menu = [];
+    }
+
+    var items = this.menuToControls(menu); // console.log('MenuBuilderComponent', items);
+
+    var form = this.form = new rxcompForm.FormGroup({
+      items: items
+    });
+    var controls = this.controls = form.controls;
+    form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
+      // console.log('MenuBuilderComponent', changes);
+      _this2.changes++;
+
+      _this2.pushChanges();
+    });
+  };
+
+  _proto.onLinkControl = function onLinkControl(control) {};
+
+  _proto.onUpControl = function onUpControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index > 0) {
+      index--;
+    } else {
+      index = length - 1;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.onDownControl = function onDownControl(control) {
+    var items = this.controls.items;
+    var length = items.controls.length;
+    var index = items.controls.indexOf(control);
+    items.controls.splice(index, 1);
+
+    if (index < length - 1) {
+      index++;
+    } else {
+      index = 0;
+    }
+
+    items.insert(control, index);
+  };
+
+  _proto.onAddItem = function onAddItem() {
+    var _this3 = this;
+
+    MenuService.createMenuItem$(null, this.controls.items.length).pipe(operators.first()).subscribe(function (item) {
+      _this3.controls.items.push(ControlMenuComponent.itemToFormGroup(item));
+    }); // this.controls.items.push(ControlMenuComponent.newFormGroup());
+  };
+
+  _proto.onRemoveControl = function onRemoveControl(control) {
+    var _this4 = this;
+
+    MenuService.deleteMenuItem$(control.value).pipe(operators.first()).subscribe(function () {
+      _this4.controls.items.remove(control);
+    }); // this.controls.items.remove(control);
+  };
+
+  _proto.isValid = function isValid() {
+    var isValid = this.form.valid;
+    return isValid;
+  };
+
+  _proto.onSubmit = function onSubmit(event) {
+    if (this.form.valid) {
+      var changes = this.form.value;
+      var menu = this.controlsToMenu(changes);
+      MenuService.updateMenu$(menu);
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.menuToControls = function menuToControls(menu, parentId) {
+    var _this5 = this;
+
+    if (parentId === void 0) {
+      parentId = null;
+    }
+
+    var items = new rxcompForm.FormArray(menu.filter(function (x) {
+      return (x.parentId || null) === parentId;
+    }).map(function (x) {
+      var subitems = _this5.menuToControls(menu, x.id);
+
+      return new rxcompForm.FormGroup({
+        id: x.id,
+        parentId: x.parentId,
+        viewId: x.viewId,
+        name: x.name,
+        items: subitems
+      });
+    }));
+    return items;
+  };
+
+  _proto.controlsToMenu = function controlsToMenu(changes) {
+    var menu = [];
+
+    var pushItem = function pushItem(items) {
+      if (items) {
+        items.forEach(function (item, i) {
+          var menuItem = Object.assign({}, item);
+          menuItem.order = i * 10;
+          delete menuItem.items;
+          menu.push(menuItem);
+          pushItem(item.items);
+        });
+      }
+    };
+
+    pushItem(changes.items);
+    return menu;
+  };
+
+  return MenuBuilderComponent;
+}(rxcomp.Component);
+MenuBuilderComponent.meta = {
+  selector: '[menu-builder]',
+  inputs: ['views']
+};var CurvedPlaneModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(CurvedPlaneModalComponent, _Component);
+
+  function CurvedPlaneModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = CurvedPlaneModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = this.object;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.CurvedPlane,
+      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
+      radius: new rxcompForm.FormControl(35, rxcompForm.RequiredValidator()),
+      height: new rxcompForm.FormControl(20, rxcompForm.RequiredValidator()),
+      arc: new rxcompForm.FormControl(90, rxcompForm.RequiredValidator()),
+      asset: null
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('CurvedPlaneModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+      // console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
+
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('CurvedPlaneModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('CurvedPlaneModalComponent.onSubmit.error', error);
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(CurvedPlaneModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "object",
+    get: function get() {
+      var object = new THREE.Object3D();
+      var data = this.data;
+
+      if (data) {
+        var position = data.hit.position.clone();
+        var normal = data.hit.normal.clone();
+        var spherical = data.hit.spherical;
+
+        if (spherical) {
+          position.normalize().multiplyScalar(20);
+          object.position.copy(position);
+          object.lookAt(Host.origin);
+        } else {
+          object.lookAt(normal);
+          object.position.set(position.x, position.y, position.z);
+          object.position.add(normal.multiplyScalar(0.01));
+        }
+      }
+
+      return object;
+    }
+  }]);
+
+  return CurvedPlaneModalComponent;
+}(rxcomp.Component);
+CurvedPlaneModalComponent.meta = {
+  selector: '[curved-plane-modal]'
+};var ItemModelModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ItemModelModalComponent, _Component);
+
+  function ItemModelModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ItemModelModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = this.object;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Model,
+      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl([0, 0, 0], rxcompForm.RequiredValidator()),
+      // [0, -Math.PI / 2, 0],
+      // rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
+      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('ItemModelModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+      // console.log('ItemModelModalComponent.onSubmit', this.view, item);
+
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('ItemModelModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('ItemModelModalComponent.onSubmit.error', error);
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(ItemModelModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "object",
+    get: function get() {
+      var object = new THREE.Object3D();
+      var data = this.data;
+
+      if (data) {
+        var position = data.hit.position.clone();
+        var normal = data.hit.normal.clone();
+        var spherical = data.hit.spherical;
+
+        if (spherical) {
+          position.normalize().multiplyScalar(4);
+          object.position.copy(position);
+          object.lookAt(Host.origin);
+        } else {
+          object.lookAt(normal);
+          object.position.set(position.x, position.y, position.z);
+          object.position.add(normal.multiplyScalar(0.01));
+        }
+      }
+
+      return object;
+    }
+  }]);
+
+  return ItemModelModalComponent;
+}(rxcomp.Component);
+ItemModelModalComponent.meta = {
+  selector: '[item-model-modal]'
+};var MediaModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(MediaModalComponent, _Component);
+
+  function MediaModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = MediaModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Media,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('MediaModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      }; // console.log('MediaModalComponent.onSubmit.view', view);
+
+      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
+        var item = {
+          type: ViewItemType.Plane,
+          position: [20, 0, 0],
+          rotation: [0, -Math.PI / 2, 0],
+          scale: [12, 6.75, 1],
+          asset: values.asset
+        };
+        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
+          view.items = [item];
+          return view;
+        }));
+      }), operators.first()).subscribe(function (response) {
+        // console.log('MediaModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('MediaModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return MediaModalComponent;
+}(rxcomp.Component);
+MediaModalComponent.meta = {
+  selector: '[media-modal]'
+};var ModelModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ModelModalComponent, _Component);
+
+  function ModelModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ModelModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Model,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      model: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('ModelModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      }; // console.log('ModelModalComponent.onSubmit.view', view);
+
+      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
+        var item = {
+          type: ViewItemType.Model,
+          asset: values.model
+        };
+        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
+          view.items = [item];
+          return view;
+        }));
+      }), operators.first()).subscribe(function (response) {
+        // console.log('ModelModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('ModelModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return ModelModalComponent;
+}(rxcomp.Component);
+ModelModalComponent.meta = {
+  selector: '[model-modal]'
 };var NavModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(NavModalComponent, _Component);
 
@@ -23486,7 +24088,178 @@ PanoramaModalComponent.meta = {
 	},
 	"zoom": 75
 }
-*/var PlaneModalComponent = /*#__PURE__*/function (_Component) {
+*/var PathAddModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PathAddModalComponent, _Component);
+
+  function PathAddModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PathAddModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PathAddModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var path = {
+        name: values.name,
+        items: []
+      }; // console.log('PathAddModalComponent.onSubmit.path', path);
+
+      return PathService.pathCreate$(path).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PathAddModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PathAddModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PathAddModalComponent;
+}(rxcomp.Component);
+PathAddModalComponent.meta = {
+  selector: '[path-add-modal]'
+};
+/*
+{
+	"id": 1,
+	"name": "Mappa",
+	"asset": {
+		"type": "image",
+		"folder": "folder/",
+		"file": "map.png"
+	},
+	"items": [{
+		"id": 110,
+		"type": "nav",
+		"title": "Barilla Experience",
+		"abstract": "Abstract",
+		"position": [0.9491595148619703,-0.3147945860255039,0],
+		"viewId": 23
+	}],
+}
+*/var PathEditModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PathEditModalComponent, _Component);
+
+  function PathEditModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PathEditModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.item = null;
+    this.views = null;
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      var data = parentInstance.modal.data;
+
+      if (data) {
+        this.item = data.item ? data.item : null;
+        this.views = this.parseViews(data.views, this.item);
+      }
+    }
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(this.item ? this.item.name : null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PathEditModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.parseViews = function parseViews(views, item) {
+    if (views && item) {
+      return views.map(function (view) {
+        return {
+          id: view.id,
+          name: view.name,
+          type: view.type,
+          active: item.items.indexOf(view.id) === -1
+        };
+      });
+    } else {
+      return [];
+    }
+  };
+
+  _proto.onToggleView = function onToggleView(view) {
+    view.active = !view.active;
+    this.pushChanges();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var payload = {
+        id: this.item.id,
+        name: values.name,
+        items: this.views.filter(function (x) {
+          return !x.active;
+        }).map(function (x) {
+          return x.id;
+        })
+      }; // console.log('PathEditModalComponent.onSubmit', payload);
+
+      return PathService.pathUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PathEditModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PathEditModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PathEditModalComponent;
+}(rxcomp.Component);
+PathEditModalComponent.meta = {
+  selector: '[path-edit-modal]'
+};var PlaneModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(PlaneModalComponent, _Component);
 
   function PlaneModalComponent() {
@@ -24069,10 +24842,13 @@ NavmapEditComponent.meta = {
     });
   };
 
-  _proto.getKeysDidChange = function getKeysDidChange(item, changes) {
-    var keys = ['hasChromaKeyColor', 'autoplay', 'loop'];
-    return keys.reduce(function (p, c) {
-      return p || changes[c] !== item[c];
+  _proto.getFlagsDidChange = function getFlagsDidChange(item, changes) {
+    var flags = ['hasChromaKeyColor', 'autoplay', 'loop'];
+    return flags.reduce(function (p, c) {
+      var a = changes[c] || false;
+      var b = item[c] || false; // console.log(c, a, b);
+
+      return p || a !== b;
     }, false);
   };
 
@@ -24085,7 +24861,8 @@ NavmapEditComponent.meta = {
     var _this2 = this;
 
     var item = this.item;
-    var assetDidChange = this.getAssetDidChange(item, changes) || this.getKeysDidChange(item, changes); // console.log('doUpdateItem.assetDidChange', assetDidChange);
+    var assetDidChange = this.getAssetDidChange(item, changes);
+    var flagsDidChange = this.getFlagsDidChange(item, changes); // console.log('UpdateViewItemCompoent.doUpdateItem', 'assetDidChange', assetDidChange, 'flagsDidChange', flagsDidChange);
 
     Object.assign(item, changes);
 
@@ -24095,7 +24872,7 @@ NavmapEditComponent.meta = {
       item.asset.loop = item.loop;
     }
 
-    if (assetDidChange) {
+    if (assetDidChange || flagsDidChange) {
       var asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : rxjs.of(null);
       asset$.pipe(operators.switchMap(function () {
         return EditorService.inferItemUpdate$(_this2.view, item);
@@ -24322,7 +25099,7 @@ NavmapEditComponent.meta = {
       var view = this.view;
       var item = new ViewItem(payload);
       EditorService.inferItemUpdate$(view, item).pipe(operators.first()).subscribe(function (response) {
-        console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
+        // console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
         EditorService.inferItemUpdateResult$(view, item);
 
         _this5.update.next({
@@ -24729,7 +25506,7 @@ UpdateViewTileComponent.meta = {
     if (!this.busy && this.form.valid) {
       this.busy = true;
       this.pushChanges();
-      var payload = Object.assign({}, this.view, this.form.value);
+      var payload = Object.assign({}, this.form.value);
 
       if (payload.latitude != null) {
         // !!! keep loose inequality
@@ -24749,7 +25526,14 @@ UpdateViewTileComponent.meta = {
         usdz: usdz,
         gltf: gltf
       } : null;
-      var view = new View$1(payload);
+      var view = new View$1(Object.assign({}, this.view, payload));
+      /*
+      let dataView = Object.assign({}, ViewService.getDataView(this.view.id), payload);
+      dataView = new View(dataView);
+      let pathView = Object.assign({}, this.view, payload);
+      pathView = new View(pathView);
+      */
+
       EditorService.viewUpdate$(view).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
         _this2.update.next({
@@ -24847,7 +25631,7 @@ UpdateViewComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'room-3d'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && ('ar' | flag)\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
-};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, NavmapBuilderComponent, NavmapEditComponent, NavmapModalComponent, NavmapItemModalComponent, MediaModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, Room3DModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
+};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, NavmapBuilderComponent, NavmapEditComponent, NavmapModalComponent, NavmapItemModalComponent, MediaModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PathAddModalComponent, PathEditModalComponent, PlaneModalComponent, RemoveModalComponent, Room3DModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
   _inheritsLoose(EditorModule, _Module);
@@ -26455,6 +27239,11 @@ LanguageComponent.meta = {
       return navigable;
     }
   }, {
+    key: "showNavInfoToggler",
+    get: function get() {
+      return environment.flags.hideNavInfo && this.state.mode !== UIMode.LiveMeeting;
+    }
+  }, {
     key: "uiClass",
     get: function get() {
       var uiClass = {};
@@ -26466,6 +27255,11 @@ LanguageComponent.meta = {
       uiClass.media = !uiClass.remotes && this.media;
       uiClass.locked = this.locked;
       return uiClass;
+    }
+  }, {
+    key: "remoteClass",
+    get: function get() {
+      return "group--remote--" + Math.min(9, this.remotes.length);
     }
   }, {
     key: "controlled",
@@ -26731,22 +27525,6 @@ MessagePipe.meta = {
 }(rxcomp.Component);
 ModalComponent.meta = {
   selector: '[modal]'
-};var SlugPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(SlugPipe, _Pipe);
-
-  function SlugPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  SlugPipe.transform = function transform(key) {
-    var url = environment.url;
-    return url[key] || "#" + key;
-  };
-
-  return SlugPipe;
-}(rxcomp.Pipe);
-SlugPipe.meta = {
-  name: 'slug'
 };var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(SupportRequestModalComponent, _Component);
 
