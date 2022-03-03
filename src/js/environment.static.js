@@ -42,6 +42,7 @@ export const environmentStatic = {
 		navTransparentAnimated: true,
 		navTransparentImportantAnimated: true,
 		useTextureEnvironment: true,
+		usePaths: true,
 		// maxQuality: false,
 	},
 	navs: {
@@ -130,6 +131,8 @@ export const environmentStatic = {
 			},
 			navmap: '/navmap-modal.html',
 			navmapItem: '/navmap-item-modal.html',
+			pathAdd: '/path-add-modal.html',
+			pathEdit: '/path-edit-modal.html',
 			remove: '/remove-modal.html',
 		},
 		email: {

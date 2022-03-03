@@ -6,7 +6,7 @@
 	</div>
 	<div class="container">
 		<div class="form">
-			<div class="title">Remove.</div>
+			<div class="title">Remove <span *if="item">&ldquo;<span [innerHTML]="item.title || item.name"></span>&rdquo;</span>.</div>
 			<div class="abstract">are you sure?</div>
 			<div class="group--cta">
 				<button type="button" class="btn--remove" (click)="onRemove($event)">

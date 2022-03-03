@@ -155,7 +155,8 @@ function _readOnlyError(name) {
     navTitleImportantAnimated: false,
     navTransparentAnimated: false,
     navTransparentImportantAnimated: false,
-    useTextureEnvironment: true // maxQuality: false,
+    useTextureEnvironment: true,
+    usePaths: false // maxQuality: false,
 
   },
   navs: {
@@ -246,6 +247,8 @@ function _readOnlyError(name) {
       },
       navmap: '/template/modules/b-here/navmap-modal.cshtml',
       navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
+      pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
+      pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
       remove: '/template/modules/b-here/remove-modal.cshtml'
     },
     email: {
@@ -295,7 +298,8 @@ function _readOnlyError(name) {
     navTitleImportantAnimated: false,
     navTransparentAnimated: true,
     navTransparentImportantAnimated: true,
-    useTextureEnvironment: true // maxQuality: false,
+    useTextureEnvironment: true,
+    usePaths: true // maxQuality: false,
 
   },
   navs: {
@@ -386,6 +390,8 @@ function _readOnlyError(name) {
       },
       navmap: '/navmap-modal.html',
       navmapItem: '/navmap-item-modal.html',
+      pathAdd: '/path-add-modal.html',
+      pathEdit: '/path-edit-modal.html',
       remove: '/remove-modal.html'
     },
     email: {
@@ -673,7 +679,7 @@ var User = function User(options) {
   if (options) {
     Object.assign(this, options);
   }
-};var MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}$/;
+};var MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
 var MeetingId = /*#__PURE__*/function () {
   _createClass(MeetingId, [{
     key: "roleIndex",
@@ -693,7 +699,8 @@ var MeetingId = /*#__PURE__*/function () {
   function MeetingId(options) {
     this.userId = StateService.state.user ? StateService.state.user.id : 0;
     this.role = StateService.state.role || RoleType.Viewer;
-    this.timestamp = new Date().valueOf().toString(); // this.timestamp = (performance.now() * 10000000000000).toString();
+    this.timestamp = new Date().valueOf().toString();
+    this.pathId = null; // this.timestamp = (performance.now() * 10000000000000).toString();
 
     if (typeof options === 'string') {
       if (options.match(MEETING_ID_VALIDATOR)) {
@@ -724,30 +731,35 @@ var MeetingId = /*#__PURE__*/function () {
       if (options.timestamp) {
         this.timestamp = options.timestamp;
       }
+
+      if (options.pathId) {
+        this.pathId = options.pathId;
+      }
     }
   }
 
   var _proto = MeetingId.prototype;
 
   _proto.toString = function toString() {
-    return MeetingId.compose(this.userId, this.roleIndex, this.timestamp);
+    return MeetingId.compose(this.userId, this.roleIndex, this.timestamp, this.pathId);
   };
 
   _proto.toRoles = function toRoles() {
     var userId = this.userId;
     var timestamp = this.timestamp;
+    var pathId = this.pathId;
     return {
-      id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp),
-      idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp),
-      idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp),
-      idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp),
-      idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp),
-      idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp)
+      id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp, pathId),
+      idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp, pathId),
+      idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp, pathId),
+      idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp, pathId),
+      idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp, pathId),
+      idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp, pathId)
     };
   };
 
-  MeetingId.compose = function compose(userId, roleIndex, timestamp) {
-    return MeetingId.padded(userId, 9) + "-" + MeetingId.padded(roleIndex, 4) + "-" + timestamp;
+  MeetingId.compose = function compose(userId, roleIndex, timestamp, pathId) {
+    return MeetingId.padded(userId, 9) + "-" + MeetingId.padded(roleIndex, 4) + "-" + timestamp + (pathId ? "-" + pathId : '');
   };
 
   MeetingId.decompose = function decompose(meetingId) {
@@ -755,7 +767,8 @@ var MeetingId = /*#__PURE__*/function () {
     return {
       userId: parseInt(components[0]),
       roleIndex: parseInt(components[1]),
-      timestamp: parseInt(components[2])
+      timestamp: parseInt(components[2]),
+      pathId: components[3] ? parseInt(components[3]) : null
     };
   };
 
@@ -6443,6 +6456,206 @@ AgoraDevicePreviewComponent.meta = {
 AgoraDeviceComponent.meta = {
   selector: '[agora-device]',
   outputs: ['enter']
+};var Path = /*#__PURE__*/function () {
+  function Path(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+
+    this.items = this.items || [];
+    this.originalItems = this.items.slice();
+  }
+
+  _createClass(Path, [{
+    key: "payload",
+    get: function get() {
+      var _this = this;
+
+      var payload = {};
+      Object.keys(this).forEach(function (key) {
+        if (View.allowedProps.indexOf(key) !== -1) {
+          switch (key) {
+            default:
+              payload[key] = _this[key];
+          }
+        }
+      });
+      return payload;
+    }
+  }]);
+
+  return Path;
+}();
+
+_defineProperty(Path, "allowedProps", ['id', 'name', 'items']);
+
+function mapPath(map) {
+  map = new Path(map);
+  return map;
+}var DEFAULT_PATH = {
+  id: null,
+  name: "Principale",
+  items: []
+};
+
+var PathService = /*#__PURE__*/function () {
+  function PathService() {}
+
+  PathService.getCurrentPath$ = function getCurrentPath$(pathId) {
+    var _this = this;
+
+    if (pathId === void 0) {
+      pathId = null;
+    }
+
+    return this.pathGet$().pipe(operators.switchMap(function (paths) {
+      _this.paths = paths;
+      var path = DEFAULT_PATH;
+
+      if (pathId) {
+        var selectedPath = paths.find(function (x) {
+          return x.id === pathId;
+        });
+
+        if (selectedPath) {
+          path = selectedPath;
+        }
+      }
+
+      _this.path = path;
+      return _this.path$;
+    }));
+  };
+
+  PathService.pathGet$ = function pathGet$() {
+    return HttpService.get$("/api/path").pipe(operators.map(function (data) {
+      data.paths = data.paths.map(function (path) {
+        return mapPath(path);
+      });
+      data.paths.unshift(DEFAULT_PATH);
+      return data.paths;
+    }));
+  };
+
+  PathService.addPath = function addPath(path) {
+    var paths = this.paths.slice();
+    paths.push(path);
+    this.paths = paths;
+    this.path = path;
+  };
+
+  PathService.editPath = function editPath(path) {
+    // console.log('PathService.editPath', path);
+    var paths = this.paths.slice();
+    var index = paths.reduce(function (p, c, i) {
+      return c.id === path.id ? i : p;
+    }, -1); // console.log('PathService.editPath', paths, index);
+
+    if (index > 0) {
+      var currentPath = this.path;
+
+      if (currentPath.id === path.id) {
+        currentPath = path;
+      } // console.log('PathService.editPath', currentPath);
+
+
+      paths.splice(index, 1, path);
+      this.paths = paths;
+      this.path = currentPath;
+    }
+  };
+
+  PathService.deletePath = function deletePath(path) {
+    var paths = this.paths.slice();
+    var index = paths.indexOf(path);
+
+    if (index > 0) {
+      paths.splice(index, 1);
+      this.paths = paths;
+      var currentPath = this.path;
+
+      if (currentPath.id === path.id) {
+        currentPath = paths[0];
+      }
+
+      this.path = currentPath;
+    }
+  };
+
+  PathService.pathCreate$ = function pathCreate$(path) {
+    return HttpService.post$("/api/path", path).pipe(operators.map(function (path) {
+      return mapPath(path);
+    }));
+  };
+
+  PathService.pathUpdate$ = function pathUpdate$(path) {
+    return HttpService.put$("/api/path/" + path.id, path).pipe(operators.map(function (x) {
+      return mapPath(x);
+    }));
+  };
+
+  PathService.pathDelete$ = function pathDelete$(path) {
+    return HttpService.delete$("/api/path/" + path.id);
+  }
+  /*
+  static itemCreate$(path, item) {
+  	return HttpService.post$(`/api/path/${path.id}/item`, item).pipe(
+  		map(item => mapViewItem(item)),
+  	);
+  }
+  
+  static itemUpdate$(path, item) {
+  	item = mapViewItem(item); // !!! ??
+  	return HttpService.put$(`/api/path/${path.id}/item/${item.id}`, item.payload).pipe(
+  		map(item => mapViewItem(item)),
+  	);
+  }
+  
+  static itemDelete$(path, item) {
+  	return HttpService.delete$(`/api/path/${path.id}/item/${item.id}`);
+  }
+  */
+  ;
+
+  _createClass(PathService, null, [{
+    key: "paths",
+    set: function set(paths) {
+      this.paths$.next(paths);
+    },
+    get: function get() {
+      return this.paths$.getValue();
+    }
+  }, {
+    key: "path",
+    set: function set(path) {
+      this.path$.next(path);
+    },
+    get: function get() {
+      return this.path$.getValue();
+    }
+  }]);
+
+  return PathService;
+}();
+
+_defineProperty(PathService, "paths$", new rxjs.BehaviorSubject([DEFAULT_PATH]));
+
+_defineProperty(PathService, "path$", new rxjs.BehaviorSubject(DEFAULT_PATH));var SlugPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(SlugPipe, _Pipe);
+
+  function SlugPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  SlugPipe.transform = function transform(key) {
+    var url = environment.url;
+    return url[key] || "#" + key;
+  };
+
+  return SlugPipe;
+}(rxcomp.Pipe);
+SlugPipe.meta = {
+  name: 'slug'
 };var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLinkComponent, _Component);
 
@@ -6456,7 +6669,33 @@ AgoraDeviceComponent.meta = {
     var _this = this;
 
     this.state = {};
+    this.paths = [];
+    this.pathId = null;
+    this.form = null;
+    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
+      // console.log('AgoraLinkComponent.state', state);
+      _this.state = state;
+
+      _this.pushChanges();
+    });
+
+    if (environment.flags.usePaths) {
+      PathService.getCurrentPath$().pipe(operators.first(), operators.tap(), operators.takeUntil(this.unsubscribe$)).subscribe(function (path) {
+        _this.paths = PathService.paths;
+        _this.pathId = path.id || '';
+
+        _this.onLoad();
+      });
+    } else {
+      this.onLoad();
+    }
+  };
+
+  _proto.onLoad = function onLoad() {
+    var _this2 = this;
+
     var form = this.form = new rxcompForm.FormGroup({
+      path: this.pathId,
       id: new rxcompForm.FormControl(null, [rxcompForm.Validators.PatternValidator(MEETING_ID_VALIDATOR), rxcompForm.Validators.RequiredValidator()]),
       idAttendee: null,
       idStreamer: null,
@@ -6465,26 +6704,48 @@ AgoraDeviceComponent.meta = {
 
     });
     var controls = this.controls = form.controls;
+    var pathOptions = this.paths.map(function (x) {
+      return {
+        id: x.id || '',
+        name: x.name
+      };
+    });
+
+    if (pathOptions.length > 0) {
+      pathOptions.unshift({
+        id: null,
+        name: 'bhere_select_path' // LabelPipe.transform('bhere_select_path')
+
+      });
+    }
+
+    controls.path.options = pathOptions;
     form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (changes) {
       // console.log('AgoraLinkComponent.changes$', form.value);
-      _this.pushChanges();
-    });
-    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (state) {
-      // console.log('AgoraLinkComponent.state', state);
-      _this.state = state;
+      // console.log(changes.path, changes.id);
+      if (_this2.pathId !== changes.path && changes.id !== null) {
+        _this2.pathId = changes.path;
 
-      _this.pushChanges();
+        _this2.onGenerateMeetingId();
+      }
+
+      _this2.pushChanges();
     });
   };
 
   _proto.onGenerateMeetingId = function onGenerateMeetingId($event) {
-    var meetingId = new MeetingId();
+    var pathId = this.pathId ? String(this.pathId) : null;
+    pathId = pathId && pathId.length ? pathId : null; // console.log('onGenerateMeetingId', this.pathId, pathId);
+
+    var meetingId = new MeetingId({
+      pathId: pathId
+    });
     var meetingIdRoles = meetingId.toRoles();
     this.form.patch(meetingIdRoles);
   };
 
   _proto.onInputDidChange = function onInputDidChange($event) {
-    var _this2 = this;
+    var _this3 = this;
 
     // console.log('onInputDidChange', this.form.get('id').value, this.form.get('id').valid);
     if (this.state.role !== 'publisher') {
@@ -6492,21 +6753,21 @@ AgoraDeviceComponent.meta = {
     }
 
     setTimeout(function () {
-      if (_this2.form.get('id').valid) {
-        var value = _this2.form.get('id').value;
+      if (_this3.form.get('id').valid) {
+        var value = _this3.form.get('id').value;
 
         var meetingId = new MeetingId(value);
         var meetingIdRoles = meetingId.toRoles();
 
-        _this2.form.patch(meetingIdRoles);
+        _this3.form.patch(meetingIdRoles);
       } else {
-        _this2.form.get('idAttendee').reset();
+        _this3.form.get('idAttendee').reset();
 
-        _this2.form.get('idStreamer').reset();
+        _this3.form.get('idStreamer').reset();
 
-        _this2.form.get('idViewer').reset();
+        _this3.form.get('idViewer').reset();
 
-        _this2.form.get('idSmartDevice').reset();
+        _this3.form.get('idSmartDevice').reset();
       }
     }, 1);
   };
@@ -6532,6 +6793,14 @@ AgoraDeviceComponent.meta = {
     var isValid = this.form.valid;
     return isValid;
   };
+
+  _createClass(AgoraLinkComponent, [{
+    key: "selfServiceTourUrl",
+    get: function get() {
+      var pathId = this.form.get('path').value;
+      return "" + SlugPipe.transform('selfServiceTour') + (pathId ? "?pathId=" + pathId : '');
+    }
+  }]);
 
   return AgoraLinkComponent;
 }(rxcomp.Component);
@@ -7043,6 +7312,13 @@ var View$1 = /*#__PURE__*/function () {
         }
       });
       return payload;
+    }
+  }, {
+    key: "pathItems",
+    get: function get() {
+      return this.items.filter(function (x) {
+        return x.path;
+      });
     }
   }, {
     key: "shortType",
@@ -7961,16 +8237,62 @@ _defineProperty(LanguageService, "languages", LanguageService.getDefaultLanguage
 
 _defineProperty(LanguageService, "defaultLanguage", LanguageService.getDefaultLanguage());
 
-_defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLanguage);var ViewService = /*#__PURE__*/function () {
+_defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLanguage);var DEFAULT_WAITING_ROOM = {
+  id: 'waiting-room',
+  type: {
+    id: 1,
+    name: 'waiting-room'
+  },
+  name: 'Waiting Room',
+  likes: 0,
+  liked: false,
+  asset: {
+    type: {
+      id: 1,
+      name: 'image'
+    },
+    folder: '/textures/waiting-room/',
+    file: 'waiting-room.jpg'
+  },
+  items: [],
+  orientation: {
+    latitude: 0,
+    longitude: 0
+  }
+};
+
+var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
+  ViewService.getDataView = function getDataView(viewId) {
+    return this.dataViews.find(function (x) {
+      return x.id === viewId;
+    });
+  }
+  /*
+  static view_ = null;
+  static get view() {
+  	return this.view_;
+  }
+  static set view(view) {
+  	this.view_ = view;
+  }
+  */
+  ;
+
   ViewService.data$ = function data$() {
+    var _this = this;
+
     if (!this.data$_) {
       var dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
       this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(function (data) {
         data.views = data.views.map(function (view) {
           return mapView(view);
         });
+        _this.data = data;
+        var views = data.views; // const views = data.views.filter(x => x.type.name !== 'waiting-room');
+
+        _this.views = views;
         return data;
       }), // tap(data => console.log('ViewService.data$', data)),
       operators.shareReplay(1));
@@ -7979,16 +8301,16 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     return this.data$_;
   };
 
-  ViewService.view$ = function view$(data, editor) {
-    var _this = this;
+  ViewService.view$ = function view$() {
+    var _this2 = this;
 
-    var views = editor ? data.views : data.views.filter(function (x) {
-      return x.type.name !== 'waiting-room';
-    });
+    var views = this.views;
+    var editor = this.editor;
     var meetingUrl = new MeetingUrl();
     var viewId = meetingUrl.viewId;
     var embedViewId = meetingUrl.embedViewId;
-    var firstViewId = views.length ? views[0].id : null;
+    var validViews = editor ? views : this.validViews;
+    var firstViewId = validViews.length ? validViews[0].id : null;
     var initialViewId = embedViewId || viewId || firstViewId;
     this.action$_.next({
       viewId: initialViewId
@@ -7996,9 +8318,30 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     return this.action$_.pipe(operators.distinctUntilChanged(function (a, b) {
       return a.viewId === b.viewId;
     }), operators.map(function (action) {
-      var view = data.views.find(function (view) {
+      // const view = data.views.find(view => view.id === action.viewId);
+      // console.log('ViewService.view$', 'path', path);
+      // filter path
+      var view = views.find(function (view) {
         return view.id === action.viewId;
       });
+      /*
+      if (path && !editor) {
+      	if (path.items.indexOf(view.id) === -1) {
+      		const newView = Object.assign({}, view);
+      		newView.items = view.items.filter(x => {
+      			if (x.type.name === ViewItemType.Nav.name) {
+      				return path.items.indexOf(x.viewId) === -1;
+      			} else {
+      				return true;
+      			}
+      		});
+      		view = mapView(newView);
+      	} else {
+      		view = null;
+      	}
+      }
+      console.log('ViewService.view$', view, path);
+      */
 
       if (view) {
         view.keepOrientation = action.keepOrientation || false;
@@ -8006,41 +8349,68 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
       } // console.log('ViewService.view$', action.viewId, action.keepOrientation, action.useLastOrientation);
 
 
-      return view || _this.getWaitingRoom(data);
+      return view || _this2.getWaitingRoom();
     }));
   };
 
-  ViewService.hostedView$ = function hostedView$(data) {
-    var _this2 = this;
+  ViewService.setDataAndPath = function setDataAndPath(data, path) {
+    this.data = data;
+    data.views.forEach(function (view) {
+      view.path = !path || path.items.indexOf(view.id) === -1;
+      view.items.forEach(function (item) {
+        var valid = true;
 
-    var waitingRoom = this.getWaitingRoom(data);
-    return rxjs.combineLatest([this.view$(data), this.hosted$()]).pipe(operators.map(function (datas) {
+        if (path) {
+          if (item.type.name === ViewItemType.Nav.name) {
+            valid = path.items.indexOf(item.viewId) === -1;
+          }
+
+          item.path = valid;
+        }
+      });
+    });
+    this.views = data.views;
+    this.path = path;
+  };
+
+  ViewService.hostedView$ = function hostedView$(data, path) {
+    var _this3 = this;
+
+    this.setDataAndPath(data, path);
+    this.editor = false;
+    var waitingRoom = this.getWaitingRoom();
+    return rxjs.combineLatest([this.view$(), this.hosted$()]).pipe(operators.map(function (datas) {
       var view = datas[0];
       var hosted = datas[1];
       return hosted ? view : waitingRoom;
     }), operators.distinctUntilChanged(function (a, b) {
       return a.id === b.id;
     }), operators.tap(function (view) {
-      _this2.view = view;
+      _this3.view = view;
 
       if (view.id !== waitingRoom.id) {
         LocationService.set('viewId', view.id);
-        var prefetchAssets = ViewService.getPrefetchAssets(view, data);
+        var prefetchAssets = ViewService.getPrefetchAssets(view);
         view.prefetchAssets = prefetchAssets;
       }
     }));
   };
 
-  ViewService.editorView$ = function editorView$(data) {
-    var _this3 = this;
+  ViewService.editorView$ = function editorView$(data, path) {
+    var _this4 = this;
 
-    var waitingRoom = this.getWaitingRoom(data);
-    return this.view$(data, true).pipe(operators.tap(function (view) {
-      _this3.view = view;
+    this.setDataAndPath(data, path);
+    this.editor = true;
+    var waitingRoom = this.getWaitingRoom();
+    return this.view$().pipe(operators.map(function (view) {
+      // console.log('ViewService.editorView$.view', view.updateIndices);
+      _this4.view = view;
 
       if (view.id !== waitingRoom.id) {
         LocationService.set('viewId', view.id);
       }
+
+      return view;
     }));
   };
 
@@ -8051,8 +8421,10 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
   };
 
   ViewService.viewById$ = function viewById$(viewId) {
+    var _this5 = this;
+
     return this.data$().pipe(operators.map(function (data) {
-      return data.views.find(function (x) {
+      return _this5.views.find(function (x) {
         return x.id === viewId;
       });
     }));
@@ -8082,41 +8454,20 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     }));
   };
 
-  ViewService.getWaitingRoom = function getWaitingRoom(data) {
-    return data && data.views.find(function (x) {
-      return x.type.name === 'waiting-room';
-    }) || {
-      id: 'waiting-room',
-      type: {
-        id: 1,
-        name: 'waiting-room'
-      },
-      name: 'Waiting Room',
-      likes: 0,
-      liked: false,
-      asset: {
-        type: {
-          id: 1,
-          name: 'image'
-        },
-        folder: '/textures/waiting-room/',
-        file: 'waiting-room.jpg'
-      },
-      items: [],
-      orientation: {
-        latitude: 0,
-        longitude: 0
-      }
-    };
+  ViewService.getWaitingRoom = function getWaitingRoom() {
+    return this.dataViews.find(function (x) {
+      return x.type.name === ViewType.WaitingRoom.name;
+    }) || DEFAULT_WAITING_ROOM;
   };
 
-  ViewService.getPrefetchAssets = function getPrefetchAssets(view, data) {
+  ViewService.getPrefetchAssets = function getPrefetchAssets(view) {
+    var views = this.views;
     var assets = view.items // filter nav items
     .filter(function (x) {
       return x.type.name === ViewItemType.Nav.name && x.viewId != null;
     }) // map to view
     .map(function (x) {
-      return data.views.find(function (v) {
+      return views.find(function (v) {
         return v.id === x.viewId;
       });
     }) // filter view with image
@@ -8130,9 +8481,68 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
     return assets;
   };
 
+  ViewService.addView = function addView(view) {
+    var data = this.data;
+    var views = data.views.slice();
+    views.push(view);
+    data.views = views;
+    this.views = views;
+    this.viewId = view.id;
+  };
+
+  ViewService.deleteView = function deleteView(view) {
+    var data = this.data;
+    var views = data.views.slice();
+    var index = views.reduce(function (p, c, i) {
+      return c.id === view.id ? i : p;
+    }, -1);
+
+    if (index > 0) {
+      views.splice(index, 1);
+      data.paths = views;
+    }
+
+    ViewService.viewId = this.dataViews[0].id; // this.pushChanges();
+  };
+
   _createClass(ViewService, null, [{
+    key: "views",
+    set: function set(views) {
+      this.views$_.next(views);
+    },
+    get: function get() {
+      return this.views$_.getValue();
+    }
+  }, {
+    key: "view",
+    set: function set(view) {
+      this.view$_.next(view);
+    },
+    get: function get() {
+      return this.view$_.getValue();
+    }
+  }, {
+    key: "dataViews",
+    get: function get() {
+      return this.data ? this.data.views : [];
+    }
+  }, {
+    key: "validViews",
+    get: function get() {
+      return this.data ? this.data.views.filter(function (x) {
+        return x.type.name !== ViewType.WaitingRoom.name;
+      }) : [];
+    }
+  }, {
+    key: "pathViews",
+    get: function get() {
+      return this.validViews.filter(function (x) {
+        return x.path;
+      });
+    } // action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
+
+  }, {
     key: "action",
-    // action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
     set: function set(action) {
       this.action$_.next(action);
     },
@@ -8153,22 +8563,16 @@ _defineProperty(LanguageService, "selectedLanguage", LanguageService.defaultLang
       var action = this.action$_.getValue();
       return action ? action.viewId : null;
     }
-  }, {
-    key: "view",
-    get: function get() {
-      return this.view_;
-    },
-    set: function set(view) {
-      this.view_ = view;
-    }
   }]);
 
   return ViewService;
 }();
 
-_defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));
+_defineProperty(ViewService, "views$_", new rxjs.BehaviorSubject([]));
 
-_defineProperty(ViewService, "view_", null);var UID = 0;
+_defineProperty(ViewService, "view$_", new rxjs.BehaviorSubject(null));
+
+_defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));var UID = 0;
 var WebhookEvent = /*#__PURE__*/function () {
   function WebhookEvent(options) {
     if (options) {
@@ -19436,10 +19840,6 @@ ModelNavComponent.meta = {
 
   var _proto = AgoraComponent.prototype;
 
-  _proto.getName = function getName(user) {
-    return StateService.state.name || MeetingUrl.getName(user);
-  };
-
   _proto.onInit = function onInit() {
     var _this = this;
 
@@ -19450,8 +19850,6 @@ ModelNavComponent.meta = {
     this.platform = DeviceService.platform;
     this.state = {};
     this.hosted = null;
-    this.data = null;
-    this.views = null;
     this.view = null;
     this.previousView = null;
     this.form = null;
@@ -19468,6 +19866,10 @@ ModelNavComponent.meta = {
       return _this.pushChanges();
     });
     this.resolveUser();
+  };
+
+  _proto.getName = function getName(user) {
+    return StateService.state.name || MeetingUrl.getName(user);
   };
 
   _proto.getLinkRole = function getLinkRole() {
@@ -19567,6 +19969,25 @@ ModelNavComponent.meta = {
     return status;
   };
 
+  _proto.getPathId = function getPathId() {
+    var pathId = LocationService.get('pathId') || null;
+
+    if (pathId) {
+      console.log('AgoraComponent.getPathId', pathId);
+      return parseInt(pathId);
+    }
+
+    var link = LocationService.get('link') || null;
+
+    if (link) {
+      var meetingId = new MeetingId(link);
+      pathId = meetingId.pathId;
+    }
+
+    console.log('AgoraComponent.getPathId', pathId);
+    return pathId;
+  };
+
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
@@ -19574,6 +19995,7 @@ ModelNavComponent.meta = {
     // const meetingUrl = this.meetingUrl;
     // const link = meetingUrl.link;
     var link = LocationService.get('link') || null;
+    var pathId = this.getPathId();
     var role = this.getLinkRole() || (user ? user.type : null);
 
     switch (role) {
@@ -19617,6 +20039,7 @@ ModelNavComponent.meta = {
       mode: mode,
       name: name,
       checklist: checklist,
+      pathId: pathId,
       link: link,
       channelName: environment.channelName,
       uid: null,
@@ -19650,11 +20073,10 @@ ModelNavComponent.meta = {
     var _this4 = this;
 
     return ViewService.data$().pipe(operators.switchMap(function (data) {
-      _this4.data = data;
-      _this4.views = data.views.filter(function (x) {
-        return x.type.name !== 'waiting-room';
-      });
-      return ViewService.hostedView$(data);
+      console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
+      return PathService.getCurrentPath$(StateService.state.pathId).pipe(operators.switchMap(function (path) {
+        return ViewService.hostedView$(data, path);
+      }));
     }),
     /*
     tap(view => {
@@ -19976,6 +20398,8 @@ ModelNavComponent.meta = {
   };
 
   _proto.onLink = function onLink(link) {
+    var meetingId = new MeetingId(link);
+    var pathId = meetingId.pathId;
     var role = this.getLinkRole();
     var mode = UserService.getMode(role);
     var user = StateService.state.user;
@@ -19983,6 +20407,7 @@ ModelNavComponent.meta = {
     if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
       StateService.patchState({
         link: link,
+        pathId: pathId,
         role: role,
         mode: mode,
         status: AgoraStatus.Login
@@ -19991,6 +20416,7 @@ ModelNavComponent.meta = {
       if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
         StateService.patchState({
           link: link,
+          pathId: pathId,
           role: role,
           mode: mode
         });
@@ -19998,6 +20424,7 @@ ModelNavComponent.meta = {
       } else {
         StateService.patchState({
           link: link,
+          pathId: pathId,
           role: role,
           mode: mode,
           status: AgoraStatus.Device
@@ -20006,6 +20433,7 @@ ModelNavComponent.meta = {
     } else {
       StateService.patchState({
         link: link,
+        pathId: pathId,
         role: role,
         mode: mode,
         status: AgoraStatus.Name
@@ -20099,7 +20527,7 @@ ModelNavComponent.meta = {
 
   _proto.onNavTo = function onNavTo(item) {
     var viewId = item.viewId;
-    var view = this.data.views.find(function (x) {
+    var view = this.pathViews.find(function (x) {
       return x.id === viewId;
     });
 
@@ -20131,7 +20559,7 @@ ModelNavComponent.meta = {
     var gridIndex = message.gridIndex;
 
     if (viewId && ViewService.viewId !== viewId) {
-      var view = this.data.views.find(function (x) {
+      var view = this.pathViews.find(function (x) {
         return x.id === viewId;
       });
 
@@ -20418,7 +20846,9 @@ ModelNavComponent.meta = {
 
     if (isSelfServiceProposition) {
       AgoraChecklistService.check$().pipe(operators.first()).subscribe(function (event) {
-        var meetingId = new MeetingId();
+        var meetingId = new MeetingId({
+          pathId: StateService.state.pathId
+        });
         var meetingIdRoles = meetingId.toRoles();
         var meetingUrl = new MeetingUrl({
           link: meetingIdRoles.id,
@@ -20643,6 +21073,11 @@ ModelNavComponent.meta = {
           window.dispatchEvent(new Event('resize'));
         }, 1);
       }
+    }
+  }, {
+    key: "pathViews",
+    get: function get() {
+      return ViewService.pathViews;
     }
   }]);
 
@@ -21494,9 +21929,9 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     this.settings = this.getSettings();
     this.aside = false;
     this.state = {};
-    this.data = null;
-    this.views = null;
     this.view = null;
+    this.paths = null;
+    this.path = null;
     this.form = null;
     this.local = null;
     this.remotes = [];
@@ -21565,26 +22000,79 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     var _this4 = this;
 
     return EditorService.data$().pipe(operators.switchMap(function (data) {
-      _this4.data = data;
-      _this4.views = data.views.filter(function (x) {
-        return x.type.name !== 'waiting-room';
-      });
-      return ViewService.editorView$(data);
+      // console.log('viewObserver$', data);
+      return PathService.getCurrentPath$().pipe(operators.switchMap(function (path) {
+        _this4.paths = PathService.paths;
+        _this4.path = path;
+        return ViewService.editorView$(data, path);
+      }));
     }), operators.tap(function (view) {
       _this4.view = null;
 
       _this4.pushChanges();
     }), operators.delay(1), operators.tap(function (view) {
-      _this4.view = view;
+      _this4.view = view; // console.log('viewObserver$', view);
 
       _this4.pushChanges();
     }));
   };
 
+  _proto.onAddPath = function onAddPath() {
+    // console.log('EditorComponent.onAddPath');
+    ModalService.open$({
+      src: environment.template.modal.pathAdd
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.addPath(event.data);
+      }
+    });
+  };
+
+  _proto.onEditPath = function onEditPath(item) {
+    // console.log('EditorComponent.onEditPath', item);
+    ModalService.open$({
+      src: environment.template.modal.pathEdit,
+      data: {
+        item: item,
+        views: ViewService.validViews
+      }
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.editPath(event.data);
+      }
+    });
+  };
+
+  _proto.onDeletePath = function onDeletePath(item) {
+    // console.log('EditorComponent.onDeletePath', item);
+    ModalService.open$({
+      src: environment.template.modal.remove,
+      data: {
+        item: item
+      }
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.pathDelete$(item).pipe(operators.first()).subscribe(function (_) {
+          PathService.deletePath(item);
+        });
+      }
+    });
+  };
+
+  _proto.onSelectPath = function onSelectPath(item) {
+    // console.log('EditorComponent.onSelectPath', item);
+    PathService.path = item;
+  };
+
+  _proto.isPathSelected = function isPathSelected(item) {
+    // console.log('EditorComponent.isPathSelected', item);
+    return PathService.path.id === item.id;
+  };
+
   _proto.onNavTo = function onNavTo(item) {
     // console.log('EditorComponent.onNavTo', item);
     var viewId = item.viewId;
-    var view = this.data.views.find(function (x) {
+    var view = ViewService.pathViews.find(function (x) {
       return x.id === viewId;
     });
 
@@ -21694,8 +22182,8 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     });
   };
 
-  _proto.onResizeEnd = function onResizeEnd(event) {
-    console.log('EditorComponent.onResizeEnd');
+  _proto.onResizeEnd = function onResizeEnd(event) {// console.log('EditorComponent.onResizeEnd');
+
     /*
     EditorService.inferItemUpdate$(this.view, event.item).pipe(
     	first(),
@@ -21736,8 +22224,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
       data: data
     }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
-        console.log('EditorComponent.onOpenModal.resolve', event);
-
+        // console.log('EditorComponent.onOpenModal.resolve', event);
         switch (modal.type) {
           case 'view':
             switch (modal.value) {
@@ -21746,13 +22233,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
               case ViewType.Model.name:
               case ViewType.Room3d.name:
               case ViewType.Media.name:
-                _this6.data.views.push(event.data);
-
-                _this6.views = _this6.data.views.slice();
-                ViewService.viewId = event.data.id;
-
-                _this6.pushChanges();
-
+                ViewService.addView(event.data);
                 break;
             }
 
@@ -21936,21 +22417,24 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     } else if (event.view) {
       EditorService.viewDelete$(event.view).pipe(operators.first()).subscribe(function (response) {
         // console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-        var views = _this8.data.views;
-        var index = views.indexOf(event.view);
-
-        if (index !== -1) {
-          views.splice(index, 1);
-        }
-
-        _this8.data.views = views;
-        _this8.views = views.slice();
-        ViewService.viewId = _this8.views[0].id; // this.pushChanges();
+        ViewService.deleteView(event.view);
       }, function (error) {
         return console.log('EditorComponent.onAsideDelete.viewDelete$.error', error);
       });
     }
   };
+
+  _createClass(EditorComponent, [{
+    key: "dataViews",
+    get: function get() {
+      return ViewService.dataViews;
+    }
+  }, {
+    key: "pathViews",
+    get: function get() {
+      return ViewService.pathViews;
+    }
+  }]);
 
   return EditorComponent;
 }(rxcomp.Component);
@@ -23601,7 +24085,178 @@ PanoramaModalComponent.meta = {
 	},
 	"zoom": 75
 }
-*/var PlaneModalComponent = /*#__PURE__*/function (_Component) {
+*/var PathAddModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PathAddModalComponent, _Component);
+
+  function PathAddModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PathAddModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PathAddModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var path = {
+        name: values.name,
+        items: []
+      }; // console.log('PathAddModalComponent.onSubmit.path', path);
+
+      return PathService.pathCreate$(path).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PathAddModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PathAddModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PathAddModalComponent;
+}(rxcomp.Component);
+PathAddModalComponent.meta = {
+  selector: '[path-add-modal]'
+};
+/*
+{
+	"id": 1,
+	"name": "Mappa",
+	"asset": {
+		"type": "image",
+		"folder": "folder/",
+		"file": "map.png"
+	},
+	"items": [{
+		"id": 110,
+		"type": "nav",
+		"title": "Barilla Experience",
+		"abstract": "Abstract",
+		"position": [0.9491595148619703,-0.3147945860255039,0],
+		"viewId": 23
+	}],
+}
+*/var PathEditModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PathEditModalComponent, _Component);
+
+  function PathEditModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PathEditModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.item = null;
+    this.views = null;
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      var data = parentInstance.modal.data;
+
+      if (data) {
+        this.item = data.item ? data.item : null;
+        this.views = this.parseViews(data.views, this.item);
+      }
+    }
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(this.item ? this.item.name : null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PathEditModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.parseViews = function parseViews(views, item) {
+    if (views && item) {
+      return views.map(function (view) {
+        return {
+          id: view.id,
+          name: view.name,
+          type: view.type,
+          active: item.items.indexOf(view.id) === -1
+        };
+      });
+    } else {
+      return [];
+    }
+  };
+
+  _proto.onToggleView = function onToggleView(view) {
+    view.active = !view.active;
+    this.pushChanges();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var payload = {
+        id: this.item.id,
+        name: values.name,
+        items: this.views.filter(function (x) {
+          return !x.active;
+        }).map(function (x) {
+          return x.id;
+        })
+      }; // console.log('PathEditModalComponent.onSubmit', payload);
+
+      return PathService.pathUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PathEditModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PathEditModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PathEditModalComponent;
+}(rxcomp.Component);
+PathEditModalComponent.meta = {
+  selector: '[path-edit-modal]'
+};var PlaneModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(PlaneModalComponent, _Component);
 
   function PlaneModalComponent() {
@@ -24184,10 +24839,13 @@ NavmapEditComponent.meta = {
     });
   };
 
-  _proto.getKeysDidChange = function getKeysDidChange(item, changes) {
-    var keys = ['hasChromaKeyColor', 'autoplay', 'loop'];
-    return keys.reduce(function (p, c) {
-      return p || changes[c] !== item[c];
+  _proto.getFlagsDidChange = function getFlagsDidChange(item, changes) {
+    var flags = ['hasChromaKeyColor', 'autoplay', 'loop'];
+    return flags.reduce(function (p, c) {
+      var a = changes[c] || false;
+      var b = item[c] || false; // console.log(c, a, b);
+
+      return p || a !== b;
     }, false);
   };
 
@@ -24200,7 +24858,8 @@ NavmapEditComponent.meta = {
     var _this2 = this;
 
     var item = this.item;
-    var assetDidChange = this.getAssetDidChange(item, changes) || this.getKeysDidChange(item, changes); // console.log('doUpdateItem.assetDidChange', assetDidChange);
+    var assetDidChange = this.getAssetDidChange(item, changes);
+    var flagsDidChange = this.getFlagsDidChange(item, changes); // console.log('UpdateViewItemCompoent.doUpdateItem', 'assetDidChange', assetDidChange, 'flagsDidChange', flagsDidChange);
 
     Object.assign(item, changes);
 
@@ -24210,7 +24869,7 @@ NavmapEditComponent.meta = {
       item.asset.loop = item.loop;
     }
 
-    if (assetDidChange) {
+    if (assetDidChange || flagsDidChange) {
       var asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : rxjs.of(null);
       asset$.pipe(operators.switchMap(function () {
         return EditorService.inferItemUpdate$(_this2.view, item);
@@ -24437,7 +25096,7 @@ NavmapEditComponent.meta = {
       var view = this.view;
       var item = new ViewItem(payload);
       EditorService.inferItemUpdate$(view, item).pipe(operators.first()).subscribe(function (response) {
-        console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
+        // console.log('UpdateViewItemComponent.onSubmit.inferItemUpdate$.success', response);
         EditorService.inferItemUpdateResult$(view, item);
 
         _this5.update.next({
@@ -24844,7 +25503,7 @@ UpdateViewTileComponent.meta = {
     if (!this.busy && this.form.valid) {
       this.busy = true;
       this.pushChanges();
-      var payload = Object.assign({}, this.view, this.form.value);
+      var payload = Object.assign({}, this.form.value);
 
       if (payload.latitude != null) {
         // !!! keep loose inequality
@@ -24864,7 +25523,14 @@ UpdateViewTileComponent.meta = {
         usdz: usdz,
         gltf: gltf
       } : null;
-      var view = new View$1(payload);
+      var view = new View$1(Object.assign({}, this.view, payload));
+      /*
+      let dataView = Object.assign({}, ViewService.getDataView(this.view.id), payload);
+      dataView = new View(dataView);
+      let pathView = Object.assign({}, this.view, payload);
+      pathView = new View(pathView);
+      */
+
       EditorService.viewUpdate$(view).pipe(operators.first()).subscribe(function (response) {
         // console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
         _this2.update.next({
@@ -24962,7 +25628,7 @@ UpdateViewComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"group--headline\" [class]=\"{ active: view.selected }\" (click)=\"onSelect($event)\">\n\t\t\t<!-- <div class=\"id\" [innerHTML]=\"view.id\"></div> -->\n\t\t\t<div class=\"icon\">\n\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t</div>\n\t\t\t<div class=\"title\" [innerHTML]=\"getTitle(view)\"></div>\n\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t</div>\n\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\" *if=\"view.selected\">\n\t\t\t<div class=\"form-controls\">\n\t\t\t\t<div control-text [control]=\"controls.id\" label=\"Id\" [disabled]=\"true\"></div>\n\t\t\t\t<!-- <div control-text [control]=\"controls.type\" label=\"Type\" [disabled]=\"true\"></div> -->\n\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'waiting-room'\">\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'room-3d'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name == 'model'\">\n\t\t\t\t<div control-checkbox [control]=\"controls.hidden\" label=\"Hide from menu\"></div>\n\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t<div control-text [control]=\"controls.latitude\" label=\"Latitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.longitude\" label=\"Longitude\" [disabled]=\"true\"></div>\n\t\t\t\t<div control-text [control]=\"controls.zoom\" label=\"Zoom\" [disabled]=\"true\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"form-controls\" *if=\"view.type.name != 'waiting-room' && ('ar' | flag)\">\n\t\t\t\t<div control-model [control]=\"controls.usdz\" label=\"AR IOS (.usdz)\" accept=\".usdz\"></div>\n\t\t\t\t<div control-model [control]=\"controls.gltf\" label=\"AR Android (.glb)\" accept=\".glb\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"submit\" class=\"btn--update\" [class]=\"{ busy: busy }\">\n\t\t\t\t\t<span [innerHTML]=\"'update' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--remove\" *if=\"view.type.name != 'waiting-room'\" (click)=\"onRemove($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'remove' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t"
-};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, NavmapBuilderComponent, NavmapEditComponent, NavmapModalComponent, NavmapItemModalComponent, MediaModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PlaneModalComponent, RemoveModalComponent, Room3DModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
+};var factories = [AsideComponent, CurvedPlaneModalComponent, EditorComponent, ItemModelModalComponent, NavmapBuilderComponent, NavmapEditComponent, NavmapModalComponent, NavmapItemModalComponent, MediaModalComponent, MenuBuilderComponent, ModelModalComponent, NavModalComponent, PanoramaModalComponent, PanoramaGridModalComponent, PathAddModalComponent, PathEditModalComponent, PlaneModalComponent, RemoveModalComponent, Room3DModalComponent, ToastOutletComponent, UpdateViewItemComponent, UpdateViewTileComponent, UpdateViewComponent];
 var pipes = [];
 var EditorModule = /*#__PURE__*/function (_Module) {
   _inheritsLoose(EditorModule, _Module);
@@ -26856,22 +27522,6 @@ MessagePipe.meta = {
 }(rxcomp.Component);
 ModalComponent.meta = {
   selector: '[modal]'
-};var SlugPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(SlugPipe, _Pipe);
-
-  function SlugPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  SlugPipe.transform = function transform(key) {
-    var url = environment.url;
-    return url[key] || "#" + key;
-  };
-
-  return SlugPipe;
-}(rxcomp.Pipe);
-SlugPipe.meta = {
-  name: 'slug'
 };var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(SupportRequestModalComponent, _Component);
 

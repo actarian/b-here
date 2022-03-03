@@ -142,7 +142,8 @@
 .remove-modal,
 .room-3d-modal,
 .control-request-modal,
-.try-in-ar-modal {
+.try-in-ar-modal,
+.path-edit-modal {
 	overflow-x: hidden;
 	overflow-y: auto;
 	@include scrollbar();
@@ -160,6 +161,12 @@
 	@include media-down(xs) {
 		width: 100vw;
 		height: 100vh;
+	}
+}
+
+.path-edit-modal {
+	@include media-up(sm) {
+		max-width: 840px;
 	}
 }
 

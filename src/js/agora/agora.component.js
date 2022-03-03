@@ -3,6 +3,7 @@ import { fromEvent } from 'rxjs';
 import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import NavmapService from '../editor/navmap/navmap.service';
+import PathService from '../editor/path/path.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
 import LabelPipe from '../label/label.pipe';
@@ -124,8 +125,8 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	getName(user) {
-		return StateService.state.name || MeetingUrl.getName(user);
+	get pathViews() {
+		return ViewService.pathViews;
 	}
 
 	onInit() {
@@ -134,8 +135,6 @@ export default class AgoraComponent extends Component {
 		this.platform = DeviceService.platform;
 		this.state = {};
 		this.hosted = null;
-		this.data = null;
-		this.views = null;
 		this.view = null;
 		this.previousView = null;
 		this.form = null;
@@ -152,6 +151,10 @@ export default class AgoraComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe(status => this.pushChanges());
 		this.resolveUser();
+	}
+
+	getName(user) {
+		return StateService.state.name || MeetingUrl.getName(user);
 	}
 
 	getLinkRole() {
@@ -238,11 +241,27 @@ export default class AgoraComponent extends Component {
 		return status;
 	}
 
+	getPathId() {
+		let pathId = LocationService.get('pathId') || null;
+		if (pathId) {
+			console.log('AgoraComponent.getPathId', pathId);
+			return parseInt(pathId);
+		}
+		const link = LocationService.get('link') || null;
+		if (link) {
+			const meetingId = new MeetingId(link);
+			pathId = meetingId.pathId;
+		}
+		console.log('AgoraComponent.getPathId', pathId);
+		return pathId;
+	}
+
 	initWithUser(user) {
 		// console.log('initWithUser', user);
 		// const meetingUrl = this.meetingUrl;
 		// const link = meetingUrl.link;
 		const link = LocationService.get('link') || null;
+		const pathId = this.getPathId();
 		const role = this.getLinkRole() || (user ? user.type : null);
 		switch (role) {
 			case RoleType.SelfService:
@@ -274,6 +293,7 @@ export default class AgoraComponent extends Component {
 			mode: mode,
 			name: name,
 			checklist: checklist,
+			pathId: pathId,
 			link: link,
 			channelName: environment.channelName,
 			uid: null,
@@ -306,9 +326,12 @@ export default class AgoraComponent extends Component {
 	viewObserver$() {
 		return ViewService.data$().pipe(
 			switchMap(data => {
-				this.data = data;
-				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
-				return ViewService.hostedView$(data);
+				console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
+				return PathService.getCurrentPath$(StateService.state.pathId).pipe(
+					switchMap(path => {
+						return ViewService.hostedView$(data, path);
+					}),
+				);
 			}),
 			/*
 			tap(view => {
@@ -574,20 +597,22 @@ export default class AgoraComponent extends Component {
 	}
 
 	onLink(link) {
+		const meetingId = new MeetingId(link);
+		const pathId = meetingId.pathId;
 		const role = this.getLinkRole();
 		const mode = UserService.getMode(role);
 		const user = StateService.state.user;
 		if ((role === RoleType.Publisher || role === RoleType.Attendee) && (!user.id || user.type !== role)) {
-			StateService.patchState({ link, role, mode, status: AgoraStatus.Login });
+			StateService.patchState({ link, pathId, role, mode, status: AgoraStatus.Login });
 		} else if (StateService.state.name) {
 			if (role === RoleType.Viewer || role === RoleType.SmartDevice) {
-				StateService.patchState({ link, role, mode });
+				StateService.patchState({ link, pathId, role, mode });
 				this.loadAndConnect();
 			} else {
-				StateService.patchState({ link, role, mode, status: AgoraStatus.Device });
+				StateService.patchState({ link, pathId, role, mode, status: AgoraStatus.Device });
 			}
 		} else {
-			StateService.patchState({ link, role, mode, status: AgoraStatus.Name });
+			StateService.patchState({ link, pathId, role, mode, status: AgoraStatus.Name });
 		}
 	}
 
@@ -665,7 +690,7 @@ export default class AgoraComponent extends Component {
 
 	onNavTo(item) {
 		const viewId = item.viewId;
-		const view = this.data.views.find(x => x.id === viewId);
+		const view = this.pathViews.find(x => x.id === viewId);
 		if (view) {
 			// console.log('AgoraComponent.onNavTo', item, view);
 			ViewService.action = { viewId, keepOrientation: item.keepOrientation, useLastOrientation: item.useLastOrientation };
@@ -689,7 +714,7 @@ export default class AgoraComponent extends Component {
 		const viewId = message.viewId;
 		const gridIndex = message.gridIndex;
 		if (viewId && ViewService.viewId !== viewId) {
-			const view = this.data.views.find(x => x.id === viewId);
+			const view = this.pathViews.find(x => x.id === viewId);
 			if (view) {
 				// console.log('AgoraComponent.onRemoteNavTo', message, view);
 				ViewService.action = { viewId, keepOrientation: message.keepOrientation, useLastOrientation: message.useLastOrientation };
@@ -922,7 +947,7 @@ export default class AgoraComponent extends Component {
 			AgoraChecklistService.check$().pipe(
 				first(),
 			).subscribe(event => {
-				const meetingId = new MeetingId();
+				const meetingId = new MeetingId({ pathId: StateService.state.pathId });
 				const meetingIdRoles = meetingId.toRoles();
 				const meetingUrl = new MeetingUrl({ link: meetingIdRoles.id, support: true });
 				const href = meetingUrl.toGuidedTourUrl();

@@ -15,6 +15,7 @@ import { ViewItemType, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
+import PathService from './path/path.service';
 
 export const SETTINGS = {
 	menu: [{
@@ -32,15 +33,23 @@ export const SETTINGS = {
 
 export default class EditorComponent extends Component {
 
+	get dataViews() {
+		return ViewService.dataViews;
+	}
+
+	get pathViews() {
+		return ViewService.pathViews;
+	}
+
 	onInit() {
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.settings = this.getSettings();
 		this.aside = false;
 		this.state = {};
-		this.data = null;
-		this.views = null;
 		this.view = null;
+		this.paths = null;
+		this.path = null;
 		this.form = null;
 		this.local = null;
 		this.remotes = [];
@@ -110,9 +119,14 @@ export default class EditorComponent extends Component {
 	viewObserver$() {
 		return EditorService.data$().pipe(
 			switchMap(data => {
-				this.data = data;
-				this.views = data.views.filter(x => x.type.name !== 'waiting-room');
-				return ViewService.editorView$(data);
+				// console.log('viewObserver$', data);
+				return PathService.getCurrentPath$().pipe(
+					switchMap(path => {
+						this.paths = PathService.paths;
+						this.path = path;
+						return ViewService.editorView$(data, path);
+					}),
+				);
 			}),
 			tap(view => {
 				this.view = null;
@@ -121,15 +135,63 @@ export default class EditorComponent extends Component {
 			delay(1),
 			tap(view => {
 				this.view = view;
+				// console.log('viewObserver$', view);
 				this.pushChanges();
 			}),
 		);
 	}
 
+	onAddPath() {
+		// console.log('EditorComponent.onAddPath');
+		ModalService.open$({ src: environment.template.modal.pathAdd }).pipe(
+			first(),
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				PathService.addPath(event.data);
+			}
+		});
+	}
+
+	onEditPath(item) {
+		// console.log('EditorComponent.onEditPath', item);
+		ModalService.open$({ src: environment.template.modal.pathEdit, data: { item: item, views: ViewService.validViews } }).pipe(
+			first(),
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				PathService.editPath(event.data);
+			}
+		});
+	}
+
+	onDeletePath(item) {
+		// console.log('EditorComponent.onDeletePath', item);
+		ModalService.open$({ src: environment.template.modal.remove, data: { item: item } }).pipe(
+			first(),
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				PathService.pathDelete$(item).pipe(
+					first(),
+				).subscribe(_ => {
+					PathService.deletePath(item);
+				});
+			}
+		});
+	}
+
+	onSelectPath(item) {
+		// console.log('EditorComponent.onSelectPath', item);
+		PathService.path = item;
+	}
+
+	isPathSelected(item) {
+		// console.log('EditorComponent.isPathSelected', item);
+		return PathService.path.id === item.id;
+	}
+
 	onNavTo(item) {
 		// console.log('EditorComponent.onNavTo', item);
 		const viewId = item.viewId;
-		const view = this.data.views.find(x => x.id === viewId);
+		const view = ViewService.pathViews.find(x => x.id === viewId);
 		if (view) {
 			ViewService.action = { viewId, keepOrientation: item.keepOrientation, useLastOrientation: item.useLastOrientation };
 		}
@@ -228,7 +290,7 @@ export default class EditorComponent extends Component {
 	}
 
 	onResizeEnd(event) {
-		console.log('EditorComponent.onResizeEnd');
+		// console.log('EditorComponent.onResizeEnd');
 		/*
 		EditorService.inferItemUpdate$(this.view, event.item).pipe(
 			first(),
@@ -263,7 +325,7 @@ export default class EditorComponent extends Component {
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
-				console.log('EditorComponent.onOpenModal.resolve', event);
+				// console.log('EditorComponent.onOpenModal.resolve', event);
 				switch (modal.type) {
 					case 'view':
 						switch (modal.value) {
@@ -272,10 +334,7 @@ export default class EditorComponent extends Component {
 							case ViewType.Model.name:
 							case ViewType.Room3d.name:
 							case ViewType.Media.name:
-								this.data.views.push(event.data);
-								this.views = this.data.views.slice();
-								ViewService.viewId = event.data.id;
-								this.pushChanges();
+								ViewService.addView(event.data);
 								break;
 							default:
 						}
@@ -420,15 +479,7 @@ export default class EditorComponent extends Component {
 				first(),
 			).subscribe(response => {
 				// console.log('EditorComponent.onAsideDelete.viewDelete$.success', response);
-				const views = this.data.views;
-				const index = views.indexOf(event.view);
-				if (index !== -1) {
-					views.splice(index, 1);
-				}
-				this.data.views = views;
-				this.views = views.slice();
-				ViewService.viewId = this.views[0].id;
-				// this.pushChanges();
+				ViewService.deleteView(event.view);
 			}, error => console.log('EditorComponent.onAsideDelete.viewDelete$.error', error));
 		}
 	}
