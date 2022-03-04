@@ -22506,6 +22506,12 @@ var MenuService = /*#__PURE__*/function () {
 
     return this.menu$().pipe(operators.map(function (menu) {
       if (menu && menu.length) {
+        menu = menu.filter(function (x) {
+          return x.viewId == null || views.find(function (v) {
+            return v.id === x.viewId;
+          }) != null;
+        }); // console.log('getModelMenu$', menu);
+
         return _this2.mapMenuItems(menu);
       } else {
         // console.log('MenuService.getModelMenu$.Views', views);
@@ -22595,9 +22601,12 @@ var MenuService = /*#__PURE__*/function () {
     }
 
     return items.filter(function (item) {
+      // console.log('MenuService.mapMenuItems', item);
       return (item.parentId || null) === parentId;
     }).map(function (item) {
       return _this3.mapMenuItem(item, items);
+    }).filter(function (x) {
+      return x.id != null || x.items.length > 0;
     });
   };
 
