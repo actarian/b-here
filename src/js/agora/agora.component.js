@@ -53,7 +53,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	get isBackButtonVisible() {
-		return this.view && this.view.type.name === ViewType.Media.name;
+		return this.view && (this.view.type.name === ViewType.Media.name || this.view.type.name === ViewType.Model.name);
 	}
 
 	get isSelfServiceProposition() {
