@@ -148,7 +148,7 @@ export default class UpdateViewComponent extends Component {
 		if (!this.busy && this.form.valid) {
 			this.busy = true;
 			this.pushChanges();
-			const payload = Object.assign({}, this.view, this.form.value);
+			const payload = Object.assign({}, this.form.value);
 			if (payload.latitude != null) { // !!! keep loose inequality
 				payload.orientation = {
 					latitude: payload.latitude,
@@ -162,12 +162,18 @@ export default class UpdateViewComponent extends Component {
 			delete payload.usdz;
 			delete payload.gltf;
 			payload.ar = (usdz || gltf) ? { usdz, gltf } : null;
-			const view = new View(payload);
+			const view = new View(Object.assign({}, this.view, payload));
+			/*
+			let dataView = Object.assign({}, ViewService.getDataView(this.view.id), payload);
+			dataView = new View(dataView);
+			let pathView = Object.assign({}, this.view, payload);
+			pathView = new View(pathView);
+			*/
 			EditorService.viewUpdate$(view).pipe(
 				first(),
 			).subscribe(response => {
 				// console.log('UpdateViewComponent.onSubmit.viewUpdate$.success', response);
-				this.update.next({ view });
+				this.update.next({ view: view });
 				this.setTimeout(() => {
 					this.busy = false;
 					this.pushChanges();

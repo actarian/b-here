@@ -47,7 +47,9 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 			const dropdown = node.querySelector('.dropdown');
 			const navDropdown = node.querySelector('.nav--dropdown');
 			const item = navDropdown.children[index];
-			dropdown.scrollTo(0, item.offsetTop);
+			if (item) {
+				dropdown.scrollTo(0, item.offsetTop);
+			}
 		}
 	}
 

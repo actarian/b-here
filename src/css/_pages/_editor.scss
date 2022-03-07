@@ -89,6 +89,234 @@
 	}
 }
 
+.group--path {
+	display: flex;
+	border-left: 2px solid rgba(0, 0, 0, 0.1);
+	border-right: 2px solid rgba(0, 0, 0, 0.1);
+	padding: 15px;
+
+	&__select {
+		position: relative;
+
+		.dropdown {
+			top: 45px;
+			left: -15px;
+			width: calc(100% + 30px);
+			box-shadow: 0 10px 10px -2px rgba(0, 0, 0, 0.4);
+
+			&>.category {
+				display: none;
+			}
+
+			.nav--dropdown>li {
+				display: flex;
+				align-items: stretch;
+				padding: 4px 10px;
+
+				.check {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					opacity: 0;
+					transition: .25s ease-in-out;
+					transition-property: background-color, color, border, opacity;
+					padding: 0 6.5px;
+
+					&>svg {
+						width: 12px;
+						height: 12px;
+						fill: $foreground-primary;
+					}
+				}
+
+				&>span {
+					flex: 1 0 auto;
+					width: auto;
+					padding: 8px 5px;
+					border-radius: 2px;
+					margin-right: 4px;
+					animation: none;
+					opacity: 1;
+				}
+
+				&.empty {
+					opacity: 1;
+				}
+
+				&.active {
+					.check {
+						opacity: 1;
+					}
+				}
+			}
+
+			.btn--mode {
+				margin: 5px;
+			}
+		}
+	}
+
+	.btn--flags,
+	.btn--duplicate,
+	.btn--trash {
+		@extend %btn;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 4px;
+		border-radius: 2px;
+		transition: .25s ease-in-out;
+		transition-property: background-color, color, border, opacity;
+
+		svg {
+			width: 17px;
+			height: 17px;
+		}
+
+		&:hover {
+			background: $background-primary-disabled;
+		}
+	}
+
+	.group--form--select {
+		padding: 0;
+		margin: 0;
+		border: none;
+		min-width: 180px;
+
+		label {
+			text-transform: uppercase;
+			margin-bottom: 3px;
+			color: $foreground-primary;
+		}
+	}
+
+	.control--custom-select {
+		font-size: 15px;
+		text-transform: uppercase;
+	}
+}
+
+.nav--flag {
+	@extend %nav-reset;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin: 0 -10px 30px -10px;
+	width: calc(100% + 20px);
+
+	&>.nav__item {
+		// flex: 0 0 25%;
+		// max-width: 25%;
+		flex: 1 0 200px;
+		max-width: 200px;
+		padding: 10px;
+	}
+
+	.btn--flag {
+		@extend %btn;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+
+		font-size: 14px;
+		line-height: 1;
+		padding: 8px;
+		border-radius: 6px;
+		// border: 1px solid rgba(0, 0, 0, 0.1);
+		border: 1px solid #ffd3cf;
+		box-shadow: none;
+
+		transition: .25s ease-in-out;
+		transition-property: background-color, color, border, opacity, box-shadow;
+
+		.icon {
+			flex: 0 0 24px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-right: 6px;
+			margin-left: -2px;
+
+			svg {
+				fill: $foreground-secondary;
+			}
+		}
+
+		.name {
+			flex: 1 0 auto;
+			display: block;
+			text-align: left;
+			font-size: 13px;
+			padding-right: 4px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			max-width: calc(100% - 52px);
+		}
+
+		.flag {
+			flex: 0 0 24px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 24px;
+			height: 24px;
+			border-radius: 12px;
+			// border: 2px solid $foreground-primary-dimmed;
+			border: 2px solid $background-secondary;
+			background: $background-secondary;
+
+			.check {
+				opacity: 0;
+			}
+
+			.close {
+				fill: $foreground-negative;
+			}
+		}
+
+		.check,
+		.close {
+			position: absolute;
+			width: 12px;
+			height: 12px;
+			fill: $foreground-primary;
+			transition-property: background-color, color, border, opacity;
+		}
+
+		&:hover,
+		&.active {
+			border-color: transparent;
+			box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2);
+		}
+
+		&.active {
+			box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2);
+
+			.icon {
+				svg {
+					fill: $foreground-primary;
+				}
+			}
+
+			.flag {
+				background: $background;
+				border-color: $foreground-primary;
+
+				.close {
+					opacity: 0;
+				}
+
+				.check {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}
+
 .headline {
 	display: flex;
 	justify-content: flex-start;
@@ -643,6 +871,21 @@ update-view-tile {
 		height: auto;
 		line-height: 1;
 		min-height: 0;
+	}
+}
+
+.path-edit-modal {
+	.group--cta {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.group--options {
+		display: flex;
+
+		&>.btn--link+.btn--link {
+			margin-left: 10px;
+		}
 	}
 }
 

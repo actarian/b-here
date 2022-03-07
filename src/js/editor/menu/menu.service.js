@@ -63,6 +63,8 @@ export default class MenuService {
 		return this.menu$().pipe(
 			map(menu => {
 				if (menu && menu.length) {
+					menu = menu.filter(x => x.viewId == null || views.find(v => v.id === x.viewId) != null);
+					// console.log('getModelMenu$', menu);
 					return this.mapMenuItems(menu);
 				} else {
 					// console.log('MenuService.getModelMenu$.Views', views);
@@ -115,6 +117,9 @@ export default class MenuService {
 	}
 
 	static mapMenuItems(items, parentId = null) {
-		return items.filter(item => (item.parentId || null) === parentId).map(item => this.mapMenuItem(item, items))
+		return items.filter(item => {
+			// console.log('MenuService.mapMenuItems', item);
+			return (item.parentId || null) === parentId;
+		}).map(item => this.mapMenuItem(item, items)).filter(x => x.id != null || x.items.length > 0);
 	}
 }

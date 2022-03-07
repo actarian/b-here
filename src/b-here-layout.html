@@ -57,6 +57,9 @@ window.labels = Object.assign(window.labels, {});
 						</div>
 					</div>
 					<div class="stagger--childs" *if="state.role === 'publisher'">
+						<!-- PATH -->
+						<div control-custom-select [control]="controls.path" label="Path" *if="('usePaths' | flag) && paths.length"></div>
+						<!--IDS -->
 						<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
 							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_insert_meeting_id' | label"></span></label>
 							<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" (change)="onInputDidChange($event)" />
@@ -102,13 +105,13 @@ window.labels = Object.assign(window.labels, {});
 					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 						<span [innerHTML]="'bhere_take_part' | label"></span>
 					</button>
+					<a [href]="selfServiceTourUrl" class="btn--secondary" *if="state.role === 'publisher'">
+						<span [innerHTML]="'bhere_self_service' | label"></span>
+					</a>
 				</div>
 			</form>
 		</div>
 		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-		</a>
-		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && state.role == 'publisher'">
 			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 		</a>
 	</div>

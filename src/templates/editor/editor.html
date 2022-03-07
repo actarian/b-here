@@ -13,7 +13,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 
 </script>
 <div class="page" editor-component>
-	<div class="ui" [class]="{ open: aside }" *if="views">
+	<div class="ui" [class]="{ open: aside }" *if="dataViews.length">
 		<div class="ui__navbar">
 			<div class="btn--settings" [class]="{ active: settings.active }" (click)="onToggleSettings($event)" *if="settings.menu.length > 0">
 				<svg class="settings" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#settings-full"></use></svg>
@@ -25,17 +25,47 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</div>
 				<div class="headline__name" [innerHTML]="view.name"></div>
 			</div>
+			<div class="group--path" *if="('usePaths' | flag) && path">
+				<div class="group--path__select">
+					<div class="group--form--select" [dropdown]="'path'">
+						<label>Percorso</label>
+						<span class="control--custom-select" [innerHTML]="path.name"></span>
+						<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
+					</div>
+					<div class="dropdown dropdown-item" [dropdown-item]="'path'">
+						<div class="category">Percorso</div>
+						<ul class="nav--dropdown">
+							<li [class]="{ active: isPathSelected(item) }" *for="let item of paths">
+								<span [innerHTML]="item.name" (click)="onSelectPath(item)"></span>
+								<div class="check">
+									<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#check"></use></svg>
+								</div>
+								<div class="btn--flags" (click)="onEditPath(item)" title="Edit" *if="item.id">
+									<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#flags"></use></svg>
+								</div>
+								<div class="btn--duplicate" (click)="onDuplicatePath(item)" title="Duplicate" *if="item.id">
+									<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#duplicate"></use></svg>
+								</div>
+								<div class="btn--trash" (click)="onDeletePath(item)" title="Delete" *if="item.id">
+									<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#trash"></use></svg>
+								</div>
+							</li>
+						</ul>
+						<div class="btn--mode" (click)="onAddPath()">Aggiungi un percorso</div>
+					</div>
+				</div>
+			</div>
 			<div class="btn--edit" [class]="{ active: aside }" (click)="onToggleAside($event)">
 				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 			</div>
 		</div>
 		<div class="ui__body">
-			<div class="world" world [view]="view" [views]="views" [editor]="true" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
+			<div class="world" world [view]="view" [views]="pathViews" [editor]="true" (navTo)="onNavTo($event)" (viewHit)="onViewHit($event)" (dragEnd)="onDragEnd($event)" (select)="onWorldSelect($event)">
 				<div class="world__view" *if="view">
 					<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 					<div *if="view.ready">
 						<div model-room [view]="view" *if="view.type.name === 'room-3d'"></div>
-						<div class="world__item" *for="let item of view.items; let index = index;">
+						<div class="world__item" *for="let item of view.pathItems; let index = index;">
 							<div model-nav [item]="item" [view]="view" [editor]="true" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" *if="item.type.name == 'nav'"></div>
 							<div model-plane [item]="item" [view]="view" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" *if="item.type.name == 'plane'"></div>
 							<div model-curved-plane [item]="item" [view]="view" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" *if="item.type.name == 'curved-plane'"></div>
@@ -95,7 +125,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</ul>
 			</div>
 			<!-- menu -->
-			<div class="group--content" menu-builder [views]="views" *if="settings.current === 'menu'">
+			<div class="group--content" menu-builder [views]="dataViews" *if="settings.current === 'menu'">
 				<div class="group--head">
 					<div class="title" [innerHTML]="'editor_menu' | label"></div>
 				</div>
@@ -115,7 +145,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</div>
 			</div>
 			<!-- navmaps -->
-			<div class="group--content" navmap-builder [views]="views" *if="settings.current === 'navmaps'">
+			<div class="group--content" navmap-builder [views]="dataViews" *if="settings.current === 'navmaps'">
 				<div class="group--head">
 					<div class="title" [innerHTML]="'editor_navmaps' | label"></div>
 				</div>
@@ -197,8 +227,8 @@ window.bhere = Object.assign((window.bhere || {}), {
 				</li>
 				<li *if="view.type.name != 'panorama-grid'">
 					<div class="title" [innerHTML]="'editor_items' | label"></div>
-					<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)" *for="let item of view.items"></update-view-item>
-					<div class="abstract" *if="view.items.length == 0" [innerHTML]="'editor_no_items' | label"></div>
+					<update-view-item [view]="view" [item]="item" (select)="onSelect($event)" (update)="onUpdate($event)" (delete)="onDelete($event)" *for="let item of view.pathItems"></update-view-item>
+					<div class="abstract" *if="view.pathItems.length == 0" [innerHTML]="'editor_no_items' | label"></div>
 					<div class="btn--mode" (click)="setMode(3)" [innerHTML]="'editor_add_item' | label"></div>
 				</li>
 				<li *if="view.type.name == 'panorama-grid'">
@@ -598,7 +628,7 @@ window.bhere = Object.assign((window.bhere || {}), {
 					<div class="title" [innerHTML]="'editor_view_items' | label"></div>
 					<ul class="nav--editor">
 						<li *for="let item of supportedViewItemTypes">
-							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'viewItem', value: item.type.name })">
+							<div class="btn" [class]="{ disabled: item.disabled }" (click)="onSelect({ type:'viewItem', value: item.type.name })" [title]="item.id">
 								<div class="icon">
 									<svg-icon [name]="item.type.name"></svg-icon>
 								</div>
