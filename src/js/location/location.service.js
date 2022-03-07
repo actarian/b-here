@@ -23,6 +23,15 @@ export default class LocationService {
 		// console.log('LocationService.set', params, keyOrValue, value);
 	}
 
+	static delete(key) {
+		const params = new URLSearchParams(window.location.search);
+		// console.log('LocationService.has', params);
+		if (params.has(key)) {
+			params.delete(key);
+			this.pushParams(params);
+		}
+	}
+
 	static pushParams(params) {
 		if (window.history && window.history.pushState) {
 			const title = document.title;

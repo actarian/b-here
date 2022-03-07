@@ -577,6 +577,15 @@ console.log('environment', environment);var LocationService = /*#__PURE__*/funct
     this.pushParams(params); // console.log('LocationService.set', params, keyOrValue, value);
   };
 
+  LocationService.delete = function _delete(key) {
+    var params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+
+    if (params.has(key)) {
+      params.delete(key);
+      this.pushParams(params);
+    }
+  };
+
   LocationService.pushParams = function pushParams(params) {
     if (window.history && window.history.pushState) {
       var title = document.title;
@@ -802,6 +811,7 @@ var MeetingId = /*#__PURE__*/function () {
     this.name = LocationService.get('name') || null;
     this.role = LocationService.get('role') || null;
     this.viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
+    this.pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
     this.embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
     this.support = LocationService.has('support') ? LocationService.get('support') === 'true' : false;
 
@@ -834,6 +844,10 @@ var MeetingId = /*#__PURE__*/function () {
         this.viewId = options.viewId;
       }
 
+      if (options.pathId) {
+        this.pathId = options.pathId;
+      }
+
       if (options.embedViewId) {
         this.embedViewId = options.embedViewId;
       }
@@ -851,7 +865,7 @@ var MeetingId = /*#__PURE__*/function () {
       shareable = false;
     }
 
-    return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.support);
+    return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.pathId, this.support);
   };
 
   _proto.toUrl = function toUrl() {
@@ -954,12 +968,13 @@ var MeetingId = /*#__PURE__*/function () {
     return user && user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
   };
 
-  MeetingUrl.compose = function compose(link, name, role, viewId, support) {
+  MeetingUrl.compose = function compose(link, name, role, viewId, pathId, support) {
     var components = {
       link: link,
       name: name,
       role: role,
       viewId: viewId,
+      pathId: pathId,
       support: support
     };
     components = Object.keys(components).map(function (key) {
@@ -972,7 +987,7 @@ var MeetingId = /*#__PURE__*/function () {
     }).map(function (x) {
       return x.key + "=" + x.value;
     });
-    return "?" + components.join('&'); // return `?link=${link}${name ? `&name=${name}` : ''}${role ? `&role=${role}` : ''}${viewId ? `&viewId=${viewId}` : ''}${support ? `&support=${support}` : ''}`;
+    return "?" + components.join('&');
   };
 
   MeetingUrl.decompose = function decompose(url) {
@@ -8304,12 +8319,11 @@ var ViewService = /*#__PURE__*/function () {
   ViewService.view$ = function view$() {
     var _this2 = this;
 
-    var views = this.views;
     var editor = this.editor;
     var meetingUrl = new MeetingUrl();
     var viewId = meetingUrl.viewId;
     var embedViewId = meetingUrl.embedViewId;
-    var validViews = editor ? views : this.validViews;
+    var validViews = editor ? this.dataViews : this.validViews;
     var firstViewId = validViews.length ? validViews[0].id : null;
     var initialViewId = embedViewId || viewId || firstViewId;
     this.action$_.next({
@@ -8321,7 +8335,7 @@ var ViewService = /*#__PURE__*/function () {
       // const view = data.views.find(view => view.id === action.viewId);
       // console.log('ViewService.view$', 'path', path);
       // filter path
-      var view = views.find(function (view) {
+      var view = _this2.dataViews.find(function (view) {
         return view.id === action.viewId;
       });
       /*
@@ -8342,6 +8356,7 @@ var ViewService = /*#__PURE__*/function () {
       }
       console.log('ViewService.view$', view, path);
       */
+
 
       if (view) {
         view.keepOrientation = action.keepOrientation || false;
@@ -8408,6 +8423,12 @@ var ViewService = /*#__PURE__*/function () {
 
       if (view.id !== waitingRoom.id) {
         LocationService.set('viewId', view.id);
+      }
+
+      if (path && path.id !== null) {
+        LocationService.set('pathId', path.id);
+      } else {
+        LocationService.delete('pathId');
       }
 
       return view;
@@ -22001,7 +22022,8 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
 
     return EditorService.data$().pipe(operators.switchMap(function (data) {
       // console.log('viewObserver$', data);
-      return PathService.getCurrentPath$().pipe(operators.switchMap(function (path) {
+      var pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
+      return PathService.getCurrentPath$(pathId).pipe(operators.switchMap(function (path) {
         _this4.paths = PathService.paths;
         _this4.path = path;
         return ViewService.editorView$(data, path);
@@ -22039,6 +22061,20 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
     }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         PathService.editPath(event.data);
+      }
+    });
+  };
+
+  _proto.onDuplicatePath = function onDuplicatePath(item) {
+    // console.log('EditorComponent.onDuplicatePath', item);
+    ModalService.open$({
+      src: environment.template.modal.pathAdd,
+      data: {
+        item: item
+      }
+    }).pipe(operators.first()).subscribe(function (event) {
+      if (event instanceof ModalResolveEvent) {
+        PathService.addPath(event.data);
       }
     });
   };
@@ -22245,22 +22281,20 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
               case ViewItemType.Plane.name:
               case ViewItemType.CurvedPlane.name:
               case ViewItemType.Model.name:
+                var item = Object.assign({}, event.data);
                 var tile = EditorService.getTile(_this6.view);
 
                 if (tile) {
                   var navs = tile.navs || [];
-                  navs.push(event.data);
-                  Object.assign(tile, {
-                    navs: navs
-                  });
+                  navs.push(item);
+                  tile.navs = navs;
 
                   _this6.view.updateCurrentItems();
                 } else {
+                  item.path = true;
                   var items = _this6.view.items || [];
-                  items.push(event.data);
-                  Object.assign(_this6.view, {
-                    items: items
-                  });
+                  items.push(item);
+                  _this6.view.items = items;
                 }
 
                 _this6.pushChanges();
@@ -22503,6 +22537,12 @@ var MenuService = /*#__PURE__*/function () {
 
     return this.menu$().pipe(operators.map(function (menu) {
       if (menu && menu.length) {
+        menu = menu.filter(function (x) {
+          return x.viewId == null || views.find(function (v) {
+            return v.id === x.viewId;
+          }) != null;
+        }); // console.log('getModelMenu$', menu);
+
         return _this2.mapMenuItems(menu);
       } else {
         // console.log('MenuService.getModelMenu$.Views', views);
@@ -22592,9 +22632,12 @@ var MenuService = /*#__PURE__*/function () {
     }
 
     return items.filter(function (item) {
+      // console.log('MenuService.mapMenuItems', item);
       return (item.parentId || null) === parentId;
     }).map(function (item) {
       return _this3.mapMenuItem(item, items);
+    }).filter(function (x) {
+      return x.id != null || x.items.length > 0;
     });
   };
 
@@ -23570,6 +23613,30 @@ ModelModalComponent.meta = {
     }
   };
 
+  _proto.onViewIdDidChange = function onViewIdDidChange(viewId) {
+    // console.log('NavModalComponent.onViewIdDidChange', viewId, this.form.value);
+    // const viewId = this.form.value.viewId;
+    if (viewId != null) {
+      var options = this.controls.viewId.options;
+      var selectedOption = options.find(function (x) {
+        return x.id === viewId;
+      }); // console.log('NavModalComponent.onViewIdDidChange', selectedOption, options);
+
+      if (selectedOption != null) {
+        var title = selectedOption.name;
+        var currentTitle = this.form.value.title; // console.log('NavModalComponent.onViewIdDidChange', title, currentTitle);
+
+        if (!currentTitle || options.find(function (x) {
+          return x.name === currentTitle;
+        })) {
+          this.form.patch({
+            title: title
+          });
+        }
+      }
+    }
+  };
+
   _proto.onClose = function onClose() {
     ModalService.reject();
   };
@@ -24097,6 +24164,13 @@ PanoramaModalComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      this.data = parentInstance.modal.data;
+    }
+
     this.error = null;
     var form = this.form = new rxcompForm.FormGroup({
       name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
@@ -24116,7 +24190,7 @@ PanoramaModalComponent.meta = {
       var values = this.form.value;
       var path = {
         name: values.name,
-        items: []
+        items: this.data ? this.data.item.items : []
       }; // console.log('PathAddModalComponent.onSubmit.path', path);
 
       return PathService.pathCreate$(path).pipe(operators.first()).subscribe(function (response) {
@@ -24246,6 +24320,20 @@ PathAddModalComponent.meta = {
     } else {
       this.form.touched = true;
     }
+  };
+
+  _proto.onSelectAll = function onSelectAll() {
+    this.views.forEach(function (view) {
+      return view.active = true;
+    });
+    this.pushChanges();
+  };
+
+  _proto.onSelectNone = function onSelectNone() {
+    this.views.forEach(function (view) {
+      return view.active = false;
+    });
+    this.pushChanges();
   };
 
   _proto.onClose = function onClose() {
@@ -26184,7 +26272,10 @@ ControlCheckboxComponent.meta = {
       var dropdown = node.querySelector('.dropdown');
       var navDropdown = node.querySelector('.nav--dropdown');
       var item = navDropdown.children[index];
-      dropdown.scrollTo(0, item.offsetTop);
+
+      if (item) {
+        dropdown.scrollTo(0, item.offsetTop);
+      }
     }
   };
 

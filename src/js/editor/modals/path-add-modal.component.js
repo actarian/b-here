@@ -1,12 +1,17 @@
-import { Component } from 'rxcomp';
+import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
+import ModalOutletComponent from '../../modal/modal-outlet.component';
 import ModalService from '../../modal/modal.service';
 import PathService from '../path/path.service';
 
 export default class PathAddModalComponent extends Component {
 
 	onInit() {
+		const { parentInstance } = getContext(this);
+		if (parentInstance instanceof ModalOutletComponent) {
+			this.data = parentInstance.modal.data;
+		}
 		this.error = null;
 		const form = this.form = new FormGroup({
 			name: new FormControl(null, RequiredValidator()),
@@ -24,7 +29,7 @@ export default class PathAddModalComponent extends Component {
 			const values = this.form.value;
 			const path = {
 				name: values.name,
-				items: [],
+				items: this.data ? this.data.item.items : [],
 			};
 			// console.log('PathAddModalComponent.onSubmit.path', path);
 			return PathService.pathCreate$(path).pipe(

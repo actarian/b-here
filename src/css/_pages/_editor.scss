@@ -135,6 +135,8 @@
 					padding: 8px 5px;
 					border-radius: 2px;
 					margin-right: 4px;
+					animation: none;
+					opacity: 1;
 				}
 
 				&.empty {
@@ -155,6 +157,7 @@
 	}
 
 	.btn--flags,
+	.btn--duplicate,
 	.btn--trash {
 		@extend %btn;
 		display: flex;
@@ -247,6 +250,10 @@
 			text-align: left;
 			font-size: 13px;
 			padding-right: 4px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			max-width: calc(100% - 52px);
 		}
 
 		.flag {
@@ -864,6 +871,21 @@ update-view-tile {
 		height: auto;
 		line-height: 1;
 		min-height: 0;
+	}
+}
+
+.path-edit-modal {
+	.group--cta {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.group--options {
+		display: flex;
+
+		&>.btn--link+.btn--link {
+			margin-left: 10px;
+		}
 	}
 }
 

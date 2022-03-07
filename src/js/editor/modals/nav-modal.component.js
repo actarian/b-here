@@ -139,6 +139,24 @@ export default class NavModalComponent extends Component {
 		}
 	}
 
+	onViewIdDidChange(viewId) {
+		// console.log('NavModalComponent.onViewIdDidChange', viewId, this.form.value);
+		// const viewId = this.form.value.viewId;
+		if (viewId != null) {
+			const options = this.controls.viewId.options;
+			const selectedOption = options.find(x => x.id === viewId);
+			// console.log('NavModalComponent.onViewIdDidChange', selectedOption, options);
+			if (selectedOption != null) {
+				const title = selectedOption.name;
+				const currentTitle = this.form.value.title;
+				// console.log('NavModalComponent.onViewIdDidChange', title, currentTitle);
+				if (!currentTitle || options.find(x => x.name === currentTitle)) {
+					this.form.patch({ title });
+				}
+			}
+		}
+	}
+
 	onClose() {
 		ModalService.reject();
 	}

@@ -697,6 +697,10 @@
 	@extend %btn-secondary;
 }
 
+.btn--link {
+	@extend %btn-link;
+}
+
 .btn--absolute {
 	height: auto;
 	min-height: auto;

@@ -13,6 +13,7 @@ export class MeetingUrl {
 		this.name = LocationService.get('name') || null;
 		this.role = LocationService.get('role') || null;
 		this.viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
+		this.pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
 		this.embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
 		this.support = LocationService.has('support') ? (LocationService.get('support') === 'true') : false;
 		if (typeof options === 'string') {
@@ -37,6 +38,9 @@ export class MeetingUrl {
 			if (options.viewId) {
 				this.viewId = options.viewId;
 			}
+			if (options.pathId) {
+				this.pathId = options.pathId;
+			}
 			if (options.embedViewId) {
 				this.embedViewId = options.embedViewId;
 			}
@@ -47,7 +51,7 @@ export class MeetingUrl {
 	}
 
 	toString(shareable = false) {
-		return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.support);
+		return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.pathId, this.support);
 	}
 
 	toUrl() {
@@ -126,13 +130,12 @@ export class MeetingUrl {
 		return (user && user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
 	}
 
-	static compose(link, name, role, viewId, support) {
-		let components = { link, name, role, viewId, support };
+	static compose(link, name, role, viewId, pathId, support) {
+		let components = { link, name, role, viewId, pathId, support };
 		components = Object.keys(components).map(key => {
 			return { key, value: components[key] }
 		}).filter(x => x.value != null && x.value !== false).map(x => `${x.key}=${x.value}`);
 		return `?${components.join('&')}`;
-		// return `?link=${link}${name ? `&name=${name}` : ''}${role ? `&role=${role}` : ''}${viewId ? `&viewId=${viewId}` : ''}${support ? `&support=${support}` : ''}`;
 	}
 
 	static decompose(url) {
