@@ -4,6 +4,7 @@ import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AgoraStatus, MessageType, UIMode } from '../agora/agora.types';
 import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
+import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
 import StateService from '../state/state.service';
@@ -120,7 +121,8 @@ export default class EditorComponent extends Component {
 		return EditorService.data$().pipe(
 			switchMap(data => {
 				// console.log('viewObserver$', data);
-				return PathService.getCurrentPath$().pipe(
+				const pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
+				return PathService.getCurrentPath$(pathId).pipe(
 					switchMap(path => {
 						this.paths = PathService.paths;
 						this.path = path;
@@ -159,6 +161,17 @@ export default class EditorComponent extends Component {
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
 				PathService.editPath(event.data);
+			}
+		});
+	}
+
+	onDuplicatePath(item) {
+		// console.log('EditorComponent.onDuplicatePath', item);
+		ModalService.open$({ src: environment.template.modal.pathAdd, data: { item } }).pipe(
+			first(),
+		).subscribe(event => {
+			if (event instanceof ModalResolveEvent) {
+				PathService.addPath(event.data);
 			}
 		});
 	}
@@ -345,16 +358,18 @@ export default class EditorComponent extends Component {
 							case ViewItemType.Plane.name:
 							case ViewItemType.CurvedPlane.name:
 							case ViewItemType.Model.name:
+								const item = Object.assign({}, event.data);
 								const tile = EditorService.getTile(this.view);
 								if (tile) {
 									const navs = tile.navs || [];
-									navs.push(event.data);
-									Object.assign(tile, { navs });
+									navs.push(item);
+									tile.navs = navs;
 									this.view.updateCurrentItems();
 								} else {
+									item.path = true;
 									const items = this.view.items || [];
-									items.push(event.data);
-									Object.assign(this.view, { items });
+									items.push(item);
+									this.view.items = items;
 								}
 								this.pushChanges();
 								break;

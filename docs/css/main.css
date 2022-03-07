@@ -189,12 +189,13 @@ strong {
 .btn--resume,
 .btn--remove,
 .btn--update,
-.btn--mode, .btn--secondary, .btn, .btn--cam,
+.btn--mode, .btn--secondary, .btn--link, .btn, .btn--cam,
 .btn--mic,
 .btn--screen,
 .btn--chat,
 .btn--navinfo,
 .btn--call, .group--path .btn--flags,
+.group--path .btn--duplicate,
 .group--path .btn--trash, .nav--flag .btn--flag, .btn--edit, a,
 button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy,
 .agora-stream .btn--control,
@@ -220,12 +221,13 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume,
   .btn--remove,
   .btn--update,
-  .btn--mode, .btn--secondary, .btn, .btn--cam,
+  .btn--mode, .btn--secondary, .btn--link, .btn, .btn--cam,
   .btn--mic,
   .btn--screen,
   .btn--chat,
   .btn--navinfo,
   .btn--call, .group--path .btn--flags,
+  .group--path .btn--duplicate,
   .group--path .btn--trash, .nav--flag .btn--flag, .btn--edit, a,
   button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn--spy,
   .agora-stream .btn--control,
@@ -240,12 +242,13 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:active,
   .btn--remove:active,
   .btn--update:active,
-  .btn--mode:active, .btn--secondary:active, .btn:active, .btn--cam:active,
+  .btn--mode:active, .btn--secondary:active, .btn--link:active, .btn:active, .btn--cam:active,
   .btn--mic:active,
   .btn--screen:active,
   .btn--chat:active,
   .btn--navinfo:active,
   .btn--call:active, .group--path .btn--flags:active,
+  .group--path .btn--duplicate:active,
   .group--path .btn--trash:active, .nav--flag .btn--flag:active, .btn--edit:active, a:active,
   button:active, .btn--heart:active, .btn--close:active, .btn--logo:active, .btn--credits:active, .agora-stream .btn--spy:active, .btn--back:focus, .btn--volume:focus, .btn--fullscreen:focus, .btn--navmap:focus, .btn--view-mode:focus, .btn--control:focus, .btn--silence:focus, .btn--menu:focus, .btn--ar:focus,
   .btn--vr:focus, .btn--generate:focus,
@@ -258,12 +261,13 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:focus,
   .btn--remove:focus,
   .btn--update:focus,
-  .btn--mode:focus, .btn--secondary:focus, .btn:focus, .btn--cam:focus,
+  .btn--mode:focus, .btn--secondary:focus, .btn--link:focus, .btn:focus, .btn--cam:focus,
   .btn--mic:focus,
   .btn--screen:focus,
   .btn--chat:focus,
   .btn--navinfo:focus,
   .btn--call:focus, .group--path .btn--flags:focus,
+  .group--path .btn--duplicate:focus,
   .group--path .btn--trash:focus, .nav--flag .btn--flag:focus, .btn--edit:focus, a:focus,
   button:focus, .btn--heart:focus, .btn--close:focus, .btn--logo:focus, .btn--credits:focus, .agora-stream .btn--spy:focus, .btn--back:hover, .btn--volume:hover, .btn--fullscreen:hover, .btn--navmap:hover, .btn--view-mode:hover, .btn--control:hover, .btn--silence:hover, .btn--menu:hover, .btn--ar:hover,
   .btn--vr:hover, .btn--generate:hover,
@@ -276,12 +280,13 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:hover,
   .btn--remove:hover,
   .btn--update:hover,
-  .btn--mode:hover, .btn--secondary:hover, .btn:hover, .btn--cam:hover,
+  .btn--mode:hover, .btn--secondary:hover, .btn--link:hover, .btn:hover, .btn--cam:hover,
   .btn--mic:hover,
   .btn--screen:hover,
   .btn--chat:hover,
   .btn--navinfo:hover,
   .btn--call:hover, .group--path .btn--flags:hover,
+  .group--path .btn--duplicate:hover,
   .group--path .btn--trash:hover, .nav--flag .btn--flag:hover, .btn--edit:hover, a:hover,
   button:hover, .btn--heart:hover, .btn--close:hover, .btn--logo:hover, .btn--credits:hover, .agora-stream .btn--spy:hover, .btn--back:visited, .btn--volume:visited, .btn--fullscreen:visited, .btn--navmap:visited, .btn--view-mode:visited, .btn--control:visited, .btn--silence:visited, .btn--menu:visited, .btn--ar:visited,
   .btn--vr:visited, .btn--generate:visited,
@@ -294,12 +299,13 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
   .btn--resume:visited,
   .btn--remove:visited,
   .btn--update:visited,
-  .btn--mode:visited, .btn--secondary:visited, .btn:visited, .btn--cam:visited,
+  .btn--mode:visited, .btn--secondary:visited, .btn--link:visited, .btn:visited, .btn--cam:visited,
   .btn--mic:visited,
   .btn--screen:visited,
   .btn--chat:visited,
   .btn--navinfo:visited,
   .btn--call:visited, .group--path .btn--flags:visited,
+  .group--path .btn--duplicate:visited,
   .group--path .btn--trash:visited, .nav--flag .btn--flag:visited, .btn--edit:visited, a:visited,
   button:visited, .btn--heart:visited, .btn--close:visited, .btn--logo:visited, .btn--credits:visited, .agora-stream .btn--spy:visited {
     color: inherit;
@@ -317,12 +323,13 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
 .btn--resume[disabled],
 .btn--remove[disabled],
 .btn--update[disabled],
-.btn--mode[disabled], .btn--secondary[disabled], .btn[disabled], .btn--cam[disabled],
+.btn--mode[disabled], .btn--secondary[disabled], .btn--link[disabled], .btn[disabled], .btn--cam[disabled],
 .btn--mic[disabled],
 .btn--screen[disabled],
 .btn--chat[disabled],
 .btn--navinfo[disabled],
 .btn--call[disabled], .group--path .btn--flags[disabled],
+.group--path .btn--duplicate[disabled],
 .group--path .btn--trash[disabled], .nav--flag .btn--flag[disabled], .btn--edit[disabled] {
   opacity: 0.5;
   pointer-events: none; }
@@ -569,6 +576,50 @@ button, .btn--heart, .btn--close, .btn--logo, .btn--credits, .agora-stream .btn-
     border-color: var(--background-primary-darkest);
     transition: none; }
   .disabled.btn--secondary, .disabled.btn--secondary:active, .disabled.btn--secondary:focus, .disabled.btn--secondary:hover, .disabled.btn--secondary:visited {
+    border-color: var(--background-primary-disabled);
+    pointer-events: none; }
+
+.btn--link {
+  line-height: 1.4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  font-weight: var(--font-semibold);
+  font-size: 13px;
+  transition: all ease-in-out 150ms;
+  position: relative; }
+  .btn--link:before {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: all ease-in-out 150ms; }
+  .btn--link svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px; }
+  .btn--link span {
+    display: block; }
+  .btn--link svg {
+    fill: currentColor; }
+  .btn--link, .btn--link:active, .btn--link:focus, .btn--link:visited {
+    color: var(--foreground); }
+    .btn--link:before, .btn--link:active:before, .btn--link:focus:before, .btn--link:visited:before {
+      background: var(--background-primary); }
+  .btn--link:hover {
+    color: var(--foreground-primary); }
+    .btn--link:hover:before {
+      transform: scaleX(1); }
+  .btn--link:active:hover {
+    color: var(--foreground-primary-darkest);
+    transition: none; }
+  .disabled.btn--link, .disabled.btn--link:active, .disabled.btn--link:focus, .disabled.btn--link:hover, .disabled.btn--link:visited {
     border-color: var(--background-primary-disabled);
     pointer-events: none; }
 
@@ -6988,7 +7039,9 @@ model-viewer {
           width: auto;
           padding: 8px 5px;
           border-radius: 2px;
-          margin-right: 4px; }
+          margin-right: 4px;
+          animation: none;
+          opacity: 1; }
         .group--path__select .dropdown .nav--dropdown > li.empty {
           opacity: 1; }
         .group--path__select .dropdown .nav--dropdown > li.active .check {
@@ -6996,6 +7049,7 @@ model-viewer {
       .group--path__select .dropdown .btn--mode {
         margin: 5px; }
   .group--path .btn--flags,
+  .group--path .btn--duplicate,
   .group--path .btn--trash {
     display: flex;
     align-items: center;
@@ -7005,10 +7059,12 @@ model-viewer {
     transition: .25s ease-in-out;
     transition-property: background-color, color, border, opacity; }
     .group--path .btn--flags svg,
+    .group--path .btn--duplicate svg,
     .group--path .btn--trash svg {
       width: 17px;
       height: 17px; }
     .group--path .btn--flags:hover,
+    .group--path .btn--duplicate:hover,
     .group--path .btn--trash:hover {
       background: var(--background-primary-disabled); }
   .group--path .group--form--select {
@@ -7061,7 +7117,11 @@ model-viewer {
       display: block;
       text-align: left;
       font-size: 13px;
-      padding-right: 4px; }
+      padding-right: 4px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: calc(100% - 52px); }
     .nav--flag .btn--flag .flag {
       flex: 0 0 24px;
       display: flex;
@@ -7591,6 +7651,15 @@ update-view-tile {
     height: auto;
     line-height: 1;
     min-height: 0; }
+
+.path-edit-modal .group--cta {
+  display: flex;
+  justify-content: space-between; }
+
+.path-edit-modal .group--options {
+  display: flex; }
+  .path-edit-modal .group--options > .btn--link + .btn--link {
+    margin-left: 10px; }
 
 .modal-outlet .abstract {
   font-size: 19px;

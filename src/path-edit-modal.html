@@ -14,7 +14,7 @@
 				</div>
 				<ul class="nav--flag" *if="views">
 					<li class="nav__item" *for="let view of views">
-						<button type="button" class="btn--flag" [class]="{ active: view.active }" (click)="onToggleView(view)">
+						<button type="button" class="btn--flag" [class]="{ active: view.active }" [title]="view.name" (click)="onToggleView(view)">
 							<div class="icon">
 								<svg-icon [name]="view.type.name"></svg-icon>
 							</div>
@@ -27,6 +27,14 @@
 					</li>
 				</ul>
 				<div class="group--cta">
+					<div class="group--options">
+						<button type="button" class="btn--link" (click)="onSelectAll()">
+							<span>Select all</span>
+						</button>
+						<button type="button" class="btn--link" (click)="onSelectNone()">
+							<span>Select none</span>
+						</button>
+					</div>
 					<button type="submit" class="btn--accept">
 						<span>Save</span>
 					</button>

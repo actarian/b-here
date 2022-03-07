@@ -110,12 +110,12 @@ export default class ViewService {
 	}
 
 	static view$() {
-		const views = this.views;
 		const editor = this.editor;
 		const meetingUrl = new MeetingUrl();
 		const viewId = meetingUrl.viewId;
+		const pathId = meetingUrl.pathId;
 		const embedViewId = meetingUrl.embedViewId;
-		const validViews = editor ? views : this.validViews;
+		const validViews = editor ? this.dataViews : this.validViews;
 		const firstViewId = validViews.length ? validViews[0].id : null;
 		const initialViewId = embedViewId || viewId || firstViewId;
 		this.action$_.next({ viewId: initialViewId });
@@ -125,7 +125,7 @@ export default class ViewService {
 				// const view = data.views.find(view => view.id === action.viewId);
 				// console.log('ViewService.view$', 'path', path);
 				// filter path
-				let view = views.find(view => view.id === action.viewId);
+				let view = this.dataViews.find(view => view.id === action.viewId);
 				/*
 				if (path && !editor) {
 					if (path.items.indexOf(view.id) === -1) {
@@ -206,6 +206,11 @@ export default class ViewService {
 				this.view = view;
 				if (view.id !== waitingRoom.id) {
 					LocationService.set('viewId', view.id);
+				}
+				if (path && path.id !== null) {
+					LocationService.set('pathId', path.id);
+				} else {
+					LocationService.delete('pathId');
 				}
 				return view;
 			}),

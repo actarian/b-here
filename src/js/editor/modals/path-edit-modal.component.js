@@ -74,6 +74,16 @@ export default class PathEditModalComponent extends Component {
 		}
 	}
 
+	onSelectAll() {
+		this.views.forEach(view => view.active = true);
+		this.pushChanges();
+	}
+
+	onSelectNone() {
+		this.views.forEach(view => view.active = false);
+		this.pushChanges();
+	}
+
 	onClose() {
 		ModalService.reject();
 	}
