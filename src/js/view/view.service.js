@@ -53,9 +53,15 @@ export default class ViewService {
 	}
 
 	static get pathViews() {
-		return this.validViews.filter(x => x.path);
-		const path = this.path;
-		return path ? this.validViews.filter(x => path.items.indexOf(x.id) === -1) : this.validViews;
+		const views = this.validViews;
+		return views.filter(x => x.path);
+		// const path = this.path;
+		// return path ? this.validViews.filter(x => path.items.indexOf(x.id) === -1) : this.validViews;
+	}
+
+	static get validPathViews() {
+		const views = this.editor ? this.data.views : this.validViews;
+		return views.filter(x => x.path);
 	}
 
 	// action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
@@ -77,7 +83,24 @@ export default class ViewService {
 	}
 
 	static getDataView(viewId) {
-		return this.dataViews.find(x => x.id === viewId);
+		const views = this.dataViews;
+		return views.find(x => x.id === viewId);
+	}
+
+	static getValidPathId(viewId) {
+		if (!viewId) {
+			return null;
+		}
+		const views = this.validPathViews;
+		if (views.find(x => x.id === viewId) == null) {
+			return null;
+		}
+	}
+
+	static getFirstPathId() {
+		const views = (this.editor && this.path.id === null) ? this.dataViews : this.pathViews;
+		// console.log('ViewService.getFirstPathId', this.editor, this.path, views);
+		return views.length ? views[0].id : null;
 	}
 
 	/*
@@ -110,14 +133,13 @@ export default class ViewService {
 	}
 
 	static view$() {
-		const editor = this.editor;
+		// const editor = this.editor;
 		const meetingUrl = new MeetingUrl();
-		const viewId = meetingUrl.viewId;
-		const pathId = meetingUrl.pathId;
-		const embedViewId = meetingUrl.embedViewId;
-		const validViews = editor ? this.dataViews : this.validViews;
-		const firstViewId = validViews.length ? validViews[0].id : null;
-		const initialViewId = embedViewId || viewId || firstViewId;
+		// const pathId = meetingUrl.pathId;
+		const viewId = this.getValidPathId(meetingUrl.viewId);
+		const embedViewId = this.getValidPathId(meetingUrl.embedViewId);
+		const initialViewId = embedViewId || viewId || this.getFirstPathId();
+		// console.log('ViewService.view$', viewId, embedViewId, initialViewId);
 		this.action$_.next({ viewId: initialViewId });
 		return this.action$_.pipe(
 			distinctUntilChanged((a, b) => a.viewId === b.viewId),

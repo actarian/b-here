@@ -8280,9 +8280,30 @@ var ViewService = /*#__PURE__*/function () {
   function ViewService() {}
 
   ViewService.getDataView = function getDataView(viewId) {
-    return this.dataViews.find(function (x) {
+    var views = this.dataViews;
+    return views.find(function (x) {
       return x.id === viewId;
     });
+  };
+
+  ViewService.getValidPathId = function getValidPathId(viewId) {
+    if (!viewId) {
+      return null;
+    }
+
+    var views = this.validPathViews;
+
+    if (views.find(function (x) {
+      return x.id === viewId;
+    }) == null) {
+      return null;
+    }
+  };
+
+  ViewService.getFirstPathId = function getFirstPathId() {
+    var views = this.editor && this.path.id === null ? this.dataViews : this.pathViews; // console.log('ViewService.getFirstPathId', this.editor, this.path, views);
+
+    return views.length ? views[0].id : null;
   }
   /*
   static view_ = null;
@@ -8319,13 +8340,13 @@ var ViewService = /*#__PURE__*/function () {
   ViewService.view$ = function view$() {
     var _this2 = this;
 
-    var editor = this.editor;
-    var meetingUrl = new MeetingUrl();
-    var viewId = meetingUrl.viewId;
-    var embedViewId = meetingUrl.embedViewId;
-    var validViews = editor ? this.dataViews : this.validViews;
-    var firstViewId = validViews.length ? validViews[0].id : null;
-    var initialViewId = embedViewId || viewId || firstViewId;
+    // const editor = this.editor;
+    var meetingUrl = new MeetingUrl(); // const pathId = meetingUrl.pathId;
+
+    var viewId = this.getValidPathId(meetingUrl.viewId);
+    var embedViewId = this.getValidPathId(meetingUrl.embedViewId);
+    var initialViewId = embedViewId || viewId || this.getFirstPathId(); // console.log('ViewService.view$', viewId, embedViewId, initialViewId);
+
     this.action$_.next({
       viewId: initialViewId
     });
@@ -8557,7 +8578,17 @@ var ViewService = /*#__PURE__*/function () {
   }, {
     key: "pathViews",
     get: function get() {
-      return this.validViews.filter(function (x) {
+      var views = this.validViews;
+      return views.filter(function (x) {
+        return x.path;
+      }); // const path = this.path;
+      // return path ? this.validViews.filter(x => path.items.indexOf(x.id) === -1) : this.validViews;
+    }
+  }, {
+    key: "validPathViews",
+    get: function get() {
+      var views = this.editor ? this.data.views : this.validViews;
+      return views.filter(function (x) {
         return x.path;
       });
     } // action: { viewId:number, keepOrientation:boolean, useLastOrientation:boolean };
