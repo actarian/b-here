@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { environment } from '../../environment';
 import HttpService from '../../http/http.service';
 import { mapPath } from './path';
 
@@ -45,13 +46,17 @@ export default class PathService {
 	}
 
 	static pathGet$() {
-		return HttpService.get$(`/api/path`).pipe(
-			map(data => {
-				data.paths = data.paths.map(path => mapPath(path));
-				data.paths.unshift(DEFAULT_PATH);
-				return data.paths;
-			}),
-		);
+		if (environment.flags.usePaths) {
+			return HttpService.get$(`/api/path`).pipe(
+				map(data => {
+					data.paths = data.paths.map(path => mapPath(path));
+					data.paths.unshift(DEFAULT_PATH);
+					return data.paths;
+				}),
+			);
+		} else {
+			return of([]);
+		}
 	}
 
 	static addPath(path) {

@@ -6543,13 +6543,17 @@ var PathService = /*#__PURE__*/function () {
   };
 
   PathService.pathGet$ = function pathGet$() {
-    return HttpService.get$("/api/path").pipe(operators.map(function (data) {
-      data.paths = data.paths.map(function (path) {
-        return mapPath(path);
-      });
-      data.paths.unshift(DEFAULT_PATH);
-      return data.paths;
-    }));
+    if (environment.flags.usePaths) {
+      return HttpService.get$("/api/path").pipe(operators.map(function (data) {
+        data.paths = data.paths.map(function (path) {
+          return mapPath(path);
+        });
+        data.paths.unshift(DEFAULT_PATH);
+        return data.paths;
+      }));
+    } else {
+      return of([]);
+    }
   };
 
   PathService.addPath = function addPath(path) {

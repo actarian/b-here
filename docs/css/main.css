@@ -7035,13 +7035,16 @@ model-viewer {
             height: 12px;
             fill: var(--foreground-primary); }
         .group--path__select .dropdown .nav--dropdown > li > span {
-          flex: 1 0 auto;
+          flex: 1 0 calc(100% - 98px);
           width: auto;
           padding: 8px 5px;
           border-radius: 2px;
           margin-right: 4px;
           animation: none;
-          opacity: 1; }
+          opacity: 1;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          display: block; }
         .group--path__select .dropdown .nav--dropdown > li.empty {
           opacity: 1; }
         .group--path__select .dropdown .nav--dropdown > li.active .check {
@@ -7071,14 +7074,18 @@ model-viewer {
     padding: 0;
     margin: 0;
     border: none;
-    min-width: 180px; }
+    min-width: 260px; }
     .group--path .group--form--select label {
       text-transform: uppercase;
       margin-bottom: 3px;
       color: var(--foreground-primary); }
   .group--path .control--custom-select {
     font-size: 15px;
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    white-space: nowrap; }
 
 .nav--flag {
   display: flex;
