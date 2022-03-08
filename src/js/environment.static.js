@@ -41,6 +41,8 @@ export const environmentStatic = {
 		navTitleImportantAnimated: false,
 		navTransparentAnimated: true,
 		navTransparentImportantAnimated: true,
+		useTextureEnvironment: true,
+		usePaths: true,
 		// maxQuality: false,
 	},
 	navs: {
@@ -102,7 +104,7 @@ export const environmentStatic = {
 		prefetch: './js/workers/prefetch.service.worker.js',
 	},
 	textures: {
-		envMap: 'textures/envMap/flower_road_1k.hdr',
+		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
@@ -129,6 +131,8 @@ export const environmentStatic = {
 			},
 			navmap: '/navmap-modal.html',
 			navmapItem: '/navmap-item-modal.html',
+			pathAdd: '/path-add-modal.html',
+			pathEdit: '/path-edit-modal.html',
 			remove: '/remove-modal.html',
 		},
 		email: {

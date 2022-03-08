@@ -1,11 +1,11 @@
 <!-- world -->
 <div class="ui__body">
-	<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)" (navLink)="onNavLink($event)">
+	<div class="world" world [view]="view" [views]="pathViews" (navTo)="onNavTo($event)" (navLink)="onNavLink($event)">
 		<div class="world__view" *if="view">
 			<div class="grid" model-grid *if="view.type.name === 'panorama-grid'" [view]="view" (move)="onGridMove($event)" (nav)="onGridNav($event)"></div>
 			<div *if="view.ready">
 				<div model-room [view]="view" *if="view.type.name === 'room-3d'"></div>
-				<div class="world__item" *for="let item of view.items; let index = index;">
+				<div class="world__item" *for="let item of view.pathItems; let index = index;">
 					<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" (link)="onNavLink($event)" *if="item.type.name == 'nav'"></div>
 					<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'plane'"></div>
 					<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'curved-plane'"></div>

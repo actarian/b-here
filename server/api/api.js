@@ -16,7 +16,7 @@ const RoleType = {
 };
 
 let db = {
-	views: [], menu: [], navmaps: [], assets: [], users: [
+	views: [], menu: [], navmaps: [], paths: [], assets: [], users: [
 		{
 			id: '1601892639985',
 			username: 'publisher',
@@ -276,7 +276,9 @@ const ROUTES = [{
 	path: '/api/menu/:menuId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.menu);
 	}
-}, {
+},
+// navmap
+{
 	path: '/api/navmap', method: 'GET', callback: function(request, response, params) {
 		sendOk(response, { navmaps: db.navmaps });
 	}
@@ -322,7 +324,59 @@ const ROUTES = [{
 			doDelete(request, response, { id: params.itemId }, navmap.items);
 		}
 	}
+},
+// path
+{
+	path: '/api/path', method: 'GET', callback: function(request, response, params) {
+		sendOk(response, { paths: db.paths });
+	}
 }, {
+	path: '/api/path/:pathId', method: 'GET', callback: function(request, response, params) {
+		const path = doGet(request, response, { id: params.pathId }, db.paths);
+		if (path) {
+			sendOk(response, path);
+		}
+	}
+}, {
+	path: '/api/path', method: 'POST', callback: function(request, response, params) {
+		doCreate(request, response, params, db.paths);
+	}
+}, {
+	path: '/api/path/:pathId', method: 'PUT', callback: function(request, response, params) {
+		doUpdate(request, response, params, db.paths);
+	}
+}, {
+	path: '/api/path/:pathId', method: 'DELETE', callback: function(request, response, params) {
+		doDelete(request, response, { id: params.pathId }, db.paths);
+	}
+},
+/*
+{
+	path: '/api/path/:pathId/item', method: 'POST', callback: function(request, response, params) {
+		const path = doGet(request, response, { id: params.pathId }, db.paths);
+		if (path) {
+			path.items = path.items || [];
+			doCreate(request, response, params, path.items);
+		}
+	}
+}, {
+	path: '/api/path/:pathId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
+		const path = doGet(request, response, { id: params.pathId }, db.paths);
+		if (path) {
+			path.items = path.items || [];
+			doUpdate(request, response, params, path.items);
+		}
+	}
+}, {
+	path: '/api/path/:pathId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
+		const path = doGet(request, response, { id: params.pathId }, db.paths);
+		if (path) {
+			doDelete(request, response, { id: params.itemId }, path.items);
+		}
+	}
+},
+*/
+{
 	path: '/api/user/me', method: 'GET', callback: function(request, response, params) {
 		const user = request.session.user;
 		if (!user) {

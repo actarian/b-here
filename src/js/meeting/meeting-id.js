@@ -1,7 +1,7 @@
 import StateService from '../state/state.service';
 import { RoleType } from '../user/user';
 
-export const MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}$/;
+export const MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
 
 export class MeetingId {
 
@@ -20,6 +20,7 @@ export class MeetingId {
 		this.userId = StateService.state.user ? StateService.state.user.id : 0;
 		this.role = StateService.state.role || RoleType.Viewer;
 		this.timestamp = new Date().valueOf().toString();
+		this.pathId = null;
 		// this.timestamp = (performance.now() * 10000000000000).toString();
 		if (typeof options === 'string') {
 			if (options.match(MEETING_ID_VALIDATOR)) {
@@ -45,28 +46,32 @@ export class MeetingId {
 			if (options.timestamp) {
 				this.timestamp = options.timestamp;
 			}
+			if (options.pathId) {
+				this.pathId = options.pathId;
+			}
 		}
 	}
 
 	toString() {
-		return MeetingId.compose(this.userId, this.roleIndex, this.timestamp);
+		return MeetingId.compose(this.userId, this.roleIndex, this.timestamp, this.pathId);
 	}
 
 	toRoles() {
 		const userId = this.userId;
 		const timestamp = this.timestamp;
+		const pathId = this.pathId;
 		return {
-			id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp),
-			idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp),
-			idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp),
-			idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp),
-			idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp),
-			idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp),
+			id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp, pathId),
+			idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp, pathId),
+			idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp, pathId),
+			idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp, pathId),
+			idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp, pathId),
+			idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp, pathId),
 		};
 	}
 
-	static compose(userId, roleIndex, timestamp) {
-		return `${MeetingId.padded(userId, 9)}-${MeetingId.padded(roleIndex, 4)}-${timestamp}`;
+	static compose(userId, roleIndex, timestamp, pathId) {
+		return `${MeetingId.padded(userId, 9)}-${MeetingId.padded(roleIndex, 4)}-${timestamp}${pathId ? `-${pathId}` : ''}`;
 	}
 
 	static decompose(meetingId) {
@@ -75,6 +80,7 @@ export class MeetingId {
 			userId: parseInt(components[0]),
 			roleIndex: parseInt(components[1]),
 			timestamp: parseInt(components[2]),
+			pathId: components[3] ? parseInt(components[3]) : null,
 		};
 	}
 

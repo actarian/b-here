@@ -1,5 +1,5 @@
 <!-- remote sidebar -->
-<div class="group--remote" [class]="'group--remote--' + remotes.length" *if="state.live">
+<div class="group--remote" [class]="remoteClass" *if="state.live">
 	<div class="agora-stream" (toggleControl)="onToggleControl($event)" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" type="remote" *for="let remote of remotes">
 		<div class="agora-stream__player"></div>
 		<div class="agora-stream__info" [class]="{ spyed: state.spying == streamId, controlling: state.controlling == streamId }">

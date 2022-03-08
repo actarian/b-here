@@ -55,6 +55,10 @@ export class View {
 		return payload;
 	}
 
+	get pathItems() {
+		return this.items.filter(x => x.path);
+	}
+
 	get shortType() {
 		return this.type ? this.type.split('-').map(x => x.substring(0, 1).toUpperCase()).join('') : '??';
 	}
