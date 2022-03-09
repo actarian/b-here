@@ -1,22 +1,35 @@
 import { Component, getContext } from 'rxcomp';
 import { Subject } from 'rxjs';
 import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { RouterService } from '../../../../../../rxcomp-router';
 import { AgoraStatus, MessageType, UIMode } from '../agora/agora.types';
 import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
+import RouterService from '../router/router.service';
 import StateService from '../state/state.service';
 import StreamService, { StreamServiceMode } from '../stream/stream.service';
 import ToastService from '../toast/toast.service';
+import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { ViewItemType, ViewType } from '../view/view';
 import ViewService from '../view/view.service';
 import VRService from '../world/vr.service';
 import EditorService from './editor.service';
+import CurvedPlaneModalComponent from './modals/curved-plane-modal.component';
+import ItemModelModalComponent from './modals/item-model-modal.component';
+import MediaModalComponent from './modals/media-modal.component';
+import ModelModalComponent from './modals/model-modal.component';
+import NavModalComponent from './modals/nav-modal.component';
+import PanoramaGridModalComponent from './modals/panorama-grid-modal.component';
+import PanoramaModalComponent from './modals/panorama-modal.component';
+import PathAddModalComponent from './modals/path-add-modal.component';
+import PathEditModalComponent from './modals/path-edit-modal.component';
+import PlaneModalComponent from './modals/plane-modal.component';
+import RemoveModalComponent from './modals/remove-modal.component';
+import Room3DModalComponent from './modals/room-3d-modal.component';
 import PathService from './path/path.service';
 
 export const SETTINGS = {
@@ -71,7 +84,7 @@ export default class EditorComponent extends Component {
 				this.user = user;
 				this.initState();
 			} else {
-				RouterService.setRouterLink(environment.url.access);
+				RouterService.setRouterLink('it.access');
 				// window.location.href = environment.url.access;
 			}
 		});
@@ -147,7 +160,7 @@ export default class EditorComponent extends Component {
 
 	onAddPath() {
 		// console.log('EditorComponent.onAddPath');
-		ModalService.open$({ src: environment.template.modal.pathAdd }).pipe(
+		ModalService.open$({ template: PathAddModalComponent.chunk() }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -158,7 +171,7 @@ export default class EditorComponent extends Component {
 
 	onEditPath(item) {
 		// console.log('EditorComponent.onEditPath', item);
-		ModalService.open$({ src: environment.template.modal.pathEdit, data: { item: item, views: ViewService.validViews } }).pipe(
+		ModalService.open$({ template: PathEditModalComponent.chunk(), data: { item: item, views: ViewService.validViews } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -169,7 +182,7 @@ export default class EditorComponent extends Component {
 
 	onDuplicatePath(item) {
 		// console.log('EditorComponent.onDuplicatePath', item);
-		ModalService.open$({ src: environment.template.modal.pathAdd, data: { item } }).pipe(
+		ModalService.open$({ template: PathAddModalComponent.chunk(), data: { item } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -180,7 +193,7 @@ export default class EditorComponent extends Component {
 
 	onDeletePath(item) {
 		// console.log('EditorComponent.onDeletePath', item);
-		ModalService.open$({ src: environment.template.modal.remove, data: { item: item } }).pipe(
+		ModalService.open$({ template: RemoveModalComponent.chunk(), data: { item: item } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -231,7 +244,7 @@ export default class EditorComponent extends Component {
 	}
 
 	tryInAr() {
-		ModalService.open$({ src: environment.template.modal.tryInAr, data: this.view }).pipe(
+		ModalService.open$({ template: TryInARModalComponent.chunk(), data: this.view }).pipe(
 			first(),
 		).subscribe(event => {
 			// this.pushChanges();
@@ -336,7 +349,48 @@ export default class EditorComponent extends Component {
 	}
 
 	onOpenModal(modal, data) {
-		ModalService.open$({ src: environment.template.modal[modal.type][modal.value], data }).pipe(
+		let template = null;
+		switch (modal.type) {
+			case 'view':
+				switch (modal.value) {
+					case ViewType.Panorama.name:
+						template = PanoramaModalComponent.chunk();
+						break;
+					case ViewType.PanoramaGrid.name:
+						template = PanoramaGridModalComponent.chunk();
+						break;
+					case ViewType.Model.name:
+						template = ModelModalComponent.chunk();
+						break;
+					case ViewType.Room3d.name:
+						template = Room3DModalComponent.chunk();
+						break;
+					case ViewType.Media.name:
+						template = MediaModalComponent.chunk();
+						break;
+				}
+				break;
+			case 'viewItem':
+				switch (modal.value) {
+					case ViewItemType.Nav.name:
+						template = NavModalComponent.chunk();
+						break;
+					case ViewItemType.Plane.name:
+						template = PlaneModalComponent.chunk();
+						break;
+					case ViewItemType.CurvedPlane.name:
+						template = CurvedPlaneModalComponent.chunk();
+						break;
+					case ViewItemType.Model.name:
+						template = ItemModelModalComponent.chunk();
+						break;
+				}
+				break;
+		}
+		if (!template) {
+			return;
+		}
+		ModalService.open$({ template, data }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -588,7 +642,7 @@ EditorComponent.meta = {
 					</div>
 					<div model-menu [views]="views" [editor]="true" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)">
 						<div class="btn--menu" (mousedown)="onToggle($event)">
-							<div class="spinner"></div>
+							<div class="btn--menu__spinner"></div>
 							<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 							<svg class="progress" width="50" height="50" viewBox="0 0 50 50">
 								<circle id="circle" r="23" cx="25" cy="25" fill="transparent"></circle>

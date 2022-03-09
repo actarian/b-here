@@ -491,7 +491,7 @@
 		transition: opacity ease-in-out 250ms;
 	}
 
-	&>.spinner {
+	&>.btn--menu__spinner {
 		position: absolute;
 		width: 100%;
 		height: 100%;
@@ -606,7 +606,7 @@
 	&.loading {
 		pointer-events: none;
 
-		&>.spinner {
+		&>.btn--menu__spinner {
 			opacity: 1;
 			visibility: visible;
 			animation: spinner 2s infinite ease;
@@ -638,7 +638,7 @@
 			display: block;
 		}
 
-		&>.spinner,
+		&>.btn--menu__spinner,
 		&>.bullets,
 		&>.progress {
 			display: none;

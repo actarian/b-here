@@ -1,5 +1,6 @@
 import { from, of, Subject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import IframeModalComponent from '../editor/modals/iframe-modal.component';
 
 export class ModalEvent {
 
@@ -14,43 +15,47 @@ export class ModalRejectEvent extends ModalEvent { }
 
 export default class ModalService {
 
-	static hasModal = false;
+	static get hasModal() {
+		return this.hasModal_;
+	}
+	static set hasModal(hasModal) {
+		if (this.hasModal_ !== hasModal) {
+			this.hasModal_ = hasModal;
+			const body = document.querySelector('body');
+			hasModal ? body.classList.add('modal-open') : body.classList.remove('modal-open');
+		}
+	}
 
 	static open$(modal) {
+		this.busy$.next(true);
 		return (
-			modal.iframe ?
-				of(/*html*/`<div class="iframe-modal" iframe-modal>
-					<div class="modal__header">
-					<button type="button" class="btn--close" (click)="onClose()">
-						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
-					</button>
-				</div>
-				<div class="modal__content">
-					<iframe src="${modal.iframe}"></iframe>
-				</div>
-			</div>`) :
-				this.getTemplate$(modal.src)
+			modal.iframe ? of(IframeModalComponent.meta.chunk(modal.iframe)) : this.getTemplate$(modal)
 		).pipe(
+			// startWith(new ModalLoadEvent(Object.assign({}, modal.data, { $src: modal.src }))),
 			map(template => {
 				return { node: this.getNode(template), data: modal.data, modal: modal };
 			}),
 			tap(node => {
 				this.modal$.next(node);
 				this.hasModal = true;
+				this.busy$.next(false);
+				// this.events$.next(new ModalLoadedEvent(Object.assign({}, modal.data, { $src: modal.src })));
 			}),
 			switchMap(node => this.events$),
 			tap(_ => this.hasModal = false)
 		)
 	}
 
-	static load$(modal) {
-
-	}
-
-	static getTemplate$(url) {
-		return from(fetch(url).then(response => {
-			return response.text();
-		}));
+	static getTemplate$(modal) {
+		if (modal.src) {
+			return from(fetch(modal.src).then(response => {
+				return response.text();
+			}));
+		} else if (modal.template) {
+			return of(modal.template);
+		} else {
+			return EMPTY;
+		}
 	}
 
 	static getNode(template) {
@@ -74,3 +79,4 @@ export default class ModalService {
 
 ModalService.modal$ = new Subject();
 ModalService.events$ = new Subject();
+ModalService.busy$ = new Subject();

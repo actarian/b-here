@@ -10,6 +10,7 @@ import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { ViewItem, ViewItemType, ViewType } from '../../view/view';
 import { WebhookService } from '../../webhook/webhook.service';
 import EditorService from '../editor.service';
+import RemoveModalComponent from '../modals/remove-modal.component';
 
 export default class UpdateViewItemComponent extends Component {
 
@@ -257,7 +258,7 @@ export default class UpdateViewItemComponent extends Component {
 	}
 
 	onRemove(event) {
-		ModalService.open$({ src: environment.template.modal.remove, data: { item: this.item } }).pipe(
+		ModalService.open$({ template: RemoveModalComponent.chunk(), data: { item: this.item } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

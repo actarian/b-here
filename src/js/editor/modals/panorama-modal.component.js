@@ -137,43 +137,36 @@ export default class PanoramaModalComponent extends Component {
 }
 
 PanoramaModalComponent.meta = {
-	selector: '[panorama-modal]'
+	selector: '[panorama-modal]',
+	template: /* html */`
+		<div class="modal__header">
+			<button type="button" class="btn--close" (click)="onClose()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+			</button>
+		</div>
+		<div class="container">
+			<div class="form">
+				<div class="title">Create Panorama.</div>
+				<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+					<div class="form-controls">
+						<div control-text [control]="controls.name" label="Name"></div>
+						<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4"></div>
+					</div>
+					<div class="group--cta">
+						<button type="submit" class="btn--accept">
+							<span>Create</span>
+						</button>
+					</div>
+					<!--
+					<div class="group--form group--form--fixed">
+						<code [innerHTML]="form.value | json"></code>
+						<button type="button" class="btn--test" (click)="test()"><span>test</span></button>
+					</div>
+					-->
+				</form>
+			</div>
+		</div>
+	`,
 };
 
-/*
-{
-	"id": 1,
-	"type": "panorama",
-	"name": "Welcome Room",
-	"likes": 134,
-	"liked": false,
-	"asset": {
-		"type": "image",
-		"folder": "waiting-room/",
-		"file": "mod2.jpg"
-	},
-	"items": [{
-		"id": 110,
-		"type": "nav",
-		"title": "Barilla Experience",
-		"abstract": "Abstract",
-		"asset": {
-			"type": "image",
-			"folder": "barilla/",
-			"file": "logo-barilla.jpg"
-		},
-		"link": {
-			"title": "Scopri di più...",
-			"href": "https://www.barilla.com/it-it/",
-			"target": "_blank"
-		},
-		"position": [0.9491595148619703,-0.3147945860255039,0],
-		"viewId": 23
-	}],
-	"orientation": {
-		"latitude": -10,
-		"longitude": 360
-	},
-	"zoom": 75
-}
-*/
+PanoramaModalComponent.chunk = () => /* html */`<div class="panorama-modal" panorama-modal></div>`;

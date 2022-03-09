@@ -233,7 +233,7 @@ export const CHUNK_NAVMAP = /* html */`
 
 export const CHUNK_LOGO = /* html */`
 <!-- logo -->
-<a class="btn--logo" [routerLink]="'index' | slug" *if="state.status != 'connected'">
+<a class="btn--logo" [routerLink]="'index' | route" *if="state.status != 'connected'">
 	<img [src]="'logo' | env" *if="'logo' | env" />
 	<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
 </a>
@@ -315,7 +315,7 @@ export const CHUNK_SELF_SERVICE_TOUR = /* html */`
 <div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'self-service-tour'">
 	<!-- world -->
 	<div class="ui__body">
-		<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)" (navLink)="onNavLink($event)"></div>
+		<div class="world" world [view]="view" [views]="pathViews" (navTo)="onNavTo($event)" (navLink)="onNavLink($event)"></div>
 	</div>
 	<div class="group--header">
 		${CHUNK_SERVICE}
@@ -335,7 +335,7 @@ export const CHUNK_EMBED = /* html */`
 <div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'embed'">
 	<!-- world -->
 	<div class="ui__body">
-		<div class="world" world [view]="view" [views]="views" (navTo)="onNavTo($event)" (navLink)="onNavLink($event)"></div>
+		<div class="world" world [view]="view" [views]="pathViews" (navTo)="onNavTo($event)" (navLink)="onNavLink($event)"></div>
 	</div>
 	<div class="group--header">
 		${CHUNK_SERVICE}

@@ -77,5 +77,39 @@ export default class TryInARComponent extends Component {
 }
 
 TryInARComponent.meta = {
-	selector: '[try-in-ar]'
+	selector: '[try-in-ar]',
+	template: /* html */`
+		<div *if="platform != 'ios'">
+			<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+			<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+		</div>
+		<div class="ui" *if="!viewId">
+			<div class="group--info">
+				<div class="group--info__content">
+					<div class="info">Unknown url.</div>
+				</div>
+			</div>
+		</div>
+		<div class="ui" *if="missingAr">
+			<div class="group--info">
+				<div class="group--info__content">
+					<div class="info">Missing AR in view.</div>
+				</div>
+			</div>
+		</div>
+		<div class="ui" *if="missingUsdz">
+			<div class="group--info">
+				<div class="group--info__content">
+					<div class="info">Missing .usdz in ar.</div>
+				</div>
+			</div>
+		</div>
+		<div class="ui" *if="missingGltf">
+			<div class="group--info">
+				<div class="group--info__content">
+					<div class="info">Missing .gltf in ar.</div>
+				</div>
+			</div>
+		</div>
+	`,
 };

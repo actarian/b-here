@@ -1,7 +1,8 @@
 import { Component } from 'rxcomp';
 import { first } from 'rxjs/operators';
-import { environment } from '../../environment';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import NavmapItemModalComponent from '../modals/navmap-item-modal.component';
+import NavmapModalComponent from '../modals/navmap-modal.component';
 import NavmapService from './navmap.service';
 
 export default class NavmapBuilderComponent extends Component {
@@ -23,7 +24,7 @@ export default class NavmapBuilderComponent extends Component {
 	}
 
 	onAdd() {
-		ModalService.open$({ src: environment.template.modal.navmap }).pipe(
+		ModalService.open$({ template: NavmapModalComponent.chunk() }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {
@@ -40,7 +41,7 @@ export default class NavmapBuilderComponent extends Component {
 	}
 
 	onAddItem(navmap, hit) {
-		ModalService.open$({ src: environment.template.modal.navmapItem, data: { navmap, hit } }).pipe(
+		ModalService.open$({ template: NavmapItemModalComponent.chunk(), data: { navmap, hit } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

@@ -53,25 +53,30 @@ export default class PathAddModalComponent extends Component {
 }
 
 PathAddModalComponent.meta = {
-	selector: '[path-add-modal]'
+	selector: '[path-add-modal]',
+	template: /* html */`
+		<div class="modal__header">
+			<button type="button" class="btn--close" (click)="onClose()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+			</button>
+		</div>
+		<div class="container">
+			<div class="form">
+				<div class="title">Add Path.</div>
+				<div class="description">Aggiungi un percorso</div>
+				<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+					<div class="form-controls">
+						<div control-text [control]="controls.name" label="Name"></div>
+					</div>
+					<div class="group--cta">
+						<button type="submit" class="btn--accept">
+							<span>Create</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	`,
 };
 
-/*
-{
-	"id": 1,
-	"name": "Mappa",
-	"asset": {
-		"type": "image",
-		"folder": "folder/",
-		"file": "map.png"
-	},
-	"items": [{
-		"id": 110,
-		"type": "nav",
-		"title": "Barilla Experience",
-		"abstract": "Abstract",
-		"position": [0.9491595148619703,-0.3147945860255039,0],
-		"viewId": 23
-	}],
-}
-*/
+PathAddModalComponent.chunk = () => /* html */`<div class="panorama-modal" path-add-modal></div>`;

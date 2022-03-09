@@ -90,5 +90,52 @@ export default class PathEditModalComponent extends Component {
 }
 
 PathEditModalComponent.meta = {
-	selector: '[path-edit-modal]'
+	selector: '[path-edit-modal]',
+	template: /* html */`
+		<div class="modal__header">
+			<button type="button" class="btn--close" (click)="onClose()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+			</button>
+		</div>
+		<div class="container">
+			<div class="form">
+				<div class="title">Edit Path <span *if="item">&ldquo;<span [innerHTML]="item.title || item.name"></span>&rdquo;</span>.</div>
+				<div class="description">Modifica il percorso</div>
+				<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+					<div class="form-controls">
+						<div control-text [control]="controls.name" label="Name"></div>
+					</div>
+					<ul class="nav--flag" *if="views">
+						<li class="nav__item" *for="let view of views">
+							<button type="button" class="btn--flag" [class]="{ active: view.active }" [title]="view.name" (click)="onToggleView(view)">
+								<div class="icon">
+									<svg-icon [name]="view.type.name"></svg-icon>
+								</div>
+								<span class="name" [innerHTML]="view.name"></span>
+								<span class="flag">
+									<svg class="check" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#check"></use></svg>
+									<svg class="close" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+								</span>
+							</button>
+						</li>
+					</ul>
+					<div class="group--cta">
+						<div class="group--options">
+							<button type="button" class="btn--link" (click)="onSelectAll()">
+								<span>Select all</span>
+							</button>
+							<button type="button" class="btn--link" (click)="onSelectNone()">
+								<span>Select none</span>
+							</button>
+						</div>
+						<button type="submit" class="btn--accept">
+							<span>Save</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	`,
 };
+
+PathEditModalComponent.chunk = () => /* html */`<div class="path-edit-modal" path-edit-modal></div>`;

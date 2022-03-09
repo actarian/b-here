@@ -1505,7 +1505,7 @@ WorldComponent.meta = {
 	<div model-menu [views]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="showMenu">
 		<div class="btn--menu" (mousedown)="onToggle($event)">
 			<svg class="menu-light" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu-light"></use></svg>
-			<div class="spinner"></div>
+			<div class="btn--menu__spinner"></div>
 			<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
 			<svg class="progress" width="50" height="50" viewBox="0 0 50 50">
 				<circle id="circle" r="23" cx="25" cy="25" fill="transparent"></circle>

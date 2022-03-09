@@ -2,8 +2,9 @@ import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { fromEvent } from 'rxjs';
 import { filter, first, map, takeUntil, tap } from 'rxjs/operators';
-import { environment } from '../../environment';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import NavmapItemModalComponent from '../modals/navmap-item-modal.component';
+import RemoveModalComponent from '../modals/remove-modal.component';
 import NavmapService from './navmap.service';
 
 export const NavmapModes = {
@@ -48,7 +49,7 @@ export default class NavmapEditComponent extends Component {
 		).subscribe(event => {
 			// console.log('NavmapEditComponent.insert', event);
 			const hit = event;
-			ModalService.open$({ src: environment.template.modal.navmapItem, data: { navmap, hit } }).pipe(
+			ModalService.open$({ template: NavmapItemModalComponent.chunk(), data: { navmap, hit } }).pipe(
 				first(),
 			).subscribe(event => {
 				if (event instanceof ModalResolveEvent) {
@@ -171,7 +172,7 @@ export default class NavmapEditComponent extends Component {
 
 	onRemove() {
 		const navmap = this.navmap;
-		ModalService.open$({ src: environment.template.modal.remove, data: { item: navmap } }).pipe(
+		ModalService.open$({ template: RemoveModalComponent.chunk(), data: { item: navmap } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.html2canvas));}(this,(function(rxcomp, rxcompForm, rxjs, operators, html2canvas){'use strict';var rxcomp__default='default'in rxcomp?rxcomp['default']:rxcomp;var rxjs__default='default'in rxjs?rxjs['default']:rxjs;var operators__default='default'in operators?operators['default']:operators;html2canvas=html2canvas&&Object.prototype.hasOwnProperty.call(html2canvas,'default')?html2canvas['default']:html2canvas;function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.html2canvas));}(this,(function(rxcomp, rxcompForm, rxjs, operators, html2canvas){'use strict';html2canvas=html2canvas&&Object.prototype.hasOwnProperty.call(html2canvas,'default')?html2canvas['default']:html2canvas;function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
     var value = info.value;
@@ -121,2954 +121,49 @@ function _assertThisInitialized(self) {
 
 function _readOnlyError(name) {
   throw new Error("\"" + name + "\" is read-only");
-}function createCommonjsModule(fn, basedir, module) {
-	return module = {
-	  path: basedir,
-	  exports: {},
-	  require: function (path, base) {
-      return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-    }
-	}, fn(module, module.exports), module.exports;
 }
 
-function getCjsExportFromNamespace (n) {
-	return n && n['default'] || n;
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
 }
 
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
 
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-/* global Reflect, Promise */
-var _extendStatics = function extendStatics(d, b) {
-  _extendStatics = Object.setPrototypeOf || {
-    __proto__: []
-  } instanceof Array && function (d, b) {
-    d.__proto__ = b;
-  } || function (d, b) {
-    for (var p in b) {
-      if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
-    }
-  };
-
-  return _extendStatics(d, b);
-};
-
-function __extends(d, b) {
-  _extendStatics(d, b);
-
-  function __() {
-    this.constructor = d;
-  }
-
-  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  return arr2;
 }
 
-var _assign = function __assign() {
-  _assign = Object.assign || function __assign(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-
-      for (var p in s) {
-        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-      }
-    }
-
-    return t;
-  };
-
-  return _assign.apply(this, arguments);
-};
-function __rest(s, e) {
-  var t = {};
-
-  for (var p in s) {
-    if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
-  }
-
-  if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-    if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
-  }
-  return t;
-}
-function __decorate(decorators, target, key, desc) {
-  var c = arguments.length,
-      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-      d;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-  }
-  return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-function __param(paramIndex, decorator) {
-  return function (target, key) {
-    decorator(target, key, paramIndex);
-  };
-}
-function __metadata(metadataKey, metadataValue) {
-  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
-}
-function __awaiter(thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-}
-function __generator(thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-}
-var __createBinding = Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  Object.defineProperty(o, k2, {
-    enumerable: true,
-    get: function get() {
-      return m[k];
-    }
-  });
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-};
-function __exportStar(m, o) {
-  for (var p in m) {
-    if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
-  }
-}
-function __values(o) {
-  var s = typeof Symbol === "function" && Symbol.iterator,
-      m = s && o[s],
-      i = 0;
-  if (m) return m.call(o);
-  if (o && typeof o.length === "number") return {
-    next: function next() {
-      if (o && i >= o.length) o = void 0;
-      return {
-        value: o && o[i++],
-        done: !o
-      };
-    }
-  };
-  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-}
-function __read(o, n) {
-  var m = typeof Symbol === "function" && o[Symbol.iterator];
-  if (!m) return o;
-  var i = m.call(o),
-      r,
-      ar = [],
-      e;
-
-  try {
-    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
-      ar.push(r.value);
-    }
-  } catch (error) {
-    e = {
-      error: error
-    };
-  } finally {
-    try {
-      if (r && !r.done && (m = i["return"])) m.call(i);
-    } finally {
-      if (e) throw e.error;
-    }
-  }
-
-  return ar;
-}
-function __spread() {
-  for (var ar = [], i = 0; i < arguments.length; i++) {
-    ar = ar.concat(__read(arguments[i]));
-  }
-
-  return ar;
-}
-function __spreadArrays() {
-  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
-    s += arguments[i].length;
-  }
-
-  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
-    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
-      r[k] = a[j];
-    }
-  }
-
-  return r;
-}
-function __await(v) {
-  return this instanceof __await ? (this.v = v, this) : new __await(v);
-}
-function __asyncGenerator(thisArg, _arguments, generator) {
-  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-  var g = generator.apply(thisArg, _arguments || []),
-      i,
-      q = [];
-  return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
-    return this;
-  }, i;
-
-  function verb(n) {
-    if (g[n]) i[n] = function (v) {
-      return new Promise(function (a, b) {
-        q.push([n, v, a, b]) > 1 || resume(n, v);
-      });
-    };
-  }
-
-  function resume(n, v) {
-    try {
-      step(g[n](v));
-    } catch (e) {
-      settle(q[0][3], e);
-    }
-  }
-
-  function step(r) {
-    r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
-  }
-
-  function fulfill(value) {
-    resume("next", value);
-  }
-
-  function reject(value) {
-    resume("throw", value);
-  }
-
-  function settle(f, v) {
-    if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]);
-  }
-}
-function __asyncDelegator(o) {
-  var i, p;
-  return i = {}, verb("next"), verb("throw", function (e) {
-    throw e;
-  }), verb("return"), i[Symbol.iterator] = function () {
-    return this;
-  }, i;
-
-  function verb(n, f) {
-    i[n] = o[n] ? function (v) {
-      return (p = !p) ? {
-        value: __await(o[n](v)),
-        done: n === "return"
-      } : f ? f(v) : v;
-    } : f;
-  }
-}
-function __asyncValues(o) {
-  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-  var m = o[Symbol.asyncIterator],
-      i;
-  return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
-    return this;
-  }, i);
-
-  function verb(n) {
-    i[n] = o[n] && function (v) {
-      return new Promise(function (resolve, reject) {
-        v = o[n](v), settle(resolve, reject, v.done, v.value);
-      });
-    };
-  }
-
-  function settle(resolve, reject, d, v) {
-    Promise.resolve(v).then(function (v) {
-      resolve({
-        value: v,
-        done: d
-      });
-    }, reject);
-  }
-}
-function __makeTemplateObject(cooked, raw) {
-  if (Object.defineProperty) {
-    Object.defineProperty(cooked, "raw", {
-      value: raw
-    });
-  } else {
-    cooked.raw = raw;
-  }
-
-  return cooked;
-}
-
-var __setModuleDefault = Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-};
-
-function __importStar(mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-}
-function __importDefault(mod) {
-  return mod && mod.__esModule ? mod : {
-    default: mod
-  };
-}
-function __classPrivateFieldGet(receiver, privateMap) {
-  if (!privateMap.has(receiver)) {
-    throw new TypeError("attempted to get private field on non-instance");
-  }
-
-  return privateMap.get(receiver);
-}
-function __classPrivateFieldSet(receiver, privateMap, value) {
-  if (!privateMap.has(receiver)) {
-    throw new TypeError("attempted to set private field on non-instance");
-  }
-
-  privateMap.set(receiver, value);
-  return value;
-}var tslib_es6=/*#__PURE__*/Object.freeze({__proto__:null,__extends: __extends,get __assign(){return _assign},__rest: __rest,__decorate: __decorate,__param: __param,__metadata: __metadata,__awaiter: __awaiter,__generator: __generator,__createBinding: __createBinding,__exportStar: __exportStar,__values: __values,__read: __read,__spread: __spread,__spreadArrays: __spreadArrays,__await: __await,__asyncGenerator: __asyncGenerator,__asyncDelegator: __asyncDelegator,__asyncValues: __asyncValues,__makeTemplateObject: __makeTemplateObject,__importStar: __importStar,__importDefault: __importDefault,__classPrivateFieldGet: __classPrivateFieldGet,__classPrivateFieldSet: __classPrivateFieldSet});var tslib_1 = getCjsExportFromNamespace(tslib_es6);var view = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.LeaveTransition = exports.EnterTransition = exports.OnceTransition = exports.Transition = void 0;
-
-  var Transition =
-  /** @class */
-  function () {
-    function Transition(callback, path) {
-      this.callback = callback;
-      this.path = path || '**';
-    }
-
-    Transition.prototype.matcher = function (path) {
-      return this.path === '**' ? true : this.path === path;
-    };
-
-    return Transition;
-  }();
-
-  exports.Transition = Transition;
-
-  var OnceTransition =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(OnceTransition, _super);
-
-    function OnceTransition() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return OnceTransition;
-  }(Transition);
-
-  exports.OnceTransition = OnceTransition;
-
-  var EnterTransition =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(EnterTransition, _super);
-
-    function EnterTransition() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return EnterTransition;
-  }(Transition);
-
-  exports.EnterTransition = EnterTransition;
-
-  var LeaveTransition =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(LeaveTransition, _super);
-
-    function LeaveTransition() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return LeaveTransition;
-  }(Transition);
-
-  exports.LeaveTransition = LeaveTransition;
-
-  var View =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(View, _super);
-
-    function View() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    Object.defineProperty(View, "transitions", {
-      get: function get() {
-        var transitions;
-
-        if (this.transitions_) {
-          transitions = this.transitions_;
-        } else {
-          transitions = this.transitions_ = [];
-          var source_1 = this.meta.transitions || {};
-          Object.keys(source_1).forEach(function (key) {
-            var matches = /^(once|from|enter|to|leave):\s?(.+)?\s?$/.exec(key); // return /([^\s]+)\s?=>\s?([^\s]+)/.test(key);
-
-            if (matches != null && matches.length > 1) {
-              switch (matches[1]) {
-                case 'once':
-                  transitions.push(new OnceTransition(source_1[key], matches[2]));
-                  break;
-
-                case 'to':
-                case 'from':
-                case 'enter':
-                  transitions.push(new EnterTransition(source_1[key], matches[2]));
-                  break;
-
-                case 'to':
-                case 'leave':
-                  transitions.push(new LeaveTransition(source_1[key], matches[2]));
-                  break;
-              }
-            }
-          });
-        }
-
-        return transitions;
-      },
-      enumerable: false,
-      configurable: true
-    });
-    return View;
-  }(rxcomp__default.Component);
-
-  exports.default = View;
-});var routeSnapshot = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.RouteSnapshot = void 0;
-
-  var RouteSnapshot =
-  /** @class */
-  function () {
-    function RouteSnapshot(options) {
-      this.pathMatch = 'prefix';
-      this.relative = true;
-      this.data$ = new rxjs__default.ReplaySubject(1);
-      this.params$ = new rxjs__default.ReplaySubject(1);
-      this.queryParams$ = new rxjs__default.ReplaySubject(1);
-      this.canDeactivate = [];
-      this.canLoad = [];
-      this.canActivate = [];
-      this.canActivateChild = [];
-
-      if (options) {
-        Object.assign(this, options);
-      }
-
-      this.data$.next(this.data);
-      this.params$.next(this.params);
-      this.queryParams$.next(this.queryParams);
-    }
-
-    RouteSnapshot.prototype.next = function (snapshot) {
-      this.childRoute = snapshot.childRoute;
-
-      if (snapshot.childRoute) {
-        snapshot.childRoute.parent = this;
-      }
-
-      var data = this.data = Object.assign({}, snapshot.data);
-      this.data$.next(data);
-      var params = this.params = Object.assign({}, snapshot.params);
-      this.params$.next(params);
-      var queryParams = this.queryParams = Object.assign({}, snapshot.queryParams);
-      this.queryParams$.next(queryParams);
-    };
-
-    return RouteSnapshot;
-  }();
-
-  exports.RouteSnapshot = RouteSnapshot;
-});var location_strategy = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.decodeParam = exports.encodeParam = exports.LocationStrategyHash = exports.LocationStrategyPath = exports.LocationStrategy = void 0;
-
-  var LocationStrategy =
-  /** @class */
-  function () {
-    function LocationStrategy() {}
-
-    LocationStrategy.prototype.serializeLink = function (routerLink) {
-      var _this = this;
-
-      var url = (Array.isArray(routerLink) ? routerLink : [routerLink]).map(function (x) {
-        return typeof x === 'string' ? x : _this.encodeParams(x);
-      }).join('/');
-      return this.serializeUrl(url);
-    };
-
-    LocationStrategy.prototype.serializeUrl = function (url) {
-      return url;
-    };
-
-    LocationStrategy.prototype.serialize = function (routePath) {
-      return "" + routePath.prefix + routePath.path + routePath.search + routePath.hash;
-    };
-
-    LocationStrategy.prototype.resolve = function (url, target) {
-      var e_1, _a;
-
-      if (target === void 0) {
-        target = {};
-      }
-
-      var prefix = '';
-      var path = '';
-      var query = '';
-      var search = '';
-      var hash = '';
-      var segments;
-      var params;
-      var regExp = /^([^\?|\#]*)?(\?[^\#]*)?(\#[^\#]*?)?$/gm;
-      var matches = url.matchAll(regExp);
-
-      try {
-        for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
-          var match = matches_1_1.value;
-          var g1 = match[1];
-          var g2 = match[2];
-          var g3 = match[3];
-
-          if (g1) {
-            path = g1;
-          }
-
-          if (g2) {
-            query = g2;
-          }
-
-          if (g3) {
-            hash = g3;
-          }
-        }
-      } catch (e_1_1) {
-        e_1 = {
-          error: e_1_1
-        };
-      } finally {
-        try {
-          if (matches_1_1 && !matches_1_1.done && (_a = matches_1.return)) _a.call(matches_1);
-        } finally {
-          if (e_1) throw e_1.error;
-        }
-      }
-
-      prefix = prefix;
-      path = path;
-      query = query;
-      hash = hash.substring(1, hash.length);
-      search = query.substring(1, query.length);
-      segments = path.split('/').filter(function (x) {
-        return x !== '';
-      });
-      params = {};
-      target.prefix = prefix;
-      target.path = path;
-      target.query = query;
-      target.hash = hash;
-      target.search = search;
-      target.segments = segments;
-      target.params = params; // console.log('resolvePath_', url, prefix, path, query, search, hash, segments, params);
-
-      return target;
-    };
-
-    LocationStrategy.prototype.resolveParams = function (path, routeSegments) {
-      var _this = this;
-
-      var segments = path.split('/').filter(function (x) {
-        return x !== '';
-      });
-      var params = {};
-      routeSegments.forEach(function (segment, index) {
-        // console.log('segment.params', segment.params);
-        var keys = Object.keys(segment.params);
-
-        if (keys.length) {
-          params[keys[0]] = _this.decodeParams(segments[index]);
-        }
-      });
-      return params;
-    };
-
-    LocationStrategy.prototype.encodeParams = function (value) {
-      var encoded;
-
-      if (typeof value === 'object') {
-        encoded = rxcomp__default.Serializer.encode(value, [rxcomp__default.encodeJson, rxcomp__default.encodeBase64, encodeParam]);
-      } else if (typeof value === 'number') {
-        encoded = value.toString();
-      }
-
-      return encoded;
-    };
-
-    LocationStrategy.prototype.decodeParams = function (value) {
-      var decoded = value;
-
-      if (value.indexOf(';') === 0) {
-        try {
-          decoded = rxcomp__default.Serializer.decode(value, [decodeParam, rxcomp__default.decodeBase64, rxcomp__default.decodeJson]);
-        } catch (error) {
-          decoded = value;
-        }
-      } else if (Number(value).toString() === value) {
-        decoded = Number(value);
-      }
-
-      return decoded;
-    };
-
-    LocationStrategy.prototype.encodeSegment = function (value) {
-      return this.encodeString(value).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%26/gi, '&');
-    };
-
-    LocationStrategy.prototype.decodeSegment = function (value) {
-      return this.decodeString(value.replace(/%28/g, '(').replace(/%29/g, ')').replace(/\&/gi, '%26'));
-    };
-
-    LocationStrategy.prototype.encodeString = function (value) {
-      return encodeURIComponent(value).replace(/%40/g, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',');
-    };
-
-    LocationStrategy.prototype.decodeString = function (value) {
-      return decodeURIComponent(value.replace(/\@/g, '%40').replace(/\:/gi, '%3A').replace(/\$/g, '%24').replace(/\,/gi, '%2C'));
-    };
-
-    LocationStrategy.prototype.getPath = function (url) {
-      return url;
-    };
-
-    LocationStrategy.prototype.getUrl = function (url, params) {
-      return "" + url + (params ? '?' + params.toString() : '');
-    };
-
-    LocationStrategy.prototype.pushState = function (url, snapshot, popped) {
-      if (LocationStrategy.historySupported()) {
-        // url = this.getUrl(url, params);
-        // !!!
-        // const state = params ? params.toString() : '';
-        // console.log(state);
-        // if (popped) {
-        // history.replaceState(undefined, title, url);
-        // } else {
-        if (!popped) {
-          try {
-            var state = this.snapshotToState(snapshot); // console.log('LocationStrategy.snapshotToState state', state);
-            // console.log(state);
-
-            var title = document.title; // you can pass null as string cause title is a DOMString!
-
-            history.pushState(state, title, url);
-          } catch (error) {
-            console.log('LocationStrategy.pushState.error', error);
-          }
-        }
-      } else if (this.historyRequired()) {
-        throw new Error('LocationStrategyError: history not supported!');
-      } else {
-        location.hash = url;
-      }
-    };
-
-    LocationStrategy.prototype.snapshotToState = function (snapshot, pool) {
-      if (pool === void 0) {
-        pool = [];
-      }
-
-      var state = undefined;
-
-      if (snapshot) {
-        if (pool.indexOf(snapshot) !== -1) {
-          state = snapshot.path;
-        } else {
-          pool.push(snapshot);
-          state = {};
-          state.path = snapshot.path;
-          state.initialUrl = snapshot.initialUrl;
-          state.urlAfterRedirects = snapshot.urlAfterRedirects;
-          state.extractedUrl = snapshot.extractedUrl;
-          state.remainUrl = snapshot.remainUrl;
-          state.childRoute = this.snapshotToState(snapshot.childRoute, pool);
-          state.previousRoute = this.snapshotToState(snapshot.previousRoute, pool);
-          state.data = snapshot.data;
-          state.params = snapshot.params;
-          state.queryParams = snapshot.queryParams;
-        }
-      }
-
-      return state;
-    };
-
-    LocationStrategy.prototype.stateToSnapshot = function (routes, state, pool) {
-      if (pool === void 0) {
-        pool = [];
-      }
-
-      var snapshot;
-
-      if (state) {
-        var route = routes.find(function (r) {
-          return r.path = state.path;
-        });
-
-        if (route) {
-          if (typeof state === 'string') {
-            snapshot = pool.find(function (x) {
-              return x.path === state;
-            });
-          } else {
-            snapshot = new routeSnapshot.RouteSnapshot(tslib_1.__assign(tslib_1.__assign({}, route), {
-              initialUrl: state.initialUrl,
-              urlAfterRedirects: state.urlAfterRedirects,
-              extractedUrl: state.extractedUrl,
-              remainUrl: state.remainUrl,
-              redirectTo: '',
-              data: state.data,
-              params: state.params,
-              queryParams: state.queryParams
-            }));
-            pool.push(snapshot);
-            snapshot.childRoute = this.stateToSnapshot(routes, state.childRoute, pool);
-            snapshot.previousRoute = this.stateToSnapshot(routes, state.previousRoute, pool);
-          }
-
-          route.snapshot = snapshot;
-        }
-      }
-
-      return snapshot;
-    };
-
-    LocationStrategy.prototype.historyRequired = function () {
-      return true;
-    };
-
-    LocationStrategy.historySupported = function () {
-      return typeof rxcomp__default.WINDOW.history !== 'undefined' && typeof rxcomp__default.WINDOW.history.pushState === 'function'; // return isPlatformBrowser && typeof history !== 'undefined' && typeof history.pushState === 'function';
-    };
-
-    return LocationStrategy;
-  }();
-
-  exports.LocationStrategy = LocationStrategy;
-
-  var LocationStrategyPath =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(LocationStrategyPath, _super);
-
-    function LocationStrategyPath() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return LocationStrategyPath;
-  }(LocationStrategy);
-
-  exports.LocationStrategyPath = LocationStrategyPath;
-
-  var LocationStrategyHash =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(LocationStrategyHash, _super);
-
-    function LocationStrategyHash() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    LocationStrategyHash.prototype.serializeLink = function (routerLink) {
-      var _this = this;
-
-      var url = (Array.isArray(routerLink) ? routerLink : [routerLink]).map(function (x) {
-        return typeof x === 'string' ? x : _this.encodeParams(x);
-      }).join('/');
-      return this.serializeUrl(url);
-    };
-
-    LocationStrategyHash.prototype.serializeUrl = function (url) {
-      var path = this.resolve(url, {});
-      return this.serialize(path);
-    };
-
-    LocationStrategyHash.prototype.serialize = function (routePath) {
-      return "" + routePath.prefix + routePath.search + routePath.hash + routePath.path;
-    };
-
-    LocationStrategyHash.prototype.resolve = function (url, target) {
-      var e_2, _a;
-
-      if (target === void 0) {
-        target = {};
-      }
-
-      var prefix = '';
-      var path = '';
-      var query = '';
-      var search = '';
-      var hash = '#';
-      var segments;
-      var params;
-      var regExp = /^([^\?|\#]*)?(\?[^\#]*)?(\#.*)$/gm;
-      var matches = url.matchAll(regExp);
-
-      try {
-        for (var matches_2 = tslib_1.__values(matches), matches_2_1 = matches_2.next(); !matches_2_1.done; matches_2_1 = matches_2.next()) {
-          var match = matches_2_1.value;
-          var g1 = match[1];
-          var g2 = match[2];
-          var g3 = match[3];
-
-          if (g1) {
-            prefix = g1;
-          }
-
-          if (g2) {
-            query = g2;
-          }
-
-          if (g3) {
-            path = g3;
-          }
-        }
-      } catch (e_2_1) {
-        e_2 = {
-          error: e_2_1
-        };
-      } finally {
-        try {
-          if (matches_2_1 && !matches_2_1.done && (_a = matches_2.return)) _a.call(matches_2);
-        } finally {
-          if (e_2) throw e_2.error;
-        }
-      }
-
-      prefix = prefix;
-      path = path.substring(1, path.length);
-      hash = hash;
-      search = query.substring(1, query.length);
-      segments = path.split('/').filter(function (x) {
-        return x !== '';
-      });
-      params = {};
-      target.prefix = prefix;
-      target.path = path;
-      target.query = query;
-      target.hash = hash;
-      target.search = search;
-      target.segments = segments;
-      target.params = params; // console.log('resolvePath_', url, prefix, path, query, search, hash, segments, params);
-
-      return target;
-    };
-
-    LocationStrategyHash.prototype.getPath = function (url) {
-      if (url.indexOf("/#") === -1) {
-        return "/#" + url;
-      } else {
-        return url;
-      }
-    };
-
-    LocationStrategyHash.prototype.getUrl = function (url, params) {
-      return "" + (params ? '?' + params.toString() : '') + this.getPath(url);
-    };
-
-    LocationStrategyHash.prototype.historyRequired = function () {
-      return false;
-    };
-
-    return LocationStrategyHash;
-  }(LocationStrategy);
-
-  exports.LocationStrategyHash = LocationStrategyHash;
-
-  function encodeParam(value) {
-    return ";" + value;
-  }
-
-  exports.encodeParam = encodeParam;
-
-  function decodeParam(value) {
-    return value.substring(1, value.length);
-  }
-
-  exports.decodeParam = decodeParam;
-});var observable = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.isPromise = exports.asObservable = void 0;
-
-  function asObservable(args, callback) {
-    return rxjs__default.Observable.create(function (observer) {
-      var subscription;
-
-      try {
-        var result = callback.apply(void 0, tslib_1.__spread(args));
-
-        if (rxjs__default.isObservable(result)) {
-          subscription = result.subscribe(function (result) {
-            observer.next(result);
-            observer.complete();
-          });
-        } else if (isPromise(result)) {
-          result.then(function (result) {
-            observer.next(result);
-            observer.complete();
-          });
-        } else if (typeof result === 'function') {
-          observer.next(result());
-          observer.complete();
-        } else {
-          observer.next(result);
-          observer.complete();
-        }
-      } catch (error) {
-        observer.error(error);
-      }
-
+function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+  var it;
+
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+      if (it) o = it;
+      var i = 0;
       return function () {
-        if (subscription) {
-          subscription.unsubscribe();
-        }
-      };
-    });
-  }
-
-  exports.asObservable = asObservable;
-
-  function isPromise(object) {
-    return object instanceof Promise || typeof object === 'object' && 'then' in object && typeof object['then'] === 'function';
-  }
-
-  exports.isPromise = isPromise;
-});var routeActivators = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.mapCanActivateChild$_ = exports.mapCanActivate$_ = exports.mapCanLoad$_ = exports.mapCanDeactivate$_ = void 0;
-
-  function mapCanDeactivate$_(activator) {
-    return function canDeactivate$(component, currentRoute) {
-      return makeObserver$_(function () {
-        return activator.canDeactivate(component, currentRoute);
-      });
-    };
-  }
-
-  exports.mapCanDeactivate$_ = mapCanDeactivate$_;
-
-  function mapCanLoad$_(activator) {
-    return function canLoad$$(route, segments) {
-      return makeObserver$_(function () {
-        return activator.canLoad(route, segments);
-      });
-    };
-  }
-
-  exports.mapCanLoad$_ = mapCanLoad$_;
-
-  function mapCanActivate$_(activator) {
-    return function canActivate$(route) {
-      return makeObserver$_(function () {
-        return activator.canActivate(route);
-      });
-    };
-  }
-
-  exports.mapCanActivate$_ = mapCanActivate$_;
-
-  function mapCanActivateChild$_(activator) {
-    return function canActivateChild$(childRoute) {
-      return makeObserver$_(function () {
-        return activator.canActivateChild(childRoute);
-      });
-    };
-  }
-
-  exports.mapCanActivateChild$_ = mapCanActivateChild$_;
-
-  function makeObserver$_(callback) {
-    return rxjs__default.Observable.create(function (observer) {
-      var subscription;
-
-      try {
-        var result = callback();
-
-        if (rxjs__default.isObservable(result)) {
-          subscription = result.subscribe(function (result) {
-            observer.next(result);
-            observer.complete();
-          });
-        } else if (observable.isPromise(result)) {
-          result.then(function (result) {
-            observer.next(result);
-            observer.complete();
-          });
-        } else if (typeof result === 'boolean' || Array.isArray(result)) {
-          observer.next(result);
-          observer.complete();
-        } else {
-          observer.error(new Error('invalid value'));
-        }
-      } catch (error) {
-        observer.error(error);
-      }
-
-      return function () {
-        if (subscription) {
-          subscription.unsubscribe();
-        }
-      };
-    });
-  }
-});var routeSegment = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.RouteSegment = void 0;
-
-  var RouteSegment =
-  /** @class */
-  function () {
-    function RouteSegment(path, params) {
-      if (params === void 0) {
-        params = {};
-      }
-
-      this.path = path;
-      this.params = params;
-    }
-
-    return RouteSegment;
-  }();
-
-  exports.RouteSegment = RouteSegment;
-});var route = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.Route = void 0;
-
-  var Route =
-  /** @class */
-  function () {
-    function Route(options) {
-      var e_1, _a;
-
-      var _this = this;
-
-      this.pathMatch = 'prefix';
-      this.relative = true;
-      this.canDeactivate = [];
-      this.canLoad = [];
-      this.canActivate = [];
-      this.canActivateChild = [];
-
-      if (options) {
-        Object.assign(this, options);
-        this.canDeactivate = options.canDeactivate ? options.canDeactivate.map(function (x) {
-          return routeActivators.mapCanDeactivate$_(x);
-        }) : [];
-        this.canLoad = options.canLoad ? options.canLoad.map(function (x) {
-          return routeActivators.mapCanLoad$_(x);
-        }) : [];
-        this.canActivate = options.canActivate ? options.canActivate.map(function (x) {
-          return routeActivators.mapCanActivate$_(x);
-        }) : [];
-        this.canActivateChild = options.canActivateChild ? options.canActivateChild.map(function (x) {
-          return routeActivators.mapCanActivateChild$_(x);
-        }) : [];
-      }
-
-      if (this.children) {
-        this.children = this.children.map(function (iRoute) {
-          var route = new Route(iRoute);
-          route.parent = _this;
-          return route;
-        });
-      }
-
-      var segments = [];
-
-      if (this.path === '**') {
-        segments.push(new routeSegment.RouteSegment(this.path));
-        this.matcher = new RegExp('^.*$');
-      } else {
-        var matchers = [];
-        var regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g; // const regExp: RegExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/\?]+)\/?|\:([^\/]+)\/?|\?(.+)/g;
-
-        var matches = this.path.matchAll(regExp);
-
-        try {
-          for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
-            var match = matches_1_1.value;
-            var g1 = match[1];
-            var g2 = match[2];
-            var g3 = match[3];
-
-            if (g1) {
-              this.relative = !(g1 === '//' || g1 === '/');
-            } else if (g2) {
-              matchers.push(g2);
-              segments.push(new routeSegment.RouteSegment(g2));
-            } else if (g3) {
-              matchers.push('([^\/]+)');
-              var param = {};
-              param[g3] = null;
-              segments.push(new routeSegment.RouteSegment('', param));
-            }
-          }
-        } catch (e_1_1) {
-          e_1 = {
-            error: e_1_1
-          };
-        } finally {
-          try {
-            if (matches_1_1 && !matches_1_1.done && (_a = matches_1.return)) _a.call(matches_1);
-          } finally {
-            if (e_1) throw e_1.error;
-          }
-        }
-
-        if (this.pathMatch === 'full') {
-          matchers.push('$');
-        }
-
-        var regexp = '^(\.\.\/|\.\/|\/\/|\/)?' + matchers.join('\/');
-        this.matcher = new RegExp(regexp);
-      }
-
-      this.segments = segments;
-    }
-
-    return Route;
-  }();
-
-  exports.Route = Route;
-});var routePath = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.RoutePath = void 0;
-
-  var RoutePath =
-  /** @class */
-  function () {
-    function RoutePath(url, routeSegments, snapshot, locationStrategy) {
-      if (url === void 0) {
-        url = '';
-      }
-
-      if (routeSegments === void 0) {
-        routeSegments = [];
-      }
-
-      this.prefix = '';
-      this.path = '';
-      this.query = '';
-      this.search = '';
-      this.hash = '';
-      this.locationStrategy = locationStrategy || new location_strategy.LocationStrategy();
-      this.url = url;
-      this.routeSegments = routeSegments;
-      this.route = snapshot;
-    }
-
-    Object.defineProperty(RoutePath.prototype, "url", {
-      get: function get() {
-        return this.url_;
-      },
-      set: function set(url) {
-        if (this.url_ !== url) {
-          this.locationStrategy.resolve(url, this);
-          this.url_ = this.locationStrategy.serialize(this);
-        }
-      },
-      enumerable: false,
-      configurable: true
-    });
-    Object.defineProperty(RoutePath.prototype, "routeSegments", {
-      get: function get() {
-        return this.routeSegments_;
-      },
-      set: function set(routeSegments) {
-        if (this.routeSegments_ !== routeSegments) {
-          this.routeSegments_ = routeSegments;
-          this.params = this.locationStrategy.resolveParams(this.path, routeSegments);
-        }
-      },
-      enumerable: false,
-      configurable: true
-    });
-    Object.defineProperty(RoutePath.prototype, "remainUrl", {
-      get: function get() {
-        return this.query + this.hash;
-      },
-      enumerable: false,
-      configurable: true
-    });
-    return RoutePath;
-  }();
-
-  exports.RoutePath = RoutePath;
-});var routerEvents = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.NavigationError = exports.NavigationCancel = exports.NavigationEnd = exports.RouteConfigLoadEnd = exports.RouteConfigLoadStart = exports.ChildActivationEnd = exports.ActivationEnd = exports.ResolveEnd = exports.ResolveStart = exports.GuardsCheckEnd = exports.ActivationStart = exports.ChildActivationStart = exports.GuardsCheckStart = exports.RoutesRecognized = exports.NavigationStart = exports.RouterEvent = void 0;
-
-  var RouterEvent =
-  /** @class */
-  function () {
-    function RouterEvent(options) {
-      if (options) {
-        Object.assign(this, options);
-      }
-
-      if (this.routerLink) {
-        this.url = Array.isArray(this.routerLink) ? this.routerLink.join('') : this.routerLink;
-      }
-    }
-
-    return RouterEvent;
-  }();
-
-  exports.RouterEvent = RouterEvent; // An event triggered when navigation starts.
-
-  var NavigationStart =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(NavigationStart, _super);
-
-    function NavigationStart() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return NavigationStart;
-  }(RouterEvent);
-
-  exports.NavigationStart = NavigationStart; // An event triggered when the Router parses the URL and the routes are recognized.
-
-  var RoutesRecognized =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RoutesRecognized, _super);
-
-    function RoutesRecognized() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return RoutesRecognized;
-  }(RouterEvent);
-
-  exports.RoutesRecognized = RoutesRecognized; // An event triggered at the start of the Guard phase of routing.
-
-  var GuardsCheckStart =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(GuardsCheckStart, _super);
-
-    function GuardsCheckStart() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return GuardsCheckStart;
-  }(RouterEvent);
-
-  exports.GuardsCheckStart = GuardsCheckStart; // An event triggered at the start of the child-activation part of the Resolve phase of routing.
-
-  var ChildActivationStart =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(ChildActivationStart, _super);
-
-    function ChildActivationStart() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return ChildActivationStart;
-  }(RouterEvent);
-
-  exports.ChildActivationStart = ChildActivationStart; // An event triggered at the start of the activation part of the Resolve phase of routing.
-
-  var ActivationStart =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(ActivationStart, _super);
-
-    function ActivationStart() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return ActivationStart;
-  }(RouterEvent);
-
-  exports.ActivationStart = ActivationStart; // An event triggered at the end of the Guard phase of routing.
-
-  var GuardsCheckEnd =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(GuardsCheckEnd, _super);
-
-    function GuardsCheckEnd() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return GuardsCheckEnd;
-  }(RouterEvent);
-
-  exports.GuardsCheckEnd = GuardsCheckEnd; // An event triggered at the the start of the Resolve phase of routing.
-
-  var ResolveStart =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(ResolveStart, _super);
-
-    function ResolveStart() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return ResolveStart;
-  }(RouterEvent);
-
-  exports.ResolveStart = ResolveStart; // An event triggered at the end of the Resolve phase of routing.
-
-  var ResolveEnd =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(ResolveEnd, _super);
-
-    function ResolveEnd() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return ResolveEnd;
-  }(RouterEvent);
-
-  exports.ResolveEnd = ResolveEnd; // An event triggered at the end of the activation part of the Resolve phase of routing.
-
-  var ActivationEnd =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(ActivationEnd, _super);
-
-    function ActivationEnd() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return ActivationEnd;
-  }(RouterEvent);
-
-  exports.ActivationEnd = ActivationEnd; // An event triggered at the end of the child-activation part of the Resolve phase of routing.
-
-  var ChildActivationEnd =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(ChildActivationEnd, _super);
-
-    function ChildActivationEnd() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return ChildActivationEnd;
-  }(RouterEvent);
-
-  exports.ChildActivationEnd = ChildActivationEnd; // An event triggered before the Router lazy loads a route configuration.
-
-  var RouteConfigLoadStart =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RouteConfigLoadStart, _super);
-
-    function RouteConfigLoadStart() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return RouteConfigLoadStart;
-  }(RouterEvent);
-
-  exports.RouteConfigLoadStart = RouteConfigLoadStart; // An event triggered after a route has been lazy loaded.
-
-  var RouteConfigLoadEnd =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RouteConfigLoadEnd, _super);
-
-    function RouteConfigLoadEnd() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return RouteConfigLoadEnd;
-  }(RouterEvent);
-
-  exports.RouteConfigLoadEnd = RouteConfigLoadEnd; // An event triggered when navigation ends successfully.
-
-  var NavigationEnd =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(NavigationEnd, _super);
-
-    function NavigationEnd() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return NavigationEnd;
-  }(RouterEvent);
-
-  exports.NavigationEnd = NavigationEnd; // An event triggered when navigation is canceled. This is due to a Route Guard returning false during navigation.
-
-  var NavigationCancel =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(NavigationCancel, _super);
-
-    function NavigationCancel() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return NavigationCancel;
-  }(RouterEvent);
-
-  exports.NavigationCancel = NavigationCancel; // An event triggered when navigation fails due to an unexpected error.
-
-  var NavigationError =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(NavigationError, _super);
-
-    function NavigationError() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    return NavigationError;
-  }(RouterEvent);
-
-  exports.NavigationError = NavigationError;
-  /*
-  NavigationStart {id: 1, url: '/test-a', navigationTrigger: 'imperative', restoredState: null, constructor: Object}
-  RoutesRecognized {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
-  GuardsCheckStart {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
-  ChildActivationStart {snapshot: ActivatedRouteSnapshot, constructor: Object}
-  ActivationStart {snapshot: ActivatedRouteSnapshot, constructor: Object}
-  GuardsCheckEnd {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, shouldActivate: true…}
-  ResolveStart {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
-  ResolveEnd {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', state: RouterStateSnapshot, constructor: Object}
-  ActivationEnd {snapshot: ActivatedRouteSnapshot, constructor: Object}
-  ChildActivationEnd {snapshot: ActivatedRouteSnapshot, constructor: Object}
-  NavigationEnd {id: 1, url: '/test-a', urlAfterRedirects: '/test-a', constructor: Object}
-  Scroll {routerEvent: NavigationEnd, position: null, anchor: null, constructor: Object}
-  */
-});var router_service = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var RouterService =
-  /** @class */
-  function () {
-    function RouterService() {}
-
-    Object.defineProperty(RouterService, "flatRoutes", {
-      get: function get() {
-        return getFlatRoutes_(this.routes);
-      },
-      enumerable: false,
-      configurable: true
-    });
-
-    RouterService.setRoutes = function (routes) {
-      this.routes = routes.map(function (x) {
-        return new route.Route(x);
-      }); // this.observe$ = makeObserve$_(this.routes, this.route$, this.events$, this.locationStrategy);
-
-      this.observe$ = this.makeObserve$();
-      return this;
-    };
-
-    RouterService.makeObserve$ = function () {
-      var routes = this.routes;
-      var route$ = this.route$;
-      var events$ = this.events$;
-      var locationStrategy = this.locationStrategy;
-      var currentRoute;
-      var currentEvent; // console.log('RouterService.WINDOW', WINDOW!!);
-
-      var stateEvents$ = rxcomp__default.isPlatformServer ? rxjs__default.EMPTY : rxjs__default.fromEvent(rxcomp__default.WINDOW, 'popstate').pipe(operators__default.map(function (event) {
-        currentEvent = event;
-        var routerLink = "" + document.location.pathname + document.location.search + document.location.hash;
-        /*
-        // !!! state to snapshot
-        const flatRoutes = getFlatRoutes_(routes);
-        flatRoutes.forEach(r => r.snapshot = undefined);
-        const snapshot: RouteSnapshot = locationStrategy.stateToSnapshot(flatRoutes, event.state) as RouteSnapshot;
-        // console.log('LocationStrategy.stateToSnapshot snapshot', snapshot);
-        // console.log('RouterService PopStateEvent', 'snapshot', snapshot, 'routes', flatRoutes.map(route => route.snapshot));
-        return new NavigationEnd({ route: snapshot, routerLink, url: routerLink, trigger: 'popstate' });
-        */
-
-        return new routerEvents.NavigationStart({
-          routerLink: routerLink,
-          trigger: 'popstate'
-        });
-      }), operators__default.shareReplay(1));
-      return rxjs__default.merge(stateEvents$, events$).pipe(operators__default.switchMap(function (event) {
-        currentEvent = event;
-
-        if (event instanceof routerEvents.GuardsCheckStart) {
-          return makeCanDeactivateResponse$_(events$, event, currentRoute).pipe(operators__default.switchMap(function (nextEvent) {
-            if (nextEvent instanceof routerEvents.NavigationCancel) {
-              return rxjs__default.of(nextEvent);
-            } else {
-              return makeCanLoadResponse$_(events$, event).pipe(operators__default.switchMap(function (nextEvent) {
-                if (nextEvent instanceof routerEvents.NavigationCancel) {
-                  return rxjs__default.of(nextEvent);
-                } else {
-                  return makeCanActivateChildResponse$_(events$, event);
-                }
-              }));
-            }
-          }));
-        } else if (event instanceof routerEvents.ChildActivationStart) {
-          return makeCanActivateResponse$_(events$, event);
-        } else {
-          return rxjs__default.of(event);
-        }
-      }), operators__default.tap(function (event) {
-        var _a, _b, _c;
-
-        currentEvent = event; // console.log('RouterEvent', event);
-
-        if (event instanceof routerEvents.NavigationStart) {
-          // console.log('NavigationStart', event.routerLink);
-          var routerLink = event.routerLink; // console.log('routerLink', routerLink);
-
-          var snapshot = void 0;
-          var initialUrl = void 0;
-          var routePath = RouterService.getPath(routerLink); // console.log(routePath, routePath.url);
-
-          initialUrl = routePath.url; // console.log('initialUrl', initialUrl);
-
-          var isRelative = initialUrl.indexOf('/') !== 0;
-
-          if (isRelative && currentRoute && ((_a = currentRoute.children) === null || _a === void 0 ? void 0 : _a.length)) {
-            snapshot = resolveRoutes_(routes, currentRoute.children, initialUrl, currentRoute);
-
-            if (snapshot) {
-              currentRoute.childRoute = snapshot;
-              snapshot.parent = currentRoute;
-              snapshot = currentRoute;
-            } // console.log('relative', currentRoute, snapshot, initialUrl);
-
-          } else {
-            snapshot = resolveRoutes_(routes, routes, initialUrl, currentRoute); // console.log('absolute');
-          }
-
-          if (snapshot) {
-            // console.log('RouterService.makeObserve$_', 'NavigationStart', snapshot);
-            currentRoute = snapshot;
-            events$.next(new routerEvents.RoutesRecognized(tslib_1.__assign(tslib_1.__assign({}, event), {
-              route: snapshot
-            })));
-          } else {
-            events$.next(new routerEvents.NavigationError(tslib_1.__assign(tslib_1.__assign({}, event), {
-              error: new Error('unknown route')
-            })));
-          }
-        } else if (event instanceof routerEvents.RoutesRecognized) {
-          // console.log('RoutesRecognized', event.route.component, event.route.initialUrl, event.route.extractedUrl, event.route.urlAfterRedirects);
-          events$.next(new routerEvents.GuardsCheckStart(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.GuardsCheckStart) {
-          // console.log('GuardsCheckStart', event);
-          events$.next(new routerEvents.ChildActivationStart(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.ChildActivationStart) {
-          // console.log('ChildActivationStart', event);
-          events$.next(new routerEvents.ActivationStart(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.ActivationStart) {
-          // console.log('ActivationStart', event);
-          events$.next(new routerEvents.GuardsCheckEnd(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.GuardsCheckEnd) {
-          // console.log('GuardsCheckEnd', event);
-          events$.next(new routerEvents.ResolveStart(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.ResolveStart) {
-          // console.log('ResolveStart', event);
-          events$.next(new routerEvents.ResolveEnd(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.ResolveEnd) {
-          // console.log('ResolveEnd', event);
-          events$.next(new routerEvents.ActivationEnd(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.ActivationEnd) {
-          // console.log('ActivationEnd', event);
-          events$.next(new routerEvents.ChildActivationEnd(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.ChildActivationEnd) {
-          // console.log('ChildActivationEnd', event);
-          events$.next(new routerEvents.RouteConfigLoadStart(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.RouteConfigLoadStart) {
-          // console.log('RouteConfigLoadStart', event);
-          events$.next(new routerEvents.RouteConfigLoadEnd(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.RouteConfigLoadEnd) {
-          // console.log('RouteConfigLoadEnd', event);
-          events$.next(new routerEvents.NavigationEnd(tslib_1.__assign({}, event)));
-        } else if (event instanceof routerEvents.NavigationEnd) {
-          // console.log('NavigationEnd', event);
-          var segments = [];
-          var source = event.route;
-
-          while (source != null) {
-            // console.log(source.params, source.data);
-            if ((_b = source.extractedUrl) === null || _b === void 0 ? void 0 : _b.length) {
-              segments.push(source.extractedUrl);
-            }
-
-            if (source.childRoute) {
-              source = source.childRoute;
-            } else {
-              if ((_c = source.remainUrl) === null || _c === void 0 ? void 0 : _c.length) {
-                segments[segments.length - 1] = segments[segments.length - 1] + source.remainUrl;
-              }
-
-              source = undefined;
-            }
-          }
-
-          var extractedUrl = segments.join('/').replace(/\/\//g, '/');
-          console.log('NavigationEnd', event.route.extractedUrl, event.route);
-          clearRoutes_(routes, event.route);
-          locationStrategy.pushState(extractedUrl, event.route, event.trigger === 'popstate'); // pushState_(locationStrategy, extractedUrl, undefined, event.trigger === 'popstate');
-
-          route$.next(event.route);
-        } else if (event instanceof routerEvents.NavigationCancel) {
-          // console.log('NavigationCancel', event.reason, event.redirectTo);
-          if (event.redirectTo) {
-            // const routePath: RoutePath = RouterService.getPath(event.redirectTo);
-            events$.next(new routerEvents.NavigationStart({
-              routerLink: event.redirectTo,
-              trigger: 'imperative'
-            }));
-          }
-        } else if (event instanceof routerEvents.NavigationError) {
-          console.warn('RouterService NavigationError', event.error);
-        }
-      }), operators__default.catchError(function (error) {
-        return rxjs__default.of(new routerEvents.NavigationError(tslib_1.__assign(tslib_1.__assign({}, currentEvent || {}), {
-          error: error
-        })));
-      }), operators__default.shareReplay(1));
-    };
-
-    RouterService.setRouterLink = function (routerLink, extras) {
-      // console.log('RouterService.setRouterLink', routerLink);
-
-
-      this.events$.next(new routerEvents.NavigationStart({
-        routerLink: routerLink,
-        trigger: 'imperative'
-      }));
-    };
-
-    RouterService.navigate = function (routerLink, extras) {
-      // navigate(['/heroes', { id: heroId }]);
-      // console.log('RouterService.navigate', routerLink);
-
-
-      this.events$.next(new routerEvents.NavigationStart({
-        routerLink: routerLink,
-        trigger: 'imperative'
-      }));
-    };
-
-    RouterService.findRoute = function (routerLink) {
-      var initialUrl = this.locationStrategy.serializeLink(routerLink);
-      return this.findRouteByUrl(initialUrl);
-    };
-
-    RouterService.findRouteByUrl = function (initialUrl) {
-      var e_1, _a;
-
-      var queryString = null;
-
-      if (initialUrl.indexOf('?') !== -1) {
-        var urlComponents = initialUrl.split('?');
-        initialUrl = urlComponents[0];
-        queryString = urlComponents[1];
-      }
-
-      var routes = getFlatRoutes_(this.routes);
-      var resolvedRoute = null;
-      var lastMatcbesLength = Number.NEGATIVE_INFINITY;
-
-      try {
-        for (var routes_1 = tslib_1.__values(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
-          var route = routes_1_1.value;
-          var matches = initialUrl.match(route.matcher);
-
-          if (matches && (!resolvedRoute || matches[0].length > lastMatcbesLength)) {
-            lastMatcbesLength = matches[0].length;
-            resolvedRoute = route;
-          }
-        }
-      } catch (e_1_1) {
-        e_1 = {
-          error: e_1_1
+        if (i >= o.length) return {
+          done: true
         };
-      } finally {
-        try {
-          if (routes_1_1 && !routes_1_1.done && (_a = routes_1.return)) _a.call(routes_1);
-        } finally {
-          if (e_1) throw e_1.error;
-        }
-      }
-
-      if (resolvedRoute && resolvedRoute.redirectTo && resolvedRoute.redirectTo !== initialUrl) {
-        // urlAfterRedirects = initialUrl;
-        // const routePath: RoutePath = RouterService.getPath(resolvedRoute.redirectTo);
-        // urlAfterRedirects = routePath.url;
-        // urlAfterRedirects = resolvedRoute.redirectTo;
-        resolvedRoute = this.findRouteByUrl(resolvedRoute.redirectTo); // !!! remove visited route?
-      } // console.log('RouterService.findRouteByUrl', resolvedRoute);
-
-
-      return resolvedRoute;
-    };
-
-    RouterService.getPath = function (routerLink) {
-      var _this = this;
-
-      if (routerLink === void 0) {
-        routerLink = [];
-      }
-
-      var lastPath = (Array.isArray(routerLink) ? routerLink : [routerLink]).map(function (x) {
-        return typeof x === 'string' ? x : _this.locationStrategy.encodeParams(x);
-      }).join('/');
-      var segments = [];
-      var routes = [];
-      var route = this.findRouteByUrl(lastPath);
-
-      if (route) {
-        var r = route === null || route === void 0 ? void 0 : route.parent;
-
-        while (r) {
-          segments.unshift.apply(segments, r.segments);
-          routes.unshift(r instanceof routeSnapshot.RouteSnapshot ? r : r.snapshot || r);
-          r = r.parent;
-        }
-
-        segments.push.apply(segments, (route === null || route === void 0 ? void 0 : route.segments) || []);
-        routes.push({
-          path: lastPath
-        });
-      }
-
-      var initialUrl = routes.map(function (r) {
-        return r instanceof routeSnapshot.RouteSnapshot ? r.extractedUrl : r.path;
-      }).join('/');
-      initialUrl = this.locationStrategy.getPath(initialUrl); // console.log('RouterService.getPath', initialUrl);
-
-      var routePath$1 = new routePath.RoutePath(initialUrl, segments, route || undefined, this.locationStrategy);
-      return routePath$1;
-    };
-
-    Object.defineProperty(RouterService, "locationStrategy", {
-      get: function get() {
-        if (this.locationStrategy_) {
-          return this.locationStrategy_;
-        } else {
-          return this.locationStrategy_ = new location_strategy.LocationStrategyPath();
-        }
-      },
-      enumerable: false,
-      configurable: true
-    });
-
-    RouterService.useLocationStrategy = function (locationStrategyFactory) {
-      this.locationStrategy_ = new locationStrategyFactory();
-    };
-
-    RouterService.routes = [];
-    RouterService.route$ = new rxjs__default.ReplaySubject(1);
-    RouterService.events$ = new rxjs__default.ReplaySubject(1);
-    return RouterService;
-  }();
-
-  exports.default = RouterService;
-
-  function getFlatRoutes_(routes) {
-    var reduceRoutes = function reduceRoutes(routes) {
-      return routes.reduce(function (p, c) {
-        p.push(c);
-        p.push.apply(p, reduceRoutes(c.children || []));
-        return p;
-      }, []);
-    };
-
-    return reduceRoutes(routes);
-  }
-
-  function getFlatSnapshots_(currentSnapshot) {
-    var snapshots = [currentSnapshot];
-    var childRoute = currentSnapshot.childRoute;
-
-    while (childRoute) {
-      snapshots.push(childRoute);
-      childRoute = childRoute.childRoute;
-    }
-
-    return snapshots;
-  }
-
-  function clearRoutes_(routes, currentSnapshot) {
-    var snapshots = getFlatSnapshots_(currentSnapshot);
-    var flatRoutes = getFlatRoutes_(routes);
-    flatRoutes.forEach(function (route) {
-      if (route.snapshot && snapshots.indexOf(route.snapshot) === -1) {
-        route.snapshot = undefined;
-      }
-      /* else {
-        console.log(route);
-      }*/
-
-    });
-  }
-
-  function resolveRoutes_(routes, childRoutes, initialUrl, previousRoute) {
-    var e_2, _a;
-
-    var resolvedSnapshot;
-
-    try {
-      for (var childRoutes_1 = tslib_1.__values(childRoutes), childRoutes_1_1 = childRoutes_1.next(); !childRoutes_1_1.done; childRoutes_1_1 = childRoutes_1.next()) {
-        var route = childRoutes_1_1.value;
-        var snapshot = resolveRoute_(routes, route, initialUrl, previousRoute);
-
-        if (snapshot) {
-          if (resolvedSnapshot) {
-            /*
-            if (snapshot.remainUrl.length < resolvedSnapshot.remainUrl.length) {
-                // console.log('RouterService.resolveRoutes_', snapshot.remainUrl.length, '<', resolvedSnapshot.remainUrl.length, snapshot.path, snapshot.remainUrl);
-            }
-            */
-            resolvedSnapshot = snapshot.remainUrl.length < resolvedSnapshot.remainUrl.length ? snapshot : resolvedSnapshot;
-          } else {
-            resolvedSnapshot = snapshot;
-          }
-        }
-      }
-    } catch (e_2_1) {
-      e_2 = {
-        error: e_2_1
-      };
-    } finally {
-      try {
-        if (childRoutes_1_1 && !childRoutes_1_1.done && (_a = childRoutes_1.return)) _a.call(childRoutes_1);
-      } finally {
-        if (e_2) throw e_2.error;
-      }
-    }
-
-    return resolvedSnapshot; // return childRoutes.reduce<RouteSnapshot | undefined>((p, route) => p || resolveRoute_(routes, route, initialUrl), undefined);
-  }
-
-  function resolveRoute_(routes, route, initialUrl, previousRoute) {
-    var _a; // console.log('resolveRoute_', initialUrl);
-
-
-    var urlAfterRedirects;
-    var extractedUrl = '';
-    var queryString = null;
-
-    if (initialUrl.indexOf('?') !== -1) {
-      var urlComponents = initialUrl.split('?');
-      initialUrl = urlComponents[0];
-      queryString = urlComponents[1];
-    }
-
-    var remainUrl = initialUrl;
-    var match = initialUrl.match(route.matcher); // console.log('RouterService.resolveRoute_', route.matcher, match?.length, initialUrl, '=>', route.path);
-
-    if (!match) {
-      // console.log('RouterService.resolveRoute_', initialUrl, '=>', route.path);
-      return undefined;
-    }
-
-    if (route.redirectTo) {
-      // console.log('RouterService.resolveRoute_', 'match', initialUrl, '=>', route.redirectTo, match);
-      var routePath_1 = RouterService.getPath(route.redirectTo);
-      return resolveRoutes_(routes, routes.filter(function (x) {
-        return x !== route;
-      }), routePath_1.url, previousRoute);
-    }
-    /* else {
-      // console.log('RouterService.resolveRoute_', 'match', initialUrl, '=>', route.path, match);
-    }*/
-
-
-    extractedUrl = match[0];
-    remainUrl = initialUrl.substring(match[0].length, initialUrl.length);
-    var routePath$1 = new routePath.RoutePath(extractedUrl, route.segments, undefined, RouterService.locationStrategy);
-    var params = routePath$1.params;
-    var snapshot = new routeSnapshot.RouteSnapshot(tslib_1.__assign(tslib_1.__assign({}, route), {
-      initialUrl: initialUrl,
-      urlAfterRedirects: urlAfterRedirects,
-      extractedUrl: extractedUrl,
-      remainUrl: remainUrl,
-      params: params
-    }));
-    snapshot.previousRoute = previousRoute;
-    route.snapshot = snapshot;
-
-    if (snapshot && snapshot.remainUrl.length && ((_a = route.children) === null || _a === void 0 ? void 0 : _a.length)) {
-      var childSnapshot = resolveRoutes_(routes, route.children, snapshot.remainUrl, previousRoute);
-      snapshot.childRoute = childSnapshot;
-
-      if (childSnapshot) {
-        childSnapshot.parent = snapshot;
-        snapshot.remainUrl = childSnapshot.remainUrl;
-      }
-    } // console.log('RouterService.resolveRoute_', snapshot.path, snapshot.extractedUrl, snapshot.remainUrl);
-
-    /*
-    // !!!
-    if (queryString) {
-        snapshot.queryParams
-    }
-    */
-
-
-    return snapshot;
-  }
-
-  function makeActivatorResponse$_(event, activators) {
-    // console.log('makeActivatorResponse$_', event);
-    return rxjs__default.combineLatest.apply(void 0, tslib_1.__spread(activators)).pipe(operators__default.map(function (values) {
-      var canActivate = values.reduce(function (p, c) {
-        return p === true ? c === true ? true : c : p;
-      }, true);
-
-      if (canActivate === true) {
-        return event;
-      } else {
-        var cancelEvent = tslib_1.__assign(tslib_1.__assign({}, event), {
-          reason: 'An activation guard has dismissed navigation to the route.'
-        });
-
-        if (canActivate !== false) {
-          var routePath = RouterService.getPath(canActivate);
-          cancelEvent.redirectTo = [routePath.url];
-        }
-
-        return new routerEvents.NavigationCancel(cancelEvent);
-      }
-    }));
-  }
-
-  function makeCanDeactivateResponse$_(events$, event, currentRoute) {
-    // console.log('makeCanDeactivateResponse$_', event);
-    if (event.route.canDeactivate && event.route.canDeactivate.length) {
-      var route = event.route;
-      var instance_1 = rxcomp__default.getContextByNode(event.route.element).instance;
-      return makeActivatorResponse$_(event, route.canDeactivate.map(function (x) {
-        return x(instance_1, currentRoute);
-      }));
-    } else {
-      return rxjs__default.of(event);
-    }
-  }
-
-  function makeCanLoadResponse$_(events$, event) {
-    // console.log('makeCanLoadResponse$_', event);
-    if (event.route.canLoad && event.route.canLoad.length) {
-      var route_2 = event.route;
-      return makeActivatorResponse$_(event, route_2.canLoad.map(function (x) {
-        return x(route_2, route_2.segments);
-      }));
-    } else {
-      return rxjs__default.of(event);
-    }
-  }
-
-  function makeCanActivateChildResponse$_(events$, event) {
-    // console.log('makeCanActivateChildResponse$_', event, event.route.childRoute);
-    var reduceChildRouteActivators_ = function reduceChildRouteActivators_(route, activators) {
-      // console.log('reduceChildRouteActivators_', route.canActivateChild, route.childRoute);
-      while (route != null && route.canActivateChild && route.canActivateChild.length && route.childRoute) {
-        var routeActivators = route.canActivateChild.map(function (x) {
-          return x(route.childRoute);
-        });
-        Array.prototype.push.apply(activators, routeActivators);
-        route = route.childRoute;
-      }
-
-      return activators;
-    };
-
-    var activators = reduceChildRouteActivators_(event.route, []); // console.log('makeCanActivateChildResponse$_', activators);
-
-    if (activators.length) {
-      return makeActivatorResponse$_(event, activators);
-    } else {
-      return rxjs__default.of(event);
-    }
-  }
-
-  function makeCanActivateResponse$_(events$, event) {
-    // console.log('makeCanActivateResponse$_', event);
-    if (event.route.canActivate && event.route.canActivate.length) {
-      var route_3 = event.route;
-      return makeActivatorResponse$_(event, route_3.canActivate.map(function (x) {
-        return x(route_3);
-      }));
-    } else {
-      return rxjs__default.of(event);
-    }
-  }
-});var routerLink_directive = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var router_service_1 = tslib_1.__importDefault(router_service);
-
-  var RouterLinkDirective =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RouterLinkDirective, _super);
-
-    function RouterLinkDirective() {
-      return _super !== null && _super.apply(this, arguments) || this;
-    }
-
-    Object.defineProperty(RouterLinkDirective.prototype, "routerLink", {
-      get: function get() {
-        return this.routerLink_;
-      },
-      set: function set(routerLink) {
-        this.routerLink_ = Array.isArray(routerLink) ? routerLink : [routerLink];
-        this.segments = this.getSegments(this.routerLink_);
-      },
-      enumerable: false,
-      configurable: true
-    });
-
-    RouterLinkDirective.prototype.getSegments = function (routerLink) {
-      // console.log('RouterLinkDirective.getSegments', routerLink);
-      var segments = [];
-      routerLink.forEach(function (item) {
-        var e_1, _a;
-
-        if (typeof item === 'string') {
-          var regExp = /([^:]+)|\:([^\/]+)/g;
-          var matches = item.matchAll(regExp);
-          var components = [];
-
-          try {
-            for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
-              var match = matches_1_1.value;
-              var g1 = match[1];
-              var g2 = match[2];
-
-              if (g1) {
-                components.push(g1);
-              } else if (g2) {
-                var param = {};
-                param[g2] = null;
-                components.push(param);
-              }
-            }
-          } catch (e_1_1) {
-            e_1 = {
-              error: e_1_1
-            };
-          } finally {
-            try {
-              if (matches_1_1 && !matches_1_1.done && (_a = matches_1.return)) _a.call(matches_1);
-            } finally {
-              if (e_1) throw e_1.error;
-            }
-          }
-        } else {
-          segments.push(new routeSegment.RouteSegment('', {}));
-        }
-      });
-      return segments;
-    };
-
-    RouterLinkDirective.prototype.onInit = function () {
-      // const { node, module } = getContext(this);
-      // console.log('RouterLinkDirective.onInit', this.routerLink, node, module);
-      this.routerLink$().pipe(operators__default.takeUntil(this.unsubscribe$)).subscribe();
-    };
-
-    RouterLinkDirective.prototype.routerLink$ = function () {
-      var _this = this;
-
-      var node = rxcomp__default.getContext(this).node;
-      return rxjs__default.fromEvent(node, 'click').pipe(operators__default.map(function (event) {
-        // console.log('RouterLinkDirective', event, this.routerLink);
-        // !!! skipLocationChange
-        var navigationExtras = {
-          skipLocationChange: _this.skipLocationChange,
-          replaceUrl: _this.replaceUrl,
-          state: _this.state
+        return {
+          done: false,
+          value: o[i++]
         };
-        router_service_1.default.setRouterLink(_this.routerLink, navigationExtras);
-        event.preventDefault();
-        return false;
-      }));
-    };
-
-    RouterLinkDirective.prototype.onChanges = function () {
-      var node = rxcomp__default.getContext(this).node;
-      var routePath = router_service_1.default.getPath(this.routerLink_); // console.log('RouterLinkDirective.routePath', routePath);
-
-      node.setAttribute('href', routePath.url);
-    };
-
-    RouterLinkDirective.meta = {
-      selector: '[routerLink]',
-      inputs: ['routerLink']
-    };
-    return RouterLinkDirective;
-  }(rxcomp__default.Directive);
-
-  exports.default = RouterLinkDirective;
-  /*
-  get urlTree(): UrlTree {
-      return RouterService.createUrlTree(this.routerLink, {
-          relativeTo: this.route,
-          queryParams: this.queryParams,
-          fragment: this.fragment,
-          preserveQueryParams: this.preserve,
-          queryParamsHandling: this.queryParamsHandling,
-          preserveFragment: this.preserveFragment,
-      });
-  }
-  */
-});var routerLinkActive_directive = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var router_link_directive_1 = tslib_1.__importDefault(routerLink_directive);
-
-  var router_service_1 = tslib_1.__importDefault(router_service);
-
-  var RouterLinkActiveDirective =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RouterLinkActiveDirective, _super);
-
-    function RouterLinkActiveDirective() {
-      var _this = _super !== null && _super.apply(this, arguments) || this;
-
-      _this.keys = [];
-      return _this;
+      };
     }
 
-    RouterLinkActiveDirective.prototype.onChanges = function () {
-      // console.log('RouterLinkActive.onChanges');
-      var node = rxcomp__default.getContext(this).node;
-      node.classList.remove.apply(node.classList, this.keys);
-      var keys = [];
-      var active = this.isActive();
-
-      if (active) {
-        var object = this.routerLinkActive;
-
-        if (typeof object === 'object') {
-          for (var key in object) {
-            if (object[key]) {
-              keys.push(key);
-            }
-          }
-        } else if (typeof object === 'string') {
-          keys = object.split(' ').filter(function (x) {
-            return x.length;
-          });
-        }
-      }
-
-      node.classList.add.apply(node.classList, keys);
-      this.keys = keys; // console.log('RouterLinkActive.onChanges', active, keys);
-    };
-
-    RouterLinkActiveDirective.prototype.isActive = function () {
-      var _a;
-
-      var path = router_service_1.default.getPath(this.host.routerLink);
-      var isActive = ((_a = path.route) === null || _a === void 0 ? void 0 : _a.snapshot) != null; // console.log('RouterLinkActive.isActive', isActive, path.route);
-
-      return isActive;
-    };
-
-    RouterLinkActiveDirective.meta = {
-      selector: '[routerLinkActive],[[routerLinkActive]]',
-      hosts: {
-        host: router_link_directive_1.default
-      },
-      inputs: ['routerLinkActive']
-    };
-    return RouterLinkActiveDirective;
-  }(rxcomp__default.Directive);
-
-  exports.default = RouterLinkActiveDirective;
-});var transition = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.transitionOnced = exports.transitionOnce = exports.transition$ = void 0; // !!! change boolean to void
-
-  function transition$(callback) {
-    return rxjs__default.Observable.create(function (observer) {
-      // let subscription: Subscription;
-      try {
-        if (rxcomp__default.isPlatformBrowser) {
-          callback(function (result) {
-            observer.next(result);
-            observer.complete();
-          });
-        } else {
-          observer.next(true);
-          observer.complete();
-        }
-      } catch (error) {
-        observer.error(error);
-      }
-      /*
-      return () => {
-          if (subscription) {
-              subscription.unsubscribe();
-          }
-      }
-      */
-
-    });
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
-  exports.transition$ = transition$; // !!! should make transition specific?
-
-  function transitionOnce() {
-    sessionStorageSet_('rxcomp_transition_once_', true);
-  }
-
-  exports.transitionOnce = transitionOnce;
-
-  function transitionOnced() {
-    return sessionStorageGet_('rxcomp_transition_once_');
-  }
-
-  exports.transitionOnced = transitionOnced;
-  var MEMORY = {};
-
-  function sessionStorageGet_(key) {
-    var value;
-
-    try {
-      var storage = rxcomp__default.WINDOW.sessionStorage;
-      value = storage.getItem(key) || null;
-    } catch (error) {
-      value = MEMORY[key];
-    }
-
-    return value;
-  }
-
-  function sessionStorageSet_(key, value) {
-    try {
-      var storage = rxcomp__default.WINDOW.sessionStorage;
-      storage.setItem(key, value);
-    } catch (error) {
-      MEMORY[key] = value;
-    }
-  }
-});var routerOutlet_structure = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var view_1 = tslib_1.__importStar(view);
-
-  var router_service_1 = tslib_1.__importDefault(router_service);
-
-  var RouterOutletStructure =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RouterOutletStructure, _super);
-
-    function RouterOutletStructure() {
-      var _this = _super !== null && _super.apply(this, arguments) || this;
-
-      _this.route$_ = new rxjs__default.ReplaySubject(1);
-      return _this;
-    }
-
-    Object.defineProperty(RouterOutletStructure.prototype, "route", {
-      get: function get() {
-        return this.route_;
-      },
-      enumerable: false,
-      configurable: true
-    });
-
-    RouterOutletStructure.prototype.onInit = function () {
-      var _this = this;
-
-      var _a;
-
-      this.route$().pipe(operators__default.switchMap(function (snapshot) {
-        return _this.factory$(snapshot);
-      }), operators__default.takeUntil(this.unsubscribe$)).subscribe(function () {// console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
-      });
-
-      if (this.host) {
-        this.route$_.next((_a = this.host.route) === null || _a === void 0 ? void 0 : _a.childRoute);
-      }
-    };
-
-    RouterOutletStructure.prototype.onChanges = function () {
-      var _a;
-
-      if (this.host) {
-        this.route$_.next((_a = this.host.route) === null || _a === void 0 ? void 0 : _a.childRoute);
-      }
-    };
-
-    RouterOutletStructure.prototype.route$ = function () {
-      var _this = this;
-
-      var source = this.host ? this.route$_ : router_service_1.default.route$;
-      return source.pipe(operators__default.filter(function (snapshot) {
-        _this.route_ = snapshot; // !!!
-
-        if (_this.snapshot_ && snapshot && _this.snapshot_.component === snapshot.component) {
-          _this.snapshot_.next(snapshot);
-
-          return false;
-        } else {
-          _this.snapshot_ = snapshot;
-          return true;
-        }
-      }));
-    };
-
-    RouterOutletStructure.prototype.factory$ = function (snapshot) {
-      var _this = this;
-
-      var _a = rxcomp__default.getContext(this),
-          module = _a.module,
-          node = _a.node;
-
-      var factory = snapshot === null || snapshot === void 0 ? void 0 : snapshot.component;
-
-      if (this.factory_ !== factory) {
-        this.factory_ = factory;
-        return this.onLeave$_(snapshot, this.element, this.instance).pipe(operators__default.tap(function () {
-          if (_this.element) {
-            _this.element.parentNode.removeChild(_this.element);
-
-            module.remove(_this.element, _this);
-            _this.element = undefined;
-            _this.instance = undefined;
-          }
-        }), operators__default.switchMap(function () {
-          if (snapshot && factory && factory.meta.template) {
-            var element_1 = document.createElement('div');
-            element_1.innerHTML = factory.meta.template;
-
-            if (element_1.children.length === 1) {
-              element_1 = element_1.firstElementChild;
-            }
-
-            node.appendChild(element_1);
-            var instance_1 = module.makeInstance(element_1, factory, factory.meta.selector, _this, undefined, {
-              route: snapshot
-            });
-            module.compile(element_1, instance_1);
-            _this.instance = instance_1;
-            _this.element = element_1;
-            snapshot.element = element_1;
-            return _this.onOnce$_(snapshot, element_1, instance_1).pipe(operators__default.switchMap(function () {
-              return _this.onEnter$_(snapshot, element_1, instance_1);
-            }));
-          } else {
-            return rxjs__default.of(void 0);
-          }
-        }));
-      } else {
-        return rxjs__default.of(void 0);
-      }
-    };
-    /*
-    private onEnter$__(element?: IElement, instance?: Component): Observable<boolean> {
-        if (instance instanceof View && element) {
-            return asObservable([element], instance.onEnter);
-        } else {
-            return of(true);
-        }
-    }
-    private onLeave$__(element?: IElement, instance?: Component): Observable<boolean> {
-        if (instance instanceof View && element) {
-            return asObservable([element], instance.onLeave);
-        } else {
-            return of(true);
-        }
-    }
-    */
-
-
-    RouterOutletStructure.prototype.onOnce$_ = function (snapshot, element, instance) {
-      if (!transition.transitionOnced() && instance instanceof view_1.default && element) {
-        transition.transitionOnce();
-        var factory = instance.constructor;
-        var transition$1 = factory.transitions.find(function (x) {
-          var _a;
-
-          return x instanceof view_1.OnceTransition && x.matcher((_a = snapshot.previousRoute) === null || _a === void 0 ? void 0 : _a.path);
-        });
-        return transition$1 ? observable.asObservable([element, snapshot.previousRoute], transition$1.callback.bind(instance)) : rxjs__default.of(void 0);
-      } else {
-        return rxjs__default.of(void 0);
-      }
-    };
-
-    RouterOutletStructure.prototype.onEnter$_ = function (snapshot, element, instance) {
-      if (instance instanceof view_1.default && element) {
-        var factory = instance.constructor;
-        var transition = factory.transitions.find(function (x) {
-          var _a;
-
-          return x instanceof view_1.EnterTransition && x.matcher((_a = snapshot.previousRoute) === null || _a === void 0 ? void 0 : _a.path);
-        });
-        return transition ? observable.asObservable([element, snapshot.previousRoute], transition.callback.bind(instance)) : rxjs__default.of(void 0);
-      } else {
-        return rxjs__default.of(void 0);
-      }
-    };
-
-    RouterOutletStructure.prototype.onLeave$_ = function (snapshot, element, instance) {
-      if (instance instanceof view_1.default && element) {
-        var factory = instance.constructor;
-        var transition = factory.transitions.find(function (x) {
-          return x instanceof view_1.LeaveTransition && x.matcher(snapshot === null || snapshot === void 0 ? void 0 : snapshot.path);
-        });
-        return transition ? observable.asObservable([element, snapshot], transition.callback.bind(instance)) : rxjs__default.of(void 0);
-      } else {
-        return rxjs__default.of(void 0);
-      }
-    };
-
-    RouterOutletStructure.meta = {
-      selector: 'router-outlet,[router-outlet]',
-      hosts: {
-        host: RouterOutletStructure
-      }
-    };
-    return RouterOutletStructure;
-  }(rxcomp__default.Structure);
-
-  exports.default = RouterOutletStructure;
-});var router_module = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var router_link_active_directive_1 = tslib_1.__importDefault(routerLinkActive_directive);
-
-  var router_link_directive_1 = tslib_1.__importDefault(routerLink_directive);
-
-  var router_outlet_structure_1 = tslib_1.__importDefault(routerOutlet_structure);
-
-  var router_service_1 = tslib_1.__importDefault(router_service);
-
-  var factories = [router_outlet_structure_1.default, router_link_directive_1.default, router_link_active_directive_1.default];
-  var pipes = [];
-  /**
-   *  RouterModule Class.
-   * @example
-   * export default class AppModule extends Module {}
-   *
-   * AppModule.meta = {
-   *  imports: [
-   *   CoreModule,
-   *   RouterModule.forRoot([
-   *    { path: '', redirectTo: '/index', pathMatch: 'full' },
-   *    { path: 'index', component: IndexComponent, data: { title: 'Index' } }
-   *   ])
-   *  ],
-   *  declarations: [
-   *   IndexComponent
-   *  ],
-   *  bootstrap: AppComponent,
-   * };
-   * @extends Module
-   */
-
-  var RouterModule =
-  /** @class */
-  function (_super) {
-    tslib_1.__extends(RouterModule, _super);
-
-    function RouterModule() {
-      var _this = _super.call(this) || this; // console.log('RouterModule');
-
-
-      router_service_1.default.observe$.pipe(operators__default.tap(function (event) {
-        var _a;
-
-        if (event instanceof routerEvents.NavigationEnd || event instanceof routerEvents.NavigationCancel || event instanceof routerEvents.NavigationError) {
-          if ((_a = _this.instances) === null || _a === void 0 ? void 0 : _a.length) {
-            var root = _this.instances[0];
-            root.pushChanges();
-          }
-        }
-      }), operators__default.takeUntil(_this.unsubscribe$)).subscribe();
-      router_service_1.default.navigate("" + (location.pathname === '' ? '/' : location.pathname) + location.search + location.hash);
-      return _this;
-    }
-
-    RouterModule.forRoot = function (routes) {
-      router_service_1.default.setRoutes(routes);
-      return this;
-    };
-
-    RouterModule.useStrategy = function (locationStrategyType) {
-      router_service_1.default.useLocationStrategy(locationStrategyType);
-      return this;
-    };
-
-    RouterModule.meta = {
-      declarations: tslib_1.__spread(factories, pipes),
-      exports: tslib_1.__spread(factories, pipes)
-    };
-    return RouterModule;
-  }(rxcomp__default.Module);
-
-  exports.default = RouterModule;
-});var router_types = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.RouteLocationStrategy = void 0;
-  var RouteLocationStrategy;
-
-  (function (RouteLocationStrategy) {
-    RouteLocationStrategy["Path"] = "path";
-    RouteLocationStrategy["Hash"] = "hash";
-  })(RouteLocationStrategy = exports.RouteLocationStrategy || (exports.RouteLocationStrategy = {}));
-});var rxcompRouter = createCommonjsModule(function (module, exports) {
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  Object.defineProperty(exports, "View", {
-    enumerable: true,
-    get: function get() {
-      return view.default;
-    }
-  });
-  Object.defineProperty(exports, "EnterTransition", {
-    enumerable: true,
-    get: function get() {
-      return view.EnterTransition;
-    }
-  });
-  Object.defineProperty(exports, "LeaveTransition", {
-    enumerable: true,
-    get: function get() {
-      return view.LeaveTransition;
-    }
-  });
-  Object.defineProperty(exports, "Transition", {
-    enumerable: true,
-    get: function get() {
-      return view.Transition;
-    }
-  });
-  Object.defineProperty(exports, "LocationStrategy", {
-    enumerable: true,
-    get: function get() {
-      return location_strategy.LocationStrategy;
-    }
-  });
-  Object.defineProperty(exports, "LocationStrategyHash", {
-    enumerable: true,
-    get: function get() {
-      return location_strategy.LocationStrategyHash;
-    }
-  });
-  Object.defineProperty(exports, "LocationStrategyPath", {
-    enumerable: true,
-    get: function get() {
-      return location_strategy.LocationStrategyPath;
-    }
-  });
-  Object.defineProperty(exports, "asObservable", {
-    enumerable: true,
-    get: function get() {
-      return observable.asObservable;
-    }
-  });
-  Object.defineProperty(exports, "isPromise", {
-    enumerable: true,
-    get: function get() {
-      return observable.isPromise;
-    }
-  });
-  Object.defineProperty(exports, "Route", {
-    enumerable: true,
-    get: function get() {
-      return route.Route;
-    }
-  });
-  Object.defineProperty(exports, "RoutePath", {
-    enumerable: true,
-    get: function get() {
-      return routePath.RoutePath;
-    }
-  });
-  Object.defineProperty(exports, "RouteSegment", {
-    enumerable: true,
-    get: function get() {
-      return routeSegment.RouteSegment;
-    }
-  });
-  Object.defineProperty(exports, "RouteSnapshot", {
-    enumerable: true,
-    get: function get() {
-      return routeSnapshot.RouteSnapshot;
-    }
-  });
-  Object.defineProperty(exports, "RouterModule", {
-    enumerable: true,
-    get: function get() {
-      return router_module.default;
-    }
-  });
-  Object.defineProperty(exports, "RouteLocationStrategy", {
-    enumerable: true,
-    get: function get() {
-      return router_types.RouteLocationStrategy;
-    }
-  });
-  Object.defineProperty(exports, "ActivationEnd", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.ActivationEnd;
-    }
-  });
-  Object.defineProperty(exports, "ActivationStart", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.ActivationStart;
-    }
-  });
-  Object.defineProperty(exports, "ChildActivationEnd", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.ChildActivationEnd;
-    }
-  });
-  Object.defineProperty(exports, "ChildActivationStart", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.ChildActivationStart;
-    }
-  });
-  Object.defineProperty(exports, "GuardsCheckEnd", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.GuardsCheckEnd;
-    }
-  });
-  Object.defineProperty(exports, "GuardsCheckStart", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.GuardsCheckStart;
-    }
-  });
-  Object.defineProperty(exports, "NavigationCancel", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.NavigationCancel;
-    }
-  });
-  Object.defineProperty(exports, "NavigationEnd", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.NavigationEnd;
-    }
-  });
-  Object.defineProperty(exports, "NavigationError", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.NavigationError;
-    }
-  });
-  Object.defineProperty(exports, "NavigationStart", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.NavigationStart;
-    }
-  });
-  Object.defineProperty(exports, "ResolveEnd", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.ResolveEnd;
-    }
-  });
-  Object.defineProperty(exports, "ResolveStart", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.ResolveStart;
-    }
-  });
-  Object.defineProperty(exports, "RouteConfigLoadEnd", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.RouteConfigLoadEnd;
-    }
-  });
-  Object.defineProperty(exports, "RouteConfigLoadStart", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.RouteConfigLoadStart;
-    }
-  });
-  Object.defineProperty(exports, "RouterEvent", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.RouterEvent;
-    }
-  });
-  Object.defineProperty(exports, "RoutesRecognized", {
-    enumerable: true,
-    get: function get() {
-      return routerEvents.RoutesRecognized;
-    }
-  });
-  Object.defineProperty(exports, "RouterLinkActiveDirective", {
-    enumerable: true,
-    get: function get() {
-      return routerLinkActive_directive.default;
-    }
-  });
-  Object.defineProperty(exports, "RouterLinkDirective", {
-    enumerable: true,
-    get: function get() {
-      return routerLink_directive.default;
-    }
-  });
-  Object.defineProperty(exports, "RouterOutletStructure", {
-    enumerable: true,
-    get: function get() {
-      return routerOutlet_structure.default;
-    }
-  });
-  Object.defineProperty(exports, "RouterService", {
-    enumerable: true,
-    get: function get() {
-      return router_service.default;
-    }
-  });
-  Object.defineProperty(exports, "transition$", {
-    enumerable: true,
-    get: function get() {
-      return transition.transition$;
-    }
-  });
-  Object.defineProperty(exports, "transitionOnce", {
-    enumerable: true,
-    get: function get() {
-      return transition.transitionOnce;
-    }
-  });
-  Object.defineProperty(exports, "transitionOnced", {
-    enumerable: true,
-    get: function get() {
-      return transition.transitionOnced;
-    }
-  });
-});var environmentServed = {
+  it = o[Symbol.iterator]();
+  return it.next.bind(it);
+}var environmentServed = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
@@ -3948,7 +1043,2936 @@ var MeetingId = /*#__PURE__*/function () {
   };
 
   return MeetingUrl;
-}();var AccessCodeComponent = /*#__PURE__*/function (_Component) {
+}();/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+var _assign = function __assign() {
+  _assign = Object.assign || function __assign(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return _assign.apply(this, arguments);
+};/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+var _assign$1 = function __assign() {
+  _assign$1 = Object.assign || function __assign(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return _assign$1.apply(this, arguments);
+};var makeOptions = function makeOptions(opts) {
+  if (opts === void 0) {
+    opts = {};
+  }
+
+  return {
+    arrayFormat: opts.arrayFormat || 'none',
+    booleanFormat: opts.booleanFormat || 'none',
+    nullFormat: opts.nullFormat || 'default'
+  };
+};
+
+var encodeValue = function encodeValue(value) {
+  return encodeURIComponent(value);
+};
+
+var decodeValue = function decodeValue(value) {
+  return decodeURIComponent(value);
+};
+
+var encodeBoolean = function encodeBoolean(name, value, opts) {
+  if (opts.booleanFormat === 'empty-true' && value) {
+    return name;
+  }
+
+  var encodedValue;
+
+  if (opts.booleanFormat === 'unicode') {
+    encodedValue = value ? '✓' : '✗';
+  } else {
+    encodedValue = value.toString();
+  }
+
+  return name + "=" + encodedValue;
+};
+
+var encodeNull = function encodeNull(name, opts) {
+  if (opts.nullFormat === 'hidden') {
+    return '';
+  }
+
+  if (opts.nullFormat === 'string') {
+    return name + "=null";
+  }
+
+  return name;
+};
+
+var getNameEncoder = function getNameEncoder(opts) {
+  if (opts.arrayFormat === 'index') {
+    return function (name, index) {
+      return name + "[" + index + "]";
+    };
+  }
+
+  if (opts.arrayFormat === 'brackets') {
+    return function (name) {
+      return name + "[]";
+    };
+  }
+
+  return function (name) {
+    return name;
+  };
+};
+
+var encodeArray = function encodeArray(name, arr, opts) {
+  var encodeName = getNameEncoder(opts);
+  return arr.map(function (val, index) {
+    return encodeName(name, index) + "=" + encodeValue(val);
+  }).join('&');
+};
+
+var encode = function encode(name, value, opts) {
+  if (value === null) {
+    return encodeNull(name, opts);
+  }
+
+  if (typeof value === 'boolean') {
+    return encodeBoolean(name, value, opts);
+  }
+
+  if (Array.isArray(value)) {
+    return encodeArray(name, value, opts);
+  }
+
+  return name + "=" + encodeValue(value);
+};
+
+var decode = function decode(value, opts) {
+  if (value === undefined) {
+    return opts.booleanFormat === 'empty-true' ? true : null;
+  }
+
+  if (opts.booleanFormat === 'string') {
+    if (value === 'true') {
+      return true;
+    }
+
+    if (value === 'false') {
+      return false;
+    }
+  }
+
+  if (opts.booleanFormat === 'unicode') {
+    if (decodeValue(value) === '✓') {
+      return true;
+    }
+
+    if (decodeValue(value) === '✗') {
+      return false;
+    }
+  }
+
+  if (opts.nullFormat === 'string') {
+    if (value === 'null') {
+      return null;
+    }
+  }
+
+  return decodeValue(value);
+};
+
+var getSearch = function getSearch(path) {
+  var pos = path.indexOf('?');
+
+  if (pos === -1) {
+    return path;
+  }
+
+  return path.slice(pos + 1);
+};
+
+var isSerialisable = function isSerialisable(val) {
+  return val !== undefined;
+};
+
+var parseName = function parseName(name) {
+  var bracketPosition = name.indexOf('[');
+  var hasBrackets = bracketPosition !== -1;
+  return {
+    hasBrackets: hasBrackets,
+    name: hasBrackets ? name.slice(0, bracketPosition) : name
+  };
+};
+/**
+ * Parse a querystring and return an object of parameters
+ */
+
+
+var parse = function parse(path, opts) {
+  var options = makeOptions(opts);
+  return getSearch(path).split('&').reduce(function (params, param) {
+    var _a = param.split('='),
+        rawName = _a[0],
+        value = _a[1];
+
+    var _b = parseName(rawName),
+        hasBrackets = _b.hasBrackets,
+        name = _b.name;
+
+    var currentValue = params[name];
+    var decodedValue = decode(value, options);
+
+    if (currentValue === undefined) {
+      params[name] = hasBrackets ? [decodedValue] : decodedValue;
+    } else {
+      params[name] = (Array.isArray(currentValue) ? currentValue : [currentValue]).concat(decodedValue);
+    }
+
+    return params;
+  }, {});
+};
+/**
+ * Build a querystring from an object of parameters
+ */
+
+
+var build = function build(params, opts) {
+  var options = makeOptions(opts);
+  return Object.keys(params).filter(function (paramName) {
+    return isSerialisable(params[paramName]);
+  }).map(function (paramName) {
+    return encode(paramName, params[paramName], options);
+  }).filter(Boolean).join('&');
+};
+/**
+ * Remove a list of parameters from a querystring
+ */
+
+
+var omit = function omit(path, paramsToOmit, opts) {
+  var options = makeOptions(opts);
+  var searchPart = getSearch(path);
+
+  if (searchPart === '') {
+    return {
+      querystring: '',
+      removedParams: {}
+    };
+  }
+
+  var _a = path.split('&').reduce(function (_a, chunk) {
+    var left = _a[0],
+        right = _a[1];
+    var rawName = chunk.split('=')[0];
+    var name = parseName(rawName).name;
+    return paramsToOmit.indexOf(name) === -1 ? [left.concat(chunk), right] : [left, right.concat(chunk)];
+  }, [[], []]),
+      kept = _a[0],
+      removed = _a[1];
+
+  return {
+    querystring: kept.join('&'),
+    removedParams: parse(removed.join('&'), options)
+  };
+};/**
+ * We encode using encodeURIComponent but we want to
+ * preserver certain characters which are commonly used
+ * (sub delimiters and ':')
+ *
+ * https://www.ietf.org/rfc/rfc3986.txt
+ *
+ * reserved    = gen-delims / sub-delims
+ *
+ * gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+ *
+ * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
+              / "*" / "+" / "," / ";" / "="
+ */
+
+var excludeSubDelimiters = /[^!$'()*+,;|:]/g;
+
+var encodeURIComponentExcludingSubDelims = function encodeURIComponentExcludingSubDelims(segment) {
+  return segment.replace(excludeSubDelimiters, function (match) {
+    return encodeURIComponent(match);
+  });
+};
+
+var encodingMethods = {
+  "default": encodeURIComponentExcludingSubDelims,
+  uri: encodeURI,
+  uriComponent: encodeURIComponent,
+  none: function none(val) {
+    return val;
+  },
+  legacy: encodeURI
+};
+var decodingMethods = {
+  "default": decodeURIComponent,
+  uri: decodeURI,
+  uriComponent: decodeURIComponent,
+  none: function none(val) {
+    return val;
+  },
+  legacy: decodeURIComponent
+};
+
+var encodeParam = function encodeParam(param, encoding, isSpatParam) {
+  var encoder = encodingMethods[encoding] || encodeURIComponentExcludingSubDelims;
+
+  if (isSpatParam) {
+    return String(param).split('/').map(encoder).join('/');
+  }
+
+  return encoder(String(param));
+};
+
+var decodeParam = function decodeParam(param, encoding) {
+  return (decodingMethods[encoding] || decodeURIComponent)(param);
+};
+
+var defaultOrConstrained = function defaultOrConstrained(match) {
+  return '(' + (match ? match.replace(/(^<|>$)/g, '') : "[a-zA-Z0-9-_.~%':|=+\\*@$]+") + ')';
+};
+
+var rules = [{
+  name: 'url-parameter',
+  pattern: /^:([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
+  regex: function regex(match) {
+    return new RegExp(defaultOrConstrained(match[2]));
+  }
+}, {
+  name: 'url-parameter-splat',
+  pattern: /^\*([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
+  regex: /([^?]*)/
+}, {
+  name: 'url-parameter-matrix',
+  pattern: /^;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
+  regex: function regex(match) {
+    return new RegExp(';' + match[1] + '=' + defaultOrConstrained(match[2]));
+  }
+}, {
+  name: 'query-parameter',
+  pattern: /^(?:\?|&)(?::)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/
+}, {
+  name: 'delimiter',
+  pattern: /^(\/|\?)/,
+  regex: function regex(match) {
+    return new RegExp('\\' + match[0]);
+  }
+}, {
+  name: 'sub-delimiter',
+  pattern: /^(!|&|-|_|\.|;)/,
+  regex: function regex(match) {
+    return new RegExp(match[0]);
+  }
+}, {
+  name: 'fragment',
+  pattern: /^([0-9a-zA-Z]+)/,
+  regex: function regex(match) {
+    return new RegExp(match[0]);
+  }
+}];
+
+var tokenise = function tokenise(str, tokens) {
+  if (tokens === void 0) {
+    tokens = [];
+  } // Look for a matching rule
+
+
+  var matched = rules.some(function (rule) {
+    var match = str.match(rule.pattern);
+
+    if (!match) {
+      return false;
+    }
+
+    tokens.push({
+      type: rule.name,
+      match: match[0],
+      val: match.slice(1, 2),
+      otherVal: match.slice(2),
+      regex: rule.regex instanceof Function ? rule.regex(match) : rule.regex
+    });
+
+    if (match[0].length < str.length) {
+      tokens = tokenise(str.substr(match[0].length), tokens);
+    }
+
+    return true;
+  }); // If no rules matched, throw an error (possible malformed path)
+
+  if (!matched) {
+    throw new Error("Could not parse path '" + str + "'");
+  }
+
+  return tokens;
+};
+
+var exists = function exists(val) {
+  return val !== undefined && val !== null;
+};
+
+var optTrailingSlash = function optTrailingSlash(source, strictTrailingSlash) {
+  if (strictTrailingSlash) {
+    return source;
+  }
+
+  if (source === '\\/') {
+    return source;
+  }
+
+  return source.replace(/\\\/$/, '') + '(?:\\/)?';
+};
+
+var upToDelimiter = function upToDelimiter(source, delimiter) {
+  if (!delimiter) {
+    return source;
+  }
+
+  return /(\/)$/.test(source) ? source : source + '(\\/|\\?|\\.|;|$)';
+};
+
+var appendQueryParam = function appendQueryParam(params, param, val) {
+  if (val === void 0) {
+    val = '';
+  }
+
+  var existingVal = params[param];
+
+  if (existingVal === undefined) {
+    params[param] = val;
+  } else {
+    params[param] = Array.isArray(existingVal) ? existingVal.concat(val) : [existingVal, val];
+  }
+
+  return params;
+};
+
+var defaultOptions$1 = {
+  urlParamsEncoding: 'default'
+};
+
+var Path =
+/*#__PURE__*/
+
+/** @class */
+function () {
+  function Path(path, options) {
+    if (!path) {
+      throw new Error('Missing path in Path constructor');
+    }
+
+    this.path = path;
+    this.options = _assign$1(_assign$1({}, defaultOptions$1), options);
+    this.tokens = tokenise(path);
+    this.hasUrlParams = this.tokens.filter(function (t) {
+      return /^url-parameter/.test(t.type);
+    }).length > 0;
+    this.hasSpatParam = this.tokens.filter(function (t) {
+      return /splat$/.test(t.type);
+    }).length > 0;
+    this.hasMatrixParams = this.tokens.filter(function (t) {
+      return /matrix$/.test(t.type);
+    }).length > 0;
+    this.hasQueryParams = this.tokens.filter(function (t) {
+      return /^query-parameter/.test(t.type);
+    }).length > 0; // Extract named parameters from tokens
+
+    this.spatParams = this.getParams('url-parameter-splat');
+    this.urlParams = this.getParams(/^url-parameter/); // Query params
+
+    this.queryParams = this.getParams('query-parameter'); // All params
+
+    this.params = this.urlParams.concat(this.queryParams); // Check if hasQueryParams
+    // Regular expressions for url part only (full and partial match)
+
+    this.source = this.tokens.filter(function (t) {
+      return t.regex !== undefined;
+    }).map(function (t) {
+      return t.regex.source;
+    }).join('');
+  }
+
+  Path.createPath = function (path, options) {
+    return new Path(path, options);
+  };
+
+  Path.prototype.isQueryParam = function (name) {
+    return this.queryParams.indexOf(name) !== -1;
+  };
+
+  Path.prototype.isSpatParam = function (name) {
+    return this.spatParams.indexOf(name) !== -1;
+  };
+
+  Path.prototype.test = function (path, opts) {
+    var _this = this;
+
+    var options = _assign$1(_assign$1({
+      caseSensitive: false,
+      strictTrailingSlash: false
+    }, this.options), opts); // trailingSlash: falsy => non optional, truthy => optional
+
+
+    var source = optTrailingSlash(this.source, options.strictTrailingSlash); // Check if exact match
+
+    var match = this.urlTest(path, source + (this.hasQueryParams ? '(\\?.*$|$)' : '$'), options.caseSensitive, options.urlParamsEncoding); // If no match, or no query params, no need to go further
+
+    if (!match || !this.hasQueryParams) {
+      return match;
+    } // Extract query params
+
+
+    var queryParams = parse(path, options.queryParams);
+    var unexpectedQueryParams = Object.keys(queryParams).filter(function (p) {
+      return !_this.isQueryParam(p);
+    });
+
+    if (unexpectedQueryParams.length === 0) {
+      // Extend url match
+      Object.keys(queryParams).forEach( // @ts-ignore
+      function (p) {
+        return match[p] = queryParams[p];
+      });
+      return match;
+    }
+
+    return null;
+  };
+
+  Path.prototype.partialTest = function (path, opts) {
+    var _this = this;
+
+    var options = _assign$1(_assign$1({
+      caseSensitive: false,
+      delimited: true
+    }, this.options), opts); // Check if partial match (start of given path matches regex)
+    // trailingSlash: falsy => non optional, truthy => optional
+
+
+    var source = upToDelimiter(this.source, options.delimited);
+    var match = this.urlTest(path, source, options.caseSensitive, options.urlParamsEncoding);
+
+    if (!match) {
+      return match;
+    }
+
+    if (!this.hasQueryParams) {
+      return match;
+    }
+
+    var queryParams = parse(path, options.queryParams);
+    Object.keys(queryParams).filter(function (p) {
+      return _this.isQueryParam(p);
+    }).forEach(function (p) {
+      return appendQueryParam(match, p, queryParams[p]);
+    });
+    return match;
+  };
+
+  Path.prototype.build = function (params, opts) {
+    var _this = this;
+
+    if (params === void 0) {
+      params = {};
+    }
+
+    var options = _assign$1(_assign$1({
+      ignoreConstraints: false,
+      ignoreSearch: false,
+      queryParams: {}
+    }, this.options), opts);
+
+    var encodedUrlParams = Object.keys(params).filter(function (p) {
+      return !_this.isQueryParam(p);
+    }).reduce(function (acc, key) {
+      if (!exists(params[key])) {
+        return acc;
+      }
+
+      var val = params[key];
+
+      var isSpatParam = _this.isSpatParam(key);
+
+      if (typeof val === 'boolean') {
+        acc[key] = val;
+      } else if (Array.isArray(val)) {
+        acc[key] = val.map(function (v) {
+          return encodeParam(v, options.urlParamsEncoding, isSpatParam);
+        });
+      } else {
+        acc[key] = encodeParam(val, options.urlParamsEncoding, isSpatParam);
+      }
+
+      return acc;
+    }, {}); // Check all params are provided (not search parameters which are optional)
+
+    if (this.urlParams.some(function (p) {
+      return !exists(params[p]);
+    })) {
+      var missingParameters = this.urlParams.filter(function (p) {
+        return !exists(params[p]);
+      });
+      throw new Error("Cannot build path: '" + this.path + "' requires missing parameters { " + missingParameters.join(', ') + ' }');
+    } // Check constraints
+
+
+    if (!options.ignoreConstraints) {
+      var constraintsPassed = this.tokens.filter(function (t) {
+        return /^url-parameter/.test(t.type) && !/-splat$/.test(t.type);
+      }).every(function (t) {
+        return new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(encodedUrlParams[t.val]);
+      });
+
+      if (!constraintsPassed) {
+        throw new Error("Some parameters of '" + this.path + "' are of invalid format");
+      }
+    }
+
+    var base = this.tokens.filter(function (t) {
+      return /^query-parameter/.test(t.type) === false;
+    }).map(function (t) {
+      if (t.type === 'url-parameter-matrix') {
+        return ";" + t.val + "=" + encodedUrlParams[t.val[0]];
+      }
+
+      return /^url-parameter/.test(t.type) ? encodedUrlParams[t.val[0]] : t.match;
+    }).join('');
+
+    if (options.ignoreSearch) {
+      return base;
+    }
+
+    var searchParams = this.queryParams.filter(function (p) {
+      return Object.keys(params).indexOf(p) !== -1;
+    }).reduce(function (sparams, paramName) {
+      sparams[paramName] = params[paramName];
+      return sparams;
+    }, {});
+    var searchPart = build(searchParams, options.queryParams);
+    return searchPart ? base + '?' + searchPart : base;
+  };
+
+  Path.prototype.getParams = function (type) {
+    var predicate = type instanceof RegExp ? function (t) {
+      return type.test(t.type);
+    } : function (t) {
+      return t.type === type;
+    };
+    return this.tokens.filter(predicate).map(function (t) {
+      return t.val[0];
+    });
+  };
+
+  Path.prototype.urlTest = function (path, source, caseSensitive, urlParamsEncoding) {
+    var _this = this;
+
+    var regex = new RegExp('^' + source, caseSensitive ? '' : 'i');
+    var match = path.match(regex);
+
+    if (!match) {
+      return null;
+    } else if (!this.urlParams.length) {
+      return {};
+    } // Reduce named params to key-value pairs
+
+
+    return match.slice(1, this.urlParams.length + 1).reduce(function (params, m, i) {
+      params[_this.urlParams[i]] = decodeParam(m, urlParamsEncoding);
+      return params;
+    }, {});
+  };
+
+  return Path;
+}();var getMetaFromSegments = function getMetaFromSegments(segments) {
+  var accName = '';
+  return segments.reduce(function (meta, segment) {
+    var _a, _b, _c, _d;
+
+    var urlParams = (_b = (_a = segment.parser) === null || _a === void 0 ? void 0 : _a.urlParams.reduce(function (params, p) {
+      params[p] = 'url';
+      return params;
+    }, {}), _b !== null && _b !== void 0 ? _b : {});
+    var allParams = (_d = (_c = segment.parser) === null || _c === void 0 ? void 0 : _c.queryParams.reduce(function (params, p) {
+      params[p] = 'query';
+      return params;
+    }, urlParams), _d !== null && _d !== void 0 ? _d : {});
+
+    if (segment.name !== undefined) {
+      accName = accName ? accName + '.' + segment.name : segment.name;
+      meta[accName] = allParams;
+    }
+
+    return meta;
+  }, {});
+};
+
+var buildStateFromMatch = function buildStateFromMatch(match) {
+  if (!match || !match.segments || !match.segments.length) {
+    return null;
+  }
+
+  var name = match.segments.map(function (segment) {
+    return segment.name;
+  }).filter(function (name) {
+    return name;
+  }).join('.');
+  var params = match.params;
+  return {
+    name: name,
+    params: params,
+    meta: getMetaFromSegments(match.segments)
+  };
+};
+
+var buildPathFromSegments = function buildPathFromSegments(segments, params, options) {
+  if (params === void 0) {
+    params = {};
+  }
+
+  if (options === void 0) {
+    options = {};
+  }
+
+  var _a = options.queryParamsMode,
+      queryParamsMode = _a === void 0 ? 'default' : _a,
+      _b = options.trailingSlashMode,
+      trailingSlashMode = _b === void 0 ? 'default' : _b;
+  var searchParams = [];
+  var nonSearchParams = [];
+
+  for (var _i = 0, segments_1 = segments; _i < segments_1.length; _i++) {
+    var segment = segments_1[_i];
+    var parser = segment.parser;
+
+    if (parser) {
+      searchParams.push.apply(searchParams, parser.queryParams);
+      nonSearchParams.push.apply(nonSearchParams, parser.urlParams);
+      nonSearchParams.push.apply(nonSearchParams, parser.spatParams);
+    }
+  }
+
+  if (queryParamsMode === 'loose') {
+    var extraParams = Object.keys(params).reduce(function (acc, p) {
+      return searchParams.indexOf(p) === -1 && nonSearchParams.indexOf(p) === -1 ? acc.concat(p) : acc;
+    }, []);
+    searchParams.push.apply(searchParams, extraParams);
+  }
+
+  var searchParamsObject = searchParams.reduce(function (acc, paramName) {
+    if (Object.keys(params).indexOf(paramName) !== -1) {
+      acc[paramName] = params[paramName];
+    }
+
+    return acc;
+  }, {});
+  var searchPart = build(searchParamsObject, options.queryParams);
+  var path = segments.reduce(function (path, segment) {
+    var _a, _b;
+
+    var segmentPath = (_b = (_a = segment.parser) === null || _a === void 0 ? void 0 : _a.build(params, {
+      ignoreSearch: true,
+      queryParams: options.queryParams,
+      urlParamsEncoding: options.urlParamsEncoding
+    }), _b !== null && _b !== void 0 ? _b : '');
+    return segment.absolute ? segmentPath : path + segmentPath;
+  }, '') // remove repeated slashes
+  .replace(/\/\/{1,}/g, '/');
+  var finalPath = path;
+
+  if (trailingSlashMode === 'always') {
+    finalPath = /\/$/.test(path) ? path : path + "/";
+  } else if (trailingSlashMode === 'never' && path !== '/') {
+    finalPath = /\/$/.test(path) ? path.slice(0, -1) : path;
+  }
+
+  return finalPath + (searchPart ? '?' + searchPart : '');
+};
+
+var getPathFromSegments = function getPathFromSegments(segments) {
+  return segments ? segments.map(function (segment) {
+    return segment.path;
+  }).join('') : null;
+};
+
+var getPath = function getPath(path) {
+  return path.split('?')[0];
+};
+
+var getSearch$1 = function getSearch(path) {
+  return path.split('?')[1] || '';
+};
+
+var matchChildren = function matchChildren(nodes, pathSegment, currentMatch, options, consumedBefore) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var _a = options.queryParamsMode,
+      queryParamsMode = _a === void 0 ? 'default' : _a,
+      _b = options.strictTrailingSlash,
+      strictTrailingSlash = _b === void 0 ? false : _b,
+      _c = options.strongMatching,
+      strongMatching = _c === void 0 ? true : _c,
+      _d = options.caseSensitive,
+      caseSensitive = _d === void 0 ? false : _d;
+  var isRoot = nodes.length === 1 && nodes[0].name === '';
+
+  var _loop_1 = function _loop_1(child) {
+    // Partially match path
+    var match = null;
+    var remainingPath = void 0;
+    var segment = pathSegment;
+
+    if (consumedBefore === '/' && child.path === '/') {
+      // when we encounter repeating slashes we add the slash
+      // back to the URL to make it de facto pathless
+      segment = '/' + pathSegment;
+    }
+
+    if (!child.children.length) {
+      match = child.parser.test(segment, {
+        caseSensitive: caseSensitive,
+        strictTrailingSlash: strictTrailingSlash,
+        queryParams: options.queryParams,
+        urlParamsEncoding: options.urlParamsEncoding
+      });
+    }
+
+    if (!match) {
+      match = child.parser.partialTest(segment, {
+        delimited: strongMatching,
+        caseSensitive: caseSensitive,
+        queryParams: options.queryParams,
+        urlParamsEncoding: options.urlParamsEncoding
+      });
+    }
+
+    if (match) {
+      // Remove consumed segment from path
+      var consumedPath = child.parser.build(match, {
+        ignoreSearch: true,
+        urlParamsEncoding: options.urlParamsEncoding
+      });
+
+      if (!strictTrailingSlash && !child.children.length) {
+        consumedPath = consumedPath.replace(/\/$/, '');
+      } // Can't create a regexp from the path because it might contain a
+      // regexp character.
+
+
+      if (segment.toLowerCase().indexOf(consumedPath.toLowerCase()) === 0) {
+        remainingPath = segment.slice(consumedPath.length);
+      } else {
+        remainingPath = segment;
+      }
+
+      if (!strictTrailingSlash && !child.children.length) {
+        remainingPath = remainingPath.replace(/^\/\?/, '?');
+      }
+
+      var querystring = omit(getSearch$1(segment.replace(consumedPath, '')), child.parser.queryParams, options.queryParams).querystring;
+      remainingPath = getPath(remainingPath) + (querystring ? "?" + querystring : '');
+
+      if (!strictTrailingSlash && !isRoot && remainingPath === '/' && !/\/$/.test(consumedPath)) {
+        remainingPath = '';
+      }
+
+      currentMatch.segments.push(child);
+      Object.keys(match).forEach(function (param) {
+        return currentMatch.params[param] = match[param];
+      });
+
+      if (!isRoot && !remainingPath.length) {
+        return {
+          value: currentMatch
+        };
+      }
+
+      if (!isRoot && queryParamsMode !== 'strict' && remainingPath.indexOf('?') === 0) {
+        // unmatched queryParams in non strict mode
+        var remainingQueryParams_1 = parse(remainingPath.slice(1), options.queryParams);
+        Object.keys(remainingQueryParams_1).forEach(function (name) {
+          return currentMatch.params[name] = remainingQueryParams_1[name];
+        });
+        return {
+          value: currentMatch
+        };
+      } // Continue matching on non absolute children
+
+
+      var children = child.getNonAbsoluteChildren(); // If no children to match against but unmatched path left
+
+      if (!children.length) {
+        return {
+          value: null
+        };
+      }
+
+      return {
+        value: matchChildren(children, remainingPath, currentMatch, options, consumedPath)
+      };
+    }
+  }; // for (child of node.children) {
+
+
+  for (var _i = 0, nodes_1 = nodes; _i < nodes_1.length; _i++) {
+    var child = nodes_1[_i];
+
+    var state_1 = _loop_1(child);
+
+    if (typeof state_1 === "object") return state_1.value;
+  }
+
+  return null;
+};
+
+function sortChildren(children) {
+  var originalChildren = children.slice(0);
+  return children.sort(sortPredicate(originalChildren));
+}
+
+var sortPredicate = function sortPredicate(originalChildren) {
+  return function (left, right) {
+    var _a, _b, _c, _d, _e, _f;
+
+    var leftPath = left.path.replace(/<.*?>/g, '').split('?')[0].replace(/(.+)\/$/, '$1');
+    var rightPath = right.path.replace(/<.*?>/g, '').split('?')[0].replace(/(.+)\/$/, '$1'); // '/' last
+
+    if (leftPath === '/') {
+      return 1;
+    }
+
+    if (rightPath === '/') {
+      return -1;
+    } // Spat params last
+
+
+    if ((_a = left.parser) === null || _a === void 0 ? void 0 : _a.hasSpatParam) {
+      return 1;
+    }
+
+    if ((_b = right.parser) === null || _b === void 0 ? void 0 : _b.hasSpatParam) {
+      return -1;
+    } // No spat, number of segments (less segments last)
+
+
+    var leftSegments = (leftPath.match(/\//g) || []).length;
+    var rightSegments = (rightPath.match(/\//g) || []).length;
+
+    if (leftSegments < rightSegments) {
+      return 1;
+    }
+
+    if (leftSegments > rightSegments) {
+      return -1;
+    } // Same number of segments, number of URL params ascending
+
+
+    var leftParamsCount = (_d = (_c = left.parser) === null || _c === void 0 ? void 0 : _c.urlParams.length, _d !== null && _d !== void 0 ? _d : 0);
+    var rightParamsCount = (_f = (_e = right.parser) === null || _e === void 0 ? void 0 : _e.urlParams.length, _f !== null && _f !== void 0 ? _f : 0);
+
+    if (leftParamsCount < rightParamsCount) {
+      return -1;
+    }
+
+    if (leftParamsCount > rightParamsCount) {
+      return 1;
+    } // Same number of segments and params, last segment length descending
+
+
+    var leftParamLength = (leftPath.split('/').slice(-1)[0] || '').length;
+    var rightParamLength = (rightPath.split('/').slice(-1)[0] || '').length;
+
+    if (leftParamLength < rightParamLength) {
+      return 1;
+    }
+
+    if (leftParamLength > rightParamLength) {
+      return -1;
+    } // Same last segment length, preserve definition order. Note that we
+    // cannot just return 0, as sort is not guaranteed to be a stable sort.
+
+
+    return originalChildren.indexOf(left) - originalChildren.indexOf(right);
+  };
+};
+
+var RouteNode =
+/*#__PURE__*/
+
+/** @class */
+function () {
+  function RouteNode(name, path, childRoutes, options) {
+    if (name === void 0) {
+      name = '';
+    }
+
+    if (path === void 0) {
+      path = '';
+    }
+
+    if (childRoutes === void 0) {
+      childRoutes = [];
+    }
+
+    if (options === void 0) {
+      options = {};
+    }
+
+    this.name = name;
+    this.absolute = /^~/.test(path);
+    this.path = this.absolute ? path.slice(1) : path;
+    this.parser = this.path ? new Path(this.path) : null;
+    this.children = [];
+    this.parent = options.parent;
+    this.checkParents();
+    this.add(childRoutes, options.onAdd, options.finalSort ? false : options.sort !== false);
+
+    if (options.finalSort) {
+      this.sortDescendants();
+    }
+
+    return this;
+  }
+
+  RouteNode.prototype.getParentSegments = function (segments) {
+    if (segments === void 0) {
+      segments = [];
+    }
+
+    return this.parent && this.parent.parser ? this.parent.getParentSegments(segments.concat(this.parent)) : segments.reverse();
+  };
+
+  RouteNode.prototype.setParent = function (parent) {
+    this.parent = parent;
+    this.checkParents();
+  };
+
+  RouteNode.prototype.setPath = function (path) {
+    if (path === void 0) {
+      path = '';
+    }
+
+    this.path = path;
+    this.parser = path ? new Path(path) : null;
+  };
+
+  RouteNode.prototype.add = function (route, cb, sort) {
+    var _this = this;
+
+    if (sort === void 0) {
+      sort = true;
+    }
+
+    if (route === undefined || route === null) {
+      return this;
+    }
+
+    if (route instanceof Array) {
+      route.forEach(function (r) {
+        return _this.add(r, cb, sort);
+      });
+      return this;
+    }
+
+    if (!(route instanceof RouteNode) && !(route instanceof Object)) {
+      throw new Error('RouteNode.add() expects routes to be an Object or an instance of RouteNode.');
+    } else if (route instanceof RouteNode) {
+      route.setParent(this);
+      this.addRouteNode(route, sort);
+    } else {
+      if (!route.name || !route.path) {
+        throw new Error('RouteNode.add() expects routes to have a name and a path defined.');
+      }
+
+      var routeNode = new RouteNode(route.name, route.path, route.children, {
+        finalSort: false,
+        onAdd: cb,
+        parent: this,
+        sort: sort
+      });
+      var fullName = routeNode.getParentSegments([routeNode]).map(function (_) {
+        return _.name;
+      }).join('.');
+
+      if (cb) {
+        cb(_assign(_assign({}, route), {
+          name: fullName
+        }));
+      }
+
+      this.addRouteNode(routeNode, sort);
+    }
+
+    return this;
+  };
+
+  RouteNode.prototype.addNode = function (name, path) {
+    this.add(new RouteNode(name, path));
+    return this;
+  };
+
+  RouteNode.prototype.getPath = function (routeName) {
+    var segmentsByName = this.getSegmentsByName(routeName);
+    return segmentsByName ? getPathFromSegments(segmentsByName) : null;
+  };
+
+  RouteNode.prototype.getNonAbsoluteChildren = function () {
+    return this.children.filter(function (child) {
+      return !child.absolute;
+    });
+  };
+
+  RouteNode.prototype.sortChildren = function () {
+    if (this.children.length) {
+      sortChildren(this.children);
+    }
+  };
+
+  RouteNode.prototype.sortDescendants = function () {
+    this.sortChildren();
+    this.children.forEach(function (child) {
+      return child.sortDescendants();
+    });
+  };
+
+  RouteNode.prototype.buildPath = function (routeName, params, options) {
+    if (params === void 0) {
+      params = {};
+    }
+
+    if (options === void 0) {
+      options = {};
+    }
+
+    var segments = this.getSegmentsByName(routeName);
+
+    if (!segments) {
+      throw new Error("[route-node][buildPath] '{routeName}' is not defined");
+    }
+
+    return buildPathFromSegments(segments, params, options);
+  };
+
+  RouteNode.prototype.buildState = function (name, params) {
+    if (params === void 0) {
+      params = {};
+    }
+
+    var segments = this.getSegmentsByName(name);
+
+    if (!segments || !segments.length) {
+      return null;
+    }
+
+    return {
+      name: name,
+      params: params,
+      meta: getMetaFromSegments(segments)
+    };
+  };
+
+  RouteNode.prototype.matchPath = function (path, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    if (path === '' && !options.strictTrailingSlash) {
+      path = '/';
+    }
+
+    var match = this.getSegmentsMatchingPath(path, options);
+
+    if (!match) {
+      return null;
+    }
+
+    var matchedSegments = match.segments;
+
+    if (matchedSegments[0].absolute) {
+      var firstSegmentParams = matchedSegments[0].getParentSegments();
+      matchedSegments.reverse();
+      matchedSegments.push.apply(matchedSegments, firstSegmentParams);
+      matchedSegments.reverse();
+    }
+
+    var lastSegment = matchedSegments[matchedSegments.length - 1];
+    var lastSegmentSlashChild = lastSegment.findSlashChild();
+
+    if (lastSegmentSlashChild) {
+      matchedSegments.push(lastSegmentSlashChild);
+    }
+
+    return buildStateFromMatch(match);
+  };
+
+  RouteNode.prototype.addRouteNode = function (route, sort) {
+    if (sort === void 0) {
+      sort = true;
+    }
+
+    var names = route.name.split('.');
+
+    if (names.length === 1) {
+      // Check duplicated routes
+      if (this.children.map(function (child) {
+        return child.name;
+      }).indexOf(route.name) !== -1) {
+        throw new Error("Alias \"" + route.name + "\" is already defined in route node");
+      } // Check duplicated paths
+
+
+      if (this.children.map(function (child) {
+        return child.path;
+      }).indexOf(route.path) !== -1) {
+        throw new Error("Path \"" + route.path + "\" is already defined in route node");
+      }
+
+      this.children.push(route);
+
+      if (sort) {
+        this.sortChildren();
+      }
+    } else {
+      // Locate parent node
+      var segments = this.getSegmentsByName(names.slice(0, -1).join('.'));
+
+      if (segments) {
+        route.name = names[names.length - 1];
+        segments[segments.length - 1].add(route);
+      } else {
+        throw new Error("Could not add route named '" + route.name + "', parent is missing.");
+      }
+    }
+
+    return this;
+  };
+
+  RouteNode.prototype.checkParents = function () {
+    if (this.absolute && this.hasParentsParams()) {
+      throw new Error('[RouteNode] A RouteNode with an abolute path cannot have parents with route parameters');
+    }
+  };
+
+  RouteNode.prototype.hasParentsParams = function () {
+    if (this.parent && this.parent.parser) {
+      var parser = this.parent.parser;
+      var hasParams = parser.hasUrlParams || parser.hasSpatParam || parser.hasMatrixParams || parser.hasQueryParams;
+      return hasParams || this.parent.hasParentsParams();
+    }
+
+    return false;
+  };
+
+  RouteNode.prototype.findAbsoluteChildren = function () {
+    return this.children.reduce(function (absoluteChildren, child) {
+      return absoluteChildren.concat(child.absolute ? child : []).concat(child.findAbsoluteChildren());
+    }, []);
+  };
+
+  RouteNode.prototype.findSlashChild = function () {
+    var slashChildren = this.getNonAbsoluteChildren().filter(function (child) {
+      return child.parser && /^\/(\?|$)/.test(child.parser.path);
+    });
+    return slashChildren[0];
+  };
+
+  RouteNode.prototype.getSegmentsByName = function (routeName) {
+    var findSegmentByName = function findSegmentByName(name, routes) {
+      var filteredRoutes = routes.filter(function (r) {
+        return r.name === name;
+      });
+      return filteredRoutes.length ? filteredRoutes[0] : undefined;
+    };
+
+    var segments = [];
+    var routes = this.parser ? [this] : this.children;
+    var names = (this.parser ? [''] : []).concat(routeName.split('.'));
+    var matched = names.every(function (name) {
+      var segment = findSegmentByName(name, routes);
+
+      if (segment) {
+        routes = segment.children;
+        segments.push(segment);
+        return true;
+      }
+
+      return false;
+    });
+    return matched ? segments : null;
+  };
+
+  RouteNode.prototype.getSegmentsMatchingPath = function (path, options) {
+    var topLevelNodes = this.parser ? [this] : this.children;
+    var startingNodes = topLevelNodes.reduce(function (nodes, node) {
+      return nodes.concat(node, node.findAbsoluteChildren());
+    }, []);
+    var currentMatch = {
+      segments: [],
+      params: {}
+    };
+    var finalMatch = matchChildren(startingNodes, path, currentMatch, options);
+
+    if (finalMatch && finalMatch.segments.length === 1 && finalMatch.segments[0].name === '') {
+      return null;
+    }
+
+    return finalMatch;
+  };
+
+  return RouteNode;
+}();function symbolObservablePonyfill(root) {
+  var result;
+  var Symbol = root.Symbol;
+
+  if (typeof Symbol === 'function') {
+    if (Symbol.observable) {
+      result = Symbol.observable;
+    } else {
+      result = Symbol('observable');
+      Symbol.observable = result;
+    }
+  } else {
+    result = '@@observable';
+  }
+
+  return result;
+}/* global window */
+var root;
+
+if (typeof self !== 'undefined') {
+  root = self;
+} else if (typeof window !== 'undefined') {
+  root = window;
+} else if (typeof global !== 'undefined') {
+  root = global;
+} else if (typeof module !== 'undefined') {
+  root = module;
+} else {
+  root = Function('return this')();
+}
+
+var result = symbolObservablePonyfill(root);var nameToIDs = function nameToIDs(name) {
+  return name.split('.').reduce(function (ids, name) {
+    return ids.concat(ids.length ? ids[ids.length - 1] + '.' + name : name);
+  }, []);
+};
+
+var exists$1 = function exists(val) {
+  return val !== undefined && val !== null;
+};
+
+var hasMetaParams = function hasMetaParams(state) {
+  return state && state.meta && state.meta.params;
+};
+
+var extractSegmentParams = function extractSegmentParams(name, state) {
+  if (!hasMetaParams(state) || !exists$1(state.meta.params[name])) return {};
+  return Object.keys(state.meta.params[name]).reduce(function (params, p) {
+    params[p] = state.params[p];
+    return params;
+  }, {});
+};
+
+function transitionPath(toState, fromState) {
+  var toStateOptions = toState.meta && toState.meta && toState.meta.options || {};
+  var fromStateIds = fromState ? nameToIDs(fromState.name) : [];
+  var toStateIds = nameToIDs(toState.name);
+  var maxI = Math.min(fromStateIds.length, toStateIds.length);
+
+  function pointOfDifference() {
+    var i;
+
+    var _loop_1 = function _loop_1() {
+      var left = fromStateIds[i];
+      var right = toStateIds[i];
+      if (left !== right) return {
+        value: i
+      };
+      var leftParams = extractSegmentParams(left, toState);
+      var rightParams = extractSegmentParams(right, fromState);
+      if (Object.keys(leftParams).length !== Object.keys(rightParams).length) return {
+        value: i
+      };
+      if (Object.keys(leftParams).length === 0) return "continue";
+      var different = Object.keys(leftParams).some(function (p) {
+        return rightParams[p] !== leftParams[p];
+      });
+
+      if (different) {
+        return {
+          value: i
+        };
+      }
+    };
+
+    for (i = 0; i < maxI; i += 1) {
+      var state_1 = _loop_1();
+
+      if (typeof state_1 === "object") return state_1.value;
+    }
+
+    return i;
+  }
+
+  var i;
+
+  if (!fromState || toStateOptions.reload) {
+    i = 0;
+  } else if (!hasMetaParams(fromState) && !hasMetaParams(toState)) {
+    i = 0;
+  } else {
+    i = pointOfDifference();
+  }
+
+  var toDeactivate = fromStateIds.slice(i).reverse();
+  var toActivate = toStateIds.slice(i);
+  var intersection = fromState && i > 0 ? fromStateIds[i - 1] : '';
+  return {
+    intersection: intersection,
+    toDeactivate: toDeactivate,
+    toActivate: toActivate
+  };
+}/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var _assign$2 = function __assign() {
+  _assign$2 = Object.assign || function __assign(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return _assign$2.apply(this, arguments);
+};
+
+var defaultOptions$2 = {
+  trailingSlashMode: 'default',
+  queryParamsMode: 'default',
+  strictTrailingSlash: false,
+  autoCleanUp: true,
+  allowNotFound: false,
+  strongMatching: true,
+  rewritePathOnMatch: true,
+  caseSensitive: false,
+  urlParamsEncoding: 'default'
+};
+
+function withOptions(options) {
+  return function (router) {
+    var routerOptions = _assign$2(_assign$2({}, defaultOptions$2), options);
+
+    router.getOptions = function () {
+      return routerOptions;
+    };
+
+    router.setOption = function (option, value) {
+      routerOptions[option] = value;
+      return router;
+    };
+
+    return router;
+  };
+}
+
+var errorCodes = {
+  ROUTER_NOT_STARTED: 'NOT_STARTED',
+  NO_START_PATH_OR_STATE: 'NO_START_PATH_OR_STATE',
+  ROUTER_ALREADY_STARTED: 'ALREADY_STARTED',
+  ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
+  SAME_STATES: 'SAME_STATES',
+  CANNOT_DEACTIVATE: 'CANNOT_DEACTIVATE',
+  CANNOT_ACTIVATE: 'CANNOT_ACTIVATE',
+  TRANSITION_ERR: 'TRANSITION_ERR',
+  TRANSITION_CANCELLED: 'CANCELLED'
+};
+var constants = {
+  UNKNOWN_ROUTE: '@@router5/UNKNOWN_ROUTE',
+  ROUTER_START: '$start',
+  ROUTER_STOP: '$stop',
+  TRANSITION_START: '$$start',
+  TRANSITION_CANCEL: '$$cancel',
+  TRANSITION_SUCCESS: '$$success',
+  TRANSITION_ERROR: '$$error'
+};
+
+function withRoutes(routes) {
+  return function (router) {
+    router.forward = function (fromRoute, toRoute) {
+      router.config.forwardMap[fromRoute] = toRoute;
+      return router;
+    };
+
+    var rootNode = routes instanceof RouteNode ? routes : new RouteNode('', '', routes, {
+      onAdd: onRouteAdded
+    });
+
+    function onRouteAdded(route) {
+      if (route.canActivate) router.canActivate(route.name, route.canActivate);
+      if (route.forwardTo) router.forward(route.name, route.forwardTo);
+      if (route.decodeParams) router.config.decoders[route.name] = route.decodeParams;
+      if (route.encodeParams) router.config.encoders[route.name] = route.encodeParams;
+      if (route.defaultParams) router.config.defaultParams[route.name] = route.defaultParams;
+    }
+
+    router.rootNode = rootNode;
+
+    router.add = function (routes, finalSort) {
+      rootNode.add(routes, onRouteAdded, !finalSort);
+
+      if (finalSort) {
+        rootNode.sortDescendants();
+      }
+
+      return router;
+    };
+
+    router.addNode = function (name, path, canActivateHandler) {
+      rootNode.addNode(name, path);
+      if (canActivateHandler) router.canActivate(name, canActivateHandler);
+      return router;
+    };
+
+    router.isActive = function (name, params, strictEquality, ignoreQueryParams) {
+      if (params === void 0) {
+        params = {};
+      }
+
+      if (strictEquality === void 0) {
+        strictEquality = false;
+      }
+
+      if (ignoreQueryParams === void 0) {
+        ignoreQueryParams = true;
+      }
+
+      var activeState = router.getState();
+      if (!activeState) return false;
+
+      if (strictEquality || activeState.name === name) {
+        return router.areStatesEqual(router.makeState(name, params), activeState, ignoreQueryParams);
+      }
+
+      return router.areStatesDescendants(router.makeState(name, params), activeState);
+    };
+
+    router.buildPath = function (route, params) {
+      if (route === constants.UNKNOWN_ROUTE) {
+        return params.path;
+      }
+
+      var paramsWithDefault = _assign$2(_assign$2({}, router.config.defaultParams[route]), params);
+
+      var _a = router.getOptions(),
+          trailingSlashMode = _a.trailingSlashMode,
+          queryParamsMode = _a.queryParamsMode,
+          queryParams = _a.queryParams;
+
+      var encodedParams = router.config.encoders[route] ? router.config.encoders[route](paramsWithDefault) : paramsWithDefault;
+      return router.rootNode.buildPath(route, encodedParams, {
+        trailingSlashMode: trailingSlashMode,
+        queryParamsMode: queryParamsMode,
+        queryParams: queryParams,
+        urlParamsEncoding: router.getOptions().urlParamsEncoding
+      });
+    };
+
+    router.matchPath = function (path, source) {
+      var options = router.getOptions();
+      var match = router.rootNode.matchPath(path, options);
+
+      if (match) {
+        var name_1 = match.name,
+            params = match.params,
+            meta = match.meta;
+        var decodedParams = router.config.decoders[name_1] ? router.config.decoders[name_1](params) : params;
+
+        var _a = router.forwardState(name_1, decodedParams),
+            routeName = _a.name,
+            routeParams = _a.params;
+
+        var builtPath = options.rewritePathOnMatch === false ? path : router.buildPath(routeName, routeParams);
+        return router.makeState(routeName, routeParams, builtPath, {
+          params: meta,
+          source: source
+        });
+      }
+
+      return null;
+    };
+
+    router.setRootPath = function (rootPath) {
+      router.rootNode.setPath(rootPath);
+    };
+
+    return router;
+  };
+}
+
+function withDependencies(dependencies) {
+  return function (router) {
+    var routerDependencies = dependencies;
+
+    router.setDependency = function (dependencyName, dependency) {
+      routerDependencies[dependencyName] = dependency;
+      return router;
+    };
+
+    router.setDependencies = function (deps) {
+      Object.keys(deps).forEach(function (name) {
+        return router.setDependency(name, deps[name]);
+      });
+      return router;
+    };
+
+    router.getDependencies = function () {
+      return routerDependencies;
+    };
+
+    router.getInjectables = function () {
+      return [router, router.getDependencies()];
+    };
+
+    router.executeFactory = function (factoryFunction) {
+      return factoryFunction.apply(void 0, router.getInjectables());
+    };
+
+    return router;
+  };
+}
+
+function withState(router) {
+  var stateId = 0;
+  var routerState = null;
+
+  router.getState = function () {
+    return routerState;
+  };
+
+  router.setState = function (state) {
+    routerState = state;
+  };
+
+  router.makeState = function (name, params, path, meta, forceId) {
+    return {
+      name: name,
+      params: _assign$2(_assign$2({}, router.config.defaultParams[name]), params),
+      path: path,
+      meta: meta ? _assign$2(_assign$2({}, meta), {
+        id: forceId === undefined ? ++stateId : forceId
+      }) : undefined
+    };
+  };
+
+  router.makeNotFoundState = function (path, options) {
+    return router.makeState(constants.UNKNOWN_ROUTE, {
+      path: path
+    }, path, {
+      options: options
+    });
+  };
+
+  router.areStatesEqual = function (state1, state2, ignoreQueryParams) {
+    if (ignoreQueryParams === void 0) {
+      ignoreQueryParams = true;
+    }
+
+    if (state1.name !== state2.name) return false;
+
+    var getUrlParams = function getUrlParams(name) {
+      return router.rootNode //@ts-ignore
+      .getSegmentsByName(name).map(function (segment) {
+        return segment.parser['urlParams'];
+      }).reduce(function (params, p) {
+        return params.concat(p);
+      }, []);
+    };
+
+    var state1Params = ignoreQueryParams ? getUrlParams(state1.name) : Object.keys(state1.params);
+    var state2Params = ignoreQueryParams ? getUrlParams(state2.name) : Object.keys(state2.params);
+    return state1Params.length === state2Params.length && state1Params.every(function (p) {
+      return state1.params[p] === state2.params[p];
+    });
+  };
+
+  router.areStatesDescendants = function (parentState, childState) {
+    var regex = new RegExp('^' + parentState.name + '\\.(.*)$');
+    if (!regex.test(childState.name)) return false; // If child state name extends parent state name, and all parent state params
+    // are in child state params.
+
+    return Object.keys(parentState.params).every(function (p) {
+      return parentState.params[p] === childState.params[p];
+    });
+  };
+
+  router.forwardState = function (routeName, routeParams) {
+    var name = router.config.forwardMap[routeName] || routeName;
+
+    var params = _assign$2(_assign$2(_assign$2({}, router.config.defaultParams[routeName]), router.config.defaultParams[name]), routeParams);
+
+    return {
+      name: name,
+      params: params
+    };
+  };
+
+  router.buildState = function (routeName, routeParams) {
+    var _a = router.forwardState(routeName, routeParams),
+        name = _a.name,
+        params = _a.params;
+
+    return router.rootNode.buildState(name, params);
+  };
+
+  return router;
+}
+
+var eventsMap = {
+  onStart: constants.ROUTER_START,
+  onStop: constants.ROUTER_STOP,
+  onTransitionSuccess: constants.TRANSITION_SUCCESS,
+  onTransitionStart: constants.TRANSITION_START,
+  onTransitionError: constants.TRANSITION_ERROR,
+  onTransitionCancel: constants.TRANSITION_CANCEL
+};
+
+function withPlugins(router) {
+  var routerPlugins = [];
+
+  router.getPlugins = function () {
+    return routerPlugins;
+  };
+
+  router.usePlugin = function () {
+    var plugins = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      plugins[_i] = arguments[_i];
+    }
+
+    var removePluginFns = plugins.map(function (plugin) {
+      routerPlugins.push(plugin);
+      return startPlugin(plugin);
+    });
+    return function () {
+      routerPlugins = routerPlugins.filter(function (plugin) {
+        return plugins.indexOf(plugin) === -1;
+      });
+      removePluginFns.forEach(function (removePlugin) {
+        return removePlugin();
+      });
+    };
+  };
+
+  function startPlugin(plugin) {
+    var appliedPlugin = router.executeFactory(plugin);
+    var removeEventListeners = Object.keys(eventsMap).map(function (methodName) {
+      if (appliedPlugin[methodName]) {
+        return router.addEventListener(eventsMap[methodName], appliedPlugin[methodName]);
+      }
+    }).filter(Boolean);
+    return function () {
+      removeEventListeners.forEach(function (removeListener) {
+        return removeListener();
+      });
+
+      if (appliedPlugin.teardown) {
+        appliedPlugin.teardown();
+      }
+    };
+  }
+
+  return router;
+}
+
+function withMiddleware(router) {
+  var middlewareFactories = [];
+  var middlewareFunctions = [];
+
+  router.useMiddleware = function () {
+    var middlewares = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      middlewares[_i] = arguments[_i];
+    }
+
+    var removePluginFns = middlewares.map(function (middleware) {
+      var middlewareFunction = router.executeFactory(middleware);
+      middlewareFactories.push(middleware);
+      middlewareFunctions.push(middlewareFunction);
+      return function () {
+        middlewareFactories = middlewareFactories.filter(function (m) {
+          return m !== middleware;
+        });
+        middlewareFunctions = middlewareFunctions.filter(function (m) {
+          return m !== middlewareFunction;
+        });
+      };
+    });
+    return function () {
+      return removePluginFns.forEach(function (fn) {
+        return fn();
+      });
+    };
+  };
+
+  router.clearMiddleware = function () {
+    middlewareFactories = [];
+    middlewareFunctions = [];
+    return router;
+  };
+
+  router.getMiddlewareFactories = function () {
+    return middlewareFactories;
+  };
+
+  router.getMiddlewareFunctions = function () {
+    return middlewareFunctions;
+  };
+
+  return router;
+}
+
+function withObservability(router) {
+  var callbacks = {};
+
+  router.invokeEventListeners = function (eventName) {
+    var args = [];
+
+    for (var _i = 1; _i < arguments.length; _i++) {
+      args[_i - 1] = arguments[_i];
+    }
+
+    (callbacks[eventName] || []).forEach(function (cb) {
+      return cb.apply(void 0, args);
+    });
+  };
+
+  router.removeEventListener = function (eventName, cb) {
+    callbacks[eventName] = callbacks[eventName].filter(function (_cb) {
+      return _cb !== cb;
+    });
+  };
+
+  router.addEventListener = function (eventName, cb) {
+    callbacks[eventName] = (callbacks[eventName] || []).concat(cb);
+    return function () {
+      return router.removeEventListener(eventName, cb);
+    };
+  };
+
+  function _subscribe(listener) {
+    var isObject = typeof listener === 'object';
+    var finalListener = isObject ? listener.next.bind(listener) : listener;
+    var unsubscribeHandler = router.addEventListener(constants.TRANSITION_SUCCESS, function (toState, fromState) {
+      finalListener({
+        route: toState,
+        previousRoute: fromState
+      });
+    });
+    return isObject ? {
+      unsubscribe: unsubscribeHandler
+    } : unsubscribeHandler;
+  }
+
+  function observable() {
+    var _a;
+
+    return _a = {
+      subscribe: function subscribe(observer) {
+        if (typeof observer !== 'object' || observer === null) {
+          throw new TypeError('Expected the observer to be an object.');
+        }
+
+        return _subscribe(observer);
+      }
+    }, _a[result] = function () {
+      return this;
+    }, _a;
+  }
+
+  router.subscribe = _subscribe; //@ts-ignore
+
+  router[result] = observable; //@ts-ignore
+
+  router['@@observable'] = observable;
+  return router;
+}
+
+function resolve(functions, _a, callback) {
+  var isCancelled = _a.isCancelled,
+      toState = _a.toState,
+      fromState = _a.fromState,
+      _b = _a.errorKey,
+      errorKey = _b === void 0 ? undefined : _b;
+  var remainingFunctions = Array.isArray(functions) ? functions : Object.keys(functions);
+
+  var isState = function isState(obj) {
+    return typeof obj === 'object' && obj.name !== undefined && obj.params !== undefined && obj.path !== undefined;
+  };
+
+  var hasStateChanged = function hasStateChanged(toState, fromState) {
+    return fromState.name !== toState.name || fromState.params !== toState.params || fromState.path !== toState.path;
+  };
+
+  var mergeStates = function mergeStates(toState, fromState) {
+    return _assign$2(_assign$2(_assign$2({}, fromState), toState), {
+      meta: _assign$2(_assign$2({}, fromState.meta), toState.meta)
+    });
+  };
+
+  var processFn = function processFn(stepFn, errBase, state, _done) {
+    var done = function done(err, newState) {
+      if (err) {
+        _done(err);
+      } else if (newState && newState !== state && isState(newState)) {
+        if (hasStateChanged(newState, state)) {
+          console.error('[router5][transition] Warning: state values (name, params, path) were changed during transition process.');
+        }
+
+        _done(null, mergeStates(newState, state));
+      } else {
+        _done(null, state);
+      }
+    };
+
+    var res = stepFn.call(null, state, fromState, done);
+
+    if (isCancelled()) {
+      done(null);
+    } else if (typeof res === 'boolean') {
+      done(res ? null : errBase);
+    } else if (isState(res)) {
+      done(null, res);
+    } else if (res && typeof res.then === 'function') {
+      res.then(function (resVal) {
+        if (resVal instanceof Error) done({
+          error: resVal
+        }, null);else done(null, resVal);
+      }, function (err) {
+        if (err instanceof Error) {
+          console.error(err.stack || err);
+          done(_assign$2(_assign$2({}, errBase), {
+            promiseError: err
+          }), null);
+        } else {
+          done(typeof err === 'object' ? _assign$2(_assign$2({}, errBase), err) : errBase, null);
+        }
+      });
+    } // else: wait for done to be called
+
+  };
+
+  var next = function next(err, state) {
+    var _a;
+
+    if (isCancelled()) {
+      callback();
+    } else if (err) {
+      callback(err);
+    } else {
+      if (!remainingFunctions.length) {
+        callback(null, state);
+      } else {
+        var isMapped = typeof remainingFunctions[0] === 'string';
+        var errBase = errorKey && isMapped ? (_a = {}, _a[errorKey] = remainingFunctions[0], _a) : {};
+        var stepFn = isMapped ? functions[remainingFunctions[0]] : remainingFunctions[0];
+        remainingFunctions = remainingFunctions.slice(1);
+        processFn(stepFn, errBase, state, next);
+      }
+    }
+  };
+
+  next(null, toState);
+}
+
+function transition(router, toState, fromState, opts, callback) {
+  var cancelled = false;
+  var completed = false;
+  var options = router.getOptions();
+
+  var _a = router.getLifecycleFunctions(),
+      canDeactivateFunctions = _a[0],
+      canActivateFunctions = _a[1];
+
+  var middlewareFunctions = router.getMiddlewareFunctions();
+
+  var isCancelled = function isCancelled() {
+    return cancelled;
+  };
+
+  var cancel = function cancel() {
+    if (!cancelled && !completed) {
+      cancelled = true;
+      callback({
+        code: errorCodes.TRANSITION_CANCELLED
+      }, null);
+    }
+  };
+
+  var done = function done(err, state) {
+    completed = true;
+
+    if (isCancelled()) {
+      return;
+    }
+
+    if (!err && options.autoCleanUp) {
+      var activeSegments_1 = nameToIDs(toState.name);
+      Object.keys(canDeactivateFunctions).forEach(function (name) {
+        if (activeSegments_1.indexOf(name) === -1) router.clearCanDeactivate(name);
+      });
+    }
+
+    callback(err, state || toState);
+  };
+
+  var makeError = function makeError(base, err) {
+    return _assign$2(_assign$2({}, base), err instanceof Object ? err : {
+      error: err
+    });
+  };
+
+  var isUnknownRoute = toState.name === constants.UNKNOWN_ROUTE;
+  var asyncBase = {
+    isCancelled: isCancelled,
+    toState: toState,
+    fromState: fromState
+  };
+
+  var _b = transitionPath(toState, fromState),
+      toDeactivate = _b.toDeactivate,
+      toActivate = _b.toActivate;
+
+  var canDeactivate = !fromState || opts.forceDeactivate ? [] : function (toState, fromState, cb) {
+    var canDeactivateFunctionMap = toDeactivate.filter(function (name) {
+      return canDeactivateFunctions[name];
+    }).reduce(function (fnMap, name) {
+      var _a;
+
+      return _assign$2(_assign$2({}, fnMap), (_a = {}, _a[name] = canDeactivateFunctions[name], _a));
+    }, {});
+    resolve(canDeactivateFunctionMap, _assign$2(_assign$2({}, asyncBase), {
+      errorKey: 'segment'
+    }), function (err) {
+      return cb(err ? makeError({
+        code: errorCodes.CANNOT_DEACTIVATE
+      }, err) : null);
+    });
+  };
+  var canActivate = isUnknownRoute ? [] : function (toState, fromState, cb) {
+    var canActivateFunctionMap = toActivate.filter(function (name) {
+      return canActivateFunctions[name];
+    }).reduce(function (fnMap, name) {
+      var _a;
+
+      return _assign$2(_assign$2({}, fnMap), (_a = {}, _a[name] = canActivateFunctions[name], _a));
+    }, {});
+    resolve(canActivateFunctionMap, _assign$2(_assign$2({}, asyncBase), {
+      errorKey: 'segment'
+    }), function (err) {
+      return cb(err ? makeError({
+        code: errorCodes.CANNOT_ACTIVATE
+      }, err) : null);
+    });
+  };
+  var middleware = !middlewareFunctions.length ? [] : function (toState, fromState, cb) {
+    return resolve(middlewareFunctions, _assign$2({}, asyncBase), function (err, state) {
+      return cb(err ? makeError({
+        code: errorCodes.TRANSITION_ERR
+      }, err) : null, state || toState);
+    });
+  };
+  var pipeline = [].concat(canDeactivate).concat(canActivate).concat(middleware);
+  resolve(pipeline, asyncBase, done);
+  return cancel;
+}
+
+var noop = function noop() {};
+
+function withNavigation(router) {
+  var cancelCurrentTransition;
+  router.navigate = navigate;
+  router.navigate = navigate;
+
+  router.navigateToDefault = function () {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+
+    var opts = typeof args[0] === 'object' ? args[0] : {};
+    var done = args.length === 2 ? args[1] : typeof args[0] === 'function' ? args[0] : noop;
+    var options = router.getOptions();
+
+    if (options.defaultRoute) {
+      return navigate(options.defaultRoute, options.defaultParams, opts, done);
+    }
+
+    return function () {};
+  };
+
+  router.cancel = function () {
+    if (cancelCurrentTransition) {
+      cancelCurrentTransition('navigate');
+      cancelCurrentTransition = null;
+    }
+
+    return router;
+  };
+
+  function navigate() {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+
+    var name = args[0];
+    var lastArg = args[args.length - 1];
+    var done = typeof lastArg === 'function' ? lastArg : noop;
+    var params = typeof args[1] === 'object' ? args[1] : {};
+    var opts = typeof args[2] === 'object' ? args[2] : {};
+
+    if (!router.isStarted()) {
+      done({
+        code: errorCodes.ROUTER_NOT_STARTED
+      });
+      return;
+    }
+
+    var route = router.buildState(name, params);
+
+    if (!route) {
+      var err = {
+        code: errorCodes.ROUTE_NOT_FOUND
+      };
+      done(err);
+      router.invokeEventListeners(constants.TRANSITION_ERROR, null, router.getState(), err);
+      return;
+    }
+
+    var toState = router.makeState(route.name, route.params, router.buildPath(route.name, route.params), {
+      params: route.meta,
+      options: opts
+    });
+    var sameStates = router.getState() ? router.areStatesEqual(router.getState(), toState, false) : false; // Do not proceed further if states are the same and no reload
+    // (no deactivation and no callbacks)
+
+    if (sameStates && !opts.reload && !opts.force) {
+      var err = {
+        code: errorCodes.SAME_STATES
+      };
+      done(err);
+      router.invokeEventListeners(constants.TRANSITION_ERROR, toState, router.getState(), err);
+      return;
+    }
+
+    var fromState = router.getState();
+
+    if (opts.skipTransition) {
+      done(null, toState);
+      return noop;
+    } // Transition
+
+
+    return router.transitionToState(toState, fromState, opts, function (err, state) {
+      if (err) {
+        if (err.redirect) {
+          var _a = err.redirect,
+              name_1 = _a.name,
+              params_1 = _a.params;
+          navigate(name_1, params_1, _assign$2(_assign$2({}, opts), {
+            force: true,
+            redirected: true
+          }), done);
+        } else {
+          done(err);
+        }
+      } else {
+        router.invokeEventListeners(constants.TRANSITION_SUCCESS, state, fromState, opts);
+        done(null, state);
+      }
+    });
+  }
+
+  router.transitionToState = function (toState, fromState, options, done) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    if (done === void 0) {
+      done = noop;
+    }
+
+    router.cancel();
+    router.invokeEventListeners(constants.TRANSITION_START, toState, fromState);
+    cancelCurrentTransition = transition(router, toState, fromState, options, function (err, state) {
+      cancelCurrentTransition = null;
+      state = state || toState;
+
+      if (err) {
+        if (err.code === errorCodes.TRANSITION_CANCELLED) {
+          router.invokeEventListeners(constants.TRANSITION_CANCEL, toState, fromState);
+        } else {
+          router.invokeEventListeners(constants.TRANSITION_ERROR, toState, fromState, err);
+        }
+
+        done(err);
+      } else {
+        router.setState(state);
+        done(null, state);
+      }
+    });
+    return cancelCurrentTransition;
+  };
+
+  return router;
+}
+
+var noop$1 = function noop$1() {};
+
+function withRouterLifecycle(router) {
+  var started = false;
+
+  router.isStarted = function () {
+    return started;
+  }; //@ts-ignore
+
+
+  router.start = function () {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+
+    var options = router.getOptions();
+    var lastArg = args[args.length - 1];
+    var done = typeof lastArg === 'function' ? lastArg : noop$1;
+    var startPathOrState = typeof args[0] !== 'function' ? args[0] : undefined;
+
+    if (started) {
+      done({
+        code: errorCodes.ROUTER_ALREADY_STARTED
+      });
+      return router;
+    }
+
+    var startPath, startState;
+    started = true;
+    router.invokeEventListeners(constants.ROUTER_START); // callback
+
+    var cb = function cb(err, state, invokeErrCb) {
+      if (invokeErrCb === void 0) {
+        invokeErrCb = true;
+      }
+
+      if (!err) router.invokeEventListeners(constants.TRANSITION_SUCCESS, state, null, {
+        replace: true
+      });
+      if (err && invokeErrCb) router.invokeEventListeners(constants.TRANSITION_ERROR, state, null, err);
+      done(err, state);
+    };
+
+    if (startPathOrState === undefined && !options.defaultRoute) {
+      return cb({
+        code: errorCodes.NO_START_PATH_OR_STATE
+      });
+    }
+
+    if (typeof startPathOrState === 'string') {
+      startPath = startPathOrState;
+    } else if (typeof startPathOrState === 'object') {
+      startState = startPathOrState;
+    }
+
+    if (!startState) {
+      // If no supplied start state, get start state
+      startState = startPath === undefined ? null : router.matchPath(startPath); // Navigate to default function
+
+      var navigateToDefault_1 = function navigateToDefault_1() {
+        return router.navigateToDefault({
+          replace: true
+        }, done);
+      };
+
+      var redirect_1 = function redirect_1(route) {
+        return router.navigate(route.name, route.params, {
+          replace: true,
+          reload: true,
+          redirected: true
+        }, done);
+      };
+
+      var transitionToState = function transitionToState(state) {
+        router.transitionToState(state, router.getState(), {}, function (err, state) {
+          if (!err) cb(null, state);else if (err.redirect) redirect_1(err.redirect);else if (options.defaultRoute) navigateToDefault_1();else cb(err, null, false);
+        });
+      }; // If matched start path
+
+
+      if (startState) {
+        transitionToState(startState);
+      } else if (options.defaultRoute) {
+        // If default, navigate to default
+        navigateToDefault_1();
+      } else if (options.allowNotFound) {
+        transitionToState(router.makeNotFoundState(startPath, {
+          replace: true
+        }));
+      } else {
+        // No start match, no default => do nothing
+        cb({
+          code: errorCodes.ROUTE_NOT_FOUND,
+          path: startPath
+        }, null);
+      }
+    } else {
+      // Initialise router with provided start state
+      router.setState(startState);
+      cb(null, startState);
+    }
+
+    return router;
+  };
+
+  router.stop = function () {
+    if (started) {
+      router.setState(null);
+      started = false;
+      router.invokeEventListeners(constants.ROUTER_STOP);
+    }
+
+    return router;
+  };
+
+  return router;
+}
+
+var toFunction = function toFunction(val) {
+  return typeof val === 'function' ? val : function () {
+    return function () {
+      return val;
+    };
+  };
+};
+
+function withRouteLifecycle(router) {
+  var canDeactivateFactories = {};
+  var canActivateFactories = {};
+  var canDeactivateFunctions = {};
+  var canActivateFunctions = {};
+
+  router.getLifecycleFactories = function () {
+    return [canDeactivateFactories, canActivateFactories];
+  };
+
+  router.getLifecycleFunctions = function () {
+    return [canDeactivateFunctions, canActivateFunctions];
+  };
+
+  router.canDeactivate = function (name, canDeactivateHandler) {
+    var factory = toFunction(canDeactivateHandler);
+    canDeactivateFactories[name] = factory;
+    canDeactivateFunctions[name] = router.executeFactory(factory);
+    return router;
+  };
+
+  router.clearCanDeactivate = function (name) {
+    canDeactivateFactories[name] = undefined;
+    canDeactivateFunctions[name] = undefined;
+    return router;
+  };
+
+  router.canActivate = function (name, canActivateHandler) {
+    var factory = toFunction(canActivateHandler);
+    canActivateFactories[name] = factory;
+    canActivateFunctions[name] = router.executeFactory(factory);
+    return router;
+  };
+
+  return router;
+}
+
+var pipe = function pipe() {
+  var fns = [];
+
+  for (var _i = 0; _i < arguments.length; _i++) {
+    fns[_i] = arguments[_i];
+  }
+
+  return function (arg) {
+    return fns.reduce(function (prev, fn) {
+      return fn(prev);
+    }, arg);
+  };
+};
+
+var createRouter = function createRouter(routes, options, dependencies) {
+  if (routes === void 0) {
+    routes = [];
+  }
+
+  if (options === void 0) {
+    options = {};
+  }
+
+  if (dependencies === void 0) {
+    dependencies = {};
+  }
+
+  var config = {
+    decoders: {},
+    encoders: {},
+    defaultParams: {},
+    forwardMap: {}
+  };
+  return pipe(withOptions(options), withDependencies(dependencies), withObservability, withState, withRouterLifecycle, withRouteLifecycle, withNavigation, withPlugins, withMiddleware, withRoutes(routes))({
+    config: config
+  });
+};/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+var _assign$3 = function __assign() {
+  _assign$3 = Object.assign || function __assign(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return _assign$3.apply(this, arguments);
+};
+
+function __spreadArrays() {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
+    s += arguments[i].length;
+  }
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) {
+    for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) {
+      r[k] = a[j];
+    }
+  }
+
+  return r;
+}
+
+var value = function value(arg) {
+  return function () {
+    return arg;
+  };
+};
+
+var noop$2 = function noop() {};
+
+var isBrowser = typeof window !== 'undefined' && window.history;
+
+var getBase = function getBase() {
+  return window.location.pathname;
+};
+
+var supportsPopStateOnHashChange = function supportsPopStateOnHashChange() {
+  return window.navigator.userAgent.indexOf('Trident') === -1;
+};
+
+var pushState = function pushState(state, title, path) {
+  return window.history.pushState(state, title, path);
+};
+
+var replaceState = function replaceState(state, title, path) {
+  return window.history.replaceState(state, title, path);
+};
+
+var addPopstateListener = function addPopstateListener(fn, opts) {
+  var shouldAddHashChangeListener = opts.useHash && !supportsPopStateOnHashChange();
+  window.addEventListener('popstate', fn);
+
+  if (shouldAddHashChangeListener) {
+    window.addEventListener('hashchange', fn);
+  }
+
+  return function () {
+    window.removeEventListener('popstate', fn);
+
+    if (shouldAddHashChangeListener) {
+      window.removeEventListener('hashchange', fn);
+    }
+  };
+};
+
+var getLocation = function getLocation(opts) {
+  var path = opts.useHash ? window.location.hash.replace(new RegExp('^#' + opts.hashPrefix), '') : window.location.pathname.replace(new RegExp('^' + opts.base), ''); // Fix issue with browsers that don't URL encode characters (Edge)
+
+  var correctedPath = safelyEncodePath(path);
+  return (correctedPath || '/') + window.location.search;
+};
+
+var safelyEncodePath = function safelyEncodePath(path) {
+  try {
+    return encodeURI(decodeURI(path));
+  } catch (_) {
+    return path;
+  }
+};
+
+var getState = function getState() {
+  return window.history.state;
+};
+
+var getHash = function getHash() {
+  return window.location.hash;
+};
+
+var browser = {};
+
+if (isBrowser) {
+  browser = {
+    getBase: getBase,
+    pushState: pushState,
+    replaceState: replaceState,
+    addPopstateListener: addPopstateListener,
+    getLocation: getLocation,
+    getState: getState,
+    getHash: getHash
+  };
+} else {
+  browser = {
+    getBase: value(''),
+    pushState: noop$2,
+    replaceState: noop$2,
+    addPopstateListener: noop$2,
+    getLocation: value(''),
+    getState: value(null),
+    getHash: value('')
+  };
+}
+
+var safeBrowser = browser;
+var defaultOptions$3 = {
+  forceDeactivate: true,
+  useHash: false,
+  hashPrefix: '',
+  base: '',
+  mergeState: false,
+  preserveHash: true
+};
+var source = 'popstate';
+
+function browserPluginFactory(opts, browser) {
+  if (browser === void 0) {
+    browser = safeBrowser;
+  }
+
+  var options = _assign$3(_assign$3({}, defaultOptions$3), opts);
+
+  var transitionOptions = {
+    forceDeactivate: options.forceDeactivate,
+    source: source
+  };
+  var removePopStateListener;
+  return function browserPlugin(router) {
+    var routerOptions = router.getOptions();
+    var routerStart = router.start;
+
+    router.buildUrl = function (route, params) {
+      var base = options.base || '';
+      var prefix = options.useHash ? "#" + options.hashPrefix : '';
+      var path = router.buildPath(route, params);
+      return base + prefix + path;
+    };
+
+    var urlToPath = function urlToPath(url) {
+      var match = url.match(/^(?:http|https):\/\/(?:[0-9a-z_\-.:]+?)(?=\/)(.*)$/);
+      var path = match ? match[1] : url;
+      var pathParts = path.match(/^(.+?)(#.+?)?(\?.+)?$/);
+      if (!pathParts) throw new Error("[router5] Could not parse url " + url);
+      var pathname = pathParts[1];
+      var hash = pathParts[2] || '';
+      var search = pathParts[3] || '';
+      return (options.useHash ? hash.replace(new RegExp('^#' + options.hashPrefix), '') : options.base ? pathname.replace(new RegExp('^' + options.base), '') : pathname) + search;
+    };
+
+    router.matchUrl = function (url) {
+      return router.matchPath(urlToPath(url));
+    };
+
+    router.start = function () {
+      var args = [];
+
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+      }
+
+      if (args.length === 0 || typeof args[0] === 'function') {
+        routerStart.apply(void 0, __spreadArrays([browser.getLocation(options)], args));
+      } else {
+        routerStart.apply(void 0, args);
+      }
+
+      return router;
+    };
+
+    router.replaceHistoryState = function (name, params, title) {
+      if (params === void 0) {
+        params = {};
+      }
+
+      if (title === void 0) {
+        title = '';
+      }
+
+      var route = router.buildState(name, params);
+      var state = router.makeState(route.name, route.params, router.buildPath(route.name, route.params), {
+        params: route.meta
+      });
+      var url = router.buildUrl(name, params);
+      router.lastKnownState = state;
+      browser.replaceState(state, title, url);
+    };
+
+    function updateBrowserState(state, url, replace) {
+      var trimmedState = state ? {
+        meta: state.meta,
+        name: state.name,
+        params: state.params,
+        path: state.path
+      } : state;
+      var finalState = options.mergeState === true ? _assign$3(_assign$3({}, browser.getState()), trimmedState) : trimmedState;
+      if (replace) browser.replaceState(finalState, '', url);else browser.pushState(finalState, '', url);
+    }
+
+    function onPopState(evt) {
+      var routerState = router.getState(); // Do nothing if no state or if last know state is poped state (it should never happen)
+
+      var newState = !evt.state || !evt.state.name;
+      var state = newState ? router.matchPath(browser.getLocation(options), source) : router.makeState(evt.state.name, evt.state.params, evt.state.path, _assign$3(_assign$3({}, evt.state.meta), {
+        source: source
+      }), evt.state.meta.id);
+      var defaultRoute = routerOptions.defaultRoute,
+          defaultParams = routerOptions.defaultParams;
+
+      if (!state) {
+        // If current state is already the default route, we will have a double entry
+        // Navigating back and forth will emit SAME_STATES error
+        defaultRoute && router.navigateToDefault(_assign$3(_assign$3({}, transitionOptions), {
+          reload: true,
+          replace: true
+        }));
+        return;
+      }
+
+      if (routerState && router.areStatesEqual(state, routerState, false)) {
+        return;
+      }
+
+      router.transitionToState(state, routerState, transitionOptions, function (err, toState) {
+        if (err) {
+          if (err.redirect) {
+            var _a = err.redirect,
+                name_1 = _a.name,
+                params = _a.params;
+            router.navigate(name_1, params, _assign$3(_assign$3({}, transitionOptions), {
+              replace: true,
+              force: true,
+              redirected: true
+            }));
+          } else if (err.code === errorCodes.CANNOT_DEACTIVATE) {
+            var url = router.buildUrl(routerState.name, routerState.params);
+
+            if (!newState) {
+              // Keep history state unchanged but use current URL
+              updateBrowserState(state, url, true);
+            } // else do nothing or history will be messed up
+            // TODO: history.back()?
+
+          } else {
+            // Force navigation to default state
+            defaultRoute && router.navigate(defaultRoute, defaultParams, _assign$3(_assign$3({}, transitionOptions), {
+              reload: true,
+              replace: true
+            }));
+          }
+        } else {
+          router.invokeEventListeners(constants.TRANSITION_SUCCESS, toState, routerState, {
+            replace: true
+          });
+        }
+      });
+    }
+
+    function onStart() {
+      if (options.useHash && !options.base) {
+        // Guess base
+        options.base = browser.getBase();
+      }
+
+      removePopStateListener = browser.addPopstateListener(onPopState, options);
+    }
+
+    function teardown() {
+      if (removePopStateListener) {
+        removePopStateListener();
+        removePopStateListener = undefined;
+      }
+    }
+
+    function onTransitionSuccess(toState, fromState, opts) {
+      var historyState = browser.getState();
+      var hasState = historyState && historyState.meta && historyState.name && historyState.params;
+      var statesAreEqual = fromState && router.areStatesEqual(fromState, toState, false);
+      var replace = opts.replace || !hasState || statesAreEqual;
+      var url = router.buildUrl(toState.name, toState.params);
+
+      if (fromState === null && options.useHash === false && options.preserveHash === true) {
+        url += browser.getHash();
+      }
+
+      updateBrowserState(toState, url, replace);
+    }
+
+    return {
+      onStart: onStart,
+      onStop: teardown,
+      teardown: teardown,
+      onTransitionSuccess: onTransitionSuccess,
+      onPopState: onPopState
+    };
+  };
+}var RouterService = /*#__PURE__*/function () {
+  function RouterService() {}
+
+  RouterService.event$ = function event$() {
+    var _this = this;
+
+    var router = this.router_;
+
+    if (router) {
+      return rxjs.from(router).pipe(operators.startWith({
+        route: router.getState(),
+        previousRoute: null
+      }), operators.tap(function (event) {
+        console.log('RouterService.event$', event);
+
+        _this.event$_.next(event);
+      })
+      /*
+      switchMap(_ => {
+      	return this.event$_;
+      }),
+      */
+      );
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  RouterService.useBrowser = function useBrowser(routes) {
+    routes = routes || [{
+      name: 'home',
+      path: '/'
+    }, {
+      name: 'profile',
+      path: '/profile'
+    }];
+    this.routes = routes;
+    var router = createRouter(routes, {
+      allowNotFound: false,
+      autoCleanUp: true,
+      defaultRoute: 'index',
+      defaultParams: {},
+      queryParams: {
+        arrayFormat: 'default',
+        nullFormat: 'default',
+        booleanFormat: 'default'
+      },
+      queryParamsMode: 'default',
+      trailingSlashMode: 'default',
+      strictTrailingSlash: false,
+      caseSensitive: false,
+      urlParamsEncoding: 'default'
+    });
+    this.router_ = router;
+    router.usePlugin(browserPluginFactory({
+      useHash: false
+    }));
+    router.start();
+  };
+
+  RouterService.useBrowser$ = function useBrowser$(routes) {
+    this.useBrowser(routes);
+    return this.event$();
+  };
+
+  RouterService.setRouterLink = function setRouterLink(routerLink, routeParams, options) {
+    if (routerLink === void 0) {
+      routerLink = 'it.access';
+    }
+
+    if (routeParams === void 0) {
+      routeParams = null;
+    }
+
+    if (options === void 0) {
+      options = {
+        reload: true
+      };
+    }
+
+    var router = this.router_;
+
+    if (router) {
+      // router.matchUrl(routerLink);
+      try {
+        router.navigate(routerLink, routeParams, options);
+      } catch (error) {
+        console.log('RouterService.setRouterLink.error', error);
+      }
+    } // console.log('RouterService.setRouterLink', router, routerLink, routeParams, options);
+
+  };
+
+  RouterService.buildPath = function buildPath(route, params) {
+    if (params === void 0) {
+      params = null;
+    }
+
+    var path = null;
+    var router = this.router_;
+
+    if (router) {
+      try {
+        path = router.buildPath(route, params);
+      } catch (error) {
+        console.log('RouterService.buildPath.error', error);
+      }
+    } // console.log('RouterService.buildPath', path, route, params);
+    // router.buildUrl(routeName, routeParams)
+
+
+    return path;
+  };
+
+  RouterService.isActive = function isActive(name, params, strictEquality, ignoreQueryParams) {
+    if (strictEquality === void 0) {
+      strictEquality = false;
+    }
+
+    if (ignoreQueryParams === void 0) {
+      ignoreQueryParams = true;
+    }
+
+    var active = false;
+    var router = this.router_;
+
+    if (router) {
+      try {
+        active = router.isActive(name, params, strictEquality, ignoreQueryParams);
+      } catch (error) {
+        console.log('RouterService.isActive.error', error);
+      }
+    } // console.log('RouterService.isActive', active, name, params, strictEquality, ignoreQueryParams);
+
+
+    return active;
+  };
+
+  _createClass(RouterService, null, [{
+    key: "router",
+    get: function get() {
+      return this.router_;
+    }
+  }]);
+
+  return RouterService;
+}();
+
+_defineProperty(RouterService, "routes", []);
+
+_defineProperty(RouterService, "router_", null);
+
+_defineProperty(RouterService, "event$_", new rxjs.Subject());var AccessCodeComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AccessCodeComponent, _Component);
 
   function AccessCodeComponent() {
@@ -3962,7 +3986,7 @@ var MeetingId = /*#__PURE__*/function () {
     var meetingUrl = new MeetingUrl();
 
     if (!meetingUrl.link) {
-      rxcompRouter.RouterService.setRouterLink(MeetingUrl.getGuidedTourUrl()); // window.location.href = MeetingUrl.getGuidedTourUrl();
+      RouterService.setRouterLink(MeetingUrl.getGuidedTourUrl()); // window.location.href = MeetingUrl.getGuidedTourUrl();
     } else {
       var url = meetingUrl.toGuidedTourUrl();
 
@@ -4728,7 +4752,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 
   _proto.onGuidedTourAccess = function onGuidedTourAccess() {
     UserService.logout$().pipe(operators.first()).subscribe(function () {
-      rxcompRouter.RouterService.setRouterLink('/it/tour-guidato'); // RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
+      RouterService.setRouterLink('it.guidedTour'); // RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
       // window.location.href = environment.url.guidedTour;
     });
   };
@@ -4904,12 +4928,12 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
             break;
 
           case 'self-service-tour':
-            rxcompRouter.RouterService.setRouterLink(environment.url.selfServiceTour); // window.location.href = environment.url.selfServiceTour;
+            RouterService.setRouterLink('it.selfServiceTour'); // window.location.href = environment.url.selfServiceTour;
 
             break;
 
           case 'login':
-            rxcompRouter.RouterService.setRouterLink(environment.url.guidedTour); // window.location.href = environment.url.guidedTour;
+            RouterService.setRouterLink('it.guidedTour'); // window.location.href = environment.url.guidedTour;
 
             break;
         }
@@ -8152,6 +8176,34 @@ AgoraCheckComponent.meta = {
   template:
   /* html */
   "\n\t\t<svg *if=\"value == null\" class=\"checkmark idle\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === true\" class=\"checkmark success\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" fill=\"none\" d=\"M14.1 27.2l7.1 7.2 16.7-16.8\" stroke-linecap=\"round\"/>\n\t\t</svg>\n\t\t<svg *if=\"value === false\" class=\"checkmark error\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 52\">\n\t\t\t<circle class=\"checkmark__circle\" cx=\"26\" cy=\"26\" r=\"25\" fill=\"none\"/>\n\t\t\t<path class=\"checkmark__icon\" stroke-linecap=\"round\" fill=\"none\" d=\"M16 16 36 36 M36 16 16 36\"/>\n\t\t</svg>\n\t"
+};var IframeModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(IframeModalComponent, _Component);
+
+  function IframeModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = IframeModalComponent.prototype;
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return IframeModalComponent;
+}(rxcomp.Component);
+IframeModalComponent.meta = {
+  selector: '[iframe-modal]',
+  inputs: ['src'],
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"modal__content\">\n\t\t\t<iframe [src]=\"src\"></iframe>\n\t\t</div>\n\t"
+};
+
+IframeModalComponent.chunk = function (src) {
+  return (
+    /* html */
+    "<div class=\"iframe-modal\" iframe-modal src=\"" + src + "\"></div>"
+  );
 };var ModalEvent = function ModalEvent(data) {
   this.data = data;
 };
@@ -8180,9 +8232,9 @@ var ModalService = /*#__PURE__*/function () {
   ModalService.open$ = function open$(modal) {
     var _this = this;
 
-    return (modal.iframe ? rxjs.of(
-    /*html*/
-    "<div class=\"iframe-modal\" iframe-modal>\n\t\t\t\t\t<div class=\"modal__header\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"modal__content\">\n\t\t\t\t\t<iframe src=\"" + modal.iframe + "\"></iframe>\n\t\t\t\t</div>\n\t\t\t</div>") : this.getTemplate$(modal.src)).pipe(operators.map(function (template) {
+    this.busy$.next(true);
+    return (modal.iframe ? rxjs.of(IframeModalComponent.meta.chunk(modal.iframe)) : this.getTemplate$(modal)).pipe( // startWith(new ModalLoadEvent(Object.assign({}, modal.data, { $src: modal.src }))),
+    operators.map(function (template) {
       return {
         node: _this.getNode(template),
         data: modal.data,
@@ -8192,6 +8244,9 @@ var ModalService = /*#__PURE__*/function () {
       _this.modal$.next(node);
 
       _this.hasModal = true;
+
+      _this.busy$.next(false); // this.events$.next(new ModalLoadedEvent(Object.assign({}, modal.data, { $src: modal.src })));
+
     }), operators.switchMap(function (node) {
       return _this.events$;
     }), operators.tap(function (_) {
@@ -8199,12 +8254,16 @@ var ModalService = /*#__PURE__*/function () {
     }));
   };
 
-  ModalService.load$ = function load$(modal) {};
-
-  ModalService.getTemplate$ = function getTemplate$(url) {
-    return rxjs.from(fetch(url).then(function (response) {
-      return response.text();
-    }));
+  ModalService.getTemplate$ = function getTemplate$(modal) {
+    if (modal.src) {
+      return rxjs.from(fetch(modal.src).then(function (response) {
+        return response.text();
+      }));
+    } else if (modal.template) {
+      return rxjs.of(modal.template);
+    } else {
+      return EMPTY;
+    }
   };
 
   ModalService.getNode = function getNode(template) {
@@ -8224,12 +8283,25 @@ var ModalService = /*#__PURE__*/function () {
     this.events$.next(new ModalResolveEvent(data));
   };
 
+  _createClass(ModalService, null, [{
+    key: "hasModal",
+    get: function get() {
+      return this.hasModal_;
+    },
+    set: function set(hasModal) {
+      if (this.hasModal_ !== hasModal) {
+        this.hasModal_ = hasModal;
+        var body = document.querySelector('body');
+        hasModal ? body.classList.add('modal-open') : body.classList.remove('modal-open');
+      }
+    }
+  }]);
+
   return ModalService;
 }();
-
-_defineProperty(ModalService, "hasModal", false);
 ModalService.modal$ = new rxjs.Subject();
-ModalService.events$ = new rxjs.Subject();var LabelPipe = /*#__PURE__*/function (_Pipe) {
+ModalService.events$ = new rxjs.Subject();
+ModalService.busy$ = new rxjs.Subject();var LabelPipe = /*#__PURE__*/function (_Pipe) {
   _inheritsLoose(LabelPipe, _Pipe);
 
   function LabelPipe() {
@@ -8689,7 +8761,34 @@ var AgoraChecklistService = /*#__PURE__*/function () {
   };
 
   return AgoraChecklistService;
-}();var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
+}();var AgoraConfigureFirewallModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AgoraConfigureFirewallModalComponent, _Component);
+
+  function AgoraConfigureFirewallModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AgoraConfigureFirewallModalComponent.prototype;
+
+  _proto.onClose = function onClose() {
+    ModalService.resolve();
+  };
+
+  return AgoraConfigureFirewallModalComponent;
+}(rxcomp.Component);
+AgoraConfigureFirewallModalComponent.meta = {
+  selector: '[agora-configure-firewall-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\" [innerHTML]=\"'bhere_configure_firewall' | label\"></div>\n\t\t\t<div class=\"group--cta\">\n\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onClose()\">\n\t\t\t\t\t<span>Chiudi</span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+AgoraConfigureFirewallModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"configure-firewall-modal\" agora-configure-firewall-modal></div>"
+  );
+};var AgoraChecklistComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraChecklistComponent, _Component);
 
   function AgoraChecklistComponent() {
@@ -8750,7 +8849,7 @@ var AgoraChecklistService = /*#__PURE__*/function () {
 
   _proto.showFirewallConfiguration = function showFirewallConfiguration() {
     ModalService.open$({
-      src: environment.template.modal.configureFirewall
+      template: AgoraConfigureFirewallModalComponent.chunk()
     }).pipe(operators.first()).subscribe();
   };
 
@@ -8761,24 +8860,7 @@ AgoraChecklistComponent.meta = {
   outputs: ['checked'],
   template:
   /* html */
-  "\n\t<div class=\"group--info\">\n\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t<div class=\"title\" *if=\"busy\" [innerHTML]=\"'bhere_checklist_busy' | label\"></div>\n\t\t\t<div class=\"title\" *if=\"checklist.success\" [innerHTML]=\"'bhere_checklist_success' | label\"></div>\n\t\t\t<div class=\"title\" *if=\"checklist.error\" [innerHTML]=\"'bhere_checklist_error' | label\"></div>\n\t\t\t<ul class=\"group--checklist stagger--childs\">\n\t\t\t\t<li class=\"checklist__item check\"><span>Browser</span> <span agora-check [value]=\"checklist.browser\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.browser\"><a class=\"btn--link\" href=\"https://browsehappy.com/\" target=\"_blank\" rel=\"noopener\" [innerHTML]=\"errors.browser\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Https</span> <span agora-check [value]=\"checklist.https\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.https\"><a class=\"btn--link\" (click)=\"openHttps()\" [innerHTML]=\"errors.https\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckAudio\"><span>Audio</span> <span agora-check [value]=\"checklist.audio\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.audio\"><span [innerHTML]=\"errors.audio\"></span></li>\n\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckVideo\"><span>Video</span> <span agora-check [value]=\"checklist.video\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.video\"><span [innerHTML]=\"errors.video\"></span></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Communication</span> <span agora-check [value]=\"checklist.rtc\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtc\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtc\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Messaging</span> <span agora-check [value]=\"checklist.rtm\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtm\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtm\"></a></li>\n\t\t\t</ul>\n\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !checklist.success, ready: checklist.success }\" (click)=\"onNext()\">\n\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<a [routerLink]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
-};var AgoraConfigureFirewallModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AgoraConfigureFirewallModalComponent, _Component);
-
-  function AgoraConfigureFirewallModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AgoraConfigureFirewallModalComponent.prototype;
-
-  _proto.onClose = function onClose() {
-    ModalService.resolve();
-  };
-
-  return AgoraConfigureFirewallModalComponent;
-}(rxcomp.Component);
-AgoraConfigureFirewallModalComponent.meta = {
-  selector: '[agora-configure-firewall-modal]'
+  "\n\t<div class=\"group--info\">\n\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t<div class=\"title\" *if=\"busy\" [innerHTML]=\"'bhere_checklist_busy' | label\"></div>\n\t\t\t<div class=\"title\" *if=\"checklist.success\" [innerHTML]=\"'bhere_checklist_success' | label\"></div>\n\t\t\t<div class=\"title\" *if=\"checklist.error\" [innerHTML]=\"'bhere_checklist_error' | label\"></div>\n\t\t\t<ul class=\"group--checklist stagger--childs\">\n\t\t\t\t<li class=\"checklist__item check\"><span>Browser</span> <span agora-check [value]=\"checklist.browser\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.browser\"><a class=\"btn--link\" href=\"https://browsehappy.com/\" target=\"_blank\" rel=\"noopener\" [innerHTML]=\"errors.browser\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Https</span> <span agora-check [value]=\"checklist.https\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.https\"><a class=\"btn--link\" (click)=\"openHttps()\" [innerHTML]=\"errors.https\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckAudio\"><span>Audio</span> <span agora-check [value]=\"checklist.audio\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.audio\"><span [innerHTML]=\"errors.audio\"></span></li>\n\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckVideo\"><span>Video</span> <span agora-check [value]=\"checklist.video\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.video\"><span [innerHTML]=\"errors.video\"></span></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Communication</span> <span agora-check [value]=\"checklist.rtc\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtc\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtc\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Messaging</span> <span agora-check [value]=\"checklist.rtm\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtm\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtm\"></a></li>\n\t\t\t</ul>\n\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !checklist.success, ready: checklist.success }\" (click)=\"onNext()\">\n\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<a [routerLink]=\"'editor' | route\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
 };var AudioStreamService = /*#__PURE__*/function () {
   function AudioStreamService() {}
 
@@ -9434,7 +9516,7 @@ AgoraDeviceComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"group--info\" *if=\"!isHttps\">\n\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_invalid_protocol' | label\"></div>\n\t\t\t<div class=\"info\" [innerHTML]=\"'bhere_reload_in_https' | label\"></div>\n\t\t\t<button type=\"button\" class=\"btn--connect\" (click)=\"openHttps($event)\">\n\t\t\t\t<span [innerHTML]=\"'bhere_reload' | label\"></span>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onEnter($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<!-- PREVIEW -->\n\t\t\t<div class=\"agora-device-preview\" agora-device-preview [video]=\"controls.video.value\" [audio]=\"controls.audio.value\" (stream)=\"onStream($event)\" (change)=\"onStreamDidChange($event)\" *if=\"this.hasPreview\">\n\t\t\t\t<video class=\"video\" muted></video>\n\t\t\t\t<div class=\"audio\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<!-- VIDEO -->\n\t\t\t\t<div control-custom-select [control]=\"controls.video\" label=\"Video\" *if=\"devices.videos.length\"></div>\n\t\t\t\t<!-- AUDIO -->\n\t\t\t\t<div control-custom-select [control]=\"controls.audio\" label=\"Audio\" *if=\"devices.audios.length\"></div>\n\t\t\t\t<div class=\"info\" *if=\"!isValid()\" [innerHTML]=\"'bhere_select_video_audio' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_video_audio_connected' | label\"></div>\n\t\t\t\t<button type=\"submit\" class=\"btn--connect\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t\t\t\t<span *if=\"!state.connecting\" [innerHTML]=\"'bhere_enter' | label\"></span>\n\t\t\t\t\t<span *if=\"state.connecting\" [innerHTML]=\"'bhere_connecting' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t"
-};var Path = /*#__PURE__*/function () {
+};var Path$1 = /*#__PURE__*/function () {
   function Path(options) {
     if (options) {
       Object.assign(this, options);
@@ -9465,10 +9547,10 @@ AgoraDeviceComponent.meta = {
   return Path;
 }();
 
-_defineProperty(Path, "allowedProps", ['id', 'name', 'items']);
+_defineProperty(Path$1, "allowedProps", ['id', 'name', 'items']);
 
 function mapPath(map) {
-  map = new Path(map);
+  map = new Path$1(map);
   return map;
 }var DEFAULT_PATH = {
   id: null,
@@ -9791,7 +9873,7 @@ AgoraLinkComponent.meta = {
   outputs: ['link'],
   template:
   /* html */
-  "\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<!-- PATH -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.path\" [label]=\"'bhere_path' | label\" *if=\"('usePaths' | flag) && paths.length\"></div>\n\t\t\t\t\t<!--IDS -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<a [href]=\"selfServiceTourUrl\" class=\"btn--secondary\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_self_service' | label\"></span>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<a [routerLink]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
+  "\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<!-- PATH -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.path\" [label]=\"'bhere_path' | label\" *if=\"('usePaths' | flag) && paths.length\"></div>\n\t\t\t\t\t<!--IDS -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<a [href]=\"selfServiceTourUrl\" class=\"btn--secondary\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_self_service' | label\"></span>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<a [routerLink]=\"'editor' | route\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
 };var AgoraLoginComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLoginComponent, _Component);
 
@@ -10853,12 +10935,17 @@ ToastService.events$ = new rxjs.Subject();var ModalOutletComponent = /*#__PURE__
   _proto.onInit = function onInit() {
     var _this = this;
 
+    this.busy_ = false;
+
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;
 
     this.modalNode = node.querySelector('.modal-outlet__modal');
     ModalService.modal$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (modal) {
-      _this.modal = modal;
+      return _this.modal = modal;
+    });
+    ModalService.busy$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (busy) {
+      return _this.busy = busy;
     });
   };
 
@@ -10890,6 +10977,18 @@ ToastService.events$ = new rxjs.Subject();var ModalOutletComponent = /*#__PURE__
       this.modal_ = modal;
       this.pushChanges();
     }
+  }, {
+    key: "busy",
+    get: function get() {
+      return this.busy_;
+    },
+    set: function set(busy) {
+      // console.log('ModalOutletComponent set busy', busy, this);
+      if (this.busy_ !== busy) {
+        this.busy_ = busy;
+        this.pushChanges();
+      }
+    }
   }]);
 
   return ModalOutletComponent;
@@ -10898,7 +10997,7 @@ ModalOutletComponent.meta = {
   selector: '[modal-outlet]',
   template:
   /* html */
-  "\n\t<div class=\"modal-outlet__container\" [class]=\"{ active: modal }\">\n\t\t<div class=\"modal-outlet__background\" (click)=\"reject($event)\"></div>\n\t\t<div class=\"modal-outlet__modal\"></div>\n\t</div>\n\t"
+  "\n\t<div class=\"modal-outlet__container\" [class]=\"{ active: modal, busy: busy }\">\n\t\t<div class=\"modal-outlet__background\" (click)=\"reject($event)\"></div>\n\t\t<div class=\"modal-outlet__modal\"></div>\n\t\t<!-- spinner -->\n\t\t<div class=\"spinner spinner--contrasted\" *if=\"busy\"></div>\n\t</div>\n\t"
 };var TryInARModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(TryInARModalComponent, _Component);
 
@@ -10949,7 +11048,17 @@ ModalOutletComponent.meta = {
   return TryInARModalComponent;
 }(rxcomp.Component);
 TryInARModalComponent.meta = {
-  selector: '[try-in-ar-modal]'
+  selector: '[try-in-ar-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Inquadra il qrcode con il cellulare o il tablet per vedere il VR.</div>\n\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t<canvas class=\"qrcode\"></canvas>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onClose()\">\n\t\t\t\t\t\t<span>Chiudi</span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+TryInARModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"try-in-ar-modal\" try-in-ar-modal></div>"
+  );
 };var EXT_IMAGE = ['jpeg', 'jpg', 'png', 'hdr'];
 var EXT_VIDEO = ['mp4', 'webm'];
 var EXT_MODEL = ['fbx', 'gltf', 'glb', 'usdz'];
@@ -21919,7 +22028,7 @@ WorldComponent.meta = {
   outputs: ['navTo', 'navLink', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
   template:
   /* html */
-  "\n\t<div class=\"world__view\" *if=\"view\">\n\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t<div *if=\"view.ready\">\n\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" (link)=\"onNavLink($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onModelDown($event)\" (play)=\"onPlayModel($event)\" *if=\"item.type.name == 'model'\"></div>\n\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t<div class=\"inner\"></div>\n\t</div>\n\t<div model-menu [views]=\"views\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\" *if=\"showMenu\">\n\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t<svg class=\"menu-light\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu-light\"></use></svg>\n\t\t\t<div class=\"spinner\"></div>\n\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t</svg>\n\t\t</div>\n\t</div>\n\t<div model-debug *if=\"debugging\"></div>\n\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t"
+  "\n\t<div class=\"world__view\" *if=\"view\">\n\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t<div *if=\"view.ready\">\n\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" (link)=\"onNavLink($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onModelDown($event)\" (play)=\"onPlayModel($event)\" *if=\"item.type.name == 'model'\"></div>\n\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t<div class=\"inner\"></div>\n\t</div>\n\t<div model-menu [views]=\"views\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\" *if=\"showMenu\">\n\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t<svg class=\"menu-light\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu-light\"></use></svg>\n\t\t\t<div class=\"btn--menu__spinner\"></div>\n\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t</svg>\n\t\t</div>\n\t</div>\n\t<div model-debug *if=\"debugging\"></div>\n\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t"
 };var ModelComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModelComponent, _Component);
 
@@ -22906,7 +23015,7 @@ var CHUNK_NAVMAP =
 "\n<!-- navmap -->\n<div class=\"group--navmap\" *if=\"navmap && state.showNavmap && state.mode != 'live-meeting'\">\n\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (click)=\"onNavmapItem(item)\" *for=\"let item of navmap.items\">\n\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t</div>\n</div>\n";
 var CHUNK_LOGO =
 /* html */
-"\n<!-- logo -->\n<a class=\"btn--logo\" [routerLink]=\"'index' | slug\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+"\n<!-- logo -->\n<a class=\"btn--logo\" [routerLink]=\"'index' | route\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
 var CHUNK_CREDITS =
 /* html */
 "\n<!-- credits -->\n<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
@@ -22921,10 +23030,10 @@ var CHUNK_SMART_DEVICE =
 "\n<!-- Smart Device -->\n<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t<div class=\"ui__body\"></div>\n\t<!-- remote sidebar -->\n\t<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t\t<div class=\"agora-stream\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<!-- remote screen -->\n\t<div class=\"group--remote-screen\" *if=\"remoteScreen && !hasScreenViewItem\">\n\t\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_LOCAL_SMART_DEVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS_SMART_DEVICE + "\n\t</div>\n\t" + CHUNK_MEMBERS_SMART_DEVICE + "\n</div>\n";
 var CHUNK_SELF_SERVICE_TOUR =
 /* html */
-"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
 var CHUNK_EMBED =
 /* html */
-"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var AgoraComponent = /*#__PURE__*/function (_Component) {
+"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
 
   function AgoraComponent() {
@@ -23028,7 +23137,7 @@ var CHUNK_EMBED =
     if (user && (!linkRole || linkRole === user.type)) {
       this.initWithUser(user);
     } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-      rxcompRouter.RouterService.setRouterLink(environment.url.access); // window.location.href = environment.url.access;
+      RouterService.setRouterLink('it.access'); // window.location.href = environment.url.access;
     } else {
       this.initWithUser({
         type: linkRole
@@ -23096,7 +23205,7 @@ var CHUNK_EMBED =
     switch (role) {
       case RoleType.SelfService:
         if (!user || user.type !== RoleType.SelfService && user.type !== RoleType.Publisher) {
-          rxcompRouter.RouterService.setRouterLink(environment.url.access); // window.location.href = environment.url.access;
+          RouterService.setRouterLink('it.access'); // window.location.href = environment.url.access;
 
           return;
         } else {
@@ -23927,7 +24036,7 @@ var CHUNK_EMBED =
       TryInARModalComponent.openInAR(this.view);
     } else {
       ModalService.open$({
-        src: environment.template.modal.tryInAr,
+        template: TryInARModalComponent.chunk(),
         data: this.view
       }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
       });
@@ -24030,7 +24139,7 @@ var CHUNK_EMBED =
       }
     });
     /*
-    ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
+    ModalService.open$({ template: SupportRequestModalComponent.chunk(), data: clientInfo }).pipe(
     	first(),
     ).subscribe(event => {
     	if (event instanceof ModalResolveEvent) {
@@ -24184,355 +24293,6 @@ AgoraComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"page\">\n\t\t<!-- background -->\n\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t</div>\n\t\t<!-- Status Checklist -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'checklist'\" [agora-checklist] (checked)=\"onChecked($event)\"></div>\n\t\t<!-- Status Link -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'link'\" [agora-link] (link)=\"onLink($event)\"></div>\n\t\t<!-- Status Login -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\" [agora-login] (login)=\"onLogin($event)\"></div>\n\t\t<!-- Status Name -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')\" [agora-name] (name)=\"onName($event)\"></div>\n\t\t<!-- Status Device -->\n\t\t<div class=\"ui ui--info\" *if=\"state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')\" [agora-device] (enter)=\"onEnter($event)\"></div>\n\t\t" + CHUNK_VIRTUAL_TOUR + "\n\t\t" + CHUNK_SMART_DEVICE + "\n\t\t" + CHUNK_SELF_SERVICE_TOUR + "\n\t\t" + CHUNK_EMBED + "\n\t\t" + CHUNK_LOGO + "\n\t\t" + CHUNK_CREDITS + "\n\t\t" + CHUNK_LANGUAGE + "\n\t</div>\n\t"
-};var AppComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AppComponent, _Component);
-
-  function AppComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AppComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.classList.remove('hidden');
-  };
-
-  return AppComponent;
-}(rxcomp.Component);
-AppComponent.meta = {
-  selector: '[app-component]',
-  template:
-  /* html */
-  "\n\t\t<!-- header -->\n\t\t<router-outlet></router-outlet>\n\t\t<!-- footer -->\n\t\t<div class=\"toast-outlet\" toast-outlet></div>\n\t\t<div class=\"modal-outlet\" modal-outlet></div>\n\t"
-};var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'];
-var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
-var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
-var MIME_STREAM = ['publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen'];
-function isImage(path) {
-  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
-}
-function isVideo(path) {
-  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/i").test(path);
-}
-function isModel(path) {
-  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/i").test(path);
-}
-function isStream(path) {
-  return MIME_STREAM.indexOf(path) !== -1;
-}
-
-var AssetPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(AssetPipe, _Pipe);
-
-  function AssetPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  AssetPipe.transform = function transform(asset, type) {
-    if (type === void 0) {
-      type = null;
-    }
-
-    if (type != null) {
-      // keep loose equality
-      asset = asset.type.name === type ? asset : null;
-    }
-
-    if (asset) {
-      if (typeof asset === 'string') {
-        return environment.getPath(asset);
-      } // console.log(asset.type.name, AssetType.Image.name);
-
-
-      switch (asset.type.name) {
-        case AssetType.Image.name:
-        case AssetType.Video.name:
-          asset = asset.folder + asset.file;
-          asset = environment.getPath(asset);
-          break;
-
-        case AssetType.Model.name:
-          asset = asset.folder + asset.file;
-          asset = environment.getPath(asset);
-          break;
-
-        case AssetType.PublisherStream.name:
-        case AssetType.AttendeeStream.name:
-        case AssetType.PublisherScreen.name:
-        case AssetType.AttendeeScreen.name:
-        case AssetType.SmartDeviceStream.name:
-          asset = environment.getPath(asset.file);
-          break;
-
-        default:
-          if (isImage(asset.file) || isVideo(asset.file)) {
-            asset = asset.folder + asset.file;
-            asset = environment.getPath(asset);
-          } else if (isModel(asset.file)) {
-            asset = asset.folder + asset.file;
-            asset = environment.getPath(asset);
-          } else if (isStream(asset.file)) {
-            asset = asset.file;
-          }
-
-      }
-
-      asset = asset;
-    } else {
-      asset = null;
-    } // console.log('AssetPipe.transform', asset);
-
-
-    return asset;
-  };
-
-  return AssetPipe;
-}(rxcomp.Pipe);
-AssetPipe.meta = {
-  name: 'asset'
-};var ControlRequestModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ControlRequestModalComponent, _Component);
-
-  function ControlRequestModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ControlRequestModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    _Component.prototype.onInit.call(this);
-
-    var _getContext = rxcomp.getContext(this),
-        parentInstance = _getContext.parentInstance;
-
-    if (parentInstance instanceof ModalOutletComponent) {
-      this.data = parentInstance.modal.data;
-    }
-  };
-
-  _proto.onAccept = function onAccept(user) {
-    ModalService.resolve();
-  };
-
-  _proto.onReject = function onReject(user) {
-    ModalService.reject();
-  }
-  /*
-  onDestroy() {
-  	// console.log('ControlRequestModalComponent.onDestroy');
-  }
-  */
-  ;
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return ControlRequestModalComponent;
-}(rxcomp.Component);
-ControlRequestModalComponent.meta = {
-  selector: '[control-request-modal]'
-};var DropDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(DropDirective, _Directive);
-
-  function DropDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = DropDirective.prototype;
-
-  _proto.onInit = function onInit() {
-    var _getContext = rxcomp.getContext(this),
-        module = _getContext.module,
-        node = _getContext.node,
-        parentInstance = _getContext.parentInstance,
-        selector = _getContext.selector;
-
-    var event = 'drop';
-    var event$ = rxjs.fromEvent(node, event).pipe(operators.shareReplay(1));
-    var expression = node.getAttribute("(" + event + ")");
-
-    if (expression) {
-      var outputFunction = module.makeFunction(expression, ['$event']);
-      event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        module.resolve(outputFunction, parentInstance, event);
-      });
-      rxjs.fromEvent(node, 'dragover').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-        return event.preventDefault();
-      });
-    } else {
-      parentInstance[event + "$"] = event$;
-    } // console.log('DropDirective.onInit', 'selector', selector, 'event', event);
-
-  };
-
-  return DropDirective;
-}(rxcomp.Directive);
-DropDirective.meta = {
-  selector: "[(drop)]"
-};var DROPDOWN_ID = 1000000;
-
-var DropdownDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(DropdownDirective, _Directive);
-
-  function DropdownDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = DropdownDirective.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    var trigger = node.getAttribute('dropdown-trigger');
-    this.trigger = trigger ? node.querySelector(trigger) : node;
-    this.opened = null;
-    this.onClick = this.onClick.bind(this);
-    this.onDocumentClick = this.onDocumentClick.bind(this);
-    this.openDropdown = this.openDropdown.bind(this);
-    this.closeDropdown = this.closeDropdown.bind(this);
-    this.addListeners();
-    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
-      // console.log('DropdownDirective', id, this['dropdown-item']);
-      if (_this.id === id) {
-        node.classList.add('dropped');
-      } else {
-        node.classList.remove('dropped');
-      }
-    });
-  };
-
-  _proto.onClick = function onClick(event) {
-    var _getContext2 = rxcomp.getContext(this),
-        node = _getContext2.node;
-
-    if (this.opened === null) {
-      this.openDropdown();
-    } else {
-      var dropdownItemNode = node.querySelector('[dropdown-item]'); // console.log('dropdownItemNode', dropdownItemNode);
-
-      if (!dropdownItemNode) {
-        // if (this.trigger !== node) {
-        this.closeDropdown();
-      }
-    }
-  };
-
-  _proto.onDocumentClick = function onDocumentClick(event) {
-    var _getContext3 = rxcomp.getContext(this),
-        node = _getContext3.node;
-
-    var clickedInside = node === event.target || node.contains(event.target);
-
-    if (!clickedInside) {
-      this.closeDropdown();
-    }
-  };
-
-  _proto.openDropdown = function openDropdown() {
-    if (this.opened === null) {
-      this.opened = true;
-      this.addDocumentListeners();
-      DropdownDirective.dropdown$.next(this.id);
-      this.dropped.next(this.id);
-    }
-  };
-
-  _proto.closeDropdown = function closeDropdown() {
-    if (this.opened !== null) {
-      this.removeDocumentListeners();
-      this.opened = null;
-
-      if (DropdownDirective.dropdown$.getValue() === this.id) {
-        DropdownDirective.dropdown$.next(null);
-        this.dropped.next(null);
-      }
-    }
-  };
-
-  _proto.addListeners = function addListeners() {
-    this.trigger.addEventListener('click', this.onClick);
-  };
-
-  _proto.addDocumentListeners = function addDocumentListeners() {
-    document.addEventListener('click', this.onDocumentClick);
-  };
-
-  _proto.removeListeners = function removeListeners() {
-    this.trigger.removeEventListener('click', this.onClick);
-  };
-
-  _proto.removeDocumentListeners = function removeDocumentListeners() {
-    document.removeEventListener('click', this.onDocumentClick);
-  };
-
-  _proto.onDestroy = function onDestroy() {
-    this.removeListeners();
-    this.removeDocumentListeners();
-  };
-
-  DropdownDirective.nextId = function nextId() {
-    return DROPDOWN_ID++;
-  };
-
-  _createClass(DropdownDirective, [{
-    key: "id",
-    get: function get() {
-      return this.dropdown || this.id_ || (this.id_ = DropdownDirective.nextId());
-    }
-  }]);
-
-  return DropdownDirective;
-}(rxcomp.Directive);
-DropdownDirective.meta = {
-  selector: '[dropdown]',
-  inputs: ['dropdown', 'dropdown-trigger'],
-  outputs: ['dropped']
-};
-DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDirective = /*#__PURE__*/function (_Directive) {
-  _inheritsLoose(DropdownItemDirective, _Directive);
-
-  function DropdownItemDirective() {
-    return _Directive.apply(this, arguments) || this;
-  }
-
-  var _proto = DropdownItemDirective.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    node.classList.add('dropdown-item');
-    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
-      // console.log('DropdownItemDirective', id, this['dropdown-item']);
-      if (_this.id === id) {
-        node.classList.add('dropped');
-      } else {
-        node.classList.remove('dropped');
-      }
-    });
-  };
-
-  _createClass(DropdownItemDirective, [{
-    key: "id",
-    get: function get() {
-      return this['dropdown-item'];
-    }
-  }]);
-
-  return DropdownItemDirective;
-}(rxcomp.Directive);
-DropdownItemDirective.meta = {
-  selector: '[dropdown-item], [[dropdown-item]]',
-  inputs: ['dropdown-item']
 };var AssetService = /*#__PURE__*/function () {
   function AssetService() {}
 
@@ -24806,7 +24566,1321 @@ DropdownItemDirective.meta = {
   };
 
   return EditorService;
-}();var SETTINGS = {
+}();var CurvedPlaneModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(CurvedPlaneModalComponent, _Component);
+
+  function CurvedPlaneModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = CurvedPlaneModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = this.object;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.CurvedPlane,
+      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
+      radius: new rxcompForm.FormControl(35, rxcompForm.RequiredValidator()),
+      height: new rxcompForm.FormControl(20, rxcompForm.RequiredValidator()),
+      arc: new rxcompForm.FormControl(90, rxcompForm.RequiredValidator()),
+      asset: null
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('CurvedPlaneModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+      // console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
+
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('CurvedPlaneModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('CurvedPlaneModalComponent.onSubmit.error', error);
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(CurvedPlaneModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "object",
+    get: function get() {
+      var object = new THREE.Object3D();
+      var data = this.data;
+
+      if (data) {
+        var position = data.hit.position.clone();
+        var normal = data.hit.normal.clone();
+        var spherical = data.hit.spherical;
+
+        if (spherical) {
+          position.normalize().multiplyScalar(20);
+          object.position.copy(position);
+          object.lookAt(Host.origin);
+        } else {
+          object.lookAt(normal);
+          object.position.set(position.x, position.y, position.z);
+          object.position.add(normal.multiplyScalar(0.01));
+        }
+      }
+
+      return object;
+    }
+  }]);
+
+  return CurvedPlaneModalComponent;
+}(rxcomp.Component);
+CurvedPlaneModalComponent.meta = {
+  selector: '[curved-plane-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Curved Plane.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<!-- <div control-text [control]=\"controls.title\" label=\"Title\"></div> -->\n\t\t\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-number [control]=\"controls.radius\" label=\"Radius\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-number [control]=\"controls.height\" label=\"Height\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-number [control]=\"controls.arc\" label=\"Arc\" [precision]=\"0\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t-->\n\t\t\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+CurvedPlaneModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"curved-plane-modal\" curved-plane-modal></div>"
+  );
+};var ItemModelModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ItemModelModalComponent, _Component);
+
+  function ItemModelModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ItemModelModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = this.object;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Model,
+      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl([0, 0, 0], rxcompForm.RequiredValidator()),
+      // [0, -Math.PI / 2, 0],
+      // rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
+      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('ItemModelModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+      // console.log('ItemModelModalComponent.onSubmit', this.view, item);
+
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('ItemModelModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('ItemModelModalComponent.onSubmit.error', error);
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(ItemModelModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "object",
+    get: function get() {
+      var object = new THREE.Object3D();
+      var data = this.data;
+
+      if (data) {
+        var position = data.hit.position.clone();
+        var normal = data.hit.normal.clone();
+        var spherical = data.hit.spherical;
+
+        if (spherical) {
+          position.normalize().multiplyScalar(4);
+          object.position.copy(position);
+          object.lookAt(Host.origin);
+        } else {
+          object.lookAt(normal);
+          object.position.set(position.x, position.y, position.z);
+          object.position.add(normal.multiplyScalar(0.01));
+        }
+      }
+
+      return object;
+    }
+  }]);
+
+  return ItemModelModalComponent;
+}(rxcomp.Component);
+ItemModelModalComponent.meta = {
+  selector: '[item-model-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Model Item.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+ItemModelModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"item-model-modal\" item-model-modal></div>"
+  );
+};var MediaModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(MediaModalComponent, _Component);
+
+  function MediaModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = MediaModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Media,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('MediaModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      }; // console.log('MediaModalComponent.onSubmit.view', view);
+
+      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
+        var item = {
+          type: ViewItemType.Plane,
+          position: [20, 0, 0],
+          rotation: [0, -Math.PI / 2, 0],
+          scale: [12, 6.75, 1],
+          asset: values.asset
+        };
+        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
+          view.items = [item];
+          return view;
+        }));
+      }), operators.first()).subscribe(function (response) {
+        // console.log('MediaModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('MediaModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return MediaModalComponent;
+}(rxcomp.Component);
+MediaModalComponent.meta = {
+  selector: '[media-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Media.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+MediaModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"media-modal\" media-modal></div>"
+  );
+};var ModelModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ModelModalComponent, _Component);
+
+  function ModelModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ModelModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Model,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      model: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('ModelModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      }; // console.log('ModelModalComponent.onSubmit.view', view);
+
+      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
+        var item = {
+          type: ViewItemType.Model,
+          asset: values.model
+        };
+        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
+          view.items = [item];
+          return view;
+        }));
+      }), operators.first()).subscribe(function (response) {
+        // console.log('ModelModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('ModelModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return ModelModalComponent;
+}(rxcomp.Component);
+ModelModalComponent.meta = {
+  selector: '[model-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Model View.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t\t\t<div control-model [control]=\"controls.model\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+ModelModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"model-modal\" model-modal></div>"
+  );
+};var NavModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(NavModalComponent, _Component);
+
+  function NavModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = NavModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = this.object;
+    this.error = null;
+    this.useHooks = WebhookService.enabled;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Nav,
+      title: null,
+      abstract: null,
+      viewId: null,
+      // new FormControl(null, RequiredValidator()),
+      hook: null,
+      hookExtra: null,
+      keepOrientation: false,
+      important: false,
+      transparent: false,
+      //
+      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      // [0, -Math.PI / 2, 0],
+      scale: new rxcompForm.FormControl([20, 5, 1], rxcompForm.RequiredValidator()),
+      //
+      asset: null,
+      link: new rxcompForm.FormGroup({
+        title: new rxcompForm.FormControl(null),
+        href: new rxcompForm.FormControl(null),
+        target: '_blank'
+      }) // upload: new FormControl(null, RequiredValidator()),
+      // items: new FormArray([null, null, null], RequiredValidator()),
+
+    });
+    this.controls = form.controls;
+
+    if (WebhookService.enabled) {
+      var options = environment.webhook.methods.map(function (x) {
+        return {
+          id: x,
+          name: x
+        };
+      });
+      options.unshift({
+        id: null,
+        name: 'select'
+      });
+      this.controls.hook.options = options;
+    } // !!! mode validator
+    // form.addValidators(NavModalValidator(form, this.view));
+
+    /*
+    this.controls.viewId.options = [{
+    	name: 'Name',
+    	id: 2,
+    }];
+    */
+
+
+    form.changes$.subscribe(function (changes) {
+      // console.log('NavModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
+      _this.controls.viewId.options = options;
+
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var item = Object.assign({}, this.form.value);
+      item.viewId = item.viewId ? parseInt(item.viewId) : this.view.id;
+
+      if (item.link && (!item.link.title || !item.link.href)) {
+        item.link = null;
+      } // console.log('NavModalComponent.onSubmit', this.view, item);
+
+
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        // console.log('NavModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('NavModalComponent.onSubmit.error', error);
+        _this2.error = error;
+        _this2.form.submitted = false; // this.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onViewIdDidChange = function onViewIdDidChange(viewId) {
+    // console.log('NavModalComponent.onViewIdDidChange', viewId, this.form.value);
+    // const viewId = this.form.value.viewId;
+    if (viewId != null) {
+      var options = this.controls.viewId.options;
+      var selectedOption = options.find(function (x) {
+        return x.id === viewId;
+      }); // console.log('NavModalComponent.onViewIdDidChange', selectedOption, options);
+
+      if (selectedOption != null) {
+        var title = selectedOption.name;
+        var currentTitle = this.form.value.title; // console.log('NavModalComponent.onViewIdDidChange', title, currentTitle);
+
+        if (!currentTitle || options.find(function (x) {
+          return x.name === currentTitle;
+        })) {
+          this.form.patch({
+            title: title
+          });
+        }
+      }
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(NavModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "position",
+    get: function get() {
+      var position = null;
+      var data = this.data;
+
+      if (data) {
+        position = data.hit.position;
+      }
+
+      return position;
+    }
+  }, {
+    key: "object",
+    get: function get() {
+      var object = new THREE.Object3D();
+      var data = this.data;
+
+      if (data) {
+        var position = data.hit.position.clone();
+        var normal = data.hit.normal.clone();
+        var spherical = data.hit.spherical;
+
+        if (spherical) {
+          position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
+          object.position.copy(position);
+          object.lookAt(Host.origin);
+        } else {
+          object.lookAt(normal);
+          object.position.set(position.x, position.y, position.z);
+          object.position.add(normal.multiplyScalar(0.01));
+        }
+      }
+
+      return object;
+    }
+  }]);
+
+  return NavModalComponent;
+}(rxcomp.Component);
+NavModalComponent.meta = {
+  selector: '[nav-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Nav.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\" (change)=\"onViewIdDidChange($event)\"></div>\n\t\t\t\t\t\t<div control-checkbox [control]=\"controls.keepOrientation\" label=\"Keep Orientation\"></div>\n\t\t\t\t\t\t<div control-checkbox [control]=\"controls.important\" label=\"Important\"></div>\n\t\t\t\t\t\t<div control-checkbox [control]=\"controls.transparent\" label=\"Transparent\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div *if=\"controls.transparent.value == true\">\n\t\t\t\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/png, image/jpeg\"></div>\n\t\t\t\t\t\t<div control-text [control]=\"controls.link.controls.title\" label=\"Link Title\"></div>\n\t\t\t\t\t\t<div control-text [control]=\"controls.link.controls.href\" label=\"Link Url\"></div>\n\t\t\t\t\t\t<div control-custom-select [control]=\"controls.hook\" label=\"Hook\" *if=\"useHooks\"></div>\n\t\t\t\t\t\t<div control-text [control]=\"controls.hookExtra\" label=\"Hook Extra\" *if=\"useHooks\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+NavModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"nav-modal\" nav-modal></div>"
+  );
+};var PanoramaGridModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PanoramaGridModalComponent, _Component);
+
+  function PanoramaGridModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PanoramaGridModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.PanoramaGrid,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      assets: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PanoramaGridModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true; // console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
+
+      var assets = this.form.value.assets;
+      var tiles = PanoramaGridView.mapTiles(assets.map(function (asset) {
+        return {
+          asset: asset,
+          navs: []
+        };
+      }), false, true);
+      tiles.sort(function (a, b) {
+        var ai = a.indices.x * 10000 + a.indices.y;
+        var bi = b.indices.x * 10000 + b.indices.y;
+        return ai - bi;
+      }); // console.log('PanoramaGridModalComponent.onSubmit', tiles);
+
+      var asset = tiles[0].asset;
+      var view = {
+        type: this.form.value.type,
+        name: this.form.value.name,
+        asset: asset,
+        tiles: tiles,
+        invertAxes: true,
+        flipAxes: false,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      };
+      EditorService.viewCreate$(view).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PanoramaGridModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PanoramaGridModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PanoramaGridModalComponent;
+}(rxcomp.Component);
+PanoramaGridModalComponent.meta = {
+  selector: '[panorama-grid-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Panorama Grid.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t<div control-assets [control]=\"controls.assets\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+PanoramaGridModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"panorama-grid-modal\" panorama-grid-modal></div>"
+  );
+};var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PanoramaModalComponent, _Component);
+
+  function PanoramaModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PanoramaModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Panorama,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // upload: new FormControl(null, RequiredValidator()),
+      // items: new FormArray([null, null, null], RequiredValidator()),
+
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      }; // console.log('PanoramaModalComponent.onSubmit.view', view);
+
+      return EditorService.viewCreate$(view).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PanoramaModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PanoramaModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+      /*
+      const asset = Asset.fromUrl(this.form.value.upload);
+      // console.log('PanoramaModalComponent.onSubmit.asset', asset);
+      AssetService.assetCreate$(asset).pipe(
+      	first(),
+      	switchMap(response => {
+      		const view = {
+      			type: this.form.value.type,
+      			name: this.form.value.name,
+      			asset: response,
+      			orientation: {
+      				latitude: 0,
+      				longitude: 0
+      			},
+      			zoom: 75
+      		};
+      		// console.log('PanoramaModalComponent.onSubmit.view', view);
+      		return EditorService.viewCreate$(view).pipe(
+      			first(),
+      		);
+      	})
+      ).subscribe(response => {
+      	// console.log('PanoramaModalComponent.onSubmit.success', response);
+      	ModalService.resolve(response);
+      }, error => {
+      	console.log('PanoramaModalComponent.onSubmit.error', error);
+      	this.error = error;
+      	this.form.reset();
+      });
+      */
+    } else {
+      this.form.touched = true;
+    }
+    /*
+    EditorService.viewCreate$({
+    	"id": 1,
+    	"type": "panorama",
+    	"name": "Welcome Room",
+    	"likes": 134,
+    	"liked": false,
+    	"asset": {
+    		"type": "image",
+    		"folder": "waiting-room/",
+    		"file": "mod2.jpg"
+    	},
+    	"items": [
+    		{
+    			"id": 110,
+    			"type": "nav",
+    			"title": "Barilla Experience",
+    			"abstract": "Abstract",
+    			"asset": {
+    				"type": "image",
+    				"folder": "barilla/",
+    				"file": "logo-barilla.jpg"
+    			},
+    			"link": {
+    				"title": "Scopri di più...",
+    				"href": "https://www.barilla.com/it-it/",
+    				"target": "_blank"
+    			},
+    			"position": [
+    				0.9491595148619703,
+    				-0.3147945860255039,
+    				0
+    			],
+    			"viewId": 23
+    		}
+    	],
+    	"orientation": {
+    		"latitude": -10,
+    		"longitude": 360
+    	},
+    	"zoom": 75
+    }).pipe(
+    	first(),
+    ).subscribe(data => {
+    	// console.log('EditorService.viewCreate$', data);
+    });
+    	*/
+
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PanoramaModalComponent;
+}(rxcomp.Component);
+PanoramaModalComponent.meta = {
+  selector: '[panorama-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Panorama.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<!--\n\t\t\t\t\t<div class=\"group--form group--form--fixed\">\n\t\t\t\t\t\t<code [innerHTML]=\"form.value | json\"></code>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--test\" (click)=\"test()\"><span>test</span></button>\n\t\t\t\t\t</div>\n\t\t\t\t\t-->\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+PanoramaModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"panorama-modal\" panorama-modal></div>"
+  );
+};var PathAddModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PathAddModalComponent, _Component);
+
+  function PathAddModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PathAddModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      this.data = parentInstance.modal.data;
+    }
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PathAddModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var path = {
+        name: values.name,
+        items: this.data ? this.data.item.items : []
+      }; // console.log('PathAddModalComponent.onSubmit.path', path);
+
+      return PathService.pathCreate$(path).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PathAddModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PathAddModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PathAddModalComponent;
+}(rxcomp.Component);
+PathAddModalComponent.meta = {
+  selector: '[path-add-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Add Path.</div>\n\t\t\t\t<div class=\"description\">Aggiungi un percorso</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+PathAddModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"panorama-modal\" path-add-modal></div>"
+  );
+};var PathEditModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PathEditModalComponent, _Component);
+
+  function PathEditModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PathEditModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.item = null;
+    this.views = null;
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      var data = parentInstance.modal.data;
+
+      if (data) {
+        this.item = data.item ? data.item : null;
+        this.views = this.parseViews(data.views, this.item);
+      }
+    }
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      name: new rxcompForm.FormControl(this.item ? this.item.name : null, rxcompForm.RequiredValidator())
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PathEditModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.parseViews = function parseViews(views, item) {
+    if (views && item) {
+      return views.map(function (view) {
+        return {
+          id: view.id,
+          name: view.name,
+          type: view.type,
+          active: item.items.indexOf(view.id) === -1
+        };
+      });
+    } else {
+      return [];
+    }
+  };
+
+  _proto.onToggleView = function onToggleView(view) {
+    view.active = !view.active;
+    this.pushChanges();
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var payload = {
+        id: this.item.id,
+        name: values.name,
+        items: this.views.filter(function (x) {
+          return !x.active;
+        }).map(function (x) {
+          return x.id;
+        })
+      }; // console.log('PathEditModalComponent.onSubmit', payload);
+
+      return PathService.pathUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
+        // console.log('PathEditModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('PathEditModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onSelectAll = function onSelectAll() {
+    this.views.forEach(function (view) {
+      return view.active = true;
+    });
+    this.pushChanges();
+  };
+
+  _proto.onSelectNone = function onSelectNone() {
+    this.views.forEach(function (view) {
+      return view.active = false;
+    });
+    this.pushChanges();
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return PathEditModalComponent;
+}(rxcomp.Component);
+PathEditModalComponent.meta = {
+  selector: '[path-edit-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Edit Path <span *if=\"item\">&ldquo;<span [innerHTML]=\"item.title || item.name\"></span>&rdquo;</span>.</div>\n\t\t\t\t<div class=\"description\">Modifica il percorso</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<ul class=\"nav--flag\" *if=\"views\">\n\t\t\t\t\t\t<li class=\"nav__item\" *for=\"let view of views\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--flag\" [class]=\"{ active: view.active }\" [title]=\"view.name\" (click)=\"onToggleView(view)\">\n\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<span class=\"name\" [innerHTML]=\"view.name\"></span>\n\t\t\t\t\t\t\t\t<span class=\"flag\">\n\t\t\t\t\t\t\t\t\t<svg class=\"check\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#check\"></use></svg>\n\t\t\t\t\t\t\t\t\t<svg class=\"close\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</li>\n\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<div class=\"group--options\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--link\" (click)=\"onSelectAll()\">\n\t\t\t\t\t\t\t\t<span>Select all</span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--link\" (click)=\"onSelectNone()\">\n\t\t\t\t\t\t\t\t<span>Select none</span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Save</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+PathEditModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"path-edit-modal\" path-edit-modal></div>"
+  );
+};var PlaneModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(PlaneModalComponent, _Component);
+
+  function PlaneModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = PlaneModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var object = this.object;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewItemType.Plane,
+      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
+      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
+      // [0, -Math.PI / 2, 0],
+      scale: new rxcompForm.FormControl([12, 6.75, 1], rxcompForm.RequiredValidator()),
+      asset: null
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('PlaneModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    if (this.form.valid) {
+      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+
+      console.log('PlaneModalComponent.onSubmit', this.view, item);
+      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
+        console.log('PlaneModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        return console.log('PlaneModalComponent.onSubmit.error', error);
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(PlaneModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "view",
+    get: function get() {
+      var view = null;
+      var data = this.data;
+
+      if (data) {
+        view = data.view;
+      }
+
+      return view;
+    }
+  }, {
+    key: "object",
+    get: function get() {
+      var object = new THREE.Object3D();
+      var data = this.data;
+
+      if (data) {
+        var position = data.hit.position.clone();
+        var normal = data.hit.normal.clone();
+        var spherical = data.hit.spherical;
+
+        if (spherical) {
+          position.normalize().multiplyScalar(20);
+          object.position.copy(position);
+          object.lookAt(Host.origin);
+        } else {
+          object.lookAt(normal);
+          object.position.set(position.x, position.y, position.z);
+          object.position.add(normal.multiplyScalar(0.01));
+        }
+      }
+
+      return object;
+    }
+  }]);
+
+  return PlaneModalComponent;
+}(rxcomp.Component);
+PlaneModalComponent.meta = {
+  selector: '[plane-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Plane.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<!-- <div control-text [control]=\"controls.title\" label=\"Title\"></div> -->\n\t\t\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.rotation\" label=\"Rotation\" [precision]=\"3\" [increment]=\"Math.PI / 360\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.scale\" label=\"Scale\" [precision]=\"2\" [disabled]=\"true\"></div>\n\t\t\t\t\t\t<div control-localized-asset [control]=\"controls.asset\" label=\"Image or Video\" accept=\"image/jpeg, video/mp4\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+PlaneModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"plane-modal\" plane-modal></div>"
+  );
+};var RemoveModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(RemoveModalComponent, _Component);
+
+  function RemoveModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = RemoveModalComponent.prototype;
+
+  _proto.onRemove = function onRemove() {
+    ModalService.resolve();
+  };
+
+  _proto.onCancel = function onCancel() {
+    ModalService.reject();
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  _createClass(RemoveModalComponent, [{
+    key: "data",
+    get: function get() {
+      var data = null;
+
+      var _getContext = rxcomp.getContext(this),
+          parentInstance = _getContext.parentInstance;
+
+      if (parentInstance instanceof ModalOutletComponent) {
+        data = parentInstance.modal.data;
+      }
+
+      return data;
+    }
+  }, {
+    key: "item",
+    get: function get() {
+      var item = null;
+      var data = this.data;
+
+      if (data) {
+        item = data.item;
+      }
+
+      return item;
+    }
+  }]);
+
+  return RemoveModalComponent;
+}(rxcomp.Component);
+RemoveModalComponent.meta = {
+  selector: '[remove-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Remove <span *if=\"item\">&ldquo;<span [innerHTML]=\"item.title || item.name\"></span>&rdquo;</span>.</div>\n\t\t\t\t<div class=\"abstract\">are you sure?</div>\n\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t\t<span>Remove</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onCancel($event)\">\n\t\t\t\t\t\t<span>Cancel</span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+RemoveModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"remove-modal\" remove-modal></div>"
+  );
+};var Room3DModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(Room3DModalComponent, _Component);
+
+  function Room3DModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = Room3DModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.error = null;
+    var form = this.form = new rxcompForm.FormGroup({
+      type: ViewType.Room3d,
+      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
+      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // model: new FormControl(null, RequiredValidator()),
+
+    });
+    this.controls = form.controls;
+    form.changes$.subscribe(function (changes) {
+      // console.log('Room3DModalComponent.form.changes$', changes, form.valid, form);
+      _this.pushChanges();
+    });
+  };
+
+  _proto.onSubmit = function onSubmit() {
+    var _this2 = this;
+
+    if (this.form.valid) {
+      this.form.submitted = true;
+      var values = this.form.value;
+      var view = {
+        type: values.type,
+        name: values.name,
+        asset: values.asset,
+        orientation: {
+          latitude: 0,
+          longitude: 0
+        },
+        zoom: 75
+      }; // console.log('Room3DModalComponent.onSubmit.view', view);
+
+      return EditorService.viewCreate$(view).pipe(
+      /*
+      switchMap(view => {
+      	const item = {
+      		type: ViewItemType.Model,
+      		asset: values.model,
+      	};
+      	return EditorService.itemCreate$(view, item).pipe(
+      		map(item => {
+      			view.items = [item];
+      			return view;
+      		})
+      	);
+      }),
+      */
+      operators.first()).subscribe(function (response) {
+        // console.log('Room3DModalComponent.onSubmit.success', response);
+        ModalService.resolve(response);
+      }, function (error) {
+        console.log('Room3DModalComponent.onSubmit.error', error);
+        _this2.error = error;
+
+        _this2.form.reset();
+      });
+    } else {
+      this.form.touched = true;
+    }
+  };
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return Room3DModalComponent;
+}(rxcomp.Component);
+Room3DModalComponent.meta = {
+  selector: '[room-3d-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Room 3D View.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/jpeg\"></div>\n\t\t\t\t\t\t<div control-model [control]=\"controls.model\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t\t\t-->\n\t\t\t\t\t\t<div control-model [control]=\"controls.asset\" label=\"Model (.glb)\" accept=\".glb\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+Room3DModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"room-3d-modal\" room-3d-modal></div>"
+  );
+};var SETTINGS = {
   menu: [{
     id: 'menu',
     title: 'editor_menu',
@@ -24862,7 +25936,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
 
         _this2.initState();
       } else {
-        rxcompRouter.RouterService.setRouterLink(environment.url.access); // window.location.href = environment.url.access;
+        RouterService.setRouterLink('it.access'); // window.location.href = environment.url.access;
       }
     });
   };
@@ -24931,7 +26005,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   _proto.onAddPath = function onAddPath() {
     // console.log('EditorComponent.onAddPath');
     ModalService.open$({
-      src: environment.template.modal.pathAdd
+      template: PathAddModalComponent.chunk()
     }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         PathService.addPath(event.data);
@@ -24942,7 +26016,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   _proto.onEditPath = function onEditPath(item) {
     // console.log('EditorComponent.onEditPath', item);
     ModalService.open$({
-      src: environment.template.modal.pathEdit,
+      template: PathEditModalComponent.chunk(),
       data: {
         item: item,
         views: ViewService.validViews
@@ -24957,7 +26031,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   _proto.onDuplicatePath = function onDuplicatePath(item) {
     // console.log('EditorComponent.onDuplicatePath', item);
     ModalService.open$({
-      src: environment.template.modal.pathAdd,
+      template: PathAddModalComponent.chunk(),
       data: {
         item: item
       }
@@ -24971,7 +26045,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   _proto.onDeletePath = function onDeletePath(item) {
     // console.log('EditorComponent.onDeletePath', item);
     ModalService.open$({
-      src: environment.template.modal.remove,
+      template: RemoveModalComponent.chunk(),
       data: {
         item: item
       }
@@ -25029,7 +26103,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
 
   _proto.tryInAr = function tryInAr() {
     ModalService.open$({
-      src: environment.template.modal.tryInAr,
+      template: TryInARModalComponent.chunk(),
       data: this.view
     }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
     });
@@ -25144,8 +26218,62 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   _proto.onOpenModal = function onOpenModal(modal, data) {
     var _this6 = this;
 
+    var template = null;
+
+    switch (modal.type) {
+      case 'view':
+        switch (modal.value) {
+          case ViewType.Panorama.name:
+            template = PanoramaModalComponent.chunk();
+            break;
+
+          case ViewType.PanoramaGrid.name:
+            template = PanoramaGridModalComponent.chunk();
+            break;
+
+          case ViewType.Model.name:
+            template = ModelModalComponent.chunk();
+            break;
+
+          case ViewType.Room3d.name:
+            template = Room3DModalComponent.chunk();
+            break;
+
+          case ViewType.Media.name:
+            template = MediaModalComponent.chunk();
+            break;
+        }
+
+        break;
+
+      case 'viewItem':
+        switch (modal.value) {
+          case ViewItemType.Nav.name:
+            template = NavModalComponent.chunk();
+            break;
+
+          case ViewItemType.Plane.name:
+            template = PlaneModalComponent.chunk();
+            break;
+
+          case ViewItemType.CurvedPlane.name:
+            template = CurvedPlaneModalComponent.chunk();
+            break;
+
+          case ViewItemType.Model.name:
+            template = ItemModelModalComponent.chunk();
+            break;
+        }
+
+        break;
+    }
+
+    if (!template) {
+      return;
+    }
+
     ModalService.open$({
-      src: environment.template.modal[modal.type][modal.value],
+      template: template,
       data: data
     }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
@@ -25365,7 +26493,540 @@ EditorComponent.meta = {
   selector: '[editor-component]',
   template:
   /* html */
-  "\n\t<div class=\"page page--editor\">\n\t\t<div class=\"ui\" [class]=\"{ open: aside }\" *if=\"dataViews.length\">\n\t\t\t<div class=\"ui__navbar\">\n\t\t\t\t<div class=\"btn--settings\" [class]=\"{ active: settings.active }\" (click)=\"onToggleSettings($event)\" *if=\"settings.menu.length > 0\">\n\t\t\t\t\t<svg class=\"settings\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#settings-full\"></use></svg>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"headline\" *if=\"view\">\n\t\t\t\t\t<div class=\"headline__id\" [innerHTML]=\"view.id\"></div>\n\t\t\t\t\t<div class=\"headline__icon\">\n\t\t\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"headline__name\" [innerHTML]=\"view.name\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--path\" *if=\"('usePaths' | flag) && path\">\n\t\t\t\t\t<div class=\"group--path__select\">\n\t\t\t\t\t\t<div class=\"group--form--select\" [dropdown]=\"'path'\">\n\t\t\t\t\t\t\t<label>Percorso</label>\n\t\t\t\t\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"path.name\"></span>\n\t\t\t\t\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dropdown dropdown-item\" [dropdown-item]=\"'path'\">\n\t\t\t\t\t\t\t<div class=\"category\">Percorso</div>\n\t\t\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t\t\t<li [class]=\"{ active: isPathSelected(item) }\" *for=\"let item of paths\">\n\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"item.name\" (click)=\"onSelectPath(item)\"></span>\n\t\t\t\t\t\t\t\t\t<div class=\"check\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#check\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--flags\" (click)=\"onEditPath(item)\" title=\"Edit\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#flags\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--duplicate\" (click)=\"onDuplicatePath(item)\" title=\"Duplicate\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#duplicate\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--trash\" (click)=\"onDeletePath(item)\" title=\"Delete\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#trash\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onAddPath()\">Aggiungi un percorso</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--edit\" [class]=\"{ active: aside }\" (click)=\"onToggleAside($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" [editor]=\"true\" (navTo)=\"onNavTo($event)\" (viewHit)=\"onViewHit($event)\" (dragEnd)=\"onDragEnd($event)\" (select)=\"onWorldSelect($event)\">\n\t\t\t\t\t<div class=\"world__view\" *if=\"view\">\n\t\t\t\t\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t\t\t\t\t<div *if=\"view.ready\">\n\t\t\t\t\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t\t\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" [editor]=\"true\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'model'\">\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"banner loading\" model-banner [item]=\"progress\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"progress\" [innerHTML]=\"progress.title\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<div class=\"banner loading\" model-banner [item]=\"loading\" *if=\"loading\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"banner waiting\" model-banner [item]=\"waiting\" *if=\"waiting\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t-->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t\t\t\t\t<div class=\"inner\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-menu [views]=\"views\" [editor]=\"true\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\">\n\t\t\t\t\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t\t\t\t\t<div class=\"spinner\"></div>\n\t\t\t\t\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t\t\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-debug *if=\"debugging\"></div>\n\t\t\t\t\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- footer -->\n\t\t\t<div class=\"group--footer\">\n\t\t\t\t<div class=\"group--ar-vr\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--ar\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--vr\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__settings\" *if=\"settings.active\">\n\t\t\t\t<!-- settings navs -->\n\t\t\t\t<div class=\"group--nav\">\n\t\t\t\t\t<ul class=\"nav--menu\">\n\t\t\t\t\t\t<li class=\"nav__item\" *for=\"let item of settings.menu\" [class]=\"{ active: settings.current === item.id }\" (click)=\"onSelectSetting(item)\"><span class=\"title\" [innerHTML]=\"item.title | label\"></span></li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<!-- menu -->\n\t\t\t\t<div class=\"group--content\" menu-builder [views]=\"dataViews\" *if=\"settings.current === 'menu'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_menu' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<div class=\"nav--tree\" *if=\"form\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"controls.items.controls.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t\t<div *for=\"let control of controls.items.controls\">\n\t\t\t\t\t\t\t\t\t<div control-menu [control]=\"control\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAddItem($event)\" [innerHTML]=\"'editor_add' | label\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"isValid() && onSubmit()\" *if=\"changes > 1\" [innerHTML]=\"'editor_save' | label\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- navmaps -->\n\t\t\t\t<div class=\"group--content\" navmap-builder [views]=\"dataViews\" *if=\"settings.current === 'navmaps'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_navmaps' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<!-- listing navmaps -->\n\t\t\t\t\t\t<div class=\"listing--navmaps\" *if=\"!navmap\">\n\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"navmaps.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"listing__item\" *for=\"let item of navmaps\">\n\t\t\t\t\t\t\t\t<div class=\"card--navmap\" (click)=\"onSet(item)\">\n\t\t\t\t\t\t\t\t\t<div class=\"card__picture\">\n\t\t\t\t\t\t\t\t\t\t<img [src]=\"item.asset | asset\" *if=\"item.asset\" />\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"card__content\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"card__name\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- navmap edit -->\n\t\t\t\t\t\t<div class=\"navmap\" navmap-edit [navmap]=\"navmap\" (delete)=\"onDelete($event)\" *if=\"navmap\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"title\"><span [innerHTML]=\"navmap.name\"></span> <span [innerHTML]=\"navmap.id\"></span></div>\n\t\t\t\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/png\"></div>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_save' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_remove' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"navmap-control\" [class]=\"mode\">\n\t\t\t\t\t\t\t\t\t<div class=\"navmap-control__image\">\n\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t\t\t\t\t\t\t\t\t\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (mousedown)=\"onMoveItem($event, item)\" (click)=\"onRemoveItem(item)\" *for=\"let item of navmap.items\">\n\t\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<ul class=\"navmap-control__toolbar\">\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'insert' }\" (click)=\"onToggleMode('insert')\"><svg class=\"pencil\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pencil\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'move' }\" (click)=\"onToggleMode('move')\"><svg class=\"move\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#move\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'remove' }\" (click)=\"onToggleMode('remove')\"><svg class=\"erase\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#erase\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAdd($event)\" [innerHTML]=\"'editor_add' | label\" *if=\"!navmap\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\" [innerHTML]=\"'editor_back' | label\" *if=\"navmap\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"aside\" [class]=\"{ active: aside }\" aside [view]=\"view\" (select)=\"onAsideSelect($event)\" (update)=\"onAsideUpdate($event)\" (delete)=\"onAsideDelete($event)\" *if=\"view && aside\">\n\t\t\t<div class=\"headline\">\n\t\t\t\t<ul class=\"nav--tab\">\n\t\t\t\t\t<li [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!--\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t\t<div class=\"scrollable\">\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 1\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t\t\t<update-view [view]=\"view\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name != 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_items' | label\"></div>\n\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of view.pathItems\"></update-view-item>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.pathItems.length == 0\" [innerHTML]=\"'editor_no_items' | label\"></div>\n\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_tiles' | label\"></div>\n\t\t\t\t\t\t<div *for=\"let tile of view.tiles\">\n\t\t\t\t\t\t\t<div *if=\"tile.selected\">\n\t\t\t\t\t\t\t\t<update-view-tile [view]=\"view\" [tile]=\"tile\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view-tile>\n\t\t\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of tile.navs\"></update-view-item>\n\t\t\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"tile.navs.length == 0\" [innerHTML]=\"'editor_no_navs' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t\t\t<svg-icon name=\"nav\"></svg-icon>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.tiles.length == 0\" [innerHTML]=\"'editor_no_tiles' | label\"></div>\n\t\t\t\t\t\t<!-- <div class=\"btn--mode\" (click)=\"setMode(3)\">Add Tile</div> -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!--\n\t\t\t\t\t<li *if=\"false\">\n\t\t\t\t\t\t<div class=\"title\">Icons</div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('animated-tabs')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 2 8.4 L 12 8.4 L 12 2 L 6 2 C 3.791 2 2 3.791 2 6 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 8.4 L 22 8.4 L 22 6 C 22 3.791 20.209 2 18 2 L 12 2 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Animated Tabs</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 13.6 C 6.8 13.158 7.158 12.8 7.6 12.8 L 16.8 12.8 C 17.242 12.8 17.6 13.158 17.6 13.6 L 17.6 16.8 C 17.6 17.242 17.242 17.6 16.8 17.6 L 7.6 17.6 C 7.158 17.6 6.8 17.242 6.8 16.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 6.8 7.2 C 6.8 6.758 7.158 6.4 7.6 6.4 L 16.8 6.4 C 17.242 6.4 17.6 6.758 17.6 7.2 L 17.6 10.4 C 17.6 10.842 17.242 11.2 16.8 11.2 L 7.6 11.2 C 7.158 11.2 6.8 10.842 6.8 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('container-transitions')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13 C 17.139 13 18.333 14.194 18.333 15.667 C 18.333 17.139 17.139 18.333 15.667 18.333 C 14.194 18.333 13 17.139 13 15.667 C 13 14.194 14.194 13 15.667 13 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Container Transitions</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-grid')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><g transform=\"translate(6.6 6.6)\"><path d=\"M 6.048 0.8 C 6.048 0.358 6.406 0 6.848 0 L 10 0 C 10.442 0 10.8 0.358 10.8 0.8 L 10.8 3.952 C 10.8 4.394 10.442 4.752 10 4.752 L 6.848 4.752 C 6.406 4.752 6.048 4.394 6.048 3.952 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path><path d=\"M 6.048 6.848 C 6.048 6.406 6.406 6.048 6.848 6.048 L 10 6.048 C 10.442 6.048 10.8 6.406 10.8 6.848 L 10.8 10 C 10.8 10.442 10.442 10.8 10 10.8 L 6.848 10.8 C 6.406 10.8 6.048 10.442 6.048 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 0.8 C 0 0.358 0.358 0 0.8 0 L 3.952 0 C 4.394 0 4.752 0.358 4.752 0.8 L 4.752 3.952 C 4.752 4.394 4.394 4.752 3.952 4.752 L 0.8 4.752 C 0.358 4.752 0 4.394 0 3.952 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 6.848 C 0 6.406 0.358 6.048 0.8 6.048 L 3.952 6.048 C 4.394 6.048 4.752 6.406 4.752 6.848 L 4.752 10 C 4.752 10.442 4.394 10.8 3.952 10.8 L 0.8 10.8 C 0.358 10.8 0 10.442 0 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path></g></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Grid</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('expand-on-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 7.833 0\" transform=\"translate(8.583 11.583) rotate(270 3.917 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 9.333 L 12 6.667 L 9.333 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 14.667 L 12 17.333 L 9.333 14.667\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Expand on Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-gallery-2')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 10.333 7.333 C 10.886 7.333 11.333 7.781 11.333 8.333 L 11.333 10.333 C 11.333 10.886 10.886 11.333 10.333 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.333 8.333 C 12.333 7.781 12.781 7.333 13.333 7.333 L 15.333 7.333 C 15.886 7.333 16.333 7.781 16.333 8.333 L 16.333 10.333 C 16.333 10.886 15.886 11.333 15.333 11.333 L 13.333 11.333 C 12.781 11.333 12.333 10.886 12.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.333 12.667 C 15.886 12.667 16.333 13.114 16.333 13.667 L 16.333 15.667 C 16.333 16.219 15.886 16.667 15.333 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Gallery 2</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-ui')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 4.8 C 7.905 4.8 8.8 5.695 8.8 6.8 C 8.8 7.905 7.905 8.8 6.8 8.8 C 5.695 8.8 4.8 7.905 4.8 6.8 C 4.8 5.695 5.695 4.8 6.8 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 4.8 C 13.105 4.8 14 5.695 14 6.8 C 14 7.905 13.105 8.8 12 8.8 C 10.895 8.8 10 7.905 10 6.8 C 10 5.695 10.895 4.8 12 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.2 4.8 C 18.305 4.8 19.2 5.695 19.2 6.8 C 19.2 7.905 18.305 8.8 17.2 8.8 C 16.095 8.8 15.2 7.905 15.2 6.8 C 15.2 5.695 16.095 4.8 17.2 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories UI</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('todo-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">To-Do List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toggle-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 17.333 15.333 C 18.438 15.333 19.333 16.229 19.333 17.333 C 19.333 18.438 18.438 19.333 17.333 19.333 C 16.229 19.333 15.333 18.438 15.333 17.333 C 15.333 16.229 16.229 15.333 17.333 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.333 10 C 18.438 10 19.333 10.895 19.333 12 C 19.333 13.105 18.438 14 17.333 14 C 16.229 14 15.333 13.105 15.333 12 C 15.333 10.895 16.229 10 17.333 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 C 19.333 7.771 18.438 8.667 17.333 8.667 C 16.229 8.667 15.333 7.771 15.333 6.667 C 15.333 5.562 16.229 4.667 17.333 4.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toggle Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('bottom-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 10.333 C 22 10.886 21.552 11.333 21 11.333 L 3 11.333 C 2.448 11.333 2 10.886 2 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 13.333 C 2 12.781 2.448 12.333 3 12.333 L 21 12.333 C 21.552 12.333 22 12.781 22 13.333 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Bottom Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('draggable-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 14 C 2 12.895 2.895 12 4 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z M 10.667 15.333 L 13.333 15.333 C 13.702 15.333 14 15.035 14 14.667 C 14 14.298 13.702 14 13.333 14 L 10.667 14 C 10.298 14 10 14.298 10 14.667 C 10 15.035 10.298 15.333 10.667 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Draggable Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('modal-box')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 9.333 C 7.333 8.229 8.229 7.333 9.333 7.333 L 14.667 7.333 C 15.771 7.333 16.667 8.229 16.667 9.333 L 16.667 14.667 C 16.667 15.771 15.771 16.667 14.667 16.667 L 9.333 16.667 C 8.229 16.667 7.333 15.771 7.333 14.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Modal Box</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('side-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 11 2 C 11.552 2 12 2.448 12 3 L 12 21 C 12 21.552 11.552 22 11 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Side Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 11.667 7.333 C 11.667 7.333 11.667 7.333 11.667 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 9 C 16.667 9.552 16.219 10 15.667 10 L 13.333 10 L 13.333 15.667 C 13.333 16.219 12.886 16.667 12.333 16.667 L 11.667 16.667 C 11.114 16.667 10.667 16.219 10.667 15.667 L 10.667 10 L 8.333 10 C 7.781 10 7.333 9.552 7.333 9 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('loading-indicator')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 16.4 10.4 C 17.284 10.4 18 11.116 18 12 C 18 12.884 17.284 13.6 16.4 13.6 C 15.516 13.6 14.8 12.884 14.8 12 C 14.8 11.116 15.516 10.4 16.4 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 10.4 C 12.884 10.4 13.6 11.116 13.6 12 C 13.6 12.884 12.884 13.6 12 13.6 C 11.116 13.6 10.4 12.884 10.4 12 C 10.4 11.116 11.116 10.4 12 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.6 10.4 C 8.484 10.4 9.2 11.116 9.2 12 C 9.2 12.884 8.484 13.6 7.6 13.6 C 6.716 13.6 6 12.884 6 12 C 6 11.116 6.716 10.4 7.6 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Loading Indicator</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('radio-button-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.833 8.167 L 14.167 8.167 C 16.284 8.167 18 9.883 18 12 C 18 14.117 16.284 15.833 14.167 15.833 L 9.833 15.833 C 7.716 15.833 6 14.117 6 12 C 6 9.883 7.716 8.167 9.833 8.167 Z M 11.333 12 C 11.333 13.473 12.527 14.667 14 14.667 C 15.473 14.667 16.667 13.473 16.667 12 C 16.667 10.527 15.473 9.333 14 9.333 C 12.527 9.333 11.333 10.527 11.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Radio Button Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('checkbox-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.651 6.931 C 7.911 6.738 7.238 7.411 7.431 8.151 L 9.363 15.558 C 9.592 16.435 10.775 16.58 11.208 15.784 L 13 12.5 L 16.284 10.708 C 17.08 10.275 16.935 9.092 16.058 8.863 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 16 15.5 L 11 10.5\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Checkbox Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('splash-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.757 13.414 C 6.976 12.633 6.976 11.367 7.757 10.586 L 10.586 7.757 C 11.367 6.976 12.633 6.976 13.414 7.757 L 16.243 10.586 C 17.024 11.367 17.024 12.633 16.243 13.414 L 13.414 16.243 C 12.633 17.024 11.367 17.024 10.586 16.243 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Splash Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('timeout-transition')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1 5.8 C 1 3.149 3.149 1 5.8 1 L 18.2 1 C 20.851 1 23 3.149 23 5.8 L 23 18.2 C 23 20.851 20.851 23 18.2 23 L 5.8 23 C 3.149 23 1 20.851 1 18.2 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 12 6.72 C 14.916 6.72 17.28 9.084 17.28 12 C 17.28 14.916 14.916 17.28 12 17.28 C 9.084 17.28 6.72 14.916 6.72 12 C 6.72 9.084 9.084 6.72 12 6.72 Z M 11.34 12 C 11.34 12.365 11.635 12.66 12 12.66 L 14.2 12.66 C 14.565 12.66 14.86 12.365 14.86 12 C 14.86 11.635 14.565 11.34 14.2 11.34 L 12.66 11.34 L 12.66 9.8 C 12.66 9.435 12.365 9.14 12 9.14 C 11.635 9.14 11.34 9.435 11.34 9.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Timeout Transition</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('accordion-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16 10.667 L 12 14.667 L 8 10.667\" fill=\"transparent\" stroke-width=\"2\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Accordion Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drop-on-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 8 0\" transform=\"translate(8.5 11.5) rotate(270 4 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.333 11.333 L 12 8 L 8.667 11.333\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drop on Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('nested-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 7 C 21.82 7.552 21.372 8 20.82 8 L 2.82 8 C 2.267 8 1.82 7.552 1.82 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 1.82 17 C 1.82 16.448 2.267 16 2.82 16 L 20.82 16 C 21.372 16 21.82 16.448 21.82 17 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 8.82 10 C 8.82 9.448 9.267 9 9.82 9 L 20.82 9 C 21.372 9 21.82 9.448 21.82 10 L 21.82 14 C 21.82 14.552 21.372 15 20.82 15 L 9.82 15 C 9.267 15 8.82 14.552 8.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 1.82 10 C 1.82 9.448 2.267 9 2.82 9 L 6.82 9 C 7.372 9 7.82 9.448 7.82 10 L 7.82 14 C 7.82 14.552 7.372 15 6.82 15 L 2.82 15 C 2.267 15 1.82 14.552 1.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Nested Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('star-rating')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.399 6.884 C 11.645 6.386 12.355 6.386 12.601 6.884 L 13.705 9.122 C 13.803 9.32 13.992 9.457 14.21 9.489 L 16.68 9.848 C 17.229 9.928 17.449 10.603 17.051 10.99 L 15.264 12.733 C 15.106 12.887 15.034 13.108 15.071 13.326 L 15.493 15.786 C 15.587 16.333 15.013 16.75 14.521 16.492 L 12.312 15.331 C 12.117 15.228 11.883 15.228 11.688 15.331 L 9.479 16.492 C 8.987 16.75 8.413 16.333 8.507 15.786 L 8.929 13.326 C 8.966 13.108 8.894 12.887 8.736 12.733 L 6.949 10.99 C 6.551 10.603 6.771 9.928 7.32 9.848 L 9.79 9.489 C 10.008 9.457 10.197 9.32 10.295 9.122 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Star Rating</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('swipe-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 17.33 C 2 16.595 2.595 16 3.33 16 L 21 16 C 21.552 16 22 16.448 22 17 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 10 C 2 9.448 2.448 9 3 9 L 14 9 C 14.552 9 15 9.448 15 10 L 15 14 C 15 14.552 14.552 15 14 15 L 3 15 C 2.448 15 2 14.552 2 14 Z M 19 9 C 20.657 9 22 10.343 22 12 C 22 13.657 20.657 15 19 15 C 17.343 15 16 13.657 16 12 C 16 10.343 17.343 9 19 9 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 7 C 22 7.552 21.552 8 21 8 L 3 8 C 2.448 8 2 7.552 2 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Swipe Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('switch-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13.333 C 17.139 13.333 18.333 14.527 18.333 16 C 18.333 17.473 17.139 18.667 15.667 18.667 C 14.194 18.667 13 17.473 13 16 C 13 14.527 14.194 13.333 15.667 13.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 8.333 13.333 C 9.806 13.333 11 14.527 11 16 C 11 17.473 9.806 18.667 8.333 18.667 C 6.861 18.667 5.667 17.473 5.667 16 C 5.667 14.527 6.861 13.333 8.333 13.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Switch Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('tab-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10 15.333 L 14 15.333 L 14 18.667 L 10 18.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.333 16.333 C 5.333 15.781 5.781 15.333 6.333 15.333 L 9.333 15.333 L 9.333 18.667 L 6.333 18.667 C 5.781 18.667 5.333 18.219 5.333 17.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 18.667 16.333 C 18.667 15.781 18.219 15.333 17.667 15.333 L 14.667 15.333 L 14.667 18.667 L 17.667 18.667 C 18.219 18.667 18.667 18.219 18.667 17.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Tab Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('wheel-picker')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.667 6 C 3.667 3.791 5.458 2 7.667 2 L 16.333 2 C 18.542 2 20.333 3.791 20.333 6 L 20.333 7 C 20.333 7.552 19.886 8 19.333 8 L 4.667 8 C 4.114 8 3.667 7.552 3.667 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 11 C 2 9.895 2.895 9 4 9 L 20 9 C 21.105 9 22 9.895 22 11 L 22 13 C 22 14.105 21.105 15 20 15 L 4 15 C 2.895 15 2 14.105 2 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.667 17 C 3.667 16.448 4.114 16 4.667 16 L 19.333 16 C 19.886 16 20.333 16.448 20.333 17 L 20.333 18 C 20.333 20.209 18.542 22 16.333 22 L 7.667 22 C 5.458 22 3.667 20.209 3.667 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Wheel Picker</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cover-flow')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 17.962 C 11.333 18.385 11.068 18.762 10.67 18.904 L 4.673 21.045 C 3.37 21.511 2 20.545 2 19.162 L 2 4.838 C 2 3.455 3.37 2.489 4.673 2.955 L 10.67 5.096 C 11.068 5.238 11.333 5.615 11.333 6.038 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 22 4.838 C 22 3.455 20.63 2.489 19.327 2.955 L 13.33 5.096 C 12.932 5.238 12.667 5.615 12.667 6.038 L 12.667 17.962 C 12.667 18.385 12.932 18.762 13.33 18.904 L 19.327 21.045 C 20.63 21.511 22 20.545 22 19.162 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cover Flow</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cube-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.743 C 2 5.898 2.531 5.144 3.327 4.859 L 9.997 2.477 C 10.648 2.245 11.333 2.727 11.333 3.419 L 11.333 20.581 C 11.333 21.273 10.648 21.755 9.997 21.523 L 3.327 19.141 C 2.531 18.856 2 18.102 2 17.257 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 3.419 C 12.667 2.727 13.352 2.245 14.003 2.477 L 20.673 4.859 C 21.469 5.144 22 5.898 22 6.743 L 22 17.257 C 22 18.102 21.469 18.856 20.673 19.141 L 14.003 21.523 C 13.352 21.755 12.667 21.273 12.667 20.581 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cube Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('flip-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 4.667 C 11.333 4.114 10.886 3.667 10.333 3.667 L 4 3.667 C 2.895 3.667 2 4.562 2 5.667 L 2 18.333 C 2 19.438 2.895 20.333 4 20.333 L 10.333 20.333 C 10.886 20.333 11.333 19.886 11.333 19.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 20 4.167 C 20 3.891 20.224 3.667 20.5 3.667 L 20.5 3.667 C 21.328 3.667 22 4.338 22 5.167 L 22 18.833 C 22 19.662 21.328 20.333 20.5 20.333 L 20.5 20.333 C 20.224 20.333 20 20.109 20 19.833 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 18.667 4.631 C 18.667 3.309 17.406 2.35 16.131 2.704 L 13.399 3.463 C 12.966 3.583 12.667 3.978 12.667 4.427 L 12.667 19.573 C 12.667 20.022 12.966 20.417 13.399 20.537 L 16.131 21.296 C 17.406 21.65 18.667 20.691 18.667 19.369 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Flip Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('parallax-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.667 C 12 5.562 12.895 4.667 14 4.667 L 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 L 19.333 10 C 19.333 11.105 18.438 12 17.333 12 L 14 12 C 12.895 12 12 11.105 12 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 4.667 14 C 4.667 12.895 5.562 12 6.667 12 L 10 12 C 11.105 12 12 12.895 12 14 L 12 17.333 C 12 18.438 11.105 19.333 10 19.333 L 6.667 19.333 C 5.562 19.333 4.667 18.438 4.667 17.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Parallax Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('pile-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.5 4 C 6.224 4 6 3.776 6 3.5 L 6 3.5 C 6 2.672 6.672 2 7.5 2 L 16.5 2 C 17.328 2 18 2.672 18 3.5 L 18 3.5 C 18 3.776 17.776 4 17.5 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 4.5 7 C 4.224 7 4 6.776 4 6.5 L 4 6.5 C 4 5.672 4.672 5 5.5 5 L 18.5 5 C 19.328 5 20 5.672 20 6.5 L 20 6.5 C 20 6.776 19.776 7 19.5 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 0 2.67 C 0 1.195 1.195 0 2.67 0 L 11.33 0 C 12.805 0 14 1.195 14 2.67 L 14 17.33 C 14 18.805 12.805 20 11.33 20 L 2.67 20 C 1.195 20 0 18.805 0 17.33 Z\" transform=\"translate(5 5) rotate(-90 7 10)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Pile Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('shuffle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.174 10.452 L 16.708 9.06 L 15.174 7.667\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.174 16.333 L 16.708 14.94 L 15.174 13.548\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 9.06 C 16.145 9.06 13.982 8.542 12.617 9.679 C 11.252 10.815 11.829 12.213 10.776 13.548 C 9.724 14.882 7.708 14.94 7.708 14.94\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 14.823 C 16.145 14.823 13.982 15.34 12.617 14.204 C 11.252 13.068 11.829 11.669 10.776 10.335 C 9.724 9.001 7.708 8.942 7.708 8.942\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Shuffle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('svg-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">SVG Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('google-sheets')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7 8.667 C 7 8.206 7.373 7.833 7.833 7.833 L 7.833 7.833 C 8.294 7.833 8.667 8.206 8.667 8.667 L 8.667 8.667 C 8.667 9.127 8.294 9.5 7.833 9.5 L 7.833 9.5 C 7.373 9.5 7 9.127 7 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 12 C 7 11.54 7.373 11.167 7.833 11.167 L 7.833 11.167 C 8.294 11.167 8.667 11.54 8.667 12 L 8.667 12 C 8.667 12.46 8.294 12.833 7.833 12.833 L 7.833 12.833 C 7.373 12.833 7 12.46 7 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 15.333 C 7 14.873 7.373 14.5 7.833 14.5 L 7.833 14.5 C 8.294 14.5 8.667 14.873 8.667 15.333 L 8.667 15.333 C 8.667 15.794 8.294 16.167 7.833 16.167 L 7.833 16.167 C 7.373 16.167 7 15.794 7 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 8.667 C 9.778 8.206 10.151 7.833 10.611 7.833 L 16.167 7.833 C 16.627 7.833 17 8.206 17 8.667 L 17 8.667 C 17 9.127 16.627 9.5 16.167 9.5 L 10.611 9.5 C 10.151 9.5 9.778 9.127 9.778 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 12 C 9.778 11.54 10.151 11.167 10.611 11.167 L 16.167 11.167 C 16.627 11.167 17 11.54 17 12 L 17 12 C 17 12.46 16.627 12.833 16.167 12.833 L 10.611 12.833 C 10.151 12.833 9.778 12.46 9.778 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 15.333 C 9.778 14.873 10.151 14.5 10.611 14.5 L 16.167 14.5 C 16.627 14.5 17 14.873 17 15.333 L 17 15.333 C 17 15.794 16.627 16.167 16.167 16.167 L 10.611 16.167 C 10.151 16.167 9.778 15.794 9.778 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Google Sheets</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('map')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.82 6.504 C 14.029 6.504 15.82 8.282 15.82 10.476 C 15.82 10.698 15.801 10.915 15.766 11.127 C 15.359 14.488 13.033 16.581 12.155 17.261 C 12.051 17.341 11.976 17.437 11.82 17.437 C 11.663 17.437 11.586 17.34 11.481 17.258 C 10.6 16.576 8.28 14.483 7.873 11.127 C 7.838 10.915 7.82 10.698 7.82 10.476 C 7.82 8.282 9.61 6.504 11.82 6.504 Z M 9.486 10.644 C 9.486 11.933 10.531 12.977 11.82 12.977 C 13.108 12.977 14.153 11.933 14.153 10.644 C 14.153 9.355 13.108 8.311 11.82 8.311 C 10.531 8.311 9.486 9.355 9.486 10.644 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Map</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('signature-pad')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.82 13.068 C 8.56 12.807 8.56 12.385 8.82 12.125 L 13.733 7.212 C 13.993 6.952 14.415 6.952 14.676 7.212 L 16.788 9.324 C 17.048 9.585 17.048 10.007 16.788 10.267 L 11.875 15.18 C 11.615 15.44 11.193 15.44 10.932 15.18 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.096 0.303 C 3.318 0.17 3.6 0.33 3.6 0.589 L 3.6 3.732 C 3.6 3.991 3.318 4.151 3.096 4.018 L 0.953 2.732 C 0.521 2.473 0.521 1.848 0.953 1.589 Z\" transform=\"translate(6.24 13.8) rotate(-45 1.8 2.16)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Signature Pad</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('sound-effects')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.225 10.793 C 14.471 11.102 14.623 11.529 14.623 12 C 14.623 12.471 14.471 12.898 14.225 13.207\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.224 9.185 C 16.96 9.911 17.417 10.905 17.417 12 C 17.417 13.095 16.96 14.09 16.224 14.816\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 6.083 10.656 C 6.083 10.288 6.382 9.989 6.75 9.989 L 7.674 9.989 L 11.021 7.835 C 11.464 7.549 12.048 7.868 12.048 8.396 L 12.048 15.604 C 12.048 16.132 11.464 16.451 11.021 16.165 L 7.674 14.011 L 6.75 14.011 C 6.382 14.011 6.083 13.712 6.083 13.344 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Sound Effects</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-swipe')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.423 7.423 C 3.423 5.214 5.214 3.423 7.423 3.423 L 16.756 3.423 C 18.965 3.423 20.756 5.214 20.756 7.423 L 20.756 16.756 C 20.756 18.965 18.965 20.756 16.756 20.756 L 7.423 20.756 C 5.214 20.756 3.423 18.965 3.423 16.756 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.172 3.377 C 10.734 1.815 13.266 1.815 14.828 3.377 L 20.721 9.269 C 22.283 10.831 22.283 13.364 20.721 14.926 L 14.828 20.819 C 13.266 22.381 10.734 22.381 9.172 20.819 L 3.279 14.926 C 1.717 13.364 1.717 10.831 3.279 9.269 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card Swipe</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('custom-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.2 C 2 5.673 2.31 5.195 2.792 4.981 L 7.063 3.083 C 7.503 2.887 8 3.21 8 3.693 L 8 20.307 C 8 20.79 7.503 21.113 7.063 20.917 L 2.792 19.019 C 2.31 18.805 2 18.327 2 17.8 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 9.333 3.297 C 9.333 2.642 9.954 2.163 10.588 2.33 L 20.509 4.941 C 21.388 5.172 22 5.967 22 6.875 L 22 17.125 C 22 18.033 21.388 18.828 20.509 19.059 L 10.588 21.67 C 9.954 21.837 9.333 21.358 9.333 20.703 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Custom Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drag-handle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 2.667 L 2.667 0 L 0 2.667\" transform=\"translate(5.667 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 5.333 0 L 2.667 2.667 L 0 0\" transform=\"translate(13 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drag Handle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-header')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 8 L 2 8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Header</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-panning')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 14 C 12 12.895 12.895 12 14 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 14 22 C 12.895 22 12 21.105 12 20 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Panning</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-data')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Data</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-validation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Validation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.28 0 C 7.017 0 7.747 2.366 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.365 0.069 -0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(11.213 11.787) rotate(15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 5.28 0 C 7.017 -0 7.747 2.365 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.366 0.069 0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(5.701 6.669) rotate(-15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-counter')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.778 7.333 C 17.556 7.333 18.724 11.072 16.502 13.268 C 14.279 15.464 12 16.667 12 16.667 C 12 16.667 9.721 15.464 7.498 13.268 C 5.276 11.072 6.444 7.333 9.222 7.333 C 12 7.333 12 10.022 12 10.022 C 12 10.022 12 7.333 14.778 7.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Counter</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('lock-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 11 C 7.333 10.448 7.781 10 8.333 10 L 15.667 10 C 16.219 10 16.667 10.448 16.667 11 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 7.333 C 13.289 7.333 14.333 8.378 14.333 9.667 C 14.333 10.955 13.289 12 12 12 C 10.711 12 9.667 10.955 9.667 9.667 C 9.667 8.378 10.711 7.333 12 7.333 Z\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Lock Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('long-press-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16.667 10.667 C 17.771 10.667 18.667 11.562 18.667 12.667 C 18.667 13.771 17.771 14.667 16.667 14.667 C 15.562 14.667 14.667 13.771 14.667 12.667 C 14.667 11.562 15.562 10.667 16.667 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12 8 C 13.105 8 14 8.895 14 10 C 14 11.105 13.105 12 12 12 C 10.895 12 10 11.105 10 10 C 10 8.895 10.895 8 12 8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 10.667 C 8.438 10.667 9.333 11.562 9.333 12.667 C 9.333 13.771 8.438 14.667 7.333 14.667 C 6.229 14.667 5.333 13.771 5.333 12.667 C 5.333 11.562 6.229 10.667 7.333 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Long Press Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('perspective-3d')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.913 22 C 5.987 22 5.182 21.364 4.967 20.463 L 2.586 10.463 C 2.287 9.206 3.24 8 4.532 8 L 19.468 8 C 20.76 8 21.713 9.206 21.414 10.463 L 19.033 20.463 C 18.818 21.364 18.013 22 17.087 22 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.833 7 C 3.557 7 3.333 6.776 3.333 6.5 L 3.333 6.5 C 3.333 5.672 4.005 5 4.833 5 L 19.167 5 C 19.995 5 20.667 5.672 20.667 6.5 L 20.667 6.5 C 20.667 6.776 20.443 7 20.167 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 5.167 4 C 4.891 4 4.667 3.776 4.667 3.5 L 4.667 3.5 C 4.667 2.672 5.338 2 6.167 2 L 17.833 2 C 18.662 2 19.333 2.672 19.333 3.5 L 19.333 3.5 C 19.333 3.776 19.109 4 18.833 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Perspective 3D</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('progress-bar')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 16.82 15.333 C 17.74 15.333 18.486 16.08 18.486 17 L 18.486 17 C 18.486 17.92 17.74 18.667 16.82 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 11.486 15.333 C 12.407 15.333 13.153 16.08 13.153 17 L 13.153 17 C 13.153 17.92 12.407 18.667 11.486 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Progress Bar</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('scroll-progress')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 10.333 C 7.333 9.781 7.781 9.333 8.333 9.333 L 15.667 9.333 C 16.219 9.333 16.667 9.781 16.667 10.333 L 16.667 11.667 C 16.667 12.219 16.219 12.667 15.667 12.667 L 8.333 12.667 C 7.781 12.667 7.333 12.219 7.333 11.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 14.667 C 7.333 14.114 7.781 13.667 8.333 13.667 L 15.667 13.667 C 16.219 13.667 16.667 14.114 16.667 14.667 L 16.667 16 C 16.667 16.552 16.219 17 15.667 17 L 8.333 17 C 7.781 17 7.333 16.552 7.333 16 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 16 7 C 16.368 7 16.667 7.298 16.667 7.667 L 16.667 7.667 C 16.667 8.035 16.368 8.333 16 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 12.667 7 C 13.035 7 13.333 7.298 13.333 7.667 L 13.333 7.667 C 13.333 8.035 13.035 8.333 12.667 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Scroll Progress</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('show-password')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10.6 12 C 10.6 11.227 11.227 10.6 12 10.6 L 12 10.6 C 12.773 10.6 13.4 11.227 13.4 12 L 13.4 12 C 13.4 12.773 12.773 13.4 12 13.4 L 12 13.4 C 11.227 13.4 10.6 12.773 10.6 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.166 7.833 C 14.892 7.833 17.161 9.42 17.811 12 C 17.161 14.58 14.892 16.167 12.166 16.167 C 9.44 16.167 7.127 14.58 6.478 12 C 7.127 9.42 9.44 7.833 12.166 7.833 Z M 9.333 12 C 9.333 13.473 10.527 14.667 12 14.667 C 13.473 14.667 14.667 13.473 14.667 12 C 14.667 10.527 13.473 9.333 12 9.333 C 10.527 9.333 9.333 10.527 9.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Show Password</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('slider')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.667 12 L 18.333 12\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" opacity=\"0.4\" stroke-width=\"2.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 12 8.333 C 14.025 8.333 15.667 9.975 15.667 12 C 15.667 14.025 14.025 15.667 12 15.667 C 9.975 15.667 8.333 14.025 8.333 12 C 8.333 9.975 9.975 8.333 12 8.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Slider</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-drag')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Drag</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toast-prompt')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18.333 C 22 20.542 20.209 22.333 18 22.333 L 6 22.333 C 3.791 22.333 2 20.542 2 18.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.333 C 15.13 6.333 17.667 8.87 17.667 12 C 17.667 15.13 15.13 17.667 12 17.667 C 8.87 17.667 6.333 15.13 6.333 12 C 6.333 8.87 8.87 6.333 12 6.333 Z\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\"></path><path d=\"M 12 13 C 12.552 13 13 13.448 13 14 C 13 14.552 12.552 15 12 15 C 11.448 15 11 14.552 11 14 C 11 13.448 11.448 13 12 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 11.06 9.998 C 11.027 9.457 11.458 9 12 9 L 12 9 C 12.542 9 12.973 9.457 12.94 9.998 L 12.848 11.535 C 12.821 11.983 12.449 12.333 12 12.333 L 12 12.333 C 11.551 12.333 11.179 11.983 11.152 11.535 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toast Prompt</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t\t-->\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 2\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'view', value: item.type.name })\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 3\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewItemTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'viewItem', value: item.type.name })\" [title]=\"item.id\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"supportedViewItemTypes.length == 0\" [innerHTML]=\"'editor_type_no_items' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t"
+  "\n\t<div class=\"page page--editor\">\n\t\t<div class=\"ui\" [class]=\"{ open: aside }\" *if=\"dataViews.length\">\n\t\t\t<div class=\"ui__navbar\">\n\t\t\t\t<div class=\"btn--settings\" [class]=\"{ active: settings.active }\" (click)=\"onToggleSettings($event)\" *if=\"settings.menu.length > 0\">\n\t\t\t\t\t<svg class=\"settings\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#settings-full\"></use></svg>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"headline\" *if=\"view\">\n\t\t\t\t\t<div class=\"headline__id\" [innerHTML]=\"view.id\"></div>\n\t\t\t\t\t<div class=\"headline__icon\">\n\t\t\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"headline__name\" [innerHTML]=\"view.name\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--path\" *if=\"('usePaths' | flag) && path\">\n\t\t\t\t\t<div class=\"group--path__select\">\n\t\t\t\t\t\t<div class=\"group--form--select\" [dropdown]=\"'path'\">\n\t\t\t\t\t\t\t<label>Percorso</label>\n\t\t\t\t\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"path.name\"></span>\n\t\t\t\t\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dropdown dropdown-item\" [dropdown-item]=\"'path'\">\n\t\t\t\t\t\t\t<div class=\"category\">Percorso</div>\n\t\t\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t\t\t<li [class]=\"{ active: isPathSelected(item) }\" *for=\"let item of paths\">\n\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"item.name\" (click)=\"onSelectPath(item)\"></span>\n\t\t\t\t\t\t\t\t\t<div class=\"check\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#check\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--flags\" (click)=\"onEditPath(item)\" title=\"Edit\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#flags\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--duplicate\" (click)=\"onDuplicatePath(item)\" title=\"Duplicate\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#duplicate\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--trash\" (click)=\"onDeletePath(item)\" title=\"Delete\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#trash\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onAddPath()\">Aggiungi un percorso</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--edit\" [class]=\"{ active: aside }\" (click)=\"onToggleAside($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" [editor]=\"true\" (navTo)=\"onNavTo($event)\" (viewHit)=\"onViewHit($event)\" (dragEnd)=\"onDragEnd($event)\" (select)=\"onWorldSelect($event)\">\n\t\t\t\t\t<div class=\"world__view\" *if=\"view\">\n\t\t\t\t\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t\t\t\t\t<div *if=\"view.ready\">\n\t\t\t\t\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t\t\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" [editor]=\"true\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'model'\">\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"banner loading\" model-banner [item]=\"progress\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"progress\" [innerHTML]=\"progress.title\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<div class=\"banner loading\" model-banner [item]=\"loading\" *if=\"loading\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"banner waiting\" model-banner [item]=\"waiting\" *if=\"waiting\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t-->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t\t\t\t\t<div class=\"inner\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-menu [views]=\"views\" [editor]=\"true\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\">\n\t\t\t\t\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t\t\t\t\t<div class=\"btn--menu__spinner\"></div>\n\t\t\t\t\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t\t\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-debug *if=\"debugging\"></div>\n\t\t\t\t\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- footer -->\n\t\t\t<div class=\"group--footer\">\n\t\t\t\t<div class=\"group--ar-vr\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--ar\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--vr\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__settings\" *if=\"settings.active\">\n\t\t\t\t<!-- settings navs -->\n\t\t\t\t<div class=\"group--nav\">\n\t\t\t\t\t<ul class=\"nav--menu\">\n\t\t\t\t\t\t<li class=\"nav__item\" *for=\"let item of settings.menu\" [class]=\"{ active: settings.current === item.id }\" (click)=\"onSelectSetting(item)\"><span class=\"title\" [innerHTML]=\"item.title | label\"></span></li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<!-- menu -->\n\t\t\t\t<div class=\"group--content\" menu-builder [views]=\"dataViews\" *if=\"settings.current === 'menu'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_menu' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<div class=\"nav--tree\" *if=\"form\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"controls.items.controls.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t\t<div *for=\"let control of controls.items.controls\">\n\t\t\t\t\t\t\t\t\t<div control-menu [control]=\"control\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAddItem($event)\" [innerHTML]=\"'editor_add' | label\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"isValid() && onSubmit()\" *if=\"changes > 1\" [innerHTML]=\"'editor_save' | label\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- navmaps -->\n\t\t\t\t<div class=\"group--content\" navmap-builder [views]=\"dataViews\" *if=\"settings.current === 'navmaps'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_navmaps' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<!-- listing navmaps -->\n\t\t\t\t\t\t<div class=\"listing--navmaps\" *if=\"!navmap\">\n\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"navmaps.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"listing__item\" *for=\"let item of navmaps\">\n\t\t\t\t\t\t\t\t<div class=\"card--navmap\" (click)=\"onSet(item)\">\n\t\t\t\t\t\t\t\t\t<div class=\"card__picture\">\n\t\t\t\t\t\t\t\t\t\t<img [src]=\"item.asset | asset\" *if=\"item.asset\" />\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"card__content\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"card__name\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- navmap edit -->\n\t\t\t\t\t\t<div class=\"navmap\" navmap-edit [navmap]=\"navmap\" (delete)=\"onDelete($event)\" *if=\"navmap\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"title\"><span [innerHTML]=\"navmap.name\"></span> <span [innerHTML]=\"navmap.id\"></span></div>\n\t\t\t\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/png\"></div>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_save' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_remove' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"navmap-control\" [class]=\"mode\">\n\t\t\t\t\t\t\t\t\t<div class=\"navmap-control__image\">\n\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t\t\t\t\t\t\t\t\t\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (mousedown)=\"onMoveItem($event, item)\" (click)=\"onRemoveItem(item)\" *for=\"let item of navmap.items\">\n\t\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<ul class=\"navmap-control__toolbar\">\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'insert' }\" (click)=\"onToggleMode('insert')\"><svg class=\"pencil\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pencil\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'move' }\" (click)=\"onToggleMode('move')\"><svg class=\"move\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#move\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'remove' }\" (click)=\"onToggleMode('remove')\"><svg class=\"erase\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#erase\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAdd($event)\" [innerHTML]=\"'editor_add' | label\" *if=\"!navmap\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\" [innerHTML]=\"'editor_back' | label\" *if=\"navmap\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"aside\" [class]=\"{ active: aside }\" aside [view]=\"view\" (select)=\"onAsideSelect($event)\" (update)=\"onAsideUpdate($event)\" (delete)=\"onAsideDelete($event)\" *if=\"view && aside\">\n\t\t\t<div class=\"headline\">\n\t\t\t\t<ul class=\"nav--tab\">\n\t\t\t\t\t<li [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!--\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t\t<div class=\"scrollable\">\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 1\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t\t\t<update-view [view]=\"view\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name != 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_items' | label\"></div>\n\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of view.pathItems\"></update-view-item>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.pathItems.length == 0\" [innerHTML]=\"'editor_no_items' | label\"></div>\n\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_tiles' | label\"></div>\n\t\t\t\t\t\t<div *for=\"let tile of view.tiles\">\n\t\t\t\t\t\t\t<div *if=\"tile.selected\">\n\t\t\t\t\t\t\t\t<update-view-tile [view]=\"view\" [tile]=\"tile\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view-tile>\n\t\t\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of tile.navs\"></update-view-item>\n\t\t\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"tile.navs.length == 0\" [innerHTML]=\"'editor_no_navs' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t\t\t<svg-icon name=\"nav\"></svg-icon>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.tiles.length == 0\" [innerHTML]=\"'editor_no_tiles' | label\"></div>\n\t\t\t\t\t\t<!-- <div class=\"btn--mode\" (click)=\"setMode(3)\">Add Tile</div> -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!--\n\t\t\t\t\t<li *if=\"false\">\n\t\t\t\t\t\t<div class=\"title\">Icons</div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('animated-tabs')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 2 8.4 L 12 8.4 L 12 2 L 6 2 C 3.791 2 2 3.791 2 6 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 8.4 L 22 8.4 L 22 6 C 22 3.791 20.209 2 18 2 L 12 2 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Animated Tabs</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 13.6 C 6.8 13.158 7.158 12.8 7.6 12.8 L 16.8 12.8 C 17.242 12.8 17.6 13.158 17.6 13.6 L 17.6 16.8 C 17.6 17.242 17.242 17.6 16.8 17.6 L 7.6 17.6 C 7.158 17.6 6.8 17.242 6.8 16.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 6.8 7.2 C 6.8 6.758 7.158 6.4 7.6 6.4 L 16.8 6.4 C 17.242 6.4 17.6 6.758 17.6 7.2 L 17.6 10.4 C 17.6 10.842 17.242 11.2 16.8 11.2 L 7.6 11.2 C 7.158 11.2 6.8 10.842 6.8 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('container-transitions')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13 C 17.139 13 18.333 14.194 18.333 15.667 C 18.333 17.139 17.139 18.333 15.667 18.333 C 14.194 18.333 13 17.139 13 15.667 C 13 14.194 14.194 13 15.667 13 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Container Transitions</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-grid')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><g transform=\"translate(6.6 6.6)\"><path d=\"M 6.048 0.8 C 6.048 0.358 6.406 0 6.848 0 L 10 0 C 10.442 0 10.8 0.358 10.8 0.8 L 10.8 3.952 C 10.8 4.394 10.442 4.752 10 4.752 L 6.848 4.752 C 6.406 4.752 6.048 4.394 6.048 3.952 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path><path d=\"M 6.048 6.848 C 6.048 6.406 6.406 6.048 6.848 6.048 L 10 6.048 C 10.442 6.048 10.8 6.406 10.8 6.848 L 10.8 10 C 10.8 10.442 10.442 10.8 10 10.8 L 6.848 10.8 C 6.406 10.8 6.048 10.442 6.048 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 0.8 C 0 0.358 0.358 0 0.8 0 L 3.952 0 C 4.394 0 4.752 0.358 4.752 0.8 L 4.752 3.952 C 4.752 4.394 4.394 4.752 3.952 4.752 L 0.8 4.752 C 0.358 4.752 0 4.394 0 3.952 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 6.848 C 0 6.406 0.358 6.048 0.8 6.048 L 3.952 6.048 C 4.394 6.048 4.752 6.406 4.752 6.848 L 4.752 10 C 4.752 10.442 4.394 10.8 3.952 10.8 L 0.8 10.8 C 0.358 10.8 0 10.442 0 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path></g></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Grid</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('expand-on-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 7.833 0\" transform=\"translate(8.583 11.583) rotate(270 3.917 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 9.333 L 12 6.667 L 9.333 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 14.667 L 12 17.333 L 9.333 14.667\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Expand on Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-gallery-2')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 10.333 7.333 C 10.886 7.333 11.333 7.781 11.333 8.333 L 11.333 10.333 C 11.333 10.886 10.886 11.333 10.333 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.333 8.333 C 12.333 7.781 12.781 7.333 13.333 7.333 L 15.333 7.333 C 15.886 7.333 16.333 7.781 16.333 8.333 L 16.333 10.333 C 16.333 10.886 15.886 11.333 15.333 11.333 L 13.333 11.333 C 12.781 11.333 12.333 10.886 12.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.333 12.667 C 15.886 12.667 16.333 13.114 16.333 13.667 L 16.333 15.667 C 16.333 16.219 15.886 16.667 15.333 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Gallery 2</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-ui')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 4.8 C 7.905 4.8 8.8 5.695 8.8 6.8 C 8.8 7.905 7.905 8.8 6.8 8.8 C 5.695 8.8 4.8 7.905 4.8 6.8 C 4.8 5.695 5.695 4.8 6.8 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 4.8 C 13.105 4.8 14 5.695 14 6.8 C 14 7.905 13.105 8.8 12 8.8 C 10.895 8.8 10 7.905 10 6.8 C 10 5.695 10.895 4.8 12 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.2 4.8 C 18.305 4.8 19.2 5.695 19.2 6.8 C 19.2 7.905 18.305 8.8 17.2 8.8 C 16.095 8.8 15.2 7.905 15.2 6.8 C 15.2 5.695 16.095 4.8 17.2 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories UI</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('todo-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">To-Do List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toggle-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 17.333 15.333 C 18.438 15.333 19.333 16.229 19.333 17.333 C 19.333 18.438 18.438 19.333 17.333 19.333 C 16.229 19.333 15.333 18.438 15.333 17.333 C 15.333 16.229 16.229 15.333 17.333 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.333 10 C 18.438 10 19.333 10.895 19.333 12 C 19.333 13.105 18.438 14 17.333 14 C 16.229 14 15.333 13.105 15.333 12 C 15.333 10.895 16.229 10 17.333 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 C 19.333 7.771 18.438 8.667 17.333 8.667 C 16.229 8.667 15.333 7.771 15.333 6.667 C 15.333 5.562 16.229 4.667 17.333 4.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toggle Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('bottom-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 10.333 C 22 10.886 21.552 11.333 21 11.333 L 3 11.333 C 2.448 11.333 2 10.886 2 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 13.333 C 2 12.781 2.448 12.333 3 12.333 L 21 12.333 C 21.552 12.333 22 12.781 22 13.333 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Bottom Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('draggable-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 14 C 2 12.895 2.895 12 4 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z M 10.667 15.333 L 13.333 15.333 C 13.702 15.333 14 15.035 14 14.667 C 14 14.298 13.702 14 13.333 14 L 10.667 14 C 10.298 14 10 14.298 10 14.667 C 10 15.035 10.298 15.333 10.667 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Draggable Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('modal-box')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 9.333 C 7.333 8.229 8.229 7.333 9.333 7.333 L 14.667 7.333 C 15.771 7.333 16.667 8.229 16.667 9.333 L 16.667 14.667 C 16.667 15.771 15.771 16.667 14.667 16.667 L 9.333 16.667 C 8.229 16.667 7.333 15.771 7.333 14.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Modal Box</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('side-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 11 2 C 11.552 2 12 2.448 12 3 L 12 21 C 12 21.552 11.552 22 11 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Side Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 11.667 7.333 C 11.667 7.333 11.667 7.333 11.667 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 9 C 16.667 9.552 16.219 10 15.667 10 L 13.333 10 L 13.333 15.667 C 13.333 16.219 12.886 16.667 12.333 16.667 L 11.667 16.667 C 11.114 16.667 10.667 16.219 10.667 15.667 L 10.667 10 L 8.333 10 C 7.781 10 7.333 9.552 7.333 9 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('loading-indicator')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 16.4 10.4 C 17.284 10.4 18 11.116 18 12 C 18 12.884 17.284 13.6 16.4 13.6 C 15.516 13.6 14.8 12.884 14.8 12 C 14.8 11.116 15.516 10.4 16.4 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 10.4 C 12.884 10.4 13.6 11.116 13.6 12 C 13.6 12.884 12.884 13.6 12 13.6 C 11.116 13.6 10.4 12.884 10.4 12 C 10.4 11.116 11.116 10.4 12 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.6 10.4 C 8.484 10.4 9.2 11.116 9.2 12 C 9.2 12.884 8.484 13.6 7.6 13.6 C 6.716 13.6 6 12.884 6 12 C 6 11.116 6.716 10.4 7.6 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Loading Indicator</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('radio-button-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.833 8.167 L 14.167 8.167 C 16.284 8.167 18 9.883 18 12 C 18 14.117 16.284 15.833 14.167 15.833 L 9.833 15.833 C 7.716 15.833 6 14.117 6 12 C 6 9.883 7.716 8.167 9.833 8.167 Z M 11.333 12 C 11.333 13.473 12.527 14.667 14 14.667 C 15.473 14.667 16.667 13.473 16.667 12 C 16.667 10.527 15.473 9.333 14 9.333 C 12.527 9.333 11.333 10.527 11.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Radio Button Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('checkbox-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.651 6.931 C 7.911 6.738 7.238 7.411 7.431 8.151 L 9.363 15.558 C 9.592 16.435 10.775 16.58 11.208 15.784 L 13 12.5 L 16.284 10.708 C 17.08 10.275 16.935 9.092 16.058 8.863 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 16 15.5 L 11 10.5\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Checkbox Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('splash-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.757 13.414 C 6.976 12.633 6.976 11.367 7.757 10.586 L 10.586 7.757 C 11.367 6.976 12.633 6.976 13.414 7.757 L 16.243 10.586 C 17.024 11.367 17.024 12.633 16.243 13.414 L 13.414 16.243 C 12.633 17.024 11.367 17.024 10.586 16.243 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Splash Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('timeout-transition')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1 5.8 C 1 3.149 3.149 1 5.8 1 L 18.2 1 C 20.851 1 23 3.149 23 5.8 L 23 18.2 C 23 20.851 20.851 23 18.2 23 L 5.8 23 C 3.149 23 1 20.851 1 18.2 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 12 6.72 C 14.916 6.72 17.28 9.084 17.28 12 C 17.28 14.916 14.916 17.28 12 17.28 C 9.084 17.28 6.72 14.916 6.72 12 C 6.72 9.084 9.084 6.72 12 6.72 Z M 11.34 12 C 11.34 12.365 11.635 12.66 12 12.66 L 14.2 12.66 C 14.565 12.66 14.86 12.365 14.86 12 C 14.86 11.635 14.565 11.34 14.2 11.34 L 12.66 11.34 L 12.66 9.8 C 12.66 9.435 12.365 9.14 12 9.14 C 11.635 9.14 11.34 9.435 11.34 9.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Timeout Transition</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('accordion-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16 10.667 L 12 14.667 L 8 10.667\" fill=\"transparent\" stroke-width=\"2\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Accordion Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drop-on-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 8 0\" transform=\"translate(8.5 11.5) rotate(270 4 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.333 11.333 L 12 8 L 8.667 11.333\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drop on Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('nested-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 7 C 21.82 7.552 21.372 8 20.82 8 L 2.82 8 C 2.267 8 1.82 7.552 1.82 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 1.82 17 C 1.82 16.448 2.267 16 2.82 16 L 20.82 16 C 21.372 16 21.82 16.448 21.82 17 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 8.82 10 C 8.82 9.448 9.267 9 9.82 9 L 20.82 9 C 21.372 9 21.82 9.448 21.82 10 L 21.82 14 C 21.82 14.552 21.372 15 20.82 15 L 9.82 15 C 9.267 15 8.82 14.552 8.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 1.82 10 C 1.82 9.448 2.267 9 2.82 9 L 6.82 9 C 7.372 9 7.82 9.448 7.82 10 L 7.82 14 C 7.82 14.552 7.372 15 6.82 15 L 2.82 15 C 2.267 15 1.82 14.552 1.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Nested Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('star-rating')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.399 6.884 C 11.645 6.386 12.355 6.386 12.601 6.884 L 13.705 9.122 C 13.803 9.32 13.992 9.457 14.21 9.489 L 16.68 9.848 C 17.229 9.928 17.449 10.603 17.051 10.99 L 15.264 12.733 C 15.106 12.887 15.034 13.108 15.071 13.326 L 15.493 15.786 C 15.587 16.333 15.013 16.75 14.521 16.492 L 12.312 15.331 C 12.117 15.228 11.883 15.228 11.688 15.331 L 9.479 16.492 C 8.987 16.75 8.413 16.333 8.507 15.786 L 8.929 13.326 C 8.966 13.108 8.894 12.887 8.736 12.733 L 6.949 10.99 C 6.551 10.603 6.771 9.928 7.32 9.848 L 9.79 9.489 C 10.008 9.457 10.197 9.32 10.295 9.122 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Star Rating</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('swipe-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 17.33 C 2 16.595 2.595 16 3.33 16 L 21 16 C 21.552 16 22 16.448 22 17 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 10 C 2 9.448 2.448 9 3 9 L 14 9 C 14.552 9 15 9.448 15 10 L 15 14 C 15 14.552 14.552 15 14 15 L 3 15 C 2.448 15 2 14.552 2 14 Z M 19 9 C 20.657 9 22 10.343 22 12 C 22 13.657 20.657 15 19 15 C 17.343 15 16 13.657 16 12 C 16 10.343 17.343 9 19 9 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 7 C 22 7.552 21.552 8 21 8 L 3 8 C 2.448 8 2 7.552 2 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Swipe Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('switch-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13.333 C 17.139 13.333 18.333 14.527 18.333 16 C 18.333 17.473 17.139 18.667 15.667 18.667 C 14.194 18.667 13 17.473 13 16 C 13 14.527 14.194 13.333 15.667 13.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 8.333 13.333 C 9.806 13.333 11 14.527 11 16 C 11 17.473 9.806 18.667 8.333 18.667 C 6.861 18.667 5.667 17.473 5.667 16 C 5.667 14.527 6.861 13.333 8.333 13.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Switch Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('tab-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10 15.333 L 14 15.333 L 14 18.667 L 10 18.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.333 16.333 C 5.333 15.781 5.781 15.333 6.333 15.333 L 9.333 15.333 L 9.333 18.667 L 6.333 18.667 C 5.781 18.667 5.333 18.219 5.333 17.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 18.667 16.333 C 18.667 15.781 18.219 15.333 17.667 15.333 L 14.667 15.333 L 14.667 18.667 L 17.667 18.667 C 18.219 18.667 18.667 18.219 18.667 17.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Tab Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('wheel-picker')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.667 6 C 3.667 3.791 5.458 2 7.667 2 L 16.333 2 C 18.542 2 20.333 3.791 20.333 6 L 20.333 7 C 20.333 7.552 19.886 8 19.333 8 L 4.667 8 C 4.114 8 3.667 7.552 3.667 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 11 C 2 9.895 2.895 9 4 9 L 20 9 C 21.105 9 22 9.895 22 11 L 22 13 C 22 14.105 21.105 15 20 15 L 4 15 C 2.895 15 2 14.105 2 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.667 17 C 3.667 16.448 4.114 16 4.667 16 L 19.333 16 C 19.886 16 20.333 16.448 20.333 17 L 20.333 18 C 20.333 20.209 18.542 22 16.333 22 L 7.667 22 C 5.458 22 3.667 20.209 3.667 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Wheel Picker</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cover-flow')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 17.962 C 11.333 18.385 11.068 18.762 10.67 18.904 L 4.673 21.045 C 3.37 21.511 2 20.545 2 19.162 L 2 4.838 C 2 3.455 3.37 2.489 4.673 2.955 L 10.67 5.096 C 11.068 5.238 11.333 5.615 11.333 6.038 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 22 4.838 C 22 3.455 20.63 2.489 19.327 2.955 L 13.33 5.096 C 12.932 5.238 12.667 5.615 12.667 6.038 L 12.667 17.962 C 12.667 18.385 12.932 18.762 13.33 18.904 L 19.327 21.045 C 20.63 21.511 22 20.545 22 19.162 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cover Flow</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cube-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.743 C 2 5.898 2.531 5.144 3.327 4.859 L 9.997 2.477 C 10.648 2.245 11.333 2.727 11.333 3.419 L 11.333 20.581 C 11.333 21.273 10.648 21.755 9.997 21.523 L 3.327 19.141 C 2.531 18.856 2 18.102 2 17.257 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 3.419 C 12.667 2.727 13.352 2.245 14.003 2.477 L 20.673 4.859 C 21.469 5.144 22 5.898 22 6.743 L 22 17.257 C 22 18.102 21.469 18.856 20.673 19.141 L 14.003 21.523 C 13.352 21.755 12.667 21.273 12.667 20.581 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cube Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('flip-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 4.667 C 11.333 4.114 10.886 3.667 10.333 3.667 L 4 3.667 C 2.895 3.667 2 4.562 2 5.667 L 2 18.333 C 2 19.438 2.895 20.333 4 20.333 L 10.333 20.333 C 10.886 20.333 11.333 19.886 11.333 19.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 20 4.167 C 20 3.891 20.224 3.667 20.5 3.667 L 20.5 3.667 C 21.328 3.667 22 4.338 22 5.167 L 22 18.833 C 22 19.662 21.328 20.333 20.5 20.333 L 20.5 20.333 C 20.224 20.333 20 20.109 20 19.833 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 18.667 4.631 C 18.667 3.309 17.406 2.35 16.131 2.704 L 13.399 3.463 C 12.966 3.583 12.667 3.978 12.667 4.427 L 12.667 19.573 C 12.667 20.022 12.966 20.417 13.399 20.537 L 16.131 21.296 C 17.406 21.65 18.667 20.691 18.667 19.369 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Flip Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('parallax-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.667 C 12 5.562 12.895 4.667 14 4.667 L 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 L 19.333 10 C 19.333 11.105 18.438 12 17.333 12 L 14 12 C 12.895 12 12 11.105 12 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 4.667 14 C 4.667 12.895 5.562 12 6.667 12 L 10 12 C 11.105 12 12 12.895 12 14 L 12 17.333 C 12 18.438 11.105 19.333 10 19.333 L 6.667 19.333 C 5.562 19.333 4.667 18.438 4.667 17.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Parallax Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('pile-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.5 4 C 6.224 4 6 3.776 6 3.5 L 6 3.5 C 6 2.672 6.672 2 7.5 2 L 16.5 2 C 17.328 2 18 2.672 18 3.5 L 18 3.5 C 18 3.776 17.776 4 17.5 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 4.5 7 C 4.224 7 4 6.776 4 6.5 L 4 6.5 C 4 5.672 4.672 5 5.5 5 L 18.5 5 C 19.328 5 20 5.672 20 6.5 L 20 6.5 C 20 6.776 19.776 7 19.5 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 0 2.67 C 0 1.195 1.195 0 2.67 0 L 11.33 0 C 12.805 0 14 1.195 14 2.67 L 14 17.33 C 14 18.805 12.805 20 11.33 20 L 2.67 20 C 1.195 20 0 18.805 0 17.33 Z\" transform=\"translate(5 5) rotate(-90 7 10)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Pile Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('shuffle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.174 10.452 L 16.708 9.06 L 15.174 7.667\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.174 16.333 L 16.708 14.94 L 15.174 13.548\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 9.06 C 16.145 9.06 13.982 8.542 12.617 9.679 C 11.252 10.815 11.829 12.213 10.776 13.548 C 9.724 14.882 7.708 14.94 7.708 14.94\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 14.823 C 16.145 14.823 13.982 15.34 12.617 14.204 C 11.252 13.068 11.829 11.669 10.776 10.335 C 9.724 9.001 7.708 8.942 7.708 8.942\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Shuffle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('svg-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">SVG Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('google-sheets')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7 8.667 C 7 8.206 7.373 7.833 7.833 7.833 L 7.833 7.833 C 8.294 7.833 8.667 8.206 8.667 8.667 L 8.667 8.667 C 8.667 9.127 8.294 9.5 7.833 9.5 L 7.833 9.5 C 7.373 9.5 7 9.127 7 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 12 C 7 11.54 7.373 11.167 7.833 11.167 L 7.833 11.167 C 8.294 11.167 8.667 11.54 8.667 12 L 8.667 12 C 8.667 12.46 8.294 12.833 7.833 12.833 L 7.833 12.833 C 7.373 12.833 7 12.46 7 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 15.333 C 7 14.873 7.373 14.5 7.833 14.5 L 7.833 14.5 C 8.294 14.5 8.667 14.873 8.667 15.333 L 8.667 15.333 C 8.667 15.794 8.294 16.167 7.833 16.167 L 7.833 16.167 C 7.373 16.167 7 15.794 7 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 8.667 C 9.778 8.206 10.151 7.833 10.611 7.833 L 16.167 7.833 C 16.627 7.833 17 8.206 17 8.667 L 17 8.667 C 17 9.127 16.627 9.5 16.167 9.5 L 10.611 9.5 C 10.151 9.5 9.778 9.127 9.778 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 12 C 9.778 11.54 10.151 11.167 10.611 11.167 L 16.167 11.167 C 16.627 11.167 17 11.54 17 12 L 17 12 C 17 12.46 16.627 12.833 16.167 12.833 L 10.611 12.833 C 10.151 12.833 9.778 12.46 9.778 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 15.333 C 9.778 14.873 10.151 14.5 10.611 14.5 L 16.167 14.5 C 16.627 14.5 17 14.873 17 15.333 L 17 15.333 C 17 15.794 16.627 16.167 16.167 16.167 L 10.611 16.167 C 10.151 16.167 9.778 15.794 9.778 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Google Sheets</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('map')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.82 6.504 C 14.029 6.504 15.82 8.282 15.82 10.476 C 15.82 10.698 15.801 10.915 15.766 11.127 C 15.359 14.488 13.033 16.581 12.155 17.261 C 12.051 17.341 11.976 17.437 11.82 17.437 C 11.663 17.437 11.586 17.34 11.481 17.258 C 10.6 16.576 8.28 14.483 7.873 11.127 C 7.838 10.915 7.82 10.698 7.82 10.476 C 7.82 8.282 9.61 6.504 11.82 6.504 Z M 9.486 10.644 C 9.486 11.933 10.531 12.977 11.82 12.977 C 13.108 12.977 14.153 11.933 14.153 10.644 C 14.153 9.355 13.108 8.311 11.82 8.311 C 10.531 8.311 9.486 9.355 9.486 10.644 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Map</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('signature-pad')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.82 13.068 C 8.56 12.807 8.56 12.385 8.82 12.125 L 13.733 7.212 C 13.993 6.952 14.415 6.952 14.676 7.212 L 16.788 9.324 C 17.048 9.585 17.048 10.007 16.788 10.267 L 11.875 15.18 C 11.615 15.44 11.193 15.44 10.932 15.18 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.096 0.303 C 3.318 0.17 3.6 0.33 3.6 0.589 L 3.6 3.732 C 3.6 3.991 3.318 4.151 3.096 4.018 L 0.953 2.732 C 0.521 2.473 0.521 1.848 0.953 1.589 Z\" transform=\"translate(6.24 13.8) rotate(-45 1.8 2.16)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Signature Pad</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('sound-effects')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.225 10.793 C 14.471 11.102 14.623 11.529 14.623 12 C 14.623 12.471 14.471 12.898 14.225 13.207\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.224 9.185 C 16.96 9.911 17.417 10.905 17.417 12 C 17.417 13.095 16.96 14.09 16.224 14.816\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 6.083 10.656 C 6.083 10.288 6.382 9.989 6.75 9.989 L 7.674 9.989 L 11.021 7.835 C 11.464 7.549 12.048 7.868 12.048 8.396 L 12.048 15.604 C 12.048 16.132 11.464 16.451 11.021 16.165 L 7.674 14.011 L 6.75 14.011 C 6.382 14.011 6.083 13.712 6.083 13.344 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Sound Effects</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-swipe')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.423 7.423 C 3.423 5.214 5.214 3.423 7.423 3.423 L 16.756 3.423 C 18.965 3.423 20.756 5.214 20.756 7.423 L 20.756 16.756 C 20.756 18.965 18.965 20.756 16.756 20.756 L 7.423 20.756 C 5.214 20.756 3.423 18.965 3.423 16.756 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.172 3.377 C 10.734 1.815 13.266 1.815 14.828 3.377 L 20.721 9.269 C 22.283 10.831 22.283 13.364 20.721 14.926 L 14.828 20.819 C 13.266 22.381 10.734 22.381 9.172 20.819 L 3.279 14.926 C 1.717 13.364 1.717 10.831 3.279 9.269 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card Swipe</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('custom-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.2 C 2 5.673 2.31 5.195 2.792 4.981 L 7.063 3.083 C 7.503 2.887 8 3.21 8 3.693 L 8 20.307 C 8 20.79 7.503 21.113 7.063 20.917 L 2.792 19.019 C 2.31 18.805 2 18.327 2 17.8 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 9.333 3.297 C 9.333 2.642 9.954 2.163 10.588 2.33 L 20.509 4.941 C 21.388 5.172 22 5.967 22 6.875 L 22 17.125 C 22 18.033 21.388 18.828 20.509 19.059 L 10.588 21.67 C 9.954 21.837 9.333 21.358 9.333 20.703 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Custom Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drag-handle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 2.667 L 2.667 0 L 0 2.667\" transform=\"translate(5.667 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 5.333 0 L 2.667 2.667 L 0 0\" transform=\"translate(13 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drag Handle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-header')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 8 L 2 8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Header</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-panning')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 14 C 12 12.895 12.895 12 14 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 14 22 C 12.895 22 12 21.105 12 20 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Panning</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-data')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Data</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-validation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Validation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.28 0 C 7.017 0 7.747 2.366 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.365 0.069 -0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(11.213 11.787) rotate(15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 5.28 0 C 7.017 -0 7.747 2.365 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.366 0.069 0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(5.701 6.669) rotate(-15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-counter')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.778 7.333 C 17.556 7.333 18.724 11.072 16.502 13.268 C 14.279 15.464 12 16.667 12 16.667 C 12 16.667 9.721 15.464 7.498 13.268 C 5.276 11.072 6.444 7.333 9.222 7.333 C 12 7.333 12 10.022 12 10.022 C 12 10.022 12 7.333 14.778 7.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Counter</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('lock-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 11 C 7.333 10.448 7.781 10 8.333 10 L 15.667 10 C 16.219 10 16.667 10.448 16.667 11 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 7.333 C 13.289 7.333 14.333 8.378 14.333 9.667 C 14.333 10.955 13.289 12 12 12 C 10.711 12 9.667 10.955 9.667 9.667 C 9.667 8.378 10.711 7.333 12 7.333 Z\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Lock Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('long-press-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16.667 10.667 C 17.771 10.667 18.667 11.562 18.667 12.667 C 18.667 13.771 17.771 14.667 16.667 14.667 C 15.562 14.667 14.667 13.771 14.667 12.667 C 14.667 11.562 15.562 10.667 16.667 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12 8 C 13.105 8 14 8.895 14 10 C 14 11.105 13.105 12 12 12 C 10.895 12 10 11.105 10 10 C 10 8.895 10.895 8 12 8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 10.667 C 8.438 10.667 9.333 11.562 9.333 12.667 C 9.333 13.771 8.438 14.667 7.333 14.667 C 6.229 14.667 5.333 13.771 5.333 12.667 C 5.333 11.562 6.229 10.667 7.333 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Long Press Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('perspective-3d')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.913 22 C 5.987 22 5.182 21.364 4.967 20.463 L 2.586 10.463 C 2.287 9.206 3.24 8 4.532 8 L 19.468 8 C 20.76 8 21.713 9.206 21.414 10.463 L 19.033 20.463 C 18.818 21.364 18.013 22 17.087 22 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.833 7 C 3.557 7 3.333 6.776 3.333 6.5 L 3.333 6.5 C 3.333 5.672 4.005 5 4.833 5 L 19.167 5 C 19.995 5 20.667 5.672 20.667 6.5 L 20.667 6.5 C 20.667 6.776 20.443 7 20.167 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 5.167 4 C 4.891 4 4.667 3.776 4.667 3.5 L 4.667 3.5 C 4.667 2.672 5.338 2 6.167 2 L 17.833 2 C 18.662 2 19.333 2.672 19.333 3.5 L 19.333 3.5 C 19.333 3.776 19.109 4 18.833 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Perspective 3D</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('progress-bar')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 16.82 15.333 C 17.74 15.333 18.486 16.08 18.486 17 L 18.486 17 C 18.486 17.92 17.74 18.667 16.82 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 11.486 15.333 C 12.407 15.333 13.153 16.08 13.153 17 L 13.153 17 C 13.153 17.92 12.407 18.667 11.486 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Progress Bar</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('scroll-progress')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 10.333 C 7.333 9.781 7.781 9.333 8.333 9.333 L 15.667 9.333 C 16.219 9.333 16.667 9.781 16.667 10.333 L 16.667 11.667 C 16.667 12.219 16.219 12.667 15.667 12.667 L 8.333 12.667 C 7.781 12.667 7.333 12.219 7.333 11.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 14.667 C 7.333 14.114 7.781 13.667 8.333 13.667 L 15.667 13.667 C 16.219 13.667 16.667 14.114 16.667 14.667 L 16.667 16 C 16.667 16.552 16.219 17 15.667 17 L 8.333 17 C 7.781 17 7.333 16.552 7.333 16 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 16 7 C 16.368 7 16.667 7.298 16.667 7.667 L 16.667 7.667 C 16.667 8.035 16.368 8.333 16 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 12.667 7 C 13.035 7 13.333 7.298 13.333 7.667 L 13.333 7.667 C 13.333 8.035 13.035 8.333 12.667 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Scroll Progress</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('show-password')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10.6 12 C 10.6 11.227 11.227 10.6 12 10.6 L 12 10.6 C 12.773 10.6 13.4 11.227 13.4 12 L 13.4 12 C 13.4 12.773 12.773 13.4 12 13.4 L 12 13.4 C 11.227 13.4 10.6 12.773 10.6 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.166 7.833 C 14.892 7.833 17.161 9.42 17.811 12 C 17.161 14.58 14.892 16.167 12.166 16.167 C 9.44 16.167 7.127 14.58 6.478 12 C 7.127 9.42 9.44 7.833 12.166 7.833 Z M 9.333 12 C 9.333 13.473 10.527 14.667 12 14.667 C 13.473 14.667 14.667 13.473 14.667 12 C 14.667 10.527 13.473 9.333 12 9.333 C 10.527 9.333 9.333 10.527 9.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Show Password</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('slider')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.667 12 L 18.333 12\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" opacity=\"0.4\" stroke-width=\"2.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 12 8.333 C 14.025 8.333 15.667 9.975 15.667 12 C 15.667 14.025 14.025 15.667 12 15.667 C 9.975 15.667 8.333 14.025 8.333 12 C 8.333 9.975 9.975 8.333 12 8.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Slider</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-drag')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Drag</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toast-prompt')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18.333 C 22 20.542 20.209 22.333 18 22.333 L 6 22.333 C 3.791 22.333 2 20.542 2 18.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.333 C 15.13 6.333 17.667 8.87 17.667 12 C 17.667 15.13 15.13 17.667 12 17.667 C 8.87 17.667 6.333 15.13 6.333 12 C 6.333 8.87 8.87 6.333 12 6.333 Z\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\"></path><path d=\"M 12 13 C 12.552 13 13 13.448 13 14 C 13 14.552 12.552 15 12 15 C 11.448 15 11 14.552 11 14 C 11 13.448 11.448 13 12 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 11.06 9.998 C 11.027 9.457 11.458 9 12 9 L 12 9 C 12.542 9 12.973 9.457 12.94 9.998 L 12.848 11.535 C 12.821 11.983 12.449 12.333 12 12.333 L 12 12.333 C 11.551 12.333 11.179 11.983 11.152 11.535 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toast Prompt</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t\t-->\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 2\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'view', value: item.type.name })\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 3\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewItemTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'viewItem', value: item.type.name })\" [title]=\"item.id\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"supportedViewItemTypes.length == 0\" [innerHTML]=\"'editor_type_no_items' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t"
+};var SVG_CHUNK =
+/* html */
+"\n\t\t<svg width=\"0\" height=\"0\" class=\"hidden\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" aria-hidden=\"true\">\n\t\t\t<symbol id=\"arrow-down\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"arrow-next\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"arrow-prev\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"call\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M20 22.621l-3.521-6.795c-.008.004-1.974.97-2.064 1.011-2.24 1.086-6.799-7.82-4.609-8.994l2.083-1.026-3.493-6.817-2.106 1.039c-7.202 3.755 4.233 25.982 11.6 22.615.121-.055 2.102-1.029 2.11-1.033z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"heart\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-8.118-10-8.999-12-3.568z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"heart-outline\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"cam\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16 18c0 1.104-.896 2-2 2h-12c-1.105 0-2-.896-2-2v-12c0-1.104.895-2 2-2h12c1.104 0 2 .896 2 2v12zm8-14l-6 6.223v3.554l6 6.223v-16z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"cam-muted\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0.7,19.5L15.5,4.7C15.1,4.3,14.6,4,14,4H2C0.9,4,0,4.9,0,6v12C0,18.6,0.3,19.1,0.7,19.5z\"></path>\n\t\t\t\t<path d=\"M18 13.8L24 20 24 4 18 10.2z\"></path>\n\t\t\t\t<path d=\"M7.8,20H14c1.1,0,2-0.9,2-2v-6.2L7.8,20z\"></path>\n\t\t\t\t<path d=\"M-3.4 11.2H27.400000000000002V12.7H-3.4z\" transform=\"rotate(-45.001 12 12)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"mic\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16 11c0 2.209-1.791 4-4 4s-4-1.791-4-4v-7c0-2.209 1.791-4 4-4s4 1.791 4 4v7zm4-2v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13v-2h-2v2h-4v2h10v-2h-4z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"mic-muted\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16,11.4L12.4,15C14.3,14.8,15.8,13.3,16,11.4z\"></path>\n\t\t\t\t<path d=\"M16,4.6V4c0-2.2-1.8-4-4-4S8,1.8,8,4v7c0,0.5,0.1,0.9,0.3,1.4L16,4.6z\"></path>\n\t\t\t\t<path d=\"M13 20L11 20 11 22 7 22 7 24 17 24 17 22 13 22z\"></path>\n\t\t\t\t<path d=\"M18,11c0,3.3-2.7,6-6,6c-0.5,0-1-0.1-1.4-0.2L9,18.4c0.9,0.4,2,0.6,3,0.6c4.4,0,8-3.6,8-8V9h-2V11z\"></path>\n\t\t\t\t<path d=\"M6.7,13.9C6.3,13,6,12,6,11V9H4v2c0,1.6,0.5,3.1,1.3,4.3L6.7,13.9z\"></path>\n\t\t\t\t<path d=\"M-3.4 11.2H27.400000000000002V12.7H-3.4z\" transform=\"rotate(-45.001 12 12)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"gamepad\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17.622 3c-1.913 0-2.558 1.382-5.623 1.382-3.009 0-3.746-1.382-5.623-1.382-5.209 0-6.376 10.375-6.376 14.348 0 2.145.817 3.652 2.469 3.652 3.458 0 2.926-5 6.915-5h5.23c3.989 0 3.457 5 6.915 5 1.652 0 2.471-1.506 2.471-3.651 0-3.973-1.169-14.349-6.378-14.349zm-10.622 10c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zm10-6c.552 0 1 .447 1 1 0 .553-.448 1-1 1s-1-.447-1-1c0-.553.448-1 1-1zm-2 4c-.552 0-1-.447-1-1 0-.553.448-1 1-1s1 .447 1 1c0 .553-.448 1-1 1zm2 2c-.552 0-1-.447-1-1 0-.553.448-1 1-1s1 .447 1 1c0 .553-.448 1-1 1zm2-2c-.552 0-1-.447-1-1 0-.553.448-1 1-1s1 .447 1 1c0 .553-.448 1-1 1zm-10.25-1c0 .965-.785 1.75-1.75 1.75s-1.75-.785-1.75-1.75.785-1.75 1.75-1.75 1.75.785 1.75 1.75z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"ar\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 0l-11 6v12.131l11 5.869 11-5.869v-12.066l-11-6.065zm7.91 6.646l-7.905 4.218-7.872-4.294 7.862-4.289 7.915 4.365zm-16.91 1.584l8 4.363v8.607l-8-4.268v-8.702zm10 12.97v-8.6l8-4.269v8.6l-8 4.269zm6.678-5.315c.007.332-.256.605-.588.612-.332.007-.604-.256-.611-.588-.006-.331.256-.605.588-.612.331-.007.605.256.611.588zm-2.71-1.677c-.332.006-.595.28-.588.611.006.332.279.595.611.588s.594-.28.588-.612c-.007-.331-.279-.594-.611-.587zm-2.132-1.095c-.332.007-.595.281-.588.612.006.332.279.594.611.588.332-.007.594-.28.588-.612-.007-.331-.279-.594-.611-.588zm-9.902 2.183c.332.007.594.281.588.612-.007.332-.279.595-.611.588-.332-.006-.595-.28-.588-.612.005-.331.279-.594.611-.588zm1.487-.5c-.006.332.256.605.588.612s.605-.257.611-.588c.007-.332-.256-.605-.588-.611-.332-.008-.604.255-.611.587zm2.132-1.094c-.006.332.256.605.588.612.332.006.605-.256.611-.588.007-.332-.256-.605-.588-.612-.332-.007-.604.256-.611.588zm3.447-5.749c-.331 0-.6.269-.6.6s.269.6.6.6.6-.269.6-.6-.269-.6-.6-.6zm0-2.225c-.331 0-.6.269-.6.6s.269.6.6.6.6-.269.6-.6-.269-.6-.6-.6zm0-2.031c-.331 0-.6.269-.6.6s.269.6.6.6.6-.269.6-.6-.269-.6-.6-.6z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"close\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M23 20.168l-8.185-8.187 8.185-8.174-2.832-2.807-8.182 8.179-8.176-8.179-2.81 2.81 8.186 8.196-8.186 8.184 2.81 2.81 8.203-8.192 8.18 8.192z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"vr\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22.3,4.3H1.7C0.8,4.3,0,5.1,0,6v12c0,0.9,0.8,1.7,1.7,1.7h5.6c0.7,0,1.4-0.5,1.6-1.2l1.4-4.2c0.5-1.6,2.7-1.6,3.3,0 l1.4,4.2c0.2,0.7,0.9,1.2,1.6,1.2h5.6c0.9,0,1.7-0.8,1.7-1.7V6C24,5.1,23.2,4.3,22.3,4.3z M6,14.6c-1.4,0-2.6-1.2-2.6-2.6 S4.6,9.4,6,9.4s2.6,1.2,2.6,2.6S7.4,14.6,6,14.6z M18,14.6c-1.4,0-2.6-1.2-2.6-2.6s1.2-2.6,2.6-2.6s2.6,1.2,2.6,2.6 S19.4,14.6,18,14.6z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"vr-02\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22.5,8.6c-0.3,0-0.6,0.1-0.8,0.3c-0.3-1.9-1.9-3.4-3.9-3.4H6.2c-2,0-3.6,1.5-3.9,3.4C2,8.7,1.7,8.6,1.4,8.6 C0.6,8.6,0,9.3,0,10.1v3.9c0,0.8,0.6,1.4,1.4,1.4c0.3,0,0.6-0.1,0.8-0.3c0.3,1.9,1.9,3.4,3.9,3.4h11.6c2,0,3.6-1.5,3.9-3.4 c0.2,0.2,0.5,0.3,0.8,0.3c0.8,0,1.4-0.6,1.4-1.4v-3.9C24,9.3,23.3,8.6,22.5,8.6z M20.7,14.6c0,1.6-1.3,2.8-2.8,2.8H6.2 c-1.6,0-2.8-1.3-2.8-2.8V9.4c0-1.6,1.3-2.8,2.8-2.8h11.6c1.6,0,2.8,1.3,2.8,2.8V14.6z\"></path><circle cx=\"5.7\" cy=\"8.7\" r=\".8\"></circle><circle cx=\"18.3\" cy=\"8.6\" r=\".8\"></circle><circle cx=\"5.7\" cy=\"15.4\" r=\".8\"></circle><circle cx=\"18.3\" cy=\"15.3\" r=\".8\"></circle>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"the-spy\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17,14c-1.8,0-3.3,1.3-3.7,3h-2.5c-0.5-2.1-2.5-3.4-4.6-2.9c-2.1,0.5-3.4,2.5-2.9,4.6s2.5,3.4,4.6,2.9 c1.4-0.3,2.6-1.5,2.9-2.9h2.5c0.5,2.1,2.5,3.4,4.6,2.9s3.4-2.5,2.9-4.6C20.4,15.3,18.8,14,17,14z\"></path>\n\t\t\t\t<path d=\"M23.2,11.5h-2.6V6c0-0.7-0.5-1.4-1.2-1.6l-5.5-1.8c-1.2-0.4-2.6-0.4-3.8,0L4.6,4.4C3.9,4.6,3.4,5.3,3.4,6v5.4H0.8 c-0.5,0-0.8,0.4-0.8,0.8s0.4,0.8,0.8,0.8h22.3c0.5,0,0.8-0.4,0.8-0.8S23.6,11.5,23.2,11.5z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"spy-eye\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12,19.6c-4.6,0-8.9-3.5-11.7-6.8c-0.4-0.5-0.4-1.2,0-1.6C3.1,7.9,7.4,4.4,12,4.4s8.9,3.5,11.7,6.8 c0.4,0.5,0.4,1.2,0,1.6C20.9,16.1,16.6,19.6,12,19.6z M12,7.5c2.5,0,4.4,1.9,4.4,4.4s-1.9,4.4-4.4,4.4s-4.4-1.9-4.4-4.4 S9.5,7.5,12,7.5z\" clip-rule=\"evenodd\"></path>\n\t\t\t\t<path d=\"M12,9.3c1.4,0,2.6,1.2,2.6,2.6s-1.2,2.6-2.6,2.6s-2.6-1.2-2.6-2.6S10.6,9.3,12,9.3z\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"copy\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M7 16h10v1h-10v-1zm0-1h10v-1h-10v1zm15-13v22h-20v-22h3c1.229 0 2.18-1.084 3-2h8c.82.916 1.771 2 3 2h3zm-11 1c0 .552.448 1 1 1s1-.448 1-1-.448-1-1-1-1 .448-1 1zm9 1h-4l-2 2h-3.898l-2.102-2h-4v18h16v-18zm-13 9h10v-1h-10v1zm0-2h10v-1h-10v1z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"menu\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 18c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3zm0-9c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3zm0-9c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"menu-light\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M14 19h-14v-1h14v1zm9.247-8.609l-3.247 4.049-3.263-4.062-.737.622 4 5 4-5-.753-.609zm-9.247 2.609h-14v-1h14v1zm0-6h-14v-1h14v1z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"settings\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 14.187v-4.374c-2.148-.766-2.726-.802-3.027-1.529-.303-.729.083-1.169 1.059-3.223l-3.093-3.093c-2.026.963-2.488 1.364-3.224 1.059-.727-.302-.768-.889-1.527-3.027h-4.375c-.764 2.144-.8 2.725-1.529 3.027-.752.313-1.203-.1-3.223-1.059l-3.093 3.093c.977 2.055 1.362 2.493 1.059 3.224-.302.727-.881.764-3.027 1.528v4.375c2.139.76 2.725.8 3.027 1.528.304.734-.081 1.167-1.059 3.223l3.093 3.093c1.999-.95 2.47-1.373 3.223-1.059.728.302.764.88 1.529 3.027h4.374c.758-2.131.799-2.723 1.537-3.031.745-.308 1.186.099 3.215 1.062l3.093-3.093c-.975-2.05-1.362-2.492-1.059-3.223.3-.726.88-.763 3.027-1.528zm-4.875.764c-.577 1.394-.068 2.458.488 3.578l-1.084 1.084c-1.093-.543-2.161-1.076-3.573-.49-1.396.581-1.79 1.693-2.188 2.877h-1.534c-.398-1.185-.791-2.297-2.183-2.875-1.419-.588-2.507-.045-3.579.488l-1.083-1.084c.557-1.118 1.066-2.18.487-3.58-.579-1.391-1.691-1.784-2.876-2.182v-1.533c1.185-.398 2.297-.791 2.875-2.184.578-1.394.068-2.459-.488-3.579l1.084-1.084c1.082.538 2.162 1.077 3.58.488 1.392-.577 1.785-1.69 2.183-2.875h1.534c.398 1.185.792 2.297 2.184 2.875 1.419.588 2.506.045 3.579-.488l1.084 1.084c-.556 1.121-1.065 2.187-.488 3.58.577 1.391 1.689 1.784 2.875 2.183v1.534c-1.188.398-2.302.791-2.877 2.183zm-7.125-5.951c1.654 0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 3-3zm0-2c-2.762 0-5 2.238-5 5s2.238 5 5 5 5-2.238 5-5-2.238-5-5-5z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"settings-full\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 13.616v-3.232l-2.869-1.02c-.198-.687-.472-1.342-.811-1.955l1.308-2.751-2.285-2.285-2.751 1.307c-.613-.339-1.269-.613-1.955-.811l-1.021-2.869h-3.232l-1.021 2.869c-.686.198-1.342.471-1.955.811l-2.751-1.308-2.285 2.285 1.308 2.752c-.339.613-.614 1.268-.811 1.955l-2.869 1.02v3.232l2.869 1.02c.197.687.472 1.342.811 1.955l-1.308 2.751 2.285 2.286 2.751-1.308c.613.339 1.269.613 1.955.811l1.021 2.869h3.232l1.021-2.869c.687-.198 1.342-.472 1.955-.811l2.751 1.308 2.285-2.286-1.308-2.751c.339-.613.613-1.268.811-1.955l2.869-1.02zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"emoji\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12,2c5.5,0,10,4.5,10,10s-4.5,10-10,10S2,17.5,2,12S6.5,2,12,2z M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12 S18.6,0,12,0z M18,14H6c0.3,1.5,2.8,4,6,4C15.1,18,17.7,15.5,18,14z M8.5,8C7.7,8,7,8.7,7,9.5S7.7,11,8.5,11S10,10.3,10,9.5 S9.3,8,8.5,8z M15.5,8C14.7,8,14,8.7,14,9.5s0.7,1.5,1.5,1.5c0.8,0,1.5-0.7,1.5-1.5S16.3,8,15.5,8z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"pencil\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M19.769 9.923l-12.642 12.639-7.127 1.438 1.438-7.128 12.641-12.64 5.69 5.691zm1.414-1.414l2.817-2.82-5.691-5.689-2.816 2.817 5.69 5.692z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"erase\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5.662 23l-5.369-5.365c-.195-.195-.293-.45-.293-.707 0-.256.098-.512.293-.707l14.929-14.928c.195-.194.451-.293.707-.293.255 0 .512.099.707.293l7.071 7.073c.196.195.293.451.293.708 0 .256-.097.511-.293.707l-11.216 11.219h5.514v2h-12.343zm3.657-2l-5.486-5.486-1.419 1.414 4.076 4.072h2.829zm.456-11.429l-4.528 4.528 5.658 5.659 4.527-4.53-5.657-5.657z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"move\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 10c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm-3.857 3c-.084-.321-.143-.652-.143-1s.059-.679.143-1h-2.143v-4l-6 5 6 5v-4h2.143zm7.714-2c.084.321.143.652.143 1s-.059.679-.143 1h2.143v4l6-5-6-5v4h-2.143zm-2.857 4.857c-.321.084-.652.143-1 .143s-.679-.059-1-.143v2.143h-4l5 6 5-6h-4v-2.143zm-2-7.714c.321-.084.652-.143 1-.143s.679.059 1 .143v-2.143h4l-5-6-5 6h4v2.143z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"caret-down\" viewBox=\"0 0 8 5\">\n\t\t\t\t<path d=\"M0 0h8L4 5 0 0z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"caret-right\" viewBox=\"0 0 8 12\">\n\t\t\t\t<path d=\"M0 12V0l8 6-8 6z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"websolute\" viewBox=\"0 0 20 20\">\n\t\t\t\t<path d=\"M20 10c0 5.5-4.5 10-10 10S0 15.5 0 10 4.5 0 10 0s10 4.5 10 10m-10 2.3c.5.5 1.3.8 2.1.8s1.5-.3 2.1-.8c.5-.5.8-1.2.8-2V7.5h-1.7v2.8c0 .3-.1.6-.4.8-.1.1-.3.2-.4.3-.2.1-.3.1-.5.1s-.3 0-.5-.1c-.1-.1-.3-.2-.4-.3-.2-.2-.4-.5-.4-.8V7.6H9.2v2.8c0 .3-.1.6-.4.9-.2.2-.5.4-.8.4-.3 0-.7-.1-.9-.3-.2-.2-.4-.5-.3-.8V7.5H5v2.8c0 .7.3 1.5.8 2 .6.5 1.3.8 2.1.8.8.1 1.6-.2 2.1-.8z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"search\" viewBox=\"0 0 21 23\">\n\t\t\t\t<path d=\"M20.6 20.3l-4.9-5.2c1.2-1.7 1.8-3.7 1.8-5.7 0-5.2-3.9-9.4-8.7-9.4S0 4.2 0 9.4s3.7 7.8 6.3 8.4c1.8.4 3.9.6 7.1-.7l5.1 5.4c.5.6 1.4.6 2 .1l.1-.1c.5-.6.5-1.6 0-2.2zM15 9.4c-.2 3.5-3.2 6.1-6.7 5.8S2.2 12 2.5 8.5c.2-3.3 3-5.8 6.3-5.8 3.5.1 6.3 3.1 6.2 6.7z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"result-indicator\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M11 21.883l-6.235-7.527-.765.644 7.521 9 7.479-9-.764-.645-6.236 7.529v-21.884h-1v21.883z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"bullet\" viewBox=\"0 0 18 18\">\n\t\t\t\t<path d=\"M9 2c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-2C4 0 0 4 0 9s4 9 9 9 9-4 9-9-4-9-9-9z\" opacity=\".15\" fill=\"#17265a\"></path>\n\t\t\t\t<circle cx=\"9\" cy=\"9\" r=\"4\" fill=\"#17265a\"></circle>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"play\" viewBox=\"0 0 16 20\">\n\t\t\t\t<path d=\"M0,0v19.8l15.4-11L0,0z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"play-progress\" viewBox=\"0 0 196 196\">\n\t\t\t\t<path d=\"M195.5,98c0,53.8-43.7,97.5-97.5,97.5S0.5,151.8,0.5,98S44.2,0.5,98,0.5S195.5,44.2,195.5,98z\" stroke-width=\"2px\" stroke-linecap=\"square\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"pause\" viewBox=\"0 0 16 20\">\n\t\t\t\t<path d=\"M0 0.9H4V18.9H0z\"></path>\n\t\t\t\t<path d=\"M11.4 0.9H15.4V18.9H11.4z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"wishlist-add\" viewBox=\"0 0 25 20\">\n\t\t\t\t<path d=\"M12.5,20.8c-0.3,0-0.5-0.1-0.8-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.7-0.5-1.4-0.9-2.1-1.5 c-1.1-0.8-2.1-1.6-3.1-2.4C4.2,15,3,13.8,1.9,12.4c-0.9-1.1-1.4-2.3-1.7-3.7C0.1,8.5,0.1,8.2,0,7.9l0-0.2l0.1-1.4 c0-0.1,0.1-0.3,0.1-0.4c0.1-0.3,0.1-0.7,0.3-1c0.6-1.7,1.8-3.2,3.4-4c1.5-0.8,3.3-1.1,5-0.8c1.4,0.2,2.6,0.8,3.7,1.7 c2.9-2.4,7.2-2.4,10,0.1c1.1,0.9,1.9,2.2,2.2,3.5c0.1,0.3,0.1,0.6,0.2,0.8L25,6.7l-0.1,1.4c-0.2,1.2-0.6,2.4-1.2,3.4 c-0.5,0.8-1.1,1.6-1.8,2.3c-0.8,0.9-1.7,1.7-2.6,2.5c-0.7,0.6-1.6,1.3-2.6,2c-0.8,0.5-1.5,1.1-2.3,1.6c-0.4,0.3-0.8,0.5-1.2,0.8 C13.1,20.8,12.8,20.8,12.5,20.8z M2.1,7.6c0,0.2,0.1,0.4,0.1,0.6c0.2,1.1,0.7,2,1.4,2.9c1,1.2,2.1,2.3,3.3,3.3c1,0.8,2,1.6,3,2.4 c0.7,0.5,1.4,0.9,2.1,1.4l0.5,0.3c0.2-0.2,0.5-0.3,0.7-0.5c0.8-0.5,1.5-1,2.3-1.6c0.9-0.7,1.8-1.4,2.5-1.9c0.9-0.7,1.7-1.5,2.4-2.3 c0.6-0.6,1.1-1.2,1.5-1.9c0.5-0.8,0.8-1.7,0.9-2.6c0-0.1,0-0.1,0-0.2l0-0.9c0-0.2-0.1-0.4-0.1-0.6c-0.3-1-0.8-1.9-1.6-2.5 c-2.1-1.8-5.2-1.8-7.3,0c-0.1,0.1-0.3,0.2-0.4,0.4l-0.9,1.2l-1-1.3c-0.8-0.8-1.9-1.4-3-1.6C7.2,2,5.9,2.2,4.9,2.8 c-1.1,0.6-2,1.6-2.4,2.8C2.4,5.9,2.3,6.1,2.3,6.4c0,0.1-0.1,0.3-0.1,0.4l0,0L2.1,7.6L2.1,7.6z\" clip-rule=\"evenodd\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"wishlist-added\" viewBox=\"0 0 25 20\">\n\t\t\t\t<path d=\"M12.5,20.8c-0.3,0-0.5-0.1-0.8-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.7-0.5-1.4-0.9-2.1-1.5 c-1.1-0.8-2.1-1.6-3.1-2.4c-1.4-1-2.6-2.2-3.7-3.6C1,11.3,0.5,10.1,0.2,8.7C0.1,8.5,0.1,8.2,0,7.9V7.7l0.1-1.4 c0-0.1,0.1-0.3,0.1-0.4c0.1-0.3,0.1-0.7,0.3-1c0.6-1.7,1.8-3.2,3.4-4c1.5-0.8,3.3-1.1,5-0.8c1.4,0.2,2.6,0.8,3.7,1.7 c2.9-2.4,7.2-2.4,10,0.1c1.1,0.9,1.9,2.2,2.2,3.5C24.9,5.7,24.9,6,25,6.2v0.5l-0.1,1.4c-0.2,1.2-0.6,2.4-1.2,3.4 c-0.5,0.8-1.1,1.6-1.8,2.3c-0.8,0.9-1.7,1.7-2.6,2.5c-0.7,0.6-1.6,1.3-2.6,2c-0.8,0.5-1.5,1.1-2.3,1.6c-0.4,0.3-0.8,0.5-1.2,0.8 C13.1,20.8,12.8,20.8,12.5,20.8z\" clip-rule=\"evenodd\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"wishlist\" viewBox=\"0 0 16 14\">\n\t\t\t\t<path d=\"M8,14c-0.2,0-0.3-0.1-0.5-0.2l-0.6-0.4c-0.5-0.3-0.9-0.6-1.4-1c-0.7-0.5-1.4-1.1-2-1.6 c-0.9-0.7-1.6-1.6-2.3-2.5C0.7,7.6,0.3,6.8,0.1,5.9c0-0.2-0.1-0.4-0.1-0.5l0-0.1l0-1c0-0.1,0-0.2,0.1-0.3c0.1-0.2,0.1-0.4,0.2-0.7 c0.4-1.1,1.2-2.1,2.2-2.7c1.8-1,4-0.8,5.5,0.6c1.8-1.6,4.6-1.6,6.4,0.1c0.7,0.6,1.2,1.5,1.4,2.4C15.9,3.8,15.9,4,16,4.2l0,0.3l0,0.9 c-0.1,0.8-0.4,1.6-0.8,2.3c-0.3,0.5-0.7,1-1.1,1.5c-0.5,0.6-1.1,1.1-1.7,1.7c-0.4,0.4-1,0.9-1.7,1.3c-0.5,0.4-1,0.7-1.5,1.1 c-0.2,0.2-0.5,0.3-0.7,0.5C8.4,13.9,8.2,14,8,14z M1.4,5.1c0,0.1,0.1,0.3,0.1,0.4c0.1,0.7,0.4,1.4,0.9,1.9C2.9,8.3,3.6,9,4.4,9.7 c0.6,0.5,1.3,1.1,1.9,1.6c0.4,0.3,0.9,0.6,1.3,0.9c0.1,0.1,0.2,0.2,0.3,0.2c0.2-0.1,0.3-0.2,0.5-0.3c0.5-0.3,1-0.7,1.5-1 c0.6-0.4,1.2-0.9,1.6-1.3c0.5-0.5,1.1-1,1.5-1.5c0.4-0.4,0.7-0.8,1-1.3c0.3-0.5,0.5-1.1,0.6-1.7c0,0,0-0.1,0-0.1l0-0.6 c0-0.1,0-0.3-0.1-0.4c-0.2-0.7-0.5-1.2-1-1.7c-1.3-1.2-3.4-1.2-4.7,0C8.7,2.4,8.6,2.5,8.5,2.6L8,3.4L7.3,2.5 C6.3,1.4,4.5,1.1,3.1,1.9C2.4,2.3,1.8,3,1.6,3.8C1.5,3.9,1.5,4.1,1.4,4.3L1.4,4.6l0,0L1.4,5.1L1.4,5.1z\" clip-rule=\"evenodd\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"expand\" viewBox=\"0 0 29 30\">\n\t\t\t\t<path d=\"M26 16.3V5.9L2.2 29.7.1 27.6 24 3.3H13v-3h16v16h-3z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"download\" viewBox=\"0 0 9 13\">\n\t\t\t\t<path d=\"M8.5 7.9c-.3-.4-.8-.4-1.2-.1l-.1.1-2 2V1.2c0-.2-.1-.4-.2-.6-.2-.3-.7-.3-1 0-.2.2-.3.4-.3.6v8.6l-2-2c-.2-.1-.4-.2-.7-.2-.2 0-.4.1-.6.3-.1.2-.1.4-.1.6 0 .2.1.4.2.5l3.4 3.4c.2.2.4.2.6.2.2 0 .4-.1.6-.2L8.4 9c.2-.1.2-.3.3-.6 0-.1-.1-.4-.2-.5z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"upload\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M10 9H4l8-9 8 9h-6v11h-4V9zm11 11v2H3v-2H1v4h22v-4h-2z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"user\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418C20.452 4.766 16.983 0 12 0 6.918 0 3.536 4.949 8.268 13.678c1.597 2.945-1.725 3.641-5.09 4.418C.105 18.806-.01 20.332 0 23l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"back\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2.117 12l7.527 6.235L9 19l-9-7.521L9 4l.645.764L2.116 11H24v1H2.117z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"add\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"remove\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 10h24v4h-24z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"link\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"up\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M7 11h-6l11-11 11 11h-6v13h-10z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"down\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17,13h6L12,24L1,13h6V0h10V13z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"waiting-room\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2,6c0-2.2,1.8-4,4-4h12c2.2,0,4,1.8,4,4v12c0,2.2-1.8,4-4,4H6c-2.2,0-4-1.8-4-4V6z\" opacity=\".2\"></path>\n\t\t\t\t<path d=\"M17.8,10.7c0.7,0,1.3,0.6,1.3,1.3s-0.6,1.3-1.3,1.3H6.2c-0.7,0-1.3-0.6-1.3-1.3s0.6-1.3,1.3-1.3H17.8z M19.7,12 c0-1.1-0.9-1.9-1.9-1.9H6.2c-1.1,0-1.9,0.9-1.9,1.9s0.9,1.9,1.9,1.9h11.6C18.9,13.9,19.7,13.1,19.7,12z M13.9,11.4H6.2 c-0.4,0-0.6,0.3-0.6,0.6s0.3,0.6,0.6,0.6h7.7c0.4,0,0.6-0.3,0.6-0.6S14.3,11.4,13.9,11.4z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"panorama\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 9 15 C 9 14.448 9.448 14 10 14 L 14 14 C 14.552 14 15 14.448 15 15 L 15 16 C 15 16.552 14.552 17 14 17 L 10 17 C 9.448 17 9 16.552 9 16 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t\t<path d=\"M 7 8 C 7 7.448 7.448 7 8 7 L 16 7 C 16.552 7 17 7.448 17 8 L 17 12 C 17 12.552 16.552 13 16 13 L 8 13 C 7.448 13 7 12.552 7 12 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"panorama-grid\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 10.333 7.333 C 10.886 7.333 11.333 7.781 11.333 8.333 L 11.333 10.333 C 11.333 10.886 10.886 11.333 10.333 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t\t<path d=\"M 12.333 8.333 C 12.333 7.781 12.781 7.333 13.333 7.333 L 15.333 7.333 C 15.886 7.333 16.333 7.781 16.333 8.333 L 16.333 10.333 C 16.333 10.886 15.886 11.333 15.333 11.333 L 13.333 11.333 C 12.781 11.333 12.333 10.886 12.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t\t<path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 10.333 12.667 C 10.886 12.667 11.333 13.114 11.333 13.667 L 11.333 15.667 C 11.333 16.219 10.886 16.667 10.333 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t\t<path d=\"M 12.333 13.667 C 12.333 13.114 12.781 12.667 13.333 12.667 L 15.333 12.667 C 15.886 12.667 16.333 13.114 16.333 13.667 L 16.333 15.667 C 16.333 16.219 15.886 16.667 15.333 16.667 L 13.333 16.667 C 12.781 16.667 12.333 16.219 12.333 15.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"room-3d\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 6.6 9.056 C 6.6 8.533 6.905 8.059 7.381 7.842 L 8.995 7.108 C 9.436 6.907 9.938 7.23 9.938 7.715 L 9.938 16.272 C 9.938 16.757 9.436 17.08 8.995 16.879 L 7.381 16.145 C 6.905 15.928 6.6 15.454 6.6 14.931 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 10.754 7.453 C 10.754 6.795 11.378 6.316 12.014 6.487 L 16.32 7.647 C 17.193 7.882 17.8 8.674 17.8 9.578 L 17.8 14.105 C 17.8 15.009 17.193 15.801 16.32 16.036 L 12.014 17.196 C 11.378 17.367 10.754 16.889 10.754 16.231 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"model\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M 11.298 7.283 C 11.602 6.729 12.398 6.729 12.702 7.283 L 14.009 9.673 C 14.082 9.807 14.193 9.918 14.327 9.991 L 16.717 11.298 C 17.271 11.602 17.271 12.398 16.717 12.702 L 14.327 14.009 C 14.193 14.082 14.082 14.193 14.009 14.327 L 12.702 16.717 C 12.398 17.271 11.602 17.271 11.298 16.717 L 9.991 14.327 C 9.918 14.193 9.807 14.082 9.673 14.009 L 7.283 12.702 C 6.729 12.398 6.729 11.602 7.283 11.298 L 9.673 9.991 C 9.807 9.918 9.918 9.807 9.991 9.673 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"media\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2,6c0-2.2,1.8-4,4-4h12c2.2,0,4,1.8,4,4v12c0,2.2-1.8,4-4,4H6c-2.2,0-4-1.8-4-4V6z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M12,19c-2.2,0-4.3-1-5.6-2.7L7,15.9c1.2,1.5,3,2.4,5,2.4c1.9,0,3.8-0.9,5-2.4l0.6,0.4C16.3,18,14.2,19,12,19z M5.5,14.7C5.2,13.8,5,12.8,5,12c0-3.5,2.7-6.5,6.2-7v0.6C8,6.1,5.7,8.8,5.7,12c0,0.8,0.1,1.5,0.4,2.4L5.5,14.7z M18,14.4 c0.3-0.8,0.4-1.6,0.4-2.4c0-3.2-2.3-5.9-5.5-6.4c0-0.2,0-0.5,0-0.6c3.5,0.4,6.2,3.4,6.2,7c0,0.8-0.2,1.8-0.5,2.7L18,14.4z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M10.2,15V8.9l5.5,3.1L10.2,15z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"nav\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 6.5 8.667 C 6.5 8.114 6.948 7.667 7.5 7.667 L 16.5 7.667 C 17.052 7.667 17.5 8.114 17.5 8.667 L 17.5 14.495 C 17.5 15.046 17.053 15.494 16.502 15.495 L 14.189 15.499 C 13.959 15.5 13.736 15.58 13.558 15.725 L 12.211 16.827 C 12.088 16.928 11.912 16.928 11.789 16.827 L 10.442 15.725 C 10.264 15.58 10.041 15.5 9.811 15.499 L 7.498 15.495 C 6.947 15.494 6.5 15.046 6.5 14.495 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"plane\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(4.667 11.5) rotate(-90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(17.333 11.5) rotate(90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 8 9 C 8 8.448 8.448 8 9 8 L 15 8 C 15.552 8 16 8.448 16 9 L 16 15 C 16 15.552 15.552 16 15 16 L 9 16 C 8.448 16 8 15.552 8 15 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"curved-plane\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(4.667 11.5) rotate(-90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(17.333 11.5) rotate(90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 8 9 C 8 8.448 8.448 8 9 8 L 15 8 C 15.552 8 16 8.448 16 9 L 16 15 C 16 15.552 15.552 16 15 16 L 9 16 C 8.448 16 8 15.552 8 15 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"texture\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 7.333 8.95 C 7.333 8.274 7.839 7.705 8.511 7.626 L 14.805 6.886 C 15.796 6.769 16.667 7.543 16.667 8.541 L 16.667 15.49 C 16.667 16.477 15.814 17.247 14.833 17.148 L 8.533 16.513 C 7.852 16.444 7.333 15.871 7.333 15.187 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"gltf\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M 11.298 7.283 C 11.602 6.729 12.398 6.729 12.702 7.283 L 14.009 9.673 C 14.082 9.807 14.193 9.918 14.327 9.991 L 16.717 11.298 C 17.271 11.602 17.271 12.398 16.717 12.702 L 14.327 14.009 C 14.193 14.082 14.082 14.193 14.009 14.327 L 12.702 16.717 C 12.398 17.271 11.602 17.271 11.298 16.717 L 9.991 14.327 C 9.918 14.193 9.807 14.082 9.673 14.009 L 7.283 12.702 C 6.729 12.398 6.729 11.602 7.283 11.298 L 9.673 9.991 C 9.807 9.918 9.918 9.807 9.991 9.673 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"tile\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 15.667 13 C 17.139 13 18.333 14.194 18.333 15.667 C 18.333 17.139 17.139 18.333 15.667 18.333 C 14.194 18.333 13 17.139 13 15.667 C 13 14.194 14.194 13 15.667 13 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"image\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"video\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2.184 7.874l-2.184-.918 2.967-2.956.933 2.164-1.716 1.71zm21.816 2.126l-3 2v4l3 2v-8zm-7-2h-7.018l.79.787c.356.355.629.769.831 1.213h4.897c.276 0 .5.224.5.5v7c0 .276-.224.5-.5.5h-11c-.276 0-.5-.224-.5-.5v-2.909l-.018-.014-1.982-1.975v5.398c0 1.104.896 2 2 2h12c1.104 0 2-.896 2-2v-8c0-1.104-.896-2-2-2zm-14.65 1.13l2.967-2.956 4.044 4.029c.819.816.819 2.14 0 2.956-.819.816-2.147.815-2.967 0l-4.044-4.029z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"stream\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M6.613 18.581m9.387-9.581c0 2.209-1.791 4-4 4s-4-1.791-4-4 1.791-4 4-4 4 1.791 4 4zm-2 0c0-1.103-.896-2-2-2s-2 .897-2 2 .896 2 2 2 2-.897 2-2zm-9 0c0 3.86 3.141 7 7 7s7-3.14 7-7-3.141-7-7-7-7 3.14-7 7zm16 0c0 4.97-4.029 9-9 9s-9-4.03-9-9 4.029-9 9-9 9 4.03 9 9zm-.404 12.501c1.007 1.142-.014 2.679-1.448 2.481-1.795-.245-3.236-1.702-7.147-1.702-3.91 0-5.352 1.458-7.146 1.702-1.436.198-2.456-1.34-1.449-2.481l2.898-3.289c.559.388 1.156.725 1.79.994l-2.025 2.298c1.295-.524 3.065-1.225 5.933-1.225s4.638.7 5.933 1.224l-2.025-2.298c.634-.27 1.231-.606 1.79-.994l2.896 3.29z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"spinner\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M8.175 7.377l-3.042-5.27 1.732-1 3.045 5.273c-.635.238-1.222.573-1.735.997zm-.799.8l-5.27-3.042-1 1.732 5.274 3.045c.237-.635.572-1.223.996-1.735zm-1.376 3.823c0-.341.035-.673.09-.999h-6.09v1.999h6.09c-.055-.326-.09-.659-.09-1zm11.351-2.705l5.208-3.007-.333-.577-5.206 3.007c.121.185.23.379.331.577zm-5.351-3.295c.341 0 .673.035.999.09v-6.09h-1.999v6.09c.326-.055.659-.09 1-.09zm3.14.894l3.004-5.204-.288-.166-3 5.197.284.173zm1.685 8.662l5.234 3.022.666-1.154-5.229-3.019c-.181.41-.408.794-.671 1.151zm-10.444-1.467l-5.274 3.046 1 1.732 5.27-3.042c-.424-.513-.759-1.1-.996-1.736zm11.594-2.589l.025.5-.025.5h6.025v-1h-6.025zm-3.727 6.061l3.03 5.249 1.442-.833-3.031-5.25c-.437.34-.92.623-1.441.834zm-2.248.439c-.341 0-.674-.035-1-.09v6.09h1.999v-6.09c-.326.055-.658.09-.999.09zm-3.824-1.376l-3.042 5.27 1.732 1 3.045-5.274c-.635-.237-1.222-.572-1.735-.996z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"update\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M23 12c0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.655 1.314l1.858 2.686h-6.994l2.152-7 1.849 2.673c1.684-1.049 3.659-1.673 5.79-1.673 6.074 0 11 4.925 11 11zm-6.354 7.692c-1.357.826-2.944 1.308-4.646 1.308-4.962 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"edit\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 1h24v2h-24v-2zm11 7h13v-2h-13v2zm0 5h13v-2h-13v2zm0 5h13v-2h-13v2zm-11 5h24v-2h-24v2zm8-17l-8 6 8 6v-12z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"lock\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10 0v-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"volume-off\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm15.324 4.993l1.646-1.659-1.324-1.324-1.651 1.67-1.665-1.648-1.316 1.318 1.67 1.657-1.65 1.669 1.318 1.317 1.658-1.672 1.666 1.653 1.324-1.325-1.676-1.656z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"volume-on\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm11.008 2.093c.742.743 1.2 1.77 1.198 2.903-.002 1.133-.462 2.158-1.205 2.9l1.219 1.223c1.057-1.053 1.712-2.511 1.715-4.121.002-1.611-.648-3.068-1.702-4.125l-1.225 1.22zm2.142-2.135c1.288 1.292 2.082 3.073 2.079 5.041s-.804 3.75-2.096 5.039l1.25 1.254c1.612-1.608 2.613-3.834 2.616-6.291.005-2.457-.986-4.681-2.595-6.293l-1.254 1.25z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"fullscreen-off\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M15 2h2v5h7v2h-9v-7zm9 13v2h-7v5h-2v-7h9zm-15 7h-2v-5h-7v-2h9v7zm-9-13v-2h7v-5h2v7h-9z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"fullscreen-on\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 9h-2v-7h-7v-2h9v9zm-9 15v-2h7v-7h2v9h-9zm-15-9h2v7h7v2h-9v-9zm9-15v2h-7v7h-2v-9h9z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"navmap\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 22.586l-2.823-2.823c.526-.792.836-1.74.836-2.763 0-2.762-2.238-5-5-5s-5 2.238-5 5 2.238 5 5 5c1.016 0 1.957-.307 2.746-.827l2.827 2.827 1.414-1.414zm-9.987-5.586c0-1.654 1.346-3 3-3s3 1.346 3 3-1.346 3-3 3-3-1.346-3-3zm-4 0l.002-.034-3.015 2.175v-13.068l4-2.886v10.247c.508-.854 1.189-1.591 2-2.161v-8.086l4 2.886v3.927h.013c.336 0 .664.032.987.078v-4.007l4-2.479v8.504c1.188 1.208 1.936 2.844 2 4.653v-16.749l-6.455 4-5.545-4-5.545 4-6.455-4v18l6.455 4 3.91-2.82c-.226-.687-.352-1.419-.352-2.18zm-4.013 2.365l-4-2.479v-13.294l4 2.479v13.294z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"screen\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 0v19h24v-19h-24zm22 14h-20v-12h20v12zm-6.599 7l2.599 3h-12l2.599-3h6.802z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"chat\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22 3v13h-11.643l-4.357 3.105v-3.105h-4v-13h20zm2-2h-24v16.981h4v5.019l7-5.019h13v-16.981z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"send\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22 12l-20 12 5-12-5-12z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"users\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M10.644 17.08c2.866-.662 4.539-1.241 3.246-3.682-3.932-7.427-1.042-11.398 3.111-11.398 4.235 0 7.054 4.124 3.11 11.398-1.332 2.455.437 3.034 3.242 3.682 2.483.574 2.647 1.787 2.647 3.889v1.031h-18c0-2.745-.22-4.258 2.644-4.92zm-12.644 4.92h7.809c-.035-8.177 3.436-5.313 3.436-11.127 0-2.511-1.639-3.873-3.748-3.873-3.115 0-5.282 2.979-2.333 8.549.969 1.83-1.031 2.265-3.181 2.761-1.862.43-1.983 1.34-1.983 2.917v.773z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"virtual-tour\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17 17h-10v-10h10v10zm7 3l-5-3v-10l5-3v16zm-24-16l5 3v10l-5 3v-16z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"live-meeting\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M18 18h6v6h-6v-6zm-9 6h6v-6h-6v6zm-9 0h6v-6h-6v6zm0-8h24v-16h-24v16z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"control\" viewBox=\"0 0 24 24\">\n\t\t\t\t<circle cx=\"7\" cy=\"10\" r=\"1\"></circle>\n\t\t\t\t<path d=\"M17,3H7c-3.9,0-7,3.1-7,7v6c0,2.8,2.2,5,5,5c2.4,0,4.4-1.7,4.9-4h4.2c0.5,2.7,3.2,4.5,5.9,3.9c2.3-0.5,4-2.5,4-4.9v-6 C24,6.1,20.9,3,17,3z M17,7c0.6,0,1,0.4,1,1s-0.4,1-1,1s-1-0.4-1-1S16.4,7,17,7z M7,13c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3 S8.7,13,7,13z M15,11c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S15.6,11,15,11z M17,13c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1s1,0.4,1,1 C18,12.5,17.6,13,17,13z M19,11c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S19.6,11,19,11z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"spy\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path fill-rule=\"evenodd\" d=\"M0.2,11.4c5.2-8.6,18.3-8.5,23.6,0c0.2,0.3,0.2,0.8,0,1.2c-5.3,8.4-18.4,8.6-23.6,0 C-0.1,12.2-0.1,11.7,0.2,11.4z M12,7.8c2.3,0,4.2,1.9,4.2,4.3s-1.9,4.2-4.2,4.2S7.8,14.3,7.8,12S9.7,7.8,12,7.8z\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"joystick\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M10.7,10.5V16H9.3C8.6,16,8,16.6,8,17.3h8c0-0.7-0.6-1.3-1.3-1.3h-1.3v-5.5c2.8-0.7,4.5-3.6,3.8-6.5 c-0.7-2.8-3.6-4.5-6.5-3.8S6.1,3.9,6.9,6.7C7.3,8.6,8.8,10,10.7,10.5z\"></path>\n\t\t\t\t<path d=\"M1.4,18.6h21.2c0.7,0,1.3,0.6,1.3,1.3v2.7c0,0.7-0.6,1.3-1.3,1.3H1.4c-0.7,0-1.3-0.6-1.3-1.3V20 C0.1,19.2,0.7,18.6,1.4,18.6z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"navinfo\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12,2c5.5,0,10,4.5,10,10s-4.5,10-10,10S2,17.5,2,12S6.5,2,12,2z M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12 S18.6,0,12,0z\"/>\n\t\t\t\t<path d=\"M13,18h-2v-8h2V18z M12,5.8c0.7,0,1.2,0.6,1.2,1.2S12.7,8.2,12,8.2S10.8,7.7,10.8,7S11.3,5.8,12,5.8z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"check\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M9,21l-9-8.6l2.8-2.9l6.2,5.9L21.2,3L24,5.8L9,21z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"duplicate\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M18,6V0H0v18h6v6h18V6H18z M6,16H2V2h14v4H6V16z M22,22H8V8h14V22z M19,14h-3v-3h-2v3h-3v2h3v3h2v-3h3V14z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"trash\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path fill-rule=\"evenodd\" d=\"M19,24H5c-1.1,0-2-0.9-2-2V5H2V3h6V1.5C8,0.7,8.7,0,9.5,0h5C15.3,0,16,0.7,16,1.5V3h6v2h-1v17 C21,23.1,20.1,24,19,24z M19,5H5v16.5C5,21.8,5.2,22,5.5,22h13c0.3,0,0.5-0.2,0.5-0.5V5z M10,9c0-0.6-0.4-1-1-1S8,8.4,8,9v9 c0,0.6,0.4,1,1,1s1-0.4,1-1V9z M16,9c0-0.6-0.4-1-1-1s-1,0.4-1,1v9c0,0.6,0.4,1,1,1s1-0.4,1-1V9z M14,2h-4v1h4V2z\" clip-rule=\"evenodd\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"flags\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M19,18c0,1.1-0.9,2-2,2s-2-0.9-2-2s0.9-2,2-2S19,16.9,19,18z M5,15c-1.7,0-3,1.3-3,3s1.3,3,3,3h14c1.7,0,3-1.3,3-3 s-1.3-3-3-3H5z M24,18c0,2.8-2.2,5-5,5H5c-2.8,0-5-2.2-5-5s2.2-5,5-5h14C21.8,13,24,15.2,24,18z M7,4C5.9,4,5,4.9,5,6s0.9,2,2,2 s2-0.9,2-2S8.1,4,7,4z M5,3C3.3,3,2,4.3,2,6s1.3,3,3,3h14c1.7,0,3-1.3,3-3s-1.3-3-3-3H5z M24,6c0,2.8-2.2,5-5,5H5c-2.8,0-5-2.2-5-5 s2.2-5,5-5h14C21.8,1,24,3.2,24,6z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"b-here\" viewBox=\"0 0 270 98\">\n\t\t\t\t<path d=\"M61.5,87.9c0-2.7,0.9-5,2.8-6.9c1.9-1.9,4.2-2.8,7-2.8c1.4,0,2.7,0.2,3.9,0.8c1.2,0.5,2.2,1.2,3.2,2 c0.9,0.9,1.6,1.9,2.1,3.1s0.8,2.5,0.8,3.8s-0.2,2.6-0.8,3.8c-0.5,1.2-1.2,2.2-2.1,3.1s-1.9,1.6-3.2,2.1c-1.2,0.5-2.5,0.8-3.9,0.8 s-2.7-0.2-3.9-0.8c-1.2-0.5-2.2-1.2-3.1-2.1s-1.6-1.9-2.1-3.1S61.5,89.2,61.5,87.9z\"></path>\n\t\t\t\t<path d=\"M16,70.2H0.7v-70H16V29c0.6-1.1,1.4-2.1,2.4-3.1s2.2-1.9,3.5-2.6s2.8-1.3,4.2-1.8c1.5-0.4,3-0.6,4.6-0.6 c3.5,0,6.7,0.6,9.6,1.9s5.4,3.1,7.4,5.3c2.1,2.2,3.7,4.9,4.8,8s1.7,6.4,1.7,10.1c0,3.6-0.6,6.9-1.7,10c-1.1,3.1-2.7,5.8-4.8,8 c-2.1,2.2-4.5,4-7.4,5.3s-6.1,2-9.6,2c-1.6,0-3.1-0.2-4.6-0.7c-1.5-0.4-2.9-1-4.2-1.7c-1.3-0.7-2.5-1.5-3.5-2.5s-1.8-2-2.4-3.1 C16,63.5,16,70.2,16,70.2z M27.6,58.5c1.7,0,3.2-0.3,4.6-1c1.4-0.7,2.6-1.5,3.6-2.7c1-1.1,1.8-2.4,2.4-3.9c0.6-1.5,0.8-3.1,0.8-4.8 s-0.3-3.2-0.8-4.7c-0.6-1.5-1.4-2.8-2.4-3.9c-1-1.1-2.2-2-3.6-2.7c-1.4-0.7-2.9-1-4.6-1s-3.3,0.3-4.8,1c-1.4,0.7-2.7,1.6-3.7,2.7 c-1,1.1-1.8,2.4-2.3,3.9c-0.6,1.5-0.8,3-0.8,4.7s0.3,3.2,0.8,4.8s1.3,2.8,2.3,3.9c1,1.1,2.2,2,3.7,2.7 C24.3,58.2,25.9,58.5,27.6,58.5z\"></path>\n\t\t\t\t<path d=\"M64.1,0.2h14.8V29c1.3-2.5,3.3-4.5,6-6s5.9-2.2,9.6-2.2c3.1,0,5.8,0.5,7.9,1.4c2.1,1,3.9,2.3,5.2,4.1 c1.5,1.9,2.6,4,3.1,6.5s0.8,5.4,0.8,8.9v28.5H96.7V45.5c0-3.5-0.6-6.3-1.8-8.5c-1.2-2.2-3.5-3.2-6.7-3.2c-3.1,0-5.5,1.1-7,3.3 s-2.3,5.2-2.3,8.9v24.2H64.1V0.2z\"></path>\n\t\t\t\t<path d=\"M135.9,49.8c0.1,1.5,0.3,2.9,0.7,4.2s1,2.4,1.8,3.4s1.9,1.7,3.2,2.3s3,0.8,5,0.8c2.7,0,4.7-0.5,6-1.6 c1.4-1.1,2.3-2.4,2.9-3.9h15c-0.3,2.3-1.1,4.4-2.4,6.4c-1.2,2-2.9,3.8-4.9,5.2c-2,1.5-4.4,2.7-7.2,3.5c-2.8,0.9-5.9,1.3-9.3,1.3 c-4.2,0-7.9-0.6-11.2-1.8c-3.2-1.2-6-3-8.2-5.2c-2.2-2.3-3.9-5-5-8c-1.1-3.1-1.7-6.5-1.7-10.2c0-3.5,0.5-6.8,1.6-9.9s2.7-5.8,4.9-8 c2.2-2.3,4.8-4.1,8-5.5c3.2-1.3,6.8-2,11-2c3.8,0,7.2,0.6,10.2,1.8c3,1.2,5.6,2.8,7.8,4.8s3.8,4.3,5,7s1.8,5.5,1.8,8.4 c0,1,0,2.1,0,3.2c0,1.1-0.2,2.4-0.5,3.9h-34.5V49.8z M146.2,31c-3,0-5.5,0.9-7.4,2.6c-1.9,1.7-2.9,4.2-2.9,7.5h20.2 c0-3.1-0.9-5.6-2.8-7.4C151.5,31.9,149.1,31,146.2,31z\"></path>\n\t\t\t\t<path d=\"M216.1,36c-1.1-0.3-2-0.5-2.7-0.6c-0.7-0.1-1.6-0.1-2.7-0.1c-4.2,0-7.6,1.2-10.1,3.7s-3.8,6.6-3.8,12.5v18.8h-15.3V22h15.3 v7.8c1.1-2.3,3-4.3,5.7-6c2.6-1.7,5.6-2.6,9-2.6c1.8,0,3.3,0.3,4.6,0.8V36z\"></path>\n\t\t\t\t<path d=\"M234.3,49.8c0.1,1.5,0.3,2.9,0.7,4.2s1,2.4,1.8,3.4s1.9,1.7,3.2,2.3s3,0.8,5,0.8c2.7,0,4.7-0.5,6-1.6 c1.4-1.1,2.3-2.4,2.9-3.9h15c-0.3,2.3-1.1,4.4-2.4,6.4c-1.2,2-2.9,3.8-4.9,5.2c-2,1.5-4.4,2.7-7.2,3.5c-2.8,0.9-5.9,1.3-9.3,1.3 c-4.2,0-7.9-0.6-11.2-1.8c-3.2-1.2-6-3-8.2-5.2c-2.2-2.3-3.9-5-5-8c-1.1-3.1-1.7-6.5-1.7-10.2c0-3.5,0.5-6.8,1.6-9.9s2.7-5.8,4.9-8 c2.2-2.3,4.8-4.1,8-5.5c3.2-1.3,6.8-2,11-2c3.8,0,7.2,0.6,10.2,1.8c3,1.2,5.6,2.8,7.8,4.8c2.2,2,3.8,4.3,5,7s1.8,5.5,1.8,8.4 c0,1,0,2.1,0,3.2c0,1.1-0.2,2.4-0.5,3.9h-34.5V49.8z M244.6,31c-3,0-5.5,0.9-7.4,2.6c-1.9,1.7-2.9,4.2-2.9,7.5h20.2 c0-3.1-0.9-5.6-2.8-7.4C249.9,31.9,247.5,31,244.6,31z\"></path>\n\t\t\t</symbol>\n\t\t</svg>\n\t";
+var TryInARComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(TryInARComponent, _Component);
+
+  function TryInARComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = TryInARComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.platform = DeviceService.platform;
+    this.missingAr = false;
+    this.missingUsdz = false;
+    this.missingGltf = false;
+    var viewId = this.viewId = this.getViewId(); // console.log('TryInARComponent.viewId', viewId);
+
+    if (viewId) {
+      ViewService.viewById$(viewId).pipe(operators.first()).subscribe(function (view) {
+        if (!view.ar) {
+          _this.missingAr = true;
+
+          _this.pushChanges();
+
+          return;
+        } // console.log('TryInARComponent.view', view);
+
+
+        if (_this.platform === DevicePlatform.IOS) {
+          var usdzSrc = _this.getUsdzSrc(view);
+
+          if (usdzSrc) {
+            window.location.href = usdzSrc;
+          } else {
+            _this.missingUsdz = true;
+
+            _this.pushChanges();
+          }
+        } else if (_this.getGltfSrc(view) !== null) {
+          var modelViewerNode = _this.getModelViewerNode(view);
+
+          var _getContext = rxcomp.getContext(_this),
+              node = _getContext.node;
+
+          node.appendChild(modelViewerNode);
+        } else {
+          _this.missingGltf = true;
+
+          _this.pushChanges();
+        }
+      });
+    }
+  };
+
+  _proto.getUsdzSrc = function getUsdzSrc(view) {
+    return view.ar && view.ar.usdz ? environment.getPath(view.ar.usdz.folder + view.ar.usdz.file) : null;
+  };
+
+  _proto.getGltfSrc = function getGltfSrc(view) {
+    return view.ar && view.ar.gltf ? environment.getPath(view.ar.gltf.folder + view.ar.gltf.file) : null;
+  };
+
+  _proto.getViewId = function getViewId() {
+    var meetingUrl = new MeetingUrl();
+    var viewId = null;
+
+    if (meetingUrl.viewId) {
+      viewId = parseInt(meetingUrl.viewId);
+    }
+
+    return viewId;
+  };
+
+  _proto.getModelViewerNode = function getModelViewerNode(view) {
+    var panorama = environment.getPath(view.asset.folder + view.asset.file);
+    var usdzSrc = this.getUsdzSrc(view);
+    var gltfSrc = this.getGltfSrc(view);
+    var template =
+    /* html */
+    "\n\t\t\t<model-viewer alt=\"" + view.name + "\" skybox-image=\"" + panorama + "\" ios-src=\"" + usdzSrc + "\" src=\"" + gltfSrc + "\" ar ar-modes=\"webxr scene-viewer quick-look\" ar-scale=\"auto\" camera-controls></model-viewer>\n\t\t";
+    var div = document.createElement("div");
+    div.innerHTML = template;
+    var node = div.firstElementChild;
+    return node;
+  };
+
+  return TryInARComponent;
+}(rxcomp.Component);
+TryInARComponent.meta = {
+  selector: '[try-in-ar]',
+  template:
+  /* html */
+  "\n\t\t<div *if=\"platform != 'ios'\">\n\t\t\t<script type=\"module\" src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js\"></script>\n\t\t\t<script nomodule src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js\"></script>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"!viewId\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Unknown url.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"missingAr\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Missing AR in view.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"missingUsdz\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Missing .usdz in ar.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"missingGltf\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Missing .gltf in ar.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};var AppComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AppComponent, _Component);
+
+  function AppComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AppComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.routes = [{
+      name: 'index',
+      path: '/',
+      forwardTo: 'it'
+    }, {
+      name: 'it',
+      path: '/it',
+      defaultParams: {
+        mode: 'access'
+      },
+      factory: AccessComponent
+    }, {
+      name: 'it.meeting',
+      path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support',
+      defaultParams: {
+        mode: 'guidedTour'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'it.access',
+      path: '/accesso',
+      defaultParams: {
+        mode: 'access'
+      },
+      factory: AccessComponent
+    }, {
+      name: 'it.accessCode',
+      path: '/codice-di-accesso',
+      defaultParams: {
+        mode: 'accessCode'
+      },
+      factory: AccessCodeComponent
+    }, {
+      name: 'it.guidedTour',
+      path: '/tour-guidato',
+      defaultParams: {
+        mode: 'guidedTour'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'it.selfServiceTour',
+      path: '/tour-self-service',
+      defaultParams: {
+        mode: 'selfServiceTour'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'it.embed',
+      path: '/embed',
+      defaultParams: {
+        mode: 'embed'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'it.tryInAr',
+      path: '/try-in-ar',
+      defaultParams: {
+        mode: 'tryInAr'
+      },
+      factory: TryInARComponent
+    }, {
+      name: 'it.editor',
+      path: '/editor',
+      defaultParams: {
+        mode: 'editor'
+      },
+      factory: EditorComponent
+    }, {
+      name: 'en',
+      path: '/en',
+      defaultParams: {
+        mode: 'access'
+      },
+      factory: AccessComponent
+    } // { path: '**', component: AccessComponent },
+    ];
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.remove('hidden');
+  };
+
+  return AppComponent;
+}(rxcomp.Component);
+AppComponent.meta = {
+  selector: '[app-component]',
+  template:
+  /* html */
+  "\n\t\t<!-- svg -->\n\t\t" + SVG_CHUNK + "\n\t\t<!-- header -->\n\t\t<router-outlet [routes]=\"routes\"></router-outlet>\n\t\t<!-- footer -->\n\t\t<div class=\"toast-outlet\" toast-outlet></div>\n\t\t<div class=\"modal-outlet\" modal-outlet></div>\n\t"
+};var MIME_IMAGE = ['bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'];
+var MIME_VIDEO = ['mp4', 'avi', 'mpeg', 'ogv', 'ts', 'webm', '3gp', '3g2'];
+var MIME_MODEL = ['fbx', 'gltf', 'glb', 'obj', 'usdz'];
+var MIME_STREAM = ['publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen'];
+function isImage(path) {
+  return new RegExp("/.(" + MIME_IMAGE.join('|') + ")$/i").test(path);
+}
+function isVideo(path) {
+  return new RegExp("/.(" + MIME_VIDEO.join('|') + ")$/i").test(path);
+}
+function isModel(path) {
+  return new RegExp("/.(" + MIME_MODEL.join('|') + ")$/i").test(path);
+}
+function isStream(path) {
+  return MIME_STREAM.indexOf(path) !== -1;
+}
+
+var AssetPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(AssetPipe, _Pipe);
+
+  function AssetPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  AssetPipe.transform = function transform(asset, type) {
+    if (type === void 0) {
+      type = null;
+    }
+
+    if (type != null) {
+      // keep loose equality
+      asset = asset.type.name === type ? asset : null;
+    }
+
+    if (asset) {
+      if (typeof asset === 'string') {
+        return environment.getPath(asset);
+      } // console.log(asset.type.name, AssetType.Image.name);
+
+
+      switch (asset.type.name) {
+        case AssetType.Image.name:
+        case AssetType.Video.name:
+          asset = asset.folder + asset.file;
+          asset = environment.getPath(asset);
+          break;
+
+        case AssetType.Model.name:
+          asset = asset.folder + asset.file;
+          asset = environment.getPath(asset);
+          break;
+
+        case AssetType.PublisherStream.name:
+        case AssetType.AttendeeStream.name:
+        case AssetType.PublisherScreen.name:
+        case AssetType.AttendeeScreen.name:
+        case AssetType.SmartDeviceStream.name:
+          asset = environment.getPath(asset.file);
+          break;
+
+        default:
+          if (isImage(asset.file) || isVideo(asset.file)) {
+            asset = asset.folder + asset.file;
+            asset = environment.getPath(asset);
+          } else if (isModel(asset.file)) {
+            asset = asset.folder + asset.file;
+            asset = environment.getPath(asset);
+          } else if (isStream(asset.file)) {
+            asset = asset.file;
+          }
+
+      }
+
+      asset = asset;
+    } else {
+      asset = null;
+    } // console.log('AssetPipe.transform', asset);
+
+
+    return asset;
+  };
+
+  return AssetPipe;
+}(rxcomp.Pipe);
+AssetPipe.meta = {
+  name: 'asset'
+};var ControlRequestModalComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ControlRequestModalComponent, _Component);
+
+  function ControlRequestModalComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ControlRequestModalComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    _Component.prototype.onInit.call(this);
+
+    var _getContext = rxcomp.getContext(this),
+        parentInstance = _getContext.parentInstance;
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      this.data = parentInstance.modal.data;
+    }
+  };
+
+  _proto.onAccept = function onAccept(user) {
+    ModalService.resolve();
+  };
+
+  _proto.onReject = function onReject(user) {
+    ModalService.reject();
+  }
+  /*
+  onDestroy() {
+  	// console.log('ControlRequestModalComponent.onDestroy');
+  }
+  */
+  ;
+
+  _proto.onClose = function onClose() {
+    ModalService.reject();
+  };
+
+  return ControlRequestModalComponent;
+}(rxcomp.Component);
+ControlRequestModalComponent.meta = {
+  selector: '[control-request-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">L'utente ha richiesto il controllo della navigazione. Accetti?</div>\n\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\">\n\t\t\t\t\t\t<span>Rifiuta</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t\t<span>Accetta</span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+ControlRequestModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"control-request-modal\" control-request-modal></div>"
+  );
+};var DropDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DropDirective, _Directive);
+
+  function DropDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DropDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _getContext = rxcomp.getContext(this),
+        module = _getContext.module,
+        node = _getContext.node,
+        parentInstance = _getContext.parentInstance,
+        selector = _getContext.selector;
+
+    var event = 'drop';
+    var event$ = rxjs.fromEvent(node, event).pipe(operators.shareReplay(1));
+    var expression = node.getAttribute("(" + event + ")");
+
+    if (expression) {
+      var outputFunction = module.makeFunction(expression, ['$event']);
+      event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        module.resolve(outputFunction, parentInstance, event);
+      });
+      rxjs.fromEvent(node, 'dragover').pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+        return event.preventDefault();
+      });
+    } else {
+      parentInstance[event + "$"] = event$;
+    } // console.log('DropDirective.onInit', 'selector', selector, 'event', event);
+
+  };
+
+  return DropDirective;
+}(rxcomp.Directive);
+DropDirective.meta = {
+  selector: "[(drop)]"
+};var DROPDOWN_ID = 1000000;
+
+var DropdownDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DropdownDirective, _Directive);
+
+  function DropdownDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DropdownDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var trigger = node.getAttribute('dropdown-trigger');
+    this.trigger = trigger ? node.querySelector(trigger) : node;
+    this.opened = null;
+    this.onClick = this.onClick.bind(this);
+    this.onDocumentClick = this.onDocumentClick.bind(this);
+    this.openDropdown = this.openDropdown.bind(this);
+    this.closeDropdown = this.closeDropdown.bind(this);
+    this.addListeners();
+    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
+      // console.log('DropdownDirective', id, this['dropdown-item']);
+      if (_this.id === id) {
+        node.classList.add('dropped');
+      } else {
+        node.classList.remove('dropped');
+      }
+    });
+  };
+
+  _proto.onClick = function onClick(event) {
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    if (this.opened === null) {
+      this.openDropdown();
+    } else {
+      var dropdownItemNode = node.querySelector('[dropdown-item]'); // console.log('dropdownItemNode', dropdownItemNode);
+
+      if (!dropdownItemNode) {
+        // if (this.trigger !== node) {
+        this.closeDropdown();
+      }
+    }
+  };
+
+  _proto.onDocumentClick = function onDocumentClick(event) {
+    var _getContext3 = rxcomp.getContext(this),
+        node = _getContext3.node;
+
+    var clickedInside = node === event.target || node.contains(event.target);
+
+    if (!clickedInside) {
+      this.closeDropdown();
+    }
+  };
+
+  _proto.openDropdown = function openDropdown() {
+    if (this.opened === null) {
+      this.opened = true;
+      this.addDocumentListeners();
+      DropdownDirective.dropdown$.next(this.id);
+      this.dropped.next(this.id);
+    }
+  };
+
+  _proto.closeDropdown = function closeDropdown() {
+    if (this.opened !== null) {
+      this.removeDocumentListeners();
+      this.opened = null;
+
+      if (DropdownDirective.dropdown$.getValue() === this.id) {
+        DropdownDirective.dropdown$.next(null);
+        this.dropped.next(null);
+      }
+    }
+  };
+
+  _proto.addListeners = function addListeners() {
+    this.trigger.addEventListener('click', this.onClick);
+  };
+
+  _proto.addDocumentListeners = function addDocumentListeners() {
+    document.addEventListener('click', this.onDocumentClick);
+  };
+
+  _proto.removeListeners = function removeListeners() {
+    this.trigger.removeEventListener('click', this.onClick);
+  };
+
+  _proto.removeDocumentListeners = function removeDocumentListeners() {
+    document.removeEventListener('click', this.onDocumentClick);
+  };
+
+  _proto.onDestroy = function onDestroy() {
+    this.removeListeners();
+    this.removeDocumentListeners();
+  };
+
+  DropdownDirective.nextId = function nextId() {
+    return DROPDOWN_ID++;
+  };
+
+  _createClass(DropdownDirective, [{
+    key: "id",
+    get: function get() {
+      return this.dropdown || this.id_ || (this.id_ = DropdownDirective.nextId());
+    }
+  }]);
+
+  return DropdownDirective;
+}(rxcomp.Directive);
+DropdownDirective.meta = {
+  selector: '[dropdown]',
+  inputs: ['dropdown', 'dropdown-trigger'],
+  outputs: ['dropped']
+};
+DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(DropdownItemDirective, _Directive);
+
+  function DropdownItemDirective() {
+    return _Directive.apply(this, arguments) || this;
+  }
+
+  var _proto = DropdownItemDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    node.classList.add('dropdown-item');
+    DropdownDirective.dropdown$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (id) {
+      // console.log('DropdownItemDirective', id, this['dropdown-item']);
+      if (_this.id === id) {
+        node.classList.add('dropped');
+      } else {
+        node.classList.remove('dropped');
+      }
+    });
+  };
+
+  _createClass(DropdownItemDirective, [{
+    key: "id",
+    get: function get() {
+      return this['dropdown-item'];
+    }
+  }]);
+
+  return DropdownItemDirective;
+}(rxcomp.Directive);
+DropdownItemDirective.meta = {
+  selector: '[dropdown-item], [[dropdown-item]]',
+  inputs: ['dropdown-item']
 };var ToastOutletComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ToastOutletComponent, _Component);
 
@@ -26233,566 +27894,6 @@ ControlMenuComponent.meta = {
 MenuBuilderComponent.meta = {
   selector: '[menu-builder]',
   inputs: ['views']
-};var CurvedPlaneModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(CurvedPlaneModalComponent, _Component);
-
-  function CurvedPlaneModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = CurvedPlaneModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var object = this.object;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewItemType.CurvedPlane,
-      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
-      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
-      radius: new rxcompForm.FormControl(35, rxcompForm.RequiredValidator()),
-      height: new rxcompForm.FormControl(20, rxcompForm.RequiredValidator()),
-      arc: new rxcompForm.FormControl(90, rxcompForm.RequiredValidator()),
-      asset: null
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('CurvedPlaneModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    if (this.form.valid) {
-      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
-      // console.log('CurvedPlaneModalComponent.onSubmit', this.view, item);
-
-      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        // console.log('CurvedPlaneModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        return console.log('CurvedPlaneModalComponent.onSubmit.error', error);
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(CurvedPlaneModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "view",
-    get: function get() {
-      var view = null;
-      var data = this.data;
-
-      if (data) {
-        view = data.view;
-      }
-
-      return view;
-    }
-  }, {
-    key: "object",
-    get: function get() {
-      var object = new THREE.Object3D();
-      var data = this.data;
-
-      if (data) {
-        var position = data.hit.position.clone();
-        var normal = data.hit.normal.clone();
-        var spherical = data.hit.spherical;
-
-        if (spherical) {
-          position.normalize().multiplyScalar(20);
-          object.position.copy(position);
-          object.lookAt(Host.origin);
-        } else {
-          object.lookAt(normal);
-          object.position.set(position.x, position.y, position.z);
-          object.position.add(normal.multiplyScalar(0.01));
-        }
-      }
-
-      return object;
-    }
-  }]);
-
-  return CurvedPlaneModalComponent;
-}(rxcomp.Component);
-CurvedPlaneModalComponent.meta = {
-  selector: '[curved-plane-modal]'
-};var ItemModelModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ItemModelModalComponent, _Component);
-
-  function ItemModelModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ItemModelModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var object = this.object;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewItemType.Model,
-      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl([0, 0, 0], rxcompForm.RequiredValidator()),
-      // [0, -Math.PI / 2, 0],
-      // rotation: new FormControl(object.rotation.toArray(), RequiredValidator()), // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([1, 1, 1], rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('ItemModelModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    if (this.form.valid) {
-      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
-      // console.log('ItemModelModalComponent.onSubmit', this.view, item);
-
-      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        // console.log('ItemModelModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        return console.log('ItemModelModalComponent.onSubmit.error', error);
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(ItemModelModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "view",
-    get: function get() {
-      var view = null;
-      var data = this.data;
-
-      if (data) {
-        view = data.view;
-      }
-
-      return view;
-    }
-  }, {
-    key: "object",
-    get: function get() {
-      var object = new THREE.Object3D();
-      var data = this.data;
-
-      if (data) {
-        var position = data.hit.position.clone();
-        var normal = data.hit.normal.clone();
-        var spherical = data.hit.spherical;
-
-        if (spherical) {
-          position.normalize().multiplyScalar(4);
-          object.position.copy(position);
-          object.lookAt(Host.origin);
-        } else {
-          object.lookAt(normal);
-          object.position.set(position.x, position.y, position.z);
-          object.position.add(normal.multiplyScalar(0.01));
-        }
-      }
-
-      return object;
-    }
-  }]);
-
-  return ItemModelModalComponent;
-}(rxcomp.Component);
-ItemModelModalComponent.meta = {
-  selector: '[item-model-modal]'
-};var MediaModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(MediaModalComponent, _Component);
-
-  function MediaModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = MediaModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Media,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('MediaModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var view = {
-        type: values.type,
-        name: values.name,
-        asset: values.asset,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      }; // console.log('MediaModalComponent.onSubmit.view', view);
-
-      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
-        var item = {
-          type: ViewItemType.Plane,
-          position: [20, 0, 0],
-          rotation: [0, -Math.PI / 2, 0],
-          scale: [12, 6.75, 1],
-          asset: values.asset
-        };
-        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
-          view.items = [item];
-          return view;
-        }));
-      }), operators.first()).subscribe(function (response) {
-        // console.log('MediaModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('MediaModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return MediaModalComponent;
-}(rxcomp.Component);
-MediaModalComponent.meta = {
-  selector: '[media-modal]'
-};var ModelModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ModelModalComponent, _Component);
-
-  function ModelModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ModelModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Model,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      model: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('ModelModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var view = {
-        type: values.type,
-        name: values.name,
-        asset: values.asset,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      }; // console.log('ModelModalComponent.onSubmit.view', view);
-
-      return EditorService.viewCreate$(view).pipe(operators.switchMap(function (view) {
-        var item = {
-          type: ViewItemType.Model,
-          asset: values.model
-        };
-        return EditorService.itemCreate$(view, item).pipe(operators.map(function (item) {
-          view.items = [item];
-          return view;
-        }));
-      }), operators.first()).subscribe(function (response) {
-        // console.log('ModelModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('ModelModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return ModelModalComponent;
-}(rxcomp.Component);
-ModelModalComponent.meta = {
-  selector: '[model-modal]'
-};var NavModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(NavModalComponent, _Component);
-
-  function NavModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = NavModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var object = this.object;
-    this.error = null;
-    this.useHooks = WebhookService.enabled;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewItemType.Nav,
-      title: null,
-      abstract: null,
-      viewId: null,
-      // new FormControl(null, RequiredValidator()),
-      hook: null,
-      hookExtra: null,
-      keepOrientation: false,
-      important: false,
-      transparent: false,
-      //
-      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
-      // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([20, 5, 1], rxcompForm.RequiredValidator()),
-      //
-      asset: null,
-      link: new rxcompForm.FormGroup({
-        title: new rxcompForm.FormControl(null),
-        href: new rxcompForm.FormControl(null),
-        target: '_blank'
-      }) // upload: new FormControl(null, RequiredValidator()),
-      // items: new FormArray([null, null, null], RequiredValidator()),
-
-    });
-    this.controls = form.controls;
-
-    if (WebhookService.enabled) {
-      var options = environment.webhook.methods.map(function (x) {
-        return {
-          id: x,
-          name: x
-        };
-      });
-      options.unshift({
-        id: null,
-        name: 'select'
-      });
-      this.controls.hook.options = options;
-    } // !!! mode validator
-    // form.addValidators(NavModalValidator(form, this.view));
-
-    /*
-    this.controls.viewId.options = [{
-    	name: 'Name',
-    	id: 2,
-    }];
-    */
-
-
-    form.changes$.subscribe(function (changes) {
-      // console.log('NavModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-    EditorService.viewIdOptions$().pipe(operators.first()).subscribe(function (options) {
-      _this.controls.viewId.options = options;
-
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var item = Object.assign({}, this.form.value);
-      item.viewId = item.viewId ? parseInt(item.viewId) : this.view.id;
-
-      if (item.link && (!item.link.title || !item.link.href)) {
-        item.link = null;
-      } // console.log('NavModalComponent.onSubmit', this.view, item);
-
-
-      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        // console.log('NavModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('NavModalComponent.onSubmit.error', error);
-        _this2.error = error;
-        _this2.form.submitted = false; // this.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onViewIdDidChange = function onViewIdDidChange(viewId) {
-    // console.log('NavModalComponent.onViewIdDidChange', viewId, this.form.value);
-    // const viewId = this.form.value.viewId;
-    if (viewId != null) {
-      var options = this.controls.viewId.options;
-      var selectedOption = options.find(function (x) {
-        return x.id === viewId;
-      }); // console.log('NavModalComponent.onViewIdDidChange', selectedOption, options);
-
-      if (selectedOption != null) {
-        var title = selectedOption.name;
-        var currentTitle = this.form.value.title; // console.log('NavModalComponent.onViewIdDidChange', title, currentTitle);
-
-        if (!currentTitle || options.find(function (x) {
-          return x.name === currentTitle;
-        })) {
-          this.form.patch({
-            title: title
-          });
-        }
-      }
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(NavModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "view",
-    get: function get() {
-      var view = null;
-      var data = this.data;
-
-      if (data) {
-        view = data.view;
-      }
-
-      return view;
-    }
-  }, {
-    key: "position",
-    get: function get() {
-      var position = null;
-      var data = this.data;
-
-      if (data) {
-        position = data.hit.position;
-      }
-
-      return position;
-    }
-  }, {
-    key: "object",
-    get: function get() {
-      var object = new THREE.Object3D();
-      var data = this.data;
-
-      if (data) {
-        var position = data.hit.position.clone();
-        var normal = data.hit.normal.clone();
-        var spherical = data.hit.spherical;
-
-        if (spherical) {
-          position.normalize().multiplyScalar(ModelNavComponent.RADIUS);
-          object.position.copy(position);
-          object.lookAt(Host.origin);
-        } else {
-          object.lookAt(normal);
-          object.position.set(position.x, position.y, position.z);
-          object.position.add(normal.multiplyScalar(0.01));
-        }
-      }
-
-      return object;
-    }
-  }]);
-
-  return NavModalComponent;
-}(rxcomp.Component);
-NavModalComponent.meta = {
-  selector: '[nav-modal]'
 };var NavmapItemModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(NavmapItemModalComponent, _Component);
 
@@ -26898,7 +27999,17 @@ NavModalComponent.meta = {
   return NavmapItemModalComponent;
 }(rxcomp.Component);
 NavmapItemModalComponent.meta = {
-  selector: '[navmap-item-modal]'
+  selector: '[navmap-item-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Map Nav.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.title\" label=\"Title\"></div>\n\t\t\t\t\t\t<div control-textarea [control]=\"controls.abstract\" label=\"Abstract\"></div>\n\t\t\t\t\t\t<div control-custom-select [control]=\"controls.viewId\" label=\"NavToView\"></div>\n\t\t\t\t\t\t<div control-vector [control]=\"controls.position\" label=\"Position\" [precision]=\"3\" [disabled]=\"true\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+NavmapItemModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"nav-modal\" navmap-item-modal></div>"
+  );
 };var NavmapModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(NavmapModalComponent, _Component);
 
@@ -26955,716 +28066,17 @@ NavmapItemModalComponent.meta = {
   return NavmapModalComponent;
 }(rxcomp.Component);
 NavmapModalComponent.meta = {
-  selector: '[navmap-modal]'
+  selector: '[navmap-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Create Map.</div>\n\t\t\t\t<form [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/png\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"description\">Formato immagine .png con trasparenza (2048x1024 o 1024x512)</div>\n\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t<span>Create</span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</form>\n\t\t\t</div>\n\t\t</div>\n\t"
 };
-/*
-{
-	"id": 1,
-	"name": "Mappa",
-	"asset": {
-		"type": "image",
-		"folder": "folder/",
-		"file": "map.png"
-	},
-	"items": [{
-		"id": 110,
-		"type": "nav",
-		"title": "Barilla Experience",
-		"abstract": "Abstract",
-		"position": [0.9491595148619703,-0.3147945860255039,0],
-		"viewId": 23
-	}],
-}
-*/var PanoramaGridModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(PanoramaGridModalComponent, _Component);
 
-  function PanoramaGridModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = PanoramaGridModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.PanoramaGrid,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      assets: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('PanoramaGridModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true; // console.log('PanoramaGridModalComponent.onSubmit', this.form.value);
-
-      var assets = this.form.value.assets;
-      var tiles = PanoramaGridView.mapTiles(assets.map(function (asset) {
-        return {
-          asset: asset,
-          navs: []
-        };
-      }), false, true);
-      tiles.sort(function (a, b) {
-        var ai = a.indices.x * 10000 + a.indices.y;
-        var bi = b.indices.x * 10000 + b.indices.y;
-        return ai - bi;
-      }); // console.log('PanoramaGridModalComponent.onSubmit', tiles);
-
-      var asset = tiles[0].asset;
-      var view = {
-        type: this.form.value.type,
-        name: this.form.value.name,
-        asset: asset,
-        tiles: tiles,
-        invertAxes: true,
-        flipAxes: false,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      };
-      EditorService.viewCreate$(view).pipe(operators.first()).subscribe(function (response) {
-        // console.log('PanoramaGridModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('PanoramaGridModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return PanoramaGridModalComponent;
-}(rxcomp.Component);
-PanoramaGridModalComponent.meta = {
-  selector: '[panorama-grid-modal]'
-};var PanoramaModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(PanoramaModalComponent, _Component);
-
-  function PanoramaModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = PanoramaModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Panorama,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // upload: new FormControl(null, RequiredValidator()),
-      // items: new FormArray([null, null, null], RequiredValidator()),
-
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('PanoramaModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var view = {
-        type: values.type,
-        name: values.name,
-        asset: values.asset,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      }; // console.log('PanoramaModalComponent.onSubmit.view', view);
-
-      return EditorService.viewCreate$(view).pipe(operators.first()).subscribe(function (response) {
-        // console.log('PanoramaModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('PanoramaModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-      /*
-      const asset = Asset.fromUrl(this.form.value.upload);
-      // console.log('PanoramaModalComponent.onSubmit.asset', asset);
-      AssetService.assetCreate$(asset).pipe(
-      	first(),
-      	switchMap(response => {
-      		const view = {
-      			type: this.form.value.type,
-      			name: this.form.value.name,
-      			asset: response,
-      			orientation: {
-      				latitude: 0,
-      				longitude: 0
-      			},
-      			zoom: 75
-      		};
-      		// console.log('PanoramaModalComponent.onSubmit.view', view);
-      		return EditorService.viewCreate$(view).pipe(
-      			first(),
-      		);
-      	})
-      ).subscribe(response => {
-      	// console.log('PanoramaModalComponent.onSubmit.success', response);
-      	ModalService.resolve(response);
-      }, error => {
-      	console.log('PanoramaModalComponent.onSubmit.error', error);
-      	this.error = error;
-      	this.form.reset();
-      });
-      */
-    } else {
-      this.form.touched = true;
-    }
-    /*
-    EditorService.viewCreate$({
-    	"id": 1,
-    	"type": "panorama",
-    	"name": "Welcome Room",
-    	"likes": 134,
-    	"liked": false,
-    	"asset": {
-    		"type": "image",
-    		"folder": "waiting-room/",
-    		"file": "mod2.jpg"
-    	},
-    	"items": [
-    		{
-    			"id": 110,
-    			"type": "nav",
-    			"title": "Barilla Experience",
-    			"abstract": "Abstract",
-    			"asset": {
-    				"type": "image",
-    				"folder": "barilla/",
-    				"file": "logo-barilla.jpg"
-    			},
-    			"link": {
-    				"title": "Scopri di più...",
-    				"href": "https://www.barilla.com/it-it/",
-    				"target": "_blank"
-    			},
-    			"position": [
-    				0.9491595148619703,
-    				-0.3147945860255039,
-    				0
-    			],
-    			"viewId": 23
-    		}
-    	],
-    	"orientation": {
-    		"latitude": -10,
-    		"longitude": 360
-    	},
-    	"zoom": 75
-    }).pipe(
-    	first(),
-    ).subscribe(data => {
-    	// console.log('EditorService.viewCreate$', data);
-    });
-    	*/
-
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return PanoramaModalComponent;
-}(rxcomp.Component);
-PanoramaModalComponent.meta = {
-  selector: '[panorama-modal]'
-};
-/*
-{
-	"id": 1,
-	"type": "panorama",
-	"name": "Welcome Room",
-	"likes": 134,
-	"liked": false,
-	"asset": {
-		"type": "image",
-		"folder": "waiting-room/",
-		"file": "mod2.jpg"
-	},
-	"items": [{
-		"id": 110,
-		"type": "nav",
-		"title": "Barilla Experience",
-		"abstract": "Abstract",
-		"asset": {
-			"type": "image",
-			"folder": "barilla/",
-			"file": "logo-barilla.jpg"
-		},
-		"link": {
-			"title": "Scopri di più...",
-			"href": "https://www.barilla.com/it-it/",
-			"target": "_blank"
-		},
-		"position": [0.9491595148619703,-0.3147945860255039,0],
-		"viewId": 23
-	}],
-	"orientation": {
-		"latitude": -10,
-		"longitude": 360
-	},
-	"zoom": 75
-}
-*/var PathAddModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(PathAddModalComponent, _Component);
-
-  function PathAddModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = PathAddModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var _getContext = rxcomp.getContext(this),
-        parentInstance = _getContext.parentInstance;
-
-    if (parentInstance instanceof ModalOutletComponent) {
-      this.data = parentInstance.modal.data;
-    }
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('PathAddModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var path = {
-        name: values.name,
-        items: this.data ? this.data.item.items : []
-      }; // console.log('PathAddModalComponent.onSubmit.path', path);
-
-      return PathService.pathCreate$(path).pipe(operators.first()).subscribe(function (response) {
-        // console.log('PathAddModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('PathAddModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return PathAddModalComponent;
-}(rxcomp.Component);
-PathAddModalComponent.meta = {
-  selector: '[path-add-modal]'
-};
-/*
-{
-	"id": 1,
-	"name": "Mappa",
-	"asset": {
-		"type": "image",
-		"folder": "folder/",
-		"file": "map.png"
-	},
-	"items": [{
-		"id": 110,
-		"type": "nav",
-		"title": "Barilla Experience",
-		"abstract": "Abstract",
-		"position": [0.9491595148619703,-0.3147945860255039,0],
-		"viewId": 23
-	}],
-}
-*/var PathEditModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(PathEditModalComponent, _Component);
-
-  function PathEditModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = PathEditModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.item = null;
-    this.views = null;
-
-    var _getContext = rxcomp.getContext(this),
-        parentInstance = _getContext.parentInstance;
-
-    if (parentInstance instanceof ModalOutletComponent) {
-      var data = parentInstance.modal.data;
-
-      if (data) {
-        this.item = data.item ? data.item : null;
-        this.views = this.parseViews(data.views, this.item);
-      }
-    }
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      name: new rxcompForm.FormControl(this.item ? this.item.name : null, rxcompForm.RequiredValidator())
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('PathEditModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.parseViews = function parseViews(views, item) {
-    if (views && item) {
-      return views.map(function (view) {
-        return {
-          id: view.id,
-          name: view.name,
-          type: view.type,
-          active: item.items.indexOf(view.id) === -1
-        };
-      });
-    } else {
-      return [];
-    }
-  };
-
-  _proto.onToggleView = function onToggleView(view) {
-    view.active = !view.active;
-    this.pushChanges();
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var payload = {
-        id: this.item.id,
-        name: values.name,
-        items: this.views.filter(function (x) {
-          return !x.active;
-        }).map(function (x) {
-          return x.id;
-        })
-      }; // console.log('PathEditModalComponent.onSubmit', payload);
-
-      return PathService.pathUpdate$(payload).pipe(operators.first()).subscribe(function (response) {
-        // console.log('PathEditModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('PathEditModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onSelectAll = function onSelectAll() {
-    this.views.forEach(function (view) {
-      return view.active = true;
-    });
-    this.pushChanges();
-  };
-
-  _proto.onSelectNone = function onSelectNone() {
-    this.views.forEach(function (view) {
-      return view.active = false;
-    });
-    this.pushChanges();
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return PathEditModalComponent;
-}(rxcomp.Component);
-PathEditModalComponent.meta = {
-  selector: '[path-edit-modal]'
-};var PlaneModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(PlaneModalComponent, _Component);
-
-  function PlaneModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = PlaneModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var object = this.object;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewItemType.Plane,
-      position: new rxcompForm.FormControl(object.position.toArray(), rxcompForm.RequiredValidator()),
-      rotation: new rxcompForm.FormControl(object.rotation.toArray(), rxcompForm.RequiredValidator()),
-      // [0, -Math.PI / 2, 0],
-      scale: new rxcompForm.FormControl([12, 6.75, 1], rxcompForm.RequiredValidator()),
-      asset: null
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('PlaneModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    if (this.form.valid) {
-      var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
-
-      console.log('PlaneModalComponent.onSubmit', this.view, item);
-      EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        console.log('PlaneModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        return console.log('PlaneModalComponent.onSubmit.error', error);
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(PlaneModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "view",
-    get: function get() {
-      var view = null;
-      var data = this.data;
-
-      if (data) {
-        view = data.view;
-      }
-
-      return view;
-    }
-  }, {
-    key: "object",
-    get: function get() {
-      var object = new THREE.Object3D();
-      var data = this.data;
-
-      if (data) {
-        var position = data.hit.position.clone();
-        var normal = data.hit.normal.clone();
-        var spherical = data.hit.spherical;
-
-        if (spherical) {
-          position.normalize().multiplyScalar(20);
-          object.position.copy(position);
-          object.lookAt(Host.origin);
-        } else {
-          object.lookAt(normal);
-          object.position.set(position.x, position.y, position.z);
-          object.position.add(normal.multiplyScalar(0.01));
-        }
-      }
-
-      return object;
-    }
-  }]);
-
-  return PlaneModalComponent;
-}(rxcomp.Component);
-PlaneModalComponent.meta = {
-  selector: '[plane-modal]'
-};var RemoveModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(RemoveModalComponent, _Component);
-
-  function RemoveModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = RemoveModalComponent.prototype;
-
-  _proto.onRemove = function onRemove() {
-    ModalService.resolve();
-  };
-
-  _proto.onCancel = function onCancel() {
-    ModalService.reject();
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  _createClass(RemoveModalComponent, [{
-    key: "data",
-    get: function get() {
-      var data = null;
-
-      var _getContext = rxcomp.getContext(this),
-          parentInstance = _getContext.parentInstance;
-
-      if (parentInstance instanceof ModalOutletComponent) {
-        data = parentInstance.modal.data;
-      }
-
-      return data;
-    }
-  }, {
-    key: "item",
-    get: function get() {
-      var item = null;
-      var data = this.data;
-
-      if (data) {
-        item = data.item;
-      }
-
-      return item;
-    }
-  }]);
-
-  return RemoveModalComponent;
-}(rxcomp.Component);
-RemoveModalComponent.meta = {
-  selector: '[remove-modal]'
-};var Room3DModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(Room3DModalComponent, _Component);
-
-  function Room3DModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = Room3DModalComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.error = null;
-    var form = this.form = new rxcompForm.FormGroup({
-      type: ViewType.Room3d,
-      name: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()),
-      asset: new rxcompForm.FormControl(null, rxcompForm.RequiredValidator()) // model: new FormControl(null, RequiredValidator()),
-
-    });
-    this.controls = form.controls;
-    form.changes$.subscribe(function (changes) {
-      // console.log('Room3DModalComponent.form.changes$', changes, form.valid, form);
-      _this.pushChanges();
-    });
-  };
-
-  _proto.onSubmit = function onSubmit() {
-    var _this2 = this;
-
-    if (this.form.valid) {
-      this.form.submitted = true;
-      var values = this.form.value;
-      var view = {
-        type: values.type,
-        name: values.name,
-        asset: values.asset,
-        orientation: {
-          latitude: 0,
-          longitude: 0
-        },
-        zoom: 75
-      }; // console.log('Room3DModalComponent.onSubmit.view', view);
-
-      return EditorService.viewCreate$(view).pipe(
-      /*
-      switchMap(view => {
-      	const item = {
-      		type: ViewItemType.Model,
-      		asset: values.model,
-      	};
-      	return EditorService.itemCreate$(view, item).pipe(
-      		map(item => {
-      			view.items = [item];
-      			return view;
-      		})
-      	);
-      }),
-      */
-      operators.first()).subscribe(function (response) {
-        // console.log('Room3DModalComponent.onSubmit.success', response);
-        ModalService.resolve(response);
-      }, function (error) {
-        console.log('Room3DModalComponent.onSubmit.error', error);
-        _this2.error = error;
-
-        _this2.form.reset();
-      });
-    } else {
-      this.form.touched = true;
-    }
-  };
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return Room3DModalComponent;
-}(rxcomp.Component);
-Room3DModalComponent.meta = {
-  selector: '[room-3d-modal]'
+NavmapModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"panorama-modal\" navmap-modal></div>"
+  );
 };var NavmapBuilderComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(NavmapBuilderComponent, _Component);
 
@@ -27695,7 +28107,7 @@ Room3DModalComponent.meta = {
     var _this2 = this;
 
     ModalService.open$({
-      src: environment.template.modal.navmap
+      template: NavmapModalComponent.chunk()
     }).pipe(operators.first()).subscribe(function (event) {
       if (event instanceof ModalResolveEvent) {
         _this2.navmaps.push(event.data);
@@ -27718,7 +28130,7 @@ Room3DModalComponent.meta = {
     var _this3 = this;
 
     ModalService.open$({
-      src: environment.template.modal.navmapItem,
+      template: NavmapItemModalComponent.chunk(),
       data: {
         navmap: navmap,
         hit: hit
@@ -27819,7 +28231,7 @@ var NavmapEditComponent = /*#__PURE__*/function (_Component) {
       // console.log('NavmapEditComponent.insert', event);
       var hit = event;
       ModalService.open$({
-        src: environment.template.modal.navmapItem,
+        template: NavmapItemModalComponent.chunk(),
         data: {
           navmap: navmap,
           hit: hit
@@ -27960,7 +28372,7 @@ var NavmapEditComponent = /*#__PURE__*/function (_Component) {
 
     var navmap = this.navmap;
     ModalService.open$({
-      src: environment.template.modal.remove,
+      template: RemoveModalComponent.chunk(),
       data: {
         item: navmap
       }
@@ -28293,7 +28705,7 @@ NavmapEditComponent.meta = {
     var _this6 = this;
 
     ModalService.open$({
-      src: environment.template.modal.remove,
+      template: RemoveModalComponent.chunk(),
       data: {
         item: this.item
       }
@@ -28437,7 +28849,7 @@ UpdateViewItemComponent.meta = {
     var _this3 = this;
 
     ModalService.open$({
-      src: environment.template.modal.remove,
+      template: RemoveModalComponent.chunk(),
       data: {
         tile: this.tile
       }
@@ -28726,7 +29138,7 @@ UpdateViewTileComponent.meta = {
     var _this3 = this;
 
     ModalService.open$({
-      src: environment.template.modal.remove,
+      template: RemoveModalComponent.chunk(),
       data: {
         item: this.item
       }
@@ -28815,23 +29227,6 @@ EditorModule.meta = {
   imports: [],
   declarations: [].concat(factories, pipes),
   exports: [].concat(factories, pipes)
-};var IframeModalComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(IframeModalComponent, _Component);
-
-  function IframeModalComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = IframeModalComponent.prototype;
-
-  _proto.onClose = function onClose() {
-    ModalService.reject();
-  };
-
-  return IframeModalComponent;
-}(rxcomp.Component);
-IframeModalComponent.meta = {
-  selector: '[iframe-modal]'
 };var EnvPipe = /*#__PURE__*/function (_Pipe) {
   _inheritsLoose(EnvPipe, _Pipe);
 
@@ -30697,7 +31092,399 @@ MessagePipe.meta = {
 }(rxcomp.Component);
 ModalComponent.meta = {
   selector: '[modal]'
-};var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
+};var RoutePipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(RoutePipe, _Pipe);
+
+  function RoutePipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  RoutePipe.transform = function transform(key) {
+    switch (key) {
+      case 'index':
+        return 'it.access';
+
+      default:
+        return 'it.' + key;
+    } // const url = environment.url;
+    // return url[key] || `#${key}`;
+
+  };
+
+  return RoutePipe;
+}(rxcomp.Pipe);
+RoutePipe.meta = {
+  name: 'route'
+};var RouterLinkDirective = /*#__PURE__*/function (_Directive) {
+  _inheritsLoose(RouterLinkDirective, _Directive);
+
+  function RouterLinkDirective() {
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _Directive.call.apply(_Directive, [this].concat(args)) || this;
+
+    _defineProperty(_assertThisInitialized(_this), "path", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "segments", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "routerLink_", void 0);
+
+    return _this;
+  }
+
+  var _proto = RouterLinkDirective.prototype;
+
+  _proto.onInit = function onInit() {
+    // const { node, module } = getContext(this);
+    // console.log('RouterLinkDirective.onInit', this.routerLink, node, module);
+    this.routerLink$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+  };
+
+  _proto.onChanges = function onChanges() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node; // const routerLink = Array.isArray(this.routerLink) ? this.routerLink : [this.routerLink];
+
+
+    var routerLink = this.routerLink;
+
+    if (routerLink.length) {
+      var routePath = RouterService.buildPath.apply(RouterService, routerLink); // RouterService.isActive(name, params, [strictEquality], [ignoreQueryParams])
+      // console.log('RouterLinkDirective.routePath', routePath);
+
+      node.setAttribute('href', routePath.url);
+    } else {
+      node.setAttribute('href', '');
+    }
+  };
+
+  _proto.routerLink$ = function routerLink$() {
+    var _this2 = this;
+
+    var _getContext2 = rxcomp.getContext(this),
+        node = _getContext2.node;
+
+    return rxjs.fromEvent(node, 'click').pipe(operators.map(function (event) {
+      // console.log('RouterLinkDirective', event, this.routerLink);
+      // !!! skipLocationChange
+
+      /*
+      const navigationExtras = {
+      	skipLocationChange: this.skipLocationChange,
+      	replaceUrl: this.replaceUrl,
+      	state: this.state,
+      };
+      */
+      // console.log('RouterLinkDirective.routerLink$', this.routerLink);
+      RouterService.setRouterLink.apply(RouterService, _this2.routerLink);
+      event.preventDefault();
+      return false;
+    }));
+  };
+
+  _proto.getSegments = function getSegments(routerLink) {
+    // console.log('RouterLinkDirective.getSegments', routerLink);
+    var segments = [];
+    routerLink.forEach(function (item) {
+      if (typeof item === 'string') {
+        var regExp = /([^:]+)|\:([^\/]+)/g;
+        var matches = item.matchAll(regExp);
+        var components = [];
+
+        for (var _iterator = _createForOfIteratorHelperLoose(matches), _step; !(_step = _iterator()).done;) {
+          var match = _step.value;
+          var g1 = match[1];
+          var g2 = match[2];
+
+          if (g1) {
+            components.push(g1);
+          } else if (g2) {
+            var param = {};
+            param[g2] = null;
+            components.push(param);
+          }
+        }
+      } else {
+        segments.push(new RouteSegment('', {}));
+      }
+    });
+    return segments;
+  };
+
+  _createClass(RouterLinkDirective, [{
+    key: "routerLink",
+    get: function get() {
+      return this.routerLink_;
+    },
+    set: function set(routerLink) {
+      this.routerLink_ = Array.isArray(routerLink) ? routerLink : [routerLink]; // this.segments = this.getSegments(this.routerLink_);
+    }
+  }]);
+
+  return RouterLinkDirective;
+}(rxcomp.Directive);
+/*
+get urlTree(): UrlTree {
+	return RouterService.createUrlTree(this.routerLink, {
+		relativeTo: this.route,
+		queryParams: this.queryParams,
+		fragment: this.fragment,
+		preserveQueryParams: this.preserve,
+		queryParamsHandling: this.queryParamsHandling,
+		preserveFragment: this.preserveFragment,
+	});
+}
+*/
+
+
+_defineProperty(RouterLinkDirective, "meta", {
+  selector: '[routerLink]',
+  inputs: ['routerLink']
+});var RouterOutletStructure = /*#__PURE__*/function (_Structure) {
+  _inheritsLoose(RouterOutletStructure, _Structure);
+
+  function RouterOutletStructure() {
+    var _this;
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _Structure.call.apply(_Structure, [this].concat(args)) || this;
+
+    _defineProperty(_assertThisInitialized(_this), "host", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "outlet", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "element", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "instance", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "route$_", new rxjs.ReplaySubject(1));
+
+    return _this;
+  }
+
+  var _proto = RouterOutletStructure.prototype;
+
+  _proto.getFactory = function getFactory(route) {
+    var factory = null;
+    var routes = this.routes;
+    var originalRoute = routes.find(function (x) {
+      return x.name === route.name;
+    });
+
+    if (originalRoute) {
+      factory = originalRoute.factory;
+    } // console.log('RouterOutletStructure.getFactory', originalRoute, routes, route);
+
+
+    return factory;
+  };
+
+  _proto.onInit = function onInit() {
+    var _this2 = this;
+
+    this.route$().pipe(operators.switchMap(function (route) {
+      return _this2.factory$(route);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
+      console.log('RouterOutletStructure.route$', event);
+    });
+    /*
+    this.route$().pipe(
+    	switchMap(snapshot => this.factory$(snapshot)),
+    	takeUntil(this.unsubscribe$)
+    ).subscribe(() => {
+    	console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
+    });
+    if (this.host) {
+    	this.route$_.next(this.host.route.childRoute);
+    }
+    */
+  };
+
+  _proto.route$ = function route$() {
+    var routes = this.routes; // console.log('RouterOutletStructure.route$', routes);
+
+    if (routes) {
+      return RouterService.useBrowser$(routes).pipe(operators.map(function (event) {
+        // console.log('RouterOutletStructure.route$', event);
+        return event.route;
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.factory$ = function factory$(route) {
+    var _this3 = this;
+
+    var factory = this.getFactory(route); // console.log('RouterOutletStructure.factory$', route, factory);
+
+    var _getContext = rxcomp.getContext(this),
+        module = _getContext.module,
+        node = _getContext.node;
+
+    if (this.factory_ !== factory) {
+      this.factory_ = factory;
+      return rxjs.of(factory).pipe(operators.tap(function () {
+        if (_this3.element) {
+          _this3.element.parentNode.removeChild(_this3.element);
+
+          module.remove(_this3.element, _this3);
+          _this3.element = undefined;
+          _this3.instance = undefined;
+        }
+      }), operators.map(function () {
+        if (factory && factory.meta.template) {
+          var element = document.createElement('div');
+          element.innerHTML = factory.meta.template;
+
+          if (element.children.length === 1) {
+            element = element.firstElementChild;
+          }
+
+          node.appendChild(element);
+          var instance = module.makeInstance(element, factory, factory.meta.selector, _this3, undefined, {
+            route: route
+          });
+          module.compile(element, instance);
+          _this3.instance = instance;
+          _this3.element = element;
+          return {
+            element: element,
+            instance: instance
+          };
+        }
+      }));
+    } else {
+      return rxjs.EMPTY;
+    }
+  };
+
+  _proto.onChanges = function onChanges() {
+    /*
+    if (this.host) {
+    	this.route$_.next(this.host.route.childRoute);
+    }
+    */
+  }
+  /*
+  route$() {
+  	const source = this.host ? this.route$_ : RouterService.route$;
+  	return source.pipe(
+  		filter((snapshot) => {
+  			this.route_ = snapshot; // !!!
+  			if (this.snapshot_ && snapshot && this.snapshot_.component === snapshot.component) {
+  				this.snapshot_.next(snapshot);
+  				return false;
+  			} else {
+  				this.snapshot_ = snapshot;
+  				return true;
+  			}
+  		}),
+  	);
+  }
+  */
+
+  /*
+  factory$(snapshot) {
+  	const { module, node } = getContext(this);
+  	const factory = snapshot.component;
+  	if (this.factory_ !== factory) {
+  		this.factory_ = factory;
+  		return this.onLeave$_(snapshot, this.element, this.instance).pipe(
+  			tap(() => {
+  				if (this.element) {
+  					this.element.parentNode.removeChild(this.element);
+  					module.remove(this.element, this);
+  					this.element = undefined;
+  					this.instance = undefined;
+  				}
+  			}),
+  			switchMap(() => {
+  				if (snapshot && factory && factory.meta.template) {
+  					let element = document.createElement('div');
+  					element.innerHTML = factory.meta.template;
+  					if (element.children.length === 1) {
+  						element = element.firstElementChild;
+  					}
+  					node.appendChild(element);
+  					const instance = module.makeInstance(element, factory, factory.meta.selector, this, undefined, { route: snapshot });
+  					module.compile(element, instance);
+  					this.instance = instance;
+  					this.element = element;
+  					snapshot.element = element;
+  					return this.onOnce$_(snapshot, element, instance).pipe(
+  						switchMap(() => {
+  							return this.onEnter$_(snapshot, element, instance);
+  						})
+  					);
+  				} else {
+  					return of(void 0);
+  				}
+  			})
+  		);
+  	} else {
+  		return of(void 0);
+  	}
+  }
+  */
+
+  /*
+  onOnce$_(snapshot, element, instance) {
+  	if (!transitionOnced() && instance instanceof View && element) {
+  		transitionOnce();
+  		const factory = instance.constructor;
+  		const transition = factory.transitions.find((x) => x instanceof OnceTransition && x.matcher(snapshot.previousRoute?.path));
+  		return transition ? asObservable([element, snapshot.previousRoute], transition.callback.bind(instance)) : of(void 0);
+  	} else {
+  		return of(void 0);
+  	}
+  }
+  
+  onEnter$_(snapshot, element, instance) {
+  	if (instance instanceof View && element) {
+  		const factory = instance.constructor;
+  		const transition = factory.transitions.find((x) => x instanceof EnterTransition && x.matcher(snapshot.previousRoute?.path));
+  		return transition ? asObservable([element, snapshot.previousRoute], transition.callback.bind(instance)) : of(void 0);
+  	} else {
+  		return of(void 0);
+  	}
+  }
+  
+  onLeave$_(snapshot, element, instance) {
+  	if (instance instanceof View && element) {
+  		const factory = instance.constructor;
+  		const transition = factory.transitions.find((x) => x instanceof LeaveTransition && x.matcher(snapshot?.path));
+  		return transition ? asObservable([element, snapshot], transition.callback.bind(instance)) : of(void 0);
+  	} else {
+  		return of(void 0);
+  	}
+  }
+  */
+  ;
+
+  _createClass(RouterOutletStructure, [{
+    key: "route",
+    get: function get() {
+      return this.route_;
+    }
+  }]);
+
+  return RouterOutletStructure;
+}(rxcomp.Structure);
+
+_defineProperty(RouterOutletStructure, "meta", {
+  selector: 'router-outlet,[router-outlet]',
+  hosts: {
+    host: RouterOutletStructure
+  },
+  inputs: ['routes']
+});var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(SupportRequestModalComponent, _Component);
 
   function SupportRequestModalComponent() {
@@ -30732,7 +31519,17 @@ ModalComponent.meta = {
   return SupportRequestModalComponent;
 }(rxcomp.Component);
 SupportRequestModalComponent.meta = {
-  selector: '[support-request-modal]'
+  selector: '[support-request-modal]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"modal__header\">\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"container\">\n\t\t\t<div class=\"form\">\n\t\t\t\t<div class=\"title\">Un operatore \xE8 disponibile per un tour guidato.<br>Desideri Accettare?</div>\n\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t\t<span>Accetta</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\">\n\t\t\t\t\t\t<span>Rifiuta</span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+};
+
+SupportRequestModalComponent.chunk = function () {
+  return (
+    /* html */
+    "<div class=\"support-request-modal\" support-request-modal></div>"
+  );
 };var SvgIconStructure = /*#__PURE__*/function (_Structure) {
   _inheritsLoose(SvgIconStructure, _Structure);
 
@@ -30815,97 +31612,6 @@ SvgIconStructure.meta = {
 TitleDirective.meta = {
   selector: '[[title]]',
   inputs: ['title']
-};var TryInARComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(TryInARComponent, _Component);
-
-  function TryInARComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = TryInARComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.platform = DeviceService.platform;
-    this.missingAr = false;
-    this.missingUsdz = false;
-    this.missingGltf = false;
-    var viewId = this.viewId = this.getViewId(); // console.log('TryInARComponent.viewId', viewId);
-
-    if (viewId) {
-      ViewService.viewById$(viewId).pipe(operators.first()).subscribe(function (view) {
-        if (!view.ar) {
-          _this.missingAr = true;
-
-          _this.pushChanges();
-
-          return;
-        } // console.log('TryInARComponent.view', view);
-
-
-        if (_this.platform === DevicePlatform.IOS) {
-          var usdzSrc = _this.getUsdzSrc(view);
-
-          if (usdzSrc) {
-            window.location.href = usdzSrc;
-          } else {
-            _this.missingUsdz = true;
-
-            _this.pushChanges();
-          }
-        } else if (_this.getGltfSrc(view) !== null) {
-          var modelViewerNode = _this.getModelViewerNode(view);
-
-          var _getContext = rxcomp.getContext(_this),
-              node = _getContext.node;
-
-          node.appendChild(modelViewerNode);
-        } else {
-          _this.missingGltf = true;
-
-          _this.pushChanges();
-        }
-      });
-    }
-  };
-
-  _proto.getUsdzSrc = function getUsdzSrc(view) {
-    return view.ar && view.ar.usdz ? environment.getPath(view.ar.usdz.folder + view.ar.usdz.file) : null;
-  };
-
-  _proto.getGltfSrc = function getGltfSrc(view) {
-    return view.ar && view.ar.gltf ? environment.getPath(view.ar.gltf.folder + view.ar.gltf.file) : null;
-  };
-
-  _proto.getViewId = function getViewId() {
-    var meetingUrl = new MeetingUrl();
-    var viewId = null;
-
-    if (meetingUrl.viewId) {
-      viewId = parseInt(meetingUrl.viewId);
-    }
-
-    return viewId;
-  };
-
-  _proto.getModelViewerNode = function getModelViewerNode(view) {
-    var panorama = environment.getPath(view.asset.folder + view.asset.file);
-    var usdzSrc = this.getUsdzSrc(view);
-    var gltfSrc = this.getGltfSrc(view);
-    var template =
-    /* html */
-    "\n\t\t\t<model-viewer alt=\"" + view.name + "\" skybox-image=\"" + panorama + "\" ios-src=\"" + usdzSrc + "\" src=\"" + gltfSrc + "\" ar ar-modes=\"webxr scene-viewer quick-look\" ar-scale=\"auto\" camera-controls></model-viewer>\n\t\t";
-    var div = document.createElement("div");
-    div.innerHTML = template;
-    var node = div.firstElementChild;
-    return node;
-  };
-
-  return TryInARComponent;
-}(rxcomp.Component);
-TryInARComponent.meta = {
-  selector: '[try-in-ar]'
 };var UploadItemComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(UploadItemComponent, _Component);
 
@@ -35496,53 +36202,7 @@ ModelTextComponent.meta = {
   return AppModule;
 }(rxcomp.Module);
 AppModule.meta = {
-  imports: [rxcomp.CoreModule,
-  /*
-  RouterModule.forRoot([
-  	{ path: '', redirectTo: '/accesso', pathMatch: 'full' },
-  	{ path: 'it/', redirectTo: '/accesso', pathMatch: 'full' },
-  	{ path: 'tour-guidato', redirectTo: '/it/tour-guidato', pathMatch: 'full' },
-  	{ path: 'tour-self-service', redirectTo: '/it/tour-self-service', pathMatch: 'full' },
-  	{ path: 'embed', redirectTo: '/it/embed', pathMatch: 'full' },
-  	{ path: 'codice-di-accesso', redirectTo: '/it/codice-di-accesso', pathMatch: 'full' },
-  	{ path: 'editor', redirectTo: '/it/editor', pathMatch: 'full' },
-  	{ path: 'en/', redirectTo: '/en/access', pathMatch: 'full' },
-  	{ path: '/accesso', component: AccessComponent },
-  	{ path: 'en/access', component: AccessComponent },
-  	{ path: 'it/tour-guidato', component: AgoraComponent },
-  	{ path: 'it/tour-self-service', component: AgoraComponent },
-  	{ path: 'it/embed', component: AgoraComponent },
-  	{ path: 'it/codice-di-accesso', component: AgoraComponent },
-  	{ path: 'it/editor', component: AgoraComponent },
-  	{ path: '**', redirectTo: '/accesso' },
-  ]).useStrategy(LocationStrategyHash),
-  */
-  rxcompRouter.RouterModule.forRoot([{
-    path: 'it/accesso',
-    component: AccessComponent
-  }, {
-    path: 'it/tour-guidato',
-    component: AgoraComponent
-  }, {
-    path: 'it/tour-self-service',
-    component: AgoraComponent
-  }, {
-    path: 'it/embed',
-    component: AgoraComponent
-  }, {
-    path: 'it/codice-di-accesso',
-    component: AccessCodeComponent
-  }, {
-    path: 'it/editor',
-    component: EditorComponent
-  }, {
-    path: '',
-    redirectTo: '/it/accesso',
-    pathMatch: 'full'
-  }, {
-    path: '**',
-    component: AccessComponent
-  }]), rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
+  imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

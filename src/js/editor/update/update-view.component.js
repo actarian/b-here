@@ -9,6 +9,7 @@ import MessageService from '../../message/message.service';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
 import { View, ViewType } from '../../view/view';
 import EditorService from '../editor.service';
+import RemoveModalComponent from '../modals/remove-modal.component';
 
 export default class UpdateViewComponent extends Component {
 
@@ -186,7 +187,7 @@ export default class UpdateViewComponent extends Component {
 	}
 
 	onRemove(event) {
-		ModalService.open$({ src: environment.template.modal.remove, data: { item: this.item } }).pipe(
+		ModalService.open$({ template: RemoveModalComponent.chunk(), data: { item: this.item } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

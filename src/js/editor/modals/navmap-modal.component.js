@@ -49,25 +49,31 @@ export default class NavmapModalComponent extends Component {
 }
 
 NavmapModalComponent.meta = {
-	selector: '[navmap-modal]'
+	selector: '[navmap-modal]',
+	template: /* html */`
+		<div class="modal__header">
+			<button type="button" class="btn--close" (click)="onClose()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+			</button>
+		</div>
+		<div class="container">
+			<div class="form">
+				<div class="title">Create Map.</div>
+				<form [formGroup]="form" (submit)="onSubmit()" name="form" role="form" novalidate autocomplete="off">
+					<div class="form-controls">
+						<div control-text [control]="controls.name" label="Name"></div>
+						<div control-asset [control]="controls.asset" label="Image" accept="image/png"></div>
+					</div>
+					<div class="description">Formato immagine .png con trasparenza (2048x1024 o 1024x512)</div>
+					<div class="group--cta">
+						<button type="submit" class="btn--accept">
+							<span>Create</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	`,
 };
 
-/*
-{
-	"id": 1,
-	"name": "Mappa",
-	"asset": {
-		"type": "image",
-		"folder": "folder/",
-		"file": "map.png"
-	},
-	"items": [{
-		"id": 110,
-		"type": "nav",
-		"title": "Barilla Experience",
-		"abstract": "Abstract",
-		"position": [0.9491595148619703,-0.3147945860255039,0],
-		"viewId": 23
-	}],
-}
-*/
+NavmapModalComponent.chunk = () => /* html */`<div class="panorama-modal" navmap-modal></div>`;

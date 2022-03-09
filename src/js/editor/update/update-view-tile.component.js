@@ -1,8 +1,8 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
-import { environment } from '../../environment';
 import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import RemoveModalComponent from '../modals/remove-modal.component';
 
 export default class UpdateViewTileComponent extends Component {
 
@@ -48,7 +48,7 @@ export default class UpdateViewTileComponent extends Component {
 	}
 
 	onRemove(event) {
-		ModalService.open$({ src: environment.template.modal.remove, data: { tile: this.tile } }).pipe(
+		ModalService.open$({ template: RemoveModalComponent.chunk(), data: { tile: this.tile } }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

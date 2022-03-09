@@ -33,9 +33,10 @@
     "https": "1.0.0",
     "mv": "2.1.1",
     "qrious": "4.0.2",
+    "router5": "8.0.1",
+    "router5-plugin-browser": "8.0.1",
     "rxcomp": "1.0.0-beta.20",
     "rxcomp-form": "1.0.0-beta.18",
-    "rxcomp-router": "1.0.0-beta.19",
     "rxjs": "6.6.2",
     "three": "0.128.0"
   },

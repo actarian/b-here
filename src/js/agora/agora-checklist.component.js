@@ -1,10 +1,10 @@
 import { Component } from 'rxcomp';
 import { first, takeUntil } from 'rxjs/operators';
 import { DeviceService } from '../device/device.service';
-import { environment } from '../environment';
 import ModalService from '../modal/modal.service';
 import { RoleType } from '../user/user';
 import { AgoraChecklistService } from './agora-checklist.service';
+import AgoraConfigureFirewallModalComponent from './agora-configure-firewall-modal.component';
 
 export default class AgoraChecklistComponent extends Component {
 
@@ -55,7 +55,7 @@ export default class AgoraChecklistComponent extends Component {
 	}
 
 	showFirewallConfiguration() {
-		ModalService.open$({ src: environment.template.modal.configureFirewall }).pipe(
+		ModalService.open$({ template: AgoraConfigureFirewallModalComponent.chunk() }).pipe(
 			first(),
 		).subscribe();
 	}
@@ -89,7 +89,7 @@ AgoraChecklistComponent.meta = {
 			</button>
 		</div>
 	</div>
-	<a [routerLink]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
+	<a [routerLink]="'editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
 		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 	</a>
 	`

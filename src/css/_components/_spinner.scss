@@ -1,0 +1,45 @@
+$spinner-size: 48px;
+$spinner-thickness: 3px;
+
+$b1: rgba(#a8a29a, 0.3);
+$c1: #1e1e1e;
+
+$b2: white;
+$c2: #1e1e1e;
+
+.spinner,
+.spinner:after {
+	border-radius: 50%;
+	width: $spinner-size;
+	height: $spinner-size;
+}
+
+.spinner {
+	margin: $spinner-size auto;
+	font-size: 0;
+	position: relative;
+	text-indent: -9999em;
+	border-top: $spinner-thickness solid $b1;
+	border-right: $spinner-thickness solid $b1;
+	border-bottom: $spinner-thickness solid $b1;
+	border-left: $spinner-thickness solid $c1;
+	transform: translateZ(0);
+	animation: spinner 1.1s infinite linear;
+}
+
+.spinner--contrasted {
+	border-top: $spinner-thickness solid $b2;
+	border-right: $spinner-thickness solid $b2;
+	border-bottom: $spinner-thickness solid $b2;
+	border-left: $spinner-thickness solid $c2;
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}

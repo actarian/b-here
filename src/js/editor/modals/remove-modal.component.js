@@ -36,5 +36,28 @@ export default class RemoveModalComponent extends Component {
 }
 
 RemoveModalComponent.meta = {
-	selector: '[remove-modal]'
+	selector: '[remove-modal]',
+	template: /* html */`
+		<div class="modal__header">
+			<button type="button" class="btn--close" (click)="onClose()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+			</button>
+		</div>
+		<div class="container">
+			<div class="form">
+				<div class="title">Remove <span *if="item">&ldquo;<span [innerHTML]="item.title || item.name"></span>&rdquo;</span>.</div>
+				<div class="abstract">are you sure?</div>
+				<div class="group--cta">
+					<button type="button" class="btn--remove" (click)="onRemove($event)">
+						<span>Remove</span>
+					</button>
+					<button type="button" class="btn--accept" (click)="onCancel($event)">
+						<span>Cancel</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	`,
 };
+
+RemoveModalComponent.chunk = () => /* html */`<div class="remove-modal" remove-modal></div>`;

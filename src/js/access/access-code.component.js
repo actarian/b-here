@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
-import { RouterService } from '../../../../../../rxcomp-router';
 import { MeetingUrl } from '../meeting/meeting-url';
+import RouterService from '../router/router.service';
 
 export default class AccessCodeComponent extends Component {
 

@@ -1,7 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { RouterService } from '../../../../../../rxcomp-router';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import NavmapService from '../editor/navmap/navmap.service';
 import PathService from '../editor/path/path.service';
@@ -13,6 +12,7 @@ import { MeetingId } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
 import MessageService from '../message/message.service';
 import ModalService from '../modal/modal.service';
+import RouterService from '../router/router.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import ToastService, { ToastPosition, ToastResolveEvent, ToastType } from '../toast/toast.service';
@@ -215,7 +215,7 @@ export default class AgoraComponent extends Component {
 		if (user && (!linkRole || linkRole === user.type)) {
 			this.initWithUser(user);
 		} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-			RouterService.setRouterLink(environment.url.access);
+			RouterService.setRouterLink('it.access');
 			// window.location.href = environment.url.access;
 		} else {
 			this.initWithUser({ type: linkRole });
@@ -270,7 +270,7 @@ export default class AgoraComponent extends Component {
 		switch (role) {
 			case RoleType.SelfService:
 				if (!user || (user.type !== RoleType.SelfService && user.type !== RoleType.Publisher)) {
-					RouterService.setRouterLink(environment.url.access);
+					RouterService.setRouterLink('it.access');
 					// window.location.href = environment.url.access;
 					return;
 				} else {
@@ -936,7 +936,7 @@ export default class AgoraComponent extends Component {
 		if (this.platform === DevicePlatform.IOS || this.platform === DevicePlatform.Android) {
 			TryInARModalComponent.openInAR(this.view);
 		} else {
-			ModalService.open$({ src: environment.template.modal.tryInAr, data: this.view }).pipe(
+			ModalService.open$({ template: TryInARModalComponent.chunk(), data: this.view }).pipe(
 				first(),
 			).subscribe(event => {
 				// this.pushChanges();
@@ -1027,7 +1027,7 @@ export default class AgoraComponent extends Component {
 			}
 		});
 		/*
-		ModalService.open$({ src: environment.template.modal.supportRequest, data: clientInfo }).pipe(
+		ModalService.open$({ template: SupportRequestModalComponent.chunk(), data: clientInfo }).pipe(
 			first(),
 		).subscribe(event => {
 			if (event instanceof ModalResolveEvent) {

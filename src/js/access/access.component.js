@@ -2,9 +2,9 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import { RouterService } from '../../../../../../rxcomp-router';
-import { environment, STATIC } from '../environment';
+import { STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
+import RouterService from '../router/router.service';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
@@ -45,7 +45,7 @@ export default class AccessComponent extends Component {
 		UserService.logout$().pipe(
 			first(),
 		).subscribe(() => {
-			RouterService.setRouterLink('/it/tour-guidato');
+			RouterService.setRouterLink('it.guidedTour');
 			// RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
 			// window.location.href = environment.url.guidedTour;
 		});
@@ -185,11 +185,11 @@ export default class AccessComponent extends Component {
 						this.pushChanges();
 						break;
 					case 'self-service-tour':
-						RouterService.setRouterLink(environment.url.selfServiceTour);
+						RouterService.setRouterLink('it.selfServiceTour');
 						// window.location.href = environment.url.selfServiceTour;
 						break;
 					case 'login':
-						RouterService.setRouterLink(environment.url.guidedTour);
+						RouterService.setRouterLink('it.guidedTour');
 						// window.location.href = environment.url.guidedTour;
 						break;
 				}
