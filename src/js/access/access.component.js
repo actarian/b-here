@@ -213,7 +213,7 @@ export default class AccessComponent extends Component {
 AccessComponent.meta = {
 	selector: '[access-component]',
 	template: /*html*/ `
-		<div class="page">
+		<div class="page page--access">
 			<!-- background -->
 			<div class="background" [class]="{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }" *if="state.status != 'connected'">
 				<img [src]="'background.image' | env" *if="'background.image' | env" />

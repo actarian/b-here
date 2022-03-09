@@ -163,7 +163,72 @@ function _createForOfIteratorHelperLoose(o, allowArrayLike) {
 
   it = o[Symbol.iterator]();
   return it.next.bind(it);
-}var environmentServed = {
+}var CHUNK_REMOTE =
+/* html */
+"\n<!-- remote sidebar -->\n<div class=\"group--remote\" [class]=\"remoteClass\" *if=\"state.live\">\n\t<div class=\"agora-stream\" (toggleControl)=\"onToggleControl($event)\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\" [class]=\"{ spyed: state.spying == streamId, controlling: state.controlling == streamId }\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" (click)=\"onToggleControl(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"control\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" (click)=\"onToggleSpy(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--members\" *if=\"state.mode == 'virtual-tour'\">\n\t\t<div class=\"members\">\n\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t</div>\n\t\t<div class=\"credits\">\n\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n</div>\n<!-- remote screen -->\n<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t</div>\n\t</div>\n</div>\n";
+var CHUNK_SERVICE =
+/* html */
+"\n<!-- service -->\n<div class=\"group--service\">\n\t<button type=\"button\" class=\"btn--back\" [title]=\"'title_back' | label\" (click)=\"onBack($event)\" *if=\"isBackButtonVisible\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--view-mode\" [title]=\"'title_view_mode' | label\" (click)=\"toggleMode($event)\" *if=\"state.mode != 'embed'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'virtual-tour'\"><use xlink:href=\"#live-meeting\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'live-meeting'\"><use xlink:href=\"#virtual-tour\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--navmap\" [title]=\"'title_navmap' | label\" [class]=\"{ active: state.showNavmap }\" (click)=\"toggleNavmap($event)\" *if=\"navmap && state.mode != 'live-meeting'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navmap\"></use></svg>\n\t</button>\n</div>\n";
+var CHUNK_LOCAL =
+/* html */
+"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<button type=\"button\" class=\"btn--silence\" [title]=\"'title_silence' | label\" [class]=\"{ active: state.silencing }\" (click)=\"onToggleSilence()\" *if=\"state.role === 'publisher'\">\n\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" [class]=\"{ active: state.controlling == state.uid }\" (click)=\"onToggleControl(state.uid)\" *if=\"state.role == 'publisher'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t</button>\n\t<div class=\"agora-stream\" *if=\"!local\"></div>\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n\t<div class=\"agora-stream agora-stream--screen\" agora-stream [stream]=\"screen\" type=\"local\" *if=\"screen && hasScreenViewItem\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t</div>\n</div>\n";
+var CHUNK_LOCAL_SMART_DEVICE =
+/* html */
+"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n</div>\n";
+var CHUNK_CONTROLS =
+/* html */
+"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--screen\" [title]=\"'title_share_screen' | label\" [class]=\"{ active: screen }\" (click)=\"toggleScreen()\" *if=\"state.role == 'publisher' || state.role == 'attendee' || controlling\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#screen\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--chat\" [title]=\"'title_chat' | label\" [class]=\"{ active: state.chatDirty }\" (click)=\"toggleChat()\" *if=\"('chat' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#chat\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--navinfo\" [title]=\"'title_navinfo' | label\" [class]=\"{ active: state.showNavInfo }\" (click)=\"toggleNavInfo()\" *if=\"showNavInfoToggler\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navinfo\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
+var CHUNK_CONTROLS_SMART_DEVICE =
+/* html */
+"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
+var CHUNK_MEMBERS =
+/* html */
+"\n<!-- members -->\n<div class=\"group--members\" *if=\"state.mode == 'live-meeting'\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
+var CHUNK_MEMBERS_SMART_DEVICE =
+/* html */
+"\n<!-- members -->\n<div class=\"group--members\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
+var CHUNK_MEDIA =
+/* html */
+"\n<!-- media -->\n<div class=\"group--media\" media-player>\n\t<button type=\"button\" class=\"btn--play\" [title]=\"'title_play' | label\" (click)=\"onPlay()\" *if=\"!playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#play\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--pause\" [title]=\"'title_pause' | label\" (click)=\"onPause()\" *if=\"playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pause\"></use></svg>\n\t</button>\n\t<div class=\"track\" (click)=\"onTrack($event)\">\n\t\t<div class=\"track__progress\" [style]=\"{ transform: 'scale(' + this.progress + ', 1)'}\"></div>\n\t</div>\n</div>\n";
+var CHUNK_AR_VR =
+/* html */
+"\n<!-- ar-vr -->\n<div class=\"group--ar-vr\">\n\t<button type=\"button\" class=\"btn--ar\" [title]=\"'title_ar' | label\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t</button>\n\t<button type=\"button\" class=\"btn--vr\" [title]=\"'title_vr' | label\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t</button>\n</div>\n";
+var CHUNK_LIKE =
+/* html */
+"\n<!-- like -->\n<div class=\"group--heart\" *if=\"view && ('like' | flag)\">\n\t<svg class=\"love\" [class]=\"{ active: view.showLove }\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t<button type=\"button\" class=\"btn--heart\" [class]=\"{ active: view.showLove }\" (click)=\"addLike($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t\t<span class=\"badge\" [innerHTML]=\"view.likes\" *if=\"view.likes\"></span>\n\t</button>\n</div>\n<div class=\"group--spacer\" *if=\"!view || !('like' | flag)\"></div>\n";
+var CHUNK_CHAT =
+/* html */
+"\n<!-- chat -->\n<div class=\"group--chat\" *if=\"state.chat\" agora-chat (close)=\"onChatClose()\"></div>\n";
+var CHUNK_LOCK =
+/* html */
+"\n<!-- lock -->\n<div class=\"ui__lock\" [class]=\"{ spying: spying }\" *if=\"locked || controlling\"></div>\n";
+var CHUNK_NAVMAP =
+/* html */
+"\n<!-- navmap -->\n<div class=\"group--navmap\" *if=\"navmap && state.showNavmap && state.mode != 'live-meeting'\">\n\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (click)=\"onNavmapItem(item)\" *for=\"let item of navmap.items\">\n\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t</div>\n</div>\n";
+var CHUNK_BACKGROUND =
+/* html */
+"\n<!-- background -->\n<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n</div>\n";
+var CHUNK_LOGO =
+/* html */
+"\n<!-- logo -->\n<a class=\"btn--logo\" [routerLink]=\"'index' | route\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+var CHUNK_CREDITS =
+/* html */
+"\n<!-- credits -->\n<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+var CHUNK_LANGUAGE =
+/* html */
+"\n<!-- language -->\n<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n";
+var CHUNK_VIRTUAL_TOUR =
+/* html */
+"\n<!-- Virtual Tour -->\n<div class=\"ui virtual-tour\" [class]=\"uiClass\" *if=\"state.status == 'connected' && isVirtualTourUser\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t" + CHUNK_REMOTE + "\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t\t" + CHUNK_LOCAL + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS + "\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_MEMBERS + "\n\t" + CHUNK_CHAT + "\n\t" + CHUNK_LOCK + "\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+var CHUNK_SMART_DEVICE =
+/* html */
+"\n<!-- Smart Device -->\n<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t<div class=\"ui__body\"></div>\n\t<!-- remote sidebar -->\n\t<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t\t<div class=\"agora-stream\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<!-- remote screen -->\n\t<div class=\"group--remote-screen\" *if=\"remoteScreen && !hasScreenViewItem\">\n\t\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_LOCAL_SMART_DEVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS_SMART_DEVICE + "\n\t</div>\n\t" + CHUNK_MEMBERS_SMART_DEVICE + "\n</div>\n";
+var CHUNK_SELF_SERVICE_TOUR =
+/* html */
+"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+var CHUNK_EMBED =
+/* html */
+"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var environmentServed = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
   flags: {
@@ -4004,7 +4069,10 @@ _defineProperty(RouterService, "event$_", new rxjs.Subject());var AccessCodeComp
   return AccessCodeComponent;
 }(rxcomp.Component);
 AccessCodeComponent.meta = {
-  selector: '[access-code-component]'
+  selector: '[access-code-component]',
+  template:
+  /* html */
+  "\n\t\t<div class=\"page page--access-code\">\n\t\t\t" + CHUNK_BACKGROUND + "\n\t\t\t<!-- access-code -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_code_title' | label\"></div>\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<canvas class=\"qrcode\"></canvas>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t" + CHUNK_LOGO + "\n\t\t\t" + CHUNK_CREDITS + "\n\t\t\t" + CHUNK_LANGUAGE + "\n\t\t</div>\n\t"
 };var ControlsComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlsComponent, _Component);
 
@@ -4961,7 +5029,7 @@ AccessComponent.meta = {
   selector: '[access-component]',
   template:
   /*html*/
-  "\n\t\t<div class=\"page\">\n\t\t\t<!-- background -->\n\t\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t\t</div>\n\t\t\t<!-- access -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'access'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_title' | label\"></div>\n\t\t\t\t\t\t<div *if=\"'selfService' | flag\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onSelfServiceTourRequest($event)\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_tour' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_or' | label\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div *if=\"'guidedTourRequest' | flag\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onGuidedTourRequest($event)\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_guided_tour' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_has_meeting_id' | label\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onGuidedTourAccess($event)\">\n\t\t\t\t\t\t\t<span [innerHTML]=\"'access_guided_tour_cta' | label\"></span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<button type=\"button\" class=\"btn--absolute\" (click)=\"onLogin($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'access_cta' | label\"></span> <svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<!-- guided-tour -->\n\t\t\t<div class=\"ui ui--info\" *if=\"state.status == 'self-service-tour' || state.status == 'guided-tour'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t\t<div class=\"title\" *if=\"state.status == 'self-service-tour'\" [innerHTML]=\"'access_fill_fields' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"title\" *if=\"state.status == 'guided-tour'\" [innerHTML]=\"'access_guided_tour_request' | label\"></div>\n\t\t\t\t\t\t\t<!-- controls -->\n\t\t\t\t\t\t\t<div controls [formGroup]=\"form\" [fields]=\"fields\"></div>\n\t\t\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'access_take_part' | label\"></div>\n\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t\t\t<span *if=\"!form.submitted\" [innerHTML]=\"'access_send' | label\"></span>\n\t\t\t\t\t\t\t\t<span *if=\"form.submitted\" [innerHTML]=\"'access_sent' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- guided-tour success -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'guided-tour-success'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_request_sent' | label\"></div>\n\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_info_request' | label\"></div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- login -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_login' | label\"></div>\n\t\t\t\t\t\t\t<input name=\"checkField\" [formControl]=\"controls.checkField\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t\t\t\t\t\t<div control-text [control]=\"controls.username\" [label]=\"'access_username' | label\"></div>\n\t\t\t\t\t\t\t<div control-password [control]=\"controls.password\" [label]=\"'access_password' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'access_cta' | label\"></div>\n\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_cta' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"btn--logo\" (click)=\"onBack($event)\">\n\t\t\t\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t\t\t\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</div>\n\t\t\t<!-- credits -->\n\t\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t\t<!-- language -->\n\t\t\t<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"page page--access\">\n\t\t\t<!-- background -->\n\t\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t\t</div>\n\t\t\t<!-- access -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'access'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_title' | label\"></div>\n\t\t\t\t\t\t<div *if=\"'selfService' | flag\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onSelfServiceTourRequest($event)\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_tour' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_or' | label\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div *if=\"'guidedTourRequest' | flag\">\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onGuidedTourRequest($event)\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_guided_tour' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_has_meeting_id' | label\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--next\" (click)=\"onGuidedTourAccess($event)\">\n\t\t\t\t\t\t\t<span [innerHTML]=\"'access_guided_tour_cta' | label\"></span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<button type=\"button\" class=\"btn--absolute\" (click)=\"onLogin($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'access_cta' | label\"></span> <svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<!-- guided-tour -->\n\t\t\t<div class=\"ui ui--info\" *if=\"state.status == 'self-service-tour' || state.status == 'guided-tour'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t\t<div class=\"title\" *if=\"state.status == 'self-service-tour'\" [innerHTML]=\"'access_fill_fields' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"title\" *if=\"state.status == 'guided-tour'\" [innerHTML]=\"'access_guided_tour_request' | label\"></div>\n\t\t\t\t\t\t\t<!-- controls -->\n\t\t\t\t\t\t\t<div controls [formGroup]=\"form\" [fields]=\"fields\"></div>\n\t\t\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'access_take_part' | label\"></div>\n\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t\t\t<span *if=\"!form.submitted\" [innerHTML]=\"'access_send' | label\"></span>\n\t\t\t\t\t\t\t\t<span *if=\"form.submitted\" [innerHTML]=\"'access_sent' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- guided-tour success -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'guided-tour-success'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_request_sent' | label\"></div>\n\t\t\t\t\t\t<div class=\"info\" [innerHTML]=\"'access_info_request' | label\"></div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- login -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_login' | label\"></div>\n\t\t\t\t\t\t\t<input name=\"checkField\" [formControl]=\"controls.checkField\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t\t\t\t\t\t<div control-text [control]=\"controls.username\" [label]=\"'access_username' | label\"></div>\n\t\t\t\t\t\t\t<div control-password [control]=\"controls.password\" [label]=\"'access_password' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'access_cta' | label\"></div>\n\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_cta' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\">\n\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t\t\t\t<span [innerHTML]=\"'access_back' | label\"></span>\n\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</form>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"btn--logo\" (click)=\"onBack($event)\">\n\t\t\t\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t\t\t\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</div>\n\t\t\t<!-- credits -->\n\t\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t\t<!-- language -->\n\t\t\t<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n\t\t</div>\n\t"
 };var EmojiService = /*#__PURE__*/function () {
   function EmojiService() {}
 
@@ -22971,69 +23039,7 @@ ModelNavComponent.meta = {
   },
   outputs: ['over', 'out', 'down', 'link'],
   inputs: ['item', 'view', 'editor']
-};var CHUNK_REMOTE =
-/* html */
-"\n<!-- remote sidebar -->\n<div class=\"group--remote\" [class]=\"remoteClass\" *if=\"state.live\">\n\t<div class=\"agora-stream\" (toggleControl)=\"onToggleControl($event)\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\" [class]=\"{ spyed: state.spying == streamId, controlling: state.controlling == streamId }\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" (click)=\"onToggleControl(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"control\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" (click)=\"onToggleSpy(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--members\" *if=\"state.mode == 'virtual-tour'\">\n\t\t<div class=\"members\">\n\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t</div>\n\t\t<div class=\"credits\">\n\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n</div>\n<!-- remote screen -->\n<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t</div>\n\t</div>\n</div>\n";
-var CHUNK_SERVICE =
-/* html */
-"\n<!-- service -->\n<div class=\"group--service\">\n\t<button type=\"button\" class=\"btn--back\" [title]=\"'title_back' | label\" (click)=\"onBack($event)\" *if=\"isBackButtonVisible\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--view-mode\" [title]=\"'title_view_mode' | label\" (click)=\"toggleMode($event)\" *if=\"state.mode != 'embed'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'virtual-tour'\"><use xlink:href=\"#live-meeting\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'live-meeting'\"><use xlink:href=\"#virtual-tour\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--navmap\" [title]=\"'title_navmap' | label\" [class]=\"{ active: state.showNavmap }\" (click)=\"toggleNavmap($event)\" *if=\"navmap && state.mode != 'live-meeting'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navmap\"></use></svg>\n\t</button>\n</div>\n";
-var CHUNK_LOCAL =
-/* html */
-"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<button type=\"button\" class=\"btn--silence\" [title]=\"'title_silence' | label\" [class]=\"{ active: state.silencing }\" (click)=\"onToggleSilence()\" *if=\"state.role === 'publisher'\">\n\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" [class]=\"{ active: state.controlling == state.uid }\" (click)=\"onToggleControl(state.uid)\" *if=\"state.role == 'publisher'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t</button>\n\t<div class=\"agora-stream\" *if=\"!local\"></div>\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n\t<div class=\"agora-stream agora-stream--screen\" agora-stream [stream]=\"screen\" type=\"local\" *if=\"screen && hasScreenViewItem\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t</div>\n</div>\n";
-var CHUNK_LOCAL_SMART_DEVICE =
-/* html */
-"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n</div>\n";
-var CHUNK_CONTROLS =
-/* html */
-"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--screen\" [title]=\"'title_share_screen' | label\" [class]=\"{ active: screen }\" (click)=\"toggleScreen()\" *if=\"state.role == 'publisher' || state.role == 'attendee' || controlling\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#screen\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--chat\" [title]=\"'title_chat' | label\" [class]=\"{ active: state.chatDirty }\" (click)=\"toggleChat()\" *if=\"('chat' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#chat\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--navinfo\" [title]=\"'title_navinfo' | label\" [class]=\"{ active: state.showNavInfo }\" (click)=\"toggleNavInfo()\" *if=\"showNavInfoToggler\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navinfo\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
-var CHUNK_CONTROLS_SMART_DEVICE =
-/* html */
-"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
-var CHUNK_MEMBERS =
-/* html */
-"\n<!-- members -->\n<div class=\"group--members\" *if=\"state.mode == 'live-meeting'\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
-var CHUNK_MEMBERS_SMART_DEVICE =
-/* html */
-"\n<!-- members -->\n<div class=\"group--members\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
-var CHUNK_MEDIA =
-/* html */
-"\n<!-- media -->\n<div class=\"group--media\" media-player>\n\t<button type=\"button\" class=\"btn--play\" [title]=\"'title_play' | label\" (click)=\"onPlay()\" *if=\"!playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#play\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--pause\" [title]=\"'title_pause' | label\" (click)=\"onPause()\" *if=\"playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pause\"></use></svg>\n\t</button>\n\t<div class=\"track\" (click)=\"onTrack($event)\">\n\t\t<div class=\"track__progress\" [style]=\"{ transform: 'scale(' + this.progress + ', 1)'}\"></div>\n\t</div>\n</div>\n";
-var CHUNK_AR_VR =
-/* html */
-"\n<!-- ar-vr -->\n<div class=\"group--ar-vr\">\n\t<button type=\"button\" class=\"btn--ar\" [title]=\"'title_ar' | label\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t</button>\n\t<button type=\"button\" class=\"btn--vr\" [title]=\"'title_vr' | label\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t</button>\n</div>\n";
-var CHUNK_LIKE =
-/* html */
-"\n<!-- like -->\n<div class=\"group--heart\" *if=\"view && ('like' | flag)\">\n\t<svg class=\"love\" [class]=\"{ active: view.showLove }\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t<button type=\"button\" class=\"btn--heart\" [class]=\"{ active: view.showLove }\" (click)=\"addLike($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t\t<span class=\"badge\" [innerHTML]=\"view.likes\" *if=\"view.likes\"></span>\n\t</button>\n</div>\n<div class=\"group--spacer\" *if=\"!view || !('like' | flag)\"></div>\n";
-var CHUNK_CHAT =
-/* html */
-"\n<!-- chat -->\n<div class=\"group--chat\" *if=\"state.chat\" agora-chat (close)=\"onChatClose()\"></div>\n";
-var CHUNK_LOCK =
-/* html */
-"\n<!-- lock -->\n<div class=\"ui__lock\" [class]=\"{ spying: spying }\" *if=\"locked || controlling\"></div>\n";
-var CHUNK_NAVMAP =
-/* html */
-"\n<!-- navmap -->\n<div class=\"group--navmap\" *if=\"navmap && state.showNavmap && state.mode != 'live-meeting'\">\n\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (click)=\"onNavmapItem(item)\" *for=\"let item of navmap.items\">\n\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t</div>\n</div>\n";
-var CHUNK_LOGO =
-/* html */
-"\n<!-- logo -->\n<a class=\"btn--logo\" [routerLink]=\"'index' | route\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
-var CHUNK_CREDITS =
-/* html */
-"\n<!-- credits -->\n<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
-var CHUNK_LANGUAGE =
-/* html */
-"\n<!-- language -->\n<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n";
-var CHUNK_VIRTUAL_TOUR =
-/* html */
-"\n<!-- Virtual Tour -->\n<div class=\"ui virtual-tour\" [class]=\"uiClass\" *if=\"state.status == 'connected' && isVirtualTourUser\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t" + CHUNK_REMOTE + "\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t\t" + CHUNK_LOCAL + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS + "\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_MEMBERS + "\n\t" + CHUNK_CHAT + "\n\t" + CHUNK_LOCK + "\n\t" + CHUNK_NAVMAP + "\n</div>\n";
-var CHUNK_SMART_DEVICE =
-/* html */
-"\n<!-- Smart Device -->\n<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t<div class=\"ui__body\"></div>\n\t<!-- remote sidebar -->\n\t<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t\t<div class=\"agora-stream\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<!-- remote screen -->\n\t<div class=\"group--remote-screen\" *if=\"remoteScreen && !hasScreenViewItem\">\n\t\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_LOCAL_SMART_DEVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS_SMART_DEVICE + "\n\t</div>\n\t" + CHUNK_MEMBERS_SMART_DEVICE + "\n</div>\n";
-var CHUNK_SELF_SERVICE_TOUR =
-/* html */
-"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
-var CHUNK_EMBED =
-/* html */
-"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var AgoraComponent = /*#__PURE__*/function (_Component) {
+};var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
 
   function AgoraComponent() {
@@ -24292,7 +24298,7 @@ AgoraComponent.meta = {
   selector: '[agora-component]',
   template:
   /* html */
-  "\n\t<div class=\"page\">\n\t\t<!-- background -->\n\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t</div>\n\t\t<!-- Status Checklist -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'checklist'\" [agora-checklist] (checked)=\"onChecked($event)\"></div>\n\t\t<!-- Status Link -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'link'\" [agora-link] (link)=\"onLink($event)\"></div>\n\t\t<!-- Status Login -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\" [agora-login] (login)=\"onLogin($event)\"></div>\n\t\t<!-- Status Name -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')\" [agora-name] (name)=\"onName($event)\"></div>\n\t\t<!-- Status Device -->\n\t\t<div class=\"ui ui--info\" *if=\"state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')\" [agora-device] (enter)=\"onEnter($event)\"></div>\n\t\t" + CHUNK_VIRTUAL_TOUR + "\n\t\t" + CHUNK_SMART_DEVICE + "\n\t\t" + CHUNK_SELF_SERVICE_TOUR + "\n\t\t" + CHUNK_EMBED + "\n\t\t" + CHUNK_LOGO + "\n\t\t" + CHUNK_CREDITS + "\n\t\t" + CHUNK_LANGUAGE + "\n\t</div>\n\t"
+  "\n\t<div class=\"page page--agora\">\n\t\t" + CHUNK_BACKGROUND + "\n\t\t<!-- Status Checklist -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'checklist'\" [agora-checklist] (checked)=\"onChecked($event)\"></div>\n\t\t<!-- Status Link -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'link'\" [agora-link] (link)=\"onLink($event)\"></div>\n\t\t<!-- Status Login -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\" [agora-login] (login)=\"onLogin($event)\"></div>\n\t\t<!-- Status Name -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')\" [agora-name] (name)=\"onName($event)\"></div>\n\t\t<!-- Status Device -->\n\t\t<div class=\"ui ui--info\" *if=\"state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')\" [agora-device] (enter)=\"onEnter($event)\"></div>\n\t\t" + CHUNK_VIRTUAL_TOUR + "\n\t\t" + CHUNK_SMART_DEVICE + "\n\t\t" + CHUNK_SELF_SERVICE_TOUR + "\n\t\t" + CHUNK_EMBED + "\n\t\t" + CHUNK_LOGO + "\n\t\t" + CHUNK_CREDITS + "\n\t\t" + CHUNK_LANGUAGE + "\n\t</div>\n\t"
 };var AssetService = /*#__PURE__*/function () {
   function AssetService() {}
 
@@ -26590,7 +26596,7 @@ TryInARComponent.meta = {
   selector: '[try-in-ar]',
   template:
   /* html */
-  "\n\t\t<div *if=\"platform != 'ios'\">\n\t\t\t<script type=\"module\" src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js\"></script>\n\t\t\t<script nomodule src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js\"></script>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"!viewId\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Unknown url.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"missingAr\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Missing AR in view.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"missingUsdz\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Missing .usdz in ar.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"ui\" *if=\"missingGltf\">\n\t\t\t<div class=\"group--info\">\n\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t<div class=\"info\">Missing .gltf in ar.</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"page page--try-in-ar\">\n\t\t\t<div *if=\"platform != 'ios'\">\n\t\t\t\t<script type=\"module\" src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js\"></script>\n\t\t\t\t<script nomodule src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js\"></script>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"!viewId\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Unknown url.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingAr\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing AR in view.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingUsdz\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing .usdz in ar.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingGltf\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing .gltf in ar.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
 };var AppComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AppComponent, _Component);
 
@@ -26605,24 +26611,20 @@ TryInARComponent.meta = {
       name: 'index',
       path: '/',
       forwardTo: 'it'
-    }, {
+    }, // it
+    {
       name: 'it',
       path: '/it',
       defaultParams: {
+        lang: 'it',
         mode: 'access'
       },
       factory: AccessComponent
     }, {
-      name: 'it.meeting',
-      path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support',
-      defaultParams: {
-        mode: 'guidedTour'
-      },
-      factory: AgoraComponent
-    }, {
       name: 'it.access',
       path: '/accesso',
       defaultParams: {
+        lang: 'it',
         mode: 'access'
       },
       factory: AccessComponent
@@ -26630,13 +26632,23 @@ TryInARComponent.meta = {
       name: 'it.accessCode',
       path: '/codice-di-accesso',
       defaultParams: {
+        lang: 'it',
         mode: 'accessCode'
       },
       factory: AccessCodeComponent
     }, {
+      name: 'it.meeting',
+      path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support',
+      defaultParams: {
+        lang: 'it',
+        mode: 'guidedTour'
+      },
+      factory: AgoraComponent
+    }, {
       name: 'it.guidedTour',
       path: '/tour-guidato',
       defaultParams: {
+        lang: 'it',
         mode: 'guidedTour'
       },
       factory: AgoraComponent
@@ -26644,6 +26656,7 @@ TryInARComponent.meta = {
       name: 'it.selfServiceTour',
       path: '/tour-self-service',
       defaultParams: {
+        lang: 'it',
         mode: 'selfServiceTour'
       },
       factory: AgoraComponent
@@ -26651,13 +26664,15 @@ TryInARComponent.meta = {
       name: 'it.embed',
       path: '/embed',
       defaultParams: {
+        lang: 'it',
         mode: 'embed'
       },
       factory: AgoraComponent
     }, {
       name: 'it.tryInAr',
-      path: '/try-in-ar',
+      path: '/prova-in-ar',
       defaultParams: {
+        lang: 'it',
         mode: 'tryInAr'
       },
       factory: TryInARComponent
@@ -26665,18 +26680,84 @@ TryInARComponent.meta = {
       name: 'it.editor',
       path: '/editor',
       defaultParams: {
+        lang: 'it',
         mode: 'editor'
       },
       factory: EditorComponent
-    }, {
+    }, // en
+    {
       name: 'en',
       path: '/en',
       defaultParams: {
+        lang: 'en',
         mode: 'access'
       },
       factory: AccessComponent
-    } // { path: '**', component: AccessComponent },
-    ];
+    }, {
+      name: 'en.access',
+      path: '/access',
+      defaultParams: {
+        lang: 'en',
+        mode: 'access'
+      },
+      factory: AccessComponent
+    }, {
+      name: 'en.accessCode',
+      path: '/accesso-code',
+      defaultParams: {
+        lang: 'en',
+        mode: 'accessCode'
+      },
+      factory: AccessCodeComponent
+    }, {
+      name: 'en.meeting',
+      path: '/guided-tour?:link&:name&:role&:viewId&:pathId&:support',
+      defaultParams: {
+        lang: 'en',
+        mode: 'guidedTour'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'en.guidedTour',
+      path: '/guided-tour',
+      defaultParams: {
+        lang: 'en',
+        mode: 'guidedTour'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'en.selfServiceTour',
+      path: '/self-service-tour',
+      defaultParams: {
+        lang: 'en',
+        mode: 'selfServiceTour'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'en.embed',
+      path: '/embed',
+      defaultParams: {
+        lang: 'en',
+        mode: 'embed'
+      },
+      factory: AgoraComponent
+    }, {
+      name: 'en.tryInAr',
+      path: '/try-in-ar',
+      defaultParams: {
+        lang: 'en',
+        mode: 'tryInAr'
+      },
+      factory: TryInARComponent
+    }, {
+      name: 'en.editor',
+      path: '/editor',
+      defaultParams: {
+        lang: 'en',
+        mode: 'editor'
+      },
+      factory: EditorComponent
+    }];
 
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;

@@ -11,17 +11,26 @@ export default class AppComponent extends Component {
 	onInit() {
 		this.routes = [
 			{ name: 'index', path: '/', forwardTo: 'it' },
-			{ name: 'it', path: '/it', defaultParams: { mode: 'access' }, factory: AccessComponent },
-			{ name: 'it.meeting', path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support', defaultParams: { mode: 'guidedTour' }, factory: AgoraComponent },
-			{ name: 'it.access', path: '/accesso', defaultParams: { mode: 'access' }, factory: AccessComponent },
-			{ name: 'it.accessCode', path: '/codice-di-accesso', defaultParams: { mode: 'accessCode' }, factory: AccessCodeComponent },
-			{ name: 'it.guidedTour', path: '/tour-guidato', defaultParams: { mode: 'guidedTour' }, factory: AgoraComponent },
-			{ name: 'it.selfServiceTour', path: '/tour-self-service', defaultParams: { mode: 'selfServiceTour' }, factory: AgoraComponent },
-			{ name: 'it.embed', path: '/embed', defaultParams: { mode: 'embed' }, factory: AgoraComponent },
-			{ name: 'it.tryInAr', path: '/try-in-ar', defaultParams: { mode: 'tryInAr' }, factory: TryInARComponent },
-			{ name: 'it.editor', path: '/editor', defaultParams: { mode: 'editor' }, factory: EditorComponent },
-			{ name: 'en', path: '/en', defaultParams: { mode: 'access' }, factory: AccessComponent },
-			// { path: '**', component: AccessComponent },
+			// it
+			{ name: 'it', path: '/it', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },
+			{ name: 'it.access', path: '/accesso', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },
+			{ name: 'it.accessCode', path: '/codice-di-accesso', defaultParams: { lang: 'it', mode: 'accessCode' }, factory: AccessCodeComponent },
+			{ name: 'it.meeting', path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support', defaultParams: { lang: 'it', mode: 'guidedTour' }, factory: AgoraComponent },
+			{ name: 'it.guidedTour', path: '/tour-guidato', defaultParams: { lang: 'it', mode: 'guidedTour' }, factory: AgoraComponent },
+			{ name: 'it.selfServiceTour', path: '/tour-self-service', defaultParams: { lang: 'it', mode: 'selfServiceTour' }, factory: AgoraComponent },
+			{ name: 'it.embed', path: '/embed', defaultParams: { lang: 'it', mode: 'embed' }, factory: AgoraComponent },
+			{ name: 'it.tryInAr', path: '/prova-in-ar', defaultParams: { lang: 'it', mode: 'tryInAr' }, factory: TryInARComponent },
+			{ name: 'it.editor', path: '/editor', defaultParams: { lang: 'it', mode: 'editor' }, factory: EditorComponent },
+			// en
+			{ name: 'en', path: '/en', defaultParams: { lang: 'en', mode: 'access' }, factory: AccessComponent },
+			{ name: 'en.access', path: '/access', defaultParams: { lang: 'en', mode: 'access' }, factory: AccessComponent },
+			{ name: 'en.accessCode', path: '/accesso-code', defaultParams: { lang: 'en', mode: 'accessCode' }, factory: AccessCodeComponent },
+			{ name: 'en.meeting', path: '/guided-tour?:link&:name&:role&:viewId&:pathId&:support', defaultParams: { lang: 'en', mode: 'guidedTour' }, factory: AgoraComponent },
+			{ name: 'en.guidedTour', path: '/guided-tour', defaultParams: { lang: 'en', mode: 'guidedTour' }, factory: AgoraComponent },
+			{ name: 'en.selfServiceTour', path: '/self-service-tour', defaultParams: { lang: 'en', mode: 'selfServiceTour' }, factory: AgoraComponent },
+			{ name: 'en.embed', path: '/embed', defaultParams: { lang: 'en', mode: 'embed' }, factory: AgoraComponent },
+			{ name: 'en.tryInAr', path: '/try-in-ar', defaultParams: { lang: 'en', mode: 'tryInAr' }, factory: TryInARComponent },
+			{ name: 'en.editor', path: '/editor', defaultParams: { lang: 'en', mode: 'editor' }, factory: EditorComponent },
 		];
 		const { node } = getContext(this);
 		node.classList.remove('hidden');

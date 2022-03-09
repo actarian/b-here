@@ -27,7 +27,7 @@ import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoade
 import ModelNavComponent from '../world/model/model-nav.component';
 import VRService from '../world/vr.service';
 import { AgoraChecklistService } from './agora-checklist.service';
-import { CHUNK_CREDITS, CHUNK_EMBED, CHUNK_LANGUAGE, CHUNK_LOGO, CHUNK_SELF_SERVICE_TOUR, CHUNK_SMART_DEVICE, CHUNK_VIRTUAL_TOUR } from './agora.component.chunks';
+import { CHUNK_BACKGROUND, CHUNK_CREDITS, CHUNK_EMBED, CHUNK_LANGUAGE, CHUNK_LOGO, CHUNK_SELF_SERVICE_TOUR, CHUNK_SMART_DEVICE, CHUNK_VIRTUAL_TOUR } from './agora.component.chunks';
 import AgoraService from './agora.service';
 import { AgoraStatus, MessageType, UIMode } from './agora.types';
 
@@ -1058,12 +1058,8 @@ export default class AgoraComponent extends Component {
 AgoraComponent.meta = {
 	selector: '[agora-component]',
 	template: /* html */`
-	<div class="page">
-		<!-- background -->
-		<div class="background" [class]="{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }" *if="state.status != 'connected'">
-			<img [src]="'background.image' | env" *if="'background.image' | env" />
-			<video [src]="'background.video' | env" *if="'background.video' | env" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
-		</div>
+	<div class="page page--agora">
+		${CHUNK_BACKGROUND}
 		<!-- Status Checklist -->
 		<div class="ui ui--info ui--info-centered" *if="state.status == 'checklist'" [agora-checklist] (checked)="onChecked($event)"></div>
 		<!-- Status Link -->
