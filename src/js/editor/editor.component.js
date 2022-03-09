@@ -299,7 +299,7 @@ export default class EditorComponent extends Component {
 		).subscribe(response => {
 			// console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
 			this.pushChanges();
-		}, error => console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error));
+		}, error => console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error, this.view, event.item, event.item.payload));
 	}
 
 	onResizeEnd(event) {
@@ -358,7 +358,7 @@ export default class EditorComponent extends Component {
 							case ViewItemType.Plane.name:
 							case ViewItemType.CurvedPlane.name:
 							case ViewItemType.Model.name:
-								const item = Object.assign({}, event.data);
+								const item = event.data; // Object.assign({}, event.data);
 								const tile = EditorService.getTile(this.view);
 								if (tile) {
 									const navs = tile.navs || [];
