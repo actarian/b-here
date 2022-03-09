@@ -1,8 +1,8 @@
 import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
-import { RouterService } from 'rxcomp-router';
 import { first, takeUntil } from 'rxjs/operators';
+import { RouterService } from '../../../../../../rxcomp-router';
 import { environment, STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
 import { UserService } from '../user/user.service';
@@ -10,6 +10,7 @@ import { UserService } from '../user/user.service';
 export default class AccessComponent extends Component {
 
 	onInit() {
+		console.log('AccessComponent.onInit');
 		this.state = {
 			status: 'access',
 		};
@@ -44,17 +45,9 @@ export default class AccessComponent extends Component {
 		UserService.logout$().pipe(
 			first(),
 		).subscribe(() => {
-			RouterService.setRouterLink('/tour-guidato');
+			RouterService.setRouterLink('/it/tour-guidato');
 			// RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
-			/*
-			static navigate(routerLink: RouterLink, extras: INavigationExtras = { skipLocationChange: false }): void {
-				// navigate(['items'], { relativeTo: this.route });
-				// navigate(['/heroes', { id: heroId }]);
-				// console.log('RouterService.navigate', routerLink);
-				this.events$.next(new NavigationStart({ routerLink, trigger: 'imperative' }));
-			}
-			window.location.href = environment.url.guidedTour;
-			*/
+			// window.location.href = environment.url.guidedTour;
 		});
 	}
 
@@ -192,10 +185,12 @@ export default class AccessComponent extends Component {
 						this.pushChanges();
 						break;
 					case 'self-service-tour':
-						window.location.href = environment.url.selfServiceTour;
+						RouterService.setRouterLink(environment.url.selfServiceTour);
+						// window.location.href = environment.url.selfServiceTour;
 						break;
 					case 'login':
-						window.location.href = environment.url.guidedTour;
+						RouterService.setRouterLink(environment.url.guidedTour);
+						// window.location.href = environment.url.guidedTour;
 						break;
 				}
 				this.form.reset();

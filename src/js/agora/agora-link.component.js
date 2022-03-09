@@ -129,69 +129,75 @@ AgoraLinkComponent.meta = {
 	selector: '[agora-link]',
 	outputs: ['link'],
 	template: /* html */`
-		<div class="group--info" *if="form">
-			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
-				<div class="group--info__content stagger--childs">
-					<div class="stagger--childs" *if="state.role !== 'publisher'">
-						<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
-							<label [innerHTML]="'bhere_insert_meeting_id' | label"></label>
-							<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.id.value)" *if="controls.id.valid">
-								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-							</div>
+	<div class="group--info" *if="form">
+		<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
+			<div class="group--info__content stagger--childs">
+				<div class="stagger--childs" *if="state.role !== 'publisher'">
+					<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
+						<label [innerHTML]="'bhere_insert_meeting_id' | label"></label>
+						<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" />
+						<div class="control--addon" (click)="onCopyToClipBoard(controls.id.value)" *if="controls.id.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
 						</div>
 					</div>
-					<div class="stagger--childs" *if="state.role === 'publisher'">
-						<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
-							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_insert_meeting_id' | label"></span></label>
-							<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" (change)="onInputDidChange($event)" />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.id.value)" *if="controls.id.valid">
-								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-							</div>
-						</div>
-						<div class="group--form group--form--addon addon" *if="('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null">
-							<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_attendee_meeting_id' | label"></span></label>
-							<input type="text" class="control--text" [formControl]="controls.idAttendee" [placeholder]="'bhere_attendee_meeting_id' | label" readonly />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.idAttendee.value)" *if="controls.idAttendee.valid">
-								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-							</div>
-						</div>
-						<div class="group--form group--form--addon addon" *if="('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null">
-							<label [innerHTML]="'bhere_streamer_meeting_id' | label"></label>
-							<input type="text" class="control--text" [formControl]="controls.idStreamer" [placeholder]="'bhere_streamer_meeting_id' | label" readonly />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.idStreamer.value)" *if="controls.idStreamer.valid">
-								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-							</div>
-						</div>
-						<div class="group--form group--form--addon addon" *if="('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null">
-							<label [innerHTML]="'bhere_viewer_meeting_id' | label"></label>
-							<input type="text" class="control--text" [formControl]="controls.idViewer" [placeholder]="'bhere_viewer_meeting_id' | label" readonly />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.idViewer.value)" *if="controls.idViewer.valid">
-								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-							</div>
-						</div>
-						<div class="group--form group--form--addon addon" *if="('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null">
-							<label [innerHTML]="'bhere_smart_device_meeting_id' | label"></label>
-							<input type="text" class="control--text" [formControl]="controls.idSmartDevice" [placeholder]="'bhere_smart_device_meeting_id' | label" readonly />
-							<div class="control--addon" (click)="onCopyToClipBoard(controls.idSmartDevice.value, true)" *if="controls.idSmartDevice.valid">
-								<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
-							</div>
-						</div>
-					</div>
-					<div class="info" *if="controls.id.errors.required" [innerHTML]="'bhere_insert_meeting_id' | label"></div>
-					<div class="info" *if="controls.id.errors.pattern" [innerHTML]="'bhere_invalid_meeting_id' | label"></div>
-					<div class="info" *if="isValid()" [innerHTML]="'bhere_take_part_meeting' | label"></div>
-					<button type="button" class="btn--generate" *if="state.role == 'publisher'" (click)="onGenerateMeetingId($event)">
-						<span [innerHTML]="'bhere_generate_meeting_id' | label"></span>
-					</button>
-					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
-						<span [innerHTML]="'bhere_take_part' | label"></span>
-					</button>
 				</div>
-			</form>
-		</div>
-		<a [href]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-			<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-		</a>
+				<div class="stagger--childs" *if="state.role === 'publisher'">
+					<!-- PATH -->
+					<div control-custom-select [control]="controls.path" [label]="'bhere_path' | label" *if="('usePaths' | flag) && paths.length"></div>
+					<!--IDS -->
+					<div class="group--form group--form--addon" [class]="{ required: controls.id.validators.length, 'addon': controls.id.valid }">
+						<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_insert_meeting_id' | label"></span></label>
+						<input type="text" class="control--text" [formControl]="controls.id" [placeholder]="'bhere_meeting_id' | label" (change)="onInputDidChange($event)" />
+						<div class="control--addon" (click)="onCopyToClipBoard(controls.id.value)" *if="controls.id.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+						</div>
+					</div>
+					<div class="group--form group--form--addon addon" *if="('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null">
+						<label><svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg> <span [innerHTML]="'bhere_attendee_meeting_id' | label"></span></label>
+						<input type="text" class="control--text" [formControl]="controls.idAttendee" [placeholder]="'bhere_attendee_meeting_id' | label" readonly />
+						<div class="control--addon" (click)="onCopyToClipBoard(controls.idAttendee.value)" *if="controls.idAttendee.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+						</div>
+					</div>
+					<div class="group--form group--form--addon addon" *if="('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null">
+						<label [innerHTML]="'bhere_streamer_meeting_id' | label"></label>
+						<input type="text" class="control--text" [formControl]="controls.idStreamer" [placeholder]="'bhere_streamer_meeting_id' | label" readonly />
+						<div class="control--addon" (click)="onCopyToClipBoard(controls.idStreamer.value)" *if="controls.idStreamer.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+						</div>
+					</div>
+					<div class="group--form group--form--addon addon" *if="('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null">
+						<label [innerHTML]="'bhere_viewer_meeting_id' | label"></label>
+						<input type="text" class="control--text" [formControl]="controls.idViewer" [placeholder]="'bhere_viewer_meeting_id' | label" readonly />
+						<div class="control--addon" (click)="onCopyToClipBoard(controls.idViewer.value)" *if="controls.idViewer.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+						</div>
+					</div>
+					<div class="group--form group--form--addon addon" *if="('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null">
+						<label [innerHTML]="'bhere_smart_device_meeting_id' | label"></label>
+						<input type="text" class="control--text" [formControl]="controls.idSmartDevice" [placeholder]="'bhere_smart_device_meeting_id' | label" readonly />
+						<div class="control--addon" (click)="onCopyToClipBoard(controls.idSmartDevice.value, true)" *if="controls.idSmartDevice.valid">
+							<svg class="copy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#copy"></use></svg>
+						</div>
+					</div>
+				</div>
+				<div class="info" *if="controls.id.errors.required" [innerHTML]="'bhere_insert_meeting_id' | label"></div>
+				<div class="info" *if="controls.id.errors.pattern" [innerHTML]="'bhere_invalid_meeting_id' | label"></div>
+				<div class="info" *if="isValid()" [innerHTML]="'bhere_take_part_meeting' | label"></div>
+				<button type="button" class="btn--generate" *if="state.role == 'publisher'" (click)="onGenerateMeetingId($event)">
+					<span [innerHTML]="'bhere_generate_meeting_id' | label"></span>
+				</button>
+				<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+					<span [innerHTML]="'bhere_take_part' | label"></span>
+				</button>
+				<a [href]="selfServiceTourUrl" class="btn--secondary" *if="state.role === 'publisher'">
+					<span [innerHTML]="'bhere_self_service' | label"></span>
+				</a>
+			</div>
+		</form>
+	</div>
+	<a [routerLink]="'editor' | slug" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
+		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
+	</a>
 	`
 };

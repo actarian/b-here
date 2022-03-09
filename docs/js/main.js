@@ -131,6 +131,10 @@ function _readOnlyError(name) {
 	}, fn(module, module.exports), module.exports;
 }
 
+function getCjsExportFromNamespace (n) {
+	return n && n['default'] || n;
+}
+
 function commonjsRequire () {
 	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 }/*! *****************************************************************************
@@ -574,7 +578,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 
   privateMap.set(receiver, value);
   return value;
-}var tslib_es6=/*#__PURE__*/Object.freeze({__proto__:null,__extends: __extends,get __assign(){return _assign},__rest: __rest,__decorate: __decorate,__param: __param,__metadata: __metadata,__awaiter: __awaiter,__generator: __generator,__createBinding: __createBinding,__exportStar: __exportStar,__values: __values,__read: __read,__spread: __spread,__spreadArrays: __spreadArrays,__await: __await,__asyncGenerator: __asyncGenerator,__asyncDelegator: __asyncDelegator,__asyncValues: __asyncValues,__makeTemplateObject: __makeTemplateObject,__importStar: __importStar,__importDefault: __importDefault,__classPrivateFieldGet: __classPrivateFieldGet,__classPrivateFieldSet: __classPrivateFieldSet});var view = createCommonjsModule(function (module, exports) {
+}var tslib_es6=/*#__PURE__*/Object.freeze({__proto__:null,__extends: __extends,get __assign(){return _assign},__rest: __rest,__decorate: __decorate,__param: __param,__metadata: __metadata,__awaiter: __awaiter,__generator: __generator,__createBinding: __createBinding,__exportStar: __exportStar,__values: __values,__read: __read,__spread: __spread,__spreadArrays: __spreadArrays,__await: __await,__asyncGenerator: __asyncGenerator,__asyncDelegator: __asyncDelegator,__asyncValues: __asyncValues,__makeTemplateObject: __makeTemplateObject,__importStar: __importStar,__importDefault: __importDefault,__classPrivateFieldGet: __classPrivateFieldGet,__classPrivateFieldSet: __classPrivateFieldSet});var tslib_1 = getCjsExportFromNamespace(tslib_es6);var view = createCommonjsModule(function (module, exports) {
 
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -601,7 +605,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var OnceTransition =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(OnceTransition, _super);
+    tslib_1.__extends(OnceTransition, _super);
 
     function OnceTransition() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -615,7 +619,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var EnterTransition =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(EnterTransition, _super);
+    tslib_1.__extends(EnterTransition, _super);
 
     function EnterTransition() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -629,7 +633,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var LeaveTransition =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(LeaveTransition, _super);
+    tslib_1.__extends(LeaveTransition, _super);
 
     function LeaveTransition() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -643,7 +647,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var View =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(View, _super);
+    tslib_1.__extends(View, _super);
 
     function View() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -787,7 +791,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
       var matches = url.matchAll(regExp);
 
       try {
-        for (var matches_1 = tslib_es6.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
+        for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
           var match = matches_1_1.value;
           var g1 = match[1];
           var g2 = match[2];
@@ -982,7 +986,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
               return x.path === state;
             });
           } else {
-            snapshot = new routeSnapshot.RouteSnapshot(tslib_es6.__assign(tslib_es6.__assign({}, route), {
+            snapshot = new routeSnapshot.RouteSnapshot(tslib_1.__assign(tslib_1.__assign({}, route), {
               initialUrl: state.initialUrl,
               urlAfterRedirects: state.urlAfterRedirects,
               extractedUrl: state.extractedUrl,
@@ -1020,7 +1024,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var LocationStrategyPath =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(LocationStrategyPath, _super);
+    tslib_1.__extends(LocationStrategyPath, _super);
 
     function LocationStrategyPath() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1034,7 +1038,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var LocationStrategyHash =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(LocationStrategyHash, _super);
+    tslib_1.__extends(LocationStrategyHash, _super);
 
     function LocationStrategyHash() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1076,7 +1080,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
       var matches = url.matchAll(regExp);
 
       try {
-        for (var matches_2 = tslib_es6.__values(matches), matches_2_1 = matches_2.next(); !matches_2_1.done; matches_2_1 = matches_2.next()) {
+        for (var matches_2 = tslib_1.__values(matches), matches_2_1 = matches_2.next(); !matches_2_1.done; matches_2_1 = matches_2.next()) {
           var match = matches_2_1.value;
           var g1 = match[1];
           var g2 = match[2];
@@ -1169,7 +1173,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
       var subscription;
 
       try {
-        var result = callback.apply(void 0, tslib_es6.__spread(args));
+        var result = callback.apply(void 0, tslib_1.__spread(args));
 
         if (rxjs__default.isObservable(result)) {
           subscription = result.subscribe(function (result) {
@@ -1363,12 +1367,13 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
         segments.push(new routeSegment.RouteSegment(this.path));
         this.matcher = new RegExp('^.*$');
       } else {
-        var matchers = ["^(../|./|//|/)?"];
-        var regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
+        var matchers = [];
+        var regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g; // const regExp: RegExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/\?]+)\/?|\:([^\/]+)\/?|\?(.+)/g;
+
         var matches = this.path.matchAll(regExp);
 
         try {
-          for (var matches_1 = tslib_es6.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
+          for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
             var match = matches_1_1.value;
             var g1 = match[1];
             var g2 = match[2];
@@ -1380,7 +1385,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
               matchers.push(g2);
               segments.push(new routeSegment.RouteSegment(g2));
             } else if (g3) {
-              matchers.push('(\/[^\/]+)');
+              matchers.push('([^\/]+)');
               var param = {};
               param[g3] = null;
               segments.push(new routeSegment.RouteSegment('', param));
@@ -1402,7 +1407,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
           matchers.push('$');
         }
 
-        var regexp = matchers.join('');
+        var regexp = '^(\.\.\/|\.\/|\/\/|\/)?' + matchers.join('\/');
         this.matcher = new RegExp(regexp);
       }
 
@@ -1508,7 +1513,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var NavigationStart =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(NavigationStart, _super);
+    tslib_1.__extends(NavigationStart, _super);
 
     function NavigationStart() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1522,7 +1527,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var RoutesRecognized =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RoutesRecognized, _super);
+    tslib_1.__extends(RoutesRecognized, _super);
 
     function RoutesRecognized() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1536,7 +1541,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var GuardsCheckStart =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(GuardsCheckStart, _super);
+    tslib_1.__extends(GuardsCheckStart, _super);
 
     function GuardsCheckStart() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1550,7 +1555,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var ChildActivationStart =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(ChildActivationStart, _super);
+    tslib_1.__extends(ChildActivationStart, _super);
 
     function ChildActivationStart() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1564,7 +1569,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var ActivationStart =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(ActivationStart, _super);
+    tslib_1.__extends(ActivationStart, _super);
 
     function ActivationStart() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1578,7 +1583,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var GuardsCheckEnd =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(GuardsCheckEnd, _super);
+    tslib_1.__extends(GuardsCheckEnd, _super);
 
     function GuardsCheckEnd() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1592,7 +1597,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var ResolveStart =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(ResolveStart, _super);
+    tslib_1.__extends(ResolveStart, _super);
 
     function ResolveStart() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1606,7 +1611,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var ResolveEnd =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(ResolveEnd, _super);
+    tslib_1.__extends(ResolveEnd, _super);
 
     function ResolveEnd() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1620,7 +1625,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var ActivationEnd =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(ActivationEnd, _super);
+    tslib_1.__extends(ActivationEnd, _super);
 
     function ActivationEnd() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1634,7 +1639,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var ChildActivationEnd =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(ChildActivationEnd, _super);
+    tslib_1.__extends(ChildActivationEnd, _super);
 
     function ChildActivationEnd() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1648,7 +1653,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var RouteConfigLoadStart =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RouteConfigLoadStart, _super);
+    tslib_1.__extends(RouteConfigLoadStart, _super);
 
     function RouteConfigLoadStart() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1662,7 +1667,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var RouteConfigLoadEnd =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RouteConfigLoadEnd, _super);
+    tslib_1.__extends(RouteConfigLoadEnd, _super);
 
     function RouteConfigLoadEnd() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1676,7 +1681,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var NavigationEnd =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(NavigationEnd, _super);
+    tslib_1.__extends(NavigationEnd, _super);
 
     function NavigationEnd() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1690,7 +1695,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var NavigationCancel =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(NavigationCancel, _super);
+    tslib_1.__extends(NavigationCancel, _super);
 
     function NavigationCancel() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1704,7 +1709,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var NavigationError =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(NavigationError, _super);
+    tslib_1.__extends(NavigationError, _super);
 
     function NavigationError() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -1837,47 +1842,47 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
           if (snapshot) {
             // console.log('RouterService.makeObserve$_', 'NavigationStart', snapshot);
             currentRoute = snapshot;
-            events$.next(new routerEvents.RoutesRecognized(tslib_es6.__assign(tslib_es6.__assign({}, event), {
+            events$.next(new routerEvents.RoutesRecognized(tslib_1.__assign(tslib_1.__assign({}, event), {
               route: snapshot
             })));
           } else {
-            events$.next(new routerEvents.NavigationError(tslib_es6.__assign(tslib_es6.__assign({}, event), {
+            events$.next(new routerEvents.NavigationError(tslib_1.__assign(tslib_1.__assign({}, event), {
               error: new Error('unknown route')
             })));
           }
         } else if (event instanceof routerEvents.RoutesRecognized) {
           // console.log('RoutesRecognized', event.route.component, event.route.initialUrl, event.route.extractedUrl, event.route.urlAfterRedirects);
-          events$.next(new routerEvents.GuardsCheckStart(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.GuardsCheckStart(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.GuardsCheckStart) {
           // console.log('GuardsCheckStart', event);
-          events$.next(new routerEvents.ChildActivationStart(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.ChildActivationStart(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.ChildActivationStart) {
           // console.log('ChildActivationStart', event);
-          events$.next(new routerEvents.ActivationStart(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.ActivationStart(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.ActivationStart) {
           // console.log('ActivationStart', event);
-          events$.next(new routerEvents.GuardsCheckEnd(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.GuardsCheckEnd(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.GuardsCheckEnd) {
           // console.log('GuardsCheckEnd', event);
-          events$.next(new routerEvents.ResolveStart(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.ResolveStart(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.ResolveStart) {
           // console.log('ResolveStart', event);
-          events$.next(new routerEvents.ResolveEnd(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.ResolveEnd(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.ResolveEnd) {
           // console.log('ResolveEnd', event);
-          events$.next(new routerEvents.ActivationEnd(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.ActivationEnd(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.ActivationEnd) {
           // console.log('ActivationEnd', event);
-          events$.next(new routerEvents.ChildActivationEnd(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.ChildActivationEnd(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.ChildActivationEnd) {
           // console.log('ChildActivationEnd', event);
-          events$.next(new routerEvents.RouteConfigLoadStart(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.RouteConfigLoadStart(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.RouteConfigLoadStart) {
           // console.log('RouteConfigLoadStart', event);
-          events$.next(new routerEvents.RouteConfigLoadEnd(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.RouteConfigLoadEnd(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.RouteConfigLoadEnd) {
           // console.log('RouteConfigLoadEnd', event);
-          events$.next(new routerEvents.NavigationEnd(tslib_es6.__assign({}, event)));
+          events$.next(new routerEvents.NavigationEnd(tslib_1.__assign({}, event)));
         } else if (event instanceof routerEvents.NavigationEnd) {
           // console.log('NavigationEnd', event);
           var segments = [];
@@ -1900,8 +1905,8 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
             }
           }
 
-          var extractedUrl = segments.join('/').replace(/\/\//g, '/'); // console.log('NavigationEnd', event.route.extractedUrl, event.route);
-
+          var extractedUrl = segments.join('/').replace(/\/\//g, '/');
+          console.log('NavigationEnd', event.route.extractedUrl, event.route);
           clearRoutes_(routes, event.route);
           locationStrategy.pushState(extractedUrl, event.route, event.trigger === 'popstate'); // pushState_(locationStrategy, extractedUrl, undefined, event.trigger === 'popstate');
 
@@ -1919,7 +1924,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
           console.warn('RouterService NavigationError', event.error);
         }
       }), operators__default.catchError(function (error) {
-        return rxjs__default.of(new routerEvents.NavigationError(tslib_es6.__assign(tslib_es6.__assign({}, currentEvent || {}), {
+        return rxjs__default.of(new routerEvents.NavigationError(tslib_1.__assign(tslib_1.__assign({}, currentEvent || {}), {
           error: error
         })));
       }), operators__default.shareReplay(1));
@@ -1954,12 +1959,20 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     RouterService.findRouteByUrl = function (initialUrl) {
       var e_1, _a;
 
+      var queryString = null;
+
+      if (initialUrl.indexOf('?') !== -1) {
+        var urlComponents = initialUrl.split('?');
+        initialUrl = urlComponents[0];
+        queryString = urlComponents[1];
+      }
+
       var routes = getFlatRoutes_(this.routes);
       var resolvedRoute = null;
       var lastMatcbesLength = Number.NEGATIVE_INFINITY;
 
       try {
-        for (var routes_1 = tslib_es6.__values(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
+        for (var routes_1 = tslib_1.__values(routes), routes_1_1 = routes_1.next(); !routes_1_1.done; routes_1_1 = routes_1.next()) {
           var route = routes_1_1.value;
           var matches = initialUrl.match(route.matcher);
 
@@ -1980,13 +1993,12 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
         }
       }
 
-      var urlAfterRedirects = initialUrl;
-
-      if (resolvedRoute && resolvedRoute.redirectTo) {
+      if (resolvedRoute && resolvedRoute.redirectTo && resolvedRoute.redirectTo !== initialUrl) {
+        // urlAfterRedirects = initialUrl;
         // const routePath: RoutePath = RouterService.getPath(resolvedRoute.redirectTo);
         // urlAfterRedirects = routePath.url;
-        urlAfterRedirects = resolvedRoute.redirectTo;
-        resolvedRoute = this.findRouteByUrl(urlAfterRedirects);
+        // urlAfterRedirects = resolvedRoute.redirectTo;
+        resolvedRoute = this.findRouteByUrl(resolvedRoute.redirectTo); // !!! remove visited route?
       } // console.log('RouterService.findRouteByUrl', resolvedRoute);
 
 
@@ -2099,7 +2111,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     var resolvedSnapshot;
 
     try {
-      for (var childRoutes_1 = tslib_es6.__values(childRoutes), childRoutes_1_1 = childRoutes_1.next(); !childRoutes_1_1.done; childRoutes_1_1 = childRoutes_1.next()) {
+      for (var childRoutes_1 = tslib_1.__values(childRoutes), childRoutes_1_1 = childRoutes_1.next(); !childRoutes_1_1.done; childRoutes_1_1 = childRoutes_1.next()) {
         var route = childRoutes_1_1.value;
         var snapshot = resolveRoute_(routes, route, initialUrl, previousRoute);
 
@@ -2137,6 +2149,14 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 
     var urlAfterRedirects;
     var extractedUrl = '';
+    var queryString = null;
+
+    if (initialUrl.indexOf('?') !== -1) {
+      var urlComponents = initialUrl.split('?');
+      initialUrl = urlComponents[0];
+      queryString = urlComponents[1];
+    }
+
     var remainUrl = initialUrl;
     var match = initialUrl.match(route.matcher); // console.log('RouterService.resolveRoute_', route.matcher, match?.length, initialUrl, '=>', route.path);
 
@@ -2148,7 +2168,9 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     if (route.redirectTo) {
       // console.log('RouterService.resolveRoute_', 'match', initialUrl, '=>', route.redirectTo, match);
       var routePath_1 = RouterService.getPath(route.redirectTo);
-      return resolveRoutes_(routes, routes, routePath_1.url, previousRoute);
+      return resolveRoutes_(routes, routes.filter(function (x) {
+        return x !== route;
+      }), routePath_1.url, previousRoute);
     }
     /* else {
       // console.log('RouterService.resolveRoute_', 'match', initialUrl, '=>', route.path, match);
@@ -2159,7 +2181,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     remainUrl = initialUrl.substring(match[0].length, initialUrl.length);
     var routePath$1 = new routePath.RoutePath(extractedUrl, route.segments, undefined, RouterService.locationStrategy);
     var params = routePath$1.params;
-    var snapshot = new routeSnapshot.RouteSnapshot(tslib_es6.__assign(tslib_es6.__assign({}, route), {
+    var snapshot = new routeSnapshot.RouteSnapshot(tslib_1.__assign(tslib_1.__assign({}, route), {
       initialUrl: initialUrl,
       urlAfterRedirects: urlAfterRedirects,
       extractedUrl: extractedUrl,
@@ -2179,13 +2201,20 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
       }
     } // console.log('RouterService.resolveRoute_', snapshot.path, snapshot.extractedUrl, snapshot.remainUrl);
 
+    /*
+    // !!!
+    if (queryString) {
+        snapshot.queryParams
+    }
+    */
+
 
     return snapshot;
   }
 
   function makeActivatorResponse$_(event, activators) {
     // console.log('makeActivatorResponse$_', event);
-    return rxjs__default.combineLatest.apply(void 0, tslib_es6.__spread(activators)).pipe(operators__default.map(function (values) {
+    return rxjs__default.combineLatest.apply(void 0, tslib_1.__spread(activators)).pipe(operators__default.map(function (values) {
       var canActivate = values.reduce(function (p, c) {
         return p === true ? c === true ? true : c : p;
       }, true);
@@ -2193,7 +2222,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
       if (canActivate === true) {
         return event;
       } else {
-        var cancelEvent = tslib_es6.__assign(tslib_es6.__assign({}, event), {
+        var cancelEvent = tslib_1.__assign(tslib_1.__assign({}, event), {
           reason: 'An activation guard has dismissed navigation to the route.'
         });
 
@@ -2273,12 +2302,12 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     value: true
   });
 
-  var router_service_1 = tslib_es6.__importDefault(router_service);
+  var router_service_1 = tslib_1.__importDefault(router_service);
 
   var RouterLinkDirective =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RouterLinkDirective, _super);
+    tslib_1.__extends(RouterLinkDirective, _super);
 
     function RouterLinkDirective() {
       return _super !== null && _super.apply(this, arguments) || this;
@@ -2308,7 +2337,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
           var components = [];
 
           try {
-            for (var matches_1 = tslib_es6.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
+            for (var matches_1 = tslib_1.__values(matches), matches_1_1 = matches_1.next(); !matches_1_1.done; matches_1_1 = matches_1.next()) {
               var match = matches_1_1.value;
               var g1 = match[1];
               var g2 = match[2];
@@ -2396,14 +2425,14 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     value: true
   });
 
-  var router_link_directive_1 = tslib_es6.__importDefault(routerLink_directive);
+  var router_link_directive_1 = tslib_1.__importDefault(routerLink_directive);
 
-  var router_service_1 = tslib_es6.__importDefault(router_service);
+  var router_service_1 = tslib_1.__importDefault(router_service);
 
   var RouterLinkActiveDirective =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RouterLinkActiveDirective, _super);
+    tslib_1.__extends(RouterLinkActiveDirective, _super);
 
     function RouterLinkActiveDirective() {
       var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2535,14 +2564,14 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     value: true
   });
 
-  var view_1 = tslib_es6.__importStar(view);
+  var view_1 = tslib_1.__importStar(view);
 
-  var router_service_1 = tslib_es6.__importDefault(router_service);
+  var router_service_1 = tslib_1.__importDefault(router_service);
 
   var RouterOutletStructure =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RouterOutletStructure, _super);
+    tslib_1.__extends(RouterOutletStructure, _super);
 
     function RouterOutletStructure() {
       var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2722,13 +2751,13 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     value: true
   });
 
-  var router_link_active_directive_1 = tslib_es6.__importDefault(routerLinkActive_directive);
+  var router_link_active_directive_1 = tslib_1.__importDefault(routerLinkActive_directive);
 
-  var router_link_directive_1 = tslib_es6.__importDefault(routerLink_directive);
+  var router_link_directive_1 = tslib_1.__importDefault(routerLink_directive);
 
-  var router_outlet_structure_1 = tslib_es6.__importDefault(routerOutlet_structure);
+  var router_outlet_structure_1 = tslib_1.__importDefault(routerOutlet_structure);
 
-  var router_service_1 = tslib_es6.__importDefault(router_service);
+  var router_service_1 = tslib_1.__importDefault(router_service);
 
   var factories = [router_outlet_structure_1.default, router_link_directive_1.default, router_link_active_directive_1.default];
   var pipes = [];
@@ -2756,7 +2785,7 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
   var RouterModule =
   /** @class */
   function (_super) {
-    tslib_es6.__extends(RouterModule, _super);
+    tslib_1.__extends(RouterModule, _super);
 
     function RouterModule() {
       var _this = _super.call(this) || this; // console.log('RouterModule');
@@ -2787,8 +2816,8 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
     };
 
     RouterModule.meta = {
-      declarations: tslib_es6.__spread(factories, pipes),
-      exports: tslib_es6.__spread(factories, pipes)
+      declarations: tslib_1.__spread(factories, pipes),
+      exports: tslib_1.__spread(factories, pipes)
     };
     return RouterModule;
   }(rxcomp__default.Module);
@@ -3933,7 +3962,7 @@ var MeetingId = /*#__PURE__*/function () {
     var meetingUrl = new MeetingUrl();
 
     if (!meetingUrl.link) {
-      window.location.href = MeetingUrl.getGuidedTourUrl();
+      rxcompRouter.RouterService.setRouterLink(MeetingUrl.getGuidedTourUrl()); // window.location.href = MeetingUrl.getGuidedTourUrl();
     } else {
       var url = meetingUrl.toGuidedTourUrl();
 
@@ -4665,6 +4694,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   var _proto = AccessComponent.prototype;
 
   _proto.onInit = function onInit() {
+    console.log('AccessComponent.onInit');
     this.state = {
       status: 'access'
     };
@@ -4698,17 +4728,8 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 
   _proto.onGuidedTourAccess = function onGuidedTourAccess() {
     UserService.logout$().pipe(operators.first()).subscribe(function () {
-      rxcompRouter.RouterService.setRouterLink('/tour-guidato'); // RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
-
-      /*
-      static navigate(routerLink: RouterLink, extras: INavigationExtras = { skipLocationChange: false }): void {
-      	// navigate(['items'], { relativeTo: this.route });
-      	// navigate(['/heroes', { id: heroId }]);
-      	// console.log('RouterService.navigate', routerLink);
-      	this.events$.next(new NavigationStart({ routerLink, trigger: 'imperative' }));
-      }
-      window.location.href = environment.url.guidedTour;
-      */
+      rxcompRouter.RouterService.setRouterLink('/it/tour-guidato'); // RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
+      // window.location.href = environment.url.guidedTour;
     });
   };
 
@@ -4883,11 +4904,13 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
             break;
 
           case 'self-service-tour':
-            window.location.href = environment.url.selfServiceTour;
+            rxcompRouter.RouterService.setRouterLink(environment.url.selfServiceTour); // window.location.href = environment.url.selfServiceTour;
+
             break;
 
           case 'login':
-            window.location.href = environment.url.guidedTour;
+            rxcompRouter.RouterService.setRouterLink(environment.url.guidedTour); // window.location.href = environment.url.guidedTour;
+
             break;
         }
 
@@ -7966,7 +7989,7 @@ AgoraChatComponent.meta = {
   outputs: ['close'],
   template:
   /* html */
-  "\n\t<div class=\"group--scrollview\" [class]=\"'rows--' + rows\">\n\t\t<div class=\"group--virtual\" *virtual=\"let item of groupedMessages\" [mode]=\"4\" [width]=\"350\" [gutter]=\"0\" [reverse]=\"true\">\n\t\t\t<!-- serve un nodo figlio -->\n\t\t\t<div class=\"listing__item message\" [class]=\"{ me: item.me, typing: item.typing }\">\n\t\t\t\t<div class=\"message__avatar\" [title]=\"item.name\"><span [innerHTML]=\"item.shortName\"></span></div>\n\t\t\t\t<div class=\"message__content\">\n\t\t\t\t\t<div [innerHTML]=\"item.message | message\"></div>\n\t\t\t\t\t<div class=\"typing-indicator\">\n\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t<span></span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--message\" [class]=\"'rows--' + rows\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.message.validators.length, 'addon': controls.message.valid }\">\n\t\t\t\t<!-- <input type=\"text\" class=\"control--text\" [formControl]=\"controls.message\" [placeholder]=\"'bhere_write_a_message' | label\" /> -->\n\t\t\t\t<button type=\"button\" class=\"control--pre\" (click)=\"onToggleEmoji()\">\n\t\t\t\t\t<svg class=\"emoji\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#emoji\"></use></svg>\n\t\t\t\t</button>\n\t\t\t\t<textarea class=\"control--text\" [formControl]=\"controls.message\" [placeholder]=\"'bhere_write_a_message' | label\" rows=\"1\" (keydown)=\"onKeyDown($event)\"></textarea>\n\t\t\t\t<button type=\"submit\" class=\"control--addon\">\n\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#send\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<div class=\"group--close\">\n\t\t<button type=\"button\" class=\"btn--close\" [title]=\"'title_close' | label\" (click)=\"onClose($event)\">\n\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t</button>\n\t</div>\n\t<div class=\"group--emoji\" [class]=\"'rows--' + rows\" agora-chat-emoji (emoji)=\"onSelectEmoji($event)\" (close)=\"onToggleEmoji()\" *if=\"showEmoji\">\n\t\t<div class=\"group--virtual\" *virtual=\"let item of items\" [mode]=\"1\" [width]=\"40\" [gutter]=\"10\" [reverse]=\"true\">\n\t\t\t<!-- serve un nodo figlio -->\n\t\t\t<div class=\"listing__item emoji\">\n\t\t\t\t<button type=\"button\" class=\"btn--emoji\" (click)=\"onSelect(item)\"><span [innerHTML]=\"item.char\"></span></button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"group--close\">\n\t\t\t<button type=\"button\" class=\"btn--close\" [title]=\"'title_close' | label\" (click)=\"onClose($event)\">\n\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
+  "\n\t\t<div class=\"group--scrollview\" [class]=\"'rows--' + rows\">\n\t\t\t<div class=\"group--virtual\" *virtual=\"let item of groupedMessages\" [mode]=\"4\" [width]=\"350\" [gutter]=\"0\" [reverse]=\"true\">\n\t\t\t\t<!-- serve un nodo figlio -->\n\t\t\t\t<div class=\"listing__item message\" [class]=\"{ me: item.me, typing: item.typing }\">\n\t\t\t\t\t<div class=\"message__avatar\" [title]=\"item.name\"><span [innerHTML]=\"item.shortName\"></span></div>\n\t\t\t\t\t<div class=\"message__content\">\n\t\t\t\t\t\t<div [innerHTML]=\"item.message | message\"></div>\n\t\t\t\t\t\t<div class=\"typing-indicator\">\n\t\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t\t<span></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"group--message\" [class]=\"'rows--' + rows\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.message.validators.length, 'addon': controls.message.valid }\">\n\t\t\t\t\t<!-- <input type=\"text\" class=\"control--text\" [formControl]=\"controls.message\" [placeholder]=\"'bhere_write_a_message' | label\" /> -->\n\t\t\t\t\t<button type=\"button\" class=\"control--pre\" (click)=\"onToggleEmoji()\">\n\t\t\t\t\t\t<svg class=\"emoji\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#emoji\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<textarea class=\"control--text\" [formControl]=\"controls.message\" [placeholder]=\"'bhere_write_a_message' | label\" rows=\"1\" (keydown)=\"onKeyDown($event)\"></textarea>\n\t\t\t\t\t<button type=\"submit\" class=\"control--addon\">\n\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#send\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<div class=\"group--close\">\n\t\t\t<button type=\"button\" class=\"btn--close\" [title]=\"'title_close' | label\" (click)=\"onClose($event)\">\n\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t\t<div class=\"group--emoji\" [class]=\"'rows--' + rows\" agora-chat-emoji (emoji)=\"onSelectEmoji($event)\" (close)=\"onToggleEmoji()\" *if=\"showEmoji\">\n\t\t\t<div class=\"group--virtual\" *virtual=\"let item of items\" [mode]=\"1\" [width]=\"40\" [gutter]=\"10\" [reverse]=\"true\">\n\t\t\t\t<!-- serve un nodo figlio -->\n\t\t\t\t<div class=\"listing__item emoji\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--emoji\" (click)=\"onSelect(item)\"><span [innerHTML]=\"item.char\"></span></button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--close\">\n\t\t\t\t<button type=\"button\" class=\"btn--close\" [title]=\"'title_close' | label\" (click)=\"onClose($event)\">\n\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t"
 };
 
 AgoraChatComponent.getFakeList = function () {
@@ -8738,7 +8761,7 @@ AgoraChecklistComponent.meta = {
   outputs: ['checked'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--info\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"title\" *if=\"busy\" [innerHTML]=\"'bhere_checklist_busy' | label\"></div>\n\t\t\t\t<div class=\"title\" *if=\"checklist.success\" [innerHTML]=\"'bhere_checklist_success' | label\"></div>\n\t\t\t\t<div class=\"title\" *if=\"checklist.error\" [innerHTML]=\"'bhere_checklist_error' | label\"></div>\n\t\t\t\t<ul class=\"group--checklist stagger--childs\">\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Browser</span> <span agora-check [value]=\"checklist.browser\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.browser\"><a class=\"btn--link\" href=\"https://browsehappy.com/\" target=\"_blank\" rel=\"noopener\" [innerHTML]=\"errors.browser\"></a></li>\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Https</span> <span agora-check [value]=\"checklist.https\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.https\"><a class=\"btn--link\" (click)=\"openHttps()\" [innerHTML]=\"errors.https\"></a></li>\n\t\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckAudio\"><span>Audio</span> <span agora-check [value]=\"checklist.audio\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.audio\"><span [innerHTML]=\"errors.audio\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckVideo\"><span>Video</span> <span agora-check [value]=\"checklist.video\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.video\"><span [innerHTML]=\"errors.video\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Communication</span> <span agora-check [value]=\"checklist.rtc\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtc\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtc\"></a></li>\n\t\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Messaging</span> <span agora-check [value]=\"checklist.rtm\"></span></li>\n\t\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtm\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtm\"></a></li>\n\t\t\t\t</ul>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !checklist.success, ready: checklist.success }\" (click)=\"onNext()\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<a [href]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t</a>\n\t"
+  "\n\t<div class=\"group--info\">\n\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t<div class=\"title\" *if=\"busy\" [innerHTML]=\"'bhere_checklist_busy' | label\"></div>\n\t\t\t<div class=\"title\" *if=\"checklist.success\" [innerHTML]=\"'bhere_checklist_success' | label\"></div>\n\t\t\t<div class=\"title\" *if=\"checklist.error\" [innerHTML]=\"'bhere_checklist_error' | label\"></div>\n\t\t\t<ul class=\"group--checklist stagger--childs\">\n\t\t\t\t<li class=\"checklist__item check\"><span>Browser</span> <span agora-check [value]=\"checklist.browser\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.browser\"><a class=\"btn--link\" href=\"https://browsehappy.com/\" target=\"_blank\" rel=\"noopener\" [innerHTML]=\"errors.browser\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Https</span> <span agora-check [value]=\"checklist.https\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.https\"><a class=\"btn--link\" (click)=\"openHttps()\" [innerHTML]=\"errors.https\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckAudio\"><span>Audio</span> <span agora-check [value]=\"checklist.audio\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.audio\"><span [innerHTML]=\"errors.audio\"></span></li>\n\t\t\t\t<li class=\"checklist__item check\" *if=\"shouldCheckVideo\"><span>Video</span> <span agora-check [value]=\"checklist.video\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.video\"><span [innerHTML]=\"errors.video\"></span></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Communication</span> <span agora-check [value]=\"checklist.rtc\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtc\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtc\"></a></li>\n\t\t\t\t<li class=\"checklist__item check\"><span>Realtime Messaging</span> <span agora-check [value]=\"checklist.rtm\"></span></li>\n\t\t\t\t<li class=\"checklist__item error\" *if=\"errors.rtm\"><a class=\"btn--link\" (click)=\"showFirewallConfiguration()\" [innerHTML]=\"errors.rtm\"></a></li>\n\t\t\t</ul>\n\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !checklist.success, ready: checklist.success }\" (click)=\"onNext()\">\n\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<a [routerLink]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
 };var AgoraConfigureFirewallModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraConfigureFirewallModalComponent, _Component);
 
@@ -9410,7 +9433,7 @@ AgoraDeviceComponent.meta = {
   outputs: ['enter'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--info\" *if=\"!isHttps\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_invalid_protocol' | label\"></div>\n\t\t\t\t<div class=\"info\" [innerHTML]=\"'bhere_reload_in_https' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--connect\" (click)=\"openHttps($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_reload' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"group--info\" *if=\"form\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onEnter($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<!-- PREVIEW -->\n\t\t\t\t<div class=\"agora-device-preview\" agora-device-preview [video]=\"controls.video.value\" [audio]=\"controls.audio.value\" (stream)=\"onStream($event)\" (change)=\"onStreamDidChange($event)\" *if=\"this.hasPreview\">\n\t\t\t\t\t<video class=\"video\" muted></video>\n\t\t\t\t\t<div class=\"audio\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<!-- VIDEO -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.video\" label=\"Video\" *if=\"devices.videos.length\"></div>\n\t\t\t\t\t<!-- AUDIO -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.audio\" label=\"Audio\" *if=\"devices.audios.length\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"!isValid()\" [innerHTML]=\"'bhere_select_video_audio' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_video_audio_connected' | label\"></div>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--connect\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t\t\t\t\t<span *if=\"!state.connecting\" [innerHTML]=\"'bhere_enter' | label\"></span>\n\t\t\t\t\t\t<span *if=\"state.connecting\" [innerHTML]=\"'bhere_connecting' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t"
+  "\n\t<div class=\"group--info\" *if=\"!isHttps\">\n\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_invalid_protocol' | label\"></div>\n\t\t\t<div class=\"info\" [innerHTML]=\"'bhere_reload_in_https' | label\"></div>\n\t\t\t<button type=\"button\" class=\"btn--connect\" (click)=\"openHttps($event)\">\n\t\t\t\t<span [innerHTML]=\"'bhere_reload' | label\"></span>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onEnter($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<!-- PREVIEW -->\n\t\t\t<div class=\"agora-device-preview\" agora-device-preview [video]=\"controls.video.value\" [audio]=\"controls.audio.value\" (stream)=\"onStream($event)\" (change)=\"onStreamDidChange($event)\" *if=\"this.hasPreview\">\n\t\t\t\t<video class=\"video\" muted></video>\n\t\t\t\t<div class=\"audio\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<!-- VIDEO -->\n\t\t\t\t<div control-custom-select [control]=\"controls.video\" label=\"Video\" *if=\"devices.videos.length\"></div>\n\t\t\t\t<!-- AUDIO -->\n\t\t\t\t<div control-custom-select [control]=\"controls.audio\" label=\"Audio\" *if=\"devices.audios.length\"></div>\n\t\t\t\t<div class=\"info\" *if=\"!isValid()\" [innerHTML]=\"'bhere_select_video_audio' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_video_audio_connected' | label\"></div>\n\t\t\t\t<button type=\"submit\" class=\"btn--connect\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t\t\t\t<span *if=\"!state.connecting\" [innerHTML]=\"'bhere_enter' | label\"></span>\n\t\t\t\t\t<span *if=\"state.connecting\" [innerHTML]=\"'bhere_connecting' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t"
 };var Path = /*#__PURE__*/function () {
   function Path(options) {
     if (options) {
@@ -9768,7 +9791,7 @@ AgoraLinkComponent.meta = {
   outputs: ['link'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--info\" *if=\"form\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t<a [href]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t</a>\n\t"
+  "\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<!-- PATH -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.path\" [label]=\"'bhere_path' | label\" *if=\"('usePaths' | flag) && paths.length\"></div>\n\t\t\t\t\t<!--IDS -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<a [href]=\"selfServiceTourUrl\" class=\"btn--secondary\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_self_service' | label\"></span>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<a [routerLink]=\"'editor' | slug\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
 };var AgoraLoginComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLoginComponent, _Component);
 
@@ -9856,7 +9879,7 @@ AgoraLoginComponent.meta = {
   outputs: ['login'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--info\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_login' | label\"></div>\n\t\t\t\t\t<input name=\"checkField\" [formControl]=\"controls.checkField\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t\t\t\t<div control-text [control]=\"controls.username\" [label]=\"'bhere_username' | label\"></div>\n\t\t\t\t\t<div control-password [control]=\"controls.password\" [label]=\"'bhere_password' | label\"></div>\n\t\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_cta' | label\"></div>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_cta' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t"
+  "\n\t<div class=\"group--info\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"title\" [innerHTML]=\"'bhere_login' | label\"></div>\n\t\t\t\t<input name=\"checkField\" [formControl]=\"controls.checkField\" value=\"\" type=\"text\" style=\"display:none !important;\" />\n\t\t\t\t<div control-text [control]=\"controls.username\" [label]=\"'bhere_username' | label\"></div>\n\t\t\t\t<div control-password [control]=\"controls.password\" [label]=\"'bhere_password' | label\"></div>\n\t\t\t\t<div class=\"group--error\" *if=\"error\">\n\t\t\t\t\t<span class=\"status-code\" [innerHTML]=\"error.statusCode\"></span>\n\t\t\t\t\t<span class=\"status-message\" [innerHTML]=\"error.statusMessage\"></span>\n\t\t\t\t\t<span class=\"friendly-message\" [innerHTML]=\"error.friendlyMessage\"></span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_cta' | label\"></div>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_cta' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<test-component [form]=\"form\" (test)=\"test($event)\" (reset)=\"reset($event)\"></test-component>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t"
 };var AgoraNameComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraNameComponent, _Component);
 
@@ -9906,7 +9929,7 @@ AgoraNameComponent.meta = {
   outputs: ['name'],
   template:
   /* html */
-  "\n\t\t<div class=\"group--info\" *if=\"form\">\n\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t<!-- NAME -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.name.validators.length }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_fill_fullname' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.name\" [placeholder]=\"'bhere_name_and_surname' | label\" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"info\" *if=\"!controls.name.valid\" [innerHTML]=\"'bhere_fill_name_and_surname' | label\"></div>\n\t\t\t\t\t<div class=\"info\" *if=\"isValid()\">prosegui come <span [innerHTML]=\"controls.name.value\"></span></div>\n\t\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t"
+  "\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<!-- NAME -->\n\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.name.validators.length }\">\n\t\t\t\t\t<label [innerHTML]=\"'bhere_fill_fullname' | label\"></label>\n\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.name\" [placeholder]=\"'bhere_name_and_surname' | label\" />\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"!controls.name.valid\" [innerHTML]=\"'bhere_fill_name_and_surname' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\">prosegui come <span [innerHTML]=\"controls.name.value\"></span></div>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_proceed' | label\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t"
 };var AgoraStreamComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraStreamComponent, _Component);
 
@@ -21896,7 +21919,7 @@ WorldComponent.meta = {
   outputs: ['navTo', 'navLink', 'viewHit', 'dragEnd', 'resizeEnd', 'select'],
   template:
   /* html */
-  "\n\t\t<div class=\"world__view\" *if=\"view\">\n\t\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t\t<div *if=\"view.ready\">\n\t\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t\t<div class=\"world__item\" *for=\"let item of view.items; let index = index;\">\n\t\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" (link)=\"onNavLink($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onModelDown($event)\" (play)=\"onPlayModel($event)\" *if=\"item.type.name == 'model'\">\n\t\t\t\t\t\t<!-- <div class=\"banner loading\" model-banner [item]=\"progress\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t<!-- <div class=\"progress\" [innerHTML]=\"progress.title\" *if=\"progress\"></div> -->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<div class=\"banner loading\" model-banner [item]=\"loading\" *if=\"loading\">\n\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"banner waiting\" model-banner [item]=\"waiting\" *if=\"waiting\">\n\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t</div>\n\t\t\t-->\n\t\t</div>\n\t\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t\t<div class=\"inner\"></div>\n\t\t</div>\n\t\t<div model-menu [views]=\"views\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\" *if=\"showMenu\">\n\t\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t\t<svg class=\"menu-light\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu-light\"></use></svg>\n\t\t\t\t<div class=\"spinner\"></div>\n\t\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t\t</svg>\n\t\t\t</div>\n\t\t</div>\n\t\t<div model-debug *if=\"debugging\"></div>\n\t\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t"
+  "\n\t<div class=\"world__view\" *if=\"view\">\n\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t<div *if=\"view.ready\">\n\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" (link)=\"onNavLink($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (play)=\"onPlayMedia($event)\" (zoom)=\"onZoomMedia($event)\" (currentTime)=\"onCurrentTimeMedia($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onModelDown($event)\" (play)=\"onPlayModel($event)\" *if=\"item.type.name == 'model'\"></div>\n\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t<div class=\"inner\"></div>\n\t</div>\n\t<div model-menu [views]=\"views\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\" *if=\"showMenu\">\n\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t<svg class=\"menu-light\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu-light\"></use></svg>\n\t\t\t<div class=\"spinner\"></div>\n\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t</svg>\n\t\t</div>\n\t</div>\n\t<div model-debug *if=\"debugging\"></div>\n\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t"
 };var ModelComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ModelComponent, _Component);
 
@@ -22839,7 +22862,69 @@ ModelNavComponent.meta = {
   },
   outputs: ['over', 'out', 'down', 'link'],
   inputs: ['item', 'view', 'editor']
-};var AgoraComponent = /*#__PURE__*/function (_Component) {
+};var CHUNK_REMOTE =
+/* html */
+"\n<!-- remote sidebar -->\n<div class=\"group--remote\" [class]=\"remoteClass\" *if=\"state.live\">\n\t<div class=\"agora-stream\" (toggleControl)=\"onToggleControl($event)\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\" [class]=\"{ spyed: state.spying == streamId, controlling: state.controlling == streamId }\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" (click)=\"onToggleControl(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"control\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" (click)=\"onToggleSpy(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--members\" *if=\"state.mode == 'virtual-tour'\">\n\t\t<div class=\"members\">\n\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t</div>\n\t\t<div class=\"credits\">\n\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n</div>\n<!-- remote screen -->\n<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t</div>\n\t</div>\n</div>\n";
+var CHUNK_SERVICE =
+/* html */
+"\n<!-- service -->\n<div class=\"group--service\">\n\t<button type=\"button\" class=\"btn--back\" [title]=\"'title_back' | label\" (click)=\"onBack($event)\" *if=\"isBackButtonVisible\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--view-mode\" [title]=\"'title_view_mode' | label\" (click)=\"toggleMode($event)\" *if=\"state.mode != 'embed'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'virtual-tour'\"><use xlink:href=\"#live-meeting\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'live-meeting'\"><use xlink:href=\"#virtual-tour\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--navmap\" [title]=\"'title_navmap' | label\" [class]=\"{ active: state.showNavmap }\" (click)=\"toggleNavmap($event)\" *if=\"navmap && state.mode != 'live-meeting'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navmap\"></use></svg>\n\t</button>\n</div>\n";
+var CHUNK_LOCAL =
+/* html */
+"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<button type=\"button\" class=\"btn--silence\" [title]=\"'title_silence' | label\" [class]=\"{ active: state.silencing }\" (click)=\"onToggleSilence()\" *if=\"state.role === 'publisher'\">\n\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" [class]=\"{ active: state.controlling == state.uid }\" (click)=\"onToggleControl(state.uid)\" *if=\"state.role == 'publisher'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t</button>\n\t<div class=\"agora-stream\" *if=\"!local\"></div>\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n\t<div class=\"agora-stream agora-stream--screen\" agora-stream [stream]=\"screen\" type=\"local\" *if=\"screen && hasScreenViewItem\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t</div>\n</div>\n";
+var CHUNK_LOCAL_SMART_DEVICE =
+/* html */
+"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n</div>\n";
+var CHUNK_CONTROLS =
+/* html */
+"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--screen\" [title]=\"'title_share_screen' | label\" [class]=\"{ active: screen }\" (click)=\"toggleScreen()\" *if=\"state.role == 'publisher' || state.role == 'attendee' || controlling\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#screen\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--chat\" [title]=\"'title_chat' | label\" [class]=\"{ active: state.chatDirty }\" (click)=\"toggleChat()\" *if=\"('chat' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#chat\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--navinfo\" [title]=\"'title_navinfo' | label\" [class]=\"{ active: state.showNavInfo }\" (click)=\"toggleNavInfo()\" *if=\"showNavInfoToggler\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navinfo\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
+var CHUNK_CONTROLS_SMART_DEVICE =
+/* html */
+"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
+var CHUNK_MEMBERS =
+/* html */
+"\n<!-- members -->\n<div class=\"group--members\" *if=\"state.mode == 'live-meeting'\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
+var CHUNK_MEMBERS_SMART_DEVICE =
+/* html */
+"\n<!-- members -->\n<div class=\"group--members\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
+var CHUNK_MEDIA =
+/* html */
+"\n<!-- media -->\n<div class=\"group--media\" media-player>\n\t<button type=\"button\" class=\"btn--play\" [title]=\"'title_play' | label\" (click)=\"onPlay()\" *if=\"!playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#play\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--pause\" [title]=\"'title_pause' | label\" (click)=\"onPause()\" *if=\"playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pause\"></use></svg>\n\t</button>\n\t<div class=\"track\" (click)=\"onTrack($event)\">\n\t\t<div class=\"track__progress\" [style]=\"{ transform: 'scale(' + this.progress + ', 1)'}\"></div>\n\t</div>\n</div>\n";
+var CHUNK_AR_VR =
+/* html */
+"\n<!-- ar-vr -->\n<div class=\"group--ar-vr\">\n\t<button type=\"button\" class=\"btn--ar\" [title]=\"'title_ar' | label\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t</button>\n\t<button type=\"button\" class=\"btn--vr\" [title]=\"'title_vr' | label\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t</button>\n</div>\n";
+var CHUNK_LIKE =
+/* html */
+"\n<!-- like -->\n<div class=\"group--heart\" *if=\"view && ('like' | flag)\">\n\t<svg class=\"love\" [class]=\"{ active: view.showLove }\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t<button type=\"button\" class=\"btn--heart\" [class]=\"{ active: view.showLove }\" (click)=\"addLike($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t\t<span class=\"badge\" [innerHTML]=\"view.likes\" *if=\"view.likes\"></span>\n\t</button>\n</div>\n<div class=\"group--spacer\" *if=\"!view || !('like' | flag)\"></div>\n";
+var CHUNK_CHAT =
+/* html */
+"\n<!-- chat -->\n<div class=\"group--chat\" *if=\"state.chat\" agora-chat (close)=\"onChatClose()\"></div>\n";
+var CHUNK_LOCK =
+/* html */
+"\n<!-- lock -->\n<div class=\"ui__lock\" [class]=\"{ spying: spying }\" *if=\"locked || controlling\"></div>\n";
+var CHUNK_NAVMAP =
+/* html */
+"\n<!-- navmap -->\n<div class=\"group--navmap\" *if=\"navmap && state.showNavmap && state.mode != 'live-meeting'\">\n\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (click)=\"onNavmapItem(item)\" *for=\"let item of navmap.items\">\n\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t</div>\n</div>\n";
+var CHUNK_LOGO =
+/* html */
+"\n<!-- logo -->\n<a class=\"btn--logo\" [routerLink]=\"'index' | slug\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+var CHUNK_CREDITS =
+/* html */
+"\n<!-- credits -->\n<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
+var CHUNK_LANGUAGE =
+/* html */
+"\n<!-- language -->\n<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n";
+var CHUNK_VIRTUAL_TOUR =
+/* html */
+"\n<!-- Virtual Tour -->\n<div class=\"ui virtual-tour\" [class]=\"uiClass\" *if=\"state.status == 'connected' && isVirtualTourUser\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t" + CHUNK_REMOTE + "\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t\t" + CHUNK_LOCAL + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS + "\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_MEMBERS + "\n\t" + CHUNK_CHAT + "\n\t" + CHUNK_LOCK + "\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+var CHUNK_SMART_DEVICE =
+/* html */
+"\n<!-- Smart Device -->\n<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t<div class=\"ui__body\"></div>\n\t<!-- remote sidebar -->\n\t<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t\t<div class=\"agora-stream\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<!-- remote screen -->\n\t<div class=\"group--remote-screen\" *if=\"remoteScreen && !hasScreenViewItem\">\n\t\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_LOCAL_SMART_DEVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS_SMART_DEVICE + "\n\t</div>\n\t" + CHUNK_MEMBERS_SMART_DEVICE + "\n</div>\n";
+var CHUNK_SELF_SERVICE_TOUR =
+/* html */
+"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
+var CHUNK_EMBED =
+/* html */
+"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var AgoraComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraComponent, _Component);
 
   function AgoraComponent() {
@@ -22943,7 +23028,7 @@ ModelNavComponent.meta = {
     if (user && (!linkRole || linkRole === user.type)) {
       this.initWithUser(user);
     } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-      window.location.href = environment.url.access;
+      rxcompRouter.RouterService.setRouterLink(environment.url.access); // window.location.href = environment.url.access;
     } else {
       this.initWithUser({
         type: linkRole
@@ -23011,7 +23096,8 @@ ModelNavComponent.meta = {
     switch (role) {
       case RoleType.SelfService:
         if (!user || user.type !== RoleType.SelfService && user.type !== RoleType.Publisher) {
-          window.location.href = environment.url.access;
+          rxcompRouter.RouterService.setRouterLink(environment.url.access); // window.location.href = environment.url.access;
+
           return;
         } else {
           // forcing role type to RoleType.SelfService
@@ -24098,70 +24184,7 @@ AgoraComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"page\">\n\t\t<!-- background -->\n\t\t<div class=\"background\" [class]=\"{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }\" *if=\"state.status != 'connected'\">\n\t\t\t<img [src]=\"'background.image' | env\" *if=\"'background.image' | env\" />\n\t\t\t<video [src]=\"'background.video' | env\" *if=\"'background.video' | env\" oncanplay=\"this.muted = true; this.classList.add('ready');\" playsinline autoplay muted loop></video>\n\t\t</div>\n\t\t<!-- Status Checklist -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'checklist'\" [agora-checklist] (checked)=\"onChecked($event)\"></div>\n\t\t<!-- Status Link -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'link'\" [agora-link] (link)=\"onLink($event)\"></div>\n\t\t<!-- Status Login -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\" [agora-login] (login)=\"onLogin($event)\"></div>\n\t\t<!-- Status Name -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')\" [agora-name] (name)=\"onName($event)\"></div>\n\t\t<!-- Status Device -->\n\t\t<div class=\"ui ui--info\" *if=\"state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')\" [agora-device] (enter)=\"onEnter($event)\"></div>\n\t\t" + CHUNK_VIRTUAL_TOUR + "\n\t\t" + CHUNK_SMART_DEVICE + "\n\t\t" + CHUNK_SELF_SERVICE_TOUR + "\n\t\t" + CHUNK_EMBED + "\n\t\t" + CHUNK_LOGO + "\n\t\t" + CHUNK_CREDITS + "\n\t\t" + CHUNK_LANGUAGE + "\n\t</div>\n\t"
-};
-var CHUNK_VIRTUAL_TOUR =
-/* html */
-"\n<!-- Virtual Tour -->\n<div class=\"ui virtual-tour\" [class]=\"uiClass\" *if=\"state.status == 'connected' && isVirtualTourUser\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t" + CHUNK_REMOTE + "\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t\t" + CHUNK_LOCAL + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS + "\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_MEMBERS + "\n\t" + CHUNK_CHAT + "\n\t" + CHUNK_LOCK + "\n\t" + CHUNK_NAVMAP + "\n</div>\n";
-var CHUNK_SMART_DEVICE =
-/* html */
-"\n<!-- Smart Device -->\n<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t<div class=\"ui__body\"></div>\n\t<!-- remote sidebar -->\n\t<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t\t<div class=\"agora-stream\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<!-- remote screen -->\n\t<div class=\"group--remote-screen\" *if=\"remoteScreen && !hasScreenViewItem\">\n\t\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_LOCAL_SMART_DEVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t" + CHUNK_CONTROLS_SMART_DEVICE + "\n\t</div>\n\t" + CHUNK_MEMBERS_SMART_DEVICE + "\n</div>\n";
-var CHUNK_SELF_SERVICE_TOUR =
-/* html */
-"\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
-var CHUNK_EMBED =
-/* html */
-"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"views\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";
-var CHUNK_REMOTE =
-/* html */
-"\n<!-- remote sidebar -->\n<div class=\"group--remote\" [class]=\"'group--remote--' + remotes.length\" *if=\"state.live\">\n\t<div class=\"agora-stream\" (toggleControl)=\"onToggleControl($event)\" (toggleSpy)=\"onToggleSpy($event)\" agora-stream [stream]=\"remote\" type=\"remote\" *for=\"let remote of remotes\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\" [class]=\"{ spyed: state.spying == streamId, controlling: state.controlling == streamId }\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" (click)=\"onToggleControl(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"control\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t</button>\n\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" (click)=\"onToggleSpy(streamId)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t<div class=\"group--members\" *if=\"state.mode == 'virtual-tour'\">\n\t\t<div class=\"members\">\n\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t</div>\n\t\t<div class=\"credits\">\n\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t</a>\n\t\t</div>\n\t</div>\n</div>\n<!-- remote screen -->\n<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"remoteScreen\" type=\"remote\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<div class=\"id\" [innerHTML]=\"stream.clientInfo.name || streamId\" *if=\"stream.clientInfo\"></div>\n\t\t</div>\n\t</div>\n</div>\n";
-var CHUNK_SERVICE =
-/* html */
-"\n<!-- service -->\n<div class=\"group--service\">\n\t<button type=\"button\" class=\"btn--back\" [title]=\"'title_back' | label\" (click)=\"onBack($event)\" *if=\"isBackButtonVisible\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--view-mode\" [title]=\"'title_view_mode' | label\" (click)=\"toggleMode($event)\" *if=\"state.mode != 'embed'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'virtual-tour'\"><use xlink:href=\"#live-meeting\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'live-meeting'\"><use xlink:href=\"#virtual-tour\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--navmap\" [title]=\"'title_navmap' | label\" [class]=\"{ active: state.showNavmap }\" (click)=\"toggleNavmap($event)\" *if=\"navmap && state.mode != 'live-meeting'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navmap\"></use></svg>\n\t</button>\n</div>\n";
-var CHUNK_LOCAL =
-/* html */
-"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<button type=\"button\" class=\"btn--silence\" [title]=\"'title_silence' | label\" [class]=\"{ active: state.silencing }\" (click)=\"onToggleSilence()\" *if=\"state.role === 'publisher'\">\n\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" [class]=\"{ active: state.controlling == state.uid }\" (click)=\"onToggleControl(state.uid)\" *if=\"state.role == 'publisher'\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t</button>\n\t<div class=\"agora-stream\" *if=\"!local\"></div>\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n\t<div class=\"agora-stream agora-stream--screen\" agora-stream [stream]=\"screen\" type=\"local\" *if=\"screen && hasScreenViewItem\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t</div>\n</div>\n";
-var CHUNK_LOCAL_SMART_DEVICE =
-/* html */
-"\n<!-- local streams -->\n<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t<div class=\"agora-stream\" agora-stream [stream]=\"local\" type=\"local\" *if=\"local\">\n\t\t<div class=\"agora-stream__player\"></div>\n\t\t<div class=\"agora-stream__info\">\n\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t</div>\n\t</div>\n</div>\n";
-var CHUNK_CONTROLS =
-/* html */
-"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--screen\" [title]=\"'title_share_screen' | label\" [class]=\"{ active: screen }\" (click)=\"toggleScreen()\" *if=\"state.role == 'publisher' || state.role == 'attendee' || controlling\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#screen\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--chat\" [title]=\"'title_chat' | label\" [class]=\"{ active: state.chatDirty }\" (click)=\"toggleChat()\" *if=\"('chat' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#chat\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--navinfo\" [title]=\"'title_navinfo' | label\" [class]=\"{ active: state.showNavInfo }\" (click)=\"toggleNavInfo()\" *if=\"('hideNavInfo' | flag)\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navinfo\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
-var CHUNK_CONTROLS_SMART_DEVICE =
-/* html */
-"\n<!-- controls -->\n<div class=\"group--controls\" *if=\"state.live\">\n\t<div class=\"group--actions\">\n\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t</button>\n\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t</button>\n\t</div>\n</div>\n";
-var CHUNK_MEMBERS =
-/* html */
-"\n<!-- members -->\n<div class=\"group--members\" *if=\"state.mode == 'live-meeting'\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
-var CHUNK_MEMBERS_SMART_DEVICE =
-/* html */
-"\n<!-- members -->\n<div class=\"group--members\">\n\t<div class=\"members\">\n\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t</div>\n\t<div class=\"credits\">\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t</div>\n</div>\n";
-var CHUNK_MEDIA =
-/* html */
-"\n<!-- media -->\n<div class=\"group--media\" media-player>\n\t<button type=\"button\" class=\"btn--play\" [title]=\"'title_play' | label\" (click)=\"onPlay()\" *if=\"!playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#play\"></use></svg>\n\t</button>\n\t<button type=\"button\" class=\"btn--pause\" [title]=\"'title_pause' | label\" (click)=\"onPause()\" *if=\"playing\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pause\"></use></svg>\n\t</button>\n\t<div class=\"track\" (click)=\"onTrack($event)\">\n\t\t<div class=\"track__progress\" [style]=\"{ transform: 'scale(' + this.progress + ', 1)'}\"></div>\n\t</div>\n</div>\n";
-var CHUNK_AR_VR =
-/* html */
-"\n<!-- ar-vr -->\n<div class=\"group--ar-vr\">\n\t<button type=\"button\" class=\"btn--ar\" [title]=\"'title_ar' | label\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t</button>\n\t<button type=\"button\" class=\"btn--vr\" [title]=\"'title_vr' | label\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t</button>\n</div>\n";
-var CHUNK_LIKE =
-/* html */
-"\n<!-- like -->\n<div class=\"group--heart\" *if=\"view && ('like' | flag)\">\n\t<svg class=\"love\" [class]=\"{ active: view.showLove }\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t<button type=\"button\" class=\"btn--heart\" [class]=\"{ active: view.showLove }\" (click)=\"addLike($event)\">\n\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#heart\"></use></svg>\n\t\t<span class=\"badge\" [innerHTML]=\"view.likes\" *if=\"view.likes\"></span>\n\t</button>\n</div>\n<div class=\"group--spacer\" *if=\"!view || !('like' | flag)\"></div>\n";
-var CHUNK_CHAT =
-/* html */
-"\n<!-- chat -->\n<div class=\"group--chat\" *if=\"state.chat\" agora-chat (close)=\"onChatClose()\"></div>\n";
-var CHUNK_LOCK =
-/* html */
-"\n<!-- lock -->\n<div class=\"ui__lock\" [class]=\"{ spying: spying }\" *if=\"locked || controlling\"></div>\n";
-var CHUNK_NAVMAP =
-/* html */
-"\n<!-- navmap -->\n<div class=\"group--navmap\" *if=\"navmap && state.showNavmap && state.mode != 'live-meeting'\">\n\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (click)=\"onNavmapItem(item)\" *for=\"let item of navmap.items\">\n\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t</div>\n</div>\n";
-var CHUNK_LOGO =
-/* html */
-"\n<!-- logo -->\n<a class=\"btn--logo\" [href]=\"'index' | slug\" *if=\"state.status != 'connected'\">\n\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
-var CHUNK_CREDITS =
-/* html */
-"\n<!-- credits -->\n<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n</a>\n";
-var CHUNK_LANGUAGE =
-/* html */
-"\n<!-- language -->\n<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n";var AppComponent = /*#__PURE__*/function (_Component) {
+};var AppComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AppComponent, _Component);
 
   function AppComponent() {
@@ -24510,198 +24533,6 @@ DropdownDirective.dropdown$ = new rxjs.BehaviorSubject(null);var DropdownItemDir
 DropdownItemDirective.meta = {
   selector: '[dropdown-item], [[dropdown-item]]',
   inputs: ['dropdown-item']
-};var ToastOutletComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(ToastOutletComponent, _Component);
-
-  function ToastOutletComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = ToastOutletComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    this.toast = null;
-    this.lastToast = null;
-    ToastService.toast$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (toast) {
-      if (toast) {
-        _this.lastToast = toast;
-      }
-
-      _this.toast = toast;
-
-      _this.pushChanges();
-    }); // console.log('ToastOutletComponent.onInit');
-  };
-
-  _proto.getClass = function getClass() {
-    var classList = {};
-
-    if (this.toast) {
-      classList.active = true;
-    }
-
-    if (this.lastToast) {
-      classList[this.lastToast.type] = true;
-      classList[this.lastToast.position] = true;
-    }
-
-    return classList;
-  };
-
-  _proto.onClose = function onClose() {
-    ToastService.reject(this.toast);
-  };
-
-  _proto.onAccept = function onAccept() {
-    ToastService.resolve(this.toast);
-  };
-
-  _proto.onReject = function onReject() {
-    ToastService.reject(this.toast);
-  };
-
-  return ToastOutletComponent;
-}(rxcomp.Component);
-ToastOutletComponent.meta = {
-  selector: '[toast-outlet]',
-  template:
-  /* html */
-  "\n\t<div class=\"toast-outlet__container\" [class]=\"getClass()\">\n\t\t<div class=\"toast-outlet__toast\" *if=\"lastToast\">\n\t\t\t<span class=\"toast-outlet__message\" [innerHTML]=\"lastToast.message\"></span>\n\t\t\t<div class=\"group--cta\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.acceptMessage\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\" *if=\"lastToast.type == 'dialog'\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.rejectMessage\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
-};var AsideComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(AsideComponent, _Component);
-
-  function AsideComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = AsideComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    this.mode = 1;
-    this.viewTypes = Object.keys(ViewType).map(function (key) {
-      var type = ViewType[key];
-      return {
-        type: type,
-        name: LabelPipe.getKeys('editor', type.name),
-        disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1
-      };
-    });
-    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
-      var type = ViewItemType[key];
-      return {
-        type: type,
-        name: LabelPipe.getKeys('editor', type.name),
-        disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1
-      };
-    });
-    this.setSupportedViewTypes();
-    this.setSupportedViewItemTypes();
-  };
-
-  _proto.onChanges = function onChanges() {
-    this.setSupportedViewTypes();
-    this.setSupportedViewItemTypes();
-  };
-
-  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
-    var _this = this;
-
-    this.supportedViewTypes = this.viewTypes.filter(function (x) {
-      return _this.supportedViewType(x.type.name);
-    }).sort(function (a, b) {
-      if (a.disabled === b.disabled) {
-        return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
-      } else {
-        return a.disabled ? 1 : -1;
-      }
-    });
-  };
-
-  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
-    var _this2 = this;
-
-    if (this.view) {
-      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
-        return _this2.supportedViewItemType(_this2.view.type.name, x.type.name);
-      }).sort(function (a, b) {
-        if (a.disabled === b.disabled) {
-          return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
-        } else {
-          return a.disabled ? 1 : -1;
-        }
-      });
-    } else {
-      this.supportedViewItemTypes = [];
-    }
-  };
-
-  _proto.setMode = function setMode(mode) {
-    if (this.mode !== mode) {
-      this.mode = mode;
-      this.pushChanges();
-    }
-  };
-
-  _proto.supportedViewType = function supportedViewType(viewTypeName) {
-    var supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name, ViewType.Media.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
-    // console.log('supportedViewType', viewType, supported);
-
-    return supported;
-  };
-
-  _proto.supportedViewItemType = function supportedViewItemType(viewTypeName, viewItemTypeName) {
-    var supported;
-
-    switch (viewTypeName) {
-      case ViewType.WaitingRoom.name:
-        supported = false;
-        break;
-
-      case ViewType.Panorama.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.PanoramaGrid.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.Room3d.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.Model.name:
-        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
-        break;
-
-      case ViewType.Media.name:
-        supported = [].indexOf(viewItemTypeName) !== -1;
-        break;
-    } // console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
-
-
-    return supported;
-  };
-
-  _proto.onSelect = function onSelect(event) {
-    this.select.next(event);
-  };
-
-  _proto.onUpdate = function onUpdate(event) {
-    this.update.next(event);
-  };
-
-  _proto.onDelete = function onDelete(event) {
-    this.delete.next(event);
-  };
-
-  return AsideComponent;
-}(rxcomp.Component);
-AsideComponent.meta = {
-  selector: '[aside]',
-  outputs: ['select', 'update', 'delete'],
-  inputs: ['view']
 };var AssetService = /*#__PURE__*/function () {
   function AssetService() {}
 
@@ -25031,7 +24862,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
 
         _this2.initState();
       } else {
-        window.location.href = environment.url.access;
+        rxcompRouter.RouterService.setRouterLink(environment.url.access); // window.location.href = environment.url.access;
       }
     });
   };
@@ -25531,7 +25362,202 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
   return EditorComponent;
 }(rxcomp.Component);
 EditorComponent.meta = {
-  selector: '[editor-component]'
+  selector: '[editor-component]',
+  template:
+  /* html */
+  "\n\t<div class=\"page page--editor\">\n\t\t<div class=\"ui\" [class]=\"{ open: aside }\" *if=\"dataViews.length\">\n\t\t\t<div class=\"ui__navbar\">\n\t\t\t\t<div class=\"btn--settings\" [class]=\"{ active: settings.active }\" (click)=\"onToggleSettings($event)\" *if=\"settings.menu.length > 0\">\n\t\t\t\t\t<svg class=\"settings\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#settings-full\"></use></svg>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"headline\" *if=\"view\">\n\t\t\t\t\t<div class=\"headline__id\" [innerHTML]=\"view.id\"></div>\n\t\t\t\t\t<div class=\"headline__icon\">\n\t\t\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"headline__name\" [innerHTML]=\"view.name\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--path\" *if=\"('usePaths' | flag) && path\">\n\t\t\t\t\t<div class=\"group--path__select\">\n\t\t\t\t\t\t<div class=\"group--form--select\" [dropdown]=\"'path'\">\n\t\t\t\t\t\t\t<label>Percorso</label>\n\t\t\t\t\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"path.name\"></span>\n\t\t\t\t\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dropdown dropdown-item\" [dropdown-item]=\"'path'\">\n\t\t\t\t\t\t\t<div class=\"category\">Percorso</div>\n\t\t\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t\t\t<li [class]=\"{ active: isPathSelected(item) }\" *for=\"let item of paths\">\n\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"item.name\" (click)=\"onSelectPath(item)\"></span>\n\t\t\t\t\t\t\t\t\t<div class=\"check\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#check\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--flags\" (click)=\"onEditPath(item)\" title=\"Edit\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#flags\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--duplicate\" (click)=\"onDuplicatePath(item)\" title=\"Duplicate\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#duplicate\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--trash\" (click)=\"onDeletePath(item)\" title=\"Delete\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#trash\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onAddPath()\">Aggiungi un percorso</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--edit\" [class]=\"{ active: aside }\" (click)=\"onToggleAside($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" [editor]=\"true\" (navTo)=\"onNavTo($event)\" (viewHit)=\"onViewHit($event)\" (dragEnd)=\"onDragEnd($event)\" (select)=\"onWorldSelect($event)\">\n\t\t\t\t\t<div class=\"world__view\" *if=\"view\">\n\t\t\t\t\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t\t\t\t\t<div *if=\"view.ready\">\n\t\t\t\t\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t\t\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" [editor]=\"true\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'model'\">\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"banner loading\" model-banner [item]=\"progress\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"progress\" [innerHTML]=\"progress.title\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<div class=\"banner loading\" model-banner [item]=\"loading\" *if=\"loading\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"banner waiting\" model-banner [item]=\"waiting\" *if=\"waiting\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t-->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t\t\t\t\t<div class=\"inner\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-menu [views]=\"views\" [editor]=\"true\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\">\n\t\t\t\t\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t\t\t\t\t<div class=\"spinner\"></div>\n\t\t\t\t\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t\t\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-debug *if=\"debugging\"></div>\n\t\t\t\t\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- footer -->\n\t\t\t<div class=\"group--footer\">\n\t\t\t\t<div class=\"group--ar-vr\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--ar\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--vr\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__settings\" *if=\"settings.active\">\n\t\t\t\t<!-- settings navs -->\n\t\t\t\t<div class=\"group--nav\">\n\t\t\t\t\t<ul class=\"nav--menu\">\n\t\t\t\t\t\t<li class=\"nav__item\" *for=\"let item of settings.menu\" [class]=\"{ active: settings.current === item.id }\" (click)=\"onSelectSetting(item)\"><span class=\"title\" [innerHTML]=\"item.title | label\"></span></li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<!-- menu -->\n\t\t\t\t<div class=\"group--content\" menu-builder [views]=\"dataViews\" *if=\"settings.current === 'menu'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_menu' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<div class=\"nav--tree\" *if=\"form\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"controls.items.controls.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t\t<div *for=\"let control of controls.items.controls\">\n\t\t\t\t\t\t\t\t\t<div control-menu [control]=\"control\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAddItem($event)\" [innerHTML]=\"'editor_add' | label\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"isValid() && onSubmit()\" *if=\"changes > 1\" [innerHTML]=\"'editor_save' | label\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- navmaps -->\n\t\t\t\t<div class=\"group--content\" navmap-builder [views]=\"dataViews\" *if=\"settings.current === 'navmaps'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_navmaps' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<!-- listing navmaps -->\n\t\t\t\t\t\t<div class=\"listing--navmaps\" *if=\"!navmap\">\n\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"navmaps.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"listing__item\" *for=\"let item of navmaps\">\n\t\t\t\t\t\t\t\t<div class=\"card--navmap\" (click)=\"onSet(item)\">\n\t\t\t\t\t\t\t\t\t<div class=\"card__picture\">\n\t\t\t\t\t\t\t\t\t\t<img [src]=\"item.asset | asset\" *if=\"item.asset\" />\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"card__content\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"card__name\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- navmap edit -->\n\t\t\t\t\t\t<div class=\"navmap\" navmap-edit [navmap]=\"navmap\" (delete)=\"onDelete($event)\" *if=\"navmap\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"title\"><span [innerHTML]=\"navmap.name\"></span> <span [innerHTML]=\"navmap.id\"></span></div>\n\t\t\t\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/png\"></div>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_save' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_remove' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"navmap-control\" [class]=\"mode\">\n\t\t\t\t\t\t\t\t\t<div class=\"navmap-control__image\">\n\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t\t\t\t\t\t\t\t\t\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (mousedown)=\"onMoveItem($event, item)\" (click)=\"onRemoveItem(item)\" *for=\"let item of navmap.items\">\n\t\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<ul class=\"navmap-control__toolbar\">\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'insert' }\" (click)=\"onToggleMode('insert')\"><svg class=\"pencil\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pencil\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'move' }\" (click)=\"onToggleMode('move')\"><svg class=\"move\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#move\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'remove' }\" (click)=\"onToggleMode('remove')\"><svg class=\"erase\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#erase\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAdd($event)\" [innerHTML]=\"'editor_add' | label\" *if=\"!navmap\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\" [innerHTML]=\"'editor_back' | label\" *if=\"navmap\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"aside\" [class]=\"{ active: aside }\" aside [view]=\"view\" (select)=\"onAsideSelect($event)\" (update)=\"onAsideUpdate($event)\" (delete)=\"onAsideDelete($event)\" *if=\"view && aside\">\n\t\t\t<div class=\"headline\">\n\t\t\t\t<ul class=\"nav--tab\">\n\t\t\t\t\t<li [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!--\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t\t<div class=\"scrollable\">\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 1\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t\t\t<update-view [view]=\"view\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name != 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_items' | label\"></div>\n\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of view.pathItems\"></update-view-item>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.pathItems.length == 0\" [innerHTML]=\"'editor_no_items' | label\"></div>\n\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_tiles' | label\"></div>\n\t\t\t\t\t\t<div *for=\"let tile of view.tiles\">\n\t\t\t\t\t\t\t<div *if=\"tile.selected\">\n\t\t\t\t\t\t\t\t<update-view-tile [view]=\"view\" [tile]=\"tile\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view-tile>\n\t\t\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of tile.navs\"></update-view-item>\n\t\t\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"tile.navs.length == 0\" [innerHTML]=\"'editor_no_navs' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t\t\t<svg-icon name=\"nav\"></svg-icon>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.tiles.length == 0\" [innerHTML]=\"'editor_no_tiles' | label\"></div>\n\t\t\t\t\t\t<!-- <div class=\"btn--mode\" (click)=\"setMode(3)\">Add Tile</div> -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!--\n\t\t\t\t\t<li *if=\"false\">\n\t\t\t\t\t\t<div class=\"title\">Icons</div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('animated-tabs')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 2 8.4 L 12 8.4 L 12 2 L 6 2 C 3.791 2 2 3.791 2 6 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 8.4 L 22 8.4 L 22 6 C 22 3.791 20.209 2 18 2 L 12 2 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Animated Tabs</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 13.6 C 6.8 13.158 7.158 12.8 7.6 12.8 L 16.8 12.8 C 17.242 12.8 17.6 13.158 17.6 13.6 L 17.6 16.8 C 17.6 17.242 17.242 17.6 16.8 17.6 L 7.6 17.6 C 7.158 17.6 6.8 17.242 6.8 16.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 6.8 7.2 C 6.8 6.758 7.158 6.4 7.6 6.4 L 16.8 6.4 C 17.242 6.4 17.6 6.758 17.6 7.2 L 17.6 10.4 C 17.6 10.842 17.242 11.2 16.8 11.2 L 7.6 11.2 C 7.158 11.2 6.8 10.842 6.8 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('container-transitions')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13 C 17.139 13 18.333 14.194 18.333 15.667 C 18.333 17.139 17.139 18.333 15.667 18.333 C 14.194 18.333 13 17.139 13 15.667 C 13 14.194 14.194 13 15.667 13 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Container Transitions</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-grid')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><g transform=\"translate(6.6 6.6)\"><path d=\"M 6.048 0.8 C 6.048 0.358 6.406 0 6.848 0 L 10 0 C 10.442 0 10.8 0.358 10.8 0.8 L 10.8 3.952 C 10.8 4.394 10.442 4.752 10 4.752 L 6.848 4.752 C 6.406 4.752 6.048 4.394 6.048 3.952 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path><path d=\"M 6.048 6.848 C 6.048 6.406 6.406 6.048 6.848 6.048 L 10 6.048 C 10.442 6.048 10.8 6.406 10.8 6.848 L 10.8 10 C 10.8 10.442 10.442 10.8 10 10.8 L 6.848 10.8 C 6.406 10.8 6.048 10.442 6.048 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 0.8 C 0 0.358 0.358 0 0.8 0 L 3.952 0 C 4.394 0 4.752 0.358 4.752 0.8 L 4.752 3.952 C 4.752 4.394 4.394 4.752 3.952 4.752 L 0.8 4.752 C 0.358 4.752 0 4.394 0 3.952 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 6.848 C 0 6.406 0.358 6.048 0.8 6.048 L 3.952 6.048 C 4.394 6.048 4.752 6.406 4.752 6.848 L 4.752 10 C 4.752 10.442 4.394 10.8 3.952 10.8 L 0.8 10.8 C 0.358 10.8 0 10.442 0 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path></g></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Grid</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('expand-on-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 7.833 0\" transform=\"translate(8.583 11.583) rotate(270 3.917 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 9.333 L 12 6.667 L 9.333 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 14.667 L 12 17.333 L 9.333 14.667\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Expand on Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-gallery-2')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 10.333 7.333 C 10.886 7.333 11.333 7.781 11.333 8.333 L 11.333 10.333 C 11.333 10.886 10.886 11.333 10.333 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.333 8.333 C 12.333 7.781 12.781 7.333 13.333 7.333 L 15.333 7.333 C 15.886 7.333 16.333 7.781 16.333 8.333 L 16.333 10.333 C 16.333 10.886 15.886 11.333 15.333 11.333 L 13.333 11.333 C 12.781 11.333 12.333 10.886 12.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.333 12.667 C 15.886 12.667 16.333 13.114 16.333 13.667 L 16.333 15.667 C 16.333 16.219 15.886 16.667 15.333 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Gallery 2</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-ui')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 4.8 C 7.905 4.8 8.8 5.695 8.8 6.8 C 8.8 7.905 7.905 8.8 6.8 8.8 C 5.695 8.8 4.8 7.905 4.8 6.8 C 4.8 5.695 5.695 4.8 6.8 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 4.8 C 13.105 4.8 14 5.695 14 6.8 C 14 7.905 13.105 8.8 12 8.8 C 10.895 8.8 10 7.905 10 6.8 C 10 5.695 10.895 4.8 12 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.2 4.8 C 18.305 4.8 19.2 5.695 19.2 6.8 C 19.2 7.905 18.305 8.8 17.2 8.8 C 16.095 8.8 15.2 7.905 15.2 6.8 C 15.2 5.695 16.095 4.8 17.2 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories UI</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('todo-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">To-Do List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toggle-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 17.333 15.333 C 18.438 15.333 19.333 16.229 19.333 17.333 C 19.333 18.438 18.438 19.333 17.333 19.333 C 16.229 19.333 15.333 18.438 15.333 17.333 C 15.333 16.229 16.229 15.333 17.333 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.333 10 C 18.438 10 19.333 10.895 19.333 12 C 19.333 13.105 18.438 14 17.333 14 C 16.229 14 15.333 13.105 15.333 12 C 15.333 10.895 16.229 10 17.333 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 C 19.333 7.771 18.438 8.667 17.333 8.667 C 16.229 8.667 15.333 7.771 15.333 6.667 C 15.333 5.562 16.229 4.667 17.333 4.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toggle Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('bottom-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 10.333 C 22 10.886 21.552 11.333 21 11.333 L 3 11.333 C 2.448 11.333 2 10.886 2 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 13.333 C 2 12.781 2.448 12.333 3 12.333 L 21 12.333 C 21.552 12.333 22 12.781 22 13.333 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Bottom Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('draggable-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 14 C 2 12.895 2.895 12 4 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z M 10.667 15.333 L 13.333 15.333 C 13.702 15.333 14 15.035 14 14.667 C 14 14.298 13.702 14 13.333 14 L 10.667 14 C 10.298 14 10 14.298 10 14.667 C 10 15.035 10.298 15.333 10.667 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Draggable Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('modal-box')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 9.333 C 7.333 8.229 8.229 7.333 9.333 7.333 L 14.667 7.333 C 15.771 7.333 16.667 8.229 16.667 9.333 L 16.667 14.667 C 16.667 15.771 15.771 16.667 14.667 16.667 L 9.333 16.667 C 8.229 16.667 7.333 15.771 7.333 14.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Modal Box</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('side-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 11 2 C 11.552 2 12 2.448 12 3 L 12 21 C 12 21.552 11.552 22 11 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Side Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 11.667 7.333 C 11.667 7.333 11.667 7.333 11.667 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 9 C 16.667 9.552 16.219 10 15.667 10 L 13.333 10 L 13.333 15.667 C 13.333 16.219 12.886 16.667 12.333 16.667 L 11.667 16.667 C 11.114 16.667 10.667 16.219 10.667 15.667 L 10.667 10 L 8.333 10 C 7.781 10 7.333 9.552 7.333 9 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('loading-indicator')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 16.4 10.4 C 17.284 10.4 18 11.116 18 12 C 18 12.884 17.284 13.6 16.4 13.6 C 15.516 13.6 14.8 12.884 14.8 12 C 14.8 11.116 15.516 10.4 16.4 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 10.4 C 12.884 10.4 13.6 11.116 13.6 12 C 13.6 12.884 12.884 13.6 12 13.6 C 11.116 13.6 10.4 12.884 10.4 12 C 10.4 11.116 11.116 10.4 12 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.6 10.4 C 8.484 10.4 9.2 11.116 9.2 12 C 9.2 12.884 8.484 13.6 7.6 13.6 C 6.716 13.6 6 12.884 6 12 C 6 11.116 6.716 10.4 7.6 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Loading Indicator</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('radio-button-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.833 8.167 L 14.167 8.167 C 16.284 8.167 18 9.883 18 12 C 18 14.117 16.284 15.833 14.167 15.833 L 9.833 15.833 C 7.716 15.833 6 14.117 6 12 C 6 9.883 7.716 8.167 9.833 8.167 Z M 11.333 12 C 11.333 13.473 12.527 14.667 14 14.667 C 15.473 14.667 16.667 13.473 16.667 12 C 16.667 10.527 15.473 9.333 14 9.333 C 12.527 9.333 11.333 10.527 11.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Radio Button Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('checkbox-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.651 6.931 C 7.911 6.738 7.238 7.411 7.431 8.151 L 9.363 15.558 C 9.592 16.435 10.775 16.58 11.208 15.784 L 13 12.5 L 16.284 10.708 C 17.08 10.275 16.935 9.092 16.058 8.863 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 16 15.5 L 11 10.5\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Checkbox Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('splash-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.757 13.414 C 6.976 12.633 6.976 11.367 7.757 10.586 L 10.586 7.757 C 11.367 6.976 12.633 6.976 13.414 7.757 L 16.243 10.586 C 17.024 11.367 17.024 12.633 16.243 13.414 L 13.414 16.243 C 12.633 17.024 11.367 17.024 10.586 16.243 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Splash Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('timeout-transition')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1 5.8 C 1 3.149 3.149 1 5.8 1 L 18.2 1 C 20.851 1 23 3.149 23 5.8 L 23 18.2 C 23 20.851 20.851 23 18.2 23 L 5.8 23 C 3.149 23 1 20.851 1 18.2 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 12 6.72 C 14.916 6.72 17.28 9.084 17.28 12 C 17.28 14.916 14.916 17.28 12 17.28 C 9.084 17.28 6.72 14.916 6.72 12 C 6.72 9.084 9.084 6.72 12 6.72 Z M 11.34 12 C 11.34 12.365 11.635 12.66 12 12.66 L 14.2 12.66 C 14.565 12.66 14.86 12.365 14.86 12 C 14.86 11.635 14.565 11.34 14.2 11.34 L 12.66 11.34 L 12.66 9.8 C 12.66 9.435 12.365 9.14 12 9.14 C 11.635 9.14 11.34 9.435 11.34 9.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Timeout Transition</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('accordion-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16 10.667 L 12 14.667 L 8 10.667\" fill=\"transparent\" stroke-width=\"2\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Accordion Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drop-on-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 8 0\" transform=\"translate(8.5 11.5) rotate(270 4 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.333 11.333 L 12 8 L 8.667 11.333\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drop on Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('nested-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 7 C 21.82 7.552 21.372 8 20.82 8 L 2.82 8 C 2.267 8 1.82 7.552 1.82 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 1.82 17 C 1.82 16.448 2.267 16 2.82 16 L 20.82 16 C 21.372 16 21.82 16.448 21.82 17 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 8.82 10 C 8.82 9.448 9.267 9 9.82 9 L 20.82 9 C 21.372 9 21.82 9.448 21.82 10 L 21.82 14 C 21.82 14.552 21.372 15 20.82 15 L 9.82 15 C 9.267 15 8.82 14.552 8.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 1.82 10 C 1.82 9.448 2.267 9 2.82 9 L 6.82 9 C 7.372 9 7.82 9.448 7.82 10 L 7.82 14 C 7.82 14.552 7.372 15 6.82 15 L 2.82 15 C 2.267 15 1.82 14.552 1.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Nested Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('star-rating')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.399 6.884 C 11.645 6.386 12.355 6.386 12.601 6.884 L 13.705 9.122 C 13.803 9.32 13.992 9.457 14.21 9.489 L 16.68 9.848 C 17.229 9.928 17.449 10.603 17.051 10.99 L 15.264 12.733 C 15.106 12.887 15.034 13.108 15.071 13.326 L 15.493 15.786 C 15.587 16.333 15.013 16.75 14.521 16.492 L 12.312 15.331 C 12.117 15.228 11.883 15.228 11.688 15.331 L 9.479 16.492 C 8.987 16.75 8.413 16.333 8.507 15.786 L 8.929 13.326 C 8.966 13.108 8.894 12.887 8.736 12.733 L 6.949 10.99 C 6.551 10.603 6.771 9.928 7.32 9.848 L 9.79 9.489 C 10.008 9.457 10.197 9.32 10.295 9.122 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Star Rating</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('swipe-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 17.33 C 2 16.595 2.595 16 3.33 16 L 21 16 C 21.552 16 22 16.448 22 17 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 10 C 2 9.448 2.448 9 3 9 L 14 9 C 14.552 9 15 9.448 15 10 L 15 14 C 15 14.552 14.552 15 14 15 L 3 15 C 2.448 15 2 14.552 2 14 Z M 19 9 C 20.657 9 22 10.343 22 12 C 22 13.657 20.657 15 19 15 C 17.343 15 16 13.657 16 12 C 16 10.343 17.343 9 19 9 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 7 C 22 7.552 21.552 8 21 8 L 3 8 C 2.448 8 2 7.552 2 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Swipe Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('switch-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13.333 C 17.139 13.333 18.333 14.527 18.333 16 C 18.333 17.473 17.139 18.667 15.667 18.667 C 14.194 18.667 13 17.473 13 16 C 13 14.527 14.194 13.333 15.667 13.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 8.333 13.333 C 9.806 13.333 11 14.527 11 16 C 11 17.473 9.806 18.667 8.333 18.667 C 6.861 18.667 5.667 17.473 5.667 16 C 5.667 14.527 6.861 13.333 8.333 13.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Switch Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('tab-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10 15.333 L 14 15.333 L 14 18.667 L 10 18.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.333 16.333 C 5.333 15.781 5.781 15.333 6.333 15.333 L 9.333 15.333 L 9.333 18.667 L 6.333 18.667 C 5.781 18.667 5.333 18.219 5.333 17.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 18.667 16.333 C 18.667 15.781 18.219 15.333 17.667 15.333 L 14.667 15.333 L 14.667 18.667 L 17.667 18.667 C 18.219 18.667 18.667 18.219 18.667 17.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Tab Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('wheel-picker')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.667 6 C 3.667 3.791 5.458 2 7.667 2 L 16.333 2 C 18.542 2 20.333 3.791 20.333 6 L 20.333 7 C 20.333 7.552 19.886 8 19.333 8 L 4.667 8 C 4.114 8 3.667 7.552 3.667 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 11 C 2 9.895 2.895 9 4 9 L 20 9 C 21.105 9 22 9.895 22 11 L 22 13 C 22 14.105 21.105 15 20 15 L 4 15 C 2.895 15 2 14.105 2 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.667 17 C 3.667 16.448 4.114 16 4.667 16 L 19.333 16 C 19.886 16 20.333 16.448 20.333 17 L 20.333 18 C 20.333 20.209 18.542 22 16.333 22 L 7.667 22 C 5.458 22 3.667 20.209 3.667 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Wheel Picker</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cover-flow')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 17.962 C 11.333 18.385 11.068 18.762 10.67 18.904 L 4.673 21.045 C 3.37 21.511 2 20.545 2 19.162 L 2 4.838 C 2 3.455 3.37 2.489 4.673 2.955 L 10.67 5.096 C 11.068 5.238 11.333 5.615 11.333 6.038 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 22 4.838 C 22 3.455 20.63 2.489 19.327 2.955 L 13.33 5.096 C 12.932 5.238 12.667 5.615 12.667 6.038 L 12.667 17.962 C 12.667 18.385 12.932 18.762 13.33 18.904 L 19.327 21.045 C 20.63 21.511 22 20.545 22 19.162 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cover Flow</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cube-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.743 C 2 5.898 2.531 5.144 3.327 4.859 L 9.997 2.477 C 10.648 2.245 11.333 2.727 11.333 3.419 L 11.333 20.581 C 11.333 21.273 10.648 21.755 9.997 21.523 L 3.327 19.141 C 2.531 18.856 2 18.102 2 17.257 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 3.419 C 12.667 2.727 13.352 2.245 14.003 2.477 L 20.673 4.859 C 21.469 5.144 22 5.898 22 6.743 L 22 17.257 C 22 18.102 21.469 18.856 20.673 19.141 L 14.003 21.523 C 13.352 21.755 12.667 21.273 12.667 20.581 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cube Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('flip-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 4.667 C 11.333 4.114 10.886 3.667 10.333 3.667 L 4 3.667 C 2.895 3.667 2 4.562 2 5.667 L 2 18.333 C 2 19.438 2.895 20.333 4 20.333 L 10.333 20.333 C 10.886 20.333 11.333 19.886 11.333 19.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 20 4.167 C 20 3.891 20.224 3.667 20.5 3.667 L 20.5 3.667 C 21.328 3.667 22 4.338 22 5.167 L 22 18.833 C 22 19.662 21.328 20.333 20.5 20.333 L 20.5 20.333 C 20.224 20.333 20 20.109 20 19.833 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 18.667 4.631 C 18.667 3.309 17.406 2.35 16.131 2.704 L 13.399 3.463 C 12.966 3.583 12.667 3.978 12.667 4.427 L 12.667 19.573 C 12.667 20.022 12.966 20.417 13.399 20.537 L 16.131 21.296 C 17.406 21.65 18.667 20.691 18.667 19.369 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Flip Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('parallax-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.667 C 12 5.562 12.895 4.667 14 4.667 L 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 L 19.333 10 C 19.333 11.105 18.438 12 17.333 12 L 14 12 C 12.895 12 12 11.105 12 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 4.667 14 C 4.667 12.895 5.562 12 6.667 12 L 10 12 C 11.105 12 12 12.895 12 14 L 12 17.333 C 12 18.438 11.105 19.333 10 19.333 L 6.667 19.333 C 5.562 19.333 4.667 18.438 4.667 17.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Parallax Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('pile-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.5 4 C 6.224 4 6 3.776 6 3.5 L 6 3.5 C 6 2.672 6.672 2 7.5 2 L 16.5 2 C 17.328 2 18 2.672 18 3.5 L 18 3.5 C 18 3.776 17.776 4 17.5 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 4.5 7 C 4.224 7 4 6.776 4 6.5 L 4 6.5 C 4 5.672 4.672 5 5.5 5 L 18.5 5 C 19.328 5 20 5.672 20 6.5 L 20 6.5 C 20 6.776 19.776 7 19.5 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 0 2.67 C 0 1.195 1.195 0 2.67 0 L 11.33 0 C 12.805 0 14 1.195 14 2.67 L 14 17.33 C 14 18.805 12.805 20 11.33 20 L 2.67 20 C 1.195 20 0 18.805 0 17.33 Z\" transform=\"translate(5 5) rotate(-90 7 10)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Pile Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('shuffle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.174 10.452 L 16.708 9.06 L 15.174 7.667\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.174 16.333 L 16.708 14.94 L 15.174 13.548\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 9.06 C 16.145 9.06 13.982 8.542 12.617 9.679 C 11.252 10.815 11.829 12.213 10.776 13.548 C 9.724 14.882 7.708 14.94 7.708 14.94\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 14.823 C 16.145 14.823 13.982 15.34 12.617 14.204 C 11.252 13.068 11.829 11.669 10.776 10.335 C 9.724 9.001 7.708 8.942 7.708 8.942\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Shuffle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('svg-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">SVG Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('google-sheets')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7 8.667 C 7 8.206 7.373 7.833 7.833 7.833 L 7.833 7.833 C 8.294 7.833 8.667 8.206 8.667 8.667 L 8.667 8.667 C 8.667 9.127 8.294 9.5 7.833 9.5 L 7.833 9.5 C 7.373 9.5 7 9.127 7 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 12 C 7 11.54 7.373 11.167 7.833 11.167 L 7.833 11.167 C 8.294 11.167 8.667 11.54 8.667 12 L 8.667 12 C 8.667 12.46 8.294 12.833 7.833 12.833 L 7.833 12.833 C 7.373 12.833 7 12.46 7 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 15.333 C 7 14.873 7.373 14.5 7.833 14.5 L 7.833 14.5 C 8.294 14.5 8.667 14.873 8.667 15.333 L 8.667 15.333 C 8.667 15.794 8.294 16.167 7.833 16.167 L 7.833 16.167 C 7.373 16.167 7 15.794 7 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 8.667 C 9.778 8.206 10.151 7.833 10.611 7.833 L 16.167 7.833 C 16.627 7.833 17 8.206 17 8.667 L 17 8.667 C 17 9.127 16.627 9.5 16.167 9.5 L 10.611 9.5 C 10.151 9.5 9.778 9.127 9.778 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 12 C 9.778 11.54 10.151 11.167 10.611 11.167 L 16.167 11.167 C 16.627 11.167 17 11.54 17 12 L 17 12 C 17 12.46 16.627 12.833 16.167 12.833 L 10.611 12.833 C 10.151 12.833 9.778 12.46 9.778 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 15.333 C 9.778 14.873 10.151 14.5 10.611 14.5 L 16.167 14.5 C 16.627 14.5 17 14.873 17 15.333 L 17 15.333 C 17 15.794 16.627 16.167 16.167 16.167 L 10.611 16.167 C 10.151 16.167 9.778 15.794 9.778 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Google Sheets</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('map')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.82 6.504 C 14.029 6.504 15.82 8.282 15.82 10.476 C 15.82 10.698 15.801 10.915 15.766 11.127 C 15.359 14.488 13.033 16.581 12.155 17.261 C 12.051 17.341 11.976 17.437 11.82 17.437 C 11.663 17.437 11.586 17.34 11.481 17.258 C 10.6 16.576 8.28 14.483 7.873 11.127 C 7.838 10.915 7.82 10.698 7.82 10.476 C 7.82 8.282 9.61 6.504 11.82 6.504 Z M 9.486 10.644 C 9.486 11.933 10.531 12.977 11.82 12.977 C 13.108 12.977 14.153 11.933 14.153 10.644 C 14.153 9.355 13.108 8.311 11.82 8.311 C 10.531 8.311 9.486 9.355 9.486 10.644 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Map</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('signature-pad')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.82 13.068 C 8.56 12.807 8.56 12.385 8.82 12.125 L 13.733 7.212 C 13.993 6.952 14.415 6.952 14.676 7.212 L 16.788 9.324 C 17.048 9.585 17.048 10.007 16.788 10.267 L 11.875 15.18 C 11.615 15.44 11.193 15.44 10.932 15.18 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.096 0.303 C 3.318 0.17 3.6 0.33 3.6 0.589 L 3.6 3.732 C 3.6 3.991 3.318 4.151 3.096 4.018 L 0.953 2.732 C 0.521 2.473 0.521 1.848 0.953 1.589 Z\" transform=\"translate(6.24 13.8) rotate(-45 1.8 2.16)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Signature Pad</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('sound-effects')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.225 10.793 C 14.471 11.102 14.623 11.529 14.623 12 C 14.623 12.471 14.471 12.898 14.225 13.207\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.224 9.185 C 16.96 9.911 17.417 10.905 17.417 12 C 17.417 13.095 16.96 14.09 16.224 14.816\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 6.083 10.656 C 6.083 10.288 6.382 9.989 6.75 9.989 L 7.674 9.989 L 11.021 7.835 C 11.464 7.549 12.048 7.868 12.048 8.396 L 12.048 15.604 C 12.048 16.132 11.464 16.451 11.021 16.165 L 7.674 14.011 L 6.75 14.011 C 6.382 14.011 6.083 13.712 6.083 13.344 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Sound Effects</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-swipe')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.423 7.423 C 3.423 5.214 5.214 3.423 7.423 3.423 L 16.756 3.423 C 18.965 3.423 20.756 5.214 20.756 7.423 L 20.756 16.756 C 20.756 18.965 18.965 20.756 16.756 20.756 L 7.423 20.756 C 5.214 20.756 3.423 18.965 3.423 16.756 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.172 3.377 C 10.734 1.815 13.266 1.815 14.828 3.377 L 20.721 9.269 C 22.283 10.831 22.283 13.364 20.721 14.926 L 14.828 20.819 C 13.266 22.381 10.734 22.381 9.172 20.819 L 3.279 14.926 C 1.717 13.364 1.717 10.831 3.279 9.269 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card Swipe</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('custom-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.2 C 2 5.673 2.31 5.195 2.792 4.981 L 7.063 3.083 C 7.503 2.887 8 3.21 8 3.693 L 8 20.307 C 8 20.79 7.503 21.113 7.063 20.917 L 2.792 19.019 C 2.31 18.805 2 18.327 2 17.8 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 9.333 3.297 C 9.333 2.642 9.954 2.163 10.588 2.33 L 20.509 4.941 C 21.388 5.172 22 5.967 22 6.875 L 22 17.125 C 22 18.033 21.388 18.828 20.509 19.059 L 10.588 21.67 C 9.954 21.837 9.333 21.358 9.333 20.703 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Custom Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drag-handle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 2.667 L 2.667 0 L 0 2.667\" transform=\"translate(5.667 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 5.333 0 L 2.667 2.667 L 0 0\" transform=\"translate(13 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drag Handle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-header')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 8 L 2 8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Header</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-panning')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 14 C 12 12.895 12.895 12 14 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 14 22 C 12.895 22 12 21.105 12 20 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Panning</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-data')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Data</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-validation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Validation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.28 0 C 7.017 0 7.747 2.366 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.365 0.069 -0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(11.213 11.787) rotate(15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 5.28 0 C 7.017 -0 7.747 2.365 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.366 0.069 0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(5.701 6.669) rotate(-15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-counter')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.778 7.333 C 17.556 7.333 18.724 11.072 16.502 13.268 C 14.279 15.464 12 16.667 12 16.667 C 12 16.667 9.721 15.464 7.498 13.268 C 5.276 11.072 6.444 7.333 9.222 7.333 C 12 7.333 12 10.022 12 10.022 C 12 10.022 12 7.333 14.778 7.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Counter</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('lock-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 11 C 7.333 10.448 7.781 10 8.333 10 L 15.667 10 C 16.219 10 16.667 10.448 16.667 11 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 7.333 C 13.289 7.333 14.333 8.378 14.333 9.667 C 14.333 10.955 13.289 12 12 12 C 10.711 12 9.667 10.955 9.667 9.667 C 9.667 8.378 10.711 7.333 12 7.333 Z\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Lock Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('long-press-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16.667 10.667 C 17.771 10.667 18.667 11.562 18.667 12.667 C 18.667 13.771 17.771 14.667 16.667 14.667 C 15.562 14.667 14.667 13.771 14.667 12.667 C 14.667 11.562 15.562 10.667 16.667 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12 8 C 13.105 8 14 8.895 14 10 C 14 11.105 13.105 12 12 12 C 10.895 12 10 11.105 10 10 C 10 8.895 10.895 8 12 8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 10.667 C 8.438 10.667 9.333 11.562 9.333 12.667 C 9.333 13.771 8.438 14.667 7.333 14.667 C 6.229 14.667 5.333 13.771 5.333 12.667 C 5.333 11.562 6.229 10.667 7.333 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Long Press Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('perspective-3d')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.913 22 C 5.987 22 5.182 21.364 4.967 20.463 L 2.586 10.463 C 2.287 9.206 3.24 8 4.532 8 L 19.468 8 C 20.76 8 21.713 9.206 21.414 10.463 L 19.033 20.463 C 18.818 21.364 18.013 22 17.087 22 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.833 7 C 3.557 7 3.333 6.776 3.333 6.5 L 3.333 6.5 C 3.333 5.672 4.005 5 4.833 5 L 19.167 5 C 19.995 5 20.667 5.672 20.667 6.5 L 20.667 6.5 C 20.667 6.776 20.443 7 20.167 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 5.167 4 C 4.891 4 4.667 3.776 4.667 3.5 L 4.667 3.5 C 4.667 2.672 5.338 2 6.167 2 L 17.833 2 C 18.662 2 19.333 2.672 19.333 3.5 L 19.333 3.5 C 19.333 3.776 19.109 4 18.833 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Perspective 3D</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('progress-bar')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 16.82 15.333 C 17.74 15.333 18.486 16.08 18.486 17 L 18.486 17 C 18.486 17.92 17.74 18.667 16.82 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 11.486 15.333 C 12.407 15.333 13.153 16.08 13.153 17 L 13.153 17 C 13.153 17.92 12.407 18.667 11.486 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Progress Bar</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('scroll-progress')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 10.333 C 7.333 9.781 7.781 9.333 8.333 9.333 L 15.667 9.333 C 16.219 9.333 16.667 9.781 16.667 10.333 L 16.667 11.667 C 16.667 12.219 16.219 12.667 15.667 12.667 L 8.333 12.667 C 7.781 12.667 7.333 12.219 7.333 11.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 14.667 C 7.333 14.114 7.781 13.667 8.333 13.667 L 15.667 13.667 C 16.219 13.667 16.667 14.114 16.667 14.667 L 16.667 16 C 16.667 16.552 16.219 17 15.667 17 L 8.333 17 C 7.781 17 7.333 16.552 7.333 16 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 16 7 C 16.368 7 16.667 7.298 16.667 7.667 L 16.667 7.667 C 16.667 8.035 16.368 8.333 16 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 12.667 7 C 13.035 7 13.333 7.298 13.333 7.667 L 13.333 7.667 C 13.333 8.035 13.035 8.333 12.667 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Scroll Progress</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('show-password')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10.6 12 C 10.6 11.227 11.227 10.6 12 10.6 L 12 10.6 C 12.773 10.6 13.4 11.227 13.4 12 L 13.4 12 C 13.4 12.773 12.773 13.4 12 13.4 L 12 13.4 C 11.227 13.4 10.6 12.773 10.6 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.166 7.833 C 14.892 7.833 17.161 9.42 17.811 12 C 17.161 14.58 14.892 16.167 12.166 16.167 C 9.44 16.167 7.127 14.58 6.478 12 C 7.127 9.42 9.44 7.833 12.166 7.833 Z M 9.333 12 C 9.333 13.473 10.527 14.667 12 14.667 C 13.473 14.667 14.667 13.473 14.667 12 C 14.667 10.527 13.473 9.333 12 9.333 C 10.527 9.333 9.333 10.527 9.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Show Password</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('slider')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.667 12 L 18.333 12\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" opacity=\"0.4\" stroke-width=\"2.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 12 8.333 C 14.025 8.333 15.667 9.975 15.667 12 C 15.667 14.025 14.025 15.667 12 15.667 C 9.975 15.667 8.333 14.025 8.333 12 C 8.333 9.975 9.975 8.333 12 8.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Slider</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-drag')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Drag</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toast-prompt')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18.333 C 22 20.542 20.209 22.333 18 22.333 L 6 22.333 C 3.791 22.333 2 20.542 2 18.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.333 C 15.13 6.333 17.667 8.87 17.667 12 C 17.667 15.13 15.13 17.667 12 17.667 C 8.87 17.667 6.333 15.13 6.333 12 C 6.333 8.87 8.87 6.333 12 6.333 Z\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\"></path><path d=\"M 12 13 C 12.552 13 13 13.448 13 14 C 13 14.552 12.552 15 12 15 C 11.448 15 11 14.552 11 14 C 11 13.448 11.448 13 12 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 11.06 9.998 C 11.027 9.457 11.458 9 12 9 L 12 9 C 12.542 9 12.973 9.457 12.94 9.998 L 12.848 11.535 C 12.821 11.983 12.449 12.333 12 12.333 L 12 12.333 C 11.551 12.333 11.179 11.983 11.152 11.535 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toast Prompt</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t\t-->\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 2\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'view', value: item.type.name })\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 3\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewItemTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'viewItem', value: item.type.name })\" [title]=\"item.id\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"supportedViewItemTypes.length == 0\" [innerHTML]=\"'editor_type_no_items' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t"
+};var ToastOutletComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(ToastOutletComponent, _Component);
+
+  function ToastOutletComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ToastOutletComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    this.toast = null;
+    this.lastToast = null;
+    ToastService.toast$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (toast) {
+      if (toast) {
+        _this.lastToast = toast;
+      }
+
+      _this.toast = toast;
+
+      _this.pushChanges();
+    }); // console.log('ToastOutletComponent.onInit');
+  };
+
+  _proto.getClass = function getClass() {
+    var classList = {};
+
+    if (this.toast) {
+      classList.active = true;
+    }
+
+    if (this.lastToast) {
+      classList[this.lastToast.type] = true;
+      classList[this.lastToast.position] = true;
+    }
+
+    return classList;
+  };
+
+  _proto.onClose = function onClose() {
+    ToastService.reject(this.toast);
+  };
+
+  _proto.onAccept = function onAccept() {
+    ToastService.resolve(this.toast);
+  };
+
+  _proto.onReject = function onReject() {
+    ToastService.reject(this.toast);
+  };
+
+  return ToastOutletComponent;
+}(rxcomp.Component);
+ToastOutletComponent.meta = {
+  selector: '[toast-outlet]',
+  template:
+  /* html */
+  "\n\t<div class=\"toast-outlet__container\" [class]=\"getClass()\">\n\t\t<div class=\"toast-outlet__toast\" *if=\"lastToast\">\n\t\t\t<span class=\"toast-outlet__message\" [innerHTML]=\"lastToast.message\"></span>\n\t\t\t<div class=\"group--cta\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<button type=\"button\" class=\"btn--accept\" (click)=\"onAccept()\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.acceptMessage\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--cancel\" (click)=\"onReject()\" *if=\"lastToast.type == 'dialog'\">\n\t\t\t\t\t<span [innerHTML]=\"lastToast.rejectMessage\"></span>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t<button type=\"button\" class=\"btn--close\" (click)=\"onClose()\" *if=\"lastToast.type != 'info'\">\n\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#close\"></use></svg>\n\t\t\t</button>\n\t\t</div>\n\t</div>\n\t"
+};var AsideComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(AsideComponent, _Component);
+
+  function AsideComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = AsideComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    this.mode = 1;
+    this.viewTypes = Object.keys(ViewType).map(function (key) {
+      var type = ViewType[key];
+      return {
+        type: type,
+        name: LabelPipe.getKeys('editor', type.name),
+        disabled: environment.editor.disabledViewTypes.indexOf(type.name) !== -1
+      };
+    });
+    this.viewItemTypes = Object.keys(ViewItemType).map(function (key) {
+      var type = ViewItemType[key];
+      return {
+        type: type,
+        name: LabelPipe.getKeys('editor', type.name),
+        disabled: environment.editor.disabledViewItemTypes.indexOf(type.name) !== -1
+      };
+    });
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.onChanges = function onChanges() {
+    this.setSupportedViewTypes();
+    this.setSupportedViewItemTypes();
+  };
+
+  _proto.setSupportedViewTypes = function setSupportedViewTypes() {
+    var _this = this;
+
+    this.supportedViewTypes = this.viewTypes.filter(function (x) {
+      return _this.supportedViewType(x.type.name);
+    }).sort(function (a, b) {
+      if (a.disabled === b.disabled) {
+        return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
+      } else {
+        return a.disabled ? 1 : -1;
+      }
+    });
+  };
+
+  _proto.setSupportedViewItemTypes = function setSupportedViewItemTypes() {
+    var _this2 = this;
+
+    if (this.view) {
+      this.supportedViewItemTypes = this.viewItemTypes.filter(function (x) {
+        return _this2.supportedViewItemType(_this2.view.type.name, x.type.name);
+      }).sort(function (a, b) {
+        if (a.disabled === b.disabled) {
+          return 0; // (a.type.name < b.type.name) ? -1 : (a.type.name > b.type.name) ? 1 : 0;
+        } else {
+          return a.disabled ? 1 : -1;
+        }
+      });
+    } else {
+      this.supportedViewItemTypes = [];
+    }
+  };
+
+  _proto.setMode = function setMode(mode) {
+    if (this.mode !== mode) {
+      this.mode = mode;
+      this.pushChanges();
+    }
+  };
+
+  _proto.supportedViewType = function supportedViewType(viewTypeName) {
+    var supported = [ViewType.Panorama.name, ViewType.PanoramaGrid.name, ViewType.Room3d.name, ViewType.Model.name, ViewType.Media.name].indexOf(viewTypeName) !== -1; // ViewType.WaitingRoom,
+    // console.log('supportedViewType', viewType, supported);
+
+    return supported;
+  };
+
+  _proto.supportedViewItemType = function supportedViewItemType(viewTypeName, viewItemTypeName) {
+    var supported;
+
+    switch (viewTypeName) {
+      case ViewType.WaitingRoom.name:
+        supported = false;
+        break;
+
+      case ViewType.Panorama.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.PanoramaGrid.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.Room3d.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.Texture.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.Model.name:
+        supported = [ViewItemType.Nav.name, ViewItemType.Model.name, ViewItemType.Plane.name, ViewItemType.CurvedPlane.name].indexOf(viewItemTypeName) !== -1;
+        break;
+
+      case ViewType.Media.name:
+        supported = [].indexOf(viewItemTypeName) !== -1;
+        break;
+    } // console.log('supportedViewItemType', viewTypeName, viewItemTypeName, supported);
+
+
+    return supported;
+  };
+
+  _proto.onSelect = function onSelect(event) {
+    this.select.next(event);
+  };
+
+  _proto.onUpdate = function onUpdate(event) {
+    this.update.next(event);
+  };
+
+  _proto.onDelete = function onDelete(event) {
+    this.delete.next(event);
+  };
+
+  return AsideComponent;
+}(rxcomp.Component);
+AsideComponent.meta = {
+  selector: '[aside]',
+  outputs: ['select', 'update', 'delete'],
+  inputs: ['view']
 };var MENU_UID = 0;
 
 var MenuService = /*#__PURE__*/function () {
@@ -35470,43 +35496,29 @@ ModelTextComponent.meta = {
   return AppModule;
 }(rxcomp.Module);
 AppModule.meta = {
-  imports: [rxcomp.CoreModule, rxcompRouter.RouterModule.forRoot([{
-    path: '',
-    redirectTo: '/accesso',
-    pathMatch: 'full'
-  }, {
-    path: 'it/',
-    redirectTo: '/accesso',
-    pathMatch: 'full'
-  }, {
-    path: 'tour-guidato',
-    redirectTo: '/it/tour-guidato',
-    pathMatch: 'full'
-  }, {
-    path: 'tour-self-service',
-    redirectTo: '/it/tour-self-service',
-    pathMatch: 'full'
-  }, {
-    path: 'embed',
-    redirectTo: '/it/embed',
-    pathMatch: 'full'
-  }, {
-    path: 'codice-di-accesso',
-    redirectTo: '/it/codice-di-accesso',
-    pathMatch: 'full'
-  }, {
-    path: 'editor',
-    redirectTo: '/it/editor',
-    pathMatch: 'full'
-  }, {
-    path: 'en/',
-    redirectTo: '/en/access',
-    pathMatch: 'full'
-  }, {
-    path: 'accesso',
-    component: AccessComponent
-  }, {
-    path: 'en/access',
+  imports: [rxcomp.CoreModule,
+  /*
+  RouterModule.forRoot([
+  	{ path: '', redirectTo: '/accesso', pathMatch: 'full' },
+  	{ path: 'it/', redirectTo: '/accesso', pathMatch: 'full' },
+  	{ path: 'tour-guidato', redirectTo: '/it/tour-guidato', pathMatch: 'full' },
+  	{ path: 'tour-self-service', redirectTo: '/it/tour-self-service', pathMatch: 'full' },
+  	{ path: 'embed', redirectTo: '/it/embed', pathMatch: 'full' },
+  	{ path: 'codice-di-accesso', redirectTo: '/it/codice-di-accesso', pathMatch: 'full' },
+  	{ path: 'editor', redirectTo: '/it/editor', pathMatch: 'full' },
+  	{ path: 'en/', redirectTo: '/en/access', pathMatch: 'full' },
+  	{ path: '/accesso', component: AccessComponent },
+  	{ path: 'en/access', component: AccessComponent },
+  	{ path: 'it/tour-guidato', component: AgoraComponent },
+  	{ path: 'it/tour-self-service', component: AgoraComponent },
+  	{ path: 'it/embed', component: AgoraComponent },
+  	{ path: 'it/codice-di-accesso', component: AgoraComponent },
+  	{ path: 'it/editor', component: AgoraComponent },
+  	{ path: '**', redirectTo: '/accesso' },
+  ]).useStrategy(LocationStrategyHash),
+  */
+  rxcompRouter.RouterModule.forRoot([{
+    path: 'it/accesso',
     component: AccessComponent
   }, {
     path: 'it/tour-guidato',
@@ -35519,30 +35531,18 @@ AppModule.meta = {
     component: AgoraComponent
   }, {
     path: 'it/codice-di-accesso',
-    component: AgoraComponent
+    component: AccessCodeComponent
   }, {
     path: 'it/editor',
-    component: AgoraComponent
+    component: EditorComponent
+  }, {
+    path: '',
+    redirectTo: '/it/accesso',
+    pathMatch: 'full'
   }, {
     path: '**',
-    redirectTo: '/accesso'
-  }
-  /*
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: IndexComponent, data: { title: 'Dashboard' } },
-  {
-  	path: 'detail/:detailId', component: DetailComponent, data: { title: 'Detail' },
-  	children: [
-  	{ path: 'media', component: SubComponent, data: { title: 'Media' } },
-  	{ path: 'files', component: SubComponent, data: { title: 'Files' } }
-  	], canActivateChild: [customActivator],
-  },
-  { path: 'data/:data', component: DataComponent, data: { title: 'Data' } },
-  { path: 'contacts', component: ContactsComponent, data: { title: 'Contacts' }, canActivate: [customActivator] },
-  { path: '**', component: NotFoundComponent },
-  */
-  // { path: '**', component: AccessComponent },
-  ]).useStrategy(rxcompRouter.LocationStrategyHash), rxcompForm.FormModule, EditorModule],
+    component: AccessComponent
+  }]), rxcompForm.FormModule, EditorModule],
   declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

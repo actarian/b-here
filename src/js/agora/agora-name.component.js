@@ -6,6 +6,7 @@ import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
 
 export default class AgoraNameComponent extends Component {
+
 	onInit() {
 		const meetingUrl = new MeetingUrl();
 		const name = meetingUrl.name;
@@ -39,27 +40,28 @@ export default class AgoraNameComponent extends Component {
 		MeetingUrl.replaceWithName(name);
 		this.name.next(name);
 	}
+
 }
 
 AgoraNameComponent.meta = {
 	selector: '[agora-name]',
 	outputs: ['name'],
 	template: /* html */`
-		<div class="group--info" *if="form">
-			<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
-				<div class="group--info__content stagger--childs">
-					<!-- NAME -->
-					<div class="group--form group--form--addon" [class]="{ required: controls.name.validators.length }">
-						<label [innerHTML]="'bhere_fill_fullname' | label"></label>
-						<input type="text" class="control--text" [formControl]="controls.name" [placeholder]="'bhere_name_and_surname' | label" />
-					</div>
-					<div class="info" *if="!controls.name.valid" [innerHTML]="'bhere_fill_name_and_surname' | label"></div>
-					<div class="info" *if="isValid()">prosegui come <span [innerHTML]="controls.name.value"></span></div>
-					<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
-						<span [innerHTML]="'bhere_proceed' | label"></span>
-					</button>
+	<div class="group--info" *if="form">
+		<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
+			<div class="group--info__content stagger--childs">
+				<!-- NAME -->
+				<div class="group--form group--form--addon" [class]="{ required: controls.name.validators.length }">
+					<label [innerHTML]="'bhere_fill_fullname' | label"></label>
+					<input type="text" class="control--text" [formControl]="controls.name" [placeholder]="'bhere_name_and_surname' | label" />
 				</div>
-			</form>
-		</div>
+				<div class="info" *if="!controls.name.valid" [innerHTML]="'bhere_fill_name_and_surname' | label"></div>
+				<div class="info" *if="isValid()">prosegui come <span [innerHTML]="controls.name.value"></span></div>
+				<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
+					<span [innerHTML]="'bhere_proceed' | label"></span>
+				</button>
+			</div>
+		</form>
+	</div>
 	`
 };

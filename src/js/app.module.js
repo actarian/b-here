@@ -1,6 +1,7 @@
 import { CoreModule, Module } from 'rxcomp';
 import { FormModule } from 'rxcomp-form';
-import { LocationStrategyHash, RouterModule } from 'rxcomp-router';
+// import { LocationStrategyHash, RouterModule } from '../../../../../rxcomp-router';
+import { RouterModule } from '../../../../../rxcomp-router';
 import AccessCodeComponent from './access/access-code.component';
 import AccessComponent from './access/access.component';
 import AgoraChatEmojiComponent from './agora/agora-chat-emoji.component';
@@ -21,6 +22,7 @@ import ControlRequestModalComponent from './control-request/control-request-moda
 import DropDirective from './drop/drop.directive';
 import DropdownItemDirective from './dropdown/dropdown-item.directive';
 import DropdownDirective from './dropdown/dropdown.directive';
+import EditorComponent from './editor/editor.component';
 import { EditorModule } from './editor/editor.module';
 import IframeModalComponent from './editor/modals/iframe-modal.component';
 import EnvPipe from './env/env.pipe';
@@ -85,6 +87,7 @@ export class AppModule extends Module { }
 AppModule.meta = {
 	imports: [
 		CoreModule,
+		/*
 		RouterModule.forRoot([
 			{ path: '', redirectTo: '/accesso', pathMatch: 'full' },
 			{ path: 'it/', redirectTo: '/accesso', pathMatch: 'full' },
@@ -94,7 +97,7 @@ AppModule.meta = {
 			{ path: 'codice-di-accesso', redirectTo: '/it/codice-di-accesso', pathMatch: 'full' },
 			{ path: 'editor', redirectTo: '/it/editor', pathMatch: 'full' },
 			{ path: 'en/', redirectTo: '/en/access', pathMatch: 'full' },
-			{ path: 'accesso', component: AccessComponent },
+			{ path: '/accesso', component: AccessComponent },
 			{ path: 'en/access', component: AccessComponent },
 			{ path: 'it/tour-guidato', component: AgoraComponent },
 			{ path: 'it/tour-self-service', component: AgoraComponent },
@@ -102,22 +105,18 @@ AppModule.meta = {
 			{ path: 'it/codice-di-accesso', component: AgoraComponent },
 			{ path: 'it/editor', component: AgoraComponent },
 			{ path: '**', redirectTo: '/accesso' },
-			/*
-			{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-			{ path: 'dashboard', component: IndexComponent, data: { title: 'Dashboard' } },
-			{
-				path: 'detail/:detailId', component: DetailComponent, data: { title: 'Detail' },
-				children: [
-				{ path: 'media', component: SubComponent, data: { title: 'Media' } },
-				{ path: 'files', component: SubComponent, data: { title: 'Files' } }
-				], canActivateChild: [customActivator],
-			},
-			{ path: 'data/:data', component: DataComponent, data: { title: 'Data' } },
-			{ path: 'contacts', component: ContactsComponent, data: { title: 'Contacts' }, canActivate: [customActivator] },
-			{ path: '**', component: NotFoundComponent },
-			*/
-			// { path: '**', component: AccessComponent },
 		]).useStrategy(LocationStrategyHash),
+		*/
+		RouterModule.forRoot([
+			{ path: 'it/accesso', component: AccessComponent },
+			{ path: 'it/tour-guidato', component: AgoraComponent },
+			{ path: 'it/tour-self-service', component: AgoraComponent },
+			{ path: 'it/embed', component: AgoraComponent },
+			{ path: 'it/codice-di-accesso', component: AccessCodeComponent },
+			{ path: 'it/editor', component: EditorComponent },
+			{ path: '', redirectTo: '/it/accesso', pathMatch: 'full' },
+			{ path: '**', component: AccessComponent },
+		]),
 		FormModule,
 		EditorModule,
 	],

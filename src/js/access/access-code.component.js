@@ -1,4 +1,5 @@
 import { Component, getContext } from 'rxcomp';
+import { RouterService } from '../../../../../../rxcomp-router';
 import { MeetingUrl } from '../meeting/meeting-url';
 
 export default class AccessCodeComponent extends Component {
@@ -7,7 +8,8 @@ export default class AccessCodeComponent extends Component {
 		this.state = {};
 		const meetingUrl = new MeetingUrl();
 		if (!meetingUrl.link) {
-			window.location.href = MeetingUrl.getGuidedTourUrl();
+			RouterService.setRouterLink(MeetingUrl.getGuidedTourUrl());
+			// window.location.href = MeetingUrl.getGuidedTourUrl();
 		} else {
 			const url = meetingUrl.toGuidedTourUrl();
 			const { node } = getContext(this);

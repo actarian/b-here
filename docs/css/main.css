@@ -6946,10 +6946,10 @@ model-viewer {
   .nav--language > li + li {
     border-top: 1px solid rgba(255, 255, 255, 0.1); }
 
-[editor-component] .ui.open {
+.page--editor .ui.open {
   width: calc(100% - 300px); }
 
-[editor-component] .ui__body {
+.page--editor .ui__body {
   position: relative;
   width: 100%;
   flex: 1 1 calc(100% - 50px); }
