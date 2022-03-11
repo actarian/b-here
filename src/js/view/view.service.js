@@ -95,6 +95,7 @@ export default class ViewService {
 		if (views.find(x => x.id === viewId) == null) {
 			return null;
 		}
+		return viewId;
 	}
 
 	static getFirstPathId() {

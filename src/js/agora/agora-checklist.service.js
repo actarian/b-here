@@ -305,9 +305,7 @@ export class AgoraChecklistService {
 		if (FORCE_ERROR) {
 			return of(false);
 		}
-		return from(AgoraService.checkRtcConnection()).pipe(
-			catchError()
-		);
+		return from(AgoraService.checkRtcConnection());
 	}
 
 	static checkRtcEvent$(event) {

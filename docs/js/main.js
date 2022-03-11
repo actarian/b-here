@@ -9140,7 +9140,7 @@ var AgoraChecklistService = /*#__PURE__*/function () {
 
   AgoraChecklistService.checkRtc$ = function checkRtc$() {
 
-    return rxjs.from(AgoraService.checkRtcConnection()).pipe(operators.catchError());
+    return rxjs.from(AgoraService.checkRtcConnection());
   };
 
   AgoraChecklistService.checkRtcEvent$ = function checkRtcEvent$(event) {
@@ -9240,7 +9240,7 @@ AgoraConfigureFirewallModalComponent.chunk = function () {
       _this.shouldCheckAudio = event.shouldCheckAudio;
       _this.shouldCheckVideo = event.shouldCheckVideo;
       _this.checklist = event.checklist;
-      _this.errors = event.errors; // console.log(JSON.stringify(event.errors));
+      _this.errors = event.errors || {}; // console.log(JSON.stringify(event.errors));
 
       var success = AgoraChecklistService.isChecked(event);
 
@@ -9259,7 +9259,7 @@ AgoraConfigureFirewallModalComponent.chunk = function () {
 
     }, function (error) {
       // console.log('AgoraChecklistService.error', error);
-      _this.errors = error.errors;
+      _this.errors = error.errors || {};
       _this.checklist.error = true;
       _this.busy = false;
 
@@ -11735,6 +11735,8 @@ var ViewService = /*#__PURE__*/function () {
     }) == null) {
       return null;
     }
+
+    return viewId;
   };
 
   ViewService.getFirstPathId = function getFirstPathId() {
@@ -25366,7 +25368,7 @@ ModelModalComponent.chunk = function () {
   _proto.onViewIdDidChange = function onViewIdDidChange(viewId) {
     // console.log('NavModalComponent.onViewIdDidChange', viewId, this.form.value);
     // const viewId = this.form.value.viewId;
-    if (viewId != null) {
+    if (viewId != null && environment.flags.navAutoUpdateTitle) {
       var options = this.controls.viewId.options;
       var selectedOption = options.find(function (x) {
         return x.id === viewId;
@@ -26470,7 +26472,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
       // console.log('EditorComponent.onDragEnd.inferItemUpdate$.success', response);
       _this5.pushChanges();
     }, function (error) {
-      return console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error);
+      return console.log('EditorComponent.onDragEnd.inferItemUpdate$.error', error, _this5.view, event.item, event.item.payload);
     });
   };
 
@@ -26591,7 +26593,8 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
               case ViewItemType.Plane.name:
               case ViewItemType.CurvedPlane.name:
               case ViewItemType.Model.name:
-                var item = Object.assign({}, event.data);
+                var item = event.data; // Object.assign({}, event.data);
+
                 var tile = EditorService.getTile(_this6.view);
 
                 if (tile) {

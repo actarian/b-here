@@ -23,7 +23,7 @@ export default class AgoraChecklistComponent extends Component {
 			this.shouldCheckAudio = event.shouldCheckAudio;
 			this.shouldCheckVideo = event.shouldCheckVideo;
 			this.checklist = event.checklist;
-			this.errors = event.errors;
+			this.errors = event.errors || {};
 			// console.log(JSON.stringify(event.errors));
 			const success = AgoraChecklistService.isChecked(event);
 			if (success) {
@@ -39,7 +39,7 @@ export default class AgoraChecklistComponent extends Component {
 			// console.log(event);
 		}, error => {
 			// console.log('AgoraChecklistService.error', error);
-			this.errors = error.errors;
+			this.errors = error.errors || {};
 			this.checklist.error = true;
 			this.busy = false;
 			this.pushChanges();

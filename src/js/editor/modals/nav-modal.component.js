@@ -142,7 +142,7 @@ export default class NavModalComponent extends Component {
 	onViewIdDidChange(viewId) {
 		// console.log('NavModalComponent.onViewIdDidChange', viewId, this.form.value);
 		// const viewId = this.form.value.viewId;
-		if (viewId != null) {
+		if (viewId != null && environment.flags.navAutoUpdateTitle) {
 			const options = this.controls.viewId.options;
 			const selectedOption = options.find(x => x.id === viewId);
 			// console.log('NavModalComponent.onViewIdDidChange', selectedOption, options);
