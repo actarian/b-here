@@ -12,6 +12,8 @@ import { MeetingId } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
 import MessageService from '../message/message.service';
 import ModalService from '../modal/modal.service';
+import RoutePipe from '../router/route.pipe';
+import RouterOutletStructure from '../router/router-outlet.structure';
 import RouterService from '../router/router.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
@@ -215,7 +217,7 @@ export default class AgoraComponent extends Component {
 		if (user && (!linkRole || linkRole === user.type)) {
 			this.initWithUser(user);
 		} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-			RouterService.setRouterLink('it.access');
+			RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
 			// window.location.href = environment.url.access;
 		} else {
 			this.initWithUser({ type: linkRole });
@@ -270,7 +272,7 @@ export default class AgoraComponent extends Component {
 		switch (role) {
 			case RoleType.SelfService:
 				if (!user || (user.type !== RoleType.SelfService && user.type !== RoleType.Publisher)) {
-					RouterService.setRouterLink('it.access');
+					RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
 					// window.location.href = environment.url.access;
 					return;
 				} else {
@@ -1057,6 +1059,7 @@ export default class AgoraComponent extends Component {
 
 AgoraComponent.meta = {
 	selector: '[agora-component]',
+	hosts: { host: RouterOutletStructure },
 	template: /* html */`
 	<div class="page page--agora">
 		${CHUNK_BACKGROUND}

@@ -1,10 +1,11 @@
+import { environment } from '../environment';
 import ControlComponent from './control.component';
 
 export default class ControlFileComponent extends ControlComponent {
 
 	onInit() {
 		this.label = this.label || 'label';
-		this.labels = window.labels || {};
+		this.labels = environment.labels || {};
 		this.file = null;
 		this.onReaderComplete = this.onReaderComplete.bind(this);
 	}

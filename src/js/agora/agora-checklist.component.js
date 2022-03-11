@@ -19,7 +19,7 @@ export default class AgoraChecklistComponent extends Component {
 		AgoraChecklistService.checkEvent$().pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
-			console.log('AgoraChecklistService', event, event.errors);
+			// console.log('AgoraChecklistService', event, event.errors);
 			this.shouldCheckAudio = event.shouldCheckAudio;
 			this.shouldCheckVideo = event.shouldCheckVideo;
 			this.checklist = event.checklist;
@@ -89,7 +89,7 @@ AgoraChecklistComponent.meta = {
 			</button>
 		</div>
 	</div>
-	<a [routerLink]="'editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
+	<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
 		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 	</a>
 	`

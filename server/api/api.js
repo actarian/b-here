@@ -147,338 +147,357 @@ function doSetLocale(item, params) {
 	return item;
 }
 
-// /api/upload
-const ROUTES = [{
-	path: '/api/view', method: 'GET', callback: function(request, response, params) {
-		sendOk(response, { views: db.views });
-	}
-}, {
-	path: '/api/view/:viewId', method: 'GET', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			sendOk(response, view);
-		}
-	}
-}, {
-	path: '/api/view', method: 'POST', callback: function(request, response, params) {
-		doCreate(request, response, params, db.views);
-	}
-}, {
-	path: '/api/view/:viewId', method: 'PUT', callback: function(request, response, params) {
-		doUpdate(request, response, params, db.views);
-	}
-}, {
-	path: '/api/view/:viewId', method: 'DELETE', callback: function(request, response, params) {
-		doDelete(request, response, { id: params.viewId }, db.views);
-	}
-}, {
-	path: '/api/view/:viewId/item', method: 'POST', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			view.items = view.items || [];
-			doCreate(request, response, params, view.items);
-		}
-	}
-}, {
-	path: '/api/view/:viewId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			view.items = view.items || [];
-			doUpdate(request, response, params, view.items);
-		}
-	}
-}, {
-	path: '/api/view/:viewId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			doDelete(request, response, { id: params.viewItemId }, view.items);
-		}
-	}
-}, {
-	path: '/api/view/:viewId/tile/:tileId/item', method: 'POST', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			const tile = view.tiles.find(x => x.id === params.tileId);
-			if (tile) {
-				tile.navs = tile.navs || [];
-				doCreate(request, response, params, tile.navs);
+const ROUTES = [/*{
+	path: '/api/labels/:lang', method: 'GET', callback: function(request, response, params) {
+		const pathname = path.join(__dirname, `../../docs/api/labels/${params.lang}.json`);
+		fs.readFile(pathname, 'utf8', (error, data) => {
+			if (error) {
+				sendError(response, 500, error);
 			} else {
-				sendError(response, 404, 'Not Found');
+				try {
+					const labels = JSON.parse(data)
+					if (labels) {
+						sendOk(response, labels);
+					} else {
+						sendError(response, 404, 'Not Found');
+					}
+				} catch (error) {
+					sendError(response, 500, 'Invalid Data');
+				}
+			}
+		});
+	}
+}, */{
+		path: '/api/view', method: 'GET', callback: function(request, response, params) {
+			sendOk(response, { views: db.views });
+		}
+	}, {
+		path: '/api/view/:viewId', method: 'GET', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				sendOk(response, view);
 			}
 		}
-	}
-}, {
-	path: '/api/view/:viewId/tile/:tileId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			const tile = view.tiles.find(x => x.id === params.tileId);
-			if (tile) {
-				tile.navs = tile.navs || [];
-				doUpdate(request, response, params, tile.navs);
-			} else {
-				sendError(response, 404, 'Not Found');
+	}, {
+		path: '/api/view', method: 'POST', callback: function(request, response, params) {
+			doCreate(request, response, params, db.views);
+		}
+	}, {
+		path: '/api/view/:viewId', method: 'PUT', callback: function(request, response, params) {
+			doUpdate(request, response, params, db.views);
+		}
+	}, {
+		path: '/api/view/:viewId', method: 'DELETE', callback: function(request, response, params) {
+			doDelete(request, response, { id: params.viewId }, db.views);
+		}
+	}, {
+		path: '/api/view/:viewId/item', method: 'POST', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				view.items = view.items || [];
+				doCreate(request, response, params, view.items);
 			}
 		}
-	}
-}, {
-	path: '/api/view/:viewId/tile/:tileId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
-		const view = doGet(request, response, { id: params.viewId }, db.views);
-		if (view) {
-			const tile = view.tiles.find(x => x.id === params.tileId);
-			if (tile) {
-				tile.navs = tile.navs || [];
-				doDelete(request, response, { id: params.viewItemId }, tile.navs);
-			} else {
-				sendError(response, 404, 'Not Found');
+	}, {
+		path: '/api/view/:viewId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				view.items = view.items || [];
+				doUpdate(request, response, params, view.items);
 			}
 		}
-	}
-}, {
-	path: '/api/asset', method: 'POST', callback: function(request, response, params) {
-		doCreate(request, response, params, db.assets);
-	}
-}, {
-	path: '/api/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
-		doUpdate(request, response, params, db.assets);
-	}
-}, {
-	path: '/api/asset/:assetId', method: 'DELETE', callback: function(request, response, params) {
-		doDelete(request, response, { id: params.assetId }, db.assets);
-	}
-}, {
-	path: '/api/:languageCode/asset', method: 'POST', callback: function(request, response, params) {
-		doCreate(request, response, params, db.assets);
-	}
-}, {
-	path: '/api/:languageCode/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
-		doUpdate(request, response, params, db.assets);
-	}
-}, {
-	path: '/api/menu', method: 'GET', callback: function(request, response, params) {
-		sendOk(response, { menu: db.menu });
-	}
-}, {
-	path: '/api/menu', method: 'PUT', callback: function(request, response, params) {
-		const menu = request.body;
-		db.menu = menu;
-		saveStore();
-		sendOk(response, menu);
-	}
-}, {
-	path: '/api/menu', method: 'POST', callback: function(request, response, params) {
-		doCreate(request, response, params, db.menu);
-	}
-}, {
-	path: '/api/menu/:menuId', method: 'DELETE', callback: function(request, response, params) {
-		doDelete(request, response, { id: params.menuId }, db.menu);
-	}
-}, {
-	path: '/api/menu/:menuId', method: 'PUT', callback: function(request, response, params) {
-		doUpdate(request, response, params, db.menu);
-	}
-},
-// navmap
-{
-	path: '/api/navmap', method: 'GET', callback: function(request, response, params) {
-		sendOk(response, { navmaps: db.navmaps });
-	}
-}, {
-	path: '/api/navmap/:navmapId', method: 'GET', callback: function(request, response, params) {
-		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
-		if (navmap) {
-			sendOk(response, navmap);
+	}, {
+		path: '/api/view/:viewId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				doDelete(request, response, { id: params.viewItemId }, view.items);
+			}
 		}
-	}
-}, {
-	path: '/api/navmap', method: 'POST', callback: function(request, response, params) {
-		doCreate(request, response, params, db.navmaps);
-	}
-}, {
-	path: '/api/navmap/:navmapId', method: 'PUT', callback: function(request, response, params) {
-		doUpdate(request, response, params, db.navmaps);
-	}
-}, {
-	path: '/api/navmap/:navmapId', method: 'DELETE', callback: function(request, response, params) {
-		doDelete(request, response, { id: params.navmapId }, db.navmaps);
-	}
-}, {
-	path: '/api/navmap/:navmapId/item', method: 'POST', callback: function(request, response, params) {
-		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
-		if (navmap) {
-			navmap.items = navmap.items || [];
-			doCreate(request, response, params, navmap.items);
+	}, {
+		path: '/api/view/:viewId/tile/:tileId/item', method: 'POST', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				const tile = view.tiles.find(x => x.id === params.tileId);
+				if (tile) {
+					tile.navs = tile.navs || [];
+					doCreate(request, response, params, tile.navs);
+				} else {
+					sendError(response, 404, 'Not Found');
+				}
+			}
 		}
-	}
-}, {
-	path: '/api/navmap/:navmapId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
-		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
-		if (navmap) {
-			navmap.items = navmap.items || [];
-			doUpdate(request, response, params, navmap.items);
+	}, {
+		path: '/api/view/:viewId/tile/:tileId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				const tile = view.tiles.find(x => x.id === params.tileId);
+				if (tile) {
+					tile.navs = tile.navs || [];
+					doUpdate(request, response, params, tile.navs);
+				} else {
+					sendError(response, 404, 'Not Found');
+				}
+			}
 		}
-	}
-}, {
-	path: '/api/navmap/:navmapId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
-		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
-		if (navmap) {
-			doDelete(request, response, { id: params.itemId }, navmap.items);
+	}, {
+		path: '/api/view/:viewId/tile/:tileId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
+			const view = doGet(request, response, { id: params.viewId }, db.views);
+			if (view) {
+				const tile = view.tiles.find(x => x.id === params.tileId);
+				if (tile) {
+					tile.navs = tile.navs || [];
+					doDelete(request, response, { id: params.viewItemId }, tile.navs);
+				} else {
+					sendError(response, 404, 'Not Found');
+				}
+			}
 		}
-	}
-},
-// path
-{
-	path: '/api/path', method: 'GET', callback: function(request, response, params) {
-		sendOk(response, { paths: db.paths });
-	}
-}, {
-	path: '/api/path/:pathId', method: 'GET', callback: function(request, response, params) {
-		const path = doGet(request, response, { id: params.pathId }, db.paths);
-		if (path) {
-			sendOk(response, path);
+	}, {
+		path: '/api/asset', method: 'POST', callback: function(request, response, params) {
+			doCreate(request, response, params, db.assets);
 		}
-	}
-}, {
-	path: '/api/path', method: 'POST', callback: function(request, response, params) {
-		doCreate(request, response, params, db.paths);
-	}
-}, {
-	path: '/api/path/:pathId', method: 'PUT', callback: function(request, response, params) {
-		doUpdate(request, response, params, db.paths);
-	}
-}, {
-	path: '/api/path/:pathId', method: 'DELETE', callback: function(request, response, params) {
-		doDelete(request, response, { id: params.pathId }, db.paths);
-	}
-},
-/*
-{
-	path: '/api/path/:pathId/item', method: 'POST', callback: function(request, response, params) {
-		const path = doGet(request, response, { id: params.pathId }, db.paths);
-		if (path) {
-			path.items = path.items || [];
-			doCreate(request, response, params, path.items);
+	}, {
+		path: '/api/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
+			doUpdate(request, response, params, db.assets);
 		}
-	}
-}, {
-	path: '/api/path/:pathId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
-		const path = doGet(request, response, { id: params.pathId }, db.paths);
-		if (path) {
-			path.items = path.items || [];
-			doUpdate(request, response, params, path.items);
+	}, {
+		path: '/api/asset/:assetId', method: 'DELETE', callback: function(request, response, params) {
+			doDelete(request, response, { id: params.assetId }, db.assets);
 		}
-	}
-}, {
-	path: '/api/path/:pathId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
-		const path = doGet(request, response, { id: params.pathId }, db.paths);
-		if (path) {
-			doDelete(request, response, { id: params.itemId }, path.items);
+	}, {
+		path: '/api/:languageCode/asset', method: 'POST', callback: function(request, response, params) {
+			doCreate(request, response, params, db.assets);
 		}
-	}
-},
-*/
-{
-	path: '/api/user/me', method: 'GET', callback: function(request, response, params) {
-		const user = request.session.user;
-		if (!user) {
-			sendError(response, 404, 'Not Found');
-		} else {
+	}, {
+		path: '/api/:languageCode/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
+			doUpdate(request, response, params, db.assets);
+		}
+	}, {
+		path: '/api/menu', method: 'GET', callback: function(request, response, params) {
+			sendOk(response, { menu: db.menu });
+		}
+	}, {
+		path: '/api/menu', method: 'PUT', callback: function(request, response, params) {
+			const menu = request.body;
+			db.menu = menu;
+			saveStore();
+			sendOk(response, menu);
+		}
+	}, {
+		path: '/api/menu', method: 'POST', callback: function(request, response, params) {
+			doCreate(request, response, params, db.menu);
+		}
+	}, {
+		path: '/api/menu/:menuId', method: 'DELETE', callback: function(request, response, params) {
+			doDelete(request, response, { id: params.menuId }, db.menu);
+		}
+	}, {
+		path: '/api/menu/:menuId', method: 'PUT', callback: function(request, response, params) {
+			doUpdate(request, response, params, db.menu);
+		}
+	},
+	// navmap
+	{
+		path: '/api/navmap', method: 'GET', callback: function(request, response, params) {
+			sendOk(response, { navmaps: db.navmaps });
+		}
+	}, {
+		path: '/api/navmap/:navmapId', method: 'GET', callback: function(request, response, params) {
+			const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+			if (navmap) {
+				sendOk(response, navmap);
+			}
+		}
+	}, {
+		path: '/api/navmap', method: 'POST', callback: function(request, response, params) {
+			doCreate(request, response, params, db.navmaps);
+		}
+	}, {
+		path: '/api/navmap/:navmapId', method: 'PUT', callback: function(request, response, params) {
+			doUpdate(request, response, params, db.navmaps);
+		}
+	}, {
+		path: '/api/navmap/:navmapId', method: 'DELETE', callback: function(request, response, params) {
+			doDelete(request, response, { id: params.navmapId }, db.navmaps);
+		}
+	}, {
+		path: '/api/navmap/:navmapId/item', method: 'POST', callback: function(request, response, params) {
+			const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+			if (navmap) {
+				navmap.items = navmap.items || [];
+				doCreate(request, response, params, navmap.items);
+			}
+		}
+	}, {
+		path: '/api/navmap/:navmapId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
+			const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+			if (navmap) {
+				navmap.items = navmap.items || [];
+				doUpdate(request, response, params, navmap.items);
+			}
+		}
+	}, {
+		path: '/api/navmap/:navmapId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
+			const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
+			if (navmap) {
+				doDelete(request, response, { id: params.itemId }, navmap.items);
+			}
+		}
+	},
+	// path
+	{
+		path: '/api/path', method: 'GET', callback: function(request, response, params) {
+			sendOk(response, { paths: db.paths });
+		}
+	}, {
+		path: '/api/path/:pathId', method: 'GET', callback: function(request, response, params) {
+			const path = doGet(request, response, { id: params.pathId }, db.paths);
+			if (path) {
+				sendOk(response, path);
+			}
+		}
+	}, {
+		path: '/api/path', method: 'POST', callback: function(request, response, params) {
+			doCreate(request, response, params, db.paths);
+		}
+	}, {
+		path: '/api/path/:pathId', method: 'PUT', callback: function(request, response, params) {
+			doUpdate(request, response, params, db.paths);
+		}
+	}, {
+		path: '/api/path/:pathId', method: 'DELETE', callback: function(request, response, params) {
+			doDelete(request, response, { id: params.pathId }, db.paths);
+		}
+	},
+	/*
+	{
+		path: '/api/path/:pathId/item', method: 'POST', callback: function(request, response, params) {
+			const path = doGet(request, response, { id: params.pathId }, db.paths);
+			if (path) {
+				path.items = path.items || [];
+				doCreate(request, response, params, path.items);
+			}
+		}
+	}, {
+		path: '/api/path/:pathId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
+			const path = doGet(request, response, { id: params.pathId }, db.paths);
+			if (path) {
+				path.items = path.items || [];
+				doUpdate(request, response, params, path.items);
+			}
+		}
+	}, {
+		path: '/api/path/:pathId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
+			const path = doGet(request, response, { id: params.pathId }, db.paths);
+			if (path) {
+				doDelete(request, response, { id: params.itemId }, path.items);
+			}
+		}
+	},
+	*/
+	{
+		path: '/api/user/me', method: 'GET', callback: function(request, response, params) {
+			const user = request.session.user;
+			if (!user) {
+				sendError(response, 404, 'Not Found');
+			} else {
+				sendOk(response, user);
+			}
+		}
+	}, {
+		path: '/api/user/login', method: 'POST', callback: function(request, response, params) {
+			const body = request.body;
+			const user = db.users.find(x => x.username === body.username && x.password === body.password);
+			if (!user) {
+				sendError(response, 404, 'Not Found');
+			} else {
+				request.session.user = user;
+				sendOk(response, user);
+			}
+		}
+	}, {
+		path: '/api/user/logout', method: 'GET', callback: function(request, response, params) {
+			const user = request.session.user;
+			request.session.user = null;
+			sendOk(response);
+		}
+	}, {
+		path: '/api/user/guided-tour', method: 'POST', callback: function(request, response, params) {
+			const body = request.body;
+			const id = uuid();
+			const user = Object.assign({ type: RoleType.Streamer }, body, { id });
+			request.session.user = null;
+			db.users.push(user);
+			saveStore();
 			sendOk(response, user);
 		}
-	}
-}, {
-	path: '/api/user/login', method: 'POST', callback: function(request, response, params) {
-		const body = request.body;
-		const user = db.users.find(x => x.username === body.username && x.password === body.password);
-		if (!user) {
-			sendError(response, 404, 'Not Found');
-		} else {
+	}, {
+		path: '/api/user/self-service-tour', method: 'POST', callback: function(request, response, params) {
+			const body = request.body;
+			const id = uuid();
+			const user = Object.assign({ type: RoleType.SelfService }, body, { id });
 			request.session.user = user;
+			db.users.push(user);
+			saveStore();
 			sendOk(response, user);
 		}
-	}
-}, {
-	path: '/api/user/logout', method: 'GET', callback: function(request, response, params) {
-		const user = request.session.user;
-		request.session.user = null;
-		sendOk(response);
-	}
-}, {
-	path: '/api/user/guided-tour', method: 'POST', callback: function(request, response, params) {
-		const body = request.body;
-		const id = uuid();
-		const user = Object.assign({ type: RoleType.Streamer }, body, { id });
-		request.session.user = null;
-		db.users.push(user);
-		saveStore();
-		sendOk(response, user);
-	}
-}, {
-	path: '/api/user/self-service-tour', method: 'POST', callback: function(request, response, params) {
-		const body = request.body;
-		const id = uuid();
-		const user = Object.assign({ type: RoleType.SelfService }, body, { id });
-		request.session.user = user;
-		db.users.push(user);
-		saveStore();
-		sendOk(response, user);
-	}
-}, {
-	path: '/api/user/self-service-support-request', method: 'POST', callback: function(request, response, params) {
-		const body = request.body;
-		sendOk(response, body);
-	}
-}, {
-	path: '/api/user/log', method: 'POST', callback: function(request, response, params) {
-		// do nothing
-		/*
-		{
-			meetingId: string,
-			sharedMeetingId: string,
-			fullName: string,
-			userType: string
+	}, {
+		path: '/api/user/self-service-support-request', method: 'POST', callback: function(request, response, params) {
+			const body = request.body;
+			sendOk(response, body);
 		}
-		*/
-		sendOk(response);
-	}
-}, {
-	path: '/api/token/rtc', method: 'POST', callback: function(request, response, params) {
-		if (!APP_KEY || !APP_SECURE_KEY) {
-			sendError(response, 400, 'appKey and appSecureKey required');
+	}, {
+		path: '/api/user/log', method: 'POST', callback: function(request, response, params) {
+			// do nothing
+			/*
+			{
+				meetingId: string,
+				sharedMeetingId: string,
+				fullName: string,
+				userType: string
+			}
+			*/
+			sendOk(response);
 		}
-		const body = request.body || {};
-		const channelName = body.channelName ? String(body.channelName) : 0;
-		if (!channelName) {
-			sendError(response, 400, 'channelName required');
+	}, {
+		path: '/api/token/rtc', method: 'POST', callback: function(request, response, params) {
+			if (!APP_KEY || !APP_SECURE_KEY) {
+				sendError(response, 400, 'appKey and appSecureKey required');
+			}
+			const body = request.body || {};
+			const channelName = body.channelName ? String(body.channelName) : 0;
+			if (!channelName) {
+				sendError(response, 400, 'channelName required');
+			}
+			// use 0 if uid is not specified
+			const uid = body.uid ? String(body.uid) : 0;
+			const duration = 3600 * 12;
+			const timestamp = Math.floor(Date.now() / 1000);
+			const expirationTime = timestamp + duration;
+			const role = RtcRole.PUBLISHER;
+			const token = RtcTokenBuilder.buildTokenWithUid(APP_KEY, APP_SECURE_KEY, channelName, uid, role, expirationTime);
+			// response.header('Access-Control-Allow-Origin', 'http://ip:port')
+			sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
 		}
-		// use 0 if uid is not specified
-		const uid = body.uid ? String(body.uid) : 0;
-		const duration = 3600 * 12;
-		const timestamp = Math.floor(Date.now() / 1000);
-		const expirationTime = timestamp + duration;
-		const role = RtcRole.PUBLISHER;
-		const token = RtcTokenBuilder.buildTokenWithUid(APP_KEY, APP_SECURE_KEY, channelName, uid, role, expirationTime);
-		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
-		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
-	}
-}, {
-	path: '/api/token/rtm', method: 'POST', callback: function(request, response, params) {
-		if (!APP_KEY || !APP_SECURE_KEY) {
-			sendError(response, 400, 'appKey and appSecureKey required');
+	}, {
+		path: '/api/token/rtm', method: 'POST', callback: function(request, response, params) {
+			if (!APP_KEY || !APP_SECURE_KEY) {
+				sendError(response, 400, 'appKey and appSecureKey required');
+			}
+			const body = request.body || {};
+			const uid = body.uid ? String(body.uid) : timestamp.toString();
+			if (!uid) {
+				return response.status(400).json({ 'error': 'uid required' }).send();
+			}
+			const duration = 3600 * 12;
+			const timestamp = Math.floor(Date.now() / 1000);
+			const expirationTime = timestamp + duration;
+			const role = RtmRole.Rtm_User;
+			const token = RtmTokenBuilder.buildToken(APP_KEY, APP_SECURE_KEY, uid, role, expirationTime);
+			// response.header('Access-Control-Allow-Origin', 'http://ip:port')
+			sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
 		}
-		const body = request.body || {};
-		const uid = body.uid ? String(body.uid) : timestamp.toString();
-		if (!uid) {
-			return response.status(400).json({ 'error': 'uid required' }).send();
-		}
-		const duration = 3600 * 12;
-		const timestamp = Math.floor(Date.now() / 1000);
-		const expirationTime = timestamp + duration;
-		const role = RtmRole.Rtm_User;
-		const token = RtmTokenBuilder.buildToken(APP_KEY, APP_SECURE_KEY, uid, role, expirationTime);
-		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
-		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
-	}
-}];
+	}];
 ROUTES.forEach(route => {
 	const segments = [];
 	if (route.path === '**') {

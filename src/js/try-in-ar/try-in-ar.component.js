@@ -3,6 +3,7 @@ import { first } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import { environment } from '../environment';
 import { MeetingUrl } from '../meeting/meeting-url';
+import RouterOutletStructure from '../router/router-outlet.structure';
 import ViewService from '../view/view.service';
 
 export default class TryInARComponent extends Component {
@@ -78,6 +79,7 @@ export default class TryInARComponent extends Component {
 
 TryInARComponent.meta = {
 	selector: '[try-in-ar]',
+	hosts: { host: RouterOutletStructure },
 	template: /* html */`
 		<div class="page page--try-in-ar">
 			<div *if="platform != 'ios'">

@@ -15,6 +15,7 @@ import AgoraNameComponent from './agora/agora-name.component';
 import AgoraStreamComponent from './agora/agora-stream.component';
 import AgoraComponent from './agora/agora.component';
 import AppComponent from './app.component';
+import { AppRoutes } from './app.routes';
 import AssetPipe from './asset/asset.pipe';
 import ControlRequestModalComponent from './control-request/control-request-modal.component';
 import DropDirective from './drop/drop.directive';
@@ -56,6 +57,7 @@ import ModalComponent from './modal/modal.component';
 import RoutePipe from './router/route.pipe';
 import RouterLinkDirective from './router/router-link.directive';
 import RouterOutletStructure from './router/router-outlet.structure';
+import RouterService from './router/router.service';
 import SlugPipe from './slug/slug.pipe';
 import SupportRequestModalComponent from './support-request/support-request-modal.component';
 import SvgIconStructure from './svg/svg-icon.structure';
@@ -81,6 +83,8 @@ import ModelRoomComponent from './world/model/model-room.component';
 import ModelTextComponent from './world/model/model-text.component';
 import ModelComponent from './world/model/model.component';
 import WorldComponent from './world/world.component';
+
+RouterService.useBrowser(AppRoutes);
 
 export class AppModule extends Module { }
 

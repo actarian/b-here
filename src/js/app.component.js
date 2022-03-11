@@ -1,37 +1,27 @@
 import { Component, getContext } from 'rxcomp';
-import AccessCodeComponent from './access/access-code.component';
-import AccessComponent from './access/access.component';
-import AgoraComponent from './agora/agora.component';
-import EditorComponent from './editor/editor.component';
+import { takeUntil } from 'rxjs/operators';
+import { AppRoutes } from './app.routes';
+import { environment } from './environment';
+import { LanguageService } from './language/language.service';
+import RouterService from './router/router.service';
 import { SVG_CHUNK } from './svg/svg.chunks';
-import TryInARComponent from './try-in-ar/try-in-ar.component';
 
 export default class AppComponent extends Component {
 
 	onInit() {
-		this.routes = [
-			{ name: 'index', path: '/', forwardTo: 'it' },
-			// it
-			{ name: 'it', path: '/it', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },
-			{ name: 'it.access', path: '/accesso', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },
-			{ name: 'it.accessCode', path: '/codice-di-accesso', defaultParams: { lang: 'it', mode: 'accessCode' }, factory: AccessCodeComponent },
-			{ name: 'it.meeting', path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support', defaultParams: { lang: 'it', mode: 'guidedTour' }, factory: AgoraComponent },
-			{ name: 'it.guidedTour', path: '/tour-guidato', defaultParams: { lang: 'it', mode: 'guidedTour' }, factory: AgoraComponent },
-			{ name: 'it.selfServiceTour', path: '/tour-self-service', defaultParams: { lang: 'it', mode: 'selfServiceTour' }, factory: AgoraComponent },
-			{ name: 'it.embed', path: '/embed', defaultParams: { lang: 'it', mode: 'embed' }, factory: AgoraComponent },
-			{ name: 'it.tryInAr', path: '/prova-in-ar', defaultParams: { lang: 'it', mode: 'tryInAr' }, factory: TryInARComponent },
-			{ name: 'it.editor', path: '/editor', defaultParams: { lang: 'it', mode: 'editor' }, factory: EditorComponent },
-			// en
-			{ name: 'en', path: '/en', defaultParams: { lang: 'en', mode: 'access' }, factory: AccessComponent },
-			{ name: 'en.access', path: '/access', defaultParams: { lang: 'en', mode: 'access' }, factory: AccessComponent },
-			{ name: 'en.accessCode', path: '/accesso-code', defaultParams: { lang: 'en', mode: 'accessCode' }, factory: AccessCodeComponent },
-			{ name: 'en.meeting', path: '/guided-tour?:link&:name&:role&:viewId&:pathId&:support', defaultParams: { lang: 'en', mode: 'guidedTour' }, factory: AgoraComponent },
-			{ name: 'en.guidedTour', path: '/guided-tour', defaultParams: { lang: 'en', mode: 'guidedTour' }, factory: AgoraComponent },
-			{ name: 'en.selfServiceTour', path: '/self-service-tour', defaultParams: { lang: 'en', mode: 'selfServiceTour' }, factory: AgoraComponent },
-			{ name: 'en.embed', path: '/embed', defaultParams: { lang: 'en', mode: 'embed' }, factory: AgoraComponent },
-			{ name: 'en.tryInAr', path: '/try-in-ar', defaultParams: { lang: 'en', mode: 'tryInAr' }, factory: TryInARComponent },
-			{ name: 'en.editor', path: '/editor', defaultParams: { lang: 'en', mode: 'editor' }, factory: EditorComponent },
-		];
+		// console.log('AppComponent.onInit', window.location.pathname);
+		if (window.location.pathname.indexOf('embed') !== -1) {
+			environment.flags.like = false;
+		}
+
+		RouterService.event$.pipe(
+			takeUntil(this.unsubscribe$),
+		).subscribe(event => {
+			const route = event.route;
+			const routes = AppRoutes;
+			LanguageService.setRoute(route, routes);
+		});
+
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 	}
@@ -39,12 +29,12 @@ export default class AppComponent extends Component {
 }
 
 AppComponent.meta = {
-	selector: '[app-component]',
+	selector: '[b-here-component]',
 	template: /* html */ `
 		<!-- svg -->
 		${SVG_CHUNK}
 		<!-- header -->
-		<router-outlet [routes]="routes"></router-outlet>
+		<router-outlet></router-outlet>
 		<!-- footer -->
 		<div class="toast-outlet" toast-outlet></div>
 		<div class="modal-outlet" modal-outlet></div>

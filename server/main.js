@@ -80,14 +80,33 @@ app.options('/api/upload', function(request, response) {
 	response.status(200).send();
 });
 
-app.get('*', function(request, response) {
-	response.sendFile(path.join(__dirname, '../docs/index__it.html'));
+const isDist = process.env.npm_config_dist;
+console.log('isDist', isDist);
+
+app.get('/', function(request, response) {
+	response.sendFile(path.join(__dirname, isDist ? `../docs/bhere__it.html` : '../docs/index__it.html'));
 });
+
+app.get('/:lang/', function(request, response) {
+	console.log(request.params);
+	response.sendFile(path.join(__dirname, isDist ? `../docs/bhere__${request.params.lang}.html` : '../docs/index__it.html'));
+});
+
+app.get('/:lang/:path/', function(request, response) {
+	console.log(request.params);
+	response.sendFile(path.join(__dirname, isDist ? `../docs/bhere__${request.params.lang}.html` : '../docs/index__it.html'));
+});
+
+/*
+app.get('*', function(request, response) {
+	response.sendFile(path.join(__dirname, isDist ? '../docs/bhere__it.html' : '../docs/index__it.html'));
+});
+*/
+
 /*
 app.get('/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access__it.html'));
 });
-*/
 app.get('/it/', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/access__it.html'));
 });
@@ -154,6 +173,7 @@ app.get('/it/editor', function(request, response) {
 app.get('/en/editor', function(request, response) {
 	response.sendFile(path.join(__dirname, '../docs/editor_en.html'));
 });
+*/
 
 app.listen(Vars.port, () => {
 	console.log(`NodeJs Running server at ${Vars.host}`);

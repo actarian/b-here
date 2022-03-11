@@ -1,0 +1,318 @@
+<!-- @@master = ./templates/layout-bhere.html { "baseHref": "/b-here/" } -->
+<!-- @@block = main-->
+<style>
+.b-here {
+	/* --font-primary: GT Walsheim, Maven Pro, Arial, sans-serif; */
+	--font-primary: Work Sans, Arial, sans-serif;
+	--background: #ffffff;
+	--background-negative: #101010;
+	--background-primary: #0099ff;
+	--background-secondary: #ff4332;
+	--background-tertiary: #d8dfe4;
+	--background-primary-darker: #0091f2;
+	--background-primary-darkest: #0089e5;
+	--background-primary-disabled: #c4d3dd;
+	--background-primary-dimmed: rgba(0, 153, 255, 0.08);
+	--foreground: #101010;
+	--foreground-negative: #fcfcfc;
+	--foreground-primary: #0099ff;
+	--foreground-secondary: #ff4332;
+	--foreground-tertiary: #6d7b84;
+	--foreground-primary-darker: #0091f2;
+	--foreground-primary-darkest: #0089e5;
+	--foreground-primary-disabled: #c4d3dd;
+	--foreground-primary-dimmed: rgba(0, 153, 255, 0.5);
+	--border: #101010;
+	--shadow: rgba(86, 125, 151, .65);
+}
+
+</style>
+<!-- @@close-->
+<!-- @@block = js-->
+<script>
+var roles = [
+	{ id: 1, name: 'Show room' },
+	{ id: 2, name: 'Architect' },
+	{ id: 3, name: 'Interior designer' },
+	{ id: 4, name: 'Private' },
+	{ id: 5, name: 'Other' }
+];
+var options = {
+	url: {
+		index: '/en/',
+		access: '/en/access',
+		accessCode: '/en/access-code',
+		guidedTour: '/en/guided-tour',
+		selfServiceTour: '/en/self-service-tour',
+		embed: '/en/embed',
+		editor: '/en/editor',
+	},
+	defaultLanguage: 'it',
+	labels: {
+		// access
+		browse: 'Open',
+		close: 'Close',
+		cancel: 'Cancel',
+		error_email: 'Invalid email',
+		error_match: 'The fields do not match',
+		error_required: 'The field is required',
+		error_pattern: 'Invalid field',
+		error_credentials: 'Invalid credentials',
+		remove: 'Remove',
+		required: 'Required',
+		select: 'Select',
+		select_file: 'Select a file ...',
+		drag_and_drop_images: 'Drag images here',
+		loading: 'Loading',
+		update: 'Save',
+		upload: 'Upload',
+		access_login: 'Login.',
+		access_username: 'Username',
+		access_password: 'Password',
+		access_or: 'or',
+		access_title: 'Access to virtual tour',
+		access_tour: 'Access the tour',
+		access_cta: 'Enter',
+		access_guided_tour: 'Request a guided tour',
+		access_fill_fields: 'Fill in the fields to access the tour.',
+		access_guided_tour_request: 'Fill in the fields and request the guided tour.',
+		access_has_meeting_id: 'do you already have a meeting id?',
+		access_guided_tour_cta: 'Access the guided tour',
+		access_first_name: 'Name',
+		access_last_name: 'Surname',
+		access_email: 'Email',
+		access_phone_number: 'Phone',
+		access_website: 'Website',
+		access_role: 'Role',
+		access_privacy_disclaimer: 'I have read the <a href="/en/information_on_privacy" target="_blank" rel="noopener noreferrer"> information </a> and I consent to the processing of the data',
+		access_take_part: 'join the meeting',
+		access_send: 'Send',
+		access_sent: 'Sent!',
+		access_back: 'Back',
+		access_request_sent: 'Request sent!',
+		access_info_request: 'Your request has been sent. You will be contacted by one of our representatives for all the details.',
+		// bhere
+		waiting_host: 'wait',
+		bhere_editor: 'editor',
+		bhere_path: 'Path',
+		bhere_select_path: 'Select a path',
+		bhere_insert_meeting_id: 'Enter a Meeting ID',
+		bhere_meeting_id: 'Meeting ID',
+		bhere_attendee_meeting_id: 'Attendee Meeting ID',
+		bhere_streamer_meeting_id: 'Streamer Meeting ID',
+		bhere_viewer_meeting_id: 'Viewer Meeting ID',
+		bhere_smart_device_meeting_id: 'Smart Device ID',
+		bhere_invalid_meeting_id: 'invalid meeting id',
+		bhere_take_part_meeting: 'join the meeting',
+		bhere_generate_meeting_id: 'Generate a Meeting ID',
+		bhere_take_part: 'Take part',
+		bhere_self_service: 'Standalone Tour',
+		bhere_login: 'Login.',
+		bhere_username: 'Username',
+		bhere_password: 'Password',
+		bhere_cta: 'Enter',
+		bhere_fill_fullname: 'Please enter full name',
+		bhere_fill_name_and_surname: 'enter a name and a surname',
+		bhere_proceed_as: 'proceed as',
+		bhere_proceed: 'Proceed',
+		bhere_name_and_surname: 'Name Surname',
+		bhere_invalid_protocol: 'Incorrect protocol.',
+		bhere_reload_in_https: 'reload in https<br>to enable microphone and camera.',
+		bhere_reload: 'Reload',
+		bhere_video: 'Video',
+		bhere_audio: 'Audio',
+		bhere_select_video_audio: 'select an audio and video source',
+		bhere_select_video: 'Select a video source',
+		bhere_select_audio: 'Select an audio source',
+		bhere_video_audio_connected: 'video and audio connected',
+		bhere_enter: 'Enter',
+		bhere_connecting: 'Connecting ...',
+		bhere_ar: 'Scan the qrcode with your mobile or tablet to open VR.',
+		bhere_checklist_busy: 'Checking system',
+		bhere_checklist_success: 'Verification completed',
+		bhere_checklist_error: 'Verification failed',
+		bhere_browser_error: '<b> The browser is not supported. </b> <br/> Get an updated version of your browser by clicking here.',
+		bhere_https_error: '<b> You are browsing an insecure version of the site. </b> <br/> Click here to load the secure version of the page.',
+		bhere_audio_error: '<b> The audio device cannot be accessed. </b> <br/> Please check that the microphone is connected, that you have authorized your browser to access it, and that the audio device is not currently being used by other applications.',
+		bhere_video_error: '<b> Unable to access the video device. </b> <br/> Check that the camera is connected, that you have authorized the browser to access it and that the video device is not currently being used by other applications.',
+		bhere_rtc_error: '<b> Unable to access voice and video services. </b> <br/> It could be caused by very strict rules of your Internet connection. We recommend that you verify that the destination ports are accessible from your network. Click here for more information. ',
+		bhere_rtm_error: '<b> Unable to access real-time messaging services. </b> <br/> It could be caused by very strict rules of your Internet connection. We recommend that you verify that the destination ports are accessible from your network. Click here for more information. ',
+		bhere_write_a_message: 'Write ...',
+		bhere_configure_firewall: /* html */ `
+	<div class="title">Realtime Video & Audio</div>
+			<div class="abstract">
+				<p>Add the following destination domains and the corresponding ports to your firewall whitelist.</p>
+			</div>
+			<div class="subtitle">Domains</div>
+			<pre class="pre">
+				<code>
+<span>.agora</span><span>.io</span>
+<span>.edge</span><span>.agora</span><span>.io</span>
+<span>.sd-rtn</span><span>.com</span>
+<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+				</code>
+			</pre>
+			<div class="subtitle">Ports</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Port type</th>
+						<th>Destination ports</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>TCP</td>
+						<td>80, 443, 3433, 4700-5000, 5668, 5669, 6080, 6443, 8667, 9667, 30011-30013</td>
+						<td>Allow</td>
+					</tr>
+					<tr>
+						<td>UDP</td>
+						<td>3478, 4700-5000</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="title">Realtime Messaging</div>
+			<div class="abstract">
+				<p>Add the following destination domains and the corresponding ports to the firewall whitelist.</p>
+			</div>
+			<div class="subtitle">Domains</div>
+			<pre class="pre">
+				<code>
+<span>.edge</span><span>.agora</span><span>.io</span>
+<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+<span>web-1</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+<span>web-2</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+<span>ap-web-1</span><span>.agora</span><span>.io</span>
+<span>ap-web-2</span><span>.agora</span><span>.io</span>
+<span>webcollector-rtm</span><span>.agora</span><span>.io</span>
+<span>logservice-rtm</span><span>.agora</span><span>.io</span>
+<span>rtm</span><span>.statscollector</span><span>.sd-rtn</span><span>.com</span>
+<span>rtm</span><span>.logservice</span><span>.sd-rtn</span><span>.com</span>
+				</code>
+			</pre>
+			<div class="subtitle">Ports</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Port type</th>
+						<th>Destination ports</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>TCP</td>
+						<td>443, 6443, 9591, 9593, 9601</td>
+					</tr>
+				</tbody>
+			</table>`,
+		bhere_support_request_sent: 'Support request sent.',
+		bhere_support_request_leaved: 'The user has left the tour.',
+		bhere_support_request_dialog: 'An operator is available for a guided tour. <br> Would you like to Accept?',
+		bhere_support_request_dialog_accept: 'Accept',
+		bhere_support_request_dialog_reject: 'Reject',
+		bhere_support_request_accepted: 'The user has accepted the support request, connecting ...',
+		bhere_support_request_rejected: 'The user has rejected the support request.',
+		// title
+		title_disconnect: 'Disconnect',
+		title_mute_camera: 'Mute camera',
+		title_mute_mic: 'Mute microphone',
+		title_share_screen: 'Share screen',
+		title_chat: 'Chat',
+		title_navinfo: 'Show info',
+		title_control: 'Remote control',
+		title_spy: 'Spy',
+		title_silence: 'Silence participants',
+		title_view_mode: 'Change mode',
+		title_volume: 'Volume',
+		title_fullscreen: 'Fullscreen',
+		title_navmap: 'Map',
+		title_ar: 'Augmented Reality',
+		title_vr: 'Enter VR',
+		title_close: 'Close',
+		title_play: 'Play',
+		title_pause: 'Pause',
+		// editor
+		editor_properties: 'Properties',
+		editor_views: 'Views',
+		editor_view_items: 'View Items',
+		editor_items: 'Items',
+		editor_menu: 'Menu',
+		editor_navmaps: 'Nav Maps',
+		editor_no_items: 'This view has no items',
+		editor_type_no_items: 'This type of view has no items',
+		editor_add_item: 'Add an item',
+		editor_tiles: 'Tiles',
+		editor_no_tiles: 'This view has no tiles',
+		editor_no_navs: 'This grid has no navpoints',
+		editor_add_nav: 'Add navpoint and tooltip',
+		editor_add: 'Add',
+		editor_save: 'Save',
+		editor_back: 'Back',
+		editor_image: 'Image',
+		editor_video: 'Video',
+		editor_model: 'Model',
+		editor_publisher_stream: 'Publisher Stream',
+		editor_next_attendee_stream: 'Next Attendee Stream',
+		editor_waiting_room: 'Waiting room',
+		editor_panorama: 'Panorama',
+		editor_panorama_grid: 'Panorama Grid',
+		editor_room_3d: '3D Room',
+		editor_media: 'Media',
+		editor_nav: 'Nav Tooltip',
+		editor_gltf: 'Gltf model',
+		editor_plane: 'Plane',
+		editor_curved_plane: 'Curved Plane',
+		editor_texture: 'Texture',
+		editor_id: 'Id',
+		editor_name: 'Name',
+		editor_hide: 'Hide from menu',
+		editor_latitude: 'Latitude',
+		editor_longitude: 'Longitude',
+		editor_zoom: 'Zoom',
+		editor_ar_ios: 'AR IOS (.usdz)',
+		editor_ar_android: 'AR Android (.glb)',
+		editor_title: 'Title',
+		editor_abstract: 'Abstract',
+		editor_nav_to_view: 'NavToView',
+		editor_link_title: 'Link title',
+		editor_link_url: 'Link url',
+		editor_position: 'Position',
+		editor_rotation: 'Rotation',
+		editor_scale: 'Scale',
+		editor_radius: 'Radius',
+		editor_height: 'Height',
+		editor_arc: 'Arc',
+		editor_asset: 'Asset',
+		editor_image_or_video: 'Image or Video',
+		editor_use_green_screen: 'Use Green Screen',
+		editor_are_you_sure: 'are you sure?',
+		editor_remove: 'Remove',
+		editor_cancel: 'Delete',
+		editor_create: 'Create',
+		editor_click_a_point: 'Click a point on the view',
+	},
+	data: {
+		roles: roles
+	},
+	fields: [
+		{ type: 'text', name: 'firstName', label: 'access_first_name', required: true, test: 'Jhon' },
+		{ type: 'text', name: 'lastName', label: 'access_last_name', required: true, test: 'Appleseed' },
+		{ type: 'email', name: 'email', label: 'access_email', required: true, test: 'jhonappleseed@gmail.com' },
+		/*
+		{ type: 'text', name: 'phoneNumber', label: 'access_phone_number', required: true, test: '0721-411112' },
+		{ type: 'url', name: 'website', label: 'access_website', required: false, test: 'www.websolute.it' },
+		*/
+		{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: roles, test: roles[0].id },
+		{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
+	],
+};
+
+var target = document.createElement('div');
+target.setAttribute('b-here', '');
+document.body.appendChild(target);
+
+var bhere = new BHere(target, options);
+
+</script>
+<!-- @@close-->

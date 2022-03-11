@@ -47,47 +47,18 @@ ___
 ```
 gulp startCss
 ```
-
-<!-- 
-
-// DEBUGGING RXCOMP
-
-"bundle": [{
-  "input": [
-    "node_modules/rxjs/bundles/rxjs.umd.js",
-    "node_modules/rxcomp/dist/iife/rxcomp.js",
-    "node_modules/rxcomp-form/dist/iife/rxcomp-form.js",
-    "node_modules/swiper/js/swiper.js",
-    "node_modules/gsap/dist/EasePack.js",
-    "node_modules/gsap/dist/gsap.js"
-  ],
-  "output": "docs/js/vendors.js",
-  "minify": true
-}, {
-  "input": [
-    "node_modules/swiper/css/swiper.css"
-  ],
-  "output": "docs/css/vendors.css",
-  "minify": true
-}]
-
-"bundle": [{
-  "input": [
-    "node_modules/rxjs/bundles/rxjs.umd.js",
-    "../../../rxcomp/dist/iife/rxcomp.js",
-    "../../../rxcomp-form/dist/iife/rxcomp-form.js",
-    "node_modules/swiper/js/swiper.js",
-    "node_modules/gsap/dist/EasePack.js",
-    "node_modules/gsap/dist/gsap.js"
-  ],
-  "output": "docs/js/vendors.js",
-  "minify": true
-}, {
-  "input": [
-    "node_modules/swiper/css/swiper.css"
-  ],
-  "output": "docs/css/vendors.css",
-  "minify": true
-}]
-
--->
+___
+### Build Dist
+```
+gulp build --target dist
+```
+___
+### Serve Node app
+```
+npm run serve
+```
+___
+### Serve Node Dist app
+```
+npm run serve --dist
+```

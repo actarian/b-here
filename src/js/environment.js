@@ -51,6 +51,12 @@ export class Environment {
 		return path.indexOf('://') === -1;
 	}
 
+	merge(options) {
+		if (options) {
+			Utils.merge(this, options);
+		}
+	}
+
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
@@ -121,6 +127,9 @@ const defaultAppOptions = {
 	url: {},
 	languages: ['it', 'en'],
 	defaultLanguage: 'it',
+	labels: {},
+	data: {},
+	fields: [],
 };
 
 const environmentOptions = window.STATIC ? environmentStatic : environmentServed;

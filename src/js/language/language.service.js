@@ -3,6 +3,7 @@ import { tap } from 'rxjs/operators';
 import { environment } from '../environment';
 import LabelPipe from '../label/label.pipe';
 import LocationService from '../location/location.service';
+import RouterService from '../router/router.service';
 import { Utils } from '../utils/utils';
 
 export class LanguageService {
@@ -10,6 +11,38 @@ export class LanguageService {
 	static languages = this.getDefaultLanguages();
 	static defaultLanguage = this.getDefaultLanguage();
 	static selectedLanguage = this.defaultLanguage;
+
+	static setAlternates(language, alternates) {
+		this.languages = alternates;
+		this.selectedLanguage = language;
+		console.log('LanguageService.setAlternates', language, alternates);
+	}
+
+	static setRoute(route, routes) {
+		const language = route.params.lang;
+		console.log('LanguageService.setRoute', route, route.path, language);
+		const alternates = environment.languages.map(lang => {
+			const title = lang === 'it' ? 'Italiano' : 'English';
+			const alternateName = route.name.replace(new RegExp(`(^${language}$)|(^${language}\.)`), (match, g1, g2, offset) => {
+				console.log('LanguageService.match', match, g1, g2, offset);
+				return g1 ? lang : `${lang}.`;
+			});
+			const alternate = routes.find(x => x.name === alternateName);
+			console.log('LanguageService.alternate', lang, alternateName, alternate);
+			if (alternate) {
+				return {
+					name: alternate.name,
+					params: route.params,
+					href: alternate.path,
+					lang: alternate.defaultParams.lang,
+					title,
+				};
+			} else {
+				return null;
+			}
+		}).filter(x => x !== null);
+		this.setAlternates(language, alternates);
+	}
 
 	static get hasLanguages() {
 		return this.languages.length > 1;
@@ -32,6 +65,31 @@ export class LanguageService {
 	}
 
 	static setLanguage$(language) {
+		const url = (environment.flags.production ? `/api/labels/${language.lang}` : `./api/labels/${language.lang}.json`);
+		return from(fetch(url).then(response => {
+			return response.json();
+		})).pipe(
+			tap(labels => {
+				environment.labels = labels;
+				RouterService.replaceHistoryState(language.name, language.params);
+				const from = this.activeLanguage.href.split('?')[0];
+				const to = language.href.split('?')[0];
+				LocationService.replace(from, to);
+				this.selectedLanguage = language.lang;
+			}),
+		);
+		/*
+		return of(language).pipe(
+			tap(language => {
+				// LabelPipe.setLabels();
+				LocationService.replace(this.activeLanguage.href, language.href);
+				this.selectedLanguage = language.lang;
+			}),
+		);
+		*/
+	}
+
+	static setLanguage$_(language) {
 		return from(fetch(language.href).then(response => {
 			return response.text();
 		})).pipe(
@@ -53,7 +111,7 @@ export class LanguageService {
 					}
 				}
 				LocationService.replace(this.activeLanguage.href, language.href);
-				// console.log(window.labels);
+				// console.log(environment.labels);
 				this.selectedLanguage = language.lang;
 			}),
 		);

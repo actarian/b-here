@@ -1,6 +1,7 @@
 src/js/loaders
 src/js/webxr
 test
+dist
 
 # Logs
 logs

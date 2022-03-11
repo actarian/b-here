@@ -241,7 +241,7 @@ export const CHUNK_BACKGROUND = /* html */`
 
 export const CHUNK_LOGO = /* html */`
 <!-- logo -->
-<a class="btn--logo" [routerLink]="'index' | route" *if="state.status != 'connected'">
+<a class="btn--logo" [routerLink]="':lang.access' | route" *if="state.status != 'connected'">
 	<img [src]="'logo' | env" *if="'logo' | env" />
 	<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
 </a>

@@ -7,6 +7,8 @@ import { environment } from '../environment';
 import LocationService from '../location/location.service';
 import MessageService from '../message/message.service';
 import ModalService, { ModalResolveEvent } from '../modal/modal.service';
+import RoutePipe from '../router/route.pipe';
+import RouterOutletStructure from '../router/router-outlet.structure';
 import RouterService from '../router/router.service';
 import StateService from '../state/state.service';
 import StreamService, { StreamServiceMode } from '../stream/stream.service';
@@ -84,7 +86,7 @@ export default class EditorComponent extends Component {
 				this.user = user;
 				this.initState();
 			} else {
-				RouterService.setRouterLink('it.access');
+				RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
 				// window.location.href = environment.url.access;
 			}
 		});
@@ -558,6 +560,7 @@ export default class EditorComponent extends Component {
 
 EditorComponent.meta = {
 	selector: '[editor-component]',
+	hosts: { host: RouterOutletStructure },
 	template: /* html */`
 	<div class="page page--editor">
 		<div class="ui" [class]="{ open: aside }" *if="dataViews.length">

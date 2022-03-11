@@ -1,13 +1,7 @@
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><meta charset="utf-8"><base href="/b-here/"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta name="Content-Language" content="it"><meta name="robots" content="noindex,nofollow"><title>Websolute B-Here</title><meta name="description" content="Websolute B-Here demo."><meta name="apple-mobile-web-app-title" content="Websolute B-Here"><meta name="application-name" content="Websolute B-Here"><link rel="shortcut icon" href="/b-here/img/favicon.ico"><!--
-	<link rel="apple-touch-icon" sizes="180x180" href="/img/icons/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16x16.png">
-	<link rel="manifest" href="/img/icons/site.webmanifest">
-	<link rel="mask-icon" href="/img/icons/safari-pinned-tab.svg" color="#19255a">
-	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-config" content="/img/icons/browserconfig.xml">
-	<meta name="theme-color" content="#ffffff">
-	--><!-- <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;700;900" rel="stylesheet"> --><link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800" rel="stylesheet"><!-- &display=swap --><link rel="stylesheet" href="/b-here/css/vendors.min.css"><link rel="stylesheet" href="/b-here/css/main.min.css"><!-- start css --><!-- end css --></head><body><script>window.STATIC = true;</script><!-- start main --><!-- start css-vars.html--><style>.b-here {
+<!-- @@master = ./templates/layout-bhere.html { "baseHref": "/b-here/" } -->
+<!-- @@block = main-->
+<style>
+.b-here {
 	/* --font-primary: GT Walsheim, Maven Pro, Arial, sans-serif; */
 	--font-primary: Work Sans, Arial, sans-serif;
 	--background: #ffffff;
@@ -30,14 +24,20 @@
 	--foreground-primary-dimmed: rgba(0, 153, 255, 0.5);
 	--border: #101010;
 	--shadow: rgba(86, 125, 151, .65);
-}</style><!-- end css-vars.html--><script>var roles = [
-	{ id: 1, name: "Show room" },
-	{ id: 2, name: "Architetto" },
-	{ id: 3, name: "Interior designer" },
-	{ id: 4, name: "Privato" },
-	{ id: 5, name: "Altro" }
+}
+
+</style>
+<!-- @@close-->
+<!-- @@block = js-->
+<script>
+var roles = [
+	{ id: 1, name: 'Show room' },
+	{ id: 2, name: 'Architetto' },
+	{ id: 3, name: 'Interior designer' },
+	{ id: 4, name: 'Privato' },
+	{ id: 5, name: 'Altro' }
 ];
-window.bhere = {
+var options = {
 	url: {
 		index: '/it/',
 		access: '/it/accesso',
@@ -139,72 +139,72 @@ window.bhere = {
 		bhere_rtm_error: '<b>Impossibile accedere ai servizi di messaggistica real-time.</b><br/> Potrebbe essere causato da regole molto stringenti della tua connessione ad Internet. <br/>Consigliamo di verificare che le porte di destinazione siano accessibili dalla rete in uso. Cicca qui per maggiori informazioni.',
 		bhere_write_a_message: 'Scrivi...',
 		bhere_configure_firewall: /* html */ `
-		<div class="title">Audio e Video Realtime</div>
-				<div class="abstract">
-					<p>Aggiungi i seguenti domini di destinazione e le porte corrispondenti alla whitelist del firewall.</p>
-				</div>
-				<div class="subtitle">Domini</div>
-				<pre class="pre">
-					<code>
-	<span>.agora</span><span>.io</span>
-	<span>.edge</span><span>.agora</span><span>.io</span>
-	<span>.sd-rtn</span><span>.com</span>
-	<span>.edge</span><span>.sd-rtn</span><span>.com</span>
-					</code>
-				</pre>
-				<div class="subtitle">Porte</div>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Tipologia</th>
-							<th>Porte di destinazione</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>TCP</td>
-							<td>80, 443, 3433, 4700-5000, 5668, 5669, 6080, 6443, 8667, 9667, 30011-30013</td>
-						</tr>
-						<tr>
-							<td>UDP</td>
-							<td>3478, 4700-5000</td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="title">Messaggistica Realtime</div>
-				<div class="abstract">
-					<p>Aggiungi i seguenti domini di destinazione e le porte corrispondenti alla whitelist del firewall.</p>
-				</div>
-				<div class="subtitle">Domini</div>
-				<pre class="pre">
-					<code>
-	<span>.edge</span><span>.agora</span><span>.io</span>
-	<span>.edge</span><span>.sd-rtn</span><span>.com</span>
-	<span>web-1</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
-	<span>web-2</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
-	<span>ap-web-1</span><span>.agora</span><span>.io</span>
-	<span>ap-web-2</span><span>.agora</span><span>.io</span>
-	<span>webcollector-rtm</span><span>.agora</span><span>.io</span>
-	<span>logservice-rtm</span><span>.agora</span><span>.io</span>
-	<span>rtm</span><span>.statscollector</span><span>.sd-rtn</span><span>.com</span>
-	<span>rtm</span><span>.logservice</span><span>.sd-rtn</span><span>.com</span>
-					</code>
-				</pre>
-				<div class="subtitle">Porte</div>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Tipologia</th>
-							<th>Porte di destinazione</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>TCP</td>
-							<td>443, 6443, 9591, 9593, 9601</td>
-						</tr>
-					</tbody>
-				</table>`,
+			<div class="title">Audio e Video Realtime</div>
+					<div class="abstract">
+						<p>Aggiungi i seguenti domini di destinazione e le porte corrispondenti alla whitelist del firewall.</p>
+					</div>
+					<div class="subtitle">Domini</div>
+					<pre class="pre">
+						<code>
+		<span>.agora</span><span>.io</span>
+		<span>.edge</span><span>.agora</span><span>.io</span>
+		<span>.sd-rtn</span><span>.com</span>
+		<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+						</code>
+					</pre>
+					<div class="subtitle">Porte</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Tipologia</th>
+								<th>Porte di destinazione</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>TCP</td>
+								<td>80, 443, 3433, 4700-5000, 5668, 5669, 6080, 6443, 8667, 9667, 30011-30013</td>
+							</tr>
+							<tr>
+								<td>UDP</td>
+								<td>3478, 4700-5000</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="title">Messaggistica Realtime</div>
+					<div class="abstract">
+						<p>Aggiungi i seguenti domini di destinazione e le porte corrispondenti alla whitelist del firewall.</p>
+					</div>
+					<div class="subtitle">Domini</div>
+					<pre class="pre">
+						<code>
+		<span>.edge</span><span>.agora</span><span>.io</span>
+		<span>.edge</span><span>.sd-rtn</span><span>.com</span>
+		<span>web-1</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+		<span>web-2</span><span>.ap</span><span>.sd-rtn</span><span>.com</span>
+		<span>ap-web-1</span><span>.agora</span><span>.io</span>
+		<span>ap-web-2</span><span>.agora</span><span>.io</span>
+		<span>webcollector-rtm</span><span>.agora</span><span>.io</span>
+		<span>logservice-rtm</span><span>.agora</span><span>.io</span>
+		<span>rtm</span><span>.statscollector</span><span>.sd-rtn</span><span>.com</span>
+		<span>rtm</span><span>.logservice</span><span>.sd-rtn</span><span>.com</span>
+						</code>
+					</pre>
+					<div class="subtitle">Porte</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Tipologia</th>
+								<th>Porte di destinazione</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>TCP</td>
+								<td>443, 6443, 9591, 9593, 9601</td>
+							</tr>
+						</tbody>
+					</table>`,
 		bhere_support_request_sent: 'Richiesta di supporto inviata.',
 		bhere_support_request_leaved: 'L\'utente ha lasciato il tour.',
 		bhere_support_request_dialog: 'Un operatore è disponibile per un tour guidato.<br>Desideri Accettare?',
@@ -306,9 +306,11 @@ window.bhere = {
 	],
 };
 
-// console.log('bhere', window.bhere, window.location.pathname);
-if (window.location.pathname.indexOf('embed') !== -1) {
-	const flags = window.bhere.flags || {};
-	flags.like = false;
-	window.bhere.flags = flags;
-}</script><div class="b-here hidden" b-here-component></div><!-- end main --><script src="https://polyfill.io/v3/polyfill.min.js?features=es5%2CString.prototype.includes%2CObject.values%2CArray.prototype.fill%2CArray.prototype.find%2CArray.from%2Cfetch%2CObject.assign%2CURLSearchParams%2CElement.prototype.classList%2CNode.prototype.contains%2CNodeList.prototype.forEach%2CCustomEvent%2CAudioContext"></script><script src="/b-here/js/vendors.min.js"></script><script src="/b-here/js/main.js"></script><!-- start js --><!-- end js --></body></html>
+var target = document.createElement('div');
+target.setAttribute('b-here', '');
+document.body.appendChild(target);
+
+var bhere = new BHere(target, options);
+
+</script>
+<!-- @@close-->

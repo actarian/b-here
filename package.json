@@ -16,7 +16,9 @@
     "start": "node server/main.js",
     "serve": "node server/main.js",
     "test": "node test/selenium-test.js",
-    "run": "gulp build --target vendors && gulp build && npm run serve"
+    "run": "gulp build --target vendors && gulp build && npm run serve",
+    "build": "gulp build",
+    "dist": "gulp build --target dist"
   },
   "dependencies": {
     "agora-access-token": "2.0.4",

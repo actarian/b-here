@@ -1,17 +1,10 @@
 import { Pipe } from 'rxcomp';
+import { LanguageService } from '../language/language.service';
 
 export default class RoutePipe extends Pipe {
 
 	static transform(key) {
-		switch (key) {
-			case 'index':
-				return 'it.access';
-			default:
-				return 'it.' + key;
-				break;
-		}
-		// const url = environment.url;
-		// return url[key] || `#${key}`;
+		return key.replace(':lang', LanguageService.selectedLanguage);
 	}
 
 }

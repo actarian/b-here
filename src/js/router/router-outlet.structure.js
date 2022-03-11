@@ -1,5 +1,5 @@
 import { getContext, Structure } from 'rxcomp';
-import { EMPTY, of, ReplaySubject } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 // import View, { EnterTransition, LeaveTransition, OnceTransition } from '../core/view';
 // import { transitionOnce, transitionOnced } from '../transition/transition';
@@ -7,19 +7,15 @@ import RouterService from './router.service';
 
 export default class RouterOutletStructure extends Structure {
 
-	host;
-	outlet;
-	element;
-	instance;
-
-	route$_ = new ReplaySubject(1);
-	get route() {
-		return this.route_;
-	}
+	// host;
+	// outlet;
+	// element;
+	// instance;
+	// route$_ = new ReplaySubject(1);
 
 	getFactory(route) {
 		let factory = null;
-		const routes = this.routes;
+		const routes = RouterService.routes;
 		const originalRoute = routes.find(x => x.name === route.name);
 		if (originalRoute) {
 			factory = originalRoute.factory;
@@ -49,6 +45,15 @@ export default class RouterOutletStructure extends Structure {
 	}
 
 	route$() {
+		return RouterService.event$.pipe(
+			map(event => {
+				const route = event.route;
+				this.route = route;
+				console.log('RouterOutletStructure.route', route);
+				return route;
+			}),
+		);
+		/*
 		const routes = this.routes;
 		// console.log('RouterOutletStructure.route$', routes);
 		if (routes) {
@@ -61,6 +66,7 @@ export default class RouterOutletStructure extends Structure {
 		} else {
 			return EMPTY;
 		}
+		*/
 	}
 
 	factory$(route) {
@@ -205,6 +211,5 @@ export default class RouterOutletStructure extends Structure {
 	static meta = {
 		selector: 'router-outlet,[router-outlet]',
 		hosts: { host: RouterOutletStructure },
-		inputs: ['routes'],
 	};
 }

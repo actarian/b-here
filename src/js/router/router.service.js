@@ -1,6 +1,6 @@
 import createRouter from 'router5';
 import browserPlugin from 'router5-plugin-browser';
-import { EMPTY, from, Subject } from 'rxjs';
+import { EMPTY, from } from 'rxjs';
 import { startWith, tap } from 'rxjs/operators';
 
 export default class RouterService {
@@ -12,6 +12,7 @@ export default class RouterService {
 		return this.router_;
 	}
 
+	/*
 	static event$_ = new Subject();
 	static event$() {
 		const router = this.router_;
@@ -22,22 +23,18 @@ export default class RouterService {
 					console.log('RouterService.event$', event);
 					this.event$_.next(event);
 				}),
-				/*
-				switchMap(_ => {
-					return this.event$_;
-				}),
-				*/
 			);
 		} else {
 			return EMPTY;
 		}
 	}
+	*/
 
 	static useBrowser(routes) {
-		routes = routes || [
-			{ name: 'home', path: '/' },
-			{ name: 'profile', path: '/profile' }
-		];
+		if (!(Array.isArray(routes) && routes.length)) {
+			this.event$ = EMPTY;
+			return;
+		}
 		this.routes = routes;
 		const router = createRouter(routes, {
 			allowNotFound: false,
@@ -60,11 +57,17 @@ export default class RouterService {
 			useHash: false
 		}));
 		router.start();
+		this.event$ = from(router).pipe(
+			startWith({ route: router.getState(), previousRoute: null }),
+			tap(event => {
+				console.log('RouterService.event$', event);
+			}),
+		);
 	}
 
 	static useBrowser$(routes) {
 		this.useBrowser(routes);
-		return this.event$();
+		return this.event$;
 	}
 
 	static setRouterLink(routerLink = 'it.access', routeParams = null, options = { reload: true }) {
@@ -77,7 +80,19 @@ export default class RouterService {
 				console.log('RouterService.setRouterLink.error', error);
 			}
 		}
-		// console.log('RouterService.setRouterLink', router, routerLink, routeParams, options);
+		console.log('RouterService.setRouterLink', router, routerLink, routeParams, options);
+	}
+
+	static replaceHistoryState(name, params) {
+		const router = this.router_;
+		if (router) {
+			// router.matchUrl(routerLink);
+			try {
+				router.replaceHistoryState(name, params);
+			} catch (error) {
+				console.log('RouterService.replaceHistoryState.error', error);
+			}
+		}
 	}
 
 	static buildPath(route, params = null) {

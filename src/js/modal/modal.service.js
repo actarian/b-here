@@ -1,6 +1,5 @@
 import { from, of, Subject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import IframeModalComponent from '../editor/modals/iframe-modal.component';
 
 export class ModalEvent {
 
@@ -29,7 +28,7 @@ export default class ModalService {
 	static open$(modal) {
 		this.busy$.next(true);
 		return (
-			modal.iframe ? of(IframeModalComponent.meta.chunk(modal.iframe)) : this.getTemplate$(modal)
+			modal.iframe ? of(/* html */`<div class="iframe-modal" iframe-modal src="${modal.iframe}"></div>`) : this.getTemplate$(modal)
 		).pipe(
 			// startWith(new ModalLoadEvent(Object.assign({}, modal.data, { $src: modal.src }))),
 			map(template => {

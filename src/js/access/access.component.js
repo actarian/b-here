@@ -2,8 +2,10 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import { STATIC } from '../environment';
+import { environment, STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
+import RoutePipe from '../router/route.pipe';
+import RouterOutletStructure from '../router/router-outlet.structure';
 import RouterService from '../router/router.service';
 import { UserService } from '../user/user.service';
 
@@ -45,7 +47,7 @@ export default class AccessComponent extends Component {
 		UserService.logout$().pipe(
 			first(),
 		).subscribe(() => {
-			RouterService.setRouterLink('it.guidedTour');
+			RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
 			// RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
 			// window.location.href = environment.url.guidedTour;
 		});
@@ -62,7 +64,7 @@ export default class AccessComponent extends Component {
 			this.formSubscription.unsubscribe();
 		}
 
-		const data = this.data = window.data || {
+		const data = this.data = environment.data || {
 			roles: [
 				{ id: 1, name: 'Show room' },
 				{ id: 2, name: 'Architetto' },
@@ -72,17 +74,17 @@ export default class AccessComponent extends Component {
 			],
 		};
 
-		const fields = this.fields = window.fields || [
+		const fields = this.fields = environment.fields || [
 			{ type: 'text', name: 'firstName', label: 'access_first_name', required: true, test: 'Jhon' },
 			{ type: 'text', name: 'lastName', label: 'access_last_name', required: true, test: 'Appleseed' },
 			{ type: 'email', name: 'email', label: 'access_email', required: true, test: 'jhonappleseed@gmail.com' },
-			{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: window.data.roles, test: window.data.roles[0].id },
+			{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: data.roles, test: data.roles[0].id },
 			{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
 		];
 
 		fields.push(
 			{ type: 'hidden', name: 'checkField', value: '', test: '' },
-			{ type: 'none', name: 'checkRequest', value: window.antiforgery || '', test: window.antiforgery || '' }
+			{ type: 'none', name: 'checkRequest', value: environment.antiforgery || '', test: environment.antiforgery || '' }
 		);
 
 		const form = this.form = fieldsToFormGroup(fields);
@@ -185,11 +187,11 @@ export default class AccessComponent extends Component {
 						this.pushChanges();
 						break;
 					case 'self-service-tour':
-						RouterService.setRouterLink('it.selfServiceTour');
+						RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
 						// window.location.href = environment.url.selfServiceTour;
 						break;
 					case 'login':
-						RouterService.setRouterLink('it.guidedTour');
+						RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
 						// window.location.href = environment.url.guidedTour;
 						break;
 				}
@@ -212,6 +214,7 @@ export default class AccessComponent extends Component {
 
 AccessComponent.meta = {
 	selector: '[access-component]',
+	hosts: { host: RouterOutletStructure },
 	template: /*html*/ `
 		<div class="page page--access">
 			<!-- background -->
