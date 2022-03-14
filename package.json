@@ -11,7 +11,7 @@
   "engines": {
     "node": "^17 || ^16 || ^15 || ^14 || ^13 || ^12 || ^11 || ^10 || ^9 || ^8"
   },
-  "main": "server/main.js",
+  "main": "index.js",
   "files": [
     "server/**/*.*",
     "dist/**/*.*",
@@ -19,12 +19,12 @@
     "!dist/js/lib/*"
   ],
   "scripts": {
-    "start": "node server/main.js",
-    "serve": "node server/main.js",
-    "test": "node test/selenium-test.js",
+    "start": "node index.js",
+    "serve": "node index.js",
     "run": "gulp build --target vendors && gulp build && npm run serve",
     "build": "gulp build",
-    "dist": "gulp build --target dist"
+    "dist": "gulp build --target dist",
+    "test": "node test/selenium-test.js"
   },
   "dependencies": {
     "agora-access-token": "2.0.4",

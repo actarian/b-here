@@ -1,5 +1,5 @@
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 // const router = express.Router();
 // const serveStatic = require('serve-static');
 
@@ -116,16 +116,17 @@ const MIME_TYPES = [
 	...MIME_APPLICATION,
 ];
 
-function staticMiddleware(vars) {
-	if (!vars.root) {
+function staticMiddleware(options) {
+	if (!options.root) {
 		throw new Error('missing Vars.root!');
 	}
-	if (!vars.baseHref) {
+	if (!options.baseHref) {
 		throw new Error('missing Vars.baseHref!');
 	}
+	const dirname = options.dirname;
 	return (request, response, next) => {
 		const url = unescape(request.baseUrl.replace(/\\/g, '/'));
-		const baseHref = vars.baseHref.substr(0, vars.baseHref.length - 1).replace(/\\/g, '/');
+		const baseHref = options.baseHref.substr(0, options.baseHref.length - 1).replace(/\\/g, '/');
 		const regExpText = `^(${baseHref})?(\\/[^\\?\\#]+)(\\.(${MIME_TYPES.join('|')}))(\\?.+)?(\\#.+)?$`;
 		// console.log('regExpText', url, regExpText);
 		const regExp = new RegExp(regExpText);
@@ -135,7 +136,7 @@ function staticMiddleware(vars) {
 		if (matches) {
 			const extension = matches[4];
 			const file = path.join(matches[2] + '.' + extension);
-			const filePath = path.join(__dirname, '../', vars.root, file);
+			const filePath = path.join(dirname, options.root, file);
 
 			fs.stat(filePath, (error, stats) => {
 				if (error) {
@@ -217,13 +218,12 @@ function staticMiddleware(vars) {
 			next();
 		}
 	};
+	// app.use(express.static(BASE_HREF, { index: false, extensions: MIME_TYPES }));
+	// app.use(express.static('/', { index: false, extensions: MIME_TYPES }));
+	// app.use(STATIC_REGEXP, serveStatic(path.join(dirname, `${ROOT}`)));
+	// app.use('/', serveStatic(path.join(dirname, `${ROOT}`)));
+	// app.use(express.static(path.join(dirname, ROOT)));
 };
-
-// app.use(express.static(BASE_HREF, { index: false, extensions: MIME_TYPES }));
-// app.use(express.static('/', { index: false, extensions: MIME_TYPES }));
-// app.use(STATIC_REGEXP, serveStatic(path.join(__dirname, `${ROOT}`)));
-// app.use('/', serveStatic(path.join(__dirname, `${ROOT}`)));
-// app.use(express.static(path.join(__dirname, ROOT)));
 
 module.exports = {
 	mimeContentTypes: MIME_CONTENT_TYPES,
