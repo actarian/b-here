@@ -9,9 +9,15 @@
     "url": "git://github.com/actarian/b-here.git"
   },
   "engines": {
-    "node": "10.x"
+    "node": "^17 || ^16 || ^15 || ^14 || ^13 || ^12 || ^11 || ^10 || ^9 || ^8"
   },
   "main": "server/main.js",
+  "files": [
+    "server/**/*.*",
+    "dist/**/*.*",
+    "!dist/css/lib/*",
+    "!dist/js/lib/*"
+  ],
   "scripts": {
     "start": "node server/main.js",
     "serve": "node server/main.js",
