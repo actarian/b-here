@@ -9,15 +9,13 @@ import { SVG_CHUNK } from './svg/svg.chunks';
 export default class AppComponent extends Component {
 
 	onInit() {
-		// console.log('AppComponent.onInit', window.location.pathname);
-		if (window.location.pathname.indexOf('embed') !== -1) {
-			environment.flags.like = false;
-		}
-
 		RouterService.event$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			const route = event.route;
+			if (route && route.params.mode === 'embed') {
+				environment.flags.like = false;
+			}
 			const routes = AppRoutes;
 			LanguageService.setRoute(route, routes);
 		});

@@ -228,445 +228,7 @@ var CHUNK_SELF_SERVICE_TOUR =
 "\n<!-- Self Service Tour -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n\t" + CHUNK_NAVMAP + "\n</div>\n";
 var CHUNK_EMBED =
 /* html */
-"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var environmentServed = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  channelName: 'BHere',
-  flags: {
-    production: true,
-    useProxy: false,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: false,
-    editorAssetScreen: false,
-    menu: true,
-    menuEmbed: false,
-    navmaps: false,
-    chat: false,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    useIframe: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: false,
-    navInfoAnimated: false,
-    navInfoImportantAnimated: false,
-    navMoveAnimated: false,
-    navMoveImportantAnimated: false,
-    navPointAnimated: false,
-    navPointImportantAnimated: false,
-    navTitleAnimated: false,
-    navTitleImportantAnimated: false,
-    navTransparentAnimated: false,
-    navTransparentImportantAnimated: false,
-    useTextureEnvironment: true,
-    usePaths: false // maxQuality: false,
-
-  },
-  navs: {
-    iconMinScale: 1,
-    iconMaxScale: 1.4
-  },
-  profiles: {
-    // streamer: "480p_1", // 640 x 480 x 15
-    streamer: "480p_2",
-    // 640 x 480 x 30
-    // streamer: "480p_3", // 480 x 480 x 15
-    // streamer: "480p_4", // 640 x 480 x 30
-    // streamer: "480p_6", // 480 x 480 x 30
-    // streamer: "480p_8", // 848, 480 x 15
-    // streamer: "480p_9", // 848, 480 x 30
-    // streamer: "480p_10", // 640 x 480 x 10
-    // streamer: "720p_1", // 1280 x 720 x 15
-    // streamer: "720p_2", // 1280 x 720 x 30
-    // streamer: "720p_3", // 1280 x 720 x 30
-    // streamer: "720p_5", // 960 x 720 x 15
-    // streamer: "720p_6", // 960 x 720 x 30
-    // streamer: "1080p_1", // 1920 x 1080 x 15
-    // streamer: "1080p_2", // 1920 x 1080 x 30
-    // streamer: "1080p_3", // 1920 x 1080 x 30
-    // streamer: "1080p_5", // 1920 x 1080 x 60
-    // publisher: "720p_2", // 1920 x 1080 x 30
-    publisher: "1080p_2",
-    // 1920 x 1080 x 30
-    // screen: "480p_1", // 640 × 480 x 5
-    // screen: "480p_2", // 640 × 480 x 30
-    // screen: "720p_1", // 1280 × 720 x 5
-    screen: "720p_2" // 1280 × 720 x 30
-    // screen: "1080p_1", // 1920 × 1080 x 5
-    // screen: "1080p_2", // 1920 × 1080 30
-
-  },
-  logo: null,
-  background: {
-    // image: '/Modules/B-Here/Client/docs/img/background.jpg',
-    video: '/Modules/B-Here/Client/docs/img/background.mp4'
-  },
-  selfServiceAudio: null,
-  // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
-  colors: {
-    menuBackground: '#000000',
-    menuForeground: '#ffffff',
-    menuOverBackground: '#0099ff',
-    menuOverForeground: '#ffffff',
-    menuBackBackground: '#0099ff',
-    menuBackForeground: '#000000',
-    menuBackOverBackground: '#0099ff',
-    menuBackOverForeground: '#ffffff'
-  },
-  editor: {
-    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
-    disabledViewItemTypes: ['texture']
-  },
-  assets: '/Modules/B-Here/Client/docs/',
-  workers: {
-    image: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
-    prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js'
-  },
-  textures: {
-    envMap: 'textures/envMap/studio_small_03_2k.hdr',
-    grid: 'textures/grid/grid.jpg'
-  },
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
-  template: {
-    tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
-    modal: {
-      configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
-      controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
-      supportRequest: '/template/modules/b-here/support-request-modal.cshtml',
-      tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
-      view: {
-        'panorama': '/template/modules/b-here/panorama-modal.cshtml',
-        'panorama-grid': '/template/modules/b-here/panorama-grid-modal.cshtml',
-        'room-3d': '/template/modules/b-here/room-3d-modal.cshtml',
-        'model': '/template/modules/b-here/model-modal.cshtml',
-        'media': '/template/modules/b-here/media-modal.cshtml'
-      },
-      viewItem: {
-        'nav': '/template/modules/b-here/nav-modal.cshtml',
-        'plane': '/template/modules/b-here/plane-modal.cshtml',
-        'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
-        'texture': '/template/modules/b-here/texture-modal.cshtml',
-        'model': '/template/modules/b-here/item-model-modal.cshtml'
-      },
-      navmap: '/template/modules/b-here/navmap-modal.cshtml',
-      navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
-      pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
-      pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
-      remove: '/template/modules/b-here/remove-modal.cshtml'
-    },
-    email: {
-      supportRequest: '/template/modules/b-here/email/support-request.cshtml'
-    }
-  }
-};var environmentStatic = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  channelName: 'BHere',
-
-  /*
-  webhook: {
-  	uris: ['internal'],
-  	methods: [
-  		'ToggleWishlist',
-  	],
-  },
-  */
-  flags: {
-    production: false,
-    useProxy: true,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: true,
-    editorAssetScreen: true,
-    menu: true,
-    menuEmbed: true,
-    navmaps: true,
-    chat: true,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    useIframe: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: false,
-    navInfoAnimated: false,
-    navInfoImportantAnimated: false,
-    navMoveAnimated: true,
-    navMoveImportantAnimated: true,
-    navPointAnimated: false,
-    navPointImportantAnimated: false,
-    navTitleAnimated: false,
-    navTitleImportantAnimated: false,
-    navTransparentAnimated: true,
-    navTransparentImportantAnimated: true,
-    useTextureEnvironment: true,
-    usePaths: true // maxQuality: false,
-
-  },
-  navs: {
-    iconMinScale: 1,
-    iconMaxScale: 1.4
-  },
-  profiles: {
-    // streamer: "480p_1", // 640 x 480 x 15
-    streamer: "480p_2",
-    // 640 x 480 x 30
-    // streamer: "480p_3", // 480 x 480 x 15
-    // streamer: "480p_4", // 640 x 480 x 30
-    // streamer: "480p_6", // 480 x 480 x 30
-    // streamer: "480p_8", // 848, 480 x 15
-    // streamer: "480p_9", // 848, 480 x 30
-    // streamer: "480p_10", // 640 x 480 x 10
-    // streamer: "720p_1", // 1280 x 720 x 15
-    // streamer: "720p_2", // 1280 x 720 x 30
-    // streamer: "720p_3", // 1280 x 720 x 30
-    // streamer: "720p_5", // 960 x 720 x 15
-    // streamer: "720p_6", // 960 x 720 x 30
-    // streamer: "1080p_1", // 1920 x 1080 x 15
-    // streamer: "1080p_2", // 1920 x 1080 x 30
-    // streamer: "1080p_3", // 1920 x 1080 x 30
-    // streamer: "1080p_5", // 1920 x 1080 x 60
-    // publisher: "720p_2", // 1920 x 1080 x 30
-    publisher: "1080p_2",
-    // 1920 x 1080 x 30
-    // screen: "480p_1", // 640 × 480 x 5
-    // screen: "480p_2", // 640 × 480 x 30
-    // screen: "720p_1", // 1280 × 720 x 5
-    // screen: "720p_2", // 1280 × 720 x 30
-    // screen: "1080p_1", // 1920 × 1080 x 5
-    screen: "1080p_2" // 1920 × 1080 30
-
-  },
-  logo: null,
-  background: {
-    // image: '/b-here/img/background.jpg',
-    video: '/b-here/img/background.mp4'
-  },
-  selfServiceAudio: null,
-  // '/b-here/audio/self-service.mp3',
-  colors: {
-    menuBackground: '#000000',
-    menuForeground: '#ffffff',
-    menuOverBackground: '#0099ff',
-    menuOverForeground: '#ffffff',
-    menuBackBackground: '#0099ff',
-    menuBackForeground: '#000000',
-    menuBackOverBackground: '#0099ff',
-    menuBackOverForeground: '#ffffff'
-  },
-  editor: {
-    disabledViewTypes: ['waiting-room'],
-    disabledViewItemTypes: ['texture']
-  },
-  assets: '/b-here/',
-  workers: {
-    image: './js/workers/image.service.worker.js',
-    prefetch: './js/workers/prefetch.service.worker.js'
-  },
-  textures: {
-    envMap: 'textures/envMap/studio_small_03_2k.hdr',
-    grid: 'textures/grid/grid.jpg'
-  },
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
-  template: {
-    tryInAr: '/try-in-ar.html?viewId=$viewId',
-    modal: {
-      configureFirewall: '/configure-firewall-modal.html',
-      controlRequest: '/control-request-modal.html',
-      supportRequest: '/support-request-modal.html',
-      tryInAr: '/try-in-ar-modal.html',
-      view: {
-        'panorama': '/panorama-modal.html',
-        'panorama-grid': '/panorama-grid-modal.html',
-        'room-3d': '/room-3d-modal.html',
-        'model': '/model-modal.html',
-        'media': '/media-modal.html'
-      },
-      viewItem: {
-        'nav': '/nav-modal.html',
-        'plane': '/plane-modal.html',
-        'curved-plane': '/curved-plane-modal.html',
-        'texture': '/texture-modal.html',
-        'model': '/item-model-modal.html'
-      },
-      navmap: '/navmap-modal.html',
-      navmapItem: '/navmap-item-modal.html',
-      pathAdd: '/path-add-modal.html',
-      pathEdit: '/path-edit-modal.html',
-      remove: '/remove-modal.html'
-    },
-    email: {
-      supportRequest: '/email/support-request.html'
-    }
-  }
-};var Utils = /*#__PURE__*/function () {
-  function Utils() {}
-
-  Utils.merge = function merge(target, source) {
-    var _this = this;
-
-    if (source && typeof source === 'object') {
-      Object.keys(source).forEach(function (key) {
-        var value = source[key];
-
-        if (typeof value === 'object' && !Array.isArray(value)) {
-          target[key] = _this.merge(target[key], value);
-        } else {
-          target[key] = value;
-        }
-      });
-    }
-
-    return target;
-  };
-
-  return Utils;
-}();var NODE = typeof module !== 'undefined' && module.exports;
-var PARAMS = NODE ? {
-  get: function get() {}
-} : new URLSearchParams(window.location.search);
-var DEBUG =  PARAMS.get('debug') != null;
-var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-var HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
-var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
-var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
-var PRODUCTION = !DEVELOPMENT;
-var ENV = {
-  STATIC: STATIC,
-  DEVELOPMENT: DEVELOPMENT,
-  PRODUCTION: PRODUCTION
-};
-var Environment = /*#__PURE__*/function () {
-  var _proto = Environment.prototype;
-
-  _proto.getAbsoluteUrl = function getAbsoluteUrl(path, params) {
-    var url = "" + window.location.origin + path; // let url = `${window.location.protocol}//${window.location.host}${path}`;
-
-    Object.keys(params).forEach(function (key) {
-      url = url.replace("$" + key, params[key]);
-    });
-    return url;
-  };
-
-  _proto.getPath = function getPath(path) {
-    return this.isLocal(path) ? this.href + path : path;
-  };
-
-  _proto.isLocal = function isLocal(path) {
-    return path.indexOf('://') === -1;
-  };
-
-  _proto.merge = function merge(options) {
-    if (options) {
-      Utils.merge(this, options);
-    }
-  };
-
-  _createClass(Environment, [{
-    key: "STATIC",
-    get: function get() {
-      return ENV.STATIC;
-    },
-    set: function set(STATIC) {
-      ENV.STATIC = STATIC === true || STATIC === 'true';
-      console.log('Environment.STATIC.set', ENV.STATIC);
-    }
-  }, {
-    key: "href",
-    get: function get() {
-      if (HEROKU) {
-        return this.githubDocs;
-      } else {
-        return BASE_HREF;
-      }
-    }
-  }]);
-
-  function Environment(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-  return Environment;
-}();
-var defaultOptions = {
-  port: 5000,
-  // fontFamily: 'GT Walsheim, sans-serif',
-  fontFamily: 'Work Sans, sans-serif',
-  colors: {
-    menuBackground: '#000000',
-    menuForeground: '#ffffff',
-    menuOverBackground: '#0099ff',
-    menuOverForeground: '#ffffff',
-    menuBackBackground: '#0099ff',
-    menuBackForeground: '#000000',
-    menuBackOverBackground: '#0099ff',
-    menuBackOverForeground: '#ffffff'
-  },
-  editor: {
-    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
-    disabledViewItemTypes: ['texture']
-  },
-  renderOrder: {
-    panorama: 0,
-    room: 10,
-    plane: 20,
-    tile: 30,
-    model: 40,
-    banner: 50,
-    nav: 60,
-    panel: 70,
-    menu: 80,
-    debug: 90,
-    pointer: 100
-  }
-};
-var defaultAppOptions = {
-  channelName: 'BHere',
-  flags: {
-    production: false,
-    useProxy: false,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: true,
-    menu: true,
-    navmaps: true,
-    chat: true,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: true,
-    // maxQuality: false,
-    heroku: HEROKU
-  },
-  navs: {
-    iconMinScale: 1,
-    iconMaxScale: 1.4
-  },
-  url: {},
-  languages: ['it', 'en'],
-  defaultLanguage: 'it',
-  labels: {},
-  data: {},
-  fields: []
-};
-var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
-var options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
-options = Utils.merge(options, window.bhere);
-var environment = new Environment(options);
-console.log('environment', environment);var LocationService = /*#__PURE__*/function () {
+"\n<!-- Embed -->\n<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t<!-- world -->\n\t<div class=\"ui__body\">\n\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" (navTo)=\"onNavTo($event)\" (navLink)=\"onNavLink($event)\"></div>\n\t</div>\n\t<div class=\"group--header\">\n\t\t" + CHUNK_SERVICE + "\n\t</div>\n\t<div class=\"group--footer\">\n\t\t<div class=\"group--spacer\"></div>\n\t\t" + CHUNK_MEDIA + "\n\t\t" + CHUNK_AR_VR + "\n\t\t" + CHUNK_LIKE + "\n\t</div>\n</div>\n";var LocationService = /*#__PURE__*/function () {
   function LocationService() {}
 
   LocationService.has = function has(key) {
@@ -770,353 +332,6 @@ console.log('environment', environment);var LocationService = /*#__PURE__*/funct
   };
 
   return LocationService;
-}();var StateService = /*#__PURE__*/function () {
-  function StateService() {}
-
-  StateService.patchState = function patchState(state) {
-    state = Object.assign({}, this.state, state);
-    this.state = state;
-  };
-
-  _createClass(StateService, null, [{
-    key: "state",
-    set: function set(state) {
-      this.state$.next(state);
-    },
-    get: function get() {
-      return this.state$.getValue();
-    }
-  }]);
-
-  return StateService;
-}();
-
-_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var RoleType = {
-  Publisher: 'publisher',
-  Attendee: 'attendee',
-  Streamer: 'streamer',
-  Viewer: 'viewer',
-  SmartDevice: 'smart-device',
-  SelfService: 'self-service',
-  Embed: 'embed'
-};
-var User = function User(options) {
-  if (options) {
-    Object.assign(this, options);
-  }
-};var MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
-var MeetingId = /*#__PURE__*/function () {
-  _createClass(MeetingId, [{
-    key: "roleIndex",
-    get: function get() {
-      return MeetingId.getRoleIndex(this.role);
-    },
-    set: function set(roleIndex) {
-      var roleIndex_ = MeetingId.getRoleIndex(this.role);
-
-      if (roleIndex_ !== roleIndex) {
-        var key = Object.keys(RoleType)[roleIndex];
-        this.role = RoleType[key];
-      }
-    }
-  }]);
-
-  function MeetingId(options) {
-    this.userId = StateService.state.user ? StateService.state.user.id : 0;
-    this.role = StateService.state.role || RoleType.Viewer;
-    this.timestamp = new Date().valueOf().toString();
-    this.pathId = null; // this.timestamp = (performance.now() * 10000000000000).toString();
-
-    if (typeof options === 'string') {
-      if (options.match(MEETING_ID_VALIDATOR)) {
-        options = MeetingId.decompose(options);
-      } else {
-        console.warn('MeetingId', 'invalid meetingId', options);
-        return null;
-      }
-    }
-
-    if (typeof options === 'object') {
-      if (options.id) {
-        this.id = options.id;
-      }
-
-      if (options.userId) {
-        this.userId = options.userId;
-      }
-
-      if (options.role) {
-        this.role = options.role;
-      }
-
-      if (options.roleIndex) {
-        this.roleIndex = options.roleIndex;
-      }
-
-      if (options.timestamp) {
-        this.timestamp = options.timestamp;
-      }
-
-      if (options.pathId) {
-        this.pathId = options.pathId;
-      }
-    }
-  }
-
-  var _proto = MeetingId.prototype;
-
-  _proto.toString = function toString() {
-    return MeetingId.compose(this.userId, this.roleIndex, this.timestamp, this.pathId);
-  };
-
-  _proto.toRoles = function toRoles() {
-    var userId = this.userId;
-    var timestamp = this.timestamp;
-    var pathId = this.pathId;
-    return {
-      id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp, pathId),
-      idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp, pathId),
-      idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp, pathId),
-      idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp, pathId),
-      idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp, pathId),
-      idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp, pathId)
-    };
-  };
-
-  MeetingId.compose = function compose(userId, roleIndex, timestamp, pathId) {
-    return MeetingId.padded(userId, 9) + "-" + MeetingId.padded(roleIndex, 4) + "-" + timestamp + (pathId ? "-" + pathId : '');
-  };
-
-  MeetingId.decompose = function decompose(meetingId) {
-    var components = meetingId.split('-');
-    return {
-      userId: parseInt(components[0]),
-      roleIndex: parseInt(components[1]),
-      timestamp: parseInt(components[2]),
-      pathId: components[3] ? parseInt(components[3]) : null
-    };
-  };
-
-  MeetingId.generateMeetingId = function generateMeetingId() {
-    var meetingId = new MeetingId();
-    return meetingId.toRoles();
-  };
-
-  MeetingId.getRoleIndex = function getRoleIndex(role) {
-    return Object.keys(RoleType).reduce(function (p, c, i) {
-      return RoleType[c] === role ? i : p;
-    }, -1);
-  };
-
-  MeetingId.padded = function padded(num, size) {
-    var s = '000000000' + num;
-    return s.substr(s.length - size);
-  };
-
-  return MeetingId;
-}();var MeetingUrl = /*#__PURE__*/function () {
-  _createClass(MeetingUrl, [{
-    key: "meetingId",
-    get: function get() {
-      return this.link ? new MeetingId(this.link) : null;
-    }
-  }]);
-
-  function MeetingUrl(options) {
-    this.link = LocationService.get('link') || null;
-    this.name = LocationService.get('name') || null;
-    this.role = LocationService.get('role') || null;
-    this.viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
-    this.pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
-    this.embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
-    this.support = LocationService.has('support') ? LocationService.get('support') === 'true' : false;
-
-    if (typeof options === 'string') {
-      options = MeetingUrl.decompose(options);
-    }
-
-    if (typeof options === 'object') {
-      if (options.link) {
-        this.link = options.link;
-      }
-
-      if (options.user) {
-        var name = MeetingUrl.getName(options.user);
-
-        if (name) {
-          this.name = name;
-        }
-      }
-
-      if (options.name) {
-        this.name = options.name;
-      }
-
-      if (options.role) {
-        this.role = options.role;
-      }
-
-      if (options.viewId) {
-        this.viewId = options.viewId;
-      }
-
-      if (options.pathId) {
-        this.pathId = options.pathId;
-      }
-
-      if (options.embedViewId) {
-        this.embedViewId = options.embedViewId;
-      }
-
-      if (options.support) {
-        this.support = options.support;
-      }
-    }
-  }
-
-  var _proto = MeetingUrl.prototype;
-
-  _proto.toString = function toString(shareable) {
-    if (shareable === void 0) {
-      shareable = false;
-    }
-
-    return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.pathId, this.support);
-  };
-
-  _proto.toUrl = function toUrl() {
-    var query = this.toString();
-    return MeetingUrl.getCurrentUrl(query);
-  };
-
-  _proto.toAccessCodeUrl = function toAccessCodeUrl() {
-    var query = this.toString();
-    return MeetingUrl.getAccessCodeUrl(query);
-  };
-
-  _proto.toGuidedTourUrl = function toGuidedTourUrl() {
-    var query = this.toString();
-    return MeetingUrl.getGuidedTourUrl(query);
-  };
-
-  _proto.copyToClipBoard = function copyToClipBoard(asAccessCode) {
-    if (asAccessCode === void 0) {
-      asAccessCode = false;
-    }
-
-    var input = document.createElement('input');
-    input.style.position = 'absolute';
-    input.style.top = '1000vh'; // input.style.visibility = 'hidden';
-
-    document.querySelector('body').appendChild(input);
-    var query = this.toString(true);
-    input.value = asAccessCode ? MeetingUrl.getAccessCodeUrl(query) : MeetingUrl.getGuidedTourUrl(query);
-    input.focus();
-    input.select();
-    input.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-    input.parentNode.removeChild(input);
-    alert("link copiato!\n " + input.value);
-  };
-
-  _proto.replaceUrl = function replaceUrl() {
-    if ('history' in window) {
-      var query = this.toString();
-      var url = MeetingUrl.getCurrentUrl(query);
-      window.history.replaceState({
-        'pageTitle': window.pageTitle
-      }, '', url);
-    }
-  };
-
-  MeetingUrl.replaceWithUser = function replaceWithUser(user) {
-    var meetingUrl = new MeetingUrl({
-      user: user
-    });
-    meetingUrl.replaceUrl();
-    return meetingUrl;
-  };
-
-  MeetingUrl.replaceWithName = function replaceWithName(name) {
-    var meetingUrl = new MeetingUrl({
-      name: name
-    });
-    meetingUrl.replaceUrl();
-    return meetingUrl;
-  };
-
-  MeetingUrl.replaceWithLink = function replaceWithLink(link) {
-    var meetingUrl = new MeetingUrl({
-      link: link
-    });
-    meetingUrl.replaceUrl();
-    return meetingUrl;
-  };
-
-  MeetingUrl.getCurrentUrl = function getCurrentUrl(query) {
-    if (query === void 0) {
-      query = '';
-    }
-
-    var url = "" + window.location.origin + window.location.pathname + query;
-    return url;
-  };
-
-  MeetingUrl.getAccessCodeUrl = function getAccessCodeUrl(query) {
-    if (query === void 0) {
-      query = '';
-    }
-
-    var url = "" + window.location.origin + environment.url.accessCode + query;
-    return url;
-  };
-
-  MeetingUrl.getGuidedTourUrl = function getGuidedTourUrl(query) {
-    if (query === void 0) {
-      query = '';
-    }
-
-    var url = "" + window.location.origin + environment.url.guidedTour + query;
-    return url;
-  };
-
-  MeetingUrl.getName = function getName(user) {
-    return user && user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
-  };
-
-  MeetingUrl.compose = function compose(link, name, role, viewId, pathId, support) {
-    var components = {
-      link: link,
-      name: name,
-      role: role,
-      viewId: viewId,
-      pathId: pathId,
-      support: support
-    };
-    components = Object.keys(components).map(function (key) {
-      return {
-        key: key,
-        value: components[key]
-      };
-    }).filter(function (x) {
-      return x.value != null && x.value !== false;
-    }).map(function (x) {
-      return x.key + "=" + x.value;
-    });
-    return "?" + components.join('&');
-  };
-
-  MeetingUrl.decompose = function decompose(url) {
-    var components = {};
-    url.split('?')[1].split('&').forEach(function (keyvalue) {
-      var key = keyvalue.split('=')[0];
-      var value = keyvalue.split('=')[1];
-      components[key] = value;
-    });
-    return components;
-  };
-
-  return MeetingUrl;
 }();/*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -1565,7 +780,7 @@ var appendQueryParam = function appendQueryParam(params, param, val) {
   return params;
 };
 
-var defaultOptions$1 = {
+var defaultOptions = {
   urlParamsEncoding: 'default'
 };
 
@@ -1580,7 +795,7 @@ function () {
     }
 
     this.path = path;
-    this.options = _assign$1(_assign$1({}, defaultOptions$1), options);
+    this.options = _assign$1(_assign$1({}, defaultOptions), options);
     this.tokens = tokenise(path);
     this.hasUrlParams = this.tokens.filter(function (t) {
       return /^url-parameter/.test(t.type);
@@ -2582,7 +1797,7 @@ var _assign$2 = function __assign() {
   return _assign$2.apply(this, arguments);
 };
 
-var defaultOptions$2 = {
+var defaultOptions$1 = {
   trailingSlashMode: 'default',
   queryParamsMode: 'default',
   strictTrailingSlash: false,
@@ -2596,7 +1811,7 @@ var defaultOptions$2 = {
 
 function withOptions(options) {
   return function (router) {
-    var routerOptions = _assign$2(_assign$2({}, defaultOptions$2), options);
+    var routerOptions = _assign$2(_assign$2({}, defaultOptions$1), options);
 
     router.getOptions = function () {
       return routerOptions;
@@ -3704,7 +2919,7 @@ if (isBrowser) {
 }
 
 var safeBrowser = browser;
-var defaultOptions$3 = {
+var defaultOptions$2 = {
   forceDeactivate: true,
   useHash: false,
   hashPrefix: '',
@@ -3719,7 +2934,7 @@ function browserPluginFactory(opts, browser) {
     browser = safeBrowser;
   }
 
-  var options = _assign$3(_assign$3({}, defaultOptions$3), opts);
+  var options = _assign$3(_assign$3({}, defaultOptions$2), opts);
 
   var transitionOptions = {
     forceDeactivate: options.forceDeactivate,
@@ -3997,6 +3212,22 @@ function browserPluginFactory(opts, browser) {
     }
   };
 
+  RouterService.setCurrentParams = function setCurrentParams(params) {
+    var router = this.router_;
+
+    if (router) {
+      try {
+        var route = this.route;
+
+        if (route) {
+          router.replaceHistoryState(route.name, params);
+        }
+      } catch (error) {
+        console.log('RouterService.setCurrentParams.error', error);
+      }
+    }
+  };
+
   RouterService.buildPath = function buildPath(route, params) {
     if (params === void 0) {
       params = null;
@@ -4016,6 +3247,26 @@ function browserPluginFactory(opts, browser) {
 
 
     return path;
+  };
+
+  RouterService.buildUrl = function buildUrl(routeName, routeParams) {
+    if (routeParams === void 0) {
+      routeParams = null;
+    }
+
+    var url = null;
+    var router = this.router_;
+
+    if (router) {
+      try {
+        url = router.buildUrl(routeName, routeParams);
+      } catch (error) {
+        console.log('RouterService.buildUrl.error', error);
+      }
+    } // console.log('RouterService.buildUrl', url, routeName, routeParams);
+
+
+    return url;
   };
 
   RouterService.isActive = function isActive(name, params, strictEquality, ignoreQueryParams) {
@@ -4047,6 +3298,19 @@ function browserPluginFactory(opts, browser) {
     get: function get() {
       return this.router_;
     }
+  }, {
+    key: "route",
+    get: function get() {
+      var route = null;
+      var router = this.router_;
+
+      if (router) {
+        route = router.getState();
+        console.log('RouterService.get.route', route);
+      }
+
+      return route;
+    }
   }]);
 
   return RouterService;
@@ -4054,7 +3318,419 @@ function browserPluginFactory(opts, browser) {
 
 _defineProperty(RouterService, "routes", []);
 
-_defineProperty(RouterService, "router_", null);var RouterOutletStructure = /*#__PURE__*/function (_Structure) {
+_defineProperty(RouterService, "router_", null);var StateService = /*#__PURE__*/function () {
+  function StateService() {}
+
+  StateService.patchState = function patchState(state) {
+    state = Object.assign({}, this.state, state);
+    this.state = state;
+  };
+
+  _createClass(StateService, null, [{
+    key: "state",
+    set: function set(state) {
+      this.state$.next(state);
+    },
+    get: function get() {
+      return this.state$.getValue();
+    }
+  }]);
+
+  return StateService;
+}();
+
+_defineProperty(StateService, "state$", new rxjs.BehaviorSubject({}));var RoleType = {
+  Publisher: 'publisher',
+  Attendee: 'attendee',
+  Streamer: 'streamer',
+  Viewer: 'viewer',
+  SmartDevice: 'smart-device',
+  SelfService: 'self-service',
+  Embed: 'embed'
+};
+var User = function User(options) {
+  if (options) {
+    Object.assign(this, options);
+  }
+};var MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
+var MeetingId = /*#__PURE__*/function () {
+  _createClass(MeetingId, [{
+    key: "roleIndex",
+    get: function get() {
+      return MeetingId.getRoleIndex(this.role);
+    },
+    set: function set(roleIndex) {
+      var roleIndex_ = MeetingId.getRoleIndex(this.role);
+
+      if (roleIndex_ !== roleIndex) {
+        var key = Object.keys(RoleType)[roleIndex];
+        this.role = RoleType[key];
+      }
+    }
+  }]);
+
+  function MeetingId(options) {
+    this.userId = StateService.state.user ? StateService.state.user.id : 0;
+    this.role = StateService.state.role || RoleType.Viewer;
+    this.timestamp = new Date().valueOf().toString();
+    this.pathId = null; // this.timestamp = (performance.now() * 10000000000000).toString();
+
+    if (typeof options === 'string') {
+      if (options.match(MEETING_ID_VALIDATOR)) {
+        options = MeetingId.decompose(options);
+      } else {
+        console.warn('MeetingId', 'invalid meetingId', options);
+        return null;
+      }
+    }
+
+    if (typeof options === 'object') {
+      if (options.id) {
+        this.id = options.id;
+      }
+
+      if (options.userId) {
+        this.userId = options.userId;
+      }
+
+      if (options.role) {
+        this.role = options.role;
+      }
+
+      if (options.roleIndex) {
+        this.roleIndex = options.roleIndex;
+      }
+
+      if (options.timestamp) {
+        this.timestamp = options.timestamp;
+      }
+
+      if (options.pathId) {
+        this.pathId = options.pathId;
+      }
+    }
+  }
+
+  var _proto = MeetingId.prototype;
+
+  _proto.toString = function toString() {
+    return MeetingId.compose(this.userId, this.roleIndex, this.timestamp, this.pathId);
+  };
+
+  _proto.toRoles = function toRoles() {
+    var userId = this.userId;
+    var timestamp = this.timestamp;
+    var pathId = this.pathId;
+    return {
+      id: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Publisher), timestamp, pathId),
+      idAttendee: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Attendee), timestamp, pathId),
+      idStreamer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Streamer), timestamp, pathId),
+      idViewer: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.Viewer), timestamp, pathId),
+      idSmartDevice: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SmartDevice), timestamp, pathId),
+      idSelfService: MeetingId.compose(userId, MeetingId.getRoleIndex(RoleType.SelfService), timestamp, pathId)
+    };
+  };
+
+  MeetingId.compose = function compose(userId, roleIndex, timestamp, pathId) {
+    return MeetingId.padded(userId, 9) + "-" + MeetingId.padded(roleIndex, 4) + "-" + timestamp + (pathId ? "-" + pathId : '');
+  };
+
+  MeetingId.decompose = function decompose(meetingId) {
+    var components = meetingId.split('-');
+    return {
+      userId: parseInt(components[0]),
+      roleIndex: parseInt(components[1]),
+      timestamp: parseInt(components[2]),
+      pathId: components[3] ? parseInt(components[3]) : null
+    };
+  };
+
+  MeetingId.generateMeetingId = function generateMeetingId() {
+    var meetingId = new MeetingId();
+    return meetingId.toRoles();
+  };
+
+  MeetingId.getRoleIndex = function getRoleIndex(role) {
+    return Object.keys(RoleType).reduce(function (p, c, i) {
+      return RoleType[c] === role ? i : p;
+    }, -1);
+  };
+
+  MeetingId.padded = function padded(num, size) {
+    var s = '000000000' + num;
+    return s.substr(s.length - size);
+  };
+
+  return MeetingId;
+}();var MeetingUrl = /*#__PURE__*/function () {
+  _createClass(MeetingUrl, [{
+    key: "meetingId",
+    get: function get() {
+      return this.link ? new MeetingId(this.link) : null;
+    }
+  }]);
+
+  function MeetingUrl(options) {
+    this.link = LocationService.get('link') || null;
+    this.name = LocationService.get('name') || null;
+    this.role = LocationService.get('role') || null;
+    this.viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
+    this.pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
+    this.embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
+    this.support = LocationService.has('support') ? LocationService.get('support') === 'true' : false;
+
+    if (typeof options === 'string') {
+      options = MeetingUrl.decompose(options);
+    }
+
+    if (typeof options === 'object') {
+      if (options.link) {
+        this.link = options.link;
+      }
+
+      if (options.user) {
+        var name = MeetingUrl.getName(options.user);
+
+        if (name) {
+          this.name = name;
+        }
+      }
+
+      if (options.name) {
+        this.name = options.name;
+      }
+
+      if (options.role) {
+        this.role = options.role;
+      }
+
+      if (options.viewId) {
+        this.viewId = options.viewId;
+      }
+
+      if (options.pathId) {
+        this.pathId = options.pathId;
+      }
+
+      if (options.embedViewId) {
+        this.embedViewId = options.embedViewId;
+      }
+
+      if (options.support) {
+        this.support = options.support;
+      }
+    }
+  }
+
+  var _proto = MeetingUrl.prototype;
+
+  _proto.toParams = function toParams(shareable) {
+    if (shareable === void 0) {
+      shareable = false;
+    }
+
+    var params = {};
+
+    if (this.link) {
+      params.link = this.link;
+    }
+
+    if (this.name) {
+      params.name = this.name;
+    }
+
+    if (this.role && !shareable) {
+      params.role = this.role;
+    }
+
+    if (this.viewId) {
+      params.viewId = this.viewId;
+    }
+
+    if (this.pathId) {
+      params.pathId = this.pathId;
+    }
+
+    if (this.support) {
+      params.support = this.support;
+    }
+
+    return params;
+  };
+
+  _proto.toString = function toString(shareable) {
+    if (shareable === void 0) {
+      shareable = false;
+    }
+
+    return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.pathId, this.support);
+  };
+
+  _proto.toUrl = function toUrl() {
+    var params = this.toParams();
+    return MeetingUrl.getCurrentUrl(params);
+  };
+
+  _proto.toAccessCodeUrl = function toAccessCodeUrl() {
+    var params = this.toParams();
+    return MeetingUrl.getAccessCodeUrl(params);
+  };
+
+  _proto.toGuidedTourUrl = function toGuidedTourUrl() {
+    var params = this.toParams();
+    return MeetingUrl.getGuidedTourUrl(params);
+  };
+
+  _proto.copyToClipBoard = function copyToClipBoard(asAccessCode) {
+    if (asAccessCode === void 0) {
+      asAccessCode = false;
+    }
+
+    var input = document.createElement('input');
+    input.style.position = 'absolute';
+    input.style.top = '1000vh'; // input.style.visibility = 'hidden';
+
+    document.querySelector('body').appendChild(input);
+    var params = this.toParams(true);
+    input.value = asAccessCode ? MeetingUrl.getAccessCodeUrl(params) : MeetingUrl.getGuidedTourUrl(params);
+    input.focus();
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    input.parentNode.removeChild(input);
+    alert("link copiato!\n " + input.value);
+  };
+
+  _proto.replaceUrl = function replaceUrl() {
+    RouterService.setCurrentParams(this.toParams());
+    /*
+    if ('history' in window) {
+    	const query = this.toString();
+    	const url = MeetingUrl.getCurrentUrl(query);
+    	window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
+    }
+    */
+  };
+
+  MeetingUrl.replaceWithUser = function replaceWithUser(user) {
+    var meetingUrl = new MeetingUrl({
+      user: user
+    });
+    meetingUrl.replaceUrl();
+    return meetingUrl;
+  };
+
+  MeetingUrl.replaceWithName = function replaceWithName(name) {
+    var meetingUrl = new MeetingUrl({
+      name: name
+    });
+    meetingUrl.replaceUrl();
+    return meetingUrl;
+  };
+
+  MeetingUrl.replaceWithLink = function replaceWithLink(link) {
+    var meetingUrl = new MeetingUrl({
+      link: link
+    });
+    meetingUrl.replaceUrl();
+    return meetingUrl;
+  };
+
+  MeetingUrl.getCurrentUrl = function getCurrentUrl(params) {
+    if (params === void 0) {
+      params = null;
+    }
+
+    var route = RouterService.route;
+
+    if (route) {
+      var routeName = route.name;
+      console.log('MeetingUrl.getCurrentUrl', routeName);
+      return RouterService.buildUrl(routeName, params);
+    }
+    /*
+    const url = `${window.location.origin}${window.location.pathname}${query}`;
+    return url;
+    */
+
+  };
+
+  MeetingUrl.getAccessCodeUrl = function getAccessCodeUrl(params) {
+    if (params === void 0) {
+      params = null;
+    }
+
+    var route = RouterService.route;
+
+    if (route) {
+      var routeName = route.params.lang + ".accessCode";
+      console.log('MeetingUrl.getAccessCodeUrl', routeName);
+      return RouterService.buildUrl(routeName, params);
+    }
+    /*
+    const url = `${window.location.origin}${environment.url.accessCode}${query}`;
+    return url;
+    */
+
+  };
+
+  MeetingUrl.getGuidedTourUrl = function getGuidedTourUrl(params) {
+    if (params === void 0) {
+      params = null;
+    }
+
+    var route = RouterService.route;
+
+    if (route) {
+      var routeName = route.params.lang + ".guidedTour";
+      console.log('MeetingUrl.getGuidedTourUrl', routeName);
+      return RouterService.buildUrl(routeName, params);
+    }
+    /*
+    const url = `${window.location.origin}${environment.url.guidedTour}${query}`;
+    return url;
+    */
+
+  };
+
+  MeetingUrl.getName = function getName(user) {
+    return user && user.firstName && user.lastName ? user.firstName + " " + user.lastName : null;
+  };
+
+  MeetingUrl.compose = function compose(link, name, role, viewId, pathId, support) {
+    var components = {
+      link: link,
+      name: name,
+      role: role,
+      viewId: viewId,
+      pathId: pathId,
+      support: support
+    };
+    components = Object.keys(components).map(function (key) {
+      return {
+        key: key,
+        value: components[key]
+      };
+    }).filter(function (x) {
+      return x.value != null && x.value !== false;
+    }).map(function (x) {
+      return x.key + "=" + x.value;
+    });
+    return "?" + components.join('&');
+  };
+
+  MeetingUrl.decompose = function decompose(url) {
+    var components = {};
+    url.split('?')[1].split('&').forEach(function (keyvalue) {
+      var key = keyvalue.split('=')[0];
+      var value = keyvalue.split('=')[1];
+      components[key] = value;
+    });
+    return components;
+  };
+
+  return MeetingUrl;
+}();var RouterOutletStructure = /*#__PURE__*/function (_Structure) {
   _inheritsLoose(RouterOutletStructure, _Structure);
 
   function RouterOutletStructure() {
@@ -4138,7 +3814,7 @@ _defineProperty(RouterService, "router_", null);var RouterOutletStructure = /*#_
         module = _getContext.module,
         node = _getContext.node;
 
-    if (this.factory_ !== factory) {
+    {
       this.factory_ = factory;
       return rxjs.of(factory).pipe(operators.tap(function () {
         if (_this3.element) {
@@ -4170,8 +3846,6 @@ _defineProperty(RouterService, "router_", null);var RouterOutletStructure = /*#_
           };
         }
       }));
-    } else {
-      return rxjs.EMPTY;
     }
   };
 
@@ -4327,7 +4001,445 @@ AccessCodeComponent.meta = {
   template:
   /* html */
   "\n\t\t<div class=\"page page--access-code\">\n\t\t\t" + CHUNK_BACKGROUND + "\n\t\t\t<!-- access-code -->\n\t\t\t<div class=\"ui ui--info ui--info-centered\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'access_code_title' | label\"></div>\n\t\t\t\t\t\t<div class=\"picture\">\n\t\t\t\t\t\t\t<canvas class=\"qrcode\"></canvas>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t" + CHUNK_LOGO + "\n\t\t\t" + CHUNK_CREDITS + "\n\t\t\t" + CHUNK_LANGUAGE + "\n\t\t</div>\n\t"
-};var ControlsComponent = /*#__PURE__*/function (_Component) {
+};var environmentServed = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere',
+  flags: {
+    production: true,
+    useProxy: false,
+    useToken: false,
+    selfService: true,
+    guidedTourRequest: true,
+    editor: false,
+    editorAssetScreen: false,
+    menu: true,
+    menuEmbed: false,
+    navmaps: false,
+    chat: false,
+    ar: true,
+    like: true,
+    hideNavInfo: true,
+    useIframe: true,
+    attendee: true,
+    streamer: true,
+    viewer: true,
+    smartDevice: true,
+    selfServiceProposition: false,
+    navInfoAnimated: false,
+    navInfoImportantAnimated: false,
+    navMoveAnimated: false,
+    navMoveImportantAnimated: false,
+    navPointAnimated: false,
+    navPointImportantAnimated: false,
+    navTitleAnimated: false,
+    navTitleImportantAnimated: false,
+    navTransparentAnimated: false,
+    navTransparentImportantAnimated: false,
+    useTextureEnvironment: true,
+    usePaths: false // maxQuality: false,
+
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
+  },
+  profiles: {
+    // streamer: "480p_1", // 640 x 480 x 15
+    streamer: "480p_2",
+    // 640 x 480 x 30
+    // streamer: "480p_3", // 480 x 480 x 15
+    // streamer: "480p_4", // 640 x 480 x 30
+    // streamer: "480p_6", // 480 x 480 x 30
+    // streamer: "480p_8", // 848, 480 x 15
+    // streamer: "480p_9", // 848, 480 x 30
+    // streamer: "480p_10", // 640 x 480 x 10
+    // streamer: "720p_1", // 1280 x 720 x 15
+    // streamer: "720p_2", // 1280 x 720 x 30
+    // streamer: "720p_3", // 1280 x 720 x 30
+    // streamer: "720p_5", // 960 x 720 x 15
+    // streamer: "720p_6", // 960 x 720 x 30
+    // streamer: "1080p_1", // 1920 x 1080 x 15
+    // streamer: "1080p_2", // 1920 x 1080 x 30
+    // streamer: "1080p_3", // 1920 x 1080 x 30
+    // streamer: "1080p_5", // 1920 x 1080 x 60
+    // publisher: "720p_2", // 1920 x 1080 x 30
+    publisher: "1080p_2",
+    // 1920 x 1080 x 30
+    // screen: "480p_1", // 640 × 480 x 5
+    // screen: "480p_2", // 640 × 480 x 30
+    // screen: "720p_1", // 1280 × 720 x 5
+    screen: "720p_2" // 1280 × 720 x 30
+    // screen: "1080p_1", // 1920 × 1080 x 5
+    // screen: "1080p_2", // 1920 × 1080 30
+
+  },
+  logo: null,
+  background: {
+    // image: '/Modules/B-Here/Client/docs/img/background.jpg',
+    video: '/Modules/B-Here/Client/docs/img/background.mp4'
+  },
+  selfServiceAudio: null,
+  // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
+  colors: {
+    menuBackground: '#000000',
+    menuForeground: '#ffffff',
+    menuOverBackground: '#0099ff',
+    menuOverForeground: '#ffffff',
+    menuBackBackground: '#0099ff',
+    menuBackForeground: '#000000',
+    menuBackOverBackground: '#0099ff',
+    menuBackOverForeground: '#ffffff'
+  },
+  editor: {
+    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
+    disabledViewItemTypes: ['texture']
+  },
+  assets: '/Modules/B-Here/Client/docs/',
+  workers: {
+    image: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
+    prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js'
+  },
+  textures: {
+    envMap: 'textures/envMap/studio_small_03_2k.hdr',
+    grid: 'textures/grid/grid.jpg'
+  },
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+  template: {
+    tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
+    modal: {
+      configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
+      controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
+      supportRequest: '/template/modules/b-here/support-request-modal.cshtml',
+      tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
+      view: {
+        'panorama': '/template/modules/b-here/panorama-modal.cshtml',
+        'panorama-grid': '/template/modules/b-here/panorama-grid-modal.cshtml',
+        'room-3d': '/template/modules/b-here/room-3d-modal.cshtml',
+        'model': '/template/modules/b-here/model-modal.cshtml',
+        'media': '/template/modules/b-here/media-modal.cshtml'
+      },
+      viewItem: {
+        'nav': '/template/modules/b-here/nav-modal.cshtml',
+        'plane': '/template/modules/b-here/plane-modal.cshtml',
+        'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
+        'texture': '/template/modules/b-here/texture-modal.cshtml',
+        'model': '/template/modules/b-here/item-model-modal.cshtml'
+      },
+      navmap: '/template/modules/b-here/navmap-modal.cshtml',
+      navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
+      pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
+      pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
+      remove: '/template/modules/b-here/remove-modal.cshtml'
+    },
+    email: {
+      supportRequest: '/template/modules/b-here/email/support-request.cshtml'
+    }
+  }
+};var environmentStatic = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere',
+
+  /*
+  webhook: {
+  	uris: ['internal'],
+  	methods: [
+  		'ToggleWishlist',
+  	],
+  },
+  */
+  flags: {
+    production: false,
+    useProxy: true,
+    useToken: false,
+    selfService: true,
+    guidedTourRequest: true,
+    editor: true,
+    editorAssetScreen: true,
+    menu: true,
+    menuEmbed: true,
+    navmaps: true,
+    chat: true,
+    ar: true,
+    like: true,
+    hideNavInfo: true,
+    useIframe: true,
+    attendee: true,
+    streamer: true,
+    viewer: true,
+    smartDevice: true,
+    selfServiceProposition: false,
+    navInfoAnimated: false,
+    navInfoImportantAnimated: false,
+    navMoveAnimated: true,
+    navMoveImportantAnimated: true,
+    navPointAnimated: false,
+    navPointImportantAnimated: false,
+    navTitleAnimated: false,
+    navTitleImportantAnimated: false,
+    navTransparentAnimated: true,
+    navTransparentImportantAnimated: true,
+    useTextureEnvironment: true,
+    usePaths: true // maxQuality: false,
+
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
+  },
+  profiles: {
+    // streamer: "480p_1", // 640 x 480 x 15
+    streamer: "480p_2",
+    // 640 x 480 x 30
+    // streamer: "480p_3", // 480 x 480 x 15
+    // streamer: "480p_4", // 640 x 480 x 30
+    // streamer: "480p_6", // 480 x 480 x 30
+    // streamer: "480p_8", // 848, 480 x 15
+    // streamer: "480p_9", // 848, 480 x 30
+    // streamer: "480p_10", // 640 x 480 x 10
+    // streamer: "720p_1", // 1280 x 720 x 15
+    // streamer: "720p_2", // 1280 x 720 x 30
+    // streamer: "720p_3", // 1280 x 720 x 30
+    // streamer: "720p_5", // 960 x 720 x 15
+    // streamer: "720p_6", // 960 x 720 x 30
+    // streamer: "1080p_1", // 1920 x 1080 x 15
+    // streamer: "1080p_2", // 1920 x 1080 x 30
+    // streamer: "1080p_3", // 1920 x 1080 x 30
+    // streamer: "1080p_5", // 1920 x 1080 x 60
+    // publisher: "720p_2", // 1920 x 1080 x 30
+    publisher: "1080p_2",
+    // 1920 x 1080 x 30
+    // screen: "480p_1", // 640 × 480 x 5
+    // screen: "480p_2", // 640 × 480 x 30
+    // screen: "720p_1", // 1280 × 720 x 5
+    // screen: "720p_2", // 1280 × 720 x 30
+    // screen: "1080p_1", // 1920 × 1080 x 5
+    screen: "1080p_2" // 1920 × 1080 30
+
+  },
+  logo: null,
+  background: {
+    // image: '/b-here/img/background.jpg',
+    video: '/b-here/img/background.mp4'
+  },
+  selfServiceAudio: null,
+  // '/b-here/audio/self-service.mp3',
+  colors: {
+    menuBackground: '#000000',
+    menuForeground: '#ffffff',
+    menuOverBackground: '#0099ff',
+    menuOverForeground: '#ffffff',
+    menuBackBackground: '#0099ff',
+    menuBackForeground: '#000000',
+    menuBackOverBackground: '#0099ff',
+    menuBackOverForeground: '#ffffff'
+  },
+  editor: {
+    disabledViewTypes: ['waiting-room'],
+    disabledViewItemTypes: ['texture']
+  },
+  assets: '/b-here/',
+  workers: {
+    image: './js/workers/image.service.worker.js',
+    prefetch: './js/workers/prefetch.service.worker.js'
+  },
+  textures: {
+    envMap: 'textures/envMap/studio_small_03_2k.hdr',
+    grid: 'textures/grid/grid.jpg'
+  },
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+  template: {
+    tryInAr: '/try-in-ar.html?viewId=$viewId',
+    modal: {
+      configureFirewall: '/configure-firewall-modal.html',
+      controlRequest: '/control-request-modal.html',
+      supportRequest: '/support-request-modal.html',
+      tryInAr: '/try-in-ar-modal.html',
+      view: {
+        'panorama': '/panorama-modal.html',
+        'panorama-grid': '/panorama-grid-modal.html',
+        'room-3d': '/room-3d-modal.html',
+        'model': '/model-modal.html',
+        'media': '/media-modal.html'
+      },
+      viewItem: {
+        'nav': '/nav-modal.html',
+        'plane': '/plane-modal.html',
+        'curved-plane': '/curved-plane-modal.html',
+        'texture': '/texture-modal.html',
+        'model': '/item-model-modal.html'
+      },
+      navmap: '/navmap-modal.html',
+      navmapItem: '/navmap-item-modal.html',
+      pathAdd: '/path-add-modal.html',
+      pathEdit: '/path-edit-modal.html',
+      remove: '/remove-modal.html'
+    },
+    email: {
+      supportRequest: '/email/support-request.html'
+    }
+  }
+};var Utils = /*#__PURE__*/function () {
+  function Utils() {}
+
+  Utils.merge = function merge(target, source) {
+    var _this = this;
+
+    if (source && typeof source === 'object') {
+      Object.keys(source).forEach(function (key) {
+        var value = source[key];
+
+        if (typeof value === 'object' && !Array.isArray(value)) {
+          target[key] = _this.merge(target[key], value);
+        } else {
+          target[key] = value;
+        }
+      });
+    }
+
+    return target;
+  };
+
+  return Utils;
+}();var NODE = typeof module !== 'undefined' && module.exports;
+var PARAMS = NODE ? {
+  get: function get() {}
+} : new URLSearchParams(window.location.search);
+var DEBUG =  PARAMS.get('debug') != null;
+var BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+var HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
+var STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
+var DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+var PRODUCTION = !DEVELOPMENT;
+var ENV = {
+  STATIC: STATIC,
+  DEVELOPMENT: DEVELOPMENT,
+  PRODUCTION: PRODUCTION
+};
+var Environment = /*#__PURE__*/function () {
+  var _proto = Environment.prototype;
+
+  _proto.getAbsoluteUrl = function getAbsoluteUrl(path, params) {
+    var url = "" + window.location.origin + path; // let url = `${window.location.protocol}//${window.location.host}${path}`;
+
+    Object.keys(params).forEach(function (key) {
+      url = url.replace("$" + key, params[key]);
+    });
+    return url;
+  };
+
+  _proto.getPath = function getPath(path) {
+    return this.isLocal(path) ? this.href + path : path;
+  };
+
+  _proto.isLocal = function isLocal(path) {
+    return path.indexOf('://') === -1;
+  };
+
+  _proto.merge = function merge(options) {
+    if (options) {
+      Utils.merge(this, options);
+    }
+  };
+
+  _createClass(Environment, [{
+    key: "STATIC",
+    get: function get() {
+      return ENV.STATIC;
+    },
+    set: function set(STATIC) {
+      ENV.STATIC = STATIC === true || STATIC === 'true';
+      console.log('Environment.STATIC.set', ENV.STATIC);
+    }
+  }, {
+    key: "href",
+    get: function get() {
+      if (HEROKU) {
+        return this.githubDocs;
+      } else {
+        return BASE_HREF;
+      }
+    }
+  }]);
+
+  function Environment(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  return Environment;
+}();
+var defaultOptions$3 = {
+  port: 5000,
+  // fontFamily: 'GT Walsheim, sans-serif',
+  fontFamily: 'Work Sans, sans-serif',
+  colors: {
+    menuBackground: '#000000',
+    menuForeground: '#ffffff',
+    menuOverBackground: '#0099ff',
+    menuOverForeground: '#ffffff',
+    menuBackBackground: '#0099ff',
+    menuBackForeground: '#000000',
+    menuBackOverBackground: '#0099ff',
+    menuBackOverForeground: '#ffffff'
+  },
+  editor: {
+    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
+    disabledViewItemTypes: ['texture']
+  },
+  renderOrder: {
+    panorama: 0,
+    room: 10,
+    plane: 20,
+    tile: 30,
+    model: 40,
+    banner: 50,
+    nav: 60,
+    panel: 70,
+    menu: 80,
+    debug: 90,
+    pointer: 100
+  }
+};
+var defaultAppOptions = {
+  channelName: 'BHere',
+  flags: {
+    production: false,
+    useProxy: false,
+    useToken: false,
+    selfService: true,
+    guidedTourRequest: true,
+    editor: true,
+    menu: true,
+    navmaps: true,
+    chat: true,
+    ar: true,
+    like: true,
+    hideNavInfo: true,
+    attendee: true,
+    streamer: true,
+    viewer: true,
+    smartDevice: true,
+    selfServiceProposition: true,
+    // maxQuality: false,
+    heroku: HEROKU
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
+  },
+  url: {},
+  languages: ['it', 'en'],
+  defaultLanguage: 'it',
+  labels: {},
+  data: {},
+  fields: []
+};
+var environmentOptions = window.STATIC ? environmentStatic : environmentServed;
+var options = Object.assign(defaultOptions$3, defaultAppOptions, environmentOptions);
+options = Utils.merge(options, window.bhere);
+var environment = new Environment(options);
+console.log('environment', environment);var ControlsComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(ControlsComponent, _Component);
 
   function ControlsComponent() {
@@ -4453,23 +4565,21 @@ LabelPipe.meta = {
 
   LanguageService.setAlternates = function setAlternates(language, alternates) {
     this.languages = alternates;
-    this.selectedLanguage = language;
-    console.log('LanguageService.setAlternates', language, alternates);
+    this.selectedLanguage = language; // console.log('LanguageService.setAlternates', language, alternates);
   };
 
   LanguageService.setRoute = function setRoute(route, routes) {
-    var language = route.params.lang;
-    console.log('LanguageService.setRoute', route, route.path, language);
+    var language = route.params.lang; // console.log('LanguageService.setRoute', route, route.path, language);
+
     var alternates = environment.languages.map(function (lang) {
       var title = lang === 'it' ? 'Italiano' : 'English';
       var alternateName = route.name.replace(new RegExp("(^" + language + "$)|(^" + language + ".)"), function (match, g1, g2, offset) {
-        console.log('LanguageService.match', match, g1, g2, offset);
+        // console.log('LanguageService.match', match, g1, g2, offset);
         return g1 ? lang : lang + ".";
       });
       var alternate = routes.find(function (x) {
         return x.name === alternateName;
-      });
-      console.log('LanguageService.alternate', lang, alternateName, alternate);
+      }); // console.log('LanguageService.alternate', lang, alternateName, alternate);
 
       if (alternate) {
         return {
@@ -5262,8 +5372,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
 
   _proto.onGuidedTourAccess = function onGuidedTourAccess() {
     UserService.logout$().pipe(operators.first()).subscribe(function () {
-      RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour')); // RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
-      // window.location.href = environment.url.guidedTour;
+      RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
     });
   };
 
@@ -5438,13 +5547,11 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
             break;
 
           case 'self-service-tour':
-            RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour')); // window.location.href = environment.url.selfServiceTour;
-
+            RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
             break;
 
           case 'login':
-            RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour')); // window.location.href = environment.url.guidedTour;
-
+            RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
             break;
         }
 
@@ -8230,7 +8337,7 @@ var AgoraChatComponent = /*#__PURE__*/function (_Component) {
 
     this.rows = 1;
     this.showEmoji = false;
-    this.demo = window.location.pathname.indexOf('b-here-layout.html') !== -1;
+    this.demo = window.location.pathname.indexOf('layout') !== -1;
     var form = this.form = new rxcompForm.FormGroup({
       message: null
     });
@@ -10132,23 +10239,7 @@ var PathService = /*#__PURE__*/function () {
 
 _defineProperty(PathService, "paths$", new rxjs.BehaviorSubject([DEFAULT_PATH]));
 
-_defineProperty(PathService, "path$", new rxjs.BehaviorSubject(DEFAULT_PATH));var SlugPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(SlugPipe, _Pipe);
-
-  function SlugPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  SlugPipe.transform = function transform(key) {
-    var url = environment.url;
-    return url[key] || "#" + key;
-  };
-
-  return SlugPipe;
-}(rxcomp.Pipe);
-SlugPipe.meta = {
-  name: 'slug'
-};var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
+_defineProperty(PathService, "path$", new rxjs.BehaviorSubject(DEFAULT_PATH));var AgoraLinkComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLinkComponent, _Component);
 
   function AgoraLinkComponent() {
@@ -10287,10 +10378,18 @@ SlugPipe.meta = {
   };
 
   _createClass(AgoraLinkComponent, [{
-    key: "selfServiceTourUrl",
+    key: "selfServiceTourRoute",
     get: function get() {
       var pathId = this.form.get('path').value;
-      return "" + SlugPipe.transform('selfServiceTour') + (pathId ? "?pathId=" + pathId : '');
+      var route = [RoutePipe.transform(':lang.selfServiceTour')];
+
+      if (pathId) {
+        route.push({
+          pathId: pathId
+        });
+      }
+
+      return route;
     }
   }]);
 
@@ -10301,7 +10400,7 @@ AgoraLinkComponent.meta = {
   outputs: ['link'],
   template:
   /* html */
-  "\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<!-- PATH -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.path\" [label]=\"'bhere_path' | label\" *if=\"('usePaths' | flag) && paths.length\"></div>\n\t\t\t\t\t<!--IDS -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<a [href]=\"selfServiceTourUrl\" class=\"btn--secondary\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_self_service' | label\"></span>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<a [routerLink]=\"':lang.editor' | route\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
+  "\n\t<div class=\"group--info\" *if=\"form\">\n\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onNext($event)\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t<div class=\"group--info__content stagger--childs\">\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role !== 'publisher'\">\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_insert_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"stagger--childs\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<!-- PATH -->\n\t\t\t\t\t<div control-custom-select [control]=\"controls.path\" [label]=\"'bhere_path' | label\" *if=\"('usePaths' | flag) && paths.length\"></div>\n\t\t\t\t\t<!--IDS -->\n\t\t\t\t\t<div class=\"group--form group--form--addon\" [class]=\"{ required: controls.id.validators.length, 'addon': controls.id.valid }\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_insert_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.id\" [placeholder]=\"'bhere_meeting_id' | label\" (change)=\"onInputDidChange($event)\" />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.id.value)\" *if=\"controls.id.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('attendee' | flag) && controls.idAttendee.valid && controls.idAttendee.value !== null\">\n\t\t\t\t\t\t<label><svg class=\"lock\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#lock\"></use></svg> <span [innerHTML]=\"'bhere_attendee_meeting_id' | label\"></span></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idAttendee\" [placeholder]=\"'bhere_attendee_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idAttendee.value)\" *if=\"controls.idAttendee.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('streamer' | flag) && controls.idStreamer.valid && controls.idStreamer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_streamer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idStreamer\" [placeholder]=\"'bhere_streamer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idStreamer.value)\" *if=\"controls.idStreamer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('viewer' | flag) && controls.idViewer.valid && controls.idViewer.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_viewer_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idViewer\" [placeholder]=\"'bhere_viewer_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idViewer.value)\" *if=\"controls.idViewer.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--form group--form--addon addon\" *if=\"('smartDevice' | flag) && controls.idSmartDevice.valid && controls.idSmartDevice.value !== null\">\n\t\t\t\t\t\t<label [innerHTML]=\"'bhere_smart_device_meeting_id' | label\"></label>\n\t\t\t\t\t\t<input type=\"text\" class=\"control--text\" [formControl]=\"controls.idSmartDevice\" [placeholder]=\"'bhere_smart_device_meeting_id' | label\" readonly />\n\t\t\t\t\t\t<div class=\"control--addon\" (click)=\"onCopyToClipBoard(controls.idSmartDevice.value, true)\" *if=\"controls.idSmartDevice.valid\">\n\t\t\t\t\t\t\t<svg class=\"copy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#copy\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.required\" [innerHTML]=\"'bhere_insert_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"controls.id.errors.pattern\" [innerHTML]=\"'bhere_invalid_meeting_id' | label\"></div>\n\t\t\t\t<div class=\"info\" *if=\"isValid()\" [innerHTML]=\"'bhere_take_part_meeting' | label\"></div>\n\t\t\t\t<button type=\"button\" class=\"btn--generate\" *if=\"state.role == 'publisher'\" (click)=\"onGenerateMeetingId($event)\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_generate_meeting_id' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"submit\" class=\"btn--next\" [class]=\"{ disabled: !isValid() }\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_take_part' | label\"></span>\n\t\t\t\t</button>\n\t\t\t\t<a [routerLink]=\"selfServiceTourRoute\" class=\"btn--secondary\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t<span [innerHTML]=\"'bhere_self_service' | label\"></span>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t<a [routerLink]=\"':lang.editor' | route\" class=\"btn--absolute\" *if=\"('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'\">\n\t\t<span [innerHTML]=\"'bhere_editor' | label\"></span> <svg class=\"edit\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t</a>\n\t"
 };var AgoraLoginComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AgoraLoginComponent, _Component);
 
@@ -21032,8 +21131,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
         this.objects.add(this.panorama.mesh);
         this.ambient.visible = true;
         this.direct.visible = true;
-      } // this.loading = LOADING_BANNER;
-      // this.waiting = null;
+      } // this.waiting = null;
 
 
       this.pushChanges();
@@ -21048,8 +21146,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
 
         view.onUpdateAsset = function () {
           _this4.onViewAssetDidChange();
-        }; // this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
-
+        };
 
         var context = rxcomp.getContext(_this4); // console.log('WorldCompoent.setView.context', context);
 
@@ -21947,8 +22044,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
     var _this8 = this;
 
     // console.log('WorldComponent.onGridMove', event, this.view);
-    this.view.items = []; // this.loading = LOADING_BANNER;
-
+    this.view.items = [];
     this.pushChanges();
     this.orbitService.walk(event.position, function (headingLongitude, headingLatitude) {
       var tile = _this8.view.getTile(event.indices.x, event.indices.y);
@@ -23337,13 +23433,14 @@ ModelNavComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    console.log('onInit');
+    console.log('AgoraComponent.onInit', this.host);
 
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;
 
     node.classList.remove('hidden');
     this.platform = DeviceService.platform;
+    this.route = this.host ? this.host.route : null;
     this.state = {};
     this.hosted = null;
     this.view = null;
@@ -23369,9 +23466,9 @@ ModelNavComponent.meta = {
   };
 
   _proto.getLinkRole = function getLinkRole() {
-    var linkRole = null; // console.log('getLinkRole', window.location, environment.url.selfServiceTour);
+    var linkRole = null;
 
-    if (window.location.pathname === environment.url.selfServiceTour) {
+    if (this.isSelfServiceTour) {
       linkRole = RoleType.SelfService;
       return linkRole;
     }
@@ -23403,6 +23500,10 @@ ModelNavComponent.meta = {
       UserService.temporaryUser$(RoleType.Embed).pipe(operators.first()).subscribe(function (user) {
         _this2.initWithUser(user);
       });
+    } else if (this.isSelfServiceTour) {
+      UserService.temporaryUser$(RoleType.SelfService).pipe(operators.first()).subscribe(function (user) {
+        _this2.initWithUser(user);
+      });
     } else {
       UserService.me$().pipe(operators.first()).subscribe(function (user) {
         _this2.initWithUser(user); // this.userGuard(user);
@@ -23412,6 +23513,7 @@ ModelNavComponent.meta = {
   };
 
   _proto.userGuard = function userGuard(user) {
+    console.log('AgoraComponent.userGuard', user);
     var linkRole = this.getLinkRole();
 
     if (user && (!linkRole || user.type === linkRole)) {
@@ -23424,12 +23526,13 @@ ModelNavComponent.meta = {
   };
 
   _proto.userGuardRedirect = function userGuardRedirect(user) {
+    console.log('AgoraComponent.userGuardRedirect', user);
     var linkRole = this.getLinkRole();
 
     if (user && (!linkRole || linkRole === user.type)) {
       this.initWithUser(user);
     } else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
-      RouterService.setRouterLink(RoutePipe.transform(':lang.access')); // window.location.href = environment.url.access;
+      RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
     } else {
       this.initWithUser({
         type: linkRole
@@ -23469,7 +23572,7 @@ ModelNavComponent.meta = {
     var pathId = LocationService.get('pathId') || null;
 
     if (pathId) {
-      console.log('AgoraComponent.getPathId', pathId);
+      // console.log('AgoraComponent.getPathId', pathId);
       return parseInt(pathId);
     }
 
@@ -23478,18 +23581,18 @@ ModelNavComponent.meta = {
     if (link) {
       var meetingId = new MeetingId(link);
       pathId = meetingId.pathId;
-    }
+    } // console.log('AgoraComponent.getPathId', pathId);
 
-    console.log('AgoraComponent.getPathId', pathId);
+
     return pathId;
   };
 
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
-    // console.log('initWithUser', user);
-    // const meetingUrl = this.meetingUrl;
+    console.log('AgoraComponent.initWithUser', user); // const meetingUrl = this.meetingUrl;
     // const link = meetingUrl.link;
+
     var link = LocationService.get('link') || null;
     var pathId = this.getPathId();
     var role = this.getLinkRole() || (user ? user.type : null);
@@ -23497,8 +23600,7 @@ ModelNavComponent.meta = {
     switch (role) {
       case RoleType.SelfService:
         if (!user || user.type !== RoleType.SelfService && user.type !== RoleType.Publisher) {
-          RouterService.setRouterLink(RoutePipe.transform(':lang.access')); // window.location.href = environment.url.access;
-
+          RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
           return;
         } else {
           // forcing role type to RoleType.SelfService
@@ -24475,8 +24577,16 @@ ModelNavComponent.meta = {
   }, {
     key: "isEmbed",
     get: function get() {
-      var isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
-      return isEmbed;
+      if (this.route) {
+        return this.route.params.mode === 'embed';
+      }
+    }
+  }, {
+    key: "isSelfServiceTour",
+    get: function get() {
+      if (this.route) {
+        return this.route.params.mode === 'selfServiceTour';
+      }
     }
   }, {
     key: "isNavigable",
@@ -26231,7 +26341,7 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
 
         _this2.initState();
       } else {
-        RouterService.setRouterLink(RoutePipe.transform(':lang.access')); // window.location.href = environment.url.access;
+        RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
       }
     });
   };
@@ -26402,22 +26512,6 @@ var EditorComponent = /*#__PURE__*/function (_Component) {
       data: this.view
     }).pipe(operators.first()).subscribe(function (event) {// this.pushChanges();
     });
-  };
-
-  _proto.replaceUrl = function replaceUrl() {
-    if ('history' in window) {
-      var params = new URLSearchParams(window.location.search);
-      var debug = params.get('debug') || null;
-      var editor = params.get('editor') || null;
-      var role = params.get('role') || null;
-      var link = params.get('link') || null;
-      var name = params.get('name') || null;
-      var url = "" + window.location.origin + window.location.pathname + "?link=" + link + (name ? "&name=" + name : '') + (role ? "&role=" + role : '') + (debug ? "&debug" : '') + (editor ? "&editor" : ''); // console.log('AgoraNameComponent.url', url);
-
-      window.history.replaceState({
-        'pageTitle': window.pageTitle
-      }, '', url);
-    }
   };
 
   _proto.onToggleAside = function onToggleAside() {
@@ -26793,6 +26887,397 @@ EditorComponent.meta = {
   template:
   /* html */
   "\n\t<div class=\"page page--editor\">\n\t\t<div class=\"ui\" [class]=\"{ open: aside }\" *if=\"dataViews.length\">\n\t\t\t<div class=\"ui__navbar\">\n\t\t\t\t<div class=\"btn--settings\" [class]=\"{ active: settings.active }\" (click)=\"onToggleSettings($event)\" *if=\"settings.menu.length > 0\">\n\t\t\t\t\t<svg class=\"settings\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#settings-full\"></use></svg>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"headline\" *if=\"view\">\n\t\t\t\t\t<div class=\"headline__id\" [innerHTML]=\"view.id\"></div>\n\t\t\t\t\t<div class=\"headline__icon\">\n\t\t\t\t\t\t<svg-icon [name]=\"view.type.name\"></svg-icon>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"headline__name\" [innerHTML]=\"view.name\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--path\" *if=\"('usePaths' | flag) && path\">\n\t\t\t\t\t<div class=\"group--path__select\">\n\t\t\t\t\t\t<div class=\"group--form--select\" [dropdown]=\"'path'\">\n\t\t\t\t\t\t\t<label>Percorso</label>\n\t\t\t\t\t\t\t<span class=\"control--custom-select\" [innerHTML]=\"path.name\"></span>\n\t\t\t\t\t\t\t<svg class=\"icon--caret-down\"><use xlink:href=\"#caret-down\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dropdown dropdown-item\" [dropdown-item]=\"'path'\">\n\t\t\t\t\t\t\t<div class=\"category\">Percorso</div>\n\t\t\t\t\t\t\t<ul class=\"nav--dropdown\">\n\t\t\t\t\t\t\t\t<li [class]=\"{ active: isPathSelected(item) }\" *for=\"let item of paths\">\n\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"item.name\" (click)=\"onSelectPath(item)\"></span>\n\t\t\t\t\t\t\t\t\t<div class=\"check\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#check\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--flags\" (click)=\"onEditPath(item)\" title=\"Edit\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#flags\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--duplicate\" (click)=\"onDuplicatePath(item)\" title=\"Duplicate\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#duplicate\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"btn--trash\" (click)=\"onDeletePath(item)\" title=\"Delete\" *if=\"item.id\">\n\t\t\t\t\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#trash\"></use></svg>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onAddPath()\">Aggiungi un percorso</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"btn--edit\" [class]=\"{ active: aside }\" (click)=\"onToggleAside($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#edit\"></use></svg>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\" world [view]=\"view\" [views]=\"pathViews\" [editor]=\"true\" (navTo)=\"onNavTo($event)\" (viewHit)=\"onViewHit($event)\" (dragEnd)=\"onDragEnd($event)\" (select)=\"onWorldSelect($event)\">\n\t\t\t\t\t<div class=\"world__view\" *if=\"view\">\n\t\t\t\t\t\t<div class=\"grid\" model-grid *if=\"view.type.name === 'panorama-grid'\" [view]=\"view\" (move)=\"onGridMove($event)\" (nav)=\"onGridNav($event)\"></div>\n\t\t\t\t\t\t<div *if=\"view.ready\">\n\t\t\t\t\t\t\t<div model-room [view]=\"view\" *if=\"view.type.name === 'room-3d'\"></div>\n\t\t\t\t\t\t\t<div class=\"world__item\" *for=\"let item of view.pathItems; let index = index;\">\n\t\t\t\t\t\t\t\t<div model-nav [item]=\"item\" [view]=\"view\" [editor]=\"true\" (over)=\"onNavOver($event)\" (out)=\"onNavOut($event)\" (down)=\"onNavDown($event)\" *if=\"item.type.name == 'nav'\"></div>\n\t\t\t\t\t\t\t\t<div model-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'plane'\"></div>\n\t\t\t\t\t\t\t\t<div model-curved-plane [item]=\"item\" [view]=\"view\" (zoom)=\"onZoomMedia($event)\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'curved-plane'\"></div>\n\t\t\t\t\t\t\t\t<div class=\"model-viewer__item\" model-model [item]=\"item\" [view]=\"view\" (down)=\"onObjectDown($event)\" *if=\"item.type.name == 'model'\">\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"banner loading\" model-banner [item]=\"progress\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t\t<!-- <div class=\"progress\" [innerHTML]=\"progress.title\" *if=\"progress\"></div> -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"panel\" [class]=\"{ 'panel--lg': item.asset != null }\" model-panel [item]=\"item\" (down)=\"onPanelDown($event)\" *if=\"item.showPanel\">\n\t\t\t\t\t\t\t\t\t<div class=\"panel__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t<div class=\"panel__abstract\" [innerHTML]=\"item.abstract\"></div>\n\t\t\t\t\t\t\t\t\t<img class=\"panel__picture\" [src]=\"item.asset | asset\" *if=\"item.asset\">\n\t\t\t\t\t\t\t\t\t<a class=\"panel__link\" [href]=\"item.link.href\" target=\"_blank\" rel=\"noopener\" *if=\"item.link\" [innerHTML]=\"item.link.title\"></a>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!--\n\t\t\t\t\t\t<div class=\"banner loading\" model-banner [item]=\"loading\" *if=\"loading\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"banner waiting\" model-banner [item]=\"waiting\" *if=\"waiting\">\n\t\t\t\t\t\t\t<div class=\"banner__title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t-->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"progress-indicator\" model-progress [view]=\"view\">\n\t\t\t\t\t\t<div class=\"inner\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-menu [views]=\"views\" [editor]=\"true\" (nav)=\"onMenuNav($event)\" (toggle)=\"onMenuToggle($event)\">\n\t\t\t\t\t\t<div class=\"btn--menu\" (mousedown)=\"onToggle($event)\">\n\t\t\t\t\t\t\t<div class=\"btn--menu__spinner\"></div>\n\t\t\t\t\t\t\t<svg class=\"bullets\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#menu\"></use></svg>\n\t\t\t\t\t\t\t<svg class=\"progress\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\">\n\t\t\t\t\t\t\t\t<circle id=\"circle\" r=\"23\" cx=\"25\" cy=\"25\" fill=\"transparent\"></circle>\n\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div model-debug *if=\"debugging\"></div>\n\t\t\t\t\t<div class=\"world__info\" *if=\"error\" [innerHTML]=\"error\"></div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- footer -->\n\t\t\t<div class=\"group--footer\">\n\t\t\t\t<div class=\"group--ar-vr\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--ar\" [href]=\"view?.ar\" (click)=\"tryInAr()\" *if=\"view?.ar\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#ar\"></use></svg> <span>Try in AR</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--vr\" [class]=\"{ disabled: vrService.isDisabled() }\" (click)=\"vrService.toggleVR()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#vr\"></use></svg> <span [innerHTML]=\"vrService.getLabel()\"></span>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui__settings\" *if=\"settings.active\">\n\t\t\t\t<!-- settings navs -->\n\t\t\t\t<div class=\"group--nav\">\n\t\t\t\t\t<ul class=\"nav--menu\">\n\t\t\t\t\t\t<li class=\"nav__item\" *for=\"let item of settings.menu\" [class]=\"{ active: settings.current === item.id }\" (click)=\"onSelectSetting(item)\"><span class=\"title\" [innerHTML]=\"item.title | label\"></span></li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<!-- menu -->\n\t\t\t\t<div class=\"group--content\" menu-builder [views]=\"dataViews\" *if=\"settings.current === 'menu'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_menu' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<div class=\"nav--tree\" *if=\"form\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"isValid() && onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"controls.items.controls.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t\t<div *for=\"let control of controls.items.controls\">\n\t\t\t\t\t\t\t\t\t<div control-menu [control]=\"control\" (remove)=\"onRemoveControl($event)\" (link)=\"onLinkControl($event)\" (up)=\"onUpControl($event)\" (down)=\"onDownControl($event)\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAddItem($event)\" [innerHTML]=\"'editor_add' | label\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"isValid() && onSubmit()\" *if=\"changes > 1\" [innerHTML]=\"'editor_save' | label\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<!-- navmaps -->\n\t\t\t\t<div class=\"group--content\" navmap-builder [views]=\"dataViews\" *if=\"settings.current === 'navmaps'\">\n\t\t\t\t\t<div class=\"group--head\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_navmaps' | label\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--main\">\n\t\t\t\t\t\t<!-- listing navmaps -->\n\t\t\t\t\t\t<div class=\"listing--navmaps\" *if=\"!navmap\">\n\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"navmaps.length == 0\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t\t\t<div class=\"listing__item\" *for=\"let item of navmaps\">\n\t\t\t\t\t\t\t\t<div class=\"card--navmap\" (click)=\"onSet(item)\">\n\t\t\t\t\t\t\t\t\t<div class=\"card__picture\">\n\t\t\t\t\t\t\t\t\t\t<img [src]=\"item.asset | asset\" *if=\"item.asset\" />\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"card__content\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"card__name\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<!-- navmap edit -->\n\t\t\t\t\t\t<div class=\"navmap\" navmap-edit [navmap]=\"navmap\" (delete)=\"onDelete($event)\" *if=\"navmap\">\n\t\t\t\t\t\t\t<form class=\"form\" [formGroup]=\"form\" (submit)=\"onSubmit()\" name=\"form\" role=\"form\" novalidate autocomplete=\"off\">\n\t\t\t\t\t\t\t\t<div class=\"title\"><span [innerHTML]=\"navmap.name\"></span> <span [innerHTML]=\"navmap.id\"></span></div>\n\t\t\t\t\t\t\t\t<div class=\"form-controls\">\n\t\t\t\t\t\t\t\t\t<div control-text [control]=\"controls.name\" label=\"Name\"></div>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<div control-asset [control]=\"controls.asset\" label=\"Image\" accept=\"image/png\"></div>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"group--cta\">\n\t\t\t\t\t\t\t\t\t<button type=\"submit\" class=\"btn--accept\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_save' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t\t<button type=\"button\" class=\"btn--remove\" (click)=\"onRemove($event)\">\n\t\t\t\t\t\t\t\t\t\t<span [innerHTML]=\"'editor_remove' | label\"></span>\n\t\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div class=\"navmap-control\" [class]=\"mode\">\n\t\t\t\t\t\t\t\t\t<div class=\"navmap-control__image\">\n\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"navmap.asset | asset\" *if=\"navmap.asset\" />\n\t\t\t\t\t\t\t\t\t\t<div class=\"navmap__item\" [style]=\"{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }\" (mousedown)=\"onMoveItem($event, item)\" (click)=\"onRemoveItem(item)\" *for=\"let item of navmap.items\">\n\t\t\t\t\t\t\t\t\t\t\t<img draggable=\"false\" [src]=\"'textures/ui/nav-point.png' | asset\" />\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.title\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<ul class=\"navmap-control__toolbar\">\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'insert' }\" (click)=\"onToggleMode('insert')\"><svg class=\"pencil\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#pencil\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'move' }\" (click)=\"onToggleMode('move')\"><svg class=\"move\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#move\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t\t<li class=\"nav__item\"><span [class]=\"{ active: mode === 'remove' }\" (click)=\"onToggleMode('remove')\"><svg class=\"erase\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#erase\"></use></svg></span></li>\n\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"group--foot\">\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onAdd($event)\" [innerHTML]=\"'editor_add' | label\" *if=\"!navmap\"></button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--mode\" (click)=\"onBack($event)\" [innerHTML]=\"'editor_back' | label\" *if=\"navmap\"></button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"aside\" [class]=\"{ active: aside }\" aside [view]=\"view\" (select)=\"onAsideSelect($event)\" (update)=\"onAsideUpdate($event)\" (delete)=\"onAsideDelete($event)\" *if=\"view && aside\">\n\t\t\t<div class=\"headline\">\n\t\t\t\t<ul class=\"nav--tab\">\n\t\t\t\t\t<li [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></li>\n\t\t\t\t\t<li [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></li>\n\t\t\t\t</ul>\n\t\t\t\t<!--\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 1 }\" (click)=\"setMode(1)\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 2 }\" (click)=\"setMode(2)\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t<div class=\"btn--mode\" [class]=\"{ active: mode === 3 }\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t-->\n\t\t\t</div>\n\t\t\t<div class=\"scrollable\">\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 1\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_properties' | label\"></div>\n\t\t\t\t\t\t<update-view [view]=\"view\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name != 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_items' | label\"></div>\n\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of view.pathItems\"></update-view-item>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.pathItems.length == 0\" [innerHTML]=\"'editor_no_items' | label\"></div>\n\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"setMode(3)\" [innerHTML]=\"'editor_add_item' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li *if=\"view.type.name == 'panorama-grid'\">\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_tiles' | label\"></div>\n\t\t\t\t\t\t<div *for=\"let tile of view.tiles\">\n\t\t\t\t\t\t\t<div *if=\"tile.selected\">\n\t\t\t\t\t\t\t\t<update-view-tile [view]=\"view\" [tile]=\"tile\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\"></update-view-tile>\n\t\t\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<update-view-item [view]=\"view\" [item]=\"item\" (select)=\"onSelect($event)\" (update)=\"onUpdate($event)\" (delete)=\"onDelete($event)\" *for=\"let item of tile.navs\"></update-view-item>\n\t\t\t\t\t\t\t\t\t\t<div class=\"abstract\" *if=\"tile.navs.length == 0\" [innerHTML]=\"'editor_no_navs' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn--mode\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t<!--\n\t\t\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect({ type:'viewItem', value: 'nav', tile: tile })\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t\t\t<svg-icon name=\"nav\"></svg-icon>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_add_nav' | label\"></div>\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t\t\t-->\n\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"view.tiles.length == 0\" [innerHTML]=\"'editor_no_tiles' | label\"></div>\n\t\t\t\t\t\t<!-- <div class=\"btn--mode\" (click)=\"setMode(3)\">Add Tile</div> -->\n\t\t\t\t\t</li>\n\t\t\t\t\t<!--\n\t\t\t\t\t<li *if=\"false\">\n\t\t\t\t\t\t<div class=\"title\">Icons</div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('animated-tabs')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 2 8.4 L 12 8.4 L 12 2 L 6 2 C 3.791 2 2 3.791 2 6 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 8.4 L 22 8.4 L 22 6 C 22 3.791 20.209 2 18 2 L 12 2 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Animated Tabs</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 13.6 C 6.8 13.158 7.158 12.8 7.6 12.8 L 16.8 12.8 C 17.242 12.8 17.6 13.158 17.6 13.6 L 17.6 16.8 C 17.6 17.242 17.242 17.6 16.8 17.6 L 7.6 17.6 C 7.158 17.6 6.8 17.242 6.8 16.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 6.8 7.2 C 6.8 6.758 7.158 6.4 7.6 6.4 L 16.8 6.4 C 17.242 6.4 17.6 6.758 17.6 7.2 L 17.6 10.4 C 17.6 10.842 17.242 11.2 16.8 11.2 L 7.6 11.2 C 7.158 11.2 6.8 10.842 6.8 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('container-transitions')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13 C 17.139 13 18.333 14.194 18.333 15.667 C 18.333 17.139 17.139 18.333 15.667 18.333 C 14.194 18.333 13 17.139 13 15.667 C 13 14.194 14.194 13 15.667 13 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Container Transitions</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-grid')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><g transform=\"translate(6.6 6.6)\"><path d=\"M 6.048 0.8 C 6.048 0.358 6.406 0 6.848 0 L 10 0 C 10.442 0 10.8 0.358 10.8 0.8 L 10.8 3.952 C 10.8 4.394 10.442 4.752 10 4.752 L 6.848 4.752 C 6.406 4.752 6.048 4.394 6.048 3.952 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path><path d=\"M 6.048 6.848 C 6.048 6.406 6.406 6.048 6.848 6.048 L 10 6.048 C 10.442 6.048 10.8 6.406 10.8 6.848 L 10.8 10 C 10.8 10.442 10.442 10.8 10 10.8 L 6.848 10.8 C 6.406 10.8 6.048 10.442 6.048 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 0.8 C 0 0.358 0.358 0 0.8 0 L 3.952 0 C 4.394 0 4.752 0.358 4.752 0.8 L 4.752 3.952 C 4.752 4.394 4.394 4.752 3.952 4.752 L 0.8 4.752 C 0.358 4.752 0 4.394 0 3.952 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 0 6.848 C 0 6.406 0.358 6.048 0.8 6.048 L 3.952 6.048 C 4.394 6.048 4.752 6.406 4.752 6.848 L 4.752 10 C 4.752 10.442 4.394 10.8 3.952 10.8 L 0.8 10.8 C 0.358 10.8 0 10.442 0 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.5\"></path></g></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Grid</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('expand-on-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 7.833 0\" transform=\"translate(8.583 11.583) rotate(270 3.917 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 9.333 L 12 6.667 L 9.333 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 14.667 14.667 L 12 17.333 L 9.333 14.667\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"1.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> </svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Expand on Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-gallery-2')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 10.333 7.333 C 10.886 7.333 11.333 7.781 11.333 8.333 L 11.333 10.333 C 11.333 10.886 10.886 11.333 10.333 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.333 8.333 C 12.333 7.781 12.781 7.333 13.333 7.333 L 15.333 7.333 C 15.886 7.333 16.333 7.781 16.333 8.333 L 16.333 10.333 C 16.333 10.886 15.886 11.333 15.333 11.333 L 13.333 11.333 C 12.781 11.333 12.333 10.886 12.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.333 12.667 C 15.886 12.667 16.333 13.114 16.333 13.667 L 16.333 15.667 C 16.333 16.219 15.886 16.667 15.333 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Gallery 2</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-ui')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 6.8 4.8 C 7.905 4.8 8.8 5.695 8.8 6.8 C 8.8 7.905 7.905 8.8 6.8 8.8 C 5.695 8.8 4.8 7.905 4.8 6.8 C 4.8 5.695 5.695 4.8 6.8 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 4.8 C 13.105 4.8 14 5.695 14 6.8 C 14 7.905 13.105 8.8 12 8.8 C 10.895 8.8 10 7.905 10 6.8 C 10 5.695 10.895 4.8 12 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.2 4.8 C 18.305 4.8 19.2 5.695 19.2 6.8 C 19.2 7.905 18.305 8.8 17.2 8.8 C 16.095 8.8 15.2 7.905 15.2 6.8 C 15.2 5.695 16.095 4.8 17.2 4.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories UI</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('todo-list')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">To-Do List</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toggle-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 17.333 15.333 C 18.438 15.333 19.333 16.229 19.333 17.333 C 19.333 18.438 18.438 19.333 17.333 19.333 C 16.229 19.333 15.333 18.438 15.333 17.333 C 15.333 16.229 16.229 15.333 17.333 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 17.333 10 C 18.438 10 19.333 10.895 19.333 12 C 19.333 13.105 18.438 14 17.333 14 C 16.229 14 15.333 13.105 15.333 12 C 15.333 10.895 16.229 10 17.333 10 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 C 19.333 7.771 18.438 8.667 17.333 8.667 C 16.229 8.667 15.333 7.771 15.333 6.667 C 15.333 5.562 16.229 4.667 17.333 4.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toggle Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('bottom-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 10.333 C 22 10.886 21.552 11.333 21 11.333 L 3 11.333 C 2.448 11.333 2 10.886 2 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 13.333 C 2 12.781 2.448 12.333 3 12.333 L 21 12.333 C 21.552 12.333 22 12.781 22 13.333 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Bottom Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('draggable-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 14 C 2 12.895 2.895 12 4 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z M 10.667 15.333 L 13.333 15.333 C 13.702 15.333 14 15.035 14 14.667 C 14 14.298 13.702 14 13.333 14 L 10.667 14 C 10.298 14 10 14.298 10 14.667 C 10 15.035 10.298 15.333 10.667 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Draggable Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('modal-box')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 9.333 C 7.333 8.229 8.229 7.333 9.333 7.333 L 14.667 7.333 C 15.771 7.333 16.667 8.229 16.667 9.333 L 16.667 14.667 C 16.667 15.771 15.771 16.667 14.667 16.667 L 9.333 16.667 C 8.229 16.667 7.333 15.771 7.333 14.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Modal Box</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('side-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 11 2 C 11.552 2 12 2.448 12 3 L 12 21 C 12 21.552 11.552 22 11 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Side Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 11.667 7.333 C 11.667 7.333 11.667 7.333 11.667 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 9 C 16.667 9.552 16.219 10 15.667 10 L 13.333 10 L 13.333 15.667 C 13.333 16.219 12.886 16.667 12.333 16.667 L 11.667 16.667 C 11.114 16.667 10.667 16.219 10.667 15.667 L 10.667 10 L 8.333 10 C 7.781 10 7.333 9.552 7.333 9 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('loading-indicator')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 16.4 10.4 C 17.284 10.4 18 11.116 18 12 C 18 12.884 17.284 13.6 16.4 13.6 C 15.516 13.6 14.8 12.884 14.8 12 C 14.8 11.116 15.516 10.4 16.4 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 10.4 C 12.884 10.4 13.6 11.116 13.6 12 C 13.6 12.884 12.884 13.6 12 13.6 C 11.116 13.6 10.4 12.884 10.4 12 C 10.4 11.116 11.116 10.4 12 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.6 10.4 C 8.484 10.4 9.2 11.116 9.2 12 C 9.2 12.884 8.484 13.6 7.6 13.6 C 6.716 13.6 6 12.884 6 12 C 6 11.116 6.716 10.4 7.6 10.4 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Loading Indicator</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('radio-button-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.833 8.167 L 14.167 8.167 C 16.284 8.167 18 9.883 18 12 C 18 14.117 16.284 15.833 14.167 15.833 L 9.833 15.833 C 7.716 15.833 6 14.117 6 12 C 6 9.883 7.716 8.167 9.833 8.167 Z M 11.333 12 C 11.333 13.473 12.527 14.667 14 14.667 C 15.473 14.667 16.667 13.473 16.667 12 C 16.667 10.527 15.473 9.333 14 9.333 C 12.527 9.333 11.333 10.527 11.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Radio Button Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('checkbox-form')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.651 6.931 C 7.911 6.738 7.238 7.411 7.431 8.151 L 9.363 15.558 C 9.592 16.435 10.775 16.58 11.208 15.784 L 13 12.5 L 16.284 10.708 C 17.08 10.275 16.935 9.092 16.058 8.863 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 16 15.5 L 11 10.5\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Checkbox Form</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('splash-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.757 13.414 C 6.976 12.633 6.976 11.367 7.757 10.586 L 10.586 7.757 C 11.367 6.976 12.633 6.976 13.414 7.757 L 16.243 10.586 C 17.024 11.367 17.024 12.633 16.243 13.414 L 13.414 16.243 C 12.633 17.024 11.367 17.024 10.586 16.243 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Splash Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('timeout-transition')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1 5.8 C 1 3.149 3.149 1 5.8 1 L 18.2 1 C 20.851 1 23 3.149 23 5.8 L 23 18.2 C 23 20.851 20.851 23 18.2 23 L 5.8 23 C 3.149 23 1 20.851 1 18.2 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path><path d=\"M 12 6.72 C 14.916 6.72 17.28 9.084 17.28 12 C 17.28 14.916 14.916 17.28 12 17.28 C 9.084 17.28 6.72 14.916 6.72 12 C 6.72 9.084 9.084 6.72 12 6.72 Z M 11.34 12 C 11.34 12.365 11.635 12.66 12 12.66 L 14.2 12.66 C 14.565 12.66 14.86 12.365 14.86 12 C 14.86 11.635 14.565 11.34 14.2 11.34 L 12.66 11.34 L 12.66 9.8 C 12.66 9.435 12.365 9.14 12 9.14 C 11.635 9.14 11.34 9.435 11.34 9.8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Timeout Transition</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('accordion-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16 10.667 L 12 14.667 L 8 10.667\" fill=\"transparent\" stroke-width=\"2\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Accordion Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drop-on-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 0 0 L 8 0\" transform=\"translate(8.5 11.5) rotate(270 4 0.5)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.333 11.333 L 12 8 L 8.667 11.333\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drop on Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('nested-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 7 C 21.82 7.552 21.372 8 20.82 8 L 2.82 8 C 2.267 8 1.82 7.552 1.82 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 1.82 17 C 1.82 16.448 2.267 16 2.82 16 L 20.82 16 C 21.372 16 21.82 16.448 21.82 17 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 8.82 10 C 8.82 9.448 9.267 9 9.82 9 L 20.82 9 C 21.372 9 21.82 9.448 21.82 10 L 21.82 14 C 21.82 14.552 21.372 15 20.82 15 L 9.82 15 C 9.267 15 8.82 14.552 8.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 1.82 10 C 1.82 9.448 2.267 9 2.82 9 L 6.82 9 C 7.372 9 7.82 9.448 7.82 10 L 7.82 14 C 7.82 14.552 7.372 15 6.82 15 L 2.82 15 C 2.267 15 1.82 14.552 1.82 14 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Nested Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('star-rating')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.399 6.884 C 11.645 6.386 12.355 6.386 12.601 6.884 L 13.705 9.122 C 13.803 9.32 13.992 9.457 14.21 9.489 L 16.68 9.848 C 17.229 9.928 17.449 10.603 17.051 10.99 L 15.264 12.733 C 15.106 12.887 15.034 13.108 15.071 13.326 L 15.493 15.786 C 15.587 16.333 15.013 16.75 14.521 16.492 L 12.312 15.331 C 12.117 15.228 11.883 15.228 11.688 15.331 L 9.479 16.492 C 8.987 16.75 8.413 16.333 8.507 15.786 L 8.929 13.326 C 8.966 13.108 8.894 12.887 8.736 12.733 L 6.949 10.99 C 6.551 10.603 6.771 9.928 7.32 9.848 L 9.79 9.489 C 10.008 9.457 10.197 9.32 10.295 9.122 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Star Rating</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('swipe-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 17.33 C 2 16.595 2.595 16 3.33 16 L 21 16 C 21.552 16 22 16.448 22 17 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 10 C 2 9.448 2.448 9 3 9 L 14 9 C 14.552 9 15 9.448 15 10 L 15 14 C 15 14.552 14.552 15 14 15 L 3 15 C 2.448 15 2 14.552 2 14 Z M 19 9 C 20.657 9 22 10.343 22 12 C 22 13.657 20.657 15 19 15 C 17.343 15 16 13.657 16 12 C 16 10.343 17.343 9 19 9 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 7 C 22 7.552 21.552 8 21 8 L 3 8 C 2.448 8 2 7.552 2 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Swipe Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('switch-sheet')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.667 13.333 C 17.139 13.333 18.333 14.527 18.333 16 C 18.333 17.473 17.139 18.667 15.667 18.667 C 14.194 18.667 13 17.473 13 16 C 13 14.527 14.194 13.333 15.667 13.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 8.333 13.333 C 9.806 13.333 11 14.527 11 16 C 11 17.473 9.806 18.667 8.333 18.667 C 6.861 18.667 5.667 17.473 5.667 16 C 5.667 14.527 6.861 13.333 8.333 13.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Switch Sheet</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('tab-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10 15.333 L 14 15.333 L 14 18.667 L 10 18.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.333 16.333 C 5.333 15.781 5.781 15.333 6.333 15.333 L 9.333 15.333 L 9.333 18.667 L 6.333 18.667 C 5.781 18.667 5.333 18.219 5.333 17.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 18.667 16.333 C 18.667 15.781 18.219 15.333 17.667 15.333 L 14.667 15.333 L 14.667 18.667 L 17.667 18.667 C 18.219 18.667 18.667 18.219 18.667 17.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Tab Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('wheel-picker')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.667 6 C 3.667 3.791 5.458 2 7.667 2 L 16.333 2 C 18.542 2 20.333 3.791 20.333 6 L 20.333 7 C 20.333 7.552 19.886 8 19.333 8 L 4.667 8 C 4.114 8 3.667 7.552 3.667 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 2 11 C 2 9.895 2.895 9 4 9 L 20 9 C 21.105 9 22 9.895 22 11 L 22 13 C 22 14.105 21.105 15 20 15 L 4 15 C 2.895 15 2 14.105 2 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.667 17 C 3.667 16.448 4.114 16 4.667 16 L 19.333 16 C 19.886 16 20.333 16.448 20.333 17 L 20.333 18 C 20.333 20.209 18.542 22 16.333 22 L 7.667 22 C 5.458 22 3.667 20.209 3.667 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Wheel Picker</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cover-flow')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 17.962 C 11.333 18.385 11.068 18.762 10.67 18.904 L 4.673 21.045 C 3.37 21.511 2 20.545 2 19.162 L 2 4.838 C 2 3.455 3.37 2.489 4.673 2.955 L 10.67 5.096 C 11.068 5.238 11.333 5.615 11.333 6.038 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 22 4.838 C 22 3.455 20.63 2.489 19.327 2.955 L 13.33 5.096 C 12.932 5.238 12.667 5.615 12.667 6.038 L 12.667 17.962 C 12.667 18.385 12.932 18.762 13.33 18.904 L 19.327 21.045 C 20.63 21.511 22 20.545 22 19.162 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cover Flow</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('cube-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.743 C 2 5.898 2.531 5.144 3.327 4.859 L 9.997 2.477 C 10.648 2.245 11.333 2.727 11.333 3.419 L 11.333 20.581 C 11.333 21.273 10.648 21.755 9.997 21.523 L 3.327 19.141 C 2.531 18.856 2 18.102 2 17.257 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 3.419 C 12.667 2.727 13.352 2.245 14.003 2.477 L 20.673 4.859 C 21.469 5.144 22 5.898 22 6.743 L 22 17.257 C 22 18.102 21.469 18.856 20.673 19.141 L 14.003 21.523 C 13.352 21.755 12.667 21.273 12.667 20.581 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Cube Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('flip-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 11.333 4.667 C 11.333 4.114 10.886 3.667 10.333 3.667 L 4 3.667 C 2.895 3.667 2 4.562 2 5.667 L 2 18.333 C 2 19.438 2.895 20.333 4 20.333 L 10.333 20.333 C 10.886 20.333 11.333 19.886 11.333 19.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 20 4.167 C 20 3.891 20.224 3.667 20.5 3.667 L 20.5 3.667 C 21.328 3.667 22 4.338 22 5.167 L 22 18.833 C 22 19.662 21.328 20.333 20.5 20.333 L 20.5 20.333 C 20.224 20.333 20 20.109 20 19.833 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 18.667 4.631 C 18.667 3.309 17.406 2.35 16.131 2.704 L 13.399 3.463 C 12.966 3.583 12.667 3.978 12.667 4.427 L 12.667 19.573 C 12.667 20.022 12.966 20.417 13.399 20.537 L 16.131 21.296 C 17.406 21.65 18.667 20.691 18.667 19.369 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Flip Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('parallax-scroll')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.667 C 12 5.562 12.895 4.667 14 4.667 L 17.333 4.667 C 18.438 4.667 19.333 5.562 19.333 6.667 L 19.333 10 C 19.333 11.105 18.438 12 17.333 12 L 14 12 C 12.895 12 12 11.105 12 10 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 4.667 14 C 4.667 12.895 5.562 12 6.667 12 L 10 12 C 11.105 12 12 12.895 12 14 L 12 17.333 C 12 18.438 11.105 19.333 10 19.333 L 6.667 19.333 C 5.562 19.333 4.667 18.438 4.667 17.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Parallax Scroll</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('pile-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.5 4 C 6.224 4 6 3.776 6 3.5 L 6 3.5 C 6 2.672 6.672 2 7.5 2 L 16.5 2 C 17.328 2 18 2.672 18 3.5 L 18 3.5 C 18 3.776 17.776 4 17.5 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 4.5 7 C 4.224 7 4 6.776 4 6.5 L 4 6.5 C 4 5.672 4.672 5 5.5 5 L 18.5 5 C 19.328 5 20 5.672 20 6.5 L 20 6.5 C 20 6.776 19.776 7 19.5 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 0 2.67 C 0 1.195 1.195 0 2.67 0 L 11.33 0 C 12.805 0 14 1.195 14 2.67 L 14 17.33 C 14 18.805 12.805 20 11.33 20 L 2.67 20 C 1.195 20 0 18.805 0 17.33 Z\" transform=\"translate(5 5) rotate(-90 7 10)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Pile Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('shuffle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 15.174 10.452 L 16.708 9.06 L 15.174 7.667\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 15.174 16.333 L 16.708 14.94 L 15.174 13.548\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 9.06 C 16.145 9.06 13.982 8.542 12.617 9.679 C 11.252 10.815 11.829 12.213 10.776 13.548 C 9.724 14.882 7.708 14.94 7.708 14.94\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.145 14.823 C 16.145 14.823 13.982 15.34 12.617 14.204 C 11.252 13.068 11.829 11.669 10.776 10.335 C 9.724 9.001 7.708 8.942 7.708 8.942\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Shuffle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('svg-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8 12.333 L 10.5 14.833 L 16 9.333\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">SVG Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('google-sheets')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7 8.667 C 7 8.206 7.373 7.833 7.833 7.833 L 7.833 7.833 C 8.294 7.833 8.667 8.206 8.667 8.667 L 8.667 8.667 C 8.667 9.127 8.294 9.5 7.833 9.5 L 7.833 9.5 C 7.373 9.5 7 9.127 7 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 12 C 7 11.54 7.373 11.167 7.833 11.167 L 7.833 11.167 C 8.294 11.167 8.667 11.54 8.667 12 L 8.667 12 C 8.667 12.46 8.294 12.833 7.833 12.833 L 7.833 12.833 C 7.373 12.833 7 12.46 7 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7 15.333 C 7 14.873 7.373 14.5 7.833 14.5 L 7.833 14.5 C 8.294 14.5 8.667 14.873 8.667 15.333 L 8.667 15.333 C 8.667 15.794 8.294 16.167 7.833 16.167 L 7.833 16.167 C 7.373 16.167 7 15.794 7 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 8.667 C 9.778 8.206 10.151 7.833 10.611 7.833 L 16.167 7.833 C 16.627 7.833 17 8.206 17 8.667 L 17 8.667 C 17 9.127 16.627 9.5 16.167 9.5 L 10.611 9.5 C 10.151 9.5 9.778 9.127 9.778 8.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 12 C 9.778 11.54 10.151 11.167 10.611 11.167 L 16.167 11.167 C 16.627 11.167 17 11.54 17 12 L 17 12 C 17 12.46 16.627 12.833 16.167 12.833 L 10.611 12.833 C 10.151 12.833 9.778 12.46 9.778 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 9.778 15.333 C 9.778 14.873 10.151 14.5 10.611 14.5 L 16.167 14.5 C 16.627 14.5 17 14.873 17 15.333 L 17 15.333 C 17 15.794 16.627 16.167 16.167 16.167 L 10.611 16.167 C 10.151 16.167 9.778 15.794 9.778 15.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Google Sheets</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('map')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 11.82 6.504 C 14.029 6.504 15.82 8.282 15.82 10.476 C 15.82 10.698 15.801 10.915 15.766 11.127 C 15.359 14.488 13.033 16.581 12.155 17.261 C 12.051 17.341 11.976 17.437 11.82 17.437 C 11.663 17.437 11.586 17.34 11.481 17.258 C 10.6 16.576 8.28 14.483 7.873 11.127 C 7.838 10.915 7.82 10.698 7.82 10.476 C 7.82 8.282 9.61 6.504 11.82 6.504 Z M 9.486 10.644 C 9.486 11.933 10.531 12.977 11.82 12.977 C 13.108 12.977 14.153 11.933 14.153 10.644 C 14.153 9.355 13.108 8.311 11.82 8.311 C 10.531 8.311 9.486 9.355 9.486 10.644 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Map</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('signature-pad')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 8.82 13.068 C 8.56 12.807 8.56 12.385 8.82 12.125 L 13.733 7.212 C 13.993 6.952 14.415 6.952 14.676 7.212 L 16.788 9.324 C 17.048 9.585 17.048 10.007 16.788 10.267 L 11.875 15.18 C 11.615 15.44 11.193 15.44 10.932 15.18 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.096 0.303 C 3.318 0.17 3.6 0.33 3.6 0.589 L 3.6 3.732 C 3.6 3.991 3.318 4.151 3.096 4.018 L 0.953 2.732 C 0.521 2.473 0.521 1.848 0.953 1.589 Z\" transform=\"translate(6.24 13.8) rotate(-45 1.8 2.16)\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Signature Pad</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('sound-effects')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.225 10.793 C 14.471 11.102 14.623 11.529 14.623 12 C 14.623 12.471 14.471 12.898 14.225 13.207\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 16.224 9.185 C 16.96 9.911 17.417 10.905 17.417 12 C 17.417 13.095 16.96 14.09 16.224 14.816\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 6.083 10.656 C 6.083 10.288 6.382 9.989 6.75 9.989 L 7.674 9.989 L 11.021 7.835 C 11.464 7.549 12.048 7.868 12.048 8.396 L 12.048 15.604 C 12.048 16.132 11.464 16.451 11.021 16.165 L 7.674 14.011 L 6.75 14.011 C 6.382 14.011 6.083 13.712 6.083 13.344 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Sound Effects</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('card-swipe')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 3.423 7.423 C 3.423 5.214 5.214 3.423 7.423 3.423 L 16.756 3.423 C 18.965 3.423 20.756 5.214 20.756 7.423 L 20.756 16.756 C 20.756 18.965 18.965 20.756 16.756 20.756 L 7.423 20.756 C 5.214 20.756 3.423 18.965 3.423 16.756 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 9.172 3.377 C 10.734 1.815 13.266 1.815 14.828 3.377 L 20.721 9.269 C 22.283 10.831 22.283 13.364 20.721 14.926 L 14.828 20.819 C 13.266 22.381 10.734 22.381 9.172 20.819 L 3.279 14.926 C 1.717 13.364 1.717 10.831 3.279 9.269 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Card Swipe</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('custom-effect')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6.2 C 2 5.673 2.31 5.195 2.792 4.981 L 7.063 3.083 C 7.503 2.887 8 3.21 8 3.693 L 8 20.307 C 8 20.79 7.503 21.113 7.063 20.917 L 2.792 19.019 C 2.31 18.805 2 18.327 2 17.8 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 9.333 3.297 C 9.333 2.642 9.954 2.163 10.588 2.33 L 20.509 4.941 C 21.388 5.172 22 5.967 22 6.875 L 22 17.125 C 22 18.033 21.388 18.828 20.509 19.059 L 10.588 21.67 C 9.954 21.837 9.333 21.358 9.333 20.703 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Custom Effect</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('drag-handle')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 2.667 L 2.667 0 L 0 2.667\" transform=\"translate(5.667 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 5.333 0 L 2.667 2.667 L 0 0\" transform=\"translate(13 10.667) rotate(-90 2.667 1.333)\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Drag Handle</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('dynamic-header')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 8 L 2 8 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Dynamic Header</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('image-panning')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 14 C 12 12.895 12.895 12 14 12 L 20 12 C 21.105 12 22 12.895 22 14 L 22 18 C 22 20.209 20.209 22 18 22 L 14 22 C 12.895 22 12 21.105 12 20 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Image Panning</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-data')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Data</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('input-validation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 15.667 7.333 C 16.219 7.333 16.667 7.781 16.667 8.333 L 16.667 10.333 C 16.667 10.886 16.219 11.333 15.667 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 15.667 12.667 C 16.219 12.667 16.667 13.114 16.667 13.667 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Input Validation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-animation')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.28 0 C 7.017 0 7.747 2.366 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.365 0.069 -0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(11.213 11.787) rotate(15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 5.28 0 C 7.017 -0 7.747 2.365 6.357 3.755 C 4.968 5.144 3.543 5.905 3.543 5.905 C 3.543 5.905 2.118 5.144 0.728 3.755 C -0.661 2.366 0.069 0 1.806 0 C 3.543 0 3.543 1.701 3.543 1.701 C 3.543 1.701 3.543 0 5.28 0 Z\" transform=\"translate(5.701 6.669) rotate(-15 3.543 2.953)\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Animation</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('like-counter')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 14.778 7.333 C 17.556 7.333 18.724 11.072 16.502 13.268 C 14.279 15.464 12 16.667 12 16.667 C 12 16.667 9.721 15.464 7.498 13.268 C 5.276 11.072 6.444 7.333 9.222 7.333 C 12 7.333 12 10.022 12 10.022 C 12 10.022 12 7.333 14.778 7.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Like Counter</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('lock-screen')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 11 C 7.333 10.448 7.781 10 8.333 10 L 15.667 10 C 16.219 10 16.667 10.448 16.667 11 L 16.667 15.667 C 16.667 16.219 16.219 16.667 15.667 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12 7.333 C 13.289 7.333 14.333 8.378 14.333 9.667 C 14.333 10.955 13.289 12 12 12 C 10.711 12 9.667 10.955 9.667 9.667 C 9.667 8.378 10.711 7.333 12 7.333 Z\" fill=\"transparent\" stroke-width=\"1.67\" stroke=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Lock Screen</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('long-press-menu')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 16.667 10.667 C 17.771 10.667 18.667 11.562 18.667 12.667 C 18.667 13.771 17.771 14.667 16.667 14.667 C 15.562 14.667 14.667 13.771 14.667 12.667 C 14.667 11.562 15.562 10.667 16.667 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12 8 C 13.105 8 14 8.895 14 10 C 14 11.105 13.105 12 12 12 C 10.895 12 10 11.105 10 10 C 10 8.895 10.895 8 12 8 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 7.333 10.667 C 8.438 10.667 9.333 11.562 9.333 12.667 C 9.333 13.771 8.438 14.667 7.333 14.667 C 6.229 14.667 5.333 13.771 5.333 12.667 C 5.333 11.562 6.229 10.667 7.333 10.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Long Press Menu</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('perspective-3d')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 6.913 22 C 5.987 22 5.182 21.364 4.967 20.463 L 2.586 10.463 C 2.287 9.206 3.24 8 4.532 8 L 19.468 8 C 20.76 8 21.713 9.206 21.414 10.463 L 19.033 20.463 C 18.818 21.364 18.013 22 17.087 22 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 3.833 7 C 3.557 7 3.333 6.776 3.333 6.5 L 3.333 6.5 C 3.333 5.672 4.005 5 4.833 5 L 19.167 5 C 19.995 5 20.667 5.672 20.667 6.5 L 20.667 6.5 C 20.667 6.776 20.443 7 20.167 7 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.7\"></path><path d=\"M 5.167 4 C 4.891 4 4.667 3.776 4.667 3.5 L 4.667 3.5 C 4.667 2.672 5.338 2 6.167 2 L 17.833 2 C 18.662 2 19.333 2.672 19.333 3.5 L 19.333 3.5 C 19.333 3.776 19.109 4 18.833 4 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Perspective 3D</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('progress-bar')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 1.82 6 C 1.82 3.791 3.61 2 5.82 2 L 17.82 2 C 20.029 2 21.82 3.791 21.82 6 L 21.82 18 C 21.82 20.209 20.029 22 17.82 22 L 5.82 22 C 3.61 22 1.82 20.209 1.82 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 16.82 15.333 C 17.74 15.333 18.486 16.08 18.486 17 L 18.486 17 C 18.486 17.92 17.74 18.667 16.82 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 5.153 17 C 5.153 16.08 5.899 15.333 6.82 15.333 L 11.486 15.333 C 12.407 15.333 13.153 16.08 13.153 17 L 13.153 17 C 13.153 17.92 12.407 18.667 11.486 18.667 L 6.82 18.667 C 5.899 18.667 5.153 17.92 5.153 17 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Progress Bar</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('scroll-progress')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 7.333 10.333 C 7.333 9.781 7.781 9.333 8.333 9.333 L 15.667 9.333 C 16.219 9.333 16.667 9.781 16.667 10.333 L 16.667 11.667 C 16.667 12.219 16.219 12.667 15.667 12.667 L 8.333 12.667 C 7.781 12.667 7.333 12.219 7.333 11.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 14.667 C 7.333 14.114 7.781 13.667 8.333 13.667 L 15.667 13.667 C 16.219 13.667 16.667 14.114 16.667 14.667 L 16.667 16 C 16.667 16.552 16.219 17 15.667 17 L 8.333 17 C 7.781 17 7.333 16.552 7.333 16 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 16 7 C 16.368 7 16.667 7.298 16.667 7.667 L 16.667 7.667 C 16.667 8.035 16.368 8.333 16 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 7.333 7.667 C 7.333 7.298 7.632 7 8 7 L 12.667 7 C 13.035 7 13.333 7.298 13.333 7.667 L 13.333 7.667 C 13.333 8.035 13.035 8.333 12.667 8.333 L 8 8.333 C 7.632 8.333 7.333 8.035 7.333 7.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Scroll Progress</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('show-password')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 10.6 12 C 10.6 11.227 11.227 10.6 12 10.6 L 12 10.6 C 12.773 10.6 13.4 11.227 13.4 12 L 13.4 12 C 13.4 12.773 12.773 13.4 12 13.4 L 12 13.4 C 11.227 13.4 10.6 12.773 10.6 12 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.166 7.833 C 14.892 7.833 17.161 9.42 17.811 12 C 17.161 14.58 14.892 16.167 12.166 16.167 C 9.44 16.167 7.127 14.58 6.478 12 C 7.127 9.42 9.44 7.833 12.166 7.833 Z M 9.333 12 C 9.333 13.473 10.527 14.667 12 14.667 C 13.473 14.667 14.667 13.473 14.667 12 C 14.667 10.527 13.473 9.333 12 9.333 C 10.527 9.333 9.333 10.527 9.333 12 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Show Password</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('slider')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.667 12 L 18.333 12\" stroke=\"var(--svg-icon-tint)\" fill=\"transparent\" opacity=\"0.4\" stroke-width=\"2.67\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><path d=\"M 12 8.333 C 14.025 8.333 15.667 9.975 15.667 12 C 15.667 14.025 14.025 15.667 12 15.667 C 9.975 15.667 8.333 14.025 8.333 12 C 8.333 9.975 9.975 8.333 12 8.333 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Slider</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-drag')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Drag</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('stories-tap')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 5.333 6.667 C 5.333 5.93 5.93 5.333 6.667 5.333 L 10 5.333 C 10.736 5.333 11.333 5.93 11.333 6.667 L 11.333 6.667 C 11.333 7.403 10.736 8 10 8 L 6.667 8 C 5.93 8 5.333 7.403 5.333 6.667 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 12.667 6.667 C 12.667 5.93 13.264 5.333 14 5.333 L 17.333 5.333 C 18.07 5.333 18.667 5.93 18.667 6.667 L 18.667 6.667 C 18.667 7.403 18.07 8 17.333 8 L 14 8 C 13.264 8 12.667 7.403 12.667 6.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Stories: Tap</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t\t<li>\n\t\t\t\t\t\t\t\t<div class=\"btn\" (click)=\"onSelect('toast-prompt')\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18.333 C 22 20.542 20.209 22.333 18 22.333 L 6 22.333 C 3.791 22.333 2 20.542 2 18.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path><path d=\"M 12 6.333 C 15.13 6.333 17.667 8.87 17.667 12 C 17.667 15.13 15.13 17.667 12 17.667 C 8.87 17.667 6.333 15.13 6.333 12 C 6.333 8.87 8.87 6.333 12 6.333 Z\" fill=\"transparent\" stroke-width=\"1.33\" stroke=\"var(--svg-icon-tint)\"></path><path d=\"M 12 13 C 12.552 13 13 13.448 13 14 C 13 14.552 12.552 15 12 15 C 11.448 15 11 14.552 11 14 C 11 13.448 11.448 13 12 13 Z\" fill=\"var(--svg-icon-tint)\"></path><path d=\"M 11.06 9.998 C 11.027 9.457 11.458 9 12 9 L 12 9 C 12.542 9 12.973 9.457 12.94 9.998 L 12.848 11.535 C 12.821 11.983 12.449 12.333 12 12.333 L 12 12.333 C 11.551 12.333 11.179 11.983 11.152 11.535 Z\" fill=\"var(--svg-icon-tint)\"></path></svg></div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\">Toast Prompt</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t\t-->\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 2\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_views' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'view', value: item.type.name })\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t\t<ul class=\"nav--editor\" *if=\"mode === 3\">\n\t\t\t\t\t<li>\n\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"'editor_view_items' | label\"></div>\n\t\t\t\t\t\t<ul class=\"nav--editor\">\n\t\t\t\t\t\t\t<li *for=\"let item of supportedViewItemTypes\">\n\t\t\t\t\t\t\t\t<div class=\"btn\" [class]=\"{ disabled: item.disabled }\" (click)=\"onSelect({ type:'viewItem', value: item.type.name })\" [title]=\"item.id\">\n\t\t\t\t\t\t\t\t\t<div class=\"icon\">\n\t\t\t\t\t\t\t\t\t\t<svg-icon [name]=\"item.type.name\"></svg-icon>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"title\" [innerHTML]=\"item.name\"></div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t<div class=\"abstract\" *if=\"supportedViewItemTypes.length == 0\" [innerHTML]=\"'editor_type_no_items' | label\"></div>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t"
+};var LayoutComponent = /*#__PURE__*/function (_Component) {
+  _inheritsLoose(LayoutComponent, _Component);
+
+  function LayoutComponent() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = LayoutComponent.prototype;
+
+  _proto.onInit = function onInit() {
+    var _this = this;
+
+    var meetingUrl = this.meetingUrl;
+    var embedViewId = meetingUrl.embedViewId;
+    this.state = {
+      status: LocationService.get('status') || AgoraStatus.Connected,
+      role: LocationService.get('role') || RoleType.Publisher,
+      // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
+      membersCount: 3,
+      controlling: false,
+      spying: false,
+      silencing: false,
+      hosted: true,
+      chat: false,
+      chatDirty: true,
+      name: 'Jhon Appleseed',
+      uid: '7341614597544882',
+      showNavInfo: true
+    };
+    this.state.live = this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG ? false : true;
+    this.state.navigable = embedViewId == null;
+    this.state.mode = UserService.getMode(this.state.role);
+    this.view = {
+      likes: 41,
+      type: {
+        id: 2,
+        name: 'panorama'
+      }
+    };
+    this.local = {};
+    this.screen = null;
+    this.remoteScreen_ = null;
+    this.media = null;
+    this.hasScreenViewItem = false;
+    this.media = true;
+    this.remotes = new Array(8).fill(0).map(function (x, i) {
+      return {
+        id: i + 1
+      };
+    });
+    this.languageService = LanguageService;
+    this.showLanguages = false;
+    StateService.patchState(this.state);
+    this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    var vrService = this.vrService = VRService.getService();
+    console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
+
+    setTimeout(function () {
+      var type = ToastType.Dialog;
+
+      switch (type) {
+        case ToastType.Info:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_sent')
+          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
+            if (event instanceof ToastResolveEvent) {
+              console.log('ToastResolveEvent', event);
+            }
+          });
+          break;
+
+        case ToastType.Alert:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_sent'),
+            type: type,
+            position: ToastPosition.BottomRight
+          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
+            if (event instanceof ToastResolveEvent) {
+              console.log('ToastResolveEvent', event);
+            } else if (event instanceof ToastRejectEvent) {
+              console.log('ToastRejectEvent', event);
+            }
+          });
+          break;
+
+        case ToastType.Dialog:
+          ToastService.open$({
+            message: LabelPipe.transform('bhere_support_request_dialog'),
+            acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
+            rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
+            type: type,
+            position: ToastPosition.BottomRight
+          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
+            if (event instanceof ToastResolveEvent) {
+              console.log('ToastResolveEvent', event);
+            } else if (event instanceof ToastRejectEvent) {
+              console.log('ToastRejectEvent', event);
+            }
+          });
+          break;
+      }
+    }, 3000);
+  };
+
+  _proto.setLanguage = function setLanguage(language) {
+    var _this2 = this;
+
+    this.languageService.setLanguage$(language).pipe(first()).subscribe(function (_) {
+      _this2.showLanguages = false;
+
+      _this2.pushChanges();
+    });
+  };
+
+  _proto.toggleLanguages = function toggleLanguages() {
+    this.showLanguages = !this.showLanguages;
+    this.pushChanges();
+  };
+
+  _proto.patchState = function patchState(state) {
+    this.state = Object.assign({}, this.state, state);
+    this.screen = this.state.screen || null;
+    this.remoteScreen = this.screen;
+    this.pushChanges();
+  };
+
+  _proto.toggleCamera = function toggleCamera() {
+    this.patchState({
+      cameraMuted: !this.state.cameraMuted
+    });
+  };
+
+  _proto.toggleAudio = function toggleAudio() {
+    this.patchState({
+      audioMuted: !this.state.audioMuted
+    });
+  };
+
+  _proto.toggleScreen = function toggleScreen() {
+    this.patchState({
+      screen: !this.state.screen
+    });
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.toggleVolume = function toggleVolume() {
+    this.patchState({
+      volumeMuted: !this.state.volumeMuted
+    });
+  };
+
+  _proto.toggleMode = function toggleMode() {
+    var mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
+    this.patchState({
+      mode: mode
+    }); // this.pushChanges();
+  };
+
+  _proto.toggleFullScreen = function toggleFullScreen() {
+    var _getContext = rxcomp.getContext(this),
+        node = _getContext.node;
+
+    var fullScreen = !this.state.fullScreen;
+
+    if (fullScreen) {
+      if (node.requestFullscreen) {
+        node.requestFullscreen();
+      } else if (node.webkitRequestFullscreen) {
+        node.webkitRequestFullscreen();
+      } else if (node.msRequestFullscreen) {
+        node.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    } // this.patchState({ fullScreen });
+
+  };
+
+  _proto.fullscreen$ = function fullscreen$() {
+    var _this3 = this;
+
+    return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
+      var fullScreen = document.fullscreenElement != null; // console.log('fullscreen$', fullScreen);
+
+      _this3.patchState({
+        fullScreen: fullScreen
+      });
+    }));
+  };
+
+  _proto.toggleChat = function toggleChat() {
+    this.patchState({
+      chat: !this.state.chat,
+      chatDirty: false
+    });
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.toggleNavInfo = function toggleNavInfo() {
+    this.patchState({
+      showNavInfo: !this.state.showNavInfo
+    });
+  };
+
+  _proto.onBack = function onBack() {
+    console.log('LayoutComponent.onBack');
+  };
+
+  _proto.onChatClose = function onChatClose() {
+    this.patchState({
+      chat: false
+    });
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  _proto.onToggleControl = function onToggleControl(remoteId) {
+    var controlling = this.state.controlling === remoteId ? null : remoteId;
+    this.patchState({
+      controlling: controlling,
+      spying: false
+    });
+  };
+
+  _proto.onToggleSilence = function onToggleSilence() {
+    this.patchState({
+      silencing: !this.state.silencing
+    });
+  };
+
+  _proto.onToggleSpy = function onToggleSpy(remoteId) {
+    var spying = this.state.spying === remoteId ? null : remoteId;
+    this.patchState({
+      spying: spying,
+      controlling: false
+    });
+  };
+
+  _proto.addLike = function addLike() {
+    this.view.liked = true; // view.liked;
+
+    this.showLove(this.view);
+  };
+
+  _proto.showLove = function showLove(view) {
+    var _this4 = this;
+
+    if (view && this.view.id === view.id) {
+      var skipTimeout = this.view.showLove;
+      this.view.likes = view.likes;
+      this.view.showLove = true;
+      this.pushChanges();
+
+      if (!skipTimeout) {
+        setTimeout(function () {
+          _this4.view.showLove = false;
+
+          _this4.pushChanges();
+        }, 3100);
+      }
+    }
+  };
+
+  _proto.disconnect = function disconnect() {};
+
+  _createClass(LayoutComponent, [{
+    key: "meetingUrl",
+    get: function get() {
+      if (!this.meetingUrl_) {
+        this.meetingUrl_ = new MeetingUrl();
+      }
+
+      return this.meetingUrl_;
+    }
+  }, {
+    key: "isVirtualTourUser",
+    get: function get() {
+      return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
+    }
+  }, {
+    key: "isEmbed",
+    get: function get() {
+      if (this.route) {
+        return this.route.params.mode === 'embed';
+      }
+    }
+  }, {
+    key: "isSelfServiceTour",
+    get: function get() {
+      if (this.route) {
+        return this.route.params.mode === 'selfServiceTour';
+      }
+    }
+  }, {
+    key: "isNavigable",
+    get: function get() {
+      var embedViewId = this.meetingUrl.embedViewId;
+      var navigable = embedViewId == null;
+      return navigable;
+    }
+  }, {
+    key: "isBackButtonVisible",
+    get: function get() {
+      return this.view && (this.view.type.name === ViewType.Media.name || this.view.type.name === ViewType.Model.name);
+    }
+  }, {
+    key: "showNavInfoToggler",
+    get: function get() {
+      return environment.flags.hideNavInfo && this.state.mode !== UIMode.LiveMeeting;
+    }
+  }, {
+    key: "uiClass",
+    get: function get() {
+      var uiClass = {};
+      uiClass[this.state.role] = true; // uiClass[this.state.mode] = true;
+
+      uiClass.chat = this.state.chat;
+      uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
+      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
+      uiClass.media = !uiClass.remotes && this.media;
+      uiClass.locked = this.locked;
+      return uiClass;
+    }
+  }, {
+    key: "remoteClass",
+    get: function get() {
+      return "group--remote--" + Math.min(9, this.remotes.length);
+    }
+  }, {
+    key: "controlled",
+    get: function get() {
+      return this.state.controlling && this.state.controlling !== this.state.uid;
+    }
+  }, {
+    key: "controlling",
+    get: function get() {
+      return this.state.controlling && this.state.controlling === this.state.uid;
+    }
+  }, {
+    key: "silencing",
+    get: function get() {
+      return StateService.state.silencing;
+    }
+  }, {
+    key: "silenced",
+    get: function get() {
+      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
+    }
+  }, {
+    key: "spyed",
+    get: function get() {
+      return this.state.spying && this.state.spying === this.state.uid;
+    }
+  }, {
+    key: "spying",
+    get: function get() {
+      return this.state.spying && this.state.spying !== this.state.uid;
+    }
+  }, {
+    key: "locked",
+    get: function get() {
+      return this.controlled || this.spying;
+    }
+  }, {
+    key: "remoteScreen",
+    get: function get() {
+      return this.remoteScreen_;
+    },
+    set: function set(remoteScreen) {
+      if (this.remoteScreen_ !== remoteScreen) {
+        this.remoteScreen_ = remoteScreen;
+        window.dispatchEvent(new Event('resize'));
+      }
+    }
+  }]);
+
+  return LayoutComponent;
+}(rxcomp.Component);
+LayoutComponent.meta = {
+  selector: '[layout-component]',
+  hosts: {
+    host: RouterOutletStructure
+  },
+  template:
+  /* html */
+  "\n\t<div class=\"page page--agora\">\n\t\t" + CHUNK_BACKGROUND + "\n\t\t<!-- Status Checklist -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'checklist'\" [agora-checklist] (checked)=\"onChecked($event)\"></div>\n\t\t<!-- Status Link -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'link'\" [agora-link] (link)=\"onLink($event)\"></div>\n\t\t<!-- Status Login -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'login'\" [agora-login] (login)=\"onLogin($event)\"></div>\n\t\t<!-- Status Name -->\n\t\t<div class=\"ui ui--info ui--info-centered\" *if=\"state.status == 'name' || (state.status == 'disconnected' && state.role === 'viewer')\" [agora-name] (name)=\"onName($event)\"></div>\n\t\t<!-- Status Device -->\n\t\t<div class=\"ui ui--info\" *if=\"state.status == 'device' || (state.status == 'disconnected' && state.role !== 'viewer')\" [agora-device] (enter)=\"onEnter($event)\"></div>\n\t\t<!-- Virtual Tour -->\n\t\t<div class=\"ui virtual-tour\" [class]=\"uiClass\" *if=\"state.status == 'connected' && isVirtualTourUser\">\n\t\t\t<!-- world -->\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\"></div>\n\t\t\t</div>\n\t\t\t<!-- remote sidebar -->\n\t\t\t<div class=\"group--remote\" [class]=\"remoteClass\" *if=\"state.live\">\n\t\t\t\t<div class=\"agora-stream\" *for=\"let remote of remotes\">\n\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t<div class=\"agora-stream__info\" [class]=\"{ spyed: state.spying == remote.id, controlling: state.controlling == remote.id }\">\n\t\t\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t\t\t<div class=\"id\">name</div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" (click)=\"onToggleControl(remote.id)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t\t\t<svg class=\"control\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" (click)=\"onToggleSpy(remote.id)\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"group--members\" *if=\"state.mode == 'virtual-tour'\">\n\t\t\t\t\t<div class=\"members\">\n\t\t\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"credits\">\n\t\t\t\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- remote screen -->\n\t\t\t<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t\t\t\t<div class=\"agora-stream\">\n\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t\t\t<div class=\"id\">name</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--header\">\n\t\t\t\t<!-- service -->\n\t\t\t\t<div class=\"group--service\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--back\" [title]=\"'title_back' | label\" (click)=\"onBack($event)\" *if=\"isBackButtonVisible\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#arrow-prev\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--view-mode\" [title]=\"'title_view_mode' | label\" (click)=\"toggleMode($event)\" *if=\"state.mode != 'embed'\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'virtual-tour'\"><use xlink:href=\"#live-meeting\"></use></svg>\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.mode == 'live-meeting'\"><use xlink:href=\"#virtual-tour\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--navmap\" [title]=\"'title_navmap' | label\" [class]=\"{ active: state.showNavmap }\" (click)=\"toggleNavmap($event)\" *if=\"navmap && state.mode != 'live-meeting'\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navmap\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t\t<!-- local streams -->\n\t\t\t\t<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--silence\" [title]=\"'title_silence' | label\" [class]=\"{ active: state.silencing }\" (click)=\"onToggleSilence()\" *if=\"state.role === 'publisher'\">\n\t\t\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--control\" [title]=\"'title_control' | label\" [class]=\"{ active: state.controlling == state.uid }\" (click)=\"onToggleControl(state.uid)\" *if=\"state.role == 'publisher'\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#control\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<div class=\"agora-stream\" *if=\"!local\"></div>\n\t\t\t\t\t<div class=\"agora-stream\" *if=\"local\">\n\t\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"agora-stream agora-stream--screen\" *if=\"screen\">\n\t\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"group--footer\">\n\t\t\t\t" + CHUNK_CONTROLS + "\n\t\t\t\t" + CHUNK_MEDIA + "\n\t\t\t\t" + CHUNK_AR_VR + "\n\t\t\t\t" + CHUNK_LIKE + "\n\t\t\t</div>\n\t\t\t<!-- members -->\n\t\t\t<div class=\"group--members\" *if=\"state.mode == 'live-meeting'\">\n\t\t\t\t<div class=\"members\">\n\t\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"credits\">\n\t\t\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t" + CHUNK_CHAT + "\n\t\t\t" + CHUNK_LOCK + "\n\t\t\t" + CHUNK_NAVMAP + "\n\t\t</div>\n\t\t<!-- Smart Device -->\n\t\t<div class=\"ui remotes\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.role == 'smart-device'\">\n\t\t\t<!-- world -->\n\t\t\t<div class=\"ui__body\">\n\t\t\t</div>\n\t\t\t<!-- remote sidebar -->\n\t\t\t<div class=\"group--remote\" [class]=\"remoteClass\" *if=\"state.live\">\n\t\t\t\t<div class=\"agora-stream\" *for=\"let remote of remotes\">\n\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t\t\t<div class=\"id\">name</div>\n\t\t\t\t\t\t<button type=\"button\" class=\"btn--spy\" [title]=\"'title_spy' | label\" *if=\"state.role === 'publisher'\" (click)=\"onToggleSpy(remote.id)\">\n\t\t\t\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#spy\"></use></svg>\n\t\t\t\t\t\t</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- remote screen -->\n\t\t\t<div class=\"group--remote-screen\" *if=\"remoteScreen\">\n\t\t\t\t<div class=\"agora-stream\">\n\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t\t\t<div class=\"id\">name</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- local streams -->\n\t\t\t<div class=\"group--local\" [class]=\"{ publisher: state.role == 'publisher', viewer: state.role == 'viewer' }\" *if=\"state.live\">\n\t\t\t\t<div class=\"agora-stream\" *if=\"local\">\n\t\t\t\t\t<div class=\"agora-stream__player\"></div>\n\t\t\t\t\t<div class=\"agora-stream__info\">\n\t\t\t\t\t\t<svg class=\"cam-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam-muted\"></use></svg>\n\t\t\t\t\t\t<svg class=\"mic-muted\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic-muted\"></use></svg>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- controls -->\n\t\t\t<div class=\"group--controls\" *if=\"state.live\">\n\t\t\t\t<div class=\"group--actions\">\n\t\t\t\t\t<button type=\"button\" class=\"btn--call\" [title]=\"'title_disconnect' | label\" (click)=\"disconnect()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#call\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--cam\" [title]=\"'title_mute_camera' | label\" [class]=\"{ muted: state.cameraMuted, disabled: !local }\" (click)=\"toggleCamera()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#cam\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--mic\" [title]=\"'title_mute_mic' | label\" [class]=\"{ muted: state.audioMuted, disabled: !local || silenced }\" (click)=\"toggleAudio()\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#mic\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--screen\" [title]=\"'title_share_screen' | label\" [class]=\"{ active: screen }\" (click)=\"toggleScreen()\" *if=\"state.role == 'publisher' || state.role == 'attendee' || controlling\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#screen\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--chat\" [title]=\"'title_chat' | label\" [class]=\"{ active: state.chatDirty }\" (click)=\"toggleChat()\" *if=\"('chat' | flag)\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#chat\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t\t<button type=\"button\" class=\"btn--navinfo\" [title]=\"'title_navinfo' | label\" [class]=\"{ active: state.showNavInfo }\" (click)=\"toggleNavInfo()\" *if=\"showNavInfoToggler\">\n\t\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#navinfo\"></use></svg>\n\t\t\t\t\t</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<!-- members -->\n\t\t\t<div class=\"group--members\">\n\t\t\t\t<div class=\"members\">\n\t\t\t\t\t<svg class=\"spy\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><use xlink:href=\"#users\"></use></svg>\n\t\t\t\t\t<span class=\"members__count\" [innerHTML]=\"state.membersCount\"></span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"credits\">\n\t\t\t\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\">\n\t\t\t\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<!-- Self Service Tour -->\n\t\t<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'self-service-tour'\">\n\t\t\t<!-- world -->\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\"></div>\n\t\t\t</div>\n\t\t\t<!-- service -->\n\t\t\t<div class=\"group--service\">\n\t\t\t\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t" + CHUNK_AR_VR + "\n\t\t\t" + CHUNK_LIKE + "\n\t\t</div>\n\t\t<!-- Embed -->\n\t\t<div class=\"ui\" [class]=\"uiClass\" *if=\"state.status == 'connected' && state.mode == 'embed'\">\n\t\t\t<!-- world -->\n\t\t\t<div class=\"ui__body\">\n\t\t\t\t<div class=\"world\"></div>\n\t\t\t</div>\n\t\t\t<!-- service -->\n\t\t\t<div class=\"group--service\">\n\t\t\t\t<button type=\"button\" class=\"btn--volume\" [title]=\"'title_volume' | label\" [class]=\"{ muted: state.volumeMuted }\" (click)=\"toggleVolume($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.volumeMuted\"><use xlink:href=\"#volume-on\"></use></svg>\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.volumeMuted\"><use xlink:href=\"#volume-off\"></use></svg>\n\t\t\t\t</button>\n\t\t\t\t<button type=\"button\" class=\"btn--fullscreen\" [title]=\"'title_fullscreen' | label\" [class]=\"{ muted: state.fullScreen }\" (click)=\"toggleFullScreen($event)\">\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"!state.fullScreen\"><use xlink:href=\"#fullscreen-on\"></use></svg>\n\t\t\t\t\t<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" *if=\"state.fullScreen\"><use xlink:href=\"#fullscreen-off\"></use></svg>\n\t\t\t\t</button>\n\t\t\t</div>\n\t\t\t" + CHUNK_AR_VR + "\n\t\t\t" + CHUNK_LIKE + "\n\t\t</div>\n\t\t<a class=\"btn--logo\" [href]=\"'index' | slug\" *if=\"state.status != 'connected'\">\n\t\t\t<img [src]=\"'logo' | env\" *if=\"'logo' | env\" />\n\t\t\t<svg viewBox=\"0 0 270 98\" *if=\"!('logo' | env)\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t\t<a class=\"btn--credits\" href=\"https://www.websolute.com/\" target=\"_blank\" rel=\"noopener\" *if=\"state.status != 'connected'\">\n\t\t\t<svg viewBox=\"0 0 270 98\"><use xlink:href=\"#b-here\"></use></svg>\n\t\t</a>\n\t\t<div class=\"group--language\" language (set)=\"pushChanges()\" *if=\"state.status != 'connected'\"></div>\n\t</div>\n\t"
 };var TryInARComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(TryInARComponent, _Component);
 
@@ -26913,7 +27398,7 @@ TryInARComponent.meta = {
   factory: AccessComponent
 }, {
   name: 'it.accessCode',
-  path: '/codice-di-accesso',
+  path: '/codice-di-accesso?:link&:name&:role&:viewId&:pathId&:support',
   defaultParams: {
     lang: 'it',
     mode: 'accessCode'
@@ -26930,7 +27415,7 @@ TryInARComponent.meta = {
 }, // { name: 'it.guidedTour', path: '/tour-guidato', defaultParams: { lang: 'it', mode: 'guidedTour' }, factory: AgoraComponent },
 {
   name: 'it.selfServiceTour',
-  path: '/tour-self-service',
+  path: '/tour-self-service?:viewId&:pathId',
   defaultParams: {
     lang: 'it',
     mode: 'selfServiceTour'
@@ -26960,6 +27445,14 @@ TryInARComponent.meta = {
     mode: 'editor'
   },
   factory: EditorComponent
+}, {
+  name: 'it.layout',
+  path: '/layout',
+  defaultParams: {
+    lang: 'it',
+    mode: 'layout'
+  },
+  factory: LayoutComponent
 }, // en
 {
   name: 'en',
@@ -26979,7 +27472,7 @@ TryInARComponent.meta = {
   factory: AccessComponent
 }, {
   name: 'en.accessCode',
-  path: '/accesso-code',
+  path: '/accesso-code?:link&:name&:role&:viewId&:pathId&:support',
   defaultParams: {
     lang: 'en',
     mode: 'accessCode'
@@ -26996,7 +27489,7 @@ TryInARComponent.meta = {
 }, // { name: 'en.guidedTour', path: '/guided-tour', defaultParams: { lang: 'en', mode: 'guidedTour' }, factory: AgoraComponent },
 {
   name: 'en.selfServiceTour',
-  path: '/self-service-tour',
+  path: '/self-service-tour?:viewId&:pathId',
   defaultParams: {
     lang: 'en',
     mode: 'selfServiceTour'
@@ -27026,6 +27519,14 @@ TryInARComponent.meta = {
     mode: 'editor'
   },
   factory: EditorComponent
+}, {
+  name: 'en.layout',
+  path: '/layout',
+  defaultParams: {
+    lang: 'en',
+    mode: 'layout'
+  },
+  factory: LayoutComponent
 }];var SVG_CHUNK =
 /* html */
 "\n\t\t<svg width=\"0\" height=\"0\" class=\"hidden\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" aria-hidden=\"true\">\n\t\t\t<symbol id=\"arrow-down\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"arrow-next\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M7.33 24l-2.83-2.829 9.339-9.175-9.339-9.167 2.83-2.829 12.17 11.996z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"arrow-prev\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"call\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M20 22.621l-3.521-6.795c-.008.004-1.974.97-2.064 1.011-2.24 1.086-6.799-7.82-4.609-8.994l2.083-1.026-3.493-6.817-2.106 1.039c-7.202 3.755 4.233 25.982 11.6 22.615.121-.055 2.102-1.029 2.11-1.033z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"heart\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-8.118-10-8.999-12-3.568z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"heart-outline\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"cam\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16 18c0 1.104-.896 2-2 2h-12c-1.105 0-2-.896-2-2v-12c0-1.104.895-2 2-2h12c1.104 0 2 .896 2 2v12zm8-14l-6 6.223v3.554l6 6.223v-16z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"cam-muted\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0.7,19.5L15.5,4.7C15.1,4.3,14.6,4,14,4H2C0.9,4,0,4.9,0,6v12C0,18.6,0.3,19.1,0.7,19.5z\"></path>\n\t\t\t\t<path d=\"M18 13.8L24 20 24 4 18 10.2z\"></path>\n\t\t\t\t<path d=\"M7.8,20H14c1.1,0,2-0.9,2-2v-6.2L7.8,20z\"></path>\n\t\t\t\t<path d=\"M-3.4 11.2H27.400000000000002V12.7H-3.4z\" transform=\"rotate(-45.001 12 12)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"mic\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16 11c0 2.209-1.791 4-4 4s-4-1.791-4-4v-7c0-2.209 1.791-4 4-4s4 1.791 4 4v7zm4-2v2c0 4.418-3.582 8-8 8s-8-3.582-8-8v-2h2v2c0 3.309 2.691 6 6 6s6-2.691 6-6v-2h2zm-7 13v-2h-2v2h-4v2h10v-2h-4z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"mic-muted\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M16,11.4L12.4,15C14.3,14.8,15.8,13.3,16,11.4z\"></path>\n\t\t\t\t<path d=\"M16,4.6V4c0-2.2-1.8-4-4-4S8,1.8,8,4v7c0,0.5,0.1,0.9,0.3,1.4L16,4.6z\"></path>\n\t\t\t\t<path d=\"M13 20L11 20 11 22 7 22 7 24 17 24 17 22 13 22z\"></path>\n\t\t\t\t<path d=\"M18,11c0,3.3-2.7,6-6,6c-0.5,0-1-0.1-1.4-0.2L9,18.4c0.9,0.4,2,0.6,3,0.6c4.4,0,8-3.6,8-8V9h-2V11z\"></path>\n\t\t\t\t<path d=\"M6.7,13.9C6.3,13,6,12,6,11V9H4v2c0,1.6,0.5,3.1,1.3,4.3L6.7,13.9z\"></path>\n\t\t\t\t<path d=\"M-3.4 11.2H27.400000000000002V12.7H-3.4z\" transform=\"rotate(-45.001 12 12)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"gamepad\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17.622 3c-1.913 0-2.558 1.382-5.623 1.382-3.009 0-3.746-1.382-5.623-1.382-5.209 0-6.376 10.375-6.376 14.348 0 2.145.817 3.652 2.469 3.652 3.458 0 2.926-5 6.915-5h5.23c3.989 0 3.457 5 6.915 5 1.652 0 2.471-1.506 2.471-3.651 0-3.973-1.169-14.349-6.378-14.349zm-10.622 10c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zm10-6c.552 0 1 .447 1 1 0 .553-.448 1-1 1s-1-.447-1-1c0-.553.448-1 1-1zm-2 4c-.552 0-1-.447-1-1 0-.553.448-1 1-1s1 .447 1 1c0 .553-.448 1-1 1zm2 2c-.552 0-1-.447-1-1 0-.553.448-1 1-1s1 .447 1 1c0 .553-.448 1-1 1zm2-2c-.552 0-1-.447-1-1 0-.553.448-1 1-1s1 .447 1 1c0 .553-.448 1-1 1zm-10.25-1c0 .965-.785 1.75-1.75 1.75s-1.75-.785-1.75-1.75.785-1.75 1.75-1.75 1.75.785 1.75 1.75z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"ar\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 0l-11 6v12.131l11 5.869 11-5.869v-12.066l-11-6.065zm7.91 6.646l-7.905 4.218-7.872-4.294 7.862-4.289 7.915 4.365zm-16.91 1.584l8 4.363v8.607l-8-4.268v-8.702zm10 12.97v-8.6l8-4.269v8.6l-8 4.269zm6.678-5.315c.007.332-.256.605-.588.612-.332.007-.604-.256-.611-.588-.006-.331.256-.605.588-.612.331-.007.605.256.611.588zm-2.71-1.677c-.332.006-.595.28-.588.611.006.332.279.595.611.588s.594-.28.588-.612c-.007-.331-.279-.594-.611-.587zm-2.132-1.095c-.332.007-.595.281-.588.612.006.332.279.594.611.588.332-.007.594-.28.588-.612-.007-.331-.279-.594-.611-.588zm-9.902 2.183c.332.007.594.281.588.612-.007.332-.279.595-.611.588-.332-.006-.595-.28-.588-.612.005-.331.279-.594.611-.588zm1.487-.5c-.006.332.256.605.588.612s.605-.257.611-.588c.007-.332-.256-.605-.588-.611-.332-.008-.604.255-.611.587zm2.132-1.094c-.006.332.256.605.588.612.332.006.605-.256.611-.588.007-.332-.256-.605-.588-.612-.332-.007-.604.256-.611.588zm3.447-5.749c-.331 0-.6.269-.6.6s.269.6.6.6.6-.269.6-.6-.269-.6-.6-.6zm0-2.225c-.331 0-.6.269-.6.6s.269.6.6.6.6-.269.6-.6-.269-.6-.6-.6zm0-2.031c-.331 0-.6.269-.6.6s.269.6.6.6.6-.269.6-.6-.269-.6-.6-.6z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"close\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M23 20.168l-8.185-8.187 8.185-8.174-2.832-2.807-8.182 8.179-8.176-8.179-2.81 2.81 8.186 8.196-8.186 8.184 2.81 2.81 8.203-8.192 8.18 8.192z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"vr\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22.3,4.3H1.7C0.8,4.3,0,5.1,0,6v12c0,0.9,0.8,1.7,1.7,1.7h5.6c0.7,0,1.4-0.5,1.6-1.2l1.4-4.2c0.5-1.6,2.7-1.6,3.3,0 l1.4,4.2c0.2,0.7,0.9,1.2,1.6,1.2h5.6c0.9,0,1.7-0.8,1.7-1.7V6C24,5.1,23.2,4.3,22.3,4.3z M6,14.6c-1.4,0-2.6-1.2-2.6-2.6 S4.6,9.4,6,9.4s2.6,1.2,2.6,2.6S7.4,14.6,6,14.6z M18,14.6c-1.4,0-2.6-1.2-2.6-2.6s1.2-2.6,2.6-2.6s2.6,1.2,2.6,2.6 S19.4,14.6,18,14.6z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"vr-02\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22.5,8.6c-0.3,0-0.6,0.1-0.8,0.3c-0.3-1.9-1.9-3.4-3.9-3.4H6.2c-2,0-3.6,1.5-3.9,3.4C2,8.7,1.7,8.6,1.4,8.6 C0.6,8.6,0,9.3,0,10.1v3.9c0,0.8,0.6,1.4,1.4,1.4c0.3,0,0.6-0.1,0.8-0.3c0.3,1.9,1.9,3.4,3.9,3.4h11.6c2,0,3.6-1.5,3.9-3.4 c0.2,0.2,0.5,0.3,0.8,0.3c0.8,0,1.4-0.6,1.4-1.4v-3.9C24,9.3,23.3,8.6,22.5,8.6z M20.7,14.6c0,1.6-1.3,2.8-2.8,2.8H6.2 c-1.6,0-2.8-1.3-2.8-2.8V9.4c0-1.6,1.3-2.8,2.8-2.8h11.6c1.6,0,2.8,1.3,2.8,2.8V14.6z\"></path><circle cx=\"5.7\" cy=\"8.7\" r=\".8\"></circle><circle cx=\"18.3\" cy=\"8.6\" r=\".8\"></circle><circle cx=\"5.7\" cy=\"15.4\" r=\".8\"></circle><circle cx=\"18.3\" cy=\"15.3\" r=\".8\"></circle>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"the-spy\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17,14c-1.8,0-3.3,1.3-3.7,3h-2.5c-0.5-2.1-2.5-3.4-4.6-2.9c-2.1,0.5-3.4,2.5-2.9,4.6s2.5,3.4,4.6,2.9 c1.4-0.3,2.6-1.5,2.9-2.9h2.5c0.5,2.1,2.5,3.4,4.6,2.9s3.4-2.5,2.9-4.6C20.4,15.3,18.8,14,17,14z\"></path>\n\t\t\t\t<path d=\"M23.2,11.5h-2.6V6c0-0.7-0.5-1.4-1.2-1.6l-5.5-1.8c-1.2-0.4-2.6-0.4-3.8,0L4.6,4.4C3.9,4.6,3.4,5.3,3.4,6v5.4H0.8 c-0.5,0-0.8,0.4-0.8,0.8s0.4,0.8,0.8,0.8h22.3c0.5,0,0.8-0.4,0.8-0.8S23.6,11.5,23.2,11.5z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"spy-eye\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12,19.6c-4.6,0-8.9-3.5-11.7-6.8c-0.4-0.5-0.4-1.2,0-1.6C3.1,7.9,7.4,4.4,12,4.4s8.9,3.5,11.7,6.8 c0.4,0.5,0.4,1.2,0,1.6C20.9,16.1,16.6,19.6,12,19.6z M12,7.5c2.5,0,4.4,1.9,4.4,4.4s-1.9,4.4-4.4,4.4s-4.4-1.9-4.4-4.4 S9.5,7.5,12,7.5z\" clip-rule=\"evenodd\"></path>\n\t\t\t\t<path d=\"M12,9.3c1.4,0,2.6,1.2,2.6,2.6s-1.2,2.6-2.6,2.6s-2.6-1.2-2.6-2.6S10.6,9.3,12,9.3z\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"copy\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M7 16h10v1h-10v-1zm0-1h10v-1h-10v1zm15-13v22h-20v-22h3c1.229 0 2.18-1.084 3-2h8c.82.916 1.771 2 3 2h3zm-11 1c0 .552.448 1 1 1s1-.448 1-1-.448-1-1-1-1 .448-1 1zm9 1h-4l-2 2h-3.898l-2.102-2h-4v18h16v-18zm-13 9h10v-1h-10v1zm0-2h10v-1h-10v1z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"menu\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 18c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3zm0-9c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3zm0-9c1.657 0 3 1.343 3 3s-1.343 3-3 3-3-1.343-3-3 1.343-3 3-3z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"menu-light\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M14 19h-14v-1h14v1zm9.247-8.609l-3.247 4.049-3.263-4.062-.737.622 4 5 4-5-.753-.609zm-9.247 2.609h-14v-1h14v1zm0-6h-14v-1h14v1z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"settings\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 14.187v-4.374c-2.148-.766-2.726-.802-3.027-1.529-.303-.729.083-1.169 1.059-3.223l-3.093-3.093c-2.026.963-2.488 1.364-3.224 1.059-.727-.302-.768-.889-1.527-3.027h-4.375c-.764 2.144-.8 2.725-1.529 3.027-.752.313-1.203-.1-3.223-1.059l-3.093 3.093c.977 2.055 1.362 2.493 1.059 3.224-.302.727-.881.764-3.027 1.528v4.375c2.139.76 2.725.8 3.027 1.528.304.734-.081 1.167-1.059 3.223l3.093 3.093c1.999-.95 2.47-1.373 3.223-1.059.728.302.764.88 1.529 3.027h4.374c.758-2.131.799-2.723 1.537-3.031.745-.308 1.186.099 3.215 1.062l3.093-3.093c-.975-2.05-1.362-2.492-1.059-3.223.3-.726.88-.763 3.027-1.528zm-4.875.764c-.577 1.394-.068 2.458.488 3.578l-1.084 1.084c-1.093-.543-2.161-1.076-3.573-.49-1.396.581-1.79 1.693-2.188 2.877h-1.534c-.398-1.185-.791-2.297-2.183-2.875-1.419-.588-2.507-.045-3.579.488l-1.083-1.084c.557-1.118 1.066-2.18.487-3.58-.579-1.391-1.691-1.784-2.876-2.182v-1.533c1.185-.398 2.297-.791 2.875-2.184.578-1.394.068-2.459-.488-3.579l1.084-1.084c1.082.538 2.162 1.077 3.58.488 1.392-.577 1.785-1.69 2.183-2.875h1.534c.398 1.185.792 2.297 2.184 2.875 1.419.588 2.506.045 3.579-.488l1.084 1.084c-.556 1.121-1.065 2.187-.488 3.58.577 1.391 1.689 1.784 2.875 2.183v1.534c-1.188.398-2.302.791-2.877 2.183zm-7.125-5.951c1.654 0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 3-3zm0-2c-2.762 0-5 2.238-5 5s2.238 5 5 5 5-2.238 5-5-2.238-5-5-5z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"settings-full\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 13.616v-3.232l-2.869-1.02c-.198-.687-.472-1.342-.811-1.955l1.308-2.751-2.285-2.285-2.751 1.307c-.613-.339-1.269-.613-1.955-.811l-1.021-2.869h-3.232l-1.021 2.869c-.686.198-1.342.471-1.955.811l-2.751-1.308-2.285 2.285 1.308 2.752c-.339.613-.614 1.268-.811 1.955l-2.869 1.02v3.232l2.869 1.02c.197.687.472 1.342.811 1.955l-1.308 2.751 2.285 2.286 2.751-1.308c.613.339 1.269.613 1.955.811l1.021 2.869h3.232l1.021-2.869c.687-.198 1.342-.472 1.955-.811l2.751 1.308 2.285-2.286-1.308-2.751c.339-.613.613-1.268.811-1.955l2.869-1.02zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"emoji\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12,2c5.5,0,10,4.5,10,10s-4.5,10-10,10S2,17.5,2,12S6.5,2,12,2z M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12 S18.6,0,12,0z M18,14H6c0.3,1.5,2.8,4,6,4C15.1,18,17.7,15.5,18,14z M8.5,8C7.7,8,7,8.7,7,9.5S7.7,11,8.5,11S10,10.3,10,9.5 S9.3,8,8.5,8z M15.5,8C14.7,8,14,8.7,14,9.5s0.7,1.5,1.5,1.5c0.8,0,1.5-0.7,1.5-1.5S16.3,8,15.5,8z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"pencil\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M19.769 9.923l-12.642 12.639-7.127 1.438 1.438-7.128 12.641-12.64 5.69 5.691zm1.414-1.414l2.817-2.82-5.691-5.689-2.816 2.817 5.69 5.692z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"erase\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5.662 23l-5.369-5.365c-.195-.195-.293-.45-.293-.707 0-.256.098-.512.293-.707l14.929-14.928c.195-.194.451-.293.707-.293.255 0 .512.099.707.293l7.071 7.073c.196.195.293.451.293.708 0 .256-.097.511-.293.707l-11.216 11.219h5.514v2h-12.343zm3.657-2l-5.486-5.486-1.419 1.414 4.076 4.072h2.829zm.456-11.429l-4.528 4.528 5.658 5.659 4.527-4.53-5.657-5.657z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"move\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12 10c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm-3.857 3c-.084-.321-.143-.652-.143-1s.059-.679.143-1h-2.143v-4l-6 5 6 5v-4h2.143zm7.714-2c.084.321.143.652.143 1s-.059.679-.143 1h2.143v4l6-5-6-5v4h-2.143zm-2.857 4.857c-.321.084-.652.143-1 .143s-.679-.059-1-.143v2.143h-4l5 6 5-6h-4v-2.143zm-2-7.714c.321-.084.652-.143 1-.143s.679.059 1 .143v-2.143h4l-5-6-5 6h4v2.143z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"caret-down\" viewBox=\"0 0 8 5\">\n\t\t\t\t<path d=\"M0 0h8L4 5 0 0z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"caret-right\" viewBox=\"0 0 8 12\">\n\t\t\t\t<path d=\"M0 12V0l8 6-8 6z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"websolute\" viewBox=\"0 0 20 20\">\n\t\t\t\t<path d=\"M20 10c0 5.5-4.5 10-10 10S0 15.5 0 10 4.5 0 10 0s10 4.5 10 10m-10 2.3c.5.5 1.3.8 2.1.8s1.5-.3 2.1-.8c.5-.5.8-1.2.8-2V7.5h-1.7v2.8c0 .3-.1.6-.4.8-.1.1-.3.2-.4.3-.2.1-.3.1-.5.1s-.3 0-.5-.1c-.1-.1-.3-.2-.4-.3-.2-.2-.4-.5-.4-.8V7.6H9.2v2.8c0 .3-.1.6-.4.9-.2.2-.5.4-.8.4-.3 0-.7-.1-.9-.3-.2-.2-.4-.5-.3-.8V7.5H5v2.8c0 .7.3 1.5.8 2 .6.5 1.3.8 2.1.8.8.1 1.6-.2 2.1-.8z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"search\" viewBox=\"0 0 21 23\">\n\t\t\t\t<path d=\"M20.6 20.3l-4.9-5.2c1.2-1.7 1.8-3.7 1.8-5.7 0-5.2-3.9-9.4-8.7-9.4S0 4.2 0 9.4s3.7 7.8 6.3 8.4c1.8.4 3.9.6 7.1-.7l5.1 5.4c.5.6 1.4.6 2 .1l.1-.1c.5-.6.5-1.6 0-2.2zM15 9.4c-.2 3.5-3.2 6.1-6.7 5.8S2.2 12 2.5 8.5c.2-3.3 3-5.8 6.3-5.8 3.5.1 6.3 3.1 6.2 6.7z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"result-indicator\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M11 21.883l-6.235-7.527-.765.644 7.521 9 7.479-9-.764-.645-6.236 7.529v-21.884h-1v21.883z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"bullet\" viewBox=\"0 0 18 18\">\n\t\t\t\t<path d=\"M9 2c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7m0-2C4 0 0 4 0 9s4 9 9 9 9-4 9-9-4-9-9-9z\" opacity=\".15\" fill=\"#17265a\"></path>\n\t\t\t\t<circle cx=\"9\" cy=\"9\" r=\"4\" fill=\"#17265a\"></circle>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"play\" viewBox=\"0 0 16 20\">\n\t\t\t\t<path d=\"M0,0v19.8l15.4-11L0,0z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"play-progress\" viewBox=\"0 0 196 196\">\n\t\t\t\t<path d=\"M195.5,98c0,53.8-43.7,97.5-97.5,97.5S0.5,151.8,0.5,98S44.2,0.5,98,0.5S195.5,44.2,195.5,98z\" stroke-width=\"2px\" stroke-linecap=\"square\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"pause\" viewBox=\"0 0 16 20\">\n\t\t\t\t<path d=\"M0 0.9H4V18.9H0z\"></path>\n\t\t\t\t<path d=\"M11.4 0.9H15.4V18.9H11.4z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"wishlist-add\" viewBox=\"0 0 25 20\">\n\t\t\t\t<path d=\"M12.5,20.8c-0.3,0-0.5-0.1-0.8-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.7-0.5-1.4-0.9-2.1-1.5 c-1.1-0.8-2.1-1.6-3.1-2.4C4.2,15,3,13.8,1.9,12.4c-0.9-1.1-1.4-2.3-1.7-3.7C0.1,8.5,0.1,8.2,0,7.9l0-0.2l0.1-1.4 c0-0.1,0.1-0.3,0.1-0.4c0.1-0.3,0.1-0.7,0.3-1c0.6-1.7,1.8-3.2,3.4-4c1.5-0.8,3.3-1.1,5-0.8c1.4,0.2,2.6,0.8,3.7,1.7 c2.9-2.4,7.2-2.4,10,0.1c1.1,0.9,1.9,2.2,2.2,3.5c0.1,0.3,0.1,0.6,0.2,0.8L25,6.7l-0.1,1.4c-0.2,1.2-0.6,2.4-1.2,3.4 c-0.5,0.8-1.1,1.6-1.8,2.3c-0.8,0.9-1.7,1.7-2.6,2.5c-0.7,0.6-1.6,1.3-2.6,2c-0.8,0.5-1.5,1.1-2.3,1.6c-0.4,0.3-0.8,0.5-1.2,0.8 C13.1,20.8,12.8,20.8,12.5,20.8z M2.1,7.6c0,0.2,0.1,0.4,0.1,0.6c0.2,1.1,0.7,2,1.4,2.9c1,1.2,2.1,2.3,3.3,3.3c1,0.8,2,1.6,3,2.4 c0.7,0.5,1.4,0.9,2.1,1.4l0.5,0.3c0.2-0.2,0.5-0.3,0.7-0.5c0.8-0.5,1.5-1,2.3-1.6c0.9-0.7,1.8-1.4,2.5-1.9c0.9-0.7,1.7-1.5,2.4-2.3 c0.6-0.6,1.1-1.2,1.5-1.9c0.5-0.8,0.8-1.7,0.9-2.6c0-0.1,0-0.1,0-0.2l0-0.9c0-0.2-0.1-0.4-0.1-0.6c-0.3-1-0.8-1.9-1.6-2.5 c-2.1-1.8-5.2-1.8-7.3,0c-0.1,0.1-0.3,0.2-0.4,0.4l-0.9,1.2l-1-1.3c-0.8-0.8-1.9-1.4-3-1.6C7.2,2,5.9,2.2,4.9,2.8 c-1.1,0.6-2,1.6-2.4,2.8C2.4,5.9,2.3,6.1,2.3,6.4c0,0.1-0.1,0.3-0.1,0.4l0,0L2.1,7.6L2.1,7.6z\" clip-rule=\"evenodd\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"wishlist-added\" viewBox=\"0 0 25 20\">\n\t\t\t\t<path d=\"M12.5,20.8c-0.3,0-0.5-0.1-0.8-0.3c-0.3-0.2-0.6-0.4-0.9-0.6c-0.7-0.5-1.4-0.9-2.1-1.5 c-1.1-0.8-2.1-1.6-3.1-2.4c-1.4-1-2.6-2.2-3.7-3.6C1,11.3,0.5,10.1,0.2,8.7C0.1,8.5,0.1,8.2,0,7.9V7.7l0.1-1.4 c0-0.1,0.1-0.3,0.1-0.4c0.1-0.3,0.1-0.7,0.3-1c0.6-1.7,1.8-3.2,3.4-4c1.5-0.8,3.3-1.1,5-0.8c1.4,0.2,2.6,0.8,3.7,1.7 c2.9-2.4,7.2-2.4,10,0.1c1.1,0.9,1.9,2.2,2.2,3.5C24.9,5.7,24.9,6,25,6.2v0.5l-0.1,1.4c-0.2,1.2-0.6,2.4-1.2,3.4 c-0.5,0.8-1.1,1.6-1.8,2.3c-0.8,0.9-1.7,1.7-2.6,2.5c-0.7,0.6-1.6,1.3-2.6,2c-0.8,0.5-1.5,1.1-2.3,1.6c-0.4,0.3-0.8,0.5-1.2,0.8 C13.1,20.8,12.8,20.8,12.5,20.8z\" clip-rule=\"evenodd\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"wishlist\" viewBox=\"0 0 16 14\">\n\t\t\t\t<path d=\"M8,14c-0.2,0-0.3-0.1-0.5-0.2l-0.6-0.4c-0.5-0.3-0.9-0.6-1.4-1c-0.7-0.5-1.4-1.1-2-1.6 c-0.9-0.7-1.6-1.6-2.3-2.5C0.7,7.6,0.3,6.8,0.1,5.9c0-0.2-0.1-0.4-0.1-0.5l0-0.1l0-1c0-0.1,0-0.2,0.1-0.3c0.1-0.2,0.1-0.4,0.2-0.7 c0.4-1.1,1.2-2.1,2.2-2.7c1.8-1,4-0.8,5.5,0.6c1.8-1.6,4.6-1.6,6.4,0.1c0.7,0.6,1.2,1.5,1.4,2.4C15.9,3.8,15.9,4,16,4.2l0,0.3l0,0.9 c-0.1,0.8-0.4,1.6-0.8,2.3c-0.3,0.5-0.7,1-1.1,1.5c-0.5,0.6-1.1,1.1-1.7,1.7c-0.4,0.4-1,0.9-1.7,1.3c-0.5,0.4-1,0.7-1.5,1.1 c-0.2,0.2-0.5,0.3-0.7,0.5C8.4,13.9,8.2,14,8,14z M1.4,5.1c0,0.1,0.1,0.3,0.1,0.4c0.1,0.7,0.4,1.4,0.9,1.9C2.9,8.3,3.6,9,4.4,9.7 c0.6,0.5,1.3,1.1,1.9,1.6c0.4,0.3,0.9,0.6,1.3,0.9c0.1,0.1,0.2,0.2,0.3,0.2c0.2-0.1,0.3-0.2,0.5-0.3c0.5-0.3,1-0.7,1.5-1 c0.6-0.4,1.2-0.9,1.6-1.3c0.5-0.5,1.1-1,1.5-1.5c0.4-0.4,0.7-0.8,1-1.3c0.3-0.5,0.5-1.1,0.6-1.7c0,0,0-0.1,0-0.1l0-0.6 c0-0.1,0-0.3-0.1-0.4c-0.2-0.7-0.5-1.2-1-1.7c-1.3-1.2-3.4-1.2-4.7,0C8.7,2.4,8.6,2.5,8.5,2.6L8,3.4L7.3,2.5 C6.3,1.4,4.5,1.1,3.1,1.9C2.4,2.3,1.8,3,1.6,3.8C1.5,3.9,1.5,4.1,1.4,4.3L1.4,4.6l0,0L1.4,5.1L1.4,5.1z\" clip-rule=\"evenodd\" fill-rule=\"evenodd\" ></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"expand\" viewBox=\"0 0 29 30\">\n\t\t\t\t<path d=\"M26 16.3V5.9L2.2 29.7.1 27.6 24 3.3H13v-3h16v16h-3z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"download\" viewBox=\"0 0 9 13\">\n\t\t\t\t<path d=\"M8.5 7.9c-.3-.4-.8-.4-1.2-.1l-.1.1-2 2V1.2c0-.2-.1-.4-.2-.6-.2-.3-.7-.3-1 0-.2.2-.3.4-.3.6v8.6l-2-2c-.2-.1-.4-.2-.7-.2-.2 0-.4.1-.6.3-.1.2-.1.4-.1.6 0 .2.1.4.2.5l3.4 3.4c.2.2.4.2.6.2.2 0 .4-.1.6-.2L8.4 9c.2-.1.2-.3.3-.6 0-.1-.1-.4-.2-.5z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"upload\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M10 9H4l8-9 8 9h-6v11h-4V9zm11 11v2H3v-2H1v4h22v-4h-2z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"user\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418C20.452 4.766 16.983 0 12 0 6.918 0 3.536 4.949 8.268 13.678c1.597 2.945-1.725 3.641-5.09 4.418C.105 18.806-.01 20.332 0 23l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"back\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2.117 12l7.527 6.235L9 19l-9-7.521L9 4l.645.764L2.116 11H24v1H2.117z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"add\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"remove\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 10h24v4h-24z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"link\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M6.188 8.719c.439-.439.926-.801 1.444-1.087 2.887-1.591 6.589-.745 8.445 2.069l-2.246 2.245c-.644-1.469-2.243-2.305-3.834-1.949-.599.134-1.168.433-1.633.898l-4.304 4.306c-1.307 1.307-1.307 3.433 0 4.74 1.307 1.307 3.433 1.307 4.74 0l1.327-1.327c1.207.479 2.501.67 3.779.575l-2.929 2.929c-2.511 2.511-6.582 2.511-9.093 0s-2.511-6.582 0-9.093l4.304-4.306zm6.836-6.836l-2.929 2.929c1.277-.096 2.572.096 3.779.574l1.326-1.326c1.307-1.307 3.433-1.307 4.74 0 1.307 1.307 1.307 3.433 0 4.74l-4.305 4.305c-1.311 1.311-3.44 1.3-4.74 0-.303-.303-.564-.68-.727-1.051l-2.246 2.245c.236.358.481.667.796.982.812.812 1.846 1.417 3.036 1.704 1.542.371 3.194.166 4.613-.617.518-.286 1.005-.648 1.444-1.087l4.304-4.305c2.512-2.511 2.512-6.582.001-9.093-2.511-2.51-6.581-2.51-9.092 0z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"up\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M7 11h-6l11-11 11 11h-6v13h-10z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"down\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17,13h6L12,24L1,13h6V0h10V13z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"waiting-room\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2,6c0-2.2,1.8-4,4-4h12c2.2,0,4,1.8,4,4v12c0,2.2-1.8,4-4,4H6c-2.2,0-4-1.8-4-4V6z\" opacity=\".2\"></path>\n\t\t\t\t<path d=\"M17.8,10.7c0.7,0,1.3,0.6,1.3,1.3s-0.6,1.3-1.3,1.3H6.2c-0.7,0-1.3-0.6-1.3-1.3s0.6-1.3,1.3-1.3H17.8z M19.7,12 c0-1.1-0.9-1.9-1.9-1.9H6.2c-1.1,0-1.9,0.9-1.9,1.9s0.9,1.9,1.9,1.9h11.6C18.9,13.9,19.7,13.1,19.7,12z M13.9,11.4H6.2 c-0.4,0-0.6,0.3-0.6,0.6s0.3,0.6,0.6,0.6h7.7c0.4,0,0.6-0.3,0.6-0.6S14.3,11.4,13.9,11.4z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"panorama\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 9 15 C 9 14.448 9.448 14 10 14 L 14 14 C 14.552 14 15 14.448 15 15 L 15 16 C 15 16.552 14.552 17 14 17 L 10 17 C 9.448 17 9 16.552 9 16 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t\t<path d=\"M 7 8 C 7 7.448 7.448 7 8 7 L 16 7 C 16.552 7 17 7.448 17 8 L 17 12 C 17 12.552 16.552 13 16 13 L 8 13 C 7.448 13 7 12.552 7 12 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"panorama-grid\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 7.333 8.333 C 7.333 7.781 7.781 7.333 8.333 7.333 L 10.333 7.333 C 10.886 7.333 11.333 7.781 11.333 8.333 L 11.333 10.333 C 11.333 10.886 10.886 11.333 10.333 11.333 L 8.333 11.333 C 7.781 11.333 7.333 10.886 7.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t\t<path d=\"M 12.333 8.333 C 12.333 7.781 12.781 7.333 13.333 7.333 L 15.333 7.333 C 15.886 7.333 16.333 7.781 16.333 8.333 L 16.333 10.333 C 16.333 10.886 15.886 11.333 15.333 11.333 L 13.333 11.333 C 12.781 11.333 12.333 10.886 12.333 10.333 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t\t<path d=\"M 7.333 13.667 C 7.333 13.114 7.781 12.667 8.333 12.667 L 10.333 12.667 C 10.886 12.667 11.333 13.114 11.333 13.667 L 11.333 15.667 C 11.333 16.219 10.886 16.667 10.333 16.667 L 8.333 16.667 C 7.781 16.667 7.333 16.219 7.333 15.667 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t\t<path d=\"M 12.333 13.667 C 12.333 13.114 12.781 12.667 13.333 12.667 L 15.333 12.667 C 15.886 12.667 16.333 13.114 16.333 13.667 L 16.333 15.667 C 16.333 16.219 15.886 16.667 15.333 16.667 L 13.333 16.667 C 12.781 16.667 12.333 16.219 12.333 15.667 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.4\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"room-3d\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 6.6 9.056 C 6.6 8.533 6.905 8.059 7.381 7.842 L 8.995 7.108 C 9.436 6.907 9.938 7.23 9.938 7.715 L 9.938 16.272 C 9.938 16.757 9.436 17.08 8.995 16.879 L 7.381 16.145 C 6.905 15.928 6.6 15.454 6.6 14.931 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 10.754 7.453 C 10.754 6.795 11.378 6.316 12.014 6.487 L 16.32 7.647 C 17.193 7.882 17.8 8.674 17.8 9.578 L 17.8 14.105 C 17.8 15.009 17.193 15.801 16.32 16.036 L 12.014 17.196 C 11.378 17.367 10.754 16.889 10.754 16.231 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"model\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M 11.298 7.283 C 11.602 6.729 12.398 6.729 12.702 7.283 L 14.009 9.673 C 14.082 9.807 14.193 9.918 14.327 9.991 L 16.717 11.298 C 17.271 11.602 17.271 12.398 16.717 12.702 L 14.327 14.009 C 14.193 14.082 14.082 14.193 14.009 14.327 L 12.702 16.717 C 12.398 17.271 11.602 17.271 11.298 16.717 L 9.991 14.327 C 9.918 14.193 9.807 14.082 9.673 14.009 L 7.283 12.702 C 6.729 12.398 6.729 11.602 7.283 11.298 L 9.673 9.991 C 9.807 9.918 9.918 9.807 9.991 9.673 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"media\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2,6c0-2.2,1.8-4,4-4h12c2.2,0,4,1.8,4,4v12c0,2.2-1.8,4-4,4H6c-2.2,0-4-1.8-4-4V6z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M12,19c-2.2,0-4.3-1-5.6-2.7L7,15.9c1.2,1.5,3,2.4,5,2.4c1.9,0,3.8-0.9,5-2.4l0.6,0.4C16.3,18,14.2,19,12,19z M5.5,14.7C5.2,13.8,5,12.8,5,12c0-3.5,2.7-6.5,6.2-7v0.6C8,6.1,5.7,8.8,5.7,12c0,0.8,0.1,1.5,0.4,2.4L5.5,14.7z M18,14.4 c0.3-0.8,0.4-1.6,0.4-2.4c0-3.2-2.3-5.9-5.5-6.4c0-0.2,0-0.5,0-0.6c3.5,0.4,6.2,3.4,6.2,7c0,0.8-0.2,1.8-0.5,2.7L18,14.4z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M10.2,15V8.9l5.5,3.1L10.2,15z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"nav\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 6.5 8.667 C 6.5 8.114 6.948 7.667 7.5 7.667 L 16.5 7.667 C 17.052 7.667 17.5 8.114 17.5 8.667 L 17.5 14.495 C 17.5 15.046 17.053 15.494 16.502 15.495 L 14.189 15.499 C 13.959 15.5 13.736 15.58 13.558 15.725 L 12.211 16.827 C 12.088 16.928 11.912 16.928 11.789 16.827 L 10.442 15.725 C 10.264 15.58 10.041 15.5 9.811 15.499 L 7.498 15.495 C 6.947 15.494 6.5 15.046 6.5 14.495 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"plane\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(4.667 11.5) rotate(-90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(17.333 11.5) rotate(90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 8 9 C 8 8.448 8.448 8 9 8 L 15 8 C 15.552 8 16 8.448 16 9 L 16 15 C 16 15.552 15.552 16 15 16 L 9 16 C 8.448 16 8 15.552 8 15 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"curved-plane\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(4.667 11.5) rotate(-90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 2 1 L 1 0 L 0 1\" transform=\"translate(17.333 11.5) rotate(90 1 0.5)\" fill=\"transparent\" opacity=\"0.4\" stroke=\"var(--svg-icon-tint)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path>\n\t\t\t\t<path d=\"M 8 9 C 8 8.448 8.448 8 9 8 L 15 8 C 15.552 8 16 8.448 16 9 L 16 15 C 16 15.552 15.552 16 15 16 L 9 16 C 8.448 16 8 15.552 8 15 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"texture\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 7.333 8.95 C 7.333 8.274 7.839 7.705 8.511 7.626 L 14.805 6.886 C 15.796 6.769 16.667 7.543 16.667 8.541 L 16.667 15.49 C 16.667 16.477 15.814 17.247 14.833 17.148 L 8.533 16.513 C 7.852 16.444 7.333 15.871 7.333 15.187 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"gltf\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.3\"></path>\n\t\t\t\t<path d=\"M 11.298 7.283 C 11.602 6.729 12.398 6.729 12.702 7.283 L 14.009 9.673 C 14.082 9.807 14.193 9.918 14.327 9.991 L 16.717 11.298 C 17.271 11.602 17.271 12.398 16.717 12.702 L 14.327 14.009 C 14.193 14.082 14.082 14.193 14.009 14.327 L 12.702 16.717 C 12.398 17.271 11.602 17.271 11.298 16.717 L 9.991 14.327 C 9.918 14.193 9.807 14.082 9.673 14.009 L 7.283 12.702 C 6.729 12.398 6.729 11.602 7.283 11.298 L 9.673 9.991 C 9.807 9.918 9.918 9.807 9.991 9.673 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"tile\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M 2 6 C 2 3.791 3.791 2 6 2 L 18 2 C 20.209 2 22 3.791 22 6 L 22 18 C 22 20.209 20.209 22 18 22 L 6 22 C 3.791 22 2 20.209 2 18 Z\" fill=\"var(--svg-icon-tint)\" opacity=\"0.2\"></path>\n\t\t\t\t<path d=\"M 15.667 13 C 17.139 13 18.333 14.194 18.333 15.667 C 18.333 17.139 17.139 18.333 15.667 18.333 C 14.194 18.333 13 17.139 13 15.667 C 13 14.194 14.194 13 15.667 13 Z\" fill=\"var(--svg-icon-tint)\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"image\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5 8.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zm9 .5l-2.519 4-2.481-1.96-4 5.96h14l-5-8zm8-4v14h-20v-14h20zm2-2h-24v18h24v-18z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"video\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M2.184 7.874l-2.184-.918 2.967-2.956.933 2.164-1.716 1.71zm21.816 2.126l-3 2v4l3 2v-8zm-7-2h-7.018l.79.787c.356.355.629.769.831 1.213h4.897c.276 0 .5.224.5.5v7c0 .276-.224.5-.5.5h-11c-.276 0-.5-.224-.5-.5v-2.909l-.018-.014-1.982-1.975v5.398c0 1.104.896 2 2 2h12c1.104 0 2-.896 2-2v-8c0-1.104-.896-2-2-2zm-14.65 1.13l2.967-2.956 4.044 4.029c.819.816.819 2.14 0 2.956-.819.816-2.147.815-2.967 0l-4.044-4.029z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"stream\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M6.613 18.581m9.387-9.581c0 2.209-1.791 4-4 4s-4-1.791-4-4 1.791-4 4-4 4 1.791 4 4zm-2 0c0-1.103-.896-2-2-2s-2 .897-2 2 .896 2 2 2 2-.897 2-2zm-9 0c0 3.86 3.141 7 7 7s7-3.14 7-7-3.141-7-7-7-7 3.14-7 7zm16 0c0 4.97-4.029 9-9 9s-9-4.03-9-9 4.029-9 9-9 9 4.03 9 9zm-.404 12.501c1.007 1.142-.014 2.679-1.448 2.481-1.795-.245-3.236-1.702-7.147-1.702-3.91 0-5.352 1.458-7.146 1.702-1.436.198-2.456-1.34-1.449-2.481l2.898-3.289c.559.388 1.156.725 1.79.994l-2.025 2.298c1.295-.524 3.065-1.225 5.933-1.225s4.638.7 5.933 1.224l-2.025-2.298c.634-.27 1.231-.606 1.79-.994l2.896 3.29z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"spinner\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M8.175 7.377l-3.042-5.27 1.732-1 3.045 5.273c-.635.238-1.222.573-1.735.997zm-.799.8l-5.27-3.042-1 1.732 5.274 3.045c.237-.635.572-1.223.996-1.735zm-1.376 3.823c0-.341.035-.673.09-.999h-6.09v1.999h6.09c-.055-.326-.09-.659-.09-1zm11.351-2.705l5.208-3.007-.333-.577-5.206 3.007c.121.185.23.379.331.577zm-5.351-3.295c.341 0 .673.035.999.09v-6.09h-1.999v6.09c.326-.055.659-.09 1-.09zm3.14.894l3.004-5.204-.288-.166-3 5.197.284.173zm1.685 8.662l5.234 3.022.666-1.154-5.229-3.019c-.181.41-.408.794-.671 1.151zm-10.444-1.467l-5.274 3.046 1 1.732 5.27-3.042c-.424-.513-.759-1.1-.996-1.736zm11.594-2.589l.025.5-.025.5h6.025v-1h-6.025zm-3.727 6.061l3.03 5.249 1.442-.833-3.031-5.25c-.437.34-.92.623-1.441.834zm-2.248.439c-.341 0-.674-.035-1-.09v6.09h1.999v-6.09c-.326.055-.658.09-.999.09zm-3.824-1.376l-3.042 5.27 1.732 1 3.045-5.274c-.635-.237-1.222-.572-1.735-.996z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"update\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M23 12c0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.655 1.314l1.858 2.686h-6.994l2.152-7 1.849 2.673c1.684-1.049 3.659-1.673 5.79-1.673 6.074 0 11 4.925 11 11zm-6.354 7.692c-1.357.826-2.944 1.308-4.646 1.308-4.962 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"edit\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 1h24v2h-24v-2zm11 7h13v-2h-13v2zm0 5h13v-2h-13v2zm0 5h13v-2h-13v2zm-11 5h24v-2h-24v2zm8-17l-8 6 8 6v-12z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"lock\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M18 10v-4c0-3.313-2.687-6-6-6s-6 2.687-6 6v4h-3v14h18v-14h-3zm-10 0v-4c0-2.206 1.794-4 4-4s4 1.794 4 4v4h-8z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"volume-off\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm15.324 4.993l1.646-1.659-1.324-1.324-1.651 1.67-1.665-1.648-1.316 1.318 1.67 1.657-1.65 1.669 1.318 1.317 1.658-1.672 1.666 1.653 1.324-1.325-1.676-1.656z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"volume-on\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M5 17h-5v-10h5v10zm2-10v10l9 5v-20l-9 5zm11.008 2.093c.742.743 1.2 1.77 1.198 2.903-.002 1.133-.462 2.158-1.205 2.9l1.219 1.223c1.057-1.053 1.712-2.511 1.715-4.121.002-1.611-.648-3.068-1.702-4.125l-1.225 1.22zm2.142-2.135c1.288 1.292 2.082 3.073 2.079 5.041s-.804 3.75-2.096 5.039l1.25 1.254c1.612-1.608 2.613-3.834 2.616-6.291.005-2.457-.986-4.681-2.595-6.293l-1.254 1.25z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"fullscreen-off\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M15 2h2v5h7v2h-9v-7zm9 13v2h-7v5h-2v-7h9zm-15 7h-2v-5h-7v-2h9v7zm-9-13v-2h7v-5h2v7h-9z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"fullscreen-on\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 9h-2v-7h-7v-2h9v9zm-9 15v-2h7v-7h2v9h-9zm-15-9h2v7h7v2h-9v-9zm9-15v2h-7v7h-2v-9h9z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"navmap\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M24 22.586l-2.823-2.823c.526-.792.836-1.74.836-2.763 0-2.762-2.238-5-5-5s-5 2.238-5 5 2.238 5 5 5c1.016 0 1.957-.307 2.746-.827l2.827 2.827 1.414-1.414zm-9.987-5.586c0-1.654 1.346-3 3-3s3 1.346 3 3-1.346 3-3 3-3-1.346-3-3zm-4 0l.002-.034-3.015 2.175v-13.068l4-2.886v10.247c.508-.854 1.189-1.591 2-2.161v-8.086l4 2.886v3.927h.013c.336 0 .664.032.987.078v-4.007l4-2.479v8.504c1.188 1.208 1.936 2.844 2 4.653v-16.749l-6.455 4-5.545-4-5.545 4-6.455-4v18l6.455 4 3.91-2.82c-.226-.687-.352-1.419-.352-2.18zm-4.013 2.365l-4-2.479v-13.294l4 2.479v13.294z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"screen\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M0 0v19h24v-19h-24zm22 14h-20v-12h20v12zm-6.599 7l2.599 3h-12l2.599-3h6.802z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"chat\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22 3v13h-11.643l-4.357 3.105v-3.105h-4v-13h20zm2-2h-24v16.981h4v5.019l7-5.019h13v-16.981z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"send\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M22 12l-20 12 5-12-5-12z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"users\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M10.644 17.08c2.866-.662 4.539-1.241 3.246-3.682-3.932-7.427-1.042-11.398 3.111-11.398 4.235 0 7.054 4.124 3.11 11.398-1.332 2.455.437 3.034 3.242 3.682 2.483.574 2.647 1.787 2.647 3.889v1.031h-18c0-2.745-.22-4.258 2.644-4.92zm-12.644 4.92h7.809c-.035-8.177 3.436-5.313 3.436-11.127 0-2.511-1.639-3.873-3.748-3.873-3.115 0-5.282 2.979-2.333 8.549.969 1.83-1.031 2.265-3.181 2.761-1.862.43-1.983 1.34-1.983 2.917v.773z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"virtual-tour\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M17 17h-10v-10h10v10zm7 3l-5-3v-10l5-3v16zm-24-16l5 3v10l-5 3v-16z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"live-meeting\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M18 18h6v6h-6v-6zm-9 6h6v-6h-6v6zm-9 0h6v-6h-6v6zm0-8h24v-16h-24v16z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"control\" viewBox=\"0 0 24 24\">\n\t\t\t\t<circle cx=\"7\" cy=\"10\" r=\"1\"></circle>\n\t\t\t\t<path d=\"M17,3H7c-3.9,0-7,3.1-7,7v6c0,2.8,2.2,5,5,5c2.4,0,4.4-1.7,4.9-4h4.2c0.5,2.7,3.2,4.5,5.9,3.9c2.3-0.5,4-2.5,4-4.9v-6 C24,6.1,20.9,3,17,3z M17,7c0.6,0,1,0.4,1,1s-0.4,1-1,1s-1-0.4-1-1S16.4,7,17,7z M7,13c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3 S8.7,13,7,13z M15,11c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S15.6,11,15,11z M17,13c-0.6,0-1-0.4-1-1c0-0.6,0.4-1,1-1s1,0.4,1,1 C18,12.5,17.6,13,17,13z M19,11c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S19.6,11,19,11z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"spy\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path fill-rule=\"evenodd\" d=\"M0.2,11.4c5.2-8.6,18.3-8.5,23.6,0c0.2,0.3,0.2,0.8,0,1.2c-5.3,8.4-18.4,8.6-23.6,0 C-0.1,12.2-0.1,11.7,0.2,11.4z M12,7.8c2.3,0,4.2,1.9,4.2,4.3s-1.9,4.2-4.2,4.2S7.8,14.3,7.8,12S9.7,7.8,12,7.8z\" clip-rule=\"evenodd\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"joystick\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M10.7,10.5V16H9.3C8.6,16,8,16.6,8,17.3h8c0-0.7-0.6-1.3-1.3-1.3h-1.3v-5.5c2.8-0.7,4.5-3.6,3.8-6.5 c-0.7-2.8-3.6-4.5-6.5-3.8S6.1,3.9,6.9,6.7C7.3,8.6,8.8,10,10.7,10.5z\"></path>\n\t\t\t\t<path d=\"M1.4,18.6h21.2c0.7,0,1.3,0.6,1.3,1.3v2.7c0,0.7-0.6,1.3-1.3,1.3H1.4c-0.7,0-1.3-0.6-1.3-1.3V20 C0.1,19.2,0.7,18.6,1.4,18.6z\"></path>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"navinfo\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M12,2c5.5,0,10,4.5,10,10s-4.5,10-10,10S2,17.5,2,12S6.5,2,12,2z M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12 S18.6,0,12,0z\"/>\n\t\t\t\t<path d=\"M13,18h-2v-8h2V18z M12,5.8c0.7,0,1.2,0.6,1.2,1.2S12.7,8.2,12,8.2S10.8,7.7,10.8,7S11.3,5.8,12,5.8z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"check\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M9,21l-9-8.6l2.8-2.9l6.2,5.9L21.2,3L24,5.8L9,21z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"duplicate\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M18,6V0H0v18h6v6h18V6H18z M6,16H2V2h14v4H6V16z M22,22H8V8h14V22z M19,14h-3v-3h-2v3h-3v2h3v3h2v-3h3V14z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"trash\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path fill-rule=\"evenodd\" d=\"M19,24H5c-1.1,0-2-0.9-2-2V5H2V3h6V1.5C8,0.7,8.7,0,9.5,0h5C15.3,0,16,0.7,16,1.5V3h6v2h-1v17 C21,23.1,20.1,24,19,24z M19,5H5v16.5C5,21.8,5.2,22,5.5,22h13c0.3,0,0.5-0.2,0.5-0.5V5z M10,9c0-0.6-0.4-1-1-1S8,8.4,8,9v9 c0,0.6,0.4,1,1,1s1-0.4,1-1V9z M16,9c0-0.6-0.4-1-1-1s-1,0.4-1,1v9c0,0.6,0.4,1,1,1s1-0.4,1-1V9z M14,2h-4v1h4V2z\" clip-rule=\"evenodd\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"flags\" viewBox=\"0 0 24 24\">\n\t\t\t\t<path d=\"M19,18c0,1.1-0.9,2-2,2s-2-0.9-2-2s0.9-2,2-2S19,16.9,19,18z M5,15c-1.7,0-3,1.3-3,3s1.3,3,3,3h14c1.7,0,3-1.3,3-3 s-1.3-3-3-3H5z M24,18c0,2.8-2.2,5-5,5H5c-2.8,0-5-2.2-5-5s2.2-5,5-5h14C21.8,13,24,15.2,24,18z M7,4C5.9,4,5,4.9,5,6s0.9,2,2,2 s2-0.9,2-2S8.1,4,7,4z M5,3C3.3,3,2,4.3,2,6s1.3,3,3,3h14c1.7,0,3-1.3,3-3s-1.3-3-3-3H5z M24,6c0,2.8-2.2,5-5,5H5c-2.8,0-5-2.2-5-5 s2.2-5,5-5h14C21.8,1,24,3.2,24,6z\"/>\n\t\t\t</symbol>\n\t\t\t<symbol id=\"b-here\" viewBox=\"0 0 270 98\">\n\t\t\t\t<path d=\"M61.5,87.9c0-2.7,0.9-5,2.8-6.9c1.9-1.9,4.2-2.8,7-2.8c1.4,0,2.7,0.2,3.9,0.8c1.2,0.5,2.2,1.2,3.2,2 c0.9,0.9,1.6,1.9,2.1,3.1s0.8,2.5,0.8,3.8s-0.2,2.6-0.8,3.8c-0.5,1.2-1.2,2.2-2.1,3.1s-1.9,1.6-3.2,2.1c-1.2,0.5-2.5,0.8-3.9,0.8 s-2.7-0.2-3.9-0.8c-1.2-0.5-2.2-1.2-3.1-2.1s-1.6-1.9-2.1-3.1S61.5,89.2,61.5,87.9z\"></path>\n\t\t\t\t<path d=\"M16,70.2H0.7v-70H16V29c0.6-1.1,1.4-2.1,2.4-3.1s2.2-1.9,3.5-2.6s2.8-1.3,4.2-1.8c1.5-0.4,3-0.6,4.6-0.6 c3.5,0,6.7,0.6,9.6,1.9s5.4,3.1,7.4,5.3c2.1,2.2,3.7,4.9,4.8,8s1.7,6.4,1.7,10.1c0,3.6-0.6,6.9-1.7,10c-1.1,3.1-2.7,5.8-4.8,8 c-2.1,2.2-4.5,4-7.4,5.3s-6.1,2-9.6,2c-1.6,0-3.1-0.2-4.6-0.7c-1.5-0.4-2.9-1-4.2-1.7c-1.3-0.7-2.5-1.5-3.5-2.5s-1.8-2-2.4-3.1 C16,63.5,16,70.2,16,70.2z M27.6,58.5c1.7,0,3.2-0.3,4.6-1c1.4-0.7,2.6-1.5,3.6-2.7c1-1.1,1.8-2.4,2.4-3.9c0.6-1.5,0.8-3.1,0.8-4.8 s-0.3-3.2-0.8-4.7c-0.6-1.5-1.4-2.8-2.4-3.9c-1-1.1-2.2-2-3.6-2.7c-1.4-0.7-2.9-1-4.6-1s-3.3,0.3-4.8,1c-1.4,0.7-2.7,1.6-3.7,2.7 c-1,1.1-1.8,2.4-2.3,3.9c-0.6,1.5-0.8,3-0.8,4.7s0.3,3.2,0.8,4.8s1.3,2.8,2.3,3.9c1,1.1,2.2,2,3.7,2.7 C24.3,58.2,25.9,58.5,27.6,58.5z\"></path>\n\t\t\t\t<path d=\"M64.1,0.2h14.8V29c1.3-2.5,3.3-4.5,6-6s5.9-2.2,9.6-2.2c3.1,0,5.8,0.5,7.9,1.4c2.1,1,3.9,2.3,5.2,4.1 c1.5,1.9,2.6,4,3.1,6.5s0.8,5.4,0.8,8.9v28.5H96.7V45.5c0-3.5-0.6-6.3-1.8-8.5c-1.2-2.2-3.5-3.2-6.7-3.2c-3.1,0-5.5,1.1-7,3.3 s-2.3,5.2-2.3,8.9v24.2H64.1V0.2z\"></path>\n\t\t\t\t<path d=\"M135.9,49.8c0.1,1.5,0.3,2.9,0.7,4.2s1,2.4,1.8,3.4s1.9,1.7,3.2,2.3s3,0.8,5,0.8c2.7,0,4.7-0.5,6-1.6 c1.4-1.1,2.3-2.4,2.9-3.9h15c-0.3,2.3-1.1,4.4-2.4,6.4c-1.2,2-2.9,3.8-4.9,5.2c-2,1.5-4.4,2.7-7.2,3.5c-2.8,0.9-5.9,1.3-9.3,1.3 c-4.2,0-7.9-0.6-11.2-1.8c-3.2-1.2-6-3-8.2-5.2c-2.2-2.3-3.9-5-5-8c-1.1-3.1-1.7-6.5-1.7-10.2c0-3.5,0.5-6.8,1.6-9.9s2.7-5.8,4.9-8 c2.2-2.3,4.8-4.1,8-5.5c3.2-1.3,6.8-2,11-2c3.8,0,7.2,0.6,10.2,1.8c3,1.2,5.6,2.8,7.8,4.8s3.8,4.3,5,7s1.8,5.5,1.8,8.4 c0,1,0,2.1,0,3.2c0,1.1-0.2,2.4-0.5,3.9h-34.5V49.8z M146.2,31c-3,0-5.5,0.9-7.4,2.6c-1.9,1.7-2.9,4.2-2.9,7.5h20.2 c0-3.1-0.9-5.6-2.8-7.4C151.5,31.9,149.1,31,146.2,31z\"></path>\n\t\t\t\t<path d=\"M216.1,36c-1.1-0.3-2-0.5-2.7-0.6c-0.7-0.1-1.6-0.1-2.7-0.1c-4.2,0-7.6,1.2-10.1,3.7s-3.8,6.6-3.8,12.5v18.8h-15.3V22h15.3 v7.8c1.1-2.3,3-4.3,5.7-6c2.6-1.7,5.6-2.6,9-2.6c1.8,0,3.3,0.3,4.6,0.8V36z\"></path>\n\t\t\t\t<path d=\"M234.3,49.8c0.1,1.5,0.3,2.9,0.7,4.2s1,2.4,1.8,3.4s1.9,1.7,3.2,2.3s3,0.8,5,0.8c2.7,0,4.7-0.5,6-1.6 c1.4-1.1,2.3-2.4,2.9-3.9h15c-0.3,2.3-1.1,4.4-2.4,6.4c-1.2,2-2.9,3.8-4.9,5.2c-2,1.5-4.4,2.7-7.2,3.5c-2.8,0.9-5.9,1.3-9.3,1.3 c-4.2,0-7.9-0.6-11.2-1.8c-3.2-1.2-6-3-8.2-5.2c-2.2-2.3-3.9-5-5-8c-1.1-3.1-1.7-6.5-1.7-10.2c0-3.5,0.5-6.8,1.6-9.9s2.7-5.8,4.9-8 c2.2-2.3,4.8-4.1,8-5.5c3.2-1.3,6.8-2,11-2c3.8,0,7.2,0.6,10.2,1.8c3,1.2,5.6,2.8,7.8,4.8c2.2,2,3.8,4.3,5,7s1.8,5.5,1.8,8.4 c0,1,0,2.1,0,3.2c0,1.1-0.2,2.4-0.5,3.9h-34.5V49.8z M244.6,31c-3,0-5.5,0.9-7.4,2.6c-1.9,1.7-2.9,4.2-2.9,7.5h20.2 c0-3.1-0.9-5.6-2.8-7.4C249.9,31.9,247.5,31,244.6,31z\"></path>\n\t\t\t</symbol>\n\t\t</svg>\n\t";
@@ -27039,13 +27540,13 @@ var AppComponent = /*#__PURE__*/function (_Component) {
   var _proto = AppComponent.prototype;
 
   _proto.onInit = function onInit() {
-    // console.log('AppComponent.onInit', window.location.pathname);
-    if (window.location.pathname.indexOf('embed') !== -1) {
-      environment.flags.like = false;
-    }
-
     RouterService.event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
       var route = event.route;
+
+      if (route && route.params.mode === 'embed') {
+        environment.flags.like = false;
+      }
+
       var routes = AppRoutes;
       LanguageService.setRoute(route, routes);
     });
@@ -30912,374 +31413,6 @@ LanguageComponent.meta = {
   template:
   /* html */
   "\n\t\t<button type=\"button\" class=\"btn--language\" (click)=\"toggleLanguages()\" *if=\"languageService.hasLanguages\"><span [innerHTML]=\"languageService.activeLanguage.title\"></span> <svg viewBox=\"0 0 8 5\"><use xlink:href=\"#caret-down\"></use></svg></button>\n\t\t<ul class=\"nav--language\" *if=\"showLanguages\">\n\t\t\t<li (click)=\"setLanguage(language)\" *for=\"let language of languageService.languages\"><span [innerHTML]=\"language.title\"></span></li>\n\t\t</ul>\n\t"
-};var LayoutComponent = /*#__PURE__*/function (_Component) {
-  _inheritsLoose(LayoutComponent, _Component);
-
-  function LayoutComponent() {
-    return _Component.apply(this, arguments) || this;
-  }
-
-  var _proto = LayoutComponent.prototype;
-
-  _proto.onInit = function onInit() {
-    var _this = this;
-
-    var meetingUrl = this.meetingUrl;
-    var embedViewId = meetingUrl.embedViewId;
-    this.state = {
-      status: LocationService.get('status') || AgoraStatus.Connected,
-      role: LocationService.get('role') || RoleType.Publisher,
-      // Publisher, Attendee, Streamer, Viewer, SmartDevice, SelfService, Embed
-      membersCount: 3,
-      controlling: false,
-      spying: false,
-      silencing: false,
-      hosted: true,
-      chat: false,
-      chatDirty: true,
-      name: 'Jhon Appleseed',
-      uid: '7341614597544882',
-      showNavInfo: true
-    };
-    this.state.live = this.state.role === RoleType.SelfService || this.state.role === RoleType.Embed || DEBUG ? false : true;
-    this.state.navigable = embedViewId == null;
-    this.state.mode = UserService.getMode(this.state.role);
-    this.view = {
-      likes: 41
-    };
-    this.local = {};
-    this.screen = null;
-    this.remoteScreen_ = null;
-    this.media = null;
-    this.hasScreenViewItem = false;
-    this.media = true;
-    this.remotes = new Array(8).fill(0).map(function (x, i) {
-      return {
-        id: i + 1
-      };
-    });
-    this.languageService = LanguageService;
-    this.showLanguages = false;
-    StateService.patchState(this.state);
-    this.fullscreen$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
-    var vrService = this.vrService = VRService.getService();
-    console.log('LayoutComponent', this); // console.log(AgoraService.getUniqueUserId());
-
-    setTimeout(function () {
-      var type = ToastType.Dialog;
-
-      switch (type) {
-        case ToastType.Info:
-          ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_sent')
-          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
-            if (event instanceof ToastResolveEvent) {
-              console.log('ToastResolveEvent', event);
-            }
-          });
-          break;
-
-        case ToastType.Alert:
-          ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_sent'),
-            type: type,
-            position: ToastPosition.BottomRight
-          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
-            if (event instanceof ToastResolveEvent) {
-              console.log('ToastResolveEvent', event);
-            } else if (event instanceof ToastRejectEvent) {
-              console.log('ToastRejectEvent', event);
-            }
-          });
-          break;
-
-        case ToastType.Dialog:
-          ToastService.open$({
-            message: LabelPipe.transform('bhere_support_request_dialog'),
-            acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
-            rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
-            type: type,
-            position: ToastPosition.BottomRight
-          }).pipe(operators.takeUntil(_this.unsubscribe$)).subscribe(function (event) {
-            if (event instanceof ToastResolveEvent) {
-              console.log('ToastResolveEvent', event);
-            } else if (event instanceof ToastRejectEvent) {
-              console.log('ToastRejectEvent', event);
-            }
-          });
-          break;
-      }
-    }, 3000);
-  };
-
-  _proto.setLanguage = function setLanguage(language) {
-    var _this2 = this;
-
-    this.languageService.setLanguage$(language).pipe(first()).subscribe(function (_) {
-      _this2.showLanguages = false;
-
-      _this2.pushChanges();
-    });
-  };
-
-  _proto.toggleLanguages = function toggleLanguages() {
-    this.showLanguages = !this.showLanguages;
-    this.pushChanges();
-  };
-
-  _proto.patchState = function patchState(state) {
-    this.state = Object.assign({}, this.state, state);
-    this.screen = this.state.screen || null;
-    this.remoteScreen = this.screen;
-    this.pushChanges();
-  };
-
-  _proto.toggleCamera = function toggleCamera() {
-    this.patchState({
-      cameraMuted: !this.state.cameraMuted
-    });
-  };
-
-  _proto.toggleAudio = function toggleAudio() {
-    this.patchState({
-      audioMuted: !this.state.audioMuted
-    });
-  };
-
-  _proto.toggleScreen = function toggleScreen() {
-    this.patchState({
-      screen: !this.state.screen
-    });
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.toggleVolume = function toggleVolume() {
-    this.patchState({
-      volumeMuted: !this.state.volumeMuted
-    });
-  };
-
-  _proto.toggleMode = function toggleMode() {
-    var mode = this.state.mode === UIMode.VirtualTour ? UIMode.LiveMeeting : UIMode.VirtualTour;
-    this.patchState({
-      mode: mode
-    }); // this.pushChanges();
-  };
-
-  _proto.toggleFullScreen = function toggleFullScreen() {
-    var _getContext = rxcomp.getContext(this),
-        node = _getContext.node;
-
-    var fullScreen = !this.state.fullScreen;
-
-    if (fullScreen) {
-      if (node.requestFullscreen) {
-        node.requestFullscreen();
-      } else if (node.webkitRequestFullscreen) {
-        node.webkitRequestFullscreen();
-      } else if (node.msRequestFullscreen) {
-        node.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    } // this.patchState({ fullScreen });
-
-  };
-
-  _proto.fullscreen$ = function fullscreen$() {
-    var _this3 = this;
-
-    return rxjs.fromEvent(document, 'fullscreenchange').pipe(operators.tap(function (_) {
-      var fullScreen = document.fullscreenElement != null; // console.log('fullscreen$', fullScreen);
-
-      _this3.patchState({
-        fullScreen: fullScreen
-      });
-    }));
-  };
-
-  _proto.toggleChat = function toggleChat() {
-    this.patchState({
-      chat: !this.state.chat,
-      chatDirty: false
-    });
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.toggleNavInfo = function toggleNavInfo() {
-    this.patchState({
-      showNavInfo: !this.state.showNavInfo
-    });
-  };
-
-  _proto.onBack = function onBack() {
-    console.log('LayoutComponent.onBack');
-  };
-
-  _proto.onChatClose = function onChatClose() {
-    this.patchState({
-      chat: false
-    });
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  _proto.onToggleControl = function onToggleControl(remoteId) {
-    var controlling = this.state.controlling === remoteId ? null : remoteId;
-    this.patchState({
-      controlling: controlling,
-      spying: false
-    });
-  };
-
-  _proto.onToggleSilence = function onToggleSilence() {
-    this.patchState({
-      silencing: !this.state.silencing
-    });
-  };
-
-  _proto.onToggleSpy = function onToggleSpy(remoteId) {
-    var spying = this.state.spying === remoteId ? null : remoteId;
-    this.patchState({
-      spying: spying,
-      controlling: false
-    });
-  };
-
-  _proto.addLike = function addLike() {
-    this.view.liked = true; // view.liked;
-
-    this.showLove(this.view);
-  };
-
-  _proto.showLove = function showLove(view) {
-    var _this4 = this;
-
-    if (view && this.view.id === view.id) {
-      var skipTimeout = this.view.showLove;
-      this.view.likes = view.likes;
-      this.view.showLove = true;
-      this.pushChanges();
-
-      if (!skipTimeout) {
-        setTimeout(function () {
-          _this4.view.showLove = false;
-
-          _this4.pushChanges();
-        }, 3100);
-      }
-    }
-  };
-
-  _proto.disconnect = function disconnect() {};
-
-  _createClass(LayoutComponent, [{
-    key: "meetingUrl",
-    get: function get() {
-      if (!this.meetingUrl_) {
-        this.meetingUrl_ = new MeetingUrl();
-      }
-
-      return this.meetingUrl_;
-    }
-  }, {
-    key: "isVirtualTourUser",
-    get: function get() {
-      return [RoleType.Publisher, RoleType.Attendee, RoleType.Streamer, RoleType.Viewer].indexOf(this.state.role) !== -1;
-    }
-  }, {
-    key: "isEmbed",
-    get: function get() {
-      var isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
-      return isEmbed;
-    }
-  }, {
-    key: "isNavigable",
-    get: function get() {
-      var embedViewId = this.meetingUrl.embedViewId;
-      var navigable = embedViewId == null;
-      return navigable;
-    }
-  }, {
-    key: "showNavInfoToggler",
-    get: function get() {
-      return environment.flags.hideNavInfo && this.state.mode !== UIMode.LiveMeeting;
-    }
-  }, {
-    key: "uiClass",
-    get: function get() {
-      var uiClass = {};
-      uiClass[this.state.role] = true; // uiClass[this.state.mode] = true;
-
-      uiClass.chat = this.state.chat;
-      uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
-      uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
-      uiClass.media = !uiClass.remotes && this.media;
-      uiClass.locked = this.locked;
-      return uiClass;
-    }
-  }, {
-    key: "remoteClass",
-    get: function get() {
-      return "group--remote--" + Math.min(9, this.remotes.length);
-    }
-  }, {
-    key: "controlled",
-    get: function get() {
-      return this.state.controlling && this.state.controlling !== this.state.uid;
-    }
-  }, {
-    key: "controlling",
-    get: function get() {
-      return this.state.controlling && this.state.controlling === this.state.uid;
-    }
-  }, {
-    key: "silencing",
-    get: function get() {
-      return StateService.state.silencing;
-    }
-  }, {
-    key: "silenced",
-    get: function get() {
-      return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-    }
-  }, {
-    key: "spyed",
-    get: function get() {
-      return this.state.spying && this.state.spying === this.state.uid;
-    }
-  }, {
-    key: "spying",
-    get: function get() {
-      return this.state.spying && this.state.spying !== this.state.uid;
-    }
-  }, {
-    key: "locked",
-    get: function get() {
-      return this.controlled || this.spying;
-    }
-  }, {
-    key: "remoteScreen",
-    get: function get() {
-      return this.remoteScreen_;
-    },
-    set: function set(remoteScreen) {
-      if (this.remoteScreen_ !== remoteScreen) {
-        this.remoteScreen_ = remoteScreen;
-        window.dispatchEvent(new Event('resize'));
-      }
-    }
-  }]);
-
-  return LayoutComponent;
-}(rxcomp.Component);
-LayoutComponent.meta = {
-  selector: '[layout-component]'
 };var IntersectionService = /*#__PURE__*/function () {
   function IntersectionService() {}
 
@@ -31529,10 +31662,10 @@ ModalComponent.meta = {
     var routerLink = this.routerLink;
 
     if (routerLink.length) {
-      var routePath = RouterService.buildPath.apply(RouterService, routerLink); // RouterService.isActive(name, params, [strictEquality], [ignoreQueryParams])
-      // console.log('RouterLinkDirective.routePath', routePath);
+      var routeUrl = RouterService.buildUrl.apply(RouterService, routerLink); // RouterService.isActive(name, params, [strictEquality], [ignoreQueryParams])
+      // console.log('RouterLinkDirective.routeUrl', routeUrl);
 
-      node.setAttribute('href', routePath.url);
+      node.setAttribute('href', routeUrl);
     } else {
       node.setAttribute('href', '');
     }
@@ -31556,6 +31689,7 @@ ModalComponent.meta = {
       };
       */
       // console.log('RouterLinkDirective.routerLink$', this.routerLink);
+      console.log(_this2.routerLink);
       RouterService.setRouterLink.apply(RouterService, _this2.routerLink);
       event.preventDefault();
       return false;
@@ -31620,7 +31754,23 @@ get urlTree(): UrlTree {
 _defineProperty(RouterLinkDirective, "meta", {
   selector: '[routerLink]',
   inputs: ['routerLink']
-});var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
+});var SlugPipe = /*#__PURE__*/function (_Pipe) {
+  _inheritsLoose(SlugPipe, _Pipe);
+
+  function SlugPipe() {
+    return _Pipe.apply(this, arguments) || this;
+  }
+
+  SlugPipe.transform = function transform(key) {
+    var url = environment.url;
+    return url[key] || "#" + key;
+  };
+
+  return SlugPipe;
+}(rxcomp.Pipe);
+SlugPipe.meta = {
+  name: 'slug'
+};var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(SupportRequestModalComponent, _Component);
 
   function SupportRequestModalComponent() {
@@ -35850,12 +36000,8 @@ ModelPlaneComponent.meta = {
   },
   outputs: ['down', 'play', 'zoom', 'currentTime'],
   inputs: ['item', 'view']
-};var LOADING_BANNER = {
-  title: LabelPipe.transform('loading')
-};
-var WAITING_BANNER = {
-  title: LabelPipe.transform('waiting_host')
-};
+};// export const WAITING_BANNER = { title: LabelPipe.transform('waiting_host') };
+
 var PANEL_RADIUS$1 = PANORAMA_RADIUS - 0.01;
 
 var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
@@ -35913,7 +36059,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
         inner.style.width = progress.value * 100 + "%";
 
         if (progress.count) {
-          _this2.title = progress.value === 0 ? LOADING_BANNER.title : progress.title;
+          _this2.title = progress.value === 0 ? LabelPipe.transform('loading') : progress.title;
         } else {
           _this2.title = _this2.getTitle();
         }
@@ -35923,7 +36069,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
 
   _proto.getTitle = function getTitle() {
     if (this.view && this.view.type.name === ViewType.WaitingRoom.name) {
-      return WAITING_BANNER.title;
+      return LabelPipe.transform('waiting_host');
     } else {
       return '';
     }
@@ -36094,7 +36240,7 @@ var ModelProgressComponent = /*#__PURE__*/function (_ModelComponent) {
       if (this.title_ !== title) {
         this.title_ = title;
 
-        if (title === WAITING_BANNER.title || title !== '' && this.visible_) {
+        if (title === LabelPipe.transform('waiting_host') || title !== '' && this.visible_) {
           this.updateProgress();
           this.show();
         } else {

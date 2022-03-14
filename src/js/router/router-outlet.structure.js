@@ -73,7 +73,7 @@ export default class RouterOutletStructure extends Structure {
 		const factory = this.getFactory(route);
 		// console.log('RouterOutletStructure.factory$', route, factory);
 		const { module, node } = getContext(this);
-		if (this.factory_ !== factory) {
+		if (true || this.factory_ !== factory) {
 			this.factory_ = factory;
 			return of(factory).pipe(
 				tap(() => {

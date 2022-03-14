@@ -56,7 +56,7 @@ export default class AgoraChatComponent extends Component {
 	onInit() {
 		this.rows = 1;
 		this.showEmoji = false;
-		this.demo = window.location.pathname.indexOf('b-here-layout.html') !== -1;
+		this.demo = window.location.pathname.indexOf('layout') !== -1;
 		const form = this.form = new FormGroup({
 			message: null,
 		});

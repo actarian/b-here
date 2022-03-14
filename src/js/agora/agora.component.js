@@ -47,8 +47,15 @@ export default class AgoraComponent extends Component {
 	}
 
 	get isEmbed() {
-		const isEmbed = window.location.href.indexOf(environment.url.embed) !== -1;
-		return isEmbed;
+		if (this.route) {
+			return this.route.params.mode === 'embed';
+		}
+	}
+
+	get isSelfServiceTour() {
+		if (this.route) {
+			return this.route.params.mode === 'selfServiceTour';
+		}
 	}
 
 	get isNavigable() {
@@ -134,10 +141,11 @@ export default class AgoraComponent extends Component {
 	}
 
 	onInit() {
-		console.log('onInit');
+		console.log('AgoraComponent.onInit', this.host);
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.platform = DeviceService.platform;
+		this.route = this.host ? this.host.route : null;
 		this.state = {};
 		this.hosted = null;
 		this.view = null;
@@ -164,8 +172,7 @@ export default class AgoraComponent extends Component {
 
 	getLinkRole() {
 		let linkRole = null;
-		// console.log('getLinkRole', window.location, environment.url.selfServiceTour);
-		if (window.location.pathname === environment.url.selfServiceTour) {
+		if (this.isSelfServiceTour) {
 			linkRole = RoleType.SelfService;
 			return linkRole;
 		}
@@ -193,6 +200,12 @@ export default class AgoraComponent extends Component {
 			).subscribe(user => {
 				this.initWithUser(user);
 			});
+		} else if (this.isSelfServiceTour) {
+			UserService.temporaryUser$(RoleType.SelfService).pipe(
+				first(),
+			).subscribe(user => {
+				this.initWithUser(user);
+			});
 		} else {
 			UserService.me$().pipe(
 				first(),
@@ -204,6 +217,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	userGuard(user) {
+		console.log('AgoraComponent.userGuard', user);
 		const linkRole = this.getLinkRole();
 		if (user && (!linkRole || user.type === linkRole)) {
 			this.initWithUser(user);
@@ -213,12 +227,12 @@ export default class AgoraComponent extends Component {
 	}
 
 	userGuardRedirect(user) {
+		console.log('AgoraComponent.userGuardRedirect', user);
 		const linkRole = this.getLinkRole();
 		if (user && (!linkRole || linkRole === user.type)) {
 			this.initWithUser(user);
 		} else if (linkRole === RoleType.Publisher || linkRole === RoleType.Attendee) {
 			RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
-			// window.location.href = environment.url.access;
 		} else {
 			this.initWithUser({ type: linkRole });
 		}
@@ -250,7 +264,7 @@ export default class AgoraComponent extends Component {
 	getPathId() {
 		let pathId = LocationService.get('pathId') || null;
 		if (pathId) {
-			console.log('AgoraComponent.getPathId', pathId);
+			// console.log('AgoraComponent.getPathId', pathId);
 			return parseInt(pathId);
 		}
 		const link = LocationService.get('link') || null;
@@ -258,12 +272,12 @@ export default class AgoraComponent extends Component {
 			const meetingId = new MeetingId(link);
 			pathId = meetingId.pathId;
 		}
-		console.log('AgoraComponent.getPathId', pathId);
+		// console.log('AgoraComponent.getPathId', pathId);
 		return pathId;
 	}
 
 	initWithUser(user) {
-		// console.log('initWithUser', user);
+		console.log('AgoraComponent.initWithUser', user);
 		// const meetingUrl = this.meetingUrl;
 		// const link = meetingUrl.link;
 		const link = LocationService.get('link') || null;
@@ -273,7 +287,6 @@ export default class AgoraComponent extends Component {
 			case RoleType.SelfService:
 				if (!user || (user.type !== RoleType.SelfService && user.type !== RoleType.Publisher)) {
 					RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
-					// window.location.href = environment.url.access;
 					return;
 				} else {
 					// forcing role type to RoleType.SelfService

@@ -380,7 +380,6 @@ export default class WorldComponent extends Component {
 				this.ambient.visible = true;
 				this.direct.visible = true;
 			}
-			// this.loading = LOADING_BANNER;
 			// this.waiting = null;
 			this.pushChanges();
 			PrefetchService.cancel();
@@ -393,7 +392,6 @@ export default class WorldComponent extends Component {
 				view.onUpdateAsset = () => {
 					this.onViewAssetDidChange();
 				};
-				// this.waiting = (view && view.type.name === 'waiting-room') ? WAITING_BANNER : null;
 				const context = getContext(this);
 				// console.log('WorldCompoent.setView.context', context);
 				if (context) {
@@ -1210,7 +1208,6 @@ export default class WorldComponent extends Component {
 	onGridMove(event) {
 		// console.log('WorldComponent.onGridMove', event, this.view);
 		this.view.items = [];
-		// this.loading = LOADING_BANNER;
 		this.pushChanges();
 		this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
 			const tile = this.view.getTile(event.indices.x, event.indices.y);

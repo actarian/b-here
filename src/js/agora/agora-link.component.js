@@ -6,14 +6,18 @@ import PathService from '../editor/path/path.service';
 import { environment } from '../environment';
 import { MeetingId, MEETING_ID_VALIDATOR } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
-import SlugPipe from '../slug/slug.pipe';
+import RoutePipe from '../router/route.pipe';
 import StateService from '../state/state.service';
 
 export default class AgoraLinkComponent extends Component {
 
-	get selfServiceTourUrl() {
+	get selfServiceTourRoute() {
 		const pathId = this.form.get('path').value;
-		return `${SlugPipe.transform('selfServiceTour')}${pathId ? `?pathId=${pathId}` : ''}`;
+		const route = [RoutePipe.transform(':lang.selfServiceTour')];
+		if (pathId) {
+			route.push({ pathId });
+		}
+		return route;
 	}
 
 	onInit() {
@@ -190,7 +194,7 @@ AgoraLinkComponent.meta = {
 				<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 					<span [innerHTML]="'bhere_take_part' | label"></span>
 				</button>
-				<a [href]="selfServiceTourUrl" class="btn--secondary" *if="state.role === 'publisher'">
+				<a [routerLink]="selfServiceTourRoute" class="btn--secondary" *if="state.role === 'publisher'">
 					<span [innerHTML]="'bhere_self_service' | label"></span>
 				</a>
 			</div>

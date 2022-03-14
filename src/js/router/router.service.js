@@ -12,6 +12,16 @@ export default class RouterService {
 		return this.router_;
 	}
 
+	static get route() {
+		let route = null;
+		const router = this.router_;
+		if (router) {
+			route = router.getState();
+			console.log('RouterService.get.route', route);
+		}
+		return route;
+	}
+
 	/*
 	static event$_ = new Subject();
 	static event$() {
@@ -95,6 +105,20 @@ export default class RouterService {
 		}
 	}
 
+	static setCurrentParams(params) {
+		const router = this.router_;
+		if (router) {
+			try {
+				const route = this.route;
+				if (route) {
+					router.replaceHistoryState(route.name, params);
+				}
+			} catch (error) {
+				console.log('RouterService.setCurrentParams.error', error);
+			}
+		}
+	}
+
 	static buildPath(route, params = null) {
 		let path = null;
 		const router = this.router_;
@@ -108,6 +132,20 @@ export default class RouterService {
 		// console.log('RouterService.buildPath', path, route, params);
 		// router.buildUrl(routeName, routeParams)
 		return path;
+	}
+
+	static buildUrl(routeName, routeParams = null) {
+		let url = null;
+		const router = this.router_;
+		if (router) {
+			try {
+				url = router.buildUrl(routeName, routeParams);
+			} catch (error) {
+				console.log('RouterService.buildUrl.error', error);
+			}
+		}
+		// console.log('RouterService.buildUrl', url, routeName, routeParams);
+		return url;
 	}
 
 	static isActive(name, params, strictEquality = false, ignoreQueryParams = true) {

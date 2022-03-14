@@ -87,7 +87,6 @@ export default class EditorComponent extends Component {
 				this.initState();
 			} else {
 				RouterService.setRouterLink(RoutePipe.transform(':lang.access'));
-				// window.location.href = environment.url.access;
 			}
 		});
 	}
@@ -251,20 +250,6 @@ export default class EditorComponent extends Component {
 		).subscribe(event => {
 			// this.pushChanges();
 		});
-	}
-
-	replaceUrl() {
-		if ('history' in window) {
-			const params = new URLSearchParams(window.location.search);
-			const debug = params.get('debug') || null;
-			const editor = params.get('editor') || null;
-			const role = params.get('role') || null;
-			const link = params.get('link') || null;
-			const name = params.get('name') || null;
-			const url = `${window.location.origin}${window.location.pathname}?link=${link}${name ? `&name=${name}` : ''}${role ? `&role=${role}` : ''}${debug ? `&debug` : ''}${editor ? `&editor` : ''}`;
-			// console.log('AgoraNameComponent.url', url);
-			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
-		}
 	}
 
 	onToggleAside() {

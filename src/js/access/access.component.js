@@ -48,8 +48,6 @@ export default class AccessComponent extends Component {
 			first(),
 		).subscribe(() => {
 			RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
-			// RouterService.navigate('tour-guidato'); // environment.url.guidedTour);
-			// window.location.href = environment.url.guidedTour;
 		});
 	}
 
@@ -188,11 +186,9 @@ export default class AccessComponent extends Component {
 						break;
 					case 'self-service-tour':
 						RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
-						// window.location.href = environment.url.selfServiceTour;
 						break;
 					case 'login':
 						RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
-						// window.location.href = environment.url.guidedTour;
 						break;
 				}
 				this.form.reset();

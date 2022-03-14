@@ -32,10 +32,10 @@ export default class RouterLinkDirective extends Directive {
 		// const routerLink = Array.isArray(this.routerLink) ? this.routerLink : [this.routerLink];
 		const routerLink = this.routerLink;
 		if (routerLink.length) {
-			const routePath = RouterService.buildPath(...routerLink);
+			const routeUrl = RouterService.buildUrl(...routerLink);
 			// RouterService.isActive(name, params, [strictEquality], [ignoreQueryParams])
-			// console.log('RouterLinkDirective.routePath', routePath);
-			node.setAttribute('href', routePath.url);
+			// console.log('RouterLinkDirective.routeUrl', routeUrl);
+			node.setAttribute('href', routeUrl);
 		} else {
 			node.setAttribute('href', '');
 		}
@@ -55,6 +55,7 @@ export default class RouterLinkDirective extends Directive {
 				};
 				*/
 				// console.log('RouterLinkDirective.routerLink$', this.routerLink);
+				console.log(this.routerLink);
 				RouterService.setRouterLink(...this.routerLink);
 				event.preventDefault();
 				return false;

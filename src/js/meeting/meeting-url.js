@@ -1,5 +1,5 @@
-import { environment } from '../environment';
 import LocationService from '../location/location.service';
+import RouterService from '../router/router.service';
 import { MeetingId } from './meeting-id';
 
 export class MeetingUrl {
@@ -50,23 +50,46 @@ export class MeetingUrl {
 		}
 	}
 
+	toParams(shareable = false) {
+		const params = {};
+		if (this.link) {
+			params.link = this.link;
+		}
+		if (this.name) {
+			params.name = this.name;
+		}
+		if (this.role && !shareable) {
+			params.role = this.role;
+		}
+		if (this.viewId) {
+			params.viewId = this.viewId;
+		}
+		if (this.pathId) {
+			params.pathId = this.pathId;
+		}
+		if (this.support) {
+			params.support = this.support;
+		}
+		return params;
+	}
+
 	toString(shareable = false) {
 		return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.pathId, this.support);
 	}
 
 	toUrl() {
-		const query = this.toString();
-		return MeetingUrl.getCurrentUrl(query);
+		const params = this.toParams();
+		return MeetingUrl.getCurrentUrl(params);
 	}
 
 	toAccessCodeUrl() {
-		const query = this.toString();
-		return MeetingUrl.getAccessCodeUrl(query);
+		const params = this.toParams();
+		return MeetingUrl.getAccessCodeUrl(params);
 	}
 
 	toGuidedTourUrl() {
-		const query = this.toString();
-		return MeetingUrl.getGuidedTourUrl(query);
+		const params = this.toParams();
+		return MeetingUrl.getGuidedTourUrl(params);
 	}
 
 	copyToClipBoard(asAccessCode = false) {
@@ -75,8 +98,8 @@ export class MeetingUrl {
 		input.style.top = '1000vh';
 		// input.style.visibility = 'hidden';
 		document.querySelector('body').appendChild(input);
-		const query = this.toString(true);
-		input.value = asAccessCode ? MeetingUrl.getAccessCodeUrl(query) : MeetingUrl.getGuidedTourUrl(query);
+		const params = this.toParams(true);
+		input.value = asAccessCode ? MeetingUrl.getAccessCodeUrl(params) : MeetingUrl.getGuidedTourUrl(params);
 		input.focus();
 		input.select();
 		input.setSelectionRange(0, 99999);
@@ -86,11 +109,14 @@ export class MeetingUrl {
 	}
 
 	replaceUrl() {
+		RouterService.setCurrentParams(this.toParams());
+		/*
 		if ('history' in window) {
 			const query = this.toString();
 			const url = MeetingUrl.getCurrentUrl(query);
 			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
 		}
+		*/
 	}
 
 	static replaceWithUser(user) {
@@ -111,19 +137,43 @@ export class MeetingUrl {
 		return meetingUrl;
 	}
 
-	static getCurrentUrl(query = '') {
+	static getCurrentUrl(params = null) {
+		const route = RouterService.route;
+		if (route) {
+			const routeName = route.name;
+			console.log('MeetingUrl.getCurrentUrl', routeName);
+			return RouterService.buildUrl(routeName, params);
+		}
+		/*
 		const url = `${window.location.origin}${window.location.pathname}${query}`;
 		return url;
+		*/
 	}
 
-	static getAccessCodeUrl(query = '') {
+	static getAccessCodeUrl(params = null) {
+		const route = RouterService.route;
+		if (route) {
+			const routeName = `${route.params.lang}.accessCode`;
+			console.log('MeetingUrl.getAccessCodeUrl', routeName);
+			return RouterService.buildUrl(routeName, params);
+		}
+		/*
 		const url = `${window.location.origin}${environment.url.accessCode}${query}`;
 		return url;
+		*/
 	}
 
-	static getGuidedTourUrl(query = '') {
+	static getGuidedTourUrl(params = null) {
+		const route = RouterService.route;
+		if (route) {
+			const routeName = `${route.params.lang}.guidedTour`;
+			console.log('MeetingUrl.getGuidedTourUrl', routeName);
+			return RouterService.buildUrl(routeName, params);
+		}
+		/*
 		const url = `${window.location.origin}${environment.url.guidedTour}${query}`;
 		return url;
+		*/
 	}
 
 	static getName(user) {

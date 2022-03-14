@@ -15,20 +15,20 @@ export class LanguageService {
 	static setAlternates(language, alternates) {
 		this.languages = alternates;
 		this.selectedLanguage = language;
-		console.log('LanguageService.setAlternates', language, alternates);
+		// console.log('LanguageService.setAlternates', language, alternates);
 	}
 
 	static setRoute(route, routes) {
 		const language = route.params.lang;
-		console.log('LanguageService.setRoute', route, route.path, language);
+		// console.log('LanguageService.setRoute', route, route.path, language);
 		const alternates = environment.languages.map(lang => {
 			const title = lang === 'it' ? 'Italiano' : 'English';
 			const alternateName = route.name.replace(new RegExp(`(^${language}$)|(^${language}\.)`), (match, g1, g2, offset) => {
-				console.log('LanguageService.match', match, g1, g2, offset);
+				// console.log('LanguageService.match', match, g1, g2, offset);
 				return g1 ? lang : `${lang}.`;
 			});
 			const alternate = routes.find(x => x.name === alternateName);
-			console.log('LanguageService.alternate', lang, alternateName, alternate);
+			// console.log('LanguageService.alternate', lang, alternateName, alternate);
 			if (alternate) {
 				return {
 					name: alternate.name,
