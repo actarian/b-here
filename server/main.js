@@ -10,11 +10,11 @@ const { apiMiddleware, uuid, setSessionUser, RoleType } = require('./api/api.js'
 function serve(options) {
 	options = options || {};
 	options.dirname = options.dirname || path.join(__dirname, '../');
+	options.baseHref = options.baseHref || '/b-here/';
 	console.log('serve', options.dirname);
 
 	const dirname = options.dirname;
 	const multipartMiddleware = multipart({ uploadDir: path.join(dirname, '/docs/temp/') });
-	const BASE_HREF = '/b-here/';
 	const ASSETS = `assets/`;
 	const ROOT = `/docs/`;
 	const PORT = process.env.PORT || 5000;
@@ -27,7 +27,6 @@ function serve(options) {
 		hostHttps: `https://localhost:${PORT_HTTPS}`,
 		charset: 'utf8',
 		assets: ASSETS,
-		baseHref: BASE_HREF,
 		cacheMode: 'file',
 		cache: path.join(dirname, `/cache/`),
 		root: ROOT,
