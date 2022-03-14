@@ -72,7 +72,7 @@ export default class ModelRoomComponent extends ModelComponent {
 		// console.log('progressRef');
 		const loader = new GLTFLoader().setPath(path);
 		// Optional: Provide a DRACOLoader instance to decode compressed mesh data
-		const decoderPath = `${environment.assets}js/draco/`;
+		const decoderPath = `${environment.dist}js/draco/`;
 		// console.log(decoderPath);
 		const dracoLoader = new DRACOLoader();
 		dracoLoader.setDecoderPath(decoderPath);

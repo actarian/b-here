@@ -99,6 +99,7 @@ export const environmentStatic = {
 		disabledViewItemTypes: ['texture'],
 	},
 	assets: '/b-here/',
+	dist: '/b-here/dist/',
 	workers: {
 		image: './js/workers/image.service.worker.js',
 		prefetch: './js/workers/prefetch.service.worker.js',

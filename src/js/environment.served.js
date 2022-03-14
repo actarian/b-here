@@ -91,6 +91,7 @@ export const environmentServed = {
 		disabledViewItemTypes: ['texture'],
 	},
 	assets: '/Modules/B-Here/Client/docs/',
+	dist: '/Modules/B-Here/Client/dist/',
 	workers: {
 		image: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
 		prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js',

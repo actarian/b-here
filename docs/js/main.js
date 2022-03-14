@@ -4095,6 +4095,7 @@ AccessCodeComponent.meta = {
     disabledViewItemTypes: ['texture']
   },
   assets: '/Modules/B-Here/Client/docs/',
+  dist: '/Modules/B-Here/Client/dist/',
   workers: {
     image: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
     prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js'
@@ -4238,6 +4239,7 @@ AccessCodeComponent.meta = {
     disabledViewItemTypes: ['texture']
   },
   assets: '/b-here/',
+  dist: '/b-here/dist/',
   workers: {
     image: './js/workers/image.service.worker.js',
     prefetch: './js/workers/prefetch.service.worker.js'
@@ -34962,7 +34964,7 @@ function DRACOWorker() {
 
     var loader = new GLTFLoader().setPath(path); // Optional: Provide a DRACOLoader instance to decode compressed mesh data
 
-    var decoderPath = environment.assets + "js/draco/"; // console.log(decoderPath);
+    var decoderPath = environment.dist + "js/draco/"; // console.log(decoderPath);
 
     var dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath(decoderPath);
@@ -36318,7 +36320,7 @@ ModelProgressComponent.meta = {
 
     var loader = new GLTFLoader().setPath(path); // Optional: Provide a DRACOLoader instance to decode compressed mesh data
 
-    var decoderPath = environment.assets + "js/draco/"; // console.log(decoderPath);
+    var decoderPath = environment.dist + "js/draco/"; // console.log(decoderPath);
 
     var dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath(decoderPath);
