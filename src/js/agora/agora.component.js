@@ -141,7 +141,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onInit() {
-		console.log('AgoraComponent.onInit', this.host);
+		// console.log('AgoraComponent.onInit', this.host);
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.platform = DeviceService.platform;
@@ -217,7 +217,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	userGuard(user) {
-		console.log('AgoraComponent.userGuard', user);
+		// console.log('AgoraComponent.userGuard', user);
 		const linkRole = this.getLinkRole();
 		if (user && (!linkRole || user.type === linkRole)) {
 			this.initWithUser(user);
@@ -227,7 +227,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	userGuardRedirect(user) {
-		console.log('AgoraComponent.userGuardRedirect', user);
+		// console.log('AgoraComponent.userGuardRedirect', user);
 		const linkRole = this.getLinkRole();
 		if (user && (!linkRole || linkRole === user.type)) {
 			this.initWithUser(user);
@@ -277,7 +277,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	initWithUser(user) {
-		console.log('AgoraComponent.initWithUser', user);
+		// console.log('AgoraComponent.initWithUser', user);
 		// const meetingUrl = this.meetingUrl;
 		// const link = meetingUrl.link;
 		const link = LocationService.get('link') || null;
@@ -346,7 +346,7 @@ export default class AgoraComponent extends Component {
 	viewObserver$() {
 		return ViewService.data$().pipe(
 			switchMap(data => {
-				console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
+				// console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
 				return PathService.getCurrentPath$(StateService.state.pathId).pipe(
 					switchMap(path => {
 						return ViewService.hostedView$(data, path);

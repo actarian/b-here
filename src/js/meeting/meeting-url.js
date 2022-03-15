@@ -110,13 +110,6 @@ export class MeetingUrl {
 
 	replaceUrl() {
 		RouterService.setCurrentParams(this.toParams());
-		/*
-		if ('history' in window) {
-			const query = this.toString();
-			const url = MeetingUrl.getCurrentUrl(query);
-			window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
-		}
-		*/
 	}
 
 	static replaceWithUser(user) {
@@ -141,39 +134,27 @@ export class MeetingUrl {
 		const route = RouterService.route;
 		if (route) {
 			const routeName = route.name;
-			console.log('MeetingUrl.getCurrentUrl', routeName);
+			// console.log('MeetingUrl.getCurrentUrl', routeName);
 			return RouterService.buildUrl(routeName, params);
 		}
-		/*
-		const url = `${window.location.origin}${window.location.pathname}${query}`;
-		return url;
-		*/
 	}
 
 	static getAccessCodeUrl(params = null) {
 		const route = RouterService.route;
 		if (route) {
 			const routeName = `${route.params.lang}.accessCode`;
-			console.log('MeetingUrl.getAccessCodeUrl', routeName);
+			// console.log('MeetingUrl.getAccessCodeUrl', routeName);
 			return RouterService.buildUrl(routeName, params);
 		}
-		/*
-		const url = `${window.location.origin}${environment.url.accessCode}${query}`;
-		return url;
-		*/
 	}
 
 	static getGuidedTourUrl(params = null) {
 		const route = RouterService.route;
 		if (route) {
 			const routeName = `${route.params.lang}.guidedTour`;
-			console.log('MeetingUrl.getGuidedTourUrl', routeName);
+			// console.log('MeetingUrl.getGuidedTourUrl', routeName);
 			return RouterService.buildUrl(routeName, params);
 		}
-		/*
-		const url = `${window.location.origin}${environment.url.guidedTour}${query}`;
-		return url;
-		*/
 	}
 
 	static getName(user) {

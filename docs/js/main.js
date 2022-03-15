@@ -3120,7 +3120,7 @@ function browserPluginFactory(opts, browser) {
   		return from(router).pipe(
   			startWith({ route: router.getState(), previousRoute: null }),
   			tap(event => {
-  				console.log('RouterService.event$', event);
+  				// console.log('RouterService.event$', event);
   				this.event$_.next(event);
   			}),
   		);
@@ -3160,9 +3160,8 @@ function browserPluginFactory(opts, browser) {
     this.event$ = rxjs.from(router).pipe(operators.startWith({
       route: router.getState(),
       previousRoute: null
-    }), operators.tap(function (event) {
-      console.log('RouterService.event$', event);
-    }));
+    }) // tap(event => { console.log('RouterService.event$', event); }),
+    );
   };
 
   RouterService.useBrowser$ = function useBrowser$(routes) {
@@ -3194,9 +3193,8 @@ function browserPluginFactory(opts, browser) {
       } catch (error) {
         console.log('RouterService.setRouterLink.error', error);
       }
-    }
+    } // console.log('RouterService.setRouterLink', router, routerLink, routeParams, options);
 
-    console.log('RouterService.setRouterLink', router, routerLink, routeParams, options);
   };
 
   RouterService.replaceHistoryState = function replaceHistoryState(name, params) {
@@ -3305,8 +3303,7 @@ function browserPluginFactory(opts, browser) {
       var router = this.router_;
 
       if (router) {
-        route = router.getState();
-        console.log('RouterService.get.route', route);
+        route = router.getState(); // console.log('RouterService.get.route', route);
       }
 
       return route;
@@ -3603,13 +3600,6 @@ var MeetingId = /*#__PURE__*/function () {
 
   _proto.replaceUrl = function replaceUrl() {
     RouterService.setCurrentParams(this.toParams());
-    /*
-    if ('history' in window) {
-    	const query = this.toString();
-    	const url = MeetingUrl.getCurrentUrl(query);
-    	window.history.replaceState({ 'pageTitle': window.pageTitle }, '', url);
-    }
-    */
   };
 
   MeetingUrl.replaceWithUser = function replaceWithUser(user) {
@@ -3644,15 +3634,10 @@ var MeetingId = /*#__PURE__*/function () {
     var route = RouterService.route;
 
     if (route) {
-      var routeName = route.name;
-      console.log('MeetingUrl.getCurrentUrl', routeName);
+      var routeName = route.name; // console.log('MeetingUrl.getCurrentUrl', routeName);
+
       return RouterService.buildUrl(routeName, params);
     }
-    /*
-    const url = `${window.location.origin}${window.location.pathname}${query}`;
-    return url;
-    */
-
   };
 
   MeetingUrl.getAccessCodeUrl = function getAccessCodeUrl(params) {
@@ -3663,15 +3648,10 @@ var MeetingId = /*#__PURE__*/function () {
     var route = RouterService.route;
 
     if (route) {
-      var routeName = route.params.lang + ".accessCode";
-      console.log('MeetingUrl.getAccessCodeUrl', routeName);
+      var routeName = route.params.lang + ".accessCode"; // console.log('MeetingUrl.getAccessCodeUrl', routeName);
+
       return RouterService.buildUrl(routeName, params);
     }
-    /*
-    const url = `${window.location.origin}${environment.url.accessCode}${query}`;
-    return url;
-    */
-
   };
 
   MeetingUrl.getGuidedTourUrl = function getGuidedTourUrl(params) {
@@ -3682,15 +3662,10 @@ var MeetingId = /*#__PURE__*/function () {
     var route = RouterService.route;
 
     if (route) {
-      var routeName = route.params.lang + ".guidedTour";
-      console.log('MeetingUrl.getGuidedTourUrl', routeName);
+      var routeName = route.params.lang + ".guidedTour"; // console.log('MeetingUrl.getGuidedTourUrl', routeName);
+
       return RouterService.buildUrl(routeName, params);
     }
-    /*
-    const url = `${window.location.origin}${environment.url.guidedTour}${query}`;
-    return url;
-    */
-
   };
 
   MeetingUrl.getName = function getName(user) {
@@ -3764,15 +3739,14 @@ var MeetingId = /*#__PURE__*/function () {
 
     this.route$().pipe(operators.switchMap(function (route) {
       return _this.factory$(route);
-    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {
-      console.log('RouterOutletStructure.route$', event);
+    }), operators.takeUntil(this.unsubscribe$)).subscribe(function (event) {// console.log('RouterOutletStructure.route$', event);
     });
     /*
     this.route$().pipe(
     	switchMap(snapshot => this.factory$(snapshot)),
     	takeUntil(this.unsubscribe$)
     ).subscribe(() => {
-    	console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
+    	// console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
     });
     if (this.host) {
     	this.route$_.next(this.host.route.childRoute);
@@ -3785,8 +3759,8 @@ var MeetingId = /*#__PURE__*/function () {
 
     return RouterService.event$.pipe(operators.map(function (event) {
       var route = event.route;
-      _this2.route = route;
-      console.log('RouterOutletStructure.route', route);
+      _this2.route = route; // console.log('RouterOutletStructure.route', route);
+
       return route;
     }));
     /*
@@ -4106,32 +4080,6 @@ AccessCodeComponent.meta = {
   },
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
   template: {
-    tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
-    modal: {
-      configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
-      controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
-      supportRequest: '/template/modules/b-here/support-request-modal.cshtml',
-      tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
-      view: {
-        'panorama': '/template/modules/b-here/panorama-modal.cshtml',
-        'panorama-grid': '/template/modules/b-here/panorama-grid-modal.cshtml',
-        'room-3d': '/template/modules/b-here/room-3d-modal.cshtml',
-        'model': '/template/modules/b-here/model-modal.cshtml',
-        'media': '/template/modules/b-here/media-modal.cshtml'
-      },
-      viewItem: {
-        'nav': '/template/modules/b-here/nav-modal.cshtml',
-        'plane': '/template/modules/b-here/plane-modal.cshtml',
-        'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
-        'texture': '/template/modules/b-here/texture-modal.cshtml',
-        'model': '/template/modules/b-here/item-model-modal.cshtml'
-      },
-      navmap: '/template/modules/b-here/navmap-modal.cshtml',
-      navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
-      pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
-      pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
-      remove: '/template/modules/b-here/remove-modal.cshtml'
-    },
     email: {
       supportRequest: '/template/modules/b-here/email/support-request.cshtml'
     }
@@ -4250,32 +4198,6 @@ AccessCodeComponent.meta = {
   },
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
   template: {
-    tryInAr: '/try-in-ar.html?viewId=$viewId',
-    modal: {
-      configureFirewall: '/configure-firewall-modal.html',
-      controlRequest: '/control-request-modal.html',
-      supportRequest: '/support-request-modal.html',
-      tryInAr: '/try-in-ar-modal.html',
-      view: {
-        'panorama': '/panorama-modal.html',
-        'panorama-grid': '/panorama-grid-modal.html',
-        'room-3d': '/room-3d-modal.html',
-        'model': '/model-modal.html',
-        'media': '/media-modal.html'
-      },
-      viewItem: {
-        'nav': '/nav-modal.html',
-        'plane': '/plane-modal.html',
-        'curved-plane': '/curved-plane-modal.html',
-        'texture': '/texture-modal.html',
-        'model': '/item-model-modal.html'
-      },
-      navmap: '/navmap-modal.html',
-      navmapItem: '/navmap-item-modal.html',
-      pathAdd: '/path-add-modal.html',
-      pathEdit: '/path-edit-modal.html',
-      remove: '/remove-modal.html'
-    },
     email: {
       supportRequest: '/email/support-request.html'
     }
@@ -5340,7 +5262,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   var _proto = AccessComponent.prototype;
 
   _proto.onInit = function onInit() {
-    console.log('AccessComponent.onInit');
+    // console.log('AccessComponent.onInit');
     this.state = {
       status: 'access'
     };
@@ -11562,9 +11484,10 @@ ModalOutletComponent.meta = {
   };
 
   TryInARModalComponent.getUrl = function getUrl(data) {
-    var url = environment.getAbsoluteUrl(environment.template.tryInAr, {
+    var path = RouterService.buildUrl(RoutePipe.transform(':lang.tryInAr'), {
       viewId: data.id
     });
+    var url = window.location.origin + path;
     console.log('TryInARModalComponent.getUrl', url);
     return url;
   };
@@ -11870,8 +11793,7 @@ var ViewService = /*#__PURE__*/function () {
 
         _this.views = views;
         return data;
-      }), // tap(data => console.log('ViewService.data$', data)),
-      operators.shareReplay(1));
+      }), operators.shareReplay(1));
     }
 
     return this.data$_;
@@ -11915,7 +11837,7 @@ var ViewService = /*#__PURE__*/function () {
       		view = null;
       	}
       }
-      console.log('ViewService.view$', view, path);
+      // console.log('ViewService.view$', view, path);
       */
 
 
@@ -13307,8 +13229,7 @@ var PrefetchService = /*#__PURE__*/function () {
   };
 
   PrefetchService.prefetch = function prefetch(assets) {
-    this.load$(assets).subscribe(function (event) {
-      console.log('PrefetchService.prefetch', event);
+    this.load$(assets).subscribe(function (event) {// console.log('PrefetchService.prefetch', event);
     });
   };
 
@@ -21747,7 +21668,7 @@ var WorldComponent = /*#__PURE__*/function (_Component) {
           /*
           if (this.panorama.mesh.intersection) {
           	const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
-          	console.log(JSON.stringify({ position: position.toArray() }));
+          	// console.log(JSON.stringify({ position: position.toArray() }));
           	this.viewHit.next(position);
           }
           */
@@ -23435,8 +23356,7 @@ ModelNavComponent.meta = {
   _proto.onInit = function onInit() {
     var _this = this;
 
-    console.log('AgoraComponent.onInit', this.host);
-
+    // console.log('AgoraComponent.onInit', this.host);
     var _getContext = rxcomp.getContext(this),
         node = _getContext.node;
 
@@ -23515,7 +23435,7 @@ ModelNavComponent.meta = {
   };
 
   _proto.userGuard = function userGuard(user) {
-    console.log('AgoraComponent.userGuard', user);
+    // console.log('AgoraComponent.userGuard', user);
     var linkRole = this.getLinkRole();
 
     if (user && (!linkRole || user.type === linkRole)) {
@@ -23528,7 +23448,7 @@ ModelNavComponent.meta = {
   };
 
   _proto.userGuardRedirect = function userGuardRedirect(user) {
-    console.log('AgoraComponent.userGuardRedirect', user);
+    // console.log('AgoraComponent.userGuardRedirect', user);
     var linkRole = this.getLinkRole();
 
     if (user && (!linkRole || linkRole === user.type)) {
@@ -23592,9 +23512,9 @@ ModelNavComponent.meta = {
   _proto.initWithUser = function initWithUser(user) {
     var _this3 = this;
 
-    console.log('AgoraComponent.initWithUser', user); // const meetingUrl = this.meetingUrl;
+    // console.log('AgoraComponent.initWithUser', user);
+    // const meetingUrl = this.meetingUrl;
     // const link = meetingUrl.link;
-
     var link = LocationService.get('link') || null;
     var pathId = this.getPathId();
     var role = this.getLinkRole() || (user ? user.type : null);
@@ -23674,7 +23594,7 @@ ModelNavComponent.meta = {
     var _this4 = this;
 
     return ViewService.data$().pipe(operators.switchMap(function (data) {
-      console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
+      // console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
       return PathService.getCurrentPath$(StateService.state.pathId).pipe(operators.switchMap(function (path) {
         return ViewService.hostedView$(data, path);
       }));
@@ -25726,87 +25646,9 @@ PanoramaGridModalComponent.chunk = function () {
 
         _this2.form.reset();
       });
-      /*
-      const asset = Asset.fromUrl(this.form.value.upload);
-      // console.log('PanoramaModalComponent.onSubmit.asset', asset);
-      AssetService.assetCreate$(asset).pipe(
-      	first(),
-      	switchMap(response => {
-      		const view = {
-      			type: this.form.value.type,
-      			name: this.form.value.name,
-      			asset: response,
-      			orientation: {
-      				latitude: 0,
-      				longitude: 0
-      			},
-      			zoom: 75
-      		};
-      		// console.log('PanoramaModalComponent.onSubmit.view', view);
-      		return EditorService.viewCreate$(view).pipe(
-      			first(),
-      		);
-      	})
-      ).subscribe(response => {
-      	// console.log('PanoramaModalComponent.onSubmit.success', response);
-      	ModalService.resolve(response);
-      }, error => {
-      	console.log('PanoramaModalComponent.onSubmit.error', error);
-      	this.error = error;
-      	this.form.reset();
-      });
-      */
     } else {
       this.form.touched = true;
     }
-    /*
-    EditorService.viewCreate$({
-    	"id": 1,
-    	"type": "panorama",
-    	"name": "Welcome Room",
-    	"likes": 134,
-    	"liked": false,
-    	"asset": {
-    		"type": "image",
-    		"folder": "waiting-room/",
-    		"file": "mod2.jpg"
-    	},
-    	"items": [
-    		{
-    			"id": 110,
-    			"type": "nav",
-    			"title": "Barilla Experience",
-    			"abstract": "Abstract",
-    			"asset": {
-    				"type": "image",
-    				"folder": "barilla/",
-    				"file": "logo-barilla.jpg"
-    			},
-    			"link": {
-    				"title": "Scopri di più...",
-    				"href": "https://www.barilla.com/it-it/",
-    				"target": "_blank"
-    			},
-    			"position": [
-    				0.9491595148619703,
-    				-0.3147945860255039,
-    				0
-    			],
-    			"viewId": 23
-    		}
-    	],
-    	"orientation": {
-    		"latitude": -10,
-    		"longitude": 360
-    	},
-    	"zoom": 75
-    }).pipe(
-    	first(),
-    ).subscribe(data => {
-    	// console.log('EditorService.viewCreate$', data);
-    });
-    	*/
-
   };
 
   _proto.onClose = function onClose() {
@@ -26051,10 +25893,10 @@ PathEditModalComponent.chunk = function () {
   _proto.onSubmit = function onSubmit() {
     if (this.form.valid) {
       var item = Object.assign({}, this.form.value); // item.viewId = parseInt(item.viewId);
+      // console.log('PlaneModalComponent.onSubmit', this.view, item);
 
-      console.log('PlaneModalComponent.onSubmit', this.view, item);
       EditorService.inferItemCreate$(this.view, item).pipe(operators.first()).subscribe(function (response) {
-        console.log('PlaneModalComponent.onSubmit.success', response);
+        // console.log('PlaneModalComponent.onSubmit.success', response);
         ModalService.resolve(response);
       }, function (error) {
         return console.log('PlaneModalComponent.onSubmit.error', error);
@@ -27293,10 +27135,11 @@ LayoutComponent.meta = {
     var _this = this;
 
     this.platform = DeviceService.platform;
+    this.route = this.host ? this.host.route : null;
     this.missingAr = false;
     this.missingUsdz = false;
     this.missingGltf = false;
-    var viewId = this.viewId = this.getViewId(); // console.log('TryInARComponent.viewId', viewId);
+    var viewId = this.viewId; // console.log('TryInARComponent.viewId', viewId);
 
     if (viewId) {
       ViewService.viewById$(viewId).pipe(operators.first()).subscribe(function (view) {
@@ -27326,6 +27169,8 @@ LayoutComponent.meta = {
               node = _getContext.node;
 
           node.appendChild(modelViewerNode);
+
+          _this.addARScripts();
         } else {
           _this.missingGltf = true;
 
@@ -27333,6 +27178,17 @@ LayoutComponent.meta = {
         }
       });
     }
+  };
+
+  _proto.addARScripts = function addARScripts() {
+    var script = document.createElement('script');
+    script.setAttribute('type', 'module');
+    script.setAttribute('src', 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js');
+    document.head.appendChild(script);
+    script = document.createElement('script');
+    script.setAttribute('nomodule', '');
+    script.setAttribute('src', 'https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js');
+    document.head.appendChild(script);
   };
 
   _proto.getUsdzSrc = function getUsdzSrc(view) {
@@ -27367,6 +27223,16 @@ LayoutComponent.meta = {
     return node;
   };
 
+  _createClass(TryInARComponent, [{
+    key: "viewId",
+    get: function get() {
+      if (this.route) {
+        var viewId = this.route.params.viewId;
+        return viewId ? parseInt(viewId) : null;
+      }
+    }
+  }]);
+
   return TryInARComponent;
 }(rxcomp.Component);
 TryInARComponent.meta = {
@@ -27376,7 +27242,7 @@ TryInARComponent.meta = {
   },
   template:
   /* html */
-  "\n\t\t<div class=\"page page--try-in-ar\">\n\t\t\t<div *if=\"platform != 'ios'\">\n\t\t\t\t<script type=\"module\" src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js\"></script>\n\t\t\t\t<script nomodule src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js\"></script>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"!viewId\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Unknown url.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingAr\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing AR in view.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingUsdz\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing .usdz in ar.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingGltf\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing .gltf in ar.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
+  "\n\t\t<div class=\"page page--try-in-ar\">\n\t\t\t<!--\n\t\t\t<div *if=\"platform != 'ios'\">\n\t\t\t\t<script type=\"module\" src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js\"></script>\n\t\t\t\t<script nomodule src=\"https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js\"></script>\n\t\t\t</div>\n\t\t\t-->\n\t\t\t<div class=\"ui\" *if=\"!viewId\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Unknown url.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingAr\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing AR in view.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingUsdz\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing .usdz in ar.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"ui\" *if=\"missingGltf\">\n\t\t\t\t<div class=\"group--info\">\n\t\t\t\t\t<div class=\"group--info__content\">\n\t\t\t\t\t\t<div class=\"info\">Missing .gltf in ar.</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t"
 };var AppRoutes = [{
   name: 'index',
   path: '/',
@@ -27433,7 +27299,7 @@ TryInARComponent.meta = {
   factory: AgoraComponent
 }, {
   name: 'it.tryInAr',
-  path: '/prova-in-ar',
+  path: '/prova-in-ar?:viewId',
   defaultParams: {
     lang: 'it',
     mode: 'tryInAr'
@@ -27507,7 +27373,7 @@ TryInARComponent.meta = {
   factory: AgoraComponent
 }, {
   name: 'en.tryInAr',
-  path: '/try-in-ar',
+  path: '/try-in-ar?:viewId',
   defaultParams: {
     lang: 'en',
     mode: 'tryInAr'
@@ -30279,7 +30145,6 @@ var UploadService = /*#__PURE__*/function () {
     /*
     // concurrent upload
     return AssetService.upload$([item.file]).pipe(
-    	// tap(upload => console.log('upload', upload)),
     	switchMap((uploads) => {
     		const upload = uploads[0];
     		item.uploading = false;
@@ -30409,8 +30274,7 @@ var UploadService = /*#__PURE__*/function () {
   };
 
   _proto.uploadFile$ = function uploadFile$(file) {
-    return AssetService.upload$([file]).pipe( // tap(upload => console.log('upload', upload)),
-    operators.switchMap(function (uploads) {
+    return AssetService.upload$([file]).pipe(operators.switchMap(function (uploads) {
       var upload = uploads[0];
       /*
       id: 1601303293569
@@ -30778,18 +30642,7 @@ ControlCustomSelectComponent.meta = {
     });
   };
 
-  _proto.onInputDidChange = function onInputDidChange(event) {
-    console.log('ControlLinkComponent.onInputDidChange', event.target.value); // event.target.value = event.target.value.replace(/[^\d|\.]/g, '');
-
-    /*
-    const value = parseFloat(event.target.value);
-    if (this.value !== value) {
-    	if (value !== NaN) {
-    		this.value = value;
-    		this.update.next(this.value);
-    	}
-    }
-    */
+  _proto.onInputDidChange = function onInputDidChange(event) {// console.log('ControlLinkComponent.onInputDidChange', event.target.value);
   };
 
   _proto.onInputDidBlur = function onInputDidBlur(event) {
@@ -31680,18 +31533,7 @@ ModalComponent.meta = {
         node = _getContext2.node;
 
     return rxjs.fromEvent(node, 'click').pipe(operators.map(function (event) {
-      // console.log('RouterLinkDirective', event, this.routerLink);
-      // !!! skipLocationChange
-
-      /*
-      const navigationExtras = {
-      	skipLocationChange: this.skipLocationChange,
-      	replaceUrl: this.replaceUrl,
-      	state: this.state,
-      };
-      */
       // console.log('RouterLinkDirective.routerLink$', this.routerLink);
-      console.log(_this2.routerLink);
       RouterService.setRouterLink.apply(RouterService, _this2.routerLink);
       event.preventDefault();
       return false;
@@ -31756,23 +31598,7 @@ get urlTree(): UrlTree {
 _defineProperty(RouterLinkDirective, "meta", {
   selector: '[routerLink]',
   inputs: ['routerLink']
-});var SlugPipe = /*#__PURE__*/function (_Pipe) {
-  _inheritsLoose(SlugPipe, _Pipe);
-
-  function SlugPipe() {
-    return _Pipe.apply(this, arguments) || this;
-  }
-
-  SlugPipe.transform = function transform(key) {
-    var url = environment.url;
-    return url[key] || "#" + key;
-  };
-
-  return SlugPipe;
-}(rxcomp.Pipe);
-SlugPipe.meta = {
-  name: 'slug'
-};var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
+});var SupportRequestModalComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(SupportRequestModalComponent, _Component);
 
   function SupportRequestModalComponent() {
@@ -36488,6 +36314,6 @@ var AppModule = /*#__PURE__*/function (_Module) {
 }(rxcomp.Module);
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, SlugPipe, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);})));

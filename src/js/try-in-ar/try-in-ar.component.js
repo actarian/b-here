@@ -8,12 +8,20 @@ import ViewService from '../view/view.service';
 
 export default class TryInARComponent extends Component {
 
+	get viewId() {
+		if (this.route) {
+			const viewId = this.route.params.viewId;
+			return viewId ? parseInt(viewId) : null;
+		}
+	}
+
 	onInit() {
 		this.platform = DeviceService.platform;
+		this.route = this.host ? this.host.route : null;
 		this.missingAr = false;
 		this.missingUsdz = false;
 		this.missingGltf = false;
-		const viewId = this.viewId = this.getViewId();
+		const viewId = this.viewId;
 		// console.log('TryInARComponent.viewId', viewId);
 		if (viewId) {
 			ViewService.viewById$(viewId).pipe(
@@ -37,12 +45,24 @@ export default class TryInARComponent extends Component {
 					const modelViewerNode = this.getModelViewerNode(view);
 					const { node } = getContext(this);
 					node.appendChild(modelViewerNode);
+					this.addARScripts();
 				} else {
 					this.missingGltf = true;
 					this.pushChanges();
 				}
 			});
 		}
+	}
+
+	addARScripts() {
+		let script = document.createElement('script');
+		script.setAttribute('type', 'module');
+		script.setAttribute('src', 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js');
+		document.head.appendChild(script);
+		script = document.createElement('script');
+		script.setAttribute('nomodule', '');
+		script.setAttribute('src', 'https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js');
+		document.head.appendChild(script);
 	}
 
 	getUsdzSrc(view) {
@@ -82,10 +102,12 @@ TryInARComponent.meta = {
 	hosts: { host: RouterOutletStructure },
 	template: /* html */`
 		<div class="page page--try-in-ar">
+			<!--
 			<div *if="platform != 'ios'">
 				<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 				<script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
 			</div>
+			-->
 			<div class="ui" *if="!viewId">
 				<div class="group--info">
 					<div class="group--info__content">

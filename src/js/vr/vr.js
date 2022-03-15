@@ -14,7 +14,7 @@ export class VR extends Emittable {
 			renderer.vr.setFrameOfReferenceType(options.frameOfReferenceType);
 		}
 		if (onError) {
-			console.log('VR.onError', onError);
+			// console.log('VR.onError', onError);
 			this.on('error', onError);
 		}
 		this.renderer = renderer;

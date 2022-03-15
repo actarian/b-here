@@ -58,7 +58,6 @@ import RoutePipe from './router/route.pipe';
 import RouterLinkDirective from './router/router-link.directive';
 import RouterOutletStructure from './router/router-outlet.structure';
 import RouterService from './router/router.service';
-import SlugPipe from './slug/slug.pipe';
 import SupportRequestModalComponent from './support-request/support-request-modal.component';
 import SvgIconStructure from './svg/svg-icon.structure';
 import TitleDirective from './title/title.directive';
@@ -160,7 +159,6 @@ AppModule.meta = {
 		ModelProgressComponent,
 		ModelRoomComponent,
 		ModelTextComponent,
-		SlugPipe,
 		RoutePipe,
 		SupportRequestModalComponent,
 		SvgIconStructure,

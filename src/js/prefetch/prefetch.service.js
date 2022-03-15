@@ -54,7 +54,7 @@ export default class PrefetchService {
 
 	static prefetch(assets) {
 		this.load$(assets).subscribe(event => {
-			console.log('PrefetchService.prefetch', event);
+			// console.log('PrefetchService.prefetch', event);
 		});
 	}
 

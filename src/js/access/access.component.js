@@ -12,7 +12,7 @@ import { UserService } from '../user/user.service';
 export default class AccessComponent extends Component {
 
 	onInit() {
-		console.log('AccessComponent.onInit');
+		// console.log('AccessComponent.onInit');
 		this.state = {
 			status: 'access',
 		};

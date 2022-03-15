@@ -110,32 +110,6 @@ export const environmentStatic = {
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
 	template: {
-		tryInAr: '/try-in-ar.html?viewId=$viewId',
-		modal: {
-			configureFirewall: '/configure-firewall-modal.html',
-			controlRequest: '/control-request-modal.html',
-			supportRequest: '/support-request-modal.html',
-			tryInAr: '/try-in-ar-modal.html',
-			view: {
-				'panorama': '/panorama-modal.html',
-				'panorama-grid': '/panorama-grid-modal.html',
-				'room-3d': '/room-3d-modal.html',
-				'model': '/model-modal.html',
-				'media': '/media-modal.html',
-			},
-			viewItem: {
-				'nav': '/nav-modal.html',
-				'plane': '/plane-modal.html',
-				'curved-plane': '/curved-plane-modal.html',
-				'texture': '/texture-modal.html',
-				'model': '/item-model-modal.html',
-			},
-			navmap: '/navmap-modal.html',
-			navmapItem: '/navmap-item-modal.html',
-			pathAdd: '/path-add-modal.html',
-			pathEdit: '/path-edit-modal.html',
-			remove: '/remove-modal.html',
-		},
 		email: {
 			supportRequest: '/email/support-request.html',
 		}

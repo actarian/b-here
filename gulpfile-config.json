@@ -48,10 +48,7 @@
         }
       ],
       "bundle": [],
-      "copy": [{
-        "input": "src/modals/**/*.html",
-        "output": "docs/modals/"
-      }]
+      "copy": []
     },
     "vendors": {
       "compile": [{
@@ -189,7 +186,7 @@
     "port": 41789,
     "log": false,
     "https": {
-      "cert": "certs/server.crt"
+      "cert": "cert.crt"
     }
   }
 }

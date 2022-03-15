@@ -23,7 +23,7 @@ export function NavModalValidator(formGroup, view) {
 			(item.link && item.link.href)) {
 			mode = NavModeType.Info;
 		}
-		console.log('FormValidator', item, view.id, mode);
+		// console.log('FormValidator', item, view.id, mode);
 		return mode === NavModeType.None ? { navModal: true } : null;
 	});
 }

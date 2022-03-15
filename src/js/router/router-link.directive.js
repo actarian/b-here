@@ -45,17 +45,7 @@ export default class RouterLinkDirective extends Directive {
 		const { node } = getContext(this);
 		return fromEvent(node, 'click').pipe(
 			map((event) => {
-				// console.log('RouterLinkDirective', event, this.routerLink);
-				// !!! skipLocationChange
-				/*
-				const navigationExtras = {
-					skipLocationChange: this.skipLocationChange,
-					replaceUrl: this.replaceUrl,
-					state: this.state,
-				};
-				*/
 				// console.log('RouterLinkDirective.routerLink$', this.routerLink);
-				console.log(this.routerLink);
 				RouterService.setRouterLink(...this.routerLink);
 				event.preventDefault();
 				return false;

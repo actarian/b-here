@@ -102,32 +102,6 @@ export const environmentServed = {
 	},
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
 	template: {
-		tryInAr: '/template/modules/b-here/try-in-ar.cshtml?viewId=$viewId',
-		modal: {
-			configureFirewall: '/template/modules/b-here/configure-firewall-modal.cshtml',
-			controlRequest: '/template/modules/b-here/control-request-modal.cshtml',
-			supportRequest: '/template/modules/b-here/support-request-modal.cshtml',
-			tryInAr: '/template/modules/b-here/try-in-ar-modal.cshtml',
-			view: {
-				'panorama': '/template/modules/b-here/panorama-modal.cshtml',
-				'panorama-grid': '/template/modules/b-here/panorama-grid-modal.cshtml',
-				'room-3d': '/template/modules/b-here/room-3d-modal.cshtml',
-				'model': '/template/modules/b-here/model-modal.cshtml',
-				'media': '/template/modules/b-here/media-modal.cshtml',
-			},
-			viewItem: {
-				'nav': '/template/modules/b-here/nav-modal.cshtml',
-				'plane': '/template/modules/b-here/plane-modal.cshtml',
-				'curved-plane': '/template/modules/b-here/curved-plane-modal.cshtml',
-				'texture': '/template/modules/b-here/texture-modal.cshtml',
-				'model': '/template/modules/b-here/item-model-modal.cshtml',
-			},
-			navmap: '/template/modules/b-here/navmap-modal.cshtml',
-			navmapItem: '/template/modules/b-here/navmap-item-modal.cshtml',
-			pathAdd: '/template/modules/b-here/path-add-modal.cshtml',
-			pathEdit: '/template/modules/b-here/path-edit-modal.cshtml',
-			remove: '/template/modules/b-here/remove-modal.cshtml',
-		},
 		email: {
 			supportRequest: '/template/modules/b-here/email/support-request.cshtml',
 		}

@@ -126,7 +126,6 @@ export default class ViewService {
 					this.views = views;
 					return data;
 				}),
-				// tap(data => console.log('ViewService.data$', data)),
 				shareReplay(1),
 			);
 		}
@@ -165,7 +164,7 @@ export default class ViewService {
 						view = null;
 					}
 				}
-				console.log('ViewService.view$', view, path);
+				// console.log('ViewService.view$', view, path);
 				*/
 				if (view) {
 					view.keepOrientation = action.keepOrientation || false;

@@ -10,7 +10,7 @@ export default class BHere {
 				environment.merge(options);
 			}
 			this.bootstrap(target);
-			console.log('BHere', target, options);
+			// console.log('BHere', target, options);
 		}
 		this.environment = environment;
 	}

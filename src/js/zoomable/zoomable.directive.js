@@ -11,7 +11,9 @@ export default class ZoomableDirective extends Directive {
 		fromEvent(target, 'click').pipe(
 			map($event => this.zoom = !this.zoom),
 			takeUntil(this.unsubscribe$)
-		).subscribe(zoom => console.log('ZoomableDirective', zoom));
+		).subscribe(zoom => {
+			// console.log('ZoomableDirective', zoom);
+		});
 	}
 
 	get zoom() {

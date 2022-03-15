@@ -4,8 +4,8 @@ import { environment } from '../environment';
 export default class SlugPipe extends Pipe {
 
 	static transform(key) {
-		const url = environment.url;
-		return url[key] || `#${key}`;
+		const slug = environment.slug;
+		return slug[key] || `#${key}`;
 	}
 
 }

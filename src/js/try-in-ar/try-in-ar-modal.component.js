@@ -1,7 +1,8 @@
 import { Component, getContext } from 'rxcomp';
-import { environment } from '../environment';
 import ModalOutletComponent from '../modal/modal-outlet.component';
 import ModalService from '../modal/modal.service';
+import RoutePipe from '../router/route.pipe';
+import RouterService from '../router/router.service';
 
 export default class TryInARModalComponent extends Component {
 
@@ -27,7 +28,8 @@ export default class TryInARModalComponent extends Component {
 	}
 
 	static getUrl(data) {
-		const url = environment.getAbsoluteUrl(environment.template.tryInAr, { viewId: data.id });
+		const path = RouterService.buildUrl(RoutePipe.transform(':lang.tryInAr'), { viewId: data.id });
+		const url = window.location.origin + path;
 		console.log('TryInARModalComponent.getUrl', url);
 		return url;
 	}

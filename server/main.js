@@ -109,8 +109,8 @@ function serve(options) {
 
 	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 	if (!heroku) {
-		const privateKey = fs.readFileSync('certs/server.key', 'utf8');
-		const certificate = fs.readFileSync('certs/server.crt', 'utf8');
+		const privateKey = fs.readFileSync('cert.key', 'utf8');
+		const certificate = fs.readFileSync('cert.crt', 'utf8');
 		const credentials = { key: privateKey, cert: certificate };
 		const serverHttps = https.createServer(credentials, app);
 		serverHttps.listen(options.portHttps, () => {

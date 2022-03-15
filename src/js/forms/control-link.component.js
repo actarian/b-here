@@ -12,17 +12,7 @@ export default class ControlLinkComponent extends ControlComponent {
 	}
 
 	onInputDidChange(event) {
-		console.log('ControlLinkComponent.onInputDidChange', event.target.value);
-		// event.target.value = event.target.value.replace(/[^\d|\.]/g, '');
-		/*
-		const value = parseFloat(event.target.value);
-		if (this.value !== value) {
-			if (value !== NaN) {
-				this.value = value;
-				this.update.next(this.value);
-			}
-		}
-		*/
+		// console.log('ControlLinkComponent.onInputDidChange', event.target.value);
 	}
 
 	onInputDidBlur(event) {

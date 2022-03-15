@@ -936,7 +936,7 @@ export default class WorldComponent extends Component {
 					/*
 					if (this.panorama.mesh.intersection) {
 						const position = new THREE.Vector3().copy(this.panorama.mesh.intersection.point).normalize();
-						console.log(JSON.stringify({ position: position.toArray() }));
+						// console.log(JSON.stringify({ position: position.toArray() }));
 						this.viewHit.next(position);
 					}
 					*/

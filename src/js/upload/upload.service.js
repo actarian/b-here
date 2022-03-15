@@ -80,7 +80,6 @@ export class UploadService {
 		/*
 		// concurrent upload
 		return AssetService.upload$([item.file]).pipe(
-			// tap(upload => console.log('upload', upload)),
 			switchMap((uploads) => {
 				const upload = uploads[0];
 				item.uploading = false;
@@ -196,7 +195,6 @@ export class UploadService {
 
 	uploadFile$(file) {
 		return AssetService.upload$([file]).pipe(
-			// tap(upload => console.log('upload', upload)),
 			switchMap((uploads) => {
 				const upload = uploads[0];
 				/*

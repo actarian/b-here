@@ -68,11 +68,11 @@ export default class PlaneModalComponent extends Component {
 		if (this.form.valid) {
 			const item = Object.assign({}, this.form.value);
 			// item.viewId = parseInt(item.viewId);
-			console.log('PlaneModalComponent.onSubmit', this.view, item);
+			// console.log('PlaneModalComponent.onSubmit', this.view, item);
 			EditorService.inferItemCreate$(this.view, item).pipe(
 				first(),
 			).subscribe(response => {
-				console.log('PlaneModalComponent.onSubmit.success', response);
+				// console.log('PlaneModalComponent.onSubmit.success', response);
 				ModalService.resolve(response);
 			}, error => console.log('PlaneModalComponent.onSubmit.error', error));
 		} else {

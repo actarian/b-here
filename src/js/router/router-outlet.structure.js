@@ -29,14 +29,14 @@ export default class RouterOutletStructure extends Structure {
 			switchMap(route => this.factory$(route)),
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
-			console.log('RouterOutletStructure.route$', event);
+			// console.log('RouterOutletStructure.route$', event);
 		});
 		/*
 		this.route$().pipe(
 			switchMap(snapshot => this.factory$(snapshot)),
 			takeUntil(this.unsubscribe$)
 		).subscribe(() => {
-			console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
+			// console.log(`RouterOutletStructure ActivatedRoutes: ["${RouterService.flatRoutes.filter(x => x.snapshot).map(x => x.snapshot?.extractedUrl).join('", "')}"]`);
 		});
 		if (this.host) {
 			this.route$_.next(this.host.route.childRoute);
@@ -49,7 +49,7 @@ export default class RouterOutletStructure extends Structure {
 			map(event => {
 				const route = event.route;
 				this.route = route;
-				console.log('RouterOutletStructure.route', route);
+				// console.log('RouterOutletStructure.route', route);
 				return route;
 			}),
 		);

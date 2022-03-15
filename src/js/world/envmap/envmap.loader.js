@@ -216,7 +216,7 @@ export class EnvMapLoader {
 			if (typeof callback === 'function') {
 				callback(texture, cubeRenderTarget.texture, false);
 			}
-			console.log('loadVideoBackground.loaded');
+			// console.log('loadVideoBackground.loaded');
 			LoaderService.setProgress(progressRef, 1);
 		};
 		// video.addEventListener('playing', onPlaying);
