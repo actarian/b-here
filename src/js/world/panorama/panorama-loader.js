@@ -1,12 +1,13 @@
 import { fromEvent } from 'rxjs';
 import { filter, first, switchMap, takeWhile, tap } from 'rxjs/operators';
+// import * as THREE from 'three';
+// import { RGBELoader } from '../loaders/RGBELoader';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
-// import * as THREE from 'three';
-import { RGBELoader } from '../loaders/RGBELoader';
 import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent, MediaLoaderTimeUpdateEvent } from '../media/media-loader';
 
 export class PanoramaLoader {
@@ -79,25 +80,6 @@ export class PanoramaLoader {
 		}
 	}
 
-	static loadBackground(folder, file, renderer, callback) {
-		const progressRef = LoaderService.getRef();
-		const loader = new THREE.TextureLoader();
-		loader.setPath(folder).load(file, (texture) => {
-			texture.minFilter = THREE.LinearFilter;
-			texture.magFilter = THREE.LinearFilter;
-			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
-			texture.needsUpdate = true;
-			if (typeof callback === 'function') {
-				callback(texture);
-			}
-			LoaderService.setProgress(progressRef, 1);
-		}, (request) => {
-			LoaderService.setProgress(progressRef, request.loaded, request.total);
-		});
-		return loader;
-	}
-
 	static loadBackgroundImageService(folder, file, renderer, callback) {
 		const progressRef = LoaderService.getRef();
 		const image = new Image();
@@ -120,7 +102,10 @@ export class PanoramaLoader {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
+			console.log('texture', texture, THREE.RGBAFormat, THREE.LinearEncoding);
+			// texture.format = THREE.RGBAFormat;
+			// texture.encoding = THREE.LinearEncoding;
+			texture.toneMapped = false;
 			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);
@@ -128,6 +113,26 @@ export class PanoramaLoader {
 			}
 			LoaderService.setProgress(progressRef, 1);
 		});
+	}
+
+	static loadBackground(folder, file, renderer, callback) {
+		const progressRef = LoaderService.getRef();
+		const loader = new THREE.TextureLoader();
+		loader.setPath(folder).load(file, (texture) => {
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
+			texture.mapping = THREE.UVMapping;
+			// texture.format = THREE.RGBAFormat;
+			// texture.encoding = THREE.LinearEncoding;
+			texture.needsUpdate = true;
+			if (typeof callback === 'function') {
+				callback(texture);
+			}
+			LoaderService.setProgress(progressRef, 1);
+		}, (request) => {
+			LoaderService.setProgress(progressRef, request.loaded, request.total);
+		});
+		return loader;
 	}
 
 	static loadRgbeBackground(folder, file, renderer, callback) {
@@ -153,7 +158,8 @@ export class PanoramaLoader {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
+			// texture.format = THREE.RGBAFormat;
+			// texture.encoding = THREE.LinearEncoding;
 			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);
@@ -241,7 +247,8 @@ export class PanoramaLoader {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
+			// texture.format = THREE.RGBAFormat;
+			// texture.encoding = THREE.LinearEncoding;
 			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);
@@ -281,7 +288,8 @@ export class PanoramaLoader {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
-				texture.format = THREE.RGBFormat;
+				// texture.format = THREE.RGBAFormat;
+				// texture.encoding = THREE.LinearEncoding;
 				texture.needsUpdate = true;
 				if (typeof callback === 'function') {
 					callback(texture);

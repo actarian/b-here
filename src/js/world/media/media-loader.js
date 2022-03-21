@@ -166,7 +166,7 @@ export default class MediaLoader {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
-				texture.format = THREE.RGBFormat;
+				// texture.format = THREE.RGBAFormat;
 				// texture.image.width = video.videoWidth;
 				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
@@ -204,7 +204,8 @@ export default class MediaLoader {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
-				texture.format = THREE.RGBFormat;
+				// texture.encoding = THREE.sRGBEncoding;
+				// texture.format = THREE.RGBAFormat;
 				// texture.image.width = video.videoWidth;
 				// texture.image.height = video.videoHeight;
 				texture.needsUpdate = true;
@@ -244,7 +245,7 @@ export default class MediaLoader {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
-				// texture.format = THREE.RGBFormat;
+				// texture.format = THREE.RGBAFormat;
 				texture.wrapS = THREE.RepeatWrapping;
 				texture.wrapT = THREE.RepeatWrapping;
 				if (typeof callback === 'function') {

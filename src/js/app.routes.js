@@ -16,7 +16,7 @@ export const AppRoutes = [
 	{ name: 'it.selfServiceTour', path: '/tour-self-service?:viewId&:pathId', defaultParams: { lang: 'it', mode: 'selfServiceTour' }, factory: AgoraComponent },
 	{ name: 'it.embed', path: '/embed', defaultParams: { lang: 'it', mode: 'embed' }, factory: AgoraComponent },
 	{ name: 'it.tryInAr', path: '/prova-in-ar?:viewId', defaultParams: { lang: 'it', mode: 'tryInAr' }, factory: TryInARComponent },
-	{ name: 'it.editor', path: '/editor', defaultParams: { lang: 'it', mode: 'editor' }, factory: EditorComponent },
+	{ name: 'it.editor', path: '/editor?:viewId', defaultParams: { lang: 'it', mode: 'editor' }, factory: EditorComponent },
 	{ name: 'it.layout', path: '/layout', defaultParams: { lang: 'it', mode: 'layout' }, factory: LayoutComponent },
 	// en
 	{ name: 'en', path: '/en', defaultParams: { lang: 'en', mode: 'access' }, factory: AccessComponent },
@@ -27,6 +27,6 @@ export const AppRoutes = [
 	{ name: 'en.selfServiceTour', path: '/self-service-tour?:viewId&:pathId', defaultParams: { lang: 'en', mode: 'selfServiceTour' }, factory: AgoraComponent },
 	{ name: 'en.embed', path: '/embed', defaultParams: { lang: 'en', mode: 'embed' }, factory: AgoraComponent },
 	{ name: 'en.tryInAr', path: '/try-in-ar?:viewId', defaultParams: { lang: 'en', mode: 'tryInAr' }, factory: TryInARComponent },
-	{ name: 'en.editor', path: '/editor', defaultParams: { lang: 'en', mode: 'editor' }, factory: EditorComponent },
+	{ name: 'en.editor', path: '/editor?:viewId', defaultParams: { lang: 'en', mode: 'editor' }, factory: EditorComponent },
 	{ name: 'en.layout', path: '/layout', defaultParams: { lang: 'en', mode: 'layout' }, factory: LayoutComponent },
 ];

@@ -8,6 +8,8 @@ import { RoleType } from '../../user/user';
 import { ViewType } from '../../view/view';
 import ViewService from '../../view/view.service';
 
+// https://github.com/google/model-viewer/blob/master/packages/model-viewer/src/three-components/SmoothControls.ts
+
 export const OrbitMode = {
 	Panorama: 'panorama',
 	PanoramaGrid: 'panorama-grid',

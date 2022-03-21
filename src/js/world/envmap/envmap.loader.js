@@ -1,13 +1,14 @@
 import { fromEvent } from 'rxjs';
 import { filter, first, switchMap, takeWhile, tap } from 'rxjs/operators';
+// import DebugService from '../debug.service';
+// import * as THREE from 'three';
+// import { RGBELoader } from '../loaders/RGBELoader';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
-// import DebugService from '../debug.service';
-// import * as THREE from 'three';
-import { RGBELoader } from '../loaders/RGBELoader';
 
 export class EnvMapLoader {
 
@@ -159,7 +160,7 @@ export class EnvMapLoader {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
+			// texture.format = THREE.RGBAFormat;
 			texture.needsUpdate = true;
 			const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 				generateMipmaps: true,
@@ -167,7 +168,7 @@ export class EnvMapLoader {
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
 				mapping: THREE.UVMapping,
-				format: THREE.RGBFormat
+				format: THREE.RGBAFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			if (typeof callback === 'function') {
 				callback(texture, cubeRenderTarget.texture, false);
@@ -203,7 +204,7 @@ export class EnvMapLoader {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
+			// texture.format = THREE.RGBAFormat;
 			texture.needsUpdate = true;
 			const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 				generateMipmaps: true,
@@ -211,7 +212,7 @@ export class EnvMapLoader {
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
 				mapping: THREE.UVMapping,
-				format: THREE.RGBFormat
+				format: THREE.RGBAFormat
 			}).fromEquirectangularTexture(renderer, texture);
 			if (typeof callback === 'function') {
 				callback(texture, cubeRenderTarget.texture, false);
@@ -247,7 +248,7 @@ export class EnvMapLoader {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
-				texture.format = THREE.RGBFormat;
+				// texture.format = THREE.RGBAFormat;
 				texture.needsUpdate = true;
 				const cubeRenderTarget = this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(1024, {
 					generateMipmaps: true,
@@ -255,7 +256,7 @@ export class EnvMapLoader {
 					minFilter: THREE.LinearFilter,
 					magFilter: THREE.LinearFilter,
 					mapping: THREE.UVMapping,
-					format: THREE.RGBFormat
+					format: THREE.RGBAFormat
 				}).fromEquirectangularTexture(renderer, texture);
 				if (typeof callback === 'function') {
 					callback(texture, cubeRenderTarget.texture, false);

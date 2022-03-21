@@ -125,7 +125,7 @@ export class MenuButton extends InteractiveMesh {
 		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
 		texture.mapping = THREE.UVMapping;
-		texture.encoding = THREE.sRGBEncoding;
+		// texture.encoding = THREE.sRGBEncoding;
 		texture.needsUpdate = true;
 		return texture;
 	}
@@ -143,7 +143,7 @@ export class MenuButton extends InteractiveMesh {
 		ctx.fillStyle = environment.colors.menuOverForeground;
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
-		texture.encoding = THREE.sRGBEncoding;
+		// texture.encoding = THREE.sRGBEncoding;
 		texture.magFilter = THREE.LinearFilter;
 		texture.needsUpdate = true;
 		return texture;
@@ -229,7 +229,7 @@ export class BackButton extends MenuButton {
 		ctx.fillStyle = environment.colors.menuBackOverForeground;
 		ctx.fillText(text, 10, 50, w - 20);
 		const texture = new THREE.CanvasTexture(canvas);
-		texture.encoding = THREE.sRGBEncoding;
+		// texture.encoding = THREE.sRGBEncoding;
 		texture.magFilter = THREE.LinearFilter;
 		texture.needsUpdate = true;
 		return texture;
@@ -327,7 +327,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		if (!this.views) {
 			return;
 		}
-		MenuService.getModelMenu$(this.views, this.editor).pipe(
+		MenuService.getModelMenu$(this.views, this.host.editor).pipe(
 			first(),
 		).subscribe(menu => this.groups = menu);
 	}
@@ -387,10 +387,10 @@ export default class ModelMenuComponent extends ModelComponent {
 		} else if (this.rootItems) {
 			return of(this.rootItems);
 		} else {
-			return MenuService.getModelMenu$(this.views, this.editor).pipe(
+			return MenuService.getModelMenu$(this.views, this.host.editor).pipe(
 				first(),
 				tap(items => {
-					if (!this.editor) {
+					if (!this.host.editor) {
 						this.rootItems = items;
 					}
 				}),
@@ -571,5 +571,15 @@ ModelMenuComponent.meta = {
 	hosts: { host: WorldComponent },
 	// outputs: ['over', 'out', 'down', 'nav'],
 	outputs: ['nav', 'toggle'],
-	inputs: ['views', 'editor'],
+	inputs: ['views'],
+	template: /* html */`
+	<div class="btn--menu" (mousedown)="onToggle($event)">
+		<svg class="menu-light" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu-light"></use></svg>
+		<div class="btn--menu__spinner"></div>
+		<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+		<svg class="progress" width="50" height="50" viewBox="0 0 50 50">
+			<circle id="circle" r="23" cx="25" cy="25" fill="transparent"></circle>
+		</svg>
+	</div>
+	`,
 };

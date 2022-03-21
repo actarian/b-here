@@ -163,7 +163,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 
 	get isHidden() {
 		return StateService.state.zoomedId != null ||
-			(environment.flags.hideNavInfo && !this.editor &&
+			(environment.flags.hideNavInfo && !this.host.editor &&
 				(!StateService.state.showNavInfo && !(this.host.renderer.xr.isPresenting || StateService.state.role === RoleType.SelfService || StateService.state.role === RoleType.Embed)) &&
 				this.mode === NavModeType.Info);
 	}
@@ -253,7 +253,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 		const nav = new THREE.Group();
 		if (mode === NavModeType.Transparent) {
 
-			const opacityIdle = this.editor ? 0.1 : 0.0;
+			const opacityIdle = this.host.editor ? 0.1 : 0.0;
 			const opacityOver = 0.2;
 			const opacityDown = 0.3;
 
@@ -308,7 +308,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				}
 				this.down.next(this);
 				// opening nav link
-				if (!this.editor && !this.shouldShowPanel() && this.item.link && this.item.link.href) {
+				if (!this.host.editor && !this.shouldShowPanel() && this.item.link && this.item.link.href) {
 					this.shouldNavToLink = this.item.link.href;
 				}
 			});
@@ -582,5 +582,5 @@ ModelNavComponent.meta = {
 	selector: '[model-nav]',
 	hosts: { host: WorldComponent },
 	outputs: ['over', 'out', 'down', 'link'],
-	inputs: ['item', 'view', 'editor'],
+	inputs: ['item', 'view'],
 };

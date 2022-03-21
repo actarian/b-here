@@ -1,3 +1,5 @@
+@use 'sass:math'as math;
+
 %live-meeting-remote {
 	flex: 0 0 auto;
 	position: absolute;
@@ -248,7 +250,7 @@
 	z-index: 1;
 
 	.agora-stream {
-		@include ratio(120px, 4 / 3);
+		@include ratio(120px, math.div(4, 3));
 		background: black;
 	}
 

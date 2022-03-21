@@ -1,3 +1,5 @@
+@use 'sass:math'as math;
+
 $remote-width: 120px;
 $remote-height: 90px;
 $chat-width: 240px;
@@ -102,7 +104,7 @@ $chat-width: 240px;
 
 					@include media-up(sm) {
 						@media (orientation: landscape) {
-							@include ratio(120px, 4 / 3);
+							@include ratio(120px, math.div(4, 3));
 						}
 
 						@media (orientation: portrait) {

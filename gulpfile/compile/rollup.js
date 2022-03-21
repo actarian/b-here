@@ -1,21 +1,18 @@
-const { DEFAULT_EXTENSIONS } = require('@babel/core'),
-	path = require('path'),
-	rollup = require('rollup'),
-	rollupPluginBabel = require('rollup-plugin-babel'),
-	rollupPluginCommonJs = require('@rollup/plugin-commonjs'),
-	rollupPluginSourcemaps = require('rollup-plugin-sourcemaps'),
-	rollupPluginLicense = require('rollup-plugin-license'),
-	rollupPluginNodeResolve = require('@rollup/plugin-node-resolve'),
-	rollupPluginTypescript2 = require('rollup-plugin-typescript2'),
-	// rollupPluginTypescript = require('@rollup/plugin-typescript'),
-	through2 = require('through2'),
-	typescript = require('typescript'),
-	vinyl = require('vinyl'),
-	vinylSourcemapsApply = require('vinyl-sourcemaps-apply');
-
+const { DEFAULT_EXTENSIONS } = require('@babel/core');
+const path = require('path');
+const rollup = require('rollup');
+const rollupPluginBabel = require('@rollup/plugin-babel');
+const rollupPluginCommonJs = require('@rollup/plugin-commonjs');
+const rollupPluginSourcemaps = require('rollup-plugin-sourcemaps');
+const rollupPluginLicense = require('rollup-plugin-license');
+const rollupPluginNodeResolve = require('@rollup/plugin-node-resolve');
+const rollupPluginTypescript2 = require('rollup-plugin-typescript2');
+const through2 = require('through2');
+const typescript = require('typescript');
+const vinyl = require('vinyl');
+const vinylSourcemapsApply = require('vinyl-sourcemaps-apply');
 const log = require('../logger/logger');
-const { service } = require('../config/config');
-
+// const { service } = require('../config/config');
 const { setEntry } = require('../watch/watch');
 
 // map object storing rollup cache objects for each input file
@@ -89,7 +86,6 @@ function rollup_(item) {
 				log.error('rollup', error);
 			});
 		};
-
 		rollup.rollup(inputOptions).then(bundle => {
 			// console.log(bundle);
 			const outputs = rollupOutput(item);
@@ -99,24 +95,22 @@ function rollup_(item) {
 			}
 			return Promise.all(outputs.map((output, i) => rollupGenerate(bundle, output, i)));
 			// return bundle.write(outputs);
-		})
-			.then((results) => {
-				results.forEach(x => {
-					const outputs = x.output;
-					outputs.forEach(x => {
-						setEntry(inputOptions.input, Object.keys(x.modules));
-					});
+		}).then((results) => {
+			results.forEach(x => {
+				const outputs = x.output;
+				outputs.forEach(x => {
+					setEntry(inputOptions.input, Object.keys(x.modules));
 				});
-				callback(null, file); // pass file to gulp and end stream
-			})
-			.catch(error => {
-				log.error('rollup', error);
-				if (inputOptions.cache !== false) {
-					rollupCache.delete(inputOptions.input);
-				}
-				throw (error);
-				return callback(null, file);
 			});
+			callback(null, file); // pass file to gulp and end stream
+		}).catch(error => {
+			log.error('rollup', error);
+			if (inputOptions.cache !== false) {
+				rollupCache.delete(inputOptions.input);
+			}
+			throw (error);
+			return callback(null, file);
+		});
 	});
 }
 
@@ -125,6 +119,7 @@ function rollupInput(item) {
 	const presetEnvOptions = {
 		modules: false,
 		loose: true,
+		useBuiltIns: false,
 	};
 	if (output.format === 'esm') {
 		presetEnvOptions.targets = {
@@ -170,6 +165,44 @@ function rollupInput(item) {
 	// console.log('watchGlob', watchGlob);
 	const globals = Object.keys(output.globals);
 	const externals = globals.length ? globals : (item.external || []);
+	const rollupPluginCommonJsOptions = {
+		exclude: output.format === 'cjs' ? ['node_modules/**'] : undefined,
+	};
+	const rollupPluginTypescript2Options = {
+		typescript: typescript,
+		tsconfigDefaults: tsconfigDefaults,
+		tsconfig: 'tsconfig.json',
+		tsconfigOverride: tsconfigOverride,
+		rollupCommonJSResolveHack: true,
+		clean: true,
+		check: false,
+	};
+	const rollupPluginBabelOptions = {
+		extensions: [
+			...DEFAULT_EXTENSIONS,
+			'.ts',
+			'.tsx'
+		],
+		presets: [
+			['@babel/preset-env', presetEnvOptions],
+			// ['@babel/preset-typescript', { modules: false, loose: true }]
+		],
+		plugins: [
+			['@babel/plugin-proposal-class-properties', { loose: true }],
+			'@babel/plugin-proposal-object-rest-spread',
+			// '@babel/plugin-transform-runtime'
+		],
+		// exclude: ['node_modules/**'], // transpile only source code
+		exclude: 'node_modules\/(?!(threejs)\/).*',
+		comments: output.format !== 'iife',
+		babelHelpers: 'bundled',
+		// babelrc: false,
+	};
+	const rollupPluginLicenseOptions = {
+		banner: `@license <%= pkg.name %> v<%= pkg.version %>
+		(c) <%= moment().format('YYYY') %> <%= pkg.author %>
+		License: <%= pkg.license %>`,
+	};
 	const plugins = [
 		// Resolve source maps to the original source
 		rollupPluginSourcemaps(),
@@ -177,51 +210,21 @@ function rollupInput(item) {
 		// which external modules to include in the bundle
 		// https://github.com/rollup/rollup-plugin-node-resolve#usage
 		// import node modules
+		/*
 		output.format === 'cjs' ? null : (typeof rollupPluginNodeResolve === 'function' ? rollupPluginNodeResolve : rollupPluginNodeResolve.nodeResolve)({
 			resolveOnly: [new RegExp(`^(?!(${externals.join('$|')}$))`)]
 		}),
+		*/
+		output.format === 'cjs' ? null : (typeof rollupPluginNodeResolve === 'function' ? rollupPluginNodeResolve : rollupPluginNodeResolve.nodeResolve)(),
 		// exclude: Object.keys(output.globals).map(x => `node_module/${x}/**`),
 		// Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-		rollupPluginCommonJs({
-			exclude: output.format === 'cjs' ? ['node_modules/**'] : undefined,
-		}),
+		rollupPluginCommonJs(rollupPluginCommonJsOptions),
 		// Compile TypeScript files
-		path.extname(item.input) === '.ts' ? rollupPluginTypescript2({
-			typescript: typescript,
-			tsconfigDefaults: tsconfigDefaults,
-			tsconfig: 'tsconfig.json',
-			tsconfigOverride: tsconfigOverride,
-			rollupCommonJSResolveHack: true,
-			clean: true,
-			check: false,
-		}) : null,
-		rollupPluginBabel({
-			extensions: [
-				...DEFAULT_EXTENSIONS,
-				'.ts',
-				'.tsx'
-			],
-			presets: [
-				['@babel/preset-env', presetEnvOptions],
-				// ['@babel/preset-typescript', { modules: false, loose: true }]
-			],
-			plugins: [
-				'@babel/plugin-proposal-class-properties',
-				'@babel/plugin-proposal-object-rest-spread'
-			],
-			// exclude: 'node_modules/**', // only transpile our source code
-			exclude: 'node_modules\/(?!(threejs)\/).*', // ← Here I try to ES5 transpile roughjs which lives in `node_modules/roughjs/bundled/rough.esm.js`
-			comments: output.format !== 'iife',
-			// babelHelpers: 'bundled', // only for version 5
-			// babelrc: false,
-		}),
-		rollupPluginLicense({
-			banner: `@license <%= pkg.name %> v<%= pkg.version %>
-			(c) <%= moment().format('YYYY') %> <%= pkg.author %>
-			License: <%= pkg.license %>`,
-		}),
-
+		path.extname(item.input) === '.ts' ? rollupPluginTypescript2(rollupPluginTypescript2Options) : null,
+		rollupPluginBabel.babel ? rollupPluginBabel.babel(rollupPluginBabelOptions) : rollupPluginBabel(rollupPluginBabelOptions),
+		rollupPluginLicense(rollupPluginLicenseOptions),
 	].filter(x => x);
+	// console.log('plugins', rollupPluginBabelOptions, plugins);
 	const input = {
 		input: item.input,
 		plugins: plugins,

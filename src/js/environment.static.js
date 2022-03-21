@@ -43,6 +43,9 @@ export const environmentStatic = {
 		navTransparentImportantAnimated: true,
 		useTextureEnvironment: true,
 		usePaths: true,
+		antialias: true,
+		alpha: false,
+		premultipliedAlpha: false,
 		// maxQuality: false,
 	},
 	navs: {

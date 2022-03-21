@@ -105,7 +105,7 @@ export default class Panorama {
 			// mapping: THREE.EquirectangularReflectionMapping,
 			mapping: THREE.CubeUVReflectionMapping,
 			// mapping: THREE.UVMapping,
-			format: THREE.RGBFormat,
+			format: THREE.RGBAFormat,
 		});
 		cubeMap.addEventListener('dispose', this.onCubeMapDispose);
 		this.setCubeMapEquirectangularTexture(cubeMap, texture);
@@ -117,7 +117,7 @@ export default class Panorama {
 
 	setCubeMapEquirectangularTexture(cubeMap, texture) {
 		cubeMap.texture.type = texture.type;
-		cubeMap.texture.format = THREE.RGBFormat;
+		cubeMap.texture.format = THREE.RGBAFormat;
 		cubeMap.texture.encoding = THREE.sRGBEncoding;
 		cubeMap.texture.generateMipmaps = texture.generateMipmaps;
 		cubeMap.texture.minFilter = texture.minFilter;

@@ -1,7 +1,8 @@
 // import * as THREE from 'three';
+// import { GLTFLoader } from '../loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
-import { GLTFLoader } from '../loaders/GLTFLoader';
 import MediaLoader from '../media/media-loader';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';

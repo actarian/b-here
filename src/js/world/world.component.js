@@ -1,6 +1,9 @@
 import { Component, getContext } from 'rxcomp';
 import { ReplaySubject } from 'rxjs';
 import { auditTime, filter, shareReplay, takeUntil, tap } from 'rxjs/operators';
+// import * as THREE from 'three';
+// import { RGBELoader } from './loaders/RGBELoader';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { MessageType, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
@@ -16,8 +19,6 @@ import ViewService from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
 import { Host } from './host/host';
 import Interactive from './interactive/interactive';
-// import * as THREE from 'three';
-import { RGBELoader } from './loaders/RGBELoader';
 import MediaMesh from './media/media-mesh';
 import MediaPlayMesh from './media/media-play-mesh';
 import OrbitService, { OrbitMoveEvent } from './orbit/orbit.service';
@@ -196,23 +197,26 @@ export default class WorldComponent extends Component {
 		const orbitService = this.orbitService = new OrbitService(camera);
 
 		const renderer = this.renderer = new THREE.WebGLRenderer({
-			antialias: true,
-			alpha: false,
-			premultipliedAlpha: true,
+			antialias: environment.flags.antialias || false,
+			alpha: environment.flags.alpha || false,
+			premultipliedAlpha: environment.flags.premultipliedAlpha || false,
 			logarithmicDepthBuffer: true,
 			// physicallyCorrectLights: true,
+			powerPreference: 'high-performance',
 		});
 		renderer.setClearColor(0x000000, 1);
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(container.offsetWidth, container.offsetHeight);
 		renderer.xr.enabled = true;
-		renderer.outputEncoding = THREE.sRGBEncoding;
-		renderer.toneMapping = THREE.NoToneMapping; // default
+		renderer.outputEncoding = THREE.LinearEncoding;
+		renderer.toneMapping = THREE.NoToneMapping;
+		renderer.toneMappingExposure = 2;
+
+		// renderer.outputEncoding = THREE.sRGBEncoding;
 		// renderer.toneMapping = THREE.LinearToneMapping;
 		// renderer.toneMapping = THREE.ReinhardToneMapping;
 		// renderer.toneMapping = THREE.CineonToneMapping;
 		// renderer.toneMapping = THREE.ACESFilmicToneMapping;
-		renderer.toneMappingExposure = 1;
 		if (USE_SHADOW) {
 			renderer.shadowMap.enabled = true;
 			renderer.shadowMap.type = THREE.PCFShadowMap; // THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
@@ -258,13 +262,15 @@ export default class WorldComponent extends Component {
 		const light = new THREE.AmbientLight(0x101010);
 		*/
 
-		const ambient = this.ambient = new THREE.AmbientLight(0xffffff, 1);
+		const ambient = this.ambient = new THREE.AmbientLight(0xffffff, 0.25);
 		objects.add(ambient);
 
+		/*
 		const direct = this.direct = new THREE.DirectionalLight(0xffffff, 1);
 		direct.position.set(-40, -40, -40);
 		direct.target.position.set(0, 0, 0);
 		objects.add(direct);
+		*/
 
 		this.addControllers();
 		this.resize();
@@ -285,6 +291,15 @@ export default class WorldComponent extends Component {
 		});
 
 		// console.log('WorldComponent.createScene', this);
+	}
+
+	toggleLights(enabled) {
+		if (this.ambient) {
+			this.ambient.visible = enabled;
+		}
+		if (this.direct) {
+			this.direct.visible = enabled;
+		}
 	}
 
 	addEnvironment() {
@@ -372,13 +387,11 @@ export default class WorldComponent extends Component {
 			if (view.type.name === ViewType.Room3d.name) {
 				this.renderer.setClearColor(0x000000, 1);
 				this.objects.remove(this.panorama.mesh);
-				this.ambient.visible = false;
-				this.direct.visible = false;
+				this.toggleLights(false);
 			} else {
 				this.renderer.setClearColor(0x000000, 1);
 				this.objects.add(this.panorama.mesh);
-				this.ambient.visible = true;
-				this.direct.visible = true;
+				this.toggleLights(true);
 			}
 			// this.waiting = null;
 			this.pushChanges();
@@ -638,53 +651,6 @@ export default class WorldComponent extends Component {
 					transparent: true
 				});
 				return new THREE.Mesh(geometry, material);
-		}
-	}
-
-	onModelDown(event) {
-		// vr controller model grab
-		const controller = this.controller;
-		if (controller && this.renderer.xr.isPresenting) {
-			const target = this.tempTarget = event.mesh;
-			// console.log('WorldComponent.onModelDown', target);
-			// DebugService.getService().setMessage('onModelDown ', target.name);
-			const parent = this.tempParent = target.parent;
-			const position = new THREE.Vector3();
-			target.localToWorld(position);
-			controller.worldToLocal(position);
-			controller.add(target);
-			target.position.copy(position);
-		}
-	}
-
-	onModelDistance(direction) {
-		// vr controller model distance
-		const controller = this.controller;
-		const target = this.tempTarget;
-		if (controller && target && this.renderer.xr.isPresenting) {
-			let position = new THREE.Vector3();
-			position = position.copy(target.position);
-			const distance = Math.max(1, Math.min(8, position.distanceTo(ZERO) + 0.02 * direction));
-			position.normalize();
-			position = position.multiplyScalar(distance);
-			// DebugService.getService().setMessage('onModelDistance ' + distance);
-			target.position.copy(position);
-		}
-	}
-
-	onModelUp() {
-		// vr controller model release
-		const target = this.tempTarget;
-		const parent = this.tempParent;
-		if (target && parent) {
-			// console.log('WorldComponent.onModelUp', target, parent);
-			const position = new THREE.Vector3();
-			target.localToWorld(position);
-			parent.worldToLocal(position);
-			parent.add(target);
-			target.position.copy(position);
-			this.tempTarget = null;
-			this.tempParent = null;
 		}
 	}
 
@@ -1110,7 +1076,7 @@ export default class WorldComponent extends Component {
 
 	onNavLink(item) {
 		// console.log('WorldComponent.onNavLink', item.link.href);
-		if (this.locked) {
+		if (this.locked || this.editor) {
 			return;
 		}
 		if (environment.flags.useIframe) {
@@ -1121,6 +1087,70 @@ export default class WorldComponent extends Component {
 			this.navLink.next(item);
 		} else {
 			window.open(item.link.href, '_blank');
+		}
+	}
+
+	onModelDown(event) {
+		if (this.editor) {
+			return this.onObjectDown(event);
+		}
+		// vr controller model grab
+		const controller = this.controller;
+		if (controller && this.renderer.xr.isPresenting) {
+			const target = this.tempTarget = event.mesh;
+			// console.log('WorldComponent.onModelDown', target);
+			// DebugService.getService().setMessage('onModelDown ', target.name);
+			const parent = this.tempParent = target.parent;
+			const position = new THREE.Vector3();
+			target.localToWorld(position);
+			controller.worldToLocal(position);
+			controller.add(target);
+			target.position.copy(position);
+		}
+	}
+
+	onModelDistance(direction) {
+		// vr controller model distance
+		const controller = this.controller;
+		const target = this.tempTarget;
+		if (controller && target && this.renderer.xr.isPresenting) {
+			let position = new THREE.Vector3();
+			position = position.copy(target.position);
+			const distance = Math.max(1, Math.min(8, position.distanceTo(ZERO) + 0.02 * direction));
+			position.normalize();
+			position = position.multiplyScalar(distance);
+			// DebugService.getService().setMessage('onModelDistance ' + distance);
+			target.position.copy(position);
+		}
+	}
+
+	onModelUp() {
+		// vr controller model release
+		const target = this.tempTarget;
+		const parent = this.tempParent;
+		if (target && parent) {
+			// console.log('WorldComponent.onModelUp', target, parent);
+			const position = new THREE.Vector3();
+			target.localToWorld(position);
+			parent.worldToLocal(position);
+			parent.add(target);
+			target.position.copy(position);
+			this.tempTarget = null;
+			this.tempParent = null;
+		}
+	}
+
+	onObjectDown(event) {
+		// console.log('WorldComponent.onObjectDown', this.keys);
+		if (this.lockedOrXR) {
+			return;
+		}
+		if (this.editor && this.keys.Shift) {
+			this.dragItem = event;
+			this.select.next(event);
+		} else if (this.editor && this.keys.Control) {
+			this.resizeItem = event;
+			this.select.next(event);
 		}
 	}
 
@@ -1147,21 +1177,10 @@ export default class WorldComponent extends Component {
 		}
 	}
 
-	onObjectDown(event) {
-		// console.log('WorldComponent.onObjectDown', this.keys);
-		if (this.lockedOrXR) {
+	onPlayMedia(event) {
+		if (this.editor) {
 			return;
 		}
-		if (this.editor && this.keys.Shift) {
-			this.dragItem = event;
-			this.select.next(event);
-		} else if (this.editor && this.keys.Control) {
-			this.resizeItem = event;
-			this.select.next(event);
-		}
-	}
-
-	onPlayMedia(event) {
 		MessageService.send({
 			type: MessageType.PlayMedia,
 			itemId: event.itemId,
@@ -1190,6 +1209,9 @@ export default class WorldComponent extends Component {
 	}
 
 	onCurrentTimeMedia(event) {
+		if (this.editor) {
+			return;
+		}
 		MessageService.send({
 			type: MessageType.CurrentTimeMedia,
 			itemId: event.itemId,
@@ -1198,6 +1220,9 @@ export default class WorldComponent extends Component {
 	}
 
 	onPlayModel(event) {
+		if (this.editor) {
+			return;
+		}
 		MessageService.send({
 			type: MessageType.PlayModel,
 			itemId: event.itemId,
@@ -1484,8 +1509,8 @@ WorldComponent.meta = {
 			<div model-room [view]="view" *if="view.type.name === 'room-3d'"></div>
 			<div class="world__item" *for="let item of view.pathItems; let index = index;">
 				<div model-nav [item]="item" [view]="view" (over)="onNavOver($event)" (out)="onNavOut($event)" (down)="onNavDown($event)" (link)="onNavLink($event)" *if="item.type.name == 'nav'"></div>
-				<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'plane'"></div>
-				<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'curved-plane'"></div>
+				<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'plane'"></div>
+				<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'curved-plane'"></div>
 				<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" (play)="onPlayModel($event)" *if="item.type.name == 'model'"></div>
 				<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
 					<div class="panel__title" [innerHTML]="item.title"></div>
@@ -1499,16 +1524,7 @@ WorldComponent.meta = {
 	<div class="progress-indicator" model-progress [view]="view">
 		<div class="inner"></div>
 	</div>
-	<div model-menu [views]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="showMenu">
-		<div class="btn--menu" (mousedown)="onToggle($event)">
-			<svg class="menu-light" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu-light"></use></svg>
-			<div class="btn--menu__spinner"></div>
-			<svg class="bullets" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
-			<svg class="progress" width="50" height="50" viewBox="0 0 50 50">
-				<circle id="circle" r="23" cx="25" cy="25" fill="transparent"></circle>
-			</svg>
-		</div>
-	</div>
+	<div model-menu [views]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="showMenu"></div>
 	<div model-debug *if="debugging"></div>
 	<div class="world__info" *if="error" [innerHTML]="error"></div>
 	`

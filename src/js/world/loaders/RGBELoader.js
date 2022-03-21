@@ -1,10 +1,10 @@
-// import { DataTextureLoader, DataUtils, FloatType, HalfFloatType, LinearEncoding, LinearFilter, NearestFilter, RGBEEncoding, RGBEFormat, RGBFormat, UnsignedByteType } from 'three';
-const { DataTextureLoader, DataUtils, FloatType, HalfFloatType, LinearEncoding, LinearFilter, NearestFilter, RGBEEncoding, RGBEFormat, RGBFormat, UnsignedByteType } = THREE;
+// import { DataTextureLoader, DataUtils, FloatType, HalfFloatType, LinearEncoding, LinearFilter, NearestFilter, RGBEEncoding, RGBEFormat, RGBAFormat, UnsignedByteType } from 'three';
+const { DataTextureLoader, DataUtils, FloatType, HalfFloatType, LinearEncoding, LinearFilter, NearestFilter, RGBEEncoding, RGBEFormat, RGBAFormat, UnsignedByteType } = THREE;
 
 // https://github.com/mrdoob/three.js/issues/5552
 // http://en.wikipedia.org/wiki/RGBE_image_format
 
-class RGBELoader extends DataTextureLoader {
+export default class RGBELoader extends DataTextureLoader {
 
 	constructor(manager) {
 
@@ -385,7 +385,7 @@ class RGBELoader extends DataTextureLoader {
 						}
 
 						data = floatArray;
-						format = RGBFormat;
+						format = RGBAFormat;
 						type = FloatType;
 						break;
 
@@ -401,7 +401,7 @@ class RGBELoader extends DataTextureLoader {
 						}
 
 						data = halfArray;
-						format = RGBFormat;
+						format = RGBAFormat;
 						type = HalfFloatType;
 						break;
 
@@ -482,4 +482,5 @@ class RGBELoader extends DataTextureLoader {
 
 }
 
-export { RGBELoader };
+// export { RGBELoader };
+

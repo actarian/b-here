@@ -65,8 +65,8 @@ export class PhoneStreamElement {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			texture.format = THREE.RGBFormat;
-			texture.encoding = THREE.sRGBEncoding;
+			// texture.format = THREE.RGBAFormat;
+			// texture.encoding = THREE.sRGBEncoding;
 			texture.needsUpdate = true;
 			if (typeof callback === 'function') {
 				callback(texture);

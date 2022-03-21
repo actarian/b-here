@@ -383,9 +383,12 @@ export default class MediaMesh extends InteractiveMesh {
 		if (item.asset && item.asset.chromaKeyColor) {
 			material = MediaMesh.getChromaKeyMaterial(item.asset.chromaKeyColor);
 		} else if (item.asset) {
-			material = new THREE.MeshBasicMaterial({ color: 0x888888 }); // MediaMesh.getMaterial();
+			// material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+			// material = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+			material = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
+			// material = new THREE.MeshPhysicalMaterial({ clearcoat: 1, clearcoatRoughness: 0, toneMapped: false, encoding: THREE.sRGBEncoding });
 		} else {
-			material = new THREE.MeshBasicMaterial({ color: 0x888888 });
+			material = new THREE.MeshBasicMaterial({ color: 0xffffff });
 		}
 		return material;
 	}
@@ -461,7 +464,7 @@ export default class MediaMesh extends InteractiveMesh {
 				return;
 			}
 			if (texture) {
-				texture.encoding = THREE.sRGBEncoding;
+				// texture.encoding = THREE.sRGBEncoding;
 				material.map = texture; // !!! Enables USE_MAP
 				if (material.uniforms) {
 					material.uniforms.map.value = texture;
@@ -474,7 +477,7 @@ export default class MediaMesh extends InteractiveMesh {
 							playMap.minFilter = THREE.LinearFilter;
 							playMap.magFilter = THREE.LinearFilter;
 							playMap.mapping = THREE.UVMapping;
-							// playMap.format = THREE.RGBFormat;
+							// playMap.format = THREE.RGBAFormat;
 							playMap.wrapS = THREE.RepeatWrapping;
 							playMap.wrapT = THREE.RepeatWrapping;
 							material.uniforms.playMap.value = playMap;

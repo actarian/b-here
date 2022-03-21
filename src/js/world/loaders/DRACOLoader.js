@@ -3,7 +3,7 @@ const { BufferAttribute, BufferGeometry, FileLoader, Loader } = THREE;
 
 const _taskCache = new WeakMap();
 
-class DRACOLoader extends Loader {
+export default class DRACOLoader extends Loader {
 
 	constructor(manager) {
 
@@ -580,4 +580,4 @@ function DRACOWorker() {
 
 }
 
-export { DRACOLoader };
+// export { DRACOLoader };

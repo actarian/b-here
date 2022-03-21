@@ -1,7 +1,7 @@
-// import { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } from 'three';
-const { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } = THREE;
+// import { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBAFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } from 'three';
+const { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBAFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } = THREE;
 
-class GLTFLoader extends Loader {
+export default class GLTFLoader extends Loader {
 
 	constructor(manager) {
 
@@ -2541,8 +2541,8 @@ class GLTFParser {
 
 			if (textureDef.name) texture.name = textureDef.name;
 
-			// When there is definitely no alpha channel in the texture, set RGBFormat to save space.
-			if (!hasAlpha) texture.format = RGBFormat;
+			// When there is definitely no alpha channel in the texture, set RGBAFormat to save space.
+			if (!hasAlpha) texture.format = RGBAFormat;
 
 			const samplers = json.samplers || {};
 			const sampler = samplers[textureDef.sampler] || {};
@@ -3936,4 +3936,5 @@ function toTrianglesDrawMode(geometry, drawMode) {
 
 }
 
-export { GLTFLoader };
+// export { GLTFLoader };
+

@@ -4,11 +4,11 @@
  * License: MIT
  */
 
-(function(f){typeof define==='function'&&define.amd?define(f):f();}((function(){'use strict';var ImageServiceWorkerEvent = {
+(function(f){typeof define==='function'&&define.amd?define(f):f();})((function(){'use strict';const ImageServiceWorkerEvent = {
   Progress: 'progress',
   Complete: 'complete'
 };
-var controllers = {};
+const controllers = {};
 
 function resize(src, blob, size) {
   if (!self.createImageBitmap || !self.OffscreenCanvas) {
@@ -16,10 +16,10 @@ function resize(src, blob, size) {
   }
 
   self.createImageBitmap(blob).then(function (img) {
-    var MAX_WIDTH = 320;
-    var MAX_HEIGHT = 240;
-    var width = img.width;
-    var height = img.height;
+    const MAX_WIDTH = 320;
+    const MAX_HEIGHT = 240;
+    let width = img.width;
+    let height = img.height;
 
     if (width > height) {
       if (width > MAX_WIDTH) {
@@ -33,8 +33,8 @@ function resize(src, blob, size) {
       }
     }
 
-    var canvas = new OffscreenCanvas(width, height);
-    var ctx = canvas.getContext('2d');
+    const canvas = new OffscreenCanvas(width, height);
+    const ctx = canvas.getContext('2d');
     canvas.width = width;
     canvas.height = height;
     ctx.drawImage(img, 0, 0, width, height); // const options = { type: 'image/jpeg', quality: 0.9 };
@@ -55,12 +55,12 @@ function sendMessage(type, src, data) {
 }
 
 self.addEventListener('message', function (event) {
-  var id = event.data.id;
-  var src = event.data.src;
-  var size = event.data.size;
+  const id = event.data.id;
+  const src = event.data.src;
+  const size = event.data.size;
 
   if (id && !src) {
-    var controller = controllers[id];
+    const controller = controllers[id];
 
     if (controller) {
       // console.log('Aborting', id);
@@ -70,25 +70,25 @@ self.addEventListener('message', function (event) {
     return;
   }
 
-  var options = {
+  const options = {
     mode: 'cors' // no-cors, *cors, same-origin
 
   };
 
   if (typeof fetch === 'function') {
     if (self.AbortController) {
-      var _controller = new AbortController();
-
-      options.signal = _controller.signal;
-      controllers[id] = _controller; // console.log('AbortController', id);
+      const controller = new AbortController();
+      options.signal = controller.signal;
+      controllers[id] = controller; // console.log('AbortController', id);
     }
 
-    var response = fetch(src, options).then(fetchProgress({
+    fetch(src, options).then(fetchProgress({
       // implement onProgress method
-      onProgress: function onProgress(event) {
+      onProgress(event) {
         // console.log('ImageServiceWorker', event.loaded, event.total);
         sendMessage(ImageServiceWorkerEvent.Progress, src, event);
       }
+
     })).then(function (response) {
       return response.blob();
     }, function (error) {
@@ -105,7 +105,7 @@ self.addEventListener('message', function (event) {
       console.log('ImageServiceWorker.error', error);
     });
   } else {
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.open('GET', src, true);
     request.responseType = 'blob';
     request.withCredentials = true;
@@ -152,39 +152,34 @@ function isFetchProgressSupported() {
 }
 
 function fetchProgress(_ref) {
-  var _ref$defaultSize = _ref.defaultSize,
-      defaultSize = _ref$defaultSize === void 0 ? 0 : _ref$defaultSize,
-      _ref$emitDelay = _ref.emitDelay,
-      emitDelay = _ref$emitDelay === void 0 ? 10 : _ref$emitDelay,
-      _ref$onProgress = _ref.onProgress,
-      onProgress = _ref$onProgress === void 0 ? function () {
-    return null;
-  } : _ref$onProgress,
-      _ref$onComplete = _ref.onComplete,
-      onComplete = _ref$onComplete === void 0 ? function () {
-    return null;
-  } : _ref$onComplete,
-      _ref$onError = _ref.onError,
-      onError = _ref$onError === void 0 ? function () {
-    return null;
-  } : _ref$onError;
+  let {
+    defaultSize = 0,
+    emitDelay = 10,
+    onProgress = () => null,
+    onComplete = () => null,
+    onError = () => null
+  } = _ref;
   return function FetchProgress(response) {
     if (!isFetchProgressSupported()) {
       return response;
     }
 
-    var body = response.body,
-        headers = response.headers,
-        status = response.status;
-    var contentLength = headers.get('content-length') || defaultSize;
-    var progress = new Progress(contentLength, emitDelay);
-    var reader = body.getReader();
-    var stream = new ReadableStream({
-      start: function start(controller) {
+    const {
+      body,
+      headers,
+      status
+    } = response;
+    const contentLength = headers.get('content-length') || defaultSize;
+    const progress = new Progress(contentLength, emitDelay);
+    const reader = body.getReader();
+    const stream = new ReadableStream({
+      start(controller) {
         function push() {
-          reader.read().then(function (_ref2) {
-            var done = _ref2.done,
-                value = _ref2.value;
+          reader.read().then(_ref2 => {
+            let {
+              done,
+              value
+            } = _ref2;
 
             if (done) {
               onComplete({});
@@ -198,23 +193,24 @@ function fetchProgress(_ref) {
 
             controller.enqueue(value);
             push();
-          }).catch(function (err) {
+          }).catch(err => {
             onError(err);
           });
         }
 
         push();
       }
+
     });
     return new Response(stream, {
-      headers: headers,
-      status: status
+      headers,
+      status
     });
   };
 }
 
-var Progress = /*#__PURE__*/function () {
-  function Progress(length, emitDelay) {
+class Progress {
+  constructor(length, emitDelay) {
     if (emitDelay === void 0) {
       emitDelay = 1000;
     }
@@ -225,25 +221,22 @@ var Progress = /*#__PURE__*/function () {
     this.emitDelay = emitDelay;
   }
 
-  var _proto = Progress.prototype;
-
-  _proto.next = function next(chunk, onProgress) {
-    var chunkLength = chunk.length;
+  next(chunk, onProgress) {
+    const chunkLength = chunk.length;
     this.loaded += chunkLength;
     this.eventStart = this.eventStart || Date.now();
 
     if (this.length >= this.loaded || Date.now() - this.eventStart > this.emitDelay) {
       this.eventStart = Date.now();
-      var progress = {
+      const progress = {
         total: this.length,
         loaded: this.loaded
       };
       onProgress(progress);
     }
-  };
+  }
 
-  return Progress;
-}();
+}
 /*
 function fetchProgress__(response, onProgress) {
 	const reader = response.body.getReader();
@@ -276,4 +269,4 @@ function fetchProgress__(response, onProgress) {
 	// We're done!
 	let commits = JSON.parse(result);
 }
-*/})));
+*/}));

@@ -185,7 +185,7 @@ export default class Panorama {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
 				texture.mapping = THREE.UVMapping;
-				texture.format = THREE.RGBFormat;
+				texture.format = THREE.RGBAFormat;
 				texture.needsUpdate = true;
 				const material = this.mesh.material;
 				material.map = texture;

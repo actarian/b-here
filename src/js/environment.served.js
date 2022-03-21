@@ -35,6 +35,9 @@ export const environmentServed = {
 		navTransparentImportantAnimated: false,
 		useTextureEnvironment: true,
 		usePaths: false,
+		antialias: true,
+		alpha: false,
+		premultipliedAlpha: false,
 		// maxQuality: false,
 	},
 	navs: {

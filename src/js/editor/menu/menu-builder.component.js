@@ -25,7 +25,7 @@ export default class MenuBuilderComponent extends Component {
 			takeUntil(this.unsubscribe$)
 		).subscribe((changes) => {
 			// console.log('MenuBuilderComponent', changes);
-			this.changes ++;
+			this.changes++;
 			this.pushChanges();
 		});
 	}
@@ -40,7 +40,7 @@ export default class MenuBuilderComponent extends Component {
 		let index = items.controls.indexOf(control);
 		items.controls.splice(index, 1);
 		if (index > 0) {
-			index --;
+			index--;
 		} else {
 			index = length - 1;
 		}
@@ -53,7 +53,7 @@ export default class MenuBuilderComponent extends Component {
 		let index = items.controls.indexOf(control);
 		items.controls.splice(index, 1);
 		if (index < length - 1) {
-			index ++;
+			index++;
 		} else {
 			index = 0;
 		}
@@ -131,4 +131,23 @@ export default class MenuBuilderComponent extends Component {
 MenuBuilderComponent.meta = {
 	selector: '[menu-builder]',
 	inputs: ['views'],
+	template: /* html */`
+	<div class="group--head">
+		<div class="title" [innerHTML]="'editor_menu' | label"></div>
+	</div>
+	<div class="group--main">
+		<div class="nav--tree" *if="form">
+			<form class="form" [formGroup]="form" (submit)="isValid() && onSubmit()" name="form" role="form" novalidate autocomplete="off">
+				<div class="abstract" *if="controls.items.controls.length == 0" [innerHTML]="'editor_add_item' | label"></div>
+				<div *for="let control of controls.items.controls">
+					<div control-menu [control]="control" (remove)="onRemoveControl($event)" (link)="onLinkControl($event)" (up)="onUpControl($event)" (down)="onDownControl($event)"></div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="group--foot">
+		<button type="button" class="btn--mode" (click)="onAddItem($event)" [innerHTML]="'editor_add' | label"></button>
+		<button type="button" class="btn--mode" (click)="isValid() && onSubmit()" *if="changes > 1" [innerHTML]="'editor_save' | label"></button>
+	</div>
+	`,
 };

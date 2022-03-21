@@ -66,13 +66,16 @@
             "node_modules/agora-rtm-sdk/index.js",
             "node_modules/hls.js/dist/hls.js",
             "node_modules/rxjs/bundles/rxjs.umd.js",
-            "node_modules/rxcomp/dist/iife/rxcomp.js",
-            "node_modules/rxcomp-form/dist/iife/rxcomp-form.js",
+            "node_modules/rxcomp/dist/umd/rxcomp.js",
+            "node_modules/rxcomp-form/dist/umd/rxcomp-form.js",
             "node_modules/gsap/dist/EasePack.js",
             "node_modules/gsap/dist/gsap.js",
             "node_modules/qrious/dist/qrious.js",
             "node_modules/html2canvas/dist/html2canvas.js",
-            "docs/js/three.umd.js"
+            "docs/js/three.umd.js",
+            "docs/js/draco-loader.umd.js",
+            "docs/js/gltf-loader.umd.js",
+            "docs/js/rgbe-loader.umd.js"
           ],
           "output": "docs/js/vendors.js",
           "minify": true

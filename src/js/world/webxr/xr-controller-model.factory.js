@@ -1,5 +1,6 @@
 // import * as THREE from 'three';
-import { GLTFLoader } from '../loaders/GLTFLoader';
+// import { GLTFLoader } from '../loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Constants as MotionControllerConstants, fetchProfile, MotionController } from './motion-controllers.module.js';
 
 const DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles';
