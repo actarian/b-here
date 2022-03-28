@@ -2,9 +2,9 @@ import { Directive, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 // import { RouteSegment } from '../route/route-segment';
-import RouterService from './router.service';
+import { RouterService } from './router.service';
 
-export default class RouterLinkDirective extends Directive {
+export class RouterLinkDirective extends Directive {
 
 	path;
 	segments;

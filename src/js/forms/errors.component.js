@@ -1,4 +1,4 @@
-import LabelPipe from '../label/label.pipe';
+import { LabelPipe } from '../label/label.pipe';
 import ControlComponent from './control.component';
 
 export default class ErrorsComponent extends ControlComponent {

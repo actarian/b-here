@@ -50,5 +50,8 @@
       "indent_size": 2,
       "indent_with_tabs": false
     }
+  },
+  "json": {
+    "wrap_line_length": 150
   }
 }

@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import HttpService from '../../http/http.service';
+import { HttpService } from '../../http/http.service';
 import { mapViewItem } from '../../view/view';
 import { mapNavmap } from './navmap';
 

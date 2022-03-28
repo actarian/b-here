@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
-import ModalService from './modal.service';
+import { ModalService } from './modal.service';
 
 export default class ModalOutletComponent extends Component {
 

@@ -1,7 +1,7 @@
 import { EMPTY, forkJoin, fromEvent, of } from 'rxjs';
 import { catchError, filter, first, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../environment';
-import HttpService from '../http/http.service';
+import { HttpService } from '../http/http.service';
 import StateService from '../state/state.service';
 
 let UID = 0;
@@ -49,7 +49,6 @@ export class WebhookEvent {
 	}
 
 }
-
 export class WebhookService {
 
 	static event$_ = fromEvent(window, 'message').pipe(

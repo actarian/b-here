@@ -3,9 +3,9 @@ import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 // import * as THREE from 'three';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
-import ModalService from '../../modal/modal.service';
+import { ModalService } from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
-import EditorService from '../editor.service';
+import { EditorService } from '../editor.service';
 import NavmapService from '../navmap/navmap.service';
 
 export default class NavmapItemModalComponent extends Component {

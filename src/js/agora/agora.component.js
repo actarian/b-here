@@ -6,15 +6,14 @@ import NavmapService from '../editor/navmap/navmap.service';
 import PathService from '../editor/path/path.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
-import LabelPipe from '../label/label.pipe';
-import LocationService from '../location/location.service';
+import { LabelPipe } from '../label/label.pipe';
 import { MeetingId } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
-import MessageService from '../message/message.service';
-import ModalService from '../modal/modal.service';
-import RoutePipe from '../router/route.pipe';
-import RouterOutletStructure from '../router/router-outlet.structure';
-import RouterService from '../router/router.service';
+import { MessageService } from '../message/message.service';
+import { ModalService } from '../modal/modal.service';
+import { RoutePipe } from '../router/route.pipe';
+import { RouterOutletStructure } from '../router/router-outlet.structure';
+import { RouterService } from '../router/router.service';
 import StateService from '../state/state.service';
 import StreamService from '../stream/stream.service';
 import ToastService, { ToastPosition, ToastResolveEvent, ToastType } from '../toast/toast.service';
@@ -22,14 +21,14 @@ import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { PanoramaGridView, ViewType } from '../view/view';
-import ViewService from '../view/view.service';
+import { ViewService } from '../view/view.service';
 import { WebhookService } from '../webhook/webhook.service';
 import { WishlistService } from '../wishlist/wishlist.service';
 import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent } from '../world/media/media-loader';
 import ModelNavComponent from '../world/model/model-nav.component';
 import VRService from '../world/vr.service';
 import { AgoraChecklistService } from './agora-checklist.service';
-import { CHUNK_BACKGROUND, CHUNK_CREDITS, CHUNK_EMBED, CHUNK_LANGUAGE, CHUNK_LOGO, CHUNK_SELF_SERVICE_TOUR, CHUNK_SMART_DEVICE, CHUNK_VIRTUAL_TOUR } from './agora.component.chunks';
+import { CHUNK_BACKGROUND, CHUNK_COPYRIGHT, CHUNK_CREDITS, CHUNK_EMBED, CHUNK_LANGUAGE, CHUNK_LOGO, CHUNK_SELF_SERVICE_TOUR, CHUNK_SMART_DEVICE, CHUNK_VIRTUAL_TOUR } from './agora.component.chunks';
 import AgoraService from './agora.service';
 import { AgoraStatus, MessageType, UIMode } from './agora.types';
 
@@ -176,14 +175,8 @@ export default class AgoraComponent extends Component {
 			linkRole = RoleType.SelfService;
 			return linkRole;
 		}
-		/*
-		const meetingUrl = this.meetingUrl;
-		const meetingId = meetingUrl.meetingId;
-		if (meetingId) {
-			linkRole = meetingId.role;
-		}
-		*/
-		const match = (LocationService.get('link') || '').match(/\d{9}-(\d{4})-\d{13}/);
+		const meetingUrl = new MeetingUrl();
+		const match = (meetingUrl.link || '').match(/\d{9}-(\d{4})-\d{13}/);
 		if (match) {
 			const index = parseInt(match[1]);
 			linkRole = Object.keys(RoleType).reduce((p, c, i) => {
@@ -262,12 +255,13 @@ export default class AgoraComponent extends Component {
 	}
 
 	getPathId() {
-		let pathId = LocationService.get('pathId') || null;
+		const meetingUrl = new MeetingUrl();
+		let pathId = meetingUrl.pathId;
 		if (pathId) {
 			// console.log('AgoraComponent.getPathId', pathId);
 			return parseInt(pathId);
 		}
-		const link = LocationService.get('link') || null;
+		const link = meetingUrl.link;
 		if (link) {
 			const meetingId = new MeetingId(link);
 			pathId = meetingId.pathId;
@@ -278,9 +272,8 @@ export default class AgoraComponent extends Component {
 
 	initWithUser(user) {
 		// console.log('AgoraComponent.initWithUser', user);
-		// const meetingUrl = this.meetingUrl;
-		// const link = meetingUrl.link;
-		const link = LocationService.get('link') || null;
+		const meetingUrl = new MeetingUrl();
+		const link = meetingUrl.link;
 		const pathId = this.getPathId();
 		const role = this.getLinkRole() || (user ? user.type : null);
 		switch (role) {
@@ -301,7 +294,7 @@ export default class AgoraComponent extends Component {
 		}
 		// console.log('initWithUser', role, user);
 		const mode = UserService.getMode(role);
-		const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null);
+		const name = this.getMeetingName(user);
 		// const name = meetingUrl.name || this.getName(user);
 		const checklist = null;
 		const hosted = role === RoleType.Publisher ? true : false;
@@ -341,6 +334,20 @@ export default class AgoraComponent extends Component {
 			this.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
 		});
 		this.initAgora();
+	}
+
+	getMeetingName(user) {
+		const meetingUrl = new MeetingUrl();
+		let name = null;
+		if (environment.flags.useExtendedUserInfo) {
+			name = meetingUrl.firstName && meetingUrl.lastName ? `${meetingUrl.firstName} ${meetingUrl.lastName}` : null;
+		} else {
+			name = meetingUrl.name ? meetingUrl.name : null;
+		}
+		if (!name && user.firstName && user.lastName) {
+			name = `${user.firstName} ${user.lastName}`;
+		}
+		return name;
 	}
 
 	viewObserver$() {
@@ -1090,9 +1097,19 @@ AgoraComponent.meta = {
 		${CHUNK_SMART_DEVICE}
 		${CHUNK_SELF_SERVICE_TOUR}
 		${CHUNK_EMBED}
-		${CHUNK_LOGO}
-		${CHUNK_CREDITS}
-		${CHUNK_LANGUAGE}
+		<header>
+			${CHUNK_LOGO}
+			${CHUNK_LANGUAGE}
+		</header>
+		<footer *if="state.status != 'connected'">
+			<span class="group--colophon">
+				${CHUNK_CREDITS}
+				${CHUNK_COPYRIGHT}
+			</span>
+			<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher' && (state.status == 'checklist' || state.status == 'link')">
+				<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
+			</a>
+		</footer>
 	</div>
 	`
 };

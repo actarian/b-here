@@ -1,8 +1,8 @@
 import { Component, getContext } from 'rxcomp';
 import { CHUNK_BACKGROUND, CHUNK_CREDITS, CHUNK_LANGUAGE, CHUNK_LOGO } from '../agora/agora.component.chunks';
 import { MeetingUrl } from '../meeting/meeting-url';
-import RouterOutletStructure from '../router/router-outlet.structure';
-// import RouterService from '../router/router.service';
+import { RouterOutletStructure } from '../router/router-outlet.structure';
+// import { RouterService } from '../router/router.service';
 
 export default class AccessCodeComponent extends Component {
 
@@ -12,7 +12,7 @@ export default class AccessCodeComponent extends Component {
 		if (!meetingUrl.link) {
 			// !!!
 			// RouterService.setRouterLink(MeetingUrl.getGuidedTourUrl());
-			window.location.href = MeetingUrl.getGuidedTourUrl();
+			window.location.href = window.location.origin + MeetingUrl.getGuidedTourUrl();
 		} else {
 			const url = meetingUrl.toGuidedTourUrl();
 			const { node } = getContext(this);

@@ -2,11 +2,12 @@ import { Component } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
+import { CHUNK_COPYRIGHT, CHUNK_CREDITS, CHUNK_LANGUAGE } from '../agora/agora.component.chunks';
 import { environment, STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
-import RoutePipe from '../router/route.pipe';
-import RouterOutletStructure from '../router/router-outlet.structure';
-import RouterService from '../router/router.service';
+import { RoutePipe } from '../router/route.pipe';
+import { RouterOutletStructure } from '../router/router-outlet.structure';
+import { RouterService } from '../router/router.service';
 import { UserService } from '../user/user.service';
 
 export default class AccessComponent extends Component {
@@ -16,15 +17,6 @@ export default class AccessComponent extends Component {
 		this.state = {
 			status: 'access',
 		};
-		/*
-		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
-		).subscribe(state => {
-			// console.log('AccessComponent.state', state);
-			this.state = state;
-			this.pushChanges();
-		});
-		*/
 	}
 
 	onSelfServiceTourRequest() {
@@ -86,27 +78,11 @@ export default class AccessComponent extends Component {
 		);
 
 		const form = this.form = fieldsToFormGroup(fields);
-		/*
-		const form = this.form = new FormGroup({
-			firstName: new FormControl(null, Validators.RequiredValidator()),
-			lastName: new FormControl(null, Validators.RequiredValidator()),
-			email: new FormControl(null, [Validators.RequiredValidator(), Validators.EmailValidator()]),
-			role: new FormControl(null, Validators.RequiredValidator()),
-			privacy: new FormControl(null, Validators.RequiredTrueValidator()),
-			checkRequest: window.antiforgery || '',
-			checkField: '',
-		});
-		*/
 
 		const controls = this.controls = form.controls;
-		/*
-		const options = data.roles.slice();
-		options.unshift({ id: null, name: 'select', // LabelPipe.transform('select') });
-		controls.role.options = options;
-		*/
 
 		this.formSubscription = form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			this.pushChanges();
 		});
@@ -147,17 +123,6 @@ export default class AccessComponent extends Component {
 			});
 		} else {
 			patchFields(this.fields, this.form);
-			/*
-			this.form.patch({
-				firstName: 'Jhon',
-				lastName: 'Appleseed',
-				email: 'jhonappleseed@gmail.com',
-				role: this.controls.role.options.find(x => x.id !== null).id,
-				privacy: true,
-				checkRequest: window.antiforgery || '',
-				checkField: ''
-			});
-			*/
 		}
 	}
 
@@ -240,9 +205,6 @@ AccessComponent.meta = {
 						</button>
 					</div>
 				</div>
-				<button type="button" class="btn--absolute" (click)="onLogin($event)">
-					<span [innerHTML]="'access_cta' | label"></span> <svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg>
-				</button>
 			</div>
 			<!-- guided-tour -->
 			<div class="ui ui--info" *if="state.status == 'self-service-tour' || state.status == 'guided-tour'">
@@ -312,16 +274,24 @@ AccessComponent.meta = {
 					</form>
 				</div>
 			</div>
-			<div class="btn--logo" (click)="onBack($event)">
-				<img [src]="'logo' | env" *if="'logo' | env" />
-				<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
-			</div>
-			<!-- credits -->
-				<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
-				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-			</a>
-			<!-- language -->
-			<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+			<header>
+				<!-- logo -->
+				<div class="btn--logo" (click)="onBack($event)">
+					<img [src]="'logo' | env" *if="'logo' | env" />
+					<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
+				</div>
+				${CHUNK_LANGUAGE}
+			</header>
+			<footer>
+				<span class="group--colophon" *if="state.status != 'connected'">
+					${CHUNK_CREDITS}
+					${CHUNK_COPYRIGHT}
+				</span>
+				<!-- login -->
+				<button type="button" class="btn--absolute" (click)="onLogin($event)" *if="state.status == 'access'">
+					<span [innerHTML]="'access_cta' | label"></span> <svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg>
+				</button>
+			</footer>
 		</div>
 	`
 };

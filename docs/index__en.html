@@ -7,7 +7,7 @@
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-config" content="/img/icons/browserconfig.xml">
 	<meta name="theme-color" content="#ffffff">
-	--><!-- <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;700;900" rel="stylesheet"> --><link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800" rel="stylesheet"><!-- &display=swap --><link rel="stylesheet" href="/b-here/css/vendors.min.css"><link rel="stylesheet" href="/b-here/css/main.min.css"><!-- start css --><!-- end css --></head><body><script>window.STATIC = true;</script><!-- start main --><!-- start css-vars.html--><style>.b-here {
+	--><!-- <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;700;900" rel="stylesheet"> --><link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/b-here/css/vendors.min.css"><link rel="stylesheet" href="/b-here/css/main.min.css"><!-- start css --><!-- end css --></head><body><script>window.STATIC = true;</script><!-- start main --><!-- start css-vars.html--><style>.b-here {
 	/* --font-primary: GT Walsheim, Maven Pro, Arial, sans-serif; */
 	--font-primary: Work Sans, Arial, sans-serif;
 	--background: #ffffff;
@@ -73,6 +73,8 @@
 		production: false,
 		useProxy: true,
 		useToken: false,
+		useExtendedUserInfo: true,
+		useEncryptedUrl: true,
 		selfService: true,
 		guidedTourRequest: true,
 		editor: true,
@@ -184,7 +186,7 @@ options = Object.assign(options, {
 		access_phone_number: 'Phone',
 		access_website: 'Website',
 		access_role: 'Role',
-		access_privacy_disclaimer: 'I have read the <a href="/en/information_on_privacy" target="_blank" rel="noopener noreferrer"> information </a> and I consent to the processing of the data',
+		access_privacy_disclaimer: 'I have read the <a href="/en/privacy-policy" target="_blank" rel="noopener noreferrer"> information </a> and I consent to the processing of the data',
 		access_take_part: 'join the meeting',
 		access_send: 'Send',
 		access_sent: 'Sent!',

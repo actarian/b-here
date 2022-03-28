@@ -6,7 +6,7 @@ import KeyboardService from '../../keyboard/keyboard.service';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
 import { ViewType } from '../../view/view';
-import ViewService from '../../view/view.service';
+import { ViewService } from '../../view/view.service';
 
 // https://github.com/google/model-viewer/blob/master/packages/model-viewer/src/three-components/SmoothControls.ts
 

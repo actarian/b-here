@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-import ModalService from '../modal/modal.service';
+import { ModalService } from '../modal/modal.service';
 
 export default class AgoraConfigureFirewallModalComponent extends Component {
 

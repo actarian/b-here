@@ -1,0 +1,105 @@
+.page--generic {
+	background: rgb(22, 23, 24);
+	background: linear-gradient(180deg, rgb(0, 0, 0) 0%, rgb(22, 23, 24) 100%);
+	color: $foreground-negative;
+
+	.ui {
+		color: $foreground;
+	}
+}
+
+.group--generic {
+	position: relative;
+	margin: 0 10px;
+	border-radius: 7px;
+	background: $background;
+	box-shadow: 0 10px 20px -5px $black-30;
+
+	&__content {
+		padding: 20px;
+	}
+
+	.title {
+		font-size: 32px;
+		line-height: 1.15;
+		margin-bottom: 1.15em;
+		font-weight: $font-extrabold;
+	}
+
+	.description {
+		margin: 15px 0;
+		font-size: 15px;
+		line-height: 1.5;
+		color: $foreground-tertiary;
+
+		h2 {
+			font-size: 19px;
+			line-height: 1.15;
+			margin: 1.5em 0 0 0;
+			font-weight: $font-extrabold;
+			color: $foreground;
+		}
+
+		h3 {
+			font-size: 17px;
+			line-height: 1.15;
+			margin-bottom: 1.15em;
+			font-weight: $font-extrabold;
+			color: $foreground;
+		}
+
+		p {
+			margin: 0 0 0.8em 0;
+		}
+
+		a {
+			color: $foreground-primary;
+		}
+	}
+
+	hr {
+		margin-bottom: 1.5em;
+		border: 1px solid #E8E8E8;
+		height: 1px;
+	}
+
+	@include media-up(sm) {
+		width: calc(100% - 300px);
+		min-width: 375px;
+		max-width: 1040px;
+		max-height: calc(100vh - 170px);
+		overflow-x: hidden;
+		overflow-y: auto;
+		@include scrollbar();
+	}
+
+	@include media-down(xs) {
+		width: 100%;
+		max-width: calc(100% - 30px);
+		overflow-x: hidden;
+		overflow-y: auto;
+		@include scrollbar();
+
+		&__content {
+			padding: 10px;
+		}
+
+		.title {
+			margin-top: 5px;
+		}
+	}
+}
+
+.list {
+	&__item {
+		&:first-child {
+			float: left;
+			margin-right: 10px;
+			width: 45px;
+		}
+
+		&:last-child {
+			overflow: hidden;
+		}
+	}
+}

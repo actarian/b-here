@@ -1,20 +1,27 @@
-import { from } from 'rxjs';
+import { BehaviorSubject, from } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../environment';
-import LabelPipe from '../label/label.pipe';
+import { LabelPipe } from '../label/label.pipe';
 import LocationService from '../location/location.service';
-import RouterService from '../router/router.service';
+import { RouterService } from '../router/router.service';
 import { Utils } from '../utils/utils';
 
 export class LanguageService {
 
 	static languages = this.getDefaultLanguages();
-	static defaultLanguage = this.getDefaultLanguage();
-	static selectedLanguage = this.defaultLanguage;
+	static lang$ = new BehaviorSubject(this.getDefaultLanguage());
+	static get lang() {
+		return this.lang$.getValue();
+	}
+	static set lang(lang) {
+		if (this.lang !== lang) {
+			this.lang$.next(lang);
+		}
+	}
 
 	static setAlternates(language, alternates) {
 		this.languages = alternates;
-		this.selectedLanguage = language;
+		this.lang = language;
 		// console.log('LanguageService.setAlternates', language, alternates);
 	}
 
@@ -49,7 +56,7 @@ export class LanguageService {
 	}
 
 	static get activeLanguage() {
-		return this.languages.find(language => language.lang === this.selectedLanguage);
+		return this.languages.find(language => language.lang === this.lang);
 	}
 
 	static getDefaultLanguages() {
@@ -61,11 +68,11 @@ export class LanguageService {
 	}
 
 	static setLanguage(language) {
-		this.selectedLanguage = language.lang;
+		this.lang = language.lang;
 	}
 
 	static setLanguage$(language) {
-		const url = (environment.flags.production ? `/api/labels/${language.lang}` : `./api/labels/${language.lang}.json`);
+		const url = (environment.flags.production ? `/api/${language.lang}/labels/` : `./api/${language.lang}/labels.json`);
 		return from(fetch(url).then(response => {
 			return response.json();
 		})).pipe(
@@ -75,7 +82,7 @@ export class LanguageService {
 				const from = this.activeLanguage.href.split('?')[0];
 				const to = language.href.split('?')[0];
 				LocationService.replace(from, to);
-				this.selectedLanguage = language.lang;
+				this.lang = language.lang;
 			}),
 		);
 		/*
@@ -83,7 +90,7 @@ export class LanguageService {
 			tap(language => {
 				// LabelPipe.setLabels();
 				LocationService.replace(this.activeLanguage.href, language.href);
-				this.selectedLanguage = language.lang;
+				this.lang = language.lang;
 			}),
 		);
 		*/
@@ -112,7 +119,7 @@ export class LanguageService {
 				}
 				LocationService.replace(this.activeLanguage.href, language.href);
 				// console.log(environment.labels);
-				this.selectedLanguage = language.lang;
+				this.lang = language.lang;
 			}),
 		);
 	}

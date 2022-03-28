@@ -19,7 +19,7 @@ export class HttpResponse {
 	}
 }
 
-export default class HttpService {
+export class HttpService {
 
 	static http$(method, url, data, format = 'json') {
 		const methods = ['POST', 'PUT', 'PATCH'];
@@ -50,7 +50,7 @@ export default class HttpService {
 						return Promise.reject(data);
 					});
 				}
-			} catch(error) {
+			} catch (error) {
 				if (response.ok) {
 					console.warn('HttpService.http$', 'Cannot parse response');
 					return Promise.resolve();
@@ -71,7 +71,7 @@ export default class HttpService {
 		const methods = ['POST', 'PUT', 'PATCH'];
 		const body = (data && methods.indexOf(method) !== -1) ? JSON.stringify(data) : undefined;
 		const queryString = (data && methods.indexOf(method) !== -1) ? Object.keys(data).map(function(key) {
-		    return key + '=' + encodeURI(data[key]);
+			return key + '=' + encodeURI(data[key]);
 		}).join('&') : undefined;
 		if (queryString) {
 			url = `${url}?${queryString}`;

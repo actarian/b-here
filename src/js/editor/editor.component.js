@@ -4,12 +4,12 @@ import { delay, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AgoraStatus, MessageType, UIMode } from '../agora/agora.types';
 import { AssetService } from '../asset/asset.service';
 import { environment } from '../environment';
-import LocationService from '../location/location.service';
-import MessageService from '../message/message.service';
-import ModalService, { ModalResolveEvent } from '../modal/modal.service';
-import RoutePipe from '../router/route.pipe';
-import RouterOutletStructure from '../router/router-outlet.structure';
-import RouterService from '../router/router.service';
+import { MeetingUrl } from '../meeting/meeting-url';
+import { MessageService } from '../message/message.service';
+import { ModalResolveEvent, ModalService } from '../modal/modal.service';
+import { RoutePipe } from '../router/route.pipe';
+import { RouterOutletStructure } from '../router/router-outlet.structure';
+import { RouterService } from '../router/router.service';
 import StateService from '../state/state.service';
 import StreamService, { StreamServiceMode } from '../stream/stream.service';
 import ToastService from '../toast/toast.service';
@@ -17,9 +17,9 @@ import TryInARModalComponent from '../try-in-ar/try-in-ar-modal.component';
 import { RoleType } from '../user/user';
 import { UserService } from '../user/user.service';
 import { ViewItemType, ViewType } from '../view/view';
-import ViewService from '../view/view.service';
+import { ViewService } from '../view/view.service';
 import VRService from '../world/vr.service';
-import EditorService from './editor.service';
+import { EditorService } from './editor.service';
 import CurvedPlaneModalComponent from './modals/curved-plane-modal.component';
 import ItemModelModalComponent from './modals/item-model-modal.component';
 import MediaModalComponent from './modals/media-modal.component';
@@ -137,7 +137,8 @@ export default class EditorComponent extends Component {
 		return EditorService.data$().pipe(
 			switchMap(data => {
 				// console.log('viewObserver$', data);
-				const pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
+				const meetingUrl = new MeetingUrl();
+				const pathId = meetingUrl.pathId;
 				return PathService.getCurrentPath$(pathId).pipe(
 					switchMap(path => {
 						this.paths = PathService.paths;

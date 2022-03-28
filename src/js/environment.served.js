@@ -6,6 +6,8 @@ export const environmentServed = {
 		production: true,
 		useProxy: false,
 		useToken: false,
+		useExtendedUserInfo: false,
+		useEncryptedUrl: false,
 		selfService: true,
 		guidedTourRequest: true,
 		editor: false,

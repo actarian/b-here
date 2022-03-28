@@ -3,7 +3,7 @@ import browserPlugin from 'router5-plugin-browser';
 import { EMPTY, from } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
-export default class RouterService {
+export class RouterService {
 
 	static routes = [];
 

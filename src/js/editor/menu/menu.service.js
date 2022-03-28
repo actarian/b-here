@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import HttpService from '../../http/http.service';
+import { HttpService } from '../../http/http.service';
 import { ViewType } from '../../view/view';
 
 let MENU_UID = 0;

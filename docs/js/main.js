@@ -1,5 +1,5 @@
 /**
- * @license b-here v1.0.0
+ * @license b-here v1.0.1
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -277,6 +277,12 @@ const CHUNK_CREDITS =
 	<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
 </a>
 `;
+const CHUNK_COPYRIGHT =
+/* html */
+`
+<!-- copyright -->
+<span> &copy; Websolute Spa and their <a [routerLink]="':lang.privacy' | route" class="btn--colophon">Privacy Policy</a> and <a [routerLink]="':lang.terms' | route" class="btn--colophon">Terms of Service</a> apply.</span>
+`;
 const CHUNK_LANGUAGE =
 /* html */
 `
@@ -384,107 +390,394 @@ const CHUNK_EMBED =
 		${CHUNK_LIKE}
 	</div>
 </div>
-`;class LocationService {
-  static has(key) {
-    const params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+`;const environmentServed = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere',
+  flags: {
+    production: true,
+    useProxy: false,
+    useToken: false,
+    useExtendedUserInfo: false,
+    useEncryptedUrl: false,
+    selfService: true,
+    guidedTourRequest: true,
+    editor: false,
+    editorAssetScreen: false,
+    menu: true,
+    menuEmbed: false,
+    navmaps: false,
+    chat: false,
+    ar: true,
+    like: true,
+    hideNavInfo: true,
+    useIframe: true,
+    attendee: true,
+    streamer: true,
+    viewer: true,
+    smartDevice: true,
+    selfServiceProposition: false,
+    navInfoAnimated: false,
+    navInfoImportantAnimated: false,
+    navMoveAnimated: false,
+    navMoveImportantAnimated: false,
+    navPointAnimated: false,
+    navPointImportantAnimated: false,
+    navTitleAnimated: false,
+    navTitleImportantAnimated: false,
+    navTransparentAnimated: false,
+    navTransparentImportantAnimated: false,
+    useTextureEnvironment: true,
+    usePaths: false,
+    antialias: true,
+    alpha: false,
+    premultipliedAlpha: false // maxQuality: false,
 
-    return params.has(key);
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
+  },
+  profiles: {
+    // streamer: "480p_1", // 640 x 480 x 15
+    streamer: "480p_2",
+    // 640 x 480 x 30
+    // streamer: "480p_3", // 480 x 480 x 15
+    // streamer: "480p_4", // 640 x 480 x 30
+    // streamer: "480p_6", // 480 x 480 x 30
+    // streamer: "480p_8", // 848, 480 x 15
+    // streamer: "480p_9", // 848, 480 x 30
+    // streamer: "480p_10", // 640 x 480 x 10
+    // streamer: "720p_1", // 1280 x 720 x 15
+    // streamer: "720p_2", // 1280 x 720 x 30
+    // streamer: "720p_3", // 1280 x 720 x 30
+    // streamer: "720p_5", // 960 x 720 x 15
+    // streamer: "720p_6", // 960 x 720 x 30
+    // streamer: "1080p_1", // 1920 x 1080 x 15
+    // streamer: "1080p_2", // 1920 x 1080 x 30
+    // streamer: "1080p_3", // 1920 x 1080 x 30
+    // streamer: "1080p_5", // 1920 x 1080 x 60
+    // publisher: "720p_2", // 1920 x 1080 x 30
+    publisher: "1080p_2",
+    // 1920 x 1080 x 30
+    // screen: "480p_1", // 640 × 480 x 5
+    // screen: "480p_2", // 640 × 480 x 30
+    // screen: "720p_1", // 1280 × 720 x 5
+    screen: "720p_2" // 1280 × 720 x 30
+    // screen: "1080p_1", // 1920 × 1080 x 5
+    // screen: "1080p_2", // 1920 × 1080 30
+
+  },
+  logo: null,
+  background: {
+    // image: '/Modules/B-Here/Client/docs/img/background.jpg',
+    video: '/Modules/B-Here/Client/docs/img/background.mp4'
+  },
+  selfServiceAudio: null,
+  // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
+  colors: {
+    menuBackground: '#000000',
+    menuForeground: '#ffffff',
+    menuOverBackground: '#0099ff',
+    menuOverForeground: '#ffffff',
+    menuBackBackground: '#0099ff',
+    menuBackForeground: '#000000',
+    menuBackOverBackground: '#0099ff',
+    menuBackOverForeground: '#ffffff'
+  },
+  editor: {
+    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
+    disabledViewItemTypes: ['texture']
+  },
+  assets: '/Modules/B-Here/Client/docs/',
+  dist: '/Modules/B-Here/Client/dist/',
+  workers: {
+    image: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
+    prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js'
+  },
+  textures: {
+    envMap: 'textures/envMap/studio_small_03_2k.hdr',
+    grid: 'textures/grid/grid.jpg'
+  },
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+  template: {
+    email: {
+      supportRequest: '/template/modules/b-here/email/support-request.cshtml'
+    }
+  }
+};const environmentStatic = {
+  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  channelName: 'BHere',
+
+  /*
+  webhook: {
+  	uris: ['internal'],
+  	methods: [
+  		'ToggleWishlist',
+  	],
+  },
+  */
+  flags: {
+    production: false,
+    useProxy: true,
+    useToken: false,
+    useExtendedUserInfo: true,
+    useEncryptedUrl: false,
+    selfService: true,
+    guidedTourRequest: true,
+    editor: true,
+    editorAssetScreen: true,
+    menu: true,
+    menuEmbed: true,
+    navmaps: true,
+    chat: true,
+    ar: true,
+    like: true,
+    hideNavInfo: true,
+    useIframe: true,
+    attendee: true,
+    streamer: true,
+    viewer: true,
+    smartDevice: true,
+    selfServiceProposition: false,
+    navInfoAnimated: false,
+    navInfoImportantAnimated: false,
+    navMoveAnimated: true,
+    navMoveImportantAnimated: true,
+    navPointAnimated: false,
+    navPointImportantAnimated: false,
+    navTitleAnimated: false,
+    navTitleImportantAnimated: false,
+    navTransparentAnimated: true,
+    navTransparentImportantAnimated: true,
+    useTextureEnvironment: true,
+    usePaths: true,
+    antialias: true,
+    alpha: false,
+    premultipliedAlpha: false // maxQuality: false,
+
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
+  },
+  profiles: {
+    // streamer: "480p_1", // 640 x 480 x 15
+    streamer: "480p_2",
+    // 640 x 480 x 30
+    // streamer: "480p_3", // 480 x 480 x 15
+    // streamer: "480p_4", // 640 x 480 x 30
+    // streamer: "480p_6", // 480 x 480 x 30
+    // streamer: "480p_8", // 848, 480 x 15
+    // streamer: "480p_9", // 848, 480 x 30
+    // streamer: "480p_10", // 640 x 480 x 10
+    // streamer: "720p_1", // 1280 x 720 x 15
+    // streamer: "720p_2", // 1280 x 720 x 30
+    // streamer: "720p_3", // 1280 x 720 x 30
+    // streamer: "720p_5", // 960 x 720 x 15
+    // streamer: "720p_6", // 960 x 720 x 30
+    // streamer: "1080p_1", // 1920 x 1080 x 15
+    // streamer: "1080p_2", // 1920 x 1080 x 30
+    // streamer: "1080p_3", // 1920 x 1080 x 30
+    // streamer: "1080p_5", // 1920 x 1080 x 60
+    // publisher: "720p_2", // 1920 x 1080 x 30
+    publisher: "1080p_2",
+    // 1920 x 1080 x 30
+    // screen: "480p_1", // 640 × 480 x 5
+    // screen: "480p_2", // 640 × 480 x 30
+    // screen: "720p_1", // 1280 × 720 x 5
+    // screen: "720p_2", // 1280 × 720 x 30
+    // screen: "1080p_1", // 1920 × 1080 x 5
+    screen: "1080p_2" // 1920 × 1080 30
+
+  },
+  logo: null,
+  background: {
+    // image: '/b-here/img/background.jpg',
+    video: '/b-here/img/background.mp4'
+  },
+  selfServiceAudio: null,
+  // '/b-here/audio/self-service.mp3',
+  colors: {
+    menuBackground: '#000000',
+    menuForeground: '#ffffff',
+    menuOverBackground: '#0099ff',
+    menuOverForeground: '#ffffff',
+    menuBackBackground: '#0099ff',
+    menuBackForeground: '#000000',
+    menuBackOverBackground: '#0099ff',
+    menuBackOverForeground: '#ffffff'
+  },
+  editor: {
+    disabledViewTypes: ['waiting-room'],
+    disabledViewItemTypes: ['texture']
+  },
+  assets: '/b-here/',
+  dist: '/b-here/dist/',
+  workers: {
+    image: './js/workers/image.service.worker.js',
+    prefetch: './js/workers/prefetch.service.worker.js'
+  },
+  textures: {
+    envMap: 'textures/envMap/studio_small_03_2k.hdr',
+    grid: 'textures/grid/grid.jpg'
+  },
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+  template: {
+    email: {
+      supportRequest: '/email/support-request.html'
+    }
+  }
+};class Utils {
+  static merge(target, source) {
+    if (source && typeof source === 'object') {
+      Object.keys(source).forEach(key => {
+        const value = source[key];
+
+        if (typeof value === 'object' && !Array.isArray(value)) {
+          target[key] = this.merge(target[key], value);
+        } else {
+          target[key] = value;
+        }
+      });
+    }
+
+    return target;
   }
 
-  static get(key) {
-    const params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
-
-    return params.get(key);
+}const NODE = typeof module !== 'undefined' && module.exports;
+const PARAMS = NODE ? {
+  get: () => {}
+} : new URLSearchParams(window.location.search);
+const DEBUG = PARAMS.get('debug') != null;
+const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+const HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
+const STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
+const DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
+const PRODUCTION = !DEVELOPMENT;
+const ENV = {
+  STATIC,
+  DEVELOPMENT,
+  PRODUCTION
+};
+class Environment {
+  get STATIC() {
+    return ENV.STATIC;
   }
 
-  static set(keyOrValue, value) {
-    const params = new URLSearchParams(window.location.search);
+  set STATIC(STATIC) {
+    ENV.STATIC = STATIC === true || STATIC === 'true';
+    console.log('Environment.STATIC.set', ENV.STATIC);
+  }
 
-    if (typeof keyOrValue === 'string') {
-      params.set(keyOrValue, value);
+  get href() {
+    if (HEROKU) {
+      return this.githubDocs;
     } else {
-      params.set(keyOrValue, '');
-    }
-
-    this.pushParams(params); // console.log('LocationService.set', params, keyOrValue, value);
-  }
-
-  static delete(key) {
-    const params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
-
-    if (params.has(key)) {
-      params.delete(key);
-      this.pushParams(params);
+      return BASE_HREF;
     }
   }
 
-  static pushParams(params) {
-    if (window.history && window.history.pushState) {
-      const title = document.title;
-      const url = `${window.location.href.split('?')[0]}?${params.toString()}`;
-      window.history.pushState(params.toString(), title, url);
+  getAbsoluteUrl(path, params) {
+    let url = `${window.location.origin}${path}`; // let url = `${window.location.protocol}//${window.location.host}${path}`;
+
+    Object.keys(params).forEach(key => {
+      url = url.replace(`$${key}`, params[key]);
+    });
+    return url;
+  }
+
+  getPath(path) {
+    return this.isLocal(path) ? this.href + path : path;
+  }
+
+  isLocal(path) {
+    return path.indexOf('://') === -1;
+  }
+
+  merge(options) {
+    if (options) {
+      Utils.merge(this, options);
     }
   }
 
-  static replace(from, to) {
-    const history = window.history;
-
-    if (history && history.replaceState) {
-      const location = window.location;
-      const title = document.title;
-
-      if (location.pathname === '/') {
-        const url = location.origin + to + location.search;
-        history.replaceState(history.state, title, url);
-      } else if (location.href.indexOf(from) !== -1) {
-        const url = location.href.replace(from, to);
-        history.replaceState(history.state, title, url);
-      }
+  constructor(options) {
+    if (options) {
+      Object.assign(this, options);
     }
   }
 
-  static deserialize(key) {
-    const encoded = this.get('params');
-    return this.decode(key, encoded);
+}
+const defaultOptions$3 = {
+  port: 5000,
+  // fontFamily: 'GT Walsheim, sans-serif',
+  fontFamily: 'Work Sans, sans-serif',
+  colors: {
+    menuBackground: '#000000',
+    menuForeground: '#ffffff',
+    menuOverBackground: '#0099ff',
+    menuOverForeground: '#ffffff',
+    menuBackBackground: '#0099ff',
+    menuBackForeground: '#000000',
+    menuBackOverBackground: '#0099ff',
+    menuBackOverForeground: '#ffffff'
+  },
+  editor: {
+    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
+    disabledViewItemTypes: ['texture']
+  },
+  renderOrder: {
+    panorama: 0,
+    room: 10,
+    plane: 20,
+    tile: 30,
+    model: 40,
+    banner: 50,
+    nav: 60,
+    panel: 70,
+    menu: 80,
+    debug: 90,
+    pointer: 100
   }
-
-  static serialize(keyOrValue, value) {
-    const params = this.deserialize();
-    const encoded = this.encode(keyOrValue, value, params);
-    this.set('params', encoded);
-  }
-
-  static decode(key, encoded) {
-    let decoded = null;
-
-    if (encoded) {
-      const json = window.atob(encoded);
-      decoded = JSON.parse(json);
-    }
-
-    if (key && decoded) {
-      decoded = decoded[key];
-    }
-
-    return decoded || null;
-  }
-
-  static encode(keyOrValue, value, params) {
-    params = params || {};
-    let encoded = null;
-
-    if (typeof keyOrValue === 'string') {
-      params[keyOrValue] = value;
-    } else {
-      params = keyOrValue;
-    }
-
-    const json = JSON.stringify(params);
-    encoded = window.btoa(json);
-    return encoded;
-  }
-
-}/*! *****************************************************************************
+};
+const defaultAppOptions = {
+  channelName: 'BHere',
+  flags: {
+    production: false,
+    useProxy: false,
+    useToken: false,
+    selfService: true,
+    guidedTourRequest: true,
+    editor: true,
+    menu: true,
+    navmaps: true,
+    chat: true,
+    ar: true,
+    like: true,
+    hideNavInfo: true,
+    attendee: true,
+    streamer: true,
+    viewer: true,
+    smartDevice: true,
+    selfServiceProposition: true,
+    // maxQuality: false,
+    heroku: HEROKU
+  },
+  navs: {
+    iconMinScale: 1,
+    iconMaxScale: 1.4
+  },
+  url: {},
+  languages: ['it', 'en'],
+  defaultLanguage: 'it',
+  labels: {},
+  data: {},
+  fields: []
+};
+const environmentOptions = window.STATIC ? environmentStatic : environmentServed;
+let options = Object.assign(defaultOptions$3, defaultAppOptions, environmentOptions);
+options = Utils.merge(options, window.bhere);
+const environment = new Environment(options);
+console.log('environment', environment);/*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -910,7 +1203,7 @@ var appendQueryParam = function appendQueryParam(params, param, val) {
   return params;
 };
 
-var defaultOptions$3 = {
+var defaultOptions$2 = {
   urlParamsEncoding: 'default'
 };
 
@@ -925,7 +1218,7 @@ function () {
     }
 
     this.path = path;
-    this.options = __assign$2(__assign$2({}, defaultOptions$3), options);
+    this.options = __assign$2(__assign$2({}, defaultOptions$2), options);
     this.tokens = tokenise(path);
     this.hasUrlParams = this.tokens.filter(function (t) {
       return /^url-parameter/.test(t.type);
@@ -1905,7 +2198,7 @@ var __assign$1 = function() {
     return __assign$1.apply(this, arguments);
 };
 
-var defaultOptions$2 = {
+var defaultOptions$1 = {
     trailingSlashMode: 'default',
     queryParamsMode: 'default',
     strictTrailingSlash: false,
@@ -1918,7 +2211,7 @@ var defaultOptions$2 = {
 };
 function withOptions(options) {
     return function (router) {
-        var routerOptions = __assign$1(__assign$1({}, defaultOptions$2), options);
+        var routerOptions = __assign$1(__assign$1({}, defaultOptions$1), options);
         router.getOptions = function () { return routerOptions; };
         router.setOption = function (option, value) {
             routerOptions[option] = value;
@@ -2777,7 +3070,7 @@ else {
 }
 var safeBrowser = browser;
 
-var defaultOptions$1 = {
+var defaultOptions = {
     forceDeactivate: true,
     useHash: false,
     hashPrefix: '',
@@ -2788,7 +3081,7 @@ var defaultOptions$1 = {
 var source = 'popstate';
 function browserPluginFactory(opts, browser) {
     if (browser === void 0) { browser = safeBrowser; }
-    var options = __assign(__assign({}, defaultOptions$1), opts);
+    var options = __assign(__assign({}, defaultOptions), opts);
     var transitionOptions = {
         forceDeactivate: options.forceDeactivate,
         source: source
@@ -3279,22 +3572,26 @@ class MeetingId {
   }
 
   constructor(options) {
+    /*
     this.link = LocationService.get('link') || null;
     this.name = LocationService.get('name') || null;
+    this.firstName = LocationService.get('firstName') || null;
+    this.lastName = LocationService.get('lastName') || null;
+    this.email = LocationService.get('email') || null;
     this.role = LocationService.get('role') || null;
     this.viewId = LocationService.has('viewId') ? parseInt(LocationService.get('viewId')) : null;
     this.pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
     this.embedViewId = LocationService.has('embedViewId') ? parseInt(LocationService.get('embedViewId')) : null;
-    this.support = LocationService.has('support') ? LocationService.get('support') === 'true' : false;
+    this.support = LocationService.has('support') ? (LocationService.get('support') === 'true') : false;
+    */
+    options = options || window.location.href;
 
     if (typeof options === 'string') {
       options = MeetingUrl.decompose(options);
     }
 
     if (typeof options === 'object') {
-      if (options.link) {
-        this.link = options.link;
-      }
+      Object.assign(this, options);
 
       if (options.user) {
         const name = MeetingUrl.getName(options.user);
@@ -3302,32 +3599,57 @@ class MeetingId {
         if (name) {
           this.name = name;
         }
+
+        if (environment.flags.useExtendedUserInfo) {
+          const firstName = MeetingUrl.getFirstName(options.user);
+
+          if (firstName) {
+            this.firstName = firstName;
+          }
+
+          const lastName = MeetingUrl.getLastName(options.user);
+
+          if (lastName) {
+            this.lastName = lastName;
+          }
+
+          const email = MeetingUrl.getEmail(options.user);
+
+          if (email) {
+            this.email = email;
+          }
+        }
       }
 
       if (options.name) {
         this.name = options.name;
       }
 
-      if (options.role) {
-        this.role = options.role;
-      }
+      if (environment.flags.useExtendedUserInfo) {
+        if (options.firstName) {
+          this.firstName = options.firstName;
+        }
 
-      if (options.viewId) {
-        this.viewId = options.viewId;
-      }
+        if (options.lastName) {
+          this.lastName = options.lastName;
+        }
 
-      if (options.pathId) {
-        this.pathId = options.pathId;
-      }
-
-      if (options.embedViewId) {
-        this.embedViewId = options.embedViewId;
-      }
-
-      if (options.support) {
-        this.support = options.support;
+        if (options.email) {
+          this.email = options.email;
+        }
       }
     }
+
+    this.link = this.link || null;
+    this.name = this.name || null;
+    this.firstName = this.firstName || null;
+    this.lastName = this.lastName || null;
+    this.email = this.email || null;
+    this.role = this.role || null;
+    this.viewId = this.viewId || null;
+    this.pathId = this.pathId || null;
+    this.embedViewId = this.embedViewId || null;
+    this.support = this.support || false;
   }
 
   toParams(shareable) {
@@ -3335,14 +3657,28 @@ class MeetingId {
       shareable = false;
     }
 
-    const params = {};
+    let params = {};
 
     if (this.link) {
       params.link = this.link;
     }
 
-    if (this.name) {
-      params.name = this.name;
+    if (environment.flags.useExtendedUserInfo) {
+      if (this.firstName) {
+        params.firstName = this.firstName;
+      }
+
+      if (this.lastName) {
+        params.lastName = this.lastName;
+      }
+
+      if (this.email) {
+        params.email = this.email;
+      }
+    } else {
+      if (this.name) {
+        params.name = this.name;
+      }
     }
 
     if (this.role && !shareable) {
@@ -3361,6 +3697,12 @@ class MeetingId {
       params.support = this.support;
     }
 
+    if (environment.flags.useEncryptedUrl) {
+      params = {
+        p: MeetingUrl.encrypt(params)
+      };
+    }
+
     return params;
   }
 
@@ -3369,7 +3711,31 @@ class MeetingId {
       shareable = false;
     }
 
-    return MeetingUrl.compose(this.link, this.name, shareable ? null : this.role, this.viewId, this.pathId, this.support);
+    let components;
+
+    if (environment.flags.useExtendedUserInfo) {
+      components = {
+        link: this.link,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        role: shareable ? null : this.role,
+        viewId: this.viewId,
+        pathId: this.pathId,
+        support: this.support
+      };
+    } else {
+      components = {
+        link: this.link,
+        name: this.name,
+        role: shareable ? null : this.role,
+        viewId: this.viewId,
+        pathId: this.pathId,
+        support: this.support
+      };
+    }
+
+    return MeetingUrl.compose(components);
   }
 
   toUrl() {
@@ -3398,7 +3764,7 @@ class MeetingId {
 
     document.querySelector('body').appendChild(input);
     const params = this.toParams(true);
-    input.value = asAccessCode ? MeetingUrl.getAccessCodeUrl(params) : MeetingUrl.getGuidedTourUrl(params);
+    input.value = window.location.origin + (asAccessCode ? MeetingUrl.getAccessCodeUrl(params) : MeetingUrl.getGuidedTourUrl(params));
     input.focus();
     input.select();
     input.setSelectionRange(0, 99999);
@@ -3409,6 +3775,12 @@ class MeetingId {
 
   replaceUrl() {
     RouterService.setCurrentParams(this.toParams());
+  }
+
+  static replaceWithOptions(options) {
+    const meetingUrl = new MeetingUrl(options);
+    meetingUrl.replaceUrl();
+    return meetingUrl;
   }
 
   static replaceWithUser(user) {
@@ -3481,32 +3853,70 @@ class MeetingId {
     return user && user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null;
   }
 
-  static compose(link, name, role, viewId, pathId, support) {
-    let components = {
-      link,
-      name,
-      role,
-      viewId,
-      pathId,
-      support
-    };
-    components = Object.keys(components).map(key => {
-      return {
-        key,
-        value: components[key]
-      };
-    }).filter(x => x.value != null && x.value !== false).map(x => `${x.key}=${x.value}`);
-    return `?${components.join('&')}`;
+  static getFirstName(user) {
+    return user && user.firstName ? user.firstName : null;
+  }
+
+  static getLastName(user) {
+    return user && user.lastName ? user.lastName : null;
+  }
+
+  static getEmail(user) {
+    return user && user.email ? user.email : null;
+  }
+
+  static compose(components) {
+    if (environment.flags.useEncryptedUrl) {
+      const p = MeetingUrl.encrypt(components);
+      return `?p=${p}`;
+    } else {
+      components = Object.keys(components).map(key => {
+        return {
+          key,
+          value: components[key]
+        };
+      }).filter(x => x.value != null && x.value !== false).map(x => `${x.key}=${x.value}`);
+      return `?${components.join('&')}`;
+    }
   }
 
   static decompose(url) {
-    const components = {};
-    url.split('?')[1].split('&').forEach(keyvalue => {
-      const key = keyvalue.split('=')[0];
-      const value = keyvalue.split('=')[1];
-      components[key] = value;
-    });
+    let components = {};
+
+    if (environment.flags.useEncryptedUrl) {
+      const params = new URLSearchParams(url.split('?')[1]);
+
+      if (params.has('p')) {
+        components = MeetingUrl.decrypt(params.get('p'));
+      }
+    } else if (url.indexOf('?') > -1) {
+      const params = new URLSearchParams(url.split('?')[1]);
+      params.forEach((value, key) => {
+        switch (key) {
+          case 'viewId':
+          case 'pathId':
+          case 'embedViewId':
+            value = value ? parseInt(value) : null;
+            break;
+
+          case 'support':
+            value = value ? value === 'true' : false;
+            break;
+        }
+
+        components[key] = value;
+      });
+    }
+
     return components;
+  }
+
+  static decrypt(p) {
+    return JSON.parse(window.atob(p));
+  }
+
+  static encrypt(params) {
+    return window.btoa(JSON.stringify(params));
   }
 
 }class RouterOutletStructure extends rxcomp.Structure {
@@ -3726,7 +4136,7 @@ RouterOutletStructure.meta = {
     if (!meetingUrl.link) {
       // !!!
       // RouterService.setRouterLink(MeetingUrl.getGuidedTourUrl());
-      window.location.href = MeetingUrl.getGuidedTourUrl();
+      window.location.href = window.location.origin + MeetingUrl.getGuidedTourUrl();
     } else {
       const url = meetingUrl.toGuidedTourUrl();
       const {
@@ -3767,390 +4177,7 @@ AccessCodeComponent.meta = {
 			${CHUNK_LANGUAGE}
 		</div>
 	`
-};const environmentServed = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  channelName: 'BHere',
-  flags: {
-    production: true,
-    useProxy: false,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: false,
-    editorAssetScreen: false,
-    menu: true,
-    menuEmbed: false,
-    navmaps: false,
-    chat: false,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    useIframe: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: false,
-    navInfoAnimated: false,
-    navInfoImportantAnimated: false,
-    navMoveAnimated: false,
-    navMoveImportantAnimated: false,
-    navPointAnimated: false,
-    navPointImportantAnimated: false,
-    navTitleAnimated: false,
-    navTitleImportantAnimated: false,
-    navTransparentAnimated: false,
-    navTransparentImportantAnimated: false,
-    useTextureEnvironment: true,
-    usePaths: false,
-    antialias: true,
-    alpha: false,
-    premultipliedAlpha: false // maxQuality: false,
-
-  },
-  navs: {
-    iconMinScale: 1,
-    iconMaxScale: 1.4
-  },
-  profiles: {
-    // streamer: "480p_1", // 640 x 480 x 15
-    streamer: "480p_2",
-    // 640 x 480 x 30
-    // streamer: "480p_3", // 480 x 480 x 15
-    // streamer: "480p_4", // 640 x 480 x 30
-    // streamer: "480p_6", // 480 x 480 x 30
-    // streamer: "480p_8", // 848, 480 x 15
-    // streamer: "480p_9", // 848, 480 x 30
-    // streamer: "480p_10", // 640 x 480 x 10
-    // streamer: "720p_1", // 1280 x 720 x 15
-    // streamer: "720p_2", // 1280 x 720 x 30
-    // streamer: "720p_3", // 1280 x 720 x 30
-    // streamer: "720p_5", // 960 x 720 x 15
-    // streamer: "720p_6", // 960 x 720 x 30
-    // streamer: "1080p_1", // 1920 x 1080 x 15
-    // streamer: "1080p_2", // 1920 x 1080 x 30
-    // streamer: "1080p_3", // 1920 x 1080 x 30
-    // streamer: "1080p_5", // 1920 x 1080 x 60
-    // publisher: "720p_2", // 1920 x 1080 x 30
-    publisher: "1080p_2",
-    // 1920 x 1080 x 30
-    // screen: "480p_1", // 640 × 480 x 5
-    // screen: "480p_2", // 640 × 480 x 30
-    // screen: "720p_1", // 1280 × 720 x 5
-    screen: "720p_2" // 1280 × 720 x 30
-    // screen: "1080p_1", // 1920 × 1080 x 5
-    // screen: "1080p_2", // 1920 × 1080 30
-
-  },
-  logo: null,
-  background: {
-    // image: '/Modules/B-Here/Client/docs/img/background.jpg',
-    video: '/Modules/B-Here/Client/docs/img/background.mp4'
-  },
-  selfServiceAudio: null,
-  // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
-  colors: {
-    menuBackground: '#000000',
-    menuForeground: '#ffffff',
-    menuOverBackground: '#0099ff',
-    menuOverForeground: '#ffffff',
-    menuBackBackground: '#0099ff',
-    menuBackForeground: '#000000',
-    menuBackOverBackground: '#0099ff',
-    menuBackOverForeground: '#ffffff'
-  },
-  editor: {
-    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
-    disabledViewItemTypes: ['texture']
-  },
-  assets: '/Modules/B-Here/Client/docs/',
-  dist: '/Modules/B-Here/Client/dist/',
-  workers: {
-    image: '/Modules/B-Here/Client/docs/js/workers/image.service.worker.js',
-    prefetch: '/Modules/B-Here/Client/docs/js/workers/prefetch.service.worker.js'
-  },
-  textures: {
-    envMap: 'textures/envMap/studio_small_03_2k.hdr',
-    grid: 'textures/grid/grid.jpg'
-  },
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
-  template: {
-    email: {
-      supportRequest: '/template/modules/b-here/email/support-request.cshtml'
-    }
-  }
-};const environmentStatic = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
-  channelName: 'BHere',
-
-  /*
-  webhook: {
-  	uris: ['internal'],
-  	methods: [
-  		'ToggleWishlist',
-  	],
-  },
-  */
-  flags: {
-    production: false,
-    useProxy: true,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: true,
-    editorAssetScreen: true,
-    menu: true,
-    menuEmbed: true,
-    navmaps: true,
-    chat: true,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    useIframe: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: false,
-    navInfoAnimated: false,
-    navInfoImportantAnimated: false,
-    navMoveAnimated: true,
-    navMoveImportantAnimated: true,
-    navPointAnimated: false,
-    navPointImportantAnimated: false,
-    navTitleAnimated: false,
-    navTitleImportantAnimated: false,
-    navTransparentAnimated: true,
-    navTransparentImportantAnimated: true,
-    useTextureEnvironment: true,
-    usePaths: true,
-    antialias: true,
-    alpha: false,
-    premultipliedAlpha: false // maxQuality: false,
-
-  },
-  navs: {
-    iconMinScale: 1,
-    iconMaxScale: 1.4
-  },
-  profiles: {
-    // streamer: "480p_1", // 640 x 480 x 15
-    streamer: "480p_2",
-    // 640 x 480 x 30
-    // streamer: "480p_3", // 480 x 480 x 15
-    // streamer: "480p_4", // 640 x 480 x 30
-    // streamer: "480p_6", // 480 x 480 x 30
-    // streamer: "480p_8", // 848, 480 x 15
-    // streamer: "480p_9", // 848, 480 x 30
-    // streamer: "480p_10", // 640 x 480 x 10
-    // streamer: "720p_1", // 1280 x 720 x 15
-    // streamer: "720p_2", // 1280 x 720 x 30
-    // streamer: "720p_3", // 1280 x 720 x 30
-    // streamer: "720p_5", // 960 x 720 x 15
-    // streamer: "720p_6", // 960 x 720 x 30
-    // streamer: "1080p_1", // 1920 x 1080 x 15
-    // streamer: "1080p_2", // 1920 x 1080 x 30
-    // streamer: "1080p_3", // 1920 x 1080 x 30
-    // streamer: "1080p_5", // 1920 x 1080 x 60
-    // publisher: "720p_2", // 1920 x 1080 x 30
-    publisher: "1080p_2",
-    // 1920 x 1080 x 30
-    // screen: "480p_1", // 640 × 480 x 5
-    // screen: "480p_2", // 640 × 480 x 30
-    // screen: "720p_1", // 1280 × 720 x 5
-    // screen: "720p_2", // 1280 × 720 x 30
-    // screen: "1080p_1", // 1920 × 1080 x 5
-    screen: "1080p_2" // 1920 × 1080 30
-
-  },
-  logo: null,
-  background: {
-    // image: '/b-here/img/background.jpg',
-    video: '/b-here/img/background.mp4'
-  },
-  selfServiceAudio: null,
-  // '/b-here/audio/self-service.mp3',
-  colors: {
-    menuBackground: '#000000',
-    menuForeground: '#ffffff',
-    menuOverBackground: '#0099ff',
-    menuOverForeground: '#ffffff',
-    menuBackBackground: '#0099ff',
-    menuBackForeground: '#000000',
-    menuBackOverBackground: '#0099ff',
-    menuBackOverForeground: '#ffffff'
-  },
-  editor: {
-    disabledViewTypes: ['waiting-room'],
-    disabledViewItemTypes: ['texture']
-  },
-  assets: '/b-here/',
-  dist: '/b-here/dist/',
-  workers: {
-    image: './js/workers/image.service.worker.js',
-    prefetch: './js/workers/prefetch.service.worker.js'
-  },
-  textures: {
-    envMap: 'textures/envMap/studio_small_03_2k.hdr',
-    grid: 'textures/grid/grid.jpg'
-  },
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
-  template: {
-    email: {
-      supportRequest: '/email/support-request.html'
-    }
-  }
-};class Utils {
-  static merge(target, source) {
-    if (source && typeof source === 'object') {
-      Object.keys(source).forEach(key => {
-        const value = source[key];
-
-        if (typeof value === 'object' && !Array.isArray(value)) {
-          target[key] = this.merge(target[key], value);
-        } else {
-          target[key] = value;
-        }
-      });
-    }
-
-    return target;
-  }
-
-}const NODE = typeof module !== 'undefined' && module.exports;
-const PARAMS = NODE ? {
-  get: () => {}
-} : new URLSearchParams(window.location.search);
-const DEBUG = PARAMS.get('debug') != null;
-const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
-const HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
-const STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
-const DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
-const PRODUCTION = !DEVELOPMENT;
-const ENV = {
-  STATIC,
-  DEVELOPMENT,
-  PRODUCTION
-};
-class Environment {
-  get STATIC() {
-    return ENV.STATIC;
-  }
-
-  set STATIC(STATIC) {
-    ENV.STATIC = STATIC === true || STATIC === 'true';
-    console.log('Environment.STATIC.set', ENV.STATIC);
-  }
-
-  get href() {
-    if (HEROKU) {
-      return this.githubDocs;
-    } else {
-      return BASE_HREF;
-    }
-  }
-
-  getAbsoluteUrl(path, params) {
-    let url = `${window.location.origin}${path}`; // let url = `${window.location.protocol}//${window.location.host}${path}`;
-
-    Object.keys(params).forEach(key => {
-      url = url.replace(`$${key}`, params[key]);
-    });
-    return url;
-  }
-
-  getPath(path) {
-    return this.isLocal(path) ? this.href + path : path;
-  }
-
-  isLocal(path) {
-    return path.indexOf('://') === -1;
-  }
-
-  merge(options) {
-    if (options) {
-      Utils.merge(this, options);
-    }
-  }
-
-  constructor(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-}
-const defaultOptions = {
-  port: 5000,
-  // fontFamily: 'GT Walsheim, sans-serif',
-  fontFamily: 'Work Sans, sans-serif',
-  colors: {
-    menuBackground: '#000000',
-    menuForeground: '#ffffff',
-    menuOverBackground: '#0099ff',
-    menuOverForeground: '#ffffff',
-    menuBackBackground: '#0099ff',
-    menuBackForeground: '#000000',
-    menuBackOverBackground: '#0099ff',
-    menuBackOverForeground: '#ffffff'
-  },
-  editor: {
-    disabledViewTypes: ['waiting-room', 'room-3d', 'media'],
-    disabledViewItemTypes: ['texture']
-  },
-  renderOrder: {
-    panorama: 0,
-    room: 10,
-    plane: 20,
-    tile: 30,
-    model: 40,
-    banner: 50,
-    nav: 60,
-    panel: 70,
-    menu: 80,
-    debug: 90,
-    pointer: 100
-  }
-};
-const defaultAppOptions = {
-  channelName: 'BHere',
-  flags: {
-    production: false,
-    useProxy: false,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: true,
-    menu: true,
-    navmaps: true,
-    chat: true,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: true,
-    // maxQuality: false,
-    heroku: HEROKU
-  },
-  navs: {
-    iconMinScale: 1,
-    iconMaxScale: 1.4
-  },
-  url: {},
-  languages: ['it', 'en'],
-  defaultLanguage: 'it',
-  labels: {},
-  data: {},
-  fields: []
-};
-const environmentOptions = window.STATIC ? environmentStatic : environmentServed;
-let options = Object.assign(defaultOptions, defaultAppOptions, environmentOptions);
-options = Utils.merge(options, window.bhere);
-const environment = new Environment(options);
-console.log('environment', environment);class ControlsComponent extends rxcomp.Component {
+};class ControlsComponent extends rxcomp.Component {
   get group() {
     if (this.formGroup) {
       return this.formGroup;
@@ -4256,10 +4283,120 @@ function patchFields(fields, form) {
 }
 LabelPipe.meta = {
   name: 'label'
-};class LanguageService {
+};class LocationService {
+  static has(key) {
+    const params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+
+    return params.has(key);
+  }
+
+  static get(key) {
+    const params = new URLSearchParams(window.location.search); // console.log('LocationService.get', params);
+
+    return params.get(key);
+  }
+
+  static set(keyOrValue, value) {
+    const params = new URLSearchParams(window.location.search);
+
+    if (typeof keyOrValue === 'string') {
+      params.set(keyOrValue, value);
+    } else {
+      params.set(keyOrValue, '');
+    }
+
+    this.pushParams(params); // console.log('LocationService.set', params, keyOrValue, value);
+  }
+
+  static delete(key) {
+    const params = new URLSearchParams(window.location.search); // console.log('LocationService.has', params);
+
+    if (params.has(key)) {
+      params.delete(key);
+      this.pushParams(params);
+    }
+  }
+
+  static pushParams(params) {
+    if (window.history && window.history.pushState) {
+      const title = document.title;
+      const url = `${window.location.href.split('?')[0]}?${params.toString()}`;
+      window.history.pushState(params.toString(), title, url);
+    }
+  }
+
+  static replace(from, to) {
+    const history = window.history;
+
+    if (history && history.replaceState) {
+      const location = window.location;
+      const title = document.title;
+
+      if (location.pathname === '/') {
+        const url = location.origin + to + location.search;
+        history.replaceState(history.state, title, url);
+      } else if (location.href.indexOf(from) !== -1) {
+        const url = location.href.replace(from, to);
+        history.replaceState(history.state, title, url);
+      }
+    }
+  }
+
+  static deserialize(key) {
+    const encoded = this.get('params');
+    return this.decode(key, encoded);
+  }
+
+  static serialize(keyOrValue, value) {
+    const params = this.deserialize();
+    const encoded = this.encode(keyOrValue, value, params);
+    this.set('params', encoded);
+  }
+
+  static decode(key, encoded) {
+    let decoded = null;
+
+    if (encoded) {
+      const json = window.atob(encoded);
+      decoded = JSON.parse(json);
+    }
+
+    if (key && decoded) {
+      decoded = decoded[key];
+    }
+
+    return decoded || null;
+  }
+
+  static encode(keyOrValue, value, params) {
+    params = params || {};
+    let encoded = null;
+
+    if (typeof keyOrValue === 'string') {
+      params[keyOrValue] = value;
+    } else {
+      params = keyOrValue;
+    }
+
+    const json = JSON.stringify(params);
+    encoded = window.btoa(json);
+    return encoded;
+  }
+
+}class LanguageService {
+  static get lang() {
+    return this.lang$.getValue();
+  }
+
+  static set lang(lang) {
+    if (this.lang !== lang) {
+      this.lang$.next(lang);
+    }
+  }
+
   static setAlternates(language, alternates) {
     this.languages = alternates;
-    this.selectedLanguage = language; // console.log('LanguageService.setAlternates', language, alternates);
+    this.lang = language; // console.log('LanguageService.setAlternates', language, alternates);
   }
 
   static setRoute(route, routes) {
@@ -4293,7 +4430,7 @@ LabelPipe.meta = {
   }
 
   static get activeLanguage() {
-    return this.languages.find(language => language.lang === this.selectedLanguage);
+    return this.languages.find(language => language.lang === this.lang);
   }
 
   static getDefaultLanguages() {
@@ -4305,11 +4442,11 @@ LabelPipe.meta = {
   }
 
   static setLanguage(language) {
-    this.selectedLanguage = language.lang;
+    this.lang = language.lang;
   }
 
   static setLanguage$(language) {
-    const url = environment.flags.production ? `/api/labels/${language.lang}` : `./api/labels/${language.lang}.json`;
+    const url = environment.flags.production ? `/api/${language.lang}/labels/` : `./api/${language.lang}/labels.json`;
     return rxjs.from(fetch(url).then(response => {
       return response.json();
     })).pipe(operators.tap(labels => {
@@ -4318,14 +4455,14 @@ LabelPipe.meta = {
       const from = this.activeLanguage.href.split('?')[0];
       const to = language.href.split('?')[0];
       LocationService.replace(from, to);
-      this.selectedLanguage = language.lang;
+      this.lang = language.lang;
     }));
     /*
     return of(language).pipe(
     	tap(language => {
     		// LabelPipe.setLabels();
     		LocationService.replace(this.activeLanguage.href, language.href);
-    		this.selectedLanguage = language.lang;
+    		this.lang = language.lang;
     	}),
     );
     */
@@ -4358,7 +4495,7 @@ LabelPipe.meta = {
 
       LocationService.replace(this.activeLanguage.href, language.href); // console.log(environment.labels);
 
-      this.selectedLanguage = language.lang;
+      this.lang = language.lang;
     }));
   }
 
@@ -4369,10 +4506,9 @@ LabelPipe.meta = {
 
 }
 LanguageService.languages = LanguageService.getDefaultLanguages();
-LanguageService.defaultLanguage = LanguageService.getDefaultLanguage();
-LanguageService.selectedLanguage = LanguageService.defaultLanguage;class RoutePipe extends rxcomp.Pipe {
+LanguageService.lang$ = new rxjs.BehaviorSubject(LanguageService.getDefaultLanguage());class RoutePipe extends rxcomp.Pipe {
   static transform(key) {
-    return key.replace(':lang', LanguageService.selectedLanguage);
+    return key.replace(':lang', LanguageService.lang);
   }
 
 }
@@ -4642,7 +4778,7 @@ class AgoraVolumeLevelsEvent extends AgoraEvent {}class HttpService {
   	const methods = ['POST', 'PUT', 'PATCH'];
   	const body = (data && methods.indexOf(method) !== -1) ? JSON.stringify(data) : undefined;
   	const queryString = (data && methods.indexOf(method) !== -1) ? Object.keys(data).map(function(key) {
-  	    return key + '=' + encodeURI(data[key]);
+  		return key + '=' + encodeURI(data[key]);
   	}).join('&') : undefined;
   	if (queryString) {
   		url = `${url}?${queryString}`;
@@ -4899,15 +5035,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends
     this.state = {
       status: 'access'
     };
-    /*
-    StateService.state$.pipe(
-    	takeUntil(this.unsubscribe$)
-    ).subscribe(state => {
-    	// console.log('AccessComponent.state', state);
-    	this.state = state;
-    	this.pushChanges();
-    });
-    */
   }
 
   onSelfServiceTourRequest() {
@@ -5006,25 +5133,7 @@ UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends
       test: environment.antiforgery || ''
     });
     const form = this.form = fieldsToFormGroup(fields);
-    /*
-    const form = this.form = new FormGroup({
-    	firstName: new FormControl(null, Validators.RequiredValidator()),
-    	lastName: new FormControl(null, Validators.RequiredValidator()),
-    	email: new FormControl(null, [Validators.RequiredValidator(), Validators.EmailValidator()]),
-    	role: new FormControl(null, Validators.RequiredValidator()),
-    	privacy: new FormControl(null, Validators.RequiredTrueValidator()),
-    	checkRequest: window.antiforgery || '',
-    	checkField: '',
-    });
-    */
-
     this.controls = form.controls;
-    /*
-    const options = data.roles.slice();
-    options.unshift({ id: null, name: 'select', // LabelPipe.transform('select') });
-    controls.role.options = options;
-    */
-
     this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(changes => {
       this.pushChanges();
     });
@@ -5059,17 +5168,6 @@ UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends
       });
     } else {
       patchFields(this.fields, this.form);
-      /*
-      this.form.patch({
-      	firstName: 'Jhon',
-      	lastName: 'Appleseed',
-      	email: 'jhonappleseed@gmail.com',
-      	role: this.controls.role.options.find(x => x.id !== null).id,
-      	privacy: true,
-      	checkRequest: window.antiforgery || '',
-      	checkField: ''
-      });
-      */
     }
   }
 
@@ -5157,9 +5255,6 @@ AccessComponent.meta = {
 						</button>
 					</div>
 				</div>
-				<button type="button" class="btn--absolute" (click)="onLogin($event)">
-					<span [innerHTML]="'access_cta' | label"></span> <svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg>
-				</button>
 			</div>
 			<!-- guided-tour -->
 			<div class="ui ui--info" *if="state.status == 'self-service-tour' || state.status == 'guided-tour'">
@@ -5229,16 +5324,24 @@ AccessComponent.meta = {
 					</form>
 				</div>
 			</div>
-			<div class="btn--logo" (click)="onBack($event)">
-				<img [src]="'logo' | env" *if="'logo' | env" />
-				<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
-			</div>
-			<!-- credits -->
-				<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
-				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-			</a>
-			<!-- language -->
-			<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+			<header>
+				<!-- logo -->
+				<div class="btn--logo" (click)="onBack($event)">
+					<img [src]="'logo' | env" *if="'logo' | env" />
+					<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
+				</div>
+				${CHUNK_LANGUAGE}
+			</header>
+			<footer>
+				<span class="group--colophon" *if="state.status != 'connected'">
+					${CHUNK_CREDITS}
+					${CHUNK_COPYRIGHT}
+				</span>
+				<!-- login -->
+				<button type="button" class="btn--absolute" (click)="onLogin($event)" *if="state.status == 'access'">
+					<span [innerHTML]="'access_cta' | label"></span> <svg class="lock" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#lock"></use></svg>
+				</button>
+			</footer>
 		</div>
 	`
 };class EmojiService {
@@ -8824,9 +8927,6 @@ AgoraChecklistComponent.meta = {
 			</button>
 		</div>
 	</div>
-	<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-	</a>
 	`
 };class AudioStreamService {
   static get context() {
@@ -9815,9 +9915,6 @@ AgoraLinkComponent.meta = {
 			</div>
 		</form>
 	</div>
-	<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-	</a>
 	`
 };class AgoraLoginComponent extends rxcomp.Component {
   onInit() {
@@ -9915,11 +10012,72 @@ AgoraLoginComponent.meta = {
 };class AgoraNameComponent extends rxcomp.Component {
   onInit() {
     const meetingUrl = new MeetingUrl();
-    const name = meetingUrl.name;
     this.state = {};
-    const form = this.form = new rxcompForm.FormGroup({
-      name: new rxcompForm.FormControl(name, [rxcompForm.Validators.PatternValidator(/^\w{2,}\s\w{2,}/), rxcompForm.Validators.RequiredValidator()])
+    const fields = this.fields = [];
+
+    if (environment.flags.useExtendedUserInfo) {
+      const firstName = meetingUrl.firstName;
+      const lastName = meetingUrl.lastName;
+      const email = meetingUrl.email;
+      fields.push({
+        type: 'text',
+        name: 'firstName',
+        label: 'access_first_name',
+        required: true,
+        value: firstName,
+        test: 'Jhon'
+      }, {
+        type: 'text',
+        name: 'lastName',
+        label: 'access_last_name',
+        required: true,
+        value: lastName,
+        test: 'Appleseed'
+      }, {
+        type: 'email',
+        name: 'email',
+        label: 'access_email',
+        required: true,
+        value: email,
+        test: 'jhonappleseed@gmail.com'
+      });
+    } else {
+      const name = meetingUrl.name;
+      fields.push({
+        type: 'text',
+        name: 'name',
+        label: 'bhere_name_and_surname',
+        pattern: /^\w{2,}\s\w{2,}/,
+        required: true,
+        value: name,
+        test: 'Jhon Appleseed'
+      });
+    }
+
+    fields.push({
+      type: 'checkbox',
+      name: 'privacy',
+      label: 'access_privacy_disclaimer',
+      required: true,
+      test: true
+    }, {
+      type: 'hidden',
+      name: 'checkField',
+      value: '',
+      test: ''
+    }, {
+      type: 'none',
+      name: 'checkRequest',
+      value: environment.antiforgery || '',
+      test: environment.antiforgery || ''
     });
+    const form = this.form = fieldsToFormGroup(fields);
+    /*
+    const form = this.form = new FormGroup({
+    	name: new FormControl(name, [Validators.PatternValidator(/^\w{2,}\s\w{2,}/), Validators.RequiredValidator()]),
+    });
+    */
+
     this.controls = form.controls;
     form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(changes => {
       // console.log('AgoraNameComponent.changes$', form.value);
@@ -9932,14 +10090,34 @@ AgoraLoginComponent.meta = {
     });
   }
 
+  test() {
+    patchFields(this.fields, this.form);
+  }
+
   isValid() {
     const isValid = this.form.valid;
     return isValid;
   }
 
   onNext(event) {
-    const name = this.controls.name.value;
-    MeetingUrl.replaceWithName(name);
+    let name;
+    let options;
+
+    if (environment.flags.useExtendedUserInfo) {
+      options = {
+        firstName: this.controls.firstName.value,
+        lastName: this.controls.lastName.value,
+        email: this.controls.email.value
+      };
+      name = `${options.firstName} ${options.lastName}`;
+    } else {
+      options = {
+        name: this.controls.name.value
+      };
+      name = options.name;
+    }
+
+    MeetingUrl.replaceWithOptions(options);
     this.name.next(name);
   }
 
@@ -9953,16 +10131,22 @@ AgoraNameComponent.meta = {
 	<div class="group--info" *if="form">
 		<form class="form" [formGroup]="form" (submit)="isValid() && onNext($event)" name="form" role="form" novalidate autocomplete="off">
 			<div class="group--info__content stagger--childs">
+				<!-- controls -->
+				<div controls [formGroup]="form" [fields]="fields"></div>
 				<!-- NAME -->
+				<!--
 				<div class="group--form group--form--addon" [class]="{ required: controls.name.validators.length }">
 					<label [innerHTML]="'bhere_fill_fullname' | label"></label>
 					<input type="text" class="control--text" [formControl]="controls.name" [placeholder]="'bhere_name_and_surname' | label" />
 				</div>
 				<div class="info" *if="!controls.name.valid" [innerHTML]="'bhere_fill_name_and_surname' | label"></div>
-				<div class="info" *if="isValid()">prosegui come <span [innerHTML]="controls.name.value"></span></div>
+				-->
+				<div class="info" *if="!isValid()"><span [innerHTML]="'bhere_fill_name_and_surname' | label"></span></div>
+				<div class="info" *if="isValid()"><span [innerHTML]="'bhere_proceed_as' | label"></span> <span [innerHTML]="controls.name.value"></span></div>
 				<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 					<span [innerHTML]="'bhere_proceed' | label"></span>
 				</button>
+				<test-component [form]="form" (test)="test($event)" (reset)="reset($event)"></test-component>
 			</div>
 		</form>
 	</div>
@@ -11171,7 +11355,7 @@ class ViewService {
 
   static data$() {
     if (!this.data$_) {
-      const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
+      const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.lang;
       this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(data => {
         data.views = data.views.map(view => mapView(view));
         this.data = data;
@@ -11264,7 +11448,9 @@ class ViewService {
       this.view = view;
 
       if (view.id !== waitingRoom.id) {
-        LocationService.set('viewId', view.id);
+        MeetingUrl.replaceWithOptions({
+          viewId: view.id
+        });
         const prefetchAssets = ViewService.getPrefetchAssets(view);
         view.prefetchAssets = prefetchAssets;
       }
@@ -11278,17 +11464,19 @@ class ViewService {
     return this.view$().pipe(operators.map(view => {
       // console.log('ViewService.editorView$.view', view.updateIndices);
       this.view = view;
+      const options = {
+        pathId: null
+      };
 
       if (view.id !== waitingRoom.id) {
-        LocationService.set('viewId', view.id);
+        options.viewId = view.id;
       }
 
       if (path && path.id !== null) {
-        LocationService.set('pathId', path.id);
-      } else {
-        LocationService.delete('pathId');
+        options.pathId = path.id;
       }
 
+      MeetingUrl.replaceWithOptions(options);
       return view;
     }));
   }
@@ -23828,16 +24016,9 @@ ModelNavComponent.meta = {
       linkRole = RoleType.SelfService;
       return linkRole;
     }
-    /*
-    const meetingUrl = this.meetingUrl;
-    const meetingId = meetingUrl.meetingId;
-    if (meetingId) {
-    	linkRole = meetingId.role;
-    }
-    */
 
-
-    const match = (LocationService.get('link') || '').match(/\d{9}-(\d{4})-\d{13}/);
+    const meetingUrl = new MeetingUrl();
+    const match = (meetingUrl.link || '').match(/\d{9}-(\d{4})-\d{13}/);
 
     if (match) {
       const index = parseInt(match[1]);
@@ -23922,14 +24103,15 @@ ModelNavComponent.meta = {
   }
 
   getPathId() {
-    let pathId = LocationService.get('pathId') || null;
+    const meetingUrl = new MeetingUrl();
+    let pathId = meetingUrl.pathId;
 
     if (pathId) {
       // console.log('AgoraComponent.getPathId', pathId);
       return parseInt(pathId);
     }
 
-    const link = LocationService.get('link') || null;
+    const link = meetingUrl.link;
 
     if (link) {
       const meetingId = new MeetingId(link);
@@ -23942,9 +24124,8 @@ ModelNavComponent.meta = {
 
   initWithUser(user) {
     // console.log('AgoraComponent.initWithUser', user);
-    // const meetingUrl = this.meetingUrl;
-    // const link = meetingUrl.link;
-    const link = LocationService.get('link') || null;
+    const meetingUrl = new MeetingUrl();
+    const link = meetingUrl.link;
     const pathId = this.getPathId();
     const role = this.getLinkRole() || (user ? user.type : null);
 
@@ -23977,7 +24158,7 @@ ModelNavComponent.meta = {
 
 
     const mode = UserService.getMode(role);
-    const name = LocationService.get('name') || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : null); // const name = meetingUrl.name || this.getName(user);
+    const name = this.getMeetingName(user); // const name = meetingUrl.name || this.getName(user);
 
     const checklist = null;
     const hosted = role === RoleType.Publisher ? true : false;
@@ -24015,6 +24196,23 @@ ModelNavComponent.meta = {
       this.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
     });
     this.initAgora();
+  }
+
+  getMeetingName(user) {
+    const meetingUrl = new MeetingUrl();
+    let name = null;
+
+    if (environment.flags.useExtendedUserInfo) {
+      name = meetingUrl.firstName && meetingUrl.lastName ? `${meetingUrl.firstName} ${meetingUrl.lastName}` : null;
+    } else {
+      name = meetingUrl.name ? meetingUrl.name : null;
+    }
+
+    if (!name && user.firstName && user.lastName) {
+      name = `${user.firstName} ${user.lastName}`;
+    }
+
+    return name;
   }
 
   viewObserver$() {
@@ -24884,9 +25082,19 @@ AgoraComponent.meta = {
 		${CHUNK_SMART_DEVICE}
 		${CHUNK_SELF_SERVICE_TOUR}
 		${CHUNK_EMBED}
-		${CHUNK_LOGO}
-		${CHUNK_CREDITS}
-		${CHUNK_LANGUAGE}
+		<header>
+			${CHUNK_LOGO}
+			${CHUNK_LANGUAGE}
+		</header>
+		<footer *if="state.status != 'connected'">
+			<span class="group--colophon">
+				${CHUNK_CREDITS}
+				${CHUNK_COPYRIGHT}
+			</span>
+			<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher' && (state.status == 'checklist' || state.status == 'link')">
+				<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
+			</a>
+		</footer>
 	</div>
 	`
 };class AssetService {
@@ -26536,7 +26744,8 @@ class EditorComponent extends rxcomp.Component {
   viewObserver$() {
     return EditorService.data$().pipe(operators.switchMap(data => {
       // console.log('viewObserver$', data);
-      const pathId = LocationService.has('pathId') ? parseInt(LocationService.get('pathId')) : null;
+      const meetingUrl = new MeetingUrl();
+      const pathId = meetingUrl.pathId;
       return PathService.getCurrentPath$(pathId).pipe(operators.switchMap(path => {
         this.paths = PathService.paths;
         this.path = path;
@@ -27062,6 +27271,62 @@ EditorComponent.meta = {
 		</div>
 		<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view && aside"></div>
 	</div>
+	`
+};class GenericService {
+  static currentLanguagePage$(mode) {
+    return LanguageService.lang$.pipe(operators.switchMap(lang => {
+      return this.page$(lang, mode);
+    }));
+  }
+
+  static page$(lang, mode) {
+    const url = environment.flags.production ? `/api/${lang}/${mode}/` : `./api/${lang}/${mode}.json`;
+    return HttpService.get$(url);
+  }
+
+}class GenericComponent extends rxcomp.Component {
+  onInit() {
+    this.route = this.host ? this.host.route : null;
+    this.state = {
+      status: 'generic'
+    };
+    this.page = null;
+    GenericService.currentLanguagePage$(this.route.params.mode).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(page => {
+      this.page = page;
+      this.pushChanges();
+    });
+  }
+
+}
+GenericComponent.meta = {
+  selector: '[generic-component]',
+  hosts: {
+    host: RouterOutletStructure
+  },
+  template:
+  /*html*/
+  `
+		<div class="page page--generic">
+			<!-- generic -->
+			<div class="ui ui--generic" *if="page">
+				<div class="group--generic">
+					<div class="group--generic__content stagger--childs">
+						<h1 class="title" [innerHTML]="page.title"></h1>
+						<div class="description" [innerHTML]="page.description"></div>
+					</div>
+				</div>
+			</div>
+			<header>
+				${CHUNK_LOGO}
+				${CHUNK_LANGUAGE}
+			</header>
+			<footer>
+				<span class="group--colophon" *if="state.status != 'connected'">
+					${CHUNK_CREDITS}
+					${CHUNK_COPYRIGHT}
+				</span>
+			</footer>
+		</div>
 	`
 };class LayoutComponent extends rxcomp.Component {
   get meetingUrl() {
@@ -27649,7 +27914,7 @@ LayoutComponent.meta = {
 			${CHUNK_AR_VR}
 			${CHUNK_LIKE}
 		</div>
-		<a class="btn--logo" [href]="'index' | slug" *if="state.status != 'connected'">
+		<a class="btn--logo" [routerLink]="':lang.access' | route" *if="state.status != 'connected'">
 			<img [src]="'logo' | env" *if="'logo' | env" />
 			<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
 		</a>
@@ -27822,7 +28087,7 @@ TryInARComponent.meta = {
   factory: AccessComponent
 }, {
   name: 'it.accessCode',
-  path: '/codice-di-accesso?:link&:name&:role&:viewId&:pathId&:support',
+  path: '/codice-di-accesso?:p&:link&:name&:role&:viewId&:pathId&:support',
   defaultParams: {
     lang: 'it',
     mode: 'accessCode'
@@ -27830,7 +28095,7 @@ TryInARComponent.meta = {
   factory: AccessCodeComponent
 }, {
   name: 'it.guidedTour',
-  path: '/tour-guidato?:link&:name&:role&:viewId&:pathId&:support',
+  path: '/tour-guidato?:p&:link&:name&:role&:viewId&:pathId&:support',
   defaultParams: {
     lang: 'it',
     mode: 'guidedTour'
@@ -27839,7 +28104,7 @@ TryInARComponent.meta = {
 }, // { name: 'it.guidedTour', path: '/tour-guidato', defaultParams: { lang: 'it', mode: 'guidedTour' }, factory: AgoraComponent },
 {
   name: 'it.selfServiceTour',
-  path: '/tour-self-service?:viewId&:pathId',
+  path: '/tour-self-service?:p&:viewId&:pathId',
   defaultParams: {
     lang: 'it',
     mode: 'selfServiceTour'
@@ -27855,7 +28120,7 @@ TryInARComponent.meta = {
   factory: AgoraComponent
 }, {
   name: 'it.tryInAr',
-  path: '/prova-in-ar?:viewId',
+  path: '/prova-in-ar?:p&:viewId',
   defaultParams: {
     lang: 'it',
     mode: 'tryInAr'
@@ -27863,7 +28128,7 @@ TryInARComponent.meta = {
   factory: TryInARComponent
 }, {
   name: 'it.editor',
-  path: '/editor?:viewId',
+  path: '/editor?:p&:viewId',
   defaultParams: {
     lang: 'it',
     mode: 'editor'
@@ -27877,6 +28142,22 @@ TryInARComponent.meta = {
     mode: 'layout'
   },
   factory: LayoutComponent
+}, {
+  name: 'it.privacy',
+  path: '/informativa-sulla-privacy',
+  defaultParams: {
+    lang: 'it',
+    mode: 'privacy'
+  },
+  factory: GenericComponent
+}, {
+  name: 'it.terms',
+  path: '/termini-di-utilizzo',
+  defaultParams: {
+    lang: 'it',
+    mode: 'terms'
+  },
+  factory: GenericComponent
 }, // en
 {
   name: 'en',
@@ -27896,7 +28177,7 @@ TryInARComponent.meta = {
   factory: AccessComponent
 }, {
   name: 'en.accessCode',
-  path: '/accesso-code?:link&:name&:role&:viewId&:pathId&:support',
+  path: '/accesso-code?:p&:link&:name&:role&:viewId&:pathId&:support',
   defaultParams: {
     lang: 'en',
     mode: 'accessCode'
@@ -27904,7 +28185,7 @@ TryInARComponent.meta = {
   factory: AccessCodeComponent
 }, {
   name: 'en.guidedTour',
-  path: '/guided-tour?:link&:name&:role&:viewId&:pathId&:support',
+  path: '/guided-tour?:p&:link&:name&:role&:viewId&:pathId&:support',
   defaultParams: {
     lang: 'en',
     mode: 'guidedTour'
@@ -27913,7 +28194,7 @@ TryInARComponent.meta = {
 }, // { name: 'en.guidedTour', path: '/guided-tour', defaultParams: { lang: 'en', mode: 'guidedTour' }, factory: AgoraComponent },
 {
   name: 'en.selfServiceTour',
-  path: '/self-service-tour?:viewId&:pathId',
+  path: '/self-service-tour?:p&:viewId&:pathId',
   defaultParams: {
     lang: 'en',
     mode: 'selfServiceTour'
@@ -27929,7 +28210,7 @@ TryInARComponent.meta = {
   factory: AgoraComponent
 }, {
   name: 'en.tryInAr',
-  path: '/try-in-ar?:viewId',
+  path: '/try-in-ar?:p&:viewId',
   defaultParams: {
     lang: 'en',
     mode: 'tryInAr'
@@ -27937,7 +28218,7 @@ TryInARComponent.meta = {
   factory: TryInARComponent
 }, {
   name: 'en.editor',
-  path: '/editor?:viewId',
+  path: '/editor?:p&:viewId',
   defaultParams: {
     lang: 'en',
     mode: 'editor'
@@ -27951,6 +28232,22 @@ TryInARComponent.meta = {
     mode: 'layout'
   },
   factory: LayoutComponent
+}, {
+  name: 'en.privacy',
+  path: '/privacy-policy',
+  defaultParams: {
+    lang: 'en',
+    mode: 'privacy'
+  },
+  factory: GenericComponent
+}, {
+  name: 'en.terms',
+  path: '/terms-of-service',
+  defaultParams: {
+    lang: 'en',
+    mode: 'terms'
+  },
+  factory: GenericComponent
 }];const SVG_CHUNK =
 /* html */
 `
@@ -31610,9 +31907,86 @@ ControlAssetsComponent.meta = {
 		</div>
 		<errors-component [control]="control"></errors-component>
 	`
-};class ControlCheckboxComponent extends ControlComponent {
+};class GenericModalComponent extends rxcomp.Component {
+  get data() {
+    let data = null;
+    const {
+      parentInstance
+    } = rxcomp.getContext(this);
+
+    if (parentInstance instanceof ModalOutletComponent) {
+      data = parentInstance.modal.data;
+    }
+
+    return data;
+  }
+
+  onInit() {
+    console.log(this.data);
+    this.page = null;
+    GenericService.currentLanguagePage$(this.data.mode).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(page => {
+      this.page = page;
+      this.pushChanges();
+    });
+  }
+
+  onClose() {
+    ModalService.reject();
+  }
+
+}
+GenericModalComponent.meta = {
+  selector: '[generic-modal]',
+  template:
+  /* html */
+  `
+		<div class="modal__header">
+			<button type="button" class="btn--close" (click)="onClose()">
+				<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#close"></use></svg>
+			</button>
+		</div>
+		<div class="container" *if="page">
+			<h1 class="title" [innerHTML]="page.title"></h1>
+			<div class="description" [innerHTML]="page.description"></div>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn--accept" (click)="onClose()">
+				<span [innerHTML]="'title_close' | label"></span>
+			</button>
+		</div>
+	`
+};
+
+GenericModalComponent.chunk = () =>
+/* html */
+`<div class="generic-modal" generic-modal></div>`;class ControlCheckboxComponent extends ControlComponent {
   onInit() {
     this.label = this.label || 'label';
+    this.links$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+  }
+
+  onChanges() {
+    const {
+      node
+    } = rxcomp.getContext(this);
+    const links = Array.prototype.slice.call(node.querySelectorAll('a'));
+    console.log('ControlCheckboxComponent.onChanges', links);
+    this.linksSubject.next(links.length ? rxjs.fromEvent(links, 'click') : rxjs.EMPTY);
+  }
+
+  links$() {
+    const linksSubject = this.linksSubject = new rxjs.ReplaySubject().pipe(operators.switchAll(), operators.tap(event => {
+      console.log(event);
+      const template = GenericModalComponent.chunk();
+      ModalService.open$({
+        template,
+        data: {
+          mode: 'privacy'
+        }
+      }).pipe(operators.first()).subscribe();
+      event.preventDefault();
+    }));
+    return linksSubject;
   }
 
 }
@@ -37080,6 +37454,6 @@ ModelTextComponent.meta = {
 class AppModule extends rxcomp.Module {}
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
-  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
+  declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, GenericComponent, GenericModalComponent, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
   bootstrap: AppComponent
 };rxcomp.Browser.bootstrap(AppModule);}));

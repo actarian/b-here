@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $family: $font-secondary;
 $size: 0.8em;
 $weight: $font-light;
@@ -8,6 +10,8 @@ $dirty: $foreground;
 $touched: $foreground;
 $valid: $foreground;
 $invalid: $foreground-primary;
+$gutter: 30px;
+$half-gutter: math.div($gutter, 2);
 
 ::-webkit-file-upload-button {
 	cursor: pointer;
@@ -420,9 +424,8 @@ errors-component {
 	flex-wrap: wrap;
 
 	@include media-up(lg) {
-		$gutter: 30px;
-		margin-left: - $gutter / 2;
-		margin-right: - $gutter / 2;
+		margin-left: - $half-gutter;
+		margin-right: - $half-gutter;
 
 		&>div {
 			@include as-col(4, 12, $gutter);
@@ -434,9 +437,8 @@ errors-component {
 	}
 
 	@include media-down(md) {
-		$gutter: 30px;
-		margin-left: - $gutter / 2;
-		margin-right: - $gutter / 2;
+		margin-left: - $half-gutter;
+		margin-right: - $half-gutter;
 
 		&>div {
 			@include as-col(6, 12, $gutter);
@@ -471,9 +473,8 @@ errors-component {
 	flex-wrap: wrap;
 
 	@include media-up(lg) {
-		$gutter: 30px;
-		margin-left: - $gutter / 2;
-		margin-right: - $gutter / 2;
+		margin-left: - $half-gutter;
+		margin-right: - $half-gutter;
 
 		&>div {
 			@include as-col(4, 12, $gutter);
@@ -489,9 +490,8 @@ errors-component {
 	}
 
 	@include media-down(md) {
-		$gutter: 30px;
-		margin-left: - $gutter / 2;
-		margin-right: - $gutter / 2;
+		margin-left: - $half-gutter;
+		margin-right: - $half-gutter;
 
 		&>div {
 			@include as-col(6, 12, $gutter);

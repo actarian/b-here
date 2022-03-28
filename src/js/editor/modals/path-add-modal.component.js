@@ -2,7 +2,7 @@ import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
-import ModalService from '../../modal/modal.service';
+import { ModalService } from '../../modal/modal.service';
 import PathService from '../path/path.service';
 
 export default class PathAddModalComponent extends Component {

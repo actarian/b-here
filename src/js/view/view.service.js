@@ -2,9 +2,8 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, tap } from 'rxjs/operators';
 import { AssetType } from '../asset/asset';
 import { environment } from '../environment';
-import HttpService from '../http/http.service';
+import { HttpService } from '../http/http.service';
 import { LanguageService } from '../language/language.service';
-import LocationService from '../location/location.service';
 import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
 import { mapView, ViewItemType, ViewType } from '../view/view';
@@ -26,7 +25,7 @@ export const DEFAULT_WAITING_ROOM = {
 		longitude: 0
 	}
 };
-export default class ViewService {
+export class ViewService {
 
 	static views$_ = new BehaviorSubject([]);
 	static set views(views) {
@@ -116,7 +115,7 @@ export default class ViewService {
 
 	static data$() {
 		if (!this.data$_) {
-			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.selectedLanguage;
+			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.lang;
 			this.data$_ = HttpService.get$(dataUrl).pipe(
 				map(data => {
 					data.views = data.views.map(view => mapView(view));
@@ -210,7 +209,7 @@ export default class ViewService {
 			tap(view => {
 				this.view = view;
 				if (view.id !== waitingRoom.id) {
-					LocationService.set('viewId', view.id);
+					MeetingUrl.replaceWithOptions({ viewId: view.id });
 					const prefetchAssets = ViewService.getPrefetchAssets(view);
 					view.prefetchAssets = prefetchAssets;
 				}
@@ -226,14 +225,16 @@ export default class ViewService {
 			map(view => {
 				// console.log('ViewService.editorView$.view', view.updateIndices);
 				this.view = view;
+				const options = {
+					pathId: null,
+				};
 				if (view.id !== waitingRoom.id) {
-					LocationService.set('viewId', view.id);
+					options.viewId = view.id;
 				}
 				if (path && path.id !== null) {
-					LocationService.set('pathId', path.id);
-				} else {
-					LocationService.delete('pathId');
+					options.pathId = path.id;
 				}
+				MeetingUrl.replaceWithOptions(options);
 				return view;
 			}),
 		);

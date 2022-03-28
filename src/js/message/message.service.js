@@ -1,6 +1,6 @@
 import { ReplaySubject } from 'rxjs';
 
-export default class MessageService {
+export class MessageService {
 	static message$ = new ReplaySubject(1);
 	static message(message) {
 		this.message$.next(message);

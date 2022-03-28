@@ -4,11 +4,11 @@ import { takeUntil, tap } from 'rxjs/operators';
 import { CHUNK_AR_VR, CHUNK_BACKGROUND, CHUNK_CHAT, CHUNK_CONTROLS, CHUNK_LIKE, CHUNK_LOCK, CHUNK_MEDIA, CHUNK_NAVMAP } from '../agora/agora.component.chunks';
 import { AgoraStatus, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
-import LabelPipe from '../label/label.pipe';
+import { LabelPipe } from '../label/label.pipe';
 import { LanguageService } from '../language/language.service';
 import LocationService from '../location/location.service';
 import { MeetingUrl } from '../meeting/meeting-url';
-import RouterOutletStructure from '../router/router-outlet.structure';
+import { RouterOutletStructure } from '../router/router-outlet.structure';
 import StateService from '../state/state.service';
 import ToastService, { ToastPosition, ToastRejectEvent, ToastResolveEvent, ToastType } from '../toast/toast.service';
 import { RoleType } from '../user/user';
@@ -574,7 +574,7 @@ LayoutComponent.meta = {
 			${CHUNK_AR_VR}
 			${CHUNK_LIKE}
 		</div>
-		<a class="btn--logo" [href]="'index' | slug" *if="state.status != 'connected'">
+		<a class="btn--logo" [routerLink]="':lang.access' | route" *if="state.status != 'connected'">
 			<img [src]="'logo' | env" *if="'logo' | env" />
 			<svg viewBox="0 0 270 98" *if="!('logo' | env)"><use xlink:href="#b-here"></use></svg>
 		</a>

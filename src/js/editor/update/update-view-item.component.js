@@ -5,11 +5,11 @@ import { first, switchMap } from 'rxjs/operators';
 import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId, AssetType } from '../../asset/asset';
 import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
-import LabelPipe from '../../label/label.pipe';
-import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import { LabelPipe } from '../../label/label.pipe';
+import { ModalResolveEvent, ModalService } from '../../modal/modal.service';
 import { ViewItem, ViewItemType, ViewType } from '../../view/view';
 import { WebhookService } from '../../webhook/webhook.service';
-import EditorService from '../editor.service';
+import { EditorService } from '../editor.service';
 import RemoveModalComponent from '../modals/remove-modal.component';
 
 export default class UpdateViewItemComponent extends Component {

@@ -1,6 +1,6 @@
 import { fromEvent, merge, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import HttpService from '../http/http.service';
+import { HttpService } from '../http/http.service';
 import { Asset, mapAsset } from './asset';
 
 export class AssetService {

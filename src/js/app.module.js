@@ -45,19 +45,21 @@ import ErrorsComponent from './forms/errors.component';
 import InputValueComponent from './forms/input-value.component';
 import TestComponent from './forms/test.component';
 import ValueDirective from './forms/value.directive';
+import { GenericModalComponent } from './generic/generic-modal.component';
+import { GenericComponent } from './generic/generic.component';
 import HtmlPipe from './html/html.pipe';
 import IdDirective from './id/id.directive';
-import LabelPipe from './label/label.pipe';
+import { LabelPipe } from './label/label.pipe';
 import LanguageComponent from './language/language.component';
 import LayoutComponent from './layout/layout.component';
 import LazyDirective from './lazy/lazy.directive';
 import MessagePipe from './message/message.pipe';
 import ModalOutletComponent from './modal/modal-outlet.component';
 import ModalComponent from './modal/modal.component';
-import RoutePipe from './router/route.pipe';
-import RouterLinkDirective from './router/router-link.directive';
-import RouterOutletStructure from './router/router-outlet.structure';
-import RouterService from './router/router.service';
+import { RoutePipe } from './router/route.pipe';
+import { RouterLinkDirective } from './router/router-link.directive';
+import { RouterOutletStructure } from './router/router-outlet.structure';
+import { RouterService } from './router/router.service';
 import SupportRequestModalComponent from './support-request/support-request-modal.component';
 import SvgIconStructure from './svg/svg-icon.structure';
 import TitleDirective from './title/title.directive';
@@ -132,6 +134,8 @@ AppModule.meta = {
 		EnvPipe,
 		ErrorsComponent,
 		FlagPipe,
+		GenericComponent,
+		GenericModalComponent,
 		HlsDirective,
 		HtmlPipe,
 		IframeModalComponent,

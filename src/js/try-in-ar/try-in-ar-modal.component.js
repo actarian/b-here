@@ -1,8 +1,8 @@
 import { Component, getContext } from 'rxcomp';
 import ModalOutletComponent from '../modal/modal-outlet.component';
-import ModalService from '../modal/modal.service';
-import RoutePipe from '../router/route.pipe';
-import RouterService from '../router/router.service';
+import { ModalService } from '../modal/modal.service';
+import { RoutePipe } from '../router/route.pipe';
+import { RouterService } from '../router/router.service';
 
 export default class TryInARModalComponent extends Component {
 

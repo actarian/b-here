@@ -2,7 +2,7 @@ import { Component, getContext } from 'rxcomp';
 // import { UserService } from './user/user.service';
 import { FormGroup } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import MessageService from '../message/message.service';
+import { MessageService } from '../message/message.service';
 import StateService from '../state/state.service';
 import AgoraService from './agora.service';
 import { MessageType } from './agora.types';

@@ -2,7 +2,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { UIMode } from '../agora/agora.types';
 import { environment } from '../environment';
-import HttpService from '../http/http.service';
+import { HttpService } from '../http/http.service';
 import { MeetingUrl } from '../meeting/meeting-url';
 import { RoleType, User } from './user';
 

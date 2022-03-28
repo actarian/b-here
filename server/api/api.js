@@ -479,8 +479,8 @@ const ROUTES = [{
 }];
 
 /*{
-	path: '/api/labels/:lang', method: 'GET', callback: function(request, response, params) {
-		const pathname = path.join(dirname, `/docs/api/labels/${params.lang}.json`);
+	path: '/api/:lang/labels', method: 'GET', callback: function(request, response, params) {
+		const pathname = path.join(dirname, `/docs/api/${params.lang}/labels.json`);
 		fs.readFile(pathname, 'utf8', (error, data) => {
 			if (error) {
 				sendError(response, 500, error);

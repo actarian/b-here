@@ -3,9 +3,9 @@ import { EMPTY, of } from 'rxjs';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 // import View, { EnterTransition, LeaveTransition, OnceTransition } from '../core/view';
 // import { transitionOnce, transitionOnced } from '../transition/transition';
-import RouterService from './router.service';
+import { RouterService } from './router.service';
 
-export default class RouterOutletStructure extends Structure {
+export class RouterOutletStructure extends Structure {
 
 	// host;
 	// outlet;

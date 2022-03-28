@@ -1,4 +1,4 @@
-@use 'sass:math'as math;
+@use "sass:math";
 
 %live-meeting-remote {
 	flex: 0 0 auto;
@@ -802,19 +802,19 @@ $checkmark-color: white;
 
 @keyframes check-idle {
 	100% {
-		box-shadow: inset 0px 0px 0px $size / 2 * 1px $color-idle;
+		box-shadow: inset 0px 0px 0px math.div($size, 2) * 1px $color-idle;
 	}
 }
 
 @keyframes check-success {
 	100% {
-		box-shadow: inset 0px 0px 0px $size / 2 * 1px $color-success;
+		box-shadow: inset 0px 0px 0px math.div($size, 2) * 1px $color-success;
 	}
 }
 
 @keyframes check-error {
 	100% {
-		box-shadow: inset 0px 0px 0px $size / 2 * 1px $color-error;
+		box-shadow: inset 0px 0px 0px math.div($size, 2) * 1px $color-error;
 	}
 }
 

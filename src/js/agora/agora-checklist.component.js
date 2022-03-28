@@ -1,7 +1,7 @@
 import { Component } from 'rxcomp';
 import { first, takeUntil } from 'rxjs/operators';
 import { DeviceService } from '../device/device.service';
-import ModalService from '../modal/modal.service';
+import { ModalService } from '../modal/modal.service';
 import { RoleType } from '../user/user';
 import { AgoraChecklistService } from './agora-checklist.service';
 import AgoraConfigureFirewallModalComponent from './agora-configure-firewall-modal.component';
@@ -89,8 +89,5 @@ AgoraChecklistComponent.meta = {
 			</button>
 		</div>
 	</div>
-	<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-	</a>
 	`
 };

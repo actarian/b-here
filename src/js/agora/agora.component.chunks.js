@@ -254,6 +254,11 @@ export const CHUNK_CREDITS = /* html */`
 </a>
 `;
 
+export const CHUNK_COPYRIGHT = /* html */`
+<!-- copyright -->
+<span> &copy; Websolute Spa and their <a [routerLink]="':lang.privacy' | route" class="btn--colophon">Privacy Policy</a> and <a [routerLink]="':lang.terms' | route" class="btn--colophon">Terms of Service</a> apply.</span>
+`;
+
 export const CHUNK_LANGUAGE = /* html */`
 <!-- language -->
 <div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>

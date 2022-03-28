@@ -1,6 +1,6 @@
 import { Directive, getContext } from 'rxcomp';
-import RouterLinkDirective from './router-link.directive';
-import RouterService from './router.service';
+import { RouterLinkDirective } from './router-link.directive';
+import { RouterService } from './router.service';
 
 export default class RouterLinkActiveDirective extends Directive {
 

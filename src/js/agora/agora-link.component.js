@@ -6,7 +6,7 @@ import PathService from '../editor/path/path.service';
 import { environment } from '../environment';
 import { MeetingId, MEETING_ID_VALIDATOR } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
-import RoutePipe from '../router/route.pipe';
+import { RoutePipe } from '../router/route.pipe';
 import StateService from '../state/state.service';
 
 export default class AgoraLinkComponent extends Component {
@@ -200,8 +200,5 @@ AgoraLinkComponent.meta = {
 			</div>
 		</form>
 	</div>
-	<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher'">
-		<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
-	</a>
 	`
 };

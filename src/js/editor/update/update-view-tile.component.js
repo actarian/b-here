@@ -1,7 +1,7 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
-import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import { ModalResolveEvent, ModalService } from '../../modal/modal.service';
 import RemoveModalComponent from '../modals/remove-modal.component';
 
 export default class UpdateViewTileComponent extends Component {

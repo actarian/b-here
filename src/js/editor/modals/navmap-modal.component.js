@@ -1,7 +1,7 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
-import ModalService from '../../modal/modal.service';
+import { ModalService } from '../../modal/modal.service';
 import NavmapService from '../navmap/navmap.service';
 
 export default class NavmapModalComponent extends Component {

@@ -12,7 +12,7 @@ export class ModalEvent {
 export class ModalResolveEvent extends ModalEvent { }
 export class ModalRejectEvent extends ModalEvent { }
 
-export default class ModalService {
+export class ModalService {
 
 	static get hasModal() {
 		return this.hasModal_;

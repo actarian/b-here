@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import ModalOutletComponent from './modal-outlet.component';
-import ModalService from './modal.service';
+import { ModalService } from './modal.service';
 
 export default class ModalComponent extends Component {
 

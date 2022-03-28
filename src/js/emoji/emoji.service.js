@@ -1,7 +1,7 @@
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../environment';
-import HttpService from '../http/http.service';
+import { HttpService } from '../http/http.service';
 
 export class EmojiService {
 

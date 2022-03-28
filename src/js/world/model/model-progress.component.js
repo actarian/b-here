@@ -2,7 +2,7 @@ import { getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 // import * as THREE from 'three';
 import { environment } from '../../environment';
-import LabelPipe from '../../label/label.pipe';
+import { LabelPipe } from '../../label/label.pipe';
 import LoaderService from '../../loader/loader.service';
 import { ViewType } from '../../view/view';
 import { PANORAMA_RADIUS } from '../geometry/geometry';

@@ -1,6 +1,6 @@
 import { Component } from 'rxcomp';
 import { environment } from '../../environment';
-import LabelPipe from '../../label/label.pipe';
+import { LabelPipe } from '../../label/label.pipe';
 import { ViewItemType, ViewType } from '../../view/view';
 
 export default class AsideComponent extends Component {

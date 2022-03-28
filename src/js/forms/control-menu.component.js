@@ -1,7 +1,7 @@
 import { FormArray, FormGroup } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import DropdownDirective from '../dropdown/dropdown.directive';
-import EditorService from '../editor/editor.service';
+import { EditorService } from '../editor/editor.service';
 import MenuService from '../editor/menu/menu.service';
 import ControlAssetComponent from './control-asset.component';
 

@@ -770,7 +770,7 @@
 	display: block;
 	width: 46px;
 	height: 17px;
-	margin: 3px 0 0 0;
+	transform: translateY(3px);
 	transition: transform ease-in-out 200ms;
 
 	svg {
@@ -780,6 +780,62 @@
 	}
 
 	&:hover {
-		transform: translateX(4px);
+		transform: translateY(3px) scale(1.05);
+	}
+}
+
+.btn--colophon {
+	@extend %btn;
+	position: relative;
+	transition: all ease-in-out $fastest;
+
+	&:before {
+		content: '';
+		display: block;
+		position: absolute;
+		bottom: 3px;
+		left: 0;
+		width: 100%;
+		height: 1px;
+		transform-origin: left;
+		transform: scaleX(1);
+		transition: all ease-in-out $fastest;
+	}
+
+	&,
+	&:active,
+	&:focus,
+	&:visited {
+		color: $foreground-negative;
+
+		&:before {
+			background: rgba(255, 255, 255, 0.4);
+		}
+	}
+
+	&:hover {
+		color: $foreground-primary;
+
+		&:before {
+			background: $background-primary;
+			transform: scaleX(0);
+		}
+	}
+
+	&:active:hover {
+		color: $foreground-primary-darkest;
+		transition: none;
+	}
+
+	&.disabled {
+
+		&,
+		&:active,
+		&:focus,
+		&:hover,
+		&:visited {
+			border-color: $background-primary-disabled;
+			pointer-events: none;
+		}
 	}
 }

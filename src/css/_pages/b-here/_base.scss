@@ -1,6 +1,8 @@
+@use "sass:math";
+
 @mixin ratio($width, $ratio) {
 	width: $width;
-	height: $width / $ratio;
+	height: math.div($width, $ratio);
 }
 
 html,
@@ -93,7 +95,7 @@ body {
 		bottom: 26px;
 	}
 
-	.btn--absolute {
+	&>.btn--absolute {
 		/*
 		position: absolute;
 		top: 15px;
@@ -106,5 +108,45 @@ body {
 		z-index: 10000;
 		// left: 50%;
 		// transform: translateX(-50%);
+	}
+}
+
+footer {
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 70px;
+	width: 100%;
+	bottom: 0;
+	padding: 15px;
+	border-top: 1px solid rgba(0, 0, 0, 0.3);
+	z-index: 10000;
+
+	@include media-down(xs) {
+		display: flex;
+		justify-content: center;
+
+		.btn--credits {
+			display: none;
+		}
+	}
+}
+
+.group--colophon {
+	display: flex;
+	font-size: 12px;
+	color: $foreground-negative;
+	text-align: center;
+
+	@include media-up(sm) {
+		&>* {
+			margin-right: 8px;
+		}
+	}
+
+	@include media-down(xs) {
+		flex-direction: column;
+		align-items: center;
 	}
 }

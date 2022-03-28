@@ -2,7 +2,7 @@ import { Component, getContext } from 'rxcomp';
 import { takeUntil, tap } from 'rxjs/operators';
 import { MessageType } from '../agora/agora.types';
 import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../drag/drag.service';
-import MessageService from '../message/message.service';
+import { MessageService } from '../message/message.service';
 
 export default class SliderDirective extends Component {
 

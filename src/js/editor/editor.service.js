@@ -1,8 +1,8 @@
 import { map, shareReplay } from 'rxjs/operators';
-import HttpService from '../http/http.service';
+import { HttpService } from '../http/http.service';
 import { mapView, mapViewItem, ViewType } from '../view/view';
 
-export default class EditorService {
+export class EditorService {
 
 	static data$() {
 		if (!this.data$_) {

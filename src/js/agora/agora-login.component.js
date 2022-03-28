@@ -1,7 +1,7 @@
 import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
-import LabelPipe from '../label/label.pipe';
+import { LabelPipe } from '../label/label.pipe';
 import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
 import { UserService } from '../user/user.service';

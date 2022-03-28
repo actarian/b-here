@@ -129,6 +129,7 @@
 	left: 0;
 }
 
+.generic-modal,
 .configure-firewall-modal,
 .control-request-modal,
 .curved-plane-modal,
@@ -164,10 +165,59 @@
 	}
 }
 
+.generic-modal,
 .path-edit-modal {
 	@include media-up(sm) {
 		max-width: 840px;
 	}
+}
+
+.generic-modal {
+
+	.title {
+		font-size: 32px;
+		line-height: 1.15;
+		margin-bottom: 1.15em;
+		font-weight: $font-extrabold;
+	}
+
+	.description {
+		margin: 15px 0;
+		font-size: 15px;
+		line-height: 1.5;
+		color: $foreground-tertiary;
+
+		h2 {
+			font-size: 19px;
+			line-height: 1.15;
+			margin: 1.5em 0 0 0;
+			font-weight: $font-extrabold;
+			color: $foreground;
+		}
+
+		h3 {
+			font-size: 17px;
+			line-height: 1.15;
+			margin-bottom: 1.15em;
+			font-weight: $font-extrabold;
+			color: $foreground;
+		}
+
+		p {
+			margin: 0 0 0.8em 0;
+		}
+
+		a {
+			color: $foreground-primary;
+		}
+	}
+
+	hr {
+		margin-bottom: 1.5em;
+		border: 1px solid #E8E8E8;
+		height: 1px;
+	}
+
 }
 
 .support-request-modal,

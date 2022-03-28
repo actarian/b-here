@@ -4,11 +4,11 @@ import { auditTime, distinctUntilChanged, filter, first, takeUntil } from 'rxjs/
 import { MessageType } from '../../agora/agora.types';
 import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
-import LabelPipe from '../../label/label.pipe';
-import MessageService from '../../message/message.service';
-import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import { LabelPipe } from '../../label/label.pipe';
+import { MessageService } from '../../message/message.service';
+import { ModalResolveEvent, ModalService } from '../../modal/modal.service';
 import { View, ViewType } from '../../view/view';
-import EditorService from '../editor.service';
+import { EditorService } from '../editor.service';
 import RemoveModalComponent from '../modals/remove-modal.component';
 
 export default class UpdateViewComponent extends Component {

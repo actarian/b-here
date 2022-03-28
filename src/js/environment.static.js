@@ -14,6 +14,8 @@ export const environmentStatic = {
 		production: false,
 		useProxy: true,
 		useToken: false,
+		useExtendedUserInfo: true,
+		useEncryptedUrl: false,
 		selfService: true,
 		guidedTourRequest: true,
 		editor: true,

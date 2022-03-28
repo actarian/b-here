@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environment';
-import HttpService from '../../http/http.service';
+import { HttpService } from '../../http/http.service';
 import { mapPath } from './path';
 
 export const DEFAULT_PATH = {

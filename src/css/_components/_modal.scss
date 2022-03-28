@@ -50,9 +50,14 @@
 	}
 }
 
-.modal__header {
+.modal__header,
+.modal__footer {
 	display: flex;
 	justify-content: flex-end;
+}
+
+.modal__footer {
+	padding: 10px 20px;
 }
 
 body {

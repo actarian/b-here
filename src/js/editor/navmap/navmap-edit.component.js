@@ -2,7 +2,7 @@ import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { fromEvent } from 'rxjs';
 import { filter, first, map, takeUntil, tap } from 'rxjs/operators';
-import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import { ModalResolveEvent, ModalService } from '../../modal/modal.service';
 import NavmapItemModalComponent from '../modals/navmap-item-modal.component';
 import RemoveModalComponent from '../modals/remove-modal.component';
 import NavmapService from './navmap.service';

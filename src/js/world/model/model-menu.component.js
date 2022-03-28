@@ -6,7 +6,7 @@ import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
-import MessageService from '../../message/message.service';
+import { MessageService } from '../../message/message.service';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
 import { Host } from '../host/host';

@@ -4,12 +4,12 @@ import { first } from 'rxjs/operators';
 import { environment } from '../../environment';
 // import * as THREE from 'three';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
-import ModalService from '../../modal/modal.service';
+import { ModalService } from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
 import { WebhookService } from '../../webhook/webhook.service';
 import { Host } from '../../world/host/host';
 import ModelNavComponent from '../../world/model/model-nav.component';
-import EditorService from '../editor.service';
+import { EditorService } from '../editor.service';
 
 export default class NavModalComponent extends Component {
 

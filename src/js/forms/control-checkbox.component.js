@@ -1,9 +1,39 @@
+import { getContext } from 'rxcomp';
+import { EMPTY, fromEvent, ReplaySubject } from 'rxjs';
+import { first, switchAll, takeUntil, tap } from 'rxjs/operators';
+import { GenericModalComponent } from '../generic/generic-modal.component';
+import { ModalService } from '../modal/modal.service';
 import ControlComponent from './control.component';
 
 export default class ControlCheckboxComponent extends ControlComponent {
 
 	onInit() {
 		this.label = this.label || 'label';
+		this.links$().pipe(
+			takeUntil(this.unsubscribe$),
+		).subscribe();
+	}
+
+	onChanges() {
+		const { node } = getContext(this);
+		const links = Array.prototype.slice.call(node.querySelectorAll('a'));
+		console.log('ControlCheckboxComponent.onChanges', links);
+		this.linksSubject.next(links.length ? fromEvent(links, 'click') : EMPTY);
+	}
+
+	links$() {
+		const linksSubject = this.linksSubject = new ReplaySubject().pipe(
+			switchAll(),
+			tap(event => {
+				console.log(event);
+				const template = GenericModalComponent.chunk();
+				ModalService.open$({ template, data: { mode: 'privacy' } }).pipe(
+					first(),
+				).subscribe();
+				event.preventDefault();
+			}),
+		);
+		return linksSubject;
 	}
 
 }

@@ -1,6 +1,6 @@
 import { Component } from 'rxcomp';
 import { first } from 'rxjs/operators';
-import ModalService, { ModalResolveEvent } from '../../modal/modal.service';
+import { ModalResolveEvent, ModalService } from '../../modal/modal.service';
 import NavmapItemModalComponent from '../modals/navmap-item-modal.component';
 import NavmapModalComponent from '../modals/navmap-modal.component';
 import NavmapService from './navmap.service';

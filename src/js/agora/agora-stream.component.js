@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
-import MessageService from '../message/message.service';
+import { MessageService } from '../message/message.service';
 import StateService from '../state/state.service';
 import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, MessageType } from './agora.types';
 

@@ -1,7 +1,7 @@
 import { Pipe } from 'rxcomp';
 import { environment } from '../environment';
 
-export default class LabelPipe extends Pipe {
+export class LabelPipe extends Pipe {
 
 	static get labels() {
 		return environment.labels;
