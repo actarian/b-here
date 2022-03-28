@@ -17,7 +17,7 @@ export default class ControlCheckboxComponent extends ControlComponent {
 	onChanges() {
 		const { node } = getContext(this);
 		const links = Array.prototype.slice.call(node.querySelectorAll('a'));
-		console.log('ControlCheckboxComponent.onChanges', links);
+		// console.log('ControlCheckboxComponent.onChanges', links);
 		this.linksSubject.next(links.length ? fromEvent(links, 'click') : EMPTY);
 	}
 
@@ -25,7 +25,7 @@ export default class ControlCheckboxComponent extends ControlComponent {
 		const linksSubject = this.linksSubject = new ReplaySubject().pipe(
 			switchAll(),
 			tap(event => {
-				console.log(event);
+				// console.log(event);
 				const template = GenericModalComponent.chunk();
 				ModalService.open$({ template, data: { mode: 'privacy' } }).pipe(
 					first(),

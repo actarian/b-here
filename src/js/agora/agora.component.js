@@ -670,34 +670,44 @@ export default class AgoraComponent extends Component {
 		this.agora.connect$(preferences).pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe();
+		const state = this.state;
 		// console.log('AgoraComponent.connect', this.state.role);
-		if (this.state.role === RoleType.SelfService) {
+		if (state.role === RoleType.SelfService) {
 			GtmService.push({
 				action: 'b-here-tour',
-				userType: this.state.role
+				userType: state.role
 			});
-		} else if (this.state.role === RoleType.Embed) {
+		} else if (state.role === RoleType.Embed) {
 			GtmService.push({
 				action: 'b-here-embed',
-				userType: this.state.role
+				userType: state.role
 			});
 		} else {
-			const sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
+			const meetingUrl = new MeetingUrl();
+			const sharedMeetingId = state.link.replace(/-\d+-/, '-');
 			const log = {
-				meetingId: this.state.link,
+				meetingId: state.link,
 				sharedMeetingId: sharedMeetingId,
-				fullName: this.state.name,
-				userType: this.state.role
+				userType: state.role
 			};
+			if (environment.flags.useExtendedUserInfo) {
+				// !!! update server side logic to use extended user info
+				log.firstName = meetingUrl.firstName;
+				log.lastName = meetingUrl.lastName;
+				log.email = meetingUrl.email;
+			} else {
+				log.fullName = state.name;
+			}
 			// console.log('AgoraComponent.connect', log);
 			UserService.log$(log).pipe(
 				first(),
 			).subscribe();
+			// do not share user data in gtm
 			GtmService.push({
 				action: 'b-here-meeting',
-				meetingId: this.state.link,
+				meetingId: state.link,
 				sharedMeetingId: sharedMeetingId,
-				userType: this.state.role
+				userType: state.role
 			});
 		}
 	}

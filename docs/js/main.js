@@ -281,7 +281,7 @@ const CHUNK_COPYRIGHT =
 /* html */
 `
 <!-- copyright -->
-<span> &copy; Websolute Spa and their <a [routerLink]="':lang.privacy' | route" class="btn--colophon">Privacy Policy</a> and <a [routerLink]="':lang.terms' | route" class="btn--colophon">Terms of Service</a> apply.</span>
+<span> <span [innerHTML]="'@copy' | label"></span> Websolute Spa - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
 `;
 const CHUNK_LANGUAGE =
 /* html */
@@ -3650,6 +3650,7 @@ class MeetingId {
     this.pathId = this.pathId || null;
     this.embedViewId = this.embedViewId || null;
     this.support = this.support || false;
+    console.log('MeetingUrl', this);
   }
 
   toParams(shareable) {
@@ -4268,6 +4269,11 @@ function patchFields(fields, form) {
   }
 
   static transform(key) {
+    switch (key) {
+      case '@copy':
+        return `©${new Date().getFullYear()}`;
+    }
+
     const labels = LabelPipe.labels;
     return labels[key] || key; // `#${key}#`;
   }
@@ -15219,8 +15225,8 @@ class ImageService {
       const texture = new THREE.Texture(image);
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
-      texture.mapping = THREE.UVMapping;
-      console.log('texture', texture, THREE.RGBAFormat, THREE.LinearEncoding); // texture.format = THREE.RGBAFormat;
+      texture.mapping = THREE.UVMapping; // console.log('texture', texture, THREE.RGBAFormat, THREE.LinearEncoding);
+      // texture.format = THREE.RGBAFormat;
       // texture.encoding = THREE.LinearEncoding;
 
       texture.toneMapped = false;
@@ -24594,33 +24600,45 @@ ModelNavComponent.meta = {
 
   connect(preferences) {
     // console.log('AgoraComponent.connect', preferences);
-    this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe(); // console.log('AgoraComponent.connect', this.state.role);
+    this.agora.connect$(preferences).pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
+    const state = this.state; // console.log('AgoraComponent.connect', this.state.role);
 
-    if (this.state.role === RoleType.SelfService) {
+    if (state.role === RoleType.SelfService) {
       GtmService.push({
         action: 'b-here-tour',
-        userType: this.state.role
+        userType: state.role
       });
-    } else if (this.state.role === RoleType.Embed) {
+    } else if (state.role === RoleType.Embed) {
       GtmService.push({
         action: 'b-here-embed',
-        userType: this.state.role
+        userType: state.role
       });
     } else {
-      const sharedMeetingId = this.state.link.replace(/-\d+-/, '-');
+      const meetingUrl = new MeetingUrl();
+      const sharedMeetingId = state.link.replace(/-\d+-/, '-');
       const log = {
-        meetingId: this.state.link,
+        meetingId: state.link,
         sharedMeetingId: sharedMeetingId,
-        fullName: this.state.name,
-        userType: this.state.role
-      }; // console.log('AgoraComponent.connect', log);
+        userType: state.role
+      };
 
-      UserService.log$(log).pipe(operators.first()).subscribe();
+      if (environment.flags.useExtendedUserInfo) {
+        // !!! update server side logic to use extended user info
+        log.firstName = meetingUrl.firstName;
+        log.lastName = meetingUrl.lastName;
+        log.email = meetingUrl.email;
+      } else {
+        log.fullName = state.name;
+      } // console.log('AgoraComponent.connect', log);
+
+
+      UserService.log$(log).pipe(operators.first()).subscribe(); // do not share user data in gtm
+
       GtmService.push({
         action: 'b-here-meeting',
-        meetingId: this.state.link,
+        meetingId: state.link,
         sharedMeetingId: sharedMeetingId,
-        userType: this.state.role
+        userType: state.role
       });
     }
   }
@@ -31969,14 +31987,14 @@ GenericModalComponent.chunk = () =>
     const {
       node
     } = rxcomp.getContext(this);
-    const links = Array.prototype.slice.call(node.querySelectorAll('a'));
-    console.log('ControlCheckboxComponent.onChanges', links);
+    const links = Array.prototype.slice.call(node.querySelectorAll('a')); // console.log('ControlCheckboxComponent.onChanges', links);
+
     this.linksSubject.next(links.length ? rxjs.fromEvent(links, 'click') : rxjs.EMPTY);
   }
 
   links$() {
     const linksSubject = this.linksSubject = new rxjs.ReplaySubject().pipe(operators.switchAll(), operators.tap(event => {
-      console.log(event);
+      // console.log(event);
       const template = GenericModalComponent.chunk();
       ModalService.open$({
         template,

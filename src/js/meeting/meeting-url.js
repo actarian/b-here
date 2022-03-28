@@ -72,6 +72,7 @@ export class MeetingUrl {
 		this.pathId = this.pathId || null;
 		this.embedViewId = this.embedViewId || null;
 		this.support = this.support || false;
+		console.log('MeetingUrl', this);
 	}
 
 	toParams(shareable = false) {

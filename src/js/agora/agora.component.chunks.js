@@ -256,7 +256,7 @@ export const CHUNK_CREDITS = /* html */`
 
 export const CHUNK_COPYRIGHT = /* html */`
 <!-- copyright -->
-<span> &copy; Websolute Spa and their <a [routerLink]="':lang.privacy' | route" class="btn--colophon">Privacy Policy</a> and <a [routerLink]="':lang.terms' | route" class="btn--colophon">Terms of Service</a> apply.</span>
+<span> <span [innerHTML]="'@copy' | label"></span> Websolute Spa - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
 `;
 
 export const CHUNK_LANGUAGE = /* html */`

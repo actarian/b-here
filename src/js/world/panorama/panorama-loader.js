@@ -102,7 +102,7 @@ export class PanoramaLoader {
 			texture.minFilter = THREE.LinearFilter;
 			texture.magFilter = THREE.LinearFilter;
 			texture.mapping = THREE.UVMapping;
-			console.log('texture', texture, THREE.RGBAFormat, THREE.LinearEncoding);
+			// console.log('texture', texture, THREE.RGBAFormat, THREE.LinearEncoding);
 			// texture.format = THREE.RGBAFormat;
 			// texture.encoding = THREE.LinearEncoding;
 			texture.toneMapped = false;

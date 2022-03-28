@@ -8,6 +8,10 @@ export class LabelPipe extends Pipe {
 	}
 
 	static transform(key) {
+		switch (key) {
+			case '@copy':
+				return `©${new Date().getFullYear()}`;
+		}
 		const labels = LabelPipe.labels;
 		return labels[key] || key; // `#${key}#`;
 	}
