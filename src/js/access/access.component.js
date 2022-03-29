@@ -5,6 +5,7 @@ import { first, takeUntil } from 'rxjs/operators';
 import { environment, STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
 import { UserService } from '../user/user.service';
+import { WebhookService } from '../webhook/webhook.service';
 
 export default class AccessComponent extends Component {
 
@@ -78,8 +79,13 @@ export default class AccessComponent extends Component {
 
 		fields.push(
 			{ type: 'hidden', name: 'checkField', value: '', test: '' },
-			{ type: 'none', name: 'checkRequest', value: window.antiforgery || '', test: window.antiforgery || '' }
 		);
+
+		if (window.antiforgery) {
+			fields.push(
+				{ type: 'none', name: 'checkRequest', value: window.antiforgery, test: window.antiforgery },
+			);
+		}
 
 		const form = this.form = fieldsToFormGroup(fields);
 		/*
@@ -177,11 +183,19 @@ export default class AccessComponent extends Component {
 				// console.log('AccessComponent.onSubmit', response);
 				switch (status) {
 					case 'guided-tour':
-						this.state.status = 'guided-tour-success';
-						this.pushChanges();
+						this.onHandleHook('GuidedTour', payload).pipe(
+							first(),
+						).subscribe(response => {
+							this.state.status = 'guided-tour-success';
+							this.pushChanges();
+						});
 						break;
 					case 'self-service-tour':
-						window.location.href = environment.url.selfServiceTour;
+						this.onHandleHook('SelfServiceTour', payload).pipe(
+							first(),
+						).subscribe(response => {
+							window.location.href = environment.url.selfServiceTour;
+						});
 						break;
 					case 'login':
 						window.location.href = environment.url.guidedTour;
@@ -201,6 +215,12 @@ export default class AccessComponent extends Component {
 	isValid() {
 		const isValid = this.form.valid;
 		return isValid;
+	}
+
+	onHandleHook(action, values) {
+		const payload = values;
+		const extra = null;
+		return WebhookService.send$(action, payload, extra);
 	}
 
 }

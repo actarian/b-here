@@ -131,7 +131,7 @@ export default class UpdateViewItemComponent extends Component {
 					case 'hook':
 						control = new FormControl(value, optional ? undefined : RequiredValidator());
 						if (WebhookService.enabled) {
-							const options = environment.webhook.methods.map(x => ({ id: x, name: x }));
+							const options = environment.webhook.methods.nav.map(x => ({ id: x, name: x }));
 							options.unshift({ id: null, name: 'select' });
 							control.options = options;
 						}

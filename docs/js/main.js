@@ -258,15 +258,12 @@ function _readOnlyError(name) {
 };var environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
-
-  /*
   webhook: {
-  	uris: ['internal'],
-  	methods: [
-  		'ToggleWishlist',
-  	],
+    uris: ['internal', 'https://webhook.site/c3aa05af-b5be-4979-9716-520030a3eaa5'],
+    methods: {
+      nav: ['ToggleWishlist']
+    }
   },
-  */
   flags: {
     production: false,
     useProxy: true,
@@ -1737,7 +1734,150 @@ var AgoraVolumeLevelsEvent = /*#__PURE__*/function (_AgoraEvent7) {
 
   return UserService;
 }();
-UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PURE__*/function (_Component) {
+UserService.user$ = new rxjs.BehaviorSubject(null);var UID = 0;
+var WebhookEvent = /*#__PURE__*/function () {
+  function WebhookEvent(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  var _proto = WebhookEvent.prototype;
+
+  _proto.toJson = function toJson() {
+    return JSON.stringify(this);
+  };
+
+  WebhookEvent.newEvent = function newEvent(action, data, extra) {
+    console.log('WebhookEvent.newEvent', action, data, extra);
+    var event = new WebhookEvent();
+    var timestamp = new Date().getTime();
+    event.timestamp = timestamp;
+    event.id = timestamp + "-" + ++UID;
+    event.action = action;
+    event.data = data;
+
+    if (extra) {
+      event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra;
+    }
+
+    if (StateService.state.link) {
+      // ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
+      event.meetingId = StateService.state.link;
+      event.userSessionId = StateService.state.uid;
+      event.userRole = StateService.state.role;
+      event.fullName = StateService.state.name;
+    }
+
+    return event;
+  };
+
+  WebhookEvent.parseEvent = function parseEvent(event) {
+    if (event && 'data' in event) {
+      var message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+      if ('action' in message) {
+        return new WebhookEvent(message);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  };
+
+  return WebhookEvent;
+}();
+var WebhookService = /*#__PURE__*/function () {
+  function WebhookService() {}
+
+  WebhookService.internal$_ = function internal$_(event) {
+    var _this = this;
+
+    return rxjs.of(event).pipe(operators.tap(function (event) {
+      console.log('WebhookService.internal$_.postMessage', event);
+
+      if (window.parent) {
+        window.parent.postMessage(event.action, event.toJson());
+      }
+    }), operators.switchMap(function (event) {
+      return _this.event$_.pipe(operators.filter(function (event) {
+        return event.id === event.id;
+      }), operators.first());
+    }), operators.map(function (response) {
+      console.log('WebhookService.internal$_.handleResponse_', event, response);
+      return _this.handleResponse_(event, response);
+    }), operators.catchError(function (error) {
+      return _this.handleError_(event, error);
+    }));
+  };
+
+  WebhookService.send$_ = function send$_(uri, event) {
+    var _this2 = this;
+
+    return HttpService.post$(uri, event).pipe(operators.map(function (response) {
+      return _this2.handleResponse_(event, response);
+    }), operators.catchError(function (error) {
+      return _this2.handleError_(event, error);
+    }));
+  };
+
+  WebhookService.send$ = function send$(action, payload, extra) {
+    var _this3 = this;
+
+    console.log('WebhookService.send$', action, payload, extra);
+
+    if (this.enabled) {
+      var event = WebhookEvent.newEvent(action, payload, extra);
+      var uris = environment.webhook.uris;
+      var observables = uris.map(function (x) {
+        return x === 'internal' ? _this3.internal$_(event) : _this3.send$_(x, event);
+      });
+      return rxjs.forkJoin(observables);
+    } else {
+      return rxjs.of(null);
+    }
+  };
+
+  WebhookService.handleResponse_ = function handleResponse_(event, remoteResponse) {
+    console.log('WebhookService.handleResponse_', remoteResponse);
+    var response = Object.assign({}, event);
+    response.remoteStatus = 1;
+    response.remoteResponse = remoteResponse;
+    return response;
+  };
+
+  WebhookService.handleError_ = function handleError_(event, error) {
+    var response = Object.assign({}, event);
+    response.remoteStatus = 0;
+    response.remoteError = error;
+    return rxjs.of(response);
+  };
+
+  _createClass(WebhookService, null, [{
+    key: "enabled",
+    get: function get() {
+      var webhook = environment.webhook;
+      var enabled = webhook && webhook.uris && webhook.uris.length > 0;
+
+      if (enabled) {
+        webhook.methods = webhook.methods || {};
+        webhook.methods.nav = webhook.methods.nav || [];
+      }
+
+      return enabled;
+    }
+  }]);
+
+  return WebhookService;
+}();
+
+_defineProperty(WebhookService, "event$_", rxjs.fromEvent(window, 'message').pipe(operators.map(function (event) {
+  var parsedEvent = WebhookEvent.parseEvent(event);
+  return parsedEvent;
+}), operators.filter(function (x) {
+  return x !== null;
+}), operators.shareReplay(1)));var AccessComponent = /*#__PURE__*/function (_Component) {
   _inheritsLoose(AccessComponent, _Component);
 
   function AccessComponent() {
@@ -1852,12 +1992,17 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
       name: 'checkField',
       value: '',
       test: ''
-    }, {
-      type: 'none',
-      name: 'checkRequest',
-      value: window.antiforgery || '',
-      test: window.antiforgery || ''
     });
+
+    if (window.antiforgery) {
+      fields.push({
+        type: 'none',
+        name: 'checkRequest',
+        value: window.antiforgery,
+        test: window.antiforgery
+      });
+    }
+
     var form = this.form = fieldsToFormGroup(fields);
     /*
     const form = this.form = new FormGroup({
@@ -1948,14 +2093,19 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
         // console.log('AccessComponent.onSubmit', response);
         switch (status) {
           case 'guided-tour':
-            _this3.state.status = 'guided-tour-success';
+            _this3.onHandleHook('GuidedTour', payload).pipe(operators.first()).subscribe(function (response) {
+              _this3.state.status = 'guided-tour-success';
 
-            _this3.pushChanges();
+              _this3.pushChanges();
+            });
 
             break;
 
           case 'self-service-tour':
-            window.location.href = environment.url.selfServiceTour;
+            _this3.onHandleHook('SelfServiceTour', payload).pipe(operators.first()).subscribe(function (response) {
+              window.location.href = environment.url.selfServiceTour;
+            });
+
             break;
 
           case 'login':
@@ -1978,6 +2128,12 @@ UserService.user$ = new rxjs.BehaviorSubject(null);var AccessComponent = /*#__PU
   _proto.isValid = function isValid() {
     var isValid = this.form.valid;
     return isValid;
+  };
+
+  _proto.onHandleHook = function onHandleHook(action, values) {
+    var payload = values;
+    var extra = null;
+    return WebhookService.send$(action, payload, extra);
   };
 
   return AccessComponent;
@@ -8630,135 +8786,7 @@ _defineProperty(ViewService, "views$_", new rxjs.BehaviorSubject([]));
 
 _defineProperty(ViewService, "view$_", new rxjs.BehaviorSubject(null));
 
-_defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));var UID = 0;
-var WebhookEvent = /*#__PURE__*/function () {
-  function WebhookEvent(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-  var _proto = WebhookEvent.prototype;
-
-  _proto.toJson = function toJson() {
-    return JSON.stringify(this);
-  };
-
-  WebhookEvent.newEvent = function newEvent(action, data, extra) {
-    console.log('WebhookEvent.newEvent', action, data, extra);
-    var event = new WebhookEvent();
-    event.action = action;
-    event.data = data;
-    event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra; // ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
-
-    event.meetingId = StateService.state.link;
-    event.userSessionId = StateService.state.uid;
-    event.userRole = StateService.state.role;
-    event.fullName = StateService.state.name;
-    var timestamp = new Date().getTime();
-    event.timestamp = timestamp;
-    event.id = timestamp + "-" + ++UID;
-    return event;
-  };
-
-  WebhookEvent.parseEvent = function parseEvent(event) {
-    if (event && 'data' in event) {
-      var message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-
-      if ('action' in message) {
-        return new WebhookEvent(message);
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  };
-
-  return WebhookEvent;
-}();
-var WebhookService = /*#__PURE__*/function () {
-  function WebhookService() {}
-
-  WebhookService.internal$_ = function internal$_(event) {
-    var _this = this;
-
-    return rxjs.of(event).pipe(operators.tap(function (event) {
-      console.log('WebhookService.internal$_.postMessage', event);
-
-      if (window.parent) {
-        window.parent.postMessage(event.action, event.toJson());
-      }
-    }), operators.switchMap(function (event) {
-      return _this.event$_.pipe(operators.filter(function (event) {
-        return event.id === event.id;
-      }), operators.first());
-    }), operators.map(function (response) {
-      console.log('WebhookService.internal$_.handleResponse_', event, response);
-      return _this.handleResponse_(event, response);
-    }), operators.catchError(function (error) {
-      return _this.handleError_(event, error);
-    }));
-  };
-
-  WebhookService.send$_ = function send$_(uri, event) {
-    var _this2 = this;
-
-    HttpService.post$(uri, event).pipe(operators.map(function (response) {
-      return _this2.handleResponse_(event, response);
-    }), operators.catchError(function (error) {
-      return _this2.handleError_(event, error);
-    }));
-  };
-
-  WebhookService.send$ = function send$(action, payload, extra) {
-    var _this3 = this;
-
-    console.log('WebhookService.send$', action, payload, extra);
-
-    if (this.enabled) {
-      var event = WebhookEvent.newEvent(action, payload, extra);
-      var uris = environment.webhook.uris;
-      var observables = uris.map(function (x) {
-        return x === 'internal' ? _this3.internal$_(event) : _this3.send$_(x, event);
-      });
-      return rxjs.forkJoin(observables);
-    } else {
-      return rxjs.of(rxjs.EMPTY);
-    }
-  };
-
-  WebhookService.handleResponse_ = function handleResponse_(event, remoteResponse) {
-    console.log('WebhookService.handleResponse_', remoteResponse);
-    var response = Object.assign({}, event);
-    response.remoteStatus = 1;
-    response.remoteResponse = remoteResponse;
-    return response;
-  };
-
-  WebhookService.handleError_ = function handleError_(event, error) {
-    var response = Object.assign({}, event);
-    response.remoteStatus = 0;
-    response.remoteError = error;
-    return rxjs.of(response);
-  };
-
-  _createClass(WebhookService, null, [{
-    key: "enabled",
-    get: function get() {
-      return environment.webhook && environment.webhook.uris && environment.webhook.uris.length > 0;
-    }
-  }]);
-
-  return WebhookService;
-}();
-
-_defineProperty(WebhookService, "event$_", rxjs.fromEvent(window, 'message').pipe(operators.map(function (event) {
-  var parsedEvent = WebhookEvent.parseEvent(event);
-  return parsedEvent;
-}), operators.filter(function (x) {
-  return x !== null;
-}), operators.shareReplay(1)));var items$_ = null;
+_defineProperty(ViewService, "action$_", new rxjs.BehaviorSubject(null));var items$_ = null;
 var WishlistService = /*#__PURE__*/function () {
   function WishlistService() {}
 
@@ -23592,7 +23620,7 @@ ModelModalComponent.meta = {
     this.controls = form.controls;
 
     if (WebhookService.enabled) {
-      var options = environment.webhook.methods.map(function (x) {
+      var options = environment.webhook.methods.nav.map(function (x) {
         return {
           id: x,
           name: x
@@ -25083,7 +25111,7 @@ NavmapEditComponent.meta = {
             control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
 
             if (WebhookService.enabled) {
-              var options = environment.webhook.methods.map(function (x) {
+              var options = environment.webhook.methods.nav.map(function (x) {
                 return {
                   id: x,
                   name: x
