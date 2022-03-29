@@ -1,5 +1,5 @@
 /**
- * @license b-here v1.0.1
+ * @license beta-bhere v1.0.2
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -521,7 +521,7 @@ const CHUNK_EMBED =
     useProxy: true,
     useToken: false,
     useExtendedUserInfo: true,
-    useEncryptedUrl: false,
+    useEncryptedUrl: true,
     selfService: true,
     guidedTourRequest: true,
     editor: true,
@@ -553,8 +553,7 @@ const CHUNK_EMBED =
     usePaths: true,
     antialias: true,
     alpha: false,
-    premultipliedAlpha: false // maxQuality: false,
-
+    premultipliedAlpha: false
   },
   navs: {
     iconMinScale: 1,
@@ -742,24 +741,6 @@ const defaultOptions$3 = {
 const defaultAppOptions = {
   channelName: 'BHere',
   flags: {
-    production: false,
-    useProxy: false,
-    useToken: false,
-    selfService: true,
-    guidedTourRequest: true,
-    editor: true,
-    menu: true,
-    navmaps: true,
-    chat: true,
-    ar: true,
-    like: true,
-    hideNavInfo: true,
-    attendee: true,
-    streamer: true,
-    viewer: true,
-    smartDevice: true,
-    selfServiceProposition: true,
-    // maxQuality: false,
     heroku: HEROKU
   },
   navs: {
@@ -3649,8 +3630,7 @@ class MeetingId {
     this.viewId = this.viewId || null;
     this.pathId = this.pathId || null;
     this.embedViewId = this.embedViewId || null;
-    this.support = this.support || false;
-    console.log('MeetingUrl', this);
+    this.support = this.support || false; // console.log('MeetingUrl', this);
   }
 
   toParams(shareable) {
@@ -4963,13 +4943,29 @@ class AgoraVolumeLevelsEvent extends AgoraEvent {}class HttpService {
     return rxjs.of({
       id: this.uuid(),
       type: roleType,
-      username: roleType,
-      firstName: 'Jhon',
-      lastName: 'Appleseed'
+      username: roleType // firstName: 'Jhon',
+      // lastName: 'Appleseed',
+
     }).pipe(operators.map(user => this.mapUser(user)), operators.switchMap(user => {
       // console.log('UserService.temporaryUser$', user);
       this.setUser(user);
       return this.user$;
+    }));
+  }
+
+  static overrideUser$(roleType) {
+    if (roleType === void 0) {
+      roleType = RoleType.Embed;
+    }
+
+    return this.me$().pipe(operators.switchMap(user => {
+      if (user) {
+        user.type = roleType;
+        user.username = roleType;
+        return this.user$;
+      }
+
+      return this.temporaryUser$(roleType);
     }));
   }
 
@@ -24042,7 +24038,7 @@ ModelNavComponent.meta = {
         this.initWithUser(user);
       });
     } else if (this.isSelfServiceTour) {
-      UserService.temporaryUser$(RoleType.SelfService).pipe(operators.first()).subscribe(user => {
+      UserService.overrideUser$(RoleType.SelfService).pipe(operators.first()).subscribe(user => {
         this.initWithUser(user);
       });
     } else {
@@ -24971,8 +24967,8 @@ ModelNavComponent.meta = {
           link: meetingIdRoles.id,
           support: true
         });
-        const href = meetingUrl.toGuidedTourUrl(); // console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
-
+        const href = window.location.origin + meetingUrl.toGuidedTourUrl();
+        console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
         UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(operators.first()).subscribe(_ => {
           const name = this.getName(StateService.state.user);
           StateService.patchState({
@@ -25033,10 +25029,20 @@ ModelNavComponent.meta = {
         const name = StateService.state.name;
         const meetingId = new MeetingId(StateService.state.link);
         meetingId.role = RoleType.Streamer;
-        const meetingUrl = new MeetingUrl({
-          link: meetingId.toString(),
-          name
-        });
+        const options = {
+          link: meetingId.toString()
+        };
+
+        if (environment.flags.useExtendedUserInfo) {
+          const user = StateService.state.user;
+          options.firstName = user.firstName;
+          options.lastName = user.lastName;
+          options.email = user.email;
+        } else {
+          options.name = name;
+        }
+
+        const meetingUrl = new MeetingUrl(options);
         const href = meetingUrl.toGuidedTourUrl();
         setTimeout(() => {
           window.location.href = href;
@@ -32660,8 +32666,8 @@ TestComponent.meta = {
   `
 	<div class="group--form--results" *if="env.DEVELOPMENT">
 		<code [innerHTML]="form.value | json"></code>
-		<button type="button" class="btn--mode" (click)="onTest($event)"><span>test</span></button>
 		<button type="button" class="btn--mode" (click)="onReset($event)"><span>reset</span></button>
+		<button type="button" class="btn--mode" (click)="onTest($event)"><span>test</span></button>
 	</div>
 	`
 };class ValueDirective extends rxcomp.Directive {

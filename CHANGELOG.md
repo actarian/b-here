@@ -1,5 +1,11 @@
 # Change Log
-All notable changes to the "b-here" library will be documented in this file.
+All notable changes to the "beta-bhere" library will be documented in this file.
+
+---
+
+## [1.0.2] - 2022-03-29
+### Added
+- encryptedUrl, extendedUserInfo
 
 ---
 

@@ -15,7 +15,7 @@ export const environmentStatic = {
 		useProxy: true,
 		useToken: false,
 		useExtendedUserInfo: true,
-		useEncryptedUrl: false,
+		useEncryptedUrl: true,
 		selfService: true,
 		guidedTourRequest: true,
 		editor: true,
@@ -48,7 +48,6 @@ export const environmentStatic = {
 		antialias: true,
 		alpha: false,
 		premultipliedAlpha: false,
-		// maxQuality: false,
 	},
 	navs: {
 		iconMinScale: 1,

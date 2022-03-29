@@ -103,14 +103,27 @@ export class UserService {
 			id: this.uuid(),
 			type: roleType,
 			username: roleType,
-			firstName: 'Jhon',
-			lastName: 'Appleseed',
+			// firstName: 'Jhon',
+			// lastName: 'Appleseed',
 		}).pipe(
 			map((user) => this.mapUser(user)),
 			switchMap(user => {
 				// console.log('UserService.temporaryUser$', user);
 				this.setUser(user);
 				return this.user$;
+			}),
+		);
+	}
+
+	static overrideUser$(roleType = RoleType.Embed) {
+		return this.me$().pipe(
+			switchMap(user => {
+				if (user) {
+					user.type = roleType;
+					user.username = roleType;
+					return this.user$;
+				}
+				return this.temporaryUser$(roleType);
 			}),
 		);
 	}

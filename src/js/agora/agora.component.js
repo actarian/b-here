@@ -194,7 +194,7 @@ export default class AgoraComponent extends Component {
 				this.initWithUser(user);
 			});
 		} else if (this.isSelfServiceTour) {
-			UserService.temporaryUser$(RoleType.SelfService).pipe(
+			UserService.overrideUser$(RoleType.SelfService).pipe(
 				first(),
 			).subscribe(user => {
 				this.initWithUser(user);
@@ -987,8 +987,8 @@ export default class AgoraComponent extends Component {
 				const meetingId = new MeetingId({ pathId: StateService.state.pathId });
 				const meetingIdRoles = meetingId.toRoles();
 				const meetingUrl = new MeetingUrl({ link: meetingIdRoles.id, support: true });
-				const href = meetingUrl.toGuidedTourUrl();
-				// console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
+				const href = window.location.origin + meetingUrl.toGuidedTourUrl();
+				console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
 				UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(
 					first(),
 				).subscribe(_ => {
@@ -1049,7 +1049,16 @@ export default class AgoraComponent extends Component {
 				const name = StateService.state.name;
 				const meetingId = new MeetingId(StateService.state.link);
 				meetingId.role = RoleType.Streamer;
-				const meetingUrl = new MeetingUrl({ link: meetingId.toString(), name });
+				const options = { link: meetingId.toString() };
+				if (environment.flags.useExtendedUserInfo) {
+					const user = StateService.state.user;
+					options.firstName = user.firstName;
+					options.lastName = user.lastName;
+					options.email = user.email;
+				} else {
+					options.name = name;
+				}
+				const meetingUrl = new MeetingUrl(options);
 				const href = meetingUrl.toGuidedTourUrl();
 				setTimeout(() => {
 					window.location.href = href;

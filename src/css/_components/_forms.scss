@@ -820,15 +820,19 @@ input-value {
 
 test-component {
 	.group--form--results {
-		display: flex;
-		flex-direction: column;
 		align-items: center;
-		justify-content: flex-start;
-		margin: 10px 0;
-		padding: 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		border-radius: 6px;
+		padding: 5px;
+		margin: 15px 0 0 0;
+		border: 2px solid $background-primary-disabled;
 	}
 
 	code {
+		flex: 1 0 100%;
 		font-size: 10px;
 		letter-spacing: -0.2px;
 	}
