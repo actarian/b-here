@@ -5,7 +5,7 @@ export const environmentStatic = {
 	webhook: {
 		uris: [
 			'internal',
-			'https://webhook.site/a3c12115-35f8-44ec-a95f-7251a56ee2d9',
+			'https://webhook.site/c3aa05af-b5be-4979-9716-520030a3eaa5',
 		],
 		methods: {
 			nav: [
