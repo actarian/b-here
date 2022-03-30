@@ -27,7 +27,7 @@ export default class ControlCheckboxComponent extends ControlComponent {
 			tap(event => {
 				// console.log(event);
 				const template = GenericModalComponent.chunk();
-				ModalService.open$({ template, data: { mode: 'privacy' } }).pipe(
+				ModalService.open$({ template, data: { mode: 'privacy_policy' } }).pipe(
 					first(),
 				).subscribe();
 				event.preventDefault();

@@ -5,16 +5,16 @@ import { LanguageService } from '../language/language.service';
 
 export class GenericService {
 
-	static currentLanguagePage$(mode) {
+	static currentLanguagePage$(key) {
 		return LanguageService.lang$.pipe(
 			switchMap(lang => {
-				return this.page$(lang, mode);
+				return this.page$(lang, key);
 			}),
 		);
 	}
 
-	static page$(lang, mode) {
-		const url = (environment.flags.production ? `/api/${lang}/${mode}/` : `./api/${lang}/${mode}.json`);
+	static page$(lang, key) {
+		const url = (environment.flags.production ? `/api/${lang}/pages/${key}/` : `./api/${lang}/pages/${key}.json`);
 		return HttpService.get$(url);
 	}
 

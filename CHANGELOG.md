@@ -3,6 +3,14 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.3] - 2022-03-30
+### Modified
+- GenericService
+### Added
+- webhooks selfServiceTour
+
+---
+
 ## [1.0.2] - 2022-03-29
 ### Added
 - encryptedUrl, extendedUserInfo

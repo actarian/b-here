@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere v1.0.2
+ * @license beta-bhere v1.0.3
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -507,12 +507,6 @@ const CHUNK_EMBED =
 };const environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
-  webhook: {
-    uris: ['internal', 'https://webhook.site/c3aa05af-b5be-4979-9716-520030a3eaa5'],
-    methods: {
-      nav: ['ToggleWishlist']
-    }
-  },
   flags: {
     production: false,
     useProxy: true,
@@ -625,6 +619,21 @@ const CHUNK_EMBED =
   }
 };class Utils {
   static merge(target, source) {
+    // override null values
+    if (source === null) {
+      return source;
+    } // assign new values
+
+
+    if (!target) {
+      if (source && typeof source === 'object') {
+        return Object.assign({}, source);
+      } else {
+        return source;
+      }
+    } // merge objects
+
+
     if (source && typeof source === 'object') {
       Object.keys(source).forEach(key => {
         const value = source[key];
@@ -27324,14 +27333,14 @@ EditorComponent.meta = {
 	</div>
 	`
 };class GenericService {
-  static currentLanguagePage$(mode) {
+  static currentLanguagePage$(key) {
     return LanguageService.lang$.pipe(operators.switchMap(lang => {
-      return this.page$(lang, mode);
+      return this.page$(lang, key);
     }));
   }
 
-  static page$(lang, mode) {
-    const url = environment.flags.production ? `/api/${lang}/${mode}/` : `./api/${lang}/${mode}.json`;
+  static page$(lang, key) {
+    const url = environment.flags.production ? `/api/${lang}/pages/${key}/` : `./api/${lang}/pages/${key}.json`;
     return HttpService.get$(url);
   }
 
@@ -28198,7 +28207,7 @@ TryInARComponent.meta = {
   path: '/informativa-sulla-privacy',
   defaultParams: {
     lang: 'it',
-    mode: 'privacy'
+    mode: 'privacy_policy'
   },
   factory: GenericComponent
 }, {
@@ -28288,7 +28297,7 @@ TryInARComponent.meta = {
   path: '/privacy-policy',
   defaultParams: {
     lang: 'en',
-    mode: 'privacy'
+    mode: 'privacy_policy'
   },
   factory: GenericComponent
 }, {
@@ -32032,7 +32041,7 @@ GenericModalComponent.chunk = () =>
       ModalService.open$({
         template,
         data: {
-          mode: 'privacy'
+          mode: 'privacy_policy'
         }
       }).pipe(operators.first()).subscribe();
       event.preventDefault();

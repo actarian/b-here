@@ -19,7 +19,7 @@ export const AppRoutes = [
 	{ name: 'it.tryInAr', path: '/prova-in-ar?:p&:viewId', defaultParams: { lang: 'it', mode: 'tryInAr' }, factory: TryInARComponent },
 	{ name: 'it.editor', path: '/editor?:p&:viewId', defaultParams: { lang: 'it', mode: 'editor' }, factory: EditorComponent },
 	{ name: 'it.layout', path: '/layout', defaultParams: { lang: 'it', mode: 'layout' }, factory: LayoutComponent },
-	{ name: 'it.privacy', path: '/informativa-sulla-privacy', defaultParams: { lang: 'it', mode: 'privacy' }, factory: GenericComponent },
+	{ name: 'it.privacy', path: '/informativa-sulla-privacy', defaultParams: { lang: 'it', mode: 'privacy_policy' }, factory: GenericComponent },
 	{ name: 'it.terms', path: '/termini-di-utilizzo', defaultParams: { lang: 'it', mode: 'terms' }, factory: GenericComponent },
 	// en
 	{ name: 'en', path: '/en', defaultParams: { lang: 'en', mode: 'access' }, factory: AccessComponent },
@@ -32,6 +32,6 @@ export const AppRoutes = [
 	{ name: 'en.tryInAr', path: '/try-in-ar?:p&:viewId', defaultParams: { lang: 'en', mode: 'tryInAr' }, factory: TryInARComponent },
 	{ name: 'en.editor', path: '/editor?:p&:viewId', defaultParams: { lang: 'en', mode: 'editor' }, factory: EditorComponent },
 	{ name: 'en.layout', path: '/layout', defaultParams: { lang: 'en', mode: 'layout' }, factory: LayoutComponent },
-	{ name: 'en.privacy', path: '/privacy-policy', defaultParams: { lang: 'en', mode: 'privacy' }, factory: GenericComponent },
+	{ name: 'en.privacy', path: '/privacy-policy', defaultParams: { lang: 'en', mode: 'privacy_policy' }, factory: GenericComponent },
 	{ name: 'en.terms', path: '/terms-of-service', defaultParams: { lang: 'en', mode: 'terms' }, factory: GenericComponent },
 ];
