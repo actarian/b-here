@@ -9,6 +9,7 @@ import { RoutePipe } from '../router/route.pipe';
 import { RouterOutletStructure } from '../router/router-outlet.structure';
 import { RouterService } from '../router/router.service';
 import { UserService } from '../user/user.service';
+import { WebhookService } from '../webhook/webhook.service';
 
 export default class AccessComponent extends Component {
 
@@ -74,8 +75,13 @@ export default class AccessComponent extends Component {
 
 		fields.push(
 			{ type: 'hidden', name: 'checkField', value: '', test: '' },
-			{ type: 'none', name: 'checkRequest', value: environment.antiforgery || '', test: environment.antiforgery || '' }
 		);
+
+		if (environment.antiforgery) {
+			fields.push(
+				{ type: 'none', name: 'checkRequest', value: environment.antiforgery, test: environment.antiforgery },
+			);
+		}
 
 		const form = this.form = fieldsToFormGroup(fields);
 
@@ -146,11 +152,19 @@ export default class AccessComponent extends Component {
 				// console.log('AccessComponent.onSubmit', response);
 				switch (status) {
 					case 'guided-tour':
-						this.state.status = 'guided-tour-success';
-						this.pushChanges();
+						this.onHandleHook('GuidedTour', payload).pipe(
+							first(),
+						).subscribe(response => {
+							this.state.status = 'guided-tour-success';
+							this.pushChanges();
+						});
 						break;
 					case 'self-service-tour':
-						RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+						this.onHandleHook('SelfServiceTour', payload).pipe(
+							first(),
+						).subscribe(response => {
+							RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+						});
 						break;
 					case 'login':
 						RouterService.setRouterLink(RoutePipe.transform(':lang.guidedTour'));
@@ -171,6 +185,13 @@ export default class AccessComponent extends Component {
 		const isValid = this.form.valid;
 		return isValid;
 	}
+
+	onHandleHook(action, values) {
+		const payload = values;
+		const extra = null;
+		return WebhookService.send$(action, payload, extra);
+	}
+
 }
 
 AccessComponent.meta = {

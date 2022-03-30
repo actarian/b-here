@@ -507,15 +507,12 @@ const CHUNK_EMBED =
 };const environmentStatic = {
   appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
   channelName: 'BHere',
-
-  /*
   webhook: {
-  	uris: ['internal'],
-  	methods: [
-  		'ToggleWishlist',
-  	],
+    uris: ['internal', 'https://webhook.site/c3aa05af-b5be-4979-9716-520030a3eaa5'],
+    methods: {
+      nav: ['ToggleWishlist']
+    }
   },
-  */
   flags: {
     production: false,
     useProxy: true,
@@ -5031,7 +5028,128 @@ class AgoraVolumeLevelsEvent extends AgoraEvent {}class HttpService {
   }
 
 }
-UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends rxcomp.Component {
+UserService.user$ = new rxjs.BehaviorSubject(null);let UID$2 = 0;
+class WebhookEvent {
+  constructor(options) {
+    if (options) {
+      Object.assign(this, options);
+    }
+  }
+
+  toJson() {
+    return JSON.stringify(this);
+  }
+
+  static newEvent(action, data, extra) {
+    console.log('WebhookEvent.newEvent', action, data, extra);
+    const event = new WebhookEvent();
+    const timestamp = new Date().getTime();
+    event.timestamp = timestamp;
+    event.id = `${timestamp}-${++UID$2}`;
+    event.action = action;
+    event.data = data;
+
+    if (extra) {
+      event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra;
+    }
+
+    if (StateService.state.link) {
+      // ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
+      event.meetingId = StateService.state.link;
+      event.userSessionId = StateService.state.uid;
+      event.userRole = StateService.state.role;
+      event.fullName = StateService.state.name;
+    }
+
+    return event;
+  }
+
+  static parseEvent(event) {
+    if (event && 'data' in event) {
+      const message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+      if ('action' in message) {
+        return new WebhookEvent(message);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+}
+class WebhookService {
+  static internal$_(event) {
+    return rxjs.of(event).pipe(operators.tap(event => {
+      console.log('WebhookService.internal$_.postMessage', event);
+
+      if (window.parent) {
+        window.parent.postMessage(event.action, event.toJson());
+      }
+    }), operators.switchMap(event => {
+      return this.event$_.pipe(operators.filter(event => event.id === event.id), operators.first());
+    }), operators.map(response => {
+      console.log('WebhookService.internal$_.handleResponse_', event, response);
+      return this.handleResponse_(event, response);
+    }), operators.catchError(error => {
+      return this.handleError_(event, error);
+    }));
+  }
+
+  static send$_(uri, event) {
+    return HttpService.post$(uri, event).pipe(operators.map(response => {
+      return this.handleResponse_(event, response);
+    }), operators.catchError(error => {
+      return this.handleError_(event, error);
+    }));
+  }
+
+  static send$(action, payload, extra) {
+    console.log('WebhookService.send$', action, payload, extra);
+
+    if (this.enabled) {
+      const event = WebhookEvent.newEvent(action, payload, extra);
+      const uris = environment.webhook.uris;
+      const observables = uris.map(x => x === 'internal' ? this.internal$_(event) : this.send$_(x, event));
+      return rxjs.forkJoin(observables);
+    } else {
+      return rxjs.of(null);
+    }
+  }
+
+  static handleResponse_(event, remoteResponse) {
+    console.log('WebhookService.handleResponse_', remoteResponse);
+    const response = Object.assign({}, event);
+    response.remoteStatus = 1;
+    response.remoteResponse = remoteResponse;
+    return response;
+  }
+
+  static handleError_(event, error) {
+    const response = Object.assign({}, event);
+    response.remoteStatus = 0;
+    response.remoteError = error;
+    return rxjs.of(response);
+  }
+
+  static get enabled() {
+    const webhook = environment.webhook;
+    const enabled = webhook && webhook.uris && webhook.uris.length > 0;
+
+    if (enabled) {
+      webhook.methods = webhook.methods || {};
+      webhook.methods.nav = webhook.methods.nav || [];
+    }
+
+    return enabled;
+  }
+
+}
+WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(event => {
+  const parsedEvent = WebhookEvent.parseEvent(event);
+  return parsedEvent;
+}), operators.filter(x => x !== null), operators.shareReplay(1));class AccessComponent extends rxcomp.Component {
   onInit() {
     // console.log('AccessComponent.onInit');
     this.state = {
@@ -5128,12 +5246,17 @@ UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends
       name: 'checkField',
       value: '',
       test: ''
-    }, {
-      type: 'none',
-      name: 'checkRequest',
-      value: environment.antiforgery || '',
-      test: environment.antiforgery || ''
     });
+
+    if (environment.antiforgery) {
+      fields.push({
+        type: 'none',
+        name: 'checkRequest',
+        value: environment.antiforgery,
+        test: environment.antiforgery
+      });
+    }
+
     const form = this.form = fieldsToFormGroup(fields);
     this.controls = form.controls;
     this.formSubscription = form.changes$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(changes => {
@@ -5191,12 +5314,16 @@ UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends
         // console.log('AccessComponent.onSubmit', response);
         switch (status) {
           case 'guided-tour':
-            this.state.status = 'guided-tour-success';
-            this.pushChanges();
+            this.onHandleHook('GuidedTour', payload).pipe(operators.first()).subscribe(response => {
+              this.state.status = 'guided-tour-success';
+              this.pushChanges();
+            });
             break;
 
           case 'self-service-tour':
-            RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+            this.onHandleHook('SelfServiceTour', payload).pipe(operators.first()).subscribe(response => {
+              RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+            });
             break;
 
           case 'login':
@@ -5218,6 +5345,12 @@ UserService.user$ = new rxjs.BehaviorSubject(null);class AccessComponent extends
   isValid() {
     const isValid = this.form.valid;
     return isValid;
+  }
+
+  onHandleHook(action, values) {
+    const payload = values;
+    const extra = null;
+    return WebhookService.send$(action, payload, extra);
   }
 
 }
@@ -11557,113 +11690,7 @@ class ViewService {
 }
 ViewService.views$_ = new rxjs.BehaviorSubject([]);
 ViewService.view$_ = new rxjs.BehaviorSubject(null);
-ViewService.action$_ = new rxjs.BehaviorSubject(null);let UID$2 = 0;
-class WebhookEvent {
-  constructor(options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-
-  toJson() {
-    return JSON.stringify(this);
-  }
-
-  static newEvent(action, data, extra) {
-    console.log('WebhookEvent.newEvent', action, data, extra);
-    const event = new WebhookEvent();
-    event.action = action;
-    event.data = data;
-    event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra; // ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
-
-    event.meetingId = StateService.state.link;
-    event.userSessionId = StateService.state.uid;
-    event.userRole = StateService.state.role;
-    event.fullName = StateService.state.name;
-    const timestamp = new Date().getTime();
-    event.timestamp = timestamp;
-    event.id = `${timestamp}-${++UID$2}`;
-    return event;
-  }
-
-  static parseEvent(event) {
-    if (event && 'data' in event) {
-      const message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-
-      if ('action' in message) {
-        return new WebhookEvent(message);
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
-
-}
-class WebhookService {
-  static internal$_(event) {
-    return rxjs.of(event).pipe(operators.tap(event => {
-      console.log('WebhookService.internal$_.postMessage', event);
-
-      if (window.parent) {
-        window.parent.postMessage(event.action, event.toJson());
-      }
-    }), operators.switchMap(event => {
-      return this.event$_.pipe(operators.filter(event => event.id === event.id), operators.first());
-    }), operators.map(response => {
-      console.log('WebhookService.internal$_.handleResponse_', event, response);
-      return this.handleResponse_(event, response);
-    }), operators.catchError(error => {
-      return this.handleError_(event, error);
-    }));
-  }
-
-  static send$_(uri, event) {
-    HttpService.post$(uri, event).pipe(operators.map(response => {
-      return this.handleResponse_(event, response);
-    }), operators.catchError(error => {
-      return this.handleError_(event, error);
-    }));
-  }
-
-  static send$(action, payload, extra) {
-    console.log('WebhookService.send$', action, payload, extra);
-
-    if (this.enabled) {
-      const event = WebhookEvent.newEvent(action, payload, extra);
-      const uris = environment.webhook.uris;
-      const observables = uris.map(x => x === 'internal' ? this.internal$_(event) : this.send$_(x, event));
-      return rxjs.forkJoin(observables);
-    } else {
-      return rxjs.of(rxjs.EMPTY);
-    }
-  }
-
-  static handleResponse_(event, remoteResponse) {
-    console.log('WebhookService.handleResponse_', remoteResponse);
-    const response = Object.assign({}, event);
-    response.remoteStatus = 1;
-    response.remoteResponse = remoteResponse;
-    return response;
-  }
-
-  static handleError_(event, error) {
-    const response = Object.assign({}, event);
-    response.remoteStatus = 0;
-    response.remoteError = error;
-    return rxjs.of(response);
-  }
-
-  static get enabled() {
-    return environment.webhook && environment.webhook.uris && environment.webhook.uris.length > 0;
-  }
-
-}
-WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(event => {
-  const parsedEvent = WebhookEvent.parseEvent(event);
-  return parsedEvent;
-}), operators.filter(x => x !== null), operators.shareReplay(1));let items$_ = null;
+ViewService.action$_ = new rxjs.BehaviorSubject(null);let items$_ = null;
 class WishlistService {
   static get items$() {
     if (!items$_) {
@@ -25870,7 +25897,7 @@ ModelModalComponent.chunk = () =>
     this.controls = form.controls;
 
     if (WebhookService.enabled) {
-      const options = environment.webhook.methods.map(x => ({
+      const options = environment.webhook.methods.nav.map(x => ({
         id: x,
         name: x
       }));
@@ -30789,7 +30816,7 @@ NavmapEditComponent.meta = {
             control = new rxcompForm.FormControl(value, optional ? undefined : rxcompForm.RequiredValidator());
 
             if (WebhookService.enabled) {
-              const options = environment.webhook.methods.map(x => ({
+              const options = environment.webhook.methods.nav.map(x => ({
                 id: x,
                 name: x
               }));

@@ -1,4 +1,4 @@
-import { EMPTY, forkJoin, fromEvent, of } from 'rxjs';
+import { combineLatest, forkJoin, fromEvent, merge, of } from 'rxjs';
 import { catchError, filter, first, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../environment';
 import { HttpService } from '../http/http.service';
@@ -21,17 +21,21 @@ export class WebhookEvent {
 	static newEvent(action, data, extra) {
 		console.log('WebhookEvent.newEvent', action, data, extra);
 		const event = new WebhookEvent();
-		event.action = action;
-		event.data = data;
-		event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra;
-		// ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
-		event.meetingId = StateService.state.link;
-		event.userSessionId = StateService.state.uid;
-		event.userRole = StateService.state.role;
-		event.fullName = StateService.state.name;
 		const timestamp = new Date().getTime();
 		event.timestamp = timestamp;
 		event.id = `${timestamp}-${++UID}`;
+		event.action = action;
+		event.data = data;
+		if (extra) {
+			event.extra = typeof extra === 'string' ? JSON.parse(extra) : extra;
+		}
+		if (StateService.state.link) {
+			// ( meetingId, userSessionId, userRole, fullName, itemId, skuId, action:InfoPoint  )
+			event.meetingId = StateService.state.link;
+			event.userSessionId = StateService.state.uid;
+			event.userRole = StateService.state.role;
+			event.fullName = StateService.state.name;
+		}
 		return event;
 	}
 
@@ -85,7 +89,7 @@ export class WebhookService {
 	}
 
 	static send$_(uri, event) {
-		HttpService.post$(uri, event).pipe(
+		return HttpService.post$(uri, event).pipe(
 			map(response => {
 				return this.handleResponse_(event, response);
 			}),
@@ -102,8 +106,15 @@ export class WebhookService {
 			const uris = environment.webhook.uris;
 			const observables = uris.map(x => x === 'internal' ? this.internal$_(event) : this.send$_(x, event));
 			return forkJoin(observables);
+			return combineLatest(observables).pipe(
+				map(results => {
+					const result = results.find((x, i) => uris[i] !== 'internal');
+					return result;
+				}),
+			);
+			return merge(observables);
 		} else {
-			return of(EMPTY);
+			return of(null);
 		}
 	}
 
@@ -123,7 +134,13 @@ export class WebhookService {
 	}
 
 	static get enabled() {
-		return environment.webhook && environment.webhook.uris && environment.webhook.uris.length > 0;
+		const webhook = environment.webhook;
+		const enabled = webhook && webhook.uris && webhook.uris.length > 0;
+		if (enabled) {
+			webhook.methods = webhook.methods || {};
+			webhook.methods.nav = webhook.methods.nav || [];
+		}
+		return enabled;
 	}
 
 }
