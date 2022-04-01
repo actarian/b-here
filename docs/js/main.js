@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere v1.0.4
+ * @license beta-bhere v1.0.5
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -9774,7 +9774,7 @@ class PathService {
         return data.paths;
       }));
     } else {
-      return of([]);
+      return rxjs.of([]);
     }
   }
 
@@ -10565,6 +10565,7 @@ class View$1 {
       latitude: 0,
       longitude: 0
     };
+    this.path = true;
   }
 
   get payload() {
@@ -10782,6 +10783,8 @@ class ViewItem {
     if (options) {
       Object.assign(this, options);
     }
+
+    this.path = true;
   }
 
   get payload() {
@@ -11404,22 +11407,6 @@ function mapAsset(asset) {
   }
 };
 class ViewService {
-  static set views(views) {
-    this.views$_.next(views);
-  }
-
-  static get views() {
-    return this.views$_.getValue();
-  }
-
-  static set view(view) {
-    this.view$_.next(view);
-  }
-
-  static get view() {
-    return this.view$_.getValue();
-  }
-
   static get dataViews() {
     return this.data ? this.data.views : [];
   }
@@ -11430,8 +11417,7 @@ class ViewService {
 
   static get pathViews() {
     const views = this.validViews;
-    return views.filter(x => x.path); // const path = this.path;
-    // return path ? this.validViews.filter(x => path.items.indexOf(x.id) === -1) : this.validViews;
+    return views.filter(x => x.path);
   }
 
   static get validPathViews() {
@@ -11464,7 +11450,17 @@ class ViewService {
 
   static getDataView(viewId) {
     const views = this.dataViews;
-    return views.find(x => x.id === viewId);
+    return views.find(x => x.id === viewId) || null;
+  }
+
+  static get currentView() {
+    const viewId = this.viewId;
+
+    if (viewId !== null) {
+      return this.getDataView(viewId);
+    }
+
+    return null;
   }
 
   static getValidPathId(viewId) {
@@ -11486,16 +11482,6 @@ class ViewService {
 
     return views.length ? views[0].id : null;
   }
-  /*
-  static view_ = null;
-  static get view() {
-  	return this.view_;
-  }
-  static set view(view) {
-  	this.view_ = view;
-  }
-  */
-
 
   static data$() {
     if (!this.data$_) {
@@ -11503,9 +11489,6 @@ class ViewService {
       this.data$_ = HttpService.get$(dataUrl).pipe(operators.map(data => {
         data.views = data.views.map(view => mapView(view));
         this.data = data;
-        const views = data.views; // const views = data.views.filter(x => x.type.name !== 'waiting-room');
-
-        this.views = views;
         return data;
       }), operators.shareReplay(1));
     }
@@ -11574,7 +11557,6 @@ class ViewService {
         }
       });
     });
-    this.views = data.views;
     this.path = path;
   }
 
@@ -11589,8 +11571,6 @@ class ViewService {
     }), operators.distinctUntilChanged((a, b) => {
       return a.id === b.id;
     }), operators.tap(view => {
-      this.view = view;
-
       if (view.id !== waitingRoom.id) {
         MeetingUrl.replaceWithOptions({
           viewId: view.id
@@ -11607,7 +11587,6 @@ class ViewService {
     const waitingRoom = this.getWaitingRoom();
     return this.view$().pipe(operators.map(view => {
       // console.log('ViewService.editorView$.view', view.updateIndices);
-      this.view = view;
       const options = {
         pathId: null
       };
@@ -11630,7 +11609,7 @@ class ViewService {
   }
 
   static viewById$(viewId) {
-    return this.data$().pipe(operators.map(data => this.views.find(x => x.id === viewId)));
+    return this.data$().pipe(operators.map(data => this.dataViews.find(x => x.id === viewId)));
   }
 
   static viewLike$(view) {
@@ -11662,7 +11641,7 @@ class ViewService {
   }
 
   static getPrefetchAssets(view) {
-    const views = this.views;
+    const views = this.validPathViews;
     const assets = view.items // filter nav items
     .filter(x => x.type.name === ViewItemType.Nav.name && x.viewId != null) // map to view
     .map(x => views.find(v => v.id === x.viewId)) // filter view with image
@@ -11677,7 +11656,6 @@ class ViewService {
     const views = data.views.slice();
     views.push(view);
     data.views = views;
-    this.views = views;
     this.viewId = view.id;
   }
 
@@ -11690,7 +11668,7 @@ class ViewService {
 
     if (index > 0) {
       views.splice(index, 1);
-      this.views = views;
+      data.views = views;
       const dataViews = this.dataViews;
 
       if (dataViews.length > 0) {
@@ -11701,8 +11679,6 @@ class ViewService {
   }
 
 }
-ViewService.views$_ = new rxjs.BehaviorSubject([]);
-ViewService.view$_ = new rxjs.BehaviorSubject(null);
 ViewService.action$_ = new rxjs.BehaviorSubject(null);let items$_ = null;
 class WishlistService {
   static get items$() {
@@ -14848,7 +14824,8 @@ class OrbitService {
   }
 
   get isMediaView() {
-    return ViewService.view && ViewService.view.type.name === ViewType.Media.name;
+    const currentView = ViewService.currentView;
+    return currentView && currentView.type.name === ViewType.Media.name;
   }
 
   get locked() {
@@ -15098,10 +15075,11 @@ class OrbitService {
 
     camera.lookAt(camera.target);
     camera.updateProjectionMatrix();
+    const currentView = ViewService.currentView;
 
-    if (ViewService.view) {
-      ViewService.view.lastOrientation.longitude = this.longitude;
-      ViewService.view.lastOrientation.latitude = this.latitude;
+    if (currentView) {
+      currentView.lastOrientation.longitude = this.longitude;
+      currentView.lastOrientation.latitude = this.latitude;
     }
 
     this.events$.next(orbitMoveEvent);
@@ -26820,8 +26798,8 @@ class EditorComponent extends rxcomp.Component {
       this.view = null;
       this.pushChanges();
     }), operators.delay(1), operators.tap(view => {
-      this.view = view; // console.log('viewObserver$', view);
-
+      // console.log('EditorComponent.viewObserver$', view, ViewService.pathViews, ViewService.dataViews);
+      this.view = view;
       this.pushChanges();
     }));
   }

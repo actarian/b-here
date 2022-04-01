@@ -35,6 +35,7 @@ export class View {
 		}
 		this.originalItems = this.items.slice();
 		this.lastOrientation = { latitude: 0, longitude: 0 };
+		this.path = true;
 	}
 	get payload() {
 		const payload = {};
@@ -215,6 +216,7 @@ export class ViewItem {
 		if (options) {
 			Object.assign(this, options);
 		}
+		this.path = true;
 	}
 	get payload() {
 		const payload = {};

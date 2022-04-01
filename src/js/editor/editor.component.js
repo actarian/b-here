@@ -153,8 +153,8 @@ export default class EditorComponent extends Component {
 			}),
 			delay(1),
 			tap(view => {
+				// console.log('EditorComponent.viewObserver$', view, ViewService.pathViews, ViewService.dataViews);
 				this.view = view;
-				// console.log('viewObserver$', view);
 				this.pushChanges();
 			}),
 		);

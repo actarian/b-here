@@ -27,22 +27,6 @@ export const DEFAULT_WAITING_ROOM = {
 };
 export class ViewService {
 
-	static views$_ = new BehaviorSubject([]);
-	static set views(views) {
-		this.views$_.next(views);
-	}
-	static get views() {
-		return this.views$_.getValue();
-	}
-
-	static view$_ = new BehaviorSubject(null);
-	static set view(view) {
-		this.view$_.next(view);
-	}
-	static get view() {
-		return this.view$_.getValue();
-	}
-
 	static get dataViews() {
 		return this.data ? this.data.views : [];
 	}
@@ -54,8 +38,6 @@ export class ViewService {
 	static get pathViews() {
 		const views = this.validViews;
 		return views.filter(x => x.path);
-		// const path = this.path;
-		// return path ? this.validViews.filter(x => path.items.indexOf(x.id) === -1) : this.validViews;
 	}
 
 	static get validPathViews() {
@@ -83,7 +65,15 @@ export class ViewService {
 
 	static getDataView(viewId) {
 		const views = this.dataViews;
-		return views.find(x => x.id === viewId);
+		return views.find(x => x.id === viewId) || null;
+	}
+
+	static get currentView() {
+		const viewId = this.viewId;
+		if (viewId !== null) {
+			return this.getDataView(viewId);
+		}
+		return null;
 	}
 
 	static getValidPathId(viewId) {
@@ -103,16 +93,6 @@ export class ViewService {
 		return views.length ? views[0].id : null;
 	}
 
-	/*
-	static view_ = null;
-	static get view() {
-		return this.view_;
-	}
-	static set view(view) {
-		this.view_ = view;
-	}
-	*/
-
 	static data$() {
 		if (!this.data$_) {
 			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.lang;
@@ -120,9 +100,6 @@ export class ViewService {
 				map(data => {
 					data.views = data.views.map(view => mapView(view));
 					this.data = data;
-					const views = data.views;
-					// const views = data.views.filter(x => x.type.name !== 'waiting-room');
-					this.views = views;
 					return data;
 				}),
 				shareReplay(1),
@@ -189,7 +166,6 @@ export class ViewService {
 				}
 			});
 		});
-		this.views = data.views;
 		this.path = path;
 	}
 
@@ -207,7 +183,6 @@ export class ViewService {
 				return a.id === b.id;
 			}),
 			tap(view => {
-				this.view = view;
 				if (view.id !== waitingRoom.id) {
 					MeetingUrl.replaceWithOptions({ viewId: view.id });
 					const prefetchAssets = ViewService.getPrefetchAssets(view);
@@ -224,7 +199,6 @@ export class ViewService {
 		return this.view$().pipe(
 			map(view => {
 				// console.log('ViewService.editorView$.view', view.updateIndices);
-				this.view = view;
 				const options = {
 					pathId: null,
 				};
@@ -249,7 +223,7 @@ export class ViewService {
 
 	static viewById$(viewId) {
 		return this.data$().pipe(
-			map(data => this.views.find(x => x.id === viewId))
+			map(data => this.dataViews.find(x => x.id === viewId))
 		);
 	}
 
@@ -283,7 +257,7 @@ export class ViewService {
 	}
 
 	static getPrefetchAssets(view) {
-		const views = this.views;
+		const views = this.validPathViews;
 		const assets = view.items
 			// filter nav items
 			.filter(x => x.type.name === ViewItemType.Nav.name && x.viewId != null)
@@ -302,7 +276,6 @@ export class ViewService {
 		const views = data.views.slice();
 		views.push(view);
 		data.views = views;
-		this.views = views;
 		this.viewId = view.id;
 	}
 
@@ -314,7 +287,7 @@ export class ViewService {
 		}, -1);
 		if (index > 0) {
 			views.splice(index, 1);
-			this.views = views;
+			data.views = views;
 			const dataViews = this.dataViews;
 			if (dataViews.length > 0) {
 				this.viewId = dataViews[0].id;

@@ -96,7 +96,8 @@ export default class OrbitService {
 	}
 
 	get isMediaView() {
-		return ViewService.view && ViewService.view.type.name === ViewType.Media.name;
+		const currentView = ViewService.currentView;
+		return currentView && currentView.type.name === ViewType.Media.name;
 	}
 
 	get locked() {
@@ -336,9 +337,10 @@ export default class OrbitService {
 		}
 		camera.lookAt(camera.target);
 		camera.updateProjectionMatrix();
-		if (ViewService.view) {
-			ViewService.view.lastOrientation.longitude = this.longitude;
-			ViewService.view.lastOrientation.latitude = this.latitude;
+		const currentView = ViewService.currentView;
+		if (currentView) {
+			currentView.lastOrientation.longitude = this.longitude;
+			currentView.lastOrientation.latitude = this.latitude;
 		}
 		this.events$.next(orbitMoveEvent);
 	}

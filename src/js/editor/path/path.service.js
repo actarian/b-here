@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environment';
 import { HttpService } from '../../http/http.service';

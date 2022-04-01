@@ -3,6 +3,12 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.5] - 2022-04-01
+### Fixing
+- ViewService, PathService
+
+---
+
 ## [1.0.4] - 2022-04-01
 ### Added
 - flags gdprRoutes, screenShare
