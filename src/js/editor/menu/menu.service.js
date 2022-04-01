@@ -63,7 +63,8 @@ export default class MenuService {
 		return this.menu$().pipe(
 			map(menu => {
 				if (menu && menu.length) {
-					menu = menu.filter(x => x.viewId == null || views.find(v => v.id === x.viewId) != null);
+					menu = menu.filter(x => x.viewId == null || x.viewId == 0 || views.find(v => v.id === x.viewId) != null);
+					// menu = menu.filter(x => x.viewId == null || views.find(v => v.id === x.viewId) != null);
 					// console.log('getModelMenu$', menu);
 					return this.mapMenuItems(menu);
 				} else {

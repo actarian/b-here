@@ -177,27 +177,22 @@ export class MeetingUrl {
 	}
 
 	static replaceWithOptions(options) {
-		const meetingUrl = new MeetingUrl(options);
+		const currentOptions = MeetingUrl.decompose(window.location.href);
+		const meetingUrl = new MeetingUrl(Object.assign(currentOptions, options));
 		meetingUrl.replaceUrl();
 		return meetingUrl;
 	}
 
 	static replaceWithUser(user) {
-		const meetingUrl = new MeetingUrl({ user });
-		meetingUrl.replaceUrl();
-		return meetingUrl;
+		return this.replaceWithOptions({ user });
 	}
 
 	static replaceWithName(name) {
-		const meetingUrl = new MeetingUrl({ name });
-		meetingUrl.replaceUrl();
-		return meetingUrl;
+		return this.replaceWithOptions({ name });
 	}
 
 	static replaceWithLink(link) {
-		const meetingUrl = new MeetingUrl({ link });
-		meetingUrl.replaceUrl();
-		return meetingUrl;
+		return this.replaceWithOptions({ link });
 	}
 
 	static getCurrentUrl(params = null) {

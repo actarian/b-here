@@ -314,9 +314,12 @@ export class ViewService {
 		}, -1);
 		if (index > 0) {
 			views.splice(index, 1);
-			data.paths = views;
+			this.views = views;
+			const dataViews = this.dataViews;
+			if (dataViews.length > 0) {
+				this.viewId = dataViews[0].id;
+			}
 		}
-		ViewService.viewId = this.dataViews[0].id;
 		// this.pushChanges();
 	}
 

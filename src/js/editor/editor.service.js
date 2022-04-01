@@ -20,7 +20,7 @@ export class EditorService {
 	static viewIdOptions$() {
 		return this.data$().pipe(
 			map(data => {
-				const options = data.views.map(view => ({ id: view.id, name: view.name }));
+				const options = data.views.filter(x => x.type.name !== ViewType.WaitingRoom.name).map(view => ({ id: view.id, name: view.name }));
 				options.unshift({ id: null, name: 'select', }); // LabelPipe.transform('select')
 				return options;
 			})

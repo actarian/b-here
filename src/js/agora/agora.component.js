@@ -625,6 +625,7 @@ export default class AgoraComponent extends Component {
 
 	onLink(link) {
 		const meetingId = new MeetingId(link);
+		// console.log('onLink', meetingId);
 		const pathId = meetingId.pathId;
 		const role = this.getLinkRole();
 		const mode = UserService.getMode(role);

@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere v1.0.3
+ * @license beta-bhere v1.0.4
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -123,7 +123,7 @@ const CHUNK_CONTROLS =
 		<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 		</button>
-		<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
+		<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="('screenShare' | flag) && (state.role == 'publisher' || state.role == 'attendee' || controlling)">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
 		</button>
 		<button type="button" class="btn--chat" [title]="'title_chat' | label" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
@@ -281,7 +281,7 @@ const CHUNK_COPYRIGHT =
 /* html */
 `
 <!-- copyright -->
-<span> <span [innerHTML]="'@copy' | label"></span> Websolute Spa - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
+<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'@copy' | label"></span> Websolute Spa - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
 `;
 const CHUNK_LANGUAGE =
 /* html */
@@ -399,6 +399,7 @@ const CHUNK_EMBED =
     useToken: false,
     useExtendedUserInfo: false,
     useEncryptedUrl: false,
+    gdprRoutes: false,
     selfService: true,
     guidedTourRequest: true,
     editor: false,
@@ -406,6 +407,7 @@ const CHUNK_EMBED =
     menu: true,
     menuEmbed: false,
     navmaps: false,
+    screenShare: false,
     chat: false,
     ar: true,
     like: true,
@@ -513,6 +515,7 @@ const CHUNK_EMBED =
     useToken: false,
     useExtendedUserInfo: true,
     useEncryptedUrl: true,
+    gdprRoutes: true,
     selfService: true,
     guidedTourRequest: true,
     editor: true,
@@ -520,6 +523,7 @@ const CHUNK_EMBED =
     menu: true,
     menuEmbed: true,
     navmaps: true,
+    screenShare: true,
     chat: true,
     ar: true,
     like: true,
@@ -3502,7 +3506,8 @@ class MeetingId {
       if (options.pathId) {
         this.pathId = options.pathId;
       }
-    }
+    } // console.log('MeetingId', this);
+
   }
 
   toString() {
@@ -3765,33 +3770,28 @@ class MeetingId {
   }
 
   static replaceWithOptions(options) {
-    const meetingUrl = new MeetingUrl(options);
+    const currentOptions = MeetingUrl.decompose(window.location.href);
+    const meetingUrl = new MeetingUrl(Object.assign(currentOptions, options));
     meetingUrl.replaceUrl();
     return meetingUrl;
   }
 
   static replaceWithUser(user) {
-    const meetingUrl = new MeetingUrl({
+    return this.replaceWithOptions({
       user
     });
-    meetingUrl.replaceUrl();
-    return meetingUrl;
   }
 
   static replaceWithName(name) {
-    const meetingUrl = new MeetingUrl({
+    return this.replaceWithOptions({
       name
     });
-    meetingUrl.replaceUrl();
-    return meetingUrl;
   }
 
   static replaceWithLink(link) {
-    const meetingUrl = new MeetingUrl({
+    return this.replaceWithOptions({
       link
     });
-    meetingUrl.replaceUrl();
-    return meetingUrl;
   }
 
   static getCurrentUrl(params) {
@@ -11690,10 +11690,14 @@ class ViewService {
 
     if (index > 0) {
       views.splice(index, 1);
-      data.paths = views;
-    }
+      this.views = views;
+      const dataViews = this.dataViews;
 
-    ViewService.viewId = this.dataViews[0].id; // this.pushChanges();
+      if (dataViews.length > 0) {
+        this.viewId = dataViews[0].id;
+      }
+    } // this.pushChanges();
+
   }
 
 }
@@ -24552,7 +24556,8 @@ ModelNavComponent.meta = {
   }
 
   onLink(link) {
-    const meetingId = new MeetingId(link);
+    const meetingId = new MeetingId(link); // console.log('onLink', meetingId);
+
     const pathId = meetingId.pathId;
     const role = this.getLinkRole();
     const mode = UserService.getMode(role);
@@ -25263,7 +25268,7 @@ AgoraComponent.meta = {
 
   static viewIdOptions$() {
     return this.data$().pipe(operators.map(data => {
-      const options = data.views.map(view => ({
+      const options = data.views.filter(x => x.type.name !== ViewType.WaitingRoom.name).map(view => ({
         id: view.id,
         name: view.name
       }));
@@ -27910,7 +27915,7 @@ LayoutComponent.meta = {
 					<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 					</button>
-					<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
+					<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="('screenShare' | flag) && (state.role == 'publisher' || state.role == 'attendee' || controlling)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
 					</button>
 					<button type="button" class="btn--chat" [title]="'title_chat' | label" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
@@ -29624,7 +29629,8 @@ class MenuService {
 
     return this.menu$().pipe(operators.map(menu => {
       if (menu && menu.length) {
-        menu = menu.filter(x => x.viewId == null || views.find(v => v.id === x.viewId) != null); // console.log('getModelMenu$', menu);
+        menu = menu.filter(x => x.viewId == null || x.viewId == 0 || views.find(v => v.id === x.viewId) != null); // menu = menu.filter(x => x.viewId == null || views.find(v => v.id === x.viewId) != null);
+        // console.log('getModelMenu$', menu);
 
         return this.mapMenuItems(menu);
       } else {
@@ -32022,6 +32028,7 @@ GenericModalComponent.chunk = () =>
 `<div class="generic-modal" generic-modal></div>`;class ControlCheckboxComponent extends ControlComponent {
   onInit() {
     this.label = this.label || 'label';
+    this.linksSubject = new rxjs.ReplaySubject();
     this.links$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe();
   }
 
@@ -32035,16 +32042,18 @@ GenericModalComponent.chunk = () =>
   }
 
   links$() {
-    const linksSubject = this.linksSubject = new rxjs.ReplaySubject().pipe(operators.switchAll(), operators.tap(event => {
+    const linksSubject = this.linksSubject.pipe(operators.switchAll(), operators.tap(event => {
       // console.log(event);
-      const template = GenericModalComponent.chunk();
-      ModalService.open$({
-        template,
-        data: {
-          mode: 'privacy_policy'
-        }
-      }).pipe(operators.first()).subscribe();
-      event.preventDefault();
+      if (environment.flags.gdprRoutes) {
+        const template = GenericModalComponent.chunk();
+        ModalService.open$({
+          template,
+          data: {
+            mode: 'privacy_policy'
+          }
+        }).pipe(operators.first()).subscribe();
+        event.preventDefault();
+      }
     }));
     return linksSubject;
   }

@@ -510,7 +510,7 @@ LayoutComponent.meta = {
 					<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 					</button>
-					<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="state.role == 'publisher' || state.role == 'attendee' || controlling">
+					<button type="button" class="btn--screen" [title]="'title_share_screen' | label" [class]="{ active: screen }" (click)="toggleScreen()" *if="('screenShare' | flag) && (state.role == 'publisher' || state.role == 'attendee' || controlling)">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#screen"></use></svg>
 					</button>
 					<button type="button" class="btn--chat" [title]="'title_chat' | label" [class]="{ active: state.chatDirty }" (click)="toggleChat()" *if="('chat' | flag)">
