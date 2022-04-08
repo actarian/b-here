@@ -6196,6 +6196,12 @@ footer {
   background: transparent;
   transition: all ease-in-out 250ms;
 }
+@media (max-width: 767.98px) {
+  .btn--menu:before {
+    width: 40px;
+    height: 40px;
+  }
+}
 .btn--menu, .btn--menu:active, .btn--menu:focus, .btn--menu:hover, .btn--menu:visited {
   background: transparent;
   color: var(--foreground);
@@ -6721,7 +6727,7 @@ footer {
 @media (max-width: 767.98px) {
   .group--service {
     margin-right: 15px;
-    filter: drop-shadow(0px 0px 8px black);
+    filter: drop-shadow(0px 0px 8px rgb(0, 0, 0));
     /*
     .btn--view-mode {
     	display: none;
@@ -7204,7 +7210,7 @@ footer {
   flex-direction: column;
   margin: 0 0 40px 0;
   padding: 0 20px;
-  min-width: 375px;
+  min-width: 335px;
   max-height: calc(100vh - 300px);
   overflow-x: hidden;
   overflow-y: auto;
@@ -7683,6 +7689,11 @@ footer {
   }
   .ui--info:not(.ui--info-centered) {
     justify-content: flex-start;
+  }
+}
+@media (max-width: 767.98px) {
+  .ui--info {
+    padding: 80px 0 65px 0;
   }
 }
 
@@ -8661,6 +8672,12 @@ model-viewer {
   border-radius: 10px;
   overflow: hidden;
   background: white;
+}
+@media (max-width: 767.98px) {
+  .iframe-modal {
+    width: 100vw;
+    height: 100vh;
+  }
 }
 .iframe-modal .modal__header {
   position: absolute;
@@ -10350,8 +10367,8 @@ update-view-tile .btn--remove {
 }
 
 .page--generic {
-  background: #161718;
-  background: linear-gradient(180deg, black 0%, #161718 100%);
+  background: rgb(22, 23, 24);
+  background: linear-gradient(180deg, rgb(0, 0, 0) 0%, rgb(22, 23, 24) 100%);
   color: var(--foreground-negative);
 }
 .page--generic .ui {

@@ -559,6 +559,10 @@
 		border-radius: 25px;
 		background: transparent;
 		transition: all ease-in-out 250ms;
+		@include media-down(xs) {
+			width: 40px;
+			height: 40px;
+		}
 	}
 
 	&,

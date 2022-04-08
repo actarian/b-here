@@ -400,6 +400,10 @@ model-viewer {
 	border-radius: 10px;
 	overflow: hidden;
 	background: white;
+	@include media-down(xs) {
+		width: 100vw;
+		height: 100vh;
+	}
 
 	.modal__header {
 		position: absolute;
