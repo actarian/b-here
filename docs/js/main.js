@@ -550,6 +550,13 @@ const CHUNK_EMBED =
     alpha: false,
     premultipliedAlpha: false
   },
+  sso: {
+    issuer: 'bhere-sso',
+    origin: `http://localhost:3010`,
+    loginUrl: `http://localhost:3010/sso/login?redirectUrl={redirectUrl}`,
+    registerUrl: `http://localhost:3010/sso/register?redirectUrl={redirectUrl}`,
+    verifyTokenUrl: `http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}`
+  },
   navs: {
     iconMinScale: 1,
     iconMaxScale: 1.4
@@ -5164,6 +5171,18 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
     this.state = {
       status: 'access'
     };
+
+    window.onPopupClose = status => {
+      if (status === 'success') {
+        alert('Login Successful');
+        UserService.me$().pipe(operators.first()).subscribe(user => {
+          console.log('AccessComponent.onInit.onPopupClose', user);
+          RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+        });
+      } else {
+        alert('Login Failed');
+      }
+    };
   }
 
   onSelfServiceTourRequest() {
@@ -5181,6 +5200,14 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
     this.initRequestForm();
     this.state.status = 'guided-tour';
     this.pushChanges();
+  }
+
+  onSSOLogin(event) {
+    // const loginUrl = environment.sso.loginUrl.replace('{redirectUrl}', `${location.protocol}//${location.host}/token`);
+    const loginUrl = `${location.protocol}//${location.host}/sso?redirectUrl=${location.protocol}//${location.host}/token`;
+    window.open(loginUrl, 'BHere | SSO Login', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
+    event.preventDefault();
+    return false;
   }
 
   onGuidedTourAccess() {
@@ -5393,6 +5420,11 @@ AccessComponent.meta = {
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>
 							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+						</div>
+						<div>
+							<button type="button" class="btn--next" (click)="onSSOLogin($event)">
+								<span>SSO Login</span>
+							</button>
 						</div>
 						<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
 							<span [innerHTML]="'access_guided_tour_cta' | label"></span>

@@ -18,6 +18,20 @@ export default class AccessComponent extends Component {
 		this.state = {
 			status: 'access',
 		};
+
+		window.onPopupClose = (status) => {
+			if (status === 'success') {
+				alert('Login Successful');
+				UserService.me$().pipe(
+					first(),
+				).subscribe((user) => {
+					console.log('AccessComponent.onInit.onPopupClose', user);
+					RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+				});
+			} else {
+				alert('Login Failed');
+			}
+		}
 	}
 
 	onSelfServiceTourRequest() {
@@ -34,6 +48,14 @@ export default class AccessComponent extends Component {
 		this.initRequestForm();
 		this.state.status = 'guided-tour';
 		this.pushChanges();
+	}
+
+	onSSOLogin(event) {
+		// const loginUrl = environment.sso.loginUrl.replace('{redirectUrl}', `${location.protocol}//${location.host}/token`);
+		const loginUrl = `${location.protocol}//${location.host}/sso?redirectUrl=${location.protocol}//${location.host}/token`;
+		window.open(loginUrl, 'BHere | SSO Login', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
+		event.preventDefault();
+		return false;
 	}
 
 	onGuidedTourAccess() {
@@ -220,6 +242,11 @@ AccessComponent.meta = {
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>
 							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+						</div>
+						<div>
+							<button type="button" class="btn--next" (click)="onSSOLogin($event)">
+								<span>SSO Login</span>
+							</button>
 						</div>
 						<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
 							<span [innerHTML]="'access_guided_tour_cta' | label"></span>
