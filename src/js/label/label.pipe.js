@@ -10,14 +10,22 @@ export class LabelPipe extends Pipe {
 	static transform(key) {
 		switch (key) {
 			case '@copy':
-				return `©${new Date().getFullYear()}`;
+				return this.getCopy();
 		}
 		const labels = LabelPipe.labels;
-		return labels[key] || key; // `#${key}#`;
+		let label = labels[key] || key; // `#${key}#`;
+		if (typeof label === 'string' && label.indexOf('@copy') !== -1) {
+			label = label.replace('@copy', this.getCopy());
+		}
+		return label;
 	}
 
 	static getKeys(...keys) {
 		return LabelPipe.transform(keys.map(x => x.replace('-', '_')).join('_'));
+	}
+
+	static getCopy() {
+		return `©${new Date().getFullYear()}`;
 	}
 }
 

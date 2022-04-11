@@ -6727,7 +6727,7 @@ footer {
 @media (max-width: 767.98px) {
   .group--service {
     margin-right: 15px;
-    filter: drop-shadow(0px 0px 8px rgb(0, 0, 0));
+    filter: drop-shadow(0px 0px 8px black);
     /*
     .btn--view-mode {
     	display: none;
@@ -10367,8 +10367,8 @@ update-view-tile .btn--remove {
 }
 
 .page--generic {
-  background: rgb(22, 23, 24);
-  background: linear-gradient(180deg, rgb(0, 0, 0) 0%, rgb(22, 23, 24) 100%);
+  background: #161718;
+  background: linear-gradient(180deg, black 0%, #161718 100%);
   color: var(--foreground-negative);
 }
 .page--generic .ui {

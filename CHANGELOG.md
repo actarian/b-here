@@ -3,6 +3,15 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.6] - 2022-04-11
+
+### Added
+- Label copyright
+### Fixing
+- fragment and vertex shader, mobile css
+
+---
+
 ## [1.0.5] - 2022-04-01
 ### Fixing
 - ViewService, PathService

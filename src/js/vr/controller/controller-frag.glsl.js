@@ -26,7 +26,7 @@ void main() {
 	/* #include <map_fragment> */
 	#ifdef USE_MAP
 		vec4 texelColor = texture2D( map, vUv );
-		texelColor = mapTexelToLinear( texelColor );
+		// texelColor = mapTexelToLinear( texelColor );
 		diffuseColor *= texelColor;
 		diffuseColor = mix(diffuseColor, emissiveColor, emissiveIntensity);
 	#endif

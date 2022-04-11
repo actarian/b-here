@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere v1.0.5
+ * @license beta-bhere v1.0.6
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -281,7 +281,7 @@ const CHUNK_COPYRIGHT =
 /* html */
 `
 <!-- copyright -->
-<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'@copy' | label"></span> Websolute Spa - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
+<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'copyright' | label"></span> - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
 `;
 const CHUNK_LANGUAGE =
 /* html */
@@ -4257,11 +4257,17 @@ function patchFields(fields, form) {
   static transform(key) {
     switch (key) {
       case '@copy':
-        return `©${new Date().getFullYear()}`;
+        return this.getCopy();
     }
 
     const labels = LabelPipe.labels;
-    return labels[key] || key; // `#${key}#`;
+    let label = labels[key] || key; // `#${key}#`;
+
+    if (typeof label === 'string' && label.indexOf('@copy') !== -1) {
+      label = label.replace('@copy', this.getCopy());
+    }
+
+    return label;
   }
 
   static getKeys() {
@@ -4270,6 +4276,10 @@ function patchFields(fields, form) {
     }
 
     return LabelPipe.transform(keys.map(x => x.replace('-', '_')).join('_'));
+  }
+
+  static getCopy() {
+    return `©${new Date().getFullYear()}`;
   }
 
 }
@@ -13552,20 +13562,21 @@ void main() {
 	#include <uv_vertex>
 	#include <uv2_vertex>
 	#include <color_vertex>
-	#include <skinbase_vertex>
-	#ifdef USE_ENVMAP
-	#include <beginnormal_vertex>
-	#include <morphnormal_vertex>
-	#include <skinnormal_vertex>
-	#include <defaultnormal_vertex>
+	#include <morphcolor_vertex>
+	#if defined ( USE_ENVMAP ) || defined ( USE_SKINNING )
+		#include <beginnormal_vertex>
+		#include <morphnormal_vertex>
+		#include <skinbase_vertex>
+		#include <skinnormal_vertex>
+		#include <defaultnormal_vertex>
 	#endif
 	#include <begin_vertex>
 	#include <morphtarget_vertex>
 	#include <skinning_vertex>
 	#include <project_vertex>
 	#include <logdepthbuf_vertex>
-	#include <worldpos_vertex>
 	#include <clipping_planes_vertex>
+	#include <worldpos_vertex>
 	#include <envmap_vertex>
 	#include <fog_vertex>
 }
@@ -13574,6 +13585,7 @@ const FRAGMENT_SHADER$1 = `
 #define USE_MAP
 
 varying vec2 vUvShader;
+
 uniform vec3 diffuse;
 uniform float opacity;
 
@@ -13588,6 +13600,7 @@ uniform float opacity;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <aomap_pars_fragment>
 #include <lightmap_pars_fragment>
 #include <envmap_common_pars_fragment>
@@ -13618,10 +13631,8 @@ void main() {
 
 	// main
 	vec4 mapRgba = texture2D(map, vUvShader);
-	mapRgba = mapTexelToLinear(mapRgba);
 	if (isVideo) {
 		vec4 playMapRgba = texture2D(playMap, vUvShader);
-		playMapRgba = mapTexelToLinear(playMapRgba);
 		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity);
 	} else {
 		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity);
@@ -13635,23 +13646,20 @@ void main() {
 
 	// accumulation (baked indirect lighting only)
 	#ifdef USE_LIGHTMAP
-		vec4 lightMapRgba = texture2D(lightMap, vUv2);
-		reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;
+		vec4 lightMapTexel = texture2D( lightMap, vUv2 );
+		reflectedLight.indirectDiffuse += lightMapTexel.rgb * lightMapIntensity * RECIPROCAL_PI;
 	#else
-		reflectedLight.indirectDiffuse += vec3(1.0);
+		reflectedLight.indirectDiffuse += vec3( 1.0 );
 	#endif
 
 	// modulation
 	#include <aomap_fragment>
 
 	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
-
 	vec3 outgoingLight = reflectedLight.indirectDiffuse;
 
 	#include <envmap_fragment>
-
-	gl_FragColor = vec4(outgoingLight, diffuseColor.a);
-
+	#include <output_fragment>
 	#include <tonemapping_fragment>
 	#include <encodings_fragment>
 	#include <fog_fragment>
@@ -13663,8 +13671,8 @@ const FRAGMENT_CHROMA_KEY_SHADER = `
 #define USE_MAP
 #define threshold 0.55
 #define padding 0.05
-
 varying vec2 vUvShader;
+
 uniform vec3 diffuse;
 uniform float opacity;
 
@@ -13679,6 +13687,7 @@ uniform float opacity;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
+#include <alphatest_pars_fragment>
 #include <aomap_pars_fragment>
 #include <lightmap_pars_fragment>
 #include <envmap_common_pars_fragment>
@@ -13702,7 +13711,7 @@ uniform bool isVideo;
 void main() {
 	#include <clipping_planes_fragment>
 
-	vec4 diffuseColor = vec4(vec3(1.0), opacity);
+	vec4 diffuseColor = vec4( diffuse, opacity );
 
 	#include <logdepthbuf_fragment>
 	#include <map_fragment>
@@ -13713,11 +13722,9 @@ void main() {
 	vec4 chromaKey = vec4(chromaKeyColor, 1.0);
     vec3 chromaKeyDiff = mapRgba.rgb - chromaKey.rgb;
     float chromaKeyValue = smoothstep(threshold - padding, threshold + padding, dot(chromaKeyDiff, chromaKeyDiff));
-	mapRgba = mapTexelToLinear(mapRgba);
 	/*
 	if (isVideo) {
 		vec4 playMapRgba = texture2D(playMap, vUvShader);
-		playMapRgba = mapTexelToLinear(playMapRgba);
 		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2) + (playMapRgba.rgb * mapTween * playMapRgba.a), opacity * chromaKeyValue);
 	} else {
 		diffuseColor = vec4(mapRgba.rgb + (playMapColor * playMapTween * 0.2), opacity * chromaKeyValue);
@@ -13730,21 +13737,17 @@ void main() {
 	#include <alphatest_fragment>
 	#include <specularmap_fragment>
 
-	ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
-
+	ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
 	// accumulation (baked indirect lighting only)
 	#ifdef USE_LIGHTMAP
-		vec4 lightMapRgba = texture2D(lightMap, vUv2);
-		reflectedLight.indirectDiffuse += lightMapTexelToLinear(lightMapRgba).rgb * lightMapIntensity;
+		vec4 lightMapTexel = texture2D( lightMap, vUv2 );
+		reflectedLight.indirectDiffuse += lightMapTexel.rgb * lightMapIntensity * RECIPROCAL_PI;
 	#else
-		reflectedLight.indirectDiffuse += vec3(1.0);
+		reflectedLight.indirectDiffuse += vec3( 1.0 );
 	#endif
-
 	// modulation
 	#include <aomap_fragment>
-
 	reflectedLight.indirectDiffuse *= diffuseColor.rgb;
-
 	vec3 outgoingLight = reflectedLight.indirectDiffuse;
 
 	#include <envmap_fragment>

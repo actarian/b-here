@@ -1,4 +1,6 @@
 # 💎 b-here
+
+## Development
 ___
 
 ### Install packages
@@ -7,15 +9,15 @@ npm install
 ```
 ___
 
-### Build, Serve & Watch 
+### Create certificates
 ```
-gulp
+npm run cert
 ```
 ___
 
-### Build
+### Build, Vendors
 ```
-gulp build
+gulp build --target vendors
 ```
 ___
 
@@ -25,37 +27,16 @@ gulp start
 ```
 ___
 
-### Build Js
+### Serve 
 ```
-gulp buildJs
+npm run serve
 ```
-___
 
-### Build Js & Watch 
-```
-gulp startJs
-```
-___
-
-### Build Css
-```
-gulp buildCss
-```
-___
-
-### Build Css & Watch 
-```
-gulp startCss
-```
+## Distribution
 ___
 ### Build Dist
 ```
 gulp build --target dist
-```
-___
-### Serve Node app
-```
-npm run serve
 ```
 ___
 ### Serve Node Dist app
