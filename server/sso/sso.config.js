@@ -12,6 +12,7 @@ const config = {
 		issuer: 'bhere-sso',
 		origin: `${origin}`,
 		loginUrl: `${origin}/sso/login?redirectUrl={redirectUrl}`,
+		logoutUrl: `${origin}/sso/logout?redirectUrl={redirectUrl}`,
 		registerUrl: `${origin}/sso/register?redirectUrl={redirectUrl}`,
 		verifyTokenUrl: `${origin}/sso/verifytoken?verifyToken={verifytoken}`,
 	}
@@ -31,6 +32,9 @@ if (process.env.SSO_ORIGIN) {
 }
 if (process.env.SSO_LOGIN_URL) {
 	config.sso.loginUrl = process.env.SSO_LOGIN_URL;
+}
+if (process.env.SSO_LOGOUT_URL) {
+	config.sso.logoutUrl = process.env.SSO_LOGOUT_URL;
 }
 if (process.env.SSO_REGISTER_URL) {
 	config.sso.registerUrl = process.env.SSO_REGISTER_URL;

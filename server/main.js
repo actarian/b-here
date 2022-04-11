@@ -10,7 +10,7 @@ const { staticMiddleware } = require('./static/static.js');
 const { apiMiddleware, uuid, setSessionUser, RoleType } = require('./api/api.js');
 const SingleSignOnGuard = require('./sso/sso.guard.js');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor.js');
-const SingleSignOnLogin = require('./sso/sso.login.js');
+const ssoRouter = require('./sso/sso.router');
 
 function serve(options) {
 	options = options || {};
@@ -60,6 +60,7 @@ function serve(options) {
 	app.set('views', options.dirname + '/server/views');
 	app.set('view engine', 'ejs');
 	app.use(SingleSignOnTokenInterceptor);
+	app.use('/sso', ssoRouter);
 
 	app.use('*', staticMiddleware_);
 	app.use('*', apiMiddleware_);
@@ -102,22 +103,6 @@ function serve(options) {
 
 	const isDist = process.env.npm_config_dist;
 	console.log('isDist', isDist);
-
-	app.get('/token', SingleSignOnGuard, (req, res, next) => {
-		const status = req.session.decodedToken != null ? 'success' : 'failure';
-		if (status === 'success') {
-			const user = Object.assign({ type: RoleType.SelfService }, req.session.decodedToken.user);
-			req.session.user = user;
-		} else {
-			req.session.user = null;
-		}
-		res.render('token', {
-			title: 'BHere | Token',
-			status: req.session.decodedToken != null ? 'success' : 'failure',
-		});
-	});
-
-	app.get('/sso', SingleSignOnLogin);
 
 	app.get('/', function(request, response) {
 		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__it.html` : '/docs/index__it.html'));

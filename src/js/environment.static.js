@@ -47,6 +47,7 @@ export const environmentStatic = {
 		issuer: 'bhere-sso',
 		origin: `http://localhost:3010`,
 		loginUrl: `http://localhost:3010/sso/login?redirectUrl={redirectUrl}`,
+		logoutUrl: `http://localhost:3010/sso/logout?redirectUrl={redirectUrl}`,
 		registerUrl: `http://localhost:3010/sso/register?redirectUrl={redirectUrl}`,
 		verifyTokenUrl: `http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}`,
 	},

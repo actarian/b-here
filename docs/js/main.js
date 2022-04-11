@@ -554,6 +554,7 @@ const CHUNK_EMBED =
     issuer: 'bhere-sso',
     origin: `http://localhost:3010`,
     loginUrl: `http://localhost:3010/sso/login?redirectUrl={redirectUrl}`,
+    logoutUrl: `http://localhost:3010/sso/logout?redirectUrl={redirectUrl}`,
     registerUrl: `http://localhost:3010/sso/register?redirectUrl={redirectUrl}`,
     verifyTokenUrl: `http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}`
   },
@@ -5203,9 +5204,15 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
   }
 
   onSSOLogin(event) {
-    // const loginUrl = environment.sso.loginUrl.replace('{redirectUrl}', `${location.protocol}//${location.host}/token`);
-    const loginUrl = `${location.protocol}//${location.host}/sso?redirectUrl=${location.protocol}//${location.host}/token`;
+    const loginUrl = `${location.protocol}//${location.host}/sso/login`;
     window.open(loginUrl, 'BHere | SSO Login', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
+    event.preventDefault();
+    return false;
+  }
+
+  onSSORegister(event) {
+    const loginUrl = `${location.protocol}//${location.host}/sso/register`;
+    window.open(loginUrl, 'BHere | SSO Register', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
     event.preventDefault();
     return false;
   }
