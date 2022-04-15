@@ -241,22 +241,31 @@ AccessComponent.meta = {
 							<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 								<span [innerHTML]="'access_tour' | label"></span>
 							</button>
-							<div class="info" [innerHTML]="'access_or' | label"></div>
 						</div>
 						<div *if="'guidedTourRequest' | flag">
+							<div class="info" [innerHTML]="'access_or' | label"></div>
 							<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>
-							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
 						</div>
-						<div>
-							<button type="button" class="btn--next" (click)="onSSOLogin($event)">
-								<span>SSO Login</span>
+						<div *if="'guidedTourAccess' | flag">
+							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+							<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
+								<span [innerHTML]="'access_guided_tour_cta' | label"></span>
 							</button>
 						</div>
-						<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
-							<span [innerHTML]="'access_guided_tour_cta' | label"></span>
-						</button>
+						<div *if="'ssoLogin' | flag">
+							<div class="info" [innerHTML]="'access_sso_login_info' | label"></div>
+							<button type="button" class="btn--next" (click)="onSSOLogin($event)">
+								<span [innerHTML]="'access_sso_login_cta' | label"></span>
+							</button>
+						</div>
+						<div *if="'ssoRegister' | flag">
+							<div class="info" [innerHTML]="'access_sso_register_info' | label"></div>
+							<button type="button" class="btn--next" (click)="onSSORegister($event)">
+								<span [innerHTML]="'access_sso_register_cta' | label"></span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
