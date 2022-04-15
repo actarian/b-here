@@ -110,7 +110,7 @@ export const environmentServed = {
 		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
-	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
 	template: {
 		email: {
 			supportRequest: '/template/modules/b-here/email/support-request.cshtml',
