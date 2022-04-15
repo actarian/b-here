@@ -45,12 +45,17 @@ function serve(options) {
 	const staticMiddleware_ = staticMiddleware(options);
 	const apiMiddleware_ = apiMiddleware(options);
 
+	const heroku = (process.env._ && process.env._.indexOf('heroku'));
+
 	const app = express();
 	app.use(session({
 		secret: 'b-here-secret-keyword',
 		saveUninitialized: true,
 		resave: true
 	}));
+	if (heroku) {
+		app.enable('trust proxy');
+	}
 	app.disable('x-powered-by');
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
@@ -122,7 +127,6 @@ function serve(options) {
 		console.log(`NodeJs Running server at ${options.host}`);
 	});
 
-	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 	if (!heroku) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');
