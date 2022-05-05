@@ -378,6 +378,12 @@ export default class AgoraComponent extends Component {
 				this.setNavmap(view);
 				this.hasScreenViewItem = view.items.find(x => MediaLoader.isPublisherScreen(x) || MediaLoader.isAttendeeScreen(x)) != null;
 				this.pushChanges();
+				const state = this.state;
+				GtmService.push({
+					action: 'b-here-view',
+					viewId: view.id,
+					userType: state.role // aggiunto
+				});
 				return view;
 			}),
 		);
