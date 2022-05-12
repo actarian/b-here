@@ -11,6 +11,9 @@ export const environmentStatic = {
 		gdprRoutes: true,
 		selfService: true,
 		guidedTourRequest: true,
+		guidedTourAccess: true,
+		ssoLogin: false,
+		ssoRegister: false,
 		editor: true,
 		editorAssetScreen: true,
 		menu: true,
@@ -42,6 +45,14 @@ export const environmentStatic = {
 		antialias: true,
 		alpha: false,
 		premultipliedAlpha: false,
+	},
+	sso: {
+		issuer: 'bhere-sso',
+		origin: `http://localhost:3010`,
+		loginUrl: `http://localhost:3010/sso/login?redirectUrl={redirectUrl}`,
+		logoutUrl: `http://localhost:3010/sso/logout?redirectUrl={redirectUrl}`,
+		registerUrl: `http://localhost:3010/sso/register?redirectUrl={redirectUrl}`,
+		verifyTokenUrl: `http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}`,
 	},
 	navs: {
 		iconMinScale: 1,
@@ -106,7 +117,7 @@ export const environmentStatic = {
 		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
-	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
 	template: {
 		email: {
 			supportRequest: '/email/support-request.html',

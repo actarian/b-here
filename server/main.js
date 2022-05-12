@@ -1,4 +1,6 @@
 const express = require('express');
+const morgan = require('morgan');
+const engine = require('ejs-mate');
 const fs = require('fs');
 const https = require('https');
 const multipart = require('connect-multiparty');
@@ -6,36 +8,44 @@ const path = require('path');
 const session = require('express-session');
 const { staticMiddleware } = require('./static/static.js');
 const { apiMiddleware, uuid, setSessionUser, RoleType } = require('./api/api.js');
+const SingleSignOnGuard = require('./sso/sso.guard.js');
+const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor.js');
+const ssoRouter = require('./sso/sso.router');
 
 function serve(options) {
 	options = options || {};
-	options.dirname = options.dirname || path.join(__dirname, '../');
-	options.baseHref = options.baseHref || '/b-here/';
-	console.log('serve', options.dirname);
 
-	const dirname = options.dirname;
+	const dirname = options.dirname ? options.dirname : path.join(__dirname, '../');
 	const multipartMiddleware = multipart({ uploadDir: path.join(dirname, '/docs/temp/') });
-	const ASSETS = `assets/`;
-	const ROOT = `/docs/`;
-	const PORT = process.env.PORT || 5000;
-	const PORT_HTTPS = 6443;
 
 	options = Object.assign({
-		port: PORT,
-		portHttps: PORT_HTTPS,
-		host: `http://localhost:${PORT}`,
-		hostHttps: `https://localhost:${PORT_HTTPS}`,
+		dirname: dirname,
+		port: 5000,
+		portHttps: 6443,
+		baseHref: '/b-here/',
 		charset: 'utf8',
-		assets: ASSETS,
+		assets: 'assets/',
 		cacheMode: 'file',
-		cache: path.join(dirname, `/cache/`),
-		root: ROOT,
-		template: path.join(dirname, `${ROOT}index.html`),
+		cache: path.join(dirname, '/cache/'),
+		root: '/docs/',
+		template: path.join(dirname, '/docs/index.html'),
 		accessControlAllowOrigin: true,
 	}, options);
 
+	if (process.env.PORT) {
+		options.port = process.env.PORT;
+	}
+	if (process.env.PORT_HTTPS) {
+		options.portHttps = process.env.PORT_HTTPS;
+	}
+
+	options.host = `http://localhost:${options.port}`;
+	options.hostHttps = `https://localhost:${options.portHttps}`;
+
 	const staticMiddleware_ = staticMiddleware(options);
 	const apiMiddleware_ = apiMiddleware(options);
+
+	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 
 	const app = express();
 	app.use(session({
@@ -43,10 +53,20 @@ function serve(options) {
 		saveUninitialized: true,
 		resave: true
 	}));
+	if (heroku) {
+		app.enable('trust proxy');
+	}
 	app.disable('x-powered-by');
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
 	app.use(express.raw());
+	app.use(morgan('dev'));
+	app.engine('ejs', engine);
+	app.set('views', options.dirname + '/server/views');
+	app.set('view engine', 'ejs');
+	app.use(SingleSignOnTokenInterceptor);
+	app.use('/sso', ssoRouter);
+
 	app.use('*', staticMiddleware_);
 	app.use('*', apiMiddleware_);
 
@@ -107,7 +127,6 @@ function serve(options) {
 		console.log(`NodeJs Running server at ${options.host}`);
 	});
 
-	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 	if (!heroku) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');

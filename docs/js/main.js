@@ -402,6 +402,9 @@ const CHUNK_EMBED =
     gdprRoutes: false,
     selfService: true,
     guidedTourRequest: true,
+    guidedTourAccess: true,
+    ssoLogin: false,
+    ssoRegister: false,
     editor: false,
     editorAssetScreen: false,
     menu: true,
@@ -500,7 +503,7 @@ const CHUNK_EMBED =
     envMap: 'textures/envMap/studio_small_03_2k.hdr',
     grid: 'textures/grid/grid.jpg'
   },
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
   template: {
     email: {
       supportRequest: '/template/modules/b-here/email/support-request.cshtml'
@@ -518,6 +521,9 @@ const CHUNK_EMBED =
     gdprRoutes: true,
     selfService: true,
     guidedTourRequest: true,
+    guidedTourAccess: true,
+    ssoLogin: false,
+    ssoRegister: false,
     editor: true,
     editorAssetScreen: true,
     menu: true,
@@ -549,6 +555,14 @@ const CHUNK_EMBED =
     antialias: true,
     alpha: false,
     premultipliedAlpha: false
+  },
+  sso: {
+    issuer: 'bhere-sso',
+    origin: `http://localhost:3010`,
+    loginUrl: `http://localhost:3010/sso/login?redirectUrl={redirectUrl}`,
+    logoutUrl: `http://localhost:3010/sso/logout?redirectUrl={redirectUrl}`,
+    registerUrl: `http://localhost:3010/sso/register?redirectUrl={redirectUrl}`,
+    verifyTokenUrl: `http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}`
   },
   navs: {
     iconMinScale: 1,
@@ -615,7 +629,7 @@ const CHUNK_EMBED =
     envMap: 'textures/envMap/studio_small_03_2k.hdr',
     grid: 'textures/grid/grid.jpg'
   },
-  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/b-here-ws-new/docs/',
+  githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
   template: {
     email: {
       supportRequest: '/email/support-request.html'
@@ -5174,6 +5188,18 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
     this.state = {
       status: 'access'
     };
+
+    window.onPopupClose = status => {
+      if (status === 'success') {
+        alert('Login Successful');
+        UserService.me$().pipe(operators.first()).subscribe(user => {
+          console.log('AccessComponent.onInit.onPopupClose', user);
+          RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+        });
+      } else {
+        alert('Login Failed');
+      }
+    };
   }
 
   onSelfServiceTourRequest() {
@@ -5191,6 +5217,20 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
     this.initRequestForm();
     this.state.status = 'guided-tour';
     this.pushChanges();
+  }
+
+  onSSOLogin(event) {
+    const loginUrl = `${location.protocol}//${location.host}/sso/login`;
+    window.open(loginUrl, 'BHere | SSO Login', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
+    event.preventDefault();
+    return false;
+  }
+
+  onSSORegister(event) {
+    const loginUrl = `${location.protocol}//${location.host}/sso/register`;
+    window.open(loginUrl, 'BHere | SSO Register', 'left=20,top=20,width=600,height=600,toolbar=1,resizable=0');
+    event.preventDefault();
+    return false;
   }
 
   onGuidedTourAccess() {
@@ -5396,17 +5436,31 @@ AccessComponent.meta = {
 							<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 								<span [innerHTML]="'access_tour' | label"></span>
 							</button>
-							<div class="info" [innerHTML]="'access_or' | label"></div>
 						</div>
 						<div *if="'guidedTourRequest' | flag">
+							<div class="info" [innerHTML]="'access_or' | label"></div>
 							<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>
-							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
 						</div>
-						<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
-							<span [innerHTML]="'access_guided_tour_cta' | label"></span>
-						</button>
+						<div *if="'guidedTourAccess' | flag">
+							<div class="info" [innerHTML]="'access_has_meeting_id' | label"></div>
+							<button type="button" class="btn--next" (click)="onGuidedTourAccess($event)">
+								<span [innerHTML]="'access_guided_tour_cta' | label"></span>
+							</button>
+						</div>
+						<div *if="'ssoLogin' | flag">
+							<div class="info" [innerHTML]="'access_sso_login_info' | label"></div>
+							<button type="button" class="btn--next" (click)="onSSOLogin($event)">
+								<span [innerHTML]="'access_sso_login_cta' | label"></span>
+							</button>
+						</div>
+						<div *if="'ssoRegister' | flag">
+							<div class="info" [innerHTML]="'access_sso_register_info' | label"></div>
+							<button type="button" class="btn--next" (click)="onSSORegister($event)">
+								<span [innerHTML]="'access_sso_register_cta' | label"></span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -43,7 +43,7 @@ var options = {
 		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
-	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/main/docs/',
+	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
 	template: {
 		email: {
 			supportRequest: '/email/support-request.html',
@@ -57,7 +57,10 @@ var options = {
 		useEncryptedUrl: true,
 		gdprRoutes: true,
 		selfService: true,
-		guidedTourRequest: true,
+		guidedTourRequest: false,
+		guidedTourAccess: false,
+		ssoLogin: true,
+		ssoRegister: true,
 		editor: true,
 		editorAssetScreen: true,
 		menu: true,
