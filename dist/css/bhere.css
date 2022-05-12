@@ -8260,7 +8260,7 @@ footer {
   font-weight: var(--font-regular);
   font-size: 60px;
   line-height: 1.2;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   color: var(--foreground-negative);
 }
 .panel__abstract {
@@ -8280,11 +8280,30 @@ footer {
   width: 100%;
 }
 .panel__link {
-  font-size: 28px;
-  color: var(--foreground-secondary);
-  font-weight: var(--font-regular);
-  text-decoration: underline;
+  position: relative;
+  display: block;
+  padding: 10px;
   margin-bottom: 10px;
+  font-size: 36px;
+  font-weight: var(--font-regular);
+  line-height: 1;
+  text-decoration: none;
+  color: var(--foreground-primary);
+}
+.panel__link:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--foreground-primary-dimmed);
+}
+.panel__link:last-child {
+  margin-bottom: 30px;
+}
+.panel span + img {
+  display: initial !important;
 }
 
 .banner {
@@ -9905,11 +9924,51 @@ update-view-tile .control--text {
   font-size: 11px;
   line-height: 1.5;
 }
+update-view .group--link,
+update-view-item .group--link,
+update-view-tile .group--link {
+  display: flex;
+  align-items: flex-start;
+  padding: 7px;
+  margin-bottom: 10px;
+  border: 2px solid var(--background-primary-disabled);
+  border-radius: 6px;
+}
+update-view .group--link .group--controls,
+update-view-item .group--link .group--controls,
+update-view-tile .group--link .group--controls {
+  flex: 1 0 calc(100% - 20px);
+  padding-right: 15px;
+}
+update-view .group--link .group--controls [control-text]:last-child .group--form,
+update-view-item .group--link .group--controls [control-text]:last-child .group--form,
+update-view-tile .group--link .group--controls [control-text]:last-child .group--form {
+  margin: 0;
+}
+update-view .group--link .btn--remove,
+update-view-item .group--link .btn--remove,
+update-view-tile .group--link .btn--remove {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+update-view .group--link .btn--remove svg,
+update-view-item .group--link .btn--remove svg,
+update-view-tile .group--link .btn--remove svg {
+  margin: 0;
+  width: 10px;
+  height: 10px;
+}
 update-view .group--cta,
 update-view-item .group--cta,
 update-view-tile .group--cta {
   display: flex;
   justify-content: space-between;
+}
+update-view .group--cta:not(:last-child),
+update-view-item .group--cta:not(:last-child),
+update-view-tile .group--cta:not(:last-child) {
+  margin-bottom: 10px;
 }
 update-view .btn--update,
 update-view .btn--remove,
