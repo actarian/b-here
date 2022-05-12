@@ -1,5 +1,5 @@
 import { Component } from 'rxcomp';
-import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
+import { FormArray, FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId, AssetType } from '../../asset/asset';
@@ -89,9 +89,9 @@ export default class UpdateViewItemComponent extends Component {
 			switch (item.type.name) {
 				case ViewItemType.Nav.name:
 					if (this.useHooks) {
-						keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'hook?', 'hookExtra?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+						keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'hook?', 'hookExtra?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?', 'links?'];
 					} else {
-						keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+						keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?', 'links?'];
 					}
 					break;
 				case ViewItemType.Plane.name:
@@ -145,6 +145,7 @@ export default class UpdateViewItemComponent extends Component {
 						// console.log(control.options);
 						break;
 					case 'link':
+						/*
 						const title = item.link ? item.link.title : null;
 						const href = item.link ? item.link.href : null;
 						const target = '_blank';
@@ -153,6 +154,15 @@ export default class UpdateViewItemComponent extends Component {
 							href: new FormControl(href),
 							target
 						});
+						*/
+						break;
+					case 'links':
+						const links = item.links;
+						control = new FormArray(links.map(link => new FormGroup({
+							title: new FormControl(link.title),
+							href: new FormControl(link.href),
+							target: '_blank',
+						})));
 						break;
 					default:
 						control = new FormControl(value, optional ? undefined : RequiredValidator());
@@ -164,10 +174,32 @@ export default class UpdateViewItemComponent extends Component {
 			Object.keys(this.controls).forEach(key => {
 				switch (key) {
 					case 'link':
+						/*
 						const title = item.link ? item.link.title : null;
 						const href = item.link ? item.link.href : null;
 						const target = '_blank';
 						this.controls[key].value = { title, href, target };
+						*/
+						break;
+					case 'links':
+						const links = item.links.map(link => ({
+							title: link.title || null,
+							href: link.href || null,
+							target: '_blank',
+						}));
+						const formArray = this.controls[key];
+						while (formArray.controls.length > links.length) {
+							formArray.remove(formArray.controls[formArray.controls.length - 1]);
+						}
+						while (formArray.controls.length < links.length) {
+							formArray.push(new FormGroup({
+								title: new FormControl(null),
+								href: new FormControl(null),
+								target: '_blank',
+							}));
+						}
+						// console.log(formArray, links);
+						formArray.patch(links);
 						break;
 					case 'hasChromaKeyColor':
 						this.controls[key].value = (item.asset && item.asset.chromaKeyColor) ? true : false;
@@ -279,6 +311,18 @@ export default class UpdateViewItemComponent extends Component {
 		return LabelPipe.getKeys('editor', item.type.name);
 	}
 
+	onAddLink(event) {
+		this.controls.links.push(new FormGroup({
+			title: new FormControl(null),
+			href: new FormControl(null),
+			target: '_blank',
+		}));
+	}
+
+	onRemoveLink(item) {
+		this.controls.links.remove(item);
+	}
+
 	clearTimeout() {
 		if (this.to) {
 			clearTimeout(this.to);
@@ -328,8 +372,21 @@ UpdateViewItemComponent.meta = {
 					<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
 				</div>
 				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
-				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
-				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
+
+				<div class="group--link" *for="let link of controls.links.controls">
+					<div class="group--controls">
+						<div control-text [control]="link.controls.title" label="Link Title"></div>
+						<div control-text [control]="link.controls.href" label="Link Url"></div>
+					</div>
+					<button type="button" class="btn--remove" (click)="onRemoveLink(link)"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#remove"></use></svg></button>
+				</div>
+
+				<div class="group--cta">
+					<button type="button" class="btn--update" (click)="onAddLink($event)">
+						<span>Add Link</span>
+					</button>
+				</div>
+
 				<div *if="useHooks">
 					<div control-custom-select [control]="controls.hook" label="Hook"></div>
 					<div control-text [control]="controls.hookExtra" label="Hook Extra"></div>

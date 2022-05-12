@@ -227,14 +227,14 @@ export default class EditorComponent extends Component {
 		}
 	}
 
-	onNavLink(item) {
-		// console.log('EditorComponent.onNavLink', item);
-		ModalService.open$({ iframe: item.link.href }).pipe(
+	onNavLink(event) {
+		// console.log('EditorComponent.onNavLink', event);
+		ModalService.open$({ iframe: event.link.href }).pipe(
 			first(),
-		).subscribe(event => {
+		).subscribe(_ => {
 			MessageService.send({
 				type: MessageType.NavLinkClose,
-				itemId: item.id,
+				itemId: event.item.id,
 			});
 		});
 	}
