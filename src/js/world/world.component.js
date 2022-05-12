@@ -1074,19 +1074,20 @@ export default class WorldComponent extends Component {
 		}
 	}
 
-	onNavLink(item) {
-		// console.log('WorldComponent.onNavLink', item.link.href);
+	onNavLink(event) {
+		// console.log('WorldComponent.onNavLink', event.link.href);
 		if (this.locked || this.editor) {
 			return;
 		}
 		if (environment.flags.useIframe) {
 			MessageService.send({
 				type: MessageType.NavLink,
-				itemId: item.id,
+				itemId: event.item.id,
+				linkIndex: event.linkIndex,
 			});
-			this.navLink.next(item);
+			this.navLink.next(event);
 		} else {
-			window.open(item.link.href, '_blank');
+			window.open(event.link.href, '_blank');
 		}
 	}
 
@@ -1154,19 +1155,20 @@ export default class WorldComponent extends Component {
 		}
 	}
 
-	onPanelDown(item) {
-		// console.log('WorldComponent.onPanelDown', item.link.href);
+	onPanelDown(event) {
+		// console.log('WorldComponent.onPanelDown', event.link.href);
 		if (this.locked) {
 			return;
 		}
 		if (environment.flags.useIframe) {
 			MessageService.send({
 				type: MessageType.NavLink,
-				itemId: item.id,
+				itemId: event.item.id,
+				linkIndex: event.linkIndex,
 			});
-			this.navLink.next(item);
+			this.navLink.next(event);
 		} else {
-			window.open(item.link.href, '_blank');
+			window.open(event.link.href, '_blank');
 			/*
 			const href = event.getAttribute('href');
 			const target = event.getAttribute('target') || '_self';
@@ -1383,7 +1385,8 @@ export default class WorldComponent extends Component {
 				case MessageType.NavLink:
 					const item = this.view.items.find(item => item.id === message.itemId);
 					if (item) {
-						this.navLink.next(item);
+						const link = item.links[message.linkIndex];
+						this.navLink.next({ item, link, linkIndex: message.linkIndex });
 					}
 					break;
 				case MessageType.NavLinkClose:
@@ -1512,12 +1515,7 @@ WorldComponent.meta = {
 				<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'plane'"></div>
 				<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'curved-plane'"></div>
 				<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" (play)="onPlayModel($event)" *if="item.type.name == 'model'"></div>
-				<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
-					<div class="panel__title" [innerHTML]="item.title"></div>
-					<div class="panel__abstract" [innerHTML]="item.abstract"></div>
-					<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-					<a class="panel__link" [href]="item.link.href" target="_blank" rel="noopener" *if="item.link" [innerHTML]="item.link.title"></a>
-				</div>
+				<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel"></div>
 			</div>
 		</div>
 	</div>

@@ -308,8 +308,10 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				}
 				this.down.next(this);
 				// opening nav link
-				if (!this.host.editor && !this.shouldShowPanel() && this.item.link && this.item.link.href) {
-					this.shouldNavToLink = this.item.link.href;
+				const item = this.item;
+				const link = item.firstLink;
+				if (!this.host.editor && !this.shouldShowPanel() && link && link.href) {
+					this.shouldNavToLink = link.href;
 				}
 			});
 
@@ -324,7 +326,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 					window.open(link, '_blank');
 					*/
 					this.shouldNavToLink = null;
-					this.link.next(this.item);
+					const item = this.item;
+					const link = item.firstLink;
+					this.link.next({ item, link });
 				}
 			});
 

@@ -1,3 +1,4 @@
+// import domtoimage from 'dom-to-image';
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
 // import * as THREE from 'three';
@@ -7,6 +8,8 @@ import { Host } from '../host/host';
 import InteractiveSprite from '../interactive/interactive.sprite';
 import WorldComponent from '../world.component';
 import ModelComponent from './model.component';
+
+// const USE_DOM_TO_IMAGE = true;
 
 export default class ModelPanelComponent extends ModelComponent {
 
@@ -36,6 +39,7 @@ export default class ModelPanelComponent extends ModelComponent {
 					map: texture.map,
 					sizeAttenuation: false,
 				});
+				const item = this.item;
 				const panel = this.panel = new InteractiveSprite(material);
 				panel.renderOrder = environment.renderOrder.panel;
 				panel.scale.set(0.02 * width, 0.02 * height, 1);
@@ -43,12 +47,15 @@ export default class ModelPanelComponent extends ModelComponent {
 				panel.on('down', (event) => {
 					const xy = { x: parseInt(event.intersection.uv.x * node.offsetWidth), y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight) };
 					// console.log('ModelPanelComponent.down.xy', xy);
-					const link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(link => {
+					const linkNodes = Array.prototype.slice.call(node.querySelectorAll('.panel__link'));
+					const linkNode = linkNodes.find(link => {
 						return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= (link.offsetLeft + link.offsetWidth) && xy.y <= (link.offsetTop + link.offsetHeight);
 					});
-					// console.log('ModelPanelComponent.down.link', link);
-					if (link) {
-						this.down.next(this.item);
+					if (linkNode) {
+						const linkIndex = linkNodes.indexOf(linkNode);
+						const link = item.links[linkIndex];
+						// console.log('ModelPanelComponent.down.link', link, linkNode, linkNodes);
+						this.down.next({ item, link, linkIndex });
 						const rect = node.getBoundingClientRect();
 						const event = new MouseEvent('mouseup', {
 							button: 0,
@@ -57,12 +64,12 @@ export default class ModelPanelComponent extends ModelComponent {
 							clientY: xy.y + rect.top,
 							movementX: 0,
 							movementY: 0,
-							relatedTarget: link,
+							relatedTarget: linkNode,
 							screenX: xy.x,
 							screenY: xy.y,
 						});
+						linkNode.dispatchEvent(event);
 						// console.log('ModelPanelComponent.dispatchEvent', event);
-						link.dispatchEvent(event);
 						setTimeout(() => {
 							DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
 						}, 1);
@@ -153,6 +160,28 @@ export default class ModelPanelComponent extends ModelComponent {
 							node = context.node;
 							const useCORS = results && (results.find(x => x === true) != null); // !!! keep loose equality
 							// console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
+							/*
+							if (USE_DOM_TO_IMAGE) {
+								domtoimage.toBlob(node, { cacheBust: true }).then(function(blob) {
+									createImageBitmap(blob).then(function(imageBitmap) {
+										const map = new THREE.Texture();
+										map.image = imageBitmap;
+										map.needsUpdate = true;
+										this.item.panelTexture = {
+											map: map,
+											width: imageBitmap.width,
+											height: imageBitmap.height,
+										};
+										resolve(this.item.panelTexture);
+
+									}, error => {
+										reject(error);
+									});
+								}, error => {
+									reject(error);
+								});
+							} else {
+							*/
 							html2canvas(node, {
 								backgroundColor: '#ffffff00',
 								scale: 2,
@@ -175,6 +204,7 @@ export default class ModelPanelComponent extends ModelComponent {
 							}, error => {
 								reject(error);
 							});
+							// }
 						}
 					});
 				}
@@ -190,4 +220,10 @@ ModelPanelComponent.meta = {
 	hosts: { host: WorldComponent },
 	outputs: ['over', 'out', 'down'],
 	inputs: ['item'],
+	template: /* html */`
+		<div class="panel__title" [innerHTML]="item.title"></div>
+		<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+		<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
+		<a class="panel__link" [href]="link.href" target="_blank" rel="noopener" *for="let link of item.links" [innerHTML]="link.title"></a>
+	`,
 };

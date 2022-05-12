@@ -10849,6 +10849,12 @@ class ViewItem {
     }
 
     this.path = true;
+    const links = this.links || (this.link ? [this.link] : []);
+    this.links = links;
+  }
+
+  get firstLink() {
+    return this.links && this.links.length ? this.links[0] : null;
   }
 
   get payload() {
@@ -10871,7 +10877,7 @@ class ViewItem {
   }
 
 }
-ViewItem.allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'hook', 'hookExtra', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
+ViewItem.allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'links', 'viewId', 'hook', 'hookExtra', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 class NavViewItem extends ViewItem {}
 class ViewTile {
   constructor(options) {
@@ -14784,15 +14790,17 @@ class DragService {
 
   static observe$(target) {
     target = target || document;
-    const events$ = DragService.events$ = new rxjs.ReplaySubject(1);
-    const dismiss$ = DragService.dismiss$ = new rxjs.Subject();
+    const events$ = DragService.events$;
+    const dismiss$ = DragService.dismiss$;
     return this.down$(target, events$).pipe(operators.switchMap(downEvent => {
       DragService.downEvent = downEvent;
       return rxjs.merge(this.move$(target, events$, dismiss$, downEvent), this.up$(target, events$, dismiss$, downEvent)).pipe(operators.takeUntil(dismiss$));
     }), operators.switchMap(() => events$));
   }
 
-}const OrbitMode = {
+}
+DragService.events$ = new rxjs.ReplaySubject(1);
+DragService.dismiss$ = new rxjs.Subject();const OrbitMode = {
   Panorama: 'panorama',
   PanoramaGrid: 'panorama-grid',
   Model: 'model'
@@ -22578,8 +22586,8 @@ class WorldComponent extends rxcomp.Component {
     }
   }
 
-  onNavLink(item) {
-    // console.log('WorldComponent.onNavLink', item.link.href);
+  onNavLink(event) {
+    // console.log('WorldComponent.onNavLink', event.link.href);
     if (this.locked || this.editor) {
       return;
     }
@@ -22587,11 +22595,12 @@ class WorldComponent extends rxcomp.Component {
     if (environment.flags.useIframe) {
       MessageService.send({
         type: MessageType.NavLink,
-        itemId: item.id
+        itemId: event.item.id,
+        linkIndex: event.linkIndex
       });
-      this.navLink.next(item);
+      this.navLink.next(event);
     } else {
-      window.open(item.link.href, '_blank');
+      window.open(event.link.href, '_blank');
     }
   }
 
@@ -22664,8 +22673,8 @@ class WorldComponent extends rxcomp.Component {
     }
   }
 
-  onPanelDown(item) {
-    // console.log('WorldComponent.onPanelDown', item.link.href);
+  onPanelDown(event) {
+    // console.log('WorldComponent.onPanelDown', event.link.href);
     if (this.locked) {
       return;
     }
@@ -22673,11 +22682,12 @@ class WorldComponent extends rxcomp.Component {
     if (environment.flags.useIframe) {
       MessageService.send({
         type: MessageType.NavLink,
-        itemId: item.id
+        itemId: event.item.id,
+        linkIndex: event.linkIndex
       });
-      this.navLink.next(item);
+      this.navLink.next(event);
     } else {
-      window.open(item.link.href, '_blank');
+      window.open(event.link.href, '_blank');
       /*
       const href = event.getAttribute('href');
       const target = event.getAttribute('target') || '_self';
@@ -22898,7 +22908,12 @@ class WorldComponent extends rxcomp.Component {
           const item = this.view.items.find(item => item.id === message.itemId);
 
           if (item) {
-            this.navLink.next(item);
+            const link = item.links[message.linkIndex];
+            this.navLink.next({
+              item,
+              link,
+              linkIndex: message.linkIndex
+            });
           }
 
           break;
@@ -23052,12 +23067,7 @@ WorldComponent.meta = {
 				<div model-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'plane'"></div>
 				<div model-curved-plane [item]="item" [view]="view" (play)="onPlayMedia($event)" (zoom)="onZoomMedia($event)" (down)="onObjectDown($event)" (currentTime)="onCurrentTimeMedia($event)" *if="item.type.name == 'curved-plane'"></div>
 				<div class="model-viewer__item" model-model [item]="item" [view]="view" (down)="onModelDown($event)" (play)="onPlayModel($event)" *if="item.type.name == 'model'"></div>
-				<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel">
-					<div class="panel__title" [innerHTML]="item.title"></div>
-					<div class="panel__abstract" [innerHTML]="item.abstract"></div>
-					<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-					<a class="panel__link" [href]="item.link.href" target="_blank" rel="noopener" *if="item.link" [innerHTML]="item.link.title"></a>
-				</div>
+				<div class="panel" [class]="{ 'panel--lg': item.asset != null }" model-panel [item]="item" (down)="onPanelDown($event)" *if="item.showPanel"></div>
 			</div>
 		</div>
 	</div>
@@ -23650,8 +23660,11 @@ class ModelNavComponent extends ModelEditableComponent {
 
         this.down.next(this); // opening nav link
 
-        if (!this.host.editor && !this.shouldShowPanel() && this.item.link && this.item.link.href) {
-          this.shouldNavToLink = this.item.link.href;
+        const item = this.item;
+        const link = item.firstLink;
+
+        if (!this.host.editor && !this.shouldShowPanel() && link && link.href) {
+          this.shouldNavToLink = link.href;
         }
       });
       plane.on('up', () => {
@@ -23666,7 +23679,12 @@ class ModelNavComponent extends ModelEditableComponent {
           window.open(link, '_blank');
           */
           this.shouldNavToLink = null;
-          this.link.next(this.item);
+          const item = this.item;
+          const link = item.firstLink;
+          this.link.next({
+            item,
+            link
+          });
         }
       });
     } else {
@@ -24753,14 +24771,14 @@ ModelNavComponent.meta = {
     }
   }
 
-  onNavLink(item) {
-    // console.log('AgoraComponent.onNavLink', item);
+  onNavLink(event) {
+    // console.log('AgoraComponent.onNavLink', event.link.href);
     ModalService.open$({
-      iframe: item.link.href
-    }).pipe(operators.first()).subscribe(event => {
+      iframe: event.link.href
+    }).pipe(operators.first()).subscribe(_ => {
       MessageService.send({
         type: MessageType.NavLinkClose,
-        itemId: item.id
+        itemId: event.item.id
       });
     });
   }
@@ -26948,14 +26966,14 @@ class EditorComponent extends rxcomp.Component {
     }
   }
 
-  onNavLink(item) {
-    // console.log('EditorComponent.onNavLink', item);
+  onNavLink(event) {
+    // console.log('EditorComponent.onNavLink', event);
     ModalService.open$({
-      iframe: item.link.href
-    }).pipe(operators.first()).subscribe(event => {
+      iframe: event.link.href
+    }).pipe(operators.first()).subscribe(_ => {
       MessageService.send({
         type: MessageType.NavLinkClose,
-        itemId: item.id
+        itemId: event.item.id
       });
     });
   }
@@ -30820,9 +30838,9 @@ NavmapEditComponent.meta = {
       switch (item.type.name) {
         case ViewItemType.Nav.name:
           if (this.useHooks) {
-            keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'hook?', 'hookExtra?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+            keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'hook?', 'hookExtra?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?', 'links?'];
           } else {
-            keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?'];
+            keys = ['id', 'type', 'title?', 'abstract?', 'viewId?', 'keepOrientation?', 'important?', 'transparent?', 'position', 'rotation', 'scale', 'asset?', 'link?', 'links?'];
           }
 
           break;
@@ -30895,14 +30913,25 @@ NavmapEditComponent.meta = {
             break;
 
           case 'link':
+            /*
             const title = item.link ? item.link.title : null;
             const href = item.link ? item.link.href : null;
             const target = '_blank';
-            control = new rxcompForm.FormGroup({
-              title: new rxcompForm.FormControl(title),
-              href: new rxcompForm.FormControl(href),
-              target
+            control = new FormGroup({
+            	title: new FormControl(title),
+            	href: new FormControl(href),
+            	target
             });
+            */
+            break;
+
+          case 'links':
+            const links = item.links;
+            control = new rxcompForm.FormArray(links.map(link => new rxcompForm.FormGroup({
+              title: new rxcompForm.FormControl(link.title),
+              href: new rxcompForm.FormControl(link.href),
+              target: '_blank'
+            })));
             break;
 
           default:
@@ -30916,14 +30945,36 @@ NavmapEditComponent.meta = {
       Object.keys(this.controls).forEach(key => {
         switch (key) {
           case 'link':
+            /*
             const title = item.link ? item.link.title : null;
             const href = item.link ? item.link.href : null;
             const target = '_blank';
-            this.controls[key].value = {
-              title,
-              href,
-              target
-            };
+            this.controls[key].value = { title, href, target };
+            */
+            break;
+
+          case 'links':
+            const links = item.links.map(link => ({
+              title: link.title || null,
+              href: link.href || null,
+              target: '_blank'
+            }));
+            const formArray = this.controls[key];
+
+            while (formArray.controls.length > links.length) {
+              formArray.remove(formArray.controls[formArray.controls.length - 1]);
+            }
+
+            while (formArray.controls.length < links.length) {
+              formArray.push(new rxcompForm.FormGroup({
+                title: new rxcompForm.FormControl(null),
+                href: new rxcompForm.FormControl(null),
+                target: '_blank'
+              }));
+            } // console.log(formArray, links);
+
+
+            formArray.patch(links);
             break;
 
           case 'hasChromaKeyColor':
@@ -31049,6 +31100,18 @@ NavmapEditComponent.meta = {
     return LabelPipe.getKeys('editor', item.type.name);
   }
 
+  onAddLink(event) {
+    this.controls.links.push(new rxcompForm.FormGroup({
+      title: new rxcompForm.FormControl(null),
+      href: new rxcompForm.FormControl(null),
+      target: '_blank'
+    }));
+  }
+
+  onRemoveLink(item) {
+    this.controls.links.remove(item);
+  }
+
   clearTimeout() {
     if (this.to) {
       clearTimeout(this.to);
@@ -31105,8 +31168,21 @@ UpdateViewItemComponent.meta = {
 					<div control-vector [control]="controls.scale" label="Scale" [precision]="2"></div>
 				</div>
 				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg, image/png"></div>
-				<div control-text [control]="controls.link.controls.title" label="Link Title"></div>
-				<div control-text [control]="controls.link.controls.href" label="Link Url"></div>
+
+				<div class="group--link" *for="let link of controls.links.controls">
+					<div class="group--controls">
+						<div control-text [control]="link.controls.title" label="Link Title"></div>
+						<div control-text [control]="link.controls.href" label="Link Url"></div>
+					</div>
+					<button type="button" class="btn--remove" (click)="onRemoveLink(link)"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#remove"></use></svg></button>
+				</div>
+
+				<div class="group--cta">
+					<button type="button" class="btn--update" (click)="onAddLink($event)">
+						<span>Add Link</span>
+					</button>
+				</div>
+
 				<div *if="useHooks">
 					<div control-custom-select [control]="controls.hook" label="Hook"></div>
 					<div control-text [control]="controls.hookExtra" label="Hook Extra"></div>
@@ -36740,7 +36816,9 @@ class EmittableSprite extends FreezableSprite {
     }
   }
 
-}class ModelPanelComponent extends ModelComponent {
+}// import domtoimage from 'dom-to-image';
+
+class ModelPanelComponent extends ModelComponent {
   onInit() {
     super.onInit(); // console.log('ModelPanelComponent.onInit', this.item);
   }
@@ -36769,6 +36847,7 @@ class EmittableSprite extends FreezableSprite {
           map: texture.map,
           sizeAttenuation: false
         });
+        const item = this.item;
         const panel = this.panel = new InteractiveSprite(material);
         panel.renderOrder = environment.renderOrder.panel;
         panel.scale.set(0.02 * width, 0.02 * height, 1);
@@ -36779,12 +36858,20 @@ class EmittableSprite extends FreezableSprite {
             y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
           }; // console.log('ModelPanelComponent.down.xy', xy);
 
-          const link = Array.prototype.slice.call(node.querySelectorAll('.panel__link')).find(link => {
+          const linkNodes = Array.prototype.slice.call(node.querySelectorAll('.panel__link'));
+          const linkNode = linkNodes.find(link => {
             return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-          }); // console.log('ModelPanelComponent.down.link', link);
+          });
 
-          if (link) {
-            this.down.next(this.item);
+          if (linkNode) {
+            const linkIndex = linkNodes.indexOf(linkNode);
+            const link = item.links[linkIndex]; // console.log('ModelPanelComponent.down.link', link, linkNode, linkNodes);
+
+            this.down.next({
+              item,
+              link,
+              linkIndex
+            });
             const rect = node.getBoundingClientRect();
             const event = new MouseEvent('mouseup', {
               button: 0,
@@ -36793,12 +36880,12 @@ class EmittableSprite extends FreezableSprite {
               clientY: xy.y + rect.top,
               movementX: 0,
               movementY: 0,
-              relatedTarget: link,
+              relatedTarget: linkNode,
               screenX: xy.x,
               screenY: xy.y
-            }); // console.log('ModelPanelComponent.dispatchEvent', event);
+            });
+            linkNode.dispatchEvent(event); // console.log('ModelPanelComponent.dispatchEvent', event);
 
-            link.dispatchEvent(event);
             setTimeout(() => {
               DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
             }, 1);
@@ -36904,6 +36991,28 @@ class EmittableSprite extends FreezableSprite {
               const useCORS = results && results.find(x => x === true) != null; // !!! keep loose equality
               // console.log('ModelPanelComponent.getCanvasTexture.useCORS', useCORS);
 
+              /*
+              if (USE_DOM_TO_IMAGE) {
+              	domtoimage.toBlob(node, { cacheBust: true }).then(function(blob) {
+              		createImageBitmap(blob).then(function(imageBitmap) {
+              			const map = new THREE.Texture();
+              			map.image = imageBitmap;
+              			map.needsUpdate = true;
+              			this.item.panelTexture = {
+              				map: map,
+              				width: imageBitmap.width,
+              				height: imageBitmap.height,
+              			};
+              			resolve(this.item.panelTexture);
+              				}, error => {
+              			reject(error);
+              		});
+              	}, error => {
+              		reject(error);
+              	});
+              } else {
+              */
+
               html2canvas__default["default"](node, {
                 backgroundColor: '#ffffff00',
                 scale: 2,
@@ -36925,7 +37034,7 @@ class EmittableSprite extends FreezableSprite {
                 resolve(this.item.panelTexture);
               }, error => {
                 reject(error);
-              });
+              }); // }
             }
           });
         }
@@ -36941,7 +37050,15 @@ ModelPanelComponent.meta = {
     host: WorldComponent
   },
   outputs: ['over', 'out', 'down'],
-  inputs: ['item']
+  inputs: ['item'],
+  template:
+  /* html */
+  `
+		<div class="panel__title" [innerHTML]="item.title"></div>
+		<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+		<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
+		<a class="panel__link" [href]="link.href" target="_blank" rel="noopener" *for="let link of item.links" [innerHTML]="link.title"></a>
+	`
 };// import * as THREE from 'three';
 class ModelPictureComponent extends ModelComponent {
   onInit() {

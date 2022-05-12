@@ -211,12 +211,17 @@ export class MediaView extends View {
 }
 
 export class ViewItem {
-	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'viewId', 'hook', 'hookExtra', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
+	static allowedProps = ['id', 'type', 'title', 'abstract', 'asset', 'link', 'links', 'viewId', 'hook', 'hookExtra', 'keepOrientation', 'important', 'transparent', 'position', 'rotation', 'scale', 'radius', 'height', 'arc'];
 	constructor(options) {
 		if (options) {
 			Object.assign(this, options);
 		}
 		this.path = true;
+		const links = this.links || (this.link ? [this.link] : []);
+		this.links = links;
+	}
+	get firstLink() {
+		return (this.links && this.links.length) ? this.links[0] : null;
 	}
 	get payload() {
 		const payload = {};

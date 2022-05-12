@@ -742,14 +742,14 @@ export default class AgoraComponent extends Component {
 		}
 	}
 
-	onNavLink(item) {
-		// console.log('AgoraComponent.onNavLink', item);
-		ModalService.open$({ iframe: item.link.href }).pipe(
+	onNavLink(event) {
+		// console.log('AgoraComponent.onNavLink', event.link.href);
+		ModalService.open$({ iframe: event.link.href }).pipe(
 			first(),
-		).subscribe(event => {
+		).subscribe(_ => {
 			MessageService.send({
 				type: MessageType.NavLinkClose,
-				itemId: item.id,
+				itemId: event.item.id,
 			});
 		});
 	}
