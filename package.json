@@ -1,8 +1,8 @@
 {
   "author": "Luca Zampetti <lzampetti@gmail.com>",
-  "name": "beta-bhere",
-  "description": "beta-bhere",
-  "version": "1.0.6",
+  "name": "beta-bhere-development",
+  "description": "beta-bhere-development",
+  "version": "1.0.7",
   "license": "MIT",
   "repository": {
     "type": "git",
