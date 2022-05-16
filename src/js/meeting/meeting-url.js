@@ -284,4 +284,13 @@ export class MeetingUrl {
 		return window.btoa(JSON.stringify(params));
 	}
 
+	static validateParams(components) {
+		if (environment.flags.useEncryptedUrl) {
+			const p = MeetingUrl.encrypt(components);
+			return { p };
+		} else {
+			return components;
+		}
+	}
+
 }

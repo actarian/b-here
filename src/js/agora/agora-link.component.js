@@ -15,7 +15,7 @@ export default class AgoraLinkComponent extends Component {
 		const pathId = this.form.get('path').value;
 		const route = [RoutePipe.transform(':lang.selfServiceTour')];
 		if (pathId) {
-			route.push({ pathId });
+			route.push(MeetingUrl.validateParams({ pathId }));
 		}
 		return route;
 	}
