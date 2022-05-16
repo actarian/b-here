@@ -83,19 +83,6 @@
 	pathMapper: {
 		ssoLogin: (data) => {
 			/*
-			const roles = [
-				{ id: 1, name: 'Agenzia Certificata' },
-				{ id: 2, name: 'Centro Assistenza Autorizzato (Contratto)' },
-				{ id: 3, name: 'Dealer' },
-				{ id: 4, name: 'Progettista Certificato' },
-				{ id: 5, name: 'Distributore' },
-				{ id: 6, name: 'Installatore Certificato' },
-				{ id: 7, name: 'Ferroli partner' },
-				{ id: 8, name: 'Ferroli partner + ass' },
-				{ id: 9, name: 'Dipendenti' },
-				{ id: 10, name: 'Centro Assistenza Certificato' },
-				{ id: 11, name: 'Agenzia Autorizzata (Contratto)' },
-			];
 			const roles = {
 				'Agenzia Certificata': 1,
 				'Centro Assistenza Autorizzato (Contratto)': 2,
@@ -110,7 +97,7 @@
 				'Agenzia Autorizzata (Contratto)': 11,
 			};
 			*/
-			const pathId = [1, 2, 9, 11, 'Dealer'].indexOf(data.role) !== -1 ? 2 : 1;
+			const pathId = [1, 2, 3, 9, 11, 'Dealer'].indexOf(data.role) !== -1 ? 2 : 1;
 			console.log('environment.pathMapper.ssoLogin', pathId, data);
 			return pathId;
 		},
@@ -119,42 +106,6 @@
 			console.log('environment.pathMapper.selfService', pathId, data);
 			return pathId;
 		},
-		roles: [
-			{ pathId: 2, id: 1, name: 'Agenzia Certificata' },
-			{ pathId: 2, id: 2, name: 'Centro Assistenza Autorizzato (Contratto)' },
-			{ pathId: 1, id: 3, name: 'Dealer' },
-			{ pathId: 1, id: 4, name: 'Progettista Certificato' },
-			{ pathId: 1, id: 5, name: 'Distributore' },
-			{ pathId: 1, id: 6, name: 'Installatore Certificato' },
-			{ pathId: 1, id: 7, name: 'Ferroli partner' },
-			{ pathId: 1, id: 8, name: 'Ferroli partner + ass' },
-			{ pathId: 2, id: 9, name: 'Dipendenti' },
-			{ pathId: 1, id: 10, name: 'Centro Assistenza Certificato' },
-			{ pathId: 2, id: 11, name: 'Agenzia Autorizzata (Contratto)' },
-		],
-		default: 1,
-	},
-	selfServiceRedirects: {
-		ssoLogin: (data) => {
-			return 1;
-		},
-		selfService: (data) => {
-			return 1;
-		},
-		roles: [
-			{ pathId: 2, id: 1, name: 'Agenzia Certificata' },
-			{ pathId: 2, id: 2, name: 'Centro Assistenza Autorizzato (Contratto)' },
-			{ pathId: 1, id: 3, name: 'Dealer' },
-			{ pathId: 1, id: 4, name: 'Progettista Certificato' },
-			{ pathId: 1, id: 5, name: 'Distributore' },
-			{ pathId: 1, id: 6, name: 'Installatore Certificato' },
-			{ pathId: 1, id: 7, name: 'Ferroli partner' },
-			{ pathId: 1, id: 8, name: 'Ferroli partner + ass' },
-			{ pathId: 2, id: 9, name: 'Dipendenti' },
-			{ pathId: 1, id: 10, name: 'Centro Assistenza Certificato' },
-			{ pathId: 2, id: 11, name: 'Agenzia Autorizzata (Contratto)' },
-		],
-		default: 1,
 	},
 	flags: {
 		production: false,
