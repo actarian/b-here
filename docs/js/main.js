@@ -3920,6 +3920,17 @@ class MeetingId {
     return window.btoa(JSON.stringify(params));
   }
 
+  static validateParams(components) {
+    if (environment.flags.useEncryptedUrl) {
+      const p = MeetingUrl.encrypt(components);
+      return {
+        p
+      };
+    } else {
+      return components;
+    }
+  }
+
 }class RouterOutletStructure extends rxcomp.Structure {
   // host;
   // outlet;
@@ -5189,12 +5200,21 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
       status: 'access'
     };
 
-    window.onPopupClose = status => {
+    window.onSSOPopupClose = status => {
       if (status === 'success') {
         alert('Login Successful');
         UserService.me$().pipe(operators.first()).subscribe(user => {
-          console.log('AccessComponent.onInit.onPopupClose', user);
-          RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+          // console.log('AccessComponent.onInit.onSSOPopupClose', user);
+          const routeUrl = RoutePipe.transform(':lang.selfServiceTour');
+          const pathId = environment.pathMapper && environment.pathMapper.ssoLogin ? environment.pathMapper.ssoLogin(user) : null;
+
+          if (pathId) {
+            RouterService.setRouterLink(routeUrl, MeetingUrl.validateParams({
+              pathId
+            }));
+          } else {
+            RouterService.setRouterLink(routeUrl);
+          }
         });
       } else {
         alert('Login Failed');
@@ -5381,7 +5401,16 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
 
           case 'self-service-tour':
             this.onHandleHook('SelfServiceTour', payload).pipe(operators.first()).subscribe(response => {
-              RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+              const routeUrl = RoutePipe.transform(':lang.selfServiceTour');
+              const pathId = environment.pathMapper && environment.pathMapper.selfService ? environment.pathMapper.selfService(user) : null;
+
+              if (pathId) {
+                RouterService.setRouterLink(routeUrl, MeetingUrl.validateParams({
+                  pathId
+                }));
+              } else {
+                RouterService.setRouterLink(routeUrl);
+              }
             });
             break;
 
@@ -9926,9 +9955,9 @@ PathService.path$ = new rxjs.BehaviorSubject(DEFAULT_PATH);class AgoraLinkCompon
     const route = [RoutePipe.transform(':lang.selfServiceTour')];
 
     if (pathId) {
-      route.push({
+      route.push(MeetingUrl.validateParams({
         pathId
-      });
+      }));
     }
 
     return route;

@@ -5,6 +5,7 @@ import { first, takeUntil } from 'rxjs/operators';
 import { CHUNK_COPYRIGHT, CHUNK_CREDITS, CHUNK_LANGUAGE } from '../agora/agora.component.chunks';
 import { environment, STATIC } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
+import { MeetingUrl } from '../meeting/meeting-url';
 import { RoutePipe } from '../router/route.pipe';
 import { RouterOutletStructure } from '../router/router-outlet.structure';
 import { RouterService } from '../router/router.service';
@@ -19,14 +20,20 @@ export default class AccessComponent extends Component {
 			status: 'access',
 		};
 
-		window.onPopupClose = (status) => {
+		window.onSSOPopupClose = (status) => {
 			if (status === 'success') {
 				alert('Login Successful');
 				UserService.me$().pipe(
 					first(),
 				).subscribe((user) => {
-					console.log('AccessComponent.onInit.onPopupClose', user);
-					RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+					// console.log('AccessComponent.onInit.onSSOPopupClose', user);
+					const routeUrl = RoutePipe.transform(':lang.selfServiceTour');
+					const pathId = environment.pathMapper && environment.pathMapper.ssoLogin ? environment.pathMapper.ssoLogin(user) : null;
+					if (pathId) {
+						RouterService.setRouterLink(routeUrl, MeetingUrl.validateParams({ pathId }));
+					} else {
+						RouterService.setRouterLink(routeUrl);
+					}
 				});
 			} else {
 				alert('Login Failed');
@@ -191,7 +198,13 @@ export default class AccessComponent extends Component {
 						this.onHandleHook('SelfServiceTour', payload).pipe(
 							first(),
 						).subscribe(response => {
-							RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
+							const routeUrl = RoutePipe.transform(':lang.selfServiceTour');
+							const pathId = environment.pathMapper && environment.pathMapper.selfService ? environment.pathMapper.selfService(user) : null;
+							if (pathId) {
+								RouterService.setRouterLink(routeUrl, MeetingUrl.validateParams({ pathId }));
+							} else {
+								RouterService.setRouterLink(routeUrl);
+							}
 						});
 						break;
 					case 'login':

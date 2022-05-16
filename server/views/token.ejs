@@ -7,7 +7,7 @@ var status = '<%= status %>';
 window.onunload = function() {
 	var opener = window.opener;
 	if (opener && !opener.closed) {
-		opener.onPopupClose(status);
+		opener.onSSOPopupClose(status);
 	}
 };
 window.close();
