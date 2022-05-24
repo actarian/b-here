@@ -3,6 +3,27 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.10] - 2022-05-24
+
+### Added
+- Menu Texture multiline
+
+---
+
+## [1.0.9] - 2022-05-16
+
+### Added
+- Nav multilinks
+
+---
+
+## [1.0.8] - 2022-05-12
+
+### Added
+- Single Sign On
+
+---
+
 ## [1.0.6] - 2022-04-11
 
 ### Added
