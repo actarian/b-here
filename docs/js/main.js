@@ -35068,9 +35068,8 @@ ModelGridComponent.meta = {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = environment.colors.menuBackground;
     ctx.fillRect(0, 0, w, h);
-    ctx.font = `20px ${environment.fontFamily}`;
     ctx.fillStyle = environment.colors.menuForeground;
-    ctx.fillText(text, 10, 50, w - 20);
+    this.writeText(ctx, text, w, h);
     const texture = new THREE.CanvasTexture(canvas);
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
@@ -35089,14 +35088,54 @@ ModelGridComponent.meta = {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = environment.colors.menuOverBackground;
     ctx.fillRect(0, 0, w, h);
-    ctx.font = `20px ${environment.fontFamily}`;
     ctx.fillStyle = environment.colors.menuOverForeground;
-    ctx.fillText(text, 10, 50, w - 20);
+    this.writeText(ctx, text, w, h);
     const texture = new THREE.CanvasTexture(canvas); // texture.encoding = THREE.sRGBEncoding;
 
     texture.magFilter = THREE.LinearFilter;
     texture.needsUpdate = true;
     return texture;
+  }
+
+  writeText(ctx, text, w, h) {
+    this.setFont(ctx);
+    const lineHeight = MenuButton.FONT_SIZE * MenuButton.LINE_HEIGHT;
+    const lines = this.getLines(ctx, text, w);
+    const lineCount = lines.length;
+    this.setFont(ctx, lineCount - 1);
+    lines.forEach((line, i) => {
+      ctx.fillText(line, 10, (h - lineCount * lineHeight) * 0.5 + (0.5 + i) * lineHeight, w - 20);
+    });
+  }
+
+  setFont(ctx, diff) {
+    if (diff === void 0) {
+      diff = 0;
+    }
+
+    ctx.textBaseline = 'middle';
+    ctx.font = `${MenuButton.FONT_SIZE - diff * 2}px ${environment.fontFamily}`;
+  }
+
+  getLines(ctx, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const width = ctx.measureText(currentLine + ' ' + word).width;
+
+      if (width < maxWidth) {
+        currentLine += ' ' + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+
+    lines.push(currentLine);
+    return lines;
   }
 
   onOver() {
@@ -35135,6 +35174,9 @@ ModelGridComponent.meta = {
   }
 
 }
+MenuButton.FONT_SIZE = 19; // 20
+
+MenuButton.LINE_HEIGHT = 0.9;
 MenuButton.W = 256;
 MenuButton.H = 64;
 MenuButton.G = 2;
@@ -35153,8 +35195,8 @@ class BackButton extends MenuButton {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = environment.colors.menuBackBackground;
     ctx.fillRect(0, 0, w, h);
-    ctx.font = `20px ${environment.fontFamily}`;
     ctx.fillStyle = environment.colors.menuBackForeground;
+    ctx.font = `${MenuButton.FONT_SIZE}px ${environment.fontFamily}`;
     ctx.fillText(text, 10, 50, w - 20);
     const texture = new THREE.CanvasTexture(canvas);
     texture.minFilter = THREE.LinearFilter;
@@ -35173,8 +35215,8 @@ class BackButton extends MenuButton {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = environment.colors.menuBackOverBackground;
     ctx.fillRect(0, 0, w, h);
-    ctx.font = `20px ${environment.fontFamily}`;
     ctx.fillStyle = environment.colors.menuBackOverForeground;
+    ctx.font = `${MenuButton.FONT_SIZE}px ${environment.fontFamily}`;
     ctx.fillText(text, 10, 50, w - 20);
     const texture = new THREE.CanvasTexture(canvas); // texture.encoding = THREE.sRGBEncoding;
 
