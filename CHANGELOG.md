@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.11] - 2022-05-26
+
+### Modified
+- WebHook payload
+
+---
+
 ## [1.0.10] - 2022-05-24
 
 ### Added
