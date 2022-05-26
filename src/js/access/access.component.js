@@ -180,6 +180,14 @@ export default class AccessComponent extends Component {
 		if (this.form.valid) {
 			this.form.submitted = true;
 			const payload = this.form.value;
+			const webhookPayload = { ...payload };
+			const controls = this.controls;
+			Object.keys(webhookPayload).forEach(key => {
+				if (controls[key].options) {
+					const options = controls[key].options;
+					webhookPayload[key] = options.find(option => option.id === webhookPayload[key]).name;
+				}
+			});
 			const status = this.state.status;
 			UserService.resolve$(payload, status).pipe(
 				first(),
@@ -187,7 +195,7 @@ export default class AccessComponent extends Component {
 				// console.log('AccessComponent.onSubmit', response);
 				switch (status) {
 					case 'guided-tour':
-						this.onHandleHook('GuidedTour', payload).pipe(
+						this.onHandleHook('GuidedTour', webhookPayload).pipe(
 							first(),
 						).subscribe(response => {
 							this.state.status = 'guided-tour-success';
@@ -195,7 +203,7 @@ export default class AccessComponent extends Component {
 						});
 						break;
 					case 'self-service-tour':
-						this.onHandleHook('SelfServiceTour', payload).pipe(
+						this.onHandleHook('SelfServiceTour', webhookPayload).pipe(
 							first(),
 						).subscribe(response => {
 							const routeUrl = RoutePipe.transform(':lang.selfServiceTour');
