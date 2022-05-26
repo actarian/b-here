@@ -4164,7 +4164,46 @@ AccessCodeComponent.meta = {
 			${CHUNK_LANGUAGE}
 		</div>
 	`
-};class ControlsComponent extends rxcomp.Component {
+};function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    enumerableOnly && (symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    })), keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}class ControlsComponent extends rxcomp.Component {
   get group() {
     if (this.formGroup) {
       return this.formGroup;
@@ -5328,19 +5367,29 @@ WebhookService.event$_ = rxjs.fromEvent(window, 'message').pipe(operators.map(ev
     if (this.form.valid) {
       this.form.submitted = true;
       const payload = this.form.value;
+
+      const webhookPayload = _objectSpread2({}, payload);
+
+      const controls = this.controls;
+      Object.keys(webhookPayload).forEach(key => {
+        if (controls[key].options) {
+          const options = controls[key].options;
+          webhookPayload[key] = options.find(option => option.id === webhookPayload[key]).name;
+        }
+      });
       const status = this.state.status;
       UserService.resolve$(payload, status).pipe(operators.first()).subscribe(response => {
         // console.log('AccessComponent.onSubmit', response);
         switch (status) {
           case 'guided-tour':
-            this.onHandleHook('GuidedTour', payload).pipe(operators.first()).subscribe(response => {
+            this.onHandleHook('GuidedTour', webhookPayload).pipe(operators.first()).subscribe(response => {
               this.state.status = 'guided-tour-success';
               this.pushChanges();
             });
             break;
 
           case 'self-service-tour':
-            this.onHandleHook('SelfServiceTour', payload).pipe(operators.first()).subscribe(response => {
+            this.onHandleHook('SelfServiceTour', webhookPayload).pipe(operators.first()).subscribe(response => {
               RouterService.setRouterLink(RoutePipe.transform(':lang.selfServiceTour'));
             });
             break;
@@ -20765,45 +20814,6 @@ function toTrianglesDrawMode( geometry, drawMode ) {
 
 	return newGeometry;
 
-}function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    enumerableOnly && (symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    })), keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = null != arguments[i] ? arguments[i] : {};
-    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-      _defineProperty(target, key, source[key]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-    });
-  }
-
-  return target;
-}
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
 }/**
  * @webxr-input-profiles/motion-controllers 1.0.0 https://github.com/immersive-web/webxr-input-profiles
  */
