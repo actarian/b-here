@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.11
+ * @license beta-bhere-development v1.0.12
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -281,7 +281,7 @@ const CHUNK_COPYRIGHT =
 /* html */
 `
 <!-- copyright -->
-<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'copyright' | label"></span> - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
+<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'copyright' | label"></span> <span *if="'privacy_policy' | label">-</span> <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label"></a> <span *if="'terms_of_service' | label">-</span> <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label"></a></span>
 `;
 const CHUNK_LANGUAGE =
 /* html */
@@ -4325,7 +4325,7 @@ function patchFields(fields, form) {
     }
 
     const labels = LabelPipe.labels;
-    let label = labels[key] || key; // `#${key}#`;
+    let label = labels[key] != null ? labels[key] : key; // `#${key}#`;
 
     if (typeof label === 'string' && label.indexOf('@copy') !== -1) {
       label = label.replace('@copy', this.getCopy());
@@ -11408,25 +11408,28 @@ const AssetGroupType = {
   // AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
 
 };
+function AssetGroupTypeInit() {
+  console.log('environment.flags.editorAssetScreen', environment.flags.editorAssetScreen, environment);
 
-if (environment.flags.editorAssetScreen) {
-  AssetGroupType.PublisherScreen = {
-    id: 5,
-    name: 'PublisherScreen',
-    ids: [6]
-  };
-  AssetGroupType.AttendeeScreen = {
-    id: 6,
-    name: 'AttendeeScreen',
-    ids: [7]
+  if (environment.flags.editorAssetScreen) {
+    AssetGroupType.PublisherScreen = {
+      id: 5,
+      name: 'PublisherScreen',
+      ids: [6]
+    };
+    AssetGroupType.AttendeeScreen = {
+      id: 6,
+      name: 'AttendeeScreen',
+      ids: [7]
+    };
+  }
+
+  AssetGroupType.SmartDevice = {
+    id: 7,
+    name: 'Smart Device',
+    ids: [8]
   };
 }
-
-AssetGroupType.SmartDevice = {
-  id: 7,
-  name: 'Smart Device',
-  ids: [8]
-};
 const STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name, AssetType.SmartDeviceStream.name];
 function assetIsStream(asset) {
   return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
@@ -28722,6 +28725,7 @@ TryInARComponent.meta = {
 		</svg>
 	`;class AppComponent extends rxcomp.Component {
   onInit() {
+    AssetGroupTypeInit();
     RouterService.event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(event => {
       const route = event.route;
 

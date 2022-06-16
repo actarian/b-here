@@ -30,12 +30,14 @@ export const AssetGroupType = {
 	// AttendeeScreen: { id: 6, name: 'AttendeeScreen', ids: [7] },
 };
 
-if (environment.flags.editorAssetScreen) {
-	AssetGroupType.PublisherScreen = { id: 5, name: 'PublisherScreen', ids: [6] };
-	AssetGroupType.AttendeeScreen = { id: 6, name: 'AttendeeScreen', ids: [7] };
+export function AssetGroupTypeInit() {
+	console.log('environment.flags.editorAssetScreen', environment.flags.editorAssetScreen, environment);
+	if (environment.flags.editorAssetScreen) {
+		AssetGroupType.PublisherScreen = { id: 5, name: 'PublisherScreen', ids: [6] };
+		AssetGroupType.AttendeeScreen = { id: 6, name: 'AttendeeScreen', ids: [7] };
+	}
+	AssetGroupType.SmartDevice = { id: 7, name: 'Smart Device', ids: [8] };
 }
-
-AssetGroupType.SmartDevice = { id: 7, name: 'Smart Device', ids: [8] };
 
 export const STREAM_TYPES = [
 	AssetType.PublisherStream.name,

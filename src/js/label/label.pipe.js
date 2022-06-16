@@ -13,7 +13,7 @@ export class LabelPipe extends Pipe {
 				return this.getCopy();
 		}
 		const labels = LabelPipe.labels;
-		let label = labels[key] || key; // `#${key}#`;
+		let label = labels[key] != null ? labels[key] : key; // `#${key}#`;
 		if (typeof label === 'string' && label.indexOf('@copy') !== -1) {
 			label = label.replace('@copy', this.getCopy());
 		}

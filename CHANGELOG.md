@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.12] - 2022-06-16
+
+### Fixing
+- AssetGroupType list
+
+---
+
 ## [1.0.11] - 2022-05-26
 
 ### Modified

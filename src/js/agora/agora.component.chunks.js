@@ -256,7 +256,7 @@ export const CHUNK_CREDITS = /* html */`
 
 export const CHUNK_COPYRIGHT = /* html */`
 <!-- copyright -->
-<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'copyright' | label"></span> - <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label">Privacy Policy</a> - <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label">Terms of Service</a></span>
+<span *if="'gdprRoutes' | flag"> <span [innerHTML]="'copyright' | label"></span> <span *if="'privacy_policy' | label">-</span> <a [routerLink]="':lang.privacy' | route" class="btn--colophon" [innerHTML]="'privacy_policy' | label"></a> <span *if="'terms_of_service' | label">-</span> <a [routerLink]="':lang.terms' | route" class="btn--colophon" [innerHTML]="'terms_of_service' | label"></a></span>
 `;
 
 export const CHUNK_LANGUAGE = /* html */`

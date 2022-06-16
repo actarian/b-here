@@ -1,6 +1,7 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
 import { AppRoutes } from './app.routes';
+import { AssetGroupTypeInit } from './asset/asset';
 import { environment } from './environment';
 import { LanguageService } from './language/language.service';
 import { RouterService } from './router/router.service';
@@ -9,6 +10,8 @@ import { SVG_CHUNK } from './svg/svg.chunks';
 export default class AppComponent extends Component {
 
 	onInit() {
+		AssetGroupTypeInit();
+
 		RouterService.event$.pipe(
 			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
