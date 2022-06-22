@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.13] - 2022-06-22
+
+### Modified
+- Updated AgoraRTCSdk 3.6.11, AgoraRTMSdk 1.4.5
+
+---
+
 ## [1.0.12] - 2022-06-16
 
 ### Fixing

@@ -11409,8 +11409,7 @@ const AssetGroupType = {
 
 };
 function AssetGroupTypeInit() {
-  console.log('environment.flags.editorAssetScreen', environment.flags.editorAssetScreen, environment);
-
+  // console.log('environment.flags.editorAssetScreen', environment.flags.editorAssetScreen, environment);
   if (environment.flags.editorAssetScreen) {
     AssetGroupType.PublisherScreen = {
       id: 5,
