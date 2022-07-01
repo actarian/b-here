@@ -109,7 +109,7 @@ NavmapBuilderComponent.meta = {
 						<img draggable="false" [src]="navmap.asset | asset" *if="navmap.asset" />
 						<div class="navmap__item" [style]="{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }" (mousedown)="onMoveItem($event, item)" (click)="onRemoveItem(item)" *for="let item of navmap.items">
 							<img draggable="false" [src]="'textures/ui/nav-point.png' | asset" />
-							<div class="title" [innerHTML]="item.title"></div>
+							<div class="title" [innerHTML]="item.title" *if="item.title"></div>
 						</div>
 					</div>
 					<ul class="navmap-control__toolbar">

@@ -125,7 +125,18 @@ footer {
 
 	@include media-down(xs) {
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
+		height: auto;
+
+		.btn--absolute {
+			order: 1;
+			margin-bottom: 20px;
+		}
+
+		.group--colophon {
+			order:2;
+		}
 
 		.btn--credits {
 			display: none;

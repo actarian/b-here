@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.14] - 2022-07-01
+
+### Modified
+- AppRoutes, Panorama, NavMap, UpdateView, Editor, css
+
+---
+
 ## [1.0.13] - 2022-06-22
 
 ### Modified

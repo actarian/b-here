@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.12
+ * @license beta-bhere-development v1.0.14
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -247,7 +247,7 @@ const CHUNK_NAVMAP =
 	<img draggable="false" [src]="navmap.asset | asset" *if="navmap.asset" />
 	<div class="navmap__item" [style]="{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }" (click)="onNavmapItem(item)" *for="let item of navmap.items">
 		<img draggable="false" [src]="'textures/ui/nav-point.png' | asset" />
-		<div class="title" [innerHTML]="item.title"></div>
+		<div class="title" [innerHTML]="item.title" *if="item.title"></div>
 	</div>
 </div>
 `;
@@ -287,7 +287,7 @@ const CHUNK_LANGUAGE =
 /* html */
 `
 <!-- language -->
-<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+<div class="group--language" language *if="state.status != 'connected'"></div>
 `;
 const CHUNK_VIRTUAL_TOUR =
 /* html */
@@ -4512,6 +4512,14 @@ LabelPipe.meta = {
   }
 
   static setLanguage$(language) {
+    if (typeof language === 'string') {
+      language = this.languages.find(x => x.lang === language);
+    }
+
+    if (!language) {
+      return;
+    }
+
     const url = environment.flags.production ? `/api/${language.lang}/labels/` : `./api/${language.lang}/labels.json`;
     return rxjs.from(fetch(url).then(response => {
       return response.json();
@@ -5556,7 +5564,7 @@ AccessComponent.meta = {
 								<span class="status-message" [innerHTML]="error.statusMessage"></span>
 								<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
 							</div>
-							<div class="info" *if="isValid()" [innerHTML]="'access_take_part' | label"></div>
+							<!-- <div class="info" *if="isValid()" [innerHTML]="'access_take_part' | label"></div> -->
 							<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 								<span *if="!form.submitted" [innerHTML]="'access_send' | label"></span>
 								<span *if="form.submitted" [innerHTML]="'access_sent' | label"></span>
@@ -15876,6 +15884,18 @@ class Panorama {
     });
   }
 
+  getLocalizedAsset(asset) {
+    if (asset && asset.locale) {
+      const localizedAsset = asset.locale[LanguageService.lang];
+
+      if (localizedAsset) {
+        asset = localizedAsset;
+      }
+    }
+
+    return asset;
+  }
+
   load(item, renderer, callback) {
     const asset = item.type.name === ViewType.Media.name ? Asset.defaultMediaAsset : item.asset;
 
@@ -15891,9 +15911,11 @@ class Panorama {
       return;
     }
 
-    this.currentAsset = asset.folder + asset.file;
-    PanoramaLoader.load(asset, renderer, (texture, rgbe) => {
-      if (asset.folder + asset.file !== this.currentAsset) {
+    const localizedAsset = this.getLocalizedAsset(asset);
+    console.log('Panorama.load.localizedAsset', localizedAsset, 'asset', asset);
+    this.currentAsset = localizedAsset.folder + localizedAsset.file;
+    PanoramaLoader.load(localizedAsset, renderer, (texture, rgbe) => {
+      if (localizedAsset.folder + localizedAsset.file !== this.currentAsset) {
         texture.dispose();
         return;
       }
@@ -21649,13 +21671,16 @@ class WorldComponent extends rxcomp.Component {
     this.loading = null;
     this.waiting = null;
     this.avatars = {};
-    this.createScene();
-    this.setView();
+    this.createScene(); // this.setView();
+
     this.addListeners();
     this.animate(); // !!!
 
     KeyboardService.keys$().pipe(operators.takeUntil(this.unsubscribe$)).subscribe(keys => {
       this.keys = keys; // console.log(keys);
+    });
+    LanguageService.lang$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(_ => {
+      this.setView();
     });
   }
   /*
@@ -28087,7 +28112,7 @@ LayoutComponent.meta = {
 		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
 			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
 		</a>
-		<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+		<div class="group--language" language *if="state.status != 'connected'"></div>
 	</div>
 	`
 };class TryInARComponent extends rxcomp.Component {
@@ -28230,10 +28255,11 @@ TryInARComponent.meta = {
 			</div>
 		</div>
 	`
-};const AppRoutes = [{
+};console.log('environment.defaultLanguage', environment.defaultLanguage);
+const AppRoutes = [{
   name: 'index',
   path: '/',
-  forwardTo: 'it'
+  forwardTo: environment.defaultLanguage || 'it'
 }, // it
 {
   name: 'it',
@@ -28734,6 +28760,9 @@ TryInARComponent.meta = {
 
       const routes = AppRoutes;
       LanguageService.setRoute(route, routes);
+    });
+    LanguageService.lang$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(_ => {
+      this.pushChanges();
     });
     const {
       node
@@ -30613,7 +30642,7 @@ NavmapBuilderComponent.meta = {
 						<img draggable="false" [src]="navmap.asset | asset" *if="navmap.asset" />
 						<div class="navmap__item" [style]="{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }" (mousedown)="onMoveItem($event, item)" (click)="onRemoveItem(item)" *for="let item of navmap.items">
 							<img draggable="false" [src]="'textures/ui/nav-point.png' | asset" />
-							<div class="title" [innerHTML]="item.title"></div>
+							<div class="title" [innerHTML]="item.title" *if="item.title"></div>
 						</div>
 					</div>
 					<ul class="navmap-control__toolbar">
@@ -31668,14 +31697,14 @@ UpdateViewComponent.meta = {
 				<div control-text [control]="controls.name" label="Name"></div>
 			</div>
 			<div class="form-controls" *if="view.type.name == 'waiting-room'">
-				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
+				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
 			</div>
 			<div class="form-controls" *if="view.type.name == 'panorama'">
 				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
-				<div control-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4"></div>
+				<div control-localized-asset [control]="controls.asset" label="Image or Video" accept="image/jpeg, video/mp4"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
@@ -31695,7 +31724,7 @@ UpdateViewComponent.meta = {
 			</div>
 			<div class="form-controls" *if="view.type.name == 'model'">
 				<div control-checkbox [control]="controls.hidden" label="Hide from menu"></div>
-				<div control-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
+				<div control-localized-asset [control]="controls.asset" label="Image" accept="image/jpeg"></div>
 				<div control-text [control]="controls.latitude" label="Latitude" [disabled]="true"></div>
 				<div control-text [control]="controls.longitude" label="Longitude" [disabled]="true"></div>
 				<div control-text [control]="controls.zoom" label="Zoom" [disabled]="true"></div>
@@ -32437,7 +32466,7 @@ ControlLinkComponent.meta = {
     this.disabled = this.disabled || false;
     this.accept = this.accept || 'image/png, image/jpeg';
     this.languages = environment.languages;
-    this.currentLanguage = environment.defaultLanguage;
+    this.currentLanguage = LanguageService.lang;
     const {
       node
     } = rxcomp.getContext(this);
@@ -32454,8 +32483,10 @@ ControlLinkComponent.meta = {
   }
 
   setLanguage(language) {
-    this.currentLanguage = language;
-    this.pushChanges();
+    LanguageService.setLanguage$(language).pipe(operators.first()).subscribe(_ => {
+      this.currentLanguage = language;
+      this.pushChanges();
+    });
   }
 
 }

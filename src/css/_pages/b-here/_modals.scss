@@ -81,7 +81,7 @@
 		}
 	}
 
-	span + img {
+	span+img {
 		display: initial !important;
 	}
 }
@@ -358,7 +358,8 @@
 		border-collapse: collapse;
 		border-spacing: 0;
 
-		th, td {
+		th,
+		td {
 			padding: 1px 8px;
 
 			&:first-child {
@@ -425,6 +426,7 @@ model-viewer {
 	border-radius: 10px;
 	overflow: hidden;
 	background: white;
+
 	@include media-down(xs) {
 		width: 100vw;
 		height: 100vh;
@@ -438,6 +440,15 @@ model-viewer {
 
 	.modal__content {
 		flex: 1 0 auto;
+	}
+
+	.btn--close {
+		background: rgba(0, 0, 0, 0.3);
+		color: white;
+
+		&:hover {
+			background: transparent;
+		}
 	}
 
 	iframe {

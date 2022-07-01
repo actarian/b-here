@@ -1,9 +1,10 @@
 import { getContext } from 'rxcomp';
 import { combineLatest } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { AssetService } from '../asset/asset.service';
 import { DropService } from '../drop/drop.service';
 import { environment } from '../environment';
+import { LanguageService } from '../language/language.service';
 import ControlComponent from './control.component';
 
 export default class ControlLocalizedAssetComponent extends ControlComponent {
@@ -24,7 +25,7 @@ export default class ControlLocalizedAssetComponent extends ControlComponent {
 		this.disabled = this.disabled || false;
 		this.accept = this.accept || 'image/png, image/jpeg';
 		this.languages = environment.languages;
-		this.currentLanguage = environment.defaultLanguage;
+		this.currentLanguage = LanguageService.lang;
 		const { node } = getContext(this);
 		const input = node.querySelector('input');
 		input.setAttribute('accept', this.accept);
@@ -46,8 +47,12 @@ export default class ControlLocalizedAssetComponent extends ControlComponent {
 	}
 
 	setLanguage(language) {
-		this.currentLanguage = language;
-		this.pushChanges();
+		LanguageService.setLanguage$(language).pipe(
+			first(),
+		).subscribe(_ => {
+			this.currentLanguage = language;
+			this.pushChanges();
+		});
 	}
 }
 

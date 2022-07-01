@@ -581,7 +581,7 @@ LayoutComponent.meta = {
 		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener" *if="state.status != 'connected'">
 			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
 		</a>
-		<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+		<div class="group--language" language *if="state.status != 'connected'"></div>
 	</div>
 	`
 };

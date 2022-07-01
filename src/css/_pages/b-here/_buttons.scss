@@ -130,8 +130,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -146,11 +146,12 @@
 	&:visited {
 		background: transparent;
 		border-color: rgba(255, 255, 255, 0.2);
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&:hover {
-		opacity: 1;
+		border-color: rgba(255, 255, 255, 0.4);
+		color: rgba(255, 255, 255, 1);
 	}
 }
 
@@ -159,8 +160,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -175,7 +176,7 @@
 	&:visited {
 		background: transparent;
 		border-color: rgba(255, 255, 255, 0.2);
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&.disabled {
@@ -188,7 +189,8 @@
 	}
 
 	&:hover {
-		opacity: 1;
+		border-color: rgba(255, 255, 255, 0.4);
+		color: rgba(255, 255, 255, 1);
 	}
 }
 
@@ -197,8 +199,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -212,7 +214,7 @@
 	&:focus,
 	&:visited {
 		background: transparent;
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&.disabled {
@@ -225,7 +227,7 @@
 	}
 
 	&:hover {
-		opacity: 1;
+		color: rgba(255, 255, 255, 1);
 	}
 }
 
@@ -234,8 +236,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -250,7 +252,7 @@
 	&:visited {
 		background: transparent;
 		border-color: transparent;
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&.disabled {
@@ -260,11 +262,11 @@
 
 	&.active {
 		border-color: rgba(255, 255, 255, 0.2);
-		opacity: 1;
+		color: rgba(255, 255, 255, 1);
 	}
 
 	&:hover {
-		opacity: 1;
+		color: rgba(255, 255, 255, 1);
 	}
 }
 
@@ -273,8 +275,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -288,7 +290,7 @@
 	&:focus,
 	&:visited {
 		background: transparent;
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&.disabled {
@@ -297,7 +299,7 @@
 	}
 
 	&:hover {
-		opacity: 1;
+		color: rgba(255, 255, 255, 1);
 	}
 }
 
@@ -306,8 +308,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -322,14 +324,13 @@
 	&:visited {
 		background: transparent;
 		border-color: rgba(255, 255, 255, 0.2);
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&:hover {
 		background: transparent;
-		border-color: rgba(255, 255, 255, 0.2);
-		color: $foreground-secondary;
-		opacity: 1;
+		border-color: rgba(255, 255, 255, 0.4);
+		color: rgba(255, 255, 255, 1);
 	}
 
 	&.active {
@@ -351,8 +352,8 @@
 	width: 40px;
 	height: 40px;
 	border: 2px solid transparent;
-	opacity: 0.4;
-	transition: opacity ease-in-out $fastest;
+	filter: drop-shadow(0 2px 3px rgba(0,0,0,.5));
+	transition: all ease-in-out $fastest;
 
 	&>svg {
 		width: 18px;
@@ -367,14 +368,13 @@
 	&:visited {
 		background: transparent;
 		border-color: rgba(255, 255, 255, 0.2);
-		color: $foreground-negative;
+		color: rgba(238, 238, 238, 1);
 	}
 
 	&:hover {
 		background: transparent;
-		border-color: rgba(255, 255, 255, 0.2);
-		color: $foreground-secondary;
-		opacity: 1;
+		border-color: rgba(255, 255, 255, 0.4);
+		color: rgba(255, 255, 255, 1);
 	}
 
 	&.active {

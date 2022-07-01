@@ -1,5 +1,6 @@
 // import * as THREE from 'three';
 import { Asset, AssetType } from '../../asset/asset';
+import { LanguageService } from '../../language/language.service';
 import StateService from '../../state/state.service';
 import { PanoramaGridView, ViewType } from '../../view/view';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -248,6 +249,16 @@ export default class Panorama {
 		});
 	}
 
+	getLocalizedAsset(asset) {
+		if (asset && asset.locale) {
+			const localizedAsset = asset.locale[LanguageService.lang];
+			if (localizedAsset) {
+				asset = localizedAsset;
+			}
+		}
+		return asset;
+	}
+
 	load(item, renderer, callback) {
 		const asset = item.type.name === ViewType.Media.name ? Asset.defaultMediaAsset : item.asset;
 		if (!asset) {
@@ -259,9 +270,11 @@ export default class Panorama {
 			}
 			return;
 		}
-		this.currentAsset = asset.folder + asset.file;
-		PanoramaLoader.load(asset, renderer, (texture, rgbe) => {
-			if (asset.folder + asset.file !== this.currentAsset) {
+		const localizedAsset = this.getLocalizedAsset(asset);
+		console.log('Panorama.load.localizedAsset', localizedAsset, 'asset', asset);
+		this.currentAsset = localizedAsset.folder + localizedAsset.file;
+		PanoramaLoader.load(localizedAsset, renderer, (texture, rgbe) => {
+			if (localizedAsset.folder + localizedAsset.file !== this.currentAsset) {
 				texture.dispose();
 				return;
 			}

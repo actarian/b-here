@@ -72,6 +72,12 @@ export class LanguageService {
 	}
 
 	static setLanguage$(language) {
+		if (typeof language === 'string') {
+			language = this.languages.find(x => x.lang === language);
+		}
+		if (!language) {
+			return;
+		}
 		const url = (environment.flags.production ? `/api/${language.lang}/labels/` : `./api/${language.lang}/labels.json`);
 		return from(fetch(url).then(response => {
 			return response.json();

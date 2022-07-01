@@ -2,12 +2,15 @@ import AccessCodeComponent from './access/access-code.component';
 import AccessComponent from './access/access.component';
 import AgoraComponent from './agora/agora.component';
 import EditorComponent from './editor/editor.component';
+import { environment } from './environment';
 import { GenericComponent } from './generic/generic.component';
 import LayoutComponent from './layout/layout.component';
 import TryInARComponent from './try-in-ar/try-in-ar.component';
 
+console.log('environment.defaultLanguage', environment.defaultLanguage);
+
 export const AppRoutes = [
-	{ name: 'index', path: '/', forwardTo: 'it' },
+	{ name: 'index', path: '/', forwardTo: environment.defaultLanguage || 'it' },
 	// it
 	{ name: 'it', path: '/it', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },
 	{ name: 'it.access', path: '/accesso', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },

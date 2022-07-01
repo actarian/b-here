@@ -226,7 +226,7 @@ export const CHUNK_NAVMAP = /* html */`
 	<img draggable="false" [src]="navmap.asset | asset" *if="navmap.asset" />
 	<div class="navmap__item" [style]="{ left: item.position[0] * 100 + '%', top: item.position[1] * 100 + '%' }" (click)="onNavmapItem(item)" *for="let item of navmap.items">
 		<img draggable="false" [src]="'textures/ui/nav-point.png' | asset" />
-		<div class="title" [innerHTML]="item.title"></div>
+		<div class="title" [innerHTML]="item.title" *if="item.title"></div>
 	</div>
 </div>
 `;
@@ -261,7 +261,7 @@ export const CHUNK_COPYRIGHT = /* html */`
 
 export const CHUNK_LANGUAGE = /* html */`
 <!-- language -->
-<div class="group--language" language (set)="pushChanges()" *if="state.status != 'connected'"></div>
+<div class="group--language" language *if="state.status != 'connected'"></div>
 `;
 
 export const CHUNK_VIRTUAL_TOUR = /* html */`

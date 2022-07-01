@@ -304,7 +304,7 @@ AccessComponent.meta = {
 								<span class="status-message" [innerHTML]="error.statusMessage"></span>
 								<span class="friendly-message" [innerHTML]="error.friendlyMessage"></span>
 							</div>
-							<div class="info" *if="isValid()" [innerHTML]="'access_take_part' | label"></div>
+							<!-- <div class="info" *if="isValid()" [innerHTML]="'access_take_part' | label"></div> -->
 							<button type="submit" class="btn--next" [class]="{ disabled: !isValid() }">
 								<span *if="!form.submitted" [innerHTML]="'access_send' | label"></span>
 								<span *if="form.submitted" [innerHTML]="'access_sent' | label"></span>

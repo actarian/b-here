@@ -7,6 +7,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { MessageType, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
+import { LanguageService } from '../language/language.service';
 import LoaderService from '../loader/loader.service';
 import { MessageService } from '../message/message.service';
 import { ModalService } from '../modal/modal.service';
@@ -142,7 +143,7 @@ export default class WorldComponent extends Component {
 		this.waiting = null;
 		this.avatars = {};
 		this.createScene();
-		this.setView();
+		// this.setView();
 		this.addListeners();
 		this.animate(); // !!!
 		KeyboardService.keys$().pipe(
@@ -150,6 +151,11 @@ export default class WorldComponent extends Component {
 		).subscribe(keys => {
 			this.keys = keys;
 			// console.log(keys);
+		});
+		LanguageService.lang$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(_ => {
+			this.setView();
 		});
 	}
 

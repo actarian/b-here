@@ -23,6 +23,12 @@ export default class AppComponent extends Component {
 			LanguageService.setRoute(route, routes);
 		});
 
+		LanguageService.lang$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(_ => {
+			this.pushChanges();
+		});
+
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 	}

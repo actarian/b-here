@@ -109,18 +109,20 @@ function serve(options) {
 	const isDist = process.env.npm_config_dist;
 	console.log('isDist', isDist);
 
+	const defaultLanguage = 'en';
+
 	app.get('/', function(request, response) {
-		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__it.html` : '/docs/index__it.html'));
+		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${defaultLanguage}.html` : `/docs/index__${defaultLanguage}.html`));
 	});
 
 	app.get('/:lang/', function(request, response) {
 		console.log(request.params);
-		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${request.params.lang}.html` : '/docs/index__it.html'));
+		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${request.params.lang}.html` : `/docs/index__${request.params.lang}.html`));
 	});
 
 	app.get('/:lang/:path/', function(request, response) {
 		console.log(request.params);
-		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${request.params.lang}.html` : '/docs/index__it.html'));
+		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${request.params.lang}.html` : `/docs/index__${request.params.lang}.html`));
 	});
 
 	app.listen(options.port, () => {
