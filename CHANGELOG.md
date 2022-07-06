@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.15] - 2022-07-06
+
+### Fixing
+- AppRoutes
+
+---
+
 ## [1.0.14] - 2022-07-01
 
 ### Modified

@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.14
+ * @license beta-bhere-development v1.0.15
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -28256,7 +28256,7 @@ TryInARComponent.meta = {
 		</div>
 	`
 };console.log('environment.defaultLanguage', environment.defaultLanguage);
-const AppRoutes = [{
+const AppRoutesInit = () => [{
   name: 'index',
   path: '/',
   forwardTo: environment.defaultLanguage || 'it'
@@ -28750,6 +28750,8 @@ const AppRoutes = [{
 		</svg>
 	`;class AppComponent extends rxcomp.Component {
   onInit() {
+    const routes = AppRoutesInit();
+    RouterService.useBrowser(routes);
     AssetGroupTypeInit();
     RouterService.event$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(event => {
       const route = event.route;
@@ -28758,7 +28760,6 @@ const AppRoutes = [{
         environment.flags.like = false;
       }
 
-      const routes = AppRoutes;
       LanguageService.setRoute(route, routes);
     });
     LanguageService.lang$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(_ => {
@@ -37793,8 +37794,7 @@ ModelTextComponent.meta = {
     host: WorldComponent
   },
   inputs: ['item']
-};RouterService.useBrowser(AppRoutes);
-class AppModule extends rxcomp.Module {}
+};class AppModule extends rxcomp.Module {}
 AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
   declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, GenericComponent, GenericModalComponent, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],

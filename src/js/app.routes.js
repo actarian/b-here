@@ -9,7 +9,7 @@ import TryInARComponent from './try-in-ar/try-in-ar.component';
 
 console.log('environment.defaultLanguage', environment.defaultLanguage);
 
-export const AppRoutes = [
+export const AppRoutesInit = () => [
 	{ name: 'index', path: '/', forwardTo: environment.defaultLanguage || 'it' },
 	// it
 	{ name: 'it', path: '/it', defaultParams: { lang: 'it', mode: 'access' }, factory: AccessComponent },

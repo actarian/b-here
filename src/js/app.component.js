@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
-import { AppRoutes } from './app.routes';
+import { AppRoutesInit } from './app.routes';
 import { AssetGroupTypeInit } from './asset/asset';
 import { environment } from './environment';
 import { LanguageService } from './language/language.service';
@@ -10,6 +10,9 @@ import { SVG_CHUNK } from './svg/svg.chunks';
 export default class AppComponent extends Component {
 
 	onInit() {
+		const routes = AppRoutesInit();
+		RouterService.useBrowser(routes);
+
 		AssetGroupTypeInit();
 
 		RouterService.event$.pipe(
@@ -19,7 +22,6 @@ export default class AppComponent extends Component {
 			if (route && route.params.mode === 'embed') {
 				environment.flags.like = false;
 			}
-			const routes = AppRoutes;
 			LanguageService.setRoute(route, routes);
 		});
 
