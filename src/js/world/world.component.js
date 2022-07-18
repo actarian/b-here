@@ -913,6 +913,13 @@ export default class WorldComponent extends Component {
 					}
 					*/
 				}
+			} else if (this.isTouchDevice() && hit && hit.name === '[panorama]') {
+				const item = this.view.items.find(item => item.showPanel);
+				if (item) {
+					item.showPanel = false;
+					this.pushChanges();
+					// console.log(item, hit, this.view.items);
+				}
 			}
 		} catch (error) {
 			this.error = error;
@@ -1036,7 +1043,6 @@ export default class WorldComponent extends Component {
 	}
 
 	onNavOver(nav) {
-		// console.log('WorldComponent.onNavOver', nav);
 		if (this.menu) {
 			return;
 			// this.menu.removeMenu();
@@ -1046,6 +1052,7 @@ export default class WorldComponent extends Component {
 			clearTimeout(nav.item.to);
 		}
 		nav.item.showPanel = nav.shouldShowPanel();
+		// console.log('WorldComponent.onNavOver', nav, nav.item.showPanel);
 		this.pushChanges();
 		MessageService.send({
 			type: MessageType.ShowPanel,
@@ -1055,6 +1062,9 @@ export default class WorldComponent extends Component {
 
 	onNavOut(nav) {
 		// console.log('WorldComponent.onNavOut', nav);
+		if (this.isTouchDevice()) {
+			return;
+		}
 		// nav.item.showPanel = false;
 		nav.item.to = setTimeout(() => {
 			nav.item.showPanel = false;
@@ -1064,7 +1074,9 @@ export default class WorldComponent extends Component {
 	}
 
 	onNavDown(event) {
-		event.item.showPanel = false;
+		if (!this.isTouchDevice()) {
+			event.item.showPanel = false;
+		}
 		// console.log('WorldComponent.onNavDown', this.keys);
 		if (this.locked) {
 			return;
@@ -1095,6 +1107,12 @@ export default class WorldComponent extends Component {
 		} else {
 			window.open(event.link.href, '_blank');
 		}
+	}
+
+	isTouchDevice() {
+		return (('ontouchstart' in window) ||
+			(navigator.maxTouchPoints > 0) ||
+			(navigator.msMaxTouchPoints > 0));
 	}
 
 	onModelDown(event) {

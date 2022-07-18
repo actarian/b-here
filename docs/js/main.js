@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.16
+ * @license beta-bhere-development v1.0.17
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -22477,6 +22477,13 @@ class WorldComponent extends rxcomp.Component {
           */
 
         }
+      } else if (this.isTouchDevice() && hit && hit.name === '[panorama]') {
+        const item = this.view.items.find(item => item.showPanel);
+
+        if (item) {
+          item.showPanel = false;
+          this.pushChanges(); // console.log(item, hit, this.view.items);
+        }
       }
     } catch (error) {
       this.error = error; // throw (error);
@@ -22605,7 +22612,6 @@ class WorldComponent extends rxcomp.Component {
   }
 
   onNavOver(nav) {
-    // console.log('WorldComponent.onNavOver', nav);
     if (this.menu) {
       return; // this.menu.removeMenu();
     }
@@ -22616,7 +22622,8 @@ class WorldComponent extends rxcomp.Component {
       clearTimeout(nav.item.to);
     }
 
-    nav.item.showPanel = nav.shouldShowPanel();
+    nav.item.showPanel = nav.shouldShowPanel(); // console.log('WorldComponent.onNavOver', nav, nav.item.showPanel);
+
     this.pushChanges();
     MessageService.send({
       type: MessageType.ShowPanel,
@@ -22626,7 +22633,11 @@ class WorldComponent extends rxcomp.Component {
 
   onNavOut(nav) {
     // console.log('WorldComponent.onNavOut', nav);
-    // nav.item.showPanel = false;
+    if (this.isTouchDevice()) {
+      return;
+    } // nav.item.showPanel = false;
+
+
     nav.item.to = setTimeout(() => {
       nav.item.showPanel = false;
       this.pushChanges();
@@ -22635,7 +22646,10 @@ class WorldComponent extends rxcomp.Component {
   }
 
   onNavDown(event) {
-    event.item.showPanel = false; // console.log('WorldComponent.onNavDown', this.keys);
+    if (!this.isTouchDevice()) {
+      event.item.showPanel = false;
+    } // console.log('WorldComponent.onNavDown', this.keys);
+
 
     if (this.locked) {
       return;
@@ -22668,6 +22682,10 @@ class WorldComponent extends rxcomp.Component {
     } else {
       window.open(event.link.href, '_blank');
     }
+  }
+
+  isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
   }
 
   onModelDown(event) {
@@ -23762,6 +23780,8 @@ class ModelNavComponent extends ModelEditableComponent {
         if (!this.host.editor && !this.shouldShowPanel() && link && link.href) {
           this.shouldNavToLink = link.href;
         }
+
+        console.log('ModelNavComponent.down');
       });
       plane.on('up', () => {
         if (!isAnimated) {

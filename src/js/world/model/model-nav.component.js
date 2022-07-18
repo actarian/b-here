@@ -337,6 +337,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				if (!this.host.editor && !this.shouldShowPanel() && link && link.href) {
 					this.shouldNavToLink = link.href;
 				}
+				console.log('ModelNavComponent.down');
 			});
 
 			plane.on('up', () => {
