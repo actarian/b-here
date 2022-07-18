@@ -49,7 +49,7 @@
 		fill: currentColor;
 	}
 
-	@include media-down(sm) {
+	@include media-down(xs) {
 		width: 40px;
 		height: 40px;
 		border-radius: 20px;

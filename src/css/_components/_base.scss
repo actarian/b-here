@@ -6,6 +6,7 @@ html {
 	overflow-y: auto;
 	overscroll-behavior: none;
 	scroll-behavior: smooth;
+	touch-action: none;
 	--vh: 1vh;
 }
 
@@ -23,6 +24,9 @@ body {
 	@include media-down(sm) {
 		overflow-x: hidden;
 		overflow-y: auto;
+		overscroll-behavior: none;
+		scroll-behavior: smooth;
+		touch-action: none;
 	}
 }
 

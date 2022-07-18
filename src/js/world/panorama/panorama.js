@@ -271,7 +271,7 @@ export default class Panorama {
 			return;
 		}
 		const localizedAsset = this.getLocalizedAsset(asset);
-		console.log('Panorama.load.localizedAsset', localizedAsset, 'asset', asset);
+		// console.log('Panorama.load.localizedAsset', localizedAsset, 'asset', asset);
 		this.currentAsset = localizedAsset.folder + localizedAsset.file;
 		PanoramaLoader.load(localizedAsset, renderer, (texture, rgbe) => {
 			if (localizedAsset.folder + localizedAsset.file !== this.currentAsset) {

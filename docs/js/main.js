@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.15
+ * @license beta-bhere-development v1.0.16
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -15911,8 +15911,8 @@ class Panorama {
       return;
     }
 
-    const localizedAsset = this.getLocalizedAsset(asset);
-    console.log('Panorama.load.localizedAsset', localizedAsset, 'asset', asset);
+    const localizedAsset = this.getLocalizedAsset(asset); // console.log('Panorama.load.localizedAsset', localizedAsset, 'asset', asset);
+
     this.currentAsset = localizedAsset.folder + localizedAsset.file;
     PanoramaLoader.load(localizedAsset, renderer, (texture, rgbe) => {
       if (localizedAsset.folder + localizedAsset.file !== this.currentAsset) {
@@ -22630,7 +22630,7 @@ class WorldComponent extends rxcomp.Component {
     nav.item.to = setTimeout(() => {
       nav.item.showPanel = false;
       this.pushChanges();
-    }, 4000);
+    }, 6000);
     this.pushChanges();
   }
 
@@ -23416,6 +23416,7 @@ class ModelNavComponent extends ModelEditableComponent {
   constructor() {
     super(...arguments);
     this.hidden_ = false;
+    this.isMobile_ = void 0;
   }
 
   static getLoader() {
@@ -23597,11 +23598,40 @@ class ModelNavComponent extends ModelEditableComponent {
   }
 
   get iconMinScale() {
-    return (environment.navs.iconMinScale || 1) * 0.03;
+    return (environment.navs.iconMinScale || 1) * 0.03 * (this.isMobile ? 1.6 : 1);
   }
 
   get iconMaxScale() {
-    return (environment.navs.iconMaxScale || 1.5) * 0.03;
+    return (environment.navs.iconMaxScale || 1.5) * 0.03 * (this.isMobile ? 1.6 : 1);
+  }
+
+  get isMobile() {
+    return this.isMobile_;
+  }
+
+  set isMobile(isMobile) {
+    if (this.isMobile_ !== isMobile) {
+      this.isMobile_ = isMobile;
+      this.setScale();
+    }
+  }
+
+  render(time, tick) {
+    // console.log('render', this.host.worldRect.width);
+    this.isMobile = this.host.worldRect.width < 768;
+  }
+
+  setScale(pow) {
+    if (pow === void 0) {
+      pow = 0;
+    }
+
+    const icon = this.icon;
+
+    if (icon) {
+      const scale = this.iconMinScale + pow * (this.iconMaxScale - this.iconMinScale);
+      icon.scale.set(scale, scale, scale);
+    }
   }
 
   shouldShowPanel() {
@@ -23804,8 +23834,7 @@ class ModelNavComponent extends ModelEditableComponent {
               repeat: -1,
               yoyo: true,
               onUpdate: () => {
-                const scale = this.iconMinScale + from.pow * (this.iconMaxScale - this.iconMinScale);
-                icon.scale.set(scale, scale, scale);
+                this.setScale(from.pow);
                 icon.material.opacity = from.pow;
               }
             });
@@ -23890,10 +23919,9 @@ class ModelNavComponent extends ModelEditableComponent {
 
       });
       const materials = [material];
-      const scale = this.iconMinScale;
       const icon = this.icon = new THREE.Sprite(material);
       icon.renderOrder = environment.renderOrder.nav;
-      icon.scale.set(scale, scale, scale);
+      this.setScale();
       mesh.add(icon);
       let titleMaterial;
       const titleTexture = ModelNavComponent.getTitleTexture(item, mode);
@@ -36935,8 +36963,53 @@ class EmittableSprite extends FreezableSprite {
 }// import domtoimage from 'dom-to-image';
 
 class ModelPanelComponent extends ModelComponent {
+  constructor() {
+    super(...arguments);
+    this.isMobile_ = void 0;
+  }
+
+  get isMobile() {
+    return this.isMobile_;
+  }
+
+  set isMobile(isMobile) {
+    if (this.isMobile_ !== isMobile) {
+      this.isMobile_ = isMobile;
+      this.setScale();
+    }
+  }
+
+  render(time, tick) {
+    // console.log('render', this.host.worldRect.width);
+    this.isMobile = this.host.worldRect.width < 768;
+  }
+
+  setScale(pow) {
+    if (pow === void 0) {
+      pow = 0;
+    }
+
+    const textureWidth = this.textureWidth;
+    const textureHeight = this.textureHeight;
+    const item = this.item;
+    const panel = this.panel;
+
+    if (panel) {
+      const scale = 0.2 * (item.asset ? 1.5 : 1.0) * (this.isMobile ? 1.6 : 1);
+      const aspect = textureWidth / textureHeight;
+      const width = ModelPanelComponent.PANEL_RADIUS * scale;
+      const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
+      const dy = width * 0.25;
+      const position = item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+      panel.position.set(position.x, position.y + (height + dy * 2) - dy * (1 - pow), position.z);
+      panel.scale.set(0.02 * width, 0.02 * height, 1);
+    }
+  }
+
   onInit() {
-    super.onInit(); // console.log('ModelPanelComponent.onInit', this.item);
+    super.onInit();
+    this.textureWidth = 0;
+    this.textureHeight = 0; // console.log('ModelPanelComponent.onInit', this.item);
   }
 
   onView() {
@@ -36949,13 +37022,10 @@ class ModelPanelComponent extends ModelComponent {
       node
     } = rxcomp.getContext(this);
     this.getCanvasTexture(node).then(texture => {
-      if (this.mesh) {
-        const scale = 0.2 * (this.item.asset ? 1.5 : 1.0);
-        const aspect = texture.width / texture.height;
-        const width = ModelPanelComponent.PANEL_RADIUS * scale;
-        const height = ModelPanelComponent.PANEL_RADIUS * scale / aspect;
-        const dy = width * 0.25;
-        const position = this.item.mesh.position.normalize().multiplyScalar(ModelPanelComponent.PANEL_RADIUS);
+      this.textureWidth = texture.width;
+      this.textureHeight = texture.height;
+
+      if (this.mesh && this.item) {
         const material = new THREE.SpriteMaterial({
           depthTest: false,
           transparent: true,
@@ -36966,18 +37036,28 @@ class ModelPanelComponent extends ModelComponent {
         const item = this.item;
         const panel = this.panel = new InteractiveSprite(material);
         panel.renderOrder = environment.renderOrder.panel;
-        panel.scale.set(0.02 * width, 0.02 * height, 1);
-        panel.position.set(position.x, position.y + (height + dy * 2), position.z);
+        this.setScale(1);
         panel.on('down', event => {
+          // console.log(event.intersection.uv.x, event.intersection.uv.y, node.offsetWidth, node.offsetHeight);
           const xy = {
             x: parseInt(event.intersection.uv.x * node.offsetWidth),
             y: parseInt((1 - event.intersection.uv.y) * node.offsetHeight)
           }; // console.log('ModelPanelComponent.down.xy', xy);
 
-          const linkNodes = Array.prototype.slice.call(node.querySelectorAll('.panel__link'));
+          const linkNodes = Array.prototype.slice.call(node.querySelectorAll('.panel__link')); // console.log('linkNodes', linkNodes);
+
           const linkNode = linkNodes.find(link => {
-            return xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
-          });
+            const inside = xy.x >= link.offsetLeft && xy.y >= link.offsetTop && xy.x <= link.offsetLeft + link.offsetWidth && xy.y <= link.offsetTop + link.offsetHeight;
+            /*
+            console.log(
+            	(link.offsetLeft + link.offsetWidth), '>=', xy.x, '>=', link.offsetLeft,
+            	(link.offsetTop + link.offsetHeight), '>=', xy.y, '>=', link.offsetTop,
+            	inside,
+            );
+            */
+
+            return inside;
+          }); // console.log('linkNode', linkNode);
 
           if (linkNode) {
             const linkIndex = linkNodes.indexOf(linkNode);
@@ -36989,7 +37069,7 @@ class ModelPanelComponent extends ModelComponent {
               linkIndex
             });
             const rect = node.getBoundingClientRect();
-            const event = new MouseEvent('mouseup', {
+            const mouseEvent = {
               button: 0,
               buttons: 0,
               clientX: xy.x + rect.left,
@@ -36999,8 +37079,9 @@ class ModelPanelComponent extends ModelComponent {
               relatedTarget: linkNode,
               screenX: xy.x,
               screenY: xy.y
-            });
-            linkNode.dispatchEvent(event); // console.log('ModelPanelComponent.dispatchEvent', event);
+            };
+            const event = new MouseEvent('mouseup', mouseEvent);
+            linkNode.dispatchEvent(event); // console.log('ModelPanelComponent.dispatchEvent', mouseEvent);
 
             setTimeout(() => {
               DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
@@ -37017,7 +37098,7 @@ class ModelPanelComponent extends ModelComponent {
           delay: 0.0,
           ease: Power2.easeInOut,
           onUpdate: () => {
-            panel.position.set(position.x, position.y + (height + dy * 2) - dy * from.value, position.z);
+            this.setScale(1 - from.value);
             panel.lookAt(Host.origin);
             panel.material.opacity = from.value;
             panel.material.needsUpdate = true;
@@ -37129,9 +37210,30 @@ class ModelPanelComponent extends ModelComponent {
               } else {
               */
 
+              /*
+              htmlToImage.toCanvas(node).then((canvas) => {
+              	// !!!
+              	// document.body.appendChild(canvas);
+              	// const alpha = this.getAlphaFromCanvas(canvas);
+              	// document.body.appendChild(alpha);
+              	const map = new THREE.CanvasTexture(canvas);
+              	// const alphaMap = new THREE.CanvasTexture(alpha);
+              	// console.log(canvas.width, canvas.height);
+              	this.item.panelTexture = {
+              		map: map,
+              		width: canvas.width,
+              		height: canvas.height,
+              	};
+              	resolve(this.item.panelTexture);
+              }).catch(error => {
+              	console.log('htmlToImage', error);
+              	reject(error);
+              });
+              */
+
               html2canvas__default["default"](node, {
                 backgroundColor: '#ffffff00',
-                scale: 2,
+                scale: 1,
                 useCORS // logging: true,
 
               }).then(canvas => {
@@ -37170,10 +37272,12 @@ ModelPanelComponent.meta = {
   template:
   /* html */
   `
-		<div class="panel__title" [innerHTML]="item.title"></div>
-		<div class="panel__abstract" [innerHTML]="item.abstract"></div>
+		<div class="panel__title"><span [innerHTML]="item.title"></span></div>
+		<div class="panel__abstract"><span [innerHTML]="item.abstract"></span></div>
 		<img class="panel__picture" [src]="item.asset | asset" *if="item.asset">
-		<a class="panel__link" [href]="link.href" target="_blank" rel="noopener" *for="let link of item.links" [innerHTML]="link.title"></a>
+		<a class="panel__link" [href]="link.href" target="_blank" rel="noopener" *for="let link of item.links">
+			<span [innerHTML]="link.title"></span>
+		</a>
 	`
 };// import * as THREE from 'three';
 class ModelPictureComponent extends ModelComponent {

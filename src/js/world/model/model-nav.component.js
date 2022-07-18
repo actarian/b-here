@@ -193,11 +193,35 @@ export default class ModelNavComponent extends ModelEditableComponent {
 	}
 
 	get iconMinScale() {
-		return (environment.navs.iconMinScale || 1) * 0.03;
+		return (environment.navs.iconMinScale || 1) * 0.03 * (this.isMobile ? 1.6 : 1);
 	}
 
 	get iconMaxScale() {
-		return (environment.navs.iconMaxScale || 1.5) * 0.03;
+		return (environment.navs.iconMaxScale || 1.5) * 0.03 * (this.isMobile ? 1.6 : 1);
+	}
+
+	isMobile_;
+	get isMobile() {
+		return this.isMobile_;
+	}
+	set isMobile(isMobile) {
+		if (this.isMobile_ !== isMobile) {
+			this.isMobile_ = isMobile;
+			this.setScale();
+		}
+	}
+
+	render(time, tick) {
+		// console.log('render', this.host.worldRect.width);
+		this.isMobile = this.host.worldRect.width < 768;
+	}
+
+	setScale(pow = 0) {
+		const icon = this.icon;
+		if (icon) {
+			const scale = this.iconMinScale + pow * (this.iconMaxScale - this.iconMinScale);
+			icon.scale.set(scale, scale, scale);
+		}
 	}
 
 	shouldShowPanel() {
@@ -382,8 +406,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 							repeat: -1,
 							yoyo: true,
 							onUpdate: () => {
-								const scale = this.iconMinScale + from.pow * (this.iconMaxScale - this.iconMinScale);
-								icon.scale.set(scale, scale, scale);
+								this.setScale(from.pow);
 								icon.material.opacity = from.pow;
 							}
 						});
@@ -458,10 +481,9 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				// color: 0xff0000,
 			});
 			const materials = [material];
-			const scale = this.iconMinScale;
 			const icon = this.icon = new THREE.Sprite(material);
 			icon.renderOrder = environment.renderOrder.nav;
-			icon.scale.set(scale, scale, scale);
+			this.setScale();
 			mesh.add(icon);
 			let titleMaterial;
 			const titleTexture = ModelNavComponent.getTitleTexture(item, mode);

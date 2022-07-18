@@ -163,6 +163,7 @@ html {
   overflow-y: auto;
   overscroll-behavior: none;
   scroll-behavior: smooth;
+  touch-action: none;
   --vh: 1vh;
 }
 
@@ -205,6 +206,9 @@ body.fixed {
   body {
     overflow-x: hidden;
     overflow-y: auto;
+    overscroll-behavior: none;
+    scroll-behavior: smooth;
+    touch-action: none;
   }
 }
 
@@ -397,7 +401,7 @@ button, .btn--edit, .nav--flag .btn--flag, .group--path .btn--flags,
   height: 24px;
   fill: currentColor;
 }
-@media (max-width: 1023.98px) {
+@media (max-width: 767.98px) {
   .btn--menu, .btn--silence, .btn--control, .btn--view-mode, .btn--navmap, .btn--fullscreen, .btn--volume, .btn--back {
     width: 40px;
     height: 40px;
@@ -8256,10 +8260,11 @@ footer {
   flex-direction: column;
   width: 600px;
   left: 0;
+  top: 0;
   top: 5000px;
   background: rgba(0, 0, 0, 0.75);
   color: var(--foreground-negative);
-  padding: 40px 30px 30px 30px;
+  padding: 40px 30px;
   border-radius: 12px;
 }
 .panel.panel--lg {
@@ -8268,15 +8273,23 @@ footer {
 .panel__title {
   font-weight: var(--font-regular);
   font-size: 60px;
-  line-height: 1.2;
-  margin-bottom: 30px;
+  line-height: 1;
+  margin-bottom: 25px;
   color: var(--foreground-negative);
+}
+.panel__title > span {
+  display: block;
+  transform: translateY(-0.5em);
 }
 .panel__abstract {
   font-size: 36px;
   line-height: 1.3;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   color: var(--foreground-negative);
+}
+.panel__abstract > span {
+  display: block;
+  transform: translateY(-0.5em);
 }
 .panel__abstract p {
   margin-top: 0;
@@ -8291,25 +8304,29 @@ footer {
 .panel__link {
   position: relative;
   display: block;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 36px;
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 28px;
   font-weight: var(--font-regular);
-  line-height: 1;
+  line-height: 0.5 !important;
   text-decoration: none;
   color: var(--foreground-primary);
+}
+.panel__link > span {
+  display: block;
+  transform: translateY(-0.5em);
 }
 .panel__link:after {
   content: "";
   position: absolute;
   left: 0;
-  top: 20px;
+  top: 0;
   width: 100%;
   height: 100%;
   border: 1px solid var(--foreground-primary-dimmed);
 }
 .panel__link:last-child {
-  margin-bottom: 30px;
+  margin-bottom: 0;
 }
 .panel span + img {
   display: initial !important;

@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.12
+ * @license beta-bhere-development v1.0.16
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */

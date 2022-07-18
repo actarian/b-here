@@ -51,14 +51,16 @@
       "copy": []
     },
     "vendors": {
-      "compile": [{
-        "input": "node_modules/three/build/three.module.js",
-        "output": {
-          "file": "docs/js/three.umd.js",
-          "format": "umd"
-        },
-        "name": "THREE"
-      }],
+      "compile": [
+        {
+          "input": "node_modules/three/build/three.module.js",
+          "output": {
+            "file": "docs/js/three.umd.js",
+            "format": "umd"
+          },
+          "name": "THREE"
+        }
+      ],
       "bundle": [
         {
           "input": [
@@ -88,10 +90,12 @@
           "minify": true
         }
       ],
-      "copy": [{
-        "input": "node_modules/three/examples/js/libs/draco/**/*.*",
-        "output": "docs/js/draco/"
-      }]
+      "copy": [
+        {
+          "input": "node_modules/three/examples/js/libs/draco/**/*.*",
+          "output": "docs/js/draco/"
+        }
+      ]
     },
     "dist": {
       "compile": [
@@ -172,13 +176,16 @@
           "minify": true
         }
       ],
-      "copy": [{
-        "input": "node_modules/three/examples/js/libs/draco/**/*.*",
-        "output": "dist/js/draco/"
-      }, {
-        "input": "dist/**/*.*",
-        "output": "docs/dist/"
-      }]
+      "copy": [
+        {
+          "input": "node_modules/three/examples/js/libs/draco/**/*.*",
+          "output": "dist/js/draco/"
+        },
+        {
+          "input": "dist/**/*.*",
+          "output": "docs/dist/"
+        }
+      ]
     }
   },
   "tfs": false,

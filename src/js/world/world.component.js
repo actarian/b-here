@@ -1059,7 +1059,7 @@ export default class WorldComponent extends Component {
 		nav.item.to = setTimeout(() => {
 			nav.item.showPanel = false;
 			this.pushChanges();
-		}, 4000);
+		}, 6000);
 		this.pushChanges();
 	}
 

@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.16] - 2022-07-18
+
+### Fixing
+- ModelPanelComponent links html2canvas
+
+---
+
 ## [1.0.15] - 2022-07-06
 
 ### Fixing
