@@ -1,4 +1,4 @@
-@use 'sass:math'as math;
+@use 'sass:math' as math;
 
 $remote-width: 120px;
 $remote-height: 90px;
@@ -38,32 +38,32 @@ $chat-width: 240px;
 
 		@include media-up(sm) {
 			@media (orientation: landscape) {
-				max-height: calc(100vh - 180px);
+				max-height: calc(var(--vh, 1vh) * 100 - 180px);
 
 				.agora-stream {
-					max-height: calc(100vh - 180px);
+					max-height: calc(var(--vh, 1vh) * 100 - 180px);
 
 					.agora-stream__player {
-						max-height: calc(100vh - 180px);
+						max-height: calc(var(--vh, 1vh) * 100 - 180px);
 
 						&>div {
-							height: calc(100vh - 180px) !important;
+							height: calc(var(--vh, 1vh) * 100 - 180px) !important;
 						}
 					}
 				}
 			}
 
 			@media (orientation: portrait) {
-				max-height: calc(100vh - 270px);
+				max-height: calc(var(--vh, 1vh) * 100 - 270px);
 
 				.agora-stream {
-					max-height: calc(100vh - 270px);
+					max-height: calc(var(--vh, 1vh) * 100 - 270px);
 
 					.agora-stream__player {
-						max-height: calc(100vh - 270px);
+						max-height: calc(var(--vh, 1vh) * 100 - 270px);
 
 						&>div {
-							height: calc(100vh - 270px) !important;
+							height: calc(var(--vh, 1vh) * 100 - 270px) !important;
 						}
 					}
 				}
@@ -459,6 +459,7 @@ $chat-width: 240px;
 			justify-content: flex-start;
 		}
 	}
+
 	@include media-down(xs) {
 		padding: 80px 0 65px 0;
 	}

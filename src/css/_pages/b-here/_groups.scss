@@ -18,7 +18,7 @@
 		width: 100%;
 		height: auto;
 		background: black;
-		max-width: calc((100vh - 182px) / 3 * 4);
+		max-width: calc((var(--vh, 1vh) * 100 - 182px) / 3 * 4);
 
 		.agora-stream__player {
 			@include aspect-clip(4, 3);
@@ -711,7 +711,7 @@
 	padding: 0 20px;
 
 	min-width: 335px;
-	max-height: calc(100vh - 300px);
+	max-height: calc(var(--vh, 1vh) * 100 - 300px);
 	overflow-x: hidden;
 	overflow-y: auto;
 	@include scrollbar();

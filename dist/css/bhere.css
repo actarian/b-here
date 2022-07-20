@@ -5058,7 +5058,7 @@ test-component .btn--mode {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   z-index: 20000;
 }
 .modal-outlet__container.active, .modal-outlet__container.busy {
@@ -5083,7 +5083,7 @@ test-component .btn--mode {
   flex-direction: column;
   padding: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   pointer-events: none;
 }
 .modal-outlet__modal > * {
@@ -5223,7 +5223,7 @@ body.modal-open {
 @media (min-width: 768px) {
   .toast-outlet__container {
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
   }
 }
 @media (max-width: 767.98px) {
@@ -5282,7 +5282,6 @@ body.modal-open {
 }
 @media (min-width: 768px) {
   .toast-outlet__toast {
-    max-height: calc(100vh - 200px);
     max-height: calc(var(--vh, 1vh) * 100 - 200px);
   }
 }
@@ -5732,7 +5731,7 @@ body {
   left: 0;
   top: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6510,7 +6509,7 @@ footer {
   width: 100%;
   height: auto;
   background: black;
-  max-width: calc((100vh - 182px) / 3 * 4);
+  max-width: calc((var(--vh, 1vh) * 100 - 182px) / 3 * 4);
 }
 .ui.remotes .group--remote .agora-stream .agora-stream__player, .ui .group--remote-screen .agora-stream .agora-stream__player {
   position: relative;
@@ -7312,7 +7311,7 @@ footer {
   margin: 0 0 40px 0;
   padding: 0 20px;
   min-width: 335px;
-  max-height: calc(100vh - 300px);
+  max-height: calc(var(--vh, 1vh) * 100 - 300px);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -7470,30 +7469,30 @@ footer {
 }
 @media (min-width: 768px) and (orientation: landscape) {
   .ui .group--remote-screen {
-    max-height: calc(100vh - 180px);
+    max-height: calc(var(--vh, 1vh) * 100 - 180px);
   }
   .ui .group--remote-screen .agora-stream {
-    max-height: calc(100vh - 180px);
+    max-height: calc(var(--vh, 1vh) * 100 - 180px);
   }
   .ui .group--remote-screen .agora-stream .agora-stream__player {
-    max-height: calc(100vh - 180px);
+    max-height: calc(var(--vh, 1vh) * 100 - 180px);
   }
   .ui .group--remote-screen .agora-stream .agora-stream__player > div {
-    height: calc(100vh - 180px) !important;
+    height: calc(var(--vh, 1vh) * 100 - 180px) !important;
   }
 }
 @media (min-width: 768px) and (orientation: portrait) {
   .ui .group--remote-screen {
-    max-height: calc(100vh - 270px);
+    max-height: calc(var(--vh, 1vh) * 100 - 270px);
   }
   .ui .group--remote-screen .agora-stream {
-    max-height: calc(100vh - 270px);
+    max-height: calc(var(--vh, 1vh) * 100 - 270px);
   }
   .ui .group--remote-screen .agora-stream .agora-stream__player {
-    max-height: calc(100vh - 270px);
+    max-height: calc(var(--vh, 1vh) * 100 - 270px);
   }
   .ui .group--remote-screen .agora-stream .agora-stream__player > div {
-    height: calc(100vh - 270px) !important;
+    height: calc(var(--vh, 1vh) * 100 - 270px) !important;
   }
 }
 .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
@@ -8565,7 +8564,6 @@ footer {
 .path-edit-modal {
     width: 100%;
     max-width: 480px;
-    max-height: calc(100vh - 200px);
     max-height: calc(var(--vh, 1vh) * 100 - 200px);
   }
 }
@@ -8587,7 +8585,7 @@ footer {
 .try-in-ar-modal,
 .path-edit-modal {
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
   }
 }
 
@@ -8803,7 +8801,7 @@ model-viewer {
   display: flex;
   flex-direction: column;
   width: calc(100vw - 240px);
-  height: calc(100vh - 180px);
+  height: calc(var(--vh, 1vh) * 100 - 180px);
   max-width: 1200px;
   border-radius: 10px;
   overflow: hidden;
@@ -8812,7 +8810,7 @@ model-viewer {
 @media (max-width: 767.98px) {
   .iframe-modal {
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
   }
 }
 .iframe-modal .modal__header {
@@ -10610,7 +10608,7 @@ update-view-tile .btn--remove {
     width: calc(100% - 300px);
     min-width: 375px;
     max-width: 1040px;
-    max-height: calc(100vh - 170px);
+    max-height: calc(var(--vh, 1vh) * 100 - 170px);
     overflow-x: hidden;
     overflow-y: auto;
   }

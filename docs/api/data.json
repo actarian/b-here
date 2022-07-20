@@ -45,7 +45,75 @@
         "longitude": 0
       },
       "zoom": 75,
-      "items": []
+      "items": [
+        {
+          "type": {
+            "id": 1,
+            "name": "nav"
+          },
+          "title": "Title",
+          "abstract": "Abstract",
+          "viewId": 170427763402500,
+          "hook": null,
+          "hookExtra": null,
+          "keepOrientation": false,
+          "important": false,
+          "transparent": false,
+          "position": [
+            99.05349086305552,
+            -6.138500596115897,
+            -12.277001192231825
+          ],
+          "rotation": [
+            -0.46364760900080576,
+            -1.433100571614926,
+            -0.45985441001633487,
+            "XYZ"
+          ],
+          "scale": [
+            20,
+            5,
+            1
+          ],
+          "asset": null,
+          "link": null,
+          "id": 8040097769000,
+          "links": [
+            {
+              "title": "video",
+              "href": "https://www.youtube.com/embed/KLEH8RJsYgI",
+              "target": "_blank"
+            },
+            {
+              "title": "google",
+              "href": "https://www.google.com",
+              "target": "_blank"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "menu": [],
+  "navmaps": [],
+  "paths": [],
+  "assets": [],
+  "users": [
+    {
+      "id": "1601892639985",
+      "username": "publisher",
+      "password": "publisher",
+      "type": "publisher",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "id": "1601892639986",
+      "username": "attendee",
+      "password": "attendee",
+      "type": "attendee",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
     }
   ]
 }

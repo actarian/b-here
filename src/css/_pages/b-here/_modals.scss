@@ -195,13 +195,12 @@
 	@include media-up(sm) {
 		width: 100%;
 		max-width: 480px;
-		max-height: calc(100vh - 200px); // Fallback for browsers that do not support Custom Properties
 		max-height: calc(var(--vh, 1vh) * 100 - 200px);
 	}
 
 	@include media-down(xs) {
 		width: 100vw;
-		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100);
 	}
 }
 
@@ -436,7 +435,7 @@ model-viewer {
 	display: flex;
 	flex-direction: column;
 	width: calc(100vw - 240px);
-	height: calc(100vh - 180px);
+	height: calc(var(--vh, 1vh) * 100 - 180px);
 	max-width: 1200px;
 	border-radius: 10px;
 	overflow: hidden;
@@ -444,7 +443,7 @@ model-viewer {
 
 	@include media-down(xs) {
 		width: 100vw;
-		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100);
 	}
 
 	.modal__header {

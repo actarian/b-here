@@ -67,7 +67,7 @@
 		width: calc(100% - 300px);
 		min-width: 375px;
 		max-width: 1040px;
-		max-height: calc(100vh - 170px);
+		max-height: calc(var(--vh, 1vh) * 100 - 170px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		@include scrollbar();

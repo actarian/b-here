@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.18] - 2022-07-20
+
+### Fixing
+- ModalComponent 100vh
+
+---
+
 ## [1.0.17] - 2022-07-18
 
 ### Fixing
