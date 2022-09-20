@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.19] - 2022-09-20
+
+### Fixing
+- css tablet portrait
+
+---
+
 ## [1.0.18] - 2022-07-20
 
 ### Fixing

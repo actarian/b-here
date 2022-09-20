@@ -36,7 +36,22 @@ $chat-width: 240px;
 			}
 		}
 
-		@include media-up(sm) {
+		@include media-up(md) {
+			max-height: calc(var(--vh, 1vh) * 100 - 180px);
+
+			.agora-stream {
+				max-height: calc(var(--vh, 1vh) * 100 - 180px);
+
+				.agora-stream__player {
+					max-height: calc(var(--vh, 1vh) * 100 - 180px);
+
+					&>div {
+						height: calc(var(--vh, 1vh) * 100 - 180px) !important;
+					}
+				}
+			}
+
+			/*
 			@media (orientation: landscape) {
 				max-height: calc(var(--vh, 1vh) * 100 - 180px);
 
@@ -68,6 +83,7 @@ $chat-width: 240px;
 					}
 				}
 			}
+			*/
 		}
 
 		@include media-down(xs) {}
@@ -102,7 +118,10 @@ $chat-width: 240px;
 						}
 					}
 
-					@include media-up(sm) {
+					@include media-up(md) {
+						@include ratio(120px, math.div(4, 3));
+
+						/*
 						@media (orientation: landscape) {
 							@include ratio(120px, math.div(4, 3));
 						}
@@ -135,9 +154,10 @@ $chat-width: 240px;
 								background: transparent;
 							}
 						}
+						*/
 					}
 
-					@include media-down(xs) {
+					@include media-down(sm) {
 						width: 50px;
 						height: 50px;
 						margin: 5px 8px 30px 8px;
@@ -167,11 +187,26 @@ $chat-width: 240px;
 					}
 				}
 
-				@include media-up(sm) {
+				@include media-up(md) {
 					position: absolute;
 					display: flex;
 					background: $background-negative;
 
+					flex-direction: column;
+					justify-content: flex-start;
+					top: 0;
+					left: -$remote-width;
+					width: $remote-width;
+					height: 100%;
+					flex: 1 1 $remote-width;
+
+					.group--members {
+						width: $remote-width;
+						bottom: 0;
+						left: 0;
+					}
+
+					/*
 					@media (orientation: landscape) {
 						flex-direction: column;
 						justify-content: flex-start;
@@ -189,21 +224,6 @@ $chat-width: 240px;
 					}
 
 					@media (orientation: portrait) {
-						/*
-						flex-direction: row;
-						justify-content: flex-start;
-						bottom: -$remote-height;
-						left: 0;
-						width: 100%;
-						height: $remote-height;
-						flex: 1 1 100%;
-
-						.group--members {
-							right: 0;
-							height: 100%;
-						}
-						*/
-
 						flex-direction: row;
 						justify-content: flex-end;
 						width: calc(100% - 240px);
@@ -221,9 +241,10 @@ $chat-width: 240px;
 							display: none;
 						}
 					}
+					*/
 				}
 
-				@include media-down(xs) {
+				@include media-down(sm) {
 					position: absolute;
 					flex-direction: row;
 					display: flex;
@@ -241,7 +262,15 @@ $chat-width: 240px;
 				}
 			}
 
-			@include media-up(sm) {
+			@include media-up(md) {
+				width: calc(100% - #{$remote-width});
+				margin-left: $remote-width;
+
+				.group--members {
+					left: -$remote-width;
+				}
+
+				/*
 				@media (orientation: landscape) {
 					width: calc(100% - #{$remote-width});
 					margin-left: $remote-width;
@@ -249,12 +278,6 @@ $chat-width: 240px;
 					.group--members {
 						left: -$remote-width;
 					}
-				}
-
-				/*
-				@media (orientation: portrait) {
-					height: calc(100% - #{$remote-height});
-					margin-bottom: $remote-height;
 				}
 				*/
 			}
@@ -269,7 +292,7 @@ $chat-width: 240px;
 
 		&.chat {
 			.group--chat {
-				@include media-up(sm) {
+				@include media-up(md) {
 					top: 0;
 					right: -$chat-width;
 					width: $chat-width;
@@ -277,7 +300,7 @@ $chat-width: 240px;
 					flex: 1 1 $chat-width;
 				}
 
-				@include media-down(xs) {
+				@include media-down(sm) {
 					top: 0;
 					left: 0;
 					width: 100%;
@@ -287,7 +310,20 @@ $chat-width: 240px;
 			}
 
 			&:not(.remotes) {
-				@include media-up(sm) {
+				@include media-up(md) {
+					width: calc(100% - #{$remote-width} - #{$chat-width});
+					margin-left: $remote-width;
+					margin-right: $chat-width;
+
+					.group--members {
+						left: 0; // -$remote-width;
+					}
+
+					.group--chat {
+						right: -$chat-width;
+					}
+
+					/*
 					@media (orientation: landscape) {
 						width: calc(100% - #{$remote-width} - #{$chat-width});
 						margin-left: $remote-width;
@@ -310,11 +346,12 @@ $chat-width: 240px;
 							display: none;
 						}
 					}
+					*/
 				}
 			}
 
 			&.remotes {
-				@include media-up(sm) {
+				@include media-up(md) {
 					width: calc(100% - #{$chat-width});
 					margin-left: 0;
 					margin-right: $chat-width;
@@ -324,7 +361,7 @@ $chat-width: 240px;
 					}
 				}
 
-				@include media-down(xs) {
+				@include media-down(sm) {
 					.group--chat {
 						top: 0;
 						left: 0;

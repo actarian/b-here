@@ -6804,7 +6804,7 @@ footer {
 .group--header > div {
   pointer-events: auto;
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .group--header {
     flex-direction: row-reverse;
   }
@@ -6816,7 +6816,7 @@ footer {
   justify-content: flex-start;
   align-items: center;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .group--service {
     margin-left: 15px;
   }
@@ -6824,7 +6824,7 @@ footer {
     margin-left: 10px;
   }
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .group--service {
     margin-right: 15px;
     filter: drop-shadow(0px 0px 8px black);
@@ -6840,13 +6840,15 @@ footer {
   .group--service .btn--back {
     display: none;
   }
-  .group--service .btn--volume {
-    display: none;
-  }
   .group--service .btn--fullscreen {
     display: none;
   }
-  .group--service .btn--navmap {
+}
+@media (max-width: 1023.98px) {
+  :not(.self-service) > .group--header > .group--service .btn--volume {
+    display: none;
+  }
+  :not(.self-service) > .group--header > .group--service .btn--navmap {
     display: none;
   }
 }
@@ -6865,7 +6867,7 @@ footer {
 .group--local .agora-stream--screen .agora-stream__player {
   border-left: 0;
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .group--local {
     position: absolute;
     visibility: hidden;
@@ -7467,9 +7469,42 @@ footer {
   -o-object-fit: contain !important;
      object-fit: contain !important;
 }
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 1024px) {
   .ui .group--remote-screen {
     max-height: calc(var(--vh, 1vh) * 100 - 180px);
+    /*
+    @media (orientation: landscape) {
+    	max-height: calc(var(--vh, 1vh) * 100 - 180px);
+
+    	.agora-stream {
+    		max-height: calc(var(--vh, 1vh) * 100 - 180px);
+
+    		.agora-stream__player {
+    			max-height: calc(var(--vh, 1vh) * 100 - 180px);
+
+    			&>div {
+    				height: calc(var(--vh, 1vh) * 100 - 180px) !important;
+    			}
+    		}
+    	}
+    }
+
+    @media (orientation: portrait) {
+    	max-height: calc(var(--vh, 1vh) * 100 - 270px);
+
+    	.agora-stream {
+    		max-height: calc(var(--vh, 1vh) * 100 - 270px);
+
+    		.agora-stream__player {
+    			max-height: calc(var(--vh, 1vh) * 100 - 270px);
+
+    			&>div {
+    				height: calc(var(--vh, 1vh) * 100 - 270px) !important;
+    			}
+    		}
+    	}
+    }
+    */
   }
   .ui .group--remote-screen .agora-stream {
     max-height: calc(var(--vh, 1vh) * 100 - 180px);
@@ -7479,20 +7514,6 @@ footer {
   }
   .ui .group--remote-screen .agora-stream .agora-stream__player > div {
     height: calc(var(--vh, 1vh) * 100 - 180px) !important;
-  }
-}
-@media (min-width: 768px) and (orientation: portrait) {
-  .ui .group--remote-screen {
-    max-height: calc(var(--vh, 1vh) * 100 - 270px);
-  }
-  .ui .group--remote-screen .agora-stream {
-    max-height: calc(var(--vh, 1vh) * 100 - 270px);
-  }
-  .ui .group--remote-screen .agora-stream .agora-stream__player {
-    max-height: calc(var(--vh, 1vh) * 100 - 270px);
-  }
-  .ui .group--remote-screen .agora-stream .agora-stream__player > div {
-    height: calc(var(--vh, 1vh) * 100 - 270px) !important;
   }
 }
 .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
@@ -7511,36 +7532,47 @@ footer {
 .ui.virtual-tour:not(.remotes) .group--remote .agora-stream__info.controlling .control {
   fill: var(--foreground-secondary);
 }
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 1024px) {
   .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
     width: 120px;
     height: 90px;
+    /*
+    @media (orientation: landscape) {
+    	@include ratio(120px, math.div(4, 3));
+    }
+
+    @media (orientation: portrait) {
+    	width: 60px;
+    	height: 60px;
+    	margin: 5px 8px 30px 8px;
+
+    	&,
+    	&__player,
+    	&__info {
+    		border-radius: 30px;
+    	}
+
+    	&.video--muted,
+    	&.audio--muted {
+    		display: none;
+    	}
+
+    	.btn--control,
+    	.btn--spy {
+    		display: none;
+    	}
+
+    	.id {
+    		width: 60px;
+    		bottom: -20px;
+    		text-align: center;
+    		background: transparent;
+    	}
+    }
+    */
   }
 }
-@media (min-width: 768px) and (orientation: portrait) {
-  .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
-    width: 60px;
-    height: 60px;
-    margin: 5px 8px 30px 8px;
-  }
-  .ui.virtual-tour:not(.remotes) .group--remote .agora-stream, .ui.virtual-tour:not(.remotes) .group--remote .agora-stream__player, .ui.virtual-tour:not(.remotes) .group--remote .agora-stream__info {
-    border-radius: 30px;
-  }
-  .ui.virtual-tour:not(.remotes) .group--remote .agora-stream.video--muted, .ui.virtual-tour:not(.remotes) .group--remote .agora-stream.audio--muted {
-    display: none;
-  }
-  .ui.virtual-tour:not(.remotes) .group--remote .agora-stream .btn--control,
-.ui.virtual-tour:not(.remotes) .group--remote .agora-stream .btn--spy {
-    display: none;
-  }
-  .ui.virtual-tour:not(.remotes) .group--remote .agora-stream .id {
-    width: 60px;
-    bottom: -20px;
-    text-align: center;
-    background: transparent;
-  }
-}
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .ui.virtual-tour:not(.remotes) .group--remote .agora-stream {
     width: 50px;
     height: 50px;
@@ -7563,15 +7595,11 @@ footer {
     background: transparent;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .ui.virtual-tour:not(.remotes) .group--remote {
     position: absolute;
     display: flex;
     background: var(--background-negative);
-  }
-}
-@media (min-width: 768px) and (orientation: landscape) {
-  .ui.virtual-tour:not(.remotes) .group--remote {
     flex-direction: column;
     justify-content: flex-start;
     top: 0;
@@ -7579,6 +7607,42 @@ footer {
     width: 120px;
     height: 100%;
     flex: 1 1 120px;
+    /*
+    @media (orientation: landscape) {
+    	flex-direction: column;
+    	justify-content: flex-start;
+    	top: 0;
+    	left: -$remote-width;
+    	width: $remote-width;
+    	height: 100%;
+    	flex: 1 1 $remote-width;
+
+    	.group--members {
+    		width: $remote-width;
+    		bottom: 0;
+    		left: 0;
+    	}
+    }
+
+    @media (orientation: portrait) {
+    	flex-direction: row;
+    	justify-content: flex-end;
+    	width: calc(100% - 240px);
+    	height: 90px;
+    	flex: 1 1 100%;
+    	position: fixed;
+    	bottom: auto;
+    	top: 10px;
+    	left: 240px;
+    	overflow-x: auto;
+    	overflow-y: hidden;
+    	background: transparent;
+
+    	.group--members {
+    		display: none;
+    	}
+    }
+    */
   }
   .ui.virtual-tour:not(.remotes) .group--remote .group--members {
     width: 120px;
@@ -7586,40 +7650,7 @@ footer {
     left: 0;
   }
 }
-@media (min-width: 768px) and (orientation: portrait) {
-  .ui.virtual-tour:not(.remotes) .group--remote {
-    /*
-    flex-direction: row;
-    justify-content: flex-start;
-    bottom: -$remote-height;
-    left: 0;
-    width: 100%;
-    height: $remote-height;
-    flex: 1 1 100%;
-
-    .group--members {
-    	right: 0;
-    	height: 100%;
-    }
-    */
-    flex-direction: row;
-    justify-content: flex-end;
-    width: calc(100% - 240px);
-    height: 90px;
-    flex: 1 1 100%;
-    position: fixed;
-    bottom: auto;
-    top: 10px;
-    left: 240px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    background: transparent;
-  }
-  .ui.virtual-tour:not(.remotes) .group--remote .group--members {
-    display: none;
-  }
-}
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .ui.virtual-tour:not(.remotes) .group--remote {
     position: absolute;
     flex-direction: row;
@@ -7636,20 +7667,20 @@ footer {
     display: none;
   }
 }
-@media (min-width: 768px) {
-  .ui.virtual-tour:not(.remotes) {
-    /*
-    @media (orientation: portrait) {
-    	height: calc(100% - 90px);
-    	margin-bottom: $remote-height;
-    }
-    */
-  }
-}
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 1024px) {
   .ui.virtual-tour:not(.remotes) {
     width: calc(100% - 120px);
     margin-left: 120px;
+    /*
+    @media (orientation: landscape) {
+    	width: calc(100% - 120px);
+    	margin-left: $remote-width;
+
+    	.group--members {
+    		left: -$remote-width;
+    	}
+    }
+    */
   }
   .ui.virtual-tour:not(.remotes) .group--members {
     left: -120px;
@@ -7659,7 +7690,7 @@ footer {
   position: absolute;
   left: 200vw;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .ui.virtual-tour.chat .group--chat {
     top: 0;
     right: -240px;
@@ -7668,7 +7699,7 @@ footer {
     flex: 1 1 240px;
   }
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .ui.virtual-tour.chat .group--chat {
     top: 0;
     left: 0;
@@ -7677,11 +7708,35 @@ footer {
     flex: 1 1 100%;
   }
 }
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 1024px) {
   .ui.virtual-tour.chat:not(.remotes) {
     width: calc(100% - 120px - 240px);
     margin-left: 120px;
     margin-right: 240px;
+    /*
+    @media (orientation: landscape) {
+    	width: calc(100% - 120px - 240px);
+    	margin-left: $remote-width;
+    	margin-right: $chat-width;
+
+    	.group--members {
+    		left: 0; // -$remote-width;
+    	}
+
+    	.group--chat {
+    		right: -$chat-width;
+    	}
+    }
+
+    @media (orientation: portrait) {
+    	height: calc(100% - 90px);
+    	margin-bottom: $remote-height;
+
+    	.group--chat {
+    		display: none;
+    	}
+    }
+    */
   }
   .ui.virtual-tour.chat:not(.remotes) .group--members {
     left: 0;
@@ -7690,16 +7745,7 @@ footer {
     right: -240px;
   }
 }
-@media (min-width: 768px) and (orientation: portrait) {
-  .ui.virtual-tour.chat:not(.remotes) {
-    height: calc(100% - 90px);
-    margin-bottom: 90px;
-  }
-  .ui.virtual-tour.chat:not(.remotes) .group--chat {
-    display: none;
-  }
-}
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .ui.virtual-tour.chat.remotes {
     width: calc(100% - 240px);
     margin-left: 0;
@@ -7709,7 +7755,7 @@ footer {
     right: -240px;
   }
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   .ui.virtual-tour.chat.remotes .group--chat {
     top: 0;
     left: 0;
