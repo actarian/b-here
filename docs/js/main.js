@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.19
+ * @license beta-bhere-development v1.0.20
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -23959,6 +23959,7 @@ class ModelNavComponent extends ModelEditableComponent {
 
         const image = titleTexture.image;
         const title = this.title = new THREE.Sprite(titleMaterial);
+        const scale = this.iconMinScale;
         title.scale.set(scale * image.width / image.height, scale, scale);
         title.position.set(0, -3.5, 0);
         mesh.add(title);

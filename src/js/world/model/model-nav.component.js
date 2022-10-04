@@ -501,6 +501,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				// console.log(titleTexture);
 				const image = titleTexture.image;
 				const title = this.title = new THREE.Sprite(titleMaterial);
+				const scale = this.iconMinScale;
 				title.scale.set(scale * image.width / image.height, scale, scale);
 				title.position.set(0, -3.5, 0);
 				mesh.add(title);

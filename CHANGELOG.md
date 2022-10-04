@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.20] - 2022-10-04
+
+### Fixing
+- ModelNavComponent onCreateSprites
+
+---
+
 ## [1.0.19] - 2022-09-20
 
 ### Fixing
