@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.20
+ * @license beta-bhere-development v1.0.21
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -473,10 +473,13 @@ const CHUNK_EMBED =
 
   },
   logo: null,
+
+  /*
   background: {
-    // image: '/Modules/B-Here/Client/docs/img/background.jpg',
-    video: '/Modules/B-Here/Client/docs/img/background.mp4'
+  	// image: '/Modules/B-Here/Client/docs/img/background.jpg',
+  	video: '/Modules/B-Here/Client/docs/img/background.mp4',
   },
+  */
   selfServiceAudio: null,
   // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
   colors: {
@@ -599,10 +602,13 @@ const CHUNK_EMBED =
 
   },
   logo: null,
+
+  /*
   background: {
-    // image: '/b-here/img/background.jpg',
-    video: '/b-here/img/background.mp4'
+  	// image: '/b-here/img/background.jpg',
+  	video: '/b-here/img/background.mp4',
   },
+  */
   selfServiceAudio: null,
   // '/b-here/audio/self-service.mp3',
   colors: {

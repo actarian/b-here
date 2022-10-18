@@ -88,10 +88,12 @@ export const environmentStatic = {
 		screen: "1080p_2", // 1920 × 1080 30
 	},
 	logo: null,
+	/*
 	background: {
 		// image: '/b-here/img/background.jpg',
 		video: '/b-here/img/background.mp4',
 	},
+	*/
 	selfServiceAudio: null, // '/b-here/audio/self-service.mp3',
 	colors: {
 		menuBackground: '#000000',

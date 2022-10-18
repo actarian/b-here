@@ -5673,18 +5673,18 @@ body {
   opacity: 0.8;
 }
 @media (min-width: 768px) {
-  .page > .background > img {
+  .page > .background.background--image.background--video > img {
     display: none;
   }
-  .page > .background > video {
+  .page > .background.background--image.background--video > video {
     display: block;
   }
 }
 @media (max-width: 767.98px) {
-  .page > .background > img {
+  .page > .background.background--image.background--video > img {
     display: block;
   }
-  .page > .background > video {
+  .page > .background.background--image.background--video > video {
     display: none;
   }
 }

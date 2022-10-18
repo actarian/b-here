@@ -81,10 +81,12 @@ export const environmentServed = {
 		// screen: "1080p_2", // 1920 × 1080 30
 	},
 	logo: null,
+	/*
 	background: {
 		// image: '/Modules/B-Here/Client/docs/img/background.jpg',
 		video: '/Modules/B-Here/Client/docs/img/background.mp4',
 	},
+	*/
 	selfServiceAudio: null, // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
 	colors: {
 		menuBackground: '#000000',

@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.21] - 2022-10-18
+
+### Fixing
+- background environment option
+
+---
+
 ## [1.0.20] - 2022-10-04
 
 ### Fixing

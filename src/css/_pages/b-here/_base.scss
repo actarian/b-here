@@ -66,25 +66,27 @@ body {
 			opacity: 0.8;
 		}
 
-		@include media-up(sm) {
+		&.background--image.background--video {
+			@include media-up(sm) {
 
-			&>img {
-				display: none;
+				&>img {
+					display: none;
+				}
+
+				&>video {
+					display: block;
+				}
 			}
 
-			&>video {
-				display: block;
-			}
-		}
+			@include media-down(xs) {
 
-		@include media-down(xs) {
+				&>img {
+					display: block;
+				}
 
-			&>img {
-				display: block;
-			}
-
-			&>video {
-				display: none;
+				&>video {
+					display: none;
+				}
 			}
 		}
 	}
