@@ -56,6 +56,7 @@ export default class Panorama {
 			depthTest: false,
 			depthWrite: false,
 			fog: false,
+			toneMapped: false,
 		});
 		texture.mapping = THREE.EquirectangularReflectionMapping;
 		const cubeMap = this.toCubeMap(texture, this.renderer);
@@ -99,6 +100,8 @@ export default class Panorama {
 		const height = image.height || image.videoHeight;
 		const cubeMap = new THREE.WebGLCubeRenderTarget(height / 2, {
 			generateMipmaps: true,
+			type: THREE.HalfFloatType,
+			encoding: THREE.LinearEncoding,
 			// minFilter: THREE.LinearMipmapLinearFilter,
 			minFilter: THREE.LinearFilter,
 			magFilter: THREE.LinearFilter,
@@ -173,7 +176,20 @@ export default class Panorama {
 		if (texture.minFilter === THREE.LinearMipmapLinearFilter) {
 			texture.minFilter = THREE.LinearFilter;
 		}
+		/*
+		const outputEncoding = renderer.outputEncoding;
+		const toneMapping = renderer.toneMapping;
+		const toneMappingExposure = renderer.toneMappingExposure;
+		renderer.toneMapping = THREE.NoToneMapping;
+		renderer.outputEncoding = THREE.LinearEncoding;
+		renderer.toneMappingExposure = 2;
+		*/
 		cubeMap.camera.update(renderer, cubeMap.mesh);
+		/*
+		renderer.toneMapping = toneMapping;
+		renderer.outputEncoding = outputEncoding;
+		renderer.toneMappingExposure = toneMappingExposure;
+		*/
 		texture.minFilter = previousMinFilter;
 		// console.log('updateCubeMapEquirectangularTexture');
 	}

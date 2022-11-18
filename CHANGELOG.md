@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.22] - 2022-11-18
+
+### Added
+- toneMappingExposure parameter
+
+---
+
 ## [1.0.21] - 2022-10-18
 
 ### Fixing

@@ -241,6 +241,7 @@ export default class MediaMesh extends InteractiveMesh {
 			depthTest: true, // !!!
 			depthWrite: true,
 			transparent: true,
+			toneMapped: false,
 			// side: THREE.DoubleSide,
 			// blending: THREE.AdditiveBlending,
 			vertexShader: VERTEX_SHADER,
@@ -269,6 +270,7 @@ export default class MediaMesh extends InteractiveMesh {
 			depthTest: true, // !!!
 			depthWrite: true,
 			transparent: true,
+			toneMapped: false,
 			// side: THREE.DoubleSide,
 			// blending: THREE.AdditiveBlending,
 			vertexShader: VERTEX_SHADER,
@@ -381,7 +383,7 @@ export default class MediaMesh extends InteractiveMesh {
 			material = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
 			// material = new THREE.MeshPhysicalMaterial({ clearcoat: 1, clearcoatRoughness: 0, toneMapped: false, encoding: THREE.sRGBEncoding });
 		} else {
-			material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+			material = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false });
 		}
 		return material;
 	}

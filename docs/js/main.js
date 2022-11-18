@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.21
+ * @license beta-bhere-development v1.0.22
  * (c) 2022 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -506,6 +506,7 @@ const CHUNK_EMBED =
     envMap: 'textures/envMap/studio_small_03_2k.hdr',
     grid: 'textures/grid/grid.jpg'
   },
+  toneMappingExposure: 1,
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
   template: {
     email: {
@@ -635,6 +636,7 @@ const CHUNK_EMBED =
     envMap: 'textures/envMap/studio_small_03_2k.hdr',
     grid: 'textures/grid/grid.jpg'
   },
+  toneMappingExposure: 1,
   githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
   template: {
     email: {
@@ -13922,6 +13924,7 @@ class MediaMesh extends InteractiveMesh {
       // !!!
       depthWrite: true,
       transparent: true,
+      toneMapped: false,
       // side: THREE.DoubleSide,
       // blending: THREE.AdditiveBlending,
       vertexShader: VERTEX_SHADER$1,
@@ -13977,6 +13980,7 @@ class MediaMesh extends InteractiveMesh {
       // !!!
       depthWrite: true,
       transparent: true,
+      toneMapped: false,
       // side: THREE.DoubleSide,
       // blending: THREE.AdditiveBlending,
       vertexShader: VERTEX_SHADER$1,
@@ -14134,7 +14138,8 @@ class MediaMesh extends InteractiveMesh {
       }); // material = new THREE.MeshPhysicalMaterial({ clearcoat: 1, clearcoatRoughness: 0, toneMapped: false, encoding: THREE.sRGBEncoding });
     } else {
       material = new THREE.MeshBasicMaterial({
-        color: 0xffffff
+        color: 0xffffff,
+        toneMapped: false
       });
     }
 
@@ -15678,7 +15683,8 @@ class Panorama {
       side: THREE.BackSide,
       depthTest: false,
       depthWrite: false,
-      fog: false
+      fog: false,
+      toneMapped: false
     });
     texture.mapping = THREE.EquirectangularReflectionMapping;
     const cubeMap = this.toCubeMap(texture, this.renderer);
@@ -15724,6 +15730,8 @@ class Panorama {
     const height = image.height || image.videoHeight;
     const cubeMap = new THREE.WebGLCubeRenderTarget(height / 2, {
       generateMipmaps: true,
+      type: THREE.HalfFloatType,
+      encoding: THREE.LinearEncoding,
       // minFilter: THREE.LinearMipmapLinearFilter,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
@@ -15804,8 +15812,23 @@ class Panorama {
     if (texture.minFilter === THREE.LinearMipmapLinearFilter) {
       texture.minFilter = THREE.LinearFilter;
     }
+    /*
+    const outputEncoding = renderer.outputEncoding;
+    const toneMapping = renderer.toneMapping;
+    const toneMappingExposure = renderer.toneMappingExposure;
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.outputEncoding = THREE.LinearEncoding;
+    renderer.toneMappingExposure = 2;
+    */
+
 
     cubeMap.camera.update(renderer, cubeMap.mesh);
+    /*
+    renderer.toneMapping = toneMapping;
+    renderer.outputEncoding = outputEncoding;
+    renderer.toneMappingExposure = toneMappingExposure;
+    */
+
     texture.minFilter = previousMinFilter; // console.log('updateCubeMapEquirectangularTexture');
   }
 
@@ -21748,9 +21771,10 @@ class WorldComponent extends rxcomp.Component {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(container.offsetWidth, container.offsetHeight);
     renderer.xr.enabled = true;
-    renderer.outputEncoding = THREE.LinearEncoding;
-    renderer.toneMapping = THREE.NoToneMapping;
-    renderer.toneMappingExposure = 2; // renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.outputEncoding = THREE.LinearEncoding; // renderer.toneMapping = THREE.NoToneMapping;
+
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = environment.toneMappingExposure || 1; // 2;
 
     if (container.childElementCount > 0) {
       container.insertBefore(renderer.domElement, container.children[0]);
@@ -21828,11 +21852,19 @@ class WorldComponent extends rxcomp.Component {
     const folder = segments.join('/') + '/';
     const isHdr = filename.indexOf('.hdr') !== -1; // const loader = isHdr ? new RGBELoader().setDataType(THREE.UnsignedByteType) : new THREE.TextureLoader();
 
-    const loader = isHdr ? new RGBELoader() : new THREE.TextureLoader();
+    let loader;
+
+    if (isHdr) {
+      loader = new RGBELoader();
+      loader.setDataType(THREE.HalfFloatType);
+    } else {
+      loader = new THREE.TextureLoader();
+    }
+
     loader.setPath(environment.getPath(folder)).load(filename, texture => {
       if (isHdr && texture) {
-        texture.mapping = THREE.EquirectangularReflectionMapping; // this.scene.background = texture;
-
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        this.scene.background = texture;
         this.scene.environment = texture;
       } else {
         this.setBackground(texture);
@@ -23736,7 +23768,8 @@ class ModelNavComponent extends ModelEditableComponent {
         depthWrite: false,
         transparent: true,
         opacity: opacityIdle,
-        color: new THREE.Color(environment.colors.menuOverBackground)
+        color: new THREE.Color(environment.colors.menuOverBackground),
+        toneMapped: false
       }));
       plane.name = `[nav] ${item.id}`;
       plane.depthTest = false;
@@ -23827,7 +23860,8 @@ class ModelNavComponent extends ModelEditableComponent {
         depthWrite: false,
         transparent: true,
         opacity: 0.0,
-        color: 0x00ffff
+        color: 0x00ffff,
+        toneMapped: false
       }));
       sphere.name = `[nav] ${item.id}`; // sphere.lookAt(Host.origin); ??
 
@@ -23941,7 +23975,8 @@ class ModelNavComponent extends ModelEditableComponent {
         depthWrite: false,
         transparent: true,
         sizeAttenuation: false,
-        opacity: opacity // color: 0xff0000,
+        opacity: opacity,
+        toneMapped: false // color: 0xff0000,
 
       });
       const materials = [material];
@@ -23959,7 +23994,8 @@ class ModelNavComponent extends ModelEditableComponent {
           transparent: true,
           map: titleTexture,
           sizeAttenuation: false,
-          opacity: opacity // color: 0xff0000,
+          opacity: opacity,
+          toneMapped: false // color: 0xff0000,
 
         }); // console.log(titleTexture);
 
@@ -34266,7 +34302,8 @@ class ModelBannerComponent extends ModelComponent {
       const material = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: true,
-        opacity: 0 // side: THREE.DoubleSide,
+        opacity: 0,
+        toneMapped: false // side: THREE.DoubleSide,
 
       });
       const mesh = this.mesh;
@@ -34761,7 +34798,8 @@ ModelCurvedPlaneComponent.meta = {
       color: 0xffffff,
       // 0x33c5f6,
       transparent: true,
-      opacity: 1 // blending: THREE.AdditiveBlending,
+      opacity: 1,
+      toneMapped: false // blending: THREE.AdditiveBlending,
       // side: THREE.DoubleSide
 
     });
@@ -35018,6 +35056,7 @@ class ModelGridComponent extends ModelComponent {
         depthTest: false,
         depthWrite: false,
         transparent: true,
+        toneMapped: false,
         vertexShader: VERTEX_SHADER,
         fragmentShader: FRAGMENT_SHADER,
         uniforms: {
@@ -35108,6 +35147,7 @@ class ModelGridComponent extends ModelComponent {
       depthTest: false,
       depthWrite: false,
       transparent: true,
+      toneMapped: false,
       opacity: 0 // side: THREE.DoubleSide,
 
     });
@@ -35249,6 +35289,7 @@ ModelGridComponent.meta = {
     const material = new THREE.ShaderMaterial({
       depthTest: false,
       transparent: true,
+      toneMapped: false,
       vertexShader: ModelMenuComponent.VERTEX_SHADER,
       fragmentShader: ModelMenuComponent.FRAGMENT_SHADER,
       uniforms: {
@@ -37058,7 +37099,8 @@ class ModelPanelComponent extends ModelComponent {
           transparent: true,
           opacity: 0,
           map: texture.map,
-          sizeAttenuation: false
+          sizeAttenuation: false,
+          toneMapped: false
         });
         const item = this.item;
         const panel = this.panel = new InteractiveSprite(material);
@@ -37666,7 +37708,8 @@ class ModelProgressComponent extends ModelComponent {
     const material = this.material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
-      opacity: 0 // side: THREE.DoubleSide,
+      opacity: 0,
+      toneMapped: false // side: THREE.DoubleSide,
 
     });
     this.banner = new THREE.Mesh(geometry, material);

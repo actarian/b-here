@@ -292,6 +292,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				transparent: true,
 				opacity: opacityIdle,
 				color: new THREE.Color(environment.colors.menuOverBackground),
+				toneMapped: false,
 			}));
 			plane.name = `[nav] ${item.id}`;
 			plane.depthTest = false;
@@ -375,6 +376,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				transparent: true,
 				opacity: 0.0,
 				color: 0x00ffff,
+				toneMapped: false,
 			}));
 			sphere.name = `[nav] ${item.id}`;
 			// sphere.lookAt(Host.origin); ??
@@ -479,6 +481,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 				transparent: true,
 				sizeAttenuation: false,
 				opacity: opacity,
+				toneMapped: false,
 				// color: 0xff0000,
 			});
 			const materials = [material];
@@ -496,6 +499,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 					map: titleTexture,
 					sizeAttenuation: false,
 					opacity: opacity,
+					toneMapped: false,
 					// color: 0xff0000,
 				});
 				// console.log(titleTexture);

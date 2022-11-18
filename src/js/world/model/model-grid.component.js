@@ -162,6 +162,7 @@ export default class ModelGridComponent extends ModelComponent {
 				depthTest: false,
 				depthWrite: false,
 				transparent: true,
+				toneMapped: false,
 				vertexShader: VERTEX_SHADER,
 				fragmentShader: FRAGMENT_SHADER,
 				uniforms: {
@@ -241,6 +242,7 @@ export default class ModelGridComponent extends ModelComponent {
 			depthTest: false,
 			depthWrite: false,
 			transparent: true,
+			toneMapped: false,
 			opacity: 0,
 			// side: THREE.DoubleSide,
 		});

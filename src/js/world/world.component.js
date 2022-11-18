@@ -215,9 +215,9 @@ export default class WorldComponent extends Component {
 		renderer.setSize(container.offsetWidth, container.offsetHeight);
 		renderer.xr.enabled = true;
 		renderer.outputEncoding = THREE.LinearEncoding;
-		renderer.toneMapping = THREE.NoToneMapping;
-		renderer.toneMappingExposure = 2;
-
+		// renderer.toneMapping = THREE.NoToneMapping;
+		renderer.toneMapping = THREE.ACESFilmicToneMapping;
+		renderer.toneMappingExposure = environment.toneMappingExposure || 1; // 2;
 		// renderer.outputEncoding = THREE.sRGBEncoding;
 		// renderer.toneMapping = THREE.LinearToneMapping;
 		// renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -314,11 +314,17 @@ export default class WorldComponent extends Component {
 		const folder = segments.join('/') + '/';
 		const isHdr = filename.indexOf('.hdr') !== -1;
 		// const loader = isHdr ? new RGBELoader().setDataType(THREE.UnsignedByteType) : new THREE.TextureLoader();
-		const loader = isHdr ? new RGBELoader() : new THREE.TextureLoader();
+		let loader;
+		if (isHdr) {
+			loader = new RGBELoader();
+			loader.setDataType(THREE.HalfFloatType);
+		} else {
+			loader = new THREE.TextureLoader();
+		}
 		loader.setPath(environment.getPath(folder)).load(filename, (texture) => {
 			if (isHdr && texture) {
 				texture.mapping = THREE.EquirectangularReflectionMapping;
-				// this.scene.background = texture;
+				this.scene.background = texture;
 				this.scene.environment = texture;
 			} else {
 				this.setBackground(texture);

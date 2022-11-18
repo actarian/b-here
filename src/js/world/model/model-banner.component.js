@@ -61,6 +61,7 @@ export default class ModelBannerComponent extends ModelComponent {
 				map: texture,
 				transparent: true,
 				opacity: 0,
+				toneMapped: false,
 				// side: THREE.DoubleSide,
 			});
 			const mesh = this.mesh;

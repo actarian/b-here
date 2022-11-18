@@ -55,6 +55,7 @@ export class MenuButton extends InteractiveMesh {
 		const material = new THREE.ShaderMaterial({
 			depthTest: false,
 			transparent: true,
+			toneMapped: false,
 			vertexShader: ModelMenuComponent.VERTEX_SHADER,
 			fragmentShader: ModelMenuComponent.FRAGMENT_SHADER,
 			uniforms: {

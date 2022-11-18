@@ -78,6 +78,7 @@ export default class ModelDebugComponent extends ModelComponent {
 			color: 0xffffff, // 0x33c5f6,
 			transparent: true,
 			opacity: 1,
+			toneMapped: false,
 			// blending: THREE.AdditiveBlending,
 			// side: THREE.DoubleSide
 		});

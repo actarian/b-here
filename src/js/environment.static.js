@@ -119,6 +119,7 @@ export const environmentStatic = {
 		envMap: 'textures/envMap/studio_small_03_2k.hdr',
 		grid: 'textures/grid/grid.jpg',
 	},
+	toneMappingExposure: 1,
 	githubDocs: 'https://raw.githubusercontent.com/actarian/b-here/beta-bhere-sso/docs/',
 	template: {
 		email: {

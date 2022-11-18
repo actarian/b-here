@@ -69,6 +69,7 @@ export default class ModelPanelComponent extends ModelComponent {
 					opacity: 0,
 					map: texture.map,
 					sizeAttenuation: false,
+					toneMapped: false,
 				});
 				const item = this.item;
 				const panel = this.panel = new InteractiveSprite(material);

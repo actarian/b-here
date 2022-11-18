@@ -162,6 +162,7 @@ export default class ModelProgressComponent extends ModelComponent {
 			map: texture,
 			transparent: true,
 			opacity: 0,
+			toneMapped: false,
 			// side: THREE.DoubleSide,
 		});
 		const banner = this.banner = new THREE.Mesh(geometry, material);
