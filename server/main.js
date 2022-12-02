@@ -45,6 +45,7 @@ function serve(options) {
 	const staticMiddleware_ = staticMiddleware(options);
 	const apiMiddleware_ = apiMiddleware(options);
 
+	const vercelUrl = process.env.VERCEL_URL;
 	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 
 	console.log(process.env);
@@ -55,7 +56,7 @@ function serve(options) {
 		saveUninitialized: true,
 		resave: true
 	}));
-	if (heroku) {
+	if (heroku || vercelUrl) {
 		app.enable('trust proxy');
 	}
 	app.disable('x-powered-by');
@@ -131,7 +132,7 @@ function serve(options) {
 		console.log(`NodeJs Running server at ${options.host}`);
 	});
 
-	if (!heroku) {
+	if (!heroku && !vercelUrl) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');
 		const credentials = { key: privateKey, cert: certificate };
