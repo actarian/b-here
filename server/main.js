@@ -47,6 +47,8 @@ function serve(options) {
 
 	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 
+	console.log(process.env);
+
 	const app = express();
 	app.use(session({
 		secret: 'b-here-secret-keyword',
