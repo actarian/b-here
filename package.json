@@ -9,7 +9,8 @@
     "url": "git://github.com/actarian/b-here.git#beta-bhere"
   },
   "engines": {
-    "node": "^17 || ^16 || ^15 || ^14 || ^13 || ^12 || ^11 || ^10 || ^9 || ^8"
+    "npm": ">=6.14.6 <=8.x.x",
+    "node": ">=12.18.3 <=16.x.x"
   },
   "main": "index.js",
   "files": [
