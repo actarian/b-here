@@ -45,8 +45,8 @@ function serve(options) {
 	// const staticMiddleware_ = staticMiddleware(options);
 	const apiMiddleware_ = apiMiddleware(options);
 
-	const vercelUrl = process.env.VERCEL_URL;
 	const heroku = (process.env._ && process.env._.indexOf('heroku') !== -1);
+	const vercelUrl = process.env.VERCEL_URL;
 
 	const app = express();
 	app.use(session({
