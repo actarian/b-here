@@ -12,7 +12,9 @@
         "includeFiles": [
           "dist/**",
           "docs/**/*.html",
-          "docs/**/*.json"
+          "docs/**/*.json",
+          "docs/**/*.js",
+          "docs/**/*.css"
         ]
       }
     },
