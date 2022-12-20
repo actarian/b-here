@@ -181,7 +181,7 @@ export default class AgoraComponent extends Component {
 			const index = parseInt(match[1]);
 			linkRole = Object.keys(RoleType).reduce((p, c, i) => {
 				return i === index ? RoleType[c] : p;
-			}, null)
+			}, null);
 		}
 		return linkRole;
 	}
@@ -1132,7 +1132,7 @@ AgoraComponent.meta = {
 				${CHUNK_CREDITS}
 				${CHUNK_COPYRIGHT}
 			</span>
-			<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher' && (state.status == 'checklist' || state.status == 'link')">
+			<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('deployed' | flag) && state.role == 'publisher' && (state.status == 'checklist' || state.status == 'link')">
 				<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 			</a>
 		</footer>

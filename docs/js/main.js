@@ -680,9 +680,11 @@ const PARAMS = NODE ? {
   get: () => {}
 } : new URLSearchParams(window.location.search);
 const DEBUG = PARAMS.get('debug') != null;
-const BASE_HREF = NODE ? null : document.querySelector('base').getAttribute('href');
+NODE ? null : document.querySelector('base').getAttribute('href');
 const HEROKU = NODE ? false : window && window.location.host.indexOf('herokuapp') !== -1;
-const STATIC = NODE ? false : HEROKU || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
+const VERCEL = NODE ? false : window && window.location.host.indexOf('vercel.app') !== -1;
+const DEPLOYED = HEROKU || VERCEL;
+const STATIC = NODE ? false : DEPLOYED || window && (window.location.port === '41789' || window.location.port === '5000' || window.location.port === '6443' || window.location.host === 'actarian.github.io');
 const DEVELOPMENT = NODE ? false : window && ['localhost', '127.0.0.1', '0.0.0.0'].indexOf(window.location.host.split(':')[0]) !== -1;
 const PRODUCTION = !DEVELOPMENT;
 const ENV = {
@@ -701,10 +703,10 @@ class Environment {
   }
 
   get href() {
-    if (HEROKU) {
+    if (DEPLOYED) {
       return this.githubDocs;
     } else {
-      return BASE_HREF;
+      return this.assets;
     }
   }
 
@@ -718,7 +720,7 @@ class Environment {
   }
 
   getPath(path) {
-    return this.isLocal(path) ? environment.assets + path : path;
+    return this.isLocal(path) ? this.href + path : path;
   }
 
   isLocal(path) {
@@ -773,7 +775,9 @@ const defaultOptions$3 = {
 const defaultAppOptions = {
   channelName: 'BHere',
   flags: {
-    heroku: HEROKU
+    heroku: HEROKU,
+    vercel: VERCEL,
+    deployed: DEPLOYED
   },
   navs: {
     iconMinScale: 1,
@@ -25367,7 +25371,7 @@ AgoraComponent.meta = {
 				${CHUNK_CREDITS}
 				${CHUNK_COPYRIGHT}
 			</span>
-			<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('heroku' | flag) && state.role == 'publisher' && (state.status == 'checklist' || state.status == 'link')">
+			<a [routerLink]="':lang.editor' | route" class="btn--absolute" *if="('editor' | flag) && !('deployed' | flag) && state.role == 'publisher' && (state.status == 'checklist' || state.status == 'link')">
 				<span [innerHTML]="'bhere_editor' | label"></span> <svg class="edit" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#edit"></use></svg>
 			</a>
 		</footer>
