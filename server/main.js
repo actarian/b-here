@@ -124,8 +124,8 @@ function serve(options) {
 		response.json(process.env);
 	});
 
-	app.get('/api/files', function(request, response) {
-		const files = getFiles(dirname);
+	app.get('/api/files', async function(request, response) {
+		const files = await getFiles(dirname);
 		response.json(files);
 	});
 
