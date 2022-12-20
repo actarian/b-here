@@ -11,10 +11,8 @@
       "config": {
         "includeFiles": [
           "dist/**",
-          "docs/**",
-          "!docs/textures/**",
-          "!docs/models/**",
-          "!docs/uploads/**"
+          "docs/**/*.html",
+          "docs/**/*.json"
         ]
       }
     },
