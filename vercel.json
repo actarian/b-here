@@ -27,5 +27,11 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/b-here/:match*",
+      "destination": "/docs/:match*"
+    }
   ]
 }
