@@ -61,6 +61,7 @@ function serve(options) {
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
 	app.use(express.raw());
+	app.use(express.static('docs'));
 	app.use(morgan('dev'));
 	app.engine('ejs', engine);
 	app.set('views', options.dirname + '/server/views');
@@ -111,7 +112,7 @@ function serve(options) {
 		response.json(process.env);
 	});
 
-	const isDist = process.env.npm_config_dist;
+	const isDist = process.env.npm_config_dist || process.env.VERCEL_ENV === 'production';
 	console.log('isDist', isDist);
 
 	const defaultLanguage = 'en';

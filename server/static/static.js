@@ -140,7 +140,7 @@ function staticMiddleware(options) {
 
 			fs.stat(filePath, (error, stats) => {
 				if (error) {
-					console.log('NodeJs.staticMiddleware.notFound', file);
+					console.log('NodeJs.staticMiddleware.notFound', filePath);
 					return next();
 				}
 
