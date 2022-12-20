@@ -129,7 +129,8 @@ function serve(options) {
 		response.json(files);
 	});
 
-	const isDist = process.env.npm_config_dist || process.env.VERCEL_ENV === 'production';
+	// const isDist = process.env.npm_config_dist || process.env.VERCEL_ENV === 'production';
+	const isDist = process.env.npm_config_dist;
 	console.log('isDist', isDist);
 
 	const defaultLanguage = 'en';
