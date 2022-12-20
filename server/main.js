@@ -12,18 +12,6 @@ const SingleSignOnGuard = require('./sso/sso.guard.js');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor.js');
 const ssoRouter = require('./sso/sso.router');
 
-const { resolve } = require('path');
-const { readdir } = require('fs').promises;
-
-async function getFiles(dir) {
-	const dirents = await readdir(dir, { withFileTypes: true });
-	const files = await Promise.all(dirents.map((dirent) => {
-		const res = resolve(dir, dirent.name);
-		return dirent.isDirectory() ? getFiles(res) : res;
-	}));
-	return Array.prototype.concat(...files);
-}
-
 function serve(options) {
 	options = options || {};
 
@@ -120,6 +108,7 @@ function serve(options) {
 		response.status(200).send();
 	});
 
+	/*
 	app.get('/api/env', function(request, response) {
 		response.json(process.env);
 	});
@@ -128,6 +117,7 @@ function serve(options) {
 		const files = await getFiles(dirname);
 		response.json(files);
 	});
+	*/
 
 	// const isDist = process.env.npm_config_dist || process.env.VERCEL_ENV === 'production';
 	const isDist = process.env.npm_config_dist;
@@ -153,7 +143,6 @@ function serve(options) {
 		console.log(`NodeJs Running server at ${options.host}`);
 	});
 
-	console.log('heroku', heroku, 'vercelUrl', vercelUrl);
 	if (!heroku && !vercelUrl) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');

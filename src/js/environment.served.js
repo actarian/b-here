@@ -83,11 +83,11 @@ export const environmentServed = {
 	logo: null,
 	/*
 	background: {
-		// image: '/Modules/B-Here/Client/docs/img/background.jpg',
-		video: '/Modules/B-Here/Client/docs/img/background.mp4',
+		// image: 'img/background.jpg',
+		video: 'img/background.mp4',
 	},
 	*/
-	selfServiceAudio: null, // '/Modules/B-Here/Client/docs/audio/self-service.mp3',
+	selfServiceAudio: null, // 'audio/self-service.mp3',
 	colors: {
 		menuBackground: '#000000',
 		menuForeground: '#ffffff',

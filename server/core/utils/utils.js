@@ -1,5 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const { resolve } = require('path');
+const { readdir } = require('fs').promises;
+
+async function getFiles(folder) {
+	const fileOrFolders = await readdir(folder, { withFileTypes: true });
+	const files = await Promise.all(fileOrFolders.map((fileOrFolder) => {
+		const response = resolve(folder, fileOrFolder.name);
+		return fileOrFolder.isDirectory() ? getFiles(response) : response;
+	}));
+	return Array.prototype.concat(...files);
+}
 
 function readFileSync(...components) {
 	const keyUrl = path.resolve(...components);
@@ -38,6 +49,7 @@ function findItemInCollection(values, collection) {
 }
 
 module.exports = {
+	getFiles,
 	readFileSync,
 	findItemInCollection,
 	encode,

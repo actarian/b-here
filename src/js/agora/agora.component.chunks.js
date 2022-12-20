@@ -234,8 +234,8 @@ export const CHUNK_NAVMAP = /* html */`
 export const CHUNK_BACKGROUND = /* html */`
 <!-- background -->
 <div class="background" [class]="{ 'background--image': ('background.image' | env), 'background--video': ('background.video' | env) }" *if="state.status != 'connected'">
-	<img [src]="'background.image' | env" *if="'background.image' | env" />
-	<video [src]="'background.video' | env" *if="'background.video' | env" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
+	<img [src]="'background.image' | env | asset" *if="'background.image' | env" />
+	<video [src]="'background.video' | env | asset" *if="'background.video' | env" oncanplay="this.muted = true; this.classList.add('ready');" playsinline autoplay muted loop></video>
 </div>
 `;
 

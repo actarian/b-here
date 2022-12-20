@@ -14,9 +14,7 @@
           "docs/**/*.html",
           "docs/**/*.json",
           "docs/**/*.js",
-          "docs/**/*.css",
-          "docs/audio/**",
-          "docs/img/**"
+          "docs/**/*.css"
         ]
       }
     },
@@ -26,10 +24,10 @@
       "config": {
         "includeFiles": [
           "dist/**",
-          "docs/**",
-          "!docs/textures/**",
-          "!docs/models/**",
-          "!docs/uploads/**"
+          "docs/**/*.html",
+          "docs/**/*.json",
+          "docs/**/*.js",
+          "docs/**/*.css"
         ]
       }
     }

@@ -1022,7 +1022,7 @@ export default class AgoraComponent extends Component {
 			selfServiceAudio.setAttribute('autoplay', 'true');
 			selfServiceAudio.setAttribute('loop', 'true');
 			selfServiceAudio.volume = 0.5;
-			selfServiceAudio.src = environment.selfServiceAudio;
+			selfServiceAudio.src = environment.getPath(environment.selfServiceAudio);
 			const { node } = getContext(this);
 			node.parentNode.appendChild(selfServiceAudio);
 			this.selfServiceAudio = selfServiceAudio;

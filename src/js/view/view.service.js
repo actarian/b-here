@@ -95,7 +95,7 @@ export class ViewService {
 
 	static data$() {
 		if (!this.data$_) {
-			const dataUrl = (environment.flags.production ? '/api/view' : './api/data.json') + '?lang=' + LanguageService.lang;
+			const dataUrl = (environment.flags.production ? '/api/view' : `${environment.assets}api/data.json`) + '?lang=' + LanguageService.lang;
 			this.data$_ = HttpService.get$(dataUrl).pipe(
 				map(data => {
 					data.views = data.views.map(view => mapView(view));
