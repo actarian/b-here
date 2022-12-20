@@ -3,11 +3,29 @@
   "public": true,
   "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "docs",
+  "outputDirectory": ".",
   "builds": [
     {
       "src": "index.js",
-      "use": "@now/node"
+      "use": "@vercel/node"
+    },
+    {
+      "src": "server/**",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "server/**"
+        ]
+      }
+    },
+    {
+      "src": "docs/**",
+      "use": "@vercel/static",
+      "config": {
+        "includeFiles": [
+          "docs/**"
+        ]
+      }
     }
   ],
   "routes": [
