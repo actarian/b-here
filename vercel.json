@@ -11,10 +11,10 @@
       "config": {
         "includeFiles": [
           "dist/**",
-          "docs/**"
-        ],
-        "excludeFiles": [
-          "docs/uploads/**"
+          "docs/**",
+          "!docs/textures/**",
+          "!docs/models/**",
+          "!docs/uploads/**"
         ]
       }
     },
@@ -23,10 +23,11 @@
       "use": "@vercel/static",
       "config": {
         "includeFiles": [
-          "docs/**"
-        ],
-        "excludeFiles": [
-          "docs/uploads/**"
+          "dist/**",
+          "docs/**",
+          "!docs/textures/**",
+          "!docs/models/**",
+          "!docs/uploads/**"
         ]
       }
     }
