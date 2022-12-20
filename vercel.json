@@ -14,7 +14,9 @@
           "docs/**/*.html",
           "docs/**/*.json",
           "docs/**/*.js",
-          "docs/**/*.css"
+          "docs/**/*.css",
+          "docs/audio/**",
+          "docs/img/**"
         ]
       }
     },
