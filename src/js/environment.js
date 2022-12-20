@@ -44,7 +44,7 @@ export class Environment {
 	}
 
 	getPath(path) {
-		return this.isLocal(path) ? (this.href + path) : path;
+		return this.isLocal(path) ? (environment.assets + path) : path;
 	}
 
 	isLocal(path) {

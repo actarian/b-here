@@ -1,4 +1,4 @@
-<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><meta charset="utf-8"><base href="/b-here/"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta name="Content-Language" content="it"><meta name="robots" content="noindex,nofollow"><title>Websolute B-Here</title><meta name="description" content="Websolute B-Here demo."><meta name="apple-mobile-web-app-title" content="Websolute B-Here"><meta name="application-name" content="Websolute B-Here"><link rel="shortcut icon" href="/b-here/img/favicon.ico"><link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800&display=swap" rel="stylesheet" crossorigin="anonymous"><link rel="stylesheet" href="/b-here/dist/css/bhere.min.css"><!-- start css --><!-- end css --></head><body><script>window.STATIC = true;</script><!-- start main --><!-- start css-vars.html--><style>.b-here {
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><meta charset="utf-8"><base href="/"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta name="Content-Language" content="it"><meta name="robots" content="noindex,nofollow"><title>Websolute B-Here</title><meta name="description" content="Websolute B-Here demo."><meta name="apple-mobile-web-app-title" content="Websolute B-Here"><meta name="application-name" content="Websolute B-Here"><link rel="shortcut icon" href="/docs/img/favicon.ico"><link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;800&display=swap" rel="stylesheet" crossorigin="anonymous"><link rel="stylesheet" href="/dist/css/bhere.min.css"><!-- start css --><!-- end css --></head><body><script>window.STATIC = true;</script><!-- start main --><!-- start css-vars.html--><style>.b-here {
 	/* --font-primary: GT Walsheim, Maven Pro, Arial, sans-serif; */
 	--font-primary: Work Sans, Arial, sans-serif;
 	--background: #ffffff;
@@ -21,7 +21,7 @@
 	--foreground-primary-dimmed: rgba(0, 153, 255, 0.5);
 	--border: #101010;
 	--shadow: rgba(86, 125, 151, .65);
-}</style><!-- end css-vars.html--><!-- end main --><script src="/b-here/dist/js/bhere.min.js"></script><!-- start js --><!-- start options.html--><script>var options = {
+}</style><!-- end css-vars.html--><!-- end main --><script src="/dist/js/bhere.min.js"></script><!-- start js --><!-- start options.html--><script>var options = {
 		appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
 		channelName: 'BHere',
 		webhook: {
@@ -37,10 +37,10 @@
 		},
 		logo: null,
 		background: {
-			image: '/b-here/img/background.jpg',
-			video: '/b-here/img/background.mp4',
+			image: '/docs/img/background.jpg',
+			video: '/docs/img/background.mp4',
 		},
-		selfServiceAudio: null, // '/b-here/audio/self-service.mp3',
+		selfServiceAudio: null, // '/docs/audio/self-service.mp3',
 		colors: {
 			menuBackground: '#000000',
 			menuForeground: '#ffffff',
@@ -55,11 +55,11 @@
 			disabledViewTypes: ['waiting-room'],
 			disabledViewItemTypes: ['texture'],
 		},
-		assets: '/b-here/',
-		dist: '/b-here/',
+		assets: '/docs/',
+		dist: '/dist/',
 		workers: {
-			image: '/b-here/js/workers/image.service.worker.js',
-			prefetch: '/b-here/js/workers/prefetch.service.worker.js',
+			image: '/docs/js/workers/image.service.worker.js',
+			prefetch: '/docs/js/workers/prefetch.service.worker.js',
 		},
 		textures: {
 			envMap: 'textures/envMap/studio_small_03_2k.hdr',
@@ -448,10 +448,10 @@ options = Object.assign(options, {
 		{ type: 'custom-select', name: 'role', label: 'access_role', required: true, options: roles, test: roles[0].id },
 		{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
 	],
-});</script><!-- end it.html--><script>options.dist = '/b-here/dist/';
+});</script><!-- end it.html--><script>options.dist = '/dist/';
 options.workers = {
-	image: '/b-here/dist/js/workers/image.service.worker.js',
-	prefetch: '/b-here/dist/js/workers/prefetch.service.worker.js',
+	image: '/dist/js/workers/image.service.worker.js',
+	prefetch: '/dist/js/workers/prefetch.service.worker.js',
 };
 
 var target = document.createElement('div');

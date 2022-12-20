@@ -90,11 +90,11 @@ export const environmentStatic = {
 	logo: null,
 	/*
 	background: {
-		// image: '/b-here/img/background.jpg',
-		video: '/b-here/img/background.mp4',
+		// image: '/docs/img/background.jpg',
+		video: '/docs/img/background.mp4',
 	},
 	*/
-	selfServiceAudio: null, // '/b-here/audio/self-service.mp3',
+	selfServiceAudio: null, // '/docs/audio/self-service.mp3',
 	colors: {
 		menuBackground: '#000000',
 		menuForeground: '#ffffff',
@@ -109,8 +109,8 @@ export const environmentStatic = {
 		disabledViewTypes: ['waiting-room'],
 		disabledViewItemTypes: ['texture'],
 	},
-	assets: '/b-here/',
-	dist: '/b-here/dist/',
+	assets: '/docs/',
+	dist: '/dist/',
 	workers: {
 		image: './js/workers/image.service.worker.js',
 		prefetch: './js/workers/prefetch.service.worker.js',

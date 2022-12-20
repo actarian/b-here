@@ -606,12 +606,12 @@ const CHUNK_EMBED =
 
   /*
   background: {
-  	// image: '/b-here/img/background.jpg',
-  	video: '/b-here/img/background.mp4',
+  	// image: '/docs/img/background.jpg',
+  	video: '/docs/img/background.mp4',
   },
   */
   selfServiceAudio: null,
-  // '/b-here/audio/self-service.mp3',
+  // '/docs/audio/self-service.mp3',
   colors: {
     menuBackground: '#000000',
     menuForeground: '#ffffff',
@@ -626,8 +626,8 @@ const CHUNK_EMBED =
     disabledViewTypes: ['waiting-room'],
     disabledViewItemTypes: ['texture']
   },
-  assets: '/b-here/',
-  dist: '/b-here/dist/',
+  assets: '/docs/',
+  dist: '/dist/',
   workers: {
     image: './js/workers/image.service.worker.js',
     prefetch: './js/workers/prefetch.service.worker.js'
@@ -718,7 +718,7 @@ class Environment {
   }
 
   getPath(path) {
-    return this.isLocal(path) ? this.href + path : path;
+    return this.isLocal(path) ? environment.assets + path : path;
   }
 
   isLocal(path) {
@@ -4119,8 +4119,7 @@ class MeetingId {
   		return of(void 0);
   	}
   }
-  
-  onEnter$_(snapshot, element, instance) {
+  	onEnter$_(snapshot, element, instance) {
   	if (instance instanceof View && element) {
   		const factory = instance.constructor;
   		const transition = factory.transitions.find((x) => x instanceof EnterTransition && x.matcher(snapshot.previousRoute?.path));
@@ -4129,8 +4128,7 @@ class MeetingId {
   		return of(void 0);
   	}
   }
-  
-  onLeave$_(snapshot, element, instance) {
+  	onLeave$_(snapshot, element, instance) {
   	if (instance instanceof View && element) {
   		const factory = instance.constructor;
   		const transition = factory.transitions.find((x) => x instanceof LeaveTransition && x.matcher(snapshot?.path));
@@ -5074,14 +5072,12 @@ class AgoraVolumeLevelsEvent extends AgoraEvent {}class HttpService {
   		map((user) => this.mapUser(user)),
   	);
   }
-  
-  static register$(payload) {
+  	static register$(payload) {
   	return HttpService.post$('/api/user/register', payload).pipe(
   		map((user) => this.mapUser(user)),
   	);
   }
-  
-  static update(payload) {
+  	static update(payload) {
   	return HttpService.post$('/api/user/updateprofile', payload).pipe(
   		map((user) => this.mapUser(user)),
   	);
@@ -9998,15 +9994,13 @@ class PathService {
   		map(item => mapViewItem(item)),
   	);
   }
-  
-  static itemUpdate$(path, item) {
+  	static itemUpdate$(path, item) {
   	item = mapViewItem(item); // !!! ??
   	return HttpService.put$(`/api/path/${path.id}/item/${item.id}`, item.payload).pipe(
   		map(item => mapViewItem(item)),
   	);
   }
-  
-  static itemDelete$(path, item) {
+  	static itemDelete$(path, item) {
   	return HttpService.delete$(`/api/path/${path.id}/item/${item.id}`);
   }
   */
@@ -21804,11 +21798,11 @@ class WorldComponent extends rxcomp.Component {
     const mainLight = new THREE.PointLight(0xffffff);
     mainLight.position.set(-50, 0, -50);
     objects.add(mainLight);
-    		const light2 = new THREE.DirectionalLight(0xffe699, 5);
+    	const light2 = new THREE.DirectionalLight(0xffe699, 5);
     light2.position.set(5, -5, 5);
     light2.target.position.set(0, 0, 0);
     objects.add(light2);
-    		const light = new THREE.AmbientLight(0x101010);
+    	const light = new THREE.AmbientLight(0x101010);
     */
 
     const ambient = this.ambient = new THREE.AmbientLight(0xffffff, 0.25);
@@ -33854,8 +33848,7 @@ class VirtualStructure extends rxcomp.Structure {
   	this.container.style.height = `${highestHeight}px`;
   	return visibleItems;
   }
-  
-  updateBackward__() {
+  	updateBackward__() {
   	const options = this.options;
   	const items = this.items$.getValue();
   	// console.log('VirtualStructure', 'items.length', items.length);
@@ -34269,8 +34262,7 @@ class ModelBannerComponent extends ModelComponent {
   	super.onInit();
   	// console.log('ModelBannerComponent.onInit', this.item);
   }
-  
-  onView() {
+  	onView() {
   	// console.log('ModelBannerComponent.onView', this.item);
   	if (this.viewed) {
   		return;
@@ -35224,7 +35216,7 @@ class ModelGridComponent extends ModelComponent {
     /*
     mesh.userData = {
     	render: () => {
-    			}
+    		}
     };
     */
 
@@ -37270,7 +37262,7 @@ class ModelPanelComponent extends ModelComponent {
               				height: imageBitmap.height,
               			};
               			resolve(this.item.panelTexture);
-              				}, error => {
+              			}, error => {
               			reject(error);
               		});
               	}, error => {

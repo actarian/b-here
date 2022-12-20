@@ -1,4 +1,4 @@
-<!-- @@master = ./templates/layout-bhere.html { "baseHref": "/b-here/" } -->
+<!-- @@master = ./templates/layout-bhere.html { "baseHref": "/" } -->
 <!-- @@block = main-->
 <!-- @@include ./templates/shared/css-vars.html -->
 <!-- @@close-->
@@ -6,10 +6,10 @@
 <!-- @@include ./templates/shared/options.html -->
 <!-- @@include ./templates/shared/en.html -->
 <script>
-options.dist = '/b-here/dist/';
+options.dist = '/dist/';
 options.workers = {
-	image: '/b-here/dist/js/workers/image.service.worker.js',
-	prefetch: '/b-here/dist/js/workers/prefetch.service.worker.js',
+	image: '/dist/js/workers/image.service.worker.js',
+	prefetch: '/dist/js/workers/prefetch.service.worker.js',
 };
 
 var target = document.createElement('div');

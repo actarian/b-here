@@ -6,7 +6,7 @@ const https = require('https');
 const multipart = require('connect-multiparty');
 const path = require('path');
 const session = require('express-session');
-const { staticMiddleware } = require('./static/static.js');
+// const { staticMiddleware } = require('./static/static.js');
 const { apiMiddleware, uuid, setSessionUser, RoleType } = require('./api/api.js');
 const SingleSignOnGuard = require('./sso/sso.guard.js');
 const SingleSignOnTokenInterceptor = require('./sso/sso-token.interceptor.js');
@@ -34,7 +34,7 @@ function serve(options) {
 		dirname: dirname,
 		port: 5000,
 		portHttps: 6443,
-		baseHref: '/b-here/',
+		baseHref: '/',
 		charset: 'utf8',
 		assets: 'assets/',
 		cacheMode: 'file',
@@ -54,11 +54,11 @@ function serve(options) {
 	options.host = `http://localhost:${options.port}`;
 	options.hostHttps = `https://localhost:${options.portHttps}`;
 
-	const staticMiddleware_ = staticMiddleware(options);
+	// const staticMiddleware_ = staticMiddleware(options);
 	const apiMiddleware_ = apiMiddleware(options);
 
 	const vercelUrl = process.env.VERCEL_URL;
-	const heroku = (process.env._ && process.env._.indexOf('heroku'));
+	const heroku = (process.env._ && process.env._.indexOf('heroku') !== -1);
 
 	const app = express();
 	app.use(session({
@@ -73,7 +73,7 @@ function serve(options) {
 	app.use(express.urlencoded({ extended: true }));
 	app.use(express.json());
 	app.use(express.raw());
-	app.use(express.static('docs'));
+	app.use('/docs', express.static('docs'));
 	app.use(morgan('dev'));
 	app.engine('ejs', engine);
 	app.set('views', options.dirname + '/server/views');
@@ -81,7 +81,7 @@ function serve(options) {
 	app.use(SingleSignOnTokenInterceptor);
 	app.use('/sso', ssoRouter);
 
-	app.use('*', staticMiddleware_);
+	// app.use('*', staticMiddleware_);
 	app.use('*', apiMiddleware_);
 
 	app.post('/api/upload', multipartMiddleware, function(request, response) {
@@ -153,6 +153,7 @@ function serve(options) {
 		console.log(`NodeJs Running server at ${options.host}`);
 	});
 
+	console.log('heroku', heroku, 'vercelUrl', vercelUrl);
 	if (!heroku && !vercelUrl) {
 		const privateKey = fs.readFileSync('cert.key', 'utf8');
 		const certificate = fs.readFileSync('cert.crt', 'utf8');
