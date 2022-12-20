@@ -3,7 +3,7 @@ const { readFileSync } = require('../core/utils/utils');
 const SSO_PUBLIC_KEY = process.env.SSO_PUBLIC_KEY || readFileSync(__dirname, './sso.key');
 
 // const origin = 'http://localhost:3010';
-const origin = 'https://b-here-sso.herokuapp.com';
+const origin = 'https://b-here-sso.vercel.app'; // process.env.SSO_ORIGIN;
 
 const config = {
 	sso: {
