@@ -48,8 +48,6 @@ function serve(options) {
 	const vercelUrl = process.env.VERCEL_URL;
 	const heroku = (process.env._ && process.env._.indexOf('heroku'));
 
-	console.log(process.env);
-
 	const app = express();
 	app.use(session({
 		secret: 'b-here-secret-keyword',
@@ -109,14 +107,14 @@ function serve(options) {
 		response.status(200).send();
 	});
 
+	app.get('/api/env', function(request, response) {
+		response.json(process.env);
+	});
+
 	const isDist = process.env.npm_config_dist;
 	console.log('isDist', isDist);
 
 	const defaultLanguage = 'en';
-
-	app.get('*', function(request, response) {
-		response.json(process.env);
-	});
 
 	app.get('/', function(request, response) {
 		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${defaultLanguage}.html` : `/docs/index__${defaultLanguage}.html`));

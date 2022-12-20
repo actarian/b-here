@@ -10,15 +10,6 @@
       "use": "@vercel/node"
     },
     {
-      "src": "server/**",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "server/**"
-        ]
-      }
-    },
-    {
       "src": "docs/**",
       "use": "@vercel/static",
       "config": {
