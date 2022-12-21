@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.23] - 2022-12-21
+
+### Added
+- vercel deployment
+
+---
+
 ## [1.0.22] - 2022-11-18
 
 ### Added
