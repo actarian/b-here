@@ -16,7 +16,7 @@
           "docs/**/*.js",
           "docs/**/*.css",
           "server/sso/sso.key",
-          "views/**/*.ejs"
+          "server/views/**/*.ejs"
         ]
       }
     },
