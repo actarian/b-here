@@ -1,14 +1,16 @@
 const { readFileSync } = require('../core/utils/utils');
 
 const SSO_PUBLIC_KEY = (process.env.SSO_PUBLIC_KEY || readFileSync(__dirname, './sso.key')).replace(/\\n/g, '\n');
+const SSO_SECRET = process.env.SSO_SECRET || 'l1Q7zkOL59cRqWBkQ12ZiGVW2DBL';
+const SSO_ISSUER = process.env.SSO_ISSUER || 'bhere-sso';
 
 const origin = process.env.SSO_ORIGIN || 'http://localhost:3010';
 
 const config = {
 	sso: {
-		secret: 'l1Q7zkOL59cRqWBkQ12ZiGVW2DBL',
+		secret: SSO_SECRET,
 		publicKey: SSO_PUBLIC_KEY,
-		issuer: 'bhere-sso',
+		issuer: SSO_ISSUER,
 		origin: `${origin}`,
 		loginUrl: `${origin}/sso/login?redirectUrl={redirectUrl}`,
 		logoutUrl: `${origin}/sso/logout?redirectUrl={redirectUrl}`,
