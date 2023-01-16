@@ -255,18 +255,21 @@ export default class WorldComponent extends Component {
 		const indicator = this.indicator = new PointerElement();
 		const pointer = this.pointer = new PointerElement('#ff4332');
 
-		/*
-		const mainLight = new THREE.PointLight(0xffffff);
-		mainLight.position.set(-50, 0, -50);
-		objects.add(mainLight);
+		const light1 = new THREE.PointLight(0xffffff, 0.8);
+		light1.position.set(-50, 0, 0);
+		objects.add(light1);
 
-		const light2 = new THREE.DirectionalLight(0xffe699, 5);
-		light2.position.set(5, -5, 5);
-		light2.target.position.set(0, 0, 0);
+		const light2 = new THREE.PointLight(0xffffff, 0.3);
+		light2.position.set(50, 0, 0);
 		objects.add(light2);
 
-		const light = new THREE.AmbientLight(0x101010);
-		*/
+		const light3 = new THREE.PointLight(0xffffff, 0.5);
+		light3.position.set(0, 50, 0);
+		objects.add(light3);
+
+		const light4 = new THREE.PointLight(0xffffff, 0.1);
+		light4.position.set(0, -50, 0);
+		objects.add(light4);
 
 		const ambient = this.ambient = new THREE.AmbientLight(0xffffff, 0.25);
 		objects.add(ambient);

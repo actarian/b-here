@@ -25,9 +25,9 @@ const orbitDragEvent = new OrbitDragEvent();
 const orbitResizeEvent = new OrbitResizeEvent();
 
 export const USE_DOLLY = false;
-export const DOLLY_MIN = 15;
+export const DOLLY_MIN = 1; // 15;
 export const DOLLY_MAX = 75; // 115
-export const ZOOM_MIN = 15;
+export const ZOOM_MIN = 1; // 15;
 export const ZOOM_MAX = 75;
 
 export default class OrbitService {

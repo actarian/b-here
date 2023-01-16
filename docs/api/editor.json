@@ -78,6 +78,16 @@
       "privacy": true,
       "checkField": "",
       "id": 33689673940100
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkField": "",
+      "id": 8487824209000
     }
   ]
 }

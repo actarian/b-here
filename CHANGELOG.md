@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.24] - 2023-01-16
+
+### Modified
+- world lights & zoom
+
+---
+
 ## [1.0.23] - 2022-12-21
 
 ### Added
