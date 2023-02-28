@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.24
+ * @license beta-bhere-development v1.0.25
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -28293,13 +28293,14 @@ LayoutComponent.meta = {
   }
 
   getModelViewerNode(view) {
-    const panorama = environment.getPath(view.asset.folder + view.asset.file);
+    const environmentImage = environment.getPath(environment.textures.envMap);
+    const skyboxImage = environment.getPath(view.asset.folder + view.asset.file);
     const usdzSrc = this.getUsdzSrc(view);
     const gltfSrc = this.getGltfSrc(view);
     const template =
     /* html */
     `
-			<model-viewer alt="${view.name}" skybox-image="${panorama}" ios-src="${usdzSrc}" src="${gltfSrc}" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls></model-viewer>
+			<model-viewer alt="${view.name}" environment-image="${environmentImage}" skybox-image="${skyboxImage}" ios-src="${usdzSrc}" src="${gltfSrc}" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls></model-viewer>
 		`;
     const div = document.createElement("div");
     div.innerHTML = template;

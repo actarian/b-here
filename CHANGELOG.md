@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.25] - 2023-02-28
+
+### Modified
+- try in ar
+
+---
+
 ## [1.0.24] - 2023-01-16
 
 ### Modified

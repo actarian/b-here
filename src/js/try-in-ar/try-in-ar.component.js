@@ -83,11 +83,12 @@ export default class TryInARComponent extends Component {
 	}
 
 	getModelViewerNode(view) {
-		const panorama = environment.getPath(view.asset.folder + view.asset.file);
+		const environmentImage = environment.getPath(environment.textures.envMap);
+		const skyboxImage = environment.getPath(view.asset.folder + view.asset.file);
 		const usdzSrc = this.getUsdzSrc(view);
 		const gltfSrc = this.getGltfSrc(view);
 		const template = /* html */`
-			<model-viewer alt="${view.name}" skybox-image="${panorama}" ios-src="${usdzSrc}" src="${gltfSrc}" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls></model-viewer>
+			<model-viewer alt="${view.name}" environment-image="${environmentImage}" skybox-image="${skyboxImage}" ios-src="${usdzSrc}" src="${gltfSrc}" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls></model-viewer>
 		`;
 		const div = document.createElement("div");
 		div.innerHTML = template;
