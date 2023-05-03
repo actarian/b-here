@@ -270,6 +270,31 @@ export default class StreamService {
 		}
 	}
 
+	static get attendeeStreamId() {
+		const streams = this.remotes.slice();
+		const local = this.local;
+		if (local) {
+			streams.unshift(local);
+		}
+		const attendeeStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Attendee && x.clientInfo.uid === x.getId());
+		if (attendeeStream) {
+			return attendeeStream.getId();
+		}
+		return null;
+	}
+
+	static getAttendeeStreamId$() {
+		const attendeeStreamId = this.attendeeStreamId;
+		if (attendeeStreamId) {
+			return of(attendeeStreamId);
+		} else {
+			return this.streams$.pipe(
+				map(() => this.attendeeStreamId),
+				filter(x => x),
+			);
+		}
+	}
+
 	static getRemoteById(streamId) {
 		// console.log('StreamService.getRemoteById', streamId);
 		const remotes = StreamService.remotes;

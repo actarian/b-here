@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.25
+ * @license beta-bhere-development v1.0.26
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -6140,6 +6140,33 @@ class StreamService {
     }
   }
 
+  static get attendeeStreamId() {
+    const streams = this.remotes.slice();
+    const local = this.local;
+
+    if (local) {
+      streams.unshift(local);
+    }
+
+    const attendeeStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Attendee && x.clientInfo.uid === x.getId());
+
+    if (attendeeStream) {
+      return attendeeStream.getId();
+    }
+
+    return null;
+  }
+
+  static getAttendeeStreamId$() {
+    const attendeeStreamId = this.attendeeStreamId;
+
+    if (attendeeStreamId) {
+      return rxjs.of(attendeeStreamId);
+    } else {
+      return this.streams$.pipe(operators.map(() => this.attendeeStreamId), operators.filter(x => x));
+    }
+  }
+
   static getRemoteById(streamId) {
     // console.log('StreamService.getRemoteById', streamId);
     const remotes = StreamService.remotes;
@@ -11451,6 +11478,7 @@ function AssetGroupTypeInit() {
 }
 const STREAM_TYPES = [AssetType.PublisherStream.name, AssetType.AttendeeStream.name, AssetType.PublisherScreen.name, AssetType.AttendeeScreen.name, AssetType.SmartDeviceStream.name];
 function assetIsStream(asset) {
+  // console.log('assetIsStream', asset.type.name, STREAM_TYPES);
   return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
 }
 function assetTypeById(id) {
@@ -15378,10 +15406,16 @@ class ImageService {
 
     if (!asset) {
       return;
-    }
+    } // console.log('PanoramaLoader.load', asset.type.name, AssetType);
+
 
     if (asset.type.name === AssetType.PublisherStream.name) {
       return this.loadPublisherStreamBackground(renderer, callback);
+    } else if (asset.type.name === AssetType.AttendeeStream.name) {
+      return this.loadAttendeeStreamBackground(renderer, callback);
+      /*} else if (assetIsStream(asset)) {
+      	return this.loadStreamBackground(renderer, callback, asset);
+      	*/
     } else if (asset.file.indexOf('.mp4') !== -1 || asset.file.indexOf('.webm') !== -1) {
       return this.loadVideoBackground(environment.getPath(asset.folder), asset.file, renderer, callback);
     } else if (asset.file.indexOf('.m3u8') !== -1) {
@@ -15637,6 +15671,106 @@ class ImageService {
     };
 
     StreamService.getPublisherStreamId$().pipe(operators.first()).subscribe(publisherStreamId => onPublisherStreamId(publisherStreamId));
+  }
+
+  static loadAttendeeStreamBackground(renderer, callback) {
+    const onAttendeeStreamId = attendeeStreamId => {
+      const video = document.querySelector(`#stream-${attendeeStreamId} video`);
+
+      if (!video) {
+        return;
+      }
+
+      const onPlaying = () => {
+        const texture = this.texture = new THREE.VideoTexture(video);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.UVMapping; // texture.format = THREE.RGBAFormat;
+        // texture.encoding = THREE.LinearEncoding;
+
+        texture.needsUpdate = true;
+
+        if (typeof callback === 'function') {
+          callback(texture);
+        }
+      };
+
+      video.crossOrigin = 'anonymous';
+
+      if (video.readyState >= video.HAVE_FUTURE_DATA) {
+        onPlaying();
+      } else {
+        video.oncanplay = () => {
+          onPlaying();
+        };
+      }
+    };
+
+    StreamService.getAttendeeStreamId$().pipe(operators.first()).subscribe(attendeeStreamId => onAttendeeStreamId(attendeeStreamId));
+  }
+
+  static loadStreamBackground(renderer, callback, asset) {
+    const onStreamId = streamId => {
+      const video = document.querySelector(`#stream-${streamId} video`);
+
+      if (!video) {
+        return;
+      }
+
+      const onPlaying = () => {
+        const texture = this.texture = new THREE.VideoTexture(video);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.UVMapping; // texture.format = THREE.RGBAFormat;
+        // texture.encoding = THREE.LinearEncoding;
+
+        texture.needsUpdate = true;
+
+        if (typeof callback === 'function') {
+          callback(texture);
+        }
+      };
+
+      video.crossOrigin = 'anonymous';
+
+      if (video.readyState >= video.HAVE_FUTURE_DATA) {
+        onPlaying();
+      } else {
+        video.oncanplay = () => {
+          onPlaying();
+        };
+      }
+    };
+
+    PanoramaLoader.getStreamId$(asset).pipe(operators.takeUntil(MediaLoader.events$.pipe(operators.filter(event => event instanceof MediaLoaderDisposeEvent)))).subscribe(streamId => {
+      onStreamId(streamId);
+    });
+  }
+
+  static getStreamId$(asset) {
+    const assetType = asset.type;
+    return StreamService.streams$.pipe(operators.map(streams => {
+      // console.log('streams', streams);
+      let stream;
+      let i = 0;
+      const matchType = MediaMesh.getTypeMatcher(assetType);
+      streams.forEach(x => {
+        // console.log('streams', matchType(x), x, asset);
+        if (matchType(x)) {
+          if (i === asset.index) {
+            stream = x;
+          }
+
+          i++;
+        }
+      });
+
+      if (stream) {
+        return stream.getId();
+      } else {
+        return null;
+      }
+    }));
   }
 
 }// import * as THREE from 'three';

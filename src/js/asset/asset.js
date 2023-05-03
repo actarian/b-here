@@ -48,6 +48,7 @@ export const STREAM_TYPES = [
 ];
 
 export function assetIsStream(asset) {
+	// console.log('assetIsStream', asset.type.name, STREAM_TYPES);
 	return asset && STREAM_TYPES.indexOf(asset.type.name) !== -1;
 }
 
