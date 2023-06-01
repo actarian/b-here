@@ -77,6 +77,9 @@ export const environmentStatic = {
 		// streamer: "1080p_3", // 1920 x 1080 x 30
 		// streamer: "1080p_5", // 1920 x 1080 x 60
 
+		// attendee: "720p_2", // 1920 x 1080 x 30
+		attendee: "1080p_2", // 1920 x 1080 x 30
+
 		// publisher: "720p_2", // 1920 x 1080 x 30
 		publisher: "1080p_2", // 1920 x 1080 x 30
 

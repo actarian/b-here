@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.27] - 2023-06-01
+
+### Added
+- Attendee streaming profile
+
+---
+
 ## [1.0.26] - 2023-05-03
 
 ### Modified

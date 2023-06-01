@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.26
+ * @license beta-bhere-development v1.0.27
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -461,6 +461,9 @@ const CHUNK_EMBED =
     // streamer: "1080p_2", // 1920 x 1080 x 30
     // streamer: "1080p_3", // 1920 x 1080 x 30
     // streamer: "1080p_5", // 1920 x 1080 x 60
+    // attendee: "720p_2", // 1920 x 1080 x 30
+    attendee: "1080p_2",
+    // 1920 x 1080 x 30
     // publisher: "720p_2", // 1920 x 1080 x 30
     publisher: "1080p_2",
     // 1920 x 1080 x 30
@@ -591,6 +594,9 @@ const CHUNK_EMBED =
     // streamer: "1080p_2", // 1920 x 1080 x 30
     // streamer: "1080p_3", // 1920 x 1080 x 30
     // streamer: "1080p_5", // 1920 x 1080 x 60
+    // attendee: "720p_2", // 1920 x 1080 x 30
+    attendee: "1080p_2",
+    // 1920 x 1080 x 30
     // publisher: "720p_2", // 1920 x 1080 x 30
     publisher: "1080p_2",
     // 1920 x 1080 x 30
@@ -4725,11 +4731,20 @@ export const StreamQualities = [{
 */
 
 function getStreamQuality(state) {
-  if (state.role === RoleType.Publisher || state.role === RoleType.SmartDevice) {
-    return StreamQualities.find(x => x.profile === environment.profiles.publisher);
-  } else {
-    return StreamQualities.find(x => x.profile === environment.profiles.streamer);
+  let profile = environment.profiles.streamer;
+
+  switch (state.role) {
+    case RoleType.Publisher:
+    case RoleType.SmartDevice:
+      profile = environment.profiles.publisher || environment.profiles.streamer;
+      break;
+
+    case RoleType.Attendee:
+      profile = environment.profiles.attendee || environment.profiles.streamer;
+      break;
   }
+
+  return StreamQualities.find(x => x.profile === profile);
 }
 /*
 export function getStreamQuality(state) {

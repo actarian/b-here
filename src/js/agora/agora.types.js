@@ -148,11 +148,18 @@ export const StreamQualities = [{
 */
 
 export function getStreamQuality(state) {
-	if ((state.role === RoleType.Publisher || state.role === RoleType.SmartDevice)) {
-		return StreamQualities.find(x => x.profile === environment.profiles.publisher);
-	} else {
-		return StreamQualities.find(x => x.profile === environment.profiles.streamer);
+	let profile = environment.profiles.streamer;
+	switch (state.role) {
+		case RoleType.Publisher:
+		case RoleType.SmartDevice:
+			profile = environment.profiles.publisher || environment.profiles.streamer;
+			break;
+		case RoleType.Attendee:
+			profile = environment.profiles.attendee || environment.profiles.streamer;
+			break;
+		default:
 	}
+	return StreamQualities.find(x => x.profile === profile);
 }
 
 /*
