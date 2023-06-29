@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.28] - 2023-06-29
+
+### Fixing
+- Support of legacy moz & webkit RTC for agora-rtc-sdk 3.6.2
+
+---
+
 ## [1.0.27] - 2023-06-01
 
 ### Added
