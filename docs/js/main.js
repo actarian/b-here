@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.28
+ * @license beta-bhere-development v1.0.29
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -11436,13 +11436,13 @@ TryInARModalComponent.meta = {
 		</div>
 		<div class="container">
 			<div class="form">
-				<div class="title">Inquadra il qrcode con il cellulare o il tablet per vedere il VR.</div>
+				<div class="title" [innerHTML]="'bhere_ar' | label"></div>
 				<div class="picture">
 					<canvas class="qrcode"></canvas>
 				</div>
 				<div class="group--cta">
 					<button type="button" class="btn--accept" (click)="onClose()">
-						<span>Chiudi</span>
+						<span [innerHTML]="'close' | label"></span>
 					</button>
 				</div>
 			</div>
@@ -28528,7 +28528,7 @@ TryInARComponent.meta = {
 			<div class="ui" *if="!viewId">
 				<div class="group--info">
 					<div class="group--info__content">
-						<div class="info">Unknown url.</div>
+						<div class="info">Not found.</div>
 					</div>
 				</div>
 			</div>

@@ -51,13 +51,13 @@ TryInARModalComponent.meta = {
 		</div>
 		<div class="container">
 			<div class="form">
-				<div class="title">Inquadra il qrcode con il cellulare o il tablet per vedere il VR.</div>
+				<div class="title" [innerHTML]="'bhere_ar' | label"></div>
 				<div class="picture">
 					<canvas class="qrcode"></canvas>
 				</div>
 				<div class="group--cta">
 					<button type="button" class="btn--accept" (click)="onClose()">
-						<span>Chiudi</span>
+						<span [innerHTML]="'close' | label"></span>
 					</button>
 				</div>
 			</div>

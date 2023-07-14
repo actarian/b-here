@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.29] - 2023-07-14
+
+### Fixing
+- Try in AR modal localization
+
+---
+
 ## [1.0.28] - 2023-06-29
 
 ### Fixing

@@ -112,7 +112,7 @@ TryInARComponent.meta = {
 			<div class="ui" *if="!viewId">
 				<div class="group--info">
 					<div class="group--info__content">
-						<div class="info">Unknown url.</div>
+						<div class="info">Not found.</div>
 					</div>
 				</div>
 			</div>
