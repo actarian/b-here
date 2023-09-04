@@ -2,15 +2,15 @@
   "author": "Luca Zampetti <lzampetti@gmail.com>",
   "name": "beta-bhere-development",
   "description": "beta-bhere-development",
-  "version": "1.0.29",
+  "version": "1.0.30-canary.0",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/actarian/b-here.git#beta-bhere"
   },
   "engines": {
-    "npm": ">=6.14.6 <=8.x.x",
-    "node": ">=12.18.3 <=16.x.x"
+    "npm": ">=8.5.5 <=9.x.x",
+    "node": ">=16.15.0 <=18.x.x"
   },
   "main": "index.js",
   "files": [
