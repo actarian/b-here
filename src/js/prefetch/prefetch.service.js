@@ -1,5 +1,5 @@
 import { fromEvent, of } from 'rxjs';
-import { filter, finalize, map, takeWhile, tap } from 'rxjs/operators';
+import { filter, finalize, first, map, takeWhile, tap } from 'rxjs/operators';
 import { environment } from '../environment';
 
 let UID = 0;
@@ -41,7 +41,7 @@ export default class PrefetchService {
 			finalize(() => {
 				// console.log('PrefetchService.finalize', lastEvent);
 				worker.postMessage({ id });
-			})
+			}),
 		);
 	}
 
@@ -53,9 +53,13 @@ export default class PrefetchService {
 	}
 
 	static prefetch(assets) {
-		this.load$(assets).subscribe(event => {
-			// console.log('PrefetchService.prefetch', event);
-		});
+		if (environment.flags.usePrefetch) {
+			this.load$(assets).pipe(
+				first(),
+			).subscribe(event => {
+				// console.log('PrefetchService.prefetch', event);
+			});
+		}
 	}
 
 	static cancel() {

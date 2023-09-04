@@ -1,7 +1,5 @@
-// import * as THREE from 'three';
-// import { GLTFLoader } from '../loaders/GLTFLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { Constants as MotionControllerConstants, fetchProfile, MotionController } from './motion-controllers.module.js';
+import { MotionController, Constants as MotionControllerConstants, fetchProfile } from './motion-controllers.module.js';
 
 const DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles';
 const DEFAULT_PROFILE = 'generic-trigger';
@@ -56,12 +54,12 @@ class XRControllerModel extends THREE.Object3D {
 					valueNode.quaternion.slerpQuaternions(
 						minNode.quaternion,
 						maxNode.quaternion,
-						value
+						value,
 					);
 					valueNode.position.lerpVectors(
 						minNode.position,
 						maxNode.position,
-						value
+						value,
 					);
 				}
 			});
@@ -156,7 +154,7 @@ export class XRControllerModelFactory {
 				controllerModel.motionController = new MotionController(
 					xrInputSource,
 					profile,
-					assetPath
+					assetPath,
 				);
 				const cachedAsset = this._assetCache[controllerModel.motionController.assetUrl];
 				if (cachedAsset) {

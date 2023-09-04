@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import Emittable from '../interactive/emittable';
 
 export class Gamepad extends Emittable {

@@ -1,7 +1,6 @@
 import { of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-// import * as THREE from 'three';
-import { assetIsStream, AssetType } from '../../asset/asset';
+import { AssetType, assetIsStream } from '../../asset/asset';
 import { environment } from '../../environment';
 import StreamService from '../../stream/stream.service';
 import { RoleType } from '../../user/user';
@@ -331,7 +330,7 @@ export default class MediaMesh extends InteractiveMesh {
 				matcher = this.isAttendeeScreen;
 				break;
 			default:
-				matcher = (stream) => { return false; }
+				matcher = (stream) => { return false; };
 		}
 		return matcher;
 	}
@@ -542,7 +541,7 @@ export default class MediaMesh extends InteractiveMesh {
 			if (typeof callback === 'function') {
 				callback(playMap);
 			}
-		}
+		};
 		image.crossOrigin = 'anonymous';
 		image.src = environment.getPath('textures/ui/play.png');
 	}
@@ -588,7 +587,7 @@ export default class MediaMesh extends InteractiveMesh {
 					}
 				}
 				return event;
-			})
+			}),
 		);
 	}
 
@@ -893,7 +892,8 @@ export default class MediaMesh extends InteractiveMesh {
 				// const k = (c - 1) / (c + 1);
 				// const clip_min = (d * (1 - k)) / (2 * k);
 				// const clip_max = k * clip_min;
-				const RAD2DEG = 180 / 3.14159265358979323846;
+				// const RAD2DEG = 180 / 3.14159265358979323846;
+				const RAD2DEG = 180 / 3.141592653589793;
 				fov = RAD2DEG * (2 * Math.atan(1 / b));
 				scale = 1;
 			}

@@ -1,5 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import WorldComponent from '../world.component';
@@ -59,7 +58,7 @@ export default class ModelGridComponent extends ModelComponent {
 					onUpdate: () => {
 						previousTile.material.uniforms.tween.value = previousUniforms.tween;
 						previousTile.material.needsUpdate = true;
-					}
+					},
 				});
 			}
 			if (coords) {
@@ -73,7 +72,7 @@ export default class ModelGridComponent extends ModelComponent {
 					onUpdate: () => {
 						currentTile.material.uniforms.tween.value = currentUniforms.tween;
 						currentTile.material.needsUpdate = true;
-					}
+					},
 				});
 				// console.log(currentTile, `${coords.x}_${coords.y}`);
 			}
@@ -96,7 +95,7 @@ export default class ModelGridComponent extends ModelComponent {
 					onUpdate: () => {
 						previousTile.material.opacity = from.tween;
 						// previousTile.material.needsUpdate = true;
-					}
+					},
 				});
 			}
 			if (coords) {
@@ -110,7 +109,7 @@ export default class ModelGridComponent extends ModelComponent {
 					onUpdate: () => {
 						currentTile.material.opacity = from.tween;
 						// currentTile.material.needsUpdate = true;
-					}
+					},
 				});
 				// console.log(currentTile, `${coords.x}_${coords.y}`);
 			}
@@ -305,7 +304,7 @@ export default class ModelGridComponent extends ModelComponent {
 		this.move.next({
 			indices: this.indices,
 			coords,
-			position: coords.clone().multiplyScalar(outerTileSize)
+			position: coords.clone().multiplyScalar(outerTileSize),
 		});
 	}
 

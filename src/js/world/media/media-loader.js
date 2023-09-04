@@ -1,5 +1,4 @@
 import { ReplaySubject } from 'rxjs';
-// import * as THREE from 'three';
 import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';

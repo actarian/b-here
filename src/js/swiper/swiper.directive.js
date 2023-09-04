@@ -62,7 +62,7 @@ export default class SwiperDirective extends Component {
 				this.index = swiper.activeIndex;
 				this.events$.next(this.index);
 				this.pushChanges();
-			}
+			};
 			this.options.on = on;
 			this.addListeners_();
 		}
@@ -100,7 +100,7 @@ export default class SwiperDirective extends Component {
 						});
 						setTimeout(() => {
 							if (typeof callback === 'function') {
-								callback.apply(this, [swiper, element, scope]);
+								callback.apply(this, [swiper]);
 							}
 						}, 1);
 					};
@@ -125,5 +125,5 @@ export default class SwiperDirective extends Component {
 
 SwiperDirective.meta = {
 	selector: '[swiper]',
-	inputs: ['consumer']
+	inputs: ['consumer'],
 };

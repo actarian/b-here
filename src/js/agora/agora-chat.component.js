@@ -8,6 +8,7 @@ import AgoraService from './agora.service';
 import { MessageType } from './agora.types';
 
 const USE_RANDOM_MESSAGE = false;
+const USE_GROUPED_MESSAGE = true;
 
 export class ChatMessage {
 
@@ -62,19 +63,19 @@ export default class AgoraChatComponent extends Component {
 		});
 		const controls = this.controls = form.controls;
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			// console.log('AgoraChatComponent.changes$', form.value);
 			this.checkTypings(changes);
 			this.pushChanges();
 		});
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			// console.log('AgoraChatComponent.state', state);
 		});
 		MessageService.out$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			// console.log('AgoraChatComponent.MessageService', message);
 			switch (message.type) {
@@ -96,7 +97,7 @@ export default class AgoraChatComponent extends Component {
 			const messages = AgoraChatComponent.getFakeList().map(x => new ChatMessage(x, StateService.state.uid, StateService.state.name));
 			this.updateMessages(messages.slice(0, 5));
 			MessageService.in$.pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(message => {
 				message.clientId = message.clientId || StateService.state.uid;
 				// console.log('AgoraChatComponent.MessageService.in$', message);
@@ -118,7 +119,7 @@ export default class AgoraChatComponent extends Component {
 		} else {
 			const agora = this.agora = AgoraService.getSingleton();
 			if (agora) {
-				agora.getChannelAttributes().pipe(
+				agora.getChannelMessages().pipe(
 					first(),
 				).subscribe(messages => {
 					messages = messages.map(x => new ChatMessage(x, StateService.state.uid, StateService.state.name));
@@ -197,9 +198,7 @@ export default class AgoraChatComponent extends Component {
 		this.pushMessage(message);
 		const agora = this.agora;
 		if (agora) {
-			agora.addOrUpdateChannelAttributes([message.getPayload()]).pipe(
-				first(),
-			).subscribe();
+			agora.addOrUpdateChannelMessages([message.getPayload()]);
 		}
 		MessageService.send(message);
 	}
@@ -248,9 +247,10 @@ export default class AgoraChatComponent extends Component {
 		return index;
 	}
 
+	typings_ = false;
 	checkTypings(changes) {
-		const typings = (changes.message && changes.message.length > 0);
-		// console.log('AgoraChatComponent.checkTypings', typings);
+		const typings = (changes.message && changes.message.length > 0) || false;
+		// console.log('AgoraChatComponent.checkTypings', typings, this.typings_);
 		if (this.typings_ !== typings) {
 			this.typings_ = typings;
 			if (typings) {
@@ -263,7 +263,7 @@ export default class AgoraChatComponent extends Component {
 
 	updateMessages(messages) {
 		this.messages = messages;
-		if (true) {
+		if (USE_GROUPED_MESSAGE) {
 			this.groupedMessages = [];
 			this.pushChanges();
 		}
@@ -375,132 +375,132 @@ AgoraChatComponent.meta = {
 AgoraChatComponent.getFakeList = () => {
 	let messages = [
 		{
-			"date": 1614592230000,
-			"name": "Jhon Appleseed",
-			"message": "Function-based web-enabled benchmark",
-			"clientId": "7341614597544882"
+			'date': 1614592230000,
+			'name': 'Jhon Appleseed',
+			'message': 'Function-based web-enabled benchmark',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592240000,
-			"name": "Jhon Appleseed",
-			"message": "Customizable exuding superstructure",
-			"clientId": "7341614597544882"
+			'date': 1614592240000,
+			'name': 'Jhon Appleseed',
+			'message': 'Customizable exuding superstructure',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592250000,
-			"name": "Gilles Pitkins",
-			"message": "Synergistic interactive archive",
-			"clientId": "cfe9ff5b-f7da-449d-bf5a-3184b5eba6ea"
+			'date': 1614592250000,
+			'name': 'Gilles Pitkins',
+			'message': 'Synergistic interactive archive',
+			'clientId': 'cfe9ff5b-f7da-449d-bf5a-3184b5eba6ea',
 		},
 		{
-			"date": 1614592260000,
-			"name": "Jhon Appleseed",
-			"message": "Digitized client-server initiative",
-			"clientId": "7341614597544882"
+			'date': 1614592260000,
+			'name': 'Jhon Appleseed',
+			'message': 'Digitized client-server initiative',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592270000,
-			"name": "Jhon Appleseed",
-			"message": "Quality-focused tertiary open system",
-			"clientId": "7341614597544882"
+			'date': 1614592270000,
+			'name': 'Jhon Appleseed',
+			'message': 'Quality-focused tertiary open system',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592280000,
-			"name": "Jhon Appleseed",
-			"message": "Exclusive uniform middleware",
-			"clientId": "7341614597544882"
+			'date': 1614592280000,
+			'name': 'Jhon Appleseed',
+			'message': 'Exclusive uniform middleware',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592290000,
-			"name": "John Pruckner",
-			"message": "Decentralized disintermediate extranet",
-			"clientId": "ae51e846-d043-41e9-bb5c-3189181e5b43"
+			'date': 1614592290000,
+			'name': 'John Pruckner',
+			'message': 'Decentralized disintermediate extranet',
+			'clientId': 'ae51e846-d043-41e9-bb5c-3189181e5b43',
 		},
 		{
-			"date": 1614592300000,
-			"name": "Lamont Georgievski",
-			"message": "Enhanced static approach",
-			"clientId": "1961cd9e-93aa-4bd0-b96a-89fcbd36b257"
+			'date': 1614592300000,
+			'name': 'Lamont Georgievski',
+			'message': 'Enhanced static approach',
+			'clientId': '1961cd9e-93aa-4bd0-b96a-89fcbd36b257',
 		},
 		{
-			"date": 1614592310000,
-			"name": "Jhon Appleseed",
-			"message": "Ergonomic clear-thinking info-mediaries",
-			"clientId": "7341614597544882"
+			'date': 1614592310000,
+			'name': 'Jhon Appleseed',
+			'message': 'Ergonomic clear-thinking info-mediaries',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592320000,
-			"name": "Jeri Pedroni",
-			"message": "Grass-roots dynamic encryption",
-			"clientId": "13d69bba-3656-449b-8fe3-d7a87062b044"
+			'date': 1614592320000,
+			'name': 'Jeri Pedroni',
+			'message': 'Grass-roots dynamic encryption',
+			'clientId': '13d69bba-3656-449b-8fe3-d7a87062b044',
 		},
 		{
-			"date": 1614592330000,
-			"name": "Frederik Dechelle",
-			"message": "Compatible disintermediate policy",
-			"clientId": "9151ebe0-efa8-40b4-a341-b8fd489e9c88"
+			'date': 1614592330000,
+			'name': 'Frederik Dechelle',
+			'message': 'Compatible disintermediate policy',
+			'clientId': '9151ebe0-efa8-40b4-a341-b8fd489e9c88',
 		},
 		{
-			"date": 1614592340000,
-			"name": "Jhon Appleseed",
-			"message": "Inverse user-facing adapter",
-			"clientId": "7341614597544882"
+			'date': 1614592340000,
+			'name': 'Jhon Appleseed',
+			'message': 'Inverse user-facing adapter',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592350000,
-			"name": "Jhon Appleseed",
-			"message": "Future-proofed even-keeled application",
-			"clientId": "7341614597544882"
+			'date': 1614592350000,
+			'name': 'Jhon Appleseed',
+			'message': 'Future-proofed even-keeled application',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592360000,
-			"name": "Cassie Jonathon",
-			"message": "Profit-focused content-based budgetary management",
-			"clientId": "5b3dc6f3-2a3d-493d-aac5-66ddfce2d709"
+			'date': 1614592360000,
+			'name': 'Cassie Jonathon',
+			'message': 'Profit-focused content-based budgetary management',
+			'clientId': '5b3dc6f3-2a3d-493d-aac5-66ddfce2d709',
 		},
 		{
-			"date": 1614592370000,
-			"name": "Jhon Appleseed",
-			"message": "Managed intermediate monitoring",
-			"clientId": "7341614597544882"
+			'date': 1614592370000,
+			'name': 'Jhon Appleseed',
+			'message': 'Managed intermediate monitoring',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592380000,
-			"name": "Jhon Appleseed",
-			"message": "Exclusive client-server encoding",
-			"clientId": "7341614597544882"
+			'date': 1614592380000,
+			'name': 'Jhon Appleseed',
+			'message': 'Exclusive client-server encoding',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592390000,
-			"name": "Jhon Appleseed",
-			"message": "Cross-group system-worthy matrices",
-			"clientId": "7341614597544882"
+			'date': 1614592390000,
+			'name': 'Jhon Appleseed',
+			'message': 'Cross-group system-worthy matrices',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592400000,
-			"name": "Jhon Appleseed",
-			"message": "Upgradable encompassing benchmark",
-			"clientId": "7341614597544882"
+			'date': 1614592400000,
+			'name': 'Jhon Appleseed',
+			'message': 'Upgradable encompassing benchmark',
+			'clientId': '7341614597544882',
 		},
 		{
-			"date": 1614592410000,
-			"name": "Emelen Beevors",
-			"message": "Function-based full-range knowledge base",
-			"clientId": "c93aea47-ebd8-4e5e-88fd-52053dd35cd1"
+			'date': 1614592410000,
+			'name': 'Emelen Beevors',
+			'message': 'Function-based full-range knowledge base',
+			'clientId': 'c93aea47-ebd8-4e5e-88fd-52053dd35cd1',
 		},
 		{
-			"date": 1614592420000,
-			"name": "Jhon Appleseed",
-			"message": "Synergistic system-worthy capability",
-			"clientId": "7341614597544882"
-		}
+			'date': 1614592420000,
+			'name': 'Jhon Appleseed',
+			'message': 'Synergistic system-worthy capability',
+			'clientId': '7341614597544882',
+		},
 	];
 	while (messages.length < 100) {
 		messages = messages.concat(messages);
 	}
 	return messages;
 	// return messages.slice(0, 5);
-}
+};
 
 AgoraChatComponent.createRandomMessage = (text) => {
 	const message = new ChatMessage({
@@ -510,7 +510,7 @@ AgoraChatComponent.createRandomMessage = (text) => {
 		message: 'Lorem ipsum dolor',
 	}, StateService.state.uid, StateService.state.name);
 	return message;
-}
+};
 
 AgoraChatComponent.randomMessage = (instance, messages) => {
 	const getRandomMessage = function() {
@@ -523,7 +523,7 @@ AgoraChatComponent.randomMessage = (instance, messages) => {
 			message: message.message,
 		}, StateService.state.uid, StateService.state.name);
 		return message;
-	}
+	};
 	if (AgoraChatComponent.to) {
 		clearTimeout(AgoraChatComponent.to);
 		AgoraChatComponent.to = null;
@@ -533,4 +533,4 @@ AgoraChatComponent.randomMessage = (instance, messages) => {
 		instance.sendMessage(message);
 		AgoraChatComponent.randomMessage(instance, messages);
 	}, (2 + Math.random() * 6) * 1000);
-}
+};

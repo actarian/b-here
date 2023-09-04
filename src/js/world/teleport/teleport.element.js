@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 
 const LINE_SEGMENTS = 10;
@@ -29,8 +28,8 @@ export class TeleportElement {
 				map: texture,
 				blending: THREE.AdditiveBlending,
 				color: 0x555555,
-				transparent: true
-			})
+				transparent: true,
+			}),
 		);
 		target.rotation.x = -Math.PI / 2;
 	}

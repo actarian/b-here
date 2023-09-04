@@ -1,7 +1,6 @@
 // import domtoimage from 'dom-to-image';
 import html2canvas from 'html2canvas';
 import { getContext } from 'rxcomp';
-// import * as THREE from 'three';
 import DragService from '../../drag/drag.service';
 import { environment } from '../../environment';
 import { Host } from '../host/host';
@@ -130,7 +129,7 @@ export default class ModelPanelComponent extends ModelComponent {
 						panel.lookAt(Host.origin);
 						panel.material.opacity = from.value;
 						panel.material.needsUpdate = true;
-					}
+					},
 				});
 			}
 		}, error => {
@@ -161,26 +160,24 @@ export default class ModelPanelComponent extends ModelComponent {
 						resolve(cors);
 					}, 10);
 				}
-				const removeListeners = () => {
-					x.removeEventListener('load', onLoad);
-					x.removeEventListener('error', onError);
-				};
-				const onLoad = () => {
-					// console.log('loaded!');
+				function onLoad() {
 					removeListeners();
 					setTimeout(() => {
 						resolve(cors);
 					}, 10);
-				};
-				const onError = () => {
-					// console.log('error!');
+				}
+				function onError() {
 					removeListeners();
 					resolve(false);
-				};
-				const addListeners = () => {
+				}
+				function removeListeners() {
+					x.removeEventListener('load', onLoad);
+					x.removeEventListener('error', onError);
+				}
+				function addListeners() {
 					x.addEventListener('load', onLoad);
 					x.addEventListener('error', onError);
-				};
+				}
 				addListeners();
 			}));
 			if (promises.length) {

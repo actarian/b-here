@@ -1,5 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import DebugService from '../debug.service';
 import { Host } from '../host/host';
@@ -104,7 +103,7 @@ export default class ModelDebugComponent extends ModelComponent {
 			color: 0xffffff, // 0x33c5f6,
 			transparent: true,
 			opacity: 1,
-			side: THREE.DoubleSide
+			side: THREE.DoubleSide,
 		});
 		const text = this.text = this.createText();
 		if (typeof mount === 'function') {

@@ -1,7 +1,6 @@
 import { getContext } from 'rxcomp';
 import { of } from 'rxjs';
 import { first, takeUntil, tap } from 'rxjs/operators';
-// import * as THREE from 'three';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
 import { environment } from '../../environment';
@@ -10,7 +9,6 @@ import { MessageService } from '../../message/message.service';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
 import { Host } from '../host/host';
-// import DebugService from '../debug.service';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
 import OrbitService, { OrbitMode } from '../orbit/orbit.service';
@@ -334,7 +332,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		const { node } = getContext(this);
 		this.progressIndicator = node.querySelector('.progress circle');
 		LoaderService.progress$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(progress => {
 			this.loading = progress.count > 0;
 			let strokeDashoffset = 144.51;
@@ -346,7 +344,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			});
 		});
 		MessageService.in$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			// DebugService.getService().setMessage('ModelMenuComponent.MessageService ' + message.type);
 			switch (message.type) {
@@ -479,7 +477,7 @@ export default class ModelMenuComponent extends ModelComponent {
 					stagger: {
 						grid: MenuButton.getGrid(buttons.length),
 						from: 0, // index
-						amount: 0.02 * buttons.length
+						amount: 0.02 * buttons.length,
 					},
 					onUpdate: () => {
 						buttons.forEach(button => {
@@ -516,7 +514,7 @@ export default class ModelMenuComponent extends ModelComponent {
 		this.removeMenu();
 		const toggler = this.toggler = new MenuButton({
 			type: { name: 'menu' },
-			name: 'Menu'
+			name: 'Menu',
 		}, 0, 1);
 		// toggler.position.y = -0.5;
 		toggler.opacity = 0.8;

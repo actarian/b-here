@@ -73,14 +73,14 @@ export default class EditorComponent extends Component {
 		this.viewHit = new Subject();
 		const vrService = this.vrService = VRService.getService();
 		vrService.status$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(status => this.pushChanges());
 		this.resolveUser();
 	}
 
 	resolveUser() {
 		UserService.me$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(user => {
 			if (user && user.type === RoleType.Publisher) {
 				this.user = user;
@@ -118,14 +118,14 @@ export default class EditorComponent extends Component {
 		};
 		StateService.state = state;
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			this.state = state;
 			this.hosted = state.hosted;
 			this.pushChanges();
 		});
 		this.viewObserver$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(view => {
 			// console.log('EditorComponent.viewObserver$', view);
 		});
@@ -292,7 +292,7 @@ export default class EditorComponent extends Component {
 		if (typeof callback === 'function') {
 			this.viewHitSubscription = this.viewHit.pipe(
 				first(),
-			).subscribe(event => callback(event))
+			).subscribe(event => callback(event));
 		}
 	}
 
@@ -401,7 +401,7 @@ export default class EditorComponent extends Component {
 							case ViewItemType.Nav.name:
 							case ViewItemType.Plane.name:
 							case ViewItemType.CurvedPlane.name:
-							case ViewItemType.Model.name:
+							case ViewItemType.Model.name: {
 								const item = event.data; // Object.assign({}, event.data);
 								const tile = EditorService.getTile(this.view);
 								if (tile) {
@@ -417,6 +417,7 @@ export default class EditorComponent extends Component {
 								}
 								this.pushChanges();
 								break;
+							}
 							default:
 						}
 						break;
@@ -624,5 +625,5 @@ EditorComponent.meta = {
 		</div>
 		<div class="aside" [class]="{ active: aside }" aside [view]="view" (select)="onAsideSelect($event)" (update)="onAsideUpdate($event)" (delete)="onAsideDelete($event)" *if="view && aside"></div>
 	</div>
-	`
+	`,
 };

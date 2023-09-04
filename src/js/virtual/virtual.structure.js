@@ -7,7 +7,7 @@ export const VirtualMode = {
 	Responsive: 1,
 	Grid: 2,
 	Centered: 3,
-	List: 4
+	List: 4,
 };
 
 export default class VirtualStructure extends Structure {
@@ -68,7 +68,7 @@ export default class VirtualStructure extends Structure {
 			map(_ => {
 				const visibleItems = this.updateForward();
 				return visibleItems;
-			})
+			}),
 		);
 	}
 
@@ -430,7 +430,7 @@ export default class VirtualStructure extends Structure {
 		return fromEvent(window, 'resize').pipe(
 			startWith(_ => null),
 			auditTime(100),
-			tap(() => this.updateView(true))
+			tap(() => this.updateView(true)),
 		);
 	}
 
@@ -493,5 +493,5 @@ export default class VirtualStructure extends Structure {
 
 VirtualStructure.meta = {
 	selector: '[*virtual]',
-	inputs: ['mode', 'width', 'gutter', 'reverse']
+	inputs: ['mode', 'width', 'gutter', 'reverse'],
 };

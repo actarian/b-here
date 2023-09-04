@@ -160,11 +160,9 @@ export class UserService {
 	static getMode(role) {
 		let mode;
 		switch (role) {
-			case RoleType.Publisher:
 			case RoleType.Attendee:
 			case RoleType.Streamer:
 			case RoleType.Viewer:
-			case RoleType.Publisher:
 			case RoleType.Publisher:
 				mode = UIMode.VirtualTour;
 				break;

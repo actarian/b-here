@@ -10,7 +10,7 @@ export default class ZoomableDirective extends Directive {
 		const target = node.getAttribute('zoomable') !== '' ? node.querySelectorAll(node.getAttribute('zoomable')) : node;
 		fromEvent(target, 'click').pipe(
 			map($event => this.zoom = !this.zoom),
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(zoom => {
 			// console.log('ZoomableDirective', zoom);
 		});
@@ -41,7 +41,7 @@ export default class ZoomableDirective extends Directive {
 			top: this.rect.top,
 			width: this.rect.width,
 			height: this.rect.height,
-			position: 'fixed'
+			position: 'fixed',
 		});
 		node.classList.add('zoom');
 		gsap.set(node, { position: 'fixed' });
@@ -57,7 +57,7 @@ export default class ZoomableDirective extends Directive {
 			ease: Power3.easeInOut,
 			onComplete: () => {
 				node.classList.add('zoomed');
-			}
+			},
 		});
 	}
 
@@ -68,7 +68,7 @@ export default class ZoomableDirective extends Directive {
 			left: this.rect.left,
 			top: this.rect.top,
 			width: this.rect.width,
-			height: this.rect.height
+			height: this.rect.height,
 		};
 		gsap.to(node, {
 			...to,
@@ -80,12 +80,12 @@ export default class ZoomableDirective extends Directive {
 				node.classList.remove('zoom');
 				this.parentNode = null;
 				this.rect = null;
-			}
+			},
 		});
 	}
 
 }
 
 ZoomableDirective.meta = {
-	selector: '[zoomable]'
+	selector: '[zoomable]',
 };

@@ -165,25 +165,25 @@ export default class StreamService {
 								clientInfo: {
 									role: RoleType.Publisher,
 									uid: 'editor',
-								}
+								},
 							};
 							const fakeAttendeeStream = {
 								getId: () => 'editor',
 								clientInfo: {
 									role: RoleType.Attendee,
 									uid: 'editor',
-								}
+								},
 							};
 							const fakeSmartDeviceStream = {
 								getId: () => 'editor',
 								clientInfo: {
 									role: RoleType.SmartDevice,
 									uid: 'editor',
-								}
+								},
 							};
 							this.editorStreams$.next([fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeSmartDeviceStream]);
 							// StreamService.editorStreams = [fakePublisherStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream, fakeAttendeeStream];
-						}
+						};
 						video.play();
 					}).catch((error) => {
 						console.log('EditorComponent.getUserMedia.error', error.name, error.message);
@@ -222,7 +222,7 @@ export default class StreamService {
 									role: RoleType.Publisher,
 									uid: 'editor',
 									screenUid: 'editor-screen',
-								}
+								},
 							};
 							const fakeAttendeeScreen = {
 								getId: () => 'editor-screen',
@@ -230,10 +230,10 @@ export default class StreamService {
 									role: RoleType.Attendee,
 									uid: 'editor',
 									screenUid: 'editor-screen',
-								}
+								},
 							};
 							this.editorScreens$.next([fakePublisherScreen, fakeAttendeeScreen]);
-						}
+						};
 						video.play();
 					}).catch((error) => {
 						console.log('EditorComponent.getUserMedia.error', error.name, error.message);

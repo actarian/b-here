@@ -11,7 +11,7 @@ function sendMessage(type, assets, data) {
 	self.postMessage({
 		type: type,
 		assets: assets,
-		data: data
+		data: data,
 	});
 }
 

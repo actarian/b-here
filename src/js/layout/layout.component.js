@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { fromEvent } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { first, takeUntil, tap } from 'rxjs/operators';
 import { CHUNK_AR_VR, CHUNK_BACKGROUND, CHUNK_CHAT, CHUNK_CONTROLS, CHUNK_LIKE, CHUNK_LOCK, CHUNK_MEDIA, CHUNK_NAVMAP } from '../agora/agora.component.chunks';
 import { AgoraStatus, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
@@ -30,15 +30,11 @@ export default class LayoutComponent extends Component {
 	}
 
 	get isEmbed() {
-		if (this.route) {
-			return this.route.params.mode === 'embed';
-		}
+		return this.route && this.route.params.mode === 'embed';
 	}
 
 	get isSelfServiceTour() {
-		if (this.route) {
-			return this.route.params.mode === 'selfServiceTour';
-		}
+		return this.route && this.route.params.mode === 'selfServiceTour';
 	}
 
 	get isNavigable() {
@@ -133,8 +129,8 @@ export default class LayoutComponent extends Component {
 			likes: 41,
 			type: {
 				id: 2,
-				name: 'panorama'
-			}
+				name: 'panorama',
+			},
 		};
 		this.local = {};
 		this.screen = null;
@@ -142,12 +138,12 @@ export default class LayoutComponent extends Component {
 		this.media = null;
 		this.hasScreenViewItem = false;
 		this.media = true;
-		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1, }));
+		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1 }));
 		this.languageService = LanguageService;
 		this.showLanguages = false;
 		StateService.patchState(this.state);
 		this.fullscreen$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe();
 		const vrService = this.vrService = VRService.getService();
 		console.log('LayoutComponent', this);
@@ -159,7 +155,7 @@ export default class LayoutComponent extends Component {
 			switch (type) {
 				case ToastType.Info:
 					ToastService.open$({
-						message: LabelPipe.transform('bhere_support_request_sent')
+						message: LabelPipe.transform('bhere_support_request_sent'),
 					}).pipe(
 						takeUntil(this.unsubscribe$),
 					).subscribe(event => {
@@ -171,7 +167,7 @@ export default class LayoutComponent extends Component {
 				case ToastType.Alert:
 					ToastService.open$({
 						message: LabelPipe.transform('bhere_support_request_sent'),
-						type: type, position: ToastPosition.BottomRight
+						type: type, position: ToastPosition.BottomRight,
 					}).pipe(
 						takeUntil(this.unsubscribe$),
 					).subscribe(event => {
@@ -187,7 +183,7 @@ export default class LayoutComponent extends Component {
 						message: LabelPipe.transform('bhere_support_request_dialog'),
 						acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
 						rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
-						type: type, position: ToastPosition.BottomRight
+						type: type, position: ToastPosition.BottomRight,
 					}).pipe(
 						takeUntil(this.unsubscribe$),
 					).subscribe(event => {
@@ -375,7 +371,7 @@ LayoutComponent.meta = {
 					</div>
 				</div>
 				<div class="group--members" *if="state.mode == 'virtual-tour'">
-					<div class="members">
+					<div class="members" *if="state.role === 'publisher'">
 						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 						<span class="members__count" [innerHTML]="state.membersCount"></span>
 					</div>
@@ -446,7 +442,7 @@ LayoutComponent.meta = {
 			</div>
 			<!-- members -->
 			<div class="group--members" *if="state.mode == 'live-meeting'">
-				<div class="members">
+				<div class="members" *if="state.role === 'publisher'">
 					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 					<span class="members__count" [innerHTML]="state.membersCount"></span>
 				</div>
@@ -523,7 +519,7 @@ LayoutComponent.meta = {
 			</div>
 			<!-- members -->
 			<div class="group--members">
-				<div class="members">
+				<div class="members" *if="state.role === 'publisher'">
 					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 					<span class="members__count" [innerHTML]="state.membersCount"></span>
 				</div>
@@ -583,5 +579,5 @@ LayoutComponent.meta = {
 		</a>
 		<div class="group--language" language *if="state.status != 'connected'"></div>
 	</div>
-	`
+	`,
 };

@@ -1,7 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
-// import * as THREE from 'three';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import { ModalService } from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
@@ -115,4 +114,4 @@ PlaneModalComponent.meta = {
 	`,
 };
 
-PlaneModalComponent.chunk = () => /* html */`<div class="plane-modal" plane-modal></div>`;
+PlaneModalComponent.chunk = () => /* html */'<div class="plane-modal" plane-modal></div>';

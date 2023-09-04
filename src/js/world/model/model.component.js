@@ -1,8 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { Geometry } from '../geometry/geometry';
-// import * as THREE from 'three';
 import Interactive from '../interactive/interactive';
-// import Ease from '../ease/ease';
 import WorldComponent from '../world.component';
 
 export default class ModelComponent extends Component {
@@ -29,7 +27,7 @@ export default class ModelComponent extends Component {
 		this.getContainer().add(group);
 		this.onCreate(
 			(mesh, item) => this.onMount(mesh, item),
-			(mesh, item) => this.onDismount(mesh, item)
+			(mesh, item) => this.onDismount(mesh, item),
 		);
 	}
 
@@ -82,7 +80,7 @@ export default class ModelComponent extends Component {
 				set: (visible) => {
 					this.setVisible(visible);
 				},
-				configurable: true
+				configurable: true,
 			});
 			item.onUpdate = () => {
 				this.onUpdate(item, mesh);

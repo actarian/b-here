@@ -1,14 +1,13 @@
 import { Component, getContext } from 'rxcomp';
 import { ReplaySubject } from 'rxjs';
-import { auditTime, filter, shareReplay, takeUntil, tap } from 'rxjs/operators';
-// import * as THREE from 'three';
-// import { RGBELoader } from './loaders/RGBELoader';
+import { auditTime, filter, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { MessageType, UIMode } from '../agora/agora.types';
 import { DEBUG, environment } from '../environment';
 import KeyboardService from '../keyboard/keyboard.service';
 import { LanguageService } from '../language/language.service';
 import LoaderService from '../loader/loader.service';
+import { Logger } from '../logger/logger';
 import { MessageService } from '../message/message.service';
 import { ModalService } from '../modal/modal.service';
 import PrefetchService from '../prefetch/prefetch.service';
@@ -115,7 +114,7 @@ export default class WorldComponent extends Component {
 	set showPointer(showPointer) {
 		if (this.showPointer !== showPointer) {
 			showPointer ? this.scene.add(this.pointer.mesh) : this.scene.remove(this.pointer.mesh);
-			// console.log('showPointer', showPointer);
+			// Logger.log('WorldComponent.showPointer', showPointer);
 		}
 	}
 
@@ -134,7 +133,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onInit() {
-		// console.log('WorldComponent.onInit');
+		// Logger.log('WorldComponent.onInit');
 		Host.host = this;
 		this.defaultTexture = Texture.gridTexture;
 		this.index = 0;
@@ -147,13 +146,13 @@ export default class WorldComponent extends Component {
 		this.addListeners();
 		this.animate(); // !!!
 		KeyboardService.keys$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(keys => {
 			this.keys = keys;
 			// console.log(keys);
 		});
 		LanguageService.lang$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(_ => {
 			this.setView();
 		});
@@ -286,7 +285,7 @@ export default class WorldComponent extends Component {
 
 		// show hide items
 		LoaderService.progress$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(progress => {
 			const complete = progress.count === 0;
 			const view = this.view_;
@@ -299,7 +298,7 @@ export default class WorldComponent extends Component {
 			// console.log(view, complete, progress);
 		});
 
-		// console.log('WorldComponent.createScene', this);
+		// Logger.log('WorldComponent.createScene', this);
 	}
 
 	toggleLights(enabled) {
@@ -412,7 +411,7 @@ export default class WorldComponent extends Component {
 			this.pushChanges();
 			PrefetchService.cancel();
 			this.panorama.change(view, this.renderer, (texture) => {
-				// console.log('panorama.change', texture);
+				// Logger.log('WorldComponent.panorama.change', texture);
 				if (!environment.flags.useTextureEnvironment) {
 					this.setBackground(texture);
 				}
@@ -421,7 +420,7 @@ export default class WorldComponent extends Component {
 					this.onViewAssetDidChange();
 				};
 				const context = getContext(this);
-				// console.log('WorldCompoent.setView.context', context);
+				// Logger.log('WorldCompoent.setView.context', context);
 				if (context) {
 					this.pushChanges();
 				}
@@ -457,7 +456,7 @@ export default class WorldComponent extends Component {
 					this.orbitService.zoom = message.zoom;
 					this.camera.updateProjectionMatrix();
 				} else if (!view.keepOrientation) {
-					// console.log('WorldComponent.setViewOrientation', view.useLastOrientation, view.lastOrientation);
+					// Logger.log('WorldComponent.setViewOrientation', view.useLastOrientation, view.lastOrientation);
 					orientation = view.useLastOrientation ? view.lastOrientation : view.orientation;
 					this.orbitService.setOrientation(orientation);
 					this.orbitService.zoom = view.zoom;
@@ -490,9 +489,9 @@ export default class WorldComponent extends Component {
 		controller.name = `[controller${index + 1}]`;
 		controllerGroup.add(controller);
 		const setController = (controller) => {
-			// console.log('setController', this);
+			// Logger.log('WorldComponent.setController', this);
 			this.controller = controller;
-		}
+		};
 		const onSelectStart = (event) => {
 			controller.userData.isSelecting = true;
 			setController(controller);
@@ -519,7 +518,7 @@ export default class WorldComponent extends Component {
 		// const debugService = DebugService.getService();
 		// debugService.setMessage('DebugService 1001');
 		const onPress = (event) => {
-			// console.log('Gamepad.onPress', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onPress', event, controller);
 			// debugService.setMessage('Gamepad.onPress ' + event.index);
 			// 0: select
 			// 1: squeeze
@@ -544,35 +543,35 @@ export default class WorldComponent extends Component {
 			this.onModelUp();
 		};
 		const onLeft = (event) => {
-			// console.log('Gamepad.onLeft', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onLeft', event, controller);
 			// debugService.setMessage('Gamepad.onLeft');
 			this.cameraGroup.rotation.y += Math.PI / 180 * 45;
 		};
 		const onRight = (event) => {
-			// console.log('Gamepad.onRight', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onRight', event, controller);
 			// debugService.setMessage('Gamepad.onRight');
 			this.cameraGroup.rotation.y -= Math.PI / 180 * 45;
 		};
 		/*
 		const onAxis = (event) => {
-			// console.log('Gamepad.onAxis', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onAxis', event, controller);
 			// debugService.setMessage('Gamepad.onAxis');
 			this.cameraGroup.rotation.y += (Math.PI / 180 * event.x);
 		};
 		*/
 		const onAxis = (event) => {
-			// console.log('Gamepad.onAxis', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onAxis', event, controller);
 			// debugService.setMessage('Gamepad.onAxis');
 			this.onModelDistance(event.y);
 		};
 		/*
 		const onUp = (event) => {
-			// console.log('Gamepad.onUp', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onUp', event, controller);
 			// debugService.setMessage('Gamepad.onUp');
 			this.cameraGroup.position.y += 1;
 		};
 		const onDown = (event) => {
-			// console.log('Gamepad.onDown', event, controller);
+			// Logger.log('WorldComponent.Gamepad.onDown', event, controller);
 			// debugService.setMessage('Gamepad.onDown');
 			this.cameraGroup.position.y -= 1;
 		};
@@ -611,7 +610,7 @@ export default class WorldComponent extends Component {
 			controller.userData.update = () => {
 				gamepad.update();
 			};
-		}
+		};
 		const onDisconnected = (event) => {
 			while (controller.children.length) {
 				controller.remove(controller.children[0]);
@@ -634,7 +633,7 @@ export default class WorldComponent extends Component {
 				delete controller.userData.gamepad;
 			}
 			teleport.removeFromController(controller, scene, renderer, camera, cameraGroup);
-		}
+		};
 		controller.userData.update = () => { };
 		controller.addEventListener('selectstart', onSelectStart);
 		controller.addEventListener('selectend', onSelectEnd);
@@ -647,7 +646,7 @@ export default class WorldComponent extends Component {
 	}
 
 	buildController(data) {
-		// console.log('buildController', data);
+		// Logger.log('WorldComponent.buildController', data);
 		let geometry, material;
 		switch (data.targetRayMode) {
 			case 'tracked-pointer':
@@ -656,14 +655,14 @@ export default class WorldComponent extends Component {
 				geometry.setAttribute('color', new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
 				material = new THREE.LineBasicMaterial({
 					vertexColors: true,
-					blending: THREE.AdditiveBlending
+					blending: THREE.AdditiveBlending,
 				});
 				return new THREE.Line(geometry, material);
 			case 'gaze':
 				geometry = new THREE.RingBufferGeometry(0.02, 0.04, 32).translate(0, 0, -1);
 				material = new THREE.MeshBasicMaterial({
 					opacity: 0.5,
-					transparent: true
+					transparent: true,
 				});
 				return new THREE.Mesh(geometry, material);
 		}
@@ -818,7 +817,7 @@ export default class WorldComponent extends Component {
 					const cameraRect = this.cameraRect;
 					cameraRect.width = height * camera.aspect;
 					cameraRect.height = height;
-					// console.log('position', camera.position.z, 'angle', angle, 'height', height, 'aspect', camera.aspect, cameraRect);
+					// Logger.log('WorldComponent.position', camera.position.z, 'angle', angle, 'height', height, 'aspect', camera.aspect, cameraRect);
 					camera.updateProjectionMatrix();
 				}
 			}
@@ -902,8 +901,7 @@ export default class WorldComponent extends Component {
 			const raycaster = this.updateRaycasterMouse(event);
 			const hit = Interactive.hittest(raycaster, true);
 			if (this.editor || DEBUG) {
-				if (this.keys.Shift || this.keys.Control) {
-				} else {
+				if (!(this.keys.Shift || this.keys.Control)) {
 					this.select.next({ item: null });
 					const intersections = raycaster.intersectObjects(this.intersectObjects);
 					if (intersections.length) {
@@ -1036,13 +1034,13 @@ export default class WorldComponent extends Component {
 	}
 
 	onMenuNav(event) {
-		// console.log('WorldComponent.onMenuNav', event.id, event);
+		// Logger.log('WorldComponent.onMenuNav', event.id, event);
 		this.menu = undefined;
 		this.navTo.next({ viewId: event.id });
 	}
 
 	onMenuToggle(event) {
-		// console.log('WorldComponent.onMenuToggle', event.id, event);
+		// Logger.log('WorldComponent.onMenuToggle', event.id, event);
 		if (this.locked) {
 			return;
 		}
@@ -1061,7 +1059,7 @@ export default class WorldComponent extends Component {
 			clearTimeout(nav.item.to);
 		}
 		nav.item.showPanel = nav.shouldShowPanel();
-		// console.log('WorldComponent.onNavOver', nav, nav.item.showPanel);
+		// Logger.log('WorldComponent.onNavOver', nav, nav.item.showPanel);
 		this.pushChanges();
 		MessageService.send({
 			type: MessageType.ShowPanel,
@@ -1070,7 +1068,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onNavOut(nav) {
-		// console.log('WorldComponent.onNavOut', nav);
+		// Logger.log('WorldComponent.onNavOut', nav);
 		if (this.isTouchDevice()) {
 			return;
 		}
@@ -1086,7 +1084,7 @@ export default class WorldComponent extends Component {
 		if (!this.isTouchDevice()) {
 			event.item.showPanel = false;
 		}
-		// console.log('WorldComponent.onNavDown', this.keys);
+		// Logger.log('WorldComponent.onNavDown', this.keys);
 		if (this.locked) {
 			return;
 		}
@@ -1102,7 +1100,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onNavLink(event) {
-		// console.log('WorldComponent.onNavLink', event.link.href);
+		// Logger.log('WorldComponent.onNavLink', event.link.href);
 		if (this.locked || this.editor) {
 			return;
 		}
@@ -1132,7 +1130,7 @@ export default class WorldComponent extends Component {
 		const controller = this.controller;
 		if (controller && this.renderer.xr.isPresenting) {
 			const target = this.tempTarget = event.mesh;
-			// console.log('WorldComponent.onModelDown', target);
+			// Logger.log('WorldComponent.onModelDown', target);
 			// DebugService.getService().setMessage('onModelDown ', target.name);
 			const parent = this.tempParent = target.parent;
 			const position = new THREE.Vector3();
@@ -1163,7 +1161,7 @@ export default class WorldComponent extends Component {
 		const target = this.tempTarget;
 		const parent = this.tempParent;
 		if (target && parent) {
-			// console.log('WorldComponent.onModelUp', target, parent);
+			// Logger.log('WorldComponent.onModelUp', target, parent);
 			const position = new THREE.Vector3();
 			target.localToWorld(position);
 			parent.worldToLocal(position);
@@ -1175,7 +1173,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onObjectDown(event) {
-		// console.log('WorldComponent.onObjectDown', this.keys);
+		// Logger.log('WorldComponent.onObjectDown', this.keys);
 		if (this.lockedOrXR) {
 			return;
 		}
@@ -1189,7 +1187,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onPanelDown(event) {
-		// console.log('WorldComponent.onPanelDown', event.link.href);
+		// Logger.log('WorldComponent.onPanelDown', event.link.href);
 		if (this.locked) {
 			return;
 		}
@@ -1266,7 +1264,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridMove(event) {
-		// console.log('WorldComponent.onGridMove', event, this.view);
+		// Logger.log('WorldComponent.onGridMove', event, this.view);
 		this.view.items = [];
 		this.pushChanges();
 		this.orbitService.walk(event.position, (headingLongitude, headingLatitude) => {
@@ -1288,7 +1286,7 @@ export default class WorldComponent extends Component {
 	}
 
 	onGridNav(event) {
-		// console.log('WorldComponent.onGridNav', event);
+		// Logger.log('WorldComponent.onGridNav', event);
 		if (this.locked) {
 			return;
 		}
@@ -1300,11 +1298,53 @@ export default class WorldComponent extends Component {
 		this.pushChanges();
 	}
 
+	setSnapshot(snapshot) {
+		if (ViewService.viewId !== snapshot.viewId) {
+			ViewService.viewId = snapshot.viewId;
+			this.requestInfoResult = snapshot;
+		} else {
+			if (!this.renderer.xr.isPresenting) {
+				this.orbitService.setOrientation(snapshot.orientation);
+				this.orbitService.zoom = snapshot.zoom;
+				this.cameraGroup.position.set(snapshot.cameraGroup.position[0], snapshot.cameraGroup.position[1], snapshot.cameraGroup.position[2]);
+				this.cameraGroup.rotation.set(snapshot.cameraGroup.rotation[0], snapshot.cameraGroup.rotation[1], snapshot.cameraGroup.rotation[2]);
+				// this.camera.updateProjectionMatrix();
+			}
+			if (this.view instanceof PanoramaGridView && snapshot.gridIndex) {
+				this.view.index = snapshot.gridIndex;
+			}
+			if (!this.view || !this.view.ready) {
+				this.requestInfoResult = snapshot;
+			}
+		}
+	}
+
+	getSnapshot() {
+		const snapshot = {
+			...CONTROL_INFO,
+			viewId: this.view.id,
+			type: MessageType.SetSnapshot,
+		};
+		if (this.view instanceof PanoramaGridView) {
+			snapshot.gridIndex = this.view.index;
+		}
+		return snapshot;
+	}
+
+	sendSetSnapshot() {
+		const snapshot = this.getSnapshot();
+		// snapshot.type = MessageType.SetSnapshot;
+		MessageService.send(snapshot);
+	}
+
 	control$() {
 		return this.controlEvent$.pipe(
 			filter(() => this.controlling || this.spyed || this.editor),
-			auditTime(40),
-			tap((control) => {
+			auditTime(Math.floor(1000 / 15)),
+			map((control) => {
+				/**
+				 * here we are updating original CONTROL_INFO object
+				 */
 				control.orientation.latitude = this.orbitService.latitude;
 				control.orientation.longitude = this.orbitService.longitude;
 				control.zoom = this.orbitService.zoom;
@@ -1320,6 +1360,16 @@ export default class WorldComponent extends Component {
 					control.pointer[2] = point.z;
 				}
 				MessageService.send(control);
+				return control;
+			}),
+			auditTime(4000),
+			tap(control => {
+				/**
+				 * !!! every 4 seconds we save the last view snapshot
+				 */
+				const snapshot = this.getSnapshot();
+				// snapshot.type = MessageType.SetSnapshot;
+				MessageService.send(snapshot);
 			}),
 		);
 	}
@@ -1327,7 +1377,7 @@ export default class WorldComponent extends Component {
 	addListeners() {
 		this.controlEvent$ = new ReplaySubject(1);
 		this.control$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe();
 		const vrService = this.vrService = VRService.getService();
 		vrService.session$.pipe(
@@ -1347,7 +1397,7 @@ export default class WorldComponent extends Component {
 			this.onVRStateDidChange(state);
 		});
 		const orbit$ = this.orbitService.observe$(this.container).pipe(
-			shareReplay(1)
+			shareReplay(1),
 		);
 		/*
 		const drag$ = orbit$.pipe(
@@ -1365,48 +1415,30 @@ export default class WorldComponent extends Component {
 			this.onOrientationDidChange();
 		});
 		MessageService.out$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
+			Logger.log('WorldComponent.addListeners', 'MessageService.out$', message);
 			switch (message.type) {
-				case MessageType.RequestInfo:
-					message.type = MessageType.RequestInfoResult;
-					message.viewId = this.view.id;
-					message.orientation = this.orbitService.getOrientation();
-					message.zoom = this.orbitService.zoom;
-					message.cameraGroup = {
-						position: this.cameraGroup.position.toArray(),
-						rotation: this.cameraGroup.rotation.toArray(),
-					}
-					if (this.view instanceof PanoramaGridView) {
-						message.gridIndex = this.view.index;
-					}
-					// console.log('WorldComponent', 'MessageType.RequestInfo', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
-					MessageService.sendBack(message);
-					if (StateService.state.role !== RoleType.Publisher) {
-						StateService.patchState({ spying: message.remoteId });
-						// console.log('WorldComponent.MessageService.out$.RequestInfo', StateService.state.spying, message.remoteId);
-					}
-					break;
-				case MessageType.RequestInfoResult:
-					// console.log('WorldComponent', 'MessageType.RequestInfoResult', 'from', message.clientId, 'to', StateService.state.uid, message.orientation);
-					if (ViewService.viewId !== message.viewId) {
-						ViewService.viewId = message.viewId;
-						this.requestInfoResult = message;
-					} else {
-						if (!this.renderer.xr.isPresenting) {
-							this.orbitService.setOrientation(message.orientation);
-							this.orbitService.zoom = message.zoom;
-							this.cameraGroup.position.set(message.cameraGroup.position[0], message.cameraGroup.position[1], message.cameraGroup.position[2]);
-							this.cameraGroup.rotation.set(message.cameraGroup.rotation[0], message.cameraGroup.rotation[1], message.cameraGroup.rotation[2]);
-							// this.camera.updateProjectionMatrix();
+				case MessageType.RequestControl:
+					{
+						Logger.log('WorldComponent.MessageType.RequestControl', message.controllingId);
+						StateService.patchState({ controlling: message.controllingId, spying: false });
+						if (message.controllingId === StateService.state.uid) {
+							this.sendSetSnapshot();
 						}
-						if (this.view instanceof PanoramaGridView && message.gridIndex) {
-							this.view.index = message.gridIndex;
-						}
-						if (!this.view || !this.view.ready) {
-							this.requestInfoResult = message;
-						}
+						break;
 					}
+				case MessageType.RequestSpy:
+					{
+						Logger.log('WorldComponent.MessageType.RequestSpy', message.spyingId);
+						StateService.patchState({ spying: message.spyingId, controlling: false });
+						if (message.spyingId === StateService.state.uid) {
+							this.sendSetSnapshot();
+						}
+						break;
+					}
+				case MessageType.SetSnapshot:
+					this.setSnapshot(message);
 					break;
 				case MessageType.ShowPanel:
 					if (this.menu) {
@@ -1415,19 +1447,21 @@ export default class WorldComponent extends Component {
 					this.view.items.forEach(item => item.showPanel = (item.id === message.itemId));
 					this.pushChanges();
 					break;
-				case MessageType.NavLink:
+				case MessageType.NavLink: {
 					const item = this.view.items.find(item => item.id === message.itemId);
 					if (item) {
 						const link = item.links[message.linkIndex];
 						this.navLink.next({ item, link, linkIndex: message.linkIndex });
 					}
 					break;
-				case MessageType.NavLinkClose:
+				}
+				case MessageType.NavLinkClose: {
 					const closeItem = this.view.items.find(item => item.id === message.itemId);
 					if (closeItem) {
 						ModalService.resolve();
 					}
 					break;
+				}
 				case MessageType.PlayMedia: {
 					// !!! uniformare a PlayModel
 					const item = this.view.items.find(item => item.id === message.itemId);
@@ -1464,7 +1498,7 @@ export default class WorldComponent extends Component {
 					break;
 				}
 				case MessageType.NavToGrid:
-					// console.log('WorldComponent.NavToGrid', this.view.id, message);
+					// Logger.log('WorldComponent.NavToGrid', this.view.id, message);
 					if (this.view.id === message.viewId) {
 						this.view.index = message.gridIndex;
 					}
@@ -1494,7 +1528,7 @@ export default class WorldComponent extends Component {
 			}
 		});
 		MessageService.in$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			switch (message.type) {
 				case MessageType.SelectItem:
@@ -1503,7 +1537,7 @@ export default class WorldComponent extends Component {
 			}
 		});
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			this.state = state;
 			this.showPointer = this.locked;
@@ -1558,5 +1592,5 @@ WorldComponent.meta = {
 	<div model-menu [views]="views" (nav)="onMenuNav($event)" (toggle)="onMenuToggle($event)" *if="showMenu"></div>
 	<div model-debug *if="debugging"></div>
 	<div class="world__info" *if="error" [innerHTML]="error"></div>
-	`
+	`,
 };

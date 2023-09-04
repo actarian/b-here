@@ -1,5 +1,3 @@
-// import * as THREE from 'three';
-
 export const ORIGIN = new THREE.Vector3();
 
 export class Host {

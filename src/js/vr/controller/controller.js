@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { cm, mm } from '../../const';
 import { GAMEPAD_HANDS } from '../gamepads';
 
@@ -67,7 +66,8 @@ export default class Controller extends THREE.Group {
 	}
 
 	press(index) {
-		TweenMax.to(this.buttons[index], 0.3, {
+		gsap.to(this.buttons[index], {
+			duration: 0.3,
 			value: 1,
 			ease: Power2.easeOut,
 			/*
@@ -81,7 +81,8 @@ export default class Controller extends THREE.Group {
 	}
 
 	release(index) {
-		TweenMax.to(this.buttons[index], 0.3, {
+		gsap.to(this.buttons[index], {
+			duration: 0.3,
 			value: 0,
 			ease: Power2.easeOut,
 			/*
@@ -106,7 +107,7 @@ export default class Controller extends THREE.Group {
 		return color.setRGB(
 			a.r + (b.r - a.r) * value,
 			a.g + (b.g - a.g) * value,
-			a.b + (b.b - a.b) * value
+			a.b + (b.b - a.b) * value,
 		);
 	}
 

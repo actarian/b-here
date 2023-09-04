@@ -1,6 +1,5 @@
 import { getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import { LabelPipe } from '../../label/label.pipe';
 import LoaderService from '../../loader/loader.service';
@@ -78,7 +77,7 @@ export default class ModelProgressComponent extends ModelComponent {
 				mount(mesh);
 			}
 			LoaderService.progress$.pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(progress => {
 				progress.count > 0 ? node.classList.add('active') : node.classList.remove('active');
 				inner.style.width = `${progress.value * 100}%`;
@@ -171,7 +170,7 @@ export default class ModelProgressComponent extends ModelComponent {
 				mesh.rotation.y += Math.PI / 180 * 0.02;
 				// texture.offset.x = (texture.offset.x - 0.01) % 1;
 				// material.needsUpdate = true;
-			}
+			},
 		};
 		return mesh;
 	}

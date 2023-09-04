@@ -15,7 +15,7 @@ export const PRODUCTION = !DEVELOPMENT;
 export const ENV = {
 	STATIC,
 	DEVELOPMENT,
-	PRODUCTION
+	PRODUCTION,
 };
 
 export class Environment {
@@ -96,7 +96,7 @@ const defaultOptions = {
 		menu: 80,
 		debug: 90,
 		pointer: 100,
-	}
+	},
 };
 
 const defaultAppOptions = {

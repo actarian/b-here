@@ -27,7 +27,7 @@ export default class SliderDirective extends Component {
 			x: -100 * this.current + '%',
 		});
 		MessageService.out$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			switch (message.type) {
 				case MessageType.SlideChange:
@@ -35,14 +35,6 @@ export default class SliderDirective extends Component {
 					if (message.index !== undefined) {
 						this.navTo(message.index);
 					}
-					break;
-				case MessageType.RequestControlAccepted:
-					setTimeout(() => {
-						MessageService.send({
-							type: MessageType.SlideChange,
-							index: this.current,
-						});
-					}, 500);
 					break;
 			}
 		});
@@ -85,13 +77,13 @@ export default class SliderDirective extends Component {
 					} else if (distanceX * -1 < width * -0.25 && this.hasPrev()) {
 						this.navTo(this.current - 1);
 					} else {
-						this.current = this.current;
+						// this.current = this.current; // !!!
 						this.inner.style.transform = `translate3d(${-100 * this.current}%, 0, 0)`;
 						// this.navTo(this.current);
 					}
 					// this.navTo(index);
 				}
-			})
+			}),
 		);
 	}
 
@@ -113,7 +105,7 @@ export default class SliderDirective extends Component {
 				if (typeof callback === 'function') {
 					callback();
 				}
-			}
+			},
 		});
 	}
 
@@ -125,7 +117,7 @@ export default class SliderDirective extends Component {
 				this.change.next(this.current);
 				MessageService.send({
 					type: MessageType.SlideChange,
-					index: index
+					index: index,
 				});
 			});
 		}

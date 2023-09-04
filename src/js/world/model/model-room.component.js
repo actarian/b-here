@@ -1,7 +1,4 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
-// import { DRACOLoader } from '../loaders/DRACOLoader';
-// import { GLTFLoader } from '../loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import MenuService from '../../editor/menu/menu.service';

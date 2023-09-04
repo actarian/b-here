@@ -7,6 +7,7 @@ import PathService from '../editor/path/path.service';
 import { DEBUG, environment } from '../environment';
 import GtmService from '../gtm/gtm.service';
 import { LabelPipe } from '../label/label.pipe';
+import { Logger } from '../logger/logger';
 import { MeetingId } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
 import { MessageService } from '../message/message.service';
@@ -46,15 +47,11 @@ export default class AgoraComponent extends Component {
 	}
 
 	get isEmbed() {
-		if (this.route) {
-			return this.route.params.mode === 'embed';
-		}
+		return this.route && this.route.params.mode === 'embed';
 	}
 
 	get isSelfServiceTour() {
-		if (this.route) {
-			return this.route.params.mode === 'selfServiceTour';
-		}
+		return this.route && this.route.params.mode === 'selfServiceTour';
 	}
 
 	get isNavigable() {
@@ -140,7 +137,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onInit() {
-		// console.log('AgoraComponent.onInit', this.host);
+		// Logger.log('AgoraComponent.onInit', this.host);
 		const { node } = getContext(this);
 		node.classList.remove('hidden');
 		this.platform = DeviceService.platform;
@@ -160,7 +157,7 @@ export default class AgoraComponent extends Component {
 		this.remotes = [];
 		const vrService = this.vrService = VRService.getService();
 		vrService.status$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(status => this.pushChanges());
 		this.resolveUser();
 	}
@@ -210,7 +207,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	userGuard(user) {
-		// console.log('AgoraComponent.userGuard', user);
+		// Logger.log('AgoraComponent.userGuard', user);
 		const linkRole = this.getLinkRole();
 		if (user && (!linkRole || user.type === linkRole)) {
 			this.initWithUser(user);
@@ -220,7 +217,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	userGuardRedirect(user) {
-		// console.log('AgoraComponent.userGuardRedirect', user);
+		// Logger.log('AgoraComponent.userGuardRedirect', user);
 		const linkRole = this.getLinkRole();
 		if (user && (!linkRole || linkRole === user.type)) {
 			this.initWithUser(user);
@@ -258,7 +255,7 @@ export default class AgoraComponent extends Component {
 		const meetingUrl = new MeetingUrl();
 		let pathId = meetingUrl.pathId;
 		if (pathId) {
-			// console.log('AgoraComponent.getPathId', pathId);
+			// Logger.log('AgoraComponent.getPathId', pathId);
 			return parseInt(pathId);
 		}
 		const link = meetingUrl.link;
@@ -266,12 +263,12 @@ export default class AgoraComponent extends Component {
 			const meetingId = new MeetingId(link);
 			pathId = meetingId.pathId;
 		}
-		// console.log('AgoraComponent.getPathId', pathId);
+		// Logger.log('AgoraComponent.getPathId', pathId);
 		return pathId;
 	}
 
 	initWithUser(user) {
-		// console.log('AgoraComponent.initWithUser', user);
+		// Logger.log('AgoraComponent.initWithUser', user);
 		const meetingUrl = new MeetingUrl();
 		const link = meetingUrl.link;
 		const pathId = this.getPathId();
@@ -292,7 +289,7 @@ export default class AgoraComponent extends Component {
 					user = { type: role };
 				}
 		}
-		// console.log('initWithUser', role, user);
+		// Logger.log('AgoraComponent.initWithUser', role, user);
 		const mode = UserService.getMode(role);
 		const name = this.getMeetingName(user);
 		// const name = meetingUrl.name || this.getName(user);
@@ -325,7 +322,7 @@ export default class AgoraComponent extends Component {
 		};
 		StateService.state = state;
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			this.state = state;
 			this.hosted = state.hosted;
@@ -353,7 +350,7 @@ export default class AgoraComponent extends Component {
 	viewObserver$() {
 		return ViewService.data$().pipe(
 			switchMap(data => {
-				// console.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
+				// Logger.log('AgoraComponent.viewObserver$', 'pathId', StateService.state.pathId);
 				return PathService.getCurrentPath$(StateService.state.pathId).pipe(
 					switchMap(path => {
 						return ViewService.hostedView$(data, path);
@@ -368,7 +365,7 @@ export default class AgoraComponent extends Component {
 			delay(1),
 			*/
 			map((view) => {
-				// console.log('AgoraComponent.viewObserver$', view);
+				// Logger.log('AgoraComponent.viewObserver$', view);
 				// !!! move navToView to user action?
 				if (this.agora) {
 					this.agora.navToView(view.id, view.keepOrientation, view.useLastOrientation);
@@ -382,7 +379,7 @@ export default class AgoraComponent extends Component {
 				GtmService.push({
 					action: 'b-here-view',
 					viewId: view.id,
-					userType: state.role // aggiunto
+					userType: state.role, // aggiunto
 				});
 				return view;
 			}),
@@ -392,9 +389,9 @@ export default class AgoraComponent extends Component {
 	load(callback) {
 		this.loadNavmaps();
 		this.viewObserver$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(view => {
-			// console.log('AgoraComponent.viewObserver$', view);
+			// Logger.log('AgoraComponent.load', view);
 			if (typeof callback === 'function') {
 				callback();
 				callback = null;
@@ -415,7 +412,7 @@ export default class AgoraComponent extends Component {
 	setNavmap(view) {
 		const navmaps = this.navmaps;
 		const navmap = (navmaps || []).find(x => (x.items || []).find(i => i.viewId === view.id) != null) || null;
-		// console.log('AgoraComponent.setNavmap', navmap);
+		// Logger.log('AgoraComponent.setNavmap', navmap);
 		this.navmap = navmap;
 	}
 
@@ -450,20 +447,20 @@ export default class AgoraComponent extends Component {
 				agora = this.agora = AgoraService.getSingleton();
 				const role = this.getLinkRole();
 				const status = this.setNextStatus();
-				// console.log('initAgora', status, role);
+				// Logger.log('AgoraComponent.initAgora', status, role);
 			});
 		}
 		StreamService.local$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(local => {
-			// console.log('AgoraComponent.local', local);
+			// Logger.log('AgoraComponent.initAgora', 'StreamService.local$', local);
 			this.local = local;
 			this.pushChanges();
 		});
 		StreamService.screen$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(screen => {
-			// console.log('AgoraComponent.screen', screen);
+			// Logger.log('AgoraComponent.initAgora', 'StreamService.screen$', screen);
 			if (this.screen === this.remoteScreen) {
 				this.remoteScreen = null;
 			}
@@ -472,7 +469,7 @@ export default class AgoraComponent extends Component {
 			this.pushChanges();
 		});
 		StreamService.orderedRemotes$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(remotes => {
 			this.remotes = [];
 			this.remoteScreen = this.screen;
@@ -483,7 +480,7 @@ export default class AgoraComponent extends Component {
 					this.remotes.push(x);
 				}
 			});
-			// console.log('AgoraComponent.remotes', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
+			// Logger.log('AgoraComponent.initAgora', 'StreamService.orderedRemotes$', this.remotes, this.remoteScreen, remotes.map(x => `${x.clientInfo ? x.clientInfo.uid : 'null'}-${x.clientInfo ? x.clientInfo.screenUid : 'null'}`).join(','));
 			this.pushChanges();
 		});
 		/*
@@ -498,30 +495,30 @@ export default class AgoraComponent extends Component {
 						// this.pushChanges();
 					}
 				}
-				// console.log('AgoraComponent.MediaLoader.events$', event);
+				// Logger.log('AgoraComponent.initAgora', 'MediaLoader.events$', event);
 			}),
 			takeUntil(this.unsubscribe$)
 		).subscribe();
 		*/
 		MessageService.out$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
-			// console.log('AgoraComponent.message', message);
+			// Logger.log('AgoraComponent.initAgora', 'MessageService.out$', message);
 			switch (message.type) {
 				case MessageType.ChannelMembers:
 					if (this.isSelfServiceSupport) {
 						const members = message.members;
-						// console.log('AgoraComponent.MessageService.out$.ChannelMembers', members, members.length);
+						// Logger.log('AgoraComponent.initAgora', 'MessageService.out$', members, members.length);
 						if (members.length > 0) {
 							ToastService.open$({
 								message: LabelPipe.transform('bhere_support_request_sent'),
-								type: ToastType.Alert, position: ToastPosition.BottomRight
+								type: ToastType.Alert, position: ToastPosition.BottomRight,
 							});
 							MessageService.send({ type: MessageType.SupportRequest });
 						} else {
 							ToastService.open$({
 								message: LabelPipe.transform('bhere_support_request_leaved'),
-								type: ToastType.Alert, position: ToastPosition.BottomRight
+								type: ToastType.Alert, position: ToastPosition.BottomRight,
 							});
 						}
 					}
@@ -531,55 +528,17 @@ export default class AgoraComponent extends Component {
 						this.openSupportRequestDialog(message.clientInfo);
 					}
 					break;
-				case MessageType.RequestPeerInfo:
-					// console.log('AgoraComponent.MessageService.out$.RequestPeerInfo', message);
-					message.type = MessageType.RequestPeerInfoResult;
-					message.clientInfo = {
-						role: StateService.state.role,
-						name: StateService.state.name,
-						uid: StateService.state.uid,
-						screenUid: StateService.state.screenUid,
-						controllingId: StateService.state.controlling,
-						mode: StateService.state.mode,
-					};
-					MessageService.sendBack(message);
-					/*
-					if (this.isSelfServiceSupport) {
-						this.meetingUrl.support = false; // !!! spostare su ChannelMembers
-						ToastService.open$({
-							message: LabelPipe.transform('bhere_support_request_sent'),
-							type: ToastType.Alert, position: ToastPosition.BottomRight
-						});
-					}
-					*/
-					break;
-				/*
-			case MessageType.RequestPeerInfoResult:
-				if (this.isSelfServiceProposition && message.clientInfo.role === RoleType.Publisher) {
-					this.openSupportRequestDialog(message.clientInfo);
-				}
-				break;
-				*/
 				case MessageType.SupportRequestAccepted:
 					ToastService.open$({
 						message: LabelPipe.transform('bhere_support_request_accepted'),
-						type: ToastType.Alert, position: ToastPosition.BottomRight
+						type: ToastType.Alert, position: ToastPosition.BottomRight,
 					});
 					break;
 				case MessageType.SupportRequestRejected:
 					ToastService.open$({
 						message: LabelPipe.transform('bhere_support_request_rejected'),
-						type: ToastType.Alert, position: ToastPosition.BottomRight
+						type: ToastType.Alert, position: ToastPosition.BottomRight,
 					});
-					break;
-				case MessageType.RequestControl:
-					// console.log('AgoraComponent', 'MessageType.RequestControlAccepted');
-					message.type = MessageType.RequestControlAccepted;
-					MessageService.sendBack(message);
-					StateService.patchState({ controlling: message.controllingId });
-					if (this.agora) {
-						this.agora.sendControlRemoteRequestInfo(message.controllingId);
-					}
 					break;
 				case MessageType.RemoteSilencing:
 					StateService.patchState({ silencing: message.silencing });
@@ -609,14 +568,14 @@ export default class AgoraComponent extends Component {
 			}
 		});
 		MessageService.in$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			if (this.agora) {
 				this.agora.sendMessage(message);
 			}
 		});
 		this.fullscreen$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe();
 		if (this.agora && StateService.state.status === AgoraStatus.ShouldConnect) {
 			this.loadAndConnect();
@@ -624,14 +583,14 @@ export default class AgoraComponent extends Component {
 	}
 
 	onChecked(checklist) {
-		// console.log('AgoraComponent.onChecked', checklist);
+		// Logger.log('AgoraComponent.onChecked', checklist);
 		StateService.patchState({ checklist: true });
 		this.setNextStatus();
 	}
 
 	onLink(link) {
 		const meetingId = new MeetingId(link);
-		// console.log('onLink', meetingId);
+		// Logger.log('AgoraComponent.onLink', meetingId);
 		const pathId = meetingId.pathId;
 		const role = this.getLinkRole();
 		const mode = UserService.getMode(role);
@@ -673,21 +632,21 @@ export default class AgoraComponent extends Component {
 	}
 
 	connect(preferences) {
-		// console.log('AgoraComponent.connect', preferences);
+		// Logger.log('AgoraComponent.connect', preferences);
 		this.agora.connect$(preferences).pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe();
 		const state = this.state;
-		// console.log('AgoraComponent.connect', this.state.role);
+		// Logger.log('AgoraComponent.connect', this.state.role);
 		if (state.role === RoleType.SelfService) {
 			GtmService.push({
 				action: 'b-here-tour',
-				userType: state.role
+				userType: state.role,
 			});
 		} else if (state.role === RoleType.Embed) {
 			GtmService.push({
 				action: 'b-here-embed',
-				userType: state.role
+				userType: state.role,
 			});
 		} else {
 			const meetingUrl = new MeetingUrl();
@@ -695,7 +654,7 @@ export default class AgoraComponent extends Component {
 			const log = {
 				meetingId: state.link,
 				sharedMeetingId: sharedMeetingId,
-				userType: state.role
+				userType: state.role,
 			};
 			if (environment.flags.useExtendedUserInfo) {
 				// !!! update server side logic to use extended user info
@@ -705,7 +664,7 @@ export default class AgoraComponent extends Component {
 			} else {
 				log.fullName = state.name;
 			}
-			// console.log('AgoraComponent.connect', log);
+			// Logger.log('AgoraComponent.connect', log);
 			UserService.log$(log).pipe(
 				first(),
 			).subscribe();
@@ -714,7 +673,7 @@ export default class AgoraComponent extends Component {
 				action: 'b-here-meeting',
 				meetingId: state.link,
 				sharedMeetingId: sharedMeetingId,
-				userType: state.role
+				userType: state.role,
 			});
 		}
 	}
@@ -736,14 +695,14 @@ export default class AgoraComponent extends Component {
 		const viewId = item.viewId;
 		const view = this.pathViews.find(x => x.id === viewId);
 		if (view) {
-			// console.log('AgoraComponent.onNavTo', item, view);
+			// Logger.log('AgoraComponent.onNavTo', item, view);
 			ViewService.action = { viewId, keepOrientation: item.keepOrientation, useLastOrientation: item.useLastOrientation };
 			this.onHandleHook(view, item);
 		}
 	}
 
 	onNavLink(event) {
-		// console.log('AgoraComponent.onNavLink', event.link.href);
+		// Logger.log('AgoraComponent.onNavLink', event.link.href);
 		ModalService.open$({ iframe: event.link.href }).pipe(
 			first(),
 		).subscribe(_ => {
@@ -760,32 +719,34 @@ export default class AgoraComponent extends Component {
 		if (viewId && ViewService.viewId !== viewId) {
 			const view = this.pathViews.find(x => x.id === viewId);
 			if (view) {
-				// console.log('AgoraComponent.onRemoteNavTo', message, view);
+				// Logger.log('AgoraComponent.onRemoteNavTo', message, view);
 				ViewService.action = { viewId, keepOrientation: message.keepOrientation, useLastOrientation: message.useLastOrientation };
 				if (gridIndex != null && view instanceof PanoramaGridView) {
 					view.index = gridIndex;
 				}
 			}
-			// console.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
+			// Logger.log('AgoraComponent.onRemoteNavTo', viewId, gridIndex);
 		}
 	}
 
 	onHandleHook(view, item) {
 		switch (item.hook) {
 			case 'ToggleWishlist':
-				const payload = { viewId: view.id, itemId: item.id };
-				WishlistService.toggle$(payload).pipe(
-					switchMap(items => {
-						payload.added = WishlistService.has(payload);
-						return WebhookService.send$(item.hook, payload, item.extra);
-					}),
-					first(),
-				).subscribe(response => {
-					console.log('AgoraComponent.onHandleHook', response);
-					item.added = payload.added;
-					this.pushChanges();
-				});
-				break;
+				{
+					const payload = { viewId: view.id, itemId: item.id };
+					WishlistService.toggle$(payload).pipe(
+						switchMap(items => {
+							payload.added = WishlistService.has(payload);
+							return WebhookService.send$(item.hook, payload, item.extra);
+						}),
+						first(),
+					).subscribe(response => {
+						Logger.log('AgoraComponent.onHandleHook', response);
+						item.added = payload.added;
+						this.pushChanges();
+					});
+					break;
+				}
 		}
 	}
 
@@ -876,7 +837,7 @@ export default class AgoraComponent extends Component {
 		return fromEvent(document, 'fullscreenchange').pipe(
 			tap(_ => {
 				const fullScreen = document.fullscreenElement != null;
-				// console.log('fullscreen$', fullScreen);
+				// Logger.log('AgoraComponent.fullscreen$', fullScreen);
 				StateService.patchState({ fullScreen });
 			}),
 		);
@@ -902,7 +863,7 @@ export default class AgoraComponent extends Component {
 	}
 
 	onBack() {
-		// console.log('AgoraCompoent.onBack');
+		// Logger.log('AgoraCompoent.onBack');
 		if (this.previousView && this.view && this.previousView.id !== this.view.id) {
 			ViewService.action = { viewId: this.previousView.id, useLastOrientation: true };
 		}
@@ -986,7 +947,7 @@ export default class AgoraComponent extends Component {
 	checkSelfServiceProposition() {
 		// self service proposition
 		const isSelfServiceProposition = this.isSelfServiceProposition;
-		// console.log('AgoraComponent.initAgora', isSelfServiceProposition);
+		// Logger.log('AgoraComponent.checkSelfServiceProposition', isSelfServiceProposition);
 		if (isSelfServiceProposition) {
 			AgoraChecklistService.check$().pipe(
 				first(),
@@ -995,7 +956,7 @@ export default class AgoraComponent extends Component {
 				const meetingIdRoles = meetingId.toRoles();
 				const meetingUrl = new MeetingUrl({ link: meetingIdRoles.id, support: true });
 				const href = window.location.origin + meetingUrl.toGuidedTourUrl();
-				console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
+				Logger.log('AgoraComponent.checkSelfServiceProposition', href);
 				UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(
 					first(),
 				).subscribe(_ => {
@@ -1005,7 +966,7 @@ export default class AgoraComponent extends Component {
 					this.connect();
 				});
 			}, error => {
-				console.log('AgoraComponent.initAgora.isSelfServiceProposition.error', error, name);
+				Logger.error('AgoraComponent.checkSelfServiceProposition.error', error);
 				/*
 				UserService.selfServiceTourSupportFailedRequest$(StateService.state.user).pipe(
 					first(),
@@ -1028,7 +989,7 @@ export default class AgoraComponent extends Component {
 			this.selfServiceAudio = selfServiceAudio;
 			MediaLoader.events$.pipe(
 				tap(event => {
-					// console.log('AgoraComponent.checkSelfServiceAudio MediaLoader.event$', event);
+					// Logger.log('AgoraComponent.checkSelfServiceAudio', 'MediaLoader.event$', event);
 					if (event instanceof MediaLoaderPlayEvent) {
 						selfServiceAudio.pause();
 						// selfServiceAudio.volume = 0;
@@ -1047,9 +1008,9 @@ export default class AgoraComponent extends Component {
 			message: LabelPipe.transform('bhere_support_request_dialog'),
 			acceptMessage: LabelPipe.transform('bhere_support_request_dialog_accept'),
 			rejectMessage: LabelPipe.transform('bhere_support_request_dialog_reject'),
-			type: ToastType.Dialog, position: ToastPosition.BottomRight
+			type: ToastType.Dialog, position: ToastPosition.BottomRight,
 		}).pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			if (event instanceof ToastResolveEvent) {
 				MessageService.send({ type: MessageType.SupportRequestAccepted });
@@ -1137,5 +1098,5 @@ AgoraComponent.meta = {
 			</a>
 		</footer>
 	</div>
-	`
+	`,
 };

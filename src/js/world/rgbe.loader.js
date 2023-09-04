@@ -1,7 +1,6 @@
-// import * as THREE from 'three';
-// import { RGBELoader } from './loaders/RGBELoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { environment } from '../environment';
+
 export class RgbeLoader {
 
 	static load(item, renderer, callback) {

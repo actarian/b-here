@@ -1,5 +1,3 @@
-// import * as THREE from 'three';
-
 function VideoTexture(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy) {
 	THREE.Texture.call(this, video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
 	this.format = format !== undefined ? format : THREE.RGBAFormat;
@@ -20,7 +18,7 @@ VideoTexture.prototype = Object.assign(Object.create(THREE.Texture.prototype), {
 		if (video.readyState >= video.HAVE_CURRENT_DATA) {
 			this.needsUpdate = true;
 		}
-	}
+	},
 
 });
 

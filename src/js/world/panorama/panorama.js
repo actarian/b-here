@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { Asset, AssetType } from '../../asset/asset';
 import { LanguageService } from '../../language/language.service';
 import StateService from '../../state/state.service';
@@ -70,7 +69,7 @@ export default class Panorama {
 			get: function() {
 				return this.uniforms.envMap.value;
 			},
-			configurable: true
+			configurable: true,
 		});
 		return material;
 	}

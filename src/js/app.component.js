@@ -16,7 +16,7 @@ export default class AppComponent extends Component {
 		AssetGroupTypeInit();
 
 		RouterService.event$.pipe(
-			takeUntil(this.unsubscribe$),
+			takeUntil(this.unsubscribe$)
 		).subscribe(event => {
 			const route = event.route;
 			if (route && route.params.mode === 'embed') {
@@ -47,5 +47,5 @@ AppComponent.meta = {
 		<!-- footer -->
 		<div class="toast-outlet" toast-outlet></div>
 		<div class="modal-outlet" modal-outlet></div>
-	`
+	`,
 };

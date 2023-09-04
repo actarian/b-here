@@ -1,7 +1,5 @@
 import { fromEvent } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
-// import * as THREE from 'three';
-// import { RGBELoader } from '../loaders/RGBELoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
@@ -267,7 +265,7 @@ export class PanoramaLoader {
 			} else {
 				video.pause();
 			}
-		}
+		};
 		const onTimeUpdate = () => {
 			MediaLoader.events$.next(new MediaLoaderTimeUpdateEvent(this));
 		};
@@ -377,7 +375,7 @@ export class PanoramaLoader {
 		};
 		PanoramaLoader.getStreamId$(asset).pipe(
 			takeUntil(MediaLoader.events$.pipe(
-				filter(event => event instanceof MediaLoaderDisposeEvent)
+				filter(event => event instanceof MediaLoaderDisposeEvent),
 			)),
 		).subscribe((streamId) => {
 			onStreamId(streamId);

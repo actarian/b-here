@@ -24,7 +24,7 @@ export default class UpdateViewComponent extends Component {
 			this.pushChanges();
 		});
 		this.orbit$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			switch (this.view.type.name) {
 				case ViewType.WaitingRoom.name:
@@ -47,7 +47,7 @@ export default class UpdateViewComponent extends Component {
 		let latitude, longitude, zoom = null;
 		return MessageService.in$.pipe(
 			filter(message => message.type === MessageType.ControlInfo),
-			auditTime(65),
+			auditTime(Math.floor(1000 / 15)),
 			distinctUntilChanged((previous, current) => {
 				const didChange = (latitude !== current.orientation.latitude ||
 					longitude !== current.orientation.longitude ||
@@ -124,16 +124,19 @@ export default class UpdateViewComponent extends Component {
 				key = key.replace('?', '');
 				switch (key) {
 					case 'latitude':
-					case 'longitude':
+					case 'longitude': {
 						const orientation = view.orientation || { latitude: 0, longitude: 0 };
 						form.add(new FormControl(orientation[key], RequiredValidator()), key);
 						break;
+					}
 					case 'usdz':
-					case 'gltf':
+					case 'gltf': {
 						form.add(new FormControl((view.ar ? (view.ar[key] || null) : null), optional ? undefined : RequiredValidator()), key);
 						break;
-					default:
+					}
+					default: {
 						form.add(new FormControl((view[key] != null ? view[key] : null), optional ? undefined : RequiredValidator()), key);
+					}
 				}
 			});
 			this.controls = form.controls;

@@ -9,10 +9,8 @@ import { ViewService } from '../view/view.service';
 export default class TryInARComponent extends Component {
 
 	get viewId() {
-		if (this.route) {
-			const viewId = this.route.params.viewId;
-			return viewId ? parseInt(viewId) : null;
-		}
+		const viewId = this.route ? this.route.params.viewId : undefined;
+		return viewId ? parseInt(viewId) : null;
 	}
 
 	onInit() {
@@ -90,7 +88,7 @@ export default class TryInARComponent extends Component {
 		const template = /* html */`
 			<model-viewer alt="${view.name}" environment-image="${environmentImage}" skybox-image="${skyboxImage}" ios-src="${usdzSrc}" src="${gltfSrc}" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls></model-viewer>
 		`;
-		const div = document.createElement("div");
+		const div = document.createElement('div');
 		div.innerHTML = template;
 		const node = div.firstElementChild;
 		return node;

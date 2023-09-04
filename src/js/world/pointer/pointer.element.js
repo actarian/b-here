@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import { Geometry } from '../geometry/geometry';
 import { Host } from '../host/host';

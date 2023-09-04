@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { cm, deg, mm, TEST_ENABLED } from '../../const';
 import { GAMEPAD_HANDS } from '../gamepads';
 import Controller from './controller';
@@ -74,7 +73,7 @@ export default class OculusQuestController extends Controller {
 								}
 							};
 							break;
-						case 'grip':
+						case 'grip': {
 							const direction = hand === GAMEPAD_HANDS.RIGHT ? 1 : -1;
 							child.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
 								const value = this.buttons[2].value;
@@ -85,6 +84,7 @@ export default class OculusQuestController extends Controller {
 								}
 							};
 							break;
+						}
 						case 'buttonX':
 						case 'buttonA':
 							child.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
@@ -152,4 +152,4 @@ export default class OculusQuestController extends Controller {
 
 }
 
-OculusQuestController.FOLDER = `models/oculus-quest`;
+OculusQuestController.FOLDER = 'models/oculus-quest';

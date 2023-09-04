@@ -1,6 +1,5 @@
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Host } from '../host/host';
-// import * as THREE from 'three';
 import MediaMesh from '../media/media-mesh';
 import WorldComponent from '../world.component';
 import ModelEditableComponent from './model-editable.component';
@@ -32,7 +31,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 		let mesh;
 		let subscription;
 		MediaMesh.getStreamId$(item).pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((streamId) => {
 			if (this.streamId !== streamId) {
 				this.streamId = streamId;
@@ -58,7 +57,7 @@ export default class ModelCurvedPlaneComponent extends ModelEditableComponent {
 							mount(mesh, item);
 						}
 						subscription = mesh.events$().pipe(
-							takeUntil(this.unsubscribe$)
+							takeUntil(this.unsubscribe$),
 						).subscribe(() => { });
 					});
 					this.addMeshListeners(mesh);

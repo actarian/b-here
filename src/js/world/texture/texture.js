@@ -1,6 +1,4 @@
-// import * as THREE from 'three';
-
-import { environment } from "../../environment";
+import { environment } from '../../environment';
 
 export class Texture {
 

@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import { PANORAMA_RADIUS } from '../geometry/geometry';
 import WorldComponent from '../world.component';
@@ -80,14 +79,14 @@ export default class ModelBannerComponent extends ModelComponent {
 				onUpdate: () => {
 					material.opacity = from.value;
 					material.needsUpdate = true;
-				}
+				},
 			});
 			mesh.userData = {
 				render: () => {
 					mesh.rotation.y += Math.PI / 180 * 0.02;
 					// texture.offset.x = (texture.offset.x - 0.01) % 1;
 					material.needsUpdate = true;
-				}
+				},
 			};
 		});
 	}

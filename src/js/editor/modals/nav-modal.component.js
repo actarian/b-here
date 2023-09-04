@@ -2,7 +2,6 @@ import { Component, getContext } from 'rxcomp';
 import { FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { first } from 'rxjs/operators';
 import { environment } from '../../environment';
-// import * as THREE from 'three';
 import ModalOutletComponent from '../../modal/modal-outlet.component';
 import { ModalService } from '../../modal/modal.service';
 import { ViewItemType } from '../../view/view';
@@ -203,4 +202,4 @@ NavModalComponent.meta = {
 	`,
 };
 
-NavModalComponent.chunk = () => /* html */`<div class="nav-modal" nav-modal></div>`;
+NavModalComponent.chunk = () => /* html */'<div class="nav-modal" nav-modal></div>';

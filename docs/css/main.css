@@ -6350,10 +6350,10 @@ footer {
 }
 
 .btn--credits {
-  display: block;
+  display: flex;
   width: 46px;
   height: 17px;
-  transform: translateY(3px);
+  transform: scale(1);
   transition: transform ease-in-out 200ms;
 }
 .btn--credits svg {
@@ -6362,7 +6362,7 @@ footer {
   fill: var(--foreground-primary);
 }
 .btn--credits:hover {
-  transform: translateY(3px) scale(1.05);
+  transform: scale(1.05);
 }
 
 .btn--colophon {

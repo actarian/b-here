@@ -1,8 +1,5 @@
 import { fromEvent } from 'rxjs';
 import { filter, first, switchMap, takeWhile, tap } from 'rxjs/operators';
-// import DebugService from '../debug.service';
-// import * as THREE from 'three';
-// import { RGBELoader } from '../loaders/RGBELoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
@@ -81,7 +78,7 @@ export class EnvMapLoader {
 	}
 
 	static loadBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new PMREMGenerator(renderer);
+		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		// console.log('loadBackground.progressRef');
@@ -132,7 +129,7 @@ export class EnvMapLoader {
 	}
 
 	static loadRgbeBackground(folder, file, renderer, callback) {
-		const pmremGenerator = new PMREMGenerator(renderer);
+		const pmremGenerator = new THREE.PMREMGenerator(renderer);
 		pmremGenerator.compileEquirectangularShader();
 		const progressRef = LoaderService.getRef();
 		const loader = new RGBELoader();
@@ -168,7 +165,7 @@ export class EnvMapLoader {
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
 				mapping: THREE.UVMapping,
-				format: THREE.RGBAFormat
+				format: THREE.RGBAFormat,
 			}).fromEquirectangularTexture(renderer, texture);
 			if (typeof callback === 'function') {
 				callback(texture, cubeRenderTarget.texture, false);
@@ -212,7 +209,7 @@ export class EnvMapLoader {
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter,
 				mapping: THREE.UVMapping,
-				format: THREE.RGBAFormat
+				format: THREE.RGBAFormat,
 			}).fromEquirectangularTexture(renderer, texture);
 			if (typeof callback === 'function') {
 				callback(texture, cubeRenderTarget.texture, false);
@@ -256,7 +253,7 @@ export class EnvMapLoader {
 					minFilter: THREE.LinearFilter,
 					magFilter: THREE.LinearFilter,
 					mapping: THREE.UVMapping,
-					format: THREE.RGBAFormat
+					format: THREE.RGBAFormat,
 				}).fromEquirectangularTexture(renderer, texture);
 				if (typeof callback === 'function') {
 					callback(texture, cubeRenderTarget.texture, false);

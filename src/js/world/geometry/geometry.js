@@ -1,5 +1,3 @@
-// import * as THREE from 'three';
-
 export const PANORAMA_RADIUS = 101;
 
 export class Geometry {

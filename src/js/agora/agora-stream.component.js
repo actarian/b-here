@@ -111,35 +111,37 @@ export default class AgoraStreamComponent extends Component {
 		this.shouldUseResumeGesture = false;
 		this.state = {};
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			this.state = state;
 			this.pushChanges();
 			// console.log('AgoraStreamComponent.StateService.state$', this.streamId, state);
 		});
 		MessageService.out$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(message => {
 			// console.log('AgoraStreamComponent.MessageService.out$', this.streamId, message);
 			switch (message.type) {
 				case MessageType.AgoraEvent:
-					const event = message.event;
-					// console.log('AgoraStreamComponent.AgoraEvent', message.event);
-					if (this.streamId && event.streamId === this.streamId) {
-						if (event instanceof AgoraMuteVideoEvent) {
-							this.videoMuted = true;
+					{
+						const event = message.event;
+						// console.log('AgoraStreamComponent.AgoraEvent', message.event);
+						if (this.streamId && event.streamId === this.streamId) {
+							if (event instanceof AgoraMuteVideoEvent) {
+								this.videoMuted = true;
+							}
+							if (event instanceof AgoraUnmuteVideoEvent) {
+								this.videoMuted = false;
+							}
+							if (event instanceof AgoraMuteAudioEvent) {
+								this.audioMuted = true;
+							}
+							if (event instanceof AgoraUnmuteAudioEvent) {
+								this.audioMuted = false;
+							}
 						}
-						if (event instanceof AgoraUnmuteVideoEvent) {
-							this.videoMuted = false;
-						}
-						if (event instanceof AgoraMuteAudioEvent) {
-							this.audioMuted = true;
-						}
-						if (event instanceof AgoraUnmuteAudioEvent) {
-							this.audioMuted = false;
-						}
+						break;
 					}
-					break;
 				case MessageType.VRStarted:
 					// console.log('AgoraStreamComponent.VRStarted', this.streamId, message.clientId, message.container);
 					if (this.streamId === message.clientId) {

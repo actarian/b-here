@@ -17,7 +17,7 @@ export default class TryInARModalComponent extends Component {
 				const qrcode = new QRious({
 					element: node.querySelector('.qrcode'),
 					value: url,
-					size: 256
+					size: 256,
 				});
 			}
 		}
@@ -65,5 +65,5 @@ TryInARModalComponent.meta = {
 	`,
 };
 
-TryInARModalComponent.chunk = () => /* html */`<div class="try-in-ar-modal" try-in-ar-modal></div>`;
+TryInARModalComponent.chunk = () => /* html */'<div class="try-in-ar-modal" try-in-ar-modal></div>';
 

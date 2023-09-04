@@ -43,7 +43,7 @@ function sendMessage(type, src, data) {
 	self.postMessage({
 		type: type,
 		src: src,
-		data: data
+		data: data,
 	});
 }
 
@@ -111,7 +111,7 @@ self.addEventListener('message', function(event) {
 		request.onprogress = function(event) {
 			// console.log('ImageServiceWorker', event.loaded, event.total);
 			sendMessage(ImageServiceWorkerEvent.Progress, src, event);
-		}
+		};
 		request.onerror = function() {
 			// new Error('There was a network error.');
 		};
@@ -170,7 +170,7 @@ function fetchProgress({
 							if (value) {
 								progress.next(
 									value,
-									onProgress
+									onProgress,
 								);
 							}
 							controller.enqueue(value);

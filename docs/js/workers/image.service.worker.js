@@ -9,18 +9,15 @@
   Complete: 'complete'
 };
 const controllers = {};
-
 function resize(src, blob, size) {
   if (!self.createImageBitmap || !self.OffscreenCanvas) {
     return sendMessage(ImageServiceWorkerEvent.Complete, src, blob);
   }
-
   self.createImageBitmap(blob).then(function (img) {
     const MAX_WIDTH = 320;
     const MAX_HEIGHT = 240;
     let width = img.width;
     let height = img.height;
-
     if (width > height) {
       if (width > MAX_WIDTH) {
         height *= MAX_WIDTH / width;
@@ -32,20 +29,18 @@ function resize(src, blob, size) {
         height = MAX_HEIGHT;
       }
     }
-
     const canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext('2d');
     canvas.width = width;
     canvas.height = height;
-    ctx.drawImage(img, 0, 0, width, height); // const options = { type: 'image/jpeg', quality: 0.9 };
+    ctx.drawImage(img, 0, 0, width, height);
+    // const options = { type: 'image/jpeg', quality: 0.9 };
     // canvas.convertToBlob(options).then(function(resizedBlob) {
-
     canvas.convertToBlob().then(function (resizedBlob) {
       sendMessage(ImageServiceWorkerEvent.Complete, src, resizedBlob);
     });
   });
 }
-
 function sendMessage(type, src, data) {
   self.postMessage({
     type: type,
@@ -53,33 +48,28 @@ function sendMessage(type, src, data) {
     data: data
   });
 }
-
 self.addEventListener('message', function (event) {
   const id = event.data.id;
   const src = event.data.src;
   const size = event.data.size;
-
   if (id && !src) {
     const controller = controllers[id];
-
     if (controller) {
       // console.log('Aborting', id);
       controller.abort();
     }
-
     return;
   }
-
   const options = {
     mode: 'cors' // no-cors, *cors, same-origin
-
   };
 
   if (typeof fetch === 'function') {
     if (self.AbortController) {
       const controller = new AbortController();
       options.signal = controller.signal;
-      controllers[id] = controller; // console.log('AbortController', id);
+      controllers[id] = controller;
+      // console.log('AbortController', id);
     }
 
     fetch(src, options).then(fetchProgress({
@@ -88,14 +78,12 @@ self.addEventListener('message', function (event) {
         // console.log('ImageServiceWorker', event.loaded, event.total);
         sendMessage(ImageServiceWorkerEvent.Progress, src, event);
       }
-
     })).then(function (response) {
       return response.blob();
     }, function (error) {
       console.log('ImageServiceWorker.error', error);
     }).then(function (blob) {
       delete controllers[id];
-
       if (typeof size === 'object') {
         resize(src, blob);
       } else {
@@ -109,7 +97,6 @@ self.addEventListener('message', function (event) {
     request.open('GET', src, true);
     request.responseType = 'blob';
     request.withCredentials = true;
-
     request.onload = function () {
       if (request.status < 300) {
         if (typeof size === 'object') {
@@ -119,18 +106,17 @@ self.addEventListener('message', function (event) {
         }
       }
     };
-
     request.onprogress = function (event) {
       // console.log('ImageServiceWorker', event.loaded, event.total);
       sendMessage(ImageServiceWorkerEvent.Progress, src, event);
     };
-
-    request.onerror = function () {// new Error('There was a network error.');
+    request.onerror = function () {
+      // new Error('There was a network error.');
     };
-
     request.send();
   }
 });
+
 /*
 self.addEventListener('message', function(event) {
 	// console.log(event);
@@ -150,7 +136,6 @@ self.addEventListener('message', function(event) {
 function isFetchProgressSupported() {
   return typeof Response !== 'undefined' && typeof ReadableStream !== 'undefined';
 }
-
 function fetchProgress(_ref) {
   let {
     defaultSize = 0,
@@ -163,7 +148,6 @@ function fetchProgress(_ref) {
     if (!isFetchProgressSupported()) {
       return response;
     }
-
     const {
       body,
       headers,
@@ -180,27 +164,22 @@ function fetchProgress(_ref) {
               done,
               value
             } = _ref2;
-
             if (done) {
               onComplete({});
               controller.close();
               return;
             }
-
             if (value) {
               progress.next(value, onProgress);
             }
-
             controller.enqueue(value);
             push();
           }).catch(err => {
             onError(err);
           });
         }
-
         push();
       }
-
     });
     return new Response(stream, {
       headers,
@@ -208,24 +187,20 @@ function fetchProgress(_ref) {
     });
   };
 }
-
 class Progress {
   constructor(length, emitDelay) {
     if (emitDelay === void 0) {
       emitDelay = 1000;
     }
-
     this.eventStart = 0;
     this.loaded = 0;
     this.length = parseInt(length, 10) || 0;
     this.emitDelay = emitDelay;
   }
-
   next(chunk, onProgress) {
     const chunkLength = chunk.length;
     this.loaded += chunkLength;
     this.eventStart = this.eventStart || Date.now();
-
     if (this.length >= this.loaded || Date.now() - this.eventStart > this.emitDelay) {
       this.eventStart = Date.now();
       const progress = {
@@ -235,8 +210,8 @@ class Progress {
       onProgress(progress);
     }
   }
-
 }
+
 /*
 function fetchProgress__(response, onProgress) {
 	const reader = response.body.getReader();

@@ -1,4 +1,3 @@
-// import { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBAFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } from 'three';
 const { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBAFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } = THREE;
 
 export default class GLTFLoader extends Loader {
@@ -133,7 +132,7 @@ export default class GLTFLoader extends Loader {
 
 		throw new Error(
 
-			'THREE.GLTFLoader: "MSFT_texture_dds" no longer supported. Please update to "KHR_texture_basisu".'
+			'THREE.GLTFLoader: "MSFT_texture_dds" no longer supported. Please update to "KHR_texture_basisu".',
 
 		);
 
@@ -230,7 +229,7 @@ export default class GLTFLoader extends Loader {
 			requestHeader: this.requestHeader,
 			manager: this.manager,
 			ktx2Loader: this.ktx2Loader,
-			meshoptDecoder: this.meshoptDecoder
+			meshoptDecoder: this.meshoptDecoder,
 
 		});
 
@@ -330,7 +329,7 @@ function GLTFRegistry() {
 
 			objects = {};
 
-		}
+		},
 
 	};
 
@@ -352,7 +351,7 @@ const EXTENSIONS = {
 	KHR_TEXTURE_TRANSFORM: 'KHR_texture_transform',
 	KHR_MESH_QUANTIZATION: 'KHR_mesh_quantization',
 	EXT_TEXTURE_WEBP: 'EXT_texture_webp',
-	EXT_MESHOPT_COMPRESSION: 'EXT_meshopt_compression'
+	EXT_MESHOPT_COMPRESSION: 'EXT_meshopt_compression',
 };
 
 /**
@@ -902,7 +901,7 @@ class GLTFBinaryExtension {
 		this.header = {
 			magic: LoaderUtils.decodeText(new Uint8Array(data.slice(0, 4))),
 			version: headerView.getUint32(4, true),
-			length: headerView.getUint32(8, true)
+			length: headerView.getUint32(8, true),
 		};
 
 		if (this.header.magic !== BINARY_EXTENSION_HEADER_MAGIC) {
@@ -1111,13 +1110,13 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 		const specularMapParsFragmentChunk = [
 			'#ifdef USE_SPECULARMAP',
 			'	uniform sampler2D specularMap;',
-			'#endif'
+			'#endif',
 		].join('\n');
 
 		const glossinessMapParsFragmentChunk = [
 			'#ifdef USE_GLOSSINESSMAP',
 			'	uniform sampler2D glossinessMap;',
-			'#endif'
+			'#endif',
 		].join('\n');
 
 		const specularMapFragmentChunk = [
@@ -1127,7 +1126,7 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 			'	texelSpecular = sRGBToLinear( texelSpecular );',
 			'	// reads channel RGB, compatible with a glTF Specular-Glossiness (RGBA) texture',
 			'	specularFactor *= texelSpecular.rgb;',
-			'#endif'
+			'#endif',
 		].join('\n');
 
 		const glossinessMapFragmentChunk = [
@@ -1136,7 +1135,7 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 			'	vec4 texelGlossiness = texture2D( glossinessMap, vUv );',
 			'	// reads channel A, compatible with a glTF Specular-Glossiness (RGBA) texture',
 			'	glossinessFactor *= texelGlossiness.a;',
-			'#endif'
+			'#endif',
 		].join('\n');
 
 		const lightPhysicalFragmentChunk = [
@@ -1154,7 +1153,7 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 			specular: { value: new Color().setHex(0xffffff) },
 			glossiness: { value: 1 },
 			specularMap: { value: null },
-			glossinessMap: { value: null }
+			glossinessMap: { value: null },
 		};
 
 		this._extraUniforms = uniforms;
@@ -1190,7 +1189,7 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 
 					uniforms.specular.value = v;
 
-				}
+				},
 			},
 
 			specularMap: {
@@ -1213,7 +1212,7 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 
 					}
 
-				}
+				},
 			},
 
 			glossiness: {
@@ -1226,7 +1225,7 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 
 					uniforms.glossiness.value = v;
 
-				}
+				},
 			},
 
 			glossinessMap: {
@@ -1251,8 +1250,8 @@ class GLTFMeshStandardSGMaterial extends MeshStandardMaterial {
 
 					}
 
-				}
-			}
+				},
+			},
 
 		});
 
@@ -1541,7 +1540,7 @@ const WEBGL_CONSTANTS = {
 	TRIANGLE_STRIP: 5,
 	TRIANGLE_FAN: 6,
 	UNSIGNED_BYTE: 5121,
-	UNSIGNED_SHORT: 5123
+	UNSIGNED_SHORT: 5123,
 };
 
 const WEBGL_COMPONENT_TYPES = {
@@ -1550,7 +1549,7 @@ const WEBGL_COMPONENT_TYPES = {
 	5122: Int16Array,
 	5123: Uint16Array,
 	5125: Uint32Array,
-	5126: Float32Array
+	5126: Float32Array,
 };
 
 const WEBGL_FILTERS = {
@@ -1559,13 +1558,13 @@ const WEBGL_FILTERS = {
 	9984: NearestMipmapNearestFilter,
 	9985: LinearMipmapNearestFilter,
 	9986: NearestMipmapLinearFilter,
-	9987: LinearMipmapLinearFilter
+	9987: LinearMipmapLinearFilter,
 };
 
 const WEBGL_WRAPPINGS = {
 	33071: ClampToEdgeWrapping,
 	33648: MirroredRepeatWrapping,
-	10497: RepeatWrapping
+	10497: RepeatWrapping,
 };
 
 const WEBGL_TYPE_SIZES = {
@@ -1575,7 +1574,7 @@ const WEBGL_TYPE_SIZES = {
 	'VEC4': 4,
 	'MAT2': 4,
 	'MAT3': 9,
-	'MAT4': 16
+	'MAT4': 16,
 };
 
 const ATTRIBUTES = {
@@ -1593,20 +1592,20 @@ const PATH_PROPERTIES = {
 	scale: 'scale',
 	translation: 'position',
 	rotation: 'quaternion',
-	weights: 'morphTargetInfluences'
+	weights: 'morphTargetInfluences',
 };
 
 const INTERPOLATION = {
 	CUBICSPLINE: undefined, // We use a custom interpolant (GLTFCubicSplineInterpolation) for CUBICSPLINE tracks. Each
 	// keyframe track will be initialized with a default interpolation type, then modified.
 	LINEAR: InterpolateLinear,
-	STEP: InterpolateDiscrete
+	STEP: InterpolateDiscrete,
 };
 
 const ALPHA_MODES = {
 	OPAQUE: 'OPAQUE',
 	MASK: 'MASK',
-	BLEND: 'BLEND'
+	BLEND: 'BLEND',
 };
 
 /* UTILITY FUNCTIONS */
@@ -1651,7 +1650,7 @@ function createDefaultMaterial(cache) {
 			roughness: 1,
 			transparent: false,
 			depthTest: true,
-			side: FrontSide
+			side: FrontSide,
 		});
 
 	}
@@ -1756,7 +1755,7 @@ function addMorphTargets(geometry, targets, parser) {
 
 	return Promise.all([
 		Promise.all(pendingPositionAccessors),
-		Promise.all(pendingNormalAccessors)
+		Promise.all(pendingNormalAccessors),
 	]).then(function(accessors) {
 
 		const morphPositions = accessors[0];
@@ -1983,7 +1982,7 @@ class GLTFParser {
 				cameras: dependencies[2],
 				asset: json.asset,
 				parser: parser,
-				userData: {}
+				userData: {},
 			};
 
 			addUnknownExtensionsToUserData(extensions, result, json);
@@ -2554,7 +2553,7 @@ class GLTFParser {
 
 			parser.associations.set(texture, {
 				type: 'textures',
-				index: textureIndex
+				index: textureIndex,
 			});
 
 			return texture;
@@ -3230,7 +3229,7 @@ class GLTFParser {
 			Promise.all(pendingInputAccessors),
 			Promise.all(pendingOutputAccessors),
 			Promise.all(pendingSamplers),
-			Promise.all(pendingTargets)
+			Promise.all(pendingTargets),
 
 		]).then(function(dependencies) {
 
@@ -3326,7 +3325,7 @@ class GLTFParser {
 						targetNames[j] + '.' + PATH_PROPERTIES[target.path],
 						inputAccessor.array,
 						outputArray,
-						interpolation
+						interpolation,
 					);
 
 					// Override interpolation with custom factory method.
@@ -3691,7 +3690,7 @@ function computeBounds(geometry, primitiveDef, parser) {
 
 			box.set(
 				new Vector3(min[0], min[1], min[2]),
-				new Vector3(max[0], max[1], max[2])
+				new Vector3(max[0], max[1], max[2]),
 			);
 
 			if (accessor.normalized) {

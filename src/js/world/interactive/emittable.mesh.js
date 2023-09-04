@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { Geometry } from '../geometry/geometry';
 import FreezableMesh from './freezable.mesh';
 

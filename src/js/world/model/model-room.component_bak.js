@@ -1,5 +1,3 @@
-// import * as THREE from 'three';
-// import { GLTFLoader } from '../loaders/GLTFLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
@@ -67,11 +65,11 @@ export default class ModelRoomComponent extends ModelComponent {
 						item.mesh = child;
 					} else {
 						/*
-						if (USE_SHADOW) {
-							child.castShadow = true;
-							child.receiveShadow = true;
-						}
-						*/
+									if (USE_SHADOW) {
+										child.castShadow = true;
+										child.receiveShadow = true;
+									}
+									*/
 						child.material.dispose();
 						// child.renderOrder = environment.renderOrder.model;
 						const material = new THREE.MeshStandardMaterial({
@@ -131,9 +129,9 @@ export default class ModelRoomComponent extends ModelComponent {
 				const radians = Math.PI / 180 * 45 + Math.PI / 180 * 120 * i;
 				light.position.set(Math.cos(radians) * 5, 1, Math.sin(radians) * 5);
 				/*
-				const helper = new THREE.PointLightHelper(light, 0.1);
-				this.group.add(helper);
-				*/
+						const helper = new THREE.PointLightHelper(light, 0.1);
+						this.group.add(helper);
+						*/
 				this.group.add(light);
 				return light;
 			});

@@ -16,7 +16,7 @@ export const CHUNK_REMOTE = /* html */`
 		</div>
 	</div>
 	<div class="group--members" *if="state.mode == 'virtual-tour'">
-		<div class="members">
+		<div class="members" *if="state.role === 'publisher'">
 			<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 			<span class="members__count" [innerHTML]="state.membersCount"></span>
 		</div>
@@ -144,7 +144,7 @@ export const CHUNK_CONTROLS_SMART_DEVICE = /* html */`
 export const CHUNK_MEMBERS = /* html */`
 <!-- members -->
 <div class="group--members" *if="state.mode == 'live-meeting'">
-	<div class="members">
+	<div class="members" *if="state.role === 'publisher'">
 		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 		<span class="members__count" [innerHTML]="state.membersCount"></span>
 	</div>
@@ -159,7 +159,7 @@ export const CHUNK_MEMBERS = /* html */`
 export const CHUNK_MEMBERS_SMART_DEVICE = /* html */`
 <!-- members -->
 <div class="group--members">
-	<div class="members">
+	<div class="members" *if="state.role === 'publisher'">
 		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
 		<span class="members__count" [innerHTML]="state.membersCount"></span>
 	</div>

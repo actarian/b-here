@@ -1,7 +1,6 @@
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-// import * as THREE from 'three';
-import DragService, { DragDownEvent, DragMoveEvent, DragUpEvent } from '../../drag/drag.service';
+import DragService, { DragDownEvent, DragMoveEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
@@ -170,9 +169,9 @@ export default class OrbitService {
 						const flip = this.mode_ === OrbitMode.Model ? -1 : 1;
 						this.setLongitudeLatitude(longitude - event.distance.x * 0.1 * flip, latitude + event.distance.y * 0.1);
 					}
-				} else if (event instanceof DragUpEvent) {
-
+				} /* else if (event instanceof DragUpEvent) {
 				}
+				*/
 				return event;
 			}),
 			filter(event => event instanceof DragMoveEvent),
@@ -219,7 +218,7 @@ export default class OrbitService {
 				if (typeof callback === 'function') {
 					callback(headingLongitude, headingLatitude);
 				}
-			}
+			},
 		});
 	}
 

@@ -1,10 +1,9 @@
-// import * as THREE from 'three';
 import { POINTER_RADIUS, TEST_ENABLED } from '../const';
 import Emittable from '../interactive/emittable';
 import Menu from '../menu/menu';
-// import Controller from './controller/controller';
 import OculusQuestController from './controller/oculus-quest-controller';
 import Gamepads, { GAMEPAD_HANDS } from './gamepads';
+
 export default class Controllers extends Emittable {
 
 	constructor(renderer, scene, pivot) {
@@ -87,12 +86,13 @@ export default class Controllers extends Emittable {
 			const y = this.pivot.rotation.y + Math.PI / 2 * direction;
 			// this.pivot.ery = y;
 			this.pivot.busy = true;
-			TweenMax.to(this.pivot.rotation, 0.7, {
+			gsap.to(this.pivot.rotation, {
+				duration: 0.7,
 				y,
 				ease: Power2.easeInOut,
 				onComplete: () => {
 					this.pivot.busy = false;
-				}
+				},
 			});
 		} else if (index === 1) {
 			const panel = this.menu.addPanel();
@@ -234,7 +234,7 @@ export default class Controllers extends Emittable {
 				color: 0x111111, // 0x33c5f6,
 				transparent: true,
 				opacity: 1,
-				side: THREE.DoubleSide
+				side: THREE.DoubleSide,
 			});
 			this.fontMaterial = material;
 		});

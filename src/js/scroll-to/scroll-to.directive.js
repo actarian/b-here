@@ -7,10 +7,10 @@ export default class ScrollToDirective extends Directive {
 	onInit() {
 		this.initialFocus = false;
 		const { module, node } = getContext(this);
-		const expression = this.expression = node.getAttribute(`(scrollTo)`);
+		const expression = this.expression = node.getAttribute('(scrollTo)');
 		this.outputFunction = module.makeFunction(expression, ['$event']);
 		this.scrollTo$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(() => { });
 	}
 
@@ -27,7 +27,7 @@ export default class ScrollToDirective extends Directive {
 						const o = { tween: 0 };
 						const html = document.querySelector('html');
 						gsap.set(html, {
-							'scroll-behavior': 'auto'
+							'scroll-behavior': 'auto',
 						});
 						gsap.to(o, {
 							duration: Math.abs((to - from)) / 2000,
@@ -39,14 +39,14 @@ export default class ScrollToDirective extends Directive {
 							},
 							onComplete: () => {
 								gsap.set(html, {
-									'scroll-behavior': 'smooth'
+									'scroll-behavior': 'smooth',
 								});
-							}
+							},
 						});
 					}
 				}
 			}),
-			shareReplay(1)
+			shareReplay(1),
 		);
 	}
 
@@ -64,5 +64,5 @@ export default class ScrollToDirective extends Directive {
 }
 
 ScrollToDirective.meta = {
-	selector: `[(scrollTo)]`
+	selector: '[(scrollTo)]',
 };

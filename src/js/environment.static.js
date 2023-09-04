@@ -6,6 +6,7 @@ export const environmentStatic = {
 		production: false,
 		useProxy: true,
 		useToken: false,
+		usePrefetch: true,
 		useExtendedUserInfo: true,
 		useEncryptedUrl: true,
 		gdprRoutes: true,
@@ -48,11 +49,11 @@ export const environmentStatic = {
 	},
 	sso: {
 		issuer: 'bhere-sso',
-		origin: `http://localhost:3010`,
-		loginUrl: `http://localhost:3010/sso/login?redirectUrl={redirectUrl}`,
-		logoutUrl: `http://localhost:3010/sso/logout?redirectUrl={redirectUrl}`,
-		registerUrl: `http://localhost:3010/sso/register?redirectUrl={redirectUrl}`,
-		verifyTokenUrl: `http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}`,
+		origin: 'http://localhost:3010',
+		loginUrl: 'http://localhost:3010/sso/login?redirectUrl={redirectUrl}',
+		logoutUrl: 'http://localhost:3010/sso/logout?redirectUrl={redirectUrl}',
+		registerUrl: 'http://localhost:3010/sso/register?redirectUrl={redirectUrl}',
+		verifyTokenUrl: 'http://localhost:3010/sso/verifytoken?verifyToken={verifytoken}',
 	},
 	navs: {
 		iconMinScale: 1,
@@ -60,7 +61,7 @@ export const environmentStatic = {
 	},
 	profiles: {
 		// streamer: "480p_1", // 640 x 480 x 15
-		streamer: "480p_2", // 640 x 480 x 30
+		streamer: '480p_2', // 640 x 480 x 30
 		// streamer: "480p_3", // 480 x 480 x 15
 		// streamer: "480p_4", // 640 x 480 x 30
 		// streamer: "480p_6", // 480 x 480 x 30
@@ -78,17 +79,17 @@ export const environmentStatic = {
 		// streamer: "1080p_5", // 1920 x 1080 x 60
 
 		// attendee: "720p_2", // 1920 x 1080 x 30
-		attendee: "1080p_2", // 1920 x 1080 x 30
+		attendee: '1080p_2', // 1920 x 1080 x 30
 
 		// publisher: "720p_2", // 1920 x 1080 x 30
-		publisher: "1080p_2", // 1920 x 1080 x 30
+		publisher: '1080p_2', // 1920 x 1080 x 30
 
 		// screen: "480p_1", // 640 × 480 x 5
 		// screen: "480p_2", // 640 × 480 x 30
 		// screen: "720p_1", // 1280 × 720 x 5
 		// screen: "720p_2", // 1280 × 720 x 30
 		// screen: "1080p_1", // 1920 × 1080 x 5
-		screen: "1080p_2", // 1920 × 1080 30
+		screen: '1080p_2', // 1920 × 1080 30
 	},
 	logo: null,
 	/*
@@ -127,6 +128,6 @@ export const environmentStatic = {
 	template: {
 		email: {
 			supportRequest: '/email/support-request.html',
-		}
+		},
 	},
 };

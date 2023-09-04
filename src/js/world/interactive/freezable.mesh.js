@@ -1,5 +1,3 @@
-// import * as THREE from 'three';
-
 import { Mesh } from 'three';
 import { Geometry } from '../geometry/geometry';
 

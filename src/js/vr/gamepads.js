@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import Emittable from '../interactive/emittable';
 
 export const SUPPORTED_GAMEPADS = ['Gear VR Controller', 'Daydream Controller', 'Oculus Go Controller', 'OpenVR Gamepad', 'Oculus Touch', 'Spatial Controller'];
@@ -57,7 +56,7 @@ export default class Gamepads extends Emittable {
 					gamepad.on('broadcast', this.onEvent);
 				}
 			}
-		} catch (e) {
+		} catch (error) {
 			console.log('Gamepads.connect.error', error);
 		}
 	}

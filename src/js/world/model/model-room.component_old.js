@@ -1,5 +1,3 @@
-// import * as THREE from 'three';
-// import { GLTFLoader } from '../loaders/GLTFLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { environment } from '../../environment';
 import InteractiveMesh from '../interactive/interactive.mesh';

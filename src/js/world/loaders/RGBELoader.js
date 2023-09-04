@@ -1,4 +1,3 @@
-// import { DataTextureLoader, DataUtils, FloatType, HalfFloatType, LinearEncoding, LinearFilter, NearestFilter, RGBEEncoding, RGBEFormat, RGBAFormat, UnsignedByteType } from 'three';
 const { DataTextureLoader, DataUtils, FloatType, HalfFloatType, LinearEncoding, LinearFilter, NearestFilter, RGBEEncoding, RGBEFormat, RGBAFormat, UnsignedByteType } = THREE;
 
 // https://github.com/mrdoob/three.js/issues/5552
@@ -124,7 +123,7 @@ export default class RGBELoader extends DataTextureLoader {
 
 						exposure: 1.0, /* a value of 1.0 in an image corresponds to <exposure> watts/steradian/m^2. defaults to 1.0 */
 
-						width: 0, height: 0 /* image dimensions, width/height */
+						width: 0, height: 0, /* image dimensions, width/height */
 
 					};
 
@@ -419,7 +418,7 @@ export default class RGBELoader extends DataTextureLoader {
 					gamma: rgbe_header_info.gamma,
 					exposure: rgbe_header_info.exposure,
 					format: format,
-					type: type
+					type: type,
 				};
 
 			}

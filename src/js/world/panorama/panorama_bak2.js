@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { Asset, AssetType } from '../../asset/asset';
 import StateService from '../../state/state.service';
 import { PanoramaGridView, ViewType } from '../../view/view';

@@ -1,7 +1,4 @@
-/* global THREE */
-
 import { Subject } from 'rxjs';
-// import * as THREE from 'three';
 import StateService from '../state/state.service';
 
 export const ViewType = {

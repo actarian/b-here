@@ -1,4 +1,3 @@
-// import * as THREE from 'three';
 import { environment } from '../../environment';
 import StateService from '../../state/state.service';
 import { RoleType } from '../../user/user';
@@ -309,7 +308,7 @@ export default class ModelNavComponent extends ModelEditableComponent {
 					yoyo: true,
 					onUpdate: () => {
 						plane.material.opacity = from.pow * opacityDown;
-					}
+					},
 				});
 			}
 
@@ -411,10 +410,10 @@ export default class ModelNavComponent extends ModelEditableComponent {
 							onUpdate: () => {
 								this.setScale(from.pow);
 								icon.material.opacity = from.pow;
-							}
+							},
 						});
 					}
-				}
+				},
 			});
 
 			sphere.on('over', () => {

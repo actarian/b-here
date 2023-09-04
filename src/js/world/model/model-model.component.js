@@ -1,8 +1,5 @@
 import { takeUntil } from 'rxjs/operators';
-// import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-// import { DRACOLoader } from '../loaders/DRACOLoader';
-// import { GLTFLoader } from '../loaders/GLTFLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MessageType } from '../../agora/agora.types';
 import MenuService from '../../editor/menu/menu.service';
@@ -124,7 +121,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 				onUpdate: onUpdate,
 				onComplete: () => {
 					this.updateHelper();
-				}
+				},
 			});
 		} else {
 			box.setFromObject(mesh);
@@ -254,7 +251,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 
 	onMessage(message) {
 		switch (message.type) {
-			case MessageType.PlayModel:
+			case MessageType.PlayModel: {
 				const actions = this.actions;
 				if (actions.length === 1) {
 					this.setSingleAction(message.actionIndex);
@@ -262,6 +259,7 @@ export default class ModelModelComponent extends ModelEditableComponent {
 					this.setMultiAction(message.actionIndex);
 				}
 				break;
+			}
 		}
 	}
 

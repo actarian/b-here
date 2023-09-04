@@ -1,5 +1,4 @@
 import { BehaviorSubject, Subject } from 'rxjs';
-// import * as THREE from 'three';
 
 export const XRStatus = {
 	Waiting: 'waiting',
@@ -38,7 +37,7 @@ export default class VRService {
 				quaternion: new THREE.Quaternion(),
 				scale: new THREE.Vector3(),
 				array: new Array(3 + 4 + 3).fill(0),
-			}
+			},
 		};
 		this.onSessionStarted = this.onSessionStarted.bind(this);
 		this.onSessionEnded = this.onSessionEnded.bind(this);
