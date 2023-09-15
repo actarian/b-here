@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.29
+ * @license beta-bhere-development v1.0.30-canary.0
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -23257,21 +23257,6 @@ ModelNavComponent.meta = {
             position: ToastPosition.BottomRight
           });
           break;
-        /*
-        case MessageType.RequestPeerInfo:
-        // Logger.log('AgoraComponent.initAgora', 'MessageService.out$', message);
-        message.type = MessageType.RequestPeerInfoResult;
-        message.clientInfo = {
-        	role: StateService.state.role,
-        	name: StateService.state.name,
-        	uid: StateService.state.uid,
-        	screenUid: StateService.state.screenUid,
-        	controllingId: StateService.state.controlling,
-        	mode: StateService.state.mode,
-        };
-        MessageService.sendBack(message);
-        break;
-        */
         case MessageType.RemoteSilencing:
           StateService.patchState({
             silencing: message.silencing
