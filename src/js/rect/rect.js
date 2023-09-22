@@ -92,7 +92,7 @@ export class Rect {
 			y: 0,
 			pow: {
 				x: -1,
-				y: -1
+				y: -1,
 			},
 			offset: function(offset) {
 				offset = offset || 0;
@@ -103,7 +103,7 @@ export class Rect {
 				offset = offset || 0;
 				const pow = (this.top - this.rect.height / 2 + offset) / -this.height;
 				return pow;
-			}
+			},
 		});
 		intersection.left = this.left;
 		intersection.top = this.top;

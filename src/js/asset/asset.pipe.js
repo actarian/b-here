@@ -3,7 +3,7 @@ import { environment } from '../environment';
 import { AssetType } from './asset';
 
 export const MIME_IMAGE = [
-	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr'
+	'bmp', 'gif', 'ico', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp', 'hdr',
 ];
 export const MIME_AUDIO = [
 	'aac', 'mid', 'midi', 'mp3', 'oga', 'opus', 'wav', 'weba',
@@ -18,12 +18,15 @@ export const MIME_STREAM = [
 	'publisherStream', 'nextAttendeeStream', 'publisherScreen', 'attendeeScreen',
 ];
 export function isImage(path) {
+	// eslint-disable-next-line no-useless-escape
 	return new RegExp(`/\.(${MIME_IMAGE.join('|')})$/i`).test(path);
 }
 export function isVideo(path) {
+	// eslint-disable-next-line no-useless-escape
 	return new RegExp(`/\.(${MIME_VIDEO.join('|')})$/i`).test(path);
 }
 export function isModel(path) {
+	// eslint-disable-next-line no-useless-escape
 	return new RegExp(`/\.(${MIME_MODEL.join('|')})$/i`).test(path);
 }
 export function isStream(path) {
@@ -67,7 +70,7 @@ export default class AssetPipe extends Pipe {
 						asset = asset.file;
 					}
 			}
-			asset = asset;
+			// asset = asset;
 		} else {
 			asset = null;
 		}

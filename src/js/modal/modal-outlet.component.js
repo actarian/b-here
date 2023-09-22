@@ -41,10 +41,10 @@ export default class ModalOutletComponent extends Component {
 		const { node } = getContext(this);
 		this.modalNode = node.querySelector('.modal-outlet__modal');
 		ModalService.modal$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(modal => this.modal = modal);
 		ModalService.busy$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(busy => this.busy = busy);
 	}
 
@@ -63,5 +63,5 @@ ModalOutletComponent.meta = {
 		<!-- spinner -->
 		<div class="spinner spinner--contrasted" *if="busy"></div>
 	</div>
-	`
+	`,
 };

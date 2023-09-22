@@ -2,7 +2,7 @@ import { Component } from 'rxcomp';
 import { FormArray, FormControl, FormGroup, RequiredValidator } from 'rxcomp-form';
 import { of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
-import { AssetGroupType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId, AssetType } from '../../asset/asset';
+import { AssetGroupType, AssetType, assetGroupTypeFromItem, assetPayloadFromGroupTypeId } from '../../asset/asset';
 import { AssetService } from '../../asset/asset.service';
 import { environment } from '../../environment';
 import { LabelPipe } from '../../label/label.pipe';
@@ -64,7 +64,7 @@ export default class UpdateViewItemComponent extends Component {
 			const asset$ = item.asset ? AssetService.assetUpdate$(item.asset) : of(null);
 			asset$.pipe(
 				switchMap(() => EditorService.inferItemUpdate$(this.view, item)),
-				first()
+				first(),
 			).subscribe();
 			// !!! create indices for nextAttendeeStream
 			this.view.updateIndices(this.view.items);
@@ -156,7 +156,7 @@ export default class UpdateViewItemComponent extends Component {
 						});
 						*/
 						break;
-					case 'links':
+					case 'links': {
 						const links = item.links;
 						control = new FormArray(links.map(link => new FormGroup({
 							title: new FormControl(link.title),
@@ -164,6 +164,7 @@ export default class UpdateViewItemComponent extends Component {
 							target: '_blank',
 						})));
 						break;
+					}
 					default:
 						control = new FormControl(value, optional ? undefined : RequiredValidator());
 				}
@@ -181,7 +182,7 @@ export default class UpdateViewItemComponent extends Component {
 						this.controls[key].value = { title, href, target };
 						*/
 						break;
-					case 'links':
+					case 'links': {
 						const links = item.links.map(link => ({
 							title: link.title || null,
 							href: link.href || null,
@@ -201,6 +202,7 @@ export default class UpdateViewItemComponent extends Component {
 						// console.log(formArray, links);
 						formArray.patch(links);
 						break;
+					}
 					case 'hasChromaKeyColor':
 						this.controls[key].value = (item.asset && item.asset.chromaKeyColor) ? true : false;
 						break;
@@ -233,10 +235,10 @@ export default class UpdateViewItemComponent extends Component {
 						const asset = assetPayloadFromGroupTypeId(assetType);
 						return AssetService.assetCreate$(asset);
 					}),
-				)
+				);
 			}
 			asset$.pipe(
-				first()
+				first(),
 			).subscribe(asset => {
 				// console.log('UpdateViewItemComponent.asset$', asset);
 				this.controls.asset.value = asset;

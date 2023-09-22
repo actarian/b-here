@@ -32,7 +32,7 @@ function tween(from, to, friction) {
 function windowRect$() {
 	const windowRect = new Rect({
 		width: window.innerWidth,
-		height: window.innerHeight
+		height: window.innerHeight,
 	});
 	return fromEvent(window, 'resize').pipe(
 		map(originalEvent => {
@@ -40,7 +40,7 @@ function windowRect$() {
 			windowRect.height = window.innerHeight;
 			return windowRect;
 		}),
-		startWith(windowRect)
+		startWith(windowRect),
 	);
 }
 
@@ -57,7 +57,7 @@ function locomotiveScrollEvent$() {
 			el: document.querySelector('#js-scroll'),
 			smooth: true,
 			getSpeed: true,
-			getDirection: true
+			getDirection: true,
 		});
 		// console.log('locomotiveScroll');
 		locomotiveScroll.on('scroll', handler);
@@ -75,7 +75,7 @@ function locomotiveScrollEvent$() {
 			return event;
 		}),
 		startWith(event),
-		shareReplay()
+		shareReplay(),
 	);
 }
 
@@ -99,7 +99,7 @@ function scrollEvent$() {
 			event.originalEvent = originalEvent;
 			return event;
 		}),
-		startWith(event)
+		startWith(event),
 	);
 }
 
@@ -118,7 +118,7 @@ class Dom {
 				response.rect = rect;
 				response.intersection = intersection;
 				return response;
-			})
+			}),
 		);
 	}
 
@@ -126,28 +126,28 @@ class Dom {
 		const isCover = node.hasAttribute('cover');
 		return Dom.scrollIntersection$(node).pipe(
 			filter(x => (Dom.ready || isCover) && x.intersection.y > value && x.intersection.x > 0),
-			first()
+			first(),
 		);
 	}
 
 	static appear$(node, value = 0.0) { // -0.5
 		return Dom.scrollIntersection$(node).pipe(
 			filter(x => x.intersection.y > value),
-			first()
+			first(),
 		);
 	}
 
 	static visibility$(node, value = 0.5) {
 		return Dom.scrollIntersection$(node).pipe(
 			map(x => x.intersection.y > value),
-			distinctUntilChanged()
+			distinctUntilChanged(),
 		);
 	}
 
 	static firstVisibility$(node, value = 0.5) {
 		return Dom.visibility$(node, value).pipe(
 			filter(visible => visible),
-			first()
+			first(),
 		);
 	}
 
@@ -164,7 +164,7 @@ class Dom {
 				response.rect = rect;
 				response.intersection = intersection;
 				return response;
-			})
+			}),
 		);
 	}
 
@@ -208,12 +208,15 @@ export default class DomService extends Dom {
 				const options = Object.defineProperty({}, 'passive', {
 					get: function() {
 						has = true;
-					}
+						return true;
+					},
 				});
 				const noop = function() { };
 				window.addEventListener('testPassiveEventSupport', noop, options);
 				window.removeEventListener('testPassiveEventSupport', noop, options);
-			} catch (e) { }
+			} catch (error) {
+				console.log('hasPassiveEvents', error);
+			}
 			return has;
 		};
 		this.hasPassiveEvents = hasPassiveEvents();
@@ -409,12 +412,12 @@ export default class DomService extends Dom {
 		let gl, debugInfo, vendor, renderer, has = false;
 		try {
 			const canvas = document.createElement('canvas');
-			if (!!window.WebGLRenderingContext) {
+			if (window.WebGLRenderingContext) {
 				gl = canvas.getContext('webgl', {
-					failIfMajorPerformanceCaveat: true
+					failIfMajorPerformanceCaveat: true,
 				}) ||
 					canvas.getContext('experimental-webgl', {
-						failIfMajorPerformanceCaveat: true
+						failIfMajorPerformanceCaveat: true,
 					});
 			}
 		} catch (e) {
@@ -481,7 +484,7 @@ export default class DomService extends Dom {
 				}
 			}),
 			filter(x => x !== null),
-			shareReplay()
+			shareReplay(),
 		);
 	}
 
@@ -494,7 +497,7 @@ export default class DomService extends Dom {
 
 	virtualScroll$(selector, friction = 10) {
 		const style = this.getStyleSheet();
-		const ruleIndex = style.insertRule(`.virtual-scroll:after { content: ''; display:block; width: 100%; height: 1px; }`, style.cssRules.length);
+		const ruleIndex = style.insertRule('.virtual-scroll:after { content: \'\'; display:block; width: 100%; height: 1px; }', style.cssRules.length);
 		const rule = style.cssRules[ruleIndex];
 		// console.log('rule', style.cssRules.length, rule.cssText);
 		let outerHeight_ = 0;
@@ -526,7 +529,7 @@ export default class DomService extends Dom {
 				}
 			}),
 			filter(x => x !== null),
-			shareReplay()
+			shareReplay(),
 		);
 	}
 

@@ -49,7 +49,7 @@ export class RouterLinkDirective extends Directive {
 				RouterService.setRouterLink(...this.routerLink);
 				event.preventDefault();
 				return false;
-			})
+			}),
 		);
 	}
 
@@ -58,6 +58,7 @@ export class RouterLinkDirective extends Directive {
 		const segments = [];
 		routerLink.forEach(item => {
 			if (typeof item === 'string') {
+				// eslint-disable-next-line no-useless-escape
 				const regExp = /([^:]+)|\:([^\/]+)/g;
 				const matches = item.matchAll(regExp);
 				const components = [];
@@ -73,6 +74,7 @@ export class RouterLinkDirective extends Directive {
 					}
 				}
 			} else {
+				// !!! todo fix RouteSegment
 				segments.push(new RouteSegment('', {}));
 			}
 		});

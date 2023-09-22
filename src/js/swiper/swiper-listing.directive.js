@@ -25,5 +25,5 @@ export default class SwiperListingDirective extends SwiperDirective {
 }
 
 SwiperListingDirective.meta = {
-	selector: '[swiper-listing]'
+	selector: '[swiper-listing]',
 };

@@ -30,6 +30,7 @@ export class LanguageService {
 		// console.log('LanguageService.setRoute', route, route.path, language);
 		const alternates = environment.languages.map(lang => {
 			const title = lang === 'it' ? 'Italiano' : 'English';
+			// eslint-disable-next-line no-useless-escape
 			const alternateName = route.name.replace(new RegExp(`(^${language}$)|(^${language}\.)`), (match, g1, g2, offset) => {
 				// console.log('LanguageService.match', match, g1, g2, offset);
 				return g1 ? lang : `${lang}.`;

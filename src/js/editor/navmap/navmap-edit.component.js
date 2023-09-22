@@ -79,7 +79,7 @@ export default class NavmapEditComponent extends Component {
 	onMoveItem(event, item) {
 		const navmap = this.navmap;
 		switch (this.mode) {
-			case NavmapModes.Move:
+			case NavmapModes.Move: {
 				const { node } = getContext(this);
 				const image = node.querySelector('.navmap-control__image');
 				const position = item.position.slice();
@@ -94,7 +94,7 @@ export default class NavmapEditComponent extends Component {
 						item.position = [
 							Math.max(0, Math.min(1, position[0] + diff.x)),
 							Math.max(0, Math.min(1, position[1] + diff.y)),
-							0
+							0,
 						];
 						this.pushChanges();
 					}),
@@ -109,7 +109,7 @@ export default class NavmapEditComponent extends Component {
 						item.position = [
 							Math.max(0, Math.min(1, position[0] + diff.x)),
 							Math.max(0, Math.min(1, position[1] + diff.y)),
-							0
+							0,
 						];
 						// console.log('NavmapEditComponent.onNavmapItem.Update', navmap, item);
 						NavmapService.itemUpdate$(navmap, item).pipe(
@@ -125,6 +125,7 @@ export default class NavmapEditComponent extends Component {
 					takeUntil(up$),
 				).subscribe();
 				break;
+			}
 		}
 	}
 
@@ -180,7 +181,7 @@ export default class NavmapEditComponent extends Component {
 					first(),
 				).subscribe(response => {
 					this.delete.next(navmap);
-				})
+				});
 			}
 		});
 	}
@@ -189,5 +190,5 @@ export default class NavmapEditComponent extends Component {
 NavmapEditComponent.meta = {
 	selector: '[navmap-edit]',
 	outputs: ['delete'],
-	inputs: ['navmap']
+	inputs: ['navmap'],
 };

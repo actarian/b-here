@@ -19,5 +19,5 @@ ControlTextComponent.meta = {
 			<input type="text" class="control--text" [formControl]="control" [placeholder]="label" [disabled]="disabled" />
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

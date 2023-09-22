@@ -103,7 +103,7 @@ export class DropService {
 			};
 			img.onerror = function() {
 				reject(blob);
-			}
+			};
 			img.src = blob;
 		});
 	}

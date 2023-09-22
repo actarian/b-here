@@ -1,12 +1,12 @@
 import { map, shareReplay } from 'rxjs/operators';
 import { HttpService } from '../http/http.service';
-import { mapView, mapViewItem, ViewType } from '../view/view';
+import { ViewType, mapView, mapViewItem } from '../view/view';
 
 export class EditorService {
 
 	static data$() {
 		if (!this.data$_) {
-			this.data$_ = HttpService.get$(`/api/view`).pipe(
+			this.data$_ = HttpService.get$('/api/view').pipe(
 				map(data => {
 					data.views = data.views.map(view => mapView(view));
 					return data;
@@ -21,14 +21,14 @@ export class EditorService {
 		return this.data$().pipe(
 			map(data => {
 				const options = data.views.filter(x => x.type.name !== ViewType.WaitingRoom.name).map(view => ({ id: view.id, name: view.name }));
-				options.unshift({ id: null, name: 'select', }); // LabelPipe.transform('select')
+				options.unshift({ id: null, name: 'select' }); // LabelPipe.transform('select')
 				return options;
-			})
+			}),
 		);
 	}
 
 	static viewCreate$(view) {
-		return HttpService.post$(`/api/view`, view).pipe(
+		return HttpService.post$('/api/view', view).pipe(
 			map(view => mapView(view)),
 		);
 	}

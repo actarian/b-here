@@ -22,7 +22,7 @@ export default class MenuBuilderComponent extends Component {
 		});
 		const controls = this.controls = form.controls;
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			// console.log('MenuBuilderComponent', changes);
 			this.changes++;
@@ -105,7 +105,7 @@ export default class MenuBuilderComponent extends Component {
 				name: x.name,
 				items: subitems,
 			});
-		}))
+		}));
 		return items;
 	}
 
@@ -121,7 +121,7 @@ export default class MenuBuilderComponent extends Component {
 					pushItem(item.items);
 				});
 			}
-		}
+		};
 		pushItem(changes.items);
 		return menu;
 	}

@@ -14,7 +14,6 @@ import AgoraLoginComponent from './agora/agora-login.component';
 import AgoraNameComponent from './agora/agora-name.component';
 import AgoraStreamComponent from './agora/agora-stream.component';
 import AgoraComponent from './agora/agora.component';
-import AgoraService from './agora/agora.service';
 import AppComponent from './app.component';
 import AssetPipe from './asset/asset.pipe';
 import ControlRequestModalComponent from './control-request/control-request-modal.component';
@@ -84,7 +83,7 @@ import ModelTextComponent from './world/model/model-text.component';
 import ModelComponent from './world/model/model.component';
 import WorldComponent from './world/world.component';
 
-AgoraService.fixLegacy();
+// AgoraService.fixLegacy();
 
 export class AppModule extends Module { }
 

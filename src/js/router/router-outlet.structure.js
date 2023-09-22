@@ -5,6 +5,8 @@ import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 // import { transitionOnce, transitionOnced } from '../transition/transition';
 import { RouterService } from './router.service';
 
+const SKIP_FACTORY_CHECK = true;
+
 export class RouterOutletStructure extends Structure {
 
 	// host;
@@ -73,7 +75,7 @@ export class RouterOutletStructure extends Structure {
 		const factory = this.getFactory(route);
 		// console.log('RouterOutletStructure.factory$', route, factory);
 		const { module, node } = getContext(this);
-		if (true || this.factory_ !== factory) {
+		if (SKIP_FACTORY_CHECK || this.factory_ !== factory) {
 			this.factory_ = factory;
 			return of(factory).pipe(
 				tap(() => {
@@ -98,7 +100,7 @@ export class RouterOutletStructure extends Structure {
 						this.element = element;
 						return { element, instance };
 					}
-				})
+				}),
 			);
 		} else {
 			return EMPTY;

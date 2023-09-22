@@ -27,7 +27,7 @@ export default class MenuService {
 	}
 
 	static getMenu$() {
-		return HttpService.get$(`/api/menu`).pipe(
+		return HttpService.get$('/api/menu').pipe(
 			map(data => {
 				data.menu.sort((a, b) => {
 					return a.order - b.order;
@@ -38,7 +38,7 @@ export default class MenuService {
 	}
 
 	static updateMenu$(menu) {
-		return HttpService.put$(`/api/menu`, menu);
+		return HttpService.put$('/api/menu', menu);
 	}
 
 	static createMenuItem$(parentId = null, order = 0) {
@@ -47,8 +47,8 @@ export default class MenuService {
 			viewId: null,
 			order: order * 10,
 			name: 'Folder ' + (++MENU_UID),
-		}
-		return HttpService.post$(`/api/menu`, payload);
+		};
+		return HttpService.post$('/api/menu', payload);
 	}
 
 	static updateMenuItem$(item) {
@@ -105,7 +105,7 @@ export default class MenuService {
 					});
 					return menu;
 				}
-			})
+			}),
 		);
 	}
 

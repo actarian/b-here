@@ -19,7 +19,7 @@ export default class AgoraLoginComponent extends Component {
 		const controls = this.controls = form.controls;
 
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			this.pushChanges();
 		});
@@ -32,7 +32,7 @@ export default class AgoraLoginComponent extends Component {
 			username: 'publisher',
 			password: 'publisher',
 			checkRequest: window.antiforgery || '',
-			checkField: ''
+			checkField: '',
 		});
 	}
 
@@ -102,5 +102,5 @@ AgoraLoginComponent.meta = {
 			</div>
 		</form>
 	</div>
-	`
+	`,
 };

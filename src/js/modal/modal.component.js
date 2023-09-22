@@ -17,5 +17,5 @@ export default class ModalComponent extends Component {
 }
 
 ModalComponent.meta = {
-	selector: '[modal]'
+	selector: '[modal]',
 };

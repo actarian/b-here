@@ -30,5 +30,5 @@ ControlVectorComponent.meta = {
 			</div>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

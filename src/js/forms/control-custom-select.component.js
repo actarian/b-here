@@ -11,7 +11,7 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 		this.dropped = false;
 		this.dropdownId = DropdownDirective.nextId();
 		KeyboardService.typing$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(word => {
 			this.scrollToWord(word);
 		});
@@ -57,7 +57,7 @@ export default class ControlCustomSelectComponent extends ControlComponent {
 		// console.log('setOption', item, this.isMultiple);
 		let value;
 		if (this.isMultiple) {
-			const value = this.control.value || [];
+			value = this.control.value || [];
 			const index = value.indexOf(item.id);
 			if (index !== -1) {
 				// if (value.length > 1) {
@@ -140,5 +140,5 @@ ControlCustomSelectComponent.meta = {
 				</li>
 			</ul>
 		</div>
-	`
+	`,
 };

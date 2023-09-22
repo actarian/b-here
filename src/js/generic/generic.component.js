@@ -45,5 +45,5 @@ GenericComponent.meta = {
 				</span>
 			</footer>
 		</div>
-	`
+	`,
 };

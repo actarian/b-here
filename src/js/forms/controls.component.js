@@ -45,6 +45,7 @@ export function fieldsToFormControls(fields) {
 			validators.push(Validators.EmailValidator());
 		}
 		if (c.type === 'url') {
+			// eslint-disable-next-line no-useless-escape
 			validators.push(Validators.PatternValidator('(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'));
 		}
 		if (c.pattern != null) {
@@ -53,7 +54,7 @@ export function fieldsToFormControls(fields) {
 		p[c.name] = new FormControl((c.value != null ? c.value : null), validators);
 		if (c.type === 'select' || c.type === 'custom-select') {
 			const options = (c.options || []).slice();
-			options.unshift({ id: null, name: 'select', }); // LabelPipe.transform('select')
+			options.unshift({ id: null, name: 'select' }); // LabelPipe.transform('select')
 			p[c.name].options = options;
 		}
 		return p;

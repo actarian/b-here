@@ -30,7 +30,7 @@ export default class ControlLocalizedAssetComponent extends ControlComponent {
 		const input = node.querySelector('input');
 		input.setAttribute('accept', this.accept);
 		DropService.drop$(input).pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe();
 		DropService.change$(input).pipe(
 			switchMap((files) => {
@@ -39,7 +39,7 @@ export default class ControlLocalizedAssetComponent extends ControlComponent {
 				));
 				return combineLatest(uploads$);
 			}),
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(assets => {
 			// console.log('ControlLocalizedAssetComponent.change$', assets);
 			this.control.value = assets[0];
@@ -79,5 +79,5 @@ ControlLocalizedAssetComponent.meta = {
 			</ul>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

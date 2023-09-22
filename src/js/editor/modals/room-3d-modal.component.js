@@ -32,9 +32,9 @@ export default class Room3DModalComponent extends Component {
 				asset: values.asset,
 				orientation: {
 					latitude: 0,
-					longitude: 0
+					longitude: 0,
 				},
-				zoom: 75
+				zoom: 75,
 			};
 			// console.log('Room3DModalComponent.onSubmit.view', view);
 			return EditorService.viewCreate$(view).pipe(
@@ -102,4 +102,4 @@ Room3DModalComponent.meta = {
 	`,
 };
 
-Room3DModalComponent.chunk = () => /* html */`<div class="room-3d-modal" room-3d-modal></div>`;
+Room3DModalComponent.chunk = () => /* html */'<div class="room-3d-modal" room-3d-modal></div>';

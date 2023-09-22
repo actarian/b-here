@@ -4,7 +4,7 @@ export const ToastType = {
 	Info: 'info',
 	Alert: 'alert',
 	Dialog: 'dialog',
-}
+};
 
 export const ToastPosition = {
 	Centered: 'centered',
@@ -16,7 +16,7 @@ export const ToastPosition = {
 	Bottom: 'bottom',
 	BottomLeft: 'bottom-left',
 	Left: 'left',
-}
+};
 
 export class ToastEvent {
 	constructor(toast) {
@@ -34,11 +34,11 @@ export default class ToastService {
 		toast.position = toast.position || ToastPosition.Centered;
 		switch (toast.type) {
 			case ToastType.Alert:
-				toast.acceptMessage = toast.acceptMessage || `Ok`;
+				toast.acceptMessage = toast.acceptMessage || 'Ok';
 				break;
 			case ToastType.Dialog:
-				toast.acceptMessage = toast.acceptMessage || `Accept`;
-				toast.rejectMessage = toast.rejectMessage || `Reject`;
+				toast.acceptMessage = toast.acceptMessage || 'Accept';
+				toast.rejectMessage = toast.rejectMessage || 'Reject';
 				break;
 		}
 		this.toast$.next(toast);

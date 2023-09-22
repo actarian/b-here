@@ -60,7 +60,7 @@ export default class DragService {
 					point.y = event.touches[0].pageY
 				) : point = {
 					x: event.touches[0].pageX,
-					y: event.touches[0].pageY
+					y: event.touches[0].pageY,
 				};
 			}
 		}
@@ -71,7 +71,7 @@ export default class DragService {
 		let downEvent;
 		return merge(
 			fromEvent(target, 'mousedown').pipe(filter(event => event.button === 0)),
-			fromEvent(target, 'touchstart')
+			fromEvent(target, 'touchstart'),
 		).pipe(
 			map((event) => {
 				downEvent = downEvent || new DragDownEvent();

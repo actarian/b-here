@@ -37,7 +37,7 @@ export default class KeyboardService {
 				}),
 				startWith(this.keys),
 				shareReplay(1),
-			)
+			);
 		}
 		return this.keys$_;
 	}
@@ -49,7 +49,7 @@ export default class KeyboardService {
 				filter(event => event.key && event.key.match(regexp)),
 				map(event => event.key),
 				shareReplay(1),
-			)
+			);
 		}
 		return this.key$_;
 	}
@@ -70,7 +70,7 @@ export default class KeyboardService {
 					return typing;
 				}),
 				shareReplay(1),
-			)
+			);
 		}
 		return this.typing$_;
 	}

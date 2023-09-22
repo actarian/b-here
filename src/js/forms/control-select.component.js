@@ -22,5 +22,5 @@ ControlSelectComponent.meta = {
 			<svg class="icon--caret-down"><use xlink:href="#caret-down"></use></svg>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

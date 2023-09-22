@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
+const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-token');
 
 const APP_KEY = process.env.APP_KEY || null;
 const APP_SECURE_KEY = process.env.APP_SECURE_KEY || null;
@@ -31,8 +31,8 @@ let db = {
 			type: 'attendee',
 			firstName: 'Jhon',
 			lastName: 'Appleseed',
-		}
-	]
+		},
+	],
 };
 
 let pathname;
@@ -149,26 +149,26 @@ function doSetLocale(item, params) {
 const ROUTES = [{
 	path: '/api/view', method: 'GET', callback: function(request, response, params) {
 		sendOk(response, { views: db.views });
-	}
+	},
 }, {
 	path: '/api/view/:viewId', method: 'GET', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
 		if (view) {
 			sendOk(response, view);
 		}
-	}
+	},
 }, {
 	path: '/api/view', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.views);
-	}
+	},
 }, {
 	path: '/api/view/:viewId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.views);
-	}
+	},
 }, {
 	path: '/api/view/:viewId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.viewId }, db.views);
-	}
+	},
 }, {
 	path: '/api/view/:viewId/item', method: 'POST', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
@@ -176,7 +176,7 @@ const ROUTES = [{
 			view.items = view.items || [];
 			doCreate(request, response, params, view.items);
 		}
-	}
+	},
 }, {
 	path: '/api/view/:viewId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
@@ -184,14 +184,14 @@ const ROUTES = [{
 			view.items = view.items || [];
 			doUpdate(request, response, params, view.items);
 		}
-	}
+	},
 }, {
 	path: '/api/view/:viewId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
 		if (view) {
 			doDelete(request, response, { id: params.viewItemId }, view.items);
 		}
-	}
+	},
 }, {
 	path: '/api/view/:viewId/tile/:tileId/item', method: 'POST', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
@@ -204,7 +204,7 @@ const ROUTES = [{
 				sendError(response, 404, 'Not Found');
 			}
 		}
-	}
+	},
 }, {
 	path: '/api/view/:viewId/tile/:tileId/item/:viewItemId', method: 'PUT', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
@@ -217,7 +217,7 @@ const ROUTES = [{
 				sendError(response, 404, 'Not Found');
 			}
 		}
-	}
+	},
 }, {
 	path: '/api/view/:viewId/tile/:tileId/item/:viewItemId', method: 'DELETE', callback: function(request, response, params) {
 		const view = doGet(request, response, { id: params.viewId }, db.views);
@@ -230,75 +230,75 @@ const ROUTES = [{
 				sendError(response, 404, 'Not Found');
 			}
 		}
-	}
+	},
 }, {
 	path: '/api/asset', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.assets);
-	}
+	},
 }, {
 	path: '/api/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.assets);
-	}
+	},
 }, {
 	path: '/api/asset/:assetId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.assetId }, db.assets);
-	}
+	},
 }, {
 	path: '/api/:languageCode/asset', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.assets);
-	}
+	},
 }, {
 	path: '/api/:languageCode/asset/:assetId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.assets);
-	}
+	},
 }, {
 	path: '/api/menu', method: 'GET', callback: function(request, response, params) {
 		sendOk(response, { menu: db.menu });
-	}
+	},
 }, {
 	path: '/api/menu', method: 'PUT', callback: function(request, response, params) {
 		const menu = request.body;
 		db.menu = menu;
 		saveStore();
 		sendOk(response, menu);
-	}
+	},
 }, {
 	path: '/api/menu', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.menu);
-	}
+	},
 }, {
 	path: '/api/menu/:menuId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.menuId }, db.menu);
-	}
+	},
 }, {
 	path: '/api/menu/:menuId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.menu);
-	}
+	},
 },
 // navmap
 {
 	path: '/api/navmap', method: 'GET', callback: function(request, response, params) {
 		sendOk(response, { navmaps: db.navmaps });
-	}
+	},
 }, {
 	path: '/api/navmap/:navmapId', method: 'GET', callback: function(request, response, params) {
 		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
 		if (navmap) {
 			sendOk(response, navmap);
 		}
-	}
+	},
 }, {
 	path: '/api/navmap', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.navmaps);
-	}
+	},
 }, {
 	path: '/api/navmap/:navmapId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.navmaps);
-	}
+	},
 }, {
 	path: '/api/navmap/:navmapId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.navmapId }, db.navmaps);
-	}
+	},
 }, {
 	path: '/api/navmap/:navmapId/item', method: 'POST', callback: function(request, response, params) {
 		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
@@ -306,7 +306,7 @@ const ROUTES = [{
 			navmap.items = navmap.items || [];
 			doCreate(request, response, params, navmap.items);
 		}
-	}
+	},
 }, {
 	path: '/api/navmap/:navmapId/item/:itemId', method: 'PUT', callback: function(request, response, params) {
 		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
@@ -314,39 +314,39 @@ const ROUTES = [{
 			navmap.items = navmap.items || [];
 			doUpdate(request, response, params, navmap.items);
 		}
-	}
+	},
 }, {
 	path: '/api/navmap/:navmapId/item/:itemId', method: 'DELETE', callback: function(request, response, params) {
 		const navmap = doGet(request, response, { id: params.navmapId }, db.navmaps);
 		if (navmap) {
 			doDelete(request, response, { id: params.itemId }, navmap.items);
 		}
-	}
+	},
 },
 // path
 {
 	path: '/api/path', method: 'GET', callback: function(request, response, params) {
 		sendOk(response, { paths: db.paths });
-	}
+	},
 }, {
 	path: '/api/path/:pathId', method: 'GET', callback: function(request, response, params) {
 		const path = doGet(request, response, { id: params.pathId }, db.paths);
 		if (path) {
 			sendOk(response, path);
 		}
-	}
+	},
 }, {
 	path: '/api/path', method: 'POST', callback: function(request, response, params) {
 		doCreate(request, response, params, db.paths);
-	}
+	},
 }, {
 	path: '/api/path/:pathId', method: 'PUT', callback: function(request, response, params) {
 		doUpdate(request, response, params, db.paths);
-	}
+	},
 }, {
 	path: '/api/path/:pathId', method: 'DELETE', callback: function(request, response, params) {
 		doDelete(request, response, { id: params.pathId }, db.paths);
-	}
+	},
 },
 /*
 {
@@ -382,7 +382,7 @@ const ROUTES = [{
 		} else {
 			sendOk(response, user);
 		}
-	}
+	},
 }, {
 	path: '/api/user/login', method: 'POST', callback: function(request, response, params) {
 		const body = request.body;
@@ -393,13 +393,13 @@ const ROUTES = [{
 			request.session.user = user;
 			sendOk(response, user);
 		}
-	}
+	},
 }, {
 	path: '/api/user/logout', method: 'GET', callback: function(request, response, params) {
 		const user = request.session.user;
 		request.session.user = null;
 		sendOk(response);
-	}
+	},
 }, {
 	path: '/api/user/guided-tour', method: 'POST', callback: function(request, response, params) {
 		const body = request.body;
@@ -409,7 +409,7 @@ const ROUTES = [{
 		db.users.push(user);
 		saveStore();
 		sendOk(response, user);
-	}
+	},
 }, {
 	path: '/api/user/self-service-tour', method: 'POST', callback: function(request, response, params) {
 		const body = request.body;
@@ -419,12 +419,12 @@ const ROUTES = [{
 		db.users.push(user);
 		saveStore();
 		sendOk(response, user);
-	}
+	},
 }, {
 	path: '/api/user/self-service-support-request', method: 'POST', callback: function(request, response, params) {
 		const body = request.body;
 		sendOk(response, body);
-	}
+	},
 }, {
 	path: '/api/user/log', method: 'POST', callback: function(request, response, params) {
 		// do nothing
@@ -437,7 +437,7 @@ const ROUTES = [{
 		}
 		*/
 		sendOk(response);
-	}
+	},
 }, {
 	path: '/api/token/rtc', method: 'POST', callback: function(request, response, params) {
 		if (!APP_KEY || !APP_SECURE_KEY) {
@@ -448,34 +448,34 @@ const ROUTES = [{
 		if (!channelName) {
 			sendError(response, 400, 'channelName required');
 		}
-		// use 0 if uid is not specified
-		const uid = body.uid ? String(body.uid) : 0;
 		const duration = 3600 * 12;
 		const timestamp = Math.floor(Date.now() / 1000);
 		const expirationTime = timestamp + duration;
 		const role = RtcRole.PUBLISHER;
+		// use 0 if uid is not specified
+		const uid = body.uid ? String(body.uid) : 0;
 		const token = RtcTokenBuilder.buildTokenWithUid(APP_KEY, APP_SECURE_KEY, channelName, uid, role, expirationTime);
 		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
 		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
-	}
+	},
 }, {
 	path: '/api/token/rtm', method: 'POST', callback: function(request, response, params) {
 		if (!APP_KEY || !APP_SECURE_KEY) {
 			sendError(response, 400, 'appKey and appSecureKey required');
 		}
 		const body = request.body || {};
-		const uid = body.uid ? String(body.uid) : timestamp.toString();
-		if (!uid) {
-			return response.status(400).json({ 'error': 'uid required' }).send();
-		}
 		const duration = 3600 * 12;
 		const timestamp = Math.floor(Date.now() / 1000);
 		const expirationTime = timestamp + duration;
 		const role = RtmRole.Rtm_User;
+		const uid = body.uid ? String(body.uid) : timestamp.toString();
+		if (!uid) {
+			return response.status(400).json({ 'error': 'uid required' }).send();
+		}
 		const token = RtmTokenBuilder.buildToken(APP_KEY, APP_SECURE_KEY, uid, role, expirationTime);
 		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
 		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
-	}
+	},
 }];
 
 /*{
@@ -506,10 +506,12 @@ ROUTES.forEach(route => {
 		segments.push(route.path);
 		route.matcher = new RegExp('^.*$');
 	} else {
-		const matchers = [`^`];
+		const matchers = ['^'];
+		// eslint-disable-next-line no-useless-escape
 		const regExp = /(^\.\.\/|\.\/|\/\/|\/)|([^:|\/]+)\/?|\:([^\/]+)\/?/g;
 		let relative;
 		let match;
+		// eslint-disable-next-line no-cond-assign
 		while ((match = regExp.exec(route.path)) !== null) {
 			const g1 = match[1];
 			const g2 = match[2];
@@ -517,9 +519,11 @@ ROUTES.forEach(route => {
 			if (g1) {
 				relative = !(g1 === '//' || g1 === '/');
 			} else if (g2) {
+				// eslint-disable-next-line no-useless-escape
 				matchers.push(`\/(${g2})`);
 				segments.push({ name: g2, param: null, value: null });
 			} else if (g3) {
+				// eslint-disable-next-line no-useless-escape
 				matchers.push('\/([^\/]+)');
 				const params = {};
 				params[g3] = null;
@@ -527,29 +531,9 @@ ROUTES.forEach(route => {
 				segments.push({ name: '', param: g3, value: null });
 			}
 		}
-		/*
-		const matches = route.path.matchAll(regExp);
-		for (let match of matches) {
-			const g1 = match[1];
-			const g2 = match[2];
-			const g3 = match[3];
-			if (g1) {
-				relative = !(g1 === '//' || g1 === '/');
-			} else if (g2) {
-				matchers.push(`\/(${g2})`);
-				segments.push({ name: g2, param: null, value: null });
-			} else if (g3) {
-				matchers.push('\/([^\/]+)');
-				const params = {};
-				params[g3] = null;
-				route.params = params;
-				segments.push({ name: '', param: g3, value: null });
-			}
-		}
-		*/
 		matchers.push('$');
 		const regexp = matchers.join('');
-		console.log(regexp)
+		// console.log(regexp);
 		route.matcher = new RegExp(regexp);
 	}
 	route.segments = segments;
@@ -562,11 +546,8 @@ function apiMiddleware(options) {
 	if (!options.baseHref) {
 		throw new Error('missing Vars.baseHref!');
 	}
-
-	pathname = path.join(options.dirname, `/docs/api/editor.json`);
-
+	pathname = path.join(options.dirname, '/docs/api/editor.json');
 	readStore();
-
 	return (request, response, next) => {
 		const url = request.baseUrl.replace(/\\/g, '/');
 		const params = {};
@@ -595,7 +576,7 @@ function apiMiddleware(options) {
 			next();
 		}
 	};
-};
+}
 
 function setSessionUser(request, userType) {
 	userType = userType || RoleType.SelfService;
@@ -618,34 +599,3 @@ module.exports = {
 	RoleType,
 	setSessionUser,
 };
-
-/*
-const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-access-token');
-const appSecureKey = '';
-
-app.post('/api/token/rtc', function(request, response) {
-	const payload = request.body || {};
-	const duration = 3600;
-	const timestamp = Math.floor(Date.now() / 1000);
-	const expirationTime = timestamp + duration;
-	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
-	const role = RtcRole.PUBLISHER;
-	const token = RtcTokenBuilder.buildTokenWithUid(environment.appKey, appSecureKey, environment.channelName, uid, role, expirationTime);
-	response.send(JSON.stringify({
-		token: token,
-	}));
-});
-
-app.post('/api/token/rtm', function(request, response) {
-	const payload = request.body || {};
-	const duration = 3600;
-	const timestamp = Math.floor(Date.now() / 1000);
-	const expirationTime = timestamp + duration;
-	const uid = payload.uid ? String(payload.uid) : timestamp.toString();
-	const role = RtmRole.PUBLISHER;
-	const token = RtmTokenBuilder.buildToken(environment.appKey, appSecureKey, uid, role, expirationTime);
-	response.send(JSON.stringify({
-		token: token,
-	}));
-});
-*/

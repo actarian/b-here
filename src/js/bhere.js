@@ -24,7 +24,7 @@ export default class BHere {
 			target.setAttribute('b-here', '');
 			document.body.appendChild(target);
 		}
-		target.innerHTML = /* html */`<div class="b-here hidden" b-here-component></div>`;
+		target.innerHTML = /* html */'<div class="b-here hidden" b-here-component></div>';
 		this.target = target;
 		Browser.bootstrap(AppModule);
 	}
@@ -32,16 +32,14 @@ export default class BHere {
 
 const USE_CHECK = false;
 if (USE_CHECK) {
-
+	// eslint-disable-next-line no-inner-declarations
 	function checkBHere() {
 		const target = document.querySelector('[b-here]');
 		if (target) {
 			const bhere = new BHere(target);
 		}
 	}
-
 	if (typeof window === 'object') {
 		checkBHere();
 	}
-
 }

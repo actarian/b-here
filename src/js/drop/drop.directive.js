@@ -12,12 +12,12 @@ export default class DropDirective extends Directive {
 		if (expression) {
 			const outputFunction = module.makeFunction(expression, ['$event']);
 			event$.pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(event => {
 				module.resolve(outputFunction, parentInstance, event);
 			});
 			fromEvent(node, 'dragover').pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(event => event.preventDefault());
 		} else {
 			parentInstance[`${event}$`] = event$;
@@ -28,5 +28,5 @@ export default class DropDirective extends Directive {
 }
 
 DropDirective.meta = {
-	selector: `[(drop)]`,
+	selector: '[(drop)]',
 };

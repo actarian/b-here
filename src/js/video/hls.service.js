@@ -1,4 +1,4 @@
-import { fromEventPattern, of, throwError } from 'rxjs';
+import { from, fromEventPattern, of, throwError } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 export const HlsQuality = {
@@ -46,7 +46,7 @@ export default class HlsService {
 					hls.on(Hls.Events.MANIFEST_PARSED, handler),
 					hls.off(Hls.Events.MANIFEST_PARSED, handler),
 				);
-			})
+			}),
 		);
 	}
 
@@ -64,7 +64,7 @@ export default class HlsService {
 						break;
 				}
 				return from(this.node.play());
-			})
+			}),
 		);
 	}
 
@@ -76,7 +76,7 @@ export default class HlsService {
 				const video = stream.getVideoTracks()[0];
 				const audio = stream.getAudioTracks()[0];
 				return { video, audio };
-			})
+			}),
 		);
 	}
 

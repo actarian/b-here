@@ -23,7 +23,7 @@ export default class TryInARComponent extends Component {
 		// console.log('TryInARComponent.viewId', viewId);
 		if (viewId) {
 			ViewService.viewById$(viewId).pipe(
-				first()
+				first(),
 			).subscribe(view => {
 				if (!view.ar) {
 					this.missingAr = true;

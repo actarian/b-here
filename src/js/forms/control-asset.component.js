@@ -15,7 +15,7 @@ export default class ControlAssetComponent extends ControlComponent {
 		const input = node.querySelector('input');
 		input.setAttribute('accept', this.accept);
 		DropService.drop$(input).pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe();
 		DropService.change$(input).pipe(
 			switchMap((files) => {
@@ -24,7 +24,7 @@ export default class ControlAssetComponent extends ControlComponent {
 				));
 				return combineLatest(uploads$);
 			}),
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(assets => {
 			// console.log('ControlAssetComponent.change$', assets);
 			this.control.value = assets[0];
@@ -52,5 +52,5 @@ ControlAssetComponent.meta = {
 			<div class="file-name" *if="control.value" [innerHTML]="control.value.file"></div>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

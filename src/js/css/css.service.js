@@ -13,7 +13,7 @@ export default class CssService {
 				let vh = height * 0.01;
 				// Then we set the value in the --vh custom property to the root of the document
 				style.setProperty('--vh', `${vh}px`);
-			})
+			}),
 		);
 	}
 

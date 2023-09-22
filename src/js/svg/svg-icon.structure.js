@@ -13,7 +13,7 @@ export default class SvgIconStructure extends Structure {
 			const { node } = getContext(this);
 			if (node.parentNode) {
 				const xmlns = 'http://www.w3.org/2000/svg';
-				const element = document.createElementNS(xmlns, `svg`);
+				const element = document.createElementNS(xmlns, 'svg');
 				const w = this.width || 24;
 				const h = this.height || 24;
 				element.setAttribute('class', `icon--${this.name}`);
@@ -31,7 +31,7 @@ export default class SvgIconStructure extends Structure {
 
 SvgIconStructure.meta = {
 	selector: 'svg-icon',
-	inputs: ['name', 'width', 'height']
+	inputs: ['name', 'width', 'height'],
 };
 
 /*

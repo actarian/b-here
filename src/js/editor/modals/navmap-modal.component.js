@@ -76,4 +76,4 @@ NavmapModalComponent.meta = {
 	`,
 };
 
-NavmapModalComponent.chunk = () => /* html */`<div class="panorama-modal" navmap-modal></div>`;
+NavmapModalComponent.chunk = () => /* html */'<div class="panorama-modal" navmap-modal></div>';

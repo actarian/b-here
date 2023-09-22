@@ -27,4 +27,4 @@ AgoraConfigureFirewallModalComponent.meta = {
 	`,
 };
 
-AgoraConfigureFirewallModalComponent.chunk = () => /* html */`<div class="configure-firewall-modal" agora-configure-firewall-modal></div>`;
+AgoraConfigureFirewallModalComponent.chunk = () => /* html */'<div class="configure-firewall-modal" agora-configure-firewall-modal></div>';

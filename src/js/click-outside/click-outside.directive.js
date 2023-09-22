@@ -23,9 +23,9 @@ export default class ClickOutsideDirective extends Directive {
 					this.initialFocus = true;
 				}
 			}),
-			shareReplay(1)
+			shareReplay(1),
 		);
-		const expression = node.getAttribute(`(clickOutside)`);
+		const expression = node.getAttribute('(clickOutside)');
 		if (expression) {
 			const outputFunction = module.makeFunction(expression, ['$event']);
 			event$.pipe(
@@ -41,5 +41,5 @@ export default class ClickOutsideDirective extends Directive {
 }
 
 ClickOutsideDirective.meta = {
-	selector: `[(clickOutside)]`,
+	selector: '[(clickOutside)]',
 };

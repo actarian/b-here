@@ -113,7 +113,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 			payload.name = view.name;
 		}
 		MenuService.updateMenuItem$(payload).pipe(
-			first()
+			first(),
 		).subscribe(() => {
 			this.controls.viewId.value = view.id;
 			if (view.id) {
@@ -129,7 +129,7 @@ export default class ControlMenuComponent extends ControlAssetComponent {
 	onTextDidChange(event) {
 		// console.log('ControlMenuComponent.onTextDidChange', this.controls.name.value);
 		MenuService.updateMenuItem$(this.control.value).pipe(
-			first()
+			first(),
 		).subscribe();
 	}
 
@@ -187,5 +187,5 @@ ControlMenuComponent.meta = {
 		<div class="group--items">
 			<div control-menu *for="let sub of control.controls.items.controls" [control]="sub" (remove)="onRemoveControl($event)" (link)="onLinkControl($event)" (up)="onUpControl($event)" (down)="onDownControl($event)"></div>
 		</div>
-	`
+	`,
 };

@@ -6,20 +6,20 @@ export const Constants = {
 	Handedness: Object.freeze({
 		NONE: 'none',
 		LEFT: 'left',
-		RIGHT: 'right'
+		RIGHT: 'right',
 	}),
 
 	ComponentState: Object.freeze({
 		DEFAULT: 'default',
 		TOUCHED: 'touched',
-		PRESSED: 'pressed'
+		PRESSED: 'pressed',
 	}),
 
 	ComponentProperty: Object.freeze({
 		BUTTON: 'button',
 		X_AXIS: 'xAxis',
 		Y_AXIS: 'yAxis',
-		STATE: 'state'
+		STATE: 'state',
 	}),
 
 	ComponentType: Object.freeze({
@@ -27,7 +27,7 @@ export const Constants = {
 		SQUEEZE: 'squeeze',
 		TOUCHPAD: 'touchpad',
 		THUMBSTICK: 'thumbstick',
-		BUTTON: 'button'
+		BUTTON: 'button',
 	}),
 
 	ButtonTouchThreshold: 0.05,
@@ -36,8 +36,8 @@ export const Constants = {
 
 	VisualResponseProperty: Object.freeze({
 		TRANSFORM: 'transform',
-		VISIBILITY: 'visibility'
-	})
+		VISIBILITY: 'visibility',
+	}),
 };
 
 /** @constant {Object} */
@@ -45,7 +45,7 @@ const defaultComponentValues = {
 	xAxis: 0,
 	yAxis: 0,
 	button: 0,
-	state: Constants.ComponentState.DEFAULT
+	state: Constants.ComponentState.DEFAULT,
 };
 
 /**
@@ -91,7 +91,7 @@ export async function fetchProfile(xrInputSource, basePath, defaultProfile = nul
 			match = {
 				profileId,
 				profilePath: `${basePath}/${supportedProfile.path}`,
-				deprecated: !!supportedProfile.deprecated
+				deprecated: !!supportedProfile.deprecated,
 			};
 		}
 		return !!match;
@@ -110,7 +110,7 @@ export async function fetchProfile(xrInputSource, basePath, defaultProfile = nul
 		match = {
 			profileId: defaultProfile,
 			profilePath: `${basePath}/${supportedProfile.path}`,
-			deprecated: !!supportedProfile.deprecated
+			deprecated: !!supportedProfile.deprecated,
 		};
 	}
 
@@ -126,7 +126,7 @@ export async function fetchProfile(xrInputSource, basePath, defaultProfile = nul
 		}
 		if (!layout) {
 			throw new Error(
-				`No matching handedness, ${xrInputSource.handedness}, in profile ${match.profileId}`
+				`No matching handedness, ${xrInputSource.handedness}, in profile ${match.profileId}`,
 			);
 		}
 
@@ -163,7 +163,7 @@ function normalizeAxes(x = 0, y = 0) {
 	// from (0, 0) to (0.5, 0.5). The circle's radius scales from 1 to be 0.5.
 	const result = {
 		normalizedXAxis: (xAxis * 0.5) + 0.5,
-		normalizedYAxis: (yAxis * 0.5) + 0.5
+		normalizedYAxis: (yAxis * 0.5) + 0.5,
 	};
 	return result;
 }
@@ -255,7 +255,7 @@ class Component {
 			state: Constants.ComponentState.DEFAULT,
 			button: (this.gamepadIndices.button !== undefined) ? 0 : undefined,
 			xAxis: (this.gamepadIndices.xAxis !== undefined) ? 0 : undefined,
-			yAxis: (this.gamepadIndices.yAxis !== undefined) ? 0 : undefined
+			yAxis: (this.gamepadIndices.yAxis !== undefined) ? 0 : undefined,
 		};
 	}
 

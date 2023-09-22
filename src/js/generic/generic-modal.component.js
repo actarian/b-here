@@ -51,4 +51,4 @@ GenericModalComponent.meta = {
 	`,
 };
 
-GenericModalComponent.chunk = () => /* html */`<div class="generic-modal" generic-modal></div>`;
+GenericModalComponent.chunk = () => /* html */'<div class="generic-modal" generic-modal></div>';

@@ -70,7 +70,7 @@ export default class MediaPlayerComponent extends Component {
 					this.media.progress = this.progress;
 					this.dragging = false;
 				}
-			})
+			}),
 		);
 	}
 

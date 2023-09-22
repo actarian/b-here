@@ -1,6 +1,6 @@
 import { Component } from 'rxcomp';
 
-export default class AgoraCheckComponent extends Component {}
+export default class AgoraCheckComponent extends Component { }
 
 AgoraCheckComponent.meta = {
 	selector: '[agora-check]',
@@ -17,5 +17,5 @@ AgoraCheckComponent.meta = {
 			<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
 			<path class="checkmark__icon" stroke-linecap="round" fill="none" d="M16 16 36 36 M36 16 16 36"/>
 		</svg>
-	`
+	`,
 };

@@ -1,4 +1,4 @@
-import { from, of, Subject } from 'rxjs';
+import { EMPTY, from, of, Subject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 export class ModalEvent {
@@ -41,8 +41,8 @@ export class ModalService {
 				// this.events$.next(new ModalLoadedEvent(Object.assign({}, modal.data, { $src: modal.src })));
 			}),
 			switchMap(node => this.events$),
-			tap(_ => this.hasModal = false)
-		)
+			tap(_ => this.hasModal = false),
+		);
 	}
 
 	static getTemplate$(modal) {

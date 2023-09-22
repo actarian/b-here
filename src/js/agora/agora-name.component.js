@@ -32,7 +32,7 @@ export default class AgoraNameComponent extends Component {
 		fields.push(
 			{ type: 'checkbox', name: 'privacy', label: 'access_privacy_disclaimer', required: true, test: true },
 			{ type: 'hidden', name: 'checkField', value: '', test: '' },
-			{ type: 'none', name: 'checkRequest', value: environment.antiforgery || '', test: environment.antiforgery || '' }
+			{ type: 'none', name: 'checkRequest', value: environment.antiforgery || '', test: environment.antiforgery || '' },
 		);
 
 		const form = this.form = fieldsToFormGroup(fields);
@@ -45,13 +45,13 @@ export default class AgoraNameComponent extends Component {
 
 		const controls = this.controls = form.controls;
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			// console.log('AgoraNameComponent.changes$', form.value);
 			this.pushChanges();
 		});
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			// console.log('AgoraNameComponent.state', state);
 			this.state = state;
@@ -116,5 +116,5 @@ AgoraNameComponent.meta = {
 			</div>
 		</form>
 	</div>
-	`
+	`,
 };

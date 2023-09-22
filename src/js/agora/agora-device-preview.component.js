@@ -147,7 +147,7 @@ export default class AgoraDevicePreviewComponent extends Component {
 		// console.log('AgoraDevicePreviewComponent.analyzeData', stream);
 		if (stream) {
 			this.frequencySubscription = AudioStreamService.frequency$(stream, 64).pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(frequency => {
 				// 32 data points
 				// console.log(frequency);
@@ -167,5 +167,5 @@ export default class AgoraDevicePreviewComponent extends Component {
 AgoraDevicePreviewComponent.meta = {
 	selector: '[agora-device-preview]',
 	outputs: ['stream', 'change'],
-	inputs: ['video', 'audio']
+	inputs: ['video', 'audio'],
 };

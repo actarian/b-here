@@ -11,19 +11,19 @@ export default class HeaderComponent extends Component {
 		this.submenu = null;
 		this.user = null;
 		UserService.user$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(user => {
 			this.user = user;
 			this.pushChanges();
 		});
 		UserService.me$().pipe(
 			catchError(() => of(null)),
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(user => {
 			// console.log('user', user);
 		});
 		CssService.height$().pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(height => {
 			// console.log('HeaderComponent.height$', height);
 		});

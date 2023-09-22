@@ -1,4 +1,4 @@
-import { combineLatest, forkJoin, fromEvent, merge, of } from 'rxjs';
+import { forkJoin, fromEvent, of } from 'rxjs';
 import { catchError, filter, first, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../environment';
 import { HttpService } from '../http/http.service';
@@ -85,7 +85,7 @@ export class WebhookService {
 			catchError(error => {
 				return this.handleError_(event, error);
 			}),
-		)
+		);
 	}
 
 	static send$_(uri, event) {
@@ -106,6 +106,7 @@ export class WebhookService {
 			const uris = environment.webhook.uris;
 			const observables = uris.map(x => x === 'internal' ? this.internal$_(event) : this.send$_(x, event));
 			return forkJoin(observables);
+			/*
 			return combineLatest(observables).pipe(
 				map(results => {
 					const result = results.find((x, i) => uris[i] !== 'internal');
@@ -113,6 +114,7 @@ export class WebhookService {
 				}),
 			);
 			return merge(observables);
+			*/
 		} else {
 			return of(null);
 		}

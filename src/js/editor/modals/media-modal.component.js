@@ -31,9 +31,9 @@ export default class MediaModalComponent extends Component {
 				asset: values.asset,
 				orientation: {
 					latitude: 0,
-					longitude: 0
+					longitude: 0,
 				},
-				zoom: 75
+				zoom: 75,
 			};
 			// console.log('MediaModalComponent.onSubmit.view', view);
 			return EditorService.viewCreate$(view).pipe(
@@ -49,7 +49,7 @@ export default class MediaModalComponent extends Component {
 						map(item => {
 							view.items = [item];
 							return view;
-						})
+						}),
 					);
 				}),
 				first(),
@@ -98,4 +98,4 @@ MediaModalComponent.meta = {
 	`,
 };
 
-MediaModalComponent.chunk = () => /* html */`<div class="media-modal" media-modal></div>`;
+MediaModalComponent.chunk = () => /* html */'<div class="media-modal" media-modal></div>';

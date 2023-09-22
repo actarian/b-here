@@ -46,9 +46,9 @@ export default class PanoramaGridModalComponent extends Component {
 				flipAxes: false,
 				orientation: {
 					latitude: 0,
-					longitude: 0
+					longitude: 0,
 				},
-				zoom: 75
+				zoom: 75,
 			};
 			EditorService.viewCreate$(view).pipe(
 				first(),
@@ -97,4 +97,4 @@ PanoramaGridModalComponent.meta = {
 	`,
 };
 
-PanoramaGridModalComponent.chunk = () => /* html */`<div class="panorama-grid-modal" panorama-grid-modal></div>`;
+PanoramaGridModalComponent.chunk = () => /* html */'<div class="panorama-grid-modal" panorama-grid-modal></div>';

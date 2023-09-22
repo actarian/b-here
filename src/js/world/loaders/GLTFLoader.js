@@ -1,4 +1,15 @@
-const { AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader, InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear, Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter, LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter, NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D, OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding, QuaternionKeyframeTrack, RGBAFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight, TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3, VectorKeyframeTrack, sRGBEncoding } = THREE;
+const {
+	AnimationClip, Bone, Box3, BufferAttribute, BufferGeometry, CanvasTexture, ClampToEdgeWrapping,
+	Color, DirectionalLight, DoubleSide, FileLoader, FrontSide, Group, ImageBitmapLoader,
+	InterleavedBuffer, InterleavedBufferAttribute, Interpolant, InterpolateDiscrete, InterpolateLinear,
+	Line, LineBasicMaterial, LineLoop, LineSegments, LinearFilter, LinearMipmapLinearFilter,
+	LinearMipmapNearestFilter, Loader, LoaderUtils, Material, MathUtils, Matrix4, Mesh, MeshBasicMaterial,
+	MeshPhysicalMaterial, MeshStandardMaterial, MirroredRepeatWrapping, NearestFilter,
+	NearestMipmapLinearFilter, NearestMipmapNearestFilter, NumberKeyframeTrack, Object3D,
+	OrthographicCamera, PerspectiveCamera, PointLight, Points, PointsMaterial, PropertyBinding,
+	QuaternionKeyframeTrack, RGBAFormat, RepeatWrapping, Skeleton, SkinnedMesh, Sphere, SpotLight,
+	TangentSpaceNormalMap, TextureLoader, TriangleFanDrawMode, TriangleStripDrawMode, Vector2, Vector3,
+	VectorKeyframeTrack, sRGBEncoding } = THREE;
 
 export default class GLTFLoader extends Loader {
 

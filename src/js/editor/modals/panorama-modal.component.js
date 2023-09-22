@@ -33,9 +33,9 @@ export default class PanoramaModalComponent extends Component {
 				asset: values.asset,
 				orientation: {
 					latitude: 0,
-					longitude: 0
+					longitude: 0,
 				},
-				zoom: 75
+				zoom: 75,
 			};
 			// console.log('PanoramaModalComponent.onSubmit.view', view);
 			return EditorService.viewCreate$(view).pipe(
@@ -91,4 +91,4 @@ PanoramaModalComponent.meta = {
 	`,
 };
 
-PanoramaModalComponent.chunk = () => /* html */`<div class="panorama-modal" panorama-modal></div>`;
+PanoramaModalComponent.chunk = () => /* html */'<div class="panorama-modal" panorama-modal></div>';

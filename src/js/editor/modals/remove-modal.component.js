@@ -60,4 +60,4 @@ RemoveModalComponent.meta = {
 	`,
 };
 
-RemoveModalComponent.chunk = () => /* html */`<div class="remove-modal" remove-modal></div>`;
+RemoveModalComponent.chunk = () => /* html */'<div class="remove-modal" remove-modal></div>';

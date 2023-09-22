@@ -18,5 +18,5 @@ ErrorsComponent.meta = {
 			<!-- <span class="key" [innerHTML]="key"></span> <span class="value" [innerHTML]="value | json"></span> -->
 		</div>
 	</div>
-	`
+	`,
 };

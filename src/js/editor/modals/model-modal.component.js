@@ -32,9 +32,9 @@ export default class ModelModalComponent extends Component {
 				asset: values.asset,
 				orientation: {
 					latitude: 0,
-					longitude: 0
+					longitude: 0,
 				},
-				zoom: 75
+				zoom: 75,
 			};
 			// console.log('ModelModalComponent.onSubmit.view', view);
 			return EditorService.viewCreate$(view).pipe(
@@ -47,7 +47,7 @@ export default class ModelModalComponent extends Component {
 						map(item => {
 							view.items = [item];
 							return view;
-						})
+						}),
 					);
 				}),
 				first(),
@@ -97,4 +97,4 @@ ModelModalComponent.meta = {
 	`,
 };
 
-ModelModalComponent.chunk = () => /* html */`<div class="model-modal" model-modal></div>`;
+ModelModalComponent.chunk = () => /* html */'<div class="model-modal" model-modal></div>';

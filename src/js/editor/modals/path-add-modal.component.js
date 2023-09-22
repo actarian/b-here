@@ -79,4 +79,4 @@ PathAddModalComponent.meta = {
 	`,
 };
 
-PathAddModalComponent.chunk = () => /* html */`<div class="panorama-modal" path-add-modal></div>`;
+PathAddModalComponent.chunk = () => /* html */'<div class="panorama-modal" path-add-modal></div>';

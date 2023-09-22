@@ -33,5 +33,5 @@ LanguageComponent.meta = {
 		<ul class="nav--language" *if="showLanguages">
 			<li (click)="setLanguage(language)" *for="let language of languageService.languages"><span [innerHTML]="language.title"></span></li>
 		</ul>
-	`
+	`,
 };

@@ -6,7 +6,7 @@ import { HttpService } from '../http/http.service';
 import { LanguageService } from '../language/language.service';
 import { MeetingUrl } from '../meeting/meeting-url';
 import StateService from '../state/state.service';
-import { mapView, ViewItemType, ViewType } from '../view/view';
+import { ViewItemType, ViewType, mapView } from '../view/view';
 
 export const DEFAULT_WAITING_ROOM = {
 	id: 'waiting-room',
@@ -22,8 +22,8 @@ export const DEFAULT_WAITING_ROOM = {
 	items: [],
 	orientation: {
 		latitude: 0,
-		longitude: 0
-	}
+		longitude: 0,
+	},
 };
 export class ViewService {
 
@@ -223,7 +223,7 @@ export class ViewService {
 
 	static viewById$(viewId) {
 		return this.data$().pipe(
-			map(data => this.dataViews.find(x => x.id === viewId))
+			map(data => this.dataViews.find(x => x.id === viewId)),
 		);
 	}
 
@@ -248,7 +248,7 @@ export class ViewService {
 				if (view) {
 					view.likes = message.likes;
 				}
-			})
+			}),
 		);
 	}
 

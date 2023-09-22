@@ -12,7 +12,7 @@ export default class SwiperSlidesDirective extends SwiperDirective {
 			speed: 600,
 			/*
 			autoplay: {
-			    delay: 5000,
+				delay: 5000,
 			},
 			*/
 			keyboardControl: true,
@@ -39,5 +39,5 @@ export default class SwiperSlidesDirective extends SwiperDirective {
 }
 
 SwiperSlidesDirective.meta = {
-	selector: '[swiper-slides]'
+	selector: '[swiper-slides]',
 };

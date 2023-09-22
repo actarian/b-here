@@ -145,7 +145,7 @@ export class AgoraChecklistService {
 							// console.log('AgoraChecklistService', event);
 							LocalStorageService.set(event.key, true);
 						}),
-					)
+					);
 				}
 			}),
 		);
@@ -184,7 +184,7 @@ export class AgoraChecklistService {
 				event.errors.browser = LabelPipe.transform('bhere_browser_error');
 				return throwError(event);
 			}),
-		)
+		);
 	}
 
 	static checkHttps$() {
@@ -216,7 +216,7 @@ export class AgoraChecklistService {
 				event.errors.https = LabelPipe.transform('bhere_https_error');
 				return throwError(event);
 			}),
-		)
+		);
 	}
 
 	static checkAudio$() {
@@ -227,7 +227,7 @@ export class AgoraChecklistService {
 			map(devices => {
 				const audioinput = devices.find(x => x.kind === 'audioinput' && x.deviceId);
 				return audioinput != null;
-			})
+			}),
 		);
 	}
 
@@ -255,7 +255,7 @@ export class AgoraChecklistService {
 					event.errors.audio = LabelPipe.transform('bhere_audio_error');
 					return throwError(event);
 				}),
-			)
+			);
 		} else {
 			return of(event);
 		}
@@ -269,7 +269,7 @@ export class AgoraChecklistService {
 			map(devices => {
 				const videoinput = devices.find(x => x.kind === 'videoinput' && x.deviceId);
 				return videoinput != null;
-			})
+			}),
 		);
 	}
 
@@ -330,7 +330,7 @@ export class AgoraChecklistService {
 				event.errors.rtc = LabelPipe.transform('bhere_rtc_error');
 				return throwError(event);
 			}),
-		)
+		);
 	}
 
 	static checkRtm$(uid) {
@@ -357,7 +357,7 @@ export class AgoraChecklistService {
 				event.errors.rtm = LabelPipe.transform('bhere_rtm_error');
 				return throwError(event);
 			}),
-		)
+		);
 	}
 
 }

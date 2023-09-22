@@ -6,7 +6,7 @@ import { mapPath } from './path';
 
 export const DEFAULT_PATH = {
 	id: null,
-	name: "Principale",
+	name: 'Principale',
 	items: [],
 };
 
@@ -42,12 +42,12 @@ export default class PathService {
 				this.path = path;
 				return this.path$;
 			}),
-		)
+		);
 	}
 
 	static pathGet$() {
 		if (environment.flags.usePaths) {
-			return HttpService.get$(`/api/path`).pipe(
+			return HttpService.get$('/api/path').pipe(
 				map(data => {
 					data.paths = data.paths.map(path => mapPath(path));
 					data.paths.unshift(DEFAULT_PATH);
@@ -100,7 +100,7 @@ export default class PathService {
 	}
 
 	static pathCreate$(path) {
-		return HttpService.post$(`/api/path`, path).pipe(
+		return HttpService.post$('/api/path', path).pipe(
 			map(path => mapPath(path)),
 		);
 	}

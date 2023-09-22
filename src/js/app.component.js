@@ -16,7 +16,7 @@ export default class AppComponent extends Component {
 		AssetGroupTypeInit();
 
 		RouterService.event$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(event => {
 			const route = event.route;
 			if (route && route.params.mode === 'embed') {
@@ -26,7 +26,7 @@ export default class AppComponent extends Component {
 		});
 
 		LanguageService.lang$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(_ => {
 			this.pushChanges();
 		});

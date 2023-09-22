@@ -89,5 +89,5 @@ AgoraChecklistComponent.meta = {
 			</button>
 		</div>
 	</div>
-	`
+	`,
 };

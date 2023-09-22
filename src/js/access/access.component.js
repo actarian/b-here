@@ -3,7 +3,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
 import { CHUNK_COPYRIGHT, CHUNK_CREDITS, CHUNK_LANGUAGE } from '../agora/agora.component.chunks';
-import { environment, STATIC } from '../environment';
+import { STATIC, environment } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
 import { MeetingUrl } from '../meeting/meeting-url';
 import { RoutePipe } from '../router/route.pipe';
@@ -38,7 +38,7 @@ export default class AccessComponent extends Component {
 			} else {
 				alert('Login Failed');
 			}
-		}
+		};
 	}
 
 	onSelfServiceTourRequest() {
@@ -96,7 +96,7 @@ export default class AccessComponent extends Component {
 				{ id: 2, name: 'Architetto' },
 				{ id: 3, name: 'Interior designer' },
 				{ id: 4, name: 'Privato' },
-				{ id: 5, name: 'Altro' }
+				{ id: 5, name: 'Altro' },
 			],
 		};
 
@@ -146,7 +146,7 @@ export default class AccessComponent extends Component {
 		const controls = this.controls = form.controls;
 
 		this.formSubscription = form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			this.pushChanges();
 		});
@@ -160,7 +160,7 @@ export default class AccessComponent extends Component {
 				username: 'publisher',
 				password: 'publisher',
 				checkRequest: window.antiforgery || '',
-				checkField: ''
+				checkField: '',
 			});
 		} else {
 			patchFields(this.fields, this.form);
@@ -191,8 +191,9 @@ export default class AccessComponent extends Component {
 			const status = this.state.status;
 			UserService.resolve$(payload, status).pipe(
 				first(),
-			).subscribe(response => {
-				// console.log('AccessComponent.onSubmit', response);
+			).subscribe(user => {
+				console.log('!!!');
+				console.log('AccessComponent.onSubmit', user);
 				switch (status) {
 					case 'guided-tour':
 						this.onHandleHook('GuidedTour', webhookPayload).pipe(
@@ -377,5 +378,5 @@ AccessComponent.meta = {
 				</button>
 			</footer>
 		</div>
-	`
+	`,
 };

@@ -18,5 +18,5 @@ ControlEmailComponent.meta = {
 			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

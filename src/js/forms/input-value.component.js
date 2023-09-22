@@ -29,13 +29,13 @@ export default class InputValueComponent extends Component {
 		const input = this.input = node.querySelector('input');
 		// fromEvent(input, 'change')
 		merge(
-			fromEvent(input, 'input')
+			fromEvent(input, 'input'),
 		).pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidChange(event));
 		merge(
 			fromEvent(input, 'blur'),
 			fromEvent(input, 'keydown').pipe(
 				filter(event => (event.key === 'Enter' || event.keyCode === 13)),
-			)
+			),
 		).pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onInputDidBlur(event));
 		// fromEvent(node, 'focus').pipe(takeUntil(this.unsubscribe$)).subscribe(event => this.onFocus(event));
 	}
@@ -43,6 +43,7 @@ export default class InputValueComponent extends Component {
 	onInputDidChange(event) {
 		// const node = getContext(this).node;
 		// const value = node.value === '' ? null : node.value;
+		// eslint-disable-next-line no-useless-escape
 		event.target.value = event.target.value.replace(/[^\d|\.|-]/g, '');
 		// console.log('InputValueComponent.onInputDidChange', event.target.value);
 		/*
@@ -61,7 +62,7 @@ export default class InputValueComponent extends Component {
 		// console.log('InputValueComponent.onInputDidBlur', event.target.value);
 		const value = parseFloat(this.input.value);
 		if (this.value !== value) {
-			if (value !== NaN) {
+			if (!isNaN(value)) {
 				this.value = value;
 				this.update.next(this.value);
 			} else {
@@ -91,9 +92,9 @@ export default class InputValueComponent extends Component {
 						return i;
 					}),
 					// startWith(increment * sign),
-					takeUntil(race(fromEvent(element, 'mouseup'), fromEvent(element, 'touchend')))
+					takeUntil(race(fromEvent(element, 'mouseup'), fromEvent(element, 'touchend'))),
 				);
-			})
+			}),
 		);
 	}
 	getValue() {
@@ -118,5 +119,5 @@ InputValueComponent.meta = {
 				<div class="btn--less" (click)="setValue(-1)">-</div>
 			</div>
 		</div>
-	`
+	`,
 };

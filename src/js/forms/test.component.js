@@ -27,5 +27,5 @@ TestComponent.meta = {
 		<button type="button" class="btn--mode" (click)="onReset($event)"><span>reset</span></button>
 		<button type="button" class="btn--mode" (click)="onTest($event)"><span>test</span></button>
 	</div>
-	`
+	`,
 };

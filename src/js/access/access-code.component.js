@@ -19,7 +19,7 @@ export default class AccessCodeComponent extends Component {
 			const qrcode = new QRious({
 				element: node.querySelector('.qrcode'),
 				value: url,
-				size: 256
+				size: 256,
 			});
 		}
 	}

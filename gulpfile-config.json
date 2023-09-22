@@ -64,7 +64,7 @@
       "bundle": [
         {
           "input": [
-            "node_modules/agora-rtc-sdk/AgoraRTCSDK.min.js",
+            "node_modules/agora-rtc-sdk-ng/AgoraRTC_N-production.js",
             "node_modules/agora-rtm-sdk/index.js",
             "node_modules/hls.js/dist/hls.js",
             "node_modules/rxjs/bundles/rxjs.umd.js",

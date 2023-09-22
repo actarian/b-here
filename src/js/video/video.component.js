@@ -24,7 +24,7 @@ export default class VideoComponent extends Component {
 		this.progress = node.querySelector('.icon--play-progress path');
 		if (parentInstance instanceof SwiperDirective) {
 			parentInstance.events$.pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(event => this.pause());
 		}
 		this.addListeners();
@@ -86,7 +86,7 @@ export default class VideoComponent extends Component {
 		this.playing = true;
 		GtmService.push({
 			event: 'video play',
-			video_name: this.video.src
+			video_name: this.video.src,
 		});
 	}
 

@@ -49,7 +49,7 @@ export default class ControlAssetsComponent extends ControlComponent {
 				this.assets.push(event.asset);
 				this.control.value = this.assets;
 			}
-			this.items = this.items;
+			this.items = this.items_;
 			this.pushChanges();
 			// this.control.value = assets;
 		});
@@ -121,5 +121,5 @@ ControlAssetsComponent.meta = {
 			</div>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

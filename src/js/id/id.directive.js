@@ -11,5 +11,5 @@ export default class IdDirective extends Directive {
 
 IdDirective.meta = {
 	selector: '[id]',
-	inputs: ['id']
+	inputs: ['id'],
 };

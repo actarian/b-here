@@ -113,7 +113,7 @@ export class VR extends Emittable {
 		navigator.xr.requestDevice().then((device) => {
 			device.supportsSession({
 				immersive: true,
-				exclusive: true /* DEPRECATED */
+				exclusive: true, /* DEPRECATED */
 			}).then(() => {
 				this.setEnterXR(device);
 			}).catch(() => this.setVRNotFound());
@@ -154,7 +154,7 @@ export class VR extends Emittable {
 	}
 
 	setVRNotFound() {
-		renderer.vr.setDevice(null);
+		this.renderer.vr.setDevice(null);
 		const element = this.element;
 		element.style.display = '';
 		element.style.cursor = 'auto';
@@ -189,7 +189,7 @@ export class VR extends Emittable {
 	onVRDisplayActivate(event) {
 		try {
 			event.display.requestPresent([{
-				source: this.renderer.domElement
+				source: this.renderer.domElement,
 			}]).then(() => {
 				this.emit('presenting');
 			}, (error) => {
@@ -217,7 +217,7 @@ export class VR extends Emittable {
 			} else {
 				// console.log(this.renderer.domElement);
 				device.requestPresent([{
-					source: this.renderer.domElement
+					source: this.renderer.domElement,
 				}]).then(() => {
 					this.emit('presenting');
 				}, (error) => {
@@ -241,7 +241,7 @@ export class VR extends Emittable {
 			if (this.session === null) {
 				device.requestSession({
 					immersive: true,
-					exclusive: true /* DEPRECATED */
+					exclusive: true, /* DEPRECATED */
 				}).then(this.onXRSessionStarted);
 				/*
 				if (Tone.context.state !== 'running') {

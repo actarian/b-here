@@ -1,5 +1,6 @@
 import { Pipe } from 'rxcomp';
 
+// eslint-disable-next-line no-useless-escape
 export const URL_PATTERN = '(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))?';
 
 // export const URL_PATTERN = '/((http:\/\/|https:\/\/|www\.)([a-z0-9])([a-z0-9]|\.)+(\?[a-z]([a-z0-9]|\=|\&)+)?)';
@@ -15,6 +16,7 @@ export default class MessagePipe extends Pipe {
 
 	static urlify(text) {
 		// const regex = new RegExp(URL_PATTERN, 'gim');
+		// eslint-disable-next-line no-useless-escape
 		const regex = /(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gmi;
 		return text.replace(regex, (url) => {
 			return /*html*/`<a href="${url}" target="_blank">${url}</a>`;
@@ -26,7 +28,7 @@ export default class MessagePipe extends Pipe {
 	static breakLines(text) {
 		const regex = /\n/gm;
 		return text.replace(regex, (text) => {
-			return /*html*/`<br>`;
+			return /*html*/'<br>';
 		});
 	}
 

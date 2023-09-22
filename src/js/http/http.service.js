@@ -31,7 +31,7 @@ export class HttpService {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json',
 			},
-			body: methods.indexOf(method) !== -1 ? JSON.stringify(data) : undefined
+			body: methods.indexOf(method) !== -1 ? JSON.stringify(data) : undefined,
 		}).then((response) => {
 			response_ = response;
 			// console.log(response);
@@ -61,7 +61,7 @@ export class HttpService {
 		})).pipe(
 			catchError(error => {
 				return throwError(this.getError(error, response_));
-			})
+			}),
 		);
 	}
 

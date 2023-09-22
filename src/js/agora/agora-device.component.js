@@ -21,7 +21,7 @@ export default class AgoraDeviceComponent extends Component {
 		if (this.isHttps) {
 			const agora = this.agora = AgoraService.getSingleton();
 			StateService.state$.pipe(
-				takeUntil(this.unsubscribe$)
+				takeUntil(this.unsubscribe$),
 			).subscribe(state => {
 				// console.log('AgoraDeviceComponent.state', state);
 				this.state = state;
@@ -76,7 +76,7 @@ export default class AgoraDeviceComponent extends Component {
 		}
 		controls.audio.options = audioOptions;
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			// console.log('AgoraDeviceComponent.changes$', form.value);
 			this.pushChanges();
@@ -143,5 +143,5 @@ AgoraDeviceComponent.meta = {
 			</div>
 		</form>
 	</div>
-	`
+	`,
 };

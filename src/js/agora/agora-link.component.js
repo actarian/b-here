@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil, tap } from 'rxjs/operators';
 import PathService from '../editor/path/path.service';
 import { environment } from '../environment';
-import { MeetingId, MEETING_ID_VALIDATOR } from '../meeting/meeting-id';
+import { MEETING_ID_VALIDATOR, MeetingId } from '../meeting/meeting-id';
 import { MeetingUrl } from '../meeting/meeting-url';
 import { RoutePipe } from '../router/route.pipe';
 import StateService from '../state/state.service';
@@ -26,7 +26,7 @@ export default class AgoraLinkComponent extends Component {
 		this.pathId = null;
 		this.form = null;
 		StateService.state$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			// console.log('AgoraLinkComponent.state', state);
 			this.state = state;
@@ -71,7 +71,7 @@ export default class AgoraLinkComponent extends Component {
 		}
 		controls.path.options = pathOptions;
 		form.changes$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe((changes) => {
 			// console.log('AgoraLinkComponent.changes$', form.value);
 			// console.log(changes.path, changes.id);
@@ -200,5 +200,5 @@ AgoraLinkComponent.meta = {
 			</div>
 		</form>
 	</div>
-	`
+	`,
 };

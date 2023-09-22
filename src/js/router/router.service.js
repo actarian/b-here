@@ -54,17 +54,17 @@ export class RouterService {
 			queryParams: {
 				arrayFormat: 'default',
 				nullFormat: 'default',
-				booleanFormat: 'default'
+				booleanFormat: 'default',
 			},
 			queryParamsMode: 'default',
 			trailingSlashMode: 'default',
 			strictTrailingSlash: false,
 			caseSensitive: false,
-			urlParamsEncoding: 'default'
+			urlParamsEncoding: 'default',
 		});
 		this.router_ = router;
 		router.usePlugin(browserPlugin({
-			useHash: false
+			useHash: false,
 		}));
 		router.start();
 		this.event$ = from(router).pipe(

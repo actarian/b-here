@@ -8,7 +8,7 @@ export default class ToastOutletComponent extends Component {
 		this.toast = null;
 		this.lastToast = null;
 		ToastService.toast$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(toast => {
 			if (toast) {
 				this.lastToast = toast;
@@ -64,5 +64,5 @@ ToastOutletComponent.meta = {
 			</button>
 		</div>
 	</div>
-	`
+	`,
 };

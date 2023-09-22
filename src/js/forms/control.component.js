@@ -15,5 +15,5 @@ export default class ControlComponent extends Component {
 
 ControlComponent.meta = {
 	selector: '[control]',
-	inputs: ['control']
+	inputs: ['control'],
 };

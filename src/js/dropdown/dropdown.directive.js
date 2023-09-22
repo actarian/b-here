@@ -21,7 +21,7 @@ export default class DropdownDirective extends Directive {
 		this.closeDropdown = this.closeDropdown.bind(this);
 		this.addListeners();
 		DropdownDirective.dropdown$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(id => {
 			// console.log('DropdownDirective', id, this['dropdown-item']);
 			if (this.id === id) {
@@ -103,7 +103,7 @@ export default class DropdownDirective extends Directive {
 DropdownDirective.meta = {
 	selector: '[dropdown]',
 	inputs: ['dropdown', 'dropdown-trigger'],
-	outputs: ['dropped']
+	outputs: ['dropped'],
 };
 
 DropdownDirective.dropdown$ = new BehaviorSubject(null);

@@ -138,4 +138,4 @@ PathEditModalComponent.meta = {
 	`,
 };
 
-PathEditModalComponent.chunk = () => /* html */`<div class="path-edit-modal" path-edit-modal></div>`;
+PathEditModalComponent.chunk = () => /* html */'<div class="path-edit-modal" path-edit-modal></div>';

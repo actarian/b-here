@@ -74,7 +74,7 @@ export default class FilterService {
 			// tap(() => console.log(filters)),
 			tap(() => this.serialize(filters)),
 			map(() => this.filterItems(items)),
-			tap(() => this.updateFilterStates(filters, items))
+			tap(() => this.updateFilterStates(filters, items)),
 		);
 	}
 

@@ -1,4 +1,4 @@
-import { mapViewItem } from '../../view/view';
+import { mapViewItem, View } from '../../view/view';
 
 export class Navmap {
 

@@ -12,7 +12,7 @@ export default class DropdownItemDirective extends Directive {
 		const { node } = getContext(this);
 		node.classList.add('dropdown-item');
 		DropdownDirective.dropdown$.pipe(
-			takeUntil(this.unsubscribe$)
+			takeUntil(this.unsubscribe$),
 		).subscribe(id => {
 			// console.log('DropdownItemDirective', id, this['dropdown-item']);
 			if (this.id === id) {
@@ -27,5 +27,5 @@ export default class DropdownItemDirective extends Directive {
 
 DropdownItemDirective.meta = {
 	selector: '[dropdown-item], [[dropdown-item]]',
-	inputs: ['dropdown-item']
+	inputs: ['dropdown-item'],
 };

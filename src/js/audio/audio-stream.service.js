@@ -36,7 +36,7 @@ export default class AudioStreamService {
 				this.analyser_ = this.context.createAnalyser();
 			} catch (error) {
 				console.log('AudioStreamService.analyser', error);
-			};
+			}
 		}
 		return this.analyser_;
 	}
@@ -228,7 +228,7 @@ export default class AudioStreamService {
 				const deltaTime = previous ? (startTime - previous.startTime) / 1000 : 0;
 				observer.next({
 					startTime,
-					deltaTime
+					deltaTime,
 				});
 			});
 		}).pipe(
@@ -237,7 +237,7 @@ export default class AudioStreamService {
 					frame.deltaTime = 1 / 30;
 				}
 				return frame;
-			})
+			}),
 		);
 	}
 
@@ -263,5 +263,5 @@ AudioStreamService.frame$ = of(undefined).pipe(
 	//  case we just want to ignore the undefined input frame
 	filter(frame => frame !== undefined),
 	map(frame => frame.deltaTime),
-	share()
+	share(),
 );

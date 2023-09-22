@@ -62,5 +62,5 @@ EditorModule.meta = {
 	exports: [
 		...factories,
 		...pipes,
-	]
+	],
 };

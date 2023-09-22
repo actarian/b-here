@@ -126,7 +126,7 @@ export class MeetingUrl {
 				role: shareable ? null : this.role,
 				viewId: this.viewId,
 				pathId: this.pathId,
-				support: this.support
+				support: this.support,
 			};
 		} else {
 			components = {
@@ -135,7 +135,7 @@ export class MeetingUrl {
 				role: shareable ? null : this.role,
 				viewId: this.viewId,
 				pathId: this.pathId,
-				support: this.support
+				support: this.support,
 			};
 		}
 		return MeetingUrl.compose(components);
@@ -244,7 +244,7 @@ export class MeetingUrl {
 			return `?p=${p}`;
 		} else {
 			components = Object.keys(components).map(key => {
-				return { key, value: components[key] }
+				return { key, value: components[key] };
 			}).filter(x => x.value != null && x.value !== false).map(x => `${x.key}=${x.value}`);
 			return `?${components.join('&')}`;
 		}

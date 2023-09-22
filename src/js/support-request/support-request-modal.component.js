@@ -49,4 +49,4 @@ SupportRequestModalComponent.meta = {
 	`,
 };
 
-SupportRequestModalComponent.chunk = () => /* html */`<div class="support-request-modal" support-request-modal></div>`;
+SupportRequestModalComponent.chunk = () => /* html */'<div class="support-request-modal" support-request-modal></div>';

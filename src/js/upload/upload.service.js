@@ -57,7 +57,7 @@ export class UploadService {
 		const files = [item.file];
 		return of(files).pipe(
 			delayWhen(() => this.concurrent$.pipe(
-				filter(x => x < 4)
+				filter(x => x < 4),
 			)),
 			tap(() => this.concurrent$.next(this.concurrent$.getValue() + 1)),
 			first(),

@@ -19,7 +19,7 @@ export default class ControlFileComponent extends ControlComponent {
 			lastModifiedDate: file.lastModifiedDate,
 			size: file.size,
 			type: file.type,
-		}
+		};
 		const reader = new FileReader();
 		reader.addEventListener('load', this.onReaderComplete);
 		reader.readAsDataURL(file);
@@ -51,5 +51,5 @@ ControlFileComponent.meta = {
 			<input name="file" type="file" accept=".pdf,.doc,.docx,*.txt" class="control--file" (change)="onInputDidChange($event)" />
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

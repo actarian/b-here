@@ -15,7 +15,7 @@ export default class NavmapService {
 	}
 
 	static navmapGet$() {
-		return HttpService.get$(`/api/navmap`).pipe(
+		return HttpService.get$('/api/navmap').pipe(
 			map(data => {
 				data.navmaps.map(navmap => mapNavmap(navmap));
 				return data.navmaps;
@@ -24,7 +24,7 @@ export default class NavmapService {
 	}
 
 	static navmapCreate$(navmap) {
-		return HttpService.post$(`/api/navmap`, navmap).pipe(
+		return HttpService.post$('/api/navmap', navmap).pipe(
 			map(navmap => mapNavmap(navmap)),
 		);
 	}

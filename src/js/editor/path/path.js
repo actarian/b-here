@@ -1,4 +1,4 @@
-
+import { View } from '../../view/view';
 export class Path {
 
 	static allowedProps = ['id', 'name', 'items'];

@@ -55,4 +55,4 @@ ControlRequestModalComponent.meta = {
 	`,
 };
 
-ControlRequestModalComponent.chunk = () => /* html */`<div class="control-request-modal" control-request-modal></div>`;
+ControlRequestModalComponent.chunk = () => /* html */'<div class="control-request-modal" control-request-modal></div>';

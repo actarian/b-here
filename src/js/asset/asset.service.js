@@ -6,7 +6,7 @@ import { Asset, mapAsset } from './asset';
 export class AssetService {
 
 	static assetCreate$(asset) {
-		return HttpService.post$(`/api/asset`, asset).pipe(
+		return HttpService.post$('/api/asset', asset).pipe(
 			map(asset => mapAsset(asset)),
 		);
 	}
@@ -57,14 +57,13 @@ export class AssetService {
 						} else {
 							return null;
 						}
-						break;
 					default:
 						return null;
 				}
 			}),
-			filter(event => event !== null)
+			filter(event => event !== null),
 		);
-		xhr.open('POST', `/api/upload/`, true);
+		xhr.open('POST', '/api/upload/', true);
 		xhr.send(formData);
 		return events$;
 	}

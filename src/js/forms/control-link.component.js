@@ -1,3 +1,6 @@
+import { getContext } from 'rxcomp';
+import { fromEvent, merge } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import ControlComponent from './control.component';
 
 export default class ControlLinkComponent extends ControlComponent {
@@ -33,5 +36,5 @@ ControlLinkComponent.meta = {
 			<span class="required__badge" [innerHTML]="'required' | label"></span>
 		</div>
 		<errors-component [control]="control"></errors-component>
-	`
+	`,
 };

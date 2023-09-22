@@ -1,13 +1,13 @@
 import { environment } from '../environment';
 
 export const EXT_IMAGE = [
-	'jpeg', 'jpg', 'png', 'hdr'
+	'jpeg', 'jpg', 'png', 'hdr',
 ];
 export const EXT_VIDEO = [
 	'mp4', 'webm',
 ];
 export const EXT_MODEL = [
-	'fbx', 'gltf', 'glb', 'usdz'
+	'fbx', 'gltf', 'glb', 'usdz',
 ];
 
 export const AssetType = {
@@ -89,7 +89,7 @@ export function assetPayloadFromGroupTypeId(groupTypeId) {
 		type: type,
 		folder: '',
 		file: file,
-	}
+	};
 	// console.log('assetPayloadFromGroupTypeId', asset);
 	return new Asset(asset);
 }
