@@ -155,7 +155,9 @@ export default class DragService {
 					takeUntil(dismiss$),
 				);
 			}),
-			switchMap(() => events$),
+			switchMap(() => events$.pipe(
+				filter(event => event instanceof DragUpEvent || event.node === target),
+			)),
 		);
 	}
 

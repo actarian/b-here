@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.29
+ * @license beta-bhere-development v1.0.30
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -14993,7 +14993,7 @@ class DragService {
     return this.down$(target, events$).pipe(operators.switchMap(downEvent => {
       DragService.downEvent = downEvent;
       return rxjs.merge(this.move$(target, events$, dismiss$, downEvent), this.up$(target, events$, dismiss$, downEvent)).pipe(operators.takeUntil(dismiss$));
-    }), operators.switchMap(() => events$));
+    }), operators.switchMap(() => events$.pipe(operators.filter(event => event instanceof DragUpEvent || event.node === target))));
   }
 
 }

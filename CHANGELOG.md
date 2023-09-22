@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.30] - 2023-09-22
+
+### Fixing
+- DragService filtering events$ by target
+
+---
+
 ## [1.0.29] - 2023-07-14
 
 ### Fixing
