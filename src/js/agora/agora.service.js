@@ -1,3 +1,4 @@
+import AgoraRTC, { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 import { from, interval, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
@@ -8,9 +9,11 @@ import { Logger } from '../logger/logger';
 import { MessageService } from '../message/message.service';
 import StateService from '../state/state.service';
 import SessionStorageService from '../storage/session-storage.service';
+import { Stream } from '../stream/stream';
 import StreamService from '../stream/stream.service';
 import { RoleType } from '../user/user';
-import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraVolumeLevelsEvent, MessageType, UIMode, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR, getStreamQuality } from './agora.types';
+import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraUserInfoUpdateEvent, AgoraVolumeLevelsEvent, MessageType, UIMode, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR, getStreamQuality } from './agora.types';
+
 
 export default class AgoraService extends Emittable {
 
@@ -36,15 +39,16 @@ export default class AgoraService extends Emittable {
 		this.onUserLeft = this.onUserLeft.bind(this);
 		this.onUserPublished = this.onUserPublished.bind(this);
 		this.onUserUnpublished = this.onUserUnpublished.bind(this);
+		this.onUserInfoUpdated = this.onUserInfoUpdated.bind(this);
 		/*
 		this.onStreamAdded = this.onStreamAdded.bind(this);
 		this.onStreamRemoved = this.onStreamRemoved.bind(this);
 		this.onStreamSubscribed = this.onStreamSubscribed.bind(this);
-		*/
 		this.onMuteVideo = this.onMuteVideo.bind(this);
 		this.onUnmuteVideo = this.onUnmuteVideo.bind(this);
 		this.onMuteAudio = this.onMuteAudio.bind(this);
 		this.onUnmuteAudio = this.onUnmuteAudio.bind(this);
+		*/
 		this.onVolumeIndicator = this.onVolumeIndicator.bind(this);
 		this.onConnectionStateChange = this.onConnectionStateChange.bind(this);
 		this.onTokenPrivilegeWillExpire = this.onTokenPrivilegeWillExpire.bind(this);
@@ -146,7 +150,7 @@ export default class AgoraService extends Emittable {
 				await this.createClient();
 				const channelNameLink = this.getChannelNameLink();
 				AgoraService.rtcToken$(channelNameLink).subscribe(async (token) => {
-					// Logger.log('AgoraService.rtcToken$', token);
+					Logger.log('AgoraService.rtcToken$', token);
 					await this.join(token.token, channelNameLink);
 				});
 			}, 250);
@@ -199,8 +203,6 @@ export default class AgoraService extends Emittable {
 			return this.client;
 		}
 		try {
-			// Logger.log('agora rtc sdk version: ' + AgoraRTC.VERSION + ' compatible: ' + AgoraRTC.checkSystemRequirements());
-			// AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.ERROR);
 			/*
 			0: DEBUG. Output all API logs.
 			1: INFO. Output logs of the INFO, WARNING and ERROR level.
@@ -215,15 +217,16 @@ export default class AgoraService extends Emittable {
 			client.on('user-left', this.onUserLeft);
 			client.on('user-published', this.onUserPublished);
 			client.on('user-unpublished', this.onUserUnpublished);
+			client.on('user-info-updated', this.onUserInfoUpdated);
 			/*
 			client.on('stream-added', this.onStreamAdded);
 			client.on('stream-removed', this.onStreamRemoved);
 			client.on('stream-subscribed', this.onStreamSubscribed);
-			*/
 			client.on('mute-video', this.onMuteVideo);
 			client.on('unmute-video', this.onUnmuteVideo);
 			client.on('mute-audio', this.onMuteAudio);
 			client.on('unmute-audio', this.onUnmuteAudio);
+			*/
 			if (USE_VOLUME_INDICATOR) {
 				client.enableAudioVolumeIndicator(); // Triggers the 'volume-indicator' callback event every two seconds.
 				client.on('volume-indicator', this.onVolumeIndicator);
@@ -511,6 +514,7 @@ export default class AgoraService extends Emittable {
 			StateService.patchState({ devices });
 			return devices;
 		}
+		return state.devices;
 	}
 
 	async createMediaStream(uid, video, audio) {
@@ -533,34 +537,36 @@ export default class AgoraService extends Emittable {
 	// and set min in bitrate as 0.4 - 0.5 times the bitrate value in the video profile table.
 	async createLocalStreamWithOptions(options, quality) {
 		try {
-			const tracks = [];
-			if (options.audio) {
-				const audioTrack = await AgoraRTC.createMicrophoneAudioTrack({
-					microphoneId: options.microphoneId,
-				});
-				tracks.push(audioTrack);
-			}
+			Logger.log('AgoraService.createLocalStreamWithOptions', options, quality);
+			let videoTrack = undefined;
+			let audioTrack = undefined;
 			if (options.video) {
-				const videoTrack = await AgoraRTC.createCameraVideoTrack({
+				videoTrack = await AgoraRTC.createCameraVideoTrack({
 					cameraId: options.cameraId,
 					encoderConfig: quality.profile,
 				});
-				/*
-				if (quality) {
-					local.setVideoProfile(quality.profile);
-					// local.setVideoEncoderConfiguration(quality);
-				}
-				*/
-				tracks.push(videoTrack);
 			}
-			StreamService.local = tracks;
+			if (options.audio) {
+				audioTrack = await AgoraRTC.createMicrophoneAudioTrack({
+					microphoneId: options.microphoneId,
+				});
+			}
+			const user = {
+				uid: options.streamID,
+				videoTrack,
+				audioTrack,
+				hasVideo: videoTrack !== undefined,
+				hasAudio: audioTrack !== undefined,
+			};
+			const stream = new Stream(user, options.video ? 'video' : 'audio', true);
+			StreamService.local = stream;
 			setTimeout(async () => {
 				await this.publishLocalStream();
 			}, 1);
-			Logger.log('AgoraService.createLocalStreamWithOptions', tracks, options, quality);
+			Logger.log('AgoraService.createLocalStreamWithOptions.success', stream);
 		} catch (error) {
-			Logger.error('AgoraService.createLocalStreamWithOptions.init.error', error);
-			throw error;
+			Logger.error('AgoraService.createLocalStreamWithOptions.error', error);
+			// throw error;
 		}
 	}
 
@@ -570,7 +576,7 @@ export default class AgoraService extends Emittable {
 			const clientInfo = await this.setUserState();
 			const local = StreamService.local;
 			const client = this.client;
-			await client.publish(local);
+			await client.publish(local.getTracks());
 			local.clientInfo = clientInfo;
 			StreamService.local = local;
 		} catch (error) {
@@ -585,7 +591,7 @@ export default class AgoraService extends Emittable {
 			const client = this.client;
 			const local = StreamService.local;
 			if (local) {
-				await client.unpublish(local);
+				await client.unpublish(local.getTracks());
 			}
 			await this.clearLocalUserAttributes();
 			StreamService.local = null;
@@ -595,11 +601,26 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	async closeLocalStream() {
+		try {
+			const local = StreamService.local;
+			if (local) {
+				await local.close();
+			}
+			await this.clearLocalUserAttributes();
+			StreamService.local = null;
+			Logger.log('AgoraService.closeLocalStream', local);
+		} catch (error) {
+			Logger.error('AgoraService.closeLocalStream.error', error);
+			throw error;
+		}
+	}
+
 	async leaveChannel() {
 		try {
 			StateService.patchState({ connecting: false });
-			await this.unpublishLocalStream();
-			await this.unpublishScreenStream();
+			await this.closeLocalStream();
+			await this.closeScreenStream();
 			StreamService.remotes = [];
 			StreamService.peers = [];
 			await this.leaveMessageChannel();
@@ -655,37 +676,37 @@ export default class AgoraService extends Emittable {
 		});
 	}
 
-	toggleCamera() {
+	async toggleCamera() {
 		const local = StreamService.local;
 		// Logger.log('AgoraService.toggleCamera', local);
 		if (local && local.video) {
 			if (local.userMuteVideo) {
-				local.unmuteVideo();
+				await local.unmuteVideo();
 				StateService.patchState({ cameraMuted: false });
-				this.broadcastEvent(new AgoraUnmuteVideoEvent({ streamId: local.getId() }));
+				this.broadcastEvent(new AgoraUnmuteVideoEvent({ streamId: local.streamId }));
 				this.setUserState();
 			} else {
-				local.muteVideo();
+				await local.muteVideo();
 				StateService.patchState({ cameraMuted: true });
-				this.broadcastEvent(new AgoraMuteVideoEvent({ streamId: local.getId() }));
+				this.broadcastEvent(new AgoraMuteVideoEvent({ streamId: local.streamId }));
 				this.setUserState();
 			}
 		}
 	}
 
-	toggleAudio() {
+	async toggleAudio() {
 		const local = StreamService.local;
 		// Logger.log('AgoraService.toggleAudio', local);
 		if (local && local.audio) {
 			if (local.userMuteAudio) {
-				local.unmuteAudio();
+				await local.unmuteAudio();
 				StateService.patchState({ audioMuted: false });
-				this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: local.getId() }));
+				this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: local.streamId }));
 				this.setUserState();
 			} else {
-				local.muteAudio();
+				await local.muteAudio();
 				StateService.patchState({ audioMuted: true });
-				this.broadcastEvent(new AgoraMuteAudioEvent({ streamId: local.getId() }));
+				this.broadcastEvent(new AgoraMuteAudioEvent({ streamId: local.streamId }));
 				this.setUserState();
 			}
 		}
@@ -700,14 +721,14 @@ export default class AgoraService extends Emittable {
 				if (!local.userMuteAudio) {
 					local.muteAudio();
 					StateService.patchState({ audioMuted: true });
-					this.broadcastEvent(new AgoraMuteAudioEvent({ streamId: local.getId() }));
+					this.broadcastEvent(new AgoraMuteAudioEvent({ streamId: local.streamId }));
 					this.setUserState();
 				}
 			} else {
 				if (local.userMuteAudio && !this.previousMuteAudio_) {
 					local.unmuteAudio();
 					StateService.patchState({ audioMuted: false });
-					this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: local.getId() }));
+					this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: local.streamId }));
 					this.setUserState();
 				}
 			}
@@ -1369,7 +1390,7 @@ AgoraService.getSystemStats
 			case MessageType.RequestControlDismiss:
 				StateService.patchState({ controlling: false });
 				if (message.controllingId === StateService.state.uid) {
-					this.unpublishScreenStream();
+					this.closeScreenStream();
 				}
 				break;
 			case MessageType.RequestSpyDismiss:
@@ -1431,8 +1452,8 @@ AgoraService.getSystemStats
 		});
 	}
 
-	remoteUserAdd(remoteId) {
-		Logger.log('AgoraService.remoteUserAdd', remoteId);
+	peerAdd(remoteId) {
+		Logger.log('AgoraService.peerAdd', remoteId);
 		const peer = {
 			uid: remoteId,
 		};
@@ -1442,8 +1463,8 @@ AgoraService.getSystemStats
 		this.broadcastEvent(new AgoraPeerEvent({ peer }));
 	}
 
-	remoteUserRemove(remoteId) {
-		Logger.log('AgoraService.remoteUserRemove', remoteId);
+	peerRemove(remoteId) {
+		Logger.log('AgoraService.peerRemove', remoteId);
 		const peers = StreamService.peers;
 		const peer = peers.find(x => x.uid === remoteId);
 		if (peer) {
@@ -1489,16 +1510,16 @@ AgoraService.getSystemStats
 
 	async onUserJoined(user) {
 		Logger.log('AgoraService.onUserJoined', user);
-		this.remoteUserAdd(user.uid);
+		this.peerAdd(user.uid);
 	}
 
 	async onUserLeft(user, reason) {
 		Logger.log('AgoraService.onUserLeft', user, reason);
-		const remoteId = user.uid;
+		const remoteId = user.uid.toString();
 		if (remoteId !== StateService.state.uid) {
 			// Logger.log('AgoraService.onUserLeft', user.uid);
 			const remote = this.remoteRemove(remoteId);
-			if (remote.clientInfo) {
+			if (remote && remote.clientInfo) {
 				// !!! remove screenRemote?
 				if (remote.clientInfo.role === RoleType.Publisher) {
 					if (StateService.state.role === RoleType.SelfService) {
@@ -1516,30 +1537,32 @@ AgoraService.getSystemStats
 				}
 			}
 		}
-		this.remoteUserRemove(remoteId);
+		this.peerRemove(remoteId);
 	}
 
+	/**
+	 *
+	 * @param {IAgoraRTCRemoteUser} user
+	 * @param {'audio' | 'video'} mediaType
+	 */
 	async onUserPublished(user, mediaType) {
 		const uid = user.uid.toString();
 		Logger.log('AgoraService.onUserPublished', uid, user, mediaType);
-		if (uid !== StateService.state.uid && uid !== StateService.state.screenUid) {
-			// Subscribe to the remote user when the SDK triggers the "user-published" event.
+		if (
+			uid !== StateService.state.uid &&
+			uid !== StateService.state.screenUid
+		) {
 			await this.client.subscribe(user, mediaType);
-			let tracks = [];
+			const stream = new Stream(user, mediaType);
+			await this.remoteAdd(stream);
+			/*
 			if (mediaType === 'video') {
-				tracks.push(user.audioTrack);
-				tracks.push(user.videoTrack);
-				// user.videoTrack.play(player);
+				const stream = new Stream(user, mediaType);
+				await this.remoteAdd(stream);
+			} else if (mediaType === 'audio') {
+				user.audioTrack?.play();
 			}
-			if (mediaType === 'audio') {
-				tracks.push(user.audioTrack);
-				// user.audioTrack.play();
-			}
-			await this.remoteAdd({
-				uid,
-				tracks,
-				mediaType,
-			});
+			*/
 		} else {
 			const clientInfo = {
 				role: StateService.state.role,
@@ -1553,57 +1576,11 @@ AgoraService.getSystemStats
 		}
 	}
 
-	async onUserUnpublished(user) {
-		const uid = user.uid.toString();
-		Logger.log('AgoraService.onUserUnpublished', uid, user);
-		if (uid !== StateService.state.uid && uid !== StateService.state.screenUid) {
-			// !!! this happen on oculus removed timeout
-			this.remoteRemove({
-				uid,
-			});
-		} else {
-			StreamService.local = null;
-		}
-	}
-
-	async onStreamAdded___(user, mediaType) {
-		Logger.log('AgoraService.onStreamAdded', user, mediaType);
-		const client = this.client;
-		const stream = event.stream;
-		if (!stream) {
-			Logger.error('AgoraService.onStreamAdded.error', 'stream is undefined');
-			return;
-		}
-		Logger.log('AgoraService.onStreamAdded', event.stream.getId());
-		const streamId = stream.getId();
-		// Logger.log('AgoraService.onStreamAdded', streamId, StateService.state.uid, StateService.state.screenUid);
-		if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
-			client.subscribe(stream, (error) => {
-				Logger.error('AgoraService.onStreamAdded.subscribe.error', error);
-			});
-		}
-	}
-
-	async onStreamRemoved___(user) {
-		const stream = event.stream;
-		const streamId = stream.getId();
-		if (streamId !== StateService.state.uid && streamId !== StateService.state.screenUid) {
-			// !!! this happen on oculus removed timeout
-			// Logger.log('AgoraService.onStreamRemoved', streamId);
-			this.remoteRemove(streamId);
-		}
-	}
-
-	async onStreamSubscribed___(event) {
-		Logger.log('AgoraService.onStreamSubscribed', event.stream.getId());
-		await this.remoteAdd(event.stream);
-	}
-
 	async remoteAdd(stream) {
 		Logger.log('AgoraService.remoteAdd', stream);
 		StreamService.remoteAdd(stream);
 		this.broadcastEvent(new AgoraRemoteEvent({ stream }));
-		const remoteId = stream.getId();
+		const remoteId = stream.streamId;
 		setTimeout(async () => {
 			const clientInfo = await this.getUserState(remoteId);
 			Logger.log('AgoraService.remoteAdd.getUserState', clientInfo);
@@ -1622,6 +1599,26 @@ AgoraService.getSystemStats
 		}, 100);
 	}
 
+	/**
+	 *
+	 * @param {IAgoraRTCRemoteUser} user
+	 * @param {'audio' | 'video'} mediaType
+	 */
+	async onUserUnpublished(user, mediaType) {
+		const uid = user.uid.toString();
+		Logger.log('AgoraService.onUserUnpublished', uid, user, mediaType);
+		if (uid === StateService.state.uid) {
+			StreamService.local = null;
+		} else if (uid === StateService.state.screenUid) {
+			StreamService.screen = null;
+		} else if (mediaType === 'video') {
+			// !!! this happen on oculus removed timeout
+			this.remoteRemove(uid);
+		} else if (mediaType === 'audio') {
+			user.audioTrack?.stop();
+		}
+	}
+
 	remoteRemove(streamId) {
 		// Logger.log('AgoraService.remoteRemove', streamId);
 		const remote = StreamService.remoteRemove(streamId);
@@ -1631,6 +1628,34 @@ AgoraService.getSystemStats
 		return remote;
 	}
 
+	onUserInfoUpdated(event) {
+		Logger.log('AgoraService.onUserInfoUpdated', event);
+		switch (event.msg) {
+			case 'mute-audio':
+				this.broadcastEvent(new AgoraMuteAudioEvent({ streamId: event.uid }));
+				break;
+			case 'unmute-audio':
+				this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: event.uid }));
+				break;
+			case 'mute-video':
+				this.broadcastEvent(new AgoraMuteVideoEvent({ streamId: event.uid }));
+				break;
+			case 'unmute-video':
+				this.broadcastEvent(new AgoraUnmuteVideoEvent({ streamId: event.uid }));
+				break;
+			/*
+		case 'disable-local-video':
+			this.broadcastEvent(new AgoraDisableVideoEvent({ streamId: event.uid }));
+			break;
+		case 'enable-local-video':
+			this.broadcastEvent(new AgoraEnableVideoEvent({ streamId: event.uid }));
+			break;
+			*/
+		}
+		this.broadcastEvent(new AgoraUserInfoUpdateEvent({ streamId: event.uid, message: event.msg }));
+	}
+
+	/*
 	onMuteVideo(event) {
 		// Logger.log('AgoraService.onMuteVideo', event);
 		this.broadcastEvent(new AgoraMuteVideoEvent({ streamId: event.uid }));
@@ -1650,6 +1675,7 @@ AgoraService.getSystemStats
 		// Logger.log('AgoraService.onUnmuteAudio', event);
 		this.broadcastEvent(new AgoraUnmuteAudioEvent({ streamId: event.uid }));
 	}
+	*/
 
 	onVolumeIndicator(event) {
 		// Logger.log('AgoraService.onVolumeIndicator', event);
@@ -1692,7 +1718,7 @@ AgoraService.getSystemStats
 	toggleScreen() {
 		const screen = StreamService.screen;
 		if (screen) {
-			this.unpublishScreenStream();
+			this.closeScreenStream();
 		} else {
 			if (this.screenClient) {
 				this.createScreenStream(StateService.state.screenUid);
@@ -1768,11 +1794,12 @@ AgoraService.getSystemStats
 			// extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg', // Google Chrome:
 			// mediaSource:  'screen', // Firefox: 'screen', 'application', 'window' (select one)
 		};
+		// !!! todo
 		const stream = AgoraRTC.createStream(options);
 		stream.setScreenProfile(environment.profiles.screen);
 		Logger.log('AgoraService.createScreenStream', options);
 		const onStopScreenSharing = () => {
-			this.unpublishScreenStream();
+			this.closeScreenStream();
 		};
 		// Initialize the stream.
 		stream.init(() => {
@@ -1789,13 +1816,13 @@ AgoraService.getSystemStats
 
 	async publishScreenStream() {
 		try {
+			Logger.log('AgoraService.publishScreenStream');
 			const clientInfo = await this.setUserState();
 			const screen = StreamService.screen;
 			const screenClient = this.screenClient;
-			await screenClient.publish(screen);
+			await screenClient.publish(screen.getTracks());
 			screen.clientInfo = clientInfo;
 			StreamService.screen = screen;
-			Logger.log('AgoraService.publishScreenStream');
 		} catch (error) {
 			Logger.error('AgoraService.publishScreenStream.error', error);
 			throw error;
@@ -1806,14 +1833,27 @@ AgoraService.getSystemStats
 		try {
 			const screenClient = this.screenClient;
 			const screen = StreamService.screen;
-			// Logger.log('AgoraService.unpublishScreenStream', screen, screenClient);
 			if (screenClient && screen) {
-				await screenClient.unpublish(screen);
+				await screenClient.unpublish(screen.getTracks());
 			}
 			StreamService.screen = null;
-			Logger.log('AgoraService.unpublishScreenStream');
+			Logger.log('AgoraService.unpublishScreenStream', screen);
 		} catch (error) {
 			Logger.error('AgoraService.unpublishScreenStream.error', error);
+			throw error;
+		}
+	}
+
+	async closeScreenStream() {
+		try {
+			const screen = StreamService.screen;
+			if (screen) {
+				await screen.close();
+			}
+			StreamService.screen = null;
+			Logger.log('AgoraService.closeScreenStream', screen);
+		} catch (error) {
+			Logger.error('AgoraService.closeScreenStream.error', error);
 			throw error;
 		}
 	}

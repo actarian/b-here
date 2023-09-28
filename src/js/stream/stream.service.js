@@ -2,8 +2,6 @@ import { BehaviorSubject, combineLatest, interval, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { RoleType } from '../user/user';
 
-const MAX_VISIBLE_STREAMS = 8;
-
 export const StreamServiceMode = {
 	Client: 'client',
 	Editor: 'editor',
@@ -29,6 +27,7 @@ export default class StreamService {
 		return this.editorScreens$.getValue();
 	}
 
+	/** @type {BehaviorSubject<Stream | null>} */
 	static local$ = new BehaviorSubject(null);
 	static set local(local) {
 		this.local$.next(local);
@@ -37,6 +36,7 @@ export default class StreamService {
 		return this.local$.getValue();
 	}
 
+	/** @type {BehaviorSubject<Stream | null>} */
 	static screen$ = new BehaviorSubject(null);
 	static set screen(screen) {
 		this.screen$.next(screen);
@@ -45,6 +45,7 @@ export default class StreamService {
 		return this.screen$.getValue();
 	}
 
+	/** @type {BehaviorSubject<Stream[]>} */
 	static remotes$ = new BehaviorSubject([]);
 	static set remotes(remotes) {
 		this.remotes$.next(remotes);
@@ -53,6 +54,7 @@ export default class StreamService {
 		return this.remotes$.getValue();
 	}
 
+	/** @type {BehaviorSubject<{ uid: string }[]>} */
 	static peers$ = new BehaviorSubject([]);
 	static set peers(peers) {
 		this.peers$.next(peers);
@@ -67,8 +69,6 @@ export default class StreamService {
 				const orderedRemotes = [];
 				const remotes = datas[0];
 				remotes.forEach(remote => {
-					// const audioLevel = remote.getAudioLevel();
-					// console.log('audioLevel', audioLevel, remote);
 					let role = null, uid = null, screenUid = null, audioLevel = 0, peekAudioLevel = 0, order = 0;
 					if (remote.clientInfo) {
 						audioLevel = remote.clientInfo.audioLevel = remote.getAudioLevel();
@@ -77,11 +77,6 @@ export default class StreamService {
 						role = remote.clientInfo.role || null;
 						uid = remote.clientInfo.uid || null;
 						screenUid = remote.clientInfo.screenUid || null;
-						/*
-						if (remote.clientInfo.screenUid !== remote.getId()) {
-							orderedRemotes.push(remote);
-						}
-						*/
 					}
 					orderedRemotes.push({ role, uid, screenUid, audioLevel, peekAudioLevel, order, remote });
 				});
@@ -97,9 +92,6 @@ export default class StreamService {
 						x.remote.clientInfo.order = i;
 					}
 				});
-				// !!! hard limit max visible stream
-				// orderedRemotes.length = Math.min(orderedRemotes.length, MAX_VISIBLE_STREAMS);
-				// console.log('StreamService.orderedRemotes$', orderedRemotes);
 				return orderedRemotes;
 			}),
 			distinctUntilChanged((a, b) => {
@@ -161,21 +153,21 @@ export default class StreamService {
 						}
 						video.oncanplay = () => {
 							const fakePublisherStream = {
-								getId: () => 'editor',
+								streamId: 'editor',
 								clientInfo: {
 									role: RoleType.Publisher,
 									uid: 'editor',
 								},
 							};
 							const fakeAttendeeStream = {
-								getId: () => 'editor',
+								streamId: 'editor',
 								clientInfo: {
 									role: RoleType.Attendee,
 									uid: 'editor',
 								},
 							};
 							const fakeSmartDeviceStream = {
-								getId: () => 'editor',
+								streamId: 'editor',
 								clientInfo: {
 									role: RoleType.SmartDevice,
 									uid: 'editor',
@@ -217,7 +209,7 @@ export default class StreamService {
 						}
 						video.oncanplay = () => {
 							const fakePublisherScreen = {
-								getId: () => 'editor-screen',
+								streamId: 'editor-screen',
 								clientInfo: {
 									role: RoleType.Publisher,
 									uid: 'editor',
@@ -225,7 +217,7 @@ export default class StreamService {
 								},
 							};
 							const fakeAttendeeScreen = {
-								getId: () => 'editor-screen',
+								streamId: 'editor-screen',
 								clientInfo: {
 									role: RoleType.Attendee,
 									uid: 'editor',
@@ -251,9 +243,9 @@ export default class StreamService {
 		if (local) {
 			streams.unshift(local);
 		}
-		const publisherStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher && x.clientInfo.uid === x.getId());
+		const publisherStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Publisher && x.clientInfo.uid === x.streamId);
 		if (publisherStream) {
-			return publisherStream.getId();
+			return publisherStream.streamId;
 		}
 		return null;
 	}
@@ -276,9 +268,9 @@ export default class StreamService {
 		if (local) {
 			streams.unshift(local);
 		}
-		const attendeeStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Attendee && x.clientInfo.uid === x.getId());
+		const attendeeStream = streams.find(x => x.clientInfo && x.clientInfo.role === RoleType.Attendee && x.clientInfo.uid === x.streamId);
 		if (attendeeStream) {
-			return attendeeStream.getId();
+			return attendeeStream.streamId;
 		}
 		return null;
 	}
@@ -298,7 +290,7 @@ export default class StreamService {
 	static getRemoteById(streamId) {
 		// console.log('StreamService.getRemoteById', streamId);
 		const remotes = StreamService.remotes;
-		const remote = remotes.find(x => x.getId() === streamId);
+		const remote = remotes.find(x => x.streamId === streamId);
 		if (remote) {
 			return remote;
 		}
@@ -306,18 +298,21 @@ export default class StreamService {
 
 	static remoteAdd(stream) {
 		const remotes = this.remotes.slice();
-		remotes.push(stream);
+		const remote = remotes.find(x => x.streamId === stream.streamId);
+		if (remote) {
+			remote.update(stream);
+		} else {
+			remotes.push(stream);
+		}
 		this.remotes = remotes;
 	}
 
 	static remoteRemove(streamId) {
 		const remotes = this.remotes.slice();
-		const remote = remotes.find(x => x.getId() === streamId);
+		const remote = remotes.find(x => x.streamId === streamId);
 		// console.log('StreamService.remoteRemove', streamId, remote);
 		if (remote) {
-			if (remote.isPlaying()) {
-				remote.stop();
-			}
+			remote.stop();
 			remotes.splice(remotes.indexOf(remote), 1);
 			this.remotes = remotes;
 		}
@@ -326,7 +321,7 @@ export default class StreamService {
 
 	static remoteSetClientInfo(remoteId, clientInfo) {
 		const remotes = this.remotes;
-		const remote = remotes.find(x => x.getId() === remoteId);
+		const remote = remotes.find(x => x.streamId === remoteId);
 		if (remote) {
 			remote.clientInfo = clientInfo;
 		}

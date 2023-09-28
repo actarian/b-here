@@ -235,6 +235,7 @@ export class AgoraEvent {
 }
 export class AgoraPeerEvent extends AgoraEvent { }
 export class AgoraRemoteEvent extends AgoraEvent { }
+export class AgoraUserInfoUpdateEvent extends AgoraEvent { }
 export class AgoraMuteVideoEvent extends AgoraEvent { }
 export class AgoraUnmuteVideoEvent extends AgoraEvent { }
 export class AgoraMuteAudioEvent extends AgoraEvent { }

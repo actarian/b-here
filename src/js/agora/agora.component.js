@@ -474,7 +474,7 @@ export default class AgoraComponent extends Component {
 			this.remotes = [];
 			this.remoteScreen = this.screen;
 			remotes.forEach(x => {
-				if (x.clientInfo && x.clientInfo.screenUid === x.getId()) {
+				if (x.clientInfo && x.clientInfo.screenUid === x.streamId) {
 					this.remoteScreen = x;
 				} else {
 					this.remotes.push(x);

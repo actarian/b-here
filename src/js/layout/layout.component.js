@@ -358,14 +358,14 @@ LayoutComponent.meta = {
 			<div class="group--remote" [class]="remoteClass" *if="state.live">
 				<div class="agora-stream" *for="let remote of remotes">
 					<div class="agora-stream__player"></div>
-					<div class="agora-stream__info" [class]="{ spyed: state.spying == remote.id, controlling: state.controlling == remote.id }">
+					<div class="agora-stream__info" [class]="{ spyed: state.spying == remote.streamId, controlling: state.controlling == remote.streamId }">
 						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 						<div class="id">name</div>
-						<button type="button" class="btn--control" [title]="'title_control' | label" (click)="onToggleControl(remote.id)" *if="state.role === 'publisher'">
+						<button type="button" class="btn--control" [title]="'title_control' | label" (click)="onToggleControl(remote.streamId)" *if="state.role === 'publisher'">
 							<svg class="control" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#control"></use></svg>
 						</button>
-						<button type="button" class="btn--spy" [title]="'title_spy' | label" (click)="onToggleSpy(remote.id)" *if="state.role === 'publisher'">
+						<button type="button" class="btn--spy" [title]="'title_spy' | label" (click)="onToggleSpy(remote.streamId)" *if="state.role === 'publisher'">
 							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 						</button>
 					</div>
@@ -469,7 +469,7 @@ LayoutComponent.meta = {
 						<svg class="cam-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cam-muted"></use></svg>
 						<svg class="mic-muted" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic-muted"></use></svg>
 						<div class="id">name</div>
-						<button type="button" class="btn--spy" [title]="'title_spy' | label" *if="state.role === 'publisher'" (click)="onToggleSpy(remote.id)">
+						<button type="button" class="btn--spy" [title]="'title_spy' | label" *if="state.role === 'publisher'" (click)="onToggleSpy(remote.streamId)">
 							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 						</button>
 					</div>

@@ -1,9 +1,10 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
+import { Logger } from '../logger/logger';
 import { MessageService } from '../message/message.service';
 import StateService from '../state/state.service';
+import { Stream } from '../stream/stream';
 import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, MessageType } from './agora.types';
-
 export default class AgoraStreamComponent extends Component {
 
 	set videoMuted(videoMuted) {
@@ -30,52 +31,62 @@ export default class AgoraStreamComponent extends Component {
 		this.streamId_ = streamId;
 	}
 
+	/** @type {Stream} */
 	get stream() {
 		return this.stream_;
 	}
 
+	/**
+	 * @param stream {Stream}
+	 * */
 	set stream(stream) {
-		if (this.stream_ !== stream) {
-			// console.log('AgoraStreamComponent set stream', stream);
-			const { node } = getContext(this);
-			const player = this.player = node.querySelector('.agora-stream__player');
-			while (player.childElementCount > 0) {
-				player.removeChild(player.firstElementChild);
-			}
-			// player.textContent = '';
-			// !!!
-			if (this.stream_ && this.stream_.isPlaying() && this.stream_.player.div.parentNode === player) {
-				console.log('AgoraStreamComponent stopping stream', this.stream_.getId(), 'on', this.stream_.player.div.parentNode);
-				this.stream_.stop();
-			}
-			this.stream_ = stream;
-			if (stream) {
-				this.videoMuted = stream.userMuteVideo;
-				this.audioMuted = stream.userMuteAudio;
-			}
-			const streamId = stream ? stream.getId() : null;
-			this.streamId = streamId;
-			// console.log('AgoraStreamComponent streamId', streamId);
-			if (streamId) {
-				// const name = `stream-${node.getAttribute('type')}-${streamId}`;
-				const name = `stream-${streamId}`;
-				player.setAttribute('id', name);
-				const self = this;
-				if (stream.isPlaying()) {
-					player.appendChild(stream.player.div);
-				} else {
-					this.shouldUseResumeGesture = false;
-					stream.play(name, { fit: 'cover' }, (error) => {
-						if (error && error.status !== 'aborted') {
-							// The playback fails, probably due to browser policy. You can resume the playback by user gesture.
-							self.shouldUseResumeGesture = true;
-							self.pushChanges();
-						}
-					});
+		try {
+			if (this.stream_ !== stream) {
+				console.log('AgoraStreamComponent set stream', stream);
+				const { node } = getContext(this);
+				const player = this.player = node.querySelector('.agora-stream__player');
+				/*
+				while (player.childElementCount > 0) {
+					player.removeChild(player.firstElementChild);
 				}
-			} else {
-				player.removeAttribute('id');
+				if (this.stream_ && this.stream_.isPlaying() && this.stream_.player.div.parentNode === player) {
+					Logger.log('AgoraStreamComponent', 'stopping stream', this.stream_.streamId);
+					this.stream_.stop();
+				}
+				*/
+				this.stream_ = stream;
+				if (stream) {
+					this.videoMuted = stream.userMuteVideo;
+					this.audioMuted = stream.userMuteAudio;
+				}
+				const streamId = stream ? stream.streamId : null;
+				this.streamId = streamId;
+				if (streamId) {
+					const playerId = `stream-${streamId}`;
+					player.setAttribute('id', playerId);
+					const self = this;
+					// Logger.log('AgoraStreamComponent', streamId);
+					if (stream.isPlaying()) {
+						stream.resume(player);
+					} else {
+						this.shouldUseResumeGesture = false;
+						try {
+							stream.play(player);
+						} catch (error) {
+							Logger.error('Stream.videoTrack.play.error', error);
+							if (error && error.status !== 'aborted') {
+								// The playback fails, probably due to browser policy. You can resume the playback by user gesture.
+								self.shouldUseResumeGesture = true;
+								self.pushChanges();
+							}
+						}
+					}
+				} else {
+					player.removeAttribute('id');
+				}
 			}
+		} catch (error) {
+			Logger.error('AgoraStreamComponent.stream.set.error', error);
 		}
 	}
 

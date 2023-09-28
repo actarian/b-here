@@ -400,7 +400,7 @@ export class PanoramaLoader {
 					}
 				});
 				if (stream) {
-					return stream.getId();
+					return stream.streamId;
 				} else {
 					return null;
 				}

@@ -44,7 +44,7 @@ export class PhoneStreamElement {
 				this.plane.material.map = remote.texture;
 				this.plane.material.needsUpdate = true;
 			} else {
-				this.addStreamTexture(remote.getId(), (texture) => {
+				this.addStreamTexture(remote.streamId, (texture) => {
 					remote.texture = texture;
 					this.plane.material.map = texture;
 					this.plane.material.needsUpdate = true;

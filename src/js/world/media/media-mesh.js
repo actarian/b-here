@@ -296,20 +296,20 @@ export default class MediaMesh extends InteractiveMesh {
 	}
 
 	static isPublisherStream(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid === stream.getId();
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.uid === stream.streamId;
 	}
 	static isAttendeeStream(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.uid === stream.getId();
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.uid === stream.streamId;
 	}
 	static isSmartDeviceStream(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.SmartDevice && stream.clientInfo.uid === stream.getId();
+		return stream.clientInfo && stream.clientInfo.role === RoleType.SmartDevice && stream.clientInfo.uid === stream.streamId;
 	}
 	static isPublisherScreen(stream) {
-		// console.log(stream.clientInfo, stream.clientInfo ? [stream.clientInfo.role, stream.clientInfo.screenUid, stream.getId()] : null);
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.screenUid === stream.getId();
+		// console.log(stream.clientInfo, stream.clientInfo ? [stream.clientInfo.role, stream.clientInfo.screenUid, stream.streamId] : null);
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Publisher && stream.clientInfo.screenUid === stream.streamId;
 	}
 	static isAttendeeScreen(stream) {
-		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.screenUid === stream.getId();
+		return stream.clientInfo && stream.clientInfo.role === RoleType.Attendee && stream.clientInfo.screenUid === stream.streamId;
 	}
 	static getTypeMatcher(assetType) {
 		let matcher;
@@ -350,7 +350,7 @@ export default class MediaMesh extends InteractiveMesh {
 					let i = 0;
 					const matchType = this.getTypeMatcher(assetType);
 					streams.forEach(x => {
-						// console.log('MediaMesh.getStreamId$', x.clientInfo, x.clientInfo ? [x.clientInfo.screenUid, x.getId()] : null);
+						// console.log('MediaMesh.getStreamId$', x.clientInfo, x.clientInfo ? [x.clientInfo.screenUid, x.streamId] : null);
 						if (matchType(x)) {
 							if (i === item.asset.index) {
 								stream = x;
@@ -359,8 +359,8 @@ export default class MediaMesh extends InteractiveMesh {
 						}
 					});
 					if (stream) {
-						// console.log('MediaMesh.getStreamId$', assetType.name, stream.clientInfo.role, stream.getId());
-						return stream.getId();
+						// console.log('MediaMesh.getStreamId$', assetType.name, stream.clientInfo.role, stream.streamId);
+						return stream.streamId;
 					} else {
 						// console.log('MediaMesh.getStreamId$.notfound', assetType.name);
 						return null;
