@@ -14988,8 +14988,10 @@ class DragService {
 
   static observe$(target) {
     target = target || document;
-    const events$ = DragService.events$;
-    const dismiss$ = DragService.dismiss$;
+    const events$ = new rxjs.ReplaySubject(1); // = DragService.events$;
+
+    const dismiss$ = new rxjs.Subject(); // = DragService.dismiss$;
+
     return this.down$(target, events$).pipe(operators.switchMap(downEvent => {
       DragService.downEvent = downEvent;
       return rxjs.merge(this.move$(target, events$, dismiss$, downEvent), this.up$(target, events$, dismiss$, downEvent)).pipe(operators.takeUntil(dismiss$));
@@ -34387,9 +34389,10 @@ VirtualStructure.meta = {
     } = rxcomp.getContext(this);
     const page = document.querySelector('.page');
     return MediaLoader.events$.pipe( // filter(event => event.loader.item.id === this.media.item.id),
-    operators.tap(event => {
+    operators.filter(event => event instanceof MediaLoaderPlayEvent || event.loader === this.media), operators.tap(event => {
       if (event instanceof MediaLoaderPlayEvent) {
         this.media = event.loader;
+        this.progress = 0;
         this.playing = true;
         node.classList.add('active');
         page.classList.add('media-player-active');

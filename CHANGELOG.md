@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.31] - 2023-09-28
+
+### Fixing
+- MediaPlayerComponent filtering events$
+
+---
+
 ## [1.0.30] - 2023-09-22
 
 ### Fixing

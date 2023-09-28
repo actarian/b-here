@@ -113,6 +113,7 @@ export default class ModelPanelComponent extends ModelComponent {
 						const event = new MouseEvent('mouseup', mouseEvent);
 						linkNode.dispatchEvent(event);
 						// console.log('ModelPanelComponent.dispatchEvent', mouseEvent);
+						// !!! todo check DragService.events$, DragService.dismiss$
 						setTimeout(() => {
 							DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
 						}, 1);

@@ -22,9 +22,11 @@ export default class MediaPlayerComponent extends Component {
 		const page = document.querySelector('.page');
 		return MediaLoader.events$.pipe(
 			// filter(event => event.loader.item.id === this.media.item.id),
+			filter(event => event instanceof MediaLoaderPlayEvent || event.loader === this.media),
 			tap(event => {
 				if (event instanceof MediaLoaderPlayEvent) {
 					this.media = event.loader;
+					this.progress = 0;
 					this.playing = true;
 					node.classList.add('active');
 					page.classList.add('media-player-active');

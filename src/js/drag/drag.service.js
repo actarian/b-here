@@ -143,8 +143,8 @@ export default class DragService {
 
 	static observe$(target) {
 		target = target || document;
-		const events$ = DragService.events$;
-		const dismiss$ = DragService.dismiss$;
+		const events$ = new ReplaySubject(1); // = DragService.events$;
+		const dismiss$ = new Subject(); // = DragService.dismiss$;
 		return this.down$(target, events$).pipe(
 			switchMap((downEvent) => {
 				DragService.downEvent = downEvent;
