@@ -3,6 +3,7 @@ const path = require('path');
 const rollup = require('rollup');
 const rollupPluginBabel = require('@rollup/plugin-babel');
 const rollupPluginCommonJs = require('@rollup/plugin-commonjs');
+const rollupPluginJson = require('@rollup/plugin-json');
 const rollupPluginSourcemaps = require('rollup-plugin-sourcemaps');
 const rollupPluginLicense = require('rollup-plugin-license');
 const rollupPluginNodeResolve = require('@rollup/plugin-node-resolve');
@@ -192,8 +193,20 @@ function rollupInput(item) {
 			'@babel/plugin-proposal-object-rest-spread',
 			// '@babel/plugin-transform-runtime'
 		],
-		// exclude: ['node_modules/**'], // transpile only source code
-		exclude: 'node_modules\/(?!(threejs)\/).*',
+		exclude: ['node_modules/**'], // transpile only source code
+		/*
+		exclude: 1 ? [] : ['node_modules/**', ...(Array.isArray(item.input) ? item.input : [item.input]).map(x => {
+		  if (x.indexOf('node_modules') === 0) {
+			x = x.split('/');
+			while (x.length > 2) {
+			  x.pop();
+			}
+			return `!${x.join('/')}/**`;
+		  } else {
+			return null;
+		  }
+		}).filter(x => x)],
+		*/
 		comments: output.format !== 'iife',
 		babelHelpers: 'bundled',
 		// babelrc: false,
@@ -204,6 +217,7 @@ function rollupInput(item) {
 		License: <%= pkg.license %>`,
 	};
 	const plugins = [
+		rollupPluginJson(),
 		// Resolve source maps to the original source
 		rollupPluginSourcemaps(),
 		// Allow node_modules resolution, so you can use 'external' to control
@@ -212,7 +226,7 @@ function rollupInput(item) {
 		// import node modules
 		/*
 		output.format === 'cjs' ? null : (typeof rollupPluginNodeResolve === 'function' ? rollupPluginNodeResolve : rollupPluginNodeResolve.nodeResolve)({
-			resolveOnly: [new RegExp(`^(?!(${externals.join('$|')}$))`)]
+		  resolveOnly: [new RegExp(`^(?!(${externals.join('$|')}$))`)]
 		}),
 		*/
 		output.format === 'cjs' ? null : (typeof rollupPluginNodeResolve === 'function' ? rollupPluginNodeResolve : rollupPluginNodeResolve.nodeResolve)(),
@@ -233,7 +247,7 @@ function rollupInput(item) {
 		treeshake: true,
 		/*
 		watch: {
-			include: watchGlob,
+		  include: watchGlob,
 		},
 		*/
 	};

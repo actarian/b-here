@@ -61,7 +61,7 @@ function compileScssItem(item) {
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
 		.pipe(gulpPlumber())
 		.pipe(sass({
-			includePaths: ['./node_modules/', __dirname + '/node_modules', 'node_modules'],
+			loadPaths: ['node_modules'], // ['./node_modules/', __dirname + '/node_modules', 'node_modules']
 		}).on('compile:scss.error', (error) => {
 			log.error('compile:scss', error);
 		}))
@@ -141,10 +141,11 @@ function compileHtml(done) {
 }
 
 function compileHtmlItem(item) {
+	// console.log('compileHtemlItem', item.input, path.extname(item.input));
 	setEntry(item.input, path.extname(item.input));
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
 		.pipe(gulpPlumber())
-		.pipe(gulpHtmlExtend({ annotations: true, verbose: false }))
+		.pipe(gulpHtmlExtend({ annotations: true, verbose: false, ...item.options }))
 		.pipe(gulpIf(item.minify, gulpHtmlMin({ collapseWhitespace: true })))
 		.pipe(gulpRename(function(path) {
 			return {
@@ -197,11 +198,11 @@ function compileRollup(item) {
 		.pipe(rollup(item))
 		/*
 		.pipe(gulpRename(function(file) {
-			const output = outputs.find(x => {
-				// console.log('file', x.file, file.basename, x.file.indexOf(file.basename));
-				return x.file.indexOf(file.basename) !== -1;
-			});
-			file.dirname = path.dirname(output.file);
+		  const output = outputs.find(x => {
+			// console.log('file', x.file, file.basename, x.file.indexOf(file.basename));
+			return x.file.indexOf(file.basename) !== -1;
+		  });
+		  file.dirname = path.dirname(output.file);
 		}))
 		*/
 		.pipe(tfsCheckout())

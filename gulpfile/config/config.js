@@ -70,17 +70,17 @@ function getConfig() {
 
 /*
 function configWatcher(callback) {
-	const configWatch = watch(CONFIG_PATH, function config(done) {
-		// config = getConfig();
-		if (typeof callback === 'function') {
-			return callback(done);
-		}
-	}).on('change', logWatch);
-	return [configWatch];
+  const configWatch = watch(CONFIG_PATH, function config(done) {
+	// config = getConfig();
+	if (typeof callback === 'function') {
+	  return callback(done);
+	}
+  }).on('change', logWatch);
+  return [configWatch];
 }
 
 function logWatch(path, stats) {
-	log('Changed', path);
+  log('Changed', path);
 }
 */
 

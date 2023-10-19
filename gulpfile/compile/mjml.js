@@ -65,12 +65,12 @@ function mjml(item) {
 			});
 		};
 		rollup.rollup(inputOptions).then(bundle => {
-				const outputs = mjmlOutput(item);
-				if (inputOptions.cache !== false) {
-					rollupCache.set(inputOptions.input, bundle);
-				}
-				return Promise.all(outputs.map((output, i) => rollupGenerate(bundle, output, i)));
-			})
+			const outputs = mjmlOutput(item);
+			if (inputOptions.cache !== false) {
+				rollupCache.set(inputOptions.input, bundle);
+			}
+			return Promise.all(outputs.map((output, i) => rollupGenerate(bundle, output, i)));
+		})
 			.then((results) => {
 				results.forEach(x => {
 					const outputs = x.output;

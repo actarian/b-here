@@ -1,10 +1,11 @@
 /**
- * @license beta-bhere-development v1.0.30
+ * @license beta-bhere-development v1.0.32
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
-(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('three'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','three','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.THREE,g.html2canvas));})(this,(function(rxcomp,rxcompForm,rxjs,operators,three,html2canvas){'use strict';function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var html2canvas__default=/*#__PURE__*/_interopDefaultLegacy(html2canvas);const CHUNK_REMOTE =
+(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('three'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','three','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.THREE,g.html2canvas));})(this,(function(rxcomp,rxcompForm,rxjs,operators,three,html2canvas){'use strict';function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var html2canvas__default=/*#__PURE__*/_interopDefaultLegacy(html2canvas);var name$1 = "beta-bhere-development";
+var version = "1.0.32";const CHUNK_REMOTE =
 /* html */
 `
 <!-- remote sidebar -->
@@ -3906,7 +3907,7 @@ class MeetingId {
       const params = new URLSearchParams(url.split('?')[1]);
 
       if (params.has('p')) {
-        components = MeetingUrl.decrypt(params.get('p'));
+        components = MeetingUrl.decrypt(params.get('p')); // console.log('MeetingUrl.decompose', components);
       }
     } else if (url.indexOf('?') > -1) {
       const params = new URLSearchParams(url.split('?')[1]);
@@ -5549,9 +5550,9 @@ AccessComponent.meta = {
 							<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 								<span [innerHTML]="'access_tour' | label"></span>
 							</button>
+							<div class="info" [innerHTML]="'access_or' | label" *if="('guidedTourRequest' | flag) || ('guidedTourAccess' | flag)"></div>
 						</div>
 						<div *if="'guidedTourRequest' | flag">
-							<div class="info" [innerHTML]="'access_or' | label"></div>
 							<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>
@@ -12253,9 +12254,26 @@ class MediaLoader {
         }
       };
 
+      const onError = error => {
+        console.log('MediaLoader.load.error', error);
+
+        if (video.error instanceof MediaError) {
+          setTimeout(() => {
+            `${LabelPipe.transform('media_error')} ${file}`;
+            ToastService.open$({
+              message: `impossible to reproduce the video source. ${file}`,
+              // mediaError,
+              type: ToastType.Alert,
+              position: ToastPosition.BottomRight
+            });
+          }, 500);
+        }
+      };
+
       video.oncanplay = onCanPlay;
       video.ontimeupdate = onTimeUpdate;
       video.onended = onEnded;
+      video.onerror = onError;
       video.src = MediaLoader.getPath(item);
       video.load(); // must call after setting/changing source
     } else if (item.asset) {
@@ -12304,15 +12322,42 @@ class MediaLoader {
 
   play(silent) {
     // console.log('MediaLoader.play');
-    if (this.video) {
-      this.video.muted = this.muted_;
-      this.video.play().then(() => {
+    const video = this.video;
+
+    if (video) {
+      video.muted = this.muted_;
+      video.play().then(() => {
         // console.log('MediaLoader.play.success', this.item.asset.file);
         if (!silent) {
           MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
         }
       }, error => {
         console.log('MediaLoader.play.error', this.item.asset.file, error);
+        setTimeout(() => {
+          ToastService.open$({
+            message: 'interact with the page to reproduce audio.',
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
+          });
+        }, 500);
+        this.tryMuted(silent);
+      });
+    }
+  }
+
+  tryMuted(silent) {
+    // console.log('MediaLoader.tryMuted');
+    const video = this.video;
+
+    if (video) {
+      this.muted = true;
+      video.play().then(() => {
+        // console.log('MediaLoader.play.success', this.item.asset.file);
+        if (!silent) {
+          MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
+        }
+      }, error => {
+        console.log('MediaLoader.tryMuted.error', this.item.asset.file, error);
       });
     }
   }
@@ -13157,7 +13202,7 @@ class LoaderService {
       total = 1;
     }
 
-    // console.log('LoaderService.setProgress');
+    // console.log('LoaderService.setProgress', ref, loaded, total);
     const item = this.items[ref];
 
     if (item) {
@@ -15644,7 +15689,31 @@ class ImageService {
           MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
         }
       }, error => {
-        console.log('PanoramaLoader.play.error', video.src, error);
+        console.log('PanoramaLoader.play.error', video.src, video.error, error);
+        setTimeout(() => {
+          ToastService.open$({
+            message: 'interact with the page to reproduce audio.',
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
+          });
+        }, 500);
+        PanoramaLoader.tryMuted(silent);
+      });
+    }
+  }
+
+  static tryMuted(silent) {
+    const video = this.video;
+
+    if (video) {
+      this.muted = true;
+      video.play().then(() => {
+        // console.log('PanoramaLoader.tryMuted.success', this.video.src);
+        if (!silent) {
+          MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
+        }
+      }, error => {
+        console.log('PanoramaLoader.tryMuted.error', video.src, video.error, error);
       });
     }
   }
@@ -15698,9 +15767,27 @@ class ImageService {
     const onEnded = () => {
     };
 
+    const onError = error => {
+      console.log('loadVideoBackground.error', video.error);
+
+      if (video.error instanceof MediaError) {
+        setTimeout(() => {
+          `${LabelPipe.transform('media_error')} ${file}`;
+          ToastService.open$({
+            message: `impossible to reproduce the video source. ${file}`,
+            // mediaError,
+            type: ToastType.Alert,
+            position: ToastPosition.BottomRight
+          });
+        }, 500);
+        LoaderService.setProgress(progressRef, 1);
+      }
+    };
+
     video.oncanplay = onCanPlay;
     video.ontimeupdate = onTimeUpdate;
     video.onended = onEnded;
+    video.onerror = onError;
     video.crossOrigin = 'anonymous';
     video.src = folder + file;
     video.load();
@@ -25437,7 +25524,10 @@ ModelNavComponent.meta = {
         });
         const href = window.location.origin + meetingUrl.toGuidedTourUrl();
         console.log('AgoraComponent.initAgora.isSelfServiceProposition', href);
-        UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(operators.first()).subscribe(_ => {
+        UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(operators.first(), operators.catchError(error => {
+          console.log('UserService.selfServiceSupportRequest$.error', error);
+          return rxjs.EMPTY;
+        })).subscribe(_ => {
           const name = this.getName(StateService.state.user);
           StateService.patchState({
             checklist: true,
@@ -37363,6 +37453,7 @@ class ModelPanelComponent extends ModelComponent {
             };
             const event = new MouseEvent('mouseup', mouseEvent);
             linkNode.dispatchEvent(event); // console.log('ModelPanelComponent.dispatchEvent', mouseEvent);
+            // !!! todo check DragService.events$, DragService.dismiss$
 
             setTimeout(() => {
               DragService.dismissEvent(event, DragService.events$, DragService.dismiss$, DragService.downEvent);
@@ -38186,4 +38277,5 @@ AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
   declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, GenericComponent, GenericModalComponent, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
   bootstrap: AppComponent
-};rxcomp.Browser.bootstrap(AppModule);}));
+};console.log(name$1, version);
+rxcomp.Browser.bootstrap(AppModule);}));

@@ -175,12 +175,12 @@ module.exports = {
 
 /*
 const RollupFormats = {
-	'amd': 'amd', // Asynchronous Module Definition, used with module loaders like RequireJS
-	'cjs': 'cjs', // CommonJS, suitable for Node and other bundlers
-	'esm': 'esm', // Keep the bundle as an ES module file, suitable for other bundlers and inclusion as a <script type=module> tag in modern browsers
-	'iife': 'iife', // A self-executing function, suitable for inclusion as a <script> tag. (If you want to create a bundle for your application, you probably want to use this.)
-	'umd': 'umd', // Universal Module Definition, works as amd, cjs and iife all in one
-	'system': 'system', // Native format of the SystemJS loader
+  'amd': 'amd', // Asynchronous Module Definition, used with module loaders like RequireJS
+  'cjs': 'cjs', // CommonJS, suitable for Node and other bundlers
+  'esm': 'esm', // Keep the bundle as an ES module file, suitable for other bundlers and inclusion as a <script type=module> tag in modern browsers
+  'iife': 'iife', // A self-executing function, suitable for inclusion as a <script> tag. (If you want to create a bundle for your application, you probably want to use this.)
+  'umd': 'umd', // Universal Module Definition, works as amd, cjs and iife all in one
+  'system': 'system', // Native format of the SystemJS loader
 };
 
 const TypescriptTarget = ["ES3", "ES5", "ES6", "ES2015", "ES2016", "ES2017", "ES2018", "ES2019", "ES2020", "ESNext"];

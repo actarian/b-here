@@ -3,7 +3,7 @@ import { Component } from 'rxcomp';
 import { FormControl, FormGroup, Validators } from 'rxcomp-form';
 import { first, takeUntil } from 'rxjs/operators';
 import { CHUNK_COPYRIGHT, CHUNK_CREDITS, CHUNK_LANGUAGE } from '../agora/agora.component.chunks';
-import { environment, STATIC } from '../environment';
+import { STATIC, environment } from '../environment';
 import { fieldsToFormGroup, patchFields } from '../forms/controls.component';
 import { MeetingUrl } from '../meeting/meeting-url';
 import { RoutePipe } from '../router/route.pipe';
@@ -262,9 +262,9 @@ AccessComponent.meta = {
 							<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 								<span [innerHTML]="'access_tour' | label"></span>
 							</button>
+							<div class="info" [innerHTML]="'access_or' | label" *if="('guidedTourRequest' | flag) || ('guidedTourAccess' | flag)"></div>
 						</div>
 						<div *if="'guidedTourRequest' | flag">
-							<div class="info" [innerHTML]="'access_or' | label"></div>
 							<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>
