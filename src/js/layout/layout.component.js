@@ -147,7 +147,6 @@ export default class LayoutComponent extends Component {
 		).subscribe();
 		const vrService = this.vrService = VRService.getService();
 		console.log('LayoutComponent', this);
-		// console.log(AgoraService.getUniqueUserId());
 
 		setTimeout(() => {
 			const type = ToastType.Dialog;

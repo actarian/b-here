@@ -23,6 +23,10 @@ export class Stream {
 		return this.user?.uid.toString();
 	}
 
+	get hasScreen() {
+		return this.user?.hasScreen;
+	}
+
 	get hasVideo() {
 		return this.user?.hasVideo;
 	}
@@ -39,6 +43,12 @@ export class Stream {
 		return this.user?.audioTrack;
 	}
 
+	/*
+	get screenTrack() {
+		return this.user?.screenTrack;
+	}
+	*/
+
 	get video() {
 		return this.videoTrack ? true : false;
 	}
@@ -46,6 +56,12 @@ export class Stream {
 	get audio() {
 		return this.audioTrack ? true : false;
 	}
+
+	/*
+	get screen() {
+		return this.screenTrack ? true : false;
+	}
+	*/
 
 	get userMuteVideo() {
 		// return this.videoTrack ? !this.videoTrack.enabled : false;
@@ -65,6 +81,11 @@ export class Stream {
 		if (this.user.hasAudio) {
 			tracks.push(this.audioTrack);
 		}
+		/*
+		if (this.user.hasScreen) {
+			tracks.push(this.screenTrack);
+		}
+		*/
 		return tracks;
 	}
 
@@ -107,15 +128,16 @@ export class Stream {
 	}
 
 	isPlaying() {
-		return this.videoTrack?.isPlaying || this.audioTrack?.isPlaying;
+		return this.videoTrack?.isPlaying || this.audioTrack?.isPlaying; // || this.screenTrack?.isPlaying;
 	}
 
-	play(parentNode) {
+	play(parentNode, mediaType = null) {
+		mediaType = mediaType || this.mediaType;
 		while (parentNode.childElementCount > 0) {
 			parentNode.removeChild(parentNode.firstElementChild);
 		}
 		this.parentNode = parentNode;
-		if (this.mediaType === 'video') {
+		if (mediaType === 'video') {
 			this.videoTrack.play(parentNode, {
 				fit: 'cover',
 				mirror: undefined,
@@ -125,6 +147,16 @@ export class Stream {
 		} else if (this.audioTrack && !this.isLocal) {
 			this.audioTrack.play();
 		}
+		/*
+		else if (mediaType === 'screen') {
+			this.screenTrack.play(parentNode, {
+				fit: 'cover',
+				mirror: undefined,
+			});
+			this.element = parentNode.firstElementChild;
+			Logger.log('Stream.play.screenTrack', parentNode, this.element);
+		}
+		*/
 	}
 
 	stop() {
@@ -134,6 +166,11 @@ export class Stream {
 		if (this.audioTrack && this.audioTrack.isPlaying) {
 			this.audioTrack.stop();
 		}
+		/*
+		if (this.screenTrack && this.screenTrack.isPlaying) {
+			this.screenTrack.stop();
+		}
+		*/
 	}
 
 	close() {
@@ -143,8 +180,14 @@ export class Stream {
 		if (this.audioTrack) {
 			this.audioTrack.close();
 		}
+		/*
+		if (this.screenTrack) {
+			this.screenTrack.close();
+		}
+		*/
 	}
 
+	// !!! unused
 	update(stream) {
 		this.user = stream.user;
 		this.mediaType = stream.mediaType;
@@ -159,6 +202,31 @@ export class Stream {
 		Logger.log('Stream.resume', parentNode, this.element);
 		if (this.element) {
 			parentNode.appendChild(this.element);
+		}
+	}
+
+	published(user, mediaType) {
+		this.user = user;
+		this.mediaType = mediaType;
+		if (this.parentNode) {
+			this.play(this.parentNode, mediaType);
+		}
+	}
+
+	unpublished(user, mediaType) {
+		this.user = user;
+		switch (mediaType) {
+			case 'video':
+				user.videoTrack?.stop();
+				break;
+			case 'audio':
+				user.audioTrack?.stop();
+				break;
+			/*
+		case 'screen':
+			user.screenTrack?.stop();
+			break;
+			*/
 		}
 	}
 

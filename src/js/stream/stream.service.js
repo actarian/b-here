@@ -299,12 +299,17 @@ export default class StreamService {
 	static remoteAdd(stream) {
 		const remotes = this.remotes.slice();
 		const remote = remotes.find(x => x.streamId === stream.streamId);
+		if (!remote) {
+			remotes.push(stream);
+			this.remotes = remotes;
+		}
+		/*
 		if (remote) {
 			remote.update(stream);
 		} else {
 			remotes.push(stream);
 		}
-		this.remotes = remotes;
+		*/
 	}
 
 	static remoteRemove(streamId) {

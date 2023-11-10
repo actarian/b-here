@@ -97,7 +97,7 @@ export class MeetingId {
 	}
 
 	static padded(num, size) {
-		const s = '000000000' + num;
-		return s.substr(s.length - size);
+		const s = '000000000000' + num;
+		return s.substring(s.length - size);
 	}
 }

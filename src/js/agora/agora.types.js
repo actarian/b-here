@@ -3,7 +3,6 @@ import { RoleType } from '../user/user';
 
 export const USE_AUTODETECT = false;
 export const USE_VOLUME_INDICATOR = false;
-export const USE_RTM = true;
 
 export const VIDEO_PROFILES = [
 	/*

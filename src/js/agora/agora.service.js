@@ -12,20 +12,9 @@ import SessionStorageService from '../storage/session-storage.service';
 import { Stream } from '../stream/stream';
 import StreamService from '../stream/stream.service';
 import { RoleType } from '../user/user';
-import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraUserInfoUpdateEvent, AgoraVolumeLevelsEvent, MessageType, UIMode, USE_AUTODETECT, USE_RTM, USE_VOLUME_INDICATOR, getStreamQuality } from './agora.types';
-
+import { AgoraMuteAudioEvent, AgoraMuteVideoEvent, AgoraPeerEvent, AgoraRemoteEvent, AgoraStatus, AgoraUnmuteAudioEvent, AgoraUnmuteVideoEvent, AgoraUserInfoUpdateEvent, AgoraVolumeLevelsEvent, MessageType, StreamQualities, UIMode, USE_AUTODETECT, USE_VOLUME_INDICATOR, getStreamQuality } from './agora.types';
 
 export default class AgoraService extends Emittable {
-
-	static getSingleton(defaultDevices) {
-		if (DEBUG) {
-			return;
-		}
-		if (!this.AGORA) {
-			this.AGORA = new AgoraService(defaultDevices);
-		}
-		return this.AGORA;
-	}
 
 	constructor(defaultDevices) {
 		if (AgoraService.AGORA) {
@@ -137,6 +126,7 @@ export default class AgoraService extends Emittable {
 		return from(devices());
 	}
 
+	// 1. connect
 	async connect(preferences) {
 		if (!StateService.state.connecting) {
 			const devices = StateService.state.devices;
@@ -149,10 +139,7 @@ export default class AgoraService extends Emittable {
 			setTimeout(async () => {
 				await this.createClient();
 				const channelNameLink = this.getChannelNameLink();
-				AgoraService.rtcToken$(channelNameLink).subscribe(async (token) => {
-					Logger.log('AgoraService.rtcToken$', token);
-					await this.join(token.token, channelNameLink);
-				});
+				await this.join(channelNameLink);
 			}, 250);
 		}
 		return StateService.state$;
@@ -198,6 +185,7 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	// 2. rtc client
 	async createClient() {
 		if (this.client) {
 			return this.client;
@@ -235,19 +223,17 @@ export default class AgoraService extends Emittable {
 			client.on('onTokenPrivilegeWillExpire', this.onTokenPrivilegeWillExpire);
 			client.on('onTokenPrivilegeDidExpire', this.onTokenPrivilegeDidExpire);
 			// Logger.log('AgoraService.createClient', 'agora rtm sdk version: ' + AgoraRTM.VERSION + ' compatible');
-			if (USE_RTM) {
-				/*
-				AgoraRTM.LOG_FILTER_OFF
-				AgoraRTM.LOG_FILTER_ERROR
-				AgoraRTM.LOG_FILTER_INFO (Default)
-				AgoraRTM.LOG_FILTER_WARNING
-				*/
-				const messageClient = this.messageClient = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF }); // LOG_FILTER_DEBUG
-				messageClient.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
-				Logger.log('AgoraService.createClient', 'client initialized');
-				// messageClient.on('ConnectionStateChanged', Logger.warn);
-				// messageClient.on('MessageFromPeer', Logger.log);
-			}
+			/*
+			AgoraRTM.LOG_FILTER_OFF
+			AgoraRTM.LOG_FILTER_ERROR
+			AgoraRTM.LOG_FILTER_INFO (Default)
+			AgoraRTM.LOG_FILTER_WARNING
+			*/
+			const messageClient = this.messageClient = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF }); // LOG_FILTER_DEBUG
+			messageClient.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
+			Logger.log('AgoraService.createClient', 'client initialized');
+			// messageClient.on('ConnectionStateChanged', Logger.warn);
+			// messageClient.on('MessageFromPeer', Logger.log);
 			await client.setClientRole(this.isAudienceRole ? 'audience' : 'host'); // 'audience' | 'host', AUDIENCE_LEVEL_LOW_LATENCY = 1
 			if (environment.flags.useProxy) {
 				client.startProxyServer(3);
@@ -265,6 +251,7 @@ export default class AgoraService extends Emittable {
 		return this.client;
 	}
 
+	// 3. channelName
 	getChannelNameLink() {
 		let link = StateService.state.link || '';
 		const match = link.match(/(\d{9})-(\d{4})-(\d{13})/);
@@ -277,90 +264,69 @@ export default class AgoraService extends Emittable {
 		return channelNameLink;
 	}
 
-	static getUniqueUserId() {
-		// max safe integer 9007199254740991 length 16
-		// max allowed integer 4294967296 2^32
-		// const m = 9007199254740991;
-		const mult = 10000000000000;
-		const a = (1 + Math.floor(Math.random() * 8)) * 100;
-		const b = (1 + Math.floor(Math.random() * 8)) * 10;
-		const c = (1 + Math.floor(Math.random() * 8)) * 1;
-		const combo = (a + b + c);
-		const date = Date.now();
-		const uid = combo * mult + date;
-		// Logger.log('AgoraService.getUniqueUserId', combo);
-		// Logger.log('AgoraService.getUniqueUserId', date);
-		// Logger.log('AgoraService.getUniqueUserId', m);
-		// Logger.log('AgoraService.getUniqueUserId', uid);
-		return uid.toString();
+	// 4. join
+	async join(channelNameLink) {
+		this.channel = null;
+		const uid = AgoraService.resolveUserId();
+		const rtmToken = await AgoraService.rtmToken$(uid).toPromise();
+		// Logger.log('AgoraService.join.rtmToken$', rtmToken);
+		try {
+			await this.joinRtmChannel(rtmToken.token, channelNameLink, uid);
+			const rtcToken = await AgoraService.rtcToken$(channelNameLink).toPromise();
+			// Logger.log('AgoraService.rtcToken$', rtcToken);
+			await this.joinRtcChannel(rtcToken.token, channelNameLink, uid);
+		} catch (error) {
+			Logger.error('AgoraService.join.joinRtmChannel.error', error);
+		}
 	}
 
-	async join(token, channelNameLink) {
-		this.channel = null;
-		const client = this.client;
-		const clientId = SessionStorageService.get('bHereClientId') || AgoraService.getUniqueUserId();
-		Logger.log('AgoraService.join', { token, channelNameLink, clientId });
+	// 5. join rtc
+	async joinRtcChannel(token, channelNameLink, uid) {
 		try {
-			const uid = await client.join(environment.appKey, channelNameLink, token, clientId);
-			// Logger.log('AgoraService.join', uid);
+			Logger.log('AgoraService.joinRtcChannel', token, channelNameLink, uid);
+			await this.client.join(environment.appKey, channelNameLink, token, uid);
 			StateService.patchState({ status: AgoraStatus.Connected, channelNameLink, connected: true, uid: uid });
-			SessionStorageService.set('bHereClientId', uid);
-			if (USE_RTM) {
-				AgoraService.rtmToken$(uid).subscribe(async (token) => {
-					// Logger.log('AgoraService.join.rtmToken$', token);
-					try {
-						await this.joinMessageChannel(token.token, uid);
-						// Logger.log('AgoraService.join.joinMessageChannel.success', success);
-						if (!this.isAudienceRole) {
-							const devices = await this.autoDetectDevice();
-							await this.createMediaStream(uid, devices.video, devices.audio);
-						}
-						this.observeMemberCount();
-					} catch (error) {
-						Logger.error('AgoraService.join.joinMessageChannel.error', error);
-					}
-				});
-			} else {
-				if (!this.isAudienceRole) {
-					const devices = await this.autoDetectDevice();
-					await this.createMediaStream(uid, devices.video, devices.audio);
-				}
+			AgoraService.storeUserId(uid);
+			if (!this.isAudienceRole) {
+				const devices = await this.autoDetectDevice();
+				await this.createMediaStream(uid, devices.video, devices.audio);
 			}
+			this.observeMemberCount();
 		} catch (error) {
-			Logger.error('AgoraService.join.error', error);
+			Logger.error('AgoraService.joinRtcChannel.error', error);
 			if (error === 'DYNAMIC_KEY_EXPIRED') {
-				AgoraService.rtcToken$(channelNameLink).subscribe(async (token) => {
-					await this.join(token.token, channelNameLink);
-				});
+				const rtcToken = await AgoraService.rtcToken$(channelNameLink).toPromise();
+				await this.joinRtcChannel(rtcToken.token, channelNameLink, uid);
 			}
 		}
 	}
 
-	joinMessageChannel(token, uid) {
+	// 5. join rtm
+	joinRtmChannel(token, channelNameLink, uid) {
+		Logger.log('AgoraService.joinRtmChannel', token, channelNameLink, uid);
 		let channel;
 		return new Promise((resolve, reject) => {
 			const messageClient = this.messageClient;
-			Logger.log('AgoraService.joinMessageChannel', messageClient);
-			messageClient.login({ token: token, uid: uid.toString() }).then(() => {
-				Logger.log('AgoraService.joinMessageChannel.login.success');
-				channel = messageClient.createChannel(StateService.state.channelNameLink);
+			messageClient.login({ token, uid }).then(() => {
+				Logger.log('AgoraService.joinRtmChannel.login.success');
+				channel = messageClient.createChannel(channelNameLink);
 				return channel.join();
 			}).then(() => {
 				this.channel = channel;
 				channel.on('ChannelMessage', this.onMessage);
 				this.emit('channel', channel);
-				// Logger.log('AgoraService.joinMessageChannel.success');
+				// Logger.log('AgoraService.joinRtmChannel.success');
 				resolve(uid);
-				Logger.log('AgoraService.joinMessageChannel.join.success');
+				Logger.log('AgoraService.joinRtmChannel.join.success');
 				channel.getMembers().then(members => {
-					members = members.filter(x => x !== uid.toString());
+					members = members.filter(x => x !== uid);
 					const message = { type: MessageType.ChannelMembers, members };
 					this.broadcastMessage(message);
-					Logger.log('AgoraService.joinMessageChannel.members', message);
+					Logger.log('AgoraService.joinRtmChannel.members', message);
 				});
-				Logger.log('AgoraService.joinMessageChannel', StateService.state.channelNameLink);
+				Logger.log('AgoraService.joinRtmChannel.success', channelNameLink);
 			}).catch(error => {
-				Logger.error('AgoraService.joinMessageChannel.error', error);
+				Logger.error('AgoraService.joinRtmChannel.error', error);
 				reject(error);
 			});
 		});
@@ -517,6 +483,7 @@ export default class AgoraService extends Emittable {
 		return state.devices;
 	}
 
+	// 6. media stream - 1
 	async createMediaStream(uid, video, audio) {
 		// this.releaseStream('_mediaVideoStream')
 		const options = {
@@ -531,6 +498,7 @@ export default class AgoraService extends Emittable {
 		await this.createLocalStreamWithOptions(options, quality);
 	}
 
+	// 6. media stream - 2
 	// If you prefer video smoothness to sharpness, use setVideoProfile
 	// to set the video resolution and Agora self-adapts the video bitrate according to the network condition.
 	// If you prefer video sharpness to smoothness, use setVideoEncoderConfiguration,
@@ -570,6 +538,7 @@ export default class AgoraService extends Emittable {
 		}
 	}
 
+	// 6. media stream - 3
 	async publishLocalStream() {
 		try {
 			Logger.log('AgoraService.publishLocalStream');
@@ -656,23 +625,19 @@ export default class AgoraService extends Emittable {
 
 	leaveMessageChannel() {
 		return new Promise((resolve, reject) => {
-			if (USE_RTM) {
-				this.unobserveMemberCount();
-				const channel = this.channel;
-				if (!channel) {
-					return resolve();
-				}
-				const messageClient = this.messageClient;
-				channel.leave().then(() => {
-					this.channel = null;
-					messageClient.logout().then(() => {
-						this.messageClient = null;
-						resolve();
-					}, reject);
-				}, reject);
-			} else {
+			this.unobserveMemberCount();
+			const channel = this.channel;
+			if (!channel) {
 				return resolve();
 			}
+			const messageClient = this.messageClient;
+			channel.leave().then(() => {
+				this.channel = null;
+				messageClient.logout().then(() => {
+					this.messageClient = null;
+					resolve();
+				}, reject);
+			}, reject);
 		});
 	}
 
@@ -1553,12 +1518,17 @@ AgoraService.getSystemStats
 			uid !== StateService.state.screenUid
 		) {
 			await this.client.subscribe(user, mediaType);
-			const stream = new Stream(user, mediaType);
-			await this.remoteAdd(stream);
+			let remote = StreamService.getRemoteById(user.uid);
+			if (remote) {
+				remote.published(user, mediaType);
+			} else {
+				remote = new Stream(user, mediaType);
+				await this.remoteAdd(remote);
+			}
 			/*
 			if (mediaType === 'video') {
-				const stream = new Stream(user, mediaType);
-				await this.remoteAdd(stream);
+				const remote = new Stream(user, mediaType);
+				await this.remoteAdd(remote);
 			} else if (mediaType === 'audio') {
 				user.audioTrack?.play();
 			}
@@ -1605,7 +1575,20 @@ AgoraService.getSystemStats
 	 * @param {'audio' | 'video'} mediaType
 	 */
 	async onUserUnpublished(user, mediaType) {
+		/**
+		 * !!! now onUserUnpublished happen at mute of track
+		 */
 		const uid = user.uid.toString();
+		if (
+			uid !== StateService.state.uid &&
+			uid !== StateService.state.screenUid
+		) {
+			let remote = StreamService.getRemoteById(user.uid);
+			if (remote) {
+				remote.unpublished(user, mediaType);
+			}
+		}
+		/*
 		Logger.log('AgoraService.onUserUnpublished', uid, user, mediaType);
 		if (uid === StateService.state.uid) {
 			StreamService.local = null;
@@ -1617,6 +1600,7 @@ AgoraService.getSystemStats
 		} else if (mediaType === 'audio') {
 			user.audioTrack?.stop();
 		}
+		*/
 	}
 
 	remoteRemove(streamId) {
@@ -1716,41 +1700,43 @@ AgoraService.getSystemStats
 	// screen
 
 	toggleScreen() {
+		if (this.isAudienceRole) {
+			return;
+		}
 		const screen = StreamService.screen;
+		// console.log('AgoraService.toggleScreen', screen);
 		if (screen) {
 			this.closeScreenStream();
 		} else {
-			if (this.screenClient) {
-				this.createScreenStream(StateService.state.screenUid);
-			} else {
-				this.createScreenClient().then(() => {
-					const channelNameLink = this.getChannelNameLink();
-					AgoraService.rtcToken$(channelNameLink).subscribe(async (token) => {
-						Logger.log('AgoraService.toggleScreen.rtcToken$', token);
-						await this.screenJoin(token.token, channelNameLink);
-					});
-				});
-			}
+			this.openScreenStream();
+		}
+	}
+
+	async openScreenStream() {
+		let screenClient = this.screenClient;
+		if (!screenClient) {
+			screenClient = await this.createScreenClient();
+		}
+		if (screenClient) {
+			await this.createScreenStream(StateService.state.screenUid);
+		} else {
+			// log modal, impossible to open screen sharing
 		}
 	}
 
 	async createScreenClient() {
-		if (this.screenClient) {
-			return this.screenClient;
-		}
+		let screenClient = null;
 		try {
-			const screenClient = this.screenClient = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
-			screenClient.on('error', this.onScreenError);
-			screenClient.on('stream-published', this.onScreenStreamPublished);
-			screenClient.on('stream-unpublished', this.onScreenStreamUnpublished);
-			// only for remotes
-			// screenClient.on('stream-added', this.onScreenStreamAdded);
-			// screenClient.on('stream-removed', this.onScreenStreamRemoved);
-			// screenClient.on('stream-subscribed', this.onScreenStreamSubscribed);
-			// screenClient.on('peer-online', this.onScreenPeerConnect);
-			// screenClient.on('peer-leave', this.onScreenPeerLeaved);
-			// screenClient.on('onTokenPrivilegeWillExpire', this.onScreenTokenPrivilegeWillExpire);
-			// screenClient.on('onTokenPrivilegeDidExpire', this.onScreenTokenPrivilegeDidExpire);
+			screenClient = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
+			screenClient.on('exception', this.onScreenException);
+			// screenClient.on('user-joined', this.onScreenJoined);
+			// screenClient.on('user-left', this.onScreenLeft);
+			screenClient.on('user-published', this.onScreenPublished);
+			screenClient.on('user-unpublished', this.onScreenUnpublished);
+			// screenClient.on('user-info-updated', this.onScreenInfoUpdated);
+			// screenClient.on('onTokenPrivilegeWillExpire', this.onTokenPrivilegeWillExpire);
+			// screenClient.on('onTokenPrivilegeDidExpire', this.onTokenPrivilegeDidExpire);
+			await screenClient.setClientRole('host');
 			if (environment.flags.useProxy) {
 				screenClient.startProxyServer(3);
 				/*
@@ -1758,60 +1744,56 @@ AgoraService.getSystemStats
 				5: The cloud proxy for the TCP (encryption) protocol, that is, the Force TCP cloud proxy mode. In this mode, the SDK always transmits data over TLS 443.
 				Note: As of v4.15.0, the default value of mode is 3.
 				*/
-				Logger.log('AgoraService.createScreenClient.startProxyServer');
+				Logger.log('AgoraService.openScreenStream.startProxyServer');
 			}
+			const channelNameLink = this.getChannelNameLink();
+			const rtcToken = await AgoraService.rtcToken$(channelNameLink).toPromise();
+			Logger.log('AgoraService.toggleScreen.rtcToken$', rtcToken);
+			await this.screenJoin(screenClient, rtcToken.token, channelNameLink);
 		} catch (error) {
-			Logger.error('AgoraService.createScreenClient.error', error);
-			this.screenClient = null;
+			Logger.error('AgoraService.openScreenStream.error', error);
 		}
-		return this.screenClient;
+		this.screenClient = screenClient;
+		return screenClient;
 	}
 
-	async screenJoin(token, channelNameLink) {
-		const screenClient = this.screenClient;
-		const screenClientId = AgoraService.getUniqueUserId();
+	async screenJoin(screenClient, token, channelNameLink) {
 		try {
+			const screenClientId = AgoraService.getUniqueUserId();
 			const screenUid = await screenClient.join(environment.appKey, channelNameLink, token, screenClientId);
 			Logger.log('AgoraService.screenJoin', screenUid);
 			StateService.patchState({ screenUid });
-			this.createScreenStream(screenUid);
 		} catch (error) {
 			Logger.error('AgoraService.screenJoin.error', error);
 			if (error === 'DYNAMIC_KEY_EXPIRED') {
-				AgoraService.rtcToken$(channelNameLink).subscribe(async (token) => {
-					await this.screenJoin(token.token, channelNameLink);
-				});
+				const rtcToken = await AgoraService.rtcToken$(channelNameLink).toPromise();
+				await this.screenJoin(screenClient, rtcToken.token, channelNameLink);
 			}
 		}
 	}
 
-	createScreenStream(screenUid) {
-		const options = {
-			streamID: screenUid,
-			audio: false,
-			video: false,
-			screen: true,
-			// extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg', // Google Chrome:
-			// mediaSource:  'screen', // Firefox: 'screen', 'application', 'window' (select one)
-		};
-		// !!! todo
-		const stream = AgoraRTC.createStream(options);
-		stream.setScreenProfile(environment.profiles.screen);
-		Logger.log('AgoraService.createScreenStream', options);
-		const onStopScreenSharing = () => {
-			this.closeScreenStream();
-		};
-		// Initialize the stream.
-		stream.init(() => {
+	async createScreenStream(screenUid) {
+		try {
+			const screenQuality = StreamQualities.find(x => x.profile === environment.profiles.screen);
+			let screenTrack = await AgoraRTC.createScreenVideoTrack({
+				displaySurface: 'monitor', // pre-selection
+				encoderConfig: screenQuality.profile,
+			}, 'disable');
+			const user = {
+				uid: screenUid,
+				videoTrack: screenTrack,
+				hasVideo: screenTrack !== undefined,
+			};
+			const stream = new Stream(user, 'video', true);
 			StreamService.screen = stream;
-			stream.on('stopScreenSharing', onStopScreenSharing);
-			stream.muteAudio();
-			setTimeout(() => {
-				this.publishScreenStream();
+			setTimeout(async () => {
+				await this.publishScreenStream();
 			}, 1);
-		}, function(error) {
-			Logger.error('AgoraService.createScreenStream.screen.init.error', error);
-		});
+			Logger.log('AgoraService.createLocalStreamWithOptions.success', stream);
+		} catch (error) {
+			Logger.error('AgoraService.createLocalStreamWithOptions.error', error);
+			// throw error;
+		}
 	}
 
 	async publishScreenStream() {
@@ -1831,13 +1813,13 @@ AgoraService.getSystemStats
 
 	async unpublishScreenStream() {
 		try {
+			Logger.log('AgoraService.unpublishScreenStream');
 			const screenClient = this.screenClient;
 			const screen = StreamService.screen;
-			if (screenClient && screen) {
+			if (screen && screenClient) {
 				await screenClient.unpublish(screen.getTracks());
 			}
 			StreamService.screen = null;
-			Logger.log('AgoraService.unpublishScreenStream', screen);
 		} catch (error) {
 			Logger.error('AgoraService.unpublishScreenStream.error', error);
 			throw error;
@@ -1850,6 +1832,7 @@ AgoraService.getSystemStats
 			if (screen) {
 				await screen.close();
 			}
+			await this.clearLocalUserAttributes();
 			StreamService.screen = null;
 			Logger.log('AgoraService.closeScreenStream', screen);
 		} catch (error) {
@@ -1880,12 +1863,13 @@ AgoraService.getSystemStats
 		});
 	}
 
-	onScreenError(error) {
-		Logger.error('AgoraService.onScreenError', error);
+	onScreenException(error) {
+		Logger.error('AgoraService.onScreenException', error);
 	}
 
-	onScreenStreamPublished(event) {
-		// Logger.log('AgoraService.onScreenStreamPublished');
+	onScreenPublished(event) {
+		Logger.log('AgoraService.onScreenPublished', event);
+		/*
 		const screen = StreamService.screen;
 		screen.clientInfo = {
 			role: StateService.state.role,
@@ -1894,11 +1878,83 @@ AgoraService.getSystemStats
 			screenUid: StateService.state.screenUid,
 		};
 		StreamService.screen = screen;
+		*/
 	}
 
-	onScreenStreamUnpublished(event) {
-		// Logger.log('AgoraService.onScreenStreamUnpublished');
+	onScreenUnpublished(event) {
+		Logger.log('AgoraService.onScreenUnpublished', event);
+		/*
 		StreamService.screen = null;
+		*/
+	}
+
+	// static
+
+	static getSingleton(defaultDevices) {
+		if (DEBUG) {
+			return;
+		}
+		if (!this.AGORA) {
+			this.AGORA = new AgoraService(defaultDevices);
+		}
+		return this.AGORA;
+	}
+
+	static getUniqueUserId() {
+		// max safe integer 9007199254740991 length 16
+		// max allowed integer 4294967296 2^32
+		// const m = 9007199254740991;
+		const mult = 10000000000000;
+		const a = (1 + Math.floor(Math.random() * 8)) * 100;
+		const b = (1 + Math.floor(Math.random() * 8)) * 10;
+		const c = (1 + Math.floor(Math.random() * 8)) * 1;
+		const combo = (a + b + c);
+		const date = Date.now();
+		const uid = combo * mult + date;
+		// Logger.log('AgoraService.getUniqueUserId', combo);
+		// Logger.log('AgoraService.getUniqueUserId', date);
+		// Logger.log('AgoraService.getUniqueUserId', m);
+		// Logger.log('AgoraService.getUniqueUserId', uid);
+		/**
+		 * Agora User Id Spec
+		 * [String uid] Length of the string: [1,255]. ASCII characters only.
+		 * [Number uid] The value range is [0,10000]
+		 * */
+		return uid.toString();
+		// return uid;
+	}
+
+	static resolveUserId() {
+		/**
+		 * Agora User Id Spec
+		 * [String uid] Length of the string: [1,255]. ASCII characters only.
+		 * [Number uid] The value range is [0,10000]
+		 * */
+		let clientId = SessionStorageService.get('bHereClientId');
+		if (typeof clientId === 'number') {
+			return clientId.toString();
+		} else if (typeof clientId === 'string') {
+			return clientId;
+		} else {
+			return AgoraService.getUniqueUserId();
+		}
+	}
+
+	static storeUserId(uid) {
+		SessionStorageService.set('bHereClientId', uid);
+	}
+
+	static fixLegacy() {
+		const prefixes = ['moz', 'webkit'];
+		prefixes.forEach(prefix => {
+			Logger.log('AgoraService.fixLegacy', `${prefix}RTC`);
+			Object.getOwnPropertyNames(window).filter(key => key.indexOf('RTC') === 0).map(key => {
+				const legacyKey = `${prefix}${key}`;
+				if (typeof window[key] !== 'undefined' && typeof window[legacyKey] === 'undefined') {
+					window[legacyKey] = window[key];
+				}
+			});
+		});
 	}
 
 	// tokens
@@ -1952,7 +2008,6 @@ AgoraService.getSystemStats
 			AgoraService.rtcToken$(channelName).subscribe(async (token) => {
 				try {
 					const uid = await client.join(environment.appKey, channelName, token.token, null);
-					// await this.createMediaStream(uid, StateService.state.devices.video, StateService.state.devices.audio);
 					resolve(uid);
 				} catch (error) {
 					if (error === 'DYNAMIC_KEY_EXPIRED') {
@@ -1968,9 +2023,6 @@ AgoraService.getSystemStats
 
 	static checkRtmConnection(uid) {
 		return new Promise((resolve, reject) => {
-			if (!USE_RTM) {
-				return resolve();
-			}
 			try {
 				let client = AgoraRTM.createInstance(environment.appKey, { logFilter: AgoraRTM.LOG_FILTER_OFF });
 				client.setParameters({ logFilter: AgoraRTM.LOG_FILTER_OFF });
@@ -2044,16 +2096,4 @@ AgoraService.getSystemStats
 		}
 	}
 
-	static fixLegacy() {
-		const prefixes = ['moz', 'webkit'];
-		prefixes.forEach(prefix => {
-			Logger.log('AgoraService.fixLegacy', `${prefix}RTC`);
-			Object.getOwnPropertyNames(window).filter(key => key.indexOf('RTC') === 0).map(key => {
-				const legacyKey = `${prefix}${key}`;
-				if (typeof window[key] !== 'undefined' && typeof window[legacyKey] === 'undefined') {
-					window[legacyKey] = window[key];
-				}
-			});
-		});
-	}
 }

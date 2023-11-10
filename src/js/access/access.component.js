@@ -192,8 +192,7 @@ export default class AccessComponent extends Component {
 			UserService.resolve$(payload, status).pipe(
 				first(),
 			).subscribe(user => {
-				console.log('!!!');
-				console.log('AccessComponent.onSubmit', user);
+				// console.log('AccessComponent.onSubmit', user);
 				switch (status) {
 					case 'guided-tour':
 						this.onHandleHook('GuidedTour', webhookPayload).pipe(

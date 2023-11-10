@@ -41,11 +41,159 @@
         "file": "welcome-room.jpg"
       },
       "orientation": {
-        "latitude": 0,
-        "longitude": 0
+        "latitude": -17.671030149772335,
+        "longitude": 89.12810956805524
       },
       "zoom": 75,
-      "items": []
+      "items": [
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            6.081035418588692,
+            -0.8514595625082411,
+            19.034075361080273
+          ],
+          "rotation": [
+            -3.096889021760113,
+            -0.30894291738370505,
+            -3.127992212254098,
+            "XYZ"
+          ],
+          "scale": [
+            12,
+            6.75,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 4,
+              "name": "publisher-stream",
+              "file": "publisherStream"
+            },
+            "folder": "",
+            "file": "publisherStream",
+            "id": 25280524659900,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 25272119444000,
+          "links": []
+        },
+        {
+          "type": {
+            "id": 2,
+            "name": "plane"
+          },
+          "position": [
+            -6.38389934164458,
+            -0.757651152309883,
+            18.938632314059888
+          ],
+          "rotation": [
+            -3.101608385777406,
+            0.3248798961802381,
+            3.1288237647391655,
+            "XYZ"
+          ],
+          "scale": [
+            12,
+            6.75,
+            1
+          ],
+          "asset": {
+            "type": {
+              "id": 6,
+              "name": "publisher-screen",
+              "file": "publisherScreen"
+            },
+            "folder": "",
+            "file": "publisherScreen",
+            "id": 25326898016400,
+            "chromaKeyColor": null,
+            "autoplay": false,
+            "loop": false,
+            "index": 0
+          },
+          "id": 25313544702000,
+          "links": []
+        }
+      ],
+      "hidden": null,
+      "ar": null
+    }
+  ],
+  "menu": [],
+  "navmaps": [],
+  "paths": [],
+  "assets": [
+    {
+      "type": {
+        "id": 4,
+        "name": "publisher-stream",
+        "file": "publisherStream"
+      },
+      "folder": "",
+      "file": "publisherStream",
+      "id": 25280524659900,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
+    },
+    {
+      "type": {
+        "id": 6,
+        "name": "publisher-screen",
+        "file": "publisherScreen"
+      },
+      "folder": "",
+      "file": "publisherScreen",
+      "id": 25326898016400,
+      "chromaKeyColor": null,
+      "autoplay": false,
+      "loop": false
+    }
+  ],
+  "users": [
+    {
+      "id": "1601892639985",
+      "username": "publisher",
+      "password": "publisher",
+      "type": "publisher",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "id": "1601892639986",
+      "username": "attendee",
+      "password": "attendee",
+      "type": "attendee",
+      "firstName": "Jhon",
+      "lastName": "Appleseed"
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkField": "",
+      "id": 33689673940100
+    },
+    {
+      "type": "self-service",
+      "firstName": "Jhon",
+      "lastName": "Appleseed",
+      "email": "jhonappleseed@gmail.com",
+      "role": 1,
+      "privacy": true,
+      "checkField": "",
+      "id": 8487824209000
     }
   ]
 }
