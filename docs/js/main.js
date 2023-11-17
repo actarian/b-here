@@ -6704,10 +6704,10 @@ StreamService.streams$ = rxjs.combineLatest([StreamService.local$, StreamService
   async publishLocalStream() {
     try {
       Logger.log('AgoraService.publishLocalStream');
-      const clientInfo = await this.setUserState();
       const local = StreamService.local;
       const client = this.client;
       await client.publish(local.getTracks());
+      const clientInfo = await this.setUserState();
       local.clientInfo = clientInfo;
       StreamService.local = local;
     } catch (error) {
@@ -7771,7 +7771,8 @@ AgoraService.getSystemStats
     }));
     const remoteId = stream.streamId;
     setTimeout(async () => {
-      const clientInfo = await this.getUserState(remoteId);
+      const uid = remoteId.split('_')[0];
+      const clientInfo = await this.getUserState(uid);
       Logger.log('AgoraService.remoteAdd.getUserState', clientInfo);
       StreamService.remoteSetClientInfo(remoteId, clientInfo);
       if (clientInfo.cameraMuted) {
@@ -7994,7 +7995,8 @@ AgoraService.getSystemStats
   }
   async screenJoin(screenClient, token, channelNameLink) {
     try {
-      const screenClientId = AgoraService.getUniqueUserId();
+      const uid = StateService.state.uid;
+      const screenClientId = uid + '_' + AgoraService.getUniqueUserId();
       const screenUid = await screenClient.join(environment.appKey, channelNameLink, token, screenClientId);
       Logger.log('AgoraService.screenJoin', screenUid);
       StateService.patchState({
@@ -8036,10 +8038,10 @@ AgoraService.getSystemStats
   async publishScreenStream() {
     try {
       Logger.log('AgoraService.publishScreenStream');
-      const clientInfo = await this.setUserState();
       const screen = StreamService.screen;
       const screenClient = this.screenClient;
       await screenClient.publish(screen.getTracks());
+      const clientInfo = await this.setUserState();
       screen.clientInfo = clientInfo;
       StreamService.screen = screen;
     } catch (error) {
