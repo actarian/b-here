@@ -64,7 +64,7 @@ module.exports = {
 			},
 		},
 	],
-	ignorePatterns: ['node_modules', 'dist', 'build', 'bin'],
+	ignorePatterns: ['node_modules', 'dist', 'build', 'bin', '*.md', 'LICENSE'],
 	globals: {
 		AgoraRTC: true,
 		AgoraRTM: true,

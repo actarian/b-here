@@ -43,16 +43,11 @@
     ]
   },
   "eslint.validate": [
-    "markdown",
-    "mdx",
     "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
+    "typescript"
   ],
   "explorer.autoReveal": true,
   "editor.definitionLinkOpensInPeek": false,
   "editor.gotoLocation.multipleDeclarations": "goto",
-  "editor.gotoLocation.multipleDefinitions": "goto",
-  "mdx.experimentalLanguageServer": true
+  "editor.gotoLocation.multipleDefinitions": "goto"
 }

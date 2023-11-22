@@ -3,6 +3,13 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.33-canary.0] - 2023-11-22
+
+### Modified
+- Agora v4
+
+---
+
 ## [1.0.29] - 2023-07-14
 
 ### Fixing
