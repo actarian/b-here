@@ -120,22 +120,22 @@ function replaceExtension(filePath, ext) {
 /*
 
 const errorM = (error) => {
-	const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
-	const relativePath = path.relative(process.cwd(), filePath);
-	const message = [chalk.underline(relativePath), error.formatted].join('\n');
+  const filePath = (error.file === 'stdin' ? file.path : error.file) || file.path;
+  const relativePath = path.relative(process.cwd(), filePath);
+  const message = [chalk.underline(relativePath), error.formatted].join('\n');
 
-	error.messageFormatted = message; // eslint-disable-line no-param-reassign
-	error.messageOriginal = error.message; // eslint-disable-line no-param-reassign
-	error.message = stripAnsi(message); // eslint-disable-line no-param-reassign
-	error.relativePath = relativePath; // eslint-disable-line no-param-reassign
+  error.messageFormatted = message; // eslint-disable-line no-param-reassign
+  error.messageOriginal = error.message; // eslint-disable-line no-param-reassign
+  error.message = stripAnsi(message); // eslint-disable-line no-param-reassign
+  error.relativePath = relativePath; // eslint-disable-line no-param-reassign
 
-	return callback(new pluginError('sass', error));
+  return callback(new pluginError('sass', error));
 };
 
 sass.logError = function logError(error) {
-	const message = new pluginError('sass', error.messageFormatted).toString();
-	process.stderr.write(`${message}\n`);
-	this.emit('end');
+  const message = new pluginError('sass', error.messageFormatted).toString();
+  process.stderr.write(`${message}\n`);
+  this.emit('end');
 };
 */
 

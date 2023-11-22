@@ -48,7 +48,7 @@ export default class LoaderService {
 	}
 
 	static setProgress(ref, loaded, total = 1) {
-		// console.log('LoaderService.setProgress');
+		// console.log('LoaderService.setProgress', ref, loaded, total);
 		const item = this.items[ref];
 		if (item) {
 			item.next({ loaded, total });

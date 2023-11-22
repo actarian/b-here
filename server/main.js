@@ -73,7 +73,7 @@ function serve(options) {
 	app.use('*', apiMiddleware_);
 	app.use('/api', express.static('docs/api'));
 
-	app.post('/api/upload', multipartMiddleware, function (request, response) {
+	app.post('/api/upload', multipartMiddleware, function(request, response) {
 		if (options.accessControlAllowOrigin) {
 			response.header('Access-Control-Allow-Origin', '*');
 		}
@@ -101,7 +101,7 @@ function serve(options) {
 			}
 		});
 	});
-	app.options('/api/upload', function (request, response) {
+	app.options('/api/upload', function(request, response) {
 		console.log('OPTIONS');
 		if (options.accessControlAllowOrigin) {
 			response.header('Access-Control-Allow-Origin', '*');
@@ -126,17 +126,21 @@ function serve(options) {
 
 	const defaultLanguage = 'en';
 
-	app.get('/', function (request, response) {
+	app.get('/', function(request, response) {
+		console.log('/', request.params);
 		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${defaultLanguage}.html` : `/docs/index__${defaultLanguage}.html`));
 	});
 
-	app.get('/:lang/', function (request, response) {
-		console.log(request.params);
+	app.get('/:lang/', function(request, response) {
+		console.log('/:lang/', request.params);
 		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${request.params.lang}.html` : `/docs/index__${request.params.lang}.html`));
 	});
 
-	app.get('/:lang/:path/', function (request, response) {
-		console.log(request.params);
+	app.get('/:lang/:path/', function(request, response) {
+		console.log('/:lang/:path/', request.params);
+		if (request.params.lang === 'email') {
+			return response.sendFile(path.join(dirname, '/docs/', request.params.lang, request.params.path));
+		}
 		response.sendFile(path.join(dirname, isDist ? `/docs/bhere__${request.params.lang}.html` : `/docs/index__${request.params.lang}.html`));
 	});
 

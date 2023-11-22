@@ -3,10 +3,39 @@ All notable changes to the "beta-bhere" library will be documented in this file.
 
 ---
 
+## [1.0.34-canary.0] - 2023-11-22
+
+### Fixing
+- use strict
+
+---
+
 ## [1.0.33-canary.0] - 2023-11-22
 
 ### Modified
 - Agora v4
+
+---
+
+## [1.0.32] - 2023-10-19
+
+### Added
+- PanoramaLoader & MediaLoader video error handler
+- selfServiceSupportRequest api catchError
+
+---
+
+## [1.0.31] - 2023-09-28
+
+### Fixing
+- MediaPlayerComponent filtering events$
+
+---
+
+## [1.0.30] - 2023-09-22
+
+### Fixing
+- DragService filtering events$ by target
 
 ---
 

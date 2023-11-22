@@ -1,7 +1,9 @@
 import { ReplaySubject } from 'rxjs';
 import { assetIsStream, AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
+import { LabelPipe } from '../../label/label.pipe';
 import StateService from '../../state/state.service';
+import ToastService, { ToastPosition, ToastType } from '../../toast/toast.service';
 import { RoleType } from '../../user/user';
 
 export class MediaLoaderEvent {
@@ -231,9 +233,22 @@ export default class MediaLoader {
 					MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
 				}
 			};
+			const onError = (error) => {
+				console.log('MediaLoader.load.error', error);
+				if (video.error instanceof MediaError) {
+					setTimeout(() => {
+						const mediaError = `${LabelPipe.transform('media_error')} ${file}`;
+						ToastService.open$({
+							message: `impossible to reproduce the video source. ${file}`, // mediaError,
+							type: ToastType.Alert, position: ToastPosition.BottomRight
+						});
+					}, 500);
+				}
+			};
 			video.oncanplay = onCanPlay;
 			video.ontimeupdate = onTimeUpdate;
 			video.onended = onEnded;
+			video.onerror = onError;
 			video.src = MediaLoader.getPath(item);
 			video.load(); // must call after setting/changing source
 		} else if (item.asset) {
@@ -277,15 +292,47 @@ export default class MediaLoader {
 
 	play(silent) {
 		// console.log('MediaLoader.play');
-		if (this.video) {
-			this.video.muted = this.muted_;
-			this.video.play().then(() => {
+		const video = this.video;
+		if (video) {
+			video.muted = this.muted_;
+			video.play().then(() => {
 				// console.log('MediaLoader.play.success', this.item.asset.file);
 				if (!silent) {
 					MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
 				}
 			}, error => {
-				console.log('MediaLoader.play.error', this.item.asset.file, error);
+				console.log(
+					'MediaLoader.play.error',
+					this.item.asset.file,
+					error
+				);
+				setTimeout(() => {
+					ToastService.open$({
+						message: 'interact with the page to reproduce audio.',
+						type: ToastType.Alert, position: ToastPosition.BottomRight
+					});
+				}, 500);
+				this.tryMuted(silent);
+			});
+		}
+	}
+
+	tryMuted(silent) {
+		// console.log('MediaLoader.tryMuted');
+		const video = this.video;
+		if (video) {
+			this.muted = true;
+			video.play().then(() => {
+				// console.log('MediaLoader.play.success', this.item.asset.file);
+				if (!silent) {
+					MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
+				}
+			}, error => {
+				console.log(
+					'MediaLoader.tryMuted.error',
+					this.item.asset.file,
+					error
+				);
 			});
 		}
 	}

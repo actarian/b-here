@@ -4,8 +4,10 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { AssetType } from '../../asset/asset';
 import { environment } from '../../environment';
 import ImageService, { ImageServiceEvent } from '../../image/image.service';
+import { LabelPipe } from '../../label/label.pipe';
 import LoaderService from '../../loader/loader.service';
 import StreamService from '../../stream/stream.service';
+import ToastService, { ToastPosition, ToastType } from '../../toast/toast.service';
 import MediaLoader, { MediaLoaderDisposeEvent, MediaLoaderPauseEvent, MediaLoaderPlayEvent, MediaLoaderTimeSetEvent, MediaLoaderTimeUpdateEvent } from '../media/media-loader';
 import MediaMesh from '../media/media-mesh';
 
@@ -223,10 +225,43 @@ export class PanoramaLoader {
 					MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
 				}
 			}, error => {
-				console.log('PanoramaLoader.play.error', video.src, error);
+				console.log(
+					'PanoramaLoader.play.error',
+					video.src,
+					video.error,
+					error
+				);
+				setTimeout(() => {
+					ToastService.open$({
+						message: 'interact with the page to reproduce audio.',
+						type: ToastType.Alert, position: ToastPosition.BottomRight
+					});
+				}, 500);
+				PanoramaLoader.tryMuted(silent);
 			});
 		}
 	}
+
+	static tryMuted(silent) {
+		const video = this.video;
+		if (video) {
+			this.muted = true;
+			video.play().then(() => {
+				// console.log('PanoramaLoader.tryMuted.success', this.video.src);
+				if (!silent) {
+					MediaLoader.events$.next(new MediaLoaderPlayEvent(this));
+				}
+			}, error => {
+				console.log(
+					'PanoramaLoader.tryMuted.error',
+					video.src,
+					video.error,
+					error
+				);
+			});
+		}
+	}
+
 	static pause(silent) {
 		// console.log('PanoramaLoader.pause');
 		const video = this.video;
@@ -274,9 +309,23 @@ export class PanoramaLoader {
 				MediaLoader.events$.next(new MediaLoaderPauseEvent(this));
 			}
 		};
+		const onError = (error) => {
+			console.log('loadVideoBackground.error', video.error);
+			if (video.error instanceof MediaError) {
+				setTimeout(() => {
+					const mediaError = `${LabelPipe.transform('media_error')} ${file}`;
+					ToastService.open$({
+						message: `impossible to reproduce the video source. ${file}`, // mediaError,
+						type: ToastType.Alert, position: ToastPosition.BottomRight
+					});
+				}, 500);
+				LoaderService.setProgress(progressRef, 1);
+			}
+		};
 		video.oncanplay = onCanPlay;
 		video.ontimeupdate = onTimeUpdate;
 		video.onended = onEnded;
+		video.onerror = onError;
 		video.crossOrigin = 'anonymous';
 		video.src = folder + file;
 		video.load();

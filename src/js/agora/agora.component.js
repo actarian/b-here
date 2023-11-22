@@ -1,6 +1,6 @@
 import { Component, getContext } from 'rxcomp';
-import { fromEvent } from 'rxjs';
-import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, fromEvent } from 'rxjs';
+import { catchError, first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';
 import NavmapService from '../editor/navmap/navmap.service';
 import PathService from '../editor/path/path.service';
@@ -959,6 +959,10 @@ export default class AgoraComponent extends Component {
 				Logger.log('AgoraComponent.checkSelfServiceProposition', href);
 				UserService.selfServiceSupportRequest$(StateService.state.user, meetingIdRoles.id, href).pipe(
 					first(),
+					catchError(error => {
+						console.log('UserService.selfServiceSupportRequest$.error', error);
+						return EMPTY;
+					}),
 				).subscribe(_ => {
 					const name = this.getName(StateService.state.user);
 					StateService.patchState({ checklist: true, link: meetingIdRoles.idSelfService, name });

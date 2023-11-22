@@ -256,6 +256,7 @@ export class MeetingUrl {
 			const params = new URLSearchParams(url.split('?')[1]);
 			if (params.has('p')) {
 				components = MeetingUrl.decrypt(params.get('p'));
+				// console.log('MeetingUrl.decompose', components);
 			}
 		} else if (url.indexOf('?') > -1) {
 			const params = new URLSearchParams(url.split('?')[1]);

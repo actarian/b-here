@@ -262,9 +262,9 @@ AccessComponent.meta = {
 							<button type="button" class="btn--next" (click)="onSelfServiceTourRequest($event)">
 								<span [innerHTML]="'access_tour' | label"></span>
 							</button>
+							<div class="info" [innerHTML]="'access_or' | label" *if="('guidedTourRequest' | flag) || ('guidedTourAccess' | flag)"></div>
 						</div>
 						<div *if="'guidedTourRequest' | flag">
-							<div class="info" [innerHTML]="'access_or' | label"></div>
 							<button type="button" class="btn--next" (click)="onGuidedTourRequest($event)">
 								<span [innerHTML]="'access_guided_tour' | label"></span>
 							</button>

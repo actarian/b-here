@@ -60,10 +60,10 @@ function middleware_(options) {
 			}
 			/*
 			logger(
-				'Not rewriting',
-				req.method,
-				req.url,
-				'because the client prefers JSON.'
+			  'Not rewriting',
+			  req.method,
+			  req.url,
+			  'because the client prefers JSON.'
 			);
 			return next();
 			*/
@@ -154,7 +154,7 @@ function getLogger(options) {
 		// eslint-disable-next-line no-console
 		return console.log.bind(console);
 	}
-	return function() {};
+	return function() { };
 }
 
 module.exports = {
