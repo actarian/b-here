@@ -55,7 +55,7 @@ function typescriptCompile(file, item) {
 	const exitCode = emitResult.emitSkipped ? 1 : 0;
 	// console.log('exitCode', exitCode);
 	return exitCode;
-	process.exit(exitCode);
+	// process.exit(exitCode);
 }
 
 function typescriptConfig(item) {
@@ -63,8 +63,8 @@ function typescriptConfig(item) {
 	const configDefault = {
 		compilerOptions: {
 			typeRoots: ['node_modules/@types'],
-			strict: false
-		}
+			strict: false,
+		},
 	};
 	/*
 	"baseUrl": "",
@@ -84,8 +84,8 @@ function typescriptConfig(item) {
 		},
 		exclude: [
 			'node_modules',
-			'.npm'
-		]
+			'.npm',
+		],
 	};
 	const output = rollupOutput(item)[0];
 	// console.log(output);
@@ -99,7 +99,7 @@ function typescriptConfig(item) {
 					lib: ['dom', 'es2015', 'es2016', 'es2017'],
 					declaration: false,
 					sourceMap: true,
-				}
+				},
 			});
 			break;
 		case 'cjs':
@@ -111,7 +111,7 @@ function typescriptConfig(item) {
 					lib: ['dom', 'es2015', 'es2016', 'es2017'],
 					declaration: true,
 					sourceMap: false,
-				}
+				},
 			});
 			break;
 		case 'esm':
@@ -123,7 +123,7 @@ function typescriptConfig(item) {
 					lib: ['dom', 'es2015', 'es2016', 'es2017'],
 					declaration: true,
 					sourceMap: false,
-				}
+				},
 			});
 			break;
 		case 'system':
@@ -135,7 +135,7 @@ function typescriptConfig(item) {
 					lib: ['dom', 'es2015', 'es2016', 'es2017'],
 					declaration: false,
 					sourceMap: true,
-				}
+				},
 			});
 			break;
 	}

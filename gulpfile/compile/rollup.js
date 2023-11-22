@@ -57,8 +57,8 @@ function rollup_(item) {
 							isCharacterDevice: () => false,
 							isSymbolicLink: () => false,
 							isFIFO: () => false,
-							isSocket: () => false
-						}
+							isSocket: () => false,
+						},
 					});
 					targetFile = newFile;
 				} else {
@@ -110,7 +110,7 @@ function rollup_(item) {
 				rollupCache.delete(inputOptions.input);
 			}
 			throw (error);
-			return callback(null, file);
+			// return callback(null, file);
 		});
 	});
 }
@@ -124,7 +124,7 @@ function rollupInput(item) {
 	};
 	if (output.format === 'esm') {
 		presetEnvOptions.targets = {
-			esmodules: true
+			esmodules: true,
 		};
 	} else {
 		if (item.target) {
@@ -144,8 +144,8 @@ function rollupInput(item) {
 		},
 		exclude: [
 			'./node_modules/*',
-			'.npm'
-		]
+			'.npm',
+		],
 	};
 	const tsconfigOverride = {
 		compilerOptions: {
@@ -159,8 +159,8 @@ function rollupInput(item) {
 		},
 		exclude: [
 			'./node_modules/*',
-			'.npm'
-		]
+			'.npm',
+		],
 	};
 	// const watchGlob = path.dirname(input) + '/**/*' + path.extname(input);
 	// console.log('watchGlob', watchGlob);
@@ -182,7 +182,7 @@ function rollupInput(item) {
 		extensions: [
 			...DEFAULT_EXTENSIONS,
 			'.ts',
-			'.tsx'
+			'.tsx',
 		],
 		presets: [
 			['@babel/preset-env', presetEnvOptions],

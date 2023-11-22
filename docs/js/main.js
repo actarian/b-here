@@ -1,11 +1,11 @@
 /**
- * @license beta-bhere-development v1.0.33-canary.0
+ * @license beta-bhere-development v1.0.34-canary.0
  * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
 (function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('three'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','three','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.THREE,g.html2canvas));})(this,(function(rxcomp,rxcompForm,rxjs,operators,three,html2canvas){'use strict';function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var html2canvas__default=/*#__PURE__*/_interopDefaultLegacy(html2canvas);var name = "beta-bhere-development";
-var version = "1.0.33-canary.0";const CHUNK_REMOTE = /* html */`
+var version = "1.0.34-canary.0";const CHUNK_REMOTE = /* html */`
 <!-- remote sidebar -->
 <div class="group--remote" [class]="remoteClass" *if="state.live">
 	<div class="agora-stream" (toggleControl)="onToggleControl($event)" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" type="remote" *for="let remote of remotes">

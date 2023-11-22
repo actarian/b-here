@@ -140,5 +140,5 @@ sass.logError = function logError(error) {
 */
 
 module.exports = {
-	sass
+	sass,
 };

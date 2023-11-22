@@ -64,12 +64,12 @@
       "bundle": [
         {
           "input": [
-            "node_modules/agora-rtc-sdk-ng/AgoraRTC_N-production.js",
-            "node_modules/agora-rtm-sdk/index.js",
-            "node_modules/hls.js/dist/hls.js",
             "node_modules/rxjs/bundles/rxjs.umd.js",
             "node_modules/rxcomp/dist/umd/rxcomp.js",
             "node_modules/rxcomp-form/dist/umd/rxcomp-form.js",
+            "node_modules/agora-rtc-sdk-ng/AgoraRTC_N-production.js",
+            "node_modules/agora-rtm-sdk/index.js",
+            "node_modules/hls.js/dist/hls.js",
             "node_modules/gsap/dist/EasePack.js",
             "node_modules/gsap/dist/gsap.js",
             "node_modules/qrious/dist/qrious.js",
@@ -151,12 +151,12 @@
       "bundle": [
         {
           "input": [
-            "node_modules/agora-rtc-sdk/AgoraRTCSDK.min.js",
-            "node_modules/agora-rtm-sdk/index.js",
-            "node_modules/hls.js/dist/hls.js",
             "node_modules/rxjs/bundles/rxjs.umd.js",
             "node_modules/rxcomp/dist/iife/rxcomp.js",
             "node_modules/rxcomp-form/dist/iife/rxcomp-form.js",
+            "node_modules/agora-rtc-sdk/AgoraRTCSDK.min.js",
+            "node_modules/agora-rtm-sdk/index.js",
+            "node_modules/hls.js/dist/hls.js",
             "node_modules/gsap/dist/EasePack.js",
             "node_modules/gsap/dist/gsap.js",
             "node_modules/qrious/dist/qrious.js",

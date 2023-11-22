@@ -27,8 +27,8 @@ function serve(done) {
 				from: new RegExp(`^${options.path}.*$`),
 				to: (context) => {
 					return context.parsedUrl.pathname.replace(options.path, '/');
-				}
-			}]
+				},
+			}],
 		});
 		options.middleware = (connect, opt) => {
 			return [middleware];
@@ -51,7 +51,7 @@ function middleware_(options) {
 				'Not rewriting',
 				req.method,
 				req.url,
-				'because the client did not send an HTTP accept header.'
+				'because the client did not send an HTTP accept header.',
 			);
 			return next();
 		} else if (headers.accept.indexOf('application/json') === 0) {
@@ -72,7 +72,7 @@ function middleware_(options) {
 				'Not rewriting',
 				req.method,
 				req.url,
-				'because the method is not GET.'
+				'because the method is not GET.',
 			);
 			return next();
 		} else if (!acceptsHtml(headers.accept, options)) {
@@ -80,7 +80,7 @@ function middleware_(options) {
 				'Not rewriting',
 				req.method,
 				req.url,
-				'because the client does not accept HTML.'
+				'because the client does not accept HTML.',
 			);
 			return next();
 		}
@@ -98,7 +98,7 @@ function middleware_(options) {
 						'Received a non-absolute rewrite target',
 						rewriteTarget,
 						'for URL',
-						req.url
+						req.url,
 					);
 				}
 				logger('Rewriting', req.method, req.url, 'to', rewriteTarget);
@@ -113,7 +113,7 @@ function middleware_(options) {
 				'Not rewriting',
 				req.method,
 				req.url,
-				'because the path includes a dot (.) character.'
+				'because the path includes a dot (.) character.',
 			);
 			return next();
 		}
@@ -122,7 +122,7 @@ function middleware_(options) {
 		req.url = rewriteTarget;
 		next();
 	};
-};
+}
 
 function evaluateRewriteRule(parsedUrl, match, rule, req) {
 	if (typeof rule === 'string') {
@@ -133,7 +133,7 @@ function evaluateRewriteRule(parsedUrl, match, rule, req) {
 	return rule({
 		parsedUrl: parsedUrl,
 		match: match,
-		request: req
+		request: req,
 	});
 }
 

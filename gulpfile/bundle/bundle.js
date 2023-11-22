@@ -40,7 +40,7 @@ function bundleCssItem(item) {
 	const skip = item.input.length === 1 && item.input[0] === item.output;
 	const plugins = [
 		// autoprefixer({browsers: ['last 1 version']}),
-		cssnano()
+		cssnano(),
 	];
 	return src(item.input, { base: '.', allowEmpty: true, sourcemaps: true })
 		.pipe(gulpPlumber())

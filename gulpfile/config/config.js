@@ -49,15 +49,15 @@ function getConfig() {
 	let configDefault = {
 		targets: {
 			browser: getTarget(),
-			dist: getTarget()
+			dist: getTarget(),
 		},
 		server: {
 			src: './docs',
 			path: '/gulpfile-config/',
 			host: 'localhost',
-			port: 40900
+			port: 40900,
 		},
-		tfs: false
+		tfs: false,
 	};
 	const config = getObject(CONFIG_PATH, configDefault);
 	config.target = config.targets[target] || getTarget();

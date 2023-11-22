@@ -1,5 +1,5 @@
 const path = require('path');
-const minimatch = require("minimatch");
+const minimatch = require('minimatch');
 const { watch } = require('gulp');
 
 const log = require('../logger/logger');
@@ -88,5 +88,5 @@ module.exports = {
 	isPath,
 	isExt,
 	sameRoot,
-	matchPaths
+	matchPaths,
 };

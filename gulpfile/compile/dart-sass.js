@@ -91,5 +91,5 @@ function replaceExtension(filePath, ext) {
 }
 
 module.exports = {
-	sass: compileSass
+	sass: compileSass,
 };

@@ -47,8 +47,8 @@ function mjml(item) {
 							isCharacterDevice: () => false,
 							isSymbolicLink: () => false,
 							isFIFO: () => false,
-							isSocket: () => false
-						}
+							isSocket: () => false,
+						},
 					});
 					targetFile = newFile;
 				} else {
@@ -98,7 +98,7 @@ function mjmlInput(item, path) {
 			minifyOptions: item.minify ? {
 				collapseWhitespace: true,
 				minifyCSS: false,
-				removeEmptyAttributes: true
+				removeEmptyAttributes: true,
 			} : {},
 			beautify: item.minify ? false : true,
 			validationLevel: 'soft',

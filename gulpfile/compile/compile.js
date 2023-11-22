@@ -73,7 +73,7 @@ function compileScssItem(item) {
 		.on('end', () => log('Compile', item.output))
 		.pipe(gulpIf(item.minify, gulpPostcss([
 			// gulpAutoprefixer({browsers: ['last 1 version']}),
-			cssnano()
+			cssnano(),
 		])))
 		.pipe(gulpIf(item.minify, gulpRename({ extname: '.min.css' })))
 		.pipe(tfsCheckout(!item.minify))
@@ -252,6 +252,7 @@ function compiles(...args) {
 
 function globs(ext) {
 	return compiles(ext).map(x => {
+		// eslint-disable-next-line no-useless-escape
 		return x.input.replace(/\/[^\/]*$/, '/**/*' + ext);
 	});
 }
