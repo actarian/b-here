@@ -198,7 +198,7 @@ export default class AgoraService extends Emittable {
 			3: ERROR. Output logs of the ERROR level.
 			4: NONE. Do not output any log.
 			*/
-			AgoraRTC.setLogLevel(2);
+			AgoraRTC.setLogLevel(3);
 			const client = this.client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
 			client.on('exception', this.onException);
 			client.on('user-joined', this.onUserJoined);

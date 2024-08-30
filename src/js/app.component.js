@@ -1,5 +1,6 @@
 import { Component, getContext } from 'rxcomp';
 import { takeUntil } from 'rxjs/operators';
+import { name, version } from '../../package.json';
 import { AppRoutesInit } from './app.routes';
 import { AssetGroupTypeInit } from './asset/asset';
 import { environment } from './environment';
@@ -10,6 +11,8 @@ import { SVG_CHUNK } from './svg/svg.chunks';
 export default class AppComponent extends Component {
 
 	onInit() {
+		console.log(name, version);
+
 		const routes = AppRoutesInit();
 		RouterService.useBrowser(routes);
 

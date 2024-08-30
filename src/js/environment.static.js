@@ -1,10 +1,10 @@
 
 export const environmentStatic = {
-	appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	appKey: 'f857439a0c0a458b9a755c3b155b94a8',
 	channelName: 'BHere',
 	flags: {
 		production: false,
-		useProxy: true,
+		useProxy: false,
 		useToken: false,
 		usePrefetch: true,
 		useExtendedUserInfo: true,

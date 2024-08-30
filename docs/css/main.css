@@ -527,10 +527,10 @@ button, .btn--edit, .nav--flag .btn--flag, .group--path .btn--flags,
 .btn--link {
   line-height: 1.4;
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
-  align-items: center;
   padding: 0;
-  font-weight: var(--font-semibold);
   font-size: 13px;
   transition: all ease-in-out 150ms;
   position: relative;
@@ -6716,9 +6716,9 @@ footer {
 .group--header > div {
   pointer-events: auto;
 }
-@media (max-width: 1023.98px) {
+@media (max-width: 767.98px) {
   .group--header {
-    flex-direction: row-reverse;
+    min-height: 80px;
   }
 }
 
@@ -6727,39 +6727,20 @@ footer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-}
-@media (min-width: 1024px) {
-  .group--service {
-    margin-left: 15px;
-  }
-  .group--service > button + button {
-    margin-left: 10px;
-  }
+  column-gap: 10px;
+  margin-left: 15px;
 }
 @media (max-width: 1023.98px) {
-  .group--service {
-    margin-right: 15px;
-    filter: drop-shadow(0px 0px 8px black);
-    /*
-    .btn--view-mode {
-    	display: none;
-    }
-    */
-  }
-  .group--service > button {
-    margin-left: 10px;
-  }
   .group--service .btn--back {
     display: none;
   }
+}
+@media (max-width: 767.98px) {
   .group--service .btn--fullscreen {
     display: none;
   }
 }
-@media (max-width: 1023.98px) {
-  :not(.self-service) > .group--header > .group--service .btn--volume {
-    display: none;
-  }
+@media (max-width: 767.98px) {
   :not(.self-service) > .group--header > .group--service .btn--navmap {
     display: none;
   }
@@ -7183,9 +7164,6 @@ footer {
 }
 
 .group--members {
-  position: absolute;
-  width: 120px;
-  height: 90px;
   padding: 8px 10px;
   display: flex;
   justify-content: center;
@@ -7519,83 +7497,40 @@ footer {
     width: 120px;
     height: 100%;
     flex: 1 1 120px;
-    /*
-    @media (orientation: landscape) {
-    	flex-direction: column;
-    	justify-content: flex-start;
-    	top: 0;
-    	left: -$remote-width;
-    	width: $remote-width;
-    	height: 100%;
-    	flex: 1 1 $remote-width;
-
-    	.group--members {
-    		width: $remote-width;
-    		bottom: 0;
-    		left: 0;
-    	}
-    }
-
-    @media (orientation: portrait) {
-    	flex-direction: row;
-    	justify-content: flex-end;
-    	width: calc(100% - 240px);
-    	height: 90px;
-    	flex: 1 1 100%;
-    	position: fixed;
-    	bottom: auto;
-    	top: 10px;
-    	left: 240px;
-    	overflow-x: auto;
-    	overflow-y: hidden;
-    	background: transparent;
-
-    	.group--members {
-    		display: none;
-    	}
-    }
-    */
-  }
-  .ui.virtual-tour:not(.remotes) .group--remote .group--members {
-    width: 120px;
-    bottom: 0;
-    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
 @media (max-width: 1023.98px) {
   .ui.virtual-tour:not(.remotes) .group--remote {
     position: absolute;
-    flex-direction: row;
+    flex-direction: row-reverse;
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
     background: transparent;
     height: auto;
     width: 100%;
-    top: 0;
+    top: 10px;
     left: 0;
+    padding-left: 120px;
   }
-  .ui.virtual-tour:not(.remotes) .group--remote .group--members {
-    display: none;
+}
+@media (max-width: 767.98px) {
+  .ui.virtual-tour:not(.remotes) .group--remote {
+    width: 100%;
+    left: 0;
   }
 }
 @media (min-width: 1024px) {
   .ui.virtual-tour:not(.remotes) {
     width: calc(100% - 120px);
     margin-left: 120px;
-    /*
-    @media (orientation: landscape) {
-    	width: calc(100% - 120px);
-    	margin-left: $remote-width;
-
-    	.group--members {
-    		left: -$remote-width;
-    	}
-    }
-    */
   }
+}
+@media (max-width: 767.98px) {
   .ui.virtual-tour:not(.remotes) .group--members {
-    left: -120px;
+    display: none;
   }
 }
 .ui.virtual-tour:not(.remotes):not(.remoteScreen) .group--remote-screen {
@@ -7625,33 +7560,6 @@ footer {
     width: calc(100% - 120px - 240px);
     margin-left: 120px;
     margin-right: 240px;
-    /*
-    @media (orientation: landscape) {
-    	width: calc(100% - 120px - 240px);
-    	margin-left: $remote-width;
-    	margin-right: $chat-width;
-
-    	.group--members {
-    		left: 0; // -$remote-width;
-    	}
-
-    	.group--chat {
-    		right: -$chat-width;
-    	}
-    }
-
-    @media (orientation: portrait) {
-    	height: calc(100% - 90px);
-    	margin-bottom: $remote-height;
-
-    	.group--chat {
-    		display: none;
-    	}
-    }
-    */
-  }
-  .ui.virtual-tour.chat:not(.remotes) .group--members {
-    left: 0;
   }
   .ui.virtual-tour.chat:not(.remotes) .group--chat {
     right: -240px;
@@ -7686,12 +7594,6 @@ footer {
 }
 .ui.remotes.remoteScreen .group--remote {
   display: none;
-}
-.ui.remotes .group--members {
-  width: 120px;
-  height: 90px;
-  bottom: 0;
-  right: 0;
 }
 .ui.remoteScreen .world,
 .ui.remoteScreen .btn--back,

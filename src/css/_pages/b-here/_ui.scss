@@ -191,7 +191,6 @@ $chat-width: 240px;
 					position: absolute;
 					display: flex;
 					background: $background-negative;
-
 					flex-direction: column;
 					justify-content: flex-start;
 					top: 0;
@@ -199,87 +198,39 @@ $chat-width: 240px;
 					width: $remote-width;
 					height: 100%;
 					flex: 1 1 $remote-width;
-
-					.group--members {
-						width: $remote-width;
-						bottom: 0;
-						left: 0;
-					}
-
-					/*
-					@media (orientation: landscape) {
-						flex-direction: column;
-						justify-content: flex-start;
-						top: 0;
-						left: -$remote-width;
-						width: $remote-width;
-						height: 100%;
-						flex: 1 1 $remote-width;
-
-						.group--members {
-							width: $remote-width;
-							bottom: 0;
-							left: 0;
-						}
-					}
-
-					@media (orientation: portrait) {
-						flex-direction: row;
-						justify-content: flex-end;
-						width: calc(100% - 240px);
-						height: 90px;
-						flex: 1 1 100%;
-						position: fixed;
-						bottom: auto;
-						top: 10px;
-						left: 240px;
-						overflow-x: auto;
-						overflow-y: hidden;
-						background: transparent;
-
-						.group--members {
-							display: none;
-						}
-					}
-					*/
+					overflow-x: hidden;
+					overflow-y: auto;
 				}
 
 				@include media-down(sm) {
 					position: absolute;
-					flex-direction: row;
+					flex-direction: row-reverse;
 					display: flex;
 					overflow-x: auto;
 					overflow-y: hidden;
 					background: transparent;
 					height: auto;
 					width: 100%;
-					top: 0;
+					top: 10px;
 					left: 0;
+					padding-left: 120px;
+				}
 
-					.group--members {
-						display: none;
-					}
+				@include media-only(xs) {
+					width: 100%;
+					left: 0;
 				}
 			}
 
 			@include media-up(md) {
 				width: calc(100% - #{$remote-width});
 				margin-left: $remote-width;
+			}
 
+			@include media-only(xs) {
 				.group--members {
-					left: -$remote-width;
+					display: none;
 				}
-
-				/*
-				@media (orientation: landscape) {
-					width: calc(100% - #{$remote-width});
-					margin-left: $remote-width;
-
-					.group--members {
-						left: -$remote-width;
-					}
-				}
-				*/
 			}
 		}
 
@@ -315,38 +266,9 @@ $chat-width: 240px;
 					margin-left: $remote-width;
 					margin-right: $chat-width;
 
-					.group--members {
-						left: 0; // -$remote-width;
-					}
-
 					.group--chat {
 						right: -$chat-width;
 					}
-
-					/*
-					@media (orientation: landscape) {
-						width: calc(100% - #{$remote-width} - #{$chat-width});
-						margin-left: $remote-width;
-						margin-right: $chat-width;
-
-						.group--members {
-							left: 0; // -$remote-width;
-						}
-
-						.group--chat {
-							right: -$chat-width;
-						}
-					}
-
-					@media (orientation: portrait) {
-						height: calc(100% - #{$remote-height});
-						margin-bottom: $remote-height;
-
-						.group--chat {
-							display: none;
-						}
-					}
-					*/
 				}
 			}
 
@@ -393,13 +315,6 @@ $chat-width: 240px;
 
 		.group--remote {
 			@extend %live-meeting-remote;
-		}
-
-		.group--members {
-			width: $remote-width;
-			height: $remote-height;
-			bottom: 0;
-			right: 0;
 		}
 	}
 

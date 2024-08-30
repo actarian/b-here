@@ -1,11 +1,10 @@
 /**
  * @license beta-bhere-development v1.0.34-canary.0
- * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
+ * (c) 2024 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
-(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('three'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','three','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.THREE,g.html2canvas));})(this,(function(rxcomp,rxcompForm,rxjs,operators,three,html2canvas){'use strict';function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var html2canvas__default=/*#__PURE__*/_interopDefaultLegacy(html2canvas);var name = "beta-bhere-development";
-var version = "1.0.34-canary.0";const CHUNK_REMOTE = /* html */`
+(function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(require('rxcomp'),require('rxcomp-form'),require('rxjs'),require('rxjs/operators'),require('three'),require('html2canvas')):typeof define==='function'&&define.amd?define(['rxcomp','rxcomp-form','rxjs','rxjs/operators','three','html2canvas'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f(g.rxcomp,g.rxcomp.form,g.rxjs,g.rxjs.operators,g.THREE,g.html2canvas));})(this,(function(rxcomp,rxcompForm,rxjs,operators,three,html2canvas){'use strict';function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var html2canvas__default=/*#__PURE__*/_interopDefaultLegacy(html2canvas);const CHUNK_REMOTE = /* html */`
 <!-- remote sidebar -->
 <div class="group--remote" [class]="remoteClass" *if="state.live">
 	<div class="agora-stream" (toggleControl)="onToggleControl($event)" (toggleSpy)="onToggleSpy($event)" agora-stream [stream]="remote" type="remote" *for="let remote of remotes">
@@ -22,17 +21,6 @@ var version = "1.0.34-canary.0";const CHUNK_REMOTE = /* html */`
 			</button>
 		</div>
 	</div>
-	<div class="group--members" *if="state.mode == 'virtual-tour'">
-		<div class="members" *if="state.role === 'publisher'">
-			<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-			<span class="members__count" [innerHTML]="state.membersCount"></span>
-		</div>
-		<div class="credits">
-			<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-			</a>
-		</div>
-	</div>
 </div>
 <!-- remote screen -->
 <div class="group--remote-screen" *if="remoteScreen">
@@ -44,9 +32,24 @@ var version = "1.0.34-canary.0";const CHUNK_REMOTE = /* html */`
 	</div>
 </div>
 `;
+const CHUNK_MEMBERS = /* html */`
+<!-- members -->
+<div class="group--members">
+	<div class="members" *if="state.role === 'publisher'">
+		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+		<span class="members__count" [innerHTML]="state.membersCount"></span>
+	</div>
+	<div class="credits">
+		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+		</a>
+	</div>
+</div>
+`;
 const CHUNK_SERVICE = /* html */`
 <!-- service -->
 <div class="group--service">
+	${CHUNK_MEMBERS}
 	<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
 	</button>
@@ -54,13 +57,13 @@ const CHUNK_SERVICE = /* html */`
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 	</button>
-	<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-	</button>
 	<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+	</button>
+	<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 	</button>
 	<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
@@ -139,34 +142,6 @@ const CHUNK_CONTROLS_SMART_DEVICE = /* html */`
 		<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 		</button>
-	</div>
-</div>
-`;
-const CHUNK_MEMBERS = /* html */`
-<!-- members -->
-<div class="group--members" *if="state.mode == 'live-meeting'">
-	<div class="members" *if="state.role === 'publisher'">
-		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-		<span class="members__count" [innerHTML]="state.membersCount"></span>
-	</div>
-	<div class="credits">
-		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-		</a>
-	</div>
-</div>
-`;
-const CHUNK_MEMBERS_SMART_DEVICE = /* html */`
-<!-- members -->
-<div class="group--members">
-	<div class="members" *if="state.role === 'publisher'">
-		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-		<span class="members__count" [innerHTML]="state.membersCount"></span>
-	</div>
-	<div class="credits">
-		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-		</a>
 	</div>
 </div>
 `;
@@ -270,7 +245,6 @@ const CHUNK_VIRTUAL_TOUR = /* html */`
 		${CHUNK_AR_VR}
 		${CHUNK_LIKE}
 	</div>
-	${CHUNK_MEMBERS}
 	${CHUNK_CHAT}
 	${CHUNK_LOCK}
 	${CHUNK_NAVMAP}
@@ -306,7 +280,7 @@ const CHUNK_SMART_DEVICE = /* html */`
 	<div class="group--footer">
 		${CHUNK_CONTROLS_SMART_DEVICE}
 	</div>
-	${CHUNK_MEMBERS_SMART_DEVICE}
+	${CHUNK_MEMBERS}
 </div>
 `;
 const CHUNK_SELF_SERVICE_TOUR = /* html */`
@@ -346,7 +320,7 @@ const CHUNK_EMBED = /* html */`
 	</div>
 </div>
 `;const environmentServed = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  appKey: 'f857439a0c0a458b9a755c3b155b94a8',
   channelName: 'BHere',
   flags: {
     production: true,
@@ -476,11 +450,11 @@ const CHUNK_EMBED = /* html */`
     }
   }
 };const environmentStatic = {
-  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+  appKey: 'f857439a0c0a458b9a755c3b155b94a8',
   channelName: 'BHere',
   flags: {
     production: false,
-    useProxy: true,
+    useProxy: false,
     useToken: false,
     usePrefetch: true,
     useExtendedUserInfo: true,
@@ -3378,19 +3352,7 @@ function browserPluginFactory(opts, browser) {
   }
 }
 RouterService.routes = [];
-RouterService.router_ = null;class StateService {
-  static set state(state) {
-    this.state$.next(state);
-  }
-  static get state() {
-    return this.state$.getValue();
-  }
-  static patchState(state) {
-    state = Object.assign({}, this.state, state);
-    this.state = state;
-  }
-}
-StateService.state$ = new rxjs.BehaviorSubject({});const RoleType = {
+RouterService.router_ = null;const RoleType = {
   Publisher: 'publisher',
   Attendee: 'attendee',
   Streamer: 'streamer',
@@ -3405,7 +3367,40 @@ class User {
       Object.assign(this, options);
     }
   }
-}const MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
+}class StateService {
+  static set state(state) {
+    this.state$.next(state);
+  }
+  static get state() {
+    return this.state$.getValue();
+  }
+  static get controlled() {
+    return this.state.controlling && this.state.controlling !== this.state.uid;
+  }
+  static get controlling() {
+    return this.state.controlling && this.state.controlling === this.state.uid;
+  }
+  static get silencing() {
+    return this.state.silencing;
+  }
+  static get silenced() {
+    return this.state.silencing && this.state.role === RoleType.Streamer;
+  }
+  static get spyed() {
+    return this.state.spying && this.state.spying === this.state.uid;
+  }
+  static get spying() {
+    return this.state.spying && this.state.spying !== this.state.uid && this.state.role === RoleType.Publisher;
+  }
+  static get locked() {
+    return this.controlled || this.spying;
+  }
+  static patchState(state) {
+    state = Object.assign({}, this.state, state);
+    this.state = state;
+  }
+}
+StateService.state$ = new rxjs.BehaviorSubject({});const MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
 class MeetingId {
   get roleIndex() {
     return MeetingId.getRoleIndex(this.role);
@@ -6341,7 +6336,7 @@ StreamService.streams$ = rxjs.combineLatest([StreamService.local$, StreamService
       3: ERROR. Output logs of the ERROR level.
       4: NONE. Do not output any log.
       */
-      AgoraRTC$1.setLogLevel(2);
+      AgoraRTC$1.setLogLevel(3);
       const client = this.client = AgoraRTC$1.createClient({
         mode: 'live',
         codec: 'h264'
@@ -14516,7 +14511,7 @@ class OrbitService {
     return StateService.state.spying && StateService.state.spying === StateService.state.uid;
   }
   get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
+    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
   }
   get isMediaView() {
     const currentView = ViewService.currentView;
@@ -21026,7 +21021,7 @@ class WorldComponent extends rxcomp.Component {
     return StateService.state.spying && StateService.state.spying === StateService.state.uid;
   }
   get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
+    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
   }
   get locked() {
     return this.controlled || this.spying;
@@ -23317,7 +23312,7 @@ ModelNavComponent.meta = {
     return StateService.state.spying && StateService.state.spying === StateService.state.uid;
   }
   get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
+    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
   }
   get locked() {
     return this.controlled || this.spying;
@@ -24348,7 +24343,8 @@ AgoraComponent.meta = {
 		</footer>
 	</div>
 	`
-};class AssetService {
+};var name = "beta-bhere-development";
+var version = "1.0.34-canary.0";class AssetService {
   static assetCreate$(asset) {
     return HttpService.post$('/api/asset', asset).pipe(operators.map(asset => mapAsset(asset)));
   }
@@ -26368,16 +26364,16 @@ GenericComponent.meta = {
     return this.state.controlling && this.state.controlling === this.state.uid;
   }
   get silencing() {
-    return StateService.state.silencing;
+    return this.state.silencing;
   }
   get silenced() {
-    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
+    return this.state.silencing && this.state.role === RoleType.Streamer;
   }
   get spyed() {
     return this.state.spying && this.state.spying === this.state.uid;
   }
   get spying() {
-    return this.state.spying && this.state.spying !== this.state.uid;
+    return this.state.spying && this.state.spying !== this.state.uid && this.state.role === RoleType.Publisher;
   }
   get locked() {
     return this.controlled || this.spying;
@@ -26425,7 +26421,7 @@ GenericComponent.meta = {
     this.media = null;
     this.hasScreenViewItem = false;
     this.media = true;
-    this.remotes = new Array(8).fill(0).map((x, i) => ({
+    this.remotes = new Array(9).fill(0).map((x, i) => ({
       id: i + 1
     }));
     this.languageService = LanguageService;
@@ -26656,17 +26652,6 @@ LayoutComponent.meta = {
 						</button>
 					</div>
 				</div>
-				<div class="group--members" *if="state.mode == 'virtual-tour'">
-					<div class="members" *if="state.role === 'publisher'">
-						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-						<span class="members__count" [innerHTML]="state.membersCount"></span>
-					</div>
-					<div class="credits">
-						<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-							<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-						</a>
-					</div>
-				</div>
 			</div>
 			<!-- remote screen -->
 			<div class="group--remote-screen" *if="remoteScreen">
@@ -26677,9 +26662,22 @@ LayoutComponent.meta = {
 					</div>
 				</div>
 			</div>
+			<!-- header -->
 			<div class="group--header">
 				<!-- service -->
 				<div class="group--service">
+					<!-- members -->
+					<div class="group--members">
+						<div class="members" *if="state.role === 'publisher'">
+							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+							<span class="members__count" [innerHTML]="state.membersCount"></span>
+						</div>
+						<div class="credits">
+							<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+								<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+							</a>
+						</div>
+					</div>
 					<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
 					</button>
@@ -26687,13 +26685,13 @@ LayoutComponent.meta = {
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 					</button>
-					<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-					</button>
 					<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+					</button>
+					<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 					</button>
 					<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
@@ -26720,23 +26718,12 @@ LayoutComponent.meta = {
 					</div>
 				</div>
 			</div>
+			<!-- footer -->
 			<div class="group--footer">
 				${CHUNK_CONTROLS}
 				${CHUNK_MEDIA}
 				${CHUNK_AR_VR}
 				${CHUNK_LIKE}
-			</div>
-			<!-- members -->
-			<div class="group--members" *if="state.mode == 'live-meeting'">
-				<div class="members" *if="state.role === 'publisher'">
-					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-					<span class="members__count" [innerHTML]="state.membersCount"></span>
-				</div>
-				<div class="credits">
-					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-					</a>
-				</div>
 			</div>
 			${CHUNK_CHAT}
 			${CHUNK_LOCK}
@@ -26759,6 +26746,18 @@ LayoutComponent.meta = {
 							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 						</button>
 					</div>
+				</div>
+			</div>
+			<!-- members -->
+			<div class="group--members">
+				<div class="members" *if="state.role === 'publisher'">
+					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+					<span class="members__count" [innerHTML]="state.membersCount"></span>
+				</div>
+				<div class="credits">
+					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+					</a>
 				</div>
 			</div>
 			<!-- remote screen -->
@@ -26803,18 +26802,6 @@ LayoutComponent.meta = {
 					</button>
 				</div>
 			</div>
-			<!-- members -->
-			<div class="group--members">
-				<div class="members" *if="state.role === 'publisher'">
-					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-					<span class="members__count" [innerHTML]="state.membersCount"></span>
-				</div>
-				<div class="credits">
-					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-					</a>
-				</div>
-			</div>
 		</div>
 		<!-- Self Service Tour -->
 		<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'self-service-tour'">
@@ -26824,13 +26811,13 @@ LayoutComponent.meta = {
 			</div>
 			<!-- service -->
 			<div class="group--service">
-				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-				</button>
 				<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+				</button>
+				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 				</button>
 			</div>
 			${CHUNK_AR_VR}
@@ -27487,6 +27474,7 @@ const AppRoutesInit = () => [{
 		</svg>
 	`;class AppComponent extends rxcomp.Component {
   onInit() {
+    console.log(name, version);
     const routes = AppRoutesInit();
     RouterService.useBrowser(routes);
     AssetGroupTypeInit();
@@ -33581,7 +33569,7 @@ class ModelMenuComponent extends ModelComponent {
     return StateService.state.spying && StateService.state.spying === StateService.state.uid;
   }
   get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
+    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
   }
   get locked() {
     return this.controlled || this.spying;
@@ -35840,5 +35828,4 @@ AppModule.meta = {
   imports: [rxcomp.CoreModule, rxcompForm.FormModule, EditorModule],
   declarations: [AccessCodeComponent, AccessComponent, AgoraChatComponent, AgoraChatEmojiComponent, AgoraCheckComponent, AgoraChecklistComponent, AgoraComponent, AgoraConfigureFirewallModalComponent, AgoraDeviceComponent, AgoraDevicePreviewComponent, AgoraLinkComponent, AgoraLoginComponent, AgoraNameComponent, AgoraStreamComponent, AssetPipe, ControlAssetComponent, ControlAssetsComponent, ControlCheckboxComponent, ControlCustomSelectComponent, ControlLinkComponent, ControlLocalizedAssetComponent, ControlMenuComponent, ControlModelComponent, ControlNumberComponent, ControlPasswordComponent, ControlRequestModalComponent, ControlsComponent, ControlSelectComponent, ControlTextareaComponent, ControlTextComponent, ControlVectorComponent, DisabledDirective, DropDirective, DropdownDirective, DropdownItemDirective, EnvPipe, ErrorsComponent, FlagPipe, GenericComponent, GenericModalComponent, HlsDirective, HtmlPipe, IframeModalComponent, IdDirective, InputValueComponent, LabelPipe, LanguageComponent, LayoutComponent, LazyDirective, MediaPlayerComponent, MessagePipe, ModalComponent, ModalOutletComponent, ModelBannerComponent, ModelComponent, ModelCurvedPlaneComponent, ModelDebugComponent, ModelGridComponent, ModelMenuComponent, ModelModelComponent, ModelNavComponent, ModelPanelComponent, ModelPictureComponent, ModelPlaneComponent, ModelProgressComponent, ModelRoomComponent, ModelTextComponent, RoutePipe, SupportRequestModalComponent, SvgIconStructure, TestComponent, TitleDirective, TryInARComponent, TryInARModalComponent, UploadItemComponent, ValueDirective, VirtualStructure, WorldComponent, RouterOutletStructure, RouterLinkDirective],
   bootstrap: AppComponent
-};console.log(name, version);
-rxcomp.Browser.bootstrap(AppModule);}));
+};rxcomp.Browser.bootstrap(AppModule);}));

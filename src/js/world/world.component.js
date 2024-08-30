@@ -93,7 +93,7 @@ export default class WorldComponent extends Component {
 	}
 
 	get spying() {
-		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid);
+		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher);
 	}
 
 	get locked() {

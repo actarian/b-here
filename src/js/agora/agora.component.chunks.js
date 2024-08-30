@@ -15,17 +15,6 @@ export const CHUNK_REMOTE = /* html */`
 			</button>
 		</div>
 	</div>
-	<div class="group--members" *if="state.mode == 'virtual-tour'">
-		<div class="members" *if="state.role === 'publisher'">
-			<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-			<span class="members__count" [innerHTML]="state.membersCount"></span>
-		</div>
-		<div class="credits">
-			<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-			</a>
-		</div>
-	</div>
 </div>
 <!-- remote screen -->
 <div class="group--remote-screen" *if="remoteScreen">
@@ -38,9 +27,25 @@ export const CHUNK_REMOTE = /* html */`
 </div>
 `;
 
+export const CHUNK_MEMBERS = /* html */`
+<!-- members -->
+<div class="group--members">
+	<div class="members" *if="state.role === 'publisher'">
+		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+		<span class="members__count" [innerHTML]="state.membersCount"></span>
+	</div>
+	<div class="credits">
+		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+		</a>
+	</div>
+</div>
+`;
+
 export const CHUNK_SERVICE = /* html */`
 <!-- service -->
 <div class="group--service">
+	${CHUNK_MEMBERS}
 	<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
 	</button>
@@ -48,13 +53,13 @@ export const CHUNK_SERVICE = /* html */`
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 	</button>
-	<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-	</button>
 	<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+	</button>
+	<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 	</button>
 	<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
@@ -137,36 +142,6 @@ export const CHUNK_CONTROLS_SMART_DEVICE = /* html */`
 		<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 		</button>
-	</div>
-</div>
-`;
-
-export const CHUNK_MEMBERS = /* html */`
-<!-- members -->
-<div class="group--members" *if="state.mode == 'live-meeting'">
-	<div class="members" *if="state.role === 'publisher'">
-		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-		<span class="members__count" [innerHTML]="state.membersCount"></span>
-	</div>
-	<div class="credits">
-		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-		</a>
-	</div>
-</div>
-`;
-
-export const CHUNK_MEMBERS_SMART_DEVICE = /* html */`
-<!-- members -->
-<div class="group--members">
-	<div class="members" *if="state.role === 'publisher'">
-		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-		<span class="members__count" [innerHTML]="state.membersCount"></span>
-	</div>
-	<div class="credits">
-		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-		</a>
 	</div>
 </div>
 `;
@@ -282,7 +257,6 @@ export const CHUNK_VIRTUAL_TOUR = /* html */`
 		${CHUNK_AR_VR}
 		${CHUNK_LIKE}
 	</div>
-	${CHUNK_MEMBERS}
 	${CHUNK_CHAT}
 	${CHUNK_LOCK}
 	${CHUNK_NAVMAP}
@@ -319,7 +293,7 @@ export const CHUNK_SMART_DEVICE = /* html */`
 	<div class="group--footer">
 		${CHUNK_CONTROLS_SMART_DEVICE}
 	</div>
-	${CHUNK_MEMBERS_SMART_DEVICE}
+	${CHUNK_MEMBERS}
 </div>
 `;
 

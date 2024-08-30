@@ -76,11 +76,11 @@ export default class LayoutComponent extends Component {
 	}
 
 	get silencing() {
-		return StateService.state.silencing;
+		return this.state.silencing;
 	}
 
 	get silenced() {
-		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
+		return (this.state.silencing && this.state.role === RoleType.Streamer);
 	}
 
 	get spyed() {
@@ -88,7 +88,7 @@ export default class LayoutComponent extends Component {
 	}
 
 	get spying() {
-		return (this.state.spying && this.state.spying !== this.state.uid);
+		return (this.state.spying && this.state.spying !== this.state.uid && this.state.role === RoleType.Publisher);
 	}
 
 	get locked() {
@@ -138,7 +138,7 @@ export default class LayoutComponent extends Component {
 		this.media = null;
 		this.hasScreenViewItem = false;
 		this.media = true;
-		this.remotes = new Array(8).fill(0).map((x, i) => ({ id: i + 1 }));
+		this.remotes = new Array(9).fill(0).map((x, i) => ({ id: i + 1 }));
 		this.languageService = LanguageService;
 		this.showLanguages = false;
 		StateService.patchState(this.state);
@@ -369,17 +369,6 @@ LayoutComponent.meta = {
 						</button>
 					</div>
 				</div>
-				<div class="group--members" *if="state.mode == 'virtual-tour'">
-					<div class="members" *if="state.role === 'publisher'">
-						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-						<span class="members__count" [innerHTML]="state.membersCount"></span>
-					</div>
-					<div class="credits">
-						<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-							<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-						</a>
-					</div>
-				</div>
 			</div>
 			<!-- remote screen -->
 			<div class="group--remote-screen" *if="remoteScreen">
@@ -390,9 +379,22 @@ LayoutComponent.meta = {
 					</div>
 				</div>
 			</div>
+			<!-- header -->
 			<div class="group--header">
 				<!-- service -->
 				<div class="group--service">
+					<!-- members -->
+					<div class="group--members">
+						<div class="members" *if="state.role === 'publisher'">
+							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+							<span class="members__count" [innerHTML]="state.membersCount"></span>
+						</div>
+						<div class="credits">
+							<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+								<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+							</a>
+						</div>
+					</div>
 					<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
 					</button>
@@ -400,13 +402,13 @@ LayoutComponent.meta = {
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 					</button>
-					<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-					</button>
 					<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+					</button>
+					<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 					</button>
 					<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
@@ -433,23 +435,12 @@ LayoutComponent.meta = {
 					</div>
 				</div>
 			</div>
+			<!-- footer -->
 			<div class="group--footer">
 				${CHUNK_CONTROLS}
 				${CHUNK_MEDIA}
 				${CHUNK_AR_VR}
 				${CHUNK_LIKE}
-			</div>
-			<!-- members -->
-			<div class="group--members" *if="state.mode == 'live-meeting'">
-				<div class="members" *if="state.role === 'publisher'">
-					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-					<span class="members__count" [innerHTML]="state.membersCount"></span>
-				</div>
-				<div class="credits">
-					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-					</a>
-				</div>
 			</div>
 			${CHUNK_CHAT}
 			${CHUNK_LOCK}
@@ -472,6 +463,18 @@ LayoutComponent.meta = {
 							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 						</button>
 					</div>
+				</div>
+			</div>
+			<!-- members -->
+			<div class="group--members">
+				<div class="members" *if="state.role === 'publisher'">
+					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+					<span class="members__count" [innerHTML]="state.membersCount"></span>
+				</div>
+				<div class="credits">
+					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+					</a>
 				</div>
 			</div>
 			<!-- remote screen -->
@@ -516,18 +519,6 @@ LayoutComponent.meta = {
 					</button>
 				</div>
 			</div>
-			<!-- members -->
-			<div class="group--members">
-				<div class="members" *if="state.role === 'publisher'">
-					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-					<span class="members__count" [innerHTML]="state.membersCount"></span>
-				</div>
-				<div class="credits">
-					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-					</a>
-				</div>
-			</div>
 		</div>
 		<!-- Self Service Tour -->
 		<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'self-service-tour'">
@@ -537,13 +528,13 @@ LayoutComponent.meta = {
 			</div>
 			<!-- service -->
 			<div class="group--service">
-				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-				</button>
 				<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+				</button>
+				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 				</button>
 			</div>
 			${CHUNK_AR_VR}
