@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { RtcTokenBuilder, RtmTokenBuilder, RtcRole, RtmRole } = require('agora-token');
+const { RtcTokenBuilder, RtmTokenBuilder, RtcRole } = require('agora-token');
 
 const APP_KEY = process.env.APP_KEY || null;
 const APP_SECURE_KEY = process.env.APP_SECURE_KEY || null;
@@ -129,7 +129,7 @@ function doDelete(request, response, params, items) {
 function doGet(request, response, params, items) {
 	let item = items.find(x => x.id === params.id);
 	if (!item) {
-		sendError(response, 404, 'Not Found');
+		return sendError(response, 404, 'Not Found');
 	}
 	return item;
 }
@@ -441,12 +441,12 @@ const ROUTES = [{
 }, {
 	path: '/api/token/rtc', method: 'POST', callback: function(request, response, params) {
 		if (!APP_KEY || !APP_SECURE_KEY) {
-			sendError(response, 400, 'appKey and appSecureKey required');
+			return sendError(response, 400, 'appKey and appSecureKey required');
 		}
 		const body = request.body || {};
 		const channelName = body.channelName ? String(body.channelName) : 0;
 		if (!channelName) {
-			sendError(response, 400, 'channelName required');
+			return sendError(response, 400, 'channelName required');
 		}
 		const duration = 3600 * 12;
 		const timestamp = Math.floor(Date.now() / 1000);
@@ -461,18 +461,17 @@ const ROUTES = [{
 }, {
 	path: '/api/token/rtm', method: 'POST', callback: function(request, response, params) {
 		if (!APP_KEY || !APP_SECURE_KEY) {
-			sendError(response, 400, 'appKey and appSecureKey required');
+			return sendError(response, 400, 'appKey and appSecureKey required');
 		}
 		const body = request.body || {};
 		const duration = 3600 * 12;
 		const timestamp = Math.floor(Date.now() / 1000);
 		const expirationTime = timestamp + duration;
-		const role = RtmRole.Rtm_User;
 		const uid = body.uid ? String(body.uid) : timestamp.toString();
 		if (!uid) {
 			return response.status(400).json({ 'error': 'uid required' }).send();
 		}
-		const token = RtmTokenBuilder.buildToken(APP_KEY, APP_SECURE_KEY, uid, role, expirationTime);
+		const token = RtmTokenBuilder.buildToken(APP_KEY, APP_SECURE_KEY, uid, expirationTime);
 		// response.header('Access-Control-Allow-Origin', 'http://ip:port')
 		sendOk(response.header('Access-Control-Allow-Origin', '*'), { token: token });
 	},
@@ -483,17 +482,17 @@ const ROUTES = [{
 		const pathname = path.join(dirname, `/docs/api/${params.lang}/labels.json`);
 		fs.readFile(pathname, 'utf8', (error, data) => {
 			if (error) {
-				sendError(response, 500, error);
+				return sendError(response, 500, error);
 			} else {
 				try {
 					const labels = JSON.parse(data)
 					if (labels) {
-						sendOk(response, labels);
+						return sendOk(response, labels);
 					} else {
-						sendError(response, 404, 'Not Found');
+						return sendError(response, 404, 'Not Found');
 					}
 				} catch (error) {
-					sendError(response, 500, 'Invalid Data');
+					return sendError(response, 500, 'Invalid Data');
 				}
 			}
 		});

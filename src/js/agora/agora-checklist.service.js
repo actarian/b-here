@@ -1,3 +1,4 @@
+import AgoraRTC from 'agora-rtc-sdk-ng';
 import { from, merge, of, Subject, throwError } from 'rxjs';
 import { catchError, delay, first, map, switchMap, tap } from 'rxjs/operators';
 import { DevicePlatform, DeviceService } from '../device/device.service';

@@ -272,7 +272,7 @@ export default class AgoraService extends Emittable {
 		// Logger.log('AgoraService.join.rtmToken$', rtmToken);
 		try {
 			await this.joinRtmChannel(rtmToken.token, channelNameLink, uid);
-			const rtcToken = await AgoraService.rtcToken$(channelNameLink).toPromise();
+			const rtcToken = await AgoraService.rtcToken$(channelNameLink, uid).toPromise();
 			// Logger.log('AgoraService.rtcToken$', rtcToken);
 			await this.joinRtcChannel(rtcToken.token, channelNameLink, uid);
 		} catch (error) {
@@ -295,7 +295,7 @@ export default class AgoraService extends Emittable {
 		} catch (error) {
 			Logger.error('AgoraService.joinRtcChannel.error', error);
 			if (error === 'DYNAMIC_KEY_EXPIRED') {
-				const rtcToken = await AgoraService.rtcToken$(channelNameLink).toPromise();
+				const rtcToken = await AgoraService.rtcToken$(channelNameLink, uid).toPromise();
 				await this.joinRtcChannel(rtcToken.token, channelNameLink, uid);
 			}
 		}
@@ -1678,7 +1678,8 @@ AgoraService.getSystemStats
 		Logger.log('AgoraService.onTokenPrivilegeWillExpire');
 		const client = this.client;
 		const channelNameLink = this.getChannelNameLink();
-		AgoraService.rtcToken$(channelNameLink).subscribe(async (token) => {
+		const uid = StateService.state.uid;
+		AgoraService.rtcToken$(channelNameLink, uid).subscribe(async (token) => {
 			if (token.token) {
 				await client.renewToken(token.token);
 				Logger.log('AgoraService.onTokenPrivilegeWillExpire.renewed');
@@ -1967,9 +1968,9 @@ AgoraService.getSystemStats
 
 	// tokens
 
-	static rtcToken$(channelNameLink) {
+	static rtcToken$(channelNameLink, uid) {
 		if (environment.flags.useToken) {
-			return HttpService.post$('/api/token/rtc', { channelName: channelNameLink, uid: null });
+			return HttpService.post$('/api/token/rtc', { channelName: channelNameLink, uid });
 		} else {
 			return of({ token: null });
 		}
@@ -2013,9 +2014,11 @@ AgoraService.getSystemStats
 	static checkRtcTryJoin(client) {
 		return new Promise((resolve, reject) => {
 			const channelName = 'checkRtcConnection';
-			AgoraService.rtcToken$(channelName).subscribe(async (token) => {
+			const uid = AgoraService.resolveUserId();
+			AgoraService.rtcToken$(channelName, uid).subscribe(async (token) => {
 				try {
-					const uid = await client.join(environment.appKey, channelName, token.token, null);
+					Logger.log('AgoraService.checkRtcTryJoin', token, channelName, uid);
+					await client.join(environment.appKey, channelName, token.token, uid);
 					resolve(uid);
 				} catch (error) {
 					if (error === 'DYNAMIC_KEY_EXPIRED') {

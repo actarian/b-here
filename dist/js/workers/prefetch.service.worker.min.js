@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.35-canary.0
+ * @license beta-bhere-development v1.0.36-canary.0
  * (c) 2024 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
