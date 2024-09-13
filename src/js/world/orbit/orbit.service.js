@@ -3,7 +3,6 @@ import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import DragService, { DragDownEvent, DragMoveEvent } from '../../drag/drag.service';
 import KeyboardService from '../../keyboard/keyboard.service';
 import StateService from '../../state/state.service';
-import { RoleType } from '../../user/user';
 import { ViewType } from '../../view/view';
 import { ViewService } from '../../view/view.service';
 
@@ -70,37 +69,13 @@ export default class OrbitService {
 		}
 	}
 
-	get controlled() {
-		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
-	}
-
-	get controlling() {
-		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
-	}
-
-	get silencing() {
-		return StateService.state.silencing;
-	}
-
-	get silenced() {
-		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
-	}
-
-	get spyed() {
-		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
-	}
-
-	get spying() {
-		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher);
-	}
-
 	get isMediaView() {
 		const currentView = ViewService.currentView;
 		return currentView && currentView.type.name === ViewType.Media.name;
 	}
 
 	get locked() {
-		return this.controlled || this.spying || this.isMediaView;
+		return StateService.locked || this.isMediaView;
 	}
 
 	constructor(camera) {

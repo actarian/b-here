@@ -13,7 +13,6 @@ import { ModalService } from '../modal/modal.service';
 import PrefetchService from '../prefetch/prefetch.service';
 import { Rect } from '../rect/rect';
 import StateService from '../state/state.service';
-import { RoleType } from '../user/user';
 import { PanoramaGridView, ViewType } from '../view/view';
 import { ViewService } from '../view/view.service';
 import AvatarElement from './avatar/avatar-element';
@@ -72,36 +71,8 @@ export default class WorldComponent extends Component {
 		return DEBUG;
 	}
 
-	get controlled() {
-		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
-	}
-
-	get controlling() {
-		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
-	}
-
-	get silencing() {
-		return StateService.state.silencing;
-	}
-
-	get silenced() {
-		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
-	}
-
-	get spyed() {
-		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
-	}
-
-	get spying() {
-		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher);
-	}
-
-	get locked() {
-		return this.controlled || this.spying;
-	}
-
 	get lockedOrXR() {
-		return this.locked || this.renderer.xr.isPresenting;
+		return StateService.locked || this.renderer.xr.isPresenting;
 	}
 
 	get showMenu() {
@@ -734,7 +705,7 @@ export default class WorldComponent extends Component {
 	}
 
 	navWithKeys() {
-		if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !this.locked && !ModalService.hasModal) {
+		if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !StateService.locked && !ModalService.hasModal) {
 			this.intersectObjects = this.view.intersectObjects;
 			const velocity = this.velocity || (this.velocity = new THREE.Vector3());
 			const direction = this.direction || (this.direction = new THREE.Vector3());
@@ -839,7 +810,7 @@ export default class WorldComponent extends Component {
 	}
 
 	raycasterXRHitTest() {
-		if (this.renderer.xr.isPresenting && !this.locked) {
+		if (this.renderer.xr.isPresenting && !StateService.locked) {
 			const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 			if (raycaster) {
 				const hit = Interactive.hittest(raycaster, this.controller.userData.isSelecting);
@@ -892,7 +863,7 @@ export default class WorldComponent extends Component {
 
 	onMouseDown(event) {
 		try {
-			if (this.locked) {
+			if (StateService.locked) {
 				return;
 			}
 			if (event.button !== 0) {
@@ -1041,7 +1012,7 @@ export default class WorldComponent extends Component {
 
 	onMenuToggle(event) {
 		// Logger.log('WorldComponent.onMenuToggle', event.id, event);
-		if (this.locked) {
+		if (StateService.locked) {
 			return;
 		}
 		this.menu = event;
@@ -1085,7 +1056,7 @@ export default class WorldComponent extends Component {
 			event.item.showPanel = false;
 		}
 		// Logger.log('WorldComponent.onNavDown', this.keys);
-		if (this.locked) {
+		if (StateService.locked) {
 			return;
 		}
 		if (this.editor && this.keys.Shift) {
@@ -1101,7 +1072,7 @@ export default class WorldComponent extends Component {
 
 	onNavLink(event) {
 		// Logger.log('WorldComponent.onNavLink', event.link.href);
-		if (this.locked || this.editor) {
+		if (StateService.locked || this.editor) {
 			return;
 		}
 		if (environment.flags.useIframe) {
@@ -1188,7 +1159,7 @@ export default class WorldComponent extends Component {
 
 	onPanelDown(event) {
 		// Logger.log('WorldComponent.onPanelDown', event.link.href);
-		if (this.locked) {
+		if (StateService.locked) {
 			return;
 		}
 		if (environment.flags.useIframe) {
@@ -1287,7 +1258,7 @@ export default class WorldComponent extends Component {
 
 	onGridNav(event) {
 		// Logger.log('WorldComponent.onGridNav', event);
-		if (this.locked) {
+		if (StateService.locked) {
 			return;
 		}
 		MessageService.send({
@@ -1339,7 +1310,7 @@ export default class WorldComponent extends Component {
 
 	control$() {
 		return this.controlEvent$.pipe(
-			filter(() => this.controlling || this.spyed || this.editor),
+			filter(() => StateService.controlling || StateService.spyed || this.editor),
 			auditTime(Math.floor(1000 / 15)),
 			map((control) => {
 				/**
@@ -1540,7 +1511,7 @@ export default class WorldComponent extends Component {
 			takeUntil(this.unsubscribe$),
 		).subscribe(state => {
 			this.state = state;
-			this.showPointer = this.locked;
+			this.showPointer = StateService.locked;
 			// console.log(state);
 			// this.pushChanges();
 		});

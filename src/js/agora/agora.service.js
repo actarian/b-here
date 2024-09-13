@@ -191,6 +191,7 @@ export default class AgoraService extends Emittable {
 			return this.client;
 		}
 		try {
+			const client = this.client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
 			/*
 			0: DEBUG. Output all API logs.
 			1: INFO. Output logs of the INFO, WARNING and ERROR level.
@@ -199,7 +200,6 @@ export default class AgoraService extends Emittable {
 			4: NONE. Do not output any log.
 			*/
 			AgoraRTC.setLogLevel(3);
-			const client = this.client = AgoraRTC.createClient({ mode: 'live', codec: 'h264' }); // rtc, vp8
 			client.on('exception', this.onException);
 			client.on('user-joined', this.onUserJoined);
 			client.on('user-left', this.onUserLeft);
@@ -870,7 +870,7 @@ export default class AgoraService extends Emittable {
 	}
 
 	navToView(viewId, keepOrientation = false, useLastOrientation = false) {
-		if (StateService.state.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
+		if (StateService.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
 			this.sendMessage({
 				type: MessageType.NavToView,
 				viewId: viewId,
@@ -1781,6 +1781,12 @@ AgoraService.getSystemStats
 				displaySurface: 'monitor', // pre-selection
 				encoderConfig: screenQuality.profile,
 			}, 'disable');
+			console.log('screenTrack', screenTrack);
+			/*
+			screenTrack.addEventListener('ended', () => {
+				console.log('The user has ended sharing the screen');
+			});
+			*/
 			const user = {
 				uid: screenUid,
 				videoTrack: screenTrack,

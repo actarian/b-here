@@ -1,5 +1,5 @@
 /**
- * @license beta-bhere-development v1.0.34-canary.0
+ * @license beta-bhere-development v1.0.35-canary.0
  * (c) 2024 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
@@ -6329,6 +6329,10 @@ StreamService.streams$ = rxjs.combineLatest([StreamService.local$, StreamService
       return this.client;
     }
     try {
+      const client = this.client = AgoraRTC$1.createClient({
+        mode: 'live',
+        codec: 'h264'
+      }); // rtc, vp8
       /*
       0: DEBUG. Output all API logs.
       1: INFO. Output logs of the INFO, WARNING and ERROR level.
@@ -6337,10 +6341,6 @@ StreamService.streams$ = rxjs.combineLatest([StreamService.local$, StreamService
       4: NONE. Do not output any log.
       */
       AgoraRTC$1.setLogLevel(3);
-      const client = this.client = AgoraRTC$1.createClient({
-        mode: 'live',
-        codec: 'h264'
-      }); // rtc, vp8
       client.on('exception', this.onException);
       client.on('user-joined', this.onUserJoined);
       client.on('user-left', this.onUserLeft);
@@ -7079,7 +7079,7 @@ StreamService.streams$ = rxjs.combineLatest([StreamService.local$, StreamService
     if (useLastOrientation === void 0) {
       useLastOrientation = false;
     }
-    if (StateService.state.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
+    if (StateService.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
       this.sendMessage({
         type: MessageType.NavToView,
         viewId: viewId,
@@ -8015,6 +8015,12 @@ AgoraService.getSystemStats
         // pre-selection
         encoderConfig: screenQuality.profile
       }, 'disable');
+      console.log('screenTrack', screenTrack);
+      /*
+      screenTrack.addEventListener('ended', () => {
+      	console.log('The user has ended sharing the screen');
+      });
+      */
       const user = {
         uid: screenUid,
         videoTrack: screenTrack,
@@ -14495,30 +14501,12 @@ class OrbitService {
       this.markAsDirty();
     }
   }
-  get controlled() {
-    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-  }
-  get controlling() {
-    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-  }
-  get silencing() {
-    return StateService.state.silencing;
-  }
-  get silenced() {
-    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-  }
-  get spyed() {
-    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-  }
-  get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
-  }
   get isMediaView() {
     const currentView = ViewService.currentView;
     return currentView && currentView.type.name === ViewType.Media.name;
   }
   get locked() {
-    return this.controlled || this.spying || this.isMediaView;
+    return StateService.locked || this.isMediaView;
   }
   constructor(camera) {
     this.mode_ = OrbitService.mode = OrbitMode.Panorama;
@@ -21005,29 +20993,8 @@ class WorldComponent extends rxcomp.Component {
     // return STATIC || DEBUG;
     return DEBUG;
   }
-  get controlled() {
-    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-  }
-  get controlling() {
-    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-  }
-  get silencing() {
-    return StateService.state.silencing;
-  }
-  get silenced() {
-    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-  }
-  get spyed() {
-    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-  }
-  get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
-  }
-  get locked() {
-    return this.controlled || this.spying;
-  }
   get lockedOrXR() {
-    return this.locked || this.renderer.xr.isPresenting;
+    return StateService.locked || this.renderer.xr.isPresenting;
   }
   get showMenu() {
     return StateService.state.hosted && StateService.state.navigable && (StateService.state.mode !== 'embed' || environment.flags.menuEmbed);
@@ -21627,7 +21594,7 @@ class WorldComponent extends rxcomp.Component {
   }
 
   navWithKeys() {
-    if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !this.locked && !ModalService.hasModal) {
+    if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !StateService.locked && !ModalService.hasModal) {
       this.intersectObjects = this.view.intersectObjects;
       const velocity = this.velocity || (this.velocity = new THREE.Vector3());
       const direction = this.direction || (this.direction = new THREE.Vector3());
@@ -21730,7 +21697,7 @@ class WorldComponent extends rxcomp.Component {
     return raycaster;
   }
   raycasterXRHitTest() {
-    if (this.renderer.xr.isPresenting && !this.locked) {
+    if (this.renderer.xr.isPresenting && !StateService.locked) {
       const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
       if (raycaster) {
         Interactive.hittest(raycaster, this.controller.userData.isSelecting);
@@ -21769,7 +21736,7 @@ class WorldComponent extends rxcomp.Component {
   }
   onMouseDown(event) {
     try {
-      if (this.locked) {
+      if (StateService.locked) {
         return;
       }
       if (event.button !== 0) {
@@ -21920,7 +21887,7 @@ class WorldComponent extends rxcomp.Component {
   }
   onMenuToggle(event) {
     // Logger.log('WorldComponent.onMenuToggle', event.id, event);
-    if (this.locked) {
+    if (StateService.locked) {
       return;
     }
     this.menu = event;
@@ -21962,7 +21929,7 @@ class WorldComponent extends rxcomp.Component {
       event.item.showPanel = false;
     }
     // Logger.log('WorldComponent.onNavDown', this.keys);
-    if (this.locked) {
+    if (StateService.locked) {
       return;
     }
     if (this.editor && this.keys.Shift) {
@@ -21977,7 +21944,7 @@ class WorldComponent extends rxcomp.Component {
   }
   onNavLink(event) {
     // Logger.log('WorldComponent.onNavLink', event.link.href);
-    if (this.locked || this.editor) {
+    if (StateService.locked || this.editor) {
       return;
     }
     if (environment.flags.useIframe) {
@@ -22056,7 +22023,7 @@ class WorldComponent extends rxcomp.Component {
   }
   onPanelDown(event) {
     // Logger.log('WorldComponent.onPanelDown', event.link.href);
-    if (this.locked) {
+    if (StateService.locked) {
       return;
     }
     if (environment.flags.useIframe) {
@@ -22153,7 +22120,7 @@ class WorldComponent extends rxcomp.Component {
 
   onGridNav(event) {
     // Logger.log('WorldComponent.onGridNav', event);
-    if (this.locked) {
+    if (StateService.locked) {
       return;
     }
     MessageService.send({
@@ -22200,7 +22167,7 @@ class WorldComponent extends rxcomp.Component {
     MessageService.send(snapshot);
   }
   control$() {
-    return this.controlEvent$.pipe(operators.filter(() => this.controlling || this.spyed || this.editor), operators.auditTime(Math.floor(1000 / 15)), operators.map(control => {
+    return this.controlEvent$.pipe(operators.filter(() => StateService.controlling || StateService.spyed || this.editor), operators.auditTime(Math.floor(1000 / 15)), operators.map(control => {
       /**
        * here we are updating original CONTROL_INFO object
        */
@@ -22394,7 +22361,7 @@ class WorldComponent extends rxcomp.Component {
     });
     StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(state => {
       this.state = state;
-      this.showPointer = this.locked;
+      this.showPointer = StateService.locked;
       // console.log(state);
       // this.pushChanges();
     });
@@ -23289,33 +23256,12 @@ ModelNavComponent.meta = {
     uiClass.chat = this.state.chat;
     uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
     uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
-    uiClass.locked = this.locked;
+    uiClass.locked = StateService.locked;
     // uiClass.media = !uiClass.remotes && this.media;
     return uiClass;
   }
   get remoteClass() {
     return `group--remote--${Math.min(9, this.remotes.length)}`;
-  }
-  get controlled() {
-    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-  }
-  get controlling() {
-    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-  }
-  get silencing() {
-    return StateService.state.silencing;
-  }
-  get silenced() {
-    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-  }
-  get spyed() {
-    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-  }
-  get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
-  }
-  get locked() {
-    return this.controlled || this.spying;
   }
   get remoteScreen() {
     return this.remoteScreen_;
@@ -23520,7 +23466,7 @@ ModelNavComponent.meta = {
       this.hosted = state.hosted;
       this.pushChanges();
       // console.log(state);
-      this.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
+      StateService.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
     });
     this.initAgora();
   }
@@ -24119,7 +24065,7 @@ ModelNavComponent.meta = {
       this.agora.toggleSilence();
     } else {
       this.patchState({
-        silencing: !this.state.silencing
+        silencing: !StateService.silencing
       });
     }
   }
@@ -24344,7 +24290,7 @@ AgoraComponent.meta = {
 	</div>
 	`
 };var name = "beta-bhere-development";
-var version = "1.0.34-canary.0";class AssetService {
+var version = "1.0.35-canary.0";class AssetService {
   static assetCreate$(asset) {
     return HttpService.post$('/api/asset', asset).pipe(operators.map(asset => mapAsset(asset)));
   }
@@ -26351,32 +26297,11 @@ GenericComponent.meta = {
     uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
     uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
     uiClass.media = !uiClass.remotes && this.media;
-    uiClass.locked = this.locked;
+    uiClass.locked = StateService.locked;
     return uiClass;
   }
   get remoteClass() {
     return `group--remote--${Math.min(9, this.remotes.length)}`;
-  }
-  get controlled() {
-    return this.state.controlling && this.state.controlling !== this.state.uid;
-  }
-  get controlling() {
-    return this.state.controlling && this.state.controlling === this.state.uid;
-  }
-  get silencing() {
-    return this.state.silencing;
-  }
-  get silenced() {
-    return this.state.silencing && this.state.role === RoleType.Streamer;
-  }
-  get spyed() {
-    return this.state.spying && this.state.spying === this.state.uid;
-  }
-  get spying() {
-    return this.state.spying && this.state.spying !== this.state.uid && this.state.role === RoleType.Publisher;
-  }
-  get locked() {
-    return this.controlled || this.spying;
   }
   get remoteScreen() {
     return this.remoteScreen_;
@@ -33553,27 +33478,6 @@ class BackButton extends MenuButton {
   }
 }
 class ModelMenuComponent extends ModelComponent {
-  get controlled() {
-    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-  }
-  get controlling() {
-    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-  }
-  get silencing() {
-    return StateService.state.silencing;
-  }
-  get silenced() {
-    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-  }
-  get spyed() {
-    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-  }
-  get spying() {
-    return StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher;
-  }
-  get locked() {
-    return this.controlled || this.spying;
-  }
   get loading() {
     return this.loading_;
   }
@@ -33833,7 +33737,7 @@ class ModelMenuComponent extends ModelComponent {
       event.preventDefault();
       event.stopImmediatePropagation();
     }
-    if (this.locked) {
+    if (StateService.locked) {
       return;
     }
     if (MenuService.active) {

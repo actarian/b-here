@@ -59,40 +59,12 @@ export default class LayoutComponent extends Component {
 		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
 		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
 		uiClass.media = !uiClass.remotes && this.media;
-		uiClass.locked = this.locked;
+		uiClass.locked = StateService.locked;
 		return uiClass;
 	}
 
 	get remoteClass() {
 		return `group--remote--${Math.min(9, this.remotes.length)}`;
-	}
-
-	get controlled() {
-		return (this.state.controlling && this.state.controlling !== this.state.uid);
-	}
-
-	get controlling() {
-		return (this.state.controlling && this.state.controlling === this.state.uid);
-	}
-
-	get silencing() {
-		return this.state.silencing;
-	}
-
-	get silenced() {
-		return (this.state.silencing && this.state.role === RoleType.Streamer);
-	}
-
-	get spyed() {
-		return (this.state.spying && this.state.spying === this.state.uid);
-	}
-
-	get spying() {
-		return (this.state.spying && this.state.spying !== this.state.uid && this.state.role === RoleType.Publisher);
-	}
-
-	get locked() {
-		return this.controlled || this.spying;
 	}
 
 	get remoteScreen() {

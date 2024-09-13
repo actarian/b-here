@@ -50658,8 +50658,8 @@ var logger = exportedLogger;
 
 
 /**
- * @license beta-bhere-development v1.0.34-canary.0
- * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
+ * @license beta-bhere-development v1.0.35-canary.0
+ * (c) 2024 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
@@ -101836,8 +101836,8 @@ var logger = exportedLogger;
 
 
 /**
- * @license beta-bhere-development v1.0.34-canary.0
- * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
+ * @license beta-bhere-development v1.0.35-canary.0
+ * (c) 2024 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 
@@ -101865,17 +101865,6 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 			</button>
 		</div>
 	</div>
-	<div class="group--members" *if="state.mode == 'virtual-tour'">
-		<div class="members" *if="state.role === 'publisher'">
-			<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-			<span class="members__count" [innerHTML]="state.membersCount"></span>
-		</div>
-		<div class="credits">
-			<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-				<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-			</a>
-		</div>
-	</div>
 </div>
 <!-- remote screen -->
 <div class="group--remote-screen" *if="remoteScreen">
@@ -101887,9 +101876,24 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	</div>
 </div>
 `;
+	const CHUNK_MEMBERS = `
+<!-- members -->
+<div class="group--members">
+	<div class="members" *if="state.role === 'publisher'">
+		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+		<span class="members__count" [innerHTML]="state.membersCount"></span>
+	</div>
+	<div class="credits">
+		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+		</a>
+	</div>
+</div>
+`;
 	const CHUNK_SERVICE = `
 <!-- service -->
 <div class="group--service">
+	${CHUNK_MEMBERS}
 	<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
 	</button>
@@ -101897,13 +101901,13 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 	</button>
-	<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-	</button>
 	<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+	</button>
+	<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+		<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 	</button>
 	<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
 		<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
@@ -101982,34 +101986,6 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 		<button type="button" class="btn--mic" [title]="'title_mute_mic' | label" [class]="{ muted: state.audioMuted, disabled: !local || silenced }" (click)="toggleAudio()">
 			<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#mic"></use></svg>
 		</button>
-	</div>
-</div>
-`;
-	const CHUNK_MEMBERS = `
-<!-- members -->
-<div class="group--members" *if="state.mode == 'live-meeting'">
-	<div class="members" *if="state.role === 'publisher'">
-		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-		<span class="members__count" [innerHTML]="state.membersCount"></span>
-	</div>
-	<div class="credits">
-		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-		</a>
-	</div>
-</div>
-`;
-	const CHUNK_MEMBERS_SMART_DEVICE = `
-<!-- members -->
-<div class="group--members">
-	<div class="members" *if="state.role === 'publisher'">
-		<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-		<span class="members__count" [innerHTML]="state.membersCount"></span>
-	</div>
-	<div class="credits">
-		<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-			<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-		</a>
 	</div>
 </div>
 `;
@@ -102113,7 +102089,6 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 		${CHUNK_AR_VR}
 		${CHUNK_LIKE}
 	</div>
-	${CHUNK_MEMBERS}
 	${CHUNK_CHAT}
 	${CHUNK_LOCK}
 	${CHUNK_NAVMAP}
@@ -102149,7 +102124,7 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	<div class="group--footer">
 		${CHUNK_CONTROLS_SMART_DEVICE}
 	</div>
-	${CHUNK_MEMBERS_SMART_DEVICE}
+	${CHUNK_MEMBERS}
 </div>
 `;
 	const CHUNK_SELF_SERVICE_TOUR = `
@@ -102191,7 +102166,7 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 `;
 
 	const environmentServed = {
-	  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	  appKey: 'f857439a0c0a458b9a755c3b155b94a8',
 	  channelName: 'BHere',
 	  flags: {
 	    production: true,
@@ -102284,11 +102259,11 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	};
 
 	const environmentStatic = {
-	  appKey: '8b0cae93d47a44e48e97e7fd0404be4e',
+	  appKey: 'f857439a0c0a458b9a755c3b155b94a8',
 	  channelName: 'BHere',
 	  flags: {
 	    production: false,
-	    useProxy: true,
+	    useProxy: false,
 	    useToken: false,
 	    usePrefetch: true,
 	    useExtendedUserInfo: true,
@@ -105140,20 +105115,6 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	RouterService.routes = [];
 	RouterService.router_ = null;
 
-	class StateService {
-	  static set state(state) {
-	    this.state$.next(state);
-	  }
-	  static get state() {
-	    return this.state$.getValue();
-	  }
-	  static patchState(state) {
-	    state = Object.assign({}, this.state, state);
-	    this.state = state;
-	  }
-	}
-	StateService.state$ = new rxjs.BehaviorSubject({});
-
 	const RoleType = {
 	  Publisher: 'publisher',
 	  Attendee: 'attendee',
@@ -105170,6 +105131,41 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	    }
 	  }
 	}
+
+	class StateService {
+	  static set state(state) {
+	    this.state$.next(state);
+	  }
+	  static get state() {
+	    return this.state$.getValue();
+	  }
+	  static get controlled() {
+	    return this.state.controlling && this.state.controlling !== this.state.uid;
+	  }
+	  static get controlling() {
+	    return this.state.controlling && this.state.controlling === this.state.uid;
+	  }
+	  static get silencing() {
+	    return this.state.silencing;
+	  }
+	  static get silenced() {
+	    return this.state.silencing && this.state.role === RoleType.Streamer;
+	  }
+	  static get spyed() {
+	    return this.state.spying && this.state.spying === this.state.uid;
+	  }
+	  static get spying() {
+	    return this.state.spying && this.state.spying !== this.state.uid && this.state.role === RoleType.Publisher;
+	  }
+	  static get locked() {
+	    return this.controlled || this.spying;
+	  }
+	  static patchState(state) {
+	    state = Object.assign({}, this.state, state);
+	    this.state = state;
+	  }
+	}
+	StateService.state$ = new rxjs.BehaviorSubject({});
 
 	const MEETING_ID_VALIDATOR = /^\d{9}-\d{4}-\d{13}(-\d+)?$/;
 	class MeetingId {
@@ -107615,11 +107611,11 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	      return this.client;
 	    }
 	    try {
-	      AgoraRTC$1.setLogLevel(2);
 	      const client = this.client = AgoraRTC$1.createClient({
 	        mode: 'live',
 	        codec: 'h264'
 	      });
+	      AgoraRTC$1.setLogLevel(3);
 	      client.on('exception', this.onException);
 	      client.on('user-joined', this.onUserJoined);
 	      client.on('user-left', this.onUserLeft);
@@ -108261,7 +108257,7 @@ var BHere = (function (rxcomp, rxcompForm, rxjs, operators, three, html2canvas) 
 	    if (useLastOrientation === void 0) {
 	      useLastOrientation = false;
 	    }
-	    if (StateService.state.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
+	    if (StateService.controlling === StateService.state.uid || StateService.state.spying === StateService.state.uid) {
 	      this.sendMessage({
 	        type: MessageType.NavToView,
 	        viewId: viewId,
@@ -109015,6 +109011,7 @@ AgoraService.getSystemStats
 	        displaySurface: 'monitor',
 	        encoderConfig: screenQuality.profile
 	      }, 'disable');
+	      console.log('screenTrack', screenTrack);
 	      const user = {
 	        uid: screenUid,
 	        videoTrack: screenTrack,
@@ -115034,30 +115031,12 @@ void main() {
 	      this.markAsDirty();
 	    }
 	  }
-	  get controlled() {
-	    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-	  }
-	  get controlling() {
-	    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-	  }
-	  get silencing() {
-	    return StateService.state.silencing;
-	  }
-	  get silenced() {
-	    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-	  }
-	  get spyed() {
-	    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-	  }
-	  get spying() {
-	    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
-	  }
 	  get isMediaView() {
 	    const currentView = ViewService.currentView;
 	    return currentView && currentView.type.name === ViewType.Media.name;
 	  }
 	  get locked() {
-	    return this.controlled || this.spying || this.isMediaView;
+	    return StateService.locked || this.isMediaView;
 	  }
 	  constructor(camera) {
 	    this.mode_ = OrbitService.mode = OrbitMode.Panorama;
@@ -121298,29 +121277,8 @@ void main() {
 	  get debugging() {
 	    return DEBUG;
 	  }
-	  get controlled() {
-	    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-	  }
-	  get controlling() {
-	    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-	  }
-	  get silencing() {
-	    return StateService.state.silencing;
-	  }
-	  get silenced() {
-	    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-	  }
-	  get spyed() {
-	    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-	  }
-	  get spying() {
-	    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
-	  }
-	  get locked() {
-	    return this.controlled || this.spying;
-	  }
 	  get lockedOrXR() {
-	    return this.locked || this.renderer.xr.isPresenting;
+	    return StateService.locked || this.renderer.xr.isPresenting;
 	  }
 	  get showMenu() {
 	    return StateService.state.hosted && StateService.state.navigable && (StateService.state.mode !== 'embed' || environment.flags.menuEmbed);
@@ -121787,7 +121745,7 @@ void main() {
 	    }
 	  }
 	  navWithKeys() {
-	    if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !this.locked && !ModalService.hasModal) {
+	    if (this.view && this.view.type.name === ViewType.Room3d.name && this.view.mesh && !StateService.locked && !ModalService.hasModal) {
 	      this.intersectObjects = this.view.intersectObjects;
 	      const velocity = this.velocity || (this.velocity = new THREE.Vector3());
 	      const direction = this.direction || (this.direction = new THREE.Vector3());
@@ -121881,7 +121839,7 @@ void main() {
 	    return raycaster;
 	  }
 	  raycasterXRHitTest() {
-	    if (this.renderer.xr.isPresenting && !this.locked) {
+	    if (this.renderer.xr.isPresenting && !StateService.locked) {
 	      const raycaster = this.updateRaycasterXR(this.controller, this.raycaster);
 	      if (raycaster) {
 	        Interactive.hittest(raycaster, this.controller.userData.isSelecting);
@@ -121913,7 +121871,7 @@ void main() {
 	  }
 	  onMouseDown(event) {
 	    try {
-	      if (this.locked) {
+	      if (StateService.locked) {
 	        return;
 	      }
 	      if (event.button !== 0) {
@@ -122044,7 +122002,7 @@ void main() {
 	    });
 	  }
 	  onMenuToggle(event) {
-	    if (this.locked) {
+	    if (StateService.locked) {
 	      return;
 	    }
 	    this.menu = event;
@@ -122080,7 +122038,7 @@ void main() {
 	    if (!this.isTouchDevice()) {
 	      event.item.showPanel = false;
 	    }
-	    if (this.locked) {
+	    if (StateService.locked) {
 	      return;
 	    }
 	    if (this.editor && this.keys.Shift) {
@@ -122094,7 +122052,7 @@ void main() {
 	    }
 	  }
 	  onNavLink(event) {
-	    if (this.locked || this.editor) {
+	    if (StateService.locked || this.editor) {
 	      return;
 	    }
 	    if (environment.flags.useIframe) {
@@ -122164,7 +122122,7 @@ void main() {
 	    }
 	  }
 	  onPanelDown(event) {
-	    if (this.locked) {
+	    if (StateService.locked) {
 	      return;
 	    }
 	    if (environment.flags.useIframe) {
@@ -122246,7 +122204,7 @@ void main() {
 	    });
 	  }
 	  onGridNav(event) {
-	    if (this.locked) {
+	    if (StateService.locked) {
 	      return;
 	    }
 	    MessageService.send({
@@ -122290,7 +122248,7 @@ void main() {
 	    MessageService.send(snapshot);
 	  }
 	  control$() {
-	    return this.controlEvent$.pipe(operators.filter(() => this.controlling || this.spyed || this.editor), operators.auditTime(Math.floor(1000 / 15)), operators.map(control => {
+	    return this.controlEvent$.pipe(operators.filter(() => StateService.controlling || StateService.spyed || this.editor), operators.auditTime(Math.floor(1000 / 15)), operators.map(control => {
 	      control.orientation.latitude = this.orbitService.latitude;
 	      control.orientation.longitude = this.orbitService.longitude;
 	      control.zoom = this.orbitService.zoom;
@@ -122467,7 +122425,7 @@ void main() {
 	    });
 	    StateService.state$.pipe(operators.takeUntil(this.unsubscribe$)).subscribe(state => {
 	      this.state = state;
-	      this.showPointer = this.locked;
+	      this.showPointer = StateService.locked;
 	    });
 	    this.resize = this.resize.bind(this);
 	    this.render = this.render.bind(this);
@@ -123285,32 +123243,11 @@ void main() {
 	    uiClass.chat = this.state.chat;
 	    uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
 	    uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
-	    uiClass.locked = this.locked;
+	    uiClass.locked = StateService.locked;
 	    return uiClass;
 	  }
 	  get remoteClass() {
 	    return `group--remote--${Math.min(9, this.remotes.length)}`;
-	  }
-	  get controlled() {
-	    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-	  }
-	  get controlling() {
-	    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-	  }
-	  get silencing() {
-	    return StateService.state.silencing;
-	  }
-	  get silenced() {
-	    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-	  }
-	  get spyed() {
-	    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-	  }
-	  get spying() {
-	    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
-	  }
-	  get locked() {
-	    return this.controlled || this.spying;
 	  }
 	  get remoteScreen() {
 	    return this.remoteScreen_;
@@ -123502,7 +123439,7 @@ void main() {
 	      this.state = state;
 	      this.hosted = state.hosted;
 	      this.pushChanges();
-	      this.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
+	      StateService.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
 	    });
 	    this.initAgora();
 	  }
@@ -124038,7 +123975,7 @@ void main() {
 	      this.agora.toggleSilence();
 	    } else {
 	      this.patchState({
-	        silencing: !this.state.silencing
+	        silencing: !StateService.silencing
 	      });
 	    }
 	  }
@@ -124221,6 +124158,9 @@ void main() {
 	</div>
 	`
 	};
+
+	var name = "beta-bhere-development";
+	var version = "1.0.35-canary.0";
 
 	class AssetService {
 	  static assetCreate$(asset) {
@@ -126124,32 +126064,11 @@ void main() {
 	    uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
 	    uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
 	    uiClass.media = !uiClass.remotes && this.media;
-	    uiClass.locked = this.locked;
+	    uiClass.locked = StateService.locked;
 	    return uiClass;
 	  }
 	  get remoteClass() {
 	    return `group--remote--${Math.min(9, this.remotes.length)}`;
-	  }
-	  get controlled() {
-	    return this.state.controlling && this.state.controlling !== this.state.uid;
-	  }
-	  get controlling() {
-	    return this.state.controlling && this.state.controlling === this.state.uid;
-	  }
-	  get silencing() {
-	    return StateService.state.silencing;
-	  }
-	  get silenced() {
-	    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-	  }
-	  get spyed() {
-	    return this.state.spying && this.state.spying === this.state.uid;
-	  }
-	  get spying() {
-	    return this.state.spying && this.state.spying !== this.state.uid;
-	  }
-	  get locked() {
-	    return this.controlled || this.spying;
 	  }
 	  get remoteScreen() {
 	    return this.remoteScreen_;
@@ -126193,7 +126112,7 @@ void main() {
 	    this.media = null;
 	    this.hasScreenViewItem = false;
 	    this.media = true;
-	    this.remotes = new Array(8).fill(0).map((x, i) => ({
+	    this.remotes = new Array(9).fill(0).map((x, i) => ({
 	      id: i + 1
 	    }));
 	    this.languageService = LanguageService;
@@ -126419,17 +126338,6 @@ void main() {
 						</button>
 					</div>
 				</div>
-				<div class="group--members" *if="state.mode == 'virtual-tour'">
-					<div class="members" *if="state.role === 'publisher'">
-						<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-						<span class="members__count" [innerHTML]="state.membersCount"></span>
-					</div>
-					<div class="credits">
-						<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-							<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-						</a>
-					</div>
-				</div>
 			</div>
 			<!-- remote screen -->
 			<div class="group--remote-screen" *if="remoteScreen">
@@ -126440,9 +126348,22 @@ void main() {
 					</div>
 				</div>
 			</div>
+			<!-- header -->
 			<div class="group--header">
 				<!-- service -->
 				<div class="group--service">
+					<!-- members -->
+					<div class="group--members">
+						<div class="members" *if="state.role === 'publisher'">
+							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+							<span class="members__count" [innerHTML]="state.membersCount"></span>
+						</div>
+						<div class="credits">
+							<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+								<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+							</a>
+						</div>
+					</div>
 					<button type="button" class="btn--back" [title]="'title_back' | label" (click)="onBack($event)" *if="isBackButtonVisible">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#arrow-prev"></use></svg>
 					</button>
@@ -126450,13 +126371,13 @@ void main() {
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'virtual-tour'"><use xlink:href="#live-meeting"></use></svg>
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.mode == 'live-meeting'"><use xlink:href="#virtual-tour"></use></svg>
 					</button>
-					<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-					</button>
 					<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+					</button>
+					<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+						<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+						<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 					</button>
 					<button type="button" class="btn--navmap" [title]="'title_navmap' | label" [class]="{ active: state.showNavmap }" (click)="toggleNavmap($event)" *if="navmap && state.mode != 'live-meeting'">
 						<svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#navmap"></use></svg>
@@ -126483,23 +126404,12 @@ void main() {
 					</div>
 				</div>
 			</div>
+			<!-- footer -->
 			<div class="group--footer">
 				${CHUNK_CONTROLS}
 				${CHUNK_MEDIA}
 				${CHUNK_AR_VR}
 				${CHUNK_LIKE}
-			</div>
-			<!-- members -->
-			<div class="group--members" *if="state.mode == 'live-meeting'">
-				<div class="members" *if="state.role === 'publisher'">
-					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-					<span class="members__count" [innerHTML]="state.membersCount"></span>
-				</div>
-				<div class="credits">
-					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-					</a>
-				</div>
 			</div>
 			${CHUNK_CHAT}
 			${CHUNK_LOCK}
@@ -126522,6 +126432,18 @@ void main() {
 							<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#spy"></use></svg>
 						</button>
 					</div>
+				</div>
+			</div>
+			<!-- members -->
+			<div class="group--members">
+				<div class="members" *if="state.role === 'publisher'">
+					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
+					<span class="members__count" [innerHTML]="state.membersCount"></span>
+				</div>
+				<div class="credits">
+					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
+						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
+					</a>
 				</div>
 			</div>
 			<!-- remote screen -->
@@ -126566,18 +126488,6 @@ void main() {
 					</button>
 				</div>
 			</div>
-			<!-- members -->
-			<div class="group--members">
-				<div class="members" *if="state.role === 'publisher'">
-					<svg class="spy" width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#users"></use></svg>
-					<span class="members__count" [innerHTML]="state.membersCount"></span>
-				</div>
-				<div class="credits">
-					<a class="btn--credits" href="https://www.websolute.com/" target="_blank" rel="noopener">
-						<svg viewBox="0 0 270 98"><use xlink:href="#b-here"></use></svg>
-					</a>
-				</div>
-			</div>
 		</div>
 		<!-- Self Service Tour -->
 		<div class="ui" [class]="uiClass" *if="state.status == 'connected' && state.mode == 'self-service-tour'">
@@ -126587,13 +126497,13 @@ void main() {
 			</div>
 			<!-- service -->
 			<div class="group--service">
-				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
-					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
-					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
-				</button>
 				<button type="button" class="btn--fullscreen" [title]="'title_fullscreen' | label" [class]="{ muted: state.fullScreen }" (click)="toggleFullScreen($event)">
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.fullScreen"><use xlink:href="#fullscreen-on"></use></svg>
 					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.fullScreen"><use xlink:href="#fullscreen-off"></use></svg>
+				</button>
+				<button type="button" class="btn--volume" [title]="'title_volume' | label" [class]="{ muted: state.volumeMuted }" (click)="toggleVolume($event)">
+					<svg width="24" height="24" viewBox="0 0 24 24" *if="!state.volumeMuted"><use xlink:href="#volume-on"></use></svg>
+					<svg width="24" height="24" viewBox="0 0 24 24" *if="state.volumeMuted"><use xlink:href="#volume-off"></use></svg>
 				</button>
 			</div>
 			${CHUNK_AR_VR}
@@ -127248,6 +127158,7 @@ void main() {
 
 	class AppComponent extends rxcomp.Component {
 	  onInit() {
+	    console.log(name, version);
 	    const routes = AppRoutesInit();
 	    RouterService.useBrowser(routes);
 	    AssetGroupTypeInit();
@@ -132701,27 +132612,6 @@ void main() {
 	  }
 	}
 	class ModelMenuComponent extends ModelComponent {
-	  get controlled() {
-	    return StateService.state.controlling && StateService.state.controlling !== StateService.state.uid;
-	  }
-	  get controlling() {
-	    return StateService.state.controlling && StateService.state.controlling === StateService.state.uid;
-	  }
-	  get silencing() {
-	    return StateService.state.silencing;
-	  }
-	  get silenced() {
-	    return StateService.state.silencing && StateService.state.role === RoleType.Streamer;
-	  }
-	  get spyed() {
-	    return StateService.state.spying && StateService.state.spying === StateService.state.uid;
-	  }
-	  get spying() {
-	    return StateService.state.spying && StateService.state.spying !== StateService.state.uid;
-	  }
-	  get locked() {
-	    return this.controlled || this.spying;
-	  }
 	  get loading() {
 	    return this.loading_;
 	  }
@@ -132932,7 +132822,7 @@ void main() {
 	      event.preventDefault();
 	      event.stopImmediatePropagation();
 	    }
-	    if (this.locked) {
+	    if (StateService.locked) {
 	      return;
 	    }
 	    if (MenuService.active) {

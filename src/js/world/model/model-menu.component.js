@@ -7,7 +7,6 @@ import { environment } from '../../environment';
 import LoaderService from '../../loader/loader.service';
 import { MessageService } from '../../message/message.service';
 import StateService from '../../state/state.service';
-import { RoleType } from '../../user/user';
 import { Host } from '../host/host';
 import Interactive from '../interactive/interactive';
 import InteractiveMesh from '../interactive/interactive.mesh';
@@ -270,34 +269,6 @@ export class BackButton extends MenuButton {
 }
 
 export default class ModelMenuComponent extends ModelComponent {
-
-	get controlled() {
-		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
-	}
-
-	get controlling() {
-		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
-	}
-
-	get silencing() {
-		return StateService.state.silencing;
-	}
-
-	get silenced() {
-		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
-	}
-
-	get spyed() {
-		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
-	}
-
-	get spying() {
-		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher);
-	}
-
-	get locked() {
-		return this.controlled || this.spying;
-	}
 
 	get loading() {
 		return this.loading_;
@@ -562,7 +533,7 @@ export default class ModelMenuComponent extends ModelComponent {
 			event.preventDefault();
 			event.stopImmediatePropagation();
 		}
-		if (this.locked) {
+		if (StateService.locked) {
 			return;
 		}
 		if (MenuService.active) {

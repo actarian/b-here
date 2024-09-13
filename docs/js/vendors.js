@@ -51406,8 +51406,8 @@ var logger = exportedLogger;
 
 
 /**
- * @license beta-bhere-development v1.0.34-canary.0
- * (c) 2023 Luca Zampetti <lzampetti@gmail.com>
+ * @license beta-bhere-development v1.0.35-canary.0
+ * (c) 2024 Luca Zampetti <lzampetti@gmail.com>
  * License: MIT
  */
 

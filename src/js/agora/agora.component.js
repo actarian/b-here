@@ -83,41 +83,13 @@ export default class AgoraComponent extends Component {
 		uiClass.chat = this.state.chat;
 		uiClass.remotes = this.state.mode === UIMode.LiveMeeting;
 		uiClass.remoteScreen = this.remoteScreen != null && !this.hasScreenViewItem;
-		uiClass.locked = this.locked;
+		uiClass.locked = StateService.locked;
 		// uiClass.media = !uiClass.remotes && this.media;
 		return uiClass;
 	}
 
 	get remoteClass() {
 		return `group--remote--${Math.min(9, this.remotes.length)}`;
-	}
-
-	get controlled() {
-		return (StateService.state.controlling && StateService.state.controlling !== StateService.state.uid);
-	}
-
-	get controlling() {
-		return (StateService.state.controlling && StateService.state.controlling === StateService.state.uid);
-	}
-
-	get silencing() {
-		return StateService.state.silencing;
-	}
-
-	get silenced() {
-		return (StateService.state.silencing && StateService.state.role === RoleType.Streamer);
-	}
-
-	get spyed() {
-		return (StateService.state.spying && StateService.state.spying === StateService.state.uid);
-	}
-
-	get spying() {
-		return (StateService.state.spying && StateService.state.spying !== StateService.state.uid && StateService.state.role === RoleType.Publisher);
-	}
-
-	get locked() {
-		return this.controlled || this.spying;
 	}
 
 	get remoteScreen() {
@@ -328,7 +300,7 @@ export default class AgoraComponent extends Component {
 			this.hosted = state.hosted;
 			this.pushChanges();
 			// console.log(state);
-			this.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
+			StateService.locked ? document.body.classList.add('locked') : document.body.classList.remove('locked');
 		});
 		this.initAgora();
 	}
@@ -886,7 +858,7 @@ export default class AgoraComponent extends Component {
 		if (this.agora) {
 			this.agora.toggleSilence();
 		} else {
-			this.patchState({ silencing: !this.state.silencing });
+			this.patchState({ silencing: !StateService.silencing });
 		}
 	}
 
